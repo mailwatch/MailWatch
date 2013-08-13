@@ -1,0 +1,18 @@
+----------------------------------
+INSTALLATION INSTRUCTIONS
+----------------------------------
+----------------------------------------------------------
+Optional for item Postfix
+----------------------------------------------------------
+
+----- Adding Postfix relay information
+
+- Add the table to the database
+
+# mysql -p mailscanner < tools/Postfix_relay/create_relay_postfix.sql
+
+- Edit the parser and add it as an hourly cron job
+
+Edit the parser for location of mailwatch webpages
+
+Edit mailscanner_relay.php in the mailscanner folder

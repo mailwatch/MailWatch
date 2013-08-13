@@ -1,0 +1,121 @@
+INSTALL file for the mailwatch "luser" interface.
+Version 1, Trever Furnish, tgfurnish at herff-jones dot com
+	2003-12-10
+
+Note: This is software contributed to the mailwatch project.  If something
+doesn't work, it's almost certainly my fault, not Steve's, so bother
+me not him. - Trever
+
+=============================================================
+Please read:
+
+This is meant to provide a non-administrative, single-email-address
+interface to the MailWatch database -- and only a SIMPLE one
+at that.
+
+In particular, this interface has no support for searching, no
+way to let a user view a detail page for a message, and no way
+for a user to release a message from quarantine or to run sa-learn.
+Those features *will* be added later.
+
+So what is this good for then, you may be asking...
+
+It's good for letting a user determine whether a message they
+never received was blocked by MailScanner.  That was my original
+primary objective, since at my site we don't notify senders
+OR recipients when a message is blocked - it just goes into the
+quarantine, where it sits for a few days till it's deleted.  In
+such a set-up the only other way for a user to figure out that
+mailscanner blocked a message is to ask the email admin to check
+on it for him.
+
+Requirements:
+
+If you have mailwatch working, then you ought to be able to get
+this working.  You'll have to add a "lusers" table to the
+mailscanner database to hold "lusernames" (described below).
+
+Authentication:
+
+For "luser" authentication, a new table, "lusers", is created
+in the mailscanner database.  Lusernames are actually email
+addresses and passwords are pseudo-randomly generated.  There
+is no provision for letting a user set their own password, 
+although they can get a new random password at any time.
+
+There is no provision for intergrating the authentication
+with another user database, such as Active Directory or the
+/etc/passwd file.  That's intentional - everything's a whole
+lot simpler (and safer) if access restrictions are based only
+on the email address in question.
+
+A user initially connects to the login page and then clicks on
+"create an account", which prompts him for his email address.
+A message containing a random password is sent to that email
+address.  If they user doesn't own the address, they never get
+the password.
+
+A note about "random" passwords:
+
+With the routine included for generating passwords, the resulting
+passwords are more likely to be easy to remember than they would
+be if they were truely random.  We use patterns to produce
+"pronounceable" passwords.  Sometimes however some passwords
+might raise an eyebrow or too - there's nothing that can be
+done to prevent that, but just be aware of it.  For example, if
+the president of your company gets his password randomly set
+to "m0ron12" and takes it personally... well, I doubt he'll
+forget it, and that's the whole point. ;^)
+
+=============================================================
+INSTALL instructions:
+
+- Untar the files into a luser directory underneath your
+  /var/www/html/mailscanner directory.  The directory
+  should be modes u=rwx,go=rx, owned by whatever owns your
+  /var/www/html/mailscanner directory.
+
+	chown root:root /var/www/html/mailscanner/luser
+	chmod u=rwx,go=rx /var/www/html/mailscanner/luser
+
+- Create a symbolic link from luser_login.php to index.php
+	cd /var/www/html/mailscanner/luser
+	ln -s luser_login.php index.php
+
+- Create the lusers table, which will hold "lusernames":
+	mysql mailscanner <create_lusertable.sql
+
+  (You'll probably need to add the -u and -p options to that command,
+  as appropriate for your mysql set-up.  For example:
+	mysql -uroot -prootpass mailscanner <create_lusertable.sql
+
+- Update the following settings within luser_functions.php:
+
+   // Who should password change messages appear to come from?
+   // Don't forget to whitelist this address.
+   define(LUSER_PASSCHANGEFROM, 'password_change@yourdomain.com');
+   
+   // Which domains do we serve?  This list should include any
+   // domain that you want "lusers" to be able to use this
+   // interface for.
+   global $luser_allowed_domains;
+   $luser_allowed_domains=array('somedomain.com','some.otherdomain.com');
+
+- Add the address you defined for LUSER_PASSCHANGEFROM to your
+  MailScanner whitelist, if appropriate for your site.  (This may not
+  be required if you already whitelist the mailwatch server by
+  ip address.)
+
+- If you have MAILQ set to true in mailscanner/functions.php, you'll
+  probably want to change that to false.  The Mail Queue table doesn't
+  make much sense for a non-administrative user.
+
+- Try the pages out.  http://yourserver/mailscanner/luser/
+
+
+=============================================================
+Licensing:
+
+These pages are based on Steve Freegard's MailWatch for MailScanner,
+which is released under the Gnu GPL, and are covered by the same
+license.

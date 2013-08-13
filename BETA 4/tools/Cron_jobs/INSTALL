@@ -1,0 +1,39 @@
+----------------------------------
+INSTALLATION INSTRUCTIONS
+----------------------------------
+
+-------------------------------------------
+Database cleanup of maillog records
+-------------------------------------------
+
+db_clean.php
+
+add to /etc/cron.daily/
+
+You will then to edit conf.php the RECORD_DAYS_TO_KEEP definition.
+
+You will need to edit the db_clean.php to reflect the location of the functions.php page
+
+--------------------------------------------
+Quaratine Maintenance
+--------------------------------------------
+
+Remove the clean.quaratine
+
+quaratine_maint.php
+
+add to /etc/cron.daily/
+
+You will then to edit conf.php the QUARANTINE_DAYS_TO_KEEP definition.
+
+You will need to edit the quaratine_maint.php to reflect the location of the functions.php page
+
+--------------------------------------------
+Quaratine Maintenance
+--------------------------------------------
+
+quaratine_report.php
+
+add to /etc/cron.daily
+
+You will need to edit the quaratine_report.php to reflect the location of the functions.php page

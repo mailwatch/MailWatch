@@ -1,0 +1,171 @@
+/*
+ MailWatch for MailScanner
+ Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+ Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+BODY {
+ margin: 0px 0px 0px 0px;
+ font-family: verdana,  sans-serif;
+}
+
+TABLE.mail TH, TABLE.boxtable TH, TABLE.maildetail TH {
+ font-size: 10pt;
+ font-weight: bold;
+ text-align: center;
+ background-color: #354C62;
+ color: white;
+}
+
+TABLE.mail TR, TABLE.sophos TR, TABLE.sa_rules_report TR {
+ font-size: 8pt;
+ background-color: #EBEBEB;
+}
+
+TABLE.mail TR.infected {
+ background-color: #B22222;
+ color: white;
+}
+
+TABLE.mail TR.spam {
+ background-color: #F5BBBB;
+ color: black;
+}
+
+TABLE.mail TR.highspam {
+ background-color: #EE6262;
+ color: black;
+}
+
+TABLE.mail TR.whitelisted {
+ background-color: lightgreen;
+ color: black;
+}
+
+TABLE.mail TR.blacklisted {
+ color: white;
+ background-color: black;
+}
+
+TABLE.mail, TABLE.maildetail, TABLE.navigation, TABLE.boxtable {
+ border: 1px solid black;
+}
+
+.navigation A {
+ color: white;
+ background-color: #6F6CA1;
+ display: block;
+ width: 100%;
+ height: 100%;
+}
+
+.navigation A:visited {
+ color: white;
+}
+
+.navigation A:HOVER {
+ background-color: #ACAAA5;
+ color: white;
+ display: block;
+}
+
+TD.heading {
+ background-color: #354C62;
+ font-weight: bold;
+ font-size: 10pt;
+ color: white;
+}
+
+TABLE.maildetail TD.heading {
+ background-color: #354C62;
+ color: white;
+ font-weight: bold;
+ font-size: 10pt;
+}
+
+TABLE.maildetail TD.detail {
+ background-color: #EBEBEB;
+ font-size: 8pt;
+}
+
+SPAN.yes {
+ background-color: red;
+ color: white;
+ font-weight: bold;
+}
+
+SPAN.no {
+ background-color: green;
+ color: white;
+ font-weight: bold;
+}
+
+A {
+ text-decoration: none;
+ color: blue;
+}
+
+A:visited {
+ text-decoration: none;
+ color: blue;
+}
+
+A:hover {
+ background-color: blue;
+ color: white;
+}
+
+TABLE.boxtable TR {
+ /*border-collapse: collapse;*/
+ border-bottom: 1px solid black;
+}
+
+TD.jump, INPUT {
+ font-size: 8pt;
+}
+
+/* Lint */
+TD.lint_1 {
+ background-color: green;
+ color: white;
+ text-align: right;
+}
+
+TD.lint_2 {
+ background-color: yellow;
+ color: black;
+ text-align: right;
+}
+
+TD.lint_3 {
+ background-color: orange;
+ color: black;
+ text-align: right;
+}
+
+TD.lint_4 {
+ background-color: orangered;
+ color: black;
+ text-align: right;
+}
+
+TD.lint_5 {
+ background-color: red;
+ color: black;
+ text-align: right;
+}
+

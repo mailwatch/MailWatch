@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# mailwatch_relay	
+
+#
+# chkconfig: 345 35 85
+# description: sendmail_relay.php is a handy mailwatch utility that\
+#              watches the mail log  for relay log lines and records\
+#              each into the MailWatch database and  displays the relay\
+#              information for each message on the 'Message Detail' page.
+
+
+# Source function library.
+. /etc/init.d/functions
+
+[ -x /usr/sbin/sendmail_relay.php ] || exit 0
+
+RETVAL=0
+prog="nohup /usr/sbin/sendmail_relay.php &"
+
+start() {
+        echo -n $"Starting sendmail_relay: "
+	nohup /usr/sbin/sendmail_relay.php 2>&1 &
+        return $RETVAL
+	echo -e "\n"
+
+}
+
+stop() {
+	echo -n $"Stopping sendmail_relay: "
+        PID=`ps -ef | grep sendmail_relay.php | grep -v grep | awk '{print $2}'`
+	kill $PID
+	PID=`ps -ef | grep 'tail -F -n0 /var/log/maillog' | grep -v grep | awk '{print $2}'`
+	kill $PID 
+	echo -e "\n"
+}
+
+status() {
+	status '/usr/sbin/sendmail_relay.php'
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+        ;;
+  stop)
+	stop
+        ;;
+  status)
+	status
+	;;
+  restart|reload)
+	stop
+	start
+	RETVAL=$?
+	;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+
+exit $RETVAL

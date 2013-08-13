@@ -1,0 +1,93 @@
+<TABLE BORDER=0 CLASS="BOXTABLE"" CELLPADDING=2 CELLSPACING=5>
+ <THEAD>
+  <TH COLSPAN=2>How to configure Outlook to catch Spam with MailScanner</TH>
+ </THEAD>
+ <TR>
+  <TD WIDTH=200><IMG SRC="images/step1.jpg"></TD>
+  <TD WIDTH="100%" VALIGN="TOP">
+   <H3>Step 1</H3>
+   In Outlook, go to the 'Tools' menu, and select 'Rules Wizard...'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step2.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 2</H3>
+   The rules wizard will display any existing rules you may have set-up.  Select 'New...'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step3.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 3</H3>
+   Click 'Check messages when they arrive' so that it is highlighted and click 'Next >'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step4.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 4</H3>
+   Tick the condition 'with specific words in the subject' then in the 'Rule Description' click where it says 'specific words'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step5.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 5</H3>
+   Enter '{Spam?}' as the word to search for in the subject.  It needs to be typed exactly as shown.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step6.jpg"></TD> 
+  <TD VALIGN="TOP">
+   <H3>Step 6</H3>
+    Click 'Next >'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step7.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 7</H3>
+   Tick 'move it to the specified folder' and in the Rule Description click 'specified'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step8.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 8</H3>
+   Click 'New...' to create a new folder in which to store the Spam messages.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step9.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 9</H3>
+   Enter the name as 'Spam' or 'Junk Mail' and make sure that the 'Inbox' is selected as the place to store the folder and click 'OK'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step10.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 10</H3>
+   Make sure that the folder you just created is selected and click 'OK'.
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step11.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 11</H3>
+   Check that your 'Rule Description' matches the example and click 'Finish'.   
+  </TD>
+ </TR>
+ <TR>
+  <TD><IMG SRC="images/step12.jpg"></TD>
+  <TD VALIGN="TOP">
+   <H3>Step 12</H3>
+   Make sure that the rule that you just created is ticked, and click 'OK'.<BR>
+   <BR>
+   Any mail that you now receive that has been classified by MailScanner and SpamAssassin as Spam will be automatically moved to the folder that you created.  You should check this daily to make sure that no legitimate mail has been mis-classified (this is called a false-positive) and delete any other mails.<BR>
+<BR>
+Any false-positives (mail wrongly classified as Spam) or false-negatives (mail not classified as Spam that should have been) should be moved or copied into the 'Spam' or 'Not Spam' public folders (Public Folders/SpamAssassin) so that the software can be 'trained' on these messages to reduce the possibility of mis-classifying similar messages in the future.<BR/><BR/><A HREF="docs.php?doc=howto_train_spamassassin">Click here</A> for a walkthrough on moving the messages to these folders.<BR>
+  </TD>
+ </TR>
+</TABLE>
