@@ -139,4 +139,3 @@ decode_structure($mime_struct[$_GET['part']]);
 
 // Close any open db connections
 dbclose();
-?>

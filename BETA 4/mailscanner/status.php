@@ -65,4 +65,3 @@ db_colorised_table($sql,"Last ".MAX_RESULTS." Messages (Refreshing every $refres
 html_end();
 // Close any open db connections
 dbclose();
-?>

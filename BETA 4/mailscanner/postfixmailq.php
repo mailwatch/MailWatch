@@ -33,4 +33,3 @@ echo postfixmailq();
 echo '</pre>';
 html_end();
 dbclose();
-?>

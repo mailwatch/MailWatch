@@ -110,4 +110,3 @@ echo '<table width="100%" class="boxtable">
 html_end();
 // Close any open db connections
 dbclose();
-?>
