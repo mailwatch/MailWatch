@@ -26,8 +26,9 @@ require('login.function.php');
 
 html_start("Documentation");
 
-if (isset($_GET[doc])) {
- include_once("docs/".$_GET[doc].".html");
+if (isset($_GET['doc'])) {
+    $file = preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['doc']);
+ include_once("docs/".$file.".html");
 } else {
  echo '<table width="100%" class="boxtable">'."\n";
  echo ' <tr>'."\n";
