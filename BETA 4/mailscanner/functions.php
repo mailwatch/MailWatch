@@ -3001,4 +3001,3 @@ function funcs_phpversion()
    return(phpversion());
 }
 
-?>

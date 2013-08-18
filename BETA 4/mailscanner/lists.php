@@ -333,4 +333,3 @@ echo '</td>
  html_end(); 
   // close the connection to the Database
  dbclose();
-?>

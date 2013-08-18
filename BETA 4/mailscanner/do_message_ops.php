@@ -98,4 +98,3 @@ echo '<p><a href="javascript:history.back(1)">Back</a>'."\n";
 html_end();
 //Close database connection
 dbclose();
-?>

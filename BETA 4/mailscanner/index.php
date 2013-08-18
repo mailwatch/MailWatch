@@ -24,4 +24,3 @@ if (isset($_GET['httpbasic']))
     header( 'Location: status.php?httpbasic');
 else
     header( 'Location: status.php');
-?>

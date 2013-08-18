@@ -184,4 +184,3 @@ echo '</tr>
 dbclose();
 // place the footer
 html_end();
-?>
