@@ -681,10 +681,6 @@ echo $footer;
 echo '<p class="center" style="font-size:13px"><i>'."\n";
 echo page_creation_timer();
 echo '</i></p>'."\n";
-echo '<p class="center">'."\n";
-echo '        <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-html401" alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
-<a href="http://sourceforge.net/projects/mailwatch"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=87163&amp;type=10" width="80" height="15" alt="Get MailWatch for MailScanner at SourceForge.net. Fast, secure and Free Open Source software downloads" ></a>'."\n";
-echo '  </p>'."\n";
 echo '</body>'."\n";
 echo '</html>'."\n";
 
