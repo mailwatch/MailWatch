@@ -69,14 +69,8 @@ if(file_exists('conf.php')){
 </td>
 </tr>
 </table>
-<p style="text-align:center;">
-    <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-html401" alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
-<a href="http://sourceforge.net/projects/mailwatch"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=87163&amp;type=10" width="80" height="15" alt="Get MailWatch for MailScanner at SourceForge.net. Fast, secure and Free Open Source software downloads"></a>
-	</p>
 </html>
-
 <?php
-
 }
 else{
 
@@ -101,7 +95,7 @@ else{
 <tr>
 <td colspan="3"><strong> MailWatch Login</strong></td>
 </tr>
-<td colspan="3"> Sorry the Server is missing config.conf. Please create the file by copying config.conf.example and making the required changes.</td>
+<td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and making the required changes.</td>
 <tr>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
@@ -116,4 +110,3 @@ else{
 <?php
 
 }
-?>

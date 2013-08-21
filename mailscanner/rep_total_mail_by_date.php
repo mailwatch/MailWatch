@@ -105,6 +105,9 @@ while($row=mysql_fetch_object($result)) {
 }
 
 // Merge in MTA data
+$data_total_unknown_users = array();
+$data_total_rbl = array();
+$data_total_unresolveable = array();
 while($row1=mysql_fetch_object($result1)) {
  if(is_numeric($key=array_search($row1->xaxis,$data_labels))) {
   switch(true) {
@@ -250,4 +253,3 @@ echo "</TABLE>\n";
 html_end();
 // Close any open db connections
 dbclose();
-?>
