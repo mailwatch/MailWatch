@@ -43,6 +43,10 @@ if(is_array($_POST)) {
  foreach($_POST as $k=>$v) {
   if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
    $id = $Regs[1];
+   $mta = get_conf_var('mta');
+   if ($mta == 'postfix') {
+      $id = str_replace('_', '.', $id);
+   }
   } else {
    continue;
   }
