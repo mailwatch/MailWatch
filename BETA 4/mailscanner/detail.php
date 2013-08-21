@@ -434,4 +434,3 @@ if((is_array($quarantined)) && (count($quarantined)>0)) {
 html_end();
 // Close any open db connections
 dbclose();
-?>

@@ -41,4 +41,3 @@ elseif(!isset($_SESSION['myusername']))
 	exit;
 }
 
-?>

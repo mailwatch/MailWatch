@@ -99,4 +99,3 @@ html_end();
 
 // Close any open db connections
 dbclose();
-?>
