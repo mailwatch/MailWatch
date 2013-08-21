@@ -94,4 +94,3 @@ db_colorised_table($sql,'Message Listing',true,true);
 html_end();
 // Close any open db connections
 dbclose();
-?>

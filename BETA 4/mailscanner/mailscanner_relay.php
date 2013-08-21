@@ -61,4 +61,3 @@ if($_SERVER['argv'][1] == "--refresh") {
  doit('tail -F -n0 '.MS_LOG);
 }
 
-?>

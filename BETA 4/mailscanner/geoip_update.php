@@ -225,4 +225,3 @@ ob_flush();
  html_end();
   // close the connection to the Database
  dbclose();
-?>
