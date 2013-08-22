@@ -60,4 +60,3 @@ if($_SERVER['argv'][1] == "--refresh") {
  // Start watching the maillog
  doit('tail -F -n0 '.MS_LOG);
 }
-
