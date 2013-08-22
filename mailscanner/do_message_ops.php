@@ -45,7 +45,7 @@ if(is_array($_POST)) {
    $id = $Regs[1];
    $mta = get_conf_var('mta');
    if ($mta == 'postfix') {
-       $id = str_replace('_', '.', $id);
+      $id = str_replace('_', '.', $id);
    }
   } else {
    continue;
