@@ -72,6 +72,7 @@ if(is_array($_POST)) {
  // echo "<TABLE WIDTH=\"100%\">\n";
   if(count($items) > 0) {
     $itemnum = array($num);
+    $num=0;
    if ($type == 'release'){
       if($quarantined = quarantine_list_items($id,RPC_ONLY)) {
          $to = $quarantined[0]['to'];
