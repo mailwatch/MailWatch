@@ -1171,6 +1171,11 @@ function parse_conf_file($name){
   if(preg_match("/%.+%/",$regs[1])) {
   	$var[$regs[1]] = $regs[2];
   }
+
+  # expand %var% variables
+  if(preg_match("/(%.+%)/",$regs[2],$match)) {
+    $regs[2] = preg_replace("/%.+%/",$var[$match[1]],$regs[2]);
+  }
  
  // Remove any html entities from the code
    $key = htmlentities($regs[1]);
