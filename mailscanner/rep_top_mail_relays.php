@@ -99,7 +99,7 @@ $p1->SetLegends($data_names);
 
 $p1->SetCenter(0.73,0.4);
 $graph->legend->SetLayout(LEGEND_VER);
-$graph->legend->Pos(0.25,0.20,center);
+$graph->legend->Pos(0.25,0.20,'center');
 
 $graph->Add($p1);
 $graph->Stroke($filename);
