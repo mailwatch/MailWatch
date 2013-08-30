@@ -83,8 +83,8 @@ else{
         </tr>
 
 <tr>
-<form name="form1" method="post" action="checklogin.php">
 <td>
+<form name="form1" method="post" action="checklogin.php">
 <table width="100%" border="0" cellpadding="3" cellspacing="1">
 <tr>
 <td colspan="3"><strong> MailWatch Login</strong></td>
@@ -96,8 +96,9 @@ else{
 <td><input type="button" value="Back" onClick="history.go(-1);return true;"></td>
 </tr>
 </table>
-</td>
 </form>
+</td>
+
 </tr>
 </table>
 </html>
