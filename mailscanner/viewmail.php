@@ -131,7 +131,7 @@ function lazy($title, $val) {
 // Display the headers
 switch(true) {
  case isset($structure->headers['date']):
-  if (function_exists (mb_check_encoding)) {
+  if (function_exists ('mb_check_encoding')) {
    if ( ! mb_check_encoding ($structure->headers['date'], 'UTF-8')) {
     $structure->headers['date'] = mb_convert_encoding($structure->headers['date'], 'UTF-8');
    }
@@ -140,7 +140,7 @@ switch(true) {
   }
   lazy("Date:",$structure->headers['date']);
  case isset($structure->headers['from']):
-  if (function_exists (mb_check_encoding)) {
+  if (function_exists ('mb_check_encoding')) {
    if ( ! mb_check_encoding ($structure->headers['from'], 'UTF-8')) {
     $structure->headers['from'] = mb_convert_encoding($structure->headers['from'], 'UTF-8');
    }
@@ -149,7 +149,7 @@ switch(true) {
   }
   lazy("From:",str_replace('"','',$structure->headers['from']));
  case isset($structure->headers['to']):
-  if (function_exists (mb_check_encoding)) {
+  if (function_exists ('mb_check_encoding')) {
    if ( ! mb_check_encoding ($structure->headers['to'], 'UTF-8')) {
     $structure->headers['to'] = mb_convert_encoding($structure->headers['to'], 'UTF-8');
    }
@@ -158,7 +158,7 @@ switch(true) {
   }
   lazy("To:",str_replace('"','',$structure->headers['to']));
  case isset($structure->headers['subject']):
-  if (function_exists (mb_check_encoding)) {
+  if (function_exists ('mb_check_encoding')) {
    if ( ! mb_check_encoding ($structure->headers['subject'], 'UTF-8')) {
     $structure->headers['subject'] = mb_convert_encoding ($structure->headers['subject'], 'UTF-8');
    }
