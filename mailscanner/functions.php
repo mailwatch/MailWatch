@@ -1181,9 +1181,10 @@ function parse_conf_file($name){
 	
 	 }
     }
+    fclose($fh) or die($php_errormsg);
+    unset($fh);
+
 	return($array_output);
-  fclose($fh) or die($php_errormsg);
-  unset($fh);
 }
   
     
