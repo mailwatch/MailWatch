@@ -42,7 +42,7 @@ echo '
  <tr>
   <td align="center">';
 
-if preg_match('/-6/i',get_conf_var('VirusScanners')){
+if (preg_match('/-6/i',get_conf_var('VirusScanners'))) {
 passthru(get_virus_conf('f-prot')." -virno | awk -f ./f-prot.awk");
 }else{
 passthru(get_virus_conf('f-prot')." -verno | awk -f ./f-prot.awk"); 
