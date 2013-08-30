@@ -32,7 +32,7 @@ html_start("Message Viewer",0,false,false);
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 function do_action(id,action) {
- ActionString = "quarantine_action.php?id="+id+"&action="+action+"&html=true"
+ ActionString = "quarantine_action.php?id=" + id + "&action=" + action + "&html=true";
  DoActionWindow = window.open(ActionString,'','toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=no, width=900, height=150');
 }
 -->
