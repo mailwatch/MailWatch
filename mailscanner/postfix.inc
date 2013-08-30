@@ -52,4 +52,3 @@ function  postfixmailq()
     echo $row ."\n";
     }
   }
-?>
