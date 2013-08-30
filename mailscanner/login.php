@@ -20,13 +20,12 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n";
+echo '<html>'."\n";
+echo '<head>'."\n";
+echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'."\n";
+
 if(file_exists('conf.php')){
-
-	echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n";
-	echo '<html>'."\n";
-	echo '<head>'."\n";
-    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'."\n";
-
 ?>
 <style type="text/css"> 
   table.center {
@@ -73,11 +72,6 @@ if(file_exists('conf.php')){
 <?php
 }
 else{
-
-	echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n";
-	echo '<html>'."\n";
-	echo '<head>'."\n";
-    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'."\n"
 ?>
 
 <title>MailWatch Login Page</title>
@@ -108,5 +102,4 @@ else{
 </table>
 </html>
 <?php
-
 }
