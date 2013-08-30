@@ -143,12 +143,12 @@ TABLE.mail TD.blacklisted {
 TABLE.mail, TABLE.maildetail, TABLE.navigation, TABLE.boxtable {
  border: 1px solid black;
  padding: 0px;
- 
+
 }
 
 TABLE.boxtable{
 
-margin-left:auto; 
+margin-left:auto;
 margin-right:auto;
 
 }
@@ -165,11 +165,10 @@ margin-right:auto;
  height: 40px;
  -moz-border-radius: 10px;
  -webkit-border-radius: 10px;
- border-top: 2px solid #eee;
- border-left: 2px solid #eee;
- border-bottom: 2px solid #ccc;
- border-right: 2px solid #ccc;
- }
+ border: 2px solid #eee;
+ border-right-color: #ccc;
+ border-bottom-color: #ccc;
+}
 
  #menu li {
  float: left;
@@ -189,13 +188,10 @@ margin-right:auto;
  border-bottom: 2px solid #DDD;
  color: #999;
  }
-						
+
 /* Yellow Menu */
 #menu.yellow {
- border-top: 2px solid #000;
- border-left: 2px solid #000;
- border-bottom: 2px solid #000;
- border-right: 2px solid #000;
+ border: 2px solid #000;
  background: #F7CE4A;
 }
 
@@ -204,10 +200,10 @@ margin-right:auto;
  }
 
 #menu.yellow li a:hover, #menu.yellow li.active a {
- color: #fff; background: #4973f7; 
+ color: #fff; background: #4973f7;
  border-bottom: 2px solid #000;
  }
- 
+
 TD.heading {
  background-color: #F7CE4A;
  font-weight: bold;
