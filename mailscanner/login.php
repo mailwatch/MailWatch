@@ -19,12 +19,12 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
-echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n";
-echo '<html>'."\n";
-echo '<head>'."\n";
-echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'."\n";
-
+?>
+<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<?php
 if(file_exists('conf.php')){
 ?>
 <style type="text/css"> 
