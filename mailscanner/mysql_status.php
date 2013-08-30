@@ -27,7 +27,7 @@ include 'login.function.php';
 
 html_start("MySQL Status",0,false,true);
 
-if($_SESSION['user_type']!=A)
+if($_SESSION['user_type']!= 'A')
 {
 
 echo "Not Authorized";

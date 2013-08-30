@@ -564,7 +564,7 @@ while($row = mysql_fetch_object($sth)) {
  if(!DISTRIBUTED_SETUP) { $nav['quarantine.php'] = "Quarantine"; }
  $nav['reports.php'] 	= "Reports";
  $nav['other.php'] 	= "Tools/Links";
- if($_SESSION['user_type'] === A){$nav['sf_version.php'] = "Software Versions";}
+ if($_SESSION['user_type'] === 'A'){$nav['sf_version.php'] = "Software Versions";}
  if(SHOW_DOC == 'true'){$nav['docs.php'] = "Documentation";}
  $nav['logout.php']	= "Logout";
  $table_width = round(100/count($nav));
