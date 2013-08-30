@@ -1,2 +1,5 @@
+#directories
 .idea
 
+#files
+mailscanner/conf.php
