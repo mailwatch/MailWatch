@@ -35,6 +35,7 @@ if(file_exists('conf.php')){
 </style>
 <title>MailWatch Login Page</title>
 </head>
+<body>
 <table width="300" border="1" class="center" cellpadding="0" cellspacing="0">
     <tr>
 
@@ -68,6 +69,7 @@ if(file_exists('conf.php')){
 </td>
 </tr>
 </table>
+</body>
 </html>
 <?php
 }
@@ -76,6 +78,7 @@ else{
 
 <title>MailWatch Login Page</title>
 </head>
+<body>
 <table width="300" border="1" style="text-align:center;" cellpadding="0" cellspacing="0">
     <tr>
 
@@ -103,6 +106,7 @@ else{
 
 </tr>
 </table>
+</body>
 </html>
 <?php
 }
