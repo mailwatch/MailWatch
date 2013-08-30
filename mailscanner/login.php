@@ -89,7 +89,9 @@ else{
 <tr>
 <td colspan="3"><strong> MailWatch Login</strong></td>
 </tr>
-<td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and making the required changes.</td>
+<tr>
+    <td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and making the required changes.</td>
+</tr>
 <tr>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
