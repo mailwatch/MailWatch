@@ -79,7 +79,7 @@ else{
 <table width="300" border="1" style="text-align:center;" cellpadding="0" cellspacing="0">
     <tr>
 
-         <td align="center"><img src="images/mailwatch-logo.png"></td>
+         <td align="center"><img src="images/mailwatch-logo.png" alt="MailWatch"></td>
         </tr>
 
 <tr>
