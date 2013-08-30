@@ -81,4 +81,3 @@ db_colorised_table($sql,'Message Operations',true,true,"SPAM");
 html_end();
 // Close any open db connections
 dbclose();
-?>
