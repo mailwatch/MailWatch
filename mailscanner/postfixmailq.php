@@ -29,7 +29,7 @@ html_start("Mail Queue Viewer");
 
 echo '<u><b>Combined mail queue (Inbound and Outbound)</b></u>'."\n";
 echo '<pre>';
-echo postfixmailq();
+postfixmailq();
 echo '</pre>';
 html_end();
 dbclose();
