@@ -42,18 +42,26 @@ echo '
 </html>';
 }
 
-function simple_html_result($status) {
-?>
-<table class="box" width="100%" height="100%">
- <tr>
-  <td valign="middle" align="center">
-   <table border=0>
-    <tr><th>Result</th></tr>
-    <tr><td><?php echo $status; ?></td></tr>
-    <tr><td align="center"><b><a href="javascript:window.close()">Close Window</a></td></tr>
-  </td>
- </tr>
-</table>
+function simple_html_result($status)
+{
+    ?>
+    <table class="box" width="100%" height="100%">
+        <tr>
+            <td valign="middle" align="center">
+                <table border=0>
+                    <tr>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td><?php echo $status; ?></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 <?php
 }
 
