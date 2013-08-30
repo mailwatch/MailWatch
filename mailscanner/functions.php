@@ -2035,11 +2035,11 @@ function get_microtime() {
 }
 
 function page_creation_timer() {
- if(!isset($GLOBALS[pc_start_time])) {
-  $GLOBALS[pc_start_time] = get_microtime();
+ if(!isset($GLOBALS['pc_start_time'])) {
+  $GLOBALS['pc_start_time'] = get_microtime();
  } else {
   $pc_end_time = get_microtime();
-  $pc_total_time = $pc_end_time - $GLOBALS[pc_start_time];
+  $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
   printf("Page generated in %f seconds\n", $pc_total_time);
  }
 }
