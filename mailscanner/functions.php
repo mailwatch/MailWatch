@@ -679,7 +679,7 @@ echo '</tr>'."\n";
 echo '</table>'."\n";
 echo $footer;
 echo '<p class="center" style="font-size:13px"><i>'."\n";
-echo page_creation_timer();
+page_creation_timer();
 echo '</i></p>'."\n";
 echo '</body>'."\n";
 echo '</html>'."\n";
