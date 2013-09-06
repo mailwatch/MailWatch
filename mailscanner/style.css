@@ -160,6 +160,7 @@ TABLE.boxtable {
     height:40px;
     -moz-border-radius:10px;
     -webkit-border-radius:10px;
+    border-radius: 10px;
     border:2px solid #eee;
     border-right-color:#ccc;
     border-bottom-color:#ccc;
