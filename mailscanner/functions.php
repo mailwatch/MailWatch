@@ -62,7 +62,7 @@ include "postfix.inc";
 // define('VIRUS_REGEX', '<<your regexp here>>');
 // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
 
-if(!defined(VIRUS_REGEX)) {
+if(!defined('VIRUS_REGEX')) {
  switch($scanner=get_primary_scanner()) {
   case 'none':
    define('VIRUS_REGEX', '/^Dummy$/');
