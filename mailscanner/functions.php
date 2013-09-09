@@ -382,14 +382,15 @@ $outgoingdir = get_conf_var('outgoingqueuedir');
      foreach (get_disks() as $disk) {
          $free_space = formatSize(disk_free_space($disk['mountpoint']));
          $total_space = formatSize(disk_total_space($disk['mountpoint']));
-         if (round($free_space / $total_space, 2) > 0.1) {
-             $percent = "<span style='color:red'>";
+         if (round($free_space / $total_space, 2) <= 0.1) {
+             $percent = '<span style="color:red">';
          } else {
-             $percent = "<span>";
+             $percent = '<span>';
          }
-         $percent = " [";
+         $percent .= ' [';
          $percent .= round($free_space / $total_space, 2) * 100;
-         $percent .= "%] ";
+         $percent .= '%] ';
+         $percent .= '</span>';
          echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . $free_space . $percent . '</td>' . "\n";
      }
 
