@@ -1,5 +1,6 @@
 #directories
 .idea
+mailscanner/images/cache/*
 
 #files
 mailscanner/conf.php
