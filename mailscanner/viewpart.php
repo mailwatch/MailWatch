@@ -32,6 +32,7 @@ if (!isset($_GET['id'])) {
     die("No input Message ID");
 } else {
     // See if message is local
+    dbconn(); // required db link for mysql_real_escape_string
     if (!($host = @mysql_result(dbquery("SELECT hostname FROM maillog WHERE id='" . mysql_real_escape_string($_GET['id']) . "' AND " . $_SESSION["global_filter"] . ""),0))) {
         die("Message '" . $_GET['id'] . "' not found\n");
     }
