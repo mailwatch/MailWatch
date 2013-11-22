@@ -20,11 +20,11 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once('./functions.php');
-require_once('Mail/mimeDecode.php');
+require_once './functions.php';
+require_once 'Mail/mimeDecode.php';
 
 session_start();
-require('login.function.php');
+require 'login.function.php';
 
 ini_set("memory_limit", MEMORY_LIMIT);
 
