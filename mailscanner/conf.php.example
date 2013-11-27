@@ -192,4 +192,3 @@ define('ALLOWED_TAGS', '<a><br><b><body><div><font><h1><h2><h3><h4><head><html><
 
 // Override VIRUS_REGEX??
 // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/'); // SophosSAVI
-?>

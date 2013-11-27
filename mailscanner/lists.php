@@ -86,7 +86,7 @@ switch($url_type) {
 
 	if (!$result1) {
     $message  = 'Invalid query: ' . mysql_error() . "\n";
-    $message .= 'Whole query: ' . $query;
+    $message .= 'Whole query: ' . $sql1;
     die($message);
 	}
 	while($row = mysql_fetch_array($result1)){
@@ -116,7 +116,7 @@ switch($url_type) {
 
 	if (!$result1) {
     $message  = 'Invalid query: ' . mysql_error() . "\n";
-    $message .= 'Whole query: ' . $query;
+    $message .= 'Whole query: ' . $sql1;
     die($message);
 	}
 	while($row = mysql_fetch_array($result1)){

@@ -29,13 +29,13 @@ html_start("Mail Queue Viewer",0,false,false);
 
 switch($_GET['queue']) {
  case "inq":
-  $queue=inq;
+  $queue='inq';
   $display='Inbound Mail Queue';
-  break;;
+  break;
  case "outq":
-  $queue=outq;
+  $queue='outq';
   $display='Outbound Mail Queue';
-  break;;
+  break;
  default:
   die("No queue specified\n");
   break;

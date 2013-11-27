@@ -19,14 +19,13 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
+?>
+<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<?php
 if(file_exists('conf.php')){
-
-	echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n";
-	echo '<html>'."\n";
-	echo '<head>'."\n";
-    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'."\n";
-
 ?>
 <style type="text/css"> 
   table.center {
@@ -36,6 +35,7 @@ if(file_exists('conf.php')){
 </style>
 <title>MailWatch Login Page</title>
 </head>
+<body>
 <table width="300" border="1" class="center" cellpadding="0" cellspacing="0">
     <tr>
 
@@ -69,44 +69,44 @@ if(file_exists('conf.php')){
 </td>
 </tr>
 </table>
+</body>
 </html>
 <?php
 }
 else{
-
-	echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n";
-	echo '<html>'."\n";
-	echo '<head>'."\n";
-    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'."\n"
 ?>
 
 <title>MailWatch Login Page</title>
 </head>
+<body>
 <table width="300" border="1" style="text-align:center;" cellpadding="0" cellspacing="0">
     <tr>
 
-         <td align="center"><img src="images/mailwatch-logo.png"></td>
+         <td align="center"><img src="images/mailwatch-logo.png" alt="MailWatch"></td>
         </tr>
 
 <tr>
-<form name="form1" method="post" action="checklogin.php">
 <td>
+<form name="form1" method="post" action="checklogin.php">
 <table width="100%" border="0" cellpadding="3" cellspacing="1">
 <tr>
 <td colspan="3"><strong> MailWatch Login</strong></td>
 </tr>
-<td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and making the required changes.</td>
+<tr>
+    <td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and making the required changes.</td>
+</tr>
 <tr>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td><input type="button" value="Back" onClick="history.go(-1);return true;"></td>
 </tr>
 </table>
-</td>
 </form>
+</td>
+
 </tr>
 </table>
+</body>
 </html>
 <?php
-
 }

@@ -160,4 +160,3 @@ ORDER BY
 
 html_end();
 dbclose();
-?>

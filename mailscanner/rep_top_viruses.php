@@ -91,8 +91,8 @@ $p1->SetTheme('sand');
 $p1->SetLegends($data_names);
 
 $p1->SetCenter(0.73,0.4);
-$graph->legend->SetLayout(LEGEND_VER);
-$graph->legend->Pos(0.25,0.20,center);
+$graph->legend->SetLayout(LEGEND_VERT);
+$graph->legend->Pos(0.25,0.20,'center');
 
 $graph->Add($p1);
 $graph->Stroke($filename);
@@ -138,4 +138,3 @@ echo "</TABLE>";
 html_end();
 // Close any open db connections
 dbclose();
-?>

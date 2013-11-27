@@ -213,7 +213,7 @@ WHERE
 
  function DisplayForm() {
   // Form
-  $return .= '<form action="'.$_SERVER[PHP_SELF].'">'."\n";
+  $return .= '<form action="'.$_SERVER['PHP_SELF'].'">'."\n";
 
   // Table
   $return .= '<table width="100%">'."\n";

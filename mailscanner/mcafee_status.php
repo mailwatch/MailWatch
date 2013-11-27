@@ -30,7 +30,7 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-if($_SESSION['user_type'] !=A){
+if($_SESSION['user_type'] != 'A'){
 header("Location: index.php");
 }
 

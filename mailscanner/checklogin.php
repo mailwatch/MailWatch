@@ -54,19 +54,19 @@ $result=dbquery($sql);
 
 if (!$result) {
     $message  = 'Invalid query: ' . mysql_error() . "\n";
-    $message .= 'Whole query: ' . $query;
+    $message .= 'Whole query: ' . $sql;
     die($message);
 }
 if(mysql_num_rows($result) > 0){
-$fullname=mysql_result($result, 0, fullname);
-$usertype=mysql_result($result, 0, type);
+$fullname=mysql_result($result, 0, 'fullname');
+$usertype=mysql_result($result, 0, 'type');
 }
 $sql1="SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
 $result1=dbquery($sql1);
 
 if (!$result1) {
     $message  = 'Invalid query: ' . mysql_error() . "\n";
-    $message .= 'Whole query: ' . $query;
+    $message .= 'Whole query: ' . $sql1;
     die($message);
 }
 

@@ -31,7 +31,7 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-if($_SESSION['user_type'] !=A){
+if($_SESSION['user_type'] != 'A'){
 header("Location: index.php");
 }
 else{
@@ -42,7 +42,7 @@ echo '
  <tr>
   <td align="center">';
 
-if preg_match('/-6/i',get_conf_var('VirusScanners')){
+if (preg_match('/-6/i',get_conf_var('VirusScanners'))) {
 passthru(get_virus_conf('f-prot')." -virno | awk -f ./f-prot.awk");
 }else{
 passthru(get_virus_conf('f-prot')." -verno | awk -f ./f-prot.awk"); 

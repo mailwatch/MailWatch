@@ -29,7 +29,7 @@ session_start();
 require('login.function.php');
 
 // If the user isn't an administrator to send them back to the main page
-if($_SESSION['user_type'] !=A){
+if($_SESSION['user_type'] != 'A'){
 header("Location: index.php");
 }
 else{

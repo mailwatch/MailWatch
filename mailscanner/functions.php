@@ -21,7 +21,7 @@
 */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 
 // Read in MailWatch configuration file
 if(!(@include_once('conf.php'))==true) {
@@ -62,7 +62,7 @@ include "postfix.inc";
 // define('VIRUS_REGEX', '<<your regexp here>>');
 // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
 
-if(!defined(VIRUS_REGEX)) {
+if(!defined('VIRUS_REGEX')) {
  switch($scanner=get_primary_scanner()) {
   case 'none':
    define('VIRUS_REGEX', '/^Dummy$/');
@@ -564,7 +564,7 @@ while($row = mysql_fetch_object($sth)) {
  if(!DISTRIBUTED_SETUP) { $nav['quarantine.php'] = "Quarantine"; }
  $nav['reports.php'] 	= "Reports";
  $nav['other.php'] 	= "Tools/Links";
- if($_SESSION['user_type'] === A){$nav['sf_version.php'] = "Software Versions";}
+ if($_SESSION['user_type'] === 'A'){$nav['sf_version.php'] = "Software Versions";}
  if(SHOW_DOC == 'true'){$nav['docs.php'] = "Documentation";}
  $nav['logout.php']	= "Logout";
  $table_width = round(100/count($nav));
@@ -679,7 +679,7 @@ echo '</tr>'."\n";
 echo '</table>'."\n";
 echo $footer;
 echo '<p class="center" style="font-size:13px"><i>'."\n";
-echo page_creation_timer();
+page_creation_timer();
 echo '</i></p>'."\n";
 echo '</body>'."\n";
 echo '</html>'."\n";
@@ -736,7 +736,7 @@ dbconn();
  if(get_magic_quotes_gpc()) {
   $value = stripslashes($value);
  }
- $value = mysql_escape_string($value);
+ $value = mysql_real_escape_string($value);
  return $value;
 }
 
@@ -1181,9 +1181,10 @@ function parse_conf_file($name){
 	
 	 }
     }
+    fclose($fh) or die($php_errormsg);
+    unset($fh);
+
 	return($array_output);
-  fclose($fh) or die($php_errormsg);
-  unset($fh);
 }
   
     
@@ -1612,7 +1613,7 @@ echo $pager->links;
       break;
      case 'subject':
       $row[$f] = decode_header($row[$f]);
-      if (function_exists (mb_check_encoding)) {
+      if (function_exists ('mb_check_encoding')) {
        if (! mb_check_encoding ($row[$f], 'UTF-8')) {
         $row[$f] = mb_convert_encoding($row[$f], 'UTF-8');
        }
@@ -1739,10 +1740,10 @@ echo $pager->links;
      echo '<tr class="mcp">'."\n";
      break;
     default:
-	  if($fieldname['sascore']==''){
-		'<tr class="mcp">'."\n";
+	  if($fieldname['mcpsascore']!=''){
+		echo '<tr class="mcp">'."\n";
 	  }else{
-     echo '<tr >'."\n";
+        echo '<tr >'."\n";
 	 }
      break;
    }
@@ -2034,11 +2035,11 @@ function get_microtime() {
 }
 
 function page_creation_timer() {
- if(!isset($GLOBALS[pc_start_time])) {
-  $GLOBALS[pc_start_time] = get_microtime();
+ if(!isset($GLOBALS['pc_start_time'])) {
+  $GLOBALS['pc_start_time'] = get_microtime();
  } else {
   $pc_end_time = get_microtime();
-  $pc_total_time = $pc_end_time - $GLOBALS[pc_start_time];
+  $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
   printf("Page generated in %f seconds\n", $pc_total_time);
  }
 }
