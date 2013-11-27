@@ -326,45 +326,78 @@ $outgoingdir = get_conf_var('outgoingqueuedir');
     }
     return round($size, 2).$suffix;
   }
-  function get_disks(){
-    if(php_uname('s')=='Windows NT'){
-        // windows
-        $disks=`fsutil fsinfo drives`;
-        $disks=str_word_count($disks,1);
-        if($disks[0]!='Drives')return '';
-        unset($disks[0]);
-        foreach($disks as $key=>$disk)$disks[$key]=$disk.':\\';
-        return $disks;
-    }else{
-        // unix
-        $data=`mount`;
-        $data=explode("\n",$data);
-        foreach ($data as $disk) {
-                $drive = preg_split("/[\s]+/", $disk);
-               if (substr($drive[0],0,5) == '/dev/')
-                        $disks[] = $drive;
-        }
-        return $disks;
-    }
-  }
-  foreach (get_disks() as $disk) {
-    $free = formatSize(disk_free_space($disk[2]));
-    $used = formatSize(disk_total_space($disk[2]));
-    if (round($free/$used,2) > .1) {
-        $percent ="<span style='color:red'>";
-    }else{
-        $percent = "<span>";
-    }
-    $percent = " [";
-    $percent.= round($free/$used,2) * 100;
-    $percent.= "%] ";
-    echo '    <tr><td>'.$disk[2].'</td><td colspan="2" align="right">'.$free.$percent.'</td>'."\n";
-  }
+
+     function get_disks()
+     {
+         $disks = array();
+         if (php_uname('s') == 'Windows NT') {
+             // windows
+             $disks = `fsutil fsinfo drives`;
+             $disks = str_word_count($disks, 1);
+             //TODO: won't work on non english installation, we need to find an universal command
+             if ($disks[0] != 'Drives') return '';
+             unset($disks[0]);
+             foreach ($disks as $key => $disk) {
+                 $disks[]['mountpoint'] = $disk . ':\\';
+             }
+         } else {
+             // unix
+             /*
+              * Using /proc/mounts as it seem to be standard on unix
+              *
+              * http://unix.stackexchange.com/a/24230/33366
+              * http://unix.stackexchange.com/a/12086/33366
+              */
+             if (is_file('/proc/mounts')) {
+                 $mounted_fs = file("/proc/mounts");
+                 foreach ($mounted_fs as $fs_row) {
+                     $drive = preg_split("/[\s]+/", $fs_row);
+                     if (substr($drive[0], 0, 5) == '/dev/') {
+                         $temp_drive['device'] = $drive[0];
+                         $temp_drive['mountpoint'] = $drive[1];
+                         $disks[] = $temp_drive;
+                         unset($temp_drive);
+                     }
+                     // TODO: list nfs mount (and other relevant fs type) in $disks[]
+                 }
+             } else {
+                 // fallback to mount command
+                 $data = `mount`;
+                 $data = explode("\n", $data);
+                 foreach ($data as $disk) {
+                     $drive = preg_split("/[\s]+/", $disk);
+                     if (substr($drive[0], 0, 5) == '/dev/') {
+                         $temp_drive['device'] = $drive[0];
+                         $temp_drive['mountpoint'] = $drive[2];
+                         $disks[] = $temp_drive;
+                         unset($temp_drive);
+                     }
+                 }
+             }
+         }
+
+         return $disks;
+     }
+
+     foreach (get_disks() as $disk) {
+         $free_space = formatSize(disk_free_space($disk['mountpoint']));
+         $total_space = formatSize(disk_total_space($disk['mountpoint']));
+         if (round($free_space / $total_space, 2) <= 0.1) {
+             $percent = '<span style="color:red">';
+         } else {
+             $percent = '<span>';
+         }
+         $percent .= ' [';
+         $percent .= round($free_space / $total_space, 2) * 100;
+         $percent .= '%] ';
+         $percent .= '</span>';
+         echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . $free_space . $percent . '</td>' . "\n";
+     }
 
 
  }
- echo '  </table>'."\n";
- echo '  </td>'."\n";
+    echo '  </table>' . "\n";
+    echo '  </td>' . "\n";
 }
 
   echo '<td align="center" valign="top">'."\n";
