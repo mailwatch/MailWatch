@@ -739,7 +739,7 @@ function dbquery($sql) {
   echo "<!--\n\n";
   $dbg_sql = "EXPLAIN ".$sql;
   echo "SQL:\n\n$sql\n\n";
-  $result = mysql_query($dbg_sql) or die("Error executing query: ".mysql_error());
+  $result = mysql_query($dbg_sql) or die("Error executing query: " . mysql_errno() . " - " . mysql_error());
   $fields = mysql_num_fields($result);
   $rows = mysql_num_rows($result);
   while($row=mysql_fetch_row($result)) {
@@ -750,7 +750,7 @@ function dbquery($sql) {
   //dbtable("SHOW STATUS");
   echo "\n-->\n\n";
  }
- $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>".mysql_error()."<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+ $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
  return $result;
 }
 
