@@ -180,7 +180,7 @@ while($row=mysql_fetch_array($result,MYSQL_BOTH)) {
   }
   if ($fieldn == "Subject:") {
    $row[$f] = decode_header($row[$f]);
-   if (function_exists (mb_check_encoding)) {
+   if (function_exists ('mb_check_encoding')) {
     if (! mb_check_encoding ($row[$f], 'UTF-8')) {
      $row[$f] = mb_convert_encoding($row[$f], 'UTF-8');
     }
