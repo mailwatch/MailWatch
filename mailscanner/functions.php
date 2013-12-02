@@ -197,7 +197,7 @@ echo '<tr>'."\n";
 echo '<td>'."\n";
 echo '<table border="0" cellpadding="0" cellspacing="0">'."\n";
 echo '<tr>'."\n";
-echo '<td align="left"><a href="./index.php"><img src="./images/mailwatch-logo.gif" alt="MailWatch for MailScanner"></a></td>'."\n";
+echo '<td align="left"><a href="./index.php"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>'."\n";
 echo '</tr>'."\n";
 echo '<tr>'."\n";
 echo '<td valign="bottom" align="left" class="jump">'."\n";
