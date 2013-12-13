@@ -115,6 +115,7 @@ function decode_structure($structure)
             }
             echo '<html>
  <head>
+ <link rel="shortcut icon" href="images/favicon.png">
  <title>Quarantined E-Mail Viewer</title>
  </head>
  <body>

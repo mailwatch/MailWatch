@@ -135,274 +135,281 @@ if(!defined('VIRUS_REGEX')) {
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
 
-function html_start($title,$refresh=0,$cacheable=true,$report=false) {
- if (!$cacheable) {
-  // Cache control (as per PHP website)
-  header("Expires: Sat, 10 May 2003 00:00:00 GMT");
-  header("Last-Modified: ".gmdate("D, M d Y H:i:s")." GMT");
-  header("Cache-Control: no-store, no-cache, must-revalidate");
-  header("Cache-Control: post-check=0, pre-check=0", false);
- }else{
-   // calc an offset of 24 hours
- $offset = 3600 * 48;
- // calc the string in GMT not localtime and add the offset
- $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
- //output the HTTP header
- Header($expire);
-  header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
-  header("Pragma: cache");
-  }
-   page_creation_timer();
- 	echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'."\n";
-	echo '<html>'."\n";
-	echo '<head>'."\n";
-    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'."\n";
-	echo '<script type="text/javascript">';
-	echo ''.java_time().'';
-	//$current_url = "".MAILWATCH_HOME."/status.php";
-	//if($_SERVER['SCRIPT_FILENAME'] == $active_url){
-	echo ''.row_highandclick().'';
-	echo '</script>';
- if($report){
-	echo '<title>MailWatch Filter Report: '.$title.' </title>'."\n";
-	echo '<link rel="StyleSheet" type="text/css" href="./style.css">'."\n";
-	if(!isset($_SESSION["filter"])) {
-		require_once('./filter.inc');
-		$filter = new Filter;
-		$_SESSION["filter"] = $filter;
-	} else {
-		// Use existing filters
-		$filter = $_SESSION["filter"];
-	}
-   audit_log('Ran report '.$title);
+function html_start($title, $refresh = 0, $cacheable = true, $report = false)
+{
+    if (!$cacheable) {
+        // Cache control (as per PHP website)
+        header("Expires: Sat, 10 May 2003 00:00:00 GMT");
+        header("Last-Modified: " . gmdate("D, M d Y H:i:s") . " GMT");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+    } else {
+        // calc an offset of 24 hours
+        $offset = 3600 * 48;
+        // calc the string in GMT not localtime and add the offset
+        $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
+        //output the HTTP header
+        Header($expire);
+        header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
+        header("Pragma: cache");
+    }
+    page_creation_timer();
+    echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">' . "\n";
+    echo '<html>' . "\n";
+    echo '<head>' . "\n";
+    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
+    echo '<link rel="shortcut icon" href="images/favicon.png" >' . "\n";
+    echo '<script type="text/javascript">';
+    echo '' . java_time() . '';
+    //$current_url = "".MAILWATCH_HOME."/status.php";
+    //if($_SERVER['SCRIPT_FILENAME'] == $active_url){
+    echo '' . row_highandclick() . '';
+    echo '</script>';
+    if ($report) {
+        echo '<title>MailWatch Filter Report: ' . $title . ' </title>' . "\n";
+        echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
+        if (!isset($_SESSION["filter"])) {
+            require_once('./filter.inc');
+            $filter = new Filter;
+            $_SESSION["filter"] = $filter;
+        } else {
+            // Use existing filters
+            $filter = $_SESSION["filter"];
+        }
+        audit_log('Ran report ' . $title);
 
-	}else{
-echo '<title>Mailwatch for Mailscanner - '.$title.'</title>'."\n";
-echo '<link rel="StyleSheet" type="text/css" href="style.css">'."\n";
-	}
+    } else {
+        echo '<title>Mailwatch for Mailscanner - ' . $title . '</title>' . "\n";
+        echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
+    }
 
- if ($refresh > 0) {
-  echo '<meta http-equiv="refresh" content="'.$refresh.'">'."\n";
- }
- 
-$message_id=$_GET['id'];
-if(!$message_id){ $message_id =" ";}
-$message_id = safe_value($message_id);
-$message_id = htmlentities($message_id);
-$message_id = trim($message_id, " ");
-echo '</head>'."\n";
-echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">'."\n";
-echo '<table border="0" cellpadding="5" width="100%">'."\n";
-echo '<tr>'."\n";
-echo '<td>'."\n";
-echo '<table border="0" cellpadding="0" cellspacing="0">'."\n";
-echo '<tr>'."\n";
-echo '<td align="left"><a href="./index.php"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>'."\n";
-echo '</tr>'."\n";
-echo '<tr>'."\n";
-echo '<td valign="bottom" align="left" class="jump">'."\n";
-echo '<form action="./detail.php">'."\n";
-echo '<p>Jump to message:<input type="text" name="id" value="'.$message_id.'"></p>'."\n";
-echo '</form>'."\n";
-echo '</table>'."\n";
-echo '<table cellspacing="1" class="mail">'."\n";
-echo '<tr><td class="heading" align="center">Current User</td><td class="heading" align="center">Current Sytem Time</td></tr>'."\n";
-echo '<tr><td>'.$_SESSION['fullname'].'</td><td><span id="clock">&nbsp;</span></td></tr>'."\n";
-echo '</table>'."\n";
-echo '</td>'."\n";
+    if ($refresh > 0) {
+        echo '<meta http-equiv="refresh" content="' . $refresh . '">' . "\n";
+    }
+
+    $message_id = $_GET['id'];
+    if (!$message_id) {
+        $message_id = " ";
+    }
+    $message_id = safe_value($message_id);
+    $message_id = htmlentities($message_id);
+    $message_id = trim($message_id, " ");
+    echo '</head>' . "\n";
+    echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
+    echo '<table border="0" cellpadding="5" width="100%">' . "\n";
+    echo '<tr>' . "\n";
+    echo '<td>' . "\n";
+    echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
+    echo '<tr>' . "\n";
+    echo '<td align="left"><a href="./index.php"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>' . "\n";
+    echo '</tr>' . "\n";
+    echo '<tr>' . "\n";
+    echo '<td valign="bottom" align="left" class="jump">' . "\n";
+    echo '<form action="./detail.php">' . "\n";
+    echo '<p>Jump to message:<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
+    echo '</form>' . "\n";
+    echo '</table>' . "\n";
+    echo '<table cellspacing="1" class="mail">' . "\n";
+    echo '<tr><td class="heading" align="center">Current User</td><td class="heading" align="center">Current Sytem Time</td></tr>' . "\n";
+    echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
+    echo '</table>' . "\n";
+    echo '</td>' . "\n";
 
 
-echo '<td align="left" valign="top">'."\n";
- 
-echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">'."\n";
-echo '    <tr> <th colspan="2">Color Codes</th> </tr>'."\n";
-echo '    <tr> <td>Bad Content/Infected</TD> <td class="infected"></TD> </TR>'."\n";
-echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>'."\n";
-echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>'."\n";
-echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>'."\n";
-echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>'."\n";
-echo '    <tr> <td>Whitelisted</td> <td class="whitelisted"></td> </tr>'."\n";
-echo '    <tr> <td>Blacklisted</td> <td class="blacklisted"></td> </tr>'."\n";
-echo '	  <tr> <td>Not Scanned</td> <td class="notscanned"></td> </tr>'."\n";
-echo '    <tr> <td>Clean</td> <td></td> </tr>'."\n";
+    echo '<td align="left" valign="top">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    echo '    <tr> <th colspan="2">Color Codes</th> </tr>' . "\n";
+    echo '    <tr> <td>Bad Content/Infected</TD> <td class="infected"></TD> </TR>' . "\n";
+    echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>' . "\n";
+    echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>' . "\n";
+    echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
+    echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
+    echo '    <tr> <td>Whitelisted</td> <td class="whitelisted"></td> </tr>' . "\n";
+    echo '    <tr> <td>Blacklisted</td> <td class="blacklisted"></td> </tr>' . "\n";
+    echo '	  <tr> <td>Not Scanned</td> <td class="notscanned"></td> </tr>' . "\n";
+    echo '    <tr> <td>Clean</td> <td></td> </tr>' . "\n";
+    echo '   </table>' . "\n";
+    echo '  </td>' . "\n";
 
-echo '   </table>'."\n";
-echo '  </td>'."\n";
+    if (!DISTRIBUTED_SETUP && ($_SESSION['user_type'] == 'A' || $_SESSION['user_type'] == 'D')) {
+        echo '  <td align="center" valign="top">' . "\n";
 
-if(!DISTRIBUTED_SETUP && ($_SESSION['user_type'] == 'A' || $_SESSION['user_type'] == 'D')) {
- echo '  <td align="center" valign="top">'."\n";
+        // Status table
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="200px">' . "\n";
+        echo '    <tr><th colspan="3">Status</th></tr>' . "\n";
 
- // Status table
- echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="200px">'."\n";
- echo '    <tr><th colspan="3">Status</th></tr>'."\n";
+        // MailScanner running?
+        if (!DISTRIBUTED_SETUP) {
+            $no = '<span class="yes">&nbsp;NO&nbsp;</span>' . "\n";
+            $yes = '<span class="no">&nbsp;YES&nbsp;</span>' . "\n";
+            $junk = exec("ps ax | grep MailScanner | grep -v grep", $output);
+            if (count($output) > 0) {
+                $running = $yes;
+                $procs = count($output) - 1 . " children";
+            } else {
+                $running = $no;
+                $procs = count($output) . " proc(s)";
+            }
+            echo '     <tr><td>MailScanner:</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
- // MailScanner running?
- if(!DISTRIBUTED_SETUP) {
-  $no = '<span class="yes">&nbsp;NO&nbsp;</span>'."\n";
-  $yes  = '<span class="no">&nbsp;YES&nbsp;</span>'."\n";
-  $junk = exec("ps ax | grep MailScanner | grep -v grep",$output);
-  if(count($output)>0) {
-   $running = $yes;
-   $procs = count($output) - 1 . " children";
-  } else {
-   $running = $no;
-   $procs = count($output) . " proc(s)";
-  }
-  echo '     <tr><td>MailScanner:</td><td align="center">'.$running.'</td><td align="right">'.$procs.'</td></tr>'."\n";
+            // is MTA running
+            $output = "";
+            $mta = get_conf_var('mta');
+            $junk = exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
+            if (count($output) > 0) {
+                $running = $yes;
+            } else {
+                $running = $no;
+            }
+            $procs = count($output) . " proc(s)";
+            echo '    <tr><td>' . ucwords(
+                    $mta
+                ) . ':</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+        }
 
-  // is MTA running
-  $output = "";
-  $mta = get_conf_var('mta');
-  $junk = exec("ps ax | grep $mta | grep -v grep | grep -v php",$output);
-  if(count($output)>0) {
-   $running = $yes;
-  } else {
-   $running = $no;
-  }
-  $procs = count($output)." proc(s)";
-  echo '    <tr><td>'.ucwords($mta).':</td><td align="center">'.$running.'</td><td align="right">'.$procs.'</td></tr>'."\n";
- }
+        // Load average
+        if (file_exists("/proc/loadavg") && !DISTRIBUTED_SETUP) {
+            $loadavg = file("/proc/loadavg");
+            $loadavg = explode(" ", $loadavg[0]);
+            $la_1m = $loadavg[0];
+            $la_5m = $loadavg[1];
+            $la_15m = $loadavg[2];
+            echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+        }
 
- // Load average
- if(file_exists("/proc/loadavg") && !DISTRIBUTED_SETUP) {
-  $loadavg = file("/proc/loadavg");
-  $loadavg = explode(" ", $loadavg[0]);
-  $la_1m = $loadavg[0];
-  $la_5m = $loadavg[1];
-  $la_15m = $loadavg[2];
-  echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">'.$la_1m.'</td><td align="center">'.$la_5m.'</td><td align="center">'.$la_15m.'</td></tr></table></td>'."\n";
- }
-
- // Mail Queues display
-$incomingdir = get_conf_var('incomingqueuedir');
-$outgoingdir = get_conf_var('outgoingqueuedir');
+        // Mail Queues display
+        $incomingdir = get_conf_var('incomingqueuedir');
+        $outgoingdir = get_conf_var('outgoingqueuedir');
 
 // Display the MTA queue
 
 // Postfix if mta = postfix
- if($mta =='postfix' && ($_SESSION['user_type'] == 'A')){
-	if(is_readable($incomingdir) && is_readable($outgoingdir)){
-         $inq = postfixinq();
-         $outq = postfixallq() - $inq;
-		 echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>'."\n";
-         echo '    <tr><td colspan="2"><a href="postfixmailq.php">Inbound:</a></td><td align="right">'.$inq.'</td>'."\n";
-         echo '    <tr><td colspan="2"><a href="postfixmailq.php">Outbound:</a></td><td align="right">'.$outq.'</td>'."\n";
-	}else{
-		echo '    <tr><td colspan="3">Please verify read permissions on '.$incomingdir.' and '.$outgoingdir.'</td></tr>'."\n";
-		 }
-		 // else use mailq which is for sendmail
- }elseif(MAILQ && ($_SESSION['user_type'] == 'A')) {
-  $inq = mysql_result(dbquery("SELECT COUNT(*) FROM inq WHERE ".$_SESSION['global_filter']),0);
-  $outq = mysql_result(dbquery("SELECT COUNT(*) FROM outq WHERE ".$_SESSION['global_filter']),0);
-  echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>'."\n";
-  echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">Inbound:</a></td><td align="right">'.$inq.'</td>'."\n";
-  echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">Outbound:</a></td><td align="right">'.$outq.'</td>'."\n";
-  }
+        if ($mta == 'postfix' && ($_SESSION['user_type'] == 'A')) {
+            if (is_readable($incomingdir) && is_readable($outgoingdir)) {
+                $inq = postfixinq();
+                $outq = postfixallq() - $inq;
+                echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">Inbound:</a></td><td align="right">' . $inq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">Outbound:</a></td><td align="right">' . $outq . '</td>' . "\n";
+            } else {
+                echo '    <tr><td colspan="3">Please verify read permissions on ' . $incomingdir . ' and ' . $outgoingdir . '</td></tr>' . "\n";
+            }
+            // else use mailq which is for sendmail
+        } elseif (MAILQ && ($_SESSION['user_type'] == 'A')) {
+            $inq = mysql_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
+            $outq = mysql_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
+            echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">Inbound:</a></td><td align="right">' . $inq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">Outbound:</a></td><td align="right">' . $outq . '</td>' . "\n";
+        }
 
-  // drive display
- if($_SESSION['user_type'] == 'A') {
-   echo '    <tr><td colspan="3" class="heading" align="center">Free Drive Space</td></tr>'."\n";
+        // drive display
+        if ($_SESSION['user_type'] == 'A') {
+            echo '    <tr><td colspan="3" class="heading" align="center">Free Drive Space</td></tr>' . "\n";
 
-  function formatSize($size){
-    switch (true){
-    case ($size > 1099511627776):
-        $size /= 1099511627776;
-        $suffix = 'TB';
-    break;
-    case ($size > 1073741824):
-        $size /= 1073741824;
-       $suffix = 'GB';
-    break;
-    case ($size > 1048576):
-        $size /= 1048576;
-       $suffix = 'MB';
-    break;
-    case ($size > 1024):
-        $size /= 1024;
-        $suffix = 'KB';
-        break;
-    default:
-        $suffix = 'B';
+            function formatSize($size)
+            {
+                switch (true) {
+                    case ($size > 1099511627776):
+                        $size /= 1099511627776;
+                        $suffix = 'TB';
+                        break;
+                    case ($size > 1073741824):
+                        $size /= 1073741824;
+                        $suffix = 'GB';
+                        break;
+                    case ($size > 1048576):
+                        $size /= 1048576;
+                        $suffix = 'MB';
+                        break;
+                    case ($size > 1024):
+                        $size /= 1024;
+                        $suffix = 'KB';
+                        break;
+                    default:
+                        $suffix = 'B';
+                }
+                return round($size, 2) . $suffix;
+            }
+
+            function get_disks()
+            {
+                $disks = array();
+                if (php_uname('s') == 'Windows NT') {
+                    // windows
+                    $disks = `fsutil fsinfo drives`;
+                    $disks = str_word_count($disks, 1);
+                    //TODO: won't work on non english installation, we need to find an universal command
+                    if ($disks[0] != 'Drives') {
+                        return '';
+                    }
+                    unset($disks[0]);
+                    foreach ($disks as $key => $disk) {
+                        $disks[]['mountpoint'] = $disk . ':\\';
+                    }
+                } else {
+                    // unix
+                    /*
+                     * Using /proc/mounts as it seem to be standard on unix
+                     *
+                     * http://unix.stackexchange.com/a/24230/33366
+                     * http://unix.stackexchange.com/a/12086/33366
+                     */
+                    if (is_file('/proc/mounts')) {
+                        $mounted_fs = file("/proc/mounts");
+                        foreach ($mounted_fs as $fs_row) {
+                            $drive = preg_split("/[\s]+/", $fs_row);
+                            if (substr($drive[0], 0, 5) == '/dev/') {
+                                $temp_drive['device'] = $drive[0];
+                                $temp_drive['mountpoint'] = $drive[1];
+                                $disks[] = $temp_drive;
+                                unset($temp_drive);
+                            }
+                            // TODO: list nfs mount (and other relevant fs type) in $disks[]
+                        }
+                    } else {
+                        // fallback to mount command
+                        $data = `mount`;
+                        $data = explode("\n", $data);
+                        foreach ($data as $disk) {
+                            $drive = preg_split("/[\s]+/", $disk);
+                            if (substr($drive[0], 0, 5) == '/dev/') {
+                                $temp_drive['device'] = $drive[0];
+                                $temp_drive['mountpoint'] = $drive[2];
+                                $disks[] = $temp_drive;
+                                unset($temp_drive);
+                            }
+                        }
+                    }
+                }
+
+                return $disks;
+            }
+
+            foreach (get_disks() as $disk) {
+                $free_space = formatSize(disk_free_space($disk['mountpoint']));
+                $total_space = formatSize(disk_total_space($disk['mountpoint']));
+                if (round($free_space / $total_space, 2) <= 0.1) {
+                    $percent = '<span style="color:red">';
+                } else {
+                    $percent = '<span>';
+                }
+                $percent .= ' [';
+                $percent .= round($free_space / $total_space, 2) * 100;
+                $percent .= '%] ';
+                $percent .= '</span>';
+                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . $free_space . $percent . '</td>' . "\n";
+            }
+
+
+        }
+        echo '  </table>' . "\n";
+        echo '  </td>' . "\n";
     }
-    return round($size, 2).$suffix;
-  }
 
-     function get_disks()
-     {
-         $disks = array();
-         if (php_uname('s') == 'Windows NT') {
-             // windows
-             $disks = `fsutil fsinfo drives`;
-             $disks = str_word_count($disks, 1);
-             //TODO: won't work on non english installation, we need to find an universal command
-             if ($disks[0] != 'Drives') return '';
-             unset($disks[0]);
-             foreach ($disks as $key => $disk) {
-                 $disks[]['mountpoint'] = $disk . ':\\';
-             }
-         } else {
-             // unix
-             /*
-              * Using /proc/mounts as it seem to be standard on unix
-              *
-              * http://unix.stackexchange.com/a/24230/33366
-              * http://unix.stackexchange.com/a/12086/33366
-              */
-             if (is_file('/proc/mounts')) {
-                 $mounted_fs = file("/proc/mounts");
-                 foreach ($mounted_fs as $fs_row) {
-                     $drive = preg_split("/[\s]+/", $fs_row);
-                     if (substr($drive[0], 0, 5) == '/dev/') {
-                         $temp_drive['device'] = $drive[0];
-                         $temp_drive['mountpoint'] = $drive[1];
-                         $disks[] = $temp_drive;
-                         unset($temp_drive);
-                     }
-                     // TODO: list nfs mount (and other relevant fs type) in $disks[]
-                 }
-             } else {
-                 // fallback to mount command
-                 $data = `mount`;
-                 $data = explode("\n", $data);
-                 foreach ($data as $disk) {
-                     $drive = preg_split("/[\s]+/", $disk);
-                     if (substr($drive[0], 0, 5) == '/dev/') {
-                         $temp_drive['device'] = $drive[0];
-                         $temp_drive['mountpoint'] = $drive[2];
-                         $disks[] = $temp_drive;
-                         unset($temp_drive);
-                     }
-                 }
-             }
-         }
+    echo '<td align="center" valign="top">' . "\n";
 
-         return $disks;
-     }
-
-     foreach (get_disks() as $disk) {
-         $free_space = formatSize(disk_free_space($disk['mountpoint']));
-         $total_space = formatSize(disk_total_space($disk['mountpoint']));
-         if (round($free_space / $total_space, 2) <= 0.1) {
-             $percent = '<span style="color:red">';
-         } else {
-             $percent = '<span>';
-         }
-         $percent .= ' [';
-         $percent .= round($free_space / $total_space, 2) * 100;
-         $percent .= '%] ';
-         $percent .= '</span>';
-         echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . $free_space . $percent . '</td>' . "\n";
-     }
-
-
- }
-    echo '  </table>' . "\n";
-    echo '  </td>' . "\n";
-}
-
-  echo '<td align="center" valign="top">'."\n";
-  
-$sql = "
+    $sql = "
  SELECT
   COUNT(*) AS processed,
   SUM(
@@ -571,69 +578,96 @@ $sql = "
  WHERE
   date = CURRENT_DATE()
  AND
-  ".$_SESSION['global_filter']."
+  " . $_SESSION['global_filter'] . "
 ";
 
-$sth = dbquery($sql);
-while($row = mysql_fetch_object($sth)) {
- echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200px">'."\n";
- echo ' <tr><th align="center" colspan="3">Today\'s Totals</th></tr>'."\n";
- echo ' <tr><td>Processed:</td><td align="right">'.number_format($row->processed).'</td><td align="right">'.format_mail_size($row->size).'</td></tr>'."\n";
- echo ' <tr><td>Clean:</td><td align="right">'.number_format($row->clean).'</td><td align="right">'.$row->cleanpercent.'%</td></tr>'."\n";
- echo ' <tr><td>Viruses:</td><td align="right">'.number_format($row->viruses).'</td><td align="right">'.$row->viruspercent.'%</tr>'."\n";
- echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">'.return_todays_top_virus().'</td></tr>'."\n";
- echo ' <tr><td>Blocked files:</td><td align="right">'.number_format($row->blockedfiles).'</td><td align="right">'.$row->blockedfilespercent.'%</td></tr>'."\n";
- echo ' <tr><td>Others:</td><td align="right">'.number_format($row->otherinfected).'</td><td align="right">'.$row->otherinfectedpercent.'%</td></tr>'."\n";
- echo ' <tr><td>Spam:</td><td align="right">'.number_format($row->spam).'</td><td align="right">'.$row->spampercent.'%</td></tr>'."\n";
- echo ' <tr><td style="white-space:nowrap">High Scoring Spam:</td><td align="right">'.number_format($row->highspam).'</td><td align="right">'.$row->highspampercent.'%</td></tr>'."\n";
- echo ' <tr><td>MCP:</td><td align="right">'.number_format($row->mcp).'</td><td align="right">'.$row->mcppercent.'%</td></tr>'."\n";
- echo ' <tr><td style="white-space:nowrap">High Scoring MCP:</td><td align="right">'.number_format($row->highmcp).'</td><td align="right">'.$row->highmcppercent.'%</td></tr>'."\n";
- echo '</table>'."\n";
+    $sth = dbquery($sql);
+    while ($row = mysql_fetch_object($sth)) {
+        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200px">' . "\n";
+        echo ' <tr><th align="center" colspan="3">Today\'s Totals</th></tr>' . "\n";
+        echo ' <tr><td>Processed:</td><td align="right">' . number_format($row->processed) . '</td><td align="right">' . format_mail_size(
+                $row->size
+            ) . '</td></tr>' . "\n";
+        echo ' <tr><td>Clean:</td><td align="right">' . number_format(
+                $row->clean
+            ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>Viruses:</td><td align="right">' . number_format(
+                $row->viruses
+            ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
+        echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus(
+            ) . '</td></tr>' . "\n";
+        echo ' <tr><td>Blocked files:</td><td align="right">' . number_format(
+                $row->blockedfiles
+            ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>Others:</td><td align="right">' . number_format(
+                $row->otherinfected
+            ) . '</td><td align="right">' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>Spam:</td><td align="right">' . number_format(
+                $row->spam
+            ) . '</td><td align="right">' . $row->spampercent . '%</td></tr>' . "\n";
+        echo ' <tr><td style="white-space:nowrap">High Scoring Spam:</td><td align="right">' . number_format(
+                $row->highspam
+            ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>MCP:</td><td align="right">' . number_format(
+                $row->mcp
+            ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
+        echo ' <tr><td style="white-space:nowrap">High Scoring MCP:</td><td align="right">' . number_format(
+                $row->highmcp
+            ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
+        echo '</table>' . "\n";
 
- // Navigation links - put them into an array to allow them to be switched
- // on or off as necessary and to allow for the table widths to be calculated.
- $nav['status.php'] 	= "Recent Messages";
- if(LISTS) { $nav['lists.php'] = "Lists"; }
- if(!DISTRIBUTED_SETUP) { $nav['quarantine.php'] = "Quarantine"; }
- $nav['reports.php'] 	= "Reports";
- $nav['other.php'] 	= "Tools/Links";
- if($_SESSION['user_type'] === 'A'){$nav['sf_version.php'] = "Software Versions";}
- if(SHOW_DOC == 'true'){$nav['docs.php'] = "Documentation";}
- $nav['logout.php']	= "Logout";
- $table_width = round(100/count($nav));
-}
+        // Navigation links - put them into an array to allow them to be switched
+        // on or off as necessary and to allow for the table widths to be calculated.
+        $nav['status.php'] = "Recent Messages";
+        if (LISTS) {
+            $nav['lists.php'] = "Lists";
+        }
+        if (!DISTRIBUTED_SETUP) {
+            $nav['quarantine.php'] = "Quarantine";
+        }
+        $nav['reports.php'] = "Reports";
+        $nav['other.php'] = "Tools/Links";
+        if ($_SESSION['user_type'] === 'A') {
+            $nav['sf_version.php'] = "Software Versions";
+        }
+        if (SHOW_DOC == 'true') {
+            $nav['docs.php'] = "Documentation";
+        }
+        $nav['logout.php'] = "Logout";
+        $table_width = round(100 / count($nav));
+    }
 
 //Navigation table
-echo '  </td>'."\n";
-echo ' </tr>'."\n";
-echo '<tr>'."\n";
-echo '<td colspan="4">'."\n";
+    echo '  </td>' . "\n";
+    echo ' </tr>' . "\n";
+    echo '<tr>' . "\n";
+    echo '<td colspan="4">' . "\n";
 
-echo '<ul id="menu" class="yellow">'."\n";
+    echo '<ul id="menu" class="yellow">' . "\n";
 
 // Display the different words
-foreach($nav as $url=>$desc) {
-$active_url = "".MAILWATCH_HOME."/".$url."";
-  if($_SERVER['SCRIPT_FILENAME'] == $active_url){
-   echo "<li class=\"active\"><a href=\"$url\">$desc</a></li>\n";
-   }else{
-   echo "<li><a href=\"$url\">$desc</a></li>\n";
-   }
-}
+    foreach ($nav as $url => $desc) {
+        $active_url = "" . MAILWATCH_HOME . "/" . $url . "";
+        if ($_SERVER['SCRIPT_FILENAME'] == $active_url) {
+            echo "<li class=\"active\"><a href=\"$url\">$desc</a></li>\n";
+        } else {
+            echo "<li><a href=\"$url\">$desc</a></li>\n";
+        }
+    }
 
-echo '
+    echo '
  </ul>
  </td>
  </tr>
  <tr>
   <td colspan="4">';
 
-  if($report){
- $return_items = $filter;
- }else{
- $return_items = $refresh;
- }
- return $return_items;
+    if ($report) {
+        $return_items = $filter;
+    } else {
+        $return_items = $refresh;
+    }
+    return $return_items;
 }
 
 function java_time(){

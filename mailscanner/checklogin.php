@@ -25,19 +25,16 @@ require_once("./functions.php");
 
 session_start();
 
-if (isset($_SERVER['PHP_AUTH_USER']))
-{
+if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = $_SERVER['PHP_AUTH_USER'];
     $mypassword = $_SERVER['PHP_AUTH_PW'];
-}
-else
-{
+} else {
     // Define $myusername and $mypassword
-    $myusername=$_POST['myusername'];
-    $mypassword=$_POST['mypassword'];
+    $myusername = $_POST['myusername'];
+    $mypassword = $_POST['mypassword'];
 }
 
-if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) != NULL)) {
+if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) != null)) {
     $_SESSION['user_ldap'] = '1';
     $myusername = safe_value($result);
     $sql = "SELECT * FROM users WHERE username='$myusername'";
@@ -45,142 +42,140 @@ if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) 
     $myusername = safe_value($myusername);
     if ($mypassword != "") {
         $mypassword = safe_value($mypassword);
-        $encrypted_mypassword=md5($mypassword);
+        $encrypted_mypassword = md5($mypassword);
     }
     $sql = "SELECT * FROM users WHERE username='$myusername' and password='$encrypted_mypassword'";
 }
 
-$result=dbquery($sql);
+$result = dbquery($sql);
 
 if (!$result) {
-    $message  = 'Invalid query: ' . mysql_error() . "\n";
+    $message = 'Invalid query: ' . mysql_error() . "\n";
     $message .= 'Whole query: ' . $sql;
     die($message);
 }
-if(mysql_num_rows($result) > 0){
-$fullname=mysql_result($result, 0, 'fullname');
-$usertype=mysql_result($result, 0, 'type');
+if (mysql_num_rows($result) > 0) {
+    $fullname = mysql_result($result, 0, 'fullname');
+    $usertype = mysql_result($result, 0, 'type');
 }
-$sql1="SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-$result1=dbquery($sql1);
+$sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
+$result1 = dbquery($sql1);
 
 if (!$result1) {
-    $message  = 'Invalid query: ' . mysql_error() . "\n";
+    $message = 'Invalid query: ' . mysql_error() . "\n";
     $message .= 'Whole query: ' . $sql1;
     die($message);
 }
 
 $filter[] = $myusername;
-while($row = mysql_fetch_array($result1)){
-    $filter[]=$row['filter'];
+while ($row = mysql_fetch_array($result1)) {
+    $filter[] = $row['filter'];
 }
 
-$global_filter = address_filter_sql ($filter, $usertype);
+$global_filter = address_filter_sql($filter, $usertype);
 
-switch ($usertype){
+switch ($usertype) {
 
-	case "A":
-		$global_list = "1=1";
-		break;
-	case "D":
-		if (strpos ($myusername,'@')) {
-		    $ar=explode("@",$myusername);
-		    $domainname = $ar[1];
-		    if((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
-			$global_filter = $global_filter . " OR to_domain='$domainname'";
-		    } else {
-			$global_filter = $global_filter . " OR to_domain='$domainname' OR from_domain='$domainname'";
-		    }
-		    $global_list = "to_domain='$domainname'";
-		} else {
-		    $global_list = "to_address='$myusername'";
-		    foreach ($filter as $to_address) {
-			$global_list .= " OR to_address='$to_address'";
-		    }
-		}
-		break;
-	case "U":
-		$global_list = "to_address='$myusername'";
-		foreach ($filter as $to_address) {
-		    $global_list .= " OR to_address='$to_address'";
-		}
-		break;
+    case "A":
+        $global_list = "1=1";
+        break;
+    case "D":
+        if (strpos($myusername, '@')) {
+            $ar = explode("@", $myusername);
+            $domainname = $ar[1];
+            if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+                $global_filter = $global_filter . " OR to_domain='$domainname'";
+            } else {
+                $global_filter = $global_filter . " OR to_domain='$domainname' OR from_domain='$domainname'";
+            }
+            $global_list = "to_domain='$domainname'";
+        } else {
+            $global_list = "to_address='$myusername'";
+            foreach ($filter as $to_address) {
+                $global_list .= " OR to_address='$to_address'";
+            }
+        }
+        break;
+    case "U":
+        $global_list = "to_address='$myusername'";
+        foreach ($filter as $to_address) {
+            $global_list .= " OR to_address='$to_address'";
+        }
+        break;
 }
 
 $global_filter = '(' . $global_filter . ')';
 
 // Mysql_num_row is counting table row
-$count=mysql_num_rows($result);
+$count = mysql_num_rows($result);
 
 // If result matched $myusername and $mypassword, table row must be 1 row
 
-if($count==1){
-// Register $myusername, $mypassword and redirect to file "login_success.php"
-$_SESSION['myusername']    = $myusername;
-$_SESSION['fullname']      = $fullname;
-$_SESSION['user_type']     = $usertype;
-$_SESSION['domain']        = $domainname;
-$_SESSION['global_filter'] = $global_filter;
-$_SESSION['global_list']   = $global_list;
-$_SESSION['global_array']  = $filter;
-header("Location: index.php");
-}
-else {
+if ($count == 1) {
+    // Register $myusername, $mypassword and redirect to file "login_success.php"
+    $_SESSION['myusername'] = $myusername;
+    $_SESSION['fullname'] = $fullname;
+    $_SESSION['user_type'] = $usertype;
+    $_SESSION['domain'] = $domainname;
+    $_SESSION['global_filter'] = $global_filter;
+    $_SESSION['global_list'] = $global_list;
+    $_SESSION['global_array'] = $filter;
+    header("Location: index.php");
+} else {
 
-echo '<html>';
-echo '<title>MailWatch Login Page</title>';
-echo '<table width="300" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">';
-echo '<TR>';
+    echo '<html>';
+    echo '<head>';
+    echo '<link rel="shortcut icon" href="images/favicon.png" >' . "\n";
+    echo '<title>MailWatch Login Page</title>';
+    echo '</head>';
+    echo '<body>';
+    echo '<table width="300" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">';
+    echo '<TR>';
 
-echo '<td align="center"><img src="images/mailwatch-logo.png"></td>';
-echo '</tr>';
+    echo '<td align="center"><img src="images/mailwatch-logo.png"></td>';
+    echo '</tr>';
 
-echo '<tr>';
+    echo '<tr>';
 
-echo '<form name="form1" method="post" action="checklogin.php">';
+    echo '<form name="form1" method="post" action="checklogin.php">';
 
-echo '<td>';
+    echo '<td>';
 
-echo '<table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#FFFFFF">';
+    echo '<table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#FFFFFF">';
 
-echo '<tr>';
-echo '<td colspan="3"><strong>MailWatch Login</strong></td>';
-echo '</tr>';
-echo '<tr>';
-echo '<td colspan="3"> Bad username or Password</td>';
+    echo '<tr>';
+    echo '    <td colspan="3"><strong>MailWatch Login</strong></td>';
+    echo '</tr>';
 
-echo '</tr>';
+    echo '<tr>';
+    echo '    <td colspan="3"> Bad username or Password</td>';
+    echo '</tr>';
 
-echo '<tr>';
-echo '<td width="78">Username</td>';
+    echo '<tr>';
+    echo '    <td width="78">Username</td>';
+    echo '    <td width="6">:</td>';
+    echo '    <td width="294"><input name="myusername" type="text" id="myusername"></td>';
+    echo '</tr>';
 
-echo '<td width="6">:</td>';
-echo '<td width="294"><input name="myusername" type="text" id="myusername"></td>';
+    echo '<tr>';
+    echo '    <td>Password</td>';
+    echo '    <td>:</td>';
+    echo '    <td><input name="mypassword" type="password" id="mypassword"></td>';
+    echo '</tr>';
 
-echo '</tr>';
-echo '<tr>';
-echo '<td>Password</td>';
-echo '<td>:</td>';
-
-echo '<td><input name="mypassword" type="password" id="mypassword"></td>';
-
-echo '</tr>';
-echo '<tr>';
-echo '<td>&nbsp;</td>';
-echo '<td>&nbsp;</td>';
-echo '<td><input type="submit" name="Submit" value="Login"> <input type="reset" value="Reset">  <INPUT TYPE="button" VALUE="Back" onClick="history.go(-1);return true;"></td>';
-
-echo '</tr>
+    echo '<tr>';
+    echo '    <td>&nbsp;</td>';
+    echo '    <td>&nbsp;</td>';
+    echo '    <td><input type="submit" name="Submit" value="Login"> <input type="reset" value="Reset">  <INPUT TYPE="button" VALUE="Back" onClick="history.go(-1);return true;"></td>';
+    echo '</tr>
 </table>
 </td>
 </form>
 </tr>
 </table>
+</body>
 </html>';
-
 }
 
 // close any DB connections
 dbclose();
-// place the footer
-html_end();
