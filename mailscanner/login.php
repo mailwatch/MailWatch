@@ -23,89 +23,90 @@
 <!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="images/favicon.png">
 <?php
-if(file_exists('conf.php')){
+if (file_exists('conf.php')) {
 ?>
-<style type="text/css"> 
-  table.center {
-    margin-left:auto; 
-    margin-right:auto;
-  }
-</style>
-<title>MailWatch Login Page</title>
+    <style type="text/css">
+        table.center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <title>MailWatch Login Page</title>
 </head>
 <body>
-<table width="300" border="1" class="center" cellpadding="0" cellspacing="0">
-    <tr>
-
-         <td align="center"><img src="images/mailwatch-logo.png" alt="Mailwatch Logo"></td>
+    <table width="300" border="1" class="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center"><img src="images/mailwatch-logo.png" alt="Mailwatch Logo"></td>
         </tr>
 
-<tr>
-<td>
-<form name="form1" method="post" action="checklogin.php">
-<table width="100%" border="0" cellpadding="3" cellspacing="1">
-<tr>
-<td colspan="3"><strong> MailWatch Login</strong></td>
-</tr>
-<tr>
-<td style="width:78px;">Username</td>
-<td style="width:6px;">:</td>
-<td style="width:294px;"><input name="myusername" type="text" id="myusername"></td>
-</tr>
-<tr>
-<td>Password</td>
-<td>:</td>
-<td><input name="mypassword" type="password" id="mypassword"></td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><input type="submit" name="Submit" value="Login"> <input type="reset" value="Reset">  <INPUT TYPE="button" VALUE="Back" onClick="history.go(-1);return true;"></td>
-</tr>
-</table>
-</form>
-</td>
-</tr>
-</table>
-</body>
-</html>
+        <tr>
+            <td>
+                <form name="form1" method="post" action="checklogin.php">
+                    <table width="100%" border="0" cellpadding="3" cellspacing="1">
+                        <tr>
+                            <td colspan="3"><strong> MailWatch Login</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width:78px;">Username</td>
+                            <td style="width:6px;">:</td>
+                            <td style="width:294px;"><input name="myusername" type="text" id="myusername"></td>
+                        </tr>
+                        <tr>
+                            <td>Password</td>
+                            <td>:</td>
+                            <td><input name="mypassword" type="password" id="mypassword"></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="submit" name="Submit" value="Login">
+                                <input type="reset" value="Reset">
+                                <input type="button" value="Back" onClick="history.go(-1);return true;">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+ </body>
+ </html>
 <?php
-}
-else{
+} else {
 ?>
-
-<title>MailWatch Login Page</title>
+    <title>MailWatch Login Page</title>
 </head>
 <body>
-<table width="300" border="1" style="text-align:center;" cellpadding="0" cellspacing="0">
-    <tr>
-
-         <td align="center"><img src="images/mailwatch-logo.png" alt="MailWatch"></td>
+    <table width="300" border="1" style="text-align:center;" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center"><img src="images/mailwatch-logo.png" alt="MailWatch"></td>
         </tr>
-
-<tr>
-<td>
-<form name="form1" method="post" action="checklogin.php">
-<table width="100%" border="0" cellpadding="3" cellspacing="1">
-<tr>
-<td colspan="3"><strong> MailWatch Login</strong></td>
-</tr>
-<tr>
-    <td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and making the required changes.</td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><input type="button" value="Back" onClick="history.go(-1);return true;"></td>
-</tr>
-</table>
-</form>
-</td>
-
-</tr>
-</table>
+        <tr>
+            <td>
+                <form name="form1" method="post" action="checklogin.php">
+                    <table width="100%" border="0" cellpadding="3" cellspacing="1">
+                        <tr>
+                            <td colspan="3"><strong> MailWatch Login</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and
+                                making the required changes.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td><input type="button" value="Back" onClick="history.go(-1);return true;"></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 <?php
