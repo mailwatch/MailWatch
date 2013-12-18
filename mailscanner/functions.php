@@ -1098,29 +1098,28 @@ $array_output = $array_output1;
   die("Cannot find configuration value: $name in $MailScanner_conf_file\n");
 }
 
-function parse_conf_dir($conf_dir){
-    if($dh = opendir($conf_dir)){
-        while(($file = readdir($dh)) !== false){
-     
-	 // remove the . and .. so that it doesn't throw an error when parsing files
-            if($file !=="."){
-                if($file !==".."){
-                    $file_name = $conf_dir.$file;
-				    if(!is_array($array_output1)){
-				        $array_output1 = array();
+function parse_conf_dir($conf_dir)
+{
+    $array_output1 = array();
+    if ($dh = opendir($conf_dir)) {
+        while (($file = readdir($dh)) !== false) {
+            // remove the . and .. so that it doesn't throw an error when parsing files
+            if ($file !== ".") {
+                if ($file !== "..") {
+                    $file_name = $conf_dir . $file;
+                    if (!is_array($array_output1)) {
                         $array_output1 = parse_conf_file($file_name);
-				    }else{
-					    $array_output2 = parse_conf_file($file_name);
-					    $array_output1 = array_merge($array_output1, $array_output2);
-					}
+                    } else {
+                        $array_output2 = parse_conf_file($file_name);
+                        $array_output1 = array_merge($array_output1, $array_output2);
+                    }
                 }
-             }
+            }
         }
-		return($array_output1);
-	} 
-  closedir($dh);
- }
- 
+    }
+    closedir($dh);
+    return ($array_output1);
+}
 
 function get_conf_truefalse($name) {
  if(DISTRIBUTED_SETUP) { return true; }
@@ -1216,51 +1215,49 @@ function get_conf_include_folder() {
 
 
 // Parse conf files
-function parse_conf_file($name){
-	
-	// open each file and read it
-	$fh = fopen($name.$file,'r')
-	or die("Cannot open MailScanner configuration file");
-	while (!feof($fh)) {
- 
- // read each line to the $line varable
- $line = rtrim(fgets($fh,4096));
- 
- //echo "line: ".$line."\n"; // only use for troubleshooting lines
- 
- // find all lines that match
- if(preg_match("/^([^#].+)\s=\s([^#].*)/",$line,$regs)) {
+function parse_conf_file($name)
+{
+    $array_output = array();
+    // open each file and read it
+    $fh = fopen($name . $file, 'r')
+    or die("Cannot open MailScanner configuration file");
+    while (!feof($fh)) {
 
- //Strip trailing comments
-  $regs[2] = preg_replace("/#.*$/","",$regs[2]);
+        // read each line to the $line varable
+        $line = rtrim(fgets($fh, 4096));
 
- // store %var% variables
-  if(preg_match("/%.+%/",$regs[1])) {
-  	$var[$regs[1]] = $regs[2];
-  }
+        //echo "line: ".$line."\n"; // only use for troubleshooting lines
 
-  # expand %var% variables
-  if(preg_match("/(%.+%)/",$regs[2],$match)) {
-    $regs[2] = preg_replace("/%.+%/",$var[$match[1]],$regs[2]);
-  }
- 
- // Remove any html entities from the code
-   $key = htmlentities($regs[1]);
-   $string = htmlentities($regs[2]);
+        // find all lines that match
+        if (preg_match("/^([^#].+)\s=\s([^#].*)/", $line, $regs)) {
 
-  // Stuff all of the data to an array
-   $array_output[$key] = $string;
-	
-	 }
+            //Strip trailing comments
+            $regs[2] = preg_replace("/#.*$/", "", $regs[2]);
+
+            // store %var% variables
+            if (preg_match("/%.+%/", $regs[1])) {
+                $var[$regs[1]] = $regs[2];
+            }
+
+            # expand %var% variables
+            if (preg_match("/(%.+%)/", $regs[2], $match)) {
+                $regs[2] = preg_replace("/%.+%/", $var[$match[1]], $regs[2]);
+            }
+
+            // Remove any html entities from the code
+            $key = htmlentities($regs[1]);
+            $string = htmlentities($regs[2]);
+
+            // Stuff all of the data to an array
+            $array_output[$key] = $string;
+
+        }
     }
     fclose($fh) or die($php_errormsg);
     unset($fh);
 
-	return($array_output);
+    return $array_output;
 }
-  
-    
-  
 
 function get_primary_scanner() {
  // Might be more than one scanner defined - pick the first as the primary
