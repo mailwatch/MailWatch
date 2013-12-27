@@ -359,7 +359,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                         $mounted_fs = file("/proc/mounts");
                         foreach ($mounted_fs as $fs_row) {
                             $drive = preg_split("/[\s]+/", $fs_row);
-                            if (substr($drive[0], 0, 5) == '/dev/') {
+                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[0], '/chroot/') === FALSE)) {
                                 $temp_drive['device'] = $drive[0];
                                 $temp_drive['mountpoint'] = $drive[1];
                                 $disks[] = $temp_drive;
@@ -373,7 +373,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                         $data = explode("\n", $data);
                         foreach ($data as $disk) {
                             $drive = preg_split("/[\s]+/", $disk);
-                            if (substr($drive[0], 0, 5) == '/dev/') {
+                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[0], '/chroot/') === FALSE)) {
                                 $temp_drive['device'] = $drive[0];
                                 $temp_drive['mountpoint'] = $drive[2];
                                 $disks[] = $temp_drive;
