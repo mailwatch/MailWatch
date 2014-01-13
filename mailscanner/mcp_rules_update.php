@@ -31,7 +31,7 @@ if ($_SESSION['user_type'] != 'A') {
     html_start("MCP Rule Description Update", 0, false, false);
 
     echo '<form method="post" action="' . $_SERVER['PHP_SELF'] . '" >' . "\n";
-    echo '<input type="hidden" name="run" value="true">' . "\N";
+    echo '<input type="hidden" name="run" value="true">' . "\n";
     echo '<table class="boxtable" width="100%">' . "\n";
     echo ' <tr>' . "\n";
     echo '  <td>' . "\n";
