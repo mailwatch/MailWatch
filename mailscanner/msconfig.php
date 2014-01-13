@@ -56,7 +56,7 @@ if ($_SESSION['user_type'] != A) {
 
         // See if parameter is a rules file
         if (@is_file($value) && @is_readable($value) && !@is_executable($value)) {
-            $value = '<a herf="msrule.php?file=' . $value . '">' . $value . '</A>';
+            $value = '<a href="msrule.php?file=' . $value . '">' . $value . '</A>';
         }
 
         // Change newline charactors to <br />
