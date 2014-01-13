@@ -29,7 +29,7 @@ session_start();
 // Require the login function code
 require('./login.function.php');
 
-$url_id = $_GET[id];
+$url_id = $_GET['id'];
 
 $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
