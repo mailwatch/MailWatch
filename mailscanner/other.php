@@ -56,7 +56,10 @@ if ($_SESSION['user_type'] == 'A') {
     echo '<li><a href="mysql_status.php">MySQL Database Status</a>';
     echo '<li><a href="msconfig.php">View MailScanner Configuration</a>';
 }
-if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') && $_SESSION['user_type'] == 'A') {
+if (!DISTRIBUTED_SETUP
+    && !in_array(strtolower(get_conf_var('UseSpamAssassin')), array('0', 'no', false))
+    && $_SESSION['user_type'] == 'A'
+) {
     echo '
      <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
