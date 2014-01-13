@@ -27,31 +27,31 @@ require('login.function.php');
 
 html_start("Rules");
 
-# Stop anyone trying to read any other files
-if (preg_match('/^'.preg_quote(MS_CONFIG_DIR,'/').'/',$_GET['file'])) {
- $file = preg_replace("/\.\./","",$_GET['file']);
+// Stop anyone trying to read any other files
+if (preg_match('/^' . preg_quote(MS_CONFIG_DIR, '/') . '/', $_GET['file'])) {
+    $file = preg_replace("/\.\./", "", $_GET['file']);
 }
 
-echo '<table cellspacing="1" class="maildetail" width="100%">'."\n";
-echo '<tr><td class="heading">File: '.$file.'</td></tr>'."\n";
-echo '<tr><td><pre>'."\n";
-if ($fh = @@fopen($file,'r')) {
- while (!feof($fh)) {
-  $line = rtrim(fgets($fh,4096));
-  if ($_GET['strip_comments']) {
-   if (!preg_match('/^#/',$line) && !preg_match('/^$/',$line)) {
-   echo $line."\n";
-   }
-  } else {
-   echo $line."\n";
-  }
- }
- fclose($fh);
+echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
+echo '<tr><td class="heading">File: ' . $file . '</td></tr>' . "\n";
+echo '<tr><td><pre>' . "\n";
+if ($fh = @@fopen($file, 'r')) {
+    while (!feof($fh)) {
+        $line = rtrim(fgets($fh, 4096));
+        if ($_GET['strip_comments']) {
+            if (!preg_match('/^#/', $line) && !preg_match('/^$/', $line)) {
+                echo $line . "\n";
+            }
+        } else {
+            echo $line . "\n";
+        }
+    }
+    fclose($fh);
 } else {
- echo "Unable to open file.\n";
+    echo "Unable to open file.\n";
 }
-echo '</pre></td></tr>'."\n";
-echo '</table>'."\n";
+echo '</pre></td></tr>' . "\n";
+echo '</table>' . "\n";
 
 // Add the footer
 html_end();
