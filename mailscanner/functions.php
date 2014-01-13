@@ -1956,7 +1956,7 @@ if($pager) {
 	'delta'			=> 2,
 	'totalItems'	=> $rows,
 	);
-	$pager = Pager::factory($pager_options);
+	$pager = @Pager::factory($pager_options);
 
 	//then we fetch the relevant records for the current page
 list($from, $to) = $pager->getOffsetByPageId();
@@ -2047,7 +2047,7 @@ echo $pager->links;
 	'delta'			=> 2,
 	'totalItems'	=> $rows,
 	);
-	$pager = Pager::factory($pager_options);
+	$pager = @Pager::factory($pager_options);
 
 	//then we fetch the relevant records for the current page
 list($from, $to) = $pager->getOffsetByPageId();
