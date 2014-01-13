@@ -29,7 +29,6 @@ require('login.function.php');
 
 html_start('Tools', "0", false, false);
 
-
 echo '<table width="100%" class="boxtable">
  <tr>
   <td>
@@ -55,8 +54,6 @@ if (preg_match('/f-prot/i', get_conf_var('VirusScanners')) && $_SESSION['user_ty
 }
 if ($_SESSION['user_type'] == 'A') {
     echo '<li><a href="mysql_status.php">MySQL Database Status</a>';
-}
-if ($_SESSION['user_type'] == 'A') {
     echo '<li><a href="msconfig.php">View MailScanner Configuration</a>';
 }
 if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') && $_SESSION['user_type'] == 'A') {
