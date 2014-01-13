@@ -25,60 +25,56 @@ require_once("./functions.php");
 session_start();
 require('./login.function.php');
 
-if($_SESSION['user_type']!=A){
-header("Location: index.php");
-}
-else{
-html_start("Configuration");
-audit_log('Viewed MailScanner configuration');
+if ($_SESSION['user_type'] != A) {
+    header("Location: index.php");
+} else {
+    html_start("Configuration");
+    audit_log('Viewed MailScanner configuration');
 
-$conf_dir = get_conf_include_folder();
-$MailScanner_conf_file = ''.MS_CONFIG_DIR.'MailScanner.conf';
+    $conf_dir = get_conf_include_folder();
+    $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
 
-echo '<table border="0" cellpadding="1" cellspacing="1" class="maildetail" width="100%">';
-echo '<tr><th colspan="2">MailScanner Configuration</th></tr>';
+    echo '<table border="0" cellpadding="1" cellspacing="1" class="maildetail" width="100%">';
+    echo '<tr><th colspan="2">MailScanner Configuration</th></tr>';
 
-$array_output = array();
+    $array_output = array();
+    $array_output1 = parse_conf_file($MailScanner_conf_file);
+    $array_output2 = parse_conf_dir($conf_dir);
 
-$array_output1 = parse_conf_file($MailScanner_conf_file);
+    if (is_array($array_output2)) {
+        $array_output = array_merge($array_output1, $array_output2);
+    } else {
+        $array_output = $array_output1;
+    }
 
-$array_output2 = parse_conf_dir($conf_dir);
+    // Display the information from the configuration files
+    foreach ($array_output as $out_key => $value) {
+        // expand %var% variables
+        if (preg_match("/(%.+%)/", $value, $match)) {
+            $value = preg_replace("/%.+%/", $var[$match[1]], $value);
+        }
 
+        // See if parameter is a rules file
+        if (@is_file($value) && @is_readable($value) && !@is_executable($value)) {
+            $value = '<a herf="msrule.php?file=' . $value . '">' . $value . '</A>';
+        }
 
-if(is_array($array_output2)){
-$array_output = array_merge($array_output1, $array_output2);
-}else{
-$array_output = $array_output1;
-}
+        // Change newline charactors to <br />
+        $value = nl2br(str_replace("\\n", "\n", $value));
 
-//Display the information from the configuration files
-foreach ($array_output as $out_key => $value) {
-  // expand %var% variables
-  if(preg_match("/(%.+%)/",$value,$match)) {
-  	$value = preg_replace("/%.+%/",$var[$match[1]],$value);
-  }
-
-  // See if parameter is a rules file
-  if (@is_file($value) && @is_readable($value) && !@is_executable($value)) {
-   $value = '<a herf="msrule.php?file='.$value.'">'.$value.'</A>';
-  }
-
-  // Change newline charactors to <br />
-  $value = nl2br(str_replace("\\n","\n",$value));
-  
-  // change <br /> to <BR> to keep with html 4.01 and above
-  $value = preg_replace("/<br \/>/","<br>",$value);
+        // change <br /> to <BR> to keep with html 4.01 and above
+        $value = preg_replace("/<br \/>/", "<br>", $value);
 
 
-  echo '<tr><td class="heading">'.$out_key.'</td><td>'.$value.'</td></tr>'."\n";
- }
+        echo '<tr><td class="heading">' . $out_key . '</td><td>' . $value . '</td></tr>' . "\n";
+    }
 
 
-echo '</table>'."\n";
+    echo '</table>' . "\n";
 
 
-// Add footer
-html_end();
-// Close any open db connections
-dbclose();
+    // Add footer
+    html_end();
+    // Close any open db connections
+    dbclose();
 }
