@@ -2975,7 +2975,7 @@ function net_match($network, $ip) {
 }
 
 function mw_version(){
-	return("1.2.0 BETA 4 Patch 4");
+	return("1.2.0 DEV");
 }
 
 function is_rpc_client_allowed() {
