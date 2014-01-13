@@ -22,8 +22,8 @@
 
 // Include of nessecary functions
 require_once("./functions.php");
-require_once("pear/MDB2.php");
-require_once("pear/Pager/Pager.php");
+require_once("MDB2.php");
+require_once("Pager/Pager.php");
 require_once("./filter.inc");
 
 // Authenication checking
