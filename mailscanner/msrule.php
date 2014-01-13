@@ -30,34 +30,39 @@ if ($_SESSION['user_type'] != 'A') {
 } else {
     html_start("Rules");
 
-    // Stop anyone trying to read any other files
-    if (preg_match('/^' . preg_quote(MS_CONFIG_DIR, '/') . '/', $_GET['file'])) {
-        $file = preg_replace("/\.\./", "", $_GET['file']);
-    }
+    // limit accessible files to the ones in MailScanner etc directory
+    $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));
+    $FilePath = realpath($_GET['file']);
 
-    echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-    echo '<tr><td class="heading">File: ' . $file . '</td></tr>' . "\n";
-    echo '<tr><td><pre>' . "\n";
-    if ($fh = @@fopen($file, 'r')) {
-        while (!feof($fh)) {
-            $line = rtrim(fgets($fh, 4096));
-            if ($_GET['strip_comments']) {
-                if (!preg_match('/^#/', $line) && !preg_match('/^$/', $line)) {
+    if ($FilePath === false || strpos($FilePath, $MailscannerEtcDir) !== 0) {
+        //Directory Traversal
+        echo "Directory traversal attempt blocked.\n";
+    } else {
+        echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
+        echo '<tr><td class="heading">File: ' . $FilePath . '</td></tr>' . "\n";
+        echo '<tr><td><pre>' . "\n";
+        if ($fh = @@fopen($FilePath, 'r')) {
+            while (!feof($fh)) {
+                $line = rtrim(fgets($fh, 4096));
+                if ($_GET['strip_comments']) {
+                    if (!preg_match('/^#/', $line) && !preg_match('/^$/', $line)) {
+                        echo $line . "\n";
+                    }
+                } else {
                     echo $line . "\n";
                 }
-            } else {
-                echo $line . "\n";
             }
+            fclose($fh);
+        } else {
+            echo "Unable to open file.\n";
         }
-        fclose($fh);
-    } else {
-        echo "Unable to open file.\n";
-    }
-    echo '</pre></td></tr>' . "\n";
-    echo '</table>' . "\n";
+        echo '</pre></td></tr>' . "\n";
+        echo '</table>' . "\n";
 
+
+    }
     // Add the footer
     html_end();
-    // close the connection to the Database
-    dbclose();
 }
+// close the connection to the Database
+dbclose();
