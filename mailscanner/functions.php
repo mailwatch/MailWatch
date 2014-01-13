@@ -235,7 +235,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="200px">' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
         echo '    <tr><th colspan="3">Status</th></tr>' . "\n";
 
         // MailScanner running?
@@ -583,7 +583,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
     $sth = dbquery($sql);
     while ($row = mysql_fetch_object($sth)) {
-        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200px">' . "\n";
+        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
         echo ' <tr><th align="center" colspan="3">Today\'s Totals</th></tr>' . "\n";
         echo ' <tr><td>Processed:</td><td align="right">' . number_format($row->processed) . '</td><td align="right">' . format_mail_size(
                 $row->size
