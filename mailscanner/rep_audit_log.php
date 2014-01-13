@@ -20,7 +20,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Include of nessecary functions
+// Include of necessary functions
 require_once("./functions.php");
 require_once("./filter.inc");
 
@@ -29,18 +29,16 @@ session_start();
 require('login.function.php');
 
 // If the user isn't an administrator to send them back to the main page
-if($_SESSION['user_type'] != 'A'){
-header("Location: index.php");
-}
-else{
+if ($_SESSION['user_type'] != 'A') {
+    header("Location: index.php");
+} else {
+    // add the header information such as the logo, search, menu, ....
+    $filter = html_start("Audit Log", 0, false, true);
 
-// add the header information such as the logo, search, menu, ....
-$filter=html_start("Audit Log",0,false,true);
-
-// SQL query for the audit log
-$sql = "
+    // SQL query for the audit log
+    $sql = "
  SELECT
-  DATE_FORMAT(a.timestamp,'".DATE_FORMAT." ".TIME_FORMAT."') AS 'Date/Time',
+  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS 'Date/Time',
   b.fullname AS 'User',
   a.ip_address AS 'IP Address',
   a.action AS 'Action'
@@ -51,21 +49,21 @@ $sql = "
   a.user=b.username
  AND
   1=1
-".$filter->CreateMtalogSQL()."
+" . $filter->CreateMtalogSQL() . "
  ORDER BY timestamp DESC";
- echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="".IMAGES_DIR."/mailscannerlogo.gif" alt="MailScanner Logo"></td></tr>
- <tr><td>'."\n";
+    echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
+ <tr><td align="center"><img src="' . IMAGES_DIR . '/mailscannerlogo.gif" alt="MailScanner Logo"></td></tr>
+ <tr><td>' . "\n";
 
- // Function to to query and display the data
- dbtable($sql,"Audit Log",true);
- 
- // close off the table
- echo '</td></tr>
-      </table>'."\n";
-  
-// Add footer
-html_end();
-// Close any open db connections
-dbclose();
+    // Function to to query and display the data
+    dbtable($sql, "Audit Log", true);
+
+    // close off the table
+    echo '</td></tr>
+      </table>' . "\n";
+
+    // Add footer
+    html_end();
+    // Close any open db connections
+    dbclose();
 }
