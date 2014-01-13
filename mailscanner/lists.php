@@ -291,7 +291,7 @@ switch($url_list) {
   $b = 'CHECKED';
   break;
 }
-echo  '   <input type="radio" value="w" name="list" '.$w.'>Whitelist &nbsp;&nbsp'."\n";
+echo  '   <input type="radio" value="w" name="list" '.$w.'>Whitelist &nbsp;&nbsp;'."\n";
 echo  '   <input type="radio" value="b" name="list" '.$b.'>Blacklist'."\n";
 
 echo '  </td>
