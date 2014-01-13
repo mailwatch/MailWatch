@@ -49,7 +49,12 @@ if ($_SESSION['user_type'] != 'A') {
         $mcp_prefs_file = get_conf_var('MCPSpamAssassinPrefsFile');
         $mcp_local_rules_dir = get_conf_var('MCPSpamAssassinLocalRulesDir');
         $mcp_default_rules_dir = get_conf_var('MCPSpamAssassinDefaultRulesDir');
-        $fh = popen("ls $mcp_prefs_file $mcp_local_rules_dir/*.cf $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
+        if ($mcp_local_rules_dir != $mcp_default_rules_dir) {
+            $fh = popen("ls $mcp_prefs_file $mcp_local_rules_dir/*.cf $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
+        } else {
+            $fh = popen("ls $mcp_prefs_file $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
+        }
+
         audit_log('Ran MCP Rules Description Update');
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
