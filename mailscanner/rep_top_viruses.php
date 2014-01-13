@@ -101,7 +101,7 @@ $graph->Stroke($filename);
 // HTML to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."/mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
 echo "</TR>";
 echo "<TR>";
 

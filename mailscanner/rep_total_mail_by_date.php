@@ -183,7 +183,7 @@ $graph->Stroke($filename);
 
 // HTML Code to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TR><TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."/mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD></TR>";
+echo " <TR><TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD></TR>";
 echo " <TR>\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.

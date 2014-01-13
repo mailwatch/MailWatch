@@ -149,7 +149,7 @@ $graph->Stroke($filename);
 }
 
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."/mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
 echo " <TR>\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.

@@ -72,7 +72,7 @@ define('PROXY_PASS', '');
 define('MAILWATCH_HOME', '/var/www/html/mailscanner');
 define('MS_CONFIG_DIR', '/etc/MailScanner/');
 define('MS_LIB_DIR', '/usr/lib/MailScanner/');
-define('IMAGES_DIR', './images/');
+define('IMAGES_DIR', './images/'); // trailing slash needed
 define('CACHE_DIR', './images/cache/'); // JpGraph cache
 define('TTF_DIR','./jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR','/usr/bin/');
