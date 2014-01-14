@@ -94,9 +94,8 @@ if ($_SESSION['user_type'] == 'A') {
 
     echo '
     <li><a href="http://www.dnsstuff.com">DNSstuff</a>
-    <li><a href="http://www.samspade.org">Sam Spade</a>
-    <li><a href="http://spam.abuse.net">spam.abuse.net</a>
-    <li><a href="http://www.dnsreport.com">DNS Report</a>
+    <li><a href="http://mxtoolbox.com/NetworkTools.aspx">MXToolbox Network Tools</a>
+    <li><a href="http://www.anti-abuse.org/multi-rbl-check/">Multi-RBL Check</a>
    </ul>';
 }
 
