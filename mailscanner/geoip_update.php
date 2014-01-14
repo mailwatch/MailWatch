@@ -36,7 +36,7 @@ echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">
 	 <table class="boxtable" width="100%">
 	 <tr>
 	 <td>
-	 This utility is used to update the SQL database with up-to-date GeoIP data from <a href=\"http://www.maxmind.com/app/geoip_country\" target=\"_maxmind\">MaxMind</a> which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.<br>
+	 This utility is used to update the SQL database with up-to-date GeoIP data from <a href="http://www.maxmind.com/app/geoip_country" target="_maxmind">MaxMind</a> which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.<br>
 	 <br>
 	 </td>
 	 </tr>
