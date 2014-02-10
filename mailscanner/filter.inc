@@ -56,7 +56,7 @@ class Filter {
   'spamreport'		=>		"Spam Report",
   'ismcp'               =>              "is MCP (>0 = TRUE)",
   'ishighmcp'           =>              "is High Scoring MCP (>0 = TRUE)",
-  'issamcp'             =>              "is MCP accoding to SpamAssassin (>0 = TRUE)",
+  'issamcp'             =>              "is MCP according to SpamAssassin (>0 = TRUE)",
   'mcpwhitelisted'      =>              "is MCP Whitelisted (>0 = TRUE)",
   'mcpblacklisted'      =>              "is MCP Blacklisted (>0 = TRUE)",
   'mcpscore'            =>              "MCP Score",
