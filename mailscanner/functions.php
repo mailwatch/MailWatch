@@ -373,7 +373,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                         $data = explode("\n", $data);
                         foreach ($data as $disk) {
                             $drive = preg_split("/[\s]+/", $disk);
-                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[0], '/chroot/') === FALSE) && !(preg_match("/\/chroot\//i", $drive[1]))) {
+                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[0], '/chroot/') === FALSE) && !(preg_match("/\/chroot\//i", $drive[2]))) {
                                 $temp_drive['device'] = $drive[0];
                                 $temp_drive['mountpoint'] = $drive[2];
                                 $disks[] = $temp_drive;
