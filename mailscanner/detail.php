@@ -35,6 +35,13 @@ $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
 $url_id = trim($url_id, " ");
 
+$url_datetime = $_GET[datetime];
+
+$url_datetime = safe_value($url_datetime);
+$url_datetime = htmlentities($url_datetime);
+$url_datetime = trim($url_datetime, " ");
+
+
 // Start the header code and Title
 html_start("Message Detail $url_id",0,false,false);
 
@@ -92,6 +99,12 @@ $sql = "
  AND
   id = '".$url_id."'
 ";
+
+if (isset($url_datetime) && $url_datetime != '') {
+ $sql .= " AND
+  timestamp = STR_TO_DATE('".$url_datetime."', '".DATE_FORMAT." ".TIME_FORMAT."')
+";
+}
 
 // Pull the data back and put it in the the $result variable
 $result = dbquery($sql);

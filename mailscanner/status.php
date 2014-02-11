@@ -31,7 +31,7 @@ $sql = "
 SELECT
  id AS id2,
  hostname AS host,
- DATE_FORMAT(timestamp, '".DATE_FORMAT."<br>".TIME_FORMAT."') AS datetime,
+ DATE_FORMAT(timestamp, '".DATE_FORMAT." ".TIME_FORMAT."') AS datetime,
  from_address,
  to_address,
  subject,
