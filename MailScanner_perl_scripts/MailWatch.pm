@@ -92,6 +92,10 @@ my($db_pass) = '';
    close(SERVER);
    $dbh->commit;
    $dbh->disconnect;
+   ##### AJOS1 CHANGE #####
+   ##### 2008-05-29 commit ineffective with AutoCommit enabled at Line 93...
+   $dbh->{Warn} = 0;
+   ##### AJOS1 CHANGE #####
    exit;
  }
 
