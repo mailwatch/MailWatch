@@ -1430,181 +1430,181 @@ echo $pager->links;
   }
   echo '<table cellspacing="1" width="100%" class="mail">'."\n";
   // Work out which columns to display
-  for($f=0; $f<$fields; $f++) {
-   if ($f == 0 and $operations != false) {
-    // Set up display for operations form elements
-    $display[$f] = true;
-    $orderable[$f] = false;
-    // Set it up not to wrap - tricky way to leach onto the align field
-    $align[$f] = "center\" style=\"white-space:nowrap";
-    $fieldname[$f] = "Ops<br><a href=\"javascript:SetRadios('S')\">S</a>&nbsp;&nbsp;&nbsp;<a href=\"javascript:SetRadios('H')\">H</a>&nbsp;&nbsp;&nbsp;<a href=\"javascript:SetRadios('F')\">F</a>&nbsp;&nbsp;&nbsp;<a href=\"javascript:SetRadios('R')\">R</a>";
-    continue;
-   }
-   $display[$f] = true;
-   $orderable[$f] = true;
-   $align[$f] = false;
-   // Set up the mysql column to account for operations
-   if ($operations != false) {
-    $colnum = $f-1;
-   } else {
-    $colnum = $f;
-   }
-   switch($fieldname[$f]=mysql_field_name($sth,$colnum)) {
-    case 'host':
-     $fieldname[$f] = "Host";
-     if(DISTRIBUTED_SETUP) {
-      $display[$f] = true;
-     } else {
-      $display[$f] = false;
+     for ($f = 0; $f < $fields; $f++) {
+         if ($f == 0 and $operations != false) {
+             // Set up display for operations form elements
+             $display[$f] = true;
+             $orderable[$f] = false;
+             // Set it up not to wrap - tricky way to leach onto the align field
+             $align[$f] = 'center" style="white-space:nowrap';
+             $fieldname[$f] = 'Ops<br><a href="javascript:SetRadios(\'S\')">S</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'H\')">H</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'F\')">F</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'R\')">R</a>';
+             continue;
+         }
+         $display[$f] = true;
+         $orderable[$f] = true;
+         $align[$f] = false;
+         // Set up the mysql column to account for operations
+         if ($operations != false) {
+             $colnum = $f - 1;
+         } else {
+             $colnum = $f;
+         }
+         switch ($fieldname[$f] = mysql_field_name($sth, $colnum)) {
+             case 'host':
+                 $fieldname[$f] = "Host";
+                 if (DISTRIBUTED_SETUP) {
+                     $display[$f] = true;
+                 } else {
+                     $display[$f] = false;
+                 }
+                 break;
+             case 'timestamp':
+                 $fieldname[$f] = "Date/Time";
+                 $align[$f] = "center";
+                 break;
+             case 'datetime':
+                 $fieldname[$f] = "Date/Time";
+                 $align[$f] = "center";
+                 break;
+             case 'id':
+                 $fieldname[$f] = "ID";
+                 $orderable[$f] = false;
+                 $align[$f] = "center";
+                 break;
+             case 'id2':
+                 $fieldname[$f] = "#";
+                 $orderable[$f] = false;
+                 $align[$f] = "center";
+                 break;
+             case 'size':
+                 $fieldname[$f] = "Size";
+                 $align[$f] = "right";
+                 break;
+             case 'from_address':
+                 $fieldname[$f] = "From";
+                 break;
+             case 'to_address':
+                 $fieldname[$f] = "To";
+                 break;
+             case 'subject':
+                 $fieldname[$f] = "Subject";
+                 break;
+             case 'clientip':
+                 $display[$f] = true;
+                 break;
+             case 'archive':
+                 $display[$f] = false;
+                 break;
+             case 'isspam':
+                 $display[$f] = false;
+                 break;
+             case 'ishighspam':
+                 $display[$f] = false;
+                 break;
+             case 'issaspam':
+                 $display[$f] = false;
+                 break;
+             case 'isrblspam':
+                 $display[$f] = false;
+                 break;
+             case 'spamwhitelisted':
+                 $display[$f] = false;
+                 break;
+             case 'spamblacklisted':
+                 $display[$f] = false;
+                 break;
+             case 'spamreport':
+                 $display[$f] = false;
+                 break;
+             case 'virusinfected':
+                 $display[$f] = false;
+                 break;
+             case 'nameinfected':
+                 $display[$f] = false;
+                 break;
+             case 'otherinfected':
+                 $display[$f] = false;
+                 break;
+             case 'report':
+                 $display[$f] = false;
+                 break;
+             case 'ismcp':
+                 $display[$f] = false;
+                 break;
+             case 'ishighmcp':
+                 $display[$f] = false;
+                 break;
+             case 'issamcp':
+                 $display[$f] = false;
+                 break;
+             case 'mcpwhitelisted':
+                 $display[$f] = false;
+                 break;
+             case 'mcpblacklisted':
+                 $display[$f] = false;
+                 break;
+             case 'mcpreport':
+                 $display[$f] = false;
+                 break;
+             case 'hostname':
+                 $fieldname[$f] = 'Host';
+                 $display[$f] = true;
+                 break;
+             case 'date':
+                 $fieldname[$f] = 'Date';
+                 break;
+             case 'time':
+                 $fieldname[$f] = 'Time';
+                 break;
+             case 'headers':
+                 $display[$f] = false;
+                 break;
+             case 'sascore':
+                 if (get_conf_truefalse('UseSpamAssassin')) {
+                     $fieldname[$f] = "SA Score";
+                     $align[$f] = "right";
+                 } else {
+                     $display[$f] = false;
+                 }
+                 break;
+             case 'mcpsascore':
+                 if (get_conf_truefalse('MCPChecks')) {
+                     $fieldname[$f] = "MCP Score";
+                     $align[$f] = "right";
+                 } else {
+                     $display[$f] = false;
+                 }
+                 break;
+             case 'status':
+                 $fieldname[$f] = "Status";
+                 $orderable[$f] = false;
+                 break;
+             case 'message':
+                 $fieldname[$f] = "Message";
+                 break;
+             case 'attempts':
+                 $fieldname[$f] = "Tries";
+                 $align[$f] = "right";
+                 break;
+             case 'lastattempt':
+                 $fieldname[$f] = "Last";
+                 $align[$f] = "right";
+                 break;
+         }
      }
-     break;
-    case 'timestamp':
-     $fieldname[$f] = "Date/Time";
-     $align[$f] = "center";
-     break;
-    case 'datetime':
-     $fieldname[$f] = "Date/Time";
-     $align[$f] = "center";
-     break;
-    case 'id':
-     $fieldname[$f] = "ID";
-     $orderable[$f] = false;
-     $align[$f] = "center";
-     break;
-    case 'id2':
-     $fieldname[$f] = "#";
-     $orderable[$f] = false;
-     $align[$f] = "center";
-     break;
-    case 'size':
-     $fieldname[$f] = "Size";
-     $align[$f] = "right";
-     break;
-    case 'from_address':
-     $fieldname[$f] = "From";
-     break;
-    case 'to_address':
-     $fieldname[$f] = "To";
-     break;
-    case 'subject':
-     $fieldname[$f] = "Subject";
-     break;
-    case 'clientip':
-     $display[$f] = true;
-     break;
-    case 'archive':
-     $display[$f] = false;
-     break;
-    case 'isspam':
-     $display[$f] = false;
-     break;
-    case 'ishighspam':
-     $display[$f] = false;
-     break;
-    case 'issaspam':
-     $display[$f] = false;
-     break;
-    case 'isrblspam':
-     $display[$f] = false;
-     break;
-    case 'spamwhitelisted':
-     $display[$f] = false;
-     break;
-    case 'spamblacklisted':
-     $display[$f] = false;
-     break;
-    case 'spamreport':
-     $display[$f] = false;
-     break;
-    case 'virusinfected':
-     $display[$f] = false;
-     break;
-    case 'nameinfected':
-     $display[$f] = false;
-     break;
-    case 'otherinfected':
-     $display[$f] = false;
-     break;
-    case 'report':
-     $display[$f] = false;
-     break;
-    case 'ismcp':
-     $display[$f] = false;
-     break;
-    case 'ishighmcp':
-     $display[$f] = false;
-     break;
-    case 'issamcp':
-     $display[$f] = false;
-     break;
-    case 'mcpwhitelisted':
-     $display[$f] = false;
-     break;
-    case 'mcpblacklisted':
-     $display[$f] = false;
-     break;
-    case 'mcpreport':
-     $display[$f] = false;
-     break;
-    case 'hostname':
-     $fieldname[$f] = 'Host';
-     $display[$f] = true;
-     break;
-    case 'date':
-     $fieldname[$f] = 'Date';
-     break;
-    case 'time':
-     $fieldname[$f] = 'Time';
-     break;
-    case 'headers':
-     $display[$f] = false;
-     break;
-    case 'sascore':
-     if(get_conf_truefalse('UseSpamAssassin')) {
-      $fieldname[$f] = "SA Score";
-      $align[$f] = "right";
-     } else {
-      $display[$f] = false;
+     // Table heading
+     if (isset($table_heading) && $table_heading != "") {
+         // Work out how many columns are going to be displayed
+         $column_headings = 0;
+         for ($f = 0; $f < $fields; $f++) {
+             if ($display[$f]) {
+                 $column_headings++;
+             }
+         }
+         echo ' <tr>' . "\n";
+         echo '  <th colspan=' . $column_headings . '>' . $table_heading . '</th>' . "\n";
+         echo ' </tr>' . "\n";
      }
-     break;
-    case 'mcpsascore':
-     if(get_conf_truefalse('MCPChecks')) {
-      $fieldname[$f] = "MCP Score";
-      $align[$f] = "right";
-     } else {
-      $display[$f] = false;
-     }
-     break;
-    case 'status':
-     $fieldname[$f] = "Status";
-     $orderable[$f] = false;
-     break;
-    case 'message':
-     $fieldname[$f] = "Message";
-     break;
-    case 'attempts':
-     $fieldname[$f] = "Tries";
-     $align[$f] = "right";
-     break;
-    case 'lastattempt':
-     $fieldname[$f] = "Last";
-     $align[$f] = "right";
-     break;
-   }
-  }
-  // Table heading
-  if(isset($table_heading) && $table_heading != "") {
-   // Work out how many columns are going to be displayed
-   $column_headings=0;
-   for($f=0; $f<$fields; $f++) {
-    if($display[$f]) {
-     $column_headings++;
-    }
-   }
-   echo ' <tr>'."\n";
-   echo '  <th colspan='.$column_headings.'>'.$table_heading.'</th>'."\n";
-   echo ' </tr>'."\n";
-  }
   // Column headings
   echo '<tr>'."\n";
   for($f=0; $f<$fields; $f++) {
@@ -1867,11 +1867,11 @@ echo $pager->links;
    &nbsp; <a href="javascript:SetRadios(\'S\')">S</a>
    &nbsp; <a href="javascript:SetRadios(\'H\')">H</a>
    &nbsp; <a href="javascript:SetRadios(\'F\')">F</a>
-   &nbsp; <a href=\"javascript:SetRadios(\'R\')">R</a>
+   &nbsp; <a href="javascript:SetRadios(\'R\')">R</a>
    &nbsp; or <a href="javascript:SetRadios(\'C\')">Clear</a> all
    <p><input type="SUBMIT" name="SUBMIT" value="Learn">
    </form>
-	<p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release'."\n";
+   <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release'."\n";
    }
 echo '<br>'."\n";
 if($pager) {
