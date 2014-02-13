@@ -2176,50 +2176,51 @@ $header=preg_replace('/IPv6\:/','', $header);
  }
 }
 
-function address_filter_sql($addresses, $type) {
- switch($type) {
-  case 'A': // Administrator - show everything
-   return "1=1";
-   break;
-  case 'U': // User - show only specific addresses
-   foreach($addresses as $address) {
-    if((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
-     $sqladdr[] = "to_address like '%$address%'";
-    } else {
-     $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
+function address_filter_sql($addresses, $type)
+{
+    switch ($type) {
+        case 'A': // Administrator - show everything
+            return "1=1";
+            break;
+        case 'U': // User - show only specific addresses
+            foreach ($addresses as $address) {
+                if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+                    $sqladdr[] = "to_address like '%$address%'";
+                } else {
+                    $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
+                }
+            }
+            $sqladdr = join(' OR ', $sqladdr);
+            return $sqladdr;
+            break;
+        case 'D': // Domain administrator
+            foreach ($addresses as $address) {
+                if (strpos($address, '@')) {
+                    if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+                        $sqladdr[] = "to_address like '%$address%'";
+                    } else {
+                        $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
+                    }
+                } else {
+                    if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+                        $sqladdr[] = "to_domain='$address'";
+                    } else {
+                        $sqladdr[] = "to_domain='$address' OR from_domain='$address'";
+                    }
+                }
+            }
+            // Join together to form a suitable SQL WHERE clause
+            $sqladdr = join(' OR ', $sqladdr);
+            return $sqladdr;
+            break;
+        case 'H': // Host
+            foreach ($addresses as $hostname) {
+                $sqladdr[] = "hostname='$hostname'";
+            }
+            $sqladdr = join(' OR ', $sqladdr);
+            return $sqladdr;
+            break;
     }
-   }
-   $sqladdr = join(' OR ',$sqladdr);
-   return $sqladdr;
-   break;
-  case 'D':  // Domain administrator
-   foreach($addresses as $address) {
-    if (strpos ($address, '@')) {
-     if ((defined ('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
-      $sqladdr[] = "to_address like '%$address%'";
-     } else {
-      $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
-     }
-    } else {
-     if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
-       $sqladdr[] = "to_domain='$address'";
-     } else {
-      $sqladdr[] = "to_domain='$address' OR from_domain='$address'";
-     }
-    }
-   }
-   // Join together to form a suitable SQL WHERE clause
-   $sqladdr = join(' OR ',$sqladdr);
-   return $sqladdr;
-   break;
-  case 'H': // Host
-   foreach($addresses as $hostname) {
-    $sqladdr[] = "hostname='$hostname'";
-   }
-   $sqladdr = join(' OR ',$host);
-   return $sqladdr;
-   break;
- }
 }
 
 function ldap_authenticate($USER,$PASS) {
