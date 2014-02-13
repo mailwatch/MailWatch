@@ -77,7 +77,7 @@ my($db_pass) = '';
    listen(SERVER, SOMAXCONN) or exit;
 
    # Our reason for existence - the persistent connection to the database
-   $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, {PrintError => 0});
+   $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, AutoCommit => 1, {PrintError => 0});
    if (!$dbh) {
     MailScanner::Log::WarnLog("Unable to initialise database connection: %s", $DBI::errstr);
    }
@@ -90,12 +90,7 @@ my($db_pass) = '';
  sub ExitLogging {
    # Server exit - commit changes, close socket, and exit gracefully.
    close(SERVER);
-   $dbh->commit;
    $dbh->disconnect;
-   ##### AJOS1 CHANGE #####
-   ##### 2008-05-29 commit ineffective with AutoCommit enabled at Line 93...
-   $dbh->{Warn} = 0;
-   ##### AJOS1 CHANGE #####
    exit;
  }
 
