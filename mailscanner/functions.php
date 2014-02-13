@@ -2938,7 +2938,7 @@ function get_virus_conf($scanner) {
 function return_quarantine_dates() {
  date_default_timezone_set(TIME_ZONE);
  $array = array();
- for($d=0; $d<(QUARANTINE_DAYS_TO_KEEP+1); $d++) {
+ for($d=0; $d<(QUARANTINE_DAYS_TO_KEEP); $d++) {
   $array[] = date('Ymd', mktime(0, 0, 0, date("m"), date("d")-$d, date("Y")));
  }
  return $array;
