@@ -2421,7 +2421,7 @@ AND
  return(@mysql_result($sth,0));
 }
 
-if (!function_exists('file_get_contents')) {
+/*if (!function_exists('file_get_contents')) {
  function file_get_contents($filename, $use_include_path = 0) {
   $file = @fopen($filename, 'rb', $use_include_path);
   if ($file) {
@@ -2436,7 +2436,7 @@ if (!function_exists('file_get_contents')) {
   }
   return $data;
  }
-}
+}*/
 
 function quarantine_list($input="/") {
  $quarantinedir = get_conf_var('QuarantineDir').'/';
