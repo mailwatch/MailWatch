@@ -2438,42 +2438,45 @@ AND
  }
 }*/
 
-function quarantine_list($input="/") {
- $quarantinedir = get_conf_var('QuarantineDir').'/';
- switch($input) {
-  case '/':
-   // Return top-level directory
-   $d = @opendir($quarantinedir);
-   while(false !== ($f = @readdir($d))) {
-    if ($f !== "." && $f !== "..") {
-     $item[] = $f;
+function quarantine_list($input = "/")
+{
+    $quarantinedir = get_conf_var('QuarantineDir') . '/';
+    $item = array();
+    switch ($input) {
+        case '/':
+            // Return top-level directory
+            $d = @opendir($quarantinedir);
+
+            while (false !== ($f = @readdir($d))) {
+                if ($f !== "." && $f !== "..") {
+                    $item[] = $f;
+                }
+            }
+            if (count($item) > 0) {
+                // Sort in reverse chronological order
+                arsort($item);
+            }
+            @closedir($d);
+            break;
+        default:
+            $current_dir = $quarantinedir . $input;
+            $dirs = array($current_dir, $current_dir . '/spam', $current_dir . '/nonspam', $current_dir . '/mcp');
+            foreach ($dirs as $dir) {
+                if (is_dir($dir) && is_readable($dir)) {
+                    $d = @opendir($dir);
+                    while (false !== ($f = readdir($d))) {
+                        if ($f !== "." && $f !== "..") {
+                            $item[] = "'$f'";
+                        }
+                    }
+                    if (count($item) > 0) {
+                        asort($item);
+                    }
+                    closedir($d);
+                }
+            }
     }
-   }
-   if(count($item)>0) {
-    // Sort in reverse chronological order
-    arsort($item);
-   }
-   @closedir($d);
-   break;
-  default:
-   $current_dir = $quarantinedir.$input;
-   $dirs = array($current_dir, $current_dir.'/spam', $current_dir.'/nonspam', $current_dir.'/mcp');
-   foreach($dirs as $dir) {
-    if(is_dir($dir) && is_readable($dir)) {
-     $d = @opendir($dir);
-     while(false !== ($f = readdir($d))) {
-      if ($f !== "." && $f !== "..") {
-       $item[] = "'$f'";
-      }
-     }
-     if(count($item)>0) {
-      asort($item);
-     }
-     closedir($d);
-    }
-   }
- }
- return $item;
+    return $item;
 }
 
 function is_local($host) {
