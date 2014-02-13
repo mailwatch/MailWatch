@@ -1833,7 +1833,7 @@ echo $pager->links;
   echo '</table>'."\n";
   // Javascript function to clear radio buttons
   if ($operations != false) {
-   echo '<script language="JavaScript" type="text/javascript">
+   echo '<script type="text/javascript">
    function ClearRadios() {
    e=document.operations.elements
    for(i=0; i<e.length; i++) {
@@ -1861,12 +1861,12 @@ echo $pager->links;
 	'.$JsFunc.'
    }
    </script>
-   &nbsp; <a href="javascript:SetRadios(\'S\')">S</a>
+   <p>&nbsp; <a href="javascript:SetRadios(\'S\')">S</a>
    &nbsp; <a href="javascript:SetRadios(\'H\')">H</a>
    &nbsp; <a href="javascript:SetRadios(\'F\')">F</a>
    &nbsp; <a href="javascript:SetRadios(\'R\')">R</a>
-   &nbsp; or <a href="javascript:SetRadios(\'C\')">Clear</a> all
-   <p><input type="SUBMIT" name="SUBMIT" value="Learn">
+   &nbsp; or <a href="javascript:SetRadios(\'C\')">Clear</a> all</p>
+   <p><input type="SUBMIT" name="SUBMIT" value="Learn"></p>
    </form>
    <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release'."\n";
    }
