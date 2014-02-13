@@ -1384,13 +1384,10 @@ if($pager) {
 	//then we fetch the relevant records for the current page
 list($from, $to) = $pager->getOffsetByPageId();
 
-echo '</ul>'."\n";
-
 echo '<table cellspacing="1" class="mail" >
     <tr>
    <th colspan="5">Displaying page '.$pager->getCurrentPageID().' of '.$pager->numPages().' - Records '.$from.' to '.$to.' of '.$pager->numItems().'</th>
   </tr>
-  <tr>
   <tr>
   <td align="center">'."\n";
 //show the links
@@ -1903,13 +1900,10 @@ if($pager) {
 	//then we fetch the relevant records for the current page
 list($from, $to) = $pager->getOffsetByPageId();
 
-echo '</ul>'."\n";
-
 echo '<table cellspacing="1" class="mail" >
     <tr>
    <th colspan="5">Displaying page '.$pager->getCurrentPageID().' of '.$pager->numPages().' - Records '.$from.' to '.$to.' of '.$pager->numItems().'</th>
   </tr>
-  <tr>
   <tr>
   <td align="center">'."\n";
 //show the links
@@ -1966,13 +1960,10 @@ if($pager) {
 	//then we fetch the relevant records for the current page
 list($from, $to) = $pager->getOffsetByPageId();
 
-echo '</ul>'."\n";
-
 echo '<table cellspacing="1" class="mail" >
     <tr>
    <th colspan="5">Displaying page '.$pager->getCurrentPageID().' of '.$pager->numPages().' - Records '.$from.' to '.$to.' of '.$pager->numItems().'</th>
   </tr>
-  <tr>
   <tr>
   <td align="center">'."\n";
 //show the links
@@ -2057,13 +2048,10 @@ echo $pager->links;
 	//then we fetch the relevant records for the current page
 list($from, $to) = $pager->getOffsetByPageId();
 
-echo '</ul>'."\n";
-
 echo '<table cellspacing="1" class="mail" >
     <tr>
    <th colspan="5">Displaying page '.$pager->getCurrentPageID().' of '.$pager->numPages().' - Records '.$from.' to '.$to.' of '.$pager->numItems().'</th>
   </tr>
-  <tr>
   <tr>
   <td align="center">'."\n";
 //show the links
