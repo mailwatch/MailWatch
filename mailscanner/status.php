@@ -25,13 +25,13 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-$refresh = html_start("Recent Messages",STATUS_REFRESH,false,false);
+$refresh = html_start("Recent Messages", STATUS_REFRESH, false, false);
 
 $sql = "
 SELECT
  id AS id2,
  hostname AS host,
- DATE_FORMAT(timestamp, '".DATE_FORMAT." ".TIME_FORMAT."') AS datetime,
+ DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
  from_address,
  to_address,
  subject,
@@ -53,13 +53,13 @@ SELECT
 FROM
  maillog
 WHERE
- ".$_SESSION['global_filter']."
+ " . $_SESSION['global_filter'] . "
 ORDER BY
  date DESC,
  time DESC
-LIMIT ".MAX_RESULTS;
+LIMIT " . MAX_RESULTS;
 
-db_colorised_table($sql,"Last ".MAX_RESULTS." Messages (Refreshing every $refresh seconds)");
+db_colorised_table($sql, "Last " . MAX_RESULTS . " Messages (Refreshing every $refresh seconds)");
 
 // Add footer
 html_end();

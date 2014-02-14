@@ -38,7 +38,7 @@ function quarantine_reconcile() {
    if(is_array(($array = quarantine_list_dir($f)))) {
     foreach($array as $id) {
      dbg("Updating: $id");
-     $sql = "UPDATE maillog SET quarantined=1 WHERE id='$id'";
+     $sql = "UPDATE maillog SET timestamp=timestamp, quarantined=1 WHERE id='$id'";
      dbquery($sql);
     }
    }
@@ -61,7 +61,7 @@ function quarantine_clean() {
     dbg("Processing directory $f: found ".count($array)." records to delete");
     foreach($array as $id) {
      // Update the quarantine flag
-     $sql = "UPDATE maillog SET quarantined = NULL WHERE id='$id'";
+     $sql = "UPDATE maillog SET timestamp=timestamp, quarantined = NULL WHERE id='$id'";
      dbquery($sql);
     }
     dbg("Deleting: ".escapeshellarg($quarantine.'/'.$f));
