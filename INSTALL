@@ -274,11 +274,14 @@ define('MSRE_COLUMNS', 7);
 ----------------------------------------------------------
 
 Change file permissions so that we can update the rules
-chnage group and rules directory locations as appropriate
+change group and rules directory locations as appropriate
 
 chgrp -R apache /etc/MailScanner/rules
 chmod g+rwxs /etc/MailScanner/rules
 chmod g+rw /etc/MailScanner/rules/*.rules
+
+See also the INSTALL docs in tools/MailScanner_rule_editor
+and tools/Cron_jobs
 
 ------------------------------------------------------------ FINISHED!! (Phew!)
 
