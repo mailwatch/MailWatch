@@ -55,6 +55,9 @@ if (preg_match('/f-prot/i', get_conf_var('VirusScanners')) && $_SESSION['user_ty
 if ($_SESSION['user_type'] == 'A') {
     echo '<li><a href="mysql_status.php">MySQL Database Status</a>';
     echo '<li><a href="msconfig.php">View MailScanner Configuration</a>';
+	if (defined('MSRE') && MSRE) { 
+      echo '<li><a href="msre_index.php">Edit MailScanner Rulesets</a>';
+	}
 }
 if (!DISTRIBUTED_SETUP
     && !in_array(strtolower(get_conf_var('UseSpamAssassin')), array('0', 'no', false))
