@@ -118,7 +118,7 @@ function Show_Form ($status_msg) {
 	echo "<form method=\"post\" name=\"MSRE_edit\" action=\"msre_edit.php?file=$short_filename\">\n";
 	echo "<input type=\"hidden\" name=\"submitted\" value=\"1\">\n";
 	// check for status message, and append it to the end of the header
-	$my_header = $CONF_edit_header;
+
 	if ($status_msg) {
 		$my_header .= "<br>\n" . $status_msg;
 	}

@@ -22,10 +22,8 @@ Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
 */
 
 // import some global variables
-global $short_filename, $full_filename, $CONF_ruleset_dir, 
+global $short_filename, $full_filename,  
 	$CONF_ruleset_keyword, $file_contents, $first_rule_comment, 
-	$CONF_columns, $CONF_edit_header, $CONF_edit_footer, 
-	$CONF_msre_reload_interval, $CONF_index_header, $CONF_index_footer, 
 	$G_version;
 
 ?>	                   
