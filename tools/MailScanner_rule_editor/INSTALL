@@ -3,5 +3,6 @@ INSTALLATION INSTRUCTIONS
 -----------------------------
 
 Copy msre_reload.sh to /usr/local/bin
+chmod +x /usr/local/bin/msre_reload.sh
 
-It is used by the MSRE cron job to restart MailScanner aftr a rule has been edited.
+It is used by the MSRE cron job to restart MailScanner after a rule has been edited.
