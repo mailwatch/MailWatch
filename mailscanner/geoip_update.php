@@ -23,7 +23,7 @@
 //Require files
 require_once('./functions.php');
 
-// Authenication verification and keep the session alive
+// Authentication verification and keep the session alive
 session_start();
 require('./login.function.php');
 
