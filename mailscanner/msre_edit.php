@@ -140,13 +140,16 @@ function Show_Form ($status_msg) {
 	// by looking for a line in the file labeled #ACTIONS:
 	$actions = array();
 	foreach (preg_split ("/\n/", $file_contents) as $line ) {
-		#echo "$i: $line<br>\n";
-		#$i++;
+		// echo "$i: $line<br>\n";
+		// $i++;
 		// this should find lines w/out comments, or lines that 
 		// start with #DISABLED#.  
-		if ( (!preg_match("/^#/", $line) 
-				or preg_match("/^#DISABLED#/", $line) )
-				and $line ) {
+                // Treat empty lines as comments
+                if ($line == "") {
+		  $line = "#";
+                }
+                if ( (!preg_match("/^#/", $line) 
+ 		      or preg_match("/^#DISABLED#/", $line) ) ) {
 			// check for a description on the previous line
 			if (preg_match("/^#/", $previous_line) ) {
 				$desc = $previous_line;
@@ -525,8 +528,8 @@ function Process_Form () {
 	// look thru the file, and grab comments on the top, 
 	// stopping when we have reached a non-comment line
 	foreach (preg_split("/\n/", $file_contents) as $line ) {
-		if (substr($line, 0, 1) == "#" 
-			and !preg_match("/#DISABLED#/", $line) ) {
+	  if ($line == "" or (substr($line, 0, 1) == "#" 
+			      and !preg_match("/#DISABLED#/", $line)) ) {
 			$new_file[] = $line . "\n";
 		} else {
 			break;

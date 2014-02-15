@@ -75,8 +75,6 @@ foreach ($ruleset_file as $this_ruleset_file) {
 // put a blank header line on the bottom... it just looks nicer that way to me
 TRH (array ("") );
 
-TR_single ("<a href=\"/mailscanner/other.php\">Back to MailWatch</a><br>\n", "class=\"footer\"");
-
 echo "</center>\n";
 echo "</body>\n";
 echo "</html>\n";
