@@ -140,8 +140,8 @@ function Show_Form ($status_msg) {
 	// by looking for a line in the file labeled #ACTIONS:
 	$actions = array();
 	foreach (preg_split ("/\n/", $file_contents) as $line ) {
-		// echo "$i: $line<br>\n";
-		// $i++;
+		#echo "$i: $line<br>\n";
+		#$i++;
 		// this should find lines w/out comments, or lines that 
 		// start with #DISABLED#.  
                 // Treat empty lines as comments
