@@ -682,6 +682,7 @@ function Process_Form () {
 			"MailScanner!  (You will have to manually do a " . 
 			"|/etc/init.d/MailScanner reload| )</span><br>\n";
 	} else {
+		fclose($fh);
 		$status_msg .= "Ok.<br>\n" . 
 			"Your changes will take effect in the next " . 
 			MSRE_RELOAD_INTERVAL . " minutes, when MailScanner reloads.<br>\n";
