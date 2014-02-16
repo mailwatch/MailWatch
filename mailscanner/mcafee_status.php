@@ -23,10 +23,10 @@
  McAfee status by Hubert Nachbaur modified from Sophos status by Steve Freegard
 */
 
-// Include of nessecary functions
+// Include of necessary functions
 require_once("./functions.php");
 
-// Authenication checking
+// Authentication checking
 session_start();
 require('login.function.php');
 

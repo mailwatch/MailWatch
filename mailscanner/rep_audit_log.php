@@ -24,7 +24,7 @@
 require_once("./functions.php");
 require_once("./filter.inc");
 
-// Authenication checking
+// Authentication checking
 session_start();
 require('login.function.php');
 
