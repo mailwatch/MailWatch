@@ -197,4 +197,3 @@ define('ALLOWED_TAGS', '<a><br><b><body><div><font><h1><h2><h3><h4><head><html><
 define('MSRE', true);
 define('MSRE_RELOAD_INTERVAL', 5);
 define('MSRE_RULESET_DIR', "/etc/MailScanner/rules");
-define('MSRE_COLUMNS', 7);

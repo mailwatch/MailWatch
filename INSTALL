@@ -270,7 +270,6 @@ Make sure MailWatch's conf.php has the following lines at the end
 define('MSRE', true);
 define('MSRE_RELOAD_INTERVAL', 5);
 define('MSRE_RULESET_DIR', "/etc/MailScanner/rules");
-define('MSRE_COLUMNS', 7);
 ----------------------------------------------------------
 
 Change file permissions so that we can update the rules

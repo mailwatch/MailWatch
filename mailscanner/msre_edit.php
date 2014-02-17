@@ -64,6 +64,8 @@ $CONF_ruleset_keyword2 = array (
 	"FromOrTo:"
 );
 
+define('MSRE_COLUMNS', 7);
+
 // ############
 // ### Main ###
 // ############
