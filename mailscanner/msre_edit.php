@@ -55,7 +55,13 @@ $CONF_ruleset_keyword = array (
 	"From:",  
 	"To:", 
 	"FromOrTo:",
-        "Virus:"
+	"Virus:"
+);
+
+$CONF_ruleset_keyword2 = array (
+	"From:",  
+	"To:", 
+	"FromOrTo:"
 );
 
 // ############
@@ -379,12 +385,22 @@ function Show_Form ($status_msg) {
 					}
 					$select_html .= ">\n" . 
 						"<option value=\"\"></option>";
-					foreach ($CONF_ruleset_keyword as $current_kw) {
-						$select_html .= "<option value=\"$current_kw\"";
-						if ($current_kw == preg_replace("/#DISABLED#/", "", $value) ) {
-							$select_html .= " selected";
-						}
-						$select_html .= ">$current_kw</option>";
+					if (strtolower($key) == "0direction") {
+					    foreach ($CONF_ruleset_keyword as $current_kw) {
+						    $select_html .= "<option value=\"$current_kw\"";
+						    if ($current_kw == preg_replace("/#DISABLED#/", "", $value) ) {
+							    $select_html .= " selected";
+						    }
+						    $select_html .= ">$current_kw</option>";
+					    }
+					} else {
+					    foreach ($CONF_ruleset_keyword2 as $current_kw) {
+						    $select_html .= "<option value=\"$current_kw\"";
+						    if ($current_kw == preg_replace("/#DISABLED#/", "", $value) ) {
+							    $select_html .= " selected";
+						    }
+						    $select_html .= ">$current_kw</option>";
+					    }
 					}
 					// need to close my select tag..
 					$select_html .= "</select>";
