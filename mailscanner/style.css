@@ -287,3 +287,67 @@ TD.lint_5 {
 p.center {
     text-align:center;
 }
+
+/* MSRE */
+
+TABLE.mailwatch TH {
+	font-size: 10pt;
+	font-weight: bold;
+	text-align: center;
+	background-color: #F7CE4A;
+}
+
+TABLE.mailwatch TR {
+	font-size: 8pt;
+	background-color: #ebebeb;
+}
+
+TABLE.mailwatch TR.alt {
+	font-size: 8pt;
+	background-color: #cfccdf;
+}
+
+TABLE.mailwatch TD.footer {
+	font-size: 9pt;
+	background-color: white;
+}	
+
+TABLE.mailwatch TR.footer {
+	font-size: 9pt;
+	background-color: white;
+}	
+
+TABLE.mailwatch TD.header {
+	font-size: 9pt;
+}
+	
+TABLE.mailwatch TR.header {
+	font-size: 9pt;
+}
+
+SPAN.status {
+	font-size: 8pt;
+	color: blue;
+}
+
+SPAN.debug {
+	font-size: 8pt;
+	color: green;
+}
+
+SPAN.error {
+	font-size: 10pt;
+	color: red;
+}                 
+ 
+TD.dashblackbox {
+	border: 2px dashed black;
+	background-color: white; 
+	padding: 5px;
+}
+
+TD.dashgreybox {
+	border: 2px dashed #cccccc;
+	background-color: white; 
+	padding: 5px;
+}
