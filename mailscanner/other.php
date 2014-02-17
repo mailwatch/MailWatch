@@ -20,10 +20,10 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Include of nessecary functions
+// Include of necessary functions
 require_once("./functions.php");
 
-// Authenication checking
+// Authentication checking
 session_start();
 require('login.function.php');
 

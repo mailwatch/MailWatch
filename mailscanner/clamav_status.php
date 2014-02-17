@@ -28,11 +28,11 @@ session_start();
 // Require the login function code
 require('./login.function.php');
 
-// Check to see if the user is an administrater
+// Check to see if the user is an administrator
 if($_SESSION['user_type'] != 'A'){
-// If the user isn't an administrater send them back to the index page.
+// If the user isn't an administrator send them back to the index page.
 header("Location: index.php");
-audit_log('Non-admin user attemped to view ClamAV Statut page');
+audit_log('Non-admin user attemped to view ClamAV Status page');
 }
 else{
 
