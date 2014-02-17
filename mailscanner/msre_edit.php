@@ -64,7 +64,7 @@ $CONF_ruleset_keyword2 = array (
 	"FromOrTo:"
 );
 
-define('MSRE_COLUMNS', 7);
+define('MSRE_COLUMNS', 6);
 
 // ############
 // ### Main ###
@@ -264,7 +264,7 @@ function Show_Form ($status_msg) {
 		$last_old_rule_part = array_pop($old_rule_part);
 		// need two differnt while loops I think, based on 
 		// if there was an and or not..
-		if ($rule_part["2and"] == "and") {
+		if (strtolower($rule_part["2and"]) == "and") {
 			// if there's an and, grab up to the 4and_target
 			$grab_to_field = "4and_target";
 		} else {
@@ -334,7 +334,7 @@ function Show_Form ($status_msg) {
 			"  <option value=\"\" selected>----</option>\n" . 
 			"  <option value=\"Delete\">Delete</option>\n" . 
 			$rule_action_select_options  . "</select>\n";
-		$desc_text = array ( $rule_action_select_html => "rowspan=\"2\"", 
+		$desc_text = array ( $rule_action_select_html => "rowspan=\"3\"", 
 			
 			"<b>Description:</b>&nbsp;&nbsp;<input type=\"text\" " . 
 			"name=\"$desc_field\" size=\"95\" value=\"" . $desc_value . "\"" . 
@@ -354,9 +354,7 @@ function Show_Form ($status_msg) {
 						$field_name .= "_disabled";
 					}
 					$checkbox_html = "<input type=\"checkbox\" name=\"$field_name\" value=\"";
-					if ($value) {
-						$checkbox_html .= "and";
-					}                    
+					$checkbox_html .= "and";
 					$checkbox_html .= "\"";
 					if ($value) {
 						$checkbox_html .= " checked";
@@ -418,7 +416,11 @@ function Show_Form ($status_msg) {
 					if ($rule_disabled) {
 						$field_name .= "_disabled";
 					}
-					$temp_text = "<input type=\"text\" name=\"$field_name\" value=\"$value\"";
+					if (strtolower($key) == "99action") {
+					  $temp_text =  "</td></tr><tr><td colspan=\"" . (MSRE_COLUMNS - 1) . "\"><b>Action:</b>&nbsp;&nbsp;<input type=\"text\" name=\"$field_name\" value=\"$value\" size=\"100\"";
+					} else {
+					  $temp_text = "<input type=\"text\" name=\"$field_name\" value=\"$value\"";
+					}
 					if ($rule_disabled) {
 						$temp_text .= " disabled ";
 					}
@@ -467,13 +469,13 @@ function Show_Form ($status_msg) {
 	$add_prefix = "rule" . $rule_count . "_";
 	// description
 	$desc_text = array (
-		"" => "rowspan=\"2\"", 
+		"" => "rowspan=\"3\"", 
 		"<b>Description:</b>&nbsp;&nbsp;<input type=\"text\" name=\"" . 
 			$add_prefix . "description\" value=\"\" size=\"95\">" => 
 				"colspan=\"" . (MSRE_COLUMNS - 1) . "\""
 	);
 	// direction
-	$temp_html = "<select name=\"" . $add_prefix . 
+	$temp_html = "<b>Condition:</b>&nbsp;&nbsp;<select name=\"" . $add_prefix . 
 		"direction\"><option value=\"\"></option>";
 	foreach ($CONF_ruleset_keyword as $kw) {
 		$temp_html .= "<option value=\"$kw\">$kw</option>";
@@ -496,8 +498,8 @@ function Show_Form ($status_msg) {
 	$add_rule_text[] = "<input type=\"text\" name=\"" . $add_prefix . 
 		"and_target\" value=\"\">";
 	// action
-	$add_rule_text[] = "<input type=\"text\" name=\"" . $add_prefix . 
-		"action\" value=\"\">";
+	$add_rule_text[] = "</td></tr><tr><td colspan=\"" . (MSRE_COLUMNS - 1) . "\"><b>Action:</b>&nbsp;&nbsp;<input type=\"text\" name=\"" . 
+	        $add_prefix . "action\" value=\"\" size=\"100\">";
 	
 	// now write it
 	TRH_Single("Add New Rule:", "colspan=\"" . MSRE_COLUMNS . "\"" );
@@ -638,6 +640,11 @@ function Process_Form () {
 		$_POST[$description] = Fix_Quotes($_POST[$description]);
 		//echo "$description: " . $_POST[$description] . "<br>\n";
 		// make sure there's something there... direction is required
+		if (!isset($_POST[$and])) {
+                    $_POST[$and] = "";
+                    $_POST[$and_direction] = "";
+		    $_POST[$and_target] = "";
+		}
 		if ($_POST[$direction]) {
 			//echo "$direction: $_POST[$direction]<br>\n";
 			$new_ruleset[] = array (
