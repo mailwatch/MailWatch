@@ -10,6 +10,7 @@
 :: Sort rule file names into alphabetical order before listing
 :: Allow "Virus:" keyword in rule files
 :: Fix very broken 'and' handling
+:: Ensure that the 'default' rule stays the default rule forever
 
 1.2.0 - beta 4 patch 4
 
