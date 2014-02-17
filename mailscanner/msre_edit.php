@@ -421,7 +421,7 @@ function Show_Form ($status_msg) {
 					} else {
 					  $temp_text = "<input type=\"text\" name=\"$field_name\" value=\"$value\"";
 					}
-					if ($rule_disabled) {
+					if ($rule_disabled || (strtolower($key) == "1target" && strtolower($value) == "default")) {
 						$temp_text .= " disabled ";
 					}
 					$temp_text .= ">";
@@ -640,6 +640,9 @@ function Process_Form () {
 		$_POST[$description] = Fix_Quotes($_POST[$description]);
 		//echo "$description: " . $_POST[$description] . "<br>\n";
 		// make sure there's something there... direction is required
+		if (!isset($_POST[$target])) {
+		    $_POST[$target] = "default";
+		}
 		if (!isset($_POST[$and])) {
                     $_POST[$and] = "";
                     $_POST[$and_direction] = "";
