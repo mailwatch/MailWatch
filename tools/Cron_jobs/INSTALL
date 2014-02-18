@@ -44,4 +44,7 @@ MailScanner Rule Editor
 
 msre_reload.crond
 
-Add to /etc/cron.d
+See the instructions in tools/MailScanner_rule_editor/INSTALL
+
+Add to /etc/cron.d when you have properly configured and installed msre_reload.sh
+
