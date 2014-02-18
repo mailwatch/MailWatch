@@ -140,7 +140,7 @@ function Show_Form ($status_msg) {
 	
 	// now grab any lines in the file that aren't comments.
 	$ruleset = array();
-	#$i = 0;                                
+	// $i = 0;                                
 	// set Actions to empty array for now.  Actions array will hold 
 	// the values that action can be set to, and is determined 
 	// by looking for a line in the file labeled #ACTIONS:
@@ -800,5 +800,4 @@ function Fix_Quotes ($stuff) {
 	$stuff = str_replace("\\'", "'", $stuff);
 	$stuff = str_replace('\"', '"', $stuff);
 	return($stuff);
-}	
-?>	
+}
