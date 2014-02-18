@@ -24,10 +24,10 @@
  updated 2012-01-23 by Garrod Alwood
 */
 
-// Include of nessecary functions
+// Include of necessary functions
 require_once("./functions.php");
 
-// Authenication checking
+// Authentication checking
 session_start();
 require('login.function.php');
 
