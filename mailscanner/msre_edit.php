@@ -648,6 +648,10 @@ function Process_Form () {
                     $_POST[$and_direction] = "";
 		    $_POST[$and_target] = "";
 		}
+                $_POST[$target] = Fix_Quotes($_POST[$target]);
+                $_POST[$and_target] = Fix_Quotes($_POST[$and_target]);
+                $_POST[$action] = Fix_Quotes($_POST[$action]);
+
 		if ($_POST[$direction]) {
 			//echo "$direction: $_POST[$direction]<br>\n";
 			$new_ruleset[] = array (
