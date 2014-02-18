@@ -604,6 +604,9 @@ function Process_Form()
         $action = $rule_prefix . "action";
         $rule_action = $rule_prefix . "rule_action";
         // check for "default" rule
+        if (!isset($_POST[$target])) {
+            $_POST[$target] = "default";
+        }
         if (strtolower($_POST[$target]) == "default") {
             $default_action = $_POST[$action];
             $default_desc = $_POST[$description];
@@ -640,9 +643,6 @@ function Process_Form()
         $_POST[$description] = Fix_Quotes($_POST[$description]);
         //echo "$description: " . $_POST[$description] . "<br>\n";
         // make sure there's something there... direction is required
-        if (!isset($_POST[$target])) {
-            $_POST[$target] = "default";
-        }
         if (!isset($_POST[$and])) {
             $_POST[$and] = "";
             $_POST[$and_direction] = "";
