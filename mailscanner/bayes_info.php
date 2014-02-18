@@ -50,31 +50,44 @@ while (!feof($fh)) {
     debug("line: " . $line . "\n");
 
     if (preg_match('/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+non-token data: (.+)/', $line, $regs)) {
-
         switch ($regs[5]) {
-
             case 'nspam':
-                echo '<tr><td class="heading">Number of Spam Messages:</td><td align="right">' . number_format($regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">Number of Spam Messages:</td><td align="right">' . number_format(
+                        $regs[3]
+                    ) . '</td></tr>';
                 break;
 
             case 'nham':
-                echo '<tr><td class="heading">Number of Ham Messages:</td><td align="right">' . number_format($regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">Number of Ham Messages:</td><td align="right">' . number_format(
+                        $regs[3]
+                    ) . '</td></tr>';
                 break;
 
             case 'ntokens':
-                echo '<tr><td class="heading">Number of Tokens:</td><td align="right">' . number_format($regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">Number of Tokens:</td><td align="right">' . number_format(
+                        $regs[3]
+                    ) . '</td></tr>';
                 break;
 
             case 'oldest atime':
-                echo '<tr><td class="heading">Oldest Token:</td><td align="right">' . date('r', $regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">Oldest Token:</td><td align="right">' . date(
+                        'r',
+                        $regs[3]
+                    ) . '</td></tr>';
                 break;
 
             case 'newest atime':
-                echo '<tr><td class="heading">Newest Token:</td><td align="right">' . date('r', $regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">Newest Token:</td><td align="right">' . date(
+                        'r',
+                        $regs[3]
+                    ) . '</td></tr>';
                 break;
 
             case 'last journal sync atime':
-                echo '<tr><td class="heading">Last Journal Sync:</td><td align="right">' . date('r', $regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">Last Journal Sync:</td><td align="right">' . date(
+                        'r',
+                        $regs[3]
+                    ) . '</td></tr>';
                 break;
 
             case 'last expiry atime':
@@ -82,7 +95,9 @@ while (!feof($fh)) {
                 break;
 
             case 'last expire reduction count':
-                echo '<tr><td class="heading">Last Expiry Reduction Count:</td><td align="right">' . number_format($regs[3]) . ' tokens</td></tr>';
+                echo '<tr><td class="heading">Last Expiry Reduction Count:</td><td align="right">' . number_format(
+                        $regs[3]
+                    ) . ' tokens</td></tr>';
                 break;
         }
     }

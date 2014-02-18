@@ -25,12 +25,12 @@ require_once("./functions.php");
 session_start();
 include 'login.function.php';
 
-html_start("Sophos",0,false,false);
+html_start("Sophos", 0, false, false);
 
 echo "<TABLE CLASS=\"boxtable\" WIDTH=\"100%\">";
 echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
- passthru(get_virus_conf('sophos')." -v | awk -f ./sophos.awk");
+passthru(get_virus_conf('sophos') . " -v | awk -f ./sophos.awk");
 echo "</TD>";
 echo "</TR>";
 echo "</TABLE>";

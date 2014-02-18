@@ -73,8 +73,8 @@ if (file_exists('conf.php')) {
             </td>
         </tr>
     </table>
- </body>
- </html>
+</body>
+</html>
 <?php
 } else {
 ?>
@@ -93,7 +93,8 @@ if (file_exists('conf.php')) {
                             <td colspan="3"><strong> MailWatch Login</strong></td>
                         </tr>
                         <tr>
-                            <td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying conf.php.example and
+                            <td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying
+                                conf.php.example and
                                 making the required changes.
                             </td>
                         </tr>

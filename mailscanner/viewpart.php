@@ -33,7 +33,15 @@ if (!isset($_GET['id'])) {
 } else {
     // See if message is local
     dbconn(); // required db link for mysql_real_escape_string
-    if (!($host = @mysql_result(dbquery("SELECT hostname FROM maillog WHERE id='" . mysql_real_escape_string($_GET['id']) . "' AND " . $_SESSION["global_filter"] . ""),0))) {
+    if (!($host = @mysql_result(
+        dbquery(
+            "SELECT hostname FROM maillog WHERE id='" . mysql_real_escape_string(
+                $_GET['id']
+            ) . "' AND " . $_SESSION["global_filter"] . ""
+        ),
+        0
+    ))
+    ) {
         die("Message '" . $_GET['id'] . "' not found\n");
     }
     if (!is_local($host) || RPC_ONLY) {
@@ -110,7 +118,10 @@ function decode_structure($structure)
     $type = $structure->ctype_primary . "/" . $structure->ctype_secondary;
     switch ($type) {
         case "text/plain":
-            if (isset ($structure->ctype_parameters['charset']) && strtolower($structure->ctype_parameters['charset']) == 'utf-8') {
+            if (isset ($structure->ctype_parameters['charset']) && strtolower(
+                    $structure->ctype_parameters['charset']
+                ) == 'utf-8'
+            ) {
                 $structure->body = utf8_decode($structure->body);
             }
             echo '<html>
@@ -126,7 +137,10 @@ function decode_structure($structure)
  </html>' . "\n";
             break;
         case "text/html":
-            if (isset ($structure->ctype_parameters['charset']) && strtolower($structure->ctype_parameters['charset']) != 'utf-8') {
+            if (isset ($structure->ctype_parameters['charset']) && strtolower(
+                    $structure->ctype_parameters['charset']
+                ) != 'utf-8'
+            ) {
                 $structure->body = utf8_encode($structure->body);
             }
             if (STRIP_HTML) {

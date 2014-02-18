@@ -25,12 +25,12 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-html_start("SpamAssassin Lint",0,false,true);
+html_start("SpamAssassin Lint", 0, false, true);
 
-if(!$fp = popen(SA_DIR.'spamassassin -x -D -p '.SA_PREFS.' --lint 2>&1','r')) {
- die("Cannot open pipe");
+if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
+    die("Cannot open pipe");
 } else {
- audit_log('Run SpamAssassin lint');
+    audit_log('Run SpamAssassin lint');
 }
 
 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\" WIDTH=\"100%\">\n";
@@ -40,36 +40,38 @@ echo " </TR>\n";
 // Start timer
 $start = get_microtime();
 $last = false;
-while($line = fgets($fp,2096)) {
- $line = preg_replace("/\n/i","",$line);
- $line = preg_replace("/</","&lt;",$line);
- if($line !== "" && $line !== " ") {
-  $timer = get_microtime();
-  $linet = $timer-$start;
-  if(!$last) { $last = $linet; }
-  echo "<!-- Timer: $timer, Line Start: $linet -->\n";
-  echo "    <TR>\n";
-  echo "     <TD>$line</TD>\n";
-  $thisone = $linet-$last;
-  $last = $linet;
-  if($thisone>=2) {
-   echo "     <TD CLASS=\"lint_5\">".round($thisone,5)."</TD>\n";
-  } elseif($thisone>=1.5) {
-    echo "     <TD CLASS=\"lint_4\">".round($thisone,5)."</TD>\n";
-  } elseif($thisone>=1) {
-    echo "     <TD CLASS=\"lint_3\">".round($thisone,5)."</TD>\n";
-  } elseif($thisone>=0.5) {
-    echo "     <TD CLASS=\"lint_2\">".round($thisone,5)."</TD>\n";
-  } elseif($thisone<0.5) {
-    echo "     <TD CLASS=\"lint_1\">".round($thisone,5)."</TD>\n";
-  }
-  echo "    </TR>\n";
- }
+while ($line = fgets($fp, 2096)) {
+    $line = preg_replace("/\n/i", "", $line);
+    $line = preg_replace("/</", "&lt;", $line);
+    if ($line !== "" && $line !== " ") {
+        $timer = get_microtime();
+        $linet = $timer - $start;
+        if (!$last) {
+            $last = $linet;
+        }
+        echo "<!-- Timer: $timer, Line Start: $linet -->\n";
+        echo "    <TR>\n";
+        echo "     <TD>$line</TD>\n";
+        $thisone = $linet - $last;
+        $last = $linet;
+        if ($thisone >= 2) {
+            echo "     <TD CLASS=\"lint_5\">" . round($thisone, 5) . "</TD>\n";
+        } elseif ($thisone >= 1.5) {
+            echo "     <TD CLASS=\"lint_4\">" . round($thisone, 5) . "</TD>\n";
+        } elseif ($thisone >= 1) {
+            echo "     <TD CLASS=\"lint_3\">" . round($thisone, 5) . "</TD>\n";
+        } elseif ($thisone >= 0.5) {
+            echo "     <TD CLASS=\"lint_2\">" . round($thisone, 5) . "</TD>\n";
+        } elseif ($thisone < 0.5) {
+            echo "     <TD CLASS=\"lint_1\">" . round($thisone, 5) . "</TD>\n";
+        }
+        echo "    </TR>\n";
+    }
 }
 pclose($fp);
 echo "   <TR>\n";
 echo "    <TD><B>Finish - Total Time</B></TD>\n";
-echo "    <TD ALIGN=\"RIGHT\"><B>".round(get_microtime()-$start,5)."</B></TD>\n";
+echo "    <TD ALIGN=\"RIGHT\"><B>" . round(get_microtime() - $start, 5) . "</B></TD>\n";
 echo "   </TR>\n";
 echo "</TABLE>\n";
 

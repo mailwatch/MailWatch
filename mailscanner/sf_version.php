@@ -26,36 +26,35 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-if($_SESSION['user_type'] != 'A'){
-header("Location: index.php");
-audit_log('Non-admin user attemped to view Software Version Page');
-}else{
+if ($_SESSION['user_type'] != 'A') {
+    header("Location: index.php");
+    audit_log('Non-admin user attemped to view Software Version Page');
+} else {
+    html_start('Mailwatch and MailScanner Version information', '0', false, false);
+    $mailwatch_version = mw_version();
+    $mailscanner_version = get_conf_var('MailScannerVersionNumber');
+    $php_version = funcs_phpversion();
+    $mysql_version = dbquery("SELECT VERSION()");
 
-html_start('Mailwatch and MailScanner Version information', '0', false, false);
-$mailwatch_version = mw_version();
-$mailscanner_version = get_conf_var('MailScannerVersionNumber');
-$php_version = funcs_phpversion();
-$mysql_version = dbquery("SELECT VERSION()");
+    echo '<table width="100%" class="boxtable">' . "\n";
+    echo '<tr>' . "\n";
+    echo '<td>' . "\n";
 
-echo '<table width="100%" class="boxtable">'."\n";
-echo '<tr>'."\n";
-echo '<td>'."\n";
+    echo '<p class="center" style="font-size:20px"><b>Software Versions</b></p>' . "\n";
+    echo 'MailWatch Version = ' . $mailwatch_version . '<br>' . "\n";
+    echo '<br>' . "\n";
+    echo 'MailScanner Version = ' . $mailscanner_version . '<br>' . "\n";
+    echo '<br>' . "\n";
+    echo 'PHP Version = ' . $php_version . '<br>' . "\n";
+    echo '<br>' . "\n";
+    echo 'MySQL Version = ' . mysql_result($mysql_version, 0) . '<BR>' . "\n";
 
-echo '<p class="center" style="font-size:20px"><b>Software Versions</b></p>'."\n";
-echo 'MailWatch Version = '.$mailwatch_version.'<br>'."\n";
-echo '<br>'."\n";
-echo 'MailScanner Version = '.$mailscanner_version.'<br>'."\n";
-echo '<br>'."\n";
-echo 'PHP Version = '.$php_version.'<br>'."\n";
-echo '<br>'."\n";
-echo 'MySQL Version = '.mysql_result($mysql_version,0).'<BR>'."\n";
+    echo '</td>' . "\n";
+    echo '</tr>' . "\n";
+    echo '</table>' . "\n";
 
-echo '</td>'."\n";
-echo '</tr>'."\n";
-echo '</table>'."\n";
-
-// Add footer
-html_end();
-// Close any open db connections
-dbclose();
+    // Add footer
+    html_end();
+    // Close any open db connections
+    dbclose();
 }

@@ -65,13 +65,10 @@ if ($_SESSION['user_type'] != 'A') {
         // change <br /> to <BR> to keep with html 4.01 and above
         $value = preg_replace("/<br \/>/", "<br>", $value);
 
-
         echo '<tr><td class="heading">' . $out_key . '</td><td>' . $value . '</td></tr>' . "\n";
     }
 
-
     echo '</table>' . "\n";
-
 
     // Add footer
     html_end();

@@ -30,27 +30,26 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-if($_SESSION['user_type'] != 'A'){
-header("Location: index.php");
-}
-else{
+if ($_SESSION['user_type'] != 'A') {
+    header("Location: index.php");
+} else {
 
-html_start("F-Secure Status");
+    html_start("F-Secure Status");
 
-echo '
+    echo '
 <table class="boxtable" width="100%">
  <tr>
   <td align="center">';
- passthru("/opt/f-secure/fsav/bin/dbtool /var/opt/f-secure/fsav/databases/ | awk -f ./f-secure.awk");
- // --FOR TESTING-- passthru("cat /var/www/html/mailscanner/f-sec_output.txt | awk -f ./f-secure.awk");
+    passthru("/opt/f-secure/fsav/bin/dbtool /var/opt/f-secure/fsav/databases/ | awk -f ./f-secure.awk");
+    // --FOR TESTING-- passthru("cat /var/www/html/mailscanner/f-sec_output.txt | awk -f ./f-secure.awk");
 
-echo '
+    echo '
  </td>
  </tr>
 </table>';
 
 // Add footer
-html_end();
+    html_end();
 // Close any open db connections
-dbclose();
+    dbclose();
 }

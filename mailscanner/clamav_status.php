@@ -28,31 +28,29 @@ session_start();
 // Require the login function code
 require('./login.function.php');
 
-// Check to see if the user is an administrator
-if($_SESSION['user_type'] != 'A'){
-// If the user isn't an administrator send them back to the index page.
-header("Location: index.php");
-audit_log('Non-admin user attemped to view ClamAV Status page');
-}
-else{
+// Check to see if the user is an administrater
+if ($_SESSION['user_type'] != 'A') {
+    // If the user isn't an administrater send them back to the index page.
+    header("Location: index.php");
+    audit_log('Non-admin user attemped to view ClamAV Status page');
+} else {
+    // Start the header code and Title
+    html_start("ClamAV Status", 0, false, false);
 
-// Start the header code and Title
-html_start("ClamAV Status",0,false,false);
+    // Create the table
+    echo '<table class="boxtable" width="100%">';
+    echo '<tr>';
+    echo '<td align="center">';
 
-// Create the table
-echo '<table class="boxtable" width="100%">';
-echo '<tr>';
-echo '<td align="center">';
+    // Output the information from the conf file
+    passthru(get_virus_conf('clamav') . " -V | awk -f ./clamav.awk");
 
-// Output the information from the conf file
- passthru(get_virus_conf('clamav')." -V | awk -f ./clamav.awk");
+    echo '</td>';
+    echo '</tr>';
+    echo '</table>';
 
- echo '</td>';
-echo '</tr>';
-echo '</table>';
-
-// Add footer
-html_end();
-// Close any open db connections
-dbclose();
+    // Add footer
+    html_end();
+    // Close any open db connections
+    dbclose();
 }
