@@ -591,6 +591,7 @@ function Process_Form()
     // it exists, because we want to tack that back onto
     // the end of the ruleset when we're done (default should
     // stay @ the bottom)
+    $default_direction = "FromOrTo:";
     $default_action = "";
     $default_desc = "";
     for ($i = -1; $i <= $_POST["rule_count"]; $i++) {
@@ -608,6 +609,7 @@ function Process_Form()
             $_POST[$target] = "default";
         }
         if (strtolower($_POST[$target]) == "default") {
+            $default_direction = $_POST[$direction];
             $default_action = $_POST[$action];
             $default_desc = $_POST[$description];
             continue;
@@ -682,7 +684,7 @@ function Process_Form()
     $default_desc = Fix_Quotes($default_desc);
     if ($default_action != "") {
         $new_file[] = "#" . $default_desc . "\n";
-        $new_file[] = "FromOrTo:\tdefault\t\t\t$default_action";
+        $new_file[] = "$default_direction\tdefault\t\t\t$default_action";
     }
 
     // ### ---> Debugging
