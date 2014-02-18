@@ -388,7 +388,7 @@ function Show_Form ($status_msg) {
 					if (strtolower($key) == "0direction") {
 					    foreach ($CONF_ruleset_keyword as $current_kw) {
 						    $select_html .= "<option value=\"$current_kw\"";
-						    if ($current_kw == preg_replace("/#DISABLED#/", "", $value) ) {
+						    if (strtolower($current_kw) == strtolower(preg_replace("/#DISABLED#/", "", $value)) ) {
 							    $select_html .= " selected";
 						    }
 						    $select_html .= ">$current_kw</option>";
@@ -396,7 +396,7 @@ function Show_Form ($status_msg) {
 					} else {
 					    foreach ($CONF_ruleset_keyword2 as $current_kw) {
 						    $select_html .= "<option value=\"$current_kw\"";
-						    if ($current_kw == preg_replace("/#DISABLED#/", "", $value) ) {
+						    if (strtolower($current_kw) == strtolower(preg_replace("/#DISABLED#/", "", $value)) ) {
 							    $select_html .= " selected";
 						    }
 						    $select_html .= ">$current_kw</option>";
