@@ -97,10 +97,7 @@ Show_Form($status_message);
 // clear status message
 $status_message = "";
 
-echo "
-</table>
-</body>
-</html>\n";
+html_end();
 }
 
 // #################
