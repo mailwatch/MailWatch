@@ -609,7 +609,12 @@ function Process_Form()
             $_POST[$target] = "default";
         }
         if (strtolower($_POST[$target]) == "default") {
-            $default_direction = $_POST[$direction];
+            // Default 'direction' can only be "Virus:" or "FromOrTo:"
+            if ($_POST[$direction] == "Virus:") {
+                $default_direction = "Virus:";
+            } else {
+                $default_direction = "FromOrTo:";
+            }
             $default_action = $_POST[$action];
             $default_desc = $_POST[$description];
             continue;
