@@ -194,6 +194,7 @@ define('ALLOWED_TAGS', '<a><br><b><body><div><font><h1><h2><h3><h4><head><html><
 // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/'); // SophosSAVI
 
 // Enable MailScanner Rule Editor
-define('MSRE', true);
+// Initially disabled as other config needs to be done to use it
+define('MSRE', false);
 define('MSRE_RELOAD_INTERVAL', 5);
 define('MSRE_RULESET_DIR', "/etc/MailScanner/rules");
