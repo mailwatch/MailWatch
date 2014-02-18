@@ -591,6 +591,7 @@ function Process_Form()
     // it exists, because we want to tack that back onto
     // the end of the ruleset when we're done (default should
     // stay @ the bottom)
+    $default_direction = "FromOrTo:";
     $default_action = "";
     $default_desc = "";
     for ($i = -1; $i <= $_POST["rule_count"]; $i++) {
@@ -604,7 +605,16 @@ function Process_Form()
         $action = $rule_prefix . "action";
         $rule_action = $rule_prefix . "rule_action";
         // check for "default" rule
+        if (!isset($_POST[$target])) {
+            $_POST[$target] = "default";
+        }
         if (strtolower($_POST[$target]) == "default") {
+            // Default 'direction' can only be "Virus:" or "FromOrTo:"
+            if ($_POST[$direction] == "Virus:") {
+                $default_direction = "Virus:";
+            } else {
+                $default_direction = "FromOrTo:";
+            }
             $default_action = $_POST[$action];
             $default_desc = $_POST[$description];
             continue;
@@ -640,9 +650,6 @@ function Process_Form()
         $_POST[$description] = Fix_Quotes($_POST[$description]);
         //echo "$description: " . $_POST[$description] . "<br>\n";
         // make sure there's something there... direction is required
-        if (!isset($_POST[$target])) {
-            $_POST[$target] = "default";
-        }
         if (!isset($_POST[$and])) {
             $_POST[$and] = "";
             $_POST[$and_direction] = "";
@@ -682,7 +689,7 @@ function Process_Form()
     $default_desc = Fix_Quotes($default_desc);
     if ($default_action != "") {
         $new_file[] = "#" . $default_desc . "\n";
-        $new_file[] = "FromOrTo:\tdefault\t\t\t$default_action";
+        $new_file[] = "$default_direction\tdefault\t\t\t$default_action";
     }
 
     // ### ---> Debugging
