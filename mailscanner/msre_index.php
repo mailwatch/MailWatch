@@ -23,58 +23,54 @@ Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
 // Include of necessary functions
 require_once("./functions.php");
 
-include ("msre_table_functions.php");
+include("msre_table_functions.php");
 
 // Authentication checking
 session_start();
 require('login.function.php');
 // Check to see if the user is an administrator
-if($_SESSION['user_type'] != 'A'){
-// If the user isn't an administrator send them back to the index page.
-header("Location: index.php");
-audit_log('Non-admin user attempted to view MailScanner Rule Editor Page');
+if ($_SESSION['user_type'] != 'A') {
+    // If the user isn't an administrator send them back to the index page.
+    header("Location: index.php");
+    audit_log('Non-admin user attempted to view MailScanner Rule Editor Page');
+} else {
+    html_start('Ruleset Editor', "0", false, false);
+
+    // ############################
+    // ### Includes and whatnot ###
+    // ############################
+
+
+    // ############
+    // ### Main ###
+    // ############
+
+    echo "<center>\n";
+    // start a table
+    echo "<table border=\"0\" class=\"mailwatch\">\n";
+    TRH(array("Choose a ruleset to edit:"));
+
+    // open directory and read its contents
+    if (is_dir(MSRE_RULESET_DIR)) {
+        if ($dh = opendir(MSRE_RULESET_DIR)) {
+            $ruleset_file = array();
+            while (($file = readdir($dh))) {
+                // if it's a ruleset (*.rules), add it to the array
+                if (preg_match("/.+\.rules$/", $file)) {
+                    array_push($ruleset_file, $file);
+                }
+            }
+            closedir($dh);
+        }
+    }
+
+    // display it in a sorted table with links
+    asort($ruleset_file);
+    foreach ($ruleset_file as $this_ruleset_file) {
+        TR(array("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>"));
+    }
+    // put a blank header line on the bottom... it just looks nicer that way to me
+    TRH(array(""));
+
+    html_end();
 }
-else {
-html_start('Ruleset Editor', "0", false, false);
-
-// ############################
-// ### Includes and whatnot ###
-// ############################
-
-
-// ############
-// ### Main ###
-// ############
-
-echo "<center>\n";
-
-// start a table
-echo "<table border=\"0\" class=\"mailwatch\">\n";
-
-TRH (array ("Choose a ruleset to edit:") );
-
-// open directory and read its contents
-if (is_dir(MSRE_RULESET_DIR) ) {
-	if ($dh = opendir(MSRE_RULESET_DIR) ) {
-		$ruleset_file = array();
-		while ( ($file = readdir($dh) ) ) {
-			// if it's a ruleset (*.rules), add it to the array
-			if (preg_match ( "/.+\.rules$/", $file) ) {
-				array_push ($ruleset_file, $file);
-			}
-		}
-		closedir($dh);
-	}
-}
-
-// display it in a sorted table with links 
-asort($ruleset_file);
-foreach ($ruleset_file as $this_ruleset_file) {
-	TR (array ("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>") );
-}
-// put a blank header line on the bottom... it just looks nicer that way to me
-TRH (array ("") );
-
-html_end();
-}
-?>
