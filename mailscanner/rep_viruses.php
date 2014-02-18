@@ -29,88 +29,88 @@ session_start();
 require('login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Virus Report",0,false,true);
+$filter = html_start("Virus Report", 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
-$scanner=array();
-$scanners = explode(" ",get_conf_var("virusscanners"));
-foreach($scanners as $vscanner) {
- switch ($vscanner) {
-  case("sophos"):
-   $scanner[$vscanner]['name'] = "Sophos";
-   $scanner[$vscanner]['regexp'] = "/(>>>) Virus \'(\S+)\' found/";
-   break;
-  case("sophossavi"):
-   $scanner[$vscanner]['name'] = "Sophos SAVI";
-   $scanner[$vscanner]['regexp'] = "/(\S+) was infected by (\S+)/";
-   break;
-  case("clamav"):
-   $scanner[$vscanner]['name'] = "ClamAV";
-   $scanner[$vscanner]['regexp'] = "/(.+) contains (\S+)/";
-   break;
-  case("clamd"):
-   $scanner[$vscanner]['name']  = "ClamD";
-   #ORIG#$scanner[$vscanner]['regexp'] = "/(.+) contains (\S+)/";
-   $scanner[$vscanner]['regexp'] = "/(.+) was infected: (\S+)/";
-   break;
-  case("clamavmodule"):
-   $scanner[$vscanner]['name'] = "Clam AV Module";
-   $scanner[$vscanner]['regexp'] = "/(.+) was infected: (\S+)/";
-   break;
-  case("f-prot"):
-   $scanner[$vscanner]['name'] = "F-Prot";
-   $scanner[$vscanner]['regexp'] = "/(.+) Infection: (\S+)/";
-   break;
-  case("mcafee"):
-   $scanner[$vscanner]['name'] = "McAfee";
-   $scanner[$vscanner]['regexp'] = "/(.+) Found the (\S+) (trojan|virus) !!!/";
-   break;
-  case("mcafee6"):
-   $scanner[$vscanner]['name'] = "McAfee";
-   $scanner[$vscanner]['regexp'] = "/(.+) Found the (\S+) (trojan|virus) !!!/";
-   break;
-  case("f-secure"):
-   $scanner[$vscanner]['name'] = "F-Secure";
-   $scanner[$vscanner]['regexp'] = "/(.+) Infected: (\S+)/";
-   break;
-  case("trend"):
-   $scanner[$vscanner]['name'] = "Trend";
-   $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
-   break;
-  case("bitdefender"):
-   $scanner[$vscanner]['name'] = "BitDefender";
-   $scanner[$vscanner]['regexp'] = "/(.+) Found virus (\S+)/";
-   break;
-  case("kaspersky-4.5"):
-   $scanner[$vscanner]['name'] = "Kaspersky";
-   $scanner[$vscanner]['regexp'] = "/(.+) INFECTED (\S+)/";
-   break;
-  case("etrust"):
-   $scanner[$vscanner]['name'] = "E-Trust";
-   $scanner[$vscanner]['regexp'] = "/(\S+) is infected by virus: (\S+)/";
-   break;
-  case("avg"):
-   $scanner[$vscanner]['name'] = "AVG";
-   $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
-   break;
-  case("norman"):
-   $scanner[$vscanner]['name'] = "Norman";
-   $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
-   break;
-  case("nod32-1.99"):
-   $scanner[$vscanner]['name'] = "NOD32';
-   $scanner[$vscanner]['regexp'] = '/(Found virus) (\S+) in (\S+)/";
-   break;
-  case("antivir"):
-   $scanner[$vscanner]['name'] = "AntiVir";
-   $scanner[$vscanner]['regexp'] = "/(ALERT:) \[(\S+) \S+\]/";
-   break;
- }
+$scanner = array();
+$scanners = explode(" ", get_conf_var("virusscanners"));
+foreach ($scanners as $vscanner) {
+    switch ($vscanner) {
+        case("sophos"):
+            $scanner[$vscanner]['name'] = "Sophos";
+            $scanner[$vscanner]['regexp'] = "/(>>>) Virus \'(\S+)\' found/";
+            break;
+        case("sophossavi"):
+            $scanner[$vscanner]['name'] = "Sophos SAVI";
+            $scanner[$vscanner]['regexp'] = "/(\S+) was infected by (\S+)/";
+            break;
+        case("clamav"):
+            $scanner[$vscanner]['name'] = "ClamAV";
+            $scanner[$vscanner]['regexp'] = "/(.+) contains (\S+)/";
+            break;
+        case("clamd"):
+            $scanner[$vscanner]['name'] = "ClamD";
+            #ORIG#$scanner[$vscanner]['regexp'] = "/(.+) contains (\S+)/";
+            $scanner[$vscanner]['regexp'] = "/(.+) was infected: (\S+)/";
+            break;
+        case("clamavmodule"):
+            $scanner[$vscanner]['name'] = "Clam AV Module";
+            $scanner[$vscanner]['regexp'] = "/(.+) was infected: (\S+)/";
+            break;
+        case("f-prot"):
+            $scanner[$vscanner]['name'] = "F-Prot";
+            $scanner[$vscanner]['regexp'] = "/(.+) Infection: (\S+)/";
+            break;
+        case("mcafee"):
+            $scanner[$vscanner]['name'] = "McAfee";
+            $scanner[$vscanner]['regexp'] = "/(.+) Found the (\S+) (trojan|virus) !!!/";
+            break;
+        case("mcafee6"):
+            $scanner[$vscanner]['name'] = "McAfee";
+            $scanner[$vscanner]['regexp'] = "/(.+) Found the (\S+) (trojan|virus) !!!/";
+            break;
+        case("f-secure"):
+            $scanner[$vscanner]['name'] = "F-Secure";
+            $scanner[$vscanner]['regexp'] = "/(.+) Infected: (\S+)/";
+            break;
+        case("trend"):
+            $scanner[$vscanner]['name'] = "Trend";
+            $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
+            break;
+        case("bitdefender"):
+            $scanner[$vscanner]['name'] = "BitDefender";
+            $scanner[$vscanner]['regexp'] = "/(.+) Found virus (\S+)/";
+            break;
+        case("kaspersky-4.5"):
+            $scanner[$vscanner]['name'] = "Kaspersky";
+            $scanner[$vscanner]['regexp'] = "/(.+) INFECTED (\S+)/";
+            break;
+        case("etrust"):
+            $scanner[$vscanner]['name'] = "E-Trust";
+            $scanner[$vscanner]['regexp'] = "/(\S+) is infected by virus: (\S+)/";
+            break;
+        case("avg"):
+            $scanner[$vscanner]['name'] = "AVG";
+            $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
+            break;
+        case("norman"):
+            $scanner[$vscanner]['name'] = "Norman";
+            $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
+            break;
+        case("nod32-1.99"):
+            $scanner[$vscanner]['name'] = "NOD32';
+            $scanner[$vscanner]['regexp'] = '/(Found virus) (\S+) in (\S+)/";
+            break;
+        case("antivir"):
+            $scanner[$vscanner]['name'] = "AntiVir";
+            $scanner[$vscanner]['regexp'] = "/(ALERT:) \[(\S+) \S+\]/";
+            break;
+    }
 }
 
 $sql = "
 SELECT
- DATE_FORMAT(timestamp, '".DATE_FORMAT." ".TIME_FORMAT."') as timestamp,
+ DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') as timestamp,
  report
 FROM
  maillog
@@ -118,44 +118,44 @@ WHERE
  virusinfected = 1
 AND
  report IS NOT NULL
-".$filter->CreateSQL()."
+" . $filter->CreateSQL() . "
 ORDER BY
  date ASC, time ASC";
 
 $result = dbquery($sql);
-if(!mysql_num_rows($result) > 0) {
- die("Error: no rows retrieved from database\n");
+if (!mysql_num_rows($result) > 0) {
+    die("Error: no rows retrieved from database\n");
 }
 
 $virus_array = array();
 
-while($row = mysql_fetch_object($result)) {
- foreach($scanner as $scan => $vals) {
-  if (preg_match($vals['regexp'], $row->report, $virus_report)) {
-   $virus = $virus_report[2];
-   if(!isset($virus_array[$virus])) {
-    $virus_array[$virus]['first_seen'] = $row->timestamp;
-    $virus_array[$virus]['scanner'] = $vals['name'];
-   }
-   $virus_array[$virus]['count']++;
-  }
- }
+while ($row = mysql_fetch_object($result)) {
+    foreach ($scanner as $scan => $vals) {
+        if (preg_match($vals['regexp'], $row->report, $virus_report)) {
+            $virus = $virus_report[2];
+            if (!isset($virus_array[$virus])) {
+                $virus_array[$virus]['first_seen'] = $row->timestamp;
+                $virus_array[$virus]['scanner'] = $vals['name'];
+            }
+            $virus_array[$virus]['count']++;
+        }
+    }
 }
 
 reset($virus_array);
 
-while((list($key, $val) = each($virus_array))) {
- $data[] = $val['count'];
- $data_names[] = "$key";
- $data_first_seen[] = $val['first_seen'];
- $data_scanner[] = $val['scanner'];
- $count++;
+while ((list($key, $val) = each($virus_array))) {
+    $data[] = $val['count'];
+    $data_names[] = "$key";
+    $data_first_seen[] = $val['first_seen'];
+    $data_scanner[] = $val['scanner'];
+    $count++;
 }
 
 // HTML Code
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . "mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
 echo "</TR>";
 echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
@@ -168,12 +168,12 @@ echo "<TH>Count</TH>";
 echo "</TR>";
 
 // Write the data in table
-for($i=0; $i<count($data_names); $i++) {
- echo "<TR BGCOLOR=\"#EBEBEB\">
+for ($i = 0; $i < count($data_names); $i++) {
+    echo "<TR BGCOLOR=\"#EBEBEB\">
  <TD>$data_names[$i]</TD>
  <TD>$data_scanner[$i]</TD>
  <TD ALIGN=\"RIGHT\">$data_first_seen[$i]</TD>
- <TD ALIGN=\"RIGHT\">".number_format($data[$i])."</TD>
+ <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
 </TR>\n";
 }
 

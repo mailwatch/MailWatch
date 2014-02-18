@@ -30,24 +30,22 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-if($_SESSION['user_type'] != 'A'){
-header("Location: index.php");
-}
+if ($_SESSION['user_type'] != 'A') {
+    header("Location: index.php");
+} else {
 
-else{
+    html_start("McAfee Status", 0, false, false);
 
-html_start("McAfee Status",0,false,false);
+    echo '<table class="boxtable" width="100%">' . "\n";
+    echo '<tr>' . "\n";
+    echo '<td align="center">' . "\n";
+    passthru(get_virus_conf('mcafee') . " --version | awk -f ./mcafee.awk");
+    echo '</td>' . "\n";
+    echo '</tr>' . "\n";
+    echo '</table>' . "\n";
 
-echo '<table class="boxtable" width="100%">'."\n";
-echo '<tr>'."\n";
-echo '<td align="center">'."\n";
-passthru(get_virus_conf('mcafee')." --version | awk -f ./mcafee.awk");
-echo '</td>'."\n";
-echo '</tr>'."\n";
-echo '</table>'."\n";
-
-// Add footer
-html_end();
-// Close any open db connections
-dbclose();
+    // Add footer
+    html_end();
+    // Close any open db connections
+    dbclose();
 }

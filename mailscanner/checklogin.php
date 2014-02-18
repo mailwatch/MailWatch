@@ -138,9 +138,7 @@ if ($count == 1) {
     echo '<tr>';
 
     echo '<form name="form1" method="post" action="checklogin.php">';
-
     echo '<td>';
-
     echo '<table width="100%" border="0" cellpadding="3" cellspacing="1" bgcolor="#FFFFFF">';
 
     echo '<tr>';

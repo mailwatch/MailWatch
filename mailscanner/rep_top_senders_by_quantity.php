@@ -29,16 +29,16 @@ session_start();
 require('login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter=html_start("Top Senders by Quantity",0,false,true);
+$filter = html_start("Top Senders by Quantity", 0, false, true);
 
 //Set timezone
-$timezone = "".TIME_ZONE."";
+$timezone = "" . TIME_ZONE . "";
 date_default_timezone_set($timezone);
 
 // Set Date format
-$date_format = "'".DATE_FORMAT."'";
+$date_format = "'" . DATE_FORMAT . "'";
 
-$filename = "".CACHE_DIR."/top_senders_by_quantity.png".time()."";
+$filename = "" . CACHE_DIR . "/top_senders_by_quantity.png" . time() . "";
 
 $sql = "
  SELECT
@@ -51,7 +51,7 @@ $sql = "
   from_address <> \"\"		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL	-- Exclude delivery receipts
-".$filter->CreateSQL()."
+" . $filter->CreateSQL() . "
  GROUP BY
   from_address
  ORDER BY
@@ -60,57 +60,57 @@ $sql = "
 ";
 
 // Check permissions to see if apache can actually create the file
-if(is_writable(CACHE_DIR)){
+if (is_writable(CACHE_DIR)) {
 
-# JPGraph
-include_once("./jpgraph/src/jpgraph.php");
-include_once("./jpgraph/src/jpgraph_pie.php");
-include_once("./jpgraph/src/jpgraph_pie3d.php");
+    // JPGraph
+    include_once("./jpgraph/src/jpgraph.php");
+    include_once("./jpgraph/src/jpgraph_pie.php");
+    include_once("./jpgraph/src/jpgraph_pie3d.php");
 
-$result = dbquery($sql);
-if(!mysql_num_rows($result) > 0) {
- die("Error: no rows retrieved from database\n");
-}
+    $result = dbquery($sql);
+    if (!mysql_num_rows($result) > 0) {
+        die("Error: no rows retrieved from database\n");
+    }
 
-while($row=mysql_fetch_object($result)) {
- $data[] = $row->count;
- $data_names[] = $row->from_address;
- $data_size[] = $row->size;
-}
+    while ($row = mysql_fetch_object($result)) {
+        $data[] = $row->count;
+        $data_names[] = $row->from_address;
+        $data_size[] = $row->size;
+    }
 
-format_report_volume($data_size, $size_info);
+    format_report_volume($data_size, $size_info);
 
-// Creating the Graph
-$graph = new PieGraph(800,385,0,false);
-$graph->SetShadow();
-$graph->img->SetAntiAliasing();
-$graph->title->Set("Top 10 Senders by Quantity");
+    // Creating the Graph
+    $graph = new PieGraph(800, 385, 0, false);
+    $graph->SetShadow();
+    $graph->img->SetAntiAliasing();
+    $graph->title->Set("Top 10 Senders by Quantity");
 
-$p1 = new PiePlot3d($data);
-$p1->SetTheme('sand');
-$p1->SetLegends($data_names);
+    $p1 = new PiePlot3d($data);
+    $p1->SetTheme('sand');
+    $p1->SetLegends($data_names);
 
-$p1->SetCenter(0.73,0.4);
-$graph->legend->SetLayout(LEGEND_VERT);
-$graph->legend->Pos(0.25,0.20,'center');
+    $p1->SetCenter(0.73, 0.4);
+    $graph->legend->SetLayout(LEGEND_VERT);
+    $graph->legend->Pos(0.25, 0.20, 'center');
 
-$graph->Add($p1);
-$graph->Stroke($filename);
+    $graph->Add($p1);
+    $graph->Stroke($filename);
 }
 
 
 // Table to Display data
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . "mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
 echo "</TR>";
 echo "<TR>";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
-if(is_readable($filename)){
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".$filename."\" ALT=\"Graph\"></TD>";
-}else{
-echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that ".CACHE_DIR." is readable and writable by Mailwatch.";
+if (is_readable($filename)) {
+    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+} else {
+    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by Mailwatch.";
 }
 
 echo "</TR>";
@@ -124,12 +124,12 @@ echo "    <TH>Size</TH>";
 echo "   </TR>";
 
 // Parsing out the data
-   for($i=0; $i<count($data); $i++) {
- echo "
+for ($i = 0; $i < count($data); $i++) {
+    echo "
    <TR BGCOLOR=\"#EBEBEB\">
     <TD>$data_names[$i]</TD>
-    <TD ALIGN=\"RIGHT\">".number_format($data[$i])."</TD>
-    <TD ALIGN=\"RIGHT\">".format_mail_size($data_size[$i]*$size_info['formula'])."</TD>
+    <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
+    <TD ALIGN=\"RIGHT\">" . format_mail_size($data_size[$i] * $size_info['formula']) . "</TD>
    </TR>\n";
 }
 

@@ -231,7 +231,6 @@ function build_table($sql, $list)
     }
 }
 
-
 echo '
 <form action="' . $_SERVER['PHP_SELF'] . '">
 <table cellspacing="1" class="mail">
@@ -306,22 +305,20 @@ echo '  </td>
 if (isset($errors)) {
     echo '<tr>
   <td class="heading">Errors:</td>
-  <td>' . implode("<br>", $errors) . '
-  </td>
- </tr> ';
+  <td>' . implode("<br>", $errors) . '</td>
+ </tr>';
 }
 echo '</table>
    </form>
    <br>
-
 <table cellspacing="1" width="100%" class="mail">
 <tr>
- <th class="whitelist">Whitelist</th>
- <th class="blacklist">Blacklist</th>
+  <th class="whitelist">Whitelist</th>
+  <th class="blacklist">Blacklist</th>
 </tr>
 <tr>
- <td class="blackwhitelist">
-  <!-- Whitelist -->';
+  <td class="blackwhitelist">
+    <!-- Whitelist -->';
 
 build_table(
     "SELECT id, from_address, to_address FROM whitelist WHERE " . $_SESSION['global_list'] . " ORDER BY from_address",
