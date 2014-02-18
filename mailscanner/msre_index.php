@@ -50,10 +50,10 @@ if ($_SESSION['user_type'] != 'A') {
     echo "<table border=\"0\" class=\"mailwatch\">\n";
     TRH(array("Choose a ruleset to edit:"));
 
+    $ruleset_file = array();
     // open directory and read its contents
     if (is_dir(MSRE_RULESET_DIR)) {
         if ($dh = opendir(MSRE_RULESET_DIR)) {
-            $ruleset_file = array();
             while (($file = readdir($dh))) {
                 // if it's a ruleset (*.rules), add it to the array
                 if (preg_match("/.+\.rules$/", $file)) {
@@ -64,13 +64,18 @@ if ($_SESSION['user_type'] != 'A') {
         }
     }
 
-    // display it in a sorted table with links
-    asort($ruleset_file);
-    foreach ($ruleset_file as $this_ruleset_file) {
-        TR(array("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>"));
+    if (empty($ruleset_file)) {
+        TR(array('No rules found'));
+    } else {
+        // display it in a sorted table with links
+        asort($ruleset_file);
+        foreach ($ruleset_file as $this_ruleset_file) {
+            TR(array("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>"));
+        }
+        // put a blank header line on the bottom... it just looks nicer that way to me
+        TRH(array(""));
     }
-    // put a blank header line on the bottom... it just looks nicer that way to me
-    TRH(array(""));
+
 
     html_end();
 }
