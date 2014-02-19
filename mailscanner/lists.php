@@ -27,39 +27,41 @@ require('./login.function.php');
 
 html_start("Whitelist/Blacklist", 0, false, false);
 
-$url_type = $_GET['type'];
+$url_type = (isset($_GET['type']) ? $_GET['type'] : '');
 $url_type = htmlentities($url_type);
 $url_type = safe_value($url_type);
 
-$url_to = $_GET['to'];
+$url_to = (isset($_GET['to']) ? $_GET['to'] : '');
 $url_to = htmlentities($url_to);
 $url_to = safe_value($url_to);
 
-$url_host = $_GET['host'];
+$url_host = (isset($_GET['host']) ? $_GET['host'] : '');
 $url_host = htmlentities($url_host);
 $url_host = safe_value($url_host);
 
-$url_from = $_GET['from'];
+$url_from = (isset($_GET['from']) ? $_GET['from'] : '');
 $url_from = htmlentities($url_from);
 $url_from = safe_value($url_from);
 
-$url_submit = $_GET['submit'];
+$url_submit = (isset($_GET['submit']) ? $_GET['submit'] : '');
 $url_submit = htmlentities($url_submit);
 $url_submit = safe_value($url_submit);
 
-$url_list = $_GET['list'];
+$url_list = (isset($_GET['list']) ? $_GET['list'] : '');
 $url_list = htmlentities($url_list);
 $url_list = safe_value($url_list);
 
-$url_domain = $_GET['domain'];
+$url_domain = (isset($_GET['domain']) ? $_GET['domain'] : '');
 $url_domain = htmlentities($url_domain);
 $url_domain = safe_value($url_domain);
 
-$url_id = $_GET['id'];
+$url_id = (isset($_GET['id']) ? $_GET['id'] : '');
 $url_id = htmlentities($url_id);
 $url_id = safe_value($url_id);
 
 // Split user/domain if necessary (from detail.php)
+$touser = '';
+$to_domain = '';
 if (preg_match('/(\S+)@(\S+)/', $url_to, $split)) {
     $touser = $split[1];
     $to_domain = $split[2];
@@ -79,6 +81,8 @@ switch ($url_type) {
 
 $myusername = $_SESSION['myusername'];
 // Validate input against the user type
+$to_user_filter = array();
+$to_domain_filter = array();
 switch ($_SESSION['user_type']) {
     case 'U': // User
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
@@ -132,6 +136,7 @@ switch ($_SESSION['user_type']) {
     case 'A': // Administrator
         break;
 }
+$to_address = '';
 switch (true) {
     case(!empty($url_to)):
         $to_address = $url_to;
@@ -171,8 +176,8 @@ if ($url_submit == 'Add') {
         $sql .= '\',\'' . mysql_real_escape_string($from) . '\')';
         @dbquery($sql);
         audit_log("Added " . $from . " to " . $list . " for " . $to_address);
-        unset($from);
-        unset($url_list);
+        //unset($from);
+        //unset($url_list);
     }
 }
 
@@ -285,6 +290,8 @@ echo '
   <td class="heading">List:</td>
   <td>';
 
+$w = '';
+$b = '';
 switch ($url_list) {
     case 'w':
         $w = 'CHECKED';

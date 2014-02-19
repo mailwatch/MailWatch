@@ -137,13 +137,17 @@ while ($row = mysql_fetch_object($result)) {
                 $virus_array[$virus]['first_seen'] = $row->timestamp;
                 $virus_array[$virus]['scanner'] = $vals['name'];
             }
-            $virus_array[$virus]['count']++;
+            if (isset($virus_array[$virus]['count'])) {
+                $virus_array[$virus]['count']++;
+            } else {
+                $virus_array[$virus]['count'] = 1;
+            }
         }
     }
 }
 
 reset($virus_array);
-
+$count = 0;
 while ((list($key, $val) = each($virus_array))) {
     $data[] = $val['count'];
     $data_names[] = "$key";

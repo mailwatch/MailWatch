@@ -65,7 +65,11 @@ while ($row = mysql_fetch_object($result)) {
     // Get rid of first match from the array
     $junk = array_shift($sa_rules);
     // Split the array, and get rid of the score and required values
-    $sa_rules = explode(", ", $sa_rules[0]);
+    if (isset($sa_rules[0])) {
+        $sa_rules = explode(", ", $sa_rules[0]);
+    } else {
+        $sa_rules = array();
+    }
     $junk = array_shift($sa_rules); // score=
     $junk = array_shift($sa_rules); // required
     foreach ($sa_rules as $rule) {
@@ -73,18 +77,24 @@ while ($row = mysql_fetch_object($result)) {
         if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
             $rule = $regs[1];
         }
-        $sa_array[$rule]['total']++;
+        if (isset($sa_array[$rule]['total'])) {
+            $sa_array[$rule]['total']++;
+        } else {
+            $sa_array[$rule]['total'] = 1;
+        }
+
+        // Initialise the other dimensions of the array
+        if (!isset($sa_array[$rule]['spam'])) {
+            $sa_array[$rule]['spam'] = 0;
+        }
+        if (!isset($sa_array[$rule]['not-spam'])) {
+            $sa_array[$rule]['not-spam'] = 0;
+        }
+
         if ($row->isspam <> 0) {
             $sa_array[$rule]['spam']++;
         } else {
             $sa_array[$rule]['not-spam']++;
-        }
-        // Initialise the other dimensions of the array
-        if (!$sa_array[$rule]['spam']) {
-            $sa_array[$rule]['spam'] = 0;
-        }
-        if (!$sa_array[$rule]['not-spam']) {
-            $sa_array[$rule]['not-spam'] = 0;
         }
     }
 }
@@ -107,7 +117,8 @@ echo "
  <TH>Spam</TH>
  <TH>%</TH>
 </TR>\n";
-while ((list($key, $val) = each($sa_array)) && $count < 10) {
+
+while ((list($key, $val) = each($sa_array))) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>

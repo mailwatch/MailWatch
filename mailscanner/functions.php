@@ -21,12 +21,13 @@
 */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-if (version_compare(phpversion(), '5.3.0', '<')) {
+/*if (version_compare(phpversion(), '5.3.0', '<')) {
     // E_DEPRECATED added in PHP 5.3
     error_reporting(E_ALL ^ E_NOTICE);
 } else {
     error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
-}
+}*/
+error_reporting(E_ALL ^ E_DEPRECATED);
 
 // Read in MailWatch configuration file
 if (!(@include_once('conf.php')) == true) {
@@ -192,8 +193,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '<meta http-equiv="refresh" content="' . $refresh . '">' . "\n";
     }
 
-    $message_id = $_GET['id'];
-    if (!$message_id) {
+    if (isset($_GET['id'])) {
+        $message_id = $_GET['id'];
+    } else {
         $message_id = " ";
     }
     $message_id = safe_value($message_id);
@@ -756,14 +758,13 @@ function dbconn()
     $link = mysql_connect(DB_HOST, DB_USER, DB_PASS)
     or die ("Could not connect to database: " . mysql_error());
     mysql_select_db(DB_NAME) or die("Could not select db: " . mysql_error());
+
     return $link;
 }
 
 function dbclose()
 {
-    if ($link) {
-        mysql_close($link);
-    }
+    return mysql_close();
 }
 
 function dbquery($sql)
@@ -871,7 +872,7 @@ function get_sa_rule_desc($rule)
     }
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
-    if ($row->rule && $row->rule_desc) {
+    if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
         return "<tr><td>$rule_score<td>$rule</td><td>&nbsp;</td></tr>";
@@ -882,7 +883,11 @@ function return_sa_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
-    return $row->rule_desc;
+    if ($row) {
+        return $row->rule_desc;
+    }
+
+    return false;
 }
 
 function format_mcp_report($mcpreport)
@@ -936,7 +941,7 @@ function get_mcp_rule_desc($rule)
     }
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
-    if ($row->rule && $row->rule_desc) {
+    if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
         return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";
@@ -947,7 +952,11 @@ function return_mcp_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
-    return $row->rule_desc;
+    if ($row) {
+        return $row->rule_desc;
+    }
+
+    return false;
 }
 
 function return_todays_top_virus()
@@ -1225,24 +1234,27 @@ function get_conf_include_folder()
         or die("Cannot open MailScanner configuration file");
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, filesize($msconfig)));
-            if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
-                $regs[1] = preg_replace('/ */', '', $regs[1]);
+            //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
+            if (preg_match('/^(?P<parameter>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
+                $regs['parameter'] = preg_replace('/ */', '', $regs['parameter']);
+                $regs['parameter'] = preg_replace('/=/', '', $regs['parameter']);
+                //var_dump($line, $regs);
                 // Strip trailing comments
-                $regs[2] = preg_replace("/\*/", "", $regs[2]);
+                $regs['value'] = preg_replace("/\*/", "", $regs['value']);
                 // store %var% variables
-                if (preg_match("/%.+%/", $regs[1])) {
-                    $var[$regs[1]] = $regs[2];
+                if (preg_match("/%.+%/", $regs['parameter'])) {
+                    $var[$regs['parameter']] = $regs['value'];
                 }
                 // expand %var% variables
-                if (preg_match("/(%.+%)/", $regs[2], $match)) {
-                    $regs[2] = preg_replace("/%.+%/", $var[$match[1]], $regs[2]);
+                if (preg_match("/(%.+%)/", $regs['value'], $match)) {
+                    $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
                 }
                 if ((strtolower($regs[1])) == (strtolower($name))) {
                     fclose($fh) or die($php_errormsg);
-                    if (is_file($regs[2])) {
-                        return read_ruleset_default($regs[2]);
+                    if (is_file($regs['value'])) {
+                        return read_ruleset_default($regs['value']);
                     } else {
-                        return $regs[2];
+                        return $regs['value'];
                     }
                 }
             }
@@ -1257,7 +1269,8 @@ function parse_conf_file($name)
 {
     $array_output = array();
     // open each file and read it
-    $fh = fopen($name . $file, 'r')
+    //$fh = fopen($name . $file, 'r')
+    $fh = fopen($name, 'r')
     or die("Cannot open MailScanner configuration file");
     while (!feof($fh)) {
 
@@ -1336,7 +1349,7 @@ function subtract_get_vars($preserve)
                 $output[] = "$k=$v";
             }
         }
-        if (is_array($output)) {
+        if (isset($output) && is_array($output)) {
             $output = join('&', $output);
             return '&' . $output;
         } else {
@@ -1356,7 +1369,7 @@ function subtract_multi_get_vars($preserve)
                 $output[] = "$k=$v";
             }
         }
-        if (is_array($output)) {
+        if (isset($output) && is_array($output)) {
             $output = join('&amp;', $output);
             return '&amp;' . $output;
         } else {
@@ -1372,14 +1385,18 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     require_once('Mail/mimeDecode.php');
 
     // Ordering
-    $orderby = $_GET['orderby'];
-    switch (strtoupper($_GET['orderdir'])) {
-        case 'A':
-            $orderdir = 'ASC';
-            break;
-        case 'D':
-            $orderdir = 'DESC';
-            break;
+    $orderby = null;
+    if (isset($_GET['orderby']))
+    {
+        $orderby = $_GET['orderby'];
+        switch (strtoupper($_GET['orderdir'])) {
+            case 'A':
+                $orderdir = 'ASC';
+                break;
+            case 'D':
+                $orderdir = 'DESC';
+                break;
+        }
     }
     if (!empty($orderby)) {
         if (($p = stristr($sql, 'ORDER BY')) !== false) {
@@ -1671,6 +1688,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo ' </tr>' . "\n";
         // Rows
+        $JsFunc = '';
         for ($r = 0; $r < $rows; $r++) {
             $row = mysql_fetch_row($sth);
             if ($operations != false) {
@@ -1862,7 +1880,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     echo '<tr class="mcp">' . "\n";
                     break;
                 default:
-                    if ($fieldname['mcpsascore'] != '') {
+                    if (isset($fieldname['mcpsascore']) && $fieldname['mcpsascore'] != '') {
                         echo '<tr class="mcp">' . "\n";
                     } else {
                         echo '<tr >' . "\n";
@@ -1971,7 +1989,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 }
 
 // Function to display data as a table
-function dbtable($sql, $title = false, $pager = false)
+function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
     // Query the data
     $sth = dbquery($sql);
@@ -2227,17 +2245,24 @@ function count_files_in_dir($dir)
 function get_mail_relays($message_headers)
 {
     $headers = explode("\\n", $message_headers);
+    $relays = null;
     foreach ($headers as $header) {
         $header = preg_replace('/IPv6\:/', '', $header);
-        if (preg_match_all('/\[([\dabcdef.:]+)\]/', $header, $regs)) {
-            foreach ($regs[1] as $relay) {
-                $relays[$relay]++;
+        if (preg_match_all('/\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
+            foreach ($regs['ip'] as $relay) {
+                if (isset($relays[$relay])) {
+                    $relays[$relay]++;
+                } else {
+                    $relays[$relay] = 1;
+                }
             }
         }
     }
     if (is_array($relays)) {
         return array_keys($relays);
     }
+
+    return false;
 }
 
 function address_filter_sql($addresses, $type)
@@ -2470,17 +2495,23 @@ function debug_print_r($input)
 
 function return_geoip_addr($ip)
 {
-    $piece = explode(".", $ip);
-    $ip1 = (16777216 * $piece[0]);
-    $ip2 = (65536 * $piece[1]);
-    $ip3 = (256 * $piece[2]);
-    $ip4 = ($piece[3]);
-    $geoip = ($ip1 + $ip2 + $ip3 + $ip4);
-    return $geoip;
+    //TODO fix this function to work with ipv6
+    if (false === strpos($ip, ':')) {
+        $piece = explode(".", $ip);
+        $ip1 = (16777216 * $piece[0]);
+        $ip2 = (65536 * $piece[1]);
+        $ip3 = (256 * $piece[2]);
+        $ip4 = ($piece[3]);
+        $geoip = ($ip1 + $ip2 + $ip3 + $ip4);
+        return $geoip;
+    }
+
+    return 0;
 }
 
 function return_geoip_country($ip)
 {
+    //TODO fix this function to work with ipv6
     $geoip_num = return_geoip_addr($ip);
     $sql = "
 SELECT
