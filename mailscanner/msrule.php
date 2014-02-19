@@ -44,7 +44,7 @@ if ($_SESSION['user_type'] != 'A') {
         if ($fh = @@fopen($FilePath, 'r')) {
             while (!feof($fh)) {
                 $line = rtrim(fgets($fh, 4096));
-                if ($_GET['strip_comments']) {
+                if (isset($_GET['strip_comments']) && $_GET['strip_comments']) {
                     if (!preg_match('/^#/', $line) && !preg_match('/^$/', $line)) {
                         echo $line . "\n";
                     }

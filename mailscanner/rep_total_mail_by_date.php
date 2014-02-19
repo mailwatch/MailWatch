@@ -225,9 +225,9 @@ for ($i = 0; $i < count($data_total_mail); $i++) {
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
     echo " <TD ALIGN=\"RIGHT\">" . format_mail_size($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
     echo " <TD><BR></TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_unknown_users[$i]) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_unresolveable[$i]) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_rbl[$i]) . "</TD>\n";
+    echo " <TD ALIGN=\"RIGHT\">" . number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0) . "</TD>\n";
+    echo " <TD ALIGN=\"RIGHT\">" . number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0) . "</TD>\n";
+    echo " <TD ALIGN=\"RIGHT\">" . number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0) . "</TD>\n";
     echo "</TR>\n";
 }
 
