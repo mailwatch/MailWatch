@@ -608,6 +608,14 @@ function Process_Form()
         if (!isset($_POST[$target])) {
             $_POST[$target] = "default";
         }
+        // we need to remove any "magic quoting" from the description, target,
+        // and action fields, so that it doesn't put it into the file
+        $_POST[$description] = Fix_Quotes($_POST[$description]);
+        //echo "$description: " . $_POST[$description] . "<br>\n";
+        $_POST[$target] = Fix_Quotes($_POST[$target]);
+        $_POST[$and_target] = Fix_Quotes($_POST[$and_target]);
+        $_POST[$action] = Fix_Quotes($_POST[$action]);
+
         if (strtolower($_POST[$target]) == "default") {
             // Default 'direction' can only be "Virus:" or "FromOrTo:"
             if ($_POST[$direction] == "Virus:") {
@@ -645,19 +653,12 @@ function Process_Form()
         }
 
         //echo "after case, rule $i<br>\n";
-        // we need to remove any "magic quoting" from the
-        // description field, so that it doesn't put it into the file
-        $_POST[$description] = Fix_Quotes($_POST[$description]);
-        //echo "$description: " . $_POST[$description] . "<br>\n";
         // make sure there's something there... direction is required
         if (!isset($_POST[$and])) {
             $_POST[$and] = "";
             $_POST[$and_direction] = "";
             $_POST[$and_target] = "";
         }
-        $_POST[$target] = Fix_Quotes($_POST[$target]);
-        $_POST[$and_target] = Fix_Quotes($_POST[$and_target]);
-        $_POST[$action] = Fix_Quotes($_POST[$action]);
 
         if ($_POST[$direction]) {
             //echo "$direction: $_POST[$direction]<br>\n";
@@ -685,11 +686,9 @@ function Process_Form()
             $new_rule["action"] . "\n";
     }
     // and add on the default rule if there is one.
-    // make sure to fix quotes on default desc too
-    $default_desc = Fix_Quotes($default_desc);
     if ($default_action != "") {
         $new_file[] = "#" . $default_desc . "\n";
-        $new_file[] = "$default_direction\tdefault\t\t\t$default_action";
+        $new_file[] = "$default_direction\tdefault\t\t\t$default_action\n";
     }
 
     // ### ---> Debugging
