@@ -92,6 +92,7 @@ if ($_SESSION['user_type'] != 'A') {
     // clear status message
     $status_message = "";
 
+    echo "</table><tr><td>\n";
     html_end();
 }
 
@@ -116,7 +117,7 @@ function Show_Form($status_msg)
     include("msre_function_global_vars.php");
 
     // display top of page stuff
-    echo "<center>\n<table border=\"0\" class=\"mailwatch\">\n";
+    echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
     echo "<form method=\"post\" name=\"MSRE_edit\" action=\"msre_edit.php?file=$short_filename\">\n";
     echo "<input type=\"hidden\" name=\"submitted\" value=\"1\">\n";
     // check for status message, and append it to the end of the header
@@ -476,6 +477,7 @@ function Show_Form($status_msg)
     foreach ($CONF_ruleset_keyword as $kw) {
         $temp_html .= "<option value=\"$kw\">$kw</option>";
     }
+    $temp_html .= "</select>\n";
     $add_rule_text[] = $temp_html;
     // target
     $add_rule_text[] = "<input type=\"text\" name=\"" . $add_prefix .
@@ -489,6 +491,7 @@ function Show_Form($status_msg)
     foreach ($CONF_ruleset_keyword as $kw) {
         $temp_html .= "<option value=\"$kw\">$kw</option>";
     }
+    $temp_html .= "</select>\n";
     $add_rule_text[] = $temp_html;
     // and target
     $add_rule_text[] = "<input type=\"text\" name=\"" . $add_prefix .

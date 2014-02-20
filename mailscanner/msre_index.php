@@ -45,9 +45,8 @@ if ($_SESSION['user_type'] != 'A') {
     // ### Main ###
     // ############
 
-    echo "<center>\n";
     // start a table
-    echo "<table border=\"0\" class=\"mailwatch\">\n";
+    echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
     TRH(array("Choose a ruleset to edit:"));
 
     $ruleset_file = array();
@@ -73,9 +72,8 @@ if ($_SESSION['user_type'] != 'A') {
             TR(array("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>"));
         }
         // put a blank header line on the bottom... it just looks nicer that way to me
-        TRH(array(""));
+	TRH(array(""));
     }
-
-
+    echo "</table><tr><td>\n";
     html_end();
 }
