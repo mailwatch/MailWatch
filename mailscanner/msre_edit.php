@@ -50,13 +50,8 @@ if ($_SESSION['user_type'] != 'A') {
         "From:",
         "To:",
         "FromOrTo:",
+	"FromAndTo:",
         "Virus:"
-    );
-
-    $CONF_ruleset_keyword2 = array(
-        "From:",
-        "To:",
-        "FromOrTo:"
     );
 
     define('MSRE_COLUMNS', 6);
@@ -331,22 +326,30 @@ function Show_Form($status_msg)
                     }
                     $select_html .= ">\n" .
                         "<option value=\"\"></option>";
-                    if (strtolower($key) == "0direction") {
-                        foreach ($CONF_ruleset_keyword as $current_kw) {
-                            $select_html .= "<option value=\"$current_kw\"";
-                            if (strtolower($current_kw) == strtolower(preg_replace("/#DISABLED#/", "", $value))) {
-                                $select_html .= " selected";
-                            }
-                            $select_html .= ">$current_kw</option>";
+                    foreach ($CONF_ruleset_keyword as $current_kw) {
+                        $select_html .= "<option value=\"$current_kw\"";
+			$match = strtolower(preg_replace("/#DISABLED#/", "", $value));
+                        $kw = "";
+                        // Use MailScanner's direction-matching rules
+                        if (preg_match("/and/", $match)) {
+			  $kw = "fromandto:";
                         }
-                    } else {
-                        foreach ($CONF_ruleset_keyword2 as $current_kw) {
-                            $select_html .= "<option value=\"$current_kw\"";
-                            if (strtolower($current_kw) == strtolower(preg_replace("/#DISABLED#/", "", $value))) {
-                                $select_html .= " selected";
-                            }
-                            $select_html .= ">$current_kw</option>";
+                        elseif (preg_match("/from/", $match) and preg_match("/to/", $match)) {
+                          $kw = "fromorto:";
                         }
+                        elseif (preg_match("/from/", $match)) {
+                          $kw = "from:";
+                        }
+                        elseif (preg_match("/to/", $match)) {
+                          $kw = "to:";
+                        }
+                        elseif (preg_match("/virus/", $match)) {
+                          $kw = "virus:";
+                        }
+                        if (strtolower($current_kw) == $kw) {
+                            $select_html .= " selected";
+                        }
+                        $select_html .= ">$current_kw</option>";
                     }
                     // need to close my select tag..
                     $select_html .= "</select>";
