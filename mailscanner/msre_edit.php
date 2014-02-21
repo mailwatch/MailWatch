@@ -50,13 +50,8 @@ if ($_SESSION['user_type'] != 'A') {
         "From:",
         "To:",
         "FromOrTo:",
+	"FromAndTo:",
         "Virus:"
-    );
-
-    $CONF_ruleset_keyword2 = array(
-        "From:",
-        "To:",
-        "FromOrTo:"
     );
 
     define('MSRE_COLUMNS', 6);
@@ -75,12 +70,8 @@ if ($_SESSION['user_type'] != 'A') {
     // this will get populated later by a function (I need it to find
     // the end of the comments @ the top of the file)
 
-    $first_rule_comment = "";
-
     // check to see if the form was submitted, and if so process it..
-    if ($_POST["submitted"]) {
-        // set the first_rule_comment based on post data
-        $first_rule_comment = $_POST["first_rule_comment"];
+    if (isset($_POST["submitted"])) {
         list($bytes_written, $status_message) = Process_Form();
         // re-read the file after processing
         $file_contents = Read_File($full_filename, $bytes_written);
@@ -138,11 +129,7 @@ function Show_Form($status_msg)
 
     // now grab any lines in the file that aren't comments.
     $ruleset = array();
-    // $i = 0;
-    // set Actions to empty array for now.  Actions array will hold
-    // the values that action can be set to, and is determined
-    // by looking for a line in the file labeled #ACTIONS:
-    $actions = array();
+    $previous_line = "";
     foreach (preg_split("/\n/", $file_contents) as $line) {
         //echo "$i: $line<br>\n";
         //$i++;
@@ -152,61 +139,18 @@ function Show_Form($status_msg)
         if ($line == "") {
             $line = "#";
         }
-        if ((!preg_match("/^#/", $line)
-            or preg_match("/^#DISABLED#/", $line))
-        ) {
+        if ((substr($line,0,1) != "#")
+            or preg_match("/^#DISABLED#/", $line) ) {
             // check for a description on the previous line
-            if (preg_match("/^#/", $previous_line)) {
+	    if (substr($previous_line,0,1) == "#" ) {
                 $desc = $previous_line;
             } else {
                 $desc = "";
             }
-            // check to see if this is the #ACTIONS: line, and if
-            // it is, don't put it into the ruleset, but set the
-            // actions array
-            //if (preg_match("/^#ACTIONS:/", $line) ) {
-            // put it into actions array.. first, strip off the
-            // #ACTIONS: part, and any leading or trailing spaces
-            //	$actions_from_file = $line;
-            //	$actions_from_file = preg_replace("/#ACTIONS:\s*/", "", $actions_from_file);
-            //	$actions_from_file = preg_replace("\s*", "", $actions_from_file);
-            //	$actions = explode(",", $actions_from_file);
-            // and go to the next line
-            //	continue;
-            //}
             $ruleset[] = array($desc, $line);
         }
         $previous_line = $line;
     }
-
-    // ok, something new ...
-    // user-editable actions, thru the form.
-    // On the top of the form, I'm going to add a new input field that
-    // controls the "action" select boxen.  When the user changes the
-    // actions field, the select boxen should be automagically updated
-    // with the help of some javascript that I haven't written yet :)
-    // But I will write it sometime soon I think ...
-    /*
-    TRH_Single("Edit Ruleset Actions:", "colspan=\"" . MSRE_COLUMNS . "\"" );
-    // now the field...
-    //$actions_text = array (
-        "<b>Ruleset Actions:</b>&nbsp;&nbsp;<input type=\"text\" " .
-            "name=\"ruleset_actions\" onChange=\"updateSelectActions(this.value)\" " .
-            "size=\"103\" value=\"$actions_from_file\">" =>
-                "colspan=\"" . MSRE_COLUMNS . "\""
-    );
-    TR_Extended	($actions_text, "");
-    // need to set colorpicker so that the next line is the right color
-    $colorpicker = 1;
-    */
-
-    $first_rule_comment = $ruleset[0][0];
-    // and make a hidden variable too, so that i still have it
-    // for form submit processing
-    // escape any double quotes...
-    $first_rule_comment = str_replace('"', '&quot;', $first_rule_comment);
-    //echo "frc (show_form): $first_rule_comment<br>\n";
-    echo "<input type=\"hidden\" name=\"first_rule_comment\" value=\"$first_rule_comment\">\n";
 
     // okay, now display it again, but in a format that the user can edit
     TRH_Single("Edit Ruleset:", "colspan=\"" . MSRE_COLUMNS . "\"");
@@ -382,22 +326,30 @@ function Show_Form($status_msg)
                     }
                     $select_html .= ">\n" .
                         "<option value=\"\"></option>";
-                    if (strtolower($key) == "0direction") {
-                        foreach ($CONF_ruleset_keyword as $current_kw) {
-                            $select_html .= "<option value=\"$current_kw\"";
-                            if (strtolower($current_kw) == strtolower(preg_replace("/#DISABLED#/", "", $value))) {
-                                $select_html .= " selected";
-                            }
-                            $select_html .= ">$current_kw</option>";
+                    foreach ($CONF_ruleset_keyword as $current_kw) {
+                        $select_html .= "<option value=\"$current_kw\"";
+			$match = strtolower(preg_replace("/#DISABLED#/", "", $value));
+                        $kw = "";
+                        // Use MailScanner's direction-matching rules
+                        if (preg_match("/and/", $match)) {
+			  $kw = "fromandto:";
                         }
-                    } else {
-                        foreach ($CONF_ruleset_keyword2 as $current_kw) {
-                            $select_html .= "<option value=\"$current_kw\"";
-                            if (strtolower($current_kw) == strtolower(preg_replace("/#DISABLED#/", "", $value))) {
-                                $select_html .= " selected";
-                            }
-                            $select_html .= ">$current_kw</option>";
+                        elseif (preg_match("/from/", $match) and preg_match("/to/", $match)) {
+                          $kw = "fromorto:";
                         }
+                        elseif (preg_match("/from/", $match)) {
+                          $kw = "from:";
+                        }
+                        elseif (preg_match("/to/", $match)) {
+                          $kw = "to:";
+                        }
+                        elseif (preg_match("/virus/", $match)) {
+                          $kw = "virus:";
+                        }
+                        if (strtolower($current_kw) == $kw) {
+                            $select_html .= " selected";
+                        }
+                        $select_html .= ">$current_kw</option>";
                     }
                     // need to close my select tag..
                     $select_html .= "</select>";
@@ -550,37 +502,20 @@ function Process_Form()
 
     // look thru the file, and grab comments on the top,
     // stopping when we have reached a non-comment line
+    $previous_line = "";
+    $first_line = true;
     foreach (preg_split("/\n/", $file_contents) as $line) {
         if ($line == "" or (substr($line, 0, 1) == "#"
-                and !preg_match("/#DISABLED#/", $line))
-        ) {
-            $new_file[] = $line . "\n";
+                and !preg_match("/#DISABLED#/", $line)) ) {
+	    if (!$first_line) {
+	        $new_file[] = $previous_line . "\n";
+            }
         } else {
             break;
         }
+        $previous_line = $line;
+	$first_line = false;
     }
-    // look @ the last element in the array, and compare it to
-    // the first_rule_comment that we grabbed before the user
-    // started editing.  If they match, remove it from the
-    // new file, since we'll be writing that one out when
-    // we write the new rule....
-    $new_file_last_line = $new_file[count($new_file) - 1];
-    // need to fix any quotes in the first_rule_comment... they will
-    // be escaped \ here ...
-    $first_rule_comment = str_replace('\"', '"', $first_rule_comment);
-    //echo "last line of new file: |$new_file_last_line|<br>\n";
-    if (rtrim($first_rule_comment) == rtrim($new_file_last_line)) {
-        //echo "*pop*!!<br>\n";
-        array_pop($new_file);
-    }
-    // debugging
-
-    //echo "first rule comment: |$first_rule_comment|<br>\n";
-    /*echo "new file:<br>\n";
-    foreach ($new_file as $a_line) {
-        echo "$a_line<br>\n";
-    }
-    */
 
     // to make my life easier (or possibly harder), I'm going
     // to re-arrange the rule varibles from the _POST var
