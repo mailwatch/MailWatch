@@ -43,34 +43,36 @@ html_start("Reports", "0", false, false);
 $dirname = "" . MAILWATCH_HOME . "/" . CACHE_DIR . "";
 
 // Add filters and save them
-switch (strtolower($_GET["action"])) {
-    case "add":
-        $filter->Add($_GET["column"], $_GET["operator"], $_GET["value"]);
-        break;
-    case "remove":
-        $filter->Remove($_GET["column"]);
-        break;
-    case "destroy":
-        session_destroy();
-        echo "Session destroyed\n";
-        exit;
-    case "save":
-        if (isset($_GET['save_as'])) {
-            $name = $_GET['save_as'];
-        }
-        if (isset($_GET['filter']) && $_GET['filter'] != "_none_") {
-            $name = $_GET['filter'];
-        }
-        if (!empty($name)) {
-            $filter->Save($name);
-        }
-        break;
-    case "load":
-        $filter->Load($_GET['filter']);
-        break;
-    case "delete":
-        $filter->Delete($_GET['filter']);
-        break;
+if (isset($_GET["action"])) {
+    switch (strtolower($_GET["action"])) {
+        case "add":
+            $filter->Add($_GET["column"], $_GET["operator"], $_GET["value"]);
+            break;
+        case "remove":
+            $filter->Remove($_GET["column"]);
+            break;
+        case "destroy":
+            session_destroy();
+            echo "Session destroyed\n";
+            exit;
+        case "save":
+            if (isset($_GET['save_as'])) {
+                $name = $_GET['save_as'];
+            }
+            if (isset($_GET['filter']) && $_GET['filter'] != "_none_") {
+                $name = $_GET['filter'];
+            }
+            if (!empty($name)) {
+                $filter->Save($name);
+            }
+            break;
+        case "load":
+            $filter->Load($_GET['filter']);
+            break;
+        case "delete":
+            $filter->Delete($_GET['filter']);
+            break;
+    }
 }
 
 // add the session filters to the variables

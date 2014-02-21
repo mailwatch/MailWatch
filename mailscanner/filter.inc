@@ -149,6 +149,7 @@ WHERE
 
     function CreateMtalogSQL()
     {
+        $sql = '';
         if (count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
                 if ($val[0] == 'date') {
@@ -182,7 +183,7 @@ WHERE
 
     function CreateSQL()
     {
-        $sql .= "AND " . $_SESSION['global_filter'] . "\n";
+        $sql = "AND " . $_SESSION['global_filter'] . "\n";
         if (count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
                 // If LIKE selected - place wildcards either side of the query string
@@ -225,7 +226,7 @@ WHERE
     function DisplayForm()
     {
         // Form
-        $return .= '<form action="' . $_SERVER['PHP_SELF'] . '">' . "\n";
+        $return = '<form action="' . $_SERVER['PHP_SELF'] . '">' . "\n";
 
         // Table
         $return .= '<table width="100%">' . "\n";

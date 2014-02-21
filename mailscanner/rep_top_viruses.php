@@ -32,7 +32,7 @@ require('login.function.php');
 $filter = html_start("Top Viruses", 0, false, true);
 
 // File name
-$filename = "" . CACHE_DIR . "/top_viruses.png." . time() . "";
+$filename = CACHE_DIR . "/top_viruses.png." . time();
 
 // SQL query to find all emails with a virus found
 $sql = "
@@ -66,7 +66,11 @@ if (is_writable(CACHE_DIR)) {
 
         if (preg_match(VIRUS_REGEX, $row->report, $virus_report)) {
             $virus = $virus_report[2];
-            $virus_array[$virus]++;
+            if (isset($virus_array[$virus])) {
+                $virus_array[$virus]++;
+            } else {
+                $virus_array[$virus] = 1;
+            }
         }
     }
 

@@ -44,7 +44,7 @@ if ($_SESSION['user_type'] != 'A') {
     echo "  <TD ALIGN=\"CENTER\"><BR><INPUT TYPE=\"SUBMIT\" VALUE=\"Run Now\"><BR><BR></TD>";
     echo "</TR>";
 
-    if ($_POST['run']) {
+    if (isset($_POST['run'])) {
         echo "<TR><TD ALIGN=\"CENTER\"><TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\"><TR><TH>Rule</TH><TH>Description</TH></TR>\n";
         $fh = popen(
             "grep -hr '^describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
@@ -55,7 +55,7 @@ if ($_SESSION['user_type'] != 'A') {
             $line = rtrim(fgets($fh, 4096));
             // debug("line: ".$line."\n");
             preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
-            if ($regs[1] && $regs[2]) {
+            if (isset($regs[1]) && isset($regs[2])) {
                 $regs[1] = mysql_real_escape_string(ltrim(rtrim($regs[1])));
                 $regs[2] = mysql_real_escape_string(ltrim(rtrim($regs[2])));
                 echo "<TR><TD>" . htmlentities($regs[1]) . "</TD><TD>" . htmlentities($regs[2]) . "</TD></TR>\n";
@@ -67,9 +67,7 @@ if ($_SESSION['user_type'] != 'A') {
         }
         pclose($fh);
         echo "</TABLE><BR></TD></TR>\n";
-
         echo "</TABLE>";
-
     }
     echo "</TABLE>\n";
     echo "</FORM>\n";
