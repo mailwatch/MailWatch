@@ -21,13 +21,12 @@
 */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-/*if (version_compare(phpversion(), '5.3.0', '<')) {
-    // E_DEPRECATED added in PHP 5.3
-    error_reporting(E_ALL ^ E_NOTICE);
+if (version_compare(phpversion(), '5.3.0', '<')) {
+    error_reporting(E_ALL);
 } else {
-    error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
-}*/
-error_reporting(E_ALL ^ E_DEPRECATED);
+    // E_DEPRECATED added in PHP 5.3
+    error_reporting(E_ALL ^ E_DEPRECATED);
+}
 
 // Read in MailWatch configuration file
 if (!(@include_once('conf.php')) == true) {
