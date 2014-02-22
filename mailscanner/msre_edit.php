@@ -581,6 +581,12 @@ function Process_Form()
         } else {
 	    $_POST[$action] = "";
 	}
+        // On no account allow invalid rule
+	// Target and Action must both have values
+	// delete rule if they don't
+	if ($_POST[$target] == "" or $_POST[$action] == "") {
+	    continue;
+        }
         if (strtolower($_POST[$target]) == "default") {
             // Default 'direction' can only be "Virus:" or "FromOrTo:"
             if ($_POST[$direction] == "Virus:") {
