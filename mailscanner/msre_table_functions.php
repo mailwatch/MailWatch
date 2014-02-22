@@ -34,7 +34,13 @@ function TR()
     // which can contain any parameters to the <tr> tag..
 
     $arg = func_get_args();
-    list($row_data, $tr_param) = $arg;
+
+    if (count($arg) > 1) {
+        list($row_data, $tr_param) = $arg;
+    } else {
+        $row_data = $arg[0];
+        $tr_param = NULL;
+    }
 
     echo "<tr";
     if ($tr_param) {

@@ -71,6 +71,7 @@ if ($_SESSION['user_type'] != 'A') {
     // the end of the comments @ the top of the file)
 
     // check to see if the form was submitted, and if so process it..
+    $status_message = "";
     if (isset($_POST["submitted"])) {
         list($bytes_written, $status_message) = Process_Form();
         // re-read the file after processing
@@ -154,6 +155,7 @@ function Show_Form($status_msg)
 
     // okay, now display it again, but in a format that the user can edit
     TRH_Single("Edit Ruleset:", "colspan=\"" . MSRE_COLUMNS . "\"");
+    $colorpicker = 0;
     $rule_count = 0;
     foreach ($ruleset as $ruleanddesc) {
         $desc = $ruleanddesc[0];
@@ -181,14 +183,24 @@ function Show_Form($status_msg)
         $rule_part = array();
         $rule_part["99action"] = array_pop($old_rule_part);
         // now I should be able to assign the other parts names as well
-        list (
+		
+	// if fewer than 5 parts to rule, fill other parts with NULL
+	// too many don't matter, so push 4 NULLs anyway
+        if (count($old_rule_part) < 5) {
+	    array_push($old_rule_part, NULL, NULL, NULL, NULL);
+	}
+	list (
             $rule_part["0direction"],
             $rule_part["1target"],
             $rule_part["2and"],
             $rule_part["3and_direction"],
             $rule_part["4and_target"]
             ) = $old_rule_part;
-
+        
+	// clean out whitespace from the rule parts
+	foreach ($rule_part as &$a_part) {
+	    trim($a_part);
+	}
         // I need to check
         // for "missing pieces" of the rule, that may
         // exist in the old_rule_part array in between
@@ -216,7 +228,9 @@ function Show_Form($status_msg)
         // now grab shit.
         while ($last_old_rule_part != $rule_part[$grab_to_field]) {
             //echo "lorp$rule_count: $last_old_rule_part<br>\n";
-            $rule_part["99action"] = $last_old_rule_part . " " . $rule_part["99action"];
+            if ($last_old_rule_part != NULL) {
+                $rule_part["99action"] = $last_old_rule_part . " " . $rule_part["99action"];
+	    }
             $last_old_rule_part = array_pop($old_rule_part);
         }
 
@@ -225,9 +239,7 @@ function Show_Form($status_msg)
         // leading up to the action... but only if the rule
         // isn't supposed to have an "and".  w/an "and", it already
         // has the proper data thx to the above code
-        if (strtolower($rule_part["2and"]) != "and"
-            and $rule_part["2and"]
-        ) {
+        if (strtolower($rule_part["2and"]) != "and" and $rule_part["2and"]) {
             // clean shit out
             $rule_part["2and"] = null;
             $rule_part["3and_direction"] = null;
@@ -382,7 +394,7 @@ function Show_Form($status_msg)
             }
         }
         if ($colorpicker) {
-            //echo "colorpicker!<br>\n";
+            //echo "colorpicker 1<br>\n";
             $tr_param = " class=\"alt\"";
             $colorpicker = 0;
             $boxclass = "dashblackbox";
@@ -542,18 +554,33 @@ function Process_Form()
         $and_target = $rule_prefix . "and_target";
         $action = $rule_prefix . "action";
         $rule_action = $rule_prefix . "rule_action";
-        // check for "default" rule
-        if (!isset($_POST[$target])) {
-            $_POST[$target] = "default";
-        }
         // we need to remove any "magic quoting" from the description, target,
         // and action fields, so that it doesn't put it into the file
-        $_POST[$description] = Fix_Quotes($_POST[$description]);
+        if (isset($_POST[$description])) {
+            $_POST[$description] = Fix_Quotes($_POST[$description]);
+	} else {
+	    $_POST[$description] = "";
+	}
         //echo "$description: " . $_POST[$description] . "<br>\n";
-        $_POST[$target] = Fix_Quotes($_POST[$target]);
-        $_POST[$and_target] = Fix_Quotes($_POST[$and_target]);
-        $_POST[$action] = Fix_Quotes($_POST[$action]);
-
+        // check for "default" rule
+        if (isset($_POST[$target])) {
+            $_POST[$target] = Fix_Quotes($_POST[$target]);
+        } else {
+	    $_POST[$target] = "default";
+        }
+        if (!isset($_POST[$and_direction])) {
+	    $_POST[$and_direction] = "";
+	}
+	if (isset($_POST[$and_target])) {
+            $_POST[$and_target] = Fix_Quotes($_POST[$and_target]);
+	} else {
+	    $_POST[$and_target] = "";
+	}
+	if (isset($_POST[$action])) {
+            $_POST[$action] = Fix_Quotes($_POST[$action]);
+        } else {
+	    $_POST[$action] = "";
+	}
         if (strtolower($_POST[$target]) == "default") {
             // Default 'direction' can only be "Virus:" or "FromOrTo:"
             if ($_POST[$direction] == "Virus:") {
@@ -570,45 +597,53 @@ function Process_Form()
         // disable, enable.
         // If so, we need to do something here..
         //echo "$rule_action: |" . $_POST[$rule_action] . "|<br>\n";
-        switch ($_POST[$rule_action]) {
-            case "Delete":
-                // deletions are simple, just ignore this rule and
-                // go to the next one (and it won't get written to
-                // the new file)
-                //echo "rule$i: $rule_action says delete<br>\n";
-                continue 2;
-                break;
-            case "Disable":
-                // to disable a rule, we simply add "#DISABLED" to the
-                // beginning of the direction field,
-                // which will end up being the first thing on the line
-                $_POST[$direction] = "#DISABLED#" . $_POST[$direction];
-                break;
-            case "Enable":
-                // enable is the opposite of disable..
-                $_POST[$direction] = preg_replace("/^#DISABLED#/", "", $_POST[$direction]);
-                break;
+        if (isset($_POST[$rule_action])) {
+	    switch ($_POST[$rule_action]) {
+                case "Delete":
+                    // deletions are simple, just ignore this rule and
+                    // go to the next one (and it won't get written to
+                    // the new file)
+                    //echo "rule$i: $rule_action says delete<br>\n";
+                    continue 2;
+                    break;
+                case "Disable":
+                    // to disable a rule, we simply add "#DISABLED" to the
+                    // beginning of the direction field,
+                    // which will end up being the first thing on the line
+                    $_POST[$direction] = "#DISABLED#" . $_POST[$direction];
+                    break;
+                case "Enable":
+                    // enable is the opposite of disable..
+                    $_POST[$direction] = preg_replace("/^#DISABLED#/", "", $_POST[$direction]);
+                    break;
+		}
         }
 
         //echo "after case, rule $i<br>\n";
         // make sure there's something there... direction is required
         if (!isset($_POST[$and])) {
             $_POST[$and] = "";
-            $_POST[$and_direction] = "";
-            $_POST[$and_target] = "";
+        }
+        // if any of the "and" parts are missing, clear the whole and part
+        if ($_POST[$and] == "" or $_POST[$and_direction] == "" or $_POST[$and_target] == "") {
+            $_POST[$and] = "";
+	    $_POST[$and_direction] = "";
+	    $_POST[$and_target] = "";
         }
 
-        if ($_POST[$direction]) {
-            //echo "$direction: $_POST[$direction]<br>\n";
-            $new_ruleset[] = array(
-                "description" => $_POST[$description],
-                "direction" => $_POST[$direction],
-                "target" => $_POST[$target],
-                "and" => $_POST[$and],
-                "and_direction" => $_POST[$and_direction],
-                "and_target" => $_POST[$and_target],
-                "action" => $_POST[$action]
-            );
+        if (isset($_POST[$direction])) {
+            if ($_POST[$direction]) {
+                //echo "$direction: $_POST[$direction]<br>\n";
+                $new_ruleset[] = array(
+                    "description" => $_POST[$description],
+                    "direction" => $_POST[$direction],
+                    "target" => $_POST[$target],
+                    "and" => $_POST[$and],
+                    "and_direction" => $_POST[$and_direction],
+                    "and_target" => $_POST[$and_target],
+                    "action" => $_POST[$action]
+                );
+            }
         }
     }
 
