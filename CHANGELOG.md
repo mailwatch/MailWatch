@@ -14,8 +14,11 @@
    -  Fix very broken 'and' handling
    -  Ensure that the 'default' rule stays the default rule forever
    -  Fix handling of escape characters in posted form
+   -  Strip spaces from entered Target and AndTarget fields
    -  Fix case-sensitivity in keywords like "FromOrTo:"
    -  Use MailScanner's rule keyword matching algorithm
+   -  Tighten up input validation based on fixes in the original MSRE 0.2.3 CVS
+   -  Tighten up rule parsing to ensure that generated rules are complete
  - Fixed AutoCommit error on MailWatch.pm
  - Better logout process
  - Hiding chroot mounts from drives list
