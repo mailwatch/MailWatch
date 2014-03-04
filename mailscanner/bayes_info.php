@@ -32,7 +32,7 @@ require('./login.function.php');
 html_start("SpamAssassin Bayes Database Info", 0, false, false);
 
 // Enter the Action in the Audit log
-audit_log('Viewed SpamAssasin Bayes Database Info');
+audit_log('Viewed SpamAssassin Bayes Database Info');
 
 // Create the table
 echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="600">';

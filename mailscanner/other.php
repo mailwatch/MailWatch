@@ -67,7 +67,7 @@ if (!DISTRIBUTED_SETUP
      <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
-     <li><a href="sa_rules_update.php">Update SpamAssasin Rule Descriptions</a>';
+     <li><a href="sa_rules_update.php">Update SpamAssassin Rule Descriptions</a>';
 }
 if (!DISTRIBUTED_SETUP && get_conf_truefalse('MCPChecks') && $_SESSION['user_type'] == 'A') {
     echo '<li><a href="mcp_rules_update.php">Update MCP Rule Descriptions</a>';
