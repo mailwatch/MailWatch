@@ -27,6 +27,9 @@ require('./login.function.php');
 
 html_start("Whitelist/Blacklist", 0, false, false);
 
+$bgcolor1 = "#BDBDBD";
+$bgcolor2 = "#D8D8D8";
+
 $url_type = (isset($_GET['type']) ? $_GET['type'] : '');
 $url_type = htmlentities($url_type);
 $url_type = safe_value($url_type);
