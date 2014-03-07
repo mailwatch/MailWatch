@@ -2082,11 +2082,11 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
         echo ' </tr>' . "\n";
         // Rows
-		$i = 1;
+        $i = 1;
         while ($row = mysql_fetch_row($sth)) {
-			$i = 1 - $i;
+            $i = 1 - $i;
             $bgcolor = $bg_colors[$i];
-			echo ' <tr>' . "\n";
+            echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
                 echo '  <td bgcolor=' . $bgcolor.'>' . $row[$f] . '</td>' . "\n";
             }
