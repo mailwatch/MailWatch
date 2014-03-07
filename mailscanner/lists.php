@@ -27,6 +27,9 @@ require('./login.function.php');
 
 html_start("Whitelist/Blacklist", 0, false, false);
 
+$bgcolor1 = "#BDBDBD";
+$bgcolor2 = "#D8D8D8";
+
 $url_type = (isset($_GET['type']) ? $_GET['type'] : '');
 $url_type = htmlentities($url_type);
 $url_type = safe_value($url_type);
@@ -214,6 +217,7 @@ if ($url_submit == 'Delete') {
 
 function build_table($sql, $list)
 {
+    global $bgcolor1,$bgcolor2;
     $sth = dbquery($sql);
     $rows = mysql_num_rows($sth);
     if ($rows > 0) {
@@ -223,11 +227,14 @@ function build_table($sql, $list)
         echo '  <th>To</th>' . "\n";
         echo '  <th>Action</th>' . "\n";
         echo ' </tr>' . "\n";
+        $i = 0;
         while ($row = mysql_fetch_row($sth)) {
+            $i = 1 - $i;
+            $bgcolor= ($i) ? $bgcolor1 : $bgcolor2;
             echo ' <tr>' . "\n";
-            echo '  <td>' . $row[1] . '</td>' . "\n";
-            echo '  <td>' . $row[2] . '</td>' . "\n";
-            echo '  <td><a href="' . $_SERVER['PHP_SELF'] . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
+            echo '  <td bgcolor='.$bgcolor.'>' . $row[1] . '</td>' . "\n";
+            echo '  <td bgcolor='.$bgcolor.'>' . $row[2] . '</td>' . "\n";
+            echo '  <td bgcolor='.$bgcolor.'><a href="' . $_SERVER['PHP_SELF'] . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
