@@ -2088,7 +2088,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td bgcolor=' . $bgcolor.'>' . $row[$f] . '</td>' . "\n";
+                echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[$f] . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }

@@ -229,9 +229,9 @@ function build_table($sql, $list)
             $i = 1 - $i;
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
-            echo '  <td bgcolor=' . $bgcolor . '>' . $row[1] . '</td>' . "\n";
-            echo '  <td bgcolor=' . $bgcolor . '>' . $row[2] . '</td>' . "\n";
-            echo '  <td bgcolor=' . $bgcolor . '><a href="' . $_SERVER['PHP_SELF'] . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . $_SERVER['PHP_SELF'] . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
