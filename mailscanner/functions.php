@@ -20,6 +20,9 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// Background colours
+$bg_colors = array("#BDBDBD", "#D8D8D8");
+
 // Set error level (some distro's have php.ini set to E_ALL)
 if (version_compare(phpversion(), '5.3.0', '<')) {
     error_reporting(E_ALL);
@@ -1990,6 +1993,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 // Function to display data as a table
 function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
+    global $bg_colors;
+
     // Query the data
     $sth = dbquery($sql);
 
@@ -2077,10 +2082,13 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
         echo ' </tr>' . "\n";
         // Rows
+        $i = 1;
         while ($row = mysql_fetch_row($sth)) {
+            $i = 1 - $i;
+            $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td>' . $row[$f] . '</td>' . "\n";
+                echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[$f] . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }

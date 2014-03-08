@@ -158,6 +158,7 @@ TABLE.boxtable {
     font-size:13px;
     background:#eee;
     height:40px;
+    min-width:960px;
     -moz-border-radius:10px;
     -webkit-border-radius:10px;
     border-radius: 10px;
