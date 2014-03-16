@@ -757,7 +757,7 @@ function html_end($footer = "")
 
 function dbconn()
 {
-    $link = mysql_connect(DB_HOST, DB_USER, DB_PASS)
+    $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, false, 128)
     or die ("Could not connect to database: " . mysql_error());
     mysql_select_db(DB_NAME) or die("Could not select db: " . mysql_error());
 
