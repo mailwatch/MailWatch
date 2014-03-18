@@ -258,6 +258,30 @@ Edit the parser for location of mailwatch webpages
 Edit mailscanner_relay.php in the mailscanner folder
 
 
+----------------------------------------------------------
+Optional for MailScanner Rule Editor
+----------------------------------------------------------
+
+Make sure MailWatch's conf.php has the following lines at the end
+(amend as appropriate)
+
+----------------------------------------------------------
+// Enable MailScanner Rule Editor
+define('MSRE', true);
+define('MSRE_RELOAD_INTERVAL', 5);
+define('MSRE_RULESET_DIR', "/etc/MailScanner/rules");
+----------------------------------------------------------
+
+Change file permissions so that we can update the rules
+change group and rules directory locations as appropriate
+
+chgrp -R apache /etc/MailScanner/rules
+chmod g+rwxs /etc/MailScanner/rules
+chmod g+rw /etc/MailScanner/rules/*.rules
+
+See also the INSTALL docs in tools/MailScanner_rule_editor
+and tools/Cron_jobs
+
 ------------------------------------------------------------ FINISHED!! (Phew!)
 
 Please send any errors or omissions to the mailing-list or directly to me.
@@ -266,4 +290,3 @@ Thanks!
 Steve.
 and
 Garrod Alwood
-

@@ -29,10 +29,10 @@ session_start();
 require('login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter=html_start("Top Mail Relays",0,false,true);
+$filter = html_start("Top Mail Relays", 0, false, true);
 
 // File name
-$filename = "".CACHE_DIR."/top_mail_relays.png.".time()."";
+$filename = "" . CACHE_DIR . "/top_mail_relays.png." . time() . "";
 
 $sql = "
 SELECT
@@ -45,7 +45,7 @@ FROM
  maillog
 WHERE
  1=1
-".$filter->CreateSQL()."
+" . $filter->CreateSQL() . "
 GROUP BY
  clientip
 ORDER BY
@@ -53,71 +53,71 @@ ORDER BY
 LIMIT 10";
 
 // Check permissions to see if apache can actually create the file
-if(is_writable(CACHE_DIR)){
+if (is_writable(CACHE_DIR)) {
 
-// JpGraph functions
-include_once("./jpgraph/src/jpgraph.php");
-include_once("./jpgraph/src/jpgraph_pie.php");
-include_once("./jpgraph/src/jpgraph_pie3d.php");
+    // JpGraph functions
+    include_once("./jpgraph/src/jpgraph.php");
+    include_once("./jpgraph/src/jpgraph_pie.php");
+    include_once("./jpgraph/src/jpgraph_pie3d.php");
 
-$result = dbquery($sql);
-if(!mysql_num_rows($result) > 0) {
- die("Error: no rows retrieved from database\n");
-}
+    $result = dbquery($sql);
+    if (!mysql_num_rows($result) > 0) {
+        die("Error: no rows retrieved from database\n");
+    }
 
-$relay_array = array();
+    $relay_array = array();
 
-while($row = mysql_fetch_object($result)) {
- $data[] = $row->count;
- $hostname = gethostbyaddr($row->clientip);
- if($hostname == $row->clientip) {
-  $data_names[] = "(Hostname lookup failed)";
- } else {
-  $data_names[] = $hostname;
- }
- $data_ip[] = $row->clientip;
- if($geoip = return_geoip_country($row->clientip)) {
-  $data_geoip[] = $geoip;
- } else {
-  $data_geoip[] = "(GeoIP lookup failed)";
- }
- $data_virus[] = $row->total_viruses;
- $data_spam[] = $row->total_spam;
- $data_size[] = $row->size;
-}
+    while ($row = mysql_fetch_object($result)) {
+        $data[] = $row->count;
+        $hostname = gethostbyaddr($row->clientip);
+        if ($hostname == $row->clientip) {
+            $data_names[] = "(Hostname lookup failed)";
+        } else {
+            $data_names[] = $hostname;
+        }
+        $data_ip[] = $row->clientip;
+        if ($geoip = return_geoip_country($row->clientip)) {
+            $data_geoip[] = $geoip;
+        } else {
+            $data_geoip[] = "(GeoIP lookup failed)";
+        }
+        $data_virus[] = $row->total_viruses;
+        $data_spam[] = $row->total_spam;
+        $data_size[] = $row->size;
+    }
 
-$graph = new PieGraph(800,385,0,false);
-$graph->SetShadow();
-$graph->img->SetAntiAliasing();
-$graph->title->Set("Top 10 Mail Relays");
-//$graph->legend->SetLayout(LEGEND_HOR);
-$graph->legend->Pos(0.52,0.87,'center');
+    $graph = new PieGraph(800, 385, 0, false);
+    $graph->SetShadow();
+    $graph->img->SetAntiAliasing();
+    $graph->title->Set("Top 10 Mail Relays");
+    //$graph->legend->SetLayout(LEGEND_HOR);
+    $graph->legend->Pos(0.52, 0.87, 'center');
 
-$p1 = new PiePlot3d($data);
-$p1->SetTheme('sand');
-$p1->SetLegends($data_names);
+    $p1 = new PiePlot3d($data);
+    $p1->SetTheme('sand');
+    $p1->SetLegends($data_names);
 
-$p1->SetCenter(0.73,0.4);
-$graph->legend->SetLayout(LEGEND_VERT);
-$graph->legend->Pos(0.25,0.20,'center');
+    $p1->SetCenter(0.73, 0.4);
+    $graph->legend->SetLayout(LEGEND_VERT);
+    $graph->legend->Pos(0.25, 0.20, 'center');
 
-$graph->Add($p1);
-$graph->Stroke($filename);
+    $graph->Add($p1);
+    $graph->Stroke($filename);
 }
 
 
 // HTML code to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".IMAGES_DIR."mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . "mailscannerlogo.gif\" ALT=\"MailScanner Logo\"></TD>";
 echo "</TR>";
 echo "<TR>";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
-if(is_readable($filename)){
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"".$filename."\" ALT=\"Graph\"></TD>";
-}else{
-echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that ".CACHE_DIR." is readable and writable by Mailwatch.";
+if (is_readable($filename)) {
+    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+} else {
+    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by Mailwatch.";
 }
 
 echo "</TR>";
@@ -134,18 +134,18 @@ echo "    <TH>Spam</TH>";
 echo "    <TH>Volume</TH>";
 echo "   </TR>";
 
-for($i=0; $i<count($data_names); $i++) {
- echo "
+for ($i = 0; $i < count($data_names); $i++) {
+    echo "
    <TR BGCOLOR=\"#EBEBEB\">
     <TD>$data_names[$i]</TD>
     <TD>$data_ip[$i]</TD>
     <TD>$data_geoip[$i]</TD>
-    <TD ALIGN=\"RIGHT\">".number_format($data[$i])."</TD>\n
-    <TD ALIGN=\"RIGHT\">".number_format($data_virus[$i])."</TD>\n
-    <TD ALIGN=\"RIGHT\">".number_format($data_spam[$i])."</TD>\n
-    <TD ALIGN=\"RIGHT\">".format_mail_size($data_size[$i])."</TD></TR>\n";
+    <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>\n
+    <TD ALIGN=\"RIGHT\">" . number_format($data_virus[$i]) . "</TD>\n
+    <TD ALIGN=\"RIGHT\">" . number_format($data_spam[$i]) . "</TD>\n
+    <TD ALIGN=\"RIGHT\">" . format_mail_size($data_size[$i]) . "</TD></TR>\n";
 }
-echo"
+echo "
   </TABLE>
  </TD>
 </TR>

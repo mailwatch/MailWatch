@@ -27,11 +27,11 @@ require_once('./functions.php');
 session_start();
 require('./login.function.php');
 
-html_start("GeoIP Database Update",0,false,false);
+html_start("GeoIP Database Update", 0, false, false);
 
-if(!isset($_POST['run'])) {
+if (!isset($_POST['run'])) {
 
-echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">
+    echo '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">
 	 <input type="hidden" name="run" value="true">
 	 <table class="boxtable" width="100%">
 	 <tr>
@@ -44,184 +44,165 @@ echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">
 	 <td align="center"><br><input type="SUBMIT" value="Run Now"><br><br></td>
 	 </tr>
 	 </table>
-	 </form>'."\n";
+	 </form>' . "\n";
 
 } else {
-ob_start();
- echo "Downloading file, please wait....<BR>\n";
+    ob_start();
+    echo "Downloading file, please wait....<BR>\n";
 
- $file1 = './temp/GeoIPCountryCSV.zip';
- $file2 = './temp/GeoIPCountryWhois.csv';
- $file3 = './temp/GeoIPv6.csv.gz';
- $file4 = './temp/GeoIPv6.csv';
- // Clean-up from last run
- if(file_exists($file1)) { unlink($file1); }
- if(file_exists($file2)) { unlink($file2); }
- if(file_exists($file3)) { unlink($file3); }
- if(file_exists($file4)) { unlink($file4); }
- $LINKGEOIPv4="http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip";
- $LINKGEOIPv6="http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz";
- $OUTDIR="./temp/";
+    $file1 = './temp/GeoIPCountryCSV.zip';
+    $file2 = './temp/GeoIPCountryWhois.csv';
+    $file3 = './temp/GeoIPv6.csv.gz';
+    $file4 = './temp/GeoIPv6.csv';
+    // Clean-up from last run
+    if (file_exists($file1)) {
+        unlink($file1);
+    }
+    if (file_exists($file2)) {
+        unlink($file2);
+    }
+    if (file_exists($file3)) {
+        unlink($file3);
+    }
+    if (file_exists($file4)) {
+        unlink($file4);
+    }
+    $LINKGEOIPv4 = "http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip";
+    $LINKGEOIPv6 = "http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz";
+    $OUTDIR = "./temp/";
 
+    ob_flush();
 
-ob_flush();
- 
- // changing to cURL rather than fopen
- if(!file_exists($file) && !file_exists($file3)) {
-	if(is_writable($OUTDIR) && is_readable($OUTDIR)){ 
-//////////////////////// IPv4 ///////////////////////////////////////////////////
+    // changing to cURL rather than fopen
+    if (!file_exists($file1) && !file_exists($file3)) {
+        if (is_writable($OUTDIR) && is_readable($OUTDIR)) {
+            //////////////////////// IPv4 ///////////////////////////////////////////////////
 
-         ////////////////////////////////////
-         /// Initialize the cURL session ////
-         ////////////////////////////////////
-        $curl_var1 = curl_init();
+            ////////////////////////////////////
+            /// Initialize the cURL session ////
+            ////////////////////////////////////
+            $curl_var1 = curl_init();
 
-         /////////////////////////////////////////////////////////
-         //////  Set the URL of the page or file to download. ////
-         /////////////////////////////////////////////////////////
-        curl_setopt($curl_var1, CURLOPT_URL, $LINKGEOIPv4);
+            /////////////////////////////////////////////////////////
+            //////  Set the URL of the page or file to download. ////
+            /////////////////////////////////////////////////////////
+            curl_setopt($curl_var1, CURLOPT_URL, $LINKGEOIPv4);
 
+            // Create the file
+            $fp1 = fopen($file1, "w+");
+            curl_setopt($curl_var1, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl_var1, CURLOPT_BINARYTRANSFER, 1);
+            curl_setopt($curl_var1, CURLOPT_FILE, $fp1);
 
-     // Create the file
-        $fp1 = fopen($file1, "w+");
+            // PROXY for curl
+            if (USE_PROXY == "true") {
+                $proxy_server = "" . PROXY_SERVER . "";
+                $proxy_port = "" . PROXY_PORT . "";
+                $proxy_type = "" . PROXY_TYPE . "";
+                $loginpassw = "" . PROXY_USER . ":" . PROXY_PASS . "";
+                curl_setopt($curl_var1, CURLOPT_PROXYPORT, $proxy_port);
+                curl_setopt($curl_var1, CURLOPT_PROXYTYPE, $proxy_type);
+                curl_setopt($curl_var1, CURLOPT_PROXY, $proxy_server);
+                if (PROXY_USER != '') {
+                    curl_setopt($curl_var1, CURLOPT_PROXYUSERPWD, $loginpassw);
+                }
+            }
+            ////////////////////////////////////////////////////////////////
+            ///// Set the timeout to allow curl to finish the download//////
+            ////////////////////////////////////////////////////////////////
+            curl_setopt($curl_var1, CURLOPT_TIMEOUT, 180);
 
-        curl_setopt($curl_var1, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_var1, CURLOPT_BINARYTRANSFER, 1);
-        curl_setopt($curl_var1, CURLOPT_FILE,$fp1);
-		
-		
-		// PROXY for curl
-		if(USE_PROXY == "true"){
-		$proxy_server = "".PROXY_SERVER."";
-		$proxy_port = "".PROXY_PORT."";
-		$proxy_type = "".PROXY_TYPE."";
-		$loginpassw = "".PROXY_USER.":".PROXY_PASS."";
-		curl_setopt($curl_var1, CURLOPT_PROXYPORT, $proxy_port);
-		curl_setopt($curl_var1, CURLOPT_PROXYTYPE, $proxy_type);
-		curl_setopt($curl_var1, CURLOPT_PROXY, $proxy_server);
-			if(PROXY_USER != ''){
-			curl_setopt($curl_var1, CURLOPT_PROXYUSERPWD, $loginpassw);
-			}
-		}
-         ////////////////////////////////////////////////////////////////
-         ///// Set the timeout to allow curl to finish the download//////
-         ////////////////////////////////////////////////////////////////
-        curl_setopt($curl_var1, CURLOPT_TIMEOUT, 180);
+            /////////////////////  IPv6 /////////////////////////////////////////////////////
 
+            ////////////////////////////////////
+            /// Initialize the cURL session ////
+            ////////////////////////////////////
+            $curl_var2 = curl_init();
 
-/////////////////////  IPv6 /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////
+            //////  Set the URL of the page or file to download. ////
+            /////////////////////////////////////////////////////////
+            curl_setopt($curl_var2, CURLOPT_URL, $LINKGEOIPv6);
 
-         ////////////////////////////////////
-         /// Initialize the cURL session ////
-         ////////////////////////////////////
-        $curl_var2 = curl_init();
+            // Create the file
+            $fp2 = fopen($file3, "w+");
+            curl_setopt($curl_var2, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl_var2, CURLOPT_BINARYTRANSFER, 1);
+            curl_setopt($curl_var2, CURLOPT_FILE, $fp2);
 
-         /////////////////////////////////////////////////////////
-         //////  Set the URL of the page or file to download. ////
-         /////////////////////////////////////////////////////////
-        curl_setopt($curl_var2, CURLOPT_URL, $LINKGEOIPv6);
+            // PROXY for curl
+            if (USE_PROXY == "true") {
+                $proxy_server = "" . PROXY_SERVER . "";
+                $proxy_port = "" . PROXY_PORT . "";
+                $proxy_type = "" . PROXY_TYPE . "";
+                $loginpassw = "" . PROXY_USER . ":" . PROXY_PASS . "";
+                curl_setopt($curl_var2, CURLOPT_PROXYPORT, $proxy_port);
+                curl_setopt($curl_var2, CURLOPT_PROXYTYPE, $proxy_type);
+                curl_setopt($curl_var2, CURLOPT_PROXY, $proxy_server);
+                if (PROXY_USER != '') {
+                    curl_setopt($curl_var2, CURLOPT_PROXYUSERPWD, $loginpassw);
+                }
+            }
+            ////////////////////////////////////////////////////////////////
+            ///// Set the timeout to allow curl to finish the download//////
+            ////////////////////////////////////////////////////////////////
+            curl_setopt($curl_var2, CURLOPT_TIMEOUT, 180);
 
+            // Download GeoIP CSV file
+            if (curl_exec($curl_var1) && curl_exec($curl_var2)) {
+                // Close the curl connection
+                curl_close($curl_var1);
+                // Close the file connection
+                fclose($fp1);
+                // Unset the file variable
+                unset($fp1);
+                // Close the curl connection
+                curl_close($curl_var2);
+                // Close the file connection
+                fclose($fp2);
+                // Unset the file variable
+                unset($fp2);
 
-     // Create the file
-        $fp2 = fopen($file3, "w+");
+                // Unzip the IPv4 file (unzip required)
+                $exec = exec('unzip -d ' . $OUTDIR . ' ' . $file1, $output, $retval);
 
-        curl_setopt($curl_var2, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_var2, CURLOPT_BINARYTRANSFER, 1);
-        curl_setopt($curl_var2, CURLOPT_FILE,$fp2);
+                // Gunzip the IPv6 file (gunzip required)
+                $exec = exec('gunzip ' . $OUTDIR . ' ' . $file3, $output1, $retval1);
 
-		// PROXY for curl
-		if(USE_PROXY == "true"){
-		$proxy_server = "".PROXY_SERVER."";
-		$proxy_port = "".PROXY_PORT."";
-		$proxy_type = "".PROXY_TYPE."";
-		$loginpassw = "".PROXY_USER.":".PROXY_PASS."";
-		curl_setopt($curl_var2, CURLOPT_PROXYPORT, $proxy_port);
-		curl_setopt($curl_var2, CURLOPT_PROXYTYPE, $proxy_type);
-		curl_setopt($curl_var2, CURLOPT_PROXY, $proxy_server);
-			if(PROXY_USER != ''){
-			curl_setopt($curl_var2, CURLOPT_PROXYUSERPWD, $loginpassw);
-			}
-		}
-         ////////////////////////////////////////////////////////////////
-         ///// Set the timeout to allow curl to finish the download//////
-         ////////////////////////////////////////////////////////////////
-        curl_setopt($curl_var2, CURLOPT_TIMEOUT, 180);
+                if ($retval == 0) {
+                    // Drop the data from the table
+                    dbquery("DELETE FROM geoip_country");
 
+                    // Load the data
+                    dbquery("LOAD DATA LOCAL INFILE '" . $file2 . "' INTO TABLE geoip_country FIELDS TERMINATED BY ',' ENCLOSED BY '\"'");
+                    dbquery("LOAD DATA LOCAL INFILE '" . $file4 . "' INTO TABLE geoip_country FIELDS TERMINATED BY ',' ENCLOSED BY '\"'");
 
+                    // Done return the number of rows
+                    echo "Download complete ... " . mysql_result(
+                            dbquery("SELECT COUNT(*) FROM geoip_country"),
+                            0
+                        ) . " rows imported.<br>\n";
 
+                    audit_log('Ran GeoIP update');
 
-
-   // Download GeoIP CSV file
-   if(curl_exec($curl_var1) && curl_exec($curl_var2)) {
-       //Close the curl connection
-       curl_close($curl_var1);
-       
-	   // Cluse the file connection
-	   fclose($fp1);
-	   
-	   // Unset the file variable
-       unset($fp1);
-	   
-	   // Close the curl connection
-	   curl_close($curl_var2);
-	   
-	   // Cluse the file connection
-       fclose($fp2);
-	   
-	   // Unset the file variable
-       unset($fp2);
-	   
-       // Unzip the IPv4 file (unzip required) 
-       $exec = exec('unzip -d '.$OUTDIR.' '.$file1, $output, $retval);
-
-	   // Gunzip the IPv6 file (gunzip required)
-       $exec = exec('gunzip '.$OUTDIR.' '.$file3, $output1, $retval1);
-
-        if($retval==0) {
-
-        // Drop the data from the table
-        dbquery("DELETE FROM geoip_country");
-
-        // Load the data
-        dbquery("LOAD DATA LOCAL INFILE '".$file2."' INTO TABLE geoip_country FIELDS TERMINATED BY ',' ENCLOSED BY '\"'");
-
-        dbquery("LOAD DATA LOCAL INFILE '".$file4."' INTO TABLE geoip_country FIELDS TERMINATED BY ',' ENCLOSED BY '\"'");
-
-        // Done return the number of rows
-        echo "Download complete ... ".mysql_result(dbquery("SELECT COUNT(*) FROM geoip_country"),0)." rows imported.<br>\n";
-        
-		audit_log('Ran GeoIP update');
-
+                } else {
+                    // If it was unable to unzip the the file display this erro
+                    die("Unzip failed:<br>Error: " . join("<br>", $output) . "<br>" . join("<br>", $output1) . "\n");
+                }
+            } else {
+                // unable to download the file correctly
+                die("Unable to download GeoIP data file.\n");
+            }
         } else {
-		
-        // If it was unable to unzip the the file display this erro
-        
-		die("Unzip failed:<br>Error: ".join("<br>",$output)."<br>".join("<br>",$output1)."\n");
+            // unable to read or write to the directory
+            die("Unable to read or write to the" . $OUTDIR . ".\n");
         }
-    }else{
-        
-		// unable to download the file correctly
-        die("Unable to download GeoIP data file.\n");
-    
-	}
-    
-	}else{
-    
-	// unable to read or write to the directory
-    
-	die("Unable to read or write to the".$OUTDIR.".\n");
-    
-	}
-    
-	}else{
-    
-	die("Files still exist for some reason\n");
-    
-	}
-
+    } else {
+        die("Files still exist for some reason\n");
+    }
 }
 
-  // Add the footer
- html_end();
-  // close the connection to the Database
- dbclose();
+// Add the footer
+html_end();
+// close the connection to the Database
+dbclose();

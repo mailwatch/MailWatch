@@ -44,13 +44,16 @@ if ($_SESSION['user_type'] != 'A') {
     echo '  <td align="center"><br><input type="submit" value="Run Now"><br><br></td>' . "\n";
     echo ' </tr>' . "\n";
 
-    if ($_POST['run']) {
+    if (isset($_POST['run'])) {
         echo '<tr><td align="CENTER"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>Rule</th><th>Description</th></tr>' . "\n";
         $mcp_prefs_file = get_conf_var('MCPSpamAssassinPrefsFile');
         $mcp_local_rules_dir = get_conf_var('MCPSpamAssassinLocalRulesDir');
         $mcp_default_rules_dir = get_conf_var('MCPSpamAssassinDefaultRulesDir');
         if ($mcp_local_rules_dir != $mcp_default_rules_dir) {
-            $fh = popen("ls $mcp_prefs_file $mcp_local_rules_dir/*.cf $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
+            $fh = popen(
+                "ls $mcp_prefs_file $mcp_local_rules_dir/*.cf $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'",
+                'r'
+            );
         } else {
             $fh = popen("ls $mcp_prefs_file $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
         }
@@ -60,7 +63,7 @@ if ($_SESSION['user_type'] != 'A') {
             $line = rtrim(fgets($fh, 4096));
             debug("line: " . $line . "\n");
             preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
-            if ($regs[1] && $regs[2]) {
+            if (isset($regs[1]) && isset($regs[2])) {
                 $regs[1] = mysql_real_escape_string(ltrim(rtrim($regs[1])));
                 $regs[2] = mysql_real_escape_string(ltrim(rtrim($regs[2])));
                 echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . '</td></tr>' . "\n";

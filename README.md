@@ -16,6 +16,6 @@ Features
 * Quarantine management allows you to release, delete or run `sa-learn` across any quarantined messages.
 * Reports with customisable filters and graphs by JpGraph
 * Tools to view Virus Scanner status, MySQL database status and to view the MailScanner configuration files.
-* Utilities for Sendmail to monitor and display the mail queue sizes and to record and display message relay information.
+* Utilities for Postfix and Sendmail to monitor and display the mail queue sizes and to record and display message relay information.
 * Multiple user levels: user, domain and admin that limit the data and features available to each.
 * XML-RPC support that allows multiple MailScanner/MailWatch installations to act as one.

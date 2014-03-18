@@ -31,29 +31,28 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-if($_SESSION['user_type'] != 'A'){
-header("Location: index.php");
-}
-else{
+if ($_SESSION['user_type'] != 'A') {
+    header("Location: index.php");
+} else {
 
-html_start("F-Prot Status",0,false,false);
-echo '
+    html_start("F-Prot Status", 0, false, false);
+    echo '
 <table class="boxtable" width="100%">
  <tr>
   <td align="center">';
 
-if (preg_match('/-6/i',get_conf_var('VirusScanners'))) {
-passthru(get_virus_conf('f-prot')." -virno | awk -f ./f-prot.awk");
-}else{
-passthru(get_virus_conf('f-prot')." -verno | awk -f ./f-prot.awk"); 
-}
-echo '
+    if (preg_match('/-6/i', get_conf_var('VirusScanners'))) {
+        passthru(get_virus_conf('f-prot') . " -virno | awk -f ./f-prot.awk");
+    } else {
+        passthru(get_virus_conf('f-prot') . " -verno | awk -f ./f-prot.awk");
+    }
+    echo '
 </td>
  </tr>
 </table>';
 
 // Add footer
-html_end();
+    html_end();
 // Close any open db connections
-dbclose();
+    dbclose();
 }

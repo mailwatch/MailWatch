@@ -25,26 +25,27 @@ require_once('./functions.php');
 session_start();
 require('login.function.php');
 
-html_start("Mail Queue Viewer",0,false,false);
+html_start("Mail Queue Viewer", 0, false, false);
 
-switch($_GET['queue']) {
- case "inq":
-  $queue='inq';
-  $display='Inbound Mail Queue';
-  break;
- case "outq":
-  $queue='outq';
-  $display='Outbound Mail Queue';
-  break;
- default:
-  die("No queue specified\n");
-  break;
+switch ($_GET['queue']) {
+    case "inq":
+        $queue = 'inq';
+        $display = 'Inbound Mail Queue';
+        break;
+    case "outq":
+        $queue = 'outq';
+        $display = 'Outbound Mail Queue';
+        break;
+    default:
+        die("No queue specified\n");
+        break;
 }
 
-db_colorised_table("
-SELECT
- id AS id2,
- CONCAT(DATE_FORMAT(cdate, '".DATE_FORMAT."'),' ',ctime) AS datetime,
+db_colorised_table(
+    "
+    SELECT
+     id AS id2,
+     CONCAT(DATE_FORMAT(cdate, '" . DATE_FORMAT . "'),' ',ctime) AS datetime,
  hostname,
  from_address,
  to_address,
@@ -54,14 +55,17 @@ SELECT
  attempts,
  CASE WHEN lastattempt=0 THEN '00:00:00' ELSE SEC_TO_TIME((UNIX_TIMESTAMP() - lastattempt)) END AS lastattempt
 FROM
- ".$queue."
+ " . $queue . "
 WHERE
- ".$_SESSION['global_filter']."
+ " . $_SESSION['global_filter'] . "
 ORDER BY
- cdate, ctime",$display,true,true);
+ cdate, ctime",
+    $display,
+    true,
+    true
+);
 
 // Add the footer
 html_end();
 // close the connection to the Database
 dbclose();
-

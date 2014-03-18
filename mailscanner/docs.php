@@ -28,16 +28,16 @@ html_start("Documentation");
 
 if (isset($_GET['doc'])) {
     $file = preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['doc']);
- include_once("docs/".$file.".html");
+    include_once("docs/" . $file . ".html");
 } else {
- echo '<table width="100%" class="boxtable">'."\n";
- echo ' <tr>'."\n";
- echo '  <td>'."\n";
- echo '  <h1>Documentation</h1>'."\n";
- echo '  This page does require authentication, so you can put links to your site documentation here and allow your users to access it if you wish.'."\n";
- echo '  </td>'."\n";
- echo ' </tr>'."\n";
- echo '</table>'."\n";
+    echo '<table width="100%" class="boxtable">' . "\n";
+    echo ' <tr>' . "\n";
+    echo '  <td>' . "\n";
+    echo '  <h1>Documentation</h1>' . "\n";
+    echo '  This page does require authentication, so you can put links to your site documentation here and allow your users to access it if you wish.' . "\n";
+    echo '  </td>' . "\n";
+    echo ' </tr>' . "\n";
+    echo '</table>' . "\n";
 }
 
 html_end();

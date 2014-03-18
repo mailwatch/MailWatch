@@ -20,35 +20,32 @@
 */
 
 function  postfixinq()
-  {
-  $handle = opendir('/var/spool/postfix/hold/');
-  $inq = 0;
-  while (false !== ($file = readdir($handle)))
-    {
-    //evaluate each entry, removing the . & .. entries
-    if ($file !== '.' && $file !== '..')
-      {
-      $inq++;
-      }
+{
+    $handle = opendir('/var/spool/postfix/hold/');
+    $inq = 0;
+    while (false !== ($file = readdir($handle))) {
+        //evaluate each entry, removing the . & .. entries
+        if ($file !== '.' && $file !== '..') {
+            $inq++;
+        }
     }
-  closedir($handle);
-  return $inq;
-  }
+    closedir($handle);
+    return $inq;
+}
 
 function  postfixallq()
-  {
-  $last_line = exec('mailq');
-  $pos = strpos($last_line, 'in ');
-  $start = substr($last_line, $pos+3);
-  $allq = intval($start);
-  return $allq;
-  }
+{
+    $last_line = exec('mailq');
+    $pos = strpos($last_line, 'in ');
+    $start = substr($last_line, $pos + 3);
+    $allq = intval($start);
+    return $allq;
+}
 
 function  postfixmailq()
-  {
-  $last_line = exec('mailq', $output);
-  while( list(,$row) = each($output) )
-    {
-    echo $row ."\n";
+{
+    $last_line = exec('mailq', $output);
+    while (list(, $row) = each($output)) {
+        echo $row . "\n";
     }
-  }
+}

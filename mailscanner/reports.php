@@ -29,82 +29,86 @@ session_start();
 require('login.function.php');
 
 // Checking to see if there are any filters
-if(!is_object($_SESSION["filter"])) {
- $filter = new Filter;
- $_SESSION["filter"] = $filter;
+if (!is_object($_SESSION["filter"])) {
+    $filter = new Filter;
+    $_SESSION["filter"] = $filter;
 } else {
- $filter = $_SESSION["filter"];
+    $filter = $_SESSION["filter"];
 }
 
 // add the header information such as the logo, search, menu, ....
-html_start("Reports","0",false,false);
+html_start("Reports", "0", false, false);
 
 // Set directory varible
-$dirname = "".MAILWATCH_HOME."/".CACHE_DIR."";
+$dirname = "" . MAILWATCH_HOME . "/" . CACHE_DIR . "";
 
 // Add filters and save them
-switch(strtolower($_GET["action"])) {
- case "add":
-  $filter->Add($_GET["column"], $_GET["operator"], $_GET["value"]);
-  break;
- case "remove":
-  $filter->Remove($_GET["column"]);
-  break;
- case "destroy":
-  session_destroy();
-  echo "Session destroyed\n";
-  exit;
- case "save":
-  if(isset($_GET['save_as'])) {
-   $name = $_GET['save_as'];
-  }
-  if(isset($_GET['filter']) && $_GET['filter'] != "_none_") {
-   $name = $_GET['filter'];
-  }
-  if(!empty($name)) { $filter->Save($name); }
-  break;
- case "load":
-  $filter->Load($_GET['filter']);
-  break;
- case "delete":
-  $filter->Delete($_GET['filter']);
-  break;
+if (isset($_GET["action"])) {
+    switch (strtolower($_GET["action"])) {
+        case "add":
+            $filter->Add($_GET["column"], $_GET["operator"], $_GET["value"]);
+            break;
+        case "remove":
+            $filter->Remove($_GET["column"]);
+            break;
+        case "destroy":
+            session_destroy();
+            echo "Session destroyed\n";
+            exit;
+        case "save":
+            if (isset($_GET['save_as'])) {
+                $name = $_GET['save_as'];
+            }
+            if (isset($_GET['filter']) && $_GET['filter'] != "_none_") {
+                $name = $_GET['filter'];
+            }
+            if (!empty($name)) {
+                $filter->Save($name);
+            }
+            break;
+        case "load":
+            $filter->Load($_GET['filter']);
+            break;
+        case "delete":
+            $filter->Delete($_GET['filter']);
+            break;
+    }
 }
 
 // add the session filters to the variables
 $_SESSION["filter"] = $filter;
 
-$filter->AddReport("rep_message_listing.php","Message Listing");
-$filter->AddReport("rep_message_ops.php","Message Operations");
+$filter->AddReport("rep_message_listing.php", "Message Listing");
+$filter->AddReport("rep_message_ops.php", "Message Operations");
 
-$filter->AddReport("rep_total_mail_by_date.php","Total Messages by Date");
-$filter->AddReport("rep_top_mail_relays.php","Top Mail Relays");
+$filter->AddReport("rep_total_mail_by_date.php", "Total Messages by Date");
+$filter->AddReport("rep_top_mail_relays.php", "Top Mail Relays");
 
-$filter->AddReport("rep_top_viruses.php","Top Viruses");
-$filter->AddReport("rep_viruses.php","Virus Report");
+$filter->AddReport("rep_top_viruses.php", "Top Viruses");
+$filter->AddReport("rep_viruses.php", "Virus Report");
 
-$filter->AddReport("rep_top_senders_by_quantity.php","Top Senders by Quantity");
-$filter->AddReport("rep_top_senders_by_volume.php","Top Senders by Volume");
-$filter->AddReport("rep_top_recipients_by_quantity.php","Top Recipients by Quantity");
-$filter->AddReport("rep_top_recipients_by_volume.php","Top Recipients by Volume");
+$filter->AddReport("rep_top_senders_by_quantity.php", "Top Senders by Quantity");
+$filter->AddReport("rep_top_senders_by_volume.php", "Top Senders by Volume");
+$filter->AddReport("rep_top_recipients_by_quantity.php", "Top Recipients by Quantity");
+$filter->AddReport("rep_top_recipients_by_volume.php", "Top Recipients by Volume");
 
 //$filter->AddReport("rep_mrtg_style.php","MRTG Style Report");
 
-$filter->AddReport("rep_top_sender_domains_by_quantity.php","Top Sender Domains by Quantity");
-$filter->AddReport("rep_top_sender_domains_by_volume.php","Top Sender Domains by Volume");
-$filter->AddReport("rep_top_recipient_domains_by_quantity.php","Top Recipient Domains by Quantity");
-$filter->AddReport("rep_top_recipient_domains_by_volume.php","Top Recipient Domains by Volume");
+$filter->AddReport("rep_top_sender_domains_by_quantity.php", "Top Sender Domains by Quantity");
+$filter->AddReport("rep_top_sender_domains_by_volume.php", "Top Sender Domains by Volume");
+$filter->AddReport("rep_top_recipient_domains_by_quantity.php", "Top Recipient Domains by Quantity");
+$filter->AddReport("rep_top_recipient_domains_by_volume.php", "Top Recipient Domains by Volume");
 
-if(get_conf_truefalse('UseSpamAssassin')){
-$filter->AddReport("rep_sa_score_dist.php","SpamAssassin Score Distribution");
-$filter->AddReport("rep_sa_rule_hits.php","SpamAssassin Rule Hits");
+if (get_conf_truefalse('UseSpamAssassin')) {
+    $filter->AddReport("rep_sa_score_dist.php", "SpamAssassin Score Distribution");
+    $filter->AddReport("rep_sa_rule_hits.php", "SpamAssassin Rule Hits");
 }
-if(get_conf_truefalse('MCPChecks')){
-$filter->AddReport("rep_mcp_score_dist.php","MCP Score Distribution");
-$filter->AddReport("rep_mcp_rule_hits.php","MCP Rule Hits");
+if (get_conf_truefalse('MCPChecks')) {
+    $filter->AddReport("rep_mcp_score_dist.php", "MCP Score Distribution");
+    $filter->AddReport("rep_mcp_rule_hits.php", "MCP Rule Hits");
 }
 
-$filter->AddReport("rep_audit_log.php","Audit Log");
+$filter->AddReport("rep_audit_log.php", "Audit Log");
 $filter->Display();
 
 delete_dir($dirname);

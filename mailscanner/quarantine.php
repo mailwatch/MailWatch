@@ -25,58 +25,63 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
+html_start("Quarantine Viewer", 0, false, false);
 
-
-html_start("Quarantine Viewer",0,false,false);
-
-if(!isset($_GET['dir']) && !isset($_GET["msgdir"])) {
- // Get the top-level list
- if(QUARANTINE_USE_FLAG) {
-  // Don't use the database any more - it's too slow on big datasets
-  $dates = return_quarantine_dates();
-  echo '<table class="mail" cellspacing="2" align="center">'."\n";
-  echo '<tr><th>Folder</th></tr>'."\n";
-  foreach($dates as $date) {
-   $sql = "SELECT id FROM maillog WHERE ".$_SESSION['global_filter']." AND date='$date' AND quarantined=1";
-   $result = dbquery($sql);
-   $rowcnt = mysql_num_rows($result);
-   $rowstr = " - ----------";
-   if ($rowcnt > 0) {
-      $rowstr = sprintf(" - %02d items", $rowcnt);
-   }
-   echo '<tr><td align="center"><a href="'.$_SERVER['PHP_SELF'].'?dir='.$date.'">'.translateQuarantineDate($date, DATE_FORMAT).$rowstr.'</a></td></tr>'."\n";
-  }
-  echo '</table>'."\n";
- } else {
-  $items = quarantine_list('/');
-  if(count($items)>0) {
-   // Sort in reverse chronological order
-   arsort($items);
-   echo '<table class="mail" cellspacing="1" align="center">'."\n";
-   echo '<tr><th>Folder</th></tr>'."\n";
-   $count=0;
-   foreach($items as $f) {
-   
-    //To look and see if any of the folders in the quarantine folder are strings and not numbers.
-	if(is_numeric($f)){
-		// Display the Quarantine folders and create links for them.
-		echo '<tr><td align="center"><a href="'.$_SERVER['PHP_SELF'].'?dir='.$f.'">'.translateQuarantineDate($f, DATE_FORMAT).'</a></td></tr>'."\n";
-		// Skip any folders that are not dates and
-		}else continue;
-   }
-   echo '</table>'."\n";
-  } else {
-   die("No quarantine directories found\n");
-  }
- }
+if (!isset($_GET['dir']) && !isset($_GET["msgdir"])) {
+    // Get the top-level list
+    if (QUARANTINE_USE_FLAG) {
+        // Don't use the database any more - it's too slow on big datasets
+        $dates = return_quarantine_dates();
+        echo '<table class="mail" cellspacing="2" align="center">' . "\n";
+        echo '<tr><th>Folder</th></tr>' . "\n";
+        foreach ($dates as $date) {
+            $sql = "SELECT id FROM maillog WHERE " . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
+            $result = dbquery($sql);
+            $rowcnt = mysql_num_rows($result);
+            $rowstr = " - ----------";
+            if ($rowcnt > 0) {
+                $rowstr = sprintf(" - %02d items", $rowcnt);
+            }
+            echo '<tr><td align="center"><a href="' . $_SERVER['PHP_SELF'] . '?dir=' . $date . '">' . translateQuarantineDate(
+                    $date,
+                    DATE_FORMAT
+                ) . $rowstr . '</a></td></tr>' . "\n";
+        }
+        echo '</table>' . "\n";
+    } else {
+        $items = quarantine_list('/');
+        if (count($items) > 0) {
+            // Sort in reverse chronological order
+            arsort($items);
+            echo '<table class="mail" cellspacing="1" align="center">' . "\n";
+            echo '<tr><th>Folder</th></tr>' . "\n";
+            $count = 0;
+            foreach ($items as $f) {
+                //To look and see if any of the folders in the quarantine folder are strings and not numbers.
+                if (is_numeric($f)) {
+                    // Display the Quarantine folders and create links for them.
+                    echo '<tr><td align="center"><a href="' . $_SERVER['PHP_SELF'] . '?dir=' . $f . '">' . translateQuarantineDate(
+                            $f,
+                            DATE_FORMAT
+                        ) . '</a></td></tr>' . "\n";
+                    // Skip any folders that are not dates and
+                } else {
+                    continue;
+                }
+            }
+            echo '</table>' . "\n";
+        } else {
+            die("No quarantine directories found\n");
+        }
+    }
 } else {
- if(QUARANTINE_USE_FLAG) {
-dbconn();
-  $date = mysql_real_escape_string(translateQuarantineDate($_GET['dir'],'sql'));
-  $sql = "
+    if (QUARANTINE_USE_FLAG) {
+        dbconn();
+        $date = mysql_real_escape_string(translateQuarantineDate($_GET['dir'], 'sql'));
+        $sql = "
 SELECT
  id AS id2,
- DATE_FORMAT(timestamp, '".DATE_FORMAT." ".TIME_FORMAT."') AS datetime,
+ DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
  from_address,
  to_address,
  subject,
@@ -100,26 +105,26 @@ SELECT
 FROM
  maillog
 WHERE
- ".$_SESSION['global_filter']."
+ " . $_SESSION['global_filter'] . "
 AND
  date = '$date'
 AND
  quarantined = 1
 ORDER BY
  date DESC, time DESC";
-  db_colorised_table($sql,'Folder: '.translateQuarantineDate($_GET['dir'], DATE_FORMAT),true,true);
- } else {
-  // SECURITY: trim off any potential nasties
-  $_GET['dir'] = preg_replace('[\.|\.\.|\/]','',$_GET['dir']);
-  $items = quarantine_list($_GET['dir']);
-  // Build list of message id's to be used in SQL statement
-  if(count($items) > 0) {
-   $msg_ids = join($items, ",");
-   $date = mysql_real_escape_string(translateQuarantineDate($_GET['dir'],'sql'));
-   $sql = "
+        db_colorised_table($sql, 'Folder: ' . translateQuarantineDate($_GET['dir'], DATE_FORMAT), true, true);
+    } else {
+        // SECURITY: trim off any potential nasties
+        $_GET['dir'] = preg_replace('[\.|\.\.|\/]', '', $_GET['dir']);
+        $items = quarantine_list($_GET['dir']);
+        // Build list of message id's to be used in SQL statement
+        if (count($items) > 0) {
+            $msg_ids = join($items, ",");
+            $date = mysql_real_escape_string(translateQuarantineDate($_GET['dir'], 'sql'));
+            $sql = "
   SELECT
    id AS id2,
-   DATE_FORMAT(timestamp, '".DATE_FORMAT." ".TIME_FORMAT."') AS datetime,
+   DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
    from_address,
    to_address,
    subject,
@@ -143,7 +148,7 @@ ORDER BY
   FROM
    maillog
   WHERE
-   ".$_SESSION['global_filter']."
+   " . $_SESSION['global_filter'] . "
   AND
    date = '$date'
   AND
@@ -151,11 +156,11 @@ ORDER BY
   ORDER BY
    date DESC, time DESC
   ";
-   db_colorised_table($sql,'Folder: '.translateQuarantineDate($_GET['dir']),true,true);
-  } else {
-   echo "No quarantined messages found\n";
- }
-}
+            db_colorised_table($sql, 'Folder: ' . translateQuarantineDate($_GET['dir']), true, true);
+        } else {
+            echo "No quarantined messages found\n";
+        }
+    }
 }
 
 html_end();

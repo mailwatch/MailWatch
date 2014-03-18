@@ -55,6 +55,9 @@ if (preg_match('/f-prot/i', get_conf_var('VirusScanners')) && $_SESSION['user_ty
 if ($_SESSION['user_type'] == 'A') {
     echo '<li><a href="mysql_status.php">MySQL Database Status</a>';
     echo '<li><a href="msconfig.php">View MailScanner Configuration</a>';
+	if (defined('MSRE') && MSRE) { 
+      echo '<li><a href="msre_index.php">Edit MailScanner Rulesets</a>';
+	}
 }
 if (!DISTRIBUTED_SETUP
     && !in_array(strtolower(get_conf_var('UseSpamAssassin')), array('0', 'no', false))
@@ -64,7 +67,7 @@ if (!DISTRIBUTED_SETUP
      <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
-     <li><a href="sa_rules_update.php">Update SpamAssasin Rule Descriptions</a>';
+     <li><a href="sa_rules_update.php">Update SpamAssassin Rule Descriptions</a>';
 }
 if (!DISTRIBUTED_SETUP && get_conf_truefalse('MCPChecks') && $_SESSION['user_type'] == 'A') {
     echo '<li><a href="mcp_rules_update.php">Update MCP Rule Descriptions</a>';

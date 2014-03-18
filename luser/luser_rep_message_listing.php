@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  MailWatch for MailScanner
  Copyright (C) 2003  Steve Freegard (smf@f2s.com)
@@ -27,49 +27,51 @@ session_start();
 //authenticate();
 $luser = $_SESSION['luser'];
 $pass = $_SESSION['pass'];
-if (! luser_auth($luser, $pass)) {
- echo "Error: You are not logged in - please \n";
- echo "<a href=\"luser_login.php\">log in</a> first.\n";
- html_end();
- exit;
+if (!luser_auth($luser, $pass)) {
+    echo "Error: You are not logged in - please \n";
+    echo "<a href=\"luser_login.php\">log in</a> first.\n";
+    html_end();
+    exit;
 }
- // $myfilter = " and ( to_address=\"".$luser."\" ";
- $myfilter = " and (to_address=\"".$luser."\" or from_address=\"".$luser."\") ";
- // I don't know why the following line causes things to puke. :-(
- // $myfilter = " and (timestamp>(now() - interval 3 day)) and (to_address=\"".$luser."\" or from_address=\"".$luser."\") ";
+// $myfilter = " and ( to_address=\"".$luser."\" ";
+$myfilter = " and (to_address=\"" . $luser . "\" or from_address=\"" . $luser . "\") ";
+// I don't know why the following line causes things to puke. :-(
+// $myfilter = " and (timestamp>(now() - interval 3 day)) and (to_address=\"".$luser."\" or from_address=\"".$luser."\") ";
 
 $refresh = luser_html_start("Message Listing");
 
-$dbh = DB::connect(DB_DSN,true);
-if (DB::isError($dbh)) { 
- die($dbh->getMessage()); 
+$dbh = DB::connect(DB_DSN, true);
+if (DB::isError($dbh)) {
+    die($dbh->getMessage());
 }
 
-$sth = $dbh->query("
- SELECT 
-  DATE_FORMAT(timestamp, '%d/%m/%y %H:%i:%s') AS datetime, 
-  id AS id,
-  from_address,
-  to_address,
-  subject,
-  size,
-  CASE WHEN isspam=1 THEN 'Y' ELSE 'N' END AS isspam,
-  CASE WHEN ishighspam=1 THEN 'Y' ELSE 'N' END AS ishighspam,
-  CASE WHEN isrblspam=1 THEN 'Y' ELSE 'N' END AS isrblspam,
-  CASE WHEN spamwhitelisted=1 THEN 'Y' ELSE 'N' END AS iswhitelisted,
-  sascore,
-  CASE WHEN virusinfected=1 THEN 'Y' ELSE 'N' END AS virusinfected,
-  CASE WHEN nameinfected=1 THEN 'Y' ELSE 'N' END AS nameinfected,
-  CASE WHEN otherinfected=1 THEN 'Y' ELSE 'N' END AS otherinfected,
-  report
- FROM
-  maillog
- WHERE
-  1=1
-".$myfilter."
+$sth = $dbh->query(
+    "
+     SELECT
+      DATE_FORMAT(timestamp, '%d/%m/%y %H:%i:%s') AS datetime,
+      id AS id,
+      from_address,
+      to_address,
+      subject,
+      size,
+      CASE WHEN isspam=1 THEN 'Y' ELSE 'N' END AS isspam,
+      CASE WHEN ishighspam=1 THEN 'Y' ELSE 'N' END AS ishighspam,
+      CASE WHEN isrblspam=1 THEN 'Y' ELSE 'N' END AS isrblspam,
+      CASE WHEN spamwhitelisted=1 THEN 'Y' ELSE 'N' END AS iswhitelisted,
+      sascore,
+      CASE WHEN virusinfected=1 THEN 'Y' ELSE 'N' END AS virusinfected,
+      CASE WHEN nameinfected=1 THEN 'Y' ELSE 'N' END AS nameinfected,
+      CASE WHEN otherinfected=1 THEN 'Y' ELSE 'N' END AS otherinfected,
+      report
+     FROM
+      maillog
+     WHERE
+      1=1
+    " . $myfilter . "
  ORDER BY 
   date DESC, time DESC
-") or die("Error executing query: ".mysql_error());
+"
+) or die("Error executing query: " . mysql_error());
 //"); // or die("Error executing query: ".mysql_error());
 //  and to_address='tgfurnish@herff-jones.com'
 //".$_SESSION["filter"]->CreateSQL()."
@@ -89,19 +91,19 @@ echo " <THEAD>\n";
 // Previous page link
 // tgf - Don't show a Prev link on the first page.
 if ($data['current'] != '1') {
- printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">&lt;&lt;Prev</A></TH>',$_SERVER['PHP_SELF'],$data['prev']);
+    printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">&lt;&lt;Prev</A></TH>', $_SERVER['PHP_SELF'], $data['prev']);
 } else {
- printf('<TH ALIGN="CENTER">&nbsp;</TH>');
+    printf('<TH ALIGN="CENTER">&nbsp;</TH>');
 }
 
-echo "  <TH COLSPAN=6>Showing records ". $data['from'] ." to ". $data['to'] ." of ".$data['numrows']."\n";
+echo "  <TH COLSPAN=6>Showing records " . $data['from'] . " to " . $data['to'] . " of " . $data['numrows'] . "\n";
 
 // Next page link
 // tgf - Don't show a Next link on the last page.
 if ($data['current'] != $data['numpages']) {
- printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TH>',$_SERVER['PHP_SELF'],$data['next']);
+    printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TH>', $_SERVER['PHP_SELF'], $data['next']);
 } else {
- printf('<TH ALIGN="CENTER">&nbsp;</TH>');
+    printf('<TH ALIGN="CENTER">&nbsp;</TH>');
 }
 
 echo " </THEAD>\n";
@@ -117,60 +119,60 @@ echo "  <TH>Status</TH>\n";
 echo " </THEAD>\n";
 
 // Get rows
-while($row = $pager->fetchRow(DB_FETCHMODE_OBJECT)) {
- $status_array = array();
+while ($row = $pager->fetchRow(DB_FETCHMODE_OBJECT)) {
+    $status_array = array();
 
- if ($row->isspam == 'Y') {
-  array_push($status_array, "Spam");
- } 
- 
- if ($row->iswhitelisted == 'Y') {
-  array_push($status_array, "Whitelisted");
- }
+    if ($row->isspam == 'Y') {
+        array_push($status_array, "Spam");
+    }
 
- if ($row->virusinfected == 'Y') {
-  // Get virus name
-  if(preg_match(VIRUS_REGEX,$row->report,$virus)) {
-   array_push($status_array, "Virus ($virus[2])");
-  } else {
-   array_push($status_array, "Virus");
-  }
- }
+    if ($row->iswhitelisted == 'Y') {
+        array_push($status_array, "Whitelisted");
+    }
 
- if ($row->nameinfected == 'Y') {
-  array_push($status_array, "Blocked attachment");
- }
- 
- if ($row->otherinfected == 'Y') {
-  array_push($status_array, "Other infection");
- }
+    if ($row->virusinfected == 'Y') {
+        // Get virus name
+        if (preg_match(VIRUS_REGEX, $row->report, $virus)) {
+            array_push($status_array, "Virus ($virus[2])");
+        } else {
+            array_push($status_array, "Virus");
+        }
+    }
 
- if (count($status_array) == 0) {
-  array_push($status_array, "Clean");
- }
+    if ($row->nameinfected == 'Y') {
+        array_push($status_array, "Blocked attachment");
+    }
 
- $status = join($status_array,", ");
+    if ($row->otherinfected == 'Y') {
+        array_push($status_array, "Other infection");
+    }
 
- # Row colorings
- if ($row->virusinfected == 'Y' || $row->nameinfected == "Y" || $row->otherinfected == "Y") {
-  echo " <TR CLASS=\"infected\">\n";
- } elseif ($row->isspam == 'Y') {
-  echo " <TR CLASS=\"spam\">\n";
- } elseif ($row->iswhitelisted == 'Y') {
-  echo " <TR CLASS=\"whitelisted\">\n";
- } else {
-  echo " <TR>";
- }
+    if (count($status_array) == 0) {
+        array_push($status_array, "Clean");
+    }
 
- echo "  <TD>" 			. $row->datetime		. "</TD>\n";
- echo "  <TD>". $row->id. "</TD>\n";
- echo "  <TD>" 	. htmlentities($row->from_address) 		. "</TD>\n";
- echo "  <TD>". str_replace(",", "<BR />", htmlentities($row->to_address)) . "</TD>\n";
- echo "  <TD class=\"subject\" width=\"10\">" 	. htmlentities($row->subject) 		. "</TD>\n";
- echo "  <TD ALIGN=\"RIGHT\">" 	. format_mail_size($row->size)	. "</TD>\n";
- echo "  <TD ALIGN=\"RIGHT\">" 	. $row->sascore			. "</TD>\n";
- echo "  <TD>" 			. $status			. "</TD>\n";
- echo " </TR>\n";
+    $status = join($status_array, ", ");
+
+    # Row colorings
+    if ($row->virusinfected == 'Y' || $row->nameinfected == "Y" || $row->otherinfected == "Y") {
+        echo " <TR CLASS=\"infected\">\n";
+    } elseif ($row->isspam == 'Y') {
+        echo " <TR CLASS=\"spam\">\n";
+    } elseif ($row->iswhitelisted == 'Y') {
+        echo " <TR CLASS=\"whitelisted\">\n";
+    } else {
+        echo " <TR>";
+    }
+
+    echo "  <TD>" . $row->datetime . "</TD>\n";
+    echo "  <TD>" . $row->id . "</TD>\n";
+    echo "  <TD>" . htmlentities($row->from_address) . "</TD>\n";
+    echo "  <TD>" . str_replace(",", "<BR />", htmlentities($row->to_address)) . "</TD>\n";
+    echo "  <TD class=\"subject\" width=\"10\">" . htmlentities($row->subject) . "</TD>\n";
+    echo "  <TD ALIGN=\"RIGHT\">" . format_mail_size($row->size) . "</TD>\n";
+    echo "  <TD ALIGN=\"RIGHT\">" . $row->sascore . "</TD>\n";
+    echo "  <TD>" . $status . "</TD>\n";
+    echo " </TR>\n";
 }
 echo " <TR><TD COLSPAN=8>\n";
 echo "  <TABLE WIDTH=100% BORDER=0><TR>\n";
@@ -178,29 +180,32 @@ echo "  <TABLE WIDTH=100% BORDER=0><TR>\n";
 // Previous page link
 // tgf - Don't show a Prev link on the first page.
 if ($data['current'] != '1') {
- printf('<TD ALIGN="CENTER"><A HREF="%s?offset=%d">&lt;&lt;Prev</A></TD><TD ALIGN="CENTER">',$_SERVER['PHP_SELF'],$data['prev']);
+    printf(
+        '<TD ALIGN="CENTER"><A HREF="%s?offset=%d">&lt;&lt;Prev</A></TD><TD ALIGN="CENTER">',
+        $_SERVER['PHP_SELF'],
+        $data['prev']
+    );
 } else {
- printf('<TD ALIGN="CENTER">&nbsp;</TD><TD ALIGN="CENTER">');
+    printf('<TD ALIGN="CENTER">&nbsp;</TD><TD ALIGN="CENTER">');
 }
 
 // Links to each page
-foreach($data['pages'] as $page=>$start) {
- if ($data['current'] != $page) {
-  printf('<A HREF="%s?offset=%d">%s</A> ',$_SERVER['PHP_SELF'],$start,$page);
- } else {
-  printf('%s ',$page);
- }
+foreach ($data['pages'] as $page => $start) {
+    if ($data['current'] != $page) {
+        printf('<A HREF="%s?offset=%d">%s</A> ', $_SERVER['PHP_SELF'], $start, $page);
+    } else {
+        printf('%s ', $page);
+    }
 }
 
 // Next page link
 // tgf - Don't show a Next link on the last page.
 if ($data['current'] != $data['numpages']) {
- printf('</TD><TD ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TD>',$_SERVER['PHP_SELF'],$data['next']);
+    printf('</TD><TD ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TD>', $_SERVER['PHP_SELF'], $data['next']);
 } else {
- printf('</TD><TD ALIGN="CENTER">&nbsp;</TD>');
+    printf('</TD><TD ALIGN="CENTER">&nbsp;</TD>');
 }
 
 echo " </TR></TABLE>\n";
 echo "</TD></TR></TABLE>\n";
 html_end();
-?>

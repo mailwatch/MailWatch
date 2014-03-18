@@ -21,10 +21,10 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-ini_set('error_log','syslog');
-ini_set('html_errors','off');
-ini_set('display_errors','on');
-ini_set('implicit_flush','false');
+ini_set('error_log', 'syslog');
+ini_set('html_errors', 'off');
+ini_set('display_errors', 'on');
+ini_set('implicit_flush', 'false');
 
 // Edit this to reflect the full path to functions.php
 require("functions.php");
@@ -34,30 +34,28 @@ set_time_limit(0);
 
 function doit($input)
 {
- global $fp;
- if(!$fp = popen($input,'r'))
-  die("Cannot open pipe");
+    global $fp;
+    if (!$fp = popen($input, 'r')) {
+        die("Cannot open pipe");
+    }
 
- $lines = 1;
- while($line = fgets($fp,2096))
- {
-  if(preg_match('/^.*MailScanner.*: Requeue: (\S+\.\S+) to (\S+)\s$/',$line,$explode))
-	{
-   $smtpd_id = $explode[1];
-   $smtp_id = $explode[2];
-	 dbquery("REPLACE INTO mtalog_ids VALUES ('$smtpd_id','$smtp_id')");
-  }
-  $lines++;
- }
- pclose($fp);
+    $lines = 1;
+    while ($line = fgets($fp, 2096)) {
+        if (preg_match('/^.*MailScanner.*: Requeue: (\S+\.\S+) to (\S+)\s$/', $line, $explode)) {
+            $smtpd_id = $explode[1];
+            $smtp_id = $explode[2];
+            dbquery("REPLACE INTO mtalog_ids VALUES ('$smtpd_id','$smtp_id')");
+        }
+        $lines++;
+    }
+    pclose($fp);
 }
 
-if($_SERVER['argv'][1] == "--refresh") {
- doit('cat '.MS_LOG);
+if ($_SERVER['argv'][1] == "--refresh") {
+    doit('cat ' . MS_LOG);
 } else {
- // Refresh first
- doit('cat '.MS_LOG);
- // Start watching the maillog
- doit('tail -F -n0 '.MS_LOG);
+    // Refresh first
+    doit('cat ' . MS_LOG);
+    // Start watching the maillog
+    doit('tail -F -n0 ' . MS_LOG);
 }
-

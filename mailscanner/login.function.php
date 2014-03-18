@@ -20,24 +20,20 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
 // if(!session_is_registered(myusername)) {
-if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION ['myusername']))
-	include 'checklogin.php';
-elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION ['myusername']) && isset($_GET['httpbasic']))
-{
-	header('WWW-Authenticate: Basic realm="MailWatch for MailScanner"');
-	header('HTTP/1.0 401 Unauthorized');
-	html_start("Not authenticated",0,false,false);
-	echo "<TABLE CLASS=\"boxtable\" WIDTH=100%><TR><TD><H1><FONT COLOR=\"RED\">Authentication Required!</FONT>
+if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION ['myusername'])) {
+    include 'checklogin.php';
+} elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION ['myusername']) && isset($_GET['httpbasic'])) {
+    header('WWW-Authenticate: Basic realm="MailWatch for MailScanner"');
+    header('HTTP/1.0 401 Unauthorized');
+    html_start("Not authenticated", 0, false, false);
+    echo "<TABLE CLASS=\"boxtable\" WIDTH=100%><TR><TD><H1><FONT COLOR=\"RED\">Authentication Required!</FONT>
 		</H1>Your username and/or password are incorrect.</TD></TR>\n";
-	html_end();
-	exit;
-}
-elseif(!isset($_SESSION['myusername']))
-{
-	// if not, show an error message and a hyperlink to the login page
-	header("Location: login.php");
-	exit;
+    html_end();
+    exit;
+} elseif (!isset($_SESSION['myusername'])) {
+    // if not, show an error message and a hyperlink to the login page
+    header("Location: login.php");
+    exit;
 }
 

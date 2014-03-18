@@ -20,7 +20,8 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-if (isset($_GET['httpbasic']))
-    header( 'Location: status.php?httpbasic');
-else
-    header( 'Location: status.php');
+if (isset($_GET['httpbasic'])) {
+    header('Location: status.php?httpbasic');
+} else {
+    header('Location: status.php');
+}
