@@ -34,6 +34,13 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $mypassword = $_POST['mypassword'];
 }
 
+// set usertype and domainname to non-null default values
+// prevents spurious errors in /var/log/httpd/error_log
+// usertype == 'Z' isn't valid and so won't match any user DB entries
+
+$usertype = 'Z';
+$domainname = 'localdomain';
+
 if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) != null)) {
     $_SESSION['user_ldap'] = '1';
     $myusername = safe_value($result);
