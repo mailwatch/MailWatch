@@ -133,8 +133,7 @@ define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 
 // This turns virus names into links that can be used to get more information
 // about a given virus or virus alias.  Comment out or set to false to disable.
-define('VIRUS_INFO', "http://www.rainingfrogs.co.uk/index.php?virus=%s&search=contains&Search=Search");
-// define('VIRUS_INFO', "http://www.viruslist.com/en/find?search_mode=virus&words=%s");
+define('VIRUS_INFO', define('VIRUS_INFO', "http://www.securelist.com/en/descriptions?words=%s&behavior=&Search=Search&search_type=1"););
 
 // When filtering data - only use the envelope 'To' address or 'To' domain.
 // This greatly increases perfomance as MySQL will not use indexes when
