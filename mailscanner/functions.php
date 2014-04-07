@@ -602,8 +602,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo ' <tr><td>Viruses:</td><td align="right">' . number_format(
                 $row->viruses
             ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
-        echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus(
-            ) . '</td></tr>' . "\n";
+        echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
         echo ' <tr><td>Blocked files:</td><td align="right">' . number_format(
                 $row->blockedfiles
             ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
@@ -741,7 +740,6 @@ function row_highandclick()
   }';
 }
 
-
 function html_end($footer = "")
 {
     echo '</td>' . "\n";
@@ -787,8 +785,7 @@ function dbquery($sql)
         //dbtable("SHOW STATUS");
         echo "\n-->\n\n";
     }
-    $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error(
-        ) . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
     return $result;
 }
 
@@ -802,7 +799,6 @@ function quote_smart($value)
     return $value;
 }
 
-
 function safe_value($value)
 {
     dbconn();
@@ -812,7 +808,6 @@ function safe_value($value)
     $value = mysql_real_escape_string($value);
     return $value;
 }
-
 
 function sa_autolearn($spamreport)
 {
@@ -1362,7 +1357,6 @@ function subtract_get_vars($preserve)
     }
 }
 
-
 function subtract_multi_get_vars($preserve)
 {
     if (is_array($_GET)) {
@@ -1388,8 +1382,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
     // Ordering
     $orderby = null;
-    if (isset($_GET['orderby']))
-    {
+    if (isset($_GET['orderby'])) {
         $orderby = $_GET['orderby'];
         switch (strtoupper($_GET['orderdir'])) {
             case 'A':
@@ -1443,8 +1436,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages(
-            ) . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -1973,8 +1965,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
             echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages(
-                ) . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2036,8 +2027,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages(
-            ) . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2128,8 +2118,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages(
-            ) . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2247,7 +2236,6 @@ function count_files_in_dir($dir)
     }
     return count($array);
 }
-
 
 function get_mail_relays($message_headers)
 {
@@ -2567,10 +2555,6 @@ function quarantine_list($input = "/")
                     $item[] = $f;
                 }
             }
-            if (count($item) > 0) {
-                // Sort in reverse chronological order
-                arsort($item);
-            }
             @closedir($d);
             break;
         default:
@@ -2584,13 +2568,15 @@ function quarantine_list($input = "/")
                             $item[] = "'$f'";
                         }
                     }
-                    if (count($item) > 0) {
-                        asort($item);
-                    }
                     closedir($d);
                 }
             }
     }
+    if (count($item) > 0) {
+        // Sort in reverse chronological order
+        arsort($item);
+    }
+
     return $item;
 }
 
@@ -3244,4 +3230,3 @@ function funcs_phpversion()
 {
     return (phpversion());
 }
-
