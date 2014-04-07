@@ -2268,7 +2268,7 @@ function address_filter_sql($addresses, $type)
             break;
         case 'U': // User - show only specific addresses
             foreach ($addresses as $address) {
-                if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+                if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
                     $sqladdr[] = "to_address like '%$address%'";
                 } else {
                     $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
@@ -2280,13 +2280,13 @@ function address_filter_sql($addresses, $type)
         case 'D': // Domain administrator
             foreach ($addresses as $address) {
                 if (strpos($address, '@')) {
-                    if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+                    if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
                         $sqladdr[] = "to_address like '%$address%'";
                     } else {
                         $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
                     }
                 } else {
-                    if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+                    if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
                         $sqladdr[] = "to_domain='$address'";
                     } else {
                         $sqladdr[] = "to_domain='$address' OR from_domain='$address'";
@@ -3089,7 +3089,7 @@ function return_quarantine_dates()
 
 function return_virus_link($virus)
 {
-    if ((defined('VIRUS_INFO') & VIRUS_INFO !== false)) {
+    if ((defined('VIRUS_INFO') && VIRUS_INFO !== false)) {
         $link = sprintf(VIRUS_INFO, $virus);
         return sprintf("<a href=\"%s\">%s</a>", $link, $virus);
     } else {

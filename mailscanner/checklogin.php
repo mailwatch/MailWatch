@@ -90,7 +90,7 @@ switch ($usertype) {
         if (strpos($myusername, '@')) {
             $ar = explode("@", $myusername);
             $domainname = $ar[1];
-            if ((defined('FILTER_TO_ONLY') & FILTER_TO_ONLY)) {
+            if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
                 $global_filter = $global_filter . " OR to_domain='$domainname'";
             } else {
                 $global_filter = $global_filter . " OR to_domain='$domainname' OR from_domain='$domainname'";
