@@ -106,8 +106,11 @@ define('RECORD_DAYS_TO_KEEP', 60);
 // Define how many days to audit logs to keep
 define('AUDIT_DAYS_TO_KEEP', 60);
 
+// Show Software Version tab (only Admins can see it)
+define('SHOW_SFVERSION', true);
+
 // Show Documentation tab
-define('SHOW_DOC', 'false');
+define('SHOW_DOC', false);
 
 // Quarantine settings
 

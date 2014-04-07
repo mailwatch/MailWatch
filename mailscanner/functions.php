@@ -634,10 +634,14 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         $nav['reports.php'] = "Reports";
         $nav['other.php'] = "Tools/Links";
-        if ($_SESSION['user_type'] === 'A') {
-            $nav['sf_version.php'] = "Software Versions";
+
+        if (SHOW_SFVERSION == true) {
+            if ($_SESSION['user_type'] === 'A') {
+                $nav['sf_version.php'] = "Software Versions";
+            }
         }
-        if (SHOW_DOC == 'true') {
+
+        if (SHOW_DOC == true) {
             $nav['docs.php'] = "Documentation";
         }
         $nav['logout.php'] = "Logout";
