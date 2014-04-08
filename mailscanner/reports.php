@@ -29,7 +29,7 @@ session_start();
 require('login.function.php');
 
 // Checking to see if there are any filters
-if (!is_object($_SESSION["filter"])) {
+if (!isset($_SESSION["filter"]) || !is_object($_SESSION["filter"])) {
     $filter = new Filter;
     $_SESSION["filter"] = $filter;
 } else {

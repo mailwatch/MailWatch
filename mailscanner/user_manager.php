@@ -138,12 +138,19 @@ if ($_SESSION['user_type'] == 'A') {
                     $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . mysql_real_escape_string($_GET['id']) . "'";
                     $result = dbquery($sql);
                     $row = mysql_fetch_object($result);
+                    $quarantine_report = '';
                     if ($row->quarantine_report == 1) {
                         $quarantine_report = "CHECKED";
                     }
                     if ($row->noscan == 0) {
                         $noscan = "CHECKED";
                     }
+
+                    $s["A"] = '';
+                    $s["D"] = '';
+                    $s["U"] = '';
+                    $s["R"] = '';
+
                     $s[$row->type] = "SELECTED";
                     echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"edit\">\n";
@@ -308,6 +315,7 @@ ORDER BY
         $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . mysql_real_escape_string($_SESSION['myusername']) . "'";
         $result = dbquery($sql);
         $row = mysql_fetch_object($result);
+        $quarantine_report = '';
         if ($row->quarantine_report == 1) {
             $quarantine_report = "CHECKED";
         }
