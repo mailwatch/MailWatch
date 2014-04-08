@@ -21,7 +21,7 @@
 */
 
 // Background colours
-$bg_colors = array("#BDBDBD", "#D8D8D8");
+$bg_colors = array("#EBEBEB", "#D8D8D8");
 
 // Set error level (some distro's have php.ini set to E_ALL)
 if (version_compare(phpversion(), '5.3.0', '<')) {
