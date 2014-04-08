@@ -65,6 +65,8 @@ $to_domain = '';
 if (preg_match('/(\S+)@(\S+)/', $url_to, $split)) {
     $touser = $split[1];
     $to_domain = $split[2];
+} else {
+    $to_domain = $url_to;
 }
 
 // Type
