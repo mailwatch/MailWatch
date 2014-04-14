@@ -174,6 +174,8 @@ function doit($input)
         die("Cannot open pipe");
     }
 
+    $link = dbconn();
+
     $lines = 1;
     while ($line = fgets($fp, 2096)) {
         // Reset variables
@@ -236,6 +238,8 @@ function doit($input)
         }
         $lines++;
     }
+
+    dbclose();
     pclose($fp);
 }
 
@@ -247,4 +251,3 @@ if ($_SERVER['argv'][1] == "--refresh") {
     // Start watching the maillog
     doit('tail -F -n0 ' . MAIL_LOG);
 }
-

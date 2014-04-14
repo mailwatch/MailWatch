@@ -106,8 +106,11 @@ define('RECORD_DAYS_TO_KEEP', 60);
 // Define how many days to audit logs to keep
 define('AUDIT_DAYS_TO_KEEP', 60);
 
+// Show Software Version tab (only Admins can see it)
+define('SHOW_SFVERSION', true);
+
 // Show Documentation tab
-define('SHOW_DOC', 'false');
+define('SHOW_DOC', false);
 
 // Quarantine settings
 
@@ -133,8 +136,7 @@ define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 
 // This turns virus names into links that can be used to get more information
 // about a given virus or virus alias.  Comment out or set to false to disable.
-define('VIRUS_INFO', "http://www.rainingfrogs.co.uk/index.php?virus=%s&search=contains&Search=Search");
-// define('VIRUS_INFO', "http://www.viruslist.com/en/find?search_mode=virus&words=%s");
+define('VIRUS_INFO', "http://www.securelist.com/en/descriptions?words=%s&behavior=&Search=Search&search_type=1");
 
 // When filtering data - only use the envelope 'To' address or 'To' domain.
 // This greatly increases perfomance as MySQL will not use indexes when

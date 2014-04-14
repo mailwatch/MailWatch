@@ -1,8 +1,8 @@
 1.2.0 - DEV
 -----------
 
+ - Added the ability to show/hide the software version page
  - Added MailScanner Rule Editor functionality from http://msre.sourceforge.net/
-  
    Fixes over original MSRE:
    -  Requires authenticated MailWatch Admin user
    -  Rules with 'action' of 0 are now correctly handled (as in size rules).
