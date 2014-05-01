@@ -2301,7 +2301,7 @@ function ldap_authenticate($USER, $PASS)
         $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die ("Could not connect to " . LDAP_HOST);
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
         if (strpos($USER, '@')) {
-            $r = ldap_search($ds, LDAP_DN, "proxyaddresses=SMTP:$USER") or die ("Could not search");
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD."=SMTP:$USER") or die ("Could not search");
         } else {
             $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$USER") or die ("Could not search");
         }
@@ -2310,8 +2310,8 @@ function ldap_authenticate($USER, $PASS)
             if ($result[0]) {
                 $USER = $result[0]['userprincipalname']['0'];
                 if (ldap_bind($ds, $USER, "$PASS")) {
-                    if (isset ($result[0]['proxyaddresses'])) {
-                        foreach ($result[0]['proxyaddresses'] as $email) {
+                    if (isset ($result[0][LDAP_EMAIL_FIELD])) {
+                        foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
                             if (substr($email, 0, 4) == "SMTP") {
                                 $email = strtolower(substr($email, 5));
                                 break;
