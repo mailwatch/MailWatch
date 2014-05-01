@@ -313,29 +313,12 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         // drive display
         if ($_SESSION['user_type'] == 'A') {
             echo '    <tr><td colspan="3" class="heading" align="center">Free Drive Space</td></tr>' . "\n";
-            function formatSize($size)
+            function formatSize($size, $precision = 2)
             {
-                switch (true) {
-                    case ($size > 1099511627776):
-                        $size /= 1099511627776;
-                        $suffix = 'TB';
-                        break;
-                    case ($size > 1073741824):
-                        $size /= 1073741824;
-                        $suffix = 'GB';
-                        break;
-                    case ($size > 1048576):
-                        $size /= 1048576;
-                        $suffix = 'MB';
-                        break;
-                    case ($size > 1024):
-                        $size /= 1024;
-                        $suffix = 'KB';
-                        break;
-                    default:
-                        $suffix = 'B';
-                }
-                return round($size, 2) . $suffix;
+                $base = log($size) / log(1024);
+                $suffixes = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+
+                return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
             }
 
             function get_disks()
@@ -393,8 +376,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             }
 
             foreach (get_disks() as $disk) {
-                $free_space = formatSize(disk_free_space($disk['mountpoint']));
-                $total_space = formatSize(disk_total_space($disk['mountpoint']));
+                $free_space = disk_free_space($disk['mountpoint']);
+                $total_space = disk_total_space($disk['mountpoint']);
                 if (round($free_space / $total_space, 2) <= 0.1) {
                     $percent = '<span style="color:red">';
                 } else {
@@ -404,7 +387,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 $percent .= round($free_space / $total_space, 2) * 100;
                 $percent .= '%] ';
                 $percent .= '</span>';
-                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . $free_space . $percent . '</td>' . "\n";
+                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
             }
 
 
