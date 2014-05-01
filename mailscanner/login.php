@@ -20,95 +20,162 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 ?>
-<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!doctype html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MailWatch Login Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
-<?php
-if (file_exists('conf.php')) {
-?>
     <style type="text/css">
-        table.center {
-            margin-left: auto;
-            margin-right: auto;
+        body {
+            background-color: #ebebeb;
+            color: #000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            line-height: 1.5em;
+        }
+
+        .login {
+            margin: 50px auto;
+            width: 307px;
+        }
+
+        .login h1 {
+            background-color: #f7ce4a;
+            -webkit-border-radius: 15px 15px 0 0;
+            -moz-border-radius: 15px 15px 0 0;
+            border-radius: 15px 15px 0 0;
+            color: #222;
+            font-size: 28px;
+            padding: 15px 15px;
+            margin: 0;
+            text-align: center;
+            border: 2px solid #000000;
+            border-bottom: 0;
+        }
+
+        .login form {
+            border: 2px solid #000000;
+            border-top: 0;
+            background-color: #fff;
+
+            -webkit-border-radius: 0 0 15px 15px;
+            -moz-border-radius: 0 0 15px 15px;
+            border-radius: 0 0 15px 15px;
+
+        }
+
+        .login fieldset {
+            border: 0;
+            margin: 0;
+            padding: 20px 20px;
+        }
+
+        .login fieldset p {
+            color: #222;
+            margin: 0;
+            margin-bottom: 8px;
+        }
+
+        .login fieldset p:last-child {
+            margin-bottom: 0;
+        }
+
+        .login p.loginerror {
+            background-color: #F2DEDE;
+            border-color: #EBCCD1;
+            color: #A94442;
+            padding: 10px;
+            text-align: center;
+
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        input {
+            border: 0;
+            border-bottom: 1px solid #222;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+            -webkit-appearance: none;
+        }
+
+        .login fieldset input[type="text"], .login fieldset input[type="password"] {
+            background-color: #e9e9e9;
+            color: #222;
+            padding: 4px 0;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .login fieldset input[type="submit"] {
+            background-color: #f7ce4a;
+            color: #222;
+            display: block;
+            margin: 0 auto;
+            padding: 4px 0;
+            width: 100px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            border: 0;
+        }
+
+        .login fieldset input[type="submit"]:hover {
+            background-color: #deb531;
         }
     </style>
-    <title>MailWatch Login Page</title>
 </head>
 <body>
-    <table width="300" border="1" class="center" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center"><img src="images/mailwatch-logo.png" alt="Mailwatch Logo"></td>
-        </tr>
+<div class="login">
+    <img src="images/mailwatch-logo-trans-307x84.png" alt="Mailwatch Logo">
+    <h1>MailWatch Login</h1>
+    <?php if (file_exists('conf.php')) { ?>
+        <form name="loginform" class="loginform" method="post" action="checklogin.php">
+            <fieldset>
+                <?php if (isset($_GET['error'])) { ?>
+                    <p class="loginerror">
+                        <?php
+                        switch ($_GET['error']) {
+                            case 'baduser':
+                                echo 'Bad Username or Password';
+                                break;
+                            case 'emptypassword':
+                                echo 'Password cannot be empty';
+                                break;
+                            default:
+                                echo 'An undefined error occurred';
+                        }
+                        ?>
+                    </p>
+                <?php } ?>
 
-        <tr>
-            <td>
-                <form name="form1" method="post" action="checklogin.php">
-                    <table width="100%" border="0" cellpadding="3" cellspacing="1">
-                        <tr>
-                            <td colspan="3"><strong> MailWatch Login</strong></td>
-                        </tr>
-                        <tr>
-                            <td style="width:78px;">Username</td>
-                            <td style="width:6px;">:</td>
-                            <td style="width:294px;"><input name="myusername" type="text" id="myusername"></td>
-                        </tr>
-                        <tr>
-                            <td>Password</td>
-                            <td>:</td>
-                            <td><input name="mypassword" type="password" id="mypassword"></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="submit" name="Submit" value="Login">
-                                <input type="reset" value="Reset">
-                                <input type="button" value="Back" onClick="history.go(-1);return true;">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </td>
-        </tr>
-    </table>
+                <p><label for="myusername">Username</label></p>
+
+                <p><input name="myusername" type="text" id="myusername" autofocus></p>
+
+                <p><label for="mypassword">Password</label></p>
+
+                <p><input name="mypassword" type="password" id="mypassword"></p>
+
+                <p><input type="submit" name="Submit" value="Login"></p>
+            </fieldset>
+        </form>
+    <?php
+    } else {
+        ?>
+        <p class="error">
+            Sorry, this installation of MailWatch is missing <span>conf.php</span> file. Please create the file by copying <span>conf.php.example</span> and making the required changes.
+        </p>
+    <?php
+    }
+    ?>
+</div>
+
 </body>
 </html>
-<?php
-} else {
-?>
-    <title>MailWatch Login Page</title>
-</head>
-<body>
-    <table width="300" border="1" style="text-align:center;" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center"><img src="images/mailwatch-logo.png" alt="MailWatch"></td>
-        </tr>
-        <tr>
-            <td>
-                <form name="form1" method="post" action="checklogin.php">
-                    <table width="100%" border="0" cellpadding="3" cellspacing="1">
-                        <tr>
-                            <td colspan="3"><strong> MailWatch Login</strong></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3"> Sorry the Server is missing conf.php. Please create the file by copying
-                                conf.php.example and
-                                making the required changes.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td><input type="button" value="Back" onClick="history.go(-1);return true;"></td>
-                        </tr>
-                    </table>
-                </form>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
-<?php
-}

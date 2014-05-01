@@ -43,13 +43,15 @@ define('DB_NAME', 'mailscanner');
 define('DB_DSN', DB_TYPE.'://'.DB_USER.":".DB_PASS."@".DB_HOST."/".DB_NAME);
 
 // LDAP settings
-define('USE_LDAP',		 '0');
-define('LDAP_HOST',      'server.example.com');
-define('LDAP_PORT',      '389');
-define('LDAP_DN',        'DC=example,DC=com');
-define('LDAP_USER',      'LDAPProxy@example.com');
-define('LDAP_PASS',      'secret');
-define('LDAP_SITE',      'default');
+define('USE_LDAP',		   '0');
+define('LDAP_HOST',        'server.example.com');
+define('LDAP_PORT',        '389');
+define('LDAP_DN',          'DC=example,DC=com');
+define('LDAP_USER',        'LDAPProxy@example.com');
+define('LDAP_PASS',        'secret');
+define('LDAP_SITE',        'default');
+// can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
+define('LDAP_EMAIL_FIELD', 'proxyaddresses');
 
 // Set Time Zone
 define('TIME_ZONE', 'America/New_York');
