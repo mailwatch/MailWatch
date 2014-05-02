@@ -1,6 +1,11 @@
 1.2.0 - DEV
 -----------
 
+ - Improved compatibility with PHP 5.5
+ - New login form design
+ - Added LDAP mail field variable to be compatible with more systems
+ - Corrected free disk space calculation
+ - Fixed Domain User operation on white/black lists
  - Added the ability to show/hide the software version page
  - Added MailScanner Rule Editor functionality from http://msre.sourceforge.net/
    Fixes over original MSRE:
@@ -63,7 +68,7 @@
  - Values from the MailScanner include directory are respected throughout the product
  - Added LDAP Support
  - Corrected issues for PHP5
- - New pagenation function that is cleaner and faster
+ - New pagination function that is cleaner and faster
  - Now using MDB2
  - HTML4.0 Strict
  - Changed the way the black and white list work
