@@ -301,7 +301,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             } else {
                 echo '    <tr><td colspan="3">Please verify read permissions on ' . $incomingdir . ' and ' . $outgoingdir . '</td></tr>' . "\n";
             }
-            // else use mailq which is for sendmail
+            // else use mailq which is for sendmail and exim
         } elseif (MAILQ && ($_SESSION['user_type'] == 'A')) {
             $inq = mysql_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
             $outq = mysql_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
@@ -1334,8 +1334,8 @@ function subtract_get_vars($preserve)
             }
         }
         if (isset($output) && is_array($output)) {
-            $output = join('&', $output);
-            return '&' . $output;
+            $output = join('&amp;', $output);
+            return '&amp;' . $output;
         } else {
             return false;
         }

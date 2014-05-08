@@ -29,23 +29,29 @@ if ($_SESSION['user_type'] != 'A') {
     header('Location: index.php');
 } else {
     html_start("SpamAssassin Rule Description Update", 0, false, false);
-
-    echo "<FORM METHOD=\"POST\" ACTION=\"" . $_SERVER['PHP_SELF'] . "\">";
-    echo "<INPUT TYPE=\"HIDDEN\" NAME=\"run\" VALUE=\"true\">";
-    echo "<TABLE CLASS=\"boxtable\" WIDTH=\"100%\">";
-    echo "<TR>";
-    echo "  <TD>";
-    echo "   This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.<BR>";
-    echo "   <BR>";
-    echo "   This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<BR>";
-    echo "  </TD>";
-    echo "</TR>";
-    echo " <TR>";
-    echo "  <TD ALIGN=\"CENTER\"><BR><INPUT TYPE=\"SUBMIT\" VALUE=\"Run Now\"><BR><BR></TD>";
-    echo "</TR>";
+    echo "<table class=\"boxtable\" width=\"100%\">";
+    echo "<tr>";
+    echo "  <td>";
+    echo "   This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.<br>";
+    echo "   <br>";
+    echo "   This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br>";
+    echo "  </td>";
+    echo "</tr>";
+    echo " <tr>";
+    echo "  <td align=\"center\">
+    <form method=\"post\" action=\"" . $_SERVER['PHP_SELF'] . "\">
+    <div style=\"margin: 5px\">
+    <input type=\"submit\" value=\"run now\">
+    <input type=\"hidden\" name=\"run\" value=\"true\">
+    </div>
+    </form>
+    </td>";
+    echo "</tr>";
+    echo "</table>\n";
 
     if (isset($_POST['run'])) {
-        echo "<TR><TD ALIGN=\"CENTER\"><TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\"><TR><TH>Rule</TH><TH>Description</TH></TR>\n";
+        echo "<table width=\"100%\">";
+        echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>Rule</th><th>Description</th></tr>\n";
         $fh = popen(
             "grep -hr '^describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
             'r'
@@ -58,7 +64,7 @@ if ($_SESSION['user_type'] != 'A') {
             if (isset($regs[1]) && isset($regs[2])) {
                 $regs[1] = mysql_real_escape_string(ltrim(rtrim($regs[1])));
                 $regs[2] = mysql_real_escape_string(ltrim(rtrim($regs[2])));
-                echo "<TR><TD>" . htmlentities($regs[1]) . "</TD><TD>" . htmlentities($regs[2]) . "</TD></TR>\n";
+                echo "<tr><td>" . htmlentities($regs[1]) . "</td><td>" . htmlentities($regs[2]) . "</td></tr>\n";
                 dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
                 //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
@@ -66,11 +72,9 @@ if ($_SESSION['user_type'] != 'A') {
             }
         }
         pclose($fh);
-        echo "</TABLE><BR></TD></TR>\n";
-        echo "</TABLE>";
+        echo "</table><br></td></tr>\n";
+        echo "</table>";
     }
-    echo "</TABLE>\n";
-    echo "</FORM>\n";
 }
 // Add footer
 html_end();

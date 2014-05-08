@@ -36,7 +36,7 @@ if (MSEE) {
 
 if ($_SESSION['user_type'] == 'A') {
     ?>
-    <script language="JavaScript" type="text/javascript">
+    <script type="text/javascript">
         <!--
         function delete_user(id) {
             var yesno = confirm("Are you sure you want to delete user " + id + "?");
