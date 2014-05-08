@@ -110,8 +110,7 @@ Spam Actions and High Scoring Spam Actions should also have 'store' as one of th
 
 If you want to use the integrate Blacklist/Whitelist (optional):
 
-   then edit the file and change the connection string in the CreateList
-   subroutine to match MailWatch.pm.
+   then edit the file and change the connection string in the CreateList subroutine to match MailWatch.pm.
 
 Copy SQLBlackWhiteList.pm to /usr/lib/MailScanner/MailScanner/CustomFunctions   and in MailScanner.conf set:
  Is Definitely Not Spam = &SQLWhitelist
@@ -163,6 +162,9 @@ Jun 13 12:18:24 hoshi MailScanner[26388]: Initialising database connection
 Jun 13 12:18:24 hoshi MailScanner[26388]: Finished initialising database connection
 
 Congratulations - you now have MailScanner logging to MySQL.
+
+If you want to see the output of `MailScanner --lint` in Tools/MailScanner Lint (Test) edit conf.php and set MS_EXECUTABLE_PATH,
+the follow instruction in tools/sudo/INSTALL
 
 -------------------------------------------
 Database cleanup of maillog records

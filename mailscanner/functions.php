@@ -2149,9 +2149,7 @@ function array_table($array, $keyed = false)
 
 function get_microtime()
 {
-    $mtime = explode(" ", microtime());
-    $mtime = $mtime[1] + $mtime[0];
-    return $mtime;
+    return microtime(true);
 }
 
 function page_creation_timer()
