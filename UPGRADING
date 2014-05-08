@@ -46,10 +46,10 @@ UPGRADING FROM 0.5.1 TO 1.0
 
    The once the new flag is enabled - you will need to populate the database
    with a flag for each of the message currently existing in your quarantine.
-   You do this by running './quarantine_maint --reconsile'.
+   You do this by running './quarantine_maint.php --reconcile'.
 
    To clean the quarantine - set 'QUARANTINE_DAYS_TO_KEEP' in conf.php and 
-   run './quarantine_maint --clean'.  This should then be run daily from cron. 
+   run './quarantine_maint.php --clean'.  This should then be run daily from cron.
   
 - Stop MailScanner/Apache from using the database while the schema is updated.
    # service httpd stop
