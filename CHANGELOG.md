@@ -1,6 +1,7 @@
 1.2.0 - DEV
 -----------
 
+ - Added a layer of security to cronjob, which don't execute if needed variables aren't set
  - Improved compatibility with PHP 5.5
  - New login form design
  - Added LDAP mail field variable to be compatible with more systems
