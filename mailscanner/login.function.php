@@ -29,7 +29,7 @@ if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
     header("Location: login.php?error=baduser");
     exit;
 } elseif (!isset($_SESSION['myusername'])) {
-    header("Location: login.php?error=baduser");
+    header("Location: login.php");
     exit;
 }
 

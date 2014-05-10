@@ -1,0 +1,5 @@
+#
+User_Alias MAILSCANNER = www-data
+Cmnd_Alias MAILSCANLINT = /usr/sbin/MailScanner
+Cmnd_Alias SPAMASSASSINLINT = /usr/bin/spamassassin
+MAILSCANNER ALL= NOPASSWD: MAILSCANLINT, SPAMASSASSINLINT

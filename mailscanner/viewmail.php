@@ -182,7 +182,7 @@ foreach ($mime_struct as $key => $part) {
         case "text/html":
             echo " <tr>\n";
             echo "  <td colspan=2>\n";
-            echo "   <iframe frameborder=0 width=\"100%\" height=300 src=\"viewpart.php?id=" . $_GET['id'] . "&filename=" . $_GET['filename'] . "&part=" . $part->mime_id . "\"></iframe>\n";
+            echo "   <iframe frameborder=0 width=\"100%\" height=300 src=\"viewpart.php?id=" . $_GET['id'] . "&amp;filename=" . $_GET['filename'] . "&amp;part=" . $part->mime_id . "\"></iframe>\n";
             echo "  </td>\n";
             echo " </tr>\n";
             break;
@@ -197,7 +197,7 @@ foreach ($mime_struct as $key => $part) {
 
             echo "  <td colspan=2 class=\"detail\">" . $part->d_parameters['filename'];
             if (($row->virusinfected == 0 && $row->nameinfected == 0 && $row->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
-                echo " <a href=\"viewpart.php?id=" . $_GET['id'] . "&filename=" . $_GET['filename'] . "&part=" . $part->mime_id . "\">Download</a>";
+                echo " <a href=\"viewpart.php?id=" . $_GET['id'] . "&amp;filename=" . $_GET['filename'] . "&amp;part=" . $part->mime_id . "\">Download</a>";
             }
             echo "  </td>";
 

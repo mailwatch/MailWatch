@@ -110,8 +110,7 @@ Spam Actions and High Scoring Spam Actions should also have 'store' as one of th
 
 If you want to use the integrate Blacklist/Whitelist (optional):
 
-   then edit the file and change the connection string in the CreateList
-   subroutine to match MailWatch.pm.
+   then edit the file and change the connection string in the CreateList subroutine to match MailWatch.pm.
 
 Copy SQLBlackWhiteList.pm to /usr/lib/MailScanner/MailScanner/CustomFunctions   and in MailScanner.conf set:
  Is Definitely Not Spam = &SQLWhitelist
@@ -164,41 +163,36 @@ Jun 13 12:18:24 hoshi MailScanner[26388]: Finished initialising database connect
 
 Congratulations - you now have MailScanner logging to MySQL.
 
+If you want to see the output of `MailScanner --lint` in Tools/MailScanner Lint (Test) edit conf.php and set MS_EXECUTABLE_PATH,
+the follow instruction in tools/sudo/INSTALL
+
 -------------------------------------------
 Database cleanup of maillog records
 -------------------------------------------
 
-db_clean.php
-
-add to /etc/cron.daily/
+add db_clean.php to /etc/cron.daily/
 
 You will then to edit conf.php the RECORD_DAYS_TO_KEEP definition.
-
-You will need to edit the db_clean.php to reflect the location of the functions.php page
+You will need to edit the db_clean.php to reflect the location of the functions.php file
 
 --------------------------------------------
-Quaratine Maintenance
+Quarantine Maintenance
 --------------------------------------------
 
-Remove the clean.quaratine
+Remove the clean.quarantine cronjob configured with MailScanner.
 
-quaratine_maint.php
-
-add to /etc/cron.daily/
+Edit and copy quarantine_maint.sh to /etc/cron.daily/
 
 You will then to edit conf.php the QUARANTINE_DAYS_TO_KEEP definition.
-
-You will need to edit the quaratine_maint.php to reflect the location of the functions.php page
+You will need to edit the quarantine_maint.php to reflect the location of the functions.php file
 
 --------------------------------------------
-Quaratine Maintenance
+Quarantine Reporting
 --------------------------------------------
 
-quaratine_report.php
+Add quarantine_report.php to /etc/cron.daily
 
-add to /etc/cron.daily
-
-You will need to edit the quaratine_report.php to reflect the location of the functions.php page
+You will need to edit the quarantine_report.php to reflect the location of the functions.php file
 
 ------------------------------------------------- 
 Test the MailWatch interface
