@@ -35,10 +35,6 @@ $url_to = (isset($_GET['to']) ? $_GET['to'] : '');
 $url_to = htmlentities($url_to);
 $url_to = safe_value($url_to);
 
-$url_to_delete = (isset($_GET['to_delete']) ? $_GET['to_delete'] : '');
-$url_to_delete = htmlentities($url_to_delete);
-$url_to_delete = safe_value($url_to_delete);
-
 $url_host = (isset($_GET['host']) ? $_GET['host'] : '');
 $url_host = htmlentities($url_host);
 $url_host = safe_value($url_host);
@@ -63,23 +59,14 @@ $url_id = (isset($_GET['id']) ? $_GET['id'] : '');
 $url_id = htmlentities($url_id);
 $url_id = safe_value($url_id);
 
-if ($url_to_delete <> '') {
-  $url_address = $url_to . '@' . $url_domain;
-}
-
 // Split user/domain if necessary (from detail.php)
-if (preg_match('/(\S+)@(\S+)/', $url_address, $split)) {
-    $to_user = $split[1];
+$touser = '';
+$to_domain = '';
+if (preg_match('/(\S+)@(\S+)/', $url_to, $split)) {
+    $touser = $split[1];
     $to_domain = $split[2];
 } else {
-    $to_domain = $url_domain;
-}
-
-if (preg_match('/(\S+)@(\S+)/', $url_to_delete, $split)) {
-    $to_user = $split[1];
-    $to_delete_domain = $split[2];
-} else {
-    $to_delete_domain = $url_to_delete;
+    $to_domain = $url_to;
 }
 
 // Type
@@ -94,7 +81,10 @@ switch ($url_type) {
         $from = $url_from;
 }
 
-$myusername = $_SESSION['myusername'];  // Validate input against the user type
+$myusername = $_SESSION['myusername'];
+// Validate input against the user type
+$to_user_filter = array();
+$to_domain_filter = array();
 switch ($_SESSION['user_type']) {
     case 'U': // User
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
@@ -148,6 +138,7 @@ switch ($_SESSION['user_type']) {
     case 'A': // Administrator
         break;
 }
+$to_address = '';
 switch (true) {
     case(!empty($url_to)):
         $to_address = $url_to;
@@ -181,7 +172,7 @@ if ($url_submit == 'Add') {
                 $list = 'blacklist';
                 break;
         }
-        $sql  = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES';  
+        $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES';
         $sql .= '(\'' . mysql_real_escape_string($to_address);
         $sql .= '\',\'' . mysql_real_escape_string($to_domain);
         $sql .= '\',\'' . mysql_real_escape_string($from) . '\')';
@@ -206,11 +197,11 @@ if ($url_submit == 'Delete') {
 
     switch ($_SESSION['user_type']) {
         case 'U':
-            $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$url_to_delete'";
+            $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
             audit_log("Removed entry $id from $list");
             break;
         case 'D':
-            $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_delete_domain'";
+            $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
             audit_log("Removed entry $id from $list");
             break;
         case 'A':
@@ -242,7 +233,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . $_SERVER['PHP_SELF'] . '?submit=Delete&amp;id=' . $row[0] . '&amp;to_delete=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . $_SERVER['PHP_SELF'] . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -266,12 +257,12 @@ echo '
 
 switch ($_SESSION['user_type']) {
     case 'A':
-        echo '<td><input type="text" name="to" size=22 value="' . $to_user . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
+        echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
         break;
     case 'U':
         echo '<td> <select name="to">';
         foreach ($to_user_filter as $to_user_selection) {
-            if ($to_user == $to_user_selection) {
+            if ($touser == $to_user_selection) {
                 echo '<option selected>' . $to_user_selection . '</option>';
             } else {
                 echo '<option>' . $to_user_selection . '</option>';
@@ -288,7 +279,7 @@ switch ($_SESSION['user_type']) {
         echo '</td>';
         break;
     case 'D':
-        echo '<td><input type="text" name="to" size=22 value="' . $to_user . '">@<select name="domain">';
+        echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
             if ($to_domain == $to_domain_selection) {
                 echo '<option selected>' . $to_domain_selection . '</option>';
