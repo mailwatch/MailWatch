@@ -110,18 +110,8 @@ class postfix_parser
 
             // Extract any key=value pairs
             if (strstr($match[2], '=')) {
-                $items = explode(', ', $match[2]);
-                $entries = array();
-                foreach ($items as $item) {
-                    $entry = explode('=', $item);
-                    $entries[$entry[0]] = $entry[1];
-                    // fix for the id= issue 09.12.2011
-                    if (isset($entry[2])) {
-                        $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                    } else {
-                        $entries[$entry[0]] = $entry[1];
-                    }
-                }
+                $pattern = "/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/";
+                preg_match($pattern, $match[2], $entries);
                 $this->entries = $entries;
             } else {
                 $this->entry = $match[2];
