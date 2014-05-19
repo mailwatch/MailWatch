@@ -61,7 +61,7 @@ http://php.net/manual/en/timezones.php
 */
 
 // Proxy Settings
-define('USE_PROXY', 'false');
+define('USE_PROXY', false);
 define('PROXY_SERVER', '127.0.0.1');
 define('PROXY_PORT', '8080');
 // Can be set to CURLPROXY_HTTP or CURLPROXY_SOCKS5

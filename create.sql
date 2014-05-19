@@ -37,21 +37,6 @@ CREATE TABLE blacklist (
 ) ENGINE=MyISAM;
 
 --
--- Table structure for table `geoip_country`
---
-
-CREATE TABLE geoip_country (
-  begin_ip varchar(15) default NULL,
-  end_ip varchar(15) default NULL,
-  begin_num bigint(20) default NULL,
-  end_num bigint(20) default NULL,
-  iso_country_code char(2) default NULL,
-  country text,
-  KEY geoip_country_begin (begin_num),
-  KEY geoip_country_end (end_num)
-) ENGINE=MyISAM;
-
---
 -- Table structure for table `inq`
 --
 

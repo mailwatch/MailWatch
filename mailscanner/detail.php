@@ -132,11 +132,15 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                 foreach ($relays as $relay) {
                     $output .= ' <tr>' . "\n";
                     $output .= ' <td>' . $relay . '</td>' . "\n";
+                    // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+                    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $relay)) {
+                        $relay = current(array_slice(explode(':', $relay), 0, 1));
+                    }
                     // Reverse lookup on address. Possibly need to remove it.
                     if (($host = gethostbyaddr($relay)) <> $relay) {
-                        $output .= " <TD>$host</TD>\n";
+                        $output .= " <td>$host</td>\n";
                     } else {
-                        $output .= " <TD>(Reverse Lookup Failed)</TD>\n";
+                        $output .= " <td>(Reverse Lookup Failed)</td>\n";
                     }
                     // Do GeoIP lookup on address
                     if ($geoip_country = return_geoip_country($relay)) {
@@ -252,7 +256,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 
 // Display the relay information only if there are matching
 // rows in the relay table (maillog.id = relay.msg_id)...
-$sqlcheck = "Show tables like 'mtalog_ids'";
+$sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
 if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfix
     $sql1 = "

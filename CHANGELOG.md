@@ -1,6 +1,7 @@
 1.2.0 - DEV
 -----------
 
+ - Moved to GeoIP binary data file, dropped CSV import to database
  - Added a layer of security to cronjob, which don't execute if needed variables aren't set
  - Improved compatibility with PHP 5.5
  - New login form design
