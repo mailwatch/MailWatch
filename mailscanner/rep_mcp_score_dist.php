@@ -53,10 +53,10 @@ $sql = "
 if (is_writable(CACHE_DIR)) {
 
 // JPGraph
-    include_once("./jpgraph/src/jpgraph.php");
-    include_once("./jpgraph/src/jpgraph_log.php");
-    include_once("./jpgraph/src/jpgraph_bar.php");
-    include_once("./jpgraph/src/jpgraph_line.php");
+    include_once("./lib/jpgraph/src/jpgraph.php");
+    include_once("./lib/jpgraph/src/jpgraph_log.php");
+    include_once("./lib/jpgraph/src/jpgraph_bar.php");
+    include_once("./lib/jpgraph/src/jpgraph_line.php");
 
 ///////AJOS1 NOTE////////
 // AjosNote - Must be 2 or more rows...

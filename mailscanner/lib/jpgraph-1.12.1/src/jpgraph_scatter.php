@@ -8,7 +8,7 @@
  // Copyright (c) Asial Corporation. All rights reserved.
  //========================================================================
  */
-require_once ('jpgraph_plotmark.inc.php');
+require_once('jpgraph_plotmark.inc.php');
 
 //===================================================
 // CLASS FieldArrow
