@@ -2230,16 +2230,12 @@ function get_mail_relays($message_headers)
         $header = preg_replace('/IPv6\:/', '', $header);
         if (preg_match_all('/\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
             foreach ($regs['ip'] as $relay) {
-                if (isset($relays[$relay])) {
-                    $relays[$relay]++;
-                } else {
-                    $relays[$relay] = 1;
-                }
+                $relays[] = $relay;
             }
         }
     }
     if (is_array($relays)) {
-        return array_keys($relays);
+        return array_unique($relays);
     }
 
     return false;
@@ -2473,58 +2469,27 @@ function debug_print_r($input)
     return $return;
 }
 
-function return_geoip_addr($ip)
-{
-    //TODO fix this function to work with ipv6
-    if (false === strpos($ip, ':')) {
-        $piece = explode(".", $ip);
-        $ip1 = (16777216 * $piece[0]);
-        $ip2 = (65536 * $piece[1]);
-        $ip3 = (256 * $piece[2]);
-        $ip4 = ($piece[3]);
-        $geoip = ($ip1 + $ip2 + $ip3 + $ip4);
-        return $geoip;
-    }
-
-    return 0;
-}
-
 function return_geoip_country($ip)
 {
-    //TODO fix this function to work with ipv6
-    $geoip_num = return_geoip_addr($ip);
-    $sql = "
-SELECT
- country
-FROM
- geoip_country
-USE INDEX (geoip_country_begin,geoip_country_end)
-WHERE
- ($geoip_num > begin_num)
-AND
- ($geoip_num < end_num)
-";
-    $sth = dbquery($sql);
-    return (@mysql_result($sth, 0));
-}
-
-/*if (!function_exists('file_get_contents')) {
-    function file_get_contents($filename, $use_include_path = 0)
-    {
-        $file = @fopen($filename, 'rb', $use_include_path);
-        if ($file) {
-            if ($fsize = @filesize($filename)) {
-                $data = fread($file, $fsize);
-            } else {
-                while (!feof($file)) {
-                    $data .= fread($file, 1024);
-                }
-            }
-            fclose($file);
-        }
-        return $data;
+    require_once 'lib/geoip.inc';
+    //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
+        $ip = current(array_slice(explode(':', $ip), 0, 1));
     }
-}*/
+
+    if (strpos($ip, ':') === false) {
+        //ipv4
+        $gi = geoip_open("./temp/GeoIP.dat", GEOIP_STANDARD);
+        $countryname = geoip_country_name_by_addr($gi, $ip);
+    } else {
+        //ipv6
+        $gi = geoip_open("./temp/GeoIPv6.dat", GEOIP_STANDARD);
+        $countryname = geoip_country_name_by_addr_v6($gi, $ip);
+    }
+
+    geoip_close($gi);
+    return $countryname;
+}
 
 function quarantine_list($input = "/")
 {
