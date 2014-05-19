@@ -9,7 +9,7 @@
  //========================================================================
  */
 
-require_once ('jpgraph_plotmark.inc.php');
+require_once('jpgraph_plotmark.inc.php');
 require_once "jpgraph_log.php";
 
 

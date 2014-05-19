@@ -183,7 +183,7 @@ class LanguageConv {
         elseif( $aFF === FF_SIMSUN ) {
             // Do Chinese conversion
             if( $this->g2312 == null ) {
-                include_once 'jpgraph_gb2312.php' ;
+                include_once 'jpgraph_gb2312.php';
                 $this->g2312 = new GB2312toUTF8();
             }
             return $this->g2312->gb2utf8($aTxt);
