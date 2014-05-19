@@ -2235,7 +2235,7 @@ function get_mail_relays($message_headers)
         }
     }
     if (is_array($relays)) {
-        return $relays;
+        return array_unique($relays);
     }
 
     return false;
