@@ -2476,18 +2476,23 @@ function return_geoip_country($ip)
     if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
         $ip = current(array_slice(explode(':', $ip), 0, 1));
     }
-
+    $countryname = false;
     if (strpos($ip, ':') === false) {
         //ipv4
-        $gi = geoip_open("./temp/GeoIP.dat", GEOIP_STANDARD);
-        $countryname = geoip_country_name_by_addr($gi, $ip);
+        if (file_exists('./temp/GeoIP.dat')) {
+            $gi = geoip_open('./temp/GeoIP.dat', GEOIP_STANDARD);
+            $countryname = geoip_country_name_by_addr($gi, $ip);
+            geoip_close($gi);
+        }
     } else {
         //ipv6
-        $gi = geoip_open("./temp/GeoIPv6.dat", GEOIP_STANDARD);
-        $countryname = geoip_country_name_by_addr_v6($gi, $ip);
+        if (file_exists('./temp/GeoIPv6.dat')) {
+            $gi = geoip_open('./temp/GeoIPv6.dat', GEOIP_STANDARD);
+            $countryname = geoip_country_name_by_addr_v6($gi, $ip);
+            geoip_close($gi);
+        }
     }
 
-    geoip_close($gi);
     return $countryname;
 }
 
