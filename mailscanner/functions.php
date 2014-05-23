@@ -2172,28 +2172,31 @@ function debug($text)
 
 function return_24_hour_array()
 {
+    $hour_array = array();
     for ($h = 0; $h < 24; $h++) {
         if (strlen($h) < 2) {
             $h = "0" . $h;
         }
-        $array[$h] = 0;
+        $hour_array[$h] = 0;
     }
-    return $array;
+    return $hour_array;
 }
 
 function return_60_minute_array()
 {
+    $minute_array = array();
     for ($m = 0; $m < 60; $m++) {
         if (strlen($m) < 2) {
             $m = "0" . $m;
         }
-        $array[$m] = 0;
+        $minute_array[$m] = 0;
     }
-    return $array;
+    return $minute_array;
 }
 
 function return_time_array()
 {
+    $time_array = array();
     for ($h = 0; $h < 24; $h++) {
         if (strlen($h) < 2) {
             $h = "0" . $h;
@@ -2202,24 +2205,26 @@ function return_time_array()
             if (strlen($m) < 2) {
                 $m = "0" . $m;
             }
-            $array[$h][$m] = 0;
+            $time_array[$h][$m] = 0;
         }
     }
-    return $array;
+    return $time_array;
 }
 
 function count_files_in_dir($dir)
 {
+    //TODO: Refactor
+    $file_list_array = array();
     if (!$drh = @opendir($dir)) {
         return false;
     } else {
         while (false !== ($file = readdir($drh))) {
             if ($file !== "." && $file !== "..") {
-                $array[] = $file;
+                $file_list_array[] = $file;
             }
         }
     }
-    return count($array);
+    return count($file_list_array);
 }
 
 function get_mail_relays($message_headers)
@@ -2243,49 +2248,50 @@ function get_mail_relays($message_headers)
 
 function address_filter_sql($addresses, $type)
 {
+    $sqladdr = '';
+    $sqladdr_arr = array();
     switch ($type) {
         case 'A': // Administrator - show everything
-            return "1=1";
+            $sqladdr = "1=1";
             break;
         case 'U': // User - show only specific addresses
             foreach ($addresses as $address) {
                 if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                    $sqladdr[] = "to_address like '%$address%'";
+                    $sqladdr_arr[] = "to_address like '%$address%'";
                 } else {
-                    $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
+                    $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
                 }
             }
-            $sqladdr = join(' OR ', $sqladdr);
-            return $sqladdr;
+            $sqladdr = join(' OR ', $sqladdr_arr);
             break;
         case 'D': // Domain administrator
             foreach ($addresses as $address) {
                 if (strpos($address, '@')) {
                     if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                        $sqladdr[] = "to_address like '%$address%'";
+                        $sqladdr_arr[] = "to_address like '%$address%'";
                     } else {
-                        $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
+                        $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
                     }
                 } else {
                     if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                        $sqladdr[] = "to_domain='$address'";
+                        $sqladdr_arr[] = "to_domain='$address'";
                     } else {
-                        $sqladdr[] = "to_domain='$address' OR from_domain='$address'";
+                        $sqladdr_arr[] = "to_domain='$address' OR from_domain='$address'";
                     }
                 }
             }
             // Join together to form a suitable SQL WHERE clause
-            $sqladdr = join(' OR ', $sqladdr);
-            return $sqladdr;
+            $sqladdr = join(' OR ', $sqladdr_arr);
             break;
         case 'H': // Host
             foreach ($addresses as $hostname) {
-                $sqladdr[] = "hostname='$hostname'";
+                $sqladdr_arr[] = "hostname='$hostname'";
             }
-            $sqladdr = join(' OR ', $sqladdr);
-            return $sqladdr;
+            $sqladdr = join(' OR ', $sqladdr_arr);
             break;
     }
+
+    return $sqladdr;
 }
 
 function ldap_authenticate($USER, $PASS)
@@ -2311,18 +2317,19 @@ function ldap_authenticate($USER, $PASS)
                                 break;
                             }
                         }
-                    }
-                    $sql = sprintf("SELECT username from users where username = %s", quote_smart($email));
-                    $sth = dbquery($sql);
-                    if (mysql_num_rows($sth) == 0) {
-                        $sql = sprintf(
-                            "REPLACE into users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                            quote_smart($email),
-                            quote_smart($result[0]['cn'][0])
-                        );
+
+                        $sql = sprintf("SELECT username from users where username = %s", quote_smart($email));
                         $sth = dbquery($sql);
+                        if (mysql_num_rows($sth) == 0) {
+                            $sql = sprintf(
+                                "REPLACE into users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                                quote_smart($email),
+                                quote_smart($result[0]['cn'][0])
+                            );
+                            $sth = dbquery($sql);
+                        }
+                        return $email;
                     }
-                    return $email;
                 }
             }
         }
@@ -2983,7 +2990,9 @@ function audit_log($action)
             // TODO: MSEE audit_logging (what session variable hold user name??)
             return false;
         }
+        return true;
     }
+    return false;
 }
 
 function mailwatch_array_sum($array)
