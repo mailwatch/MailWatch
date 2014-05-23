@@ -332,6 +332,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         debug("submit branch taken");
         // Reset error status
         $error = 0;
+        $status = array();
         // Release
         if (isset($_GET['release'])) {
             // Send to the original recipient(s) or to an alternate address
@@ -355,7 +356,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo ' <tr>' . "\n";
         echo '  <th colspan="2">Quarantine Command Results</th>' . "\n";
         echo ' </tr>' . "\n";
-        if (isset($status)) {
+        if (!empty($status)) {
             echo '  <tr>' . "\n";
             echo '  <td class="heading" width="150" align="right" valign="top">Result Messages:</td>' . "\n";
             echo '  <td class="detail">' . "\n";
@@ -395,6 +396,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo '  <th>Path</th>' . "\n";
         echo '  <th>Dangerous?</th>' . "\n";
         echo ' </tr>' . "\n";
+        $is_dangerous = 0;
         foreach ($quarantined as $item) {
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
@@ -432,6 +434,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
             }
             if ($item['dangerous'] == "Y" && $_SESSION['user_type'] != 'A') {
                 $dangerous = $yes;
+                $is_dangerous++;
             } else {
                 $dangerous = $no;
             }
@@ -439,7 +442,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr>' . "\n";
-        if ($item['dangerous'] == "Y" && $_SESSION['user_type'] != 'A') {
+        if ($is_dangerous > 0 && $_SESSION['user_type'] != 'A') {
             echo '  <td colspan="6">&nbsp</td>' . "\n";
         } else {
             echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;Alternate Recipient(s):&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";

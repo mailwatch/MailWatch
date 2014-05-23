@@ -38,7 +38,6 @@ switch ($_GET['queue']) {
         break;
     default:
         die("No queue specified\n");
-        break;
 }
 
 db_colorised_table(

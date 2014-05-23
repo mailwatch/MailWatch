@@ -250,7 +250,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         if (!DISTRIBUTED_SETUP) {
             $no = '<span class="yes">&nbsp;NO&nbsp;</span>' . "\n";
             $yes = '<span class="no">&nbsp;YES&nbsp;</span>' . "\n";
-            $junk = exec("ps ax | grep MailScanner | grep -v grep", $output);
+            exec("ps ax | grep MailScanner | grep -v grep", $output);
             if (count($output) > 0) {
                 $running = $yes;
                 $procs = count($output) - 1 . " children";
@@ -261,9 +261,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             echo '     <tr><td>MailScanner:</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
-            $output = "";
             $mta = get_conf_var('mta');
-            $junk = exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
+            exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
             if (count($output) > 0) {
                 $running = $yes;
             } else {
@@ -344,6 +343,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                      * http://unix.stackexchange.com/a/24230/33366
                      * http://unix.stackexchange.com/a/12086/33366
                      */
+                    $temp_drive = array();
                     if (is_file('/proc/mounts')) {
                         $mounted_fs = file("/proc/mounts");
                         foreach ($mounted_fs as $fs_row) {
@@ -608,6 +608,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
         // Navigation links - put them into an array to allow them to be switched
         // on or off as necessary and to allow for the table widths to be calculated.
+        $nav = array();
         $nav['status.php'] = "Recent Messages";
         if (LISTS) {
             $nav['lists.php'] = "Lists";
@@ -763,7 +764,6 @@ function dbquery($sql)
         echo "SQL:\n\n$sql\n\n";
         $result = mysql_query($dbg_sql) or die("Error executing query: " . mysql_errno() . " - " . mysql_error());
         $fields = mysql_num_fields($result);
-        $rows = mysql_num_rows($result);
         while ($row = mysql_fetch_row($result)) {
             for ($f = 0; $f < $fields; $f++) {
                 echo mysql_field_name($result, $f) . ": " . $row[$f] . "\n";
@@ -1100,7 +1100,7 @@ function get_conf_var($name)
     } else {
         $conf_dir = get_conf_include_folder();
         $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
-        $array_output = array();
+        //$array_output = array();
 
         $array_output1 = parse_conf_file($MailScanner_conf_file);
         $array_output2 = parse_conf_dir($conf_dir);
@@ -1110,14 +1110,15 @@ function get_conf_var($name)
         } else {
             $array_output = $array_output1;
         }
-        foreach ($array_output as $regs[1] => $regs[2]) {
-            $regs[1] = preg_replace('/ */', '', $regs[1]);
+        //echo '<pre>'; var_dump($array_output); echo '</pre>';
+        foreach ($array_output as $parameter_name => $parameter_value) {
+            $parameter_name = preg_replace('/ */', '', $parameter_name);
 
-            if ((strtolower($regs[1])) == (strtolower($name))) {
-                if (is_file($regs[2])) {
-                    return read_ruleset_default($regs[2]);
+            if ((strtolower($parameter_name)) == (strtolower($name))) {
+                if (is_file($parameter_value)) {
+                    return read_ruleset_default($parameter_value);
                 } else {
-                    return $regs[2];
+                    return $parameter_value;
                 }
             }
         }
@@ -1131,15 +1132,13 @@ function parse_conf_dir($conf_dir)
     if ($dh = opendir($conf_dir)) {
         while (($file = readdir($dh)) !== false) {
             // remove the . and .. so that it doesn't throw an error when parsing files
-            if ($file !== ".") {
-                if ($file !== "..") {
-                    $file_name = $conf_dir . $file;
-                    if (!is_array($array_output1)) {
-                        $array_output1 = parse_conf_file($file_name);
-                    } else {
-                        $array_output2 = parse_conf_file($file_name);
-                        $array_output1 = array_merge($array_output1, $array_output2);
-                    }
+            if ($file !== "." && $file !== "..") {
+                $file_name = $conf_dir . $file;
+                if (!is_array($array_output1)) {
+                    $array_output1 = parse_conf_file($file_name);
+                } else {
+                    $array_output2 = parse_conf_file($file_name);
+                    $array_output1 = array_merge($array_output1, $array_output2);
                 }
             }
         }
@@ -1159,8 +1158,7 @@ function get_conf_truefalse($name)
         return ldap_get_conf_truefalse($name);
     } else {
         $conf_dir = get_conf_include_folder();
-        $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
-        $array_output = array();
+        $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
         $array_output1 = parse_conf_file($MailScanner_conf_file);
         $array_output2 = parse_conf_dir($conf_dir);
@@ -1170,31 +1168,24 @@ function get_conf_truefalse($name)
         } else {
             $array_output = $array_output1;
         }
-        foreach ($array_output as $regs[1] => $regs[2]) {
-            $regs[1] = preg_replace('/ */', '', $regs[1]);
+        foreach ($array_output as $parameter_name => $parameter_value) {
+            $parameter_name = preg_replace('/ */', '', $parameter_name);
 
-            if ((strtolower($regs[1])) == (strtolower($name))) {
+            if ((strtolower($parameter_name)) == (strtolower($name))) {
                 // Is it a ruleset?
-                if (is_readable($regs[2])) {
-                    $regs[2] = get_default_ruleset_value($regs[2]);
+                if (is_readable($parameter_value)) {
+                    $parameter_value = get_default_ruleset_value($parameter_value);
                 }
-                $regs[2] = strtolower($regs[2]);
-                switch ($regs[2]) {
+                $parameter_value = strtolower($parameter_value);
+                switch ($parameter_value) {
                     case "yes":
-                        return true;
-                        break;
                     case "1":
                         return true;
-                        break;
                     case "no":
-                        return false;
-                        break;
                     case "0":
                         return false;
-                        break;
                     default:
                         return false;
-                        break;
                 }
             }
         }
@@ -1243,7 +1234,7 @@ function get_conf_include_folder()
                 }
             }
         }
-        fclose($fh) or die($php_errormsg);
+        fclose($fh);
         die("Cannot find configuration value: $name in $msconfig\n");
     }
 }
