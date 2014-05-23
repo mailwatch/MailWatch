@@ -81,7 +81,6 @@ define('TTF_DIR','./lib/jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR','/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spam.assassin.prefs.conf');
-define('FPDF_FONTPATH','./lib/fpdf/font/');
 define('TEMP_DIR', '/tmp/');
 
 // Log file location
