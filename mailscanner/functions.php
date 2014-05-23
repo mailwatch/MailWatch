@@ -44,7 +44,7 @@ if (SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 }
 
 // Set PHP path to use local PEAR modules only
-ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/fpdf:' . MAILWATCH_HOME . '/lib/xmlrpc');
+ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
 
 // XML-RPC
 @include_once('lib/xmlrpc/xmlrpc.inc');
