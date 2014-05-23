@@ -3165,32 +3165,19 @@ function xmlrpc_wrapper($host, $msg)
 }
 
 // Clean Cache folder
-function delete_dir($path)
+function clear_cache_dir()
 {
-    $files = glob($path . '/*');
+    $cache_dir = MAILWATCH_HOME . '/' . CACHE_DIR;
+    $files = glob($cache_dir . '/*');
     // Life of cached images: hard set to 60 seconds
     $life = '60';
     // File not to delete
-    $notfile = "" . MAILWATCH_HOME . "/" . CACHE_DIR . "/place_holder.txt";
+    $placeholder_file = $cache_dir . "/place_holder.txt";
     foreach ($files as $file) {
-        if (is_dir($file) && !is_link($file)) {
-            delete_dir($file);
-        } else {
-            if (((time() - filemtime($file) >= $life) && ($file != $notfile))) {
+        if (is_file($file) || is_link($file)) {
+            if (((time() - filemtime($file) >= $life) && ($file != $placeholder_file))) {
                 unlink($file);
             }
         }
     }
-    // Check to see if we are in the right path
-    if ($path != "" . MAILWATCH_HOME . "/" . CACHE_DIR . "") {
-        echo "bad path";
-    }
-}
-
-/////////////////////////////////////////////////////
-/// Last Updated: 2012/01/22   //////////////////////
-/////////////////////////////////////////////////////
-function funcs_phpversion()
-{
-    return (phpversion());
 }

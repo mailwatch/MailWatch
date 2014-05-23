@@ -39,9 +39,6 @@ if (!isset($_SESSION["filter"]) || !is_object($_SESSION["filter"])) {
 // add the header information such as the logo, search, menu, ....
 html_start("Reports", "0", false, false);
 
-// Set directory varible
-$dirname = "" . MAILWATCH_HOME . "/" . CACHE_DIR . "";
-
 // Add filters and save them
 if (isset($_GET["action"])) {
     switch (strtolower($_GET["action"])) {
@@ -111,7 +108,7 @@ if (get_conf_truefalse('MCPChecks')) {
 $filter->AddReport("rep_audit_log.php", "Audit Log");
 $filter->Display();
 
-delete_dir($dirname);
+clear_cache_dir();
 
 // Add footer
 html_end();

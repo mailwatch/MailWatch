@@ -33,7 +33,7 @@ if ($_SESSION['user_type'] != 'A') {
     html_start('Mailwatch and MailScanner Version information', '0', false, false);
     $mailwatch_version = mw_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
-    $php_version = funcs_phpversion();
+    $php_version = phpversion();
     $mysql_version = dbquery("SELECT VERSION()");
 
     echo '<table width="100%" class="boxtable">' . "\n";
