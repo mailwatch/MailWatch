@@ -172,7 +172,6 @@ if ($required_constant_missing_count == 0) {
                 break;
             default:
                 die('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
-                break;
         }
     }
 }
