@@ -605,33 +605,33 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 $row->highmcp
             ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
         echo '</table>' . "\n";
-
-        // Navigation links - put them into an array to allow them to be switched
-        // on or off as necessary and to allow for the table widths to be calculated.
-        $nav = array();
-        $nav['status.php'] = "Recent Messages";
-        if (LISTS) {
-            $nav['lists.php'] = "Lists";
-        }
-        if (!DISTRIBUTED_SETUP) {
-            $nav['quarantine.php'] = "Quarantine";
-        }
-        $nav['reports.php'] = "Reports";
-        $nav['other.php'] = "Tools/Links";
-
-        if (SHOW_SFVERSION == true) {
-            if ($_SESSION['user_type'] === 'A') {
-                $nav['sf_version.php'] = "Software Versions";
-            }
-        }
-
-        if (SHOW_DOC == true) {
-            $nav['docs.php'] = "Documentation";
-        }
-        $nav['logout.php'] = "Logout";
-        $table_width = round(100 / count($nav));
     }
 
+    // Navigation links - put them into an array to allow them to be switched
+    // on or off as necessary and to allow for the table widths to be calculated.
+    $nav = array();
+    $nav['status.php'] = "Recent Messages";
+    if (LISTS) {
+        $nav['lists.php'] = "Lists";
+    }
+    if (!DISTRIBUTED_SETUP) {
+        $nav['quarantine.php'] = "Quarantine";
+    }
+    $nav['reports.php'] = "Reports";
+    $nav['other.php'] = "Tools/Links";
+
+    if (SHOW_SFVERSION == true) {
+        if ($_SESSION['user_type'] === 'A') {
+            $nav['sf_version.php'] = "Software Versions";
+        }
+    }
+
+    if (SHOW_DOC == true) {
+        $nav['docs.php'] = "Documentation";
+    }
+    $nav['logout.php'] = "Logout";
+    $table_width = round(100 / count($nav));
+    
     //Navigation table
     echo '  </td>' . "\n";
     echo ' </tr>' . "\n";
