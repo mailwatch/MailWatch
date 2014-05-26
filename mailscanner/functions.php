@@ -630,7 +630,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         $nav['docs.php'] = "Documentation";
     }
     $nav['logout.php'] = "Logout";
-    $table_width = round(100 / count($nav));
+    //$table_width = round(100 / count($nav));
     
     //Navigation table
     echo '  </td>' . "\n";
@@ -1276,7 +1276,6 @@ function parse_conf_file($name)
 
             // Stuff all of the data to an array
             $array_output[$key] = $string;
-
         }
     }
     fclose($fh) or die($php_errormsg);
@@ -1303,16 +1302,13 @@ function translateQuarantineDate($date, $format = 'dmy')
     switch ($format) {
         case 'dmy':
             return "$d/$m/$y";
-            break;
         case 'sql':
             return "$y-$m-$d";
-            break;
         default:
             $format = preg_replace("/%y/", $y, $format);
             $format = preg_replace("/%m/", $m, $format);
             $format = preg_replace("/%d/", $d, $format);
             return $format;
-            break;
     }
 }
 
@@ -1964,6 +1960,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
     global $bg_colors;
 
+    /*
     // Query the data
     $sth = dbquery($sql);
 
@@ -1972,6 +1969,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
     // Count the nubmer of fields
     $fields = mysql_num_fields($sth);
+    */
 
     // Turn on paging of for the database
     if ($pager) {
@@ -2131,11 +2129,6 @@ function db_vertical_table($sql)
     } else {
         echo "No rows retrieved\n";
     }
-}
-
-function array_table($array, $keyed = false)
-{
-    return false;
 }
 
 function get_microtime()
@@ -2317,7 +2310,7 @@ function ldap_authenticate($USER, $PASS)
                                 quote_smart($email),
                                 quote_smart($result[0]['cn'][0])
                             );
-                            $sth = dbquery($sql);
+                            dbquery($sql);
                         }
                         return $email;
                     }
@@ -2352,6 +2345,7 @@ function ldap_get_conf_var($entry)
             return $info[0][$info[0][0]][0];
         } else {
             // Multi-value option, build array and return as space delimited
+            $return = array();
             for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
                 $return[] = $info[0][$info[0][0]][$n];
             }
@@ -2386,20 +2380,12 @@ function ldap_get_conf_truefalse($entry)
         debug("Entry: " . debug_print_r($info[0][$info[0][0]][0]));
         switch ($info[0][$info[0][0]][0]) {
             case 'yes':
-                return true;
-                break;
             case '1':
                 return true;
-                break;
             case 'no':
-                return false;
-                break;
             case '0':
-                return false;
-                break;
             default:
                 return false;
-                break;
         }
     } else {
         // No results
@@ -2438,7 +2424,7 @@ function decode_header($input)
     // For each encoded-word...
     while (preg_match('/(=\?([^?]+)\?(q|b)\?([^?]*)\?=)/i', $input, $matches)) {
         $encoded = $matches[1];
-        $charset = $matches[2];
+        //$charset = $matches[2];
         $encoding = $matches[3];
         $text = $matches[4];
         switch (strtolower($encoding)) {
@@ -2540,15 +2526,11 @@ function is_local($host)
     $sys_hostname = strtolower(chop(`hostname`));
     switch ($host) {
         case $sys_hostname:
-            return true;
-            break;
         case gethostbyaddr('127.0.0.1'):
             return true;
-            break;
         default:
             // Remote - RPC needed
             return false;
-            break;
     }
 }
 
@@ -2839,7 +2821,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
                         debug("Learner - running SQL: $sql");
-                        $junk = dbquery($sql);
+                        dbquery($sql);
                     }
                     $status[] = "SpamAssassin: " . join(", ", $output_array);
                     switch ($learn_type) {
@@ -2872,7 +2854,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
                         debug("Learner - running SQL: $sql");
-                        $junk = dbquery($sql);
+                        dbquery($sql);
                     }
                     $status[] = "SA Learn: " . join(", ", $output_array);
                     audit_log('SpamAssassin was trained on message ' . $list[$val]['msgid'] . ' as ' . $learn_type);

@@ -164,7 +164,7 @@ function doit($input)
         die("Cannot open pipe");
     }
 
-    $link = dbconn();
+    dbconn();
 
     $lines = 1;
     while ($line = fgets($fp, 2096)) {
@@ -203,7 +203,6 @@ function doit($input)
             // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
             // example
             if (preg_match('/NOQUEUE/i', $postfix->entry)) {
-                $_status = mysql_real_escape_string($postfix->raw);
                 if (preg_match('/Client host rejected: cannot find your hostname/i', $postfix->entry)) {
                     $_type = mysql_real_escape_string('unknown_hostname');
                 } else {

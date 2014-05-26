@@ -39,7 +39,7 @@ function TR()
         list($row_data, $tr_param) = $arg;
     } else {
         $row_data = $arg[0];
-        $tr_param = NULL;
+        $tr_param = null;
     }
 
     echo "<tr";
