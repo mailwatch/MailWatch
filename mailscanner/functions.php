@@ -3040,11 +3040,6 @@ function net_match($network, $ip)
     return ($ip_long & $mask) == ($network_long & $mask);
 }
 
-function mw_version()
-{
-    return ("1.2.0 - Beta 5");
-}
-
 function is_rpc_client_allowed()
 {
     // If no server address supplied
@@ -3136,4 +3131,9 @@ function clear_cache_dir()
             }
         }
     }
+}
+
+function mailwatch_version()
+{
+    return ("1.2.0 - Beta 6 DEV");
 }
