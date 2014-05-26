@@ -34,9 +34,9 @@ echo '<table width="100%" class="boxtable">
   <td>
    <p>Tools</p>
    <ul>';
-if (!MSEE) {
-    echo '<li><a href="user_manager.php">User Management</a>';
-}
+
+echo '<li><a href="user_manager.php">User Management</a>';
+
 if (preg_match('/sophos/i', get_conf_var('VirusScanners')) && $_SESSION['user_type'] == 'A') {
     echo '<li><a href="sophos_status.php">Sophos Status</a>';
 }

@@ -182,9 +182,6 @@ define('AUDIT', false);
 // You'll need to configure MailScanner to use it accordingly.
 define('LISTS', true);
 
-// Are we running on MSEE?
-define('MSEE', false);
-
 // Force SSL connections only?
 define('SSL_ONLY', false);
 

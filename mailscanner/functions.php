@@ -1093,36 +1093,31 @@ function get_conf_var($name)
     if (DISTRIBUTED_SETUP) {
         return false;
     }
-    // Translate input if using LDAP on MSEE
-    if (MSEE) {
-        $name = translate_etoi($name);
-        return ldap_get_conf_var($name);
+    $conf_dir = get_conf_include_folder();
+    $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
+    //$array_output = array();
+
+    $array_output1 = parse_conf_file($MailScanner_conf_file);
+    $array_output2 = parse_conf_dir($conf_dir);
+
+    if (is_array($array_output2)) {
+        $array_output = array_merge($array_output1, $array_output2);
     } else {
-        $conf_dir = get_conf_include_folder();
-        $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
-        //$array_output = array();
+        $array_output = $array_output1;
+    }
+    //echo '<pre>'; var_dump($array_output); echo '</pre>';
+    foreach ($array_output as $parameter_name => $parameter_value) {
+        $parameter_name = preg_replace('/ */', '', $parameter_name);
 
-        $array_output1 = parse_conf_file($MailScanner_conf_file);
-        $array_output2 = parse_conf_dir($conf_dir);
-
-        if (is_array($array_output2)) {
-            $array_output = array_merge($array_output1, $array_output2);
-        } else {
-            $array_output = $array_output1;
-        }
-        //echo '<pre>'; var_dump($array_output); echo '</pre>';
-        foreach ($array_output as $parameter_name => $parameter_value) {
-            $parameter_name = preg_replace('/ */', '', $parameter_name);
-
-            if ((strtolower($parameter_name)) == (strtolower($name))) {
-                if (is_file($parameter_value)) {
-                    return read_ruleset_default($parameter_value);
-                } else {
-                    return $parameter_value;
-                }
+        if ((strtolower($parameter_name)) == (strtolower($name))) {
+            if (is_file($parameter_value)) {
+                return read_ruleset_default($parameter_value);
+            } else {
+                return $parameter_value;
             }
         }
     }
+
     die("Cannot find configuration value: $name in $MailScanner_conf_file\n");
 }
 
@@ -1152,44 +1147,40 @@ function get_conf_truefalse($name)
     if (DISTRIBUTED_SETUP) {
         return true;
     }
-    // Translate input if using LDAP on MSEE
-    if (MSEE) {
-        $name = translate_etoi($name);
-        return ldap_get_conf_truefalse($name);
+
+    $conf_dir = get_conf_include_folder();
+    $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
+
+    $array_output1 = parse_conf_file($MailScanner_conf_file);
+    $array_output2 = parse_conf_dir($conf_dir);
+
+    if (is_array($array_output2)) {
+        $array_output = array_merge($array_output1, $array_output2);
     } else {
-        $conf_dir = get_conf_include_folder();
-        $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
+        $array_output = $array_output1;
+    }
+    foreach ($array_output as $parameter_name => $parameter_value) {
+        $parameter_name = preg_replace('/ */', '', $parameter_name);
 
-        $array_output1 = parse_conf_file($MailScanner_conf_file);
-        $array_output2 = parse_conf_dir($conf_dir);
-
-        if (is_array($array_output2)) {
-            $array_output = array_merge($array_output1, $array_output2);
-        } else {
-            $array_output = $array_output1;
-        }
-        foreach ($array_output as $parameter_name => $parameter_value) {
-            $parameter_name = preg_replace('/ */', '', $parameter_name);
-
-            if ((strtolower($parameter_name)) == (strtolower($name))) {
-                // Is it a ruleset?
-                if (is_readable($parameter_value)) {
-                    $parameter_value = get_default_ruleset_value($parameter_value);
-                }
-                $parameter_value = strtolower($parameter_value);
-                switch ($parameter_value) {
-                    case "yes":
-                    case "1":
-                        return true;
-                    case "no":
-                    case "0":
-                        return false;
-                    default:
-                        return false;
-                }
+        if ((strtolower($parameter_name)) == (strtolower($name))) {
+            // Is it a ruleset?
+            if (is_readable($parameter_value)) {
+                $parameter_value = get_default_ruleset_value($parameter_value);
+            }
+            $parameter_value = strtolower($parameter_value);
+            switch ($parameter_value) {
+                case "yes":
+                case "1":
+                    return true;
+                case "no":
+                case "0":
+                    return false;
+                default:
+                    return false;
             }
         }
     }
+
     return false;
 }
 
@@ -1199,44 +1190,39 @@ function get_conf_include_folder()
     if (DISTRIBUTED_SETUP) {
         return false;
     }
-    // Translate input if using LDAP on MSEE
-    if (MSEE) {
-        $name = translate_etoi($name);
-        return ldap_get_conf_var($name);
-    } else {
-        $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
-        $fh = fopen($msconfig, 'r')
-        or die("Cannot open MailScanner configuration file");
-        while (!feof($fh)) {
-            $line = rtrim(fgets($fh, filesize($msconfig)));
-            //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
-            if (preg_match('/^(?P<parameter>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
-                $regs['parameter'] = preg_replace('/ */', '', $regs['parameter']);
-                $regs['parameter'] = preg_replace('/=/', '', $regs['parameter']);
-                //var_dump($line, $regs);
-                // Strip trailing comments
-                $regs['value'] = preg_replace("/\*/", "", $regs['value']);
-                // store %var% variables
-                if (preg_match("/%.+%/", $regs['parameter'])) {
-                    $var[$regs['parameter']] = $regs['value'];
-                }
-                // expand %var% variables
-                if (preg_match("/(%.+%)/", $regs['value'], $match)) {
-                    $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
-                }
-                if ((strtolower($regs[1])) == (strtolower($name))) {
-                    fclose($fh) or die($php_errormsg);
-                    if (is_file($regs['value'])) {
-                        return read_ruleset_default($regs['value']);
-                    } else {
-                        return $regs['value'];
-                    }
+
+    $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
+    $fh = fopen($msconfig, 'r')
+    or die("Cannot open MailScanner configuration file");
+    while (!feof($fh)) {
+        $line = rtrim(fgets($fh, filesize($msconfig)));
+        //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
+        if (preg_match('/^(?P<parameter>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
+            $regs['parameter'] = preg_replace('/ */', '', $regs['parameter']);
+            $regs['parameter'] = preg_replace('/=/', '', $regs['parameter']);
+            //var_dump($line, $regs);
+            // Strip trailing comments
+            $regs['value'] = preg_replace("/\*/", "", $regs['value']);
+            // store %var% variables
+            if (preg_match("/%.+%/", $regs['parameter'])) {
+                $var[$regs['parameter']] = $regs['value'];
+            }
+            // expand %var% variables
+            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
+                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
+            }
+            if ((strtolower($regs[1])) == (strtolower($name))) {
+                fclose($fh) or die($php_errormsg);
+                if (is_file($regs['value'])) {
+                    return read_ruleset_default($regs['value']);
+                } else {
+                    return $regs['value'];
                 }
             }
         }
-        fclose($fh);
-        die("Cannot find configuration value: $name in $msconfig\n");
     }
+    fclose($fh);
+    die("Cannot find configuration value: $name in $msconfig\n");
 }
 
 // Parse conf files
@@ -2954,16 +2940,13 @@ function audit_log($action)
 {
     dbconn();
     if (AUDIT) {
-        if (!MSEE) {
-            $user = mysql_real_escape_string($_SESSION['myusername']);
-            $action = mysql_real_escape_string($action);
-            $ip = mysql_real_escape_string($_SERVER['REMOTE_ADDR']);
-            dbquery("INSERT INTO audit_log (user,ip_address,action) VALUES ('$user','$ip','$action')");
-        } else {
-            // TODO: MSEE audit_logging (what session variable hold user name??)
-            return false;
+        $user = mysql_real_escape_string($_SESSION['myusername']);
+        $action = mysql_real_escape_string($action);
+        $ip = mysql_real_escape_string($_SERVER['REMOTE_ADDR']);
+        $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
+        if ($ret){
+            return true;
         }
-        return true;
     }
     return false;
 }
