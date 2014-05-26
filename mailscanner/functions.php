@@ -3042,7 +3042,7 @@ function net_match($network, $ip)
 
 function mw_version()
 {
-    return ("1.2.0 DEV");
+    return ("1.2.0 - Beta 5");
 }
 
 function is_rpc_client_allowed()

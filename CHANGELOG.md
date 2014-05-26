@@ -1,4 +1,4 @@
-1.2.0 - DEV
+1.2.0 - Beta 5
 -----------
 
  - Reorganized all libraries to lib directory, removed fpdf (which was not used) and removed lib's symlinks
@@ -37,7 +37,7 @@
  - Fixed spelling mistakes/typos
  - Code cleanup
 
-1.2.0 - beta 4 patch 4
+1.2.0 - Beta 4 patch 4
 ----------------------
 
  - Fixed create.sql for some incorrect parts
@@ -47,23 +47,23 @@
    lists.php
  - Updated functions.php
 
-1.2.0 - beta 4
+1.2.0 - Beta 4
 --------------
 
  - Fix the mime.php due to a mistype
  - Fix geoip_update.php for a mistype
 
-1.2.0 - Beta3
+1.2.0 - Beta 3
 -------------
 
  - Fix for XSS issue
 
-1.2.0 - Beta2
+1.2.0 - Beta 2
 -------------
 
  - Fix for CentOS 6 not respecting issues with ./
 
-1.2.0 - Beta1
+1.2.0 - Beta 1
 -------------
 
  - Fixed db_clean.php to remove items correctly.
