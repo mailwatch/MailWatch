@@ -1229,6 +1229,7 @@ function get_conf_include_folder()
 function parse_conf_file($name)
 {
     $array_output = array();
+    $var = array();
     // open each file and read it
     //$fh = fopen($name . $file, 'r')
     $fh = fopen($name, 'r') or die("Cannot open MailScanner configuration file");
@@ -1240,7 +1241,7 @@ function parse_conf_file($name)
         //echo "line: ".$line."\n"; // only use for troubleshooting lines
 
         // find all lines that match
-        if (preg_match("/^(?<name>[^#].+)\s?=\s?(?<value>[^#]*)/", $line, $regs)) {
+        if (preg_match("/^(?<name>[^#].+[^\s*$])\s*=\s*(?<value>[^#]*)/", $line, $regs)) {
 
             // Strip trailing comments
             $regs['value'] = preg_replace("/#.*$/", "", $regs['value']);
