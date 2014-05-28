@@ -960,7 +960,11 @@ AND
     while ($row = mysql_fetch_object($result)) {
         if (preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
             $virus = return_virus_link($virus_reports[2]);
-            $virus_array[$virus]++;
+            if (!isset($virus_array[$virus])) {
+                $virus_array[$virus] = 1;
+            } else {
+                $virus_array[$virus]++;
+            }
         }
     }
     arsort($virus_array);
@@ -975,6 +979,7 @@ AND
             return $saved_key;
         } else {
             // Tied first place - return none
+            // FIXME: Should return all top viruses
             return "None";
         }
     } else {
