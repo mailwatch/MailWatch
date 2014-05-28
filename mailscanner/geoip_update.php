@@ -74,7 +74,7 @@ if (!isset($_POST['run'])) {
                     CURLOPT_BINARYTRANSFER => true,
                     CURLOPT_TIMEOUT => 180
                 );
-                if (USE_PROXY) {
+                if (USE_PROXY === true) {
                     $curl_proxy_options = array(
                         CURLOPT_PROXY => PROXY_SERVER,
                         CURLOPT_PROXYPORT => PROXY_PORT,
@@ -87,6 +87,7 @@ if (!isset($_POST['run'])) {
                     $curl_generic_options = $curl_generic_options + $curl_proxy_options;
                 }
 
+                // IPv4 download
                 $ch_ipv4 = curl_init();
                 $fp_ipv4 = fopen($ipv4_file, "w+");
                 $curl_ipv4_options = array(
@@ -94,7 +95,16 @@ if (!isset($_POST['run'])) {
                     CURLOPT_FILE => $fp_ipv4,
                 );
                 curl_setopt_array($ch_ipv4, ($curl_generic_options + $curl_ipv4_options));
+                if (false == curl_exec($ch_ipv4))
+                {
+                    die("Unable to download GeoIP ipv4 data file (CURL reported: ".curl_errno($ch_ipv4) .' ' . curl_error($ch_ipv4) . ").\n");
+                } else {
+                    curl_close($ch_ipv4);
+                    fclose($fp_ipv4);
+                    unset($fp_ipv4);
+                }
 
+                // IPv6 download
                 $ch_ipv6 = curl_init();
                 $fp_ipv6 = fopen($ipv6_file, "w+");
                 $curl_ipv6_options = array(
@@ -102,16 +112,12 @@ if (!isset($_POST['run'])) {
                     CURLOPT_FILE => $fp_ipv6,
                 );
                 curl_setopt_array($ch_ipv6, ($curl_generic_options + $curl_ipv6_options));
-                if (curl_exec($ch_ipv4) && curl_exec($ch_ipv6)) {
-                    curl_close($ch_ipv4);
-                    fclose($fp_ipv4);
-                    unset($fp_ipv4);
-
+                if(false == curl_exec($ch_ipv6)) {
+                    die("Unable to download GeoIP ipv6 data file (CURL reported: ".curl_errno($ch_ipv6) .' ' . curl_error($ch_ipv6) . ").\n");
+                } else {
                     curl_close($ch_ipv6);
                     fclose($fp_ipv6);
                     unset($fp_ipv6);
-                } else {
-                    die("Unable to download GeoIP data file.\n");
                 }
             } elseif (ini_get('allow_url_fopen')) {
                 // try fopen
@@ -149,7 +155,7 @@ if (!isset($_POST['run'])) {
                     die("Unable to download GeoIP ipv6 data file.\n");
                 }
             } else {
-                die("Unable to download GeoIP data file.\n");
+                die("Unable to download GeoIP data file (tried CURL, fopen and wget).\n");
             }
 
             echo 'Download complete, unpacking files...<br>' . "\n";
@@ -192,7 +198,7 @@ if (!isset($_POST['run'])) {
             audit_log('Ran GeoIP update');
         } else {
             // unable to read or write to the directory
-            die("Unable to read or write to the " . $extract_dir . " .\n");
+            die("Unable to read or write to the " . $extract_dir . " directory.\n");
         }
     } else {
         die("Files still exist for some reason\n");
