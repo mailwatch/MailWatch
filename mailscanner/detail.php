@@ -328,7 +328,7 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if ((is_array($quarantined)) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if ($_GET['submit'] == "Submit") {
+    if (isset($_GET['submit']) && ($_GET['submit'] == "Submit")) {
         debug("submit branch taken");
         // Reset error status
         $error = 0;

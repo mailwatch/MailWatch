@@ -2749,9 +2749,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         $new = quarantine_list_items($list[0]['msgid']);
         $list =& $new;
     }
-
+    $status = array();
     if (!$rpc_only && is_local($list[0]['host'])) {
         foreach ($num as $key => $val) {
+            $use_spamassassin = false;
             switch ($type) {
                 case "ham":
                     $learn_type = "ham";
