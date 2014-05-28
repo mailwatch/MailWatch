@@ -46,6 +46,7 @@ if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) 
         $sql = "SELECT * FROM users WHERE username='$myusername' and password='$encrypted_mypassword'";
     } else {
         header("Location: login.php?error=emptypassword");
+        die();
     }
 }
 
@@ -120,7 +121,7 @@ if ($usercount == 0) {
         $_SESSION['user_type'] = (isset($usertype) ? $usertype : '');
         $_SESSION['domain'] = (isset($domainname) ? $domainname : '');
         $_SESSION['global_filter'] = '(' . $global_filter . ')';
-        $_SESSION['global_list'] = $global_list;
+        $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
         $_SESSION['global_array'] = $filter;
         header("Location: index.php");
     } else {

@@ -132,11 +132,15 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                 foreach ($relays as $relay) {
                     $output .= ' <tr>' . "\n";
                     $output .= ' <td>' . $relay . '</td>' . "\n";
+                    // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+                    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $relay)) {
+                        $relay = current(array_slice(explode(':', $relay), 0, 1));
+                    }
                     // Reverse lookup on address. Possibly need to remove it.
                     if (($host = gethostbyaddr($relay)) <> $relay) {
-                        $output .= " <TD>$host</TD>\n";
+                        $output .= " <td>$host</td>\n";
                     } else {
-                        $output .= " <TD>(Reverse Lookup Failed)</TD>\n";
+                        $output .= " <td>(Reverse Lookup Failed)</td>\n";
                     }
                     // Do GeoIP lookup on address
                     if ($geoip_country = return_geoip_country($relay)) {
@@ -252,7 +256,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 
 // Display the relay information only if there are matching
 // rows in the relay table (maillog.id = relay.msg_id)...
-$sqlcheck = "Show tables like 'mtalog_ids'";
+$sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
 if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfix
     $sql1 = "
@@ -324,10 +328,11 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if ((is_array($quarantined)) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if ($_GET['submit'] == "Submit") {
+    if (isset($_GET['submit']) && ($_GET['submit'] == "Submit")) {
         debug("submit branch taken");
         // Reset error status
         $error = 0;
+        $status = array();
         // Release
         if (isset($_GET['release'])) {
             // Send to the original recipient(s) or to an alternate address
@@ -351,7 +356,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo ' <tr>' . "\n";
         echo '  <th colspan="2">Quarantine Command Results</th>' . "\n";
         echo ' </tr>' . "\n";
-        if (isset($status)) {
+        if (!empty($status)) {
             echo '  <tr>' . "\n";
             echo '  <td class="heading" width="150" align="right" valign="top">Result Messages:</td>' . "\n";
             echo '  <td class="detail">' . "\n";
@@ -391,6 +396,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo '  <th>Path</th>' . "\n";
         echo '  <th>Dangerous?</th>' . "\n";
         echo ' </tr>' . "\n";
+        $is_dangerous = 0;
         foreach ($quarantined as $item) {
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
@@ -428,6 +434,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
             }
             if ($item['dangerous'] == "Y" && $_SESSION['user_type'] != 'A') {
                 $dangerous = $yes;
+                $is_dangerous++;
             } else {
                 $dangerous = $no;
             }
@@ -435,7 +442,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr>' . "\n";
-        if ($item['dangerous'] == "Y" && $_SESSION['user_type'] != 'A') {
+        if ($is_dangerous > 0 && $_SESSION['user_type'] != 'A') {
             echo '  <td colspan="6">&nbsp</td>' . "\n";
         } else {
             echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;Alternate Recipient(s):&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";

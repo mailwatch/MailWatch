@@ -65,7 +65,6 @@ if (is_array($_POST)) {
                 break;
             default:
                 continue;
-                break;
         }
         $items = quarantine_list_items($id, RPC_ONLY);
         // Commenting out the below line since it shouldn't make a table for every message

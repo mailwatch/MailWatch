@@ -36,11 +36,6 @@ if ($_SESSION['user_type'] != 'A') {
 } else {
     html_start('Ruleset Editor', "0", false, false);
 
-    // ############################
-    // ### Includes and whatnot ###
-    // ############################
-
-
     // ############
     // ### Main ###
     // ############

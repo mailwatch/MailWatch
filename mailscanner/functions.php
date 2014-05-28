@@ -44,12 +44,12 @@ if (SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 }
 
 // Set PHP path to use local PEAR modules only
-ini_set('include_path', '.:' . MAILWATCH_HOME . '/pear:' . MAILWATCH_HOME . '/fpdf:' . MAILWATCH_HOME . '/xmlrpc');
+ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
 
 // XML-RPC
-@include_once('xmlrpc/xmlrpc.inc');
-@include_once('xmlrpc/xmlrpcs.inc');
-@include_once('xmlrpc/xmlrpc_wrappers.inc');
+@include_once('lib/xmlrpc/xmlrpc.inc');
+@include_once('lib/xmlrpc/xmlrpcs.inc');
+@include_once('lib/xmlrpc/xmlrpc_wrappers.inc');
 
 include "postfix.inc";
 
@@ -250,7 +250,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         if (!DISTRIBUTED_SETUP) {
             $no = '<span class="yes">&nbsp;NO&nbsp;</span>' . "\n";
             $yes = '<span class="no">&nbsp;YES&nbsp;</span>' . "\n";
-            $junk = exec("ps ax | grep MailScanner | grep -v grep", $output);
+            exec("ps ax | grep MailScanner | grep -v grep", $output);
             if (count($output) > 0) {
                 $running = $yes;
                 $procs = count($output) - 1 . " children";
@@ -261,9 +261,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             echo '     <tr><td>MailScanner:</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
-            $output = "";
             $mta = get_conf_var('mta');
-            $junk = exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
+            exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
             if (count($output) > 0) {
                 $running = $yes;
             } else {
@@ -344,6 +343,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                      * http://unix.stackexchange.com/a/24230/33366
                      * http://unix.stackexchange.com/a/12086/33366
                      */
+                    $temp_drive = array();
                     if (is_file('/proc/mounts')) {
                         $mounted_fs = file("/proc/mounts");
                         foreach ($mounted_fs as $fs_row) {
@@ -605,32 +605,33 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 $row->highmcp
             ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
         echo '</table>' . "\n";
-
-        // Navigation links - put them into an array to allow them to be switched
-        // on or off as necessary and to allow for the table widths to be calculated.
-        $nav['status.php'] = "Recent Messages";
-        if (LISTS) {
-            $nav['lists.php'] = "Lists";
-        }
-        if (!DISTRIBUTED_SETUP) {
-            $nav['quarantine.php'] = "Quarantine";
-        }
-        $nav['reports.php'] = "Reports";
-        $nav['other.php'] = "Tools/Links";
-
-        if (SHOW_SFVERSION == true) {
-            if ($_SESSION['user_type'] === 'A') {
-                $nav['sf_version.php'] = "Software Versions";
-            }
-        }
-
-        if (SHOW_DOC == true) {
-            $nav['docs.php'] = "Documentation";
-        }
-        $nav['logout.php'] = "Logout";
-        $table_width = round(100 / count($nav));
     }
 
+    // Navigation links - put them into an array to allow them to be switched
+    // on or off as necessary and to allow for the table widths to be calculated.
+    $nav = array();
+    $nav['status.php'] = "Recent Messages";
+    if (LISTS) {
+        $nav['lists.php'] = "Lists";
+    }
+    if (!DISTRIBUTED_SETUP) {
+        $nav['quarantine.php'] = "Quarantine";
+    }
+    $nav['reports.php'] = "Reports";
+    $nav['other.php'] = "Tools/Links";
+
+    if (SHOW_SFVERSION == true) {
+        if ($_SESSION['user_type'] === 'A') {
+            $nav['sf_version.php'] = "Software Versions";
+        }
+    }
+
+    if (SHOW_DOC == true) {
+        $nav['docs.php'] = "Documentation";
+    }
+    $nav['logout.php'] = "Logout";
+    //$table_width = round(100 / count($nav));
+    
     //Navigation table
     echo '  </td>' . "\n";
     echo ' </tr>' . "\n";
@@ -763,7 +764,6 @@ function dbquery($sql)
         echo "SQL:\n\n$sql\n\n";
         $result = mysql_query($dbg_sql) or die("Error executing query: " . mysql_errno() . " - " . mysql_error());
         $fields = mysql_num_fields($result);
-        $rows = mysql_num_rows($result);
         while ($row = mysql_fetch_row($result)) {
             for ($f = 0; $f < $fields; $f++) {
                 echo mysql_field_name($result, $f) . ": " . $row[$f] . "\n";
@@ -960,7 +960,11 @@ AND
     while ($row = mysql_fetch_object($result)) {
         if (preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
             $virus = return_virus_link($virus_reports[2]);
-            $virus_array[$virus]++;
+            if (!isset($virus_array[$virus])) {
+                $virus_array[$virus] = 1;
+            } else {
+                $virus_array[$virus]++;
+            }
         }
     }
     arsort($virus_array);
@@ -975,6 +979,7 @@ AND
             return $saved_key;
         } else {
             // Tied first place - return none
+            // FIXME: Should return all top viruses
             return "None";
         }
     } else {
@@ -1093,35 +1098,31 @@ function get_conf_var($name)
     if (DISTRIBUTED_SETUP) {
         return false;
     }
-    // Translate input if using LDAP on MSEE
-    if (MSEE) {
-        $name = translate_etoi($name);
-        return ldap_get_conf_var($name);
+    $conf_dir = get_conf_include_folder();
+    $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
+    //$array_output = array();
+
+    $array_output1 = parse_conf_file($MailScanner_conf_file);
+    $array_output2 = parse_conf_dir($conf_dir);
+
+    if (is_array($array_output2)) {
+        $array_output = array_merge($array_output1, $array_output2);
     } else {
-        $conf_dir = get_conf_include_folder();
-        $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
-        $array_output = array();
+        $array_output = $array_output1;
+    }
+    //echo '<pre>'; var_dump($array_output); echo '</pre>';
+    foreach ($array_output as $parameter_name => $parameter_value) {
+        $parameter_name = preg_replace('/ */', '', $parameter_name);
 
-        $array_output1 = parse_conf_file($MailScanner_conf_file);
-        $array_output2 = parse_conf_dir($conf_dir);
-
-        if (is_array($array_output2)) {
-            $array_output = array_merge($array_output1, $array_output2);
-        } else {
-            $array_output = $array_output1;
-        }
-        foreach ($array_output as $regs[1] => $regs[2]) {
-            $regs[1] = preg_replace('/ */', '', $regs[1]);
-
-            if ((strtolower($regs[1])) == (strtolower($name))) {
-                if (is_file($regs[2])) {
-                    return read_ruleset_default($regs[2]);
-                } else {
-                    return $regs[2];
-                }
+        if ((strtolower($parameter_name)) == (strtolower($name))) {
+            if (is_file($parameter_value)) {
+                return read_ruleset_default($parameter_value);
+            } else {
+                return $parameter_value;
             }
         }
     }
+
     die("Cannot find configuration value: $name in $MailScanner_conf_file\n");
 }
 
@@ -1131,15 +1132,13 @@ function parse_conf_dir($conf_dir)
     if ($dh = opendir($conf_dir)) {
         while (($file = readdir($dh)) !== false) {
             // remove the . and .. so that it doesn't throw an error when parsing files
-            if ($file !== ".") {
-                if ($file !== "..") {
-                    $file_name = $conf_dir . $file;
-                    if (!is_array($array_output1)) {
-                        $array_output1 = parse_conf_file($file_name);
-                    } else {
-                        $array_output2 = parse_conf_file($file_name);
-                        $array_output1 = array_merge($array_output1, $array_output2);
-                    }
+            if ($file !== "." && $file !== "..") {
+                $file_name = $conf_dir . $file;
+                if (!is_array($array_output1)) {
+                    $array_output1 = parse_conf_file($file_name);
+                } else {
+                    $array_output2 = parse_conf_file($file_name);
+                    $array_output1 = array_merge($array_output1, $array_output2);
                 }
             }
         }
@@ -1153,52 +1152,40 @@ function get_conf_truefalse($name)
     if (DISTRIBUTED_SETUP) {
         return true;
     }
-    // Translate input if using LDAP on MSEE
-    if (MSEE) {
-        $name = translate_etoi($name);
-        return ldap_get_conf_truefalse($name);
+
+    $conf_dir = get_conf_include_folder();
+    $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
+
+    $array_output1 = parse_conf_file($MailScanner_conf_file);
+    $array_output2 = parse_conf_dir($conf_dir);
+
+    if (is_array($array_output2)) {
+        $array_output = array_merge($array_output1, $array_output2);
     } else {
-        $conf_dir = get_conf_include_folder();
-        $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
-        $array_output = array();
+        $array_output = $array_output1;
+    }
+    foreach ($array_output as $parameter_name => $parameter_value) {
+        $parameter_name = preg_replace('/ */', '', $parameter_name);
 
-        $array_output1 = parse_conf_file($MailScanner_conf_file);
-        $array_output2 = parse_conf_dir($conf_dir);
-
-        if (is_array($array_output2)) {
-            $array_output = array_merge($array_output1, $array_output2);
-        } else {
-            $array_output = $array_output1;
-        }
-        foreach ($array_output as $regs[1] => $regs[2]) {
-            $regs[1] = preg_replace('/ */', '', $regs[1]);
-
-            if ((strtolower($regs[1])) == (strtolower($name))) {
-                // Is it a ruleset?
-                if (is_readable($regs[2])) {
-                    $regs[2] = get_default_ruleset_value($regs[2]);
-                }
-                $regs[2] = strtolower($regs[2]);
-                switch ($regs[2]) {
-                    case "yes":
-                        return true;
-                        break;
-                    case "1":
-                        return true;
-                        break;
-                    case "no":
-                        return false;
-                        break;
-                    case "0":
-                        return false;
-                        break;
-                    default:
-                        return false;
-                        break;
-                }
+        if ((strtolower($parameter_name)) == (strtolower($name))) {
+            // Is it a ruleset?
+            if (is_readable($parameter_value)) {
+                $parameter_value = get_default_ruleset_value($parameter_value);
+            }
+            $parameter_value = strtolower($parameter_value);
+            switch ($parameter_value) {
+                case "yes":
+                case "1":
+                    return true;
+                case "no":
+                case "0":
+                    return false;
+                default:
+                    return false;
             }
         }
     }
+
     return false;
 }
 
@@ -1208,54 +1195,49 @@ function get_conf_include_folder()
     if (DISTRIBUTED_SETUP) {
         return false;
     }
-    // Translate input if using LDAP on MSEE
-    if (MSEE) {
-        $name = translate_etoi($name);
-        return ldap_get_conf_var($name);
-    } else {
-        $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
-        $fh = fopen($msconfig, 'r')
-        or die("Cannot open MailScanner configuration file");
-        while (!feof($fh)) {
-            $line = rtrim(fgets($fh, filesize($msconfig)));
-            //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
-            if (preg_match('/^(?P<parameter>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
-                $regs['parameter'] = preg_replace('/ */', '', $regs['parameter']);
-                $regs['parameter'] = preg_replace('/=/', '', $regs['parameter']);
-                //var_dump($line, $regs);
-                // Strip trailing comments
-                $regs['value'] = preg_replace("/\*/", "", $regs['value']);
-                // store %var% variables
-                if (preg_match("/%.+%/", $regs['parameter'])) {
-                    $var[$regs['parameter']] = $regs['value'];
-                }
-                // expand %var% variables
-                if (preg_match("/(%.+%)/", $regs['value'], $match)) {
-                    $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
-                }
-                if ((strtolower($regs[1])) == (strtolower($name))) {
-                    fclose($fh) or die($php_errormsg);
-                    if (is_file($regs['value'])) {
-                        return read_ruleset_default($regs['value']);
-                    } else {
-                        return $regs['value'];
-                    }
+
+    $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
+    $fh = fopen($msconfig, 'r')
+    or die("Cannot open MailScanner configuration file");
+    while (!feof($fh)) {
+        $line = rtrim(fgets($fh, filesize($msconfig)));
+        //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
+        if (preg_match('/^(?<name>[^#].+)\s(?<value>[^#].+)/', $line, $regs)) {
+            $regs['name'] = preg_replace('/ */', '', $regs['name']);
+            $regs['name'] = preg_replace('/=/', '', $regs['name']);
+            //var_dump($line, $regs);
+            // Strip trailing comments
+            $regs['value'] = preg_replace("/\*/", "", $regs['value']);
+            // store %var% variables
+            if (preg_match("/%.+%/", $regs['name'])) {
+                $var[$regs['name']] = $regs['value'];
+            }
+            // expand %var% variables
+            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
+                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
+            }
+            if ((strtolower($regs[1])) == (strtolower($name))) {
+                fclose($fh) or die($php_errormsg);
+                if (is_file($regs['value'])) {
+                    return read_ruleset_default($regs['value']);
+                } else {
+                    return $regs['value'];
                 }
             }
         }
-        fclose($fh) or die($php_errormsg);
-        die("Cannot find configuration value: $name in $msconfig\n");
     }
+    fclose($fh);
+    die("Cannot find configuration value: $name in $msconfig\n");
 }
 
 // Parse conf files
 function parse_conf_file($name)
 {
     $array_output = array();
+    $var = array();
     // open each file and read it
     //$fh = fopen($name . $file, 'r')
-    $fh = fopen($name, 'r')
-    or die("Cannot open MailScanner configuration file");
+    $fh = fopen($name, 'r') or die("Cannot open MailScanner configuration file");
     while (!feof($fh)) {
 
         // read each line to the $line varable
@@ -1264,28 +1246,27 @@ function parse_conf_file($name)
         //echo "line: ".$line."\n"; // only use for troubleshooting lines
 
         // find all lines that match
-        if (preg_match("/^([^#].+)\s=\s([^#].*)/", $line, $regs)) {
+        if (preg_match("/^(?<name>[^#].+[^\s*$])\s*=\s*(?<value>[^#]*)/", $line, $regs)) {
 
             // Strip trailing comments
-            $regs[2] = preg_replace("/#.*$/", "", $regs[2]);
+            $regs['value'] = preg_replace("/#.*$/", "", $regs['value']);
 
             // store %var% variables
-            if (preg_match("/%.+%/", $regs[1])) {
-                $var[$regs[1]] = $regs[2];
+            if (preg_match("/%.+%/", $regs['name'])) {
+                $var[$regs['name']] = $regs['value'];
             }
 
             // expand %var% variables
-            if (preg_match("/(%.+%)/", $regs[2], $match)) {
-                $regs[2] = preg_replace("/%.+%/", $var[$match[1]], $regs[2]);
+            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
+                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
             }
 
             // Remove any html entities from the code
-            $key = htmlentities($regs[1]);
-            $string = htmlentities($regs[2]);
+            $key = htmlentities($regs['name']);
+            $string = htmlentities($regs['value']);
 
             // Stuff all of the data to an array
             $array_output[$key] = $string;
-
         }
     }
     fclose($fh) or die($php_errormsg);
@@ -1312,16 +1293,13 @@ function translateQuarantineDate($date, $format = 'dmy')
     switch ($format) {
         case 'dmy':
             return "$d/$m/$y";
-            break;
         case 'sql':
             return "$y-$m-$d";
-            break;
         default:
             $format = preg_replace("/%y/", $y, $format);
             $format = preg_replace("/%m/", $m, $format);
             $format = preg_replace("/%d/", $d, $format);
             return $format;
-            break;
     }
 }
 
@@ -1369,6 +1347,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
     // Ordering
     $orderby = null;
+    $orderdir = '';
     if (isset($_GET['orderby'])) {
         $orderby = $_GET['orderby'];
         switch (strtoupper($_GET['orderdir'])) {
@@ -1973,6 +1952,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
     global $bg_colors;
 
+    /*
     // Query the data
     $sth = dbquery($sql);
 
@@ -1981,6 +1961,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
     // Count the nubmer of fields
     $fields = mysql_num_fields($sth);
+    */
 
     // Turn on paging of for the database
     if ($pager) {
@@ -2142,11 +2123,6 @@ function db_vertical_table($sql)
     }
 }
 
-function array_table($array, $keyed = false)
-{
-    return false;
-}
-
 function get_microtime()
 {
     return microtime(true);
@@ -2172,28 +2148,31 @@ function debug($text)
 
 function return_24_hour_array()
 {
+    $hour_array = array();
     for ($h = 0; $h < 24; $h++) {
         if (strlen($h) < 2) {
             $h = "0" . $h;
         }
-        $array[$h] = 0;
+        $hour_array[$h] = 0;
     }
-    return $array;
+    return $hour_array;
 }
 
 function return_60_minute_array()
 {
+    $minute_array = array();
     for ($m = 0; $m < 60; $m++) {
         if (strlen($m) < 2) {
             $m = "0" . $m;
         }
-        $array[$m] = 0;
+        $minute_array[$m] = 0;
     }
-    return $array;
+    return $minute_array;
 }
 
 function return_time_array()
 {
+    $time_array = array();
     for ($h = 0; $h < 24; $h++) {
         if (strlen($h) < 2) {
             $h = "0" . $h;
@@ -2202,24 +2181,26 @@ function return_time_array()
             if (strlen($m) < 2) {
                 $m = "0" . $m;
             }
-            $array[$h][$m] = 0;
+            $time_array[$h][$m] = 0;
         }
     }
-    return $array;
+    return $time_array;
 }
 
 function count_files_in_dir($dir)
 {
+    //TODO: Refactor
+    $file_list_array = array();
     if (!$drh = @opendir($dir)) {
         return false;
     } else {
         while (false !== ($file = readdir($drh))) {
             if ($file !== "." && $file !== "..") {
-                $array[] = $file;
+                $file_list_array[] = $file;
             }
         }
     }
-    return count($array);
+    return count($file_list_array);
 }
 
 function get_mail_relays($message_headers)
@@ -2230,16 +2211,12 @@ function get_mail_relays($message_headers)
         $header = preg_replace('/IPv6\:/', '', $header);
         if (preg_match_all('/\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
             foreach ($regs['ip'] as $relay) {
-                if (isset($relays[$relay])) {
-                    $relays[$relay]++;
-                } else {
-                    $relays[$relay] = 1;
-                }
+                $relays[] = $relay;
             }
         }
     }
     if (is_array($relays)) {
-        return array_keys($relays);
+        return array_unique($relays);
     }
 
     return false;
@@ -2247,49 +2224,50 @@ function get_mail_relays($message_headers)
 
 function address_filter_sql($addresses, $type)
 {
+    $sqladdr = '';
+    $sqladdr_arr = array();
     switch ($type) {
         case 'A': // Administrator - show everything
-            return "1=1";
+            $sqladdr = "1=1";
             break;
         case 'U': // User - show only specific addresses
             foreach ($addresses as $address) {
                 if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                    $sqladdr[] = "to_address like '%$address%'";
+                    $sqladdr_arr[] = "to_address like '%$address%'";
                 } else {
-                    $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
+                    $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
                 }
             }
-            $sqladdr = join(' OR ', $sqladdr);
-            return $sqladdr;
+            $sqladdr = join(' OR ', $sqladdr_arr);
             break;
         case 'D': // Domain administrator
             foreach ($addresses as $address) {
                 if (strpos($address, '@')) {
                     if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                        $sqladdr[] = "to_address like '%$address%'";
+                        $sqladdr_arr[] = "to_address like '%$address%'";
                     } else {
-                        $sqladdr[] = "to_address like '%$address%' OR from_address = '$address'";
+                        $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
                     }
                 } else {
                     if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                        $sqladdr[] = "to_domain='$address'";
+                        $sqladdr_arr[] = "to_domain='$address'";
                     } else {
-                        $sqladdr[] = "to_domain='$address' OR from_domain='$address'";
+                        $sqladdr_arr[] = "to_domain='$address' OR from_domain='$address'";
                     }
                 }
             }
             // Join together to form a suitable SQL WHERE clause
-            $sqladdr = join(' OR ', $sqladdr);
-            return $sqladdr;
+            $sqladdr = join(' OR ', $sqladdr_arr);
             break;
         case 'H': // Host
             foreach ($addresses as $hostname) {
-                $sqladdr[] = "hostname='$hostname'";
+                $sqladdr_arr[] = "hostname='$hostname'";
             }
-            $sqladdr = join(' OR ', $sqladdr);
-            return $sqladdr;
+            $sqladdr = join(' OR ', $sqladdr_arr);
             break;
     }
+
+    return $sqladdr;
 }
 
 function ldap_authenticate($USER, $PASS)
@@ -2315,18 +2293,19 @@ function ldap_authenticate($USER, $PASS)
                                 break;
                             }
                         }
-                    }
-                    $sql = sprintf("SELECT username from users where username = %s", quote_smart($email));
-                    $sth = dbquery($sql);
-                    if (mysql_num_rows($sth) == 0) {
-                        $sql = sprintf(
-                            "REPLACE into users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                            quote_smart($email),
-                            quote_smart($result[0]['cn'][0])
-                        );
+
+                        $sql = sprintf("SELECT username from users where username = %s", quote_smart($email));
                         $sth = dbquery($sql);
+                        if (mysql_num_rows($sth) == 0) {
+                            $sql = sprintf(
+                                "REPLACE into users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                                quote_smart($email),
+                                quote_smart($result[0]['cn'][0])
+                            );
+                            dbquery($sql);
+                        }
+                        return $email;
                     }
-                    return $email;
                 }
             }
         }
@@ -2358,6 +2337,7 @@ function ldap_get_conf_var($entry)
             return $info[0][$info[0][0]][0];
         } else {
             // Multi-value option, build array and return as space delimited
+            $return = array();
             for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
                 $return[] = $info[0][$info[0][0]][$n];
             }
@@ -2392,20 +2372,12 @@ function ldap_get_conf_truefalse($entry)
         debug("Entry: " . debug_print_r($info[0][$info[0][0]][0]));
         switch ($info[0][$info[0][0]][0]) {
             case 'yes':
-                return true;
-                break;
             case '1':
                 return true;
-                break;
             case 'no':
-                return false;
-                break;
             case '0':
-                return false;
-                break;
             default:
                 return false;
-                break;
         }
     } else {
         // No results
@@ -2444,7 +2416,7 @@ function decode_header($input)
     // For each encoded-word...
     while (preg_match('/(=\?([^?]+)\?(q|b)\?([^?]*)\?=)/i', $input, $matches)) {
         $encoded = $matches[1];
-        $charset = $matches[2];
+        //$charset = $matches[2];
         $encoding = $matches[3];
         $text = $matches[4];
         switch (strtolower($encoding)) {
@@ -2473,58 +2445,32 @@ function debug_print_r($input)
     return $return;
 }
 
-function return_geoip_addr($ip)
-{
-    //TODO fix this function to work with ipv6
-    if (false === strpos($ip, ':')) {
-        $piece = explode(".", $ip);
-        $ip1 = (16777216 * $piece[0]);
-        $ip2 = (65536 * $piece[1]);
-        $ip3 = (256 * $piece[2]);
-        $ip4 = ($piece[3]);
-        $geoip = ($ip1 + $ip2 + $ip3 + $ip4);
-        return $geoip;
-    }
-
-    return 0;
-}
-
 function return_geoip_country($ip)
 {
-    //TODO fix this function to work with ipv6
-    $geoip_num = return_geoip_addr($ip);
-    $sql = "
-SELECT
- country
-FROM
- geoip_country
-USE INDEX (geoip_country_begin,geoip_country_end)
-WHERE
- ($geoip_num > begin_num)
-AND
- ($geoip_num < end_num)
-";
-    $sth = dbquery($sql);
-    return (@mysql_result($sth, 0));
-}
-
-/*if (!function_exists('file_get_contents')) {
-    function file_get_contents($filename, $use_include_path = 0)
-    {
-        $file = @fopen($filename, 'rb', $use_include_path);
-        if ($file) {
-            if ($fsize = @filesize($filename)) {
-                $data = fread($file, $fsize);
-            } else {
-                while (!feof($file)) {
-                    $data .= fread($file, 1024);
-                }
-            }
-            fclose($file);
-        }
-        return $data;
+    require_once 'lib/geoip.inc';
+    //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
+        $ip = current(array_slice(explode(':', $ip), 0, 1));
     }
-}*/
+    $countryname = false;
+    if (strpos($ip, ':') === false) {
+        //ipv4
+        if (file_exists('./temp/GeoIP.dat')) {
+            $gi = geoip_open('./temp/GeoIP.dat', GEOIP_STANDARD);
+            $countryname = geoip_country_name_by_addr($gi, $ip);
+            geoip_close($gi);
+        }
+    } else {
+        //ipv6
+        if (file_exists('./temp/GeoIPv6.dat')) {
+            $gi = geoip_open('./temp/GeoIPv6.dat', GEOIP_STANDARD);
+            $countryname = geoip_country_name_by_addr_v6($gi, $ip);
+            geoip_close($gi);
+        }
+    }
+
+    return $countryname;
+}
 
 function quarantine_list($input = "/")
 {
@@ -2572,15 +2518,11 @@ function is_local($host)
     $sys_hostname = strtolower(chop(`hostname`));
     switch ($host) {
         case $sys_hostname:
-            return true;
-            break;
         case gethostbyaddr('127.0.0.1'):
             return true;
-            break;
         default:
             // Remote - RPC needed
             return false;
-            break;
     }
 }
 
@@ -2807,9 +2749,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         $new = quarantine_list_items($list[0]['msgid']);
         $list =& $new;
     }
-
+    $status = array();
     if (!$rpc_only && is_local($list[0]['host'])) {
         foreach ($num as $key => $val) {
+            $use_spamassassin = false;
             switch ($type) {
                 case "ham":
                     $learn_type = "ham";
@@ -2871,7 +2814,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
                         debug("Learner - running SQL: $sql");
-                        $junk = dbquery($sql);
+                        dbquery($sql);
                     }
                     $status[] = "SpamAssassin: " . join(", ", $output_array);
                     switch ($learn_type) {
@@ -2904,7 +2847,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
                         debug("Learner - running SQL: $sql");
-                        $junk = dbquery($sql);
+                        dbquery($sql);
                     }
                     $status[] = "SA Learn: " . join(", ", $output_array);
                     audit_log('SpamAssassin was trained on message ' . $list[$val]['msgid'] . ' as ' . $learn_type);
@@ -3004,16 +2947,15 @@ function audit_log($action)
 {
     dbconn();
     if (AUDIT) {
-        if (!MSEE) {
-            $user = mysql_real_escape_string($_SESSION['myusername']);
-            $action = mysql_real_escape_string($action);
-            $ip = mysql_real_escape_string($_SERVER['REMOTE_ADDR']);
-            dbquery("INSERT INTO audit_log (user,ip_address,action) VALUES ('$user','$ip','$action')");
-        } else {
-            // TODO: MSEE audit_logging (what session variable hold user name??)
-            return false;
+        $user = mysql_real_escape_string($_SESSION['myusername']);
+        $action = mysql_real_escape_string($action);
+        $ip = mysql_real_escape_string($_SERVER['REMOTE_ADDR']);
+        $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
+        if ($ret){
+            return true;
         }
     }
+    return false;
 }
 
 function mailwatch_array_sum($array)
@@ -3105,11 +3047,6 @@ function net_match($network, $ip)
     return ($ip_long & $mask) == ($network_long & $mask);
 }
 
-function mw_version()
-{
-    return ("1.2.0 DEV");
-}
-
 function is_rpc_client_allowed()
 {
     // If no server address supplied
@@ -3186,32 +3123,24 @@ function xmlrpc_wrapper($host, $msg)
 }
 
 // Clean Cache folder
-function delete_dir($path)
+function clear_cache_dir()
 {
-    $files = glob($path . '/*');
+    $cache_dir = MAILWATCH_HOME . '/' . CACHE_DIR;
+    $files = glob($cache_dir . '/*');
     // Life of cached images: hard set to 60 seconds
     $life = '60';
     // File not to delete
-    $notfile = "" . MAILWATCH_HOME . "/" . CACHE_DIR . "/place_holder.txt";
+    $placeholder_file = $cache_dir . "/place_holder.txt";
     foreach ($files as $file) {
-        if (is_dir($file) && !is_link($file)) {
-            delete_dir($file);
-        } else {
-            if (((time() - filemtime($file) >= $life) && ($file != $notfile))) {
+        if (is_file($file) || is_link($file)) {
+            if (((time() - filemtime($file) >= $life) && ($file != $placeholder_file))) {
                 unlink($file);
             }
         }
     }
-    // Check to see if we are in the right path
-    if ($path != "" . MAILWATCH_HOME . "/" . CACHE_DIR . "") {
-        echo "bad path";
-    }
 }
 
-/////////////////////////////////////////////////////
-/// Last Updated: 2012/01/22   //////////////////////
-/////////////////////////////////////////////////////
-function funcs_phpversion()
+function mailwatch_version()
 {
-    return (phpversion());
+    return ("1.2.0 - Beta 6 DEV");
 }

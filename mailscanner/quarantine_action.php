@@ -71,10 +71,8 @@ function simple_html_result($status)
 switch (false) {
     case (isset($_GET['id'])):
         die("Error: No Message ID");
-        break;
     case (isset($_GET['action'])):
         die("Error: No action");
-        break;
 }
 
 
@@ -87,6 +85,7 @@ if (count($list) == 0) {
 switch ($_GET['action']) {
 
     case 'release':
+        $result = '';
         if (count($list) == 1) {
             $to = $list[0]['to'];
             $result = quarantine_release($list, array(0), $to);
@@ -107,6 +106,7 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
+        $status = array();
         if (isset($_GET['html'])) {
             if (!isset($_GET['confirm'])) {
                 // Dislay an 'Are you sure' dialog
@@ -154,7 +154,6 @@ switch ($_GET['action']) {
 
     default:
         die("Unknown action: " . $_GET['action']);
-        break;
 }
 
 dbclose();

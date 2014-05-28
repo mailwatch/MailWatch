@@ -61,7 +61,7 @@ http://php.net/manual/en/timezones.php
 */
 
 // Proxy Settings
-define('USE_PROXY', 'false');
+define('USE_PROXY', false);
 define('PROXY_SERVER', '127.0.0.1');
 define('PROXY_PORT', '8080');
 // Can be set to CURLPROXY_HTTP or CURLPROXY_SOCKS5
@@ -77,11 +77,10 @@ define('MS_LIB_DIR', '/usr/lib/MailScanner/');
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
 define('IMAGES_DIR', './images/'); // trailing slash needed
 define('CACHE_DIR', './images/cache/'); // JpGraph cache
-define('TTF_DIR','./jpgraph/src/fonts/'); // JpGraph fonts
+define('TTF_DIR','./lib/jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR','/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spam.assassin.prefs.conf');
-define('FPDF_FONTPATH','./fpdf/font/');
 define('TEMP_DIR', '/tmp/');
 
 // Log file location
@@ -182,9 +181,6 @@ define('AUDIT', false);
 // Do you want the whitelist/blacklist functionality enabled??
 // You'll need to configure MailScanner to use it accordingly.
 define('LISTS', true);
-
-// Are we running on MSEE?
-define('MSEE', false);
 
 // Force SSL connections only?
 define('SSL_ONLY', false);

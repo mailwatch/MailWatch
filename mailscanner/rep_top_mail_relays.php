@@ -56,9 +56,9 @@ LIMIT 10";
 if (is_writable(CACHE_DIR)) {
 
     // JpGraph functions
-    include_once("./jpgraph/src/jpgraph.php");
-    include_once("./jpgraph/src/jpgraph_pie.php");
-    include_once("./jpgraph/src/jpgraph_pie3d.php");
+    include_once("./lib/jpgraph/src/jpgraph.php");
+    include_once("./lib/jpgraph/src/jpgraph_pie.php");
+    include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
 
     $result = dbquery($sql);
     if (!mysql_num_rows($result) > 0) {

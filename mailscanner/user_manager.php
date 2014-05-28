@@ -27,13 +27,6 @@ require('login.function.php');
 
 html_start("User Manager", 0, false, false);
 
-// Don't run on DefenderMX
-if (MSEE) {
-    echo "This utility is not used in DefenderMX.\n";
-    html_end();
-    exit;
-}
-
 if ($_SESSION['user_type'] == 'A') {
     ?>
     <script type="text/javascript">
