@@ -1197,15 +1197,15 @@ function get_conf_include_folder()
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($msconfig)));
         //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
-        if (preg_match('/^(?P<parameter>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
-            $regs['parameter'] = preg_replace('/ */', '', $regs['parameter']);
-            $regs['parameter'] = preg_replace('/=/', '', $regs['parameter']);
+        if (preg_match('/^(?<name>[^#].+)\s(?<value>[^#].+)/', $line, $regs)) {
+            $regs['name'] = preg_replace('/ */', '', $regs['name']);
+            $regs['name'] = preg_replace('/=/', '', $regs['name']);
             //var_dump($line, $regs);
             // Strip trailing comments
             $regs['value'] = preg_replace("/\*/", "", $regs['value']);
             // store %var% variables
-            if (preg_match("/%.+%/", $regs['parameter'])) {
-                $var[$regs['parameter']] = $regs['value'];
+            if (preg_match("/%.+%/", $regs['name'])) {
+                $var[$regs['name']] = $regs['value'];
             }
             // expand %var% variables
             if (preg_match("/(%.+%)/", $regs['value'], $match)) {
@@ -1231,8 +1231,7 @@ function parse_conf_file($name)
     $array_output = array();
     // open each file and read it
     //$fh = fopen($name . $file, 'r')
-    $fh = fopen($name, 'r')
-    or die("Cannot open MailScanner configuration file");
+    $fh = fopen($name, 'r') or die("Cannot open MailScanner configuration file");
     while (!feof($fh)) {
 
         // read each line to the $line varable
@@ -1241,24 +1240,24 @@ function parse_conf_file($name)
         //echo "line: ".$line."\n"; // only use for troubleshooting lines
 
         // find all lines that match
-        if (preg_match("/^([^#].+)\s=\s([^#].*)/", $line, $regs)) {
+        if (preg_match("/^(?<name>[^#].+)\s?=\s?(?<value>[^#]*)/", $line, $regs)) {
 
             // Strip trailing comments
-            $regs[2] = preg_replace("/#.*$/", "", $regs[2]);
+            $regs['value'] = preg_replace("/#.*$/", "", $regs['value']);
 
             // store %var% variables
-            if (preg_match("/%.+%/", $regs[1])) {
-                $var[$regs[1]] = $regs[2];
+            if (preg_match("/%.+%/", $regs['name'])) {
+                $var[$regs['name']] = $regs['value'];
             }
 
             // expand %var% variables
-            if (preg_match("/(%.+%)/", $regs[2], $match)) {
-                $regs[2] = preg_replace("/%.+%/", $var[$match[1]], $regs[2]);
+            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
+                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
             }
 
             // Remove any html entities from the code
-            $key = htmlentities($regs[1]);
-            $string = htmlentities($regs[2]);
+            $key = htmlentities($regs['name']);
+            $string = htmlentities($regs['value']);
 
             // Stuff all of the data to an array
             $array_output[$key] = $string;
@@ -1342,6 +1341,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
     // Ordering
     $orderby = null;
+    $orderdir = '';
     if (isset($_GET['orderby'])) {
         $orderby = $_GET['orderby'];
         switch (strtoupper($_GET['orderdir'])) {
