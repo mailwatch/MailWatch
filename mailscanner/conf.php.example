@@ -36,14 +36,14 @@ define('DEBUG', false);
 // (IE) Do not use your main-global-admin accounts.
 //
 define('DB_TYPE', 'mysql');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_USER', 'mailwatch');
+define('DB_PASS', 'mailwatch');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'mailscanner');
-define('DB_DSN', DB_TYPE.'://'.DB_USER.":".DB_PASS."@".DB_HOST."/".DB_NAME);
+define('DB_DSN',  DB_TYPE.'://'.DB_USER.":".DB_PASS."@".DB_HOST."/".DB_NAME);
 
 // LDAP settings
-define('USE_LDAP',		   '0');
+define('USE_LDAP',         '0');
 define('LDAP_HOST',        'server.example.com');
 define('LDAP_PORT',        '389');
 define('LDAP_DN',          'DC=example,DC=com');
@@ -87,7 +87,6 @@ define('TEMP_DIR', '/tmp/');
 define('MS_LOG', '/var/log/mail.log');
 define('MAIL_LOG', '/var/log/mail.log');
 
-
 // Default number of results on Recent Messages and Message Listing Report
 define('MAX_RESULTS', 50);
 // Default refresh rate in seconds for the Recent Messages screen
@@ -114,13 +113,13 @@ define('SHOW_SFVERSION', true);
 // Show Documentation tab
 define('SHOW_DOC', false);
 
-// Quarantine settings
+/* Quarantine settings */
 
 // The quarantine flag is only available on MailScanner >=4.43
 // it will dramtically improved the speed of quarantine operations
 // but requires that you use the quarantine_manager.php in place of
 // the clean.quarantine script provided with MailScanner.
-define('QUARANTINE_USE_FLAG', false);
+define('QUARANTINE_USE_FLAG', true);
 define('QUARANTINE_DAYS_TO_KEEP', 30);
 define('QUARANTINE_MAIL_HOST', '127.0.0.1');
 define('QUARANTINE_FROM_ADDR', 'postmaster');
