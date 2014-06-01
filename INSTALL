@@ -15,7 +15,6 @@ Please use the mailing-list mailwatch-users@lists.sourceforge.net or the forums 
 NOTES FOR OTHER OPERATING SYSTEMS/LINUX DISTRO'S
 
 PHP should have the following set in php.ini (possibly others too....)
- short_open_tag = On
  safe_mode = Off
  register_globals = Off
  magic_quotes_gpc = On
@@ -76,14 +75,15 @@ Install & Configure MailWatch
    quarantine directory.  The new quarantine report requires the use of the
    new functionality - so you must upgrade if you want to run this.
 
-   The new quarantine flag is not used by default - if you have MailScanner
-   verions 4.43 or later, you can activate the new functionality by setting
-   QUARANTINE_USE_FLAG to true in conf.php - if you do this, you must disable
+   The new quarantine flag is used by default and you must disable
    the clean.quarantine script supplied by MailScanner and use the new
    quarantine_maint.php script in the tools directory instead.
-
    To clean the quarantine - set 'QUARANTINE_DAYS_TO_KEEP' in conf.php and
    run './quarantine_maint --clean'.  This should then be run daily from cron.
+
+   If you are still using MailScanner 4.42 or older, updating your installation
+   is highly recommanded; if you can't update you need to set the QUARANTINE_USE_FLAG
+   to false in conf.php and use the clean.quarantine script supplied by MailScanner.
 
 # cp conf.php.example conf.php
 
