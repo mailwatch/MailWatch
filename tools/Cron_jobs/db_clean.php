@@ -39,6 +39,7 @@ if (!defined(RECORD_DAYS_TO_KEEP) || (defined(RECORD_DAYS_TO_KEEP) && RECORD_DAY
     // Cleaning the mta_log and optionally the mta_log_id table
     $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
     $tablecheck = dbquery($sqlcheck);
+    $mta = get_conf_var('mta');
     if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfix with mtalog_ids enabled
         dbquery("DELETE i.*, m.* FROM mtalog AS m INNER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id WHERE m.timestamp < (now() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
     } else {

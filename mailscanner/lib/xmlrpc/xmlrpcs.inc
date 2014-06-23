@@ -1,7 +1,6 @@
 <?php
 // by Edd Dumbill (C) 1999-2002
 // <edd@usefulinc.com>
-// $Id: xmlrpcs.inc,v 1.1 2011/12/05 00:33:49 lorodoes Exp $
 
 // Copyright (c) 1999,2000,2002 Edd Dumbill.
 // All rights reserved.
@@ -421,7 +420,7 @@
 	/**
 	* Add a string to the debug info that can be later seralized by the server
 	* as part of the response message.
-	* Note that for best compatbility, the debug string should be encoded using
+	* Note that for best compatibility, the debug string should be encoded using
 	* the $GLOBALS['xmlrpc_internalencoding'] character set.
 	* @param string $m
 	* @access public
@@ -451,7 +450,7 @@
 		* @see php_xmlrpc_encode for a list of values
 		*/
 		var $phpvals_encoding_options = array( 'auto_dates' );
-		/// controls wether the server is going to echo debugging messages back to the client as comments in response body. valid values: 0,1,2,3
+		/// controls whether the server is going to echo debugging messages back to the client as comments in response body. valid values: 0,1,2,3
 		var $debug = 1;
 		/**
 		* Controls behaviour of server when invoked user function throws an exception:
@@ -495,8 +494,8 @@
 		var $user_data = null;
 
 		/**
-		* @param array $dispmap the dispatch map withd efinition of exposed services
-		* @param boolean $servicenow set to false to prevent the server from runnung upon construction
+		* @param array $dispmap the dispatch map with definition of exposed services
+		* @param boolean $servicenow set to false to prevent the server from running upon construction
 		*/
 		function xmlrpc_server($dispMap=null, $serviceNow=true)
 		{
@@ -541,7 +540,7 @@
 		* with the standard processing of the php function exposed as method. In
 		* particular, triggering an USER_ERROR level error will not halt script
 		* execution anymore, but just end up logged in the xmlrpc response)
-		* Note that info added at elevel 2 and 3 will be base64 encoded
+		* Note that info added at level 2 and 3 will be base64 encoded
 		* @access public
 		*/
 		function setDebug($in)
@@ -588,15 +587,7 @@
 			if ($data === null)
 			{
 				// workaround for a known bug in php ver. 5.2.2 that broke $HTTP_RAW_POST_DATA
-				$ver = phpversion();
-				if ($ver[0] >= 5)
-				{
-					$data = file_get_contents('php://input');
-				}
-				else
-				{
-					$data = isset($GLOBALS['HTTP_RAW_POST_DATA']) ? $GLOBALS['HTTP_RAW_POST_DATA'] : '';
-				}
+                $data = file_get_contents('php://input');
 			}
 			$raw_data = $data;
 
@@ -720,6 +711,7 @@
 		* Verify type and number of parameters received against a list of known signatures
 		* @param array $in array of either xmlrpcval objects or xmlrpc type definitions
 		* @param array $sig array of known signatures to match against
+		* @return array
 		* @access private
 		*/
 		function verifySignature($in, $sig)
@@ -785,7 +777,7 @@
 
 		/**
 		* Parse http headers received along with xmlrpc request. If needed, inflate request
-		* @return null on success or an xmlrpcresp
+		* @return mixed null on success or an xmlrpcresp
 		* @access private
 		*/
 		function parseRequestHeaders(&$data, &$req_encoding, &$resp_encoding, &$resp_compression)
@@ -948,7 +940,7 @@
 				}
 				/// @BUG this will fail on PHP 5 if charset is not specified in the xml prologue,
 				// the encoding is not UTF8 and there are non-ascii chars in the text...
-				/// @todo use an ampty string for php 5 ???
+				/// @todo use an empty string for php 5 ???
 				$parser = xml_parser_create($req_encoding);
 			}
 			else
@@ -1210,7 +1202,7 @@
 
 		/**
 		* add a string to the 'internal debug message' (separate from 'user debug message')
-		* @param string $strings
+		* @param string $string
 		* @access private
 		*/
 		function debugmsg($string)

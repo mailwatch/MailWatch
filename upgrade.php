@@ -81,7 +81,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
   lowspamscore decimal(10,0) NOT NULL default '0',
   highspamscore decimal(10,0) NOT NULL default '0',
   PRIMARY KEY  (user)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
     if (@mysql_query($sql)) {
         echo " OK\n";
     } else {
@@ -236,11 +236,11 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
     echo pad(" - Creating table 'audit_log' ");
     $sql = "
    CREATE TABLE audit_log (
-     timestamp timestamp(14) NOT NULL,
+     timestamp timestamp NOT NULL,
      user varchar(20) NOT NULL default '',
      ip_address varchar(15) NOT NULL default '',
      action text NOT NULL
-   ) TYPE=MyISAM
+   ) ENGINE=MyISAM
    ";
     if(@mysql_query($sql)) {
      echo " OK\n";
@@ -258,7 +258,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
      from_address text,
      PRIMARY KEY  (id),
      UNIQUE KEY blacklist_uniq (to_address(100),from_address(100))
-   ) TYPE=MyISAM
+   ) ENGINE=MyISAM
    ";
     if(@mysql_query($sql)) {
      echo " OK\n";
@@ -278,7 +278,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
      country text,
      KEY geoip_country_begin (begin_num),
      KEY geoip_country_end (end_num)
-   ) TYPE=MyISAM
+   ) ENGINE=MyISAM
    ";
     if(@mysql_query($sql)) {
      echo " OK\n";
@@ -293,7 +293,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
      rule char(100) NOT NULL default '',
      rule_desc char(200) NOT NULL default '',
      PRIMARY KEY  (rule)
-   ) TYPE=MyISAM
+   ) ENGINE=MyISAM
    ";
     if(@mysql_query($sql)) {
      echo " OK\n";
@@ -316,7 +316,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
      UNIQUE KEY mtalog_uniq (timestamp,host(10),type(10),msg_id,relay(20)),
      KEY mtalog_timestamp (timestamp),
      KEY mtalog_type (type(10))
-   ) TYPE=MyISAM
+   ) ENGINE=MyISAM
    ";
     if(@mysql_query($sql)) {
      echo " OK\n";
@@ -334,7 +334,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
      value text NOT NULL,
      username text NOT NULL,
      UNIQUE KEY unique_filters (name(20),col(20),operator(20),value(20),username(20))
-   ) TYPE=MyISAM
+   ) ENGINE=MyISAM
    ";
     if(@mysql_query($sql)) {
      echo " OK\n";
@@ -352,7 +352,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
      from_address text,
      PRIMARY KEY  (id),
      UNIQUE KEY whitelist_uniq (to_address(100),from_address(100))
-   ) TYPE=MyISAM
+   ) ENGINE=MyISAM
    ";
     if(@mysql_query($sql)) {
      echo " OK\n";
