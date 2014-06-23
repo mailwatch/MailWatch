@@ -3,9 +3,8 @@
  * PHP-XMLRPC "wrapper" functions
  * Generate stubs to transparently access xmlrpc methods as php functions and viceversa
  *
- * @version $Id: xmlrpc_wrappers.inc,v 1.1 2011/12/05 00:33:49 lorodoes Exp $
  * @author Gaetano Giunta
- * @copyright (C) 2006-2009 G. Giunta
+ * @copyright (C) 2006-2014 G. Giunta
  * @license code licensed under the BSD License: http://phpxmlrpc.sourceforge.net/license.txt
  *
  * @todo separate introspection from code generation for func-2-method wrapping
@@ -106,7 +105,6 @@
 	* carried out by the lib, while datetime vals are passed around as strings)
 	*
 	* Known limitations:
-	* - requires PHP 5.0.3 +
 	* - only works for user-defined functions, not for PHP internal functions
 	*   (reflection does not support retrieving number/type of params for those)
 	* - functions returning php objects will generate special xmlrpc responses:
@@ -150,14 +148,7 @@
 		$decode_php_objects = isset($extra_options['decode_php_objs']) ? (bool)$extra_options['decode_php_objs'] : false;
 		$catch_warnings = isset($extra_options['suppress_warnings']) && $extra_options['suppress_warnings'] ? '@' : '';
 
-		if(version_compare(phpversion(), '5.0.3') == -1)
-		{
-			// up to php 5.0.3 some useful reflection methods were missing
-			error_log('XML-RPC: cannot not wrap php functions unless running php version bigger than 5.0.3');
-			return false;
-		}
-
-        $exists = false;
+		$exists = false;
 	    if (is_string($funcname) && strpos($funcname, '::') !== false)
 	    {
 	        $funcname = explode('::', $funcname);
@@ -178,11 +169,6 @@
                 $plainfuncname = get_class($funcname[0]) . '->' . $funcname[1];
             }
             $exists = method_exists($funcname[0], $funcname[1]);
-            if (!$exists && version_compare(phpversion(), '5.1') < 0)
-            {
-               // workaround for php 5.0: static class methods are not seen by method_exists
-               $exists = is_callable( $funcname );
-            }
         }
         else
         {
@@ -240,8 +226,7 @@
     				error_log('XML-RPC: method to be wrapped is the constructor: '.$plainfuncname);
     				return false;
     			}
-			    // php 503 always says isdestructor = true...
-                if( version_compare(phpversion(), '5.0.3') != 0 && $func->isDestructor())
+                if($func->isDestructor())
     			{
     				error_log('XML-RPC: method to be wrapped is the destructor: '.$plainfuncname);
     				return false;
@@ -500,13 +485,6 @@
     {
 		$methodfilter = isset($extra_options['method_filter']) ? $extra_options['method_filter'] : '';
 		$methodtype = isset($extra_options['method_type']) ? $extra_options['method_type'] : 'auto';
-
-        if(version_compare(phpversion(), '5.0.3') == -1)
-		{
-			// up to php 5.0.3 some useful reflection methods were missing
-			error_log('XML-RPC: cannot not wrap php functions unless running php version bigger than 5.0.3');
-			return false;
-		}
 
         $result = array();
 		$mlist = get_class_methods($classname);
