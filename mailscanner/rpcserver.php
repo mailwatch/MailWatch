@@ -25,6 +25,7 @@ ini_set("memory_limit", MEMORY_LIMIT);
 
 function rpc_get_quarantine($msg)
 {
+    global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (is_string($input)) {
         $input = strtolower($input);
@@ -67,19 +68,20 @@ function rpc_get_quarantine($msg)
                         }
                         break;
                     case(is_file($quarantinedir . $input)):
-                        return new xmlrpcresp(0, 1, "$quarantinedir$input is a file.");
+                        return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir$input is a file.");
                         break;
                 }
                 break;
         }
         return new xmlrpcresp(new xmlrpcval($output, 'array'));
     } else {
-        return new xmlrpcresp(0, 1, "Parameter type " . gettype($input) . " mismatch expected type.");
+        return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($input) . " mismatch expected type.");
     }
 }
 
 function rpc_return_quarantined_file($msg)
 {
+    global $xmlrpcerruser;
     dbconn();
     $input = php_xmlrpc_decode(array_shift($msg->params));
     $input = preg_replace('[\.\/|\.\.\/]', '', $input);
@@ -107,11 +109,11 @@ function rpc_return_quarantined_file($msg)
     $quarantinedir = get_conf_var('QuarantineDir');
     switch (true) {
         case(!is_string($file)):
-            return new xmlrpcresp(0, 1, "Parameter type " . gettype($file) . " mismatch expected type.");
+            return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($file) . " mismatch expected type.");
         case(!is_file($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, 1, "$quarantinedir/$file is not a file.");
+            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file is not a file.");
         case(!is_readable($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, 1, "$quarantinedir/$file: permission denied.");
+            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file: permission denied.");
         default:
             $output = base64_encode(file_get_contents($quarantinedir . '/' . $file));
             break;
@@ -121,18 +123,21 @@ function rpc_return_quarantined_file($msg)
 
 function rpc_quarantine_list_items($msg)
 {
+    global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (!is_string($input)) {
-        return new xmlrpcresp(0, 1, "Parameter type " . gettype($input) . " mismatch expected type.");
+        return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($input) . " mismatch expected type.");
     }
     $return = quarantine_list_items($input);
     $output = array();
+    $struct = array();
     foreach ($return as $array) {
         foreach ($array as $key => $val) {
             $struct[$key] = new xmlrpcval($val);
         }
         $output[] = new xmlrpcval($struct, 'struct');
     }
+    //var_dump($output);
     return new xmlrpcresp(new xmlrpcval($output, 'array'));
 }
 
@@ -170,11 +175,12 @@ function rpc_sophos_status()
 
 function rpc_get_conf_var($msg)
 {
+    global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (is_string($input)) {
         return new xmlrpcresp(new xmlrpcval(get_conf_var($input), 'string'));
     } else {
-        return new xmlrpcresp(0, 1, "Parameter type " . gettype($input) . " mismatch expected type.");
+        return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($input) . " mismatch expected type.");
     }
 }
 
@@ -290,13 +296,13 @@ $s = new xmlrpc_server(array(
             'docstring' => 'This service return information about the bayes database.'
         )
     )
-    , 0);
-/*
+    , false);
+
 // Check that the client is authorised to connect
 if(is_rpc_client_allowed()) {
     $s->service();
 } else {
-    $output = new xmlrpcresp(0, 1, "Client {$_SERVER['SERVER_ADDR']} is not authorized to connect.");
+    global $xmlrpcerruser;
+    $output = new xmlrpcresp(0, $xmlrpcerruser + 1, "Client {$_SERVER['SERVER_ADDR']} is not authorized to connect.");
     print $output->serialize();
 }
-*/
