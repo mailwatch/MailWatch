@@ -134,6 +134,7 @@ define('QUARANTINE_REPORT_HOSTURL', 'http://'.chop(`hostname`).'/mailscanner/');
 define('QUARANTINE_REPORT_DAYS', 7);
 define('QUARANTINE_USE_SENDMAIL', false);
 define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
+define('QUARANTINE_DISPLAY_IP', false);
 
 // This turns virus names into links that can be used to get more information
 // about a given virus or virus alias.  Comment out or set to false to disable.
