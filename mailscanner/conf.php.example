@@ -92,6 +92,9 @@ define('MAX_RESULTS', 50);
 // Default refresh rate in seconds for the Recent Messages screen
 define('STATUS_REFRESH', 30);
 
+// Display Client IP Address on message listing
+define('DISPLAY_IP', false);
+
 // Set the following to a value greater than zero to limit the length of the
 // From, To and Subject columns in the 'Recent Messages' screen.
 define('FROMTO_MAXLEN', 50);
@@ -134,7 +137,6 @@ define('QUARANTINE_REPORT_HOSTURL', 'http://'.chop(`hostname`).'/mailscanner/');
 define('QUARANTINE_REPORT_DAYS', 7);
 define('QUARANTINE_USE_SENDMAIL', false);
 define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
-define('QUARANTINE_DISPLAY_IP', false);
 
 // This turns virus names into links that can be used to get more information
 // about a given virus or virus alias.  Comment out or set to false to disable.
