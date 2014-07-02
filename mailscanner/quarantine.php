@@ -84,9 +84,9 @@ SELECT
  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
  from_address,";
         if (DISPLAY_IP) {
-            $sql += "clientip,";
+            $sql .= "clientip,";
         }
-        $sql += "
+        $sql .= "
  to_address,
  subject,
  size,
@@ -131,9 +131,9 @@ ORDER BY
    DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
    from_address,";
             if (DISPLAY_IP) {
-                $sql += "clientip,";
+                $sql .= "clientip,";
             }
-            $sql += "
+            $sql .= "
    to_address,
    subject,
    size,
