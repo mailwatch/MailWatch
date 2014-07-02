@@ -2,7 +2,7 @@
 -----------
 
  - Enhanced MailScanner.conf parser to catch variable's value even if there is no space before and/or after = sign
- - Added DISPLAY_IP to show sender's IP Address in Quarantine listings and message lists
+ - Added DISPLAY_IP option to show sender's IP Address in Quarantine listings and message lists
 
 1.2.0 - Beta 5
 -----------
