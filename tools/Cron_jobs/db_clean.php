@@ -28,9 +28,9 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-if (!defined(RECORD_DAYS_TO_KEEP) || (defined(RECORD_DAYS_TO_KEEP) && RECORD_DAYS_TO_KEEP < 1)) {
+if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
     die("The variable RECORD_DAYS_TO_KEEP is empty, please set a value in conf.php.");
-} elseif (!defined(AUDIT_DAYS_TO_KEEP) || (defined(AUDIT_DAYS_TO_KEEP) && AUDIT_DAYS_TO_KEEP < 1)) {
+} elseif (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
     die("The variable AUDIT_DAYS_TO_KEEP is empty, please set a value in conf.php.");
 } else {
     // Cleaning the maillog table
