@@ -25,9 +25,9 @@ require('/var/www/html/mailscanner/functions.php');
 
 $required_constant = array('TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP');
 $required_constant_missing_count = 0;
-foreach ($required_constant as $contant) {
-    if (!defined($contant)) {
-        echo "The variable $contant is empty, please set a value in conf.php.\n";
+foreach ($required_constant as $constant) {
+    if (!defined($constant)) {
+        echo "The variable $constant is empty, please set a value in conf.php.\n";
         $required_constant_missing_count++;
     }
 }
