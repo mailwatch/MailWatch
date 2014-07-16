@@ -120,7 +120,7 @@ define('SHOW_DOC', false);
 
 // The quarantine flag is only available on MailScanner >=4.43
 // it will dramtically improved the speed of quarantine operations
-// but requires that you use the quarantine_manager.php in place of
+// but requires that you use the quarantine_maint.php in place of
 // the clean.quarantine script provided with MailScanner.
 define('QUARANTINE_USE_FLAG', true);
 define('QUARANTINE_DAYS_TO_KEEP', 30);
