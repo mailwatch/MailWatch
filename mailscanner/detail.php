@@ -202,7 +202,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $row[$f] = format_mail_size($row[$f]);
         }
         if ($fieldn == "Message Headers:") {
-            if (version_compare(phpversion(), "5.4", ">=") {
+            if (version_compare(phpversion(), "5.4", ">=")) {
                 $row[$f] = nl2br(
                     str_replace(array("\n", "\t"), array("<br>", "&nbsp; &nbsp; &nbsp;"), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
                 );
