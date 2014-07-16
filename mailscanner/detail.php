@@ -203,7 +203,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
         }
         if ($fieldn == "Message Headers:") {
             $row[$f] = nl2br(
-                str_replace(array("\n", "\t"), array("<br>", "&nbsp; &nbsp; &nbsp;"), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
+                str_replace(array("\n", "\t"), array("<br>", "&nbsp; &nbsp; &nbsp;"), htmlentities($row[$f], ENT_COMPAT, "ISO-8859-1"))
             );
             $row[$f] = preg_replace("/<br \/>/", "<br>", $row[$f]);
         }
