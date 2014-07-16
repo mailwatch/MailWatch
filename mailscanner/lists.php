@@ -85,6 +85,7 @@ $myusername = $_SESSION['myusername'];
 // Validate input against the user type
 $to_user_filter = array();
 $to_domain_filter = array();
+$to_address = '';
 switch ($_SESSION['user_type']) {
     case 'U': // User
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
@@ -136,9 +137,9 @@ switch ($_SESSION['user_type']) {
         $to_domain_filter = array_unique($to_domain_filter);
         break;
     case 'A': // Administrator
+        $to_address = 'default';
         break;
 }
-$to_address = '';
 switch (true) {
     case(!empty($url_to)):
         $to_address = $url_to;
