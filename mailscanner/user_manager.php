@@ -255,7 +255,7 @@ if ($_SESSION['user_type'] == 'A') {
                         dbquery($sql);
                     }
                 }
-                $sql = "SELECT filter, CASE WHEN active='Y' THEN 'Yes' ELSE 'No' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . mysql_real_escape_string($_GET['id']) . "\',\'',filter,'\'\)\">Delete</a>&nbsp;&nbsp<a href=\"javascript:change_state(\'" . mysql_real_escape_string($_GET['id']) . "\',\'',filter,'\')\">Activate/Deactivate</a>') AS actions FROM user_filters WHERE username='" . mysql_real_escape_string($_GET['id']) . "'";
+                $sql = "SELECT filter, CASE WHEN active='Y' THEN 'Yes' ELSE 'No' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . mysql_real_escape_string($_GET['id']) . "\',\'',filter,'\'\)\">Delete</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . mysql_real_escape_string($_GET['id']) . "\',\'',filter,'\')\">Activate/Deactivate</a>') AS actions FROM user_filters WHERE username='" . mysql_real_escape_string($_GET['id']) . "'";
                 $result = dbquery($sql);
                 echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"id\" VALUE=\"" . $_GET['id'] . "\">\n";
