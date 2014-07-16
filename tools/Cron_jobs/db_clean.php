@@ -40,12 +40,15 @@ if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
     $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
     $tablecheck = dbquery($sqlcheck);
     $mta = get_conf_var('mta');
+    $optimize_mtalog_id = '';
     if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) {
         //version for postfix with mtalog_ids enabled
-        dbquery("DELETE i.*, m.* FROM mtalog AS m
-                    LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id
-                    WHERE m.timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)"
+        dbquery(
+            "DELETE i.*, m.* FROM mtalog AS m
+             LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id
+             WHERE m.timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)"
         );
+        $optimize_mtalog_id = ', mtalog_ids';
     } else {
         dbquery("DELETE FROM mtalog WHERE timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
     }
@@ -54,5 +57,5 @@ if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
     dbquery("DELETE FROM audit_log WHERE timestamp < (NOW() - INTERVAL " . AUDIT_DAYS_TO_KEEP . " DAY)");
 
     // Optimize all of tables
-    dbquery("OPTIMIZE TABLE maillog, mtalog, audit_log");
+    dbquery("OPTIMIZE TABLE maillog, mtalog, audit_log" . $optimize_mtalog_id);
 }
