@@ -111,7 +111,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
         if ($fieldn == "Received from:") {
             $output = "<table class=\"sa_rules_report\" width=\"100%\" cellspacing=0 cellpadding=0><tr><td>" . $row[$f] . "</td>";
             if (LISTS) {
-                $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">Add to Whitelist</a>&nbsp|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">Add to Blacklist</a>]</td>";
+                $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">Add to Whitelist</a>&nbsp;|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">Add to Blacklist</a>]</td>";
             }
             $output .= "</tr></table>\n";
             $row[$f] = $output;
@@ -173,7 +173,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $row[$f] = htmlentities($row[$f]);
             $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
             if (LISTS) {
-                $output .= '<td align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">Add to Whitelist</a>&nbsp|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">Add to Blacklist</a>]</td>' . "\n";
+                $output .= '<td align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">Add to Whitelist</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">Add to Blacklist</a>]</td>' . "\n";
             }
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
@@ -415,7 +415,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
             ) {
                 echo '   <td align="center"><input type="checkbox" name="learn[]" value="' . $item['id'] . '"><select name="learn_type"><option value="ham">As Ham</option><option value="spam">As Spam</option><option value="forget">Forget</option><option value="report">As Spam+Report</option><option value="revoke">As Ham+Revoke</option></select></td>' . "\n";
             } else {
-                echo '   <td>&nbsp&nbsp</td>' . "\n";
+                echo '   <td>&nbsp;&nbsp;</td>' . "\n";
             }
             echo '  <td>' . $item['file'] . '</td>' . "\n";
             echo '  <td>' . $item['type'] . '</td>' . "\n";
@@ -443,7 +443,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         }
         echo ' <tr>' . "\n";
         if ($is_dangerous > 0 && $_SESSION['user_type'] != 'A') {
-            echo '  <td colspan="6">&nbsp</td>' . "\n";
+            echo '  <td colspan="6">&nbsp;</td>' . "\n";
         } else {
             echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;Alternate Recipient(s):&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
         }
