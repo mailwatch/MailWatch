@@ -34,20 +34,24 @@ if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
     die("The variable AUDIT_DAYS_TO_KEEP is empty, please set a value in conf.php.");
 } else {
     // Cleaning the maillog table
-    dbquery("DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (now() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
+    dbquery("DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
 
     // Cleaning the mta_log and optionally the mta_log_id table
     $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
     $tablecheck = dbquery($sqlcheck);
     $mta = get_conf_var('mta');
-    if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfix with mtalog_ids enabled
-        dbquery("DELETE i.*, m.* FROM mtalog AS m INNER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id WHERE m.timestamp < (now() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
+    if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) {
+        //version for postfix with mtalog_ids enabled
+        dbquery("DELETE i.*, m.* FROM mtalog AS m
+                    LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id
+                    WHERE m.timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)"
+        );
     } else {
-        dbquery("DELETE FROM mtalog WHERE timestamp < (now() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
+        dbquery("DELETE FROM mtalog WHERE timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
     }
 
     // Clean the audit log
-    dbquery("DELETE FROM audit_log WHERE timestamp < (now() - INTERVAL " . AUDIT_DAYS_TO_KEEP . " DAY)");
+    dbquery("DELETE FROM audit_log WHERE timestamp < (NOW() - INTERVAL " . AUDIT_DAYS_TO_KEEP . " DAY)");
 
     // Optimize all of tables
     dbquery("OPTIMIZE TABLE maillog, mtalog, audit_log");
