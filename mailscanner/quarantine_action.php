@@ -122,7 +122,7 @@ switch ($_GET['action']) {
                                 <tr>
                                     <td align="center">
                                         <a href="<?php echo $_SERVER['PHP_SELF']; ?>?id=<?php echo $_GET['id']; ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
-                                        &nbsp;&nbsp
+                                        &nbsp;&nbsp;
                                         <a href="javascript:void(0)" onClick="javascript:window.close()">No</a>
                                     </td>
                                 </tr>

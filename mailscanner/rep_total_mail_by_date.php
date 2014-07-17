@@ -207,7 +207,7 @@ echo "  <TH>%</TH>\n";
 echo "  <TH>MCP</TH>\n";
 echo "  <TH>%</TH>\n";
 echo "  <TH>Volume</TH>\n";
-echo "  <TH>&nbsp;&nbsp;&nbsp;&nbsp</TH>\n";
+echo "  <TH>&nbsp;&nbsp;&nbsp;&nbsp;</TH>\n";
 echo "  <TH>Unknown<BR>Users</TH>\n";
 echo "  <TH>Can't<BR>Resolve</TH>\n";
 echo "  <TH>RBL</TH>\n";
