@@ -32,7 +32,11 @@ SELECT
  id AS id2,
  hostname AS host,
  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
- from_address,
+ from_address,";
+if (DISPLAY_IP) {
+    $sql .= "clientip,";
+}
+$sql .= "
  to_address,
  subject,
  size as size,

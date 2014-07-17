@@ -92,6 +92,9 @@ define('MAX_RESULTS', 50);
 // Default refresh rate in seconds for the Recent Messages screen
 define('STATUS_REFRESH', 30);
 
+// Display Client IP Address on message listing
+define('DISPLAY_IP', false);
+
 // Set the following to a value greater than zero to limit the length of the
 // From, To and Subject columns in the 'Recent Messages' screen.
 define('FROMTO_MAXLEN', 50);
