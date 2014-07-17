@@ -82,7 +82,11 @@ if (!isset($_GET['dir']) && !isset($_GET["msgdir"])) {
 SELECT
  id AS id2,
  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
- from_address,
+ from_address,";
+        if (DISPLAY_IP) {
+            $sql .= "clientip,";
+        }
+        $sql .= "
  to_address,
  subject,
  size,
@@ -125,7 +129,11 @@ ORDER BY
   SELECT
    id AS id2,
    DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
-   from_address,
+   from_address,";
+            if (DISPLAY_IP) {
+                $sql .= "clientip,";
+            }
+            $sql .= "
    to_address,
    subject,
    size,
