@@ -162,35 +162,46 @@ sub LookupList {
   @to         = @{$message->{to}};
   $to         = $to[0];
   $ip         = $message->{clientip};
-  # match on leading 3, 2, or 1 octets - filter must have trailing dot to match
+  # match on leading 3, 2, or 1 octets
   $ip =~ /(\d{1,3}\.)(\d{1,3}\.)(\d{1,3}\.)/;  # get 1st three octets of IP
   $ip3 = "$1$2$3";
   $ip2 = "$1$2";
   $ip1 = $1;
-  # $ip1, $ip2, $ip3 all end in a trailing ".", as must the rule to match
+  # $ip1, $ip2, $ip3 all end in a trailing "."
 
   # It is in the list if either the exact address is listed,
-  # or the domain is listed
+  # the domain is listed,
+  # the IP address is listed,
+  # or the first 3, 2, or 1 octects of the ipaddress are listed with or without a trailing dot
   return 1 if $BlackWhite->{$to}{$from};
   return 1 if $BlackWhite->{$to}{$fromdomain};
   return 1 if $BlackWhite->{$to}{$ip};
   return 1 if $BlackWhite->{$to}{$ip3};
+  return 1 if $BlackWhite->{$to}{chop($ip3)};
   return 1 if $BlackWhite->{$to}{$ip2};
+  return 1 if $BlackWhite->{$to}{chop($ip2)};
   return 1 if $BlackWhite->{$to}{$ip1};
+  return 1 if $BlackWhite->{$to}{chop($ip1)};
   return 1 if $BlackWhite->{$to}{'default'};
   return 1 if $BlackWhite->{$todomain}{$from};
   return 1 if $BlackWhite->{$todomain}{$fromdomain};
   return 1 if $BlackWhite->{$todomain}{$ip};
   return 1 if $BlackWhite->{$todomain}{$ip3};
+  return 1 if $BlackWhite->{$todomain}{chop($ip3)};
   return 1 if $BlackWhite->{$todomain}{$ip2};
+  return 1 if $BlackWhite->{$todomain}{chop($ip2)};
   return 1 if $BlackWhite->{$todomain}{$ip1};
+  return 1 if $BlackWhite->{$todomain}{chop($ip1)};
   return 1 if $BlackWhite->{$todomain}{'default'};
   return 1 if $BlackWhite->{'default'}{$from};
   return 1 if $BlackWhite->{'default'}{$fromdomain};
   return 1 if $BlackWhite->{'default'}{$ip};
   return 1 if $BlackWhite->{'default'}{$ip3};
+  return 1 if $BlackWhite->{'default'}{chop($ip3)};
   return 1 if $BlackWhite->{'default'}{$ip2};
+  return 1 if $BlackWhite->{'default'}{chop($ip2)};
   return 1 if $BlackWhite->{'default'}{$ip1};
+  return 1 if $BlackWhite->{'default'}{chop($ip1)};
 
   # It is not in the list
   return 0;
