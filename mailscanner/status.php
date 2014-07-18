@@ -33,7 +33,7 @@ SELECT
  hostname AS host,
  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
  from_address,";
-if (DISPLAY_IP) {
+if (defined('DISPLAY_IP') && DISPLAY_IP) {
     $sql .= "clientip,";
 }
 $sql .= "
