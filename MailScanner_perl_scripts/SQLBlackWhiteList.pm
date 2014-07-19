@@ -172,7 +172,7 @@ sub LookupList {
   # It is in the list if either the exact address is listed,
   # the domain is listed,
   # the IP address is listed,
-  # or the first 3, 2, or 1 octects of the ipaddress are listed with or without a trailing dot
+  # or the first 3, 2, or 1 octets of the ipaddress are listed with or without a trailing dot
   return 1 if $BlackWhite->{$to}{$from};
   return 1 if $BlackWhite->{$to}{$fromdomain};
   return 1 if $BlackWhite->{$to}{$ip};
