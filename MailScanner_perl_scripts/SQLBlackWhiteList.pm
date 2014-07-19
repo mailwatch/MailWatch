@@ -154,7 +154,7 @@ sub LookupList {
   return 0 unless $message; # Sanity check the input
 
   # Find the "from" address and the first "to" address
-  my($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip2, $ip3);
+  my($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip2, $ip3, @keys);
   $from       = $message->{from};
   $fromdomain = $message->{fromdomain};
   @todomain   = @{$message->{todomain}};
@@ -173,35 +173,20 @@ sub LookupList {
   # the domain is listed,
   # the IP address is listed,
   # or the first 3, 2, or 1 octets of the ipaddress are listed with or without a trailing dot
-  return 1 if $BlackWhite->{$to}{$from};
-  return 1 if $BlackWhite->{$to}{$fromdomain};
-  return 1 if $BlackWhite->{$to}{$ip};
-  return 1 if $BlackWhite->{$to}{$ip3};
-  return 1 if $BlackWhite->{$to}{chop($ip3)};
-  return 1 if $BlackWhite->{$to}{$ip2};
-  return 1 if $BlackWhite->{$to}{chop($ip2)};
-  return 1 if $BlackWhite->{$to}{$ip1};
-  return 1 if $BlackWhite->{$to}{chop($ip1)};
-  return 1 if $BlackWhite->{$to}{'default'};
-  return 1 if $BlackWhite->{$todomain}{$from};
-  return 1 if $BlackWhite->{$todomain}{$fromdomain};
-  return 1 if $BlackWhite->{$todomain}{$ip};
-  return 1 if $BlackWhite->{$todomain}{$ip3};
-  return 1 if $BlackWhite->{$todomain}{chop($ip3)};
-  return 1 if $BlackWhite->{$todomain}{$ip2};
-  return 1 if $BlackWhite->{$todomain}{chop($ip2)};
-  return 1 if $BlackWhite->{$todomain}{$ip1};
-  return 1 if $BlackWhite->{$todomain}{chop($ip1)};
-  return 1 if $BlackWhite->{$todomain}{'default'};
-  return 1 if $BlackWhite->{'default'}{$from};
-  return 1 if $BlackWhite->{'default'}{$fromdomain};
-  return 1 if $BlackWhite->{'default'}{$ip};
-  return 1 if $BlackWhite->{'default'}{$ip3};
-  return 1 if $BlackWhite->{'default'}{chop($ip3)};
-  return 1 if $BlackWhite->{'default'}{$ip2};
-  return 1 if $BlackWhite->{'default'}{chop($ip2)};
-  return 1 if $BlackWhite->{'default'}{$ip1};
-  return 1 if $BlackWhite->{'default'}{chop($ip1)};
+
+  @keys = ($to, $todomain, 'default');
+  foreach (@keys) {
+    return 1 if $BlackWhite->{$_}{$from};
+    return 1 if $BlackWhite->{$_}{$fromdomain};
+    return 1 if $BlackWhite->{$_}{$ip};
+    return 1 if $BlackWhite->{$_}{$ip3};
+    return 1 if $BlackWhite->{$_}{chop($ip3)};
+    return 1 if $BlackWhite->{$_}{$ip2};
+    return 1 if $BlackWhite->{$_}{chop($ip2)};
+    return 1 if $BlackWhite->{$_}{$ip1};
+    return 1 if $BlackWhite->{$_}{chop($ip1)};
+    return 1 if $BlackWhite->{$_}{'default'};
+  }
 
   # It is not in the list
   return 0;
