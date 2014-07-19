@@ -1202,7 +1202,7 @@ function get_conf_include_folder()
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($msconfig)));
         //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
-        if (preg_match('/^(?<name>[^#].+)\s(?<value>[^#].+)/', $line, $regs)) {
+        if (preg_match('/^(?P<name>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
             $regs['name'] = preg_replace('/ */', '', $regs['name']);
             $regs['name'] = preg_replace('/=/', '', $regs['name']);
             //var_dump($line, $regs);
@@ -1246,7 +1246,7 @@ function parse_conf_file($name)
         //echo "line: ".$line."\n"; // only use for troubleshooting lines
 
         // find all lines that match
-        if (preg_match("/^(?<name>[^#].+[^\s*$])\s*=\s*(?<value>[^#]*)/", $line, $regs)) {
+        if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
 
             // Strip trailing comments
             $regs['value'] = preg_replace("/#.*$/", "", $regs['value']);
