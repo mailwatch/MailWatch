@@ -154,9 +154,18 @@ sub LookupList {
   return 0 unless $message; # Sanity check the input
 
   # Find the "from" address and the first "to" address
-  my($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip2, $ip3, @keys);
+  my($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip2, $ip3, $subdom, $i, @keys, @subdomains);
   $from       = $message->{from};
   $fromdomain = $message->{fromdomain};
+  # create a array of subdomains for subdomain wildcard matching
+  #   e.g. me@this.that.example.com generates subdomain list of ('that.example.com', 'example.com')
+  #   wildcards of *.com, *.uk, *.gov, etc will never be matched for safety's sake (though *.gov.uk could be)
+  $subdom = $fromdomain;
+  @subdomains = ();
+  while ($subdom =~ /.*?\.(.*\..*)/) {
+    $subdom = $1;
+    push (@subdomains, "*." . $subdom);
+  }
   @todomain   = @{$message->{todomain}};
   $todomain   = $todomain[0];
   @to         = @{$message->{to}};
@@ -172,19 +181,24 @@ sub LookupList {
   # It is in the list if either the exact address is listed,
   # the domain is listed,
   # the IP address is listed,
-  # or the first 3, 2, or 1 octets of the ipaddress are listed with or without a trailing dot
-
+  # the first 3, 2, or 1 octets of the ipaddress are listed with or without a trailing dot
+  # or a subdomain match of the form *.subdomain.example.com is listed
+  
   @keys = ($to, $todomain, 'default');
   foreach (@keys) {
-    return 1 if $BlackWhite->{$_}{$from};
-    return 1 if $BlackWhite->{$_}{$fromdomain};
-    return 1 if $BlackWhite->{$_}{$ip};
-    return 1 if $BlackWhite->{$_}{$ip3};
-    return 1 if $BlackWhite->{$_}{chop($ip3)};
-    return 1 if $BlackWhite->{$_}{$ip2};
-    return 1 if $BlackWhite->{$_}{chop($ip2)};
-    return 1 if $BlackWhite->{$_}{$ip1};
-    return 1 if $BlackWhite->{$_}{chop($ip1)};
+    $i = $_;
+    return 1 if $BlackWhite->{$i}{$from};
+    return 1 if $BlackWhite->{$i}{$fromdomain};
+    return 1 if $BlackWhite->{$i}{$ip};
+    return 1 if $BlackWhite->{$i}{$ip3};
+    return 1 if $BlackWhite->{$i}{chop($ip3)};
+    return 1 if $BlackWhite->{$i}{$ip2};
+    return 1 if $BlackWhite->{$i}{chop($ip2)};
+    return 1 if $BlackWhite->{$i}{$ip1};
+    return 1 if $BlackWhite->{$i}{chop($ip1)};
+    foreach (@subdomains) {
+      return 1 if $BlackWhite->{$i}{$_};
+    }
   }
   return 1 if $BlackWhite->{$to}{'default'};
   return 1 if $BlackWhite->{$todomain}{'default'};
