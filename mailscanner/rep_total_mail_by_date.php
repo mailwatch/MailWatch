@@ -60,7 +60,7 @@ $sql = "
 // Fetch MTA stats
 $sql1 = "
 SELECT
- DATE_FORMAT(timestamp, '%d/%m') AS xaxis,
+ DATE_FORMAT(timestamp, $date_format) AS xaxis,
  type,
  count(*) as count
 FROM
