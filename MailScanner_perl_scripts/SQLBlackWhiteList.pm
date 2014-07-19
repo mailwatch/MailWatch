@@ -185,8 +185,9 @@ sub LookupList {
     return 1 if $BlackWhite->{$_}{chop($ip2)};
     return 1 if $BlackWhite->{$_}{$ip1};
     return 1 if $BlackWhite->{$_}{chop($ip1)};
-    return 1 if $BlackWhite->{$_}{'default'};
   }
+  return 1 if $BlackWhite->{$to}{'default'};
+  return 1 if $BlackWhite->{$todomain}{'default'};
 
   # It is not in the list
   return 0;
