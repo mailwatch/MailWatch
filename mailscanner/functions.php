@@ -1504,7 +1504,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $fieldname[$f] = "Subject";
                     break;
                 case 'clientip':
-                    if (DISPLAY_IP) {
+                    if (defined('DISPLAY_IP') && DISPLAY_IP) {
                         $fieldname[$f]= "Client IP";
                     }	
                     $display[$f] = true;
