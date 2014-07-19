@@ -188,7 +188,7 @@ sub LookupList {
   foreach (@keys) {
     $i = $_;
     return 1 if $BlackWhite->{$i}{$from};
-    return 1 if $BlackWhite->{$i}{$fromdomain};
+    return 1 if $BlackWhite->{$i}{'@' . $fromdomain};
     return 1 if $BlackWhite->{$i}{$ip};
     return 1 if $BlackWhite->{$i}{$ip3};
     return 1 if $BlackWhite->{$i}{chop($ip3)};
