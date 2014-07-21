@@ -174,11 +174,12 @@ sub LookupList {
   # match on leading 3, 2, or 1 octets
   $ip =~ /(\d{1,3}\.)(\d{1,3}\.)(\d{1,3}\.)/;  # get 1st three octets of IP
   $ip3 = "$1$2$3";
-  $ip3c = chop($ip3);
+  $ip3c = substr($ip3, 0, -1);
   $ip2 = "$1$2";
-  $ip2c = chop($ip2);
+  $ip2c = substr($ip2, 0, -1);
   $ip1 = $1;
-  $ip1c = chop($ip1);
+  $ip1c = substr($ip1, 0, -1);
+
   # $ip1, $ip2, $ip3 all end in a trailing "."
 
   # It is in the list if either the exact address is listed,
