@@ -50,6 +50,7 @@ if (!isset($_GET['id'])) {
     } else {
         audit_log('Quarantined message (' . $_GET['id'] . ') body viewed');
     }
+    $using_rpc = false;
     if (!is_local($row->hostname) || RPC_ONLY) {
         // Host is remote - use XML-RPC
         $using_rpc = true;
