@@ -2562,7 +2562,7 @@ SELECT
         } else {
             $infected = "N";
         }
-
+        $quarantined = array();
         $count = 0;
         // Check for non-spam first
         if (file_exists($nonspam) && is_readable($nonspam)) {
