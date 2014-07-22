@@ -179,8 +179,8 @@ if (!isset($_POST['run'])) {
                 gzclose($zp_ipv6_gz);
                 fclose($targetFileipv6);
             } elseif (in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
-                exec('gunzip -f ' . $extract_dir . ' ' . $ipv4_file, $output_gunzip_ipv4, $retval_gunzip_ipv4);
-                exec('gunzip -f ' . $extract_dir . ' ' . $ipv6_file, $output_gunzip_ipv6, $retval_gunzip_ipv6);
+                exec('gunzip -f ' . $ipv4_file, $output_gunzip_ipv4, $retval_gunzip_ipv4);
+                exec('gunzip -f ' . $ipv6_file, $output_gunzip_ipv6, $retval_gunzip_ipv6);
                 //TODO: add error handling
                 if ($retval_gunzip_ipv4 > 0) {
                     die("Unable to extract GeoIP ipv4 data file.\n");
