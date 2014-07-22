@@ -139,7 +139,7 @@ if (!isset($_POST['run'])) {
 
                 file_put_contents($ipv4_file, fopen($ipv4_database_url, 'r', false, $context));
                 file_put_contents($ipv6_file, fopen($ipv6_database_url, 'r', false, $context));
-            } elseif (in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
                 //wget
                 if (USE_PROXY) {
                     exec('wget -e use_proxy=on -e http_proxy='.PROXY_SERVER.':'.PROXY_PORT.' --proxy-user='.PROXY_USER.' --proxy-password='.PROXY_PASS.' -N ' . $ipv4_database_url . ' -O ' . $ipv4_file, $output_wget_ipv4, $retval_wget_ipv4);
@@ -178,7 +178,7 @@ if (!isset($_POST['run'])) {
                 }
                 gzclose($zp_ipv6_gz);
                 fclose($targetFileipv6);
-            } elseif (in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
                 exec('gunzip -f ' . $ipv4_file, $output_gunzip_ipv4, $retval_gunzip_ipv4);
                 exec('gunzip -f ' . $ipv6_file, $output_gunzip_ipv6, $retval_gunzip_ipv6);
                 //TODO: add error handling
