@@ -115,7 +115,9 @@ if ($using_rpc) {
 } else {
     $title = "Message Viewer: " . $_GET['id'];
 }
-echo "  <th colspan=2>$title</th>\n";
+echo "  <tr>\n";
+echo "    <th colspan=2>$title</th>\n";
+echo "  </tr>\n";
 echo " </thead>\n";
 
 function lazy($title, $val)
