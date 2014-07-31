@@ -135,6 +135,9 @@ Regards,
 Postmaster');
 define('QUARANTINE_REPORT_HOSTURL', 'http://'.chop(`hostname`).'/mailscanner/');
 define('QUARANTINE_REPORT_DAYS', 7);
+
+// set QUARANTINE_USE_SENDMAIL to true to send released email as original email using sendmail,
+//                                false to send it as an attachment to a release message
 define('QUARANTINE_USE_SENDMAIL', false);
 define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 
