@@ -66,6 +66,11 @@ Install & Configure MailWatch
 # chown root:apache images/cache
 # chmod ug+rwx images/cache
 
+- Check the permissions of /var/www/html/mailscanner/temp - they should be ug+rw and owned by root and in the same group as the web server user (apache on RedHat 9).
+
+# chown root:apache temp
+# chmod ug+rwr temp
+
 - Create conf.php by copying conf.php.example and edit the values to suit, you will need to set DB_USER and DB_PASS to the MySQL user and password that you created earlier.
 
    Note that MailWatch 1.0 can use the quarantine more effectively when used
