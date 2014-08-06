@@ -228,7 +228,7 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
         $sys_hostname = chop(`hostname`);
         // Drop everything from the table first
         dbquery("DELETE FROM " . $table_name . " WHERE hostname='" . $sys_hostname . "'");
-        if (empty($output)) {
+        if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
                 // Insert each record
                 $sql = "INSERT INTO " . $table_name . "
