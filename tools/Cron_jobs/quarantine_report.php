@@ -234,103 +234,103 @@ ORDER BY a.date DESC, a.time DESC";
             }
         }
     }
+}
 
-    function dbg($text)
-    {
-        echo $text . "\n";
-    }
+function dbg($text)
+{
+    echo $text . "\n";
+}
 
-    function return_user_filters($user)
-    {
-        global $filters_sql;
-        $result = dbquery(sprintf($filters_sql, quote_smart($user)));
-        $rows = mysql_num_rows($result);
-        $array = array();
-        if ($rows > 0) {
-            while ($row = mysql_fetch_object($result)) {
-                $array[] = $row->filter;
-            }
+function return_user_filters($user)
+{
+    global $filters_sql;
+    $result = dbquery(sprintf($filters_sql, quote_smart($user)));
+    $rows = mysql_num_rows($result);
+    $array = array();
+    if ($rows > 0) {
+        while ($row = mysql_fetch_object($result)) {
+            $array[] = $row->filter;
         }
-        return $array;
     }
+    return $array;
+}
 
-    function return_quarantine_list_array($filter)
-    {
-        global $sql;
-        $result = dbquery(sprintf($sql, quote_smart($filter), quote_smart($filter)));
-        $rows = mysql_num_rows($result);
-        $array = array();
-        if ($rows > 0) {
-            while ($row = mysql_fetch_object($result)) {
-                $array[] = array(
-                    'id' => trim($row->id),
-                    'datetime' => trim($row->datetime),
-                    'from' => trim_output($row->from_address, FROMTO_MAXLEN),
-                    'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
-                    'reason' => trim($row->reason)
-                );
-            }
-        }
-        return $array;
-    }
-
-    function send_quarantine_email($email, $filter, $quarantined)
-    {
-        global $html, $html_table, $html_content, $text, $text_content;
-        // Setup variables to prevent warnings
-        $h1 = "";
-        $t1 = "";
-        // Build the quarantine list for this recipient
-        foreach ($quarantined as $qitem) {
-            // HTML Version
-            $h1 .= sprintf(
-                $html_content,
-                $qitem['datetime'],
-                $qitem['from'],
-                $qitem['subject'],
-                $qitem['reason'],
-                '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>'
-            );
-            // Text Version
-            $t1 .= sprintf(
-                $text_content,
-                strip_tags($qitem['datetime']),
-                $qitem['from'],
-                $qitem['subject'],
-                $qitem['reason'],
-                '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>'
+function return_quarantine_list_array($filter)
+{
+    global $sql;
+    $result = dbquery(sprintf($sql, quote_smart($filter), quote_smart($filter)));
+    $rows = mysql_num_rows($result);
+    $array = array();
+    if ($rows > 0) {
+        while ($row = mysql_fetch_object($result)) {
+            $array[] = array(
+                'id' => trim($row->id),
+                'datetime' => trim($row->datetime),
+                'from' => trim_output($row->from_address, FROMTO_MAXLEN),
+                'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
+                'reason' => trim($row->reason)
             );
         }
+    }
+    return $array;
+}
 
-        // HTML
-        $h2 = sprintf($html_table, $h1);
-        $html_report = sprintf($html, $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $h2);
-        if (DEBUG) {
-            echo $html_report;
-        }
-
-        // Text
-        $text_report = sprintf($text, $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $t1);
-        if (DEBUG) {
-            echo "<PRE>$text_report</PRE>\n";
-        }
-
-        // Send e-mail
-        $mime = new Mail_mime("\n");
-        $hdrs = array(
-            'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>',
-            'To' => $email,
-            'Subject' => QUARANTINE_REPORT_SUBJECT,
-            'Date' => date("r")
+function send_quarantine_email($email, $filter, $quarantined)
+{
+    global $html, $html_table, $html_content, $text, $text_content;
+    // Setup variables to prevent warnings
+    $h1 = "";
+    $t1 = "";
+    // Build the quarantine list for this recipient
+    foreach ($quarantined as $qitem) {
+        // HTML Version
+        $h1 .= sprintf(
+            $html_content,
+            $qitem['datetime'],
+            $qitem['from'],
+            $qitem['subject'],
+            $qitem['reason'],
+            '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>'
         );
-        $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
-        $mime->setTXTBody($text_report);
-        $mime->setHTMLBody($html_report);
-        $body = $mime->get();
-        $hdrs = $mime->headers($hdrs);
-        $mail_param = array('host' => QUARANTINE_MAIL_HOST);
-        $mail =& Mail::factory('smtp', $mail_param);
-        $mail->send($email, $hdrs, $body);
-        dbg(" ==== Sent e-mail to $email");
+        // Text Version
+        $t1 .= sprintf(
+            $text_content,
+            strip_tags($qitem['datetime']),
+            $qitem['from'],
+            $qitem['subject'],
+            $qitem['reason'],
+            '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>'
+        );
     }
+
+    // HTML
+    $h2 = sprintf($html_table, $h1);
+    $html_report = sprintf($html, $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $h2);
+    if (DEBUG) {
+        echo $html_report;
+    }
+
+    // Text
+    $text_report = sprintf($text, $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $t1);
+    if (DEBUG) {
+        echo "<PRE>$text_report</PRE>\n";
+    }
+
+    // Send e-mail
+    $mime = new Mail_mime("\n");
+    $hdrs = array(
+        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>',
+        'To' => $email,
+        'Subject' => QUARANTINE_REPORT_SUBJECT,
+        'Date' => date("r")
+    );
+    $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
+    $mime->setTXTBody($text_report);
+    $mime->setHTMLBody($html_report);
+    $body = $mime->get();
+    $hdrs = $mime->headers($hdrs);
+    $mail_param = array('host' => QUARANTINE_MAIL_HOST);
+    $mail =& Mail::factory('smtp', $mail_param);
+    $mail->send($email, $hdrs, $body);
+    dbg(" ==== Sent e-mail to $email");
 }
