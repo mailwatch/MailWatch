@@ -149,6 +149,7 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
                             $output[$msgid]['size'] = (@filesize($queuedir . "df" . $msgid) + @filesize(
                                     $queuedir . "qf" . $msgid
                                 ));
+                            $output[$msgid]['message'] = '';
                             while (!@feof($fh)) {
                                 if (($line = @fgets($fh, 1024))) {
                                     switch (true) {
