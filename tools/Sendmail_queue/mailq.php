@@ -41,7 +41,7 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
 
     foreach ($queue as $table_name => $queuedir) {
         // Clear the output array
-        unset($output);
+        $output = array();
         if ($dh = @opendir($queuedir)) {
             while (false !== ($file = readdir($dh))) {
                 if ($MTA == "exim") {
@@ -228,7 +228,7 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
         $sys_hostname = chop(`hostname`);
         // Drop everything from the table first
         dbquery("DELETE FROM " . $table_name . " WHERE hostname='" . $sys_hostname . "'");
-        if (($output)) {
+        if (empty($output)) {
             foreach ($output as $msgid => $msginfo) {
                 // Insert each record
                 $sql = "INSERT INTO " . $table_name . "
