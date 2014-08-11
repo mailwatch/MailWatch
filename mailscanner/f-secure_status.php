@@ -40,7 +40,7 @@ if ($_SESSION['user_type'] != 'A') {
 <table class="boxtable" width="100%">
  <tr>
   <td align="center">';
-    passthru("/opt/f-secure/fsav/bin/dbtool /var/opt/f-secure/fsav/databases/ | awk -f ./f-secure.awk");
+    passthru("/opt/f-secure/fsav/bin/fsav --version | awk -f ./f-secure.awk");
     // --FOR TESTING-- passthru("cat /var/www/html/mailscanner/f-sec_output.txt | awk -f ./f-secure.awk");
 
     echo '

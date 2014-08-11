@@ -1,7 +1,6 @@
 #
 # MailWatch for MailScanner
-# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
-# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2003  Steve Freegard (smf@f2s.com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,104 +18,86 @@
 #
 # 2003-11-27
 # F-Secure status by Carl Boberg modified from Sophos status by Steve Freegard
+# 2011-09-22
+# Modified by Kevin Miller to work with F-Secure version 9.10
 
 BEGIN {
  FS = ": ";
  print "<table class=\"sophos\" cellpadding=\"1\" cellspacing=\"1\">";
  print " <tr>";
- print "  <th colspan=\"4\">F-Secure Information</th>";
+ print "  <th>F-Secure Information</th>";
  print " </tr>";
 }
 
-/F-Secure Anti-Virus Database/||/Copyright/ {
-  print " <tr><td colspan=\"4\">"$1"</td></tr>";
+/F-Secure Linux Security/ {
+  print " <tr><td>"$1"</td></tr>";
+  print " <tr><td>&nbsp;</td></tr>";
 }
 
-/Frisk/ {
+/F-Secure Security Platform/||/Command/||/Daemon/ {
+    print " <tr>";
+    print " <tr><td>"$1"</td></tr>";
+    print " </tr>";
+}
+
+/Scanner Engine/ {
+ print " <tr><td>&nbsp;</td></tr>";
  print " <tr>";
- print "  <th colspan=\"4\">"$1"</th>";
+ print "  <th>"$1"</th>";
  print " </tr>";
+}
+/Libra engine/ {
  print " <tr>";
- print "  <th>File</th>";
- print "  <th>Version</th>";
- print "  <th>Date</th>";
- print "  <th>Status</th>";
+ print "  <td>"$1"</td>";
  print " </tr>";
 }
-/def/ {
-split($1, array, " ");
- v_name = array[1];
- v_ver = array[2];
- v_date = array[3];
- v_status = array[4];
- print " <tr>";
- print "  <td>"v_name"</td>";
- print "  <td>"v_ver"</td>";
- print "  <td>"v_date"</td>";
- print "  <td>"v_status"</td>";
- print " </tr>";
+/Libra database/ {
+  print " <tr>";
+  print "  <td>"$1"</td>";
+  print " </tr>";
+  print " <tr><td>&nbsp;</td></tr>";
 }
 
-/Kaspersky/ {
+/Orion engine/ {
   print " <tr>";
-  print "  <th colspan=\"4\">"$1"</th>";
-  print " </tr>";
-  print " <tr>";
-  print "  <th>File</th>";
-  print "  <th>Version</th>";
-  print "  <th>Date</th>";
-  print "  <th>Status</th>";
+  print "  <td>"$1"</td>";
   print " </tr>";
 }
-/avc/ {
-split($1, array, " ");
-  v_name = array[1];
-  v_ver = array[2];
-  v_date = array[3];
-  v_status = array[4];
+/Orion database/ {
   print " <tr>";
-  print "  <td>"v_name"</td>";
-  print "  <td>"v_ver"</td>";
-  print "  <td>"v_date"</td>";
-  print "  <td>"v_status"</td>";
+  print "  <td>"$1"</td>";
   print " </tr>";
-}
-/End of/ {
-  print " <tr>";
-  print "  <td colspan=\"4\">"$1"</td>";
-  print " </tr>";
+  print " <tr><td>&nbsp;</td></tr>";
 }
 
-/orion engine/ {
+/FPI Engine engine/ {
   print " <tr>";
-  print "  <th colspan=\"4\">"$1"</th>";
-  print " </tr>";
-  print " <tr>";
-  print "  <th>File</th>";
-  print "  <th>Version</th>";
-  print "  <th>Date</th>";
-  print "  <th>Status</th>";
+  print "  <td>"$1"</td>";
   print " </tr>";
 }
-/DAT/ {
-  split($1, array, " ");
-  v_name = array[1];
-  v_ver = array[2];
-  v_date = array[3];
-  v_status = array[4];
+/FPI Engine database/ {
   print " <tr>";
-  print "  <td>"v_name"</td>";
-  print "  <td>"v_ver"</td>";
-  print "  <td>"v_date"</td>";
-  print "  <td>"v_status"</td>";
+  print "  <td>"$1"</td>";
   print " </tr>";
 }
-
-
-#End of DupDestroy
-#F-Secure Corporation Orion engine version 1.02 build 25
-#ORION.DAT version 2003-11-14 valid
-
-
+/Hydra engine/ {
+  print " <tr>";
+  print "  <td>"$1"</td>";
+  print " </tr>";
+}
+/Hydra database/ {
+  print " <tr>";
+  print "  <td>"$1"</td>";
+  print " </tr>";
+}
+/Aquarius engine/ {
+  print " <tr>";
+  print "  <td>"$1"</td>";
+  print " </tr>";
+}
+/Aquarius database/ {
+  print " <tr>";
+  print "  <td>"$1"</td>";
+  print " </tr>";
+}
 END { print "</table>" }
-
