@@ -342,7 +342,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         // Release
         if (isset($_GET['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (($_GET['alt_recpt_yn'] == "y")) {
+            if (isset($_GET['alt_recpt_yn']) && ($_GET['alt_recpt_yn'] == "y")) {
                 $to = $_GET['alt_recpt'];
                 $to = htmlentities($to);
             } else {
