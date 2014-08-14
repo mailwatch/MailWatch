@@ -25,6 +25,7 @@ use Sys::Hostname;
 use Storable(qw[freeze thaw]);
 use POSIX;
 use Socket;
+use Encoding::FixLatin qw(fix_latin);
 
 # Trace settings - uncomment this to debug
 # DBI->trace(2,'/root/dbitrace.log');
@@ -77,7 +78,7 @@ my($db_pass) = '';
    listen(SERVER, SOMAXCONN) or exit;
 
    # Our reason for existence - the persistent connection to the database
-   $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, {PrintError => 0, AutoCommit => 1, RaiseError => 1});
+   $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, {PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1});
    if (!$dbh) {
     MailScanner::Log::WarnLog("Unable to initialise database connection: %s", $DBI::errstr);
    }
@@ -280,7 +281,7 @@ my($db_pass) = '';
    $msg{from_domain} = $message->{fromdomain};
    $msg{to} = join(",", @{$message->{to}});
    $msg{to_domain} = $todomain;
-   $msg{subject} = $message->{subject};
+   $msg{subject} = fix_latin($message->{utf8subject});
    $msg{clientip} = $clientip;
    $msg{archiveplaces} = join(",", @{$message->{archiveplaces}});
    $msg{isspam} = $message->{isspam};
@@ -305,7 +306,7 @@ my($db_pass) = '';
    $msg{hostname} = $hostname;
    $msg{date} = $date;
    $msg{"time"} = $time;
-   $msg{headers} = join("\n",@{$message->{headers}});
+   $msg{headers} = fix_latin(join("\n",@{$message->{headers}}));
    $msg{quarantined} = $quarantined;
 
    # Prepare data for transmission

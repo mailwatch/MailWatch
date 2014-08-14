@@ -178,10 +178,8 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
         }
-        if ($fieldn == "To:" || $fieldn == "Subject:") {
-            $row[$f] = htmlspecialchars($row[$f]);
-        }
         if ($fieldn == "To:") {
+            $row[$f] = htmlspecialchars($row[$f]);
             $row[$f] = str_replace(",", "<br>", $row[$f]);
         }
         if ($fieldn == "Subject:") {
