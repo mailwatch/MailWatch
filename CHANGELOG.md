@@ -5,6 +5,7 @@
  - Added DISPLAY_IP option to show sender's IP Address in Quarantine listings and message lists
  - Enhanced SQL Black/Whitelist to allow matching 1, 2, or 3 IP address octets
  - Enhanced SQL Black/Whitelist to allow matching of subdomains
+ - Upgraded PEAR packages to last stable versions (some trunk commit was used)
 
 1.2.0 - Beta 5
 -----------
