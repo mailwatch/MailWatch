@@ -43,7 +43,7 @@
  * @author     gERD Schaufelberger <gerd@php-tools.net>
  * @copyright  2010 gERD Schaufelberger
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    CVS: $Id: smtpmx.php,v 1.2 2011/12/14 18:13:45 lorodoes Exp $
+ * @version    CVS: $Id$
  * @link       http://pear.php.net/package/Mail/
  */
 
@@ -56,7 +56,7 @@ require_once 'Net/SMTP.php';
  * @access public
  * @author  gERD Schaufelberger <gerd@php-tools.net>
  * @package Mail
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 class Mail_smtpmx extends Mail {
 
@@ -386,7 +386,7 @@ class Mail_smtpmx extends Mail {
             }
 
             // Send data
-            $res = $this->_smtp->data("$textHeaders\r\n$body");
+            $res = $this->_smtp->data($body, $textHeaders);
             if (is_a($res, 'PEAR_Error')) {
                 $info = array('rcpt' => $rcpt);
                 return $this->_raiseError('failed_send_data', $info);

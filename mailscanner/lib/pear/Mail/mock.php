@@ -39,7 +39,7 @@
  * @author      Chuck Hagenbuch <chuck@horde.org> 
  * @copyright   2010 Chuck Hagenbuch
  * @license     http://opensource.org/licenses/bsd-license.php New BSD License
- * @version     CVS: $Id: mock.php,v 1.2 2011/12/14 18:13:45 lorodoes Exp $
+ * @version     CVS: $Id$
  * @link        http://pear.php.net/package/Mail/
  */
 
@@ -47,7 +47,7 @@
  * Mock implementation of the PEAR Mail:: interface for testing.
  * @access public
  * @package Mail
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 class Mail_mock extends Mail {
 

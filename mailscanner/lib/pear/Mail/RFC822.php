@@ -1,37 +1,48 @@
 <?php
-// +-----------------------------------------------------------------------+
-// | Copyright (c) 2001-2002, Richard Heyes                                |
-// | All rights reserved.                                                  |
-// |                                                                       |
-// | Redistribution and use in source and binary forms, with or without    |
-// | modification, are permitted provided that the following conditions    |
-// | are met:                                                              |
-// |                                                                       |
-// | o Redistributions of source code must retain the above copyright      |
-// |   notice, this list of conditions and the following disclaimer.       |
-// | o Redistributions in binary form must reproduce the above copyright   |
-// |   notice, this list of conditions and the following disclaimer in the |
-// |   documentation and/or other materials provided with the distribution.|
-// | o The names of the authors may not be used to endorse or promote      |
-// |   products derived from this software without specific prior written  |
-// |   permission.                                                         |
-// |                                                                       |
-// | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS   |
-// | "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT     |
-// | LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR |
-// | A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT  |
-// | OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, |
-// | SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT      |
-// | LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, |
-// | DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY |
-// | THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT   |
-// | (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE |
-// | OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  |
-// |                                                                       |
-// +-----------------------------------------------------------------------+
-// | Authors: Richard Heyes <richard@phpguru.org>                          |
-// |          Chuck Hagenbuch <chuck@horde.org>                            |
-// +-----------------------------------------------------------------------+
+/**
+ * RFC 822 Email address list validation Utility
+ *
+ * PHP versions 4 and 5
+ *
+ * LICENSE:
+ *
+ * Copyright (c) 2001-2010, Richard Heyes
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * o Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ * o Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ * o The names of the authors may not be used to endorse or promote
+ *   products derived from this software without specific prior written
+ *   permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @category    Mail
+ * @package     Mail
+ * @author      Richard Heyes <richard@phpguru.org>
+ * @author      Chuck Hagenbuch <chuck@horde.org
+ * @copyright   2001-2010 Richard Heyes
+ * @license     http://opensource.org/licenses/bsd-license.php New BSD License
+ * @version     CVS: $Id$
+ * @link        http://pear.php.net/package/Mail/
+ */
 
 /**
  * RFC 822 Email address list validation Utility
@@ -52,7 +63,7 @@
  *
  * @author  Richard Heyes <richard@phpguru.org>
  * @author  Chuck Hagenbuch <chuck@horde.org>
- * @version $Revision: 1.3 $
+ * @version $Revision$
  * @license BSD
  * @package Mail
  */
@@ -177,9 +188,11 @@ class Mail_RFC822 {
         $this->error      = null;
         $this->index      = null;
 
-        while ($this->address = $this->_splitAddresses($this->address)) {
-            continue;
-        }
+        // Unfold any long lines in $this->address.
+        $this->address = preg_replace('/\r?\n/', "\r\n", $this->address);
+        $this->address = preg_replace('/\r\n(\t| )+/', ' ', $this->address);
+
+        while ($this->address = $this->_splitAddresses($this->address));
 
         if ($this->address === false || isset($this->error)) {
             require_once 'PEAR.php';
@@ -340,22 +353,39 @@ class Mail_RFC822 {
     }
 
     /**
-     * Checks if a string has an unclosed quotes or not.
+     * Checks if a string has unclosed quotes or not.
      *
      * @access private
-     * @param string $string The string to check.
-     * @return boolean True if there are unclosed quotes inside the string, false otherwise.
+     * @param string $string  The string to check.
+     * @return boolean  True if there are unclosed quotes inside the string,
+     *                  false otherwise.
      */
     function _hasUnclosedQuotes($string)
     {
-        $string     = explode('"', $string);
-        $string_cnt = count($string);
+        $string = trim($string);
+        $iMax = strlen($string);
+        $in_quote = false;
+        $i = $slashes = 0;
 
-        for ($i = 0; $i < (count($string) - 1); $i++)
-            if (substr($string[$i], -1) == '\\')
-                $string_cnt--;
+        for (; $i < $iMax; ++$i) {
+            switch ($string[$i]) {
+            case '\\':
+                ++$slashes;
+                break;
 
-        return ($string_cnt % 2 === 0);
+            case '"':
+                if ($slashes % 2 == 0) {
+                    $in_quote = !$in_quote;
+                }
+                // Fall through to default action below.
+
+            default:
+                $slashes = 0;
+                break;
+            }
+        }
+
+        return $in_quote;
     }
 
     /**
@@ -453,14 +483,6 @@ class Mail_RFC822 {
             $addresses[] = $address['address'];
         }
 
-        // Check that $addresses is set, if address like this:
-        // Groupname:;
-        // Then errors were appearing.
-        if (!count($addresses)){
-            $this->error = 'Empty group.';
-            return false;
-        }
-
         // Trim the whitespace from all of the address strings.
         array_map('trim', $addresses);
 
@@ -472,7 +494,7 @@ class Mail_RFC822 {
         for ($i = 0; $i < count($addresses); $i++) {
             if (!$this->validateMailbox($addresses[$i])) {
                 if (empty($this->error)) {
-                    $this->error = 'Validation failed for "' . $addresses[$i] . '"';
+                    $this->error = 'Validation failed for: ' . $addresses[$i];
                 }
                 return false;
             }
@@ -584,8 +606,8 @@ class Mail_RFC822 {
         // Leading and trailing "
         $qstring = substr($qstring, 1, -1);
 
-        // Perform check.
-        return !(preg_match('/(.)[\x0D\\\\"]/', $qstring, $matches) && $matches[1] != '\\');
+        // Perform check, removing quoted characters first.
+        return !preg_match('/[\x0D\\\\"]/', preg_replace('/\\\\./', '', $qstring));
     }
 
     /**
@@ -616,8 +638,8 @@ class Mail_RFC822 {
                 $comment    = $this->_splitCheck($parts, ')');
                 $comments[] = $comment;
 
-                // +1 is for the trailing )
-                $_mailbox   = substr($_mailbox, strpos($_mailbox, $comment)+strlen($comment)+1);
+                // +2 is for the brackets
+                $_mailbox = substr($_mailbox, strpos($_mailbox, '('.$comment)+strlen($comment)+2);
             } else {
                 break;
             }
@@ -858,7 +880,7 @@ class Mail_RFC822 {
         $words = array();
 
         // Split the local_part into words.
-        while (count($parts) > 0){
+        while (count($parts) > 0) {
             $words[] = $this->_splitCheck($parts, '.');
             for ($i = 0; $i < $this->index + 1; $i++) {
                 array_shift($parts);
@@ -867,6 +889,10 @@ class Mail_RFC822 {
 
         // Validate each word.
         foreach ($words as $word) {
+            // word cannot be empty (#17317)
+            if ($word === '') {
+                return false;
+            }
             // If this word contains an unquoted space, it is invalid. (6.2.4)
             if (strpos($word, ' ') && $word[0] !== '"')
             {
@@ -910,7 +936,7 @@ class Mail_RFC822 {
      */
     function isValidInetAddress($data, $strict = false)
     {
-        $regex = $strict ? '/^([.0-9a-z_-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,4})$/i' : '/^([*+!.&#$|\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,4})$/i';
+        $regex = $strict ? '/^([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})$/i' : '/^([*+!.&#$|\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})$/i';
         if (preg_match($regex, trim($data), $matches)) {
             return array($matches[1], $matches[2]);
         } else {
