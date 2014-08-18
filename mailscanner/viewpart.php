@@ -103,8 +103,9 @@ $params['decode_bodies'] = true;
 $params['decode_headers'] = true;
 $params['input'] = $file;
 
-$structure = Mail_mimeDecode::decode($params);
-$mime_struct = Mail_mimeDecode::getMimeNumbers($structure);
+$Mail_mimeDecode = new Mail_mimeDecode($file);
+$structure = $Mail_mimeDecode->decode($params);
+$mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 // Make sure that part being requested actually exists
 if (isset($_GET['part'])) {
@@ -118,21 +119,22 @@ function decode_structure($structure)
     $type = $structure->ctype_primary . "/" . $structure->ctype_secondary;
     switch ($type) {
         case "text/plain":
-            if (isset ($structure->ctype_parameters['charset']) && strtolower(
-                    $structure->ctype_parameters['charset']
-                ) == 'utf-8'
+            /*
+            if (isset ($structure->ctype_parameters['charset']) &&
+                strtolower($structure->ctype_parameters['charset']) == 'utf-8'
             ) {
                 $structure->body = utf8_decode($structure->body);
             }
-            echo '<html>
+            */
+            echo '<!DOCTYPE html>
+ <html>
  <head>
+ <meta charset="utf-8">
  <link rel="shortcut icon" href="images/favicon.png">
  <title>Quarantined E-Mail Viewer</title>
  </head>
  <body>
- <pre>
- ' . htmlentities(wordwrap($structure->body)) . '
- </pre>
+ <pre>' . htmlentities(wordwrap($structure->body)) . '</pre>
  </body>
  </html>' . "\n";
             break;

@@ -105,8 +105,9 @@ $params['decode_bodies'] = true;
 $params['decode_headers'] = true;
 $params['input'] = $file;
 
-$structure = Mail_mimeDecode::decode($params);
-$mime_struct = Mail_mimeDecode::getMimeNumbers($structure);
+$Mail_mimeDecode = new Mail_mimeDecode($file);
+$structure = $Mail_mimeDecode->decode($params);
+$mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 echo "<table border=0 cellspacing=1 cellpadding=1 class=\"maildetail\" width=100%>\n";
 echo " <thead>\n";
