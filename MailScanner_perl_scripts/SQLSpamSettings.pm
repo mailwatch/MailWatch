@@ -38,8 +38,8 @@ my(%LowSpamScores, %HighSpamScores);
 my(%ScanList);
 my($db_name) = 'mailscanner';
 my($db_host) = 'localhost';
-my($db_user) = 'root';
-my($db_pass) = '';
+my($db_user) = 'mailwatch';
+my($db_pass) = 'mailwatch';
 
 #
 # Initialise the arrays with the users Spam settings

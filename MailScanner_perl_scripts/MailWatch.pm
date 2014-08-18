@@ -40,8 +40,8 @@ my $timeout = 3600;
 # Modify this as necessary for your configuration
 my($db_name) = 'mailscanner';
 my($db_host) = 'localhost';
-my($db_user) = 'root';
-my($db_pass) = '';
+my($db_user) = 'mailwatch';
+my($db_pass) = 'mailwatch';
 
  sub InitMailWatchLogging {
    my $pid = fork();
@@ -195,7 +195,7 @@ my($db_pass) = '';
 
    # Don't bother trying to do an insert if  no message is passed-in
    return unless $message;
-   
+
    # Fix duplicate 'to' addresses for Postfix users
    my(%rcpts);
    map { $rcpts{$_}=1; } @{$message->{to}};

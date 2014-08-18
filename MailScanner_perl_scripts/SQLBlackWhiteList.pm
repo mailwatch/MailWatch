@@ -102,8 +102,8 @@ sub CreateList {
   my($dbh, $sth, $sql, $to_address, $from_address, $count, $filter);
   my($db_name) = 'mailscanner';
   my($db_host) = 'localhost';
-  my($db_user) = 'root';
-  my($db_pass) = '';
+  my($db_user) = 'mailwatch';
+  my($db_pass) = 'mailwatch';
   
   # Connect to the database
   $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
