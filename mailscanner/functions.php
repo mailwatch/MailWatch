@@ -1372,7 +1372,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        require_once('Pager/Pager.php');
+        require_once('Pager.php');
         if (isset($_GET['offset'])) {
             $from = intval($_GET['offset']);
         } else {
@@ -1904,7 +1904,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '<br>' . "\n";
         if ($pager) {
-            require_once('Pager/Pager.php');
+            require_once('Pager.php');
             if (isset($_GET['offset'])) {
                 $from = intval($_GET['offset']);
             } else {
@@ -1968,7 +1968,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
     // Turn on paging of for the database
     if ($pager) {
-        require_once('Pager/Pager.php');
+        require_once('Pager.php');
         if (isset($_GET['offset'])) {
             $from = intval($_GET['offset']);
         } else {
@@ -2059,7 +2059,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     }
     echo '<br>' . "\n";
     if ($pager) {
-        require_once('Pager/Pager.php');
+        require_once('Pager.php');
         if (isset($_GET['offset'])) {
             $from = intval($_GET['offset']);
         } else {
