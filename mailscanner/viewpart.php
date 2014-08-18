@@ -103,8 +103,9 @@ $params['decode_bodies'] = true;
 $params['decode_headers'] = true;
 $params['input'] = $file;
 
-$structure = Mail_mimeDecode::decode($params);
-$mime_struct = Mail_mimeDecode::getMimeNumbers($structure);
+$Mail_mimeDecode = new Mail_mimeDecode($file);
+$structure = $Mail_mimeDecode->decode($params);
+$mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 // Make sure that part being requested actually exists
 if (isset($_GET['part'])) {
