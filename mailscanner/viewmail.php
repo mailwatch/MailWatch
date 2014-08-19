@@ -121,11 +121,16 @@ echo "    <th colspan=2>$title</th>\n";
 echo "  </tr>\n";
 echo " </thead>\n";
 
-function lazy($title, $val)
+function lazy($title, $val, $dohtmlentities = true)
 {
+    if ($dohtmlentities) {
+        $v = htmlentities($val);
+    } else {
+        $v = $val;
+    }
     echo ' <tr>
    <td class="heading" align="right" width="10%">' . $title . '</td>
-   <td class="detail" width="80%">' . $val . '</td>
+   <td class="detail" width="80%">' . $v . '</td>
    </tr>' . "\n";
 }
 
@@ -172,7 +177,8 @@ switch (true) {
 if (($row->virusinfected == 0 && $row->nameinfected == 0 && $row->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
         "Actions:",
-        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','delete')\">Delete this message</a>"
+        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','delete')\">Delete this message</a>",
+        false
     );
 }
 
