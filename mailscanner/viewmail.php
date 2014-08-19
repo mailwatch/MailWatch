@@ -125,6 +125,14 @@ function lazy($title, $val)
 {
     echo ' <tr>
    <td class="heading" align="right" width="10%">' . $title . '</td>
+   <td class="detail" width="80%">' . htmlentities($val) . '</td>
+   </tr>' . "\n";
+}
+
+function lazy_no_htmlentities($title, $val)
+{
+    echo ' <tr>
+   <td class="heading" align="right" width="10%">' . $title . '</td>
    <td class="detail" width="80%">' . $val . '</td>
    </tr>' . "\n";
 }
@@ -170,7 +178,7 @@ switch (true) {
 }
 
 if (($row->virusinfected == 0 && $row->nameinfected == 0 && $row->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
-    lazy(
+    lazy_no_htmlentities(
         "Actions:",
         "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','delete')\">Delete this message</a>"
     );
