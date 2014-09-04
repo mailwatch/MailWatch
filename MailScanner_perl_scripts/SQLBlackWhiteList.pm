@@ -87,14 +87,14 @@ sub SQLBlacklist {
 
 
 #
-# Close down the by-domain whitelist and blacklist
+# Close down the SQL whitelist and blacklist
 #
 sub EndSQLWhitelist {
-  MailScanner::Log::InfoLog("Closing down by-domain spam whitelist");
+  MailScanner::Log::InfoLog("Closing down SQL Whitelist");
 }
 
 sub EndSQLBlacklist {
-  MailScanner::Log::InfoLog("Closing down by-domain spam blacklist");
+  MailScanner::Log::InfoLog("Closing down SQL Blacklist");
 }
 
 sub CreateList {
