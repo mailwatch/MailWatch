@@ -111,12 +111,14 @@ class sendmail_parser
                 $entries = array();
                 foreach ($items as $item) {
                     $entry = explode('=', $item);
-                    $entries[$entry[0]] = $entry[1];
-                    // fix for the id= issue 09.12.2011
-                    if (isset($entry[2])) {
-                        $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                    } else {
+                    if (isset($entry[1])) {
                         $entries[$entry[0]] = $entry[1];
+                        // fix for the id= issue 09.12.2011
+                        if (isset($entry[2])) {
+                            $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
+                        } else {
+                            $entries[$entry[0]] = $entry[1];
+                        }
                     }
                 }
                 $this->entries = $entries;
@@ -174,12 +176,12 @@ function doit($input)
 
     $lines = 1;
     while ($line = fgets($fp, 2096)) {
-        // Reset variables
-        unset($parsed, $sendmail, $_timestamp, $_host, $_type, $_msg_id, $_relay, $_dsn, $_status, $_delay);
-
         $parsed = new syslog_parser($line);
         $_timestamp = mysql_real_escape_string($parsed->timestamp);
         $_host = mysql_real_escape_string($parsed->host);
+        $_dsn = "";
+        $_delay = "";
+        $_relay = "";
 
         // Sendmail
         if ($parsed->process == 'sendmail' && class_exists('sendmail_parser')) {
@@ -238,11 +240,14 @@ function doit($input)
             );
         }
         $lines++;
+
+        // Reset variables
+        unset($line, $parsed, $sendmail, $_timestamp, $_host, $_type, $_msg_id, $_relay, $_dsn, $_status, $_delay);
     }
     pclose($fp);
 }
 
-if ($_SERVER['argv'][1] == "--refresh") {
+if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == "--refresh") {
     doit('cat /var/log/maillog');
 } else {
     // Refresh first
