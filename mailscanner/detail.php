@@ -178,10 +178,8 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
         }
-        if ($fieldn == "To:" || $fieldn == "Subject:") {
-            $row[$f] = htmlspecialchars($row[$f]);
-        }
         if ($fieldn == "To:") {
+            $row[$f] = htmlspecialchars($row[$f]);
             $row[$f] = str_replace(",", "<br>", $row[$f]);
         }
         if ($fieldn == "Subject:") {
@@ -210,6 +208,9 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                 $row[$f] = nl2br(
                     str_replace(array("\n", "\t"), array("<br>", "&nbsp; &nbsp; &nbsp;"), htmlentities($row[$f]))
                 );
+            }
+            if (function_exists('iconv_mime_decode')) {
+                $row[$f] = iconv_mime_decode( utf8_decode($row[$f]), 2, 'UTF-8' );
             }
             $row[$f] = preg_replace("/<br \/>/", "<br>", $row[$f]);
         }
