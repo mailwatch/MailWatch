@@ -37,8 +37,8 @@ echo '  <tr>' . "\n";
 echo '  <td colspan="3" class="detail">' . "\n";
 
 // Iterate through the POST variables
-
-if (is_array($_POST)) {
+unset($_POST['SUBMIT']);
+if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
             $id = $Regs[1];
@@ -92,7 +92,7 @@ if (is_array($_POST)) {
         }
     }
 } else {
-    echo '<tr><td colspan="3">Message ' . $id . ' not found in quarantine</td></tr>' . "\n";
+    echo '<tr><td colspan="3">Message not found in quarantine</td></tr>' . "\n";
 }
 echo '</table>' . "\n";
 
