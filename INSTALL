@@ -18,7 +18,7 @@ NOTES FOR OTHER OPERATING SYSTEMS/LINUX DISTRO'S
 PHP should have the following set in php.ini (possibly others too....)
  safe_mode = Off
  register_globals = Off
- magic_quotes_gpc = On
+ magic_quotes_gpc = Off
  magic_quotes_runtime = Off
  session.auto_start = 0
 

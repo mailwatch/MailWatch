@@ -1,3 +1,8 @@
+1.2.0 - DEV
+-----------
+
+ - Fix documentation regarding magic_quotes_gpc 
+
 1.2.0 - Beta 6
 -----------
 
