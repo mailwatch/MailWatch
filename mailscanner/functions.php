@@ -64,7 +64,7 @@ include "postfix.inc";
  to me - smf@f2s.com.
 
  If you are running MailWatch in DISTRIBUTED_MODE or you wish to override the
- selection of the regular expression - you will need to add on of the following
+ selection of the regular expression - you will need to add one of the following
  statements to conf.php and set the regular expression manually.
 */
 // define('VIRUS_REGEX', '<<your regexp here>>');
