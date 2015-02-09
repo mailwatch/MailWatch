@@ -7,6 +7,7 @@
  - Enhanced SQL Black/Whitelist to allow matching of subdomains
  - Upgraded PEAR packages to last stable versions (some trunk commit was used)
  - Enable UTF-8 subject encoding
+ - Fix conflict with GeoIP PHP extension
 
 1.2.0 - Beta 5
 -----------
