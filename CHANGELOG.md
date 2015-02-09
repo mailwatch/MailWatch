@@ -1,4 +1,4 @@
-1.2.0 - DEV
+1.2.0 - Beta 6
 -----------
 
  - Enhanced MailScanner.conf parser to catch variable's value even if there is no space before and/or after = sign
