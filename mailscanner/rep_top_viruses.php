@@ -78,6 +78,8 @@ if (is_writable(CACHE_DIR)) {
     reset($virus_array);
 
     $count = 0;
+    $data = array();
+    $data_names = array();
     while ((list($key, $val) = each($virus_array)) && $count < 10) {
         $data[] = $val;
         $data_names[] = "$key";
@@ -99,7 +101,12 @@ if (is_writable(CACHE_DIR)) {
     $graph->legend->Pos(0.25, 0.20, 'center');
 
     $graph->Add($p1);
-    $graph->Stroke($filename);
+    try {
+        $graph->Stroke($filename);
+        $graphok = true;
+    } catch (JpGraphException $e) {
+        $graphok = false;
+    }
 }
 
 // HTML to display the graph
@@ -110,24 +117,30 @@ echo "</TR>";
 echo "<TR>";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+echo '<TD ALIGN="CENTER">';
+if ($graphok == true)
+{
+    if (is_readable($filename)) {
+       echo '<IMG SRC="' . $filename . '" ALT="Graph">';
+    } else {
+        echo "File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by Mailwatch.";
+    }
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by Mailwatch.";
+    echo "Not enough data to generate a graph.";
 }
-
+echo '</TD>';
 echo "</TR>";
 echo "<TR>";
 echo " <TD ALIGN=\"CENTER\">";
 echo "  <TABLE WIDTH=\"500\">";
-echo "   <TR BGCOLOR=\"#F7CE4A\">";
+echo "   <TR style=\"background-color: #f7ce4a\">";
 echo "    <TH>Virus</TH>";
 echo "    <TH>Count</TH>";
 echo "   </TR>";
 
 // Write the data out
 for ($i = 0; $i < count($data_names); $i++) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">
+    echo "<TR style=\"background-color: #EBEBEB\">
  <TD>$data_names[$i]</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
 </TR>\n";

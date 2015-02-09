@@ -148,6 +148,7 @@ while ($row = mysql_fetch_object($result)) {
 
 reset($virus_array);
 $count = 0;
+$data_names = array();
 while ((list($key, $val) = each($virus_array))) {
     $data[] = $val['count'];
     $data_names[] = "$key";
