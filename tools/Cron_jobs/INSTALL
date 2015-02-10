@@ -10,9 +10,9 @@ db_clean.php
 
 add to /etc/cron.daily/
 
-You will then to edit conf.php the RECORD_DAYS_TO_KEEP definition.
+You need to edit conf.php the RECORD_DAYS_TO_KEEP definition.
 
-You will need to edit the db_clean.php to reflect the location of the functions.php file
+You need to edit the db_clean.php to reflect the location of the functions.php file
 
 --------------------------------------------
 Quarantine Maintenance
@@ -24,12 +24,12 @@ quarantine_maint.php
 
 add to /etc/cron.daily/
 
-You will then to edit conf.php the QUARANTINE_DAYS_TO_KEEP definition.
+You need to edit conf.php the QUARANTINE_DAYS_TO_KEEP definition.
 
-You will need to edit the quarantine_maint.php to reflect the location of the functions.php file
+You need to edit the quarantine_maint.php to reflect the location of the functions.php file
 
 --------------------------------------------
-Quarantine Maintenance
+Quarantine Report
 --------------------------------------------
 
 quarantine_report.php
