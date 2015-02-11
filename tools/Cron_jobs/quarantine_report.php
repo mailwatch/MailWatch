@@ -58,10 +58,10 @@ if ($required_constant_missing_count == 0) {
     ini_set("error_reporting", E_ALL);
     ini_set("max_execution_time", 0);
     if (version_compare(phpversion(), '5.3.0', '<')) {
-        error_reporting(E_ALL);
+        error_reporting(E_ALL ^ E_STRICT);
     } else {
         // E_DEPRECATED added in PHP 5.3
-        error_reporting(E_ALL ^ E_DEPRECATED);
+        error_reporting(E_ALL ^ E_STRICT ^ E_DEPRECATED);
     }
 
     /*
