@@ -39,7 +39,7 @@
 
         .login {
             margin: 50px auto;
-            width: 307px;
+            width: 308px;
         }
 
         .login h1 {
@@ -108,8 +108,8 @@
         .login fieldset input[type="text"], .login fieldset input[type="password"] {
             background-color: #e9e9e9;
             color: #222;
-            padding: 4px 0;
-            width: 100%;
+            padding: 4px;
+            width: 256px;
             margin-bottom: 16px;
         }
 
