@@ -123,9 +123,14 @@ if ($usercount == 0) {
         $_SESSION['global_filter'] = '(' . $global_filter . ')';
         $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
         $_SESSION['global_array'] = $filter;
-        header("Location: index.php");
+        $redirect_url = 'index.php';
+        if (isset($_SESSION['REQUEST_URI'])) {
+            $redirect_url = $_SESSION['REQUEST_URI'];
+            unset($_SESSION['REQUEST_URI']);
+        }
+        header('Location: ' . $redirect_url);
     } else {
-        header("Location: login.php?error=baduser");
+        header('Location: login.php?error=baduser');
     }
 
     // close any DB connections

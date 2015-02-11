@@ -20,7 +20,6 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// if(!session_is_registered(myusername)) {
 if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
     include 'checklogin.php';
 } elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername']) && isset($_GET['httpbasic'])) {
@@ -29,7 +28,9 @@ if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
     header("Location: login.php?error=baduser");
     exit;
 } elseif (!isset($_SESSION['myusername'])) {
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $_SESSION['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
+    }
     header("Location: login.php");
     exit;
 }
-
