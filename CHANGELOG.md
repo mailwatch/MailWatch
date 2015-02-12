@@ -1,7 +1,9 @@
 1.2.0 - DEV
 -----------
 
- - Fix documentation regarding magic_quotes_gpc 
+ - Fix documentation regarding magic_quotes_gpc
+ - Redirect to original link after login (e.g. from quarantine report)
+ - Fix to GPL v2 licensing problems
 
 1.2.0 - Beta 6
 -----------
