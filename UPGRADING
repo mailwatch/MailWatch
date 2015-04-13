@@ -73,10 +73,10 @@ UPGRADING FROM 0.5.1 TO 1.0
    Edit MailWatch.pm and change the database connection string to 
    match your existing.
    
-   Move MailWatch.pm to /usr/lib/MailScanner/MailScanner/CustomFunctions
+   Move MailWatch.pm to /usr/share/MailScanner/MailScanner/CustomFunctions
    
    Remove the old MailWatch.pm if it was installed in 
-   /usr/lib/MailScanner/MailScanner and remove the 
+   /usr/share/MailScanner/MailScanner and remove the
    'require MailScanner/MailWatch.pm' from CustomConfig.pm if necessary.
 
 - Install SQLBlackWhiteList.pm if required
@@ -84,7 +84,7 @@ UPGRADING FROM 0.5.1 TO 1.0
    then edit the file and change the connection string in the CreateList
    subroutine to match MailWatch.pm.
 
-   Copy SQLBlackWhiteList.pm to /usr/lib/MailScanner/MailScanner/CustomFunctions
+   Copy SQLBlackWhiteList.pm to /usr/share/MailScanner/MailScanner/CustomFunctions
    and in MailScanner.conf set:
     Is Definitely Not Spam = &SQLWhitelist
     Is Definitely Spam = &SQLBlacklist
@@ -99,13 +99,5 @@ UPGRADING FROM 0.5.1 TO 1.0
 
 - If used, replace sendmail_relay.php and mailq.php with the latest versions.
 
-If you encounter any problems with the procedure, then please contact me at
-smf@f2s.com or by the mailing-list at Sourceforge.
-
-Thanks,
-Steve.
-
---
-If you find MailWatch useful then consider buying something from my wishlist 
-at amazon.co.uk - you can find my list using my e-mail address smf@f2s.com. 
-Thanks!
+If you encounter any problems with the procedure, then please contact us
+by the mailing-list at Sourceforge.

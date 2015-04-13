@@ -11,7 +11,7 @@ you also need Perl Encoding::FixLatin to deal with email subjects that contain c
 
 SUPPORT
 
-Please use the mailing-list mailwatch-users@lists.sourceforge.net or the forums on Sourceforge.  Note that you will get faster support from me if you use the mailing-list.
+Please use the mailing-list mailwatch-users@lists.sourceforge.net or the forums on Sourceforge. Note that you will get faster support from me if you use the mailing-list.
 
 NOTES FOR OTHER OPERATING SYSTEMS/LINUX DISTRO'S
 
@@ -78,14 +78,14 @@ Install & Configure MailWatch
    with MailScanner version 4.43 or later as Julian added some code for me
    to keep track of messages quarantined by using a flag in the maillog table.
    This means that MailWatch 1.0 is *much* faster when you have a large
-   quarantine directory.  The new quarantine report requires the use of the
+   quarantine directory. The new quarantine report requires the use of the
    new functionality - so you must upgrade if you want to run this.
 
    The new quarantine flag is used by default and you must disable
    the clean.quarantine script supplied by MailScanner and use the new
    quarantine_maint.php script in the tools directory instead.
    To clean the quarantine - set 'QUARANTINE_DAYS_TO_KEEP' in conf.php and
-   run './quarantine_maint --clean'.  This should then be run daily from cron.
+   run './quarantine_maint --clean'. This should then be run daily from cron.
 
    If you are still using MailScanner 4.42 or older, updating your installation
    is highly recommanded; if you can't update you need to set the QUARANTINE_USE_FLAG
@@ -118,7 +118,7 @@ If you want to use the integrate Blacklist/Whitelist (optional):
 
    then edit the file and change the connection string in the CreateList subroutine to match MailWatch.pm.
 
-Copy SQLBlackWhiteList.pm to /usr/lib/MailScanner/MailScanner/CustomFunctions   and in MailScanner.conf set:
+Copy SQLBlackWhiteList.pm to /usr/share/MailScanner/MailScanner/CustomFunctions and in MailScanner.conf set:
  Is Definitely Not Spam = &SQLWhitelist
  Is Definitely Spam = &SQLBlacklist
 
