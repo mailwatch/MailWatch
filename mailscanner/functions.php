@@ -2857,13 +2857,13 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 // Only sa-learn required
                 if (SA_MAXSIZE) {
                     exec(
-                        SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . ' 2>&1',
+                        SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . ' --max-size ' . SA_MAXSIZE . ' 2>&1',
                         $output_array,
                         $retval
                     );
                 } else {
                     exec(
-                        SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . ' --max-size ' . SA_MAXSIZE . ' 2>&1',
+                        SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . ' 2>&1',
                         $output_array,
                         $retval
                     );
