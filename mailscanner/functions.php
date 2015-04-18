@@ -41,17 +41,18 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
     error_reporting(E_ALL);
 } else {
     // E_DEPRECATED added in PHP 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED);
+    error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 }
 
 // Read in MailWatch configuration file
-if (!(@include_once('conf.php')) == true) {
+if (!is_readable(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php')) {
     die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
 }
+require_once(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php');
 
-if (SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
+if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] == 'on') {
-        header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+        header("Location: https://" . sanitizeInput($_SERVER['HTTP_HOST']) . sanitizeInput($_SERVER['REQUEST_URI']));
         exit;
     }
 }
@@ -60,9 +61,12 @@ if (SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
 
 // XML-RPC
-@include_once('lib/xmlrpc/xmlrpc.inc');
-@include_once('lib/xmlrpc/xmlrpcs.inc');
-@include_once('lib/xmlrpc/xmlrpc_wrappers.inc');
+require_once('lib/xmlrpc/xmlrpc.inc');
+require_once('lib/xmlrpc/xmlrpcs.inc');
+require_once('lib/xmlrpc/xmlrpc_wrappers.inc');
+
+//HTLMPurifier
+require_once('lib/htmlpurifier/HTMLPurifier.standalone.php');
 
 include "postfix.inc";
 
@@ -74,7 +78,7 @@ include "postfix.inc";
  report against.  It defaults to the first scanner found in MailScanner.conf.
 
  Please submit any new regular expressions to the MailWatch mailing-list or
- to me - smf@f2s.com.
+ open an issue on GitHub.
 
  If you are running MailWatch in DISTRIBUTED_MODE or you wish to override the
  selection of the regular expression - you will need to add one of the following
@@ -155,6 +159,10 @@ if (!defined('VIRUS_REGEX')) {
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
+function mailwatch_version()
+{
+    return ("1.2.0 - RC1 DEV");
+}
 
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
@@ -174,8 +182,13 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
         header("Pragma: cache");
     }
+    //security headers
+    header('X-XSS-Protection: 1; mode=block');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+
     page_creation_timer();
-    echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">' . "\n";
+    echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
     echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
@@ -209,7 +222,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
 
     if (isset($_GET['id'])) {
-        $message_id = $_GET['id'];
+        $message_id = sanitizeInput($_GET['id']);
     } else {
         $message_id = " ";
     }
@@ -223,7 +236,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="./index.php"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
@@ -243,8 +256,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '    <tr> <td>Bad Content/Infected</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>' . "\n";
     echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>' . "\n";
-    echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
-    echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
+    if (get_conf_truefalse('mcpchecks')) {
+        echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
+        echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
+    }
     echo '    <tr> <td>Whitelisted</td> <td class="whitelisted"></td> </tr>' . "\n";
     echo '    <tr> <td>Blacklisted</td> <td class="blacklisted"></td> </tr>' . "\n";
     echo '	  <tr> <td>Not Scanned</td> <td class="notscanned"></td> </tr>' . "\n";
@@ -295,6 +310,13 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_5m = $loadavg[1];
             $la_15m = $loadavg[2];
             echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+        } elseif (file_exists("/usr/bin/uptime") && !DISTRIBUTED_SETUP) {
+            $loadavg = shell_exec('/usr/bin/uptime');
+            $loadavg = explode(" ", $loadavg);
+            $la_1m = rtrim($loadavg[count($loadavg) - 3], ",");
+            $la_5m = rtrim($loadavg[count($loadavg) - 2], ",");
+            $la_15m = rtrim($loadavg[count($loadavg) - 1]);
+            echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
         }
 
         // Mail Queues display
@@ -325,69 +347,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         // drive display
         if ($_SESSION['user_type'] == 'A') {
             echo '    <tr><td colspan="3" class="heading" align="center">Free Drive Space</td></tr>' . "\n";
-            function formatSize($size, $precision = 2)
-            {
-                $base = log($size) / log(1024);
-                $suffixes = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-
-                return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
-            }
-
-            function get_disks()
-            {
-                $disks = array();
-                if (php_uname('s') == 'Windows NT') {
-                    // windows
-                    $disks = `fsutil fsinfo drives`;
-                    $disks = str_word_count($disks, 1);
-                    //TODO: won't work on non english installation, we need to find an universal command
-                    if ($disks[0] != 'Drives') {
-                        return '';
-                    }
-                    unset($disks[0]);
-                    foreach ($disks as $key => $disk) {
-                        $disks[]['mountpoint'] = $disk . ':\\';
-                    }
-                } else {
-                    // unix
-                    /*
-                     * Using /proc/mounts as it seem to be standard on unix
-                     *
-                     * http://unix.stackexchange.com/a/24230/33366
-                     * http://unix.stackexchange.com/a/12086/33366
-                     */
-                    $temp_drive = array();
-                    if (is_file('/proc/mounts')) {
-                        $mounted_fs = file("/proc/mounts");
-                        foreach ($mounted_fs as $fs_row) {
-                            $drive = preg_split("/[\s]+/", $fs_row);
-                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
-                                $temp_drive['device'] = $drive[0];
-                                $temp_drive['mountpoint'] = $drive[1];
-                                $disks[] = $temp_drive;
-                                unset($temp_drive);
-                            }
-                            // TODO: list nfs mount (and other relevant fs type) in $disks[]
-                        }
-                    } else {
-                        // fallback to mount command
-                        $data = `mount`;
-                        $data = explode("\n", $data);
-                        foreach ($data as $disk) {
-                            $drive = preg_split("/[\s]+/", $disk);
-                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[2], '/chroot/') === false)) {
-                                $temp_drive['device'] = $drive[0];
-                                $temp_drive['mountpoint'] = $drive[2];
-                                $disks[] = $temp_drive;
-                                unset($temp_drive);
-                            }
-                        }
-                    }
-                }
-
-                return $disks;
-            }
-
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
                 $total_space = disk_total_space($disk['mountpoint']);
@@ -402,8 +361,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 $percent .= '</span>';
                 echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
             }
-
-
         }
         echo '  </table>' . "\n";
         echo '  </td>' . "\n";
@@ -611,12 +568,14 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo ' <tr><td style="white-space:nowrap">High Scoring Spam:</td><td align="right">' . number_format(
                 $row->highspam
             ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>MCP:</td><td align="right">' . number_format(
-                $row->mcp
-            ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
-        echo ' <tr><td style="white-space:nowrap">High Scoring MCP:</td><td align="right">' . number_format(
-                $row->highmcp
-            ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
+        if (get_conf_truefalse('mcpchecks')) {
+            echo ' <tr><td>MCP:</td><td align="right">' . number_format(
+                    $row->mcp
+                ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
+            echo ' <tr><td style="white-space:nowrap">High Scoring MCP:</td><td align="right">' . number_format(
+                    $row->highmcp
+                ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
+        }
         echo '</table>' . "\n";
     }
 
@@ -790,14 +749,15 @@ function dbquery($sql)
     return $result;
 }
 
+function sanitizeInput($string) {
+    $config = HTMLPurifier_Config::createDefault();
+    $purifier = new HTMLPurifier($config);
+    return $purifier->purify($string);
+}
+
 function quote_smart($value)
 {
-    dbconn();
-    if (get_magic_quotes_gpc()) {
-        $value = stripslashes($value);
-    }
-    $value = "'" . mysql_real_escape_string($value) . "'";
-    return $value;
+    return "'" . safe_value($value) . "'";
 }
 
 function safe_value($value)
@@ -999,6 +959,69 @@ AND
     } else {
         return "None";
     }
+}
+
+function get_disks()
+{
+    $disks = array();
+    if (php_uname('s') == 'Windows NT') {
+        // windows
+        $disks = `fsutil fsinfo drives`;
+        $disks = str_word_count($disks, 1);
+        //TODO: won't work on non english installation, we need to find an universal command
+        if ($disks[0] != 'Drives') {
+            return '';
+        }
+        unset($disks[0]);
+        foreach ($disks as $key => $disk) {
+            $disks[]['mountpoint'] = $disk . ':\\';
+        }
+    } else {
+        // unix
+        /*
+         * Using /proc/mounts as it seem to be standard on unix
+         *
+         * http://unix.stackexchange.com/a/24230/33366
+         * http://unix.stackexchange.com/a/12086/33366
+         */
+        $temp_drive = array();
+        if (is_file('/proc/mounts')) {
+            $mounted_fs = file("/proc/mounts");
+            foreach ($mounted_fs as $fs_row) {
+                $drive = preg_split("/[\s]+/", $fs_row);
+                if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
+                    $temp_drive['device'] = $drive[0];
+                    $temp_drive['mountpoint'] = $drive[1];
+                    $disks[] = $temp_drive;
+                    unset($temp_drive);
+                }
+                // TODO: list nfs mount (and other relevant fs type) in $disks[]
+            }
+        } else {
+            // fallback to mount command
+            $data = `mount`;
+            $data = explode("\n", $data);
+            foreach ($data as $disk) {
+                $drive = preg_split("/[\s]+/", $disk);
+                if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[2], '/chroot/') === false)) {
+                    $temp_drive['device'] = $drive[0];
+                    $temp_drive['mountpoint'] = $drive[2];
+                    $disks[] = $temp_drive;
+                    unset($temp_drive);
+                }
+            }
+        }
+    }
+
+    return $disks;
+}
+
+function formatSize($size, $precision = 2)
+{
+    $base = log($size) / log(1024);
+    $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
+
+    return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
 
 function format_mail_size($size_in_bytes, $decimal_places = 1)
@@ -1363,7 +1386,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     $orderby = null;
     $orderdir = '';
     if (isset($_GET['orderby'])) {
-        $orderby = $_GET['orderby'];
+        $orderby = sanitizeInput($_GET['orderby']);
         switch (strtoupper($_GET['orderdir'])) {
             case 'A':
                 $orderdir = 'ASC';
@@ -1377,8 +1400,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         if (($p = stristr($sql, 'ORDER BY')) !== false) {
             // We already have an existing ORDER BY clause
             $p = "ORDER BY\n  " . $orderby . ' ' . $orderdir . ',' . substr($p, (strlen('ORDER BY') + 2));
-            $p = substr($sql, 0, strpos($sql, 'ORDER BY')) . $p;
-            $sql = $p;
+            $sql = substr($sql, 0, strpos($sql, 'ORDER BY')) . $p;
         } else {
             // No existing ORDER BY - disable feature
             $order = false;
@@ -1437,7 +1459,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
 
@@ -1446,20 +1468,20 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
     }
 
     if ($rows > 0) {
-        if ($operations != false) {
+        if ($operations !== false) {
             // Start form for operations
             echo '<form name="operations" action="./do_message_ops.php" method="POST">' . "\n";
         }
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         // Work out which columns to display
         for ($f = 0; $f < $fields; $f++) {
-            if ($f == 0 and $operations != false) {
+            if ($f == 0 && $operations !== false) {
                 // Set up display for operations form elements
                 $display[$f] = true;
                 $orderable[$f] = false;
@@ -1472,7 +1494,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $orderable[$f] = true;
             $align[$f] = false;
             // Set up the mysql column to account for operations
-            if ($operations != false) {
+            if ($operations !== false) {
                 $colnum = $f - 1;
             } else {
                 $colnum = $f;
@@ -1642,7 +1664,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             if ($display[$f]) {
                 if ($order && $orderable[$f]) {
                     // Set up the mysql column to account for operations
-                    if ($operations != false) {
+                    if ($operations !== false) {
                         $colnum = $f - 1;
                     } else {
                         $colnum = $f;
@@ -1665,14 +1687,15 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo ' </tr>' . "\n";
         // Rows
-        $JsFunc = '';
+        $jsRadioCheck = '';
+        $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
             $row = mysql_fetch_row($sth);
-            if ($operations != false) {
+            if ($operations !== false) {
                 // Prepend operations elements - later on, replace REPLACEME w/ message id
                 array_unshift(
                     $row,
-                    "<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"S\">&nbsp;<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"H\">&nbsp;<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"F\">&nbsp;<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"R\">"
+                    '<input name="OPT-REPLACEME" type="RADIO" value="S">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="H">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="F">&nbsp;<input name="OPTRELEASE-REPLACEME" type="checkbox" value="R">'
                 );
             }
             // Work out field colourings and mofidy the incoming data as necessary
@@ -1686,7 +1709,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $mcp = false;
             $highmcp = false;
             for ($f = 0; $f < $fields; $f++) {
-                if ($operations != false) {
+                if ($operations !== false) {
                     if ($f == 0) {
                         // Skip the first field if it is operations
                         continue;
@@ -1713,6 +1736,17 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         if (FROMTO_MAXLEN > 0) {
                             $row[$f] = trim_output($row[$f], FROMTO_MAXLEN);
                         }
+                        break;
+                    case 'clientip':
+                        $clientip = $row[$f];
+                        if (net_match('10.0.0.0/8', $clientip) || net_match('172.16.0.0/12',
+                                $clientip) || net_match('192.168.0.0/16', $clientip)
+                        ) {
+                            $host = 'Internal Network';
+                        } elseif (($host = gethostbyaddr($clientip)) == $clientip) {
+                            $host = 'Unknown';
+                        }
+                        $row[$f] .= " ($host)";
                         break;
                     case 'to_address':
                         $row[$f] = htmlentities($row[$f]);
@@ -1829,9 +1863,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 }
             }
             // Now add the id to the operations form elements
-            if ($operations != false) {
+            if ($operations !== false) {
                 $row[0] = str_replace("REPLACEME", $id, $row[0]);
-                $JsFunc .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
+                $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
+                $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
             }
             // Colorise the row
             switch (true) {
@@ -1878,43 +1913,52 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '</table>' . "\n";
         // Javascript function to clear radio buttons
-        if ($operations != false) {
-            echo '<script type="text/javascript">
-   function ClearRadios() {
-   e=document.operations.elements
-   for(i=0; i<e.length; i++) {
-   if (e[i].type=="radio") {
-   e[i].checked=false;
-     }
+        if ($operations !== false) {
+            echo "
+<script type='text/javascript'>
+    function ClearRadios() {
+        var e=document.operations.elements
+        for(i=0; i<e.length; i++) {
+            if (e[i].type=='radio' || e[i].type=='checkbox') {
+                e[i].checked=false;
+            }
+        }
     }
-   }
-   function SetRadios(p) {
-    var val;
-    if (p == \'S\') {
-     val = 0;
-    } else if (p == \'H\') {
-     val = 1;
-    } else if (p == \'F\') {
-     val = 2;
-    } else if (p == \'R\') {
-     val = 3;
-    } else if (p == \'C\') {
-     ClearRadios();
-    return;
-     } else {
-	  return;
-     }
-	' . $JsFunc . '
-   }
-   </script>
-   <p>&nbsp; <a href="javascript:SetRadios(\'S\')">S</a>
-   &nbsp; <a href="javascript:SetRadios(\'H\')">H</a>
-   &nbsp; <a href="javascript:SetRadios(\'F\')">F</a>
-   &nbsp; <a href="javascript:SetRadios(\'R\')">R</a>
-   &nbsp; or <a href="javascript:SetRadios(\'C\')">Clear</a> all</p>
-   <p><input type="SUBMIT" name="SUBMIT" value="Learn"></p>
+
+    function SetRadios(p) {
+        var val;
+        var values = {
+            'S'  : 0,
+            'H'  : 1,
+            'F'  : 2,
+            'R'  : 3
+        };
+        switch (p) {
+            case 'S':
+            case 'H':
+            case 'F':
+                val = values[p];
+                $jsRadioCheck
+                break;
+            case 'R':
+                $jsReleaseCheck
+                break;
+            case 'C':
+                ClearRadios();
+                break;
+            default:
+                return;
+        }
+    }
+</script>
+   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">S</a>
+   &nbsp; <a href=\"javascript:SetRadios('H')\">H</a>
+   &nbsp; <a href=\"javascript:SetRadios('F')\">F</a>
+   &nbsp; <a href=\"javascript:SetRadios('R')\">R</a>
+   &nbsp; or <a href=\"javascript:SetRadios('C')\">Clear</a> all</p>
+   <p><input type='SUBMIT' name='SUBMIT' value='Learn'></p>
    </form>
-   <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release' . "\n";
+   <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release" . "\n";
         }
         echo '<br>' . "\n";
         if ($pager) {
@@ -2031,7 +2075,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
 
@@ -2040,7 +2084,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
     }
@@ -2466,9 +2510,7 @@ function return_geoip_country($ip)
 {
     require_once 'lib/geoip.inc';
     //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
-        $ip = current(array_slice(explode(':', $ip), 0, 1));
-    }
+    $ip = stripPortFromIp($ip);
     $countryname = false;
     if (strpos($ip, ':') === false) {
         //ipv4
@@ -2487,6 +2529,14 @@ function return_geoip_country($ip)
     }
 
     return $countryname;
+}
+
+function stripPortFromIp($ip) {
+    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
+        $ip = current(array_slice(explode(':', $ip), 0, 1));
+    }
+
+    return $ip;
 }
 
 function quarantine_list($input = "/")
@@ -2692,9 +2742,11 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $mail_param = array('host' => QUARANTINE_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
-            $mail =& Mail::factory('smtp', $mail_param);
+            $mail = new Mail;
+            $mail = $mail->factory('smtp', $mail_param);
+
             $m_result = $mail->send($to, $hdrs, $body);
-            if (PEAR::isError($m_result)) {
+            if (is_a($m_result, 'PEAR_Error')) {
                 // Error
                 $status = 'Release: error (' . $m_result->getMessage() . ')';
                 global $error;
@@ -2855,11 +2907,17 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 }
             } else {
                 // Only sa-learn required
+                $max_size_option = '';
+                if (defined('SA_MAXSIZE') && is_int(SA_MAXSIZE) && SA_MAXSIZE > 0) {
+                    $max_size_option = ' --max-size ' . SA_MAXSIZE;
+                }
+
                 exec(
-                    SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . ' 2>&1',
+                    SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . $max_size_option . ' 2>&1',
                     $output_array,
                     $retval
                 );
+
                 if ($retval == 0) {
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
@@ -2958,6 +3016,14 @@ function quarantine_delete($list, $num, $rpc_only = false)
         }
         return $response . " (RPC)";
     }
+}
+
+function fixMessageId($id) {
+    $mta = get_conf_var('mta');
+    if ($mta == 'postfix') {
+        $id = str_replace('_', '.', $id);
+    }
+    return $id;
 }
 
 function audit_log($action)
@@ -3076,10 +3142,10 @@ function is_rpc_client_allowed()
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ($client == 'allprivate' && (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) || net_match(
-                        '172.16.0.0/12',
-                        $_SERVER['SERVER_ADDR']
-                    ) || net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
+            if ($client == 'allprivate' &&
+                (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) ||
+                    net_match('172.16.0.0/12', $_SERVER['SERVER_ADDR']) ||
+                    net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
             ) {
                 return true;
             }
@@ -3155,9 +3221,4 @@ function clear_cache_dir()
             }
         }
     }
-}
-
-function mailwatch_version()
-{
-    return ("1.2.0 - Beta 7 DEV");
 }

@@ -70,7 +70,16 @@ $sql .= "
 FROM
  maillog
 WHERE
- " . $_SESSION['global_filter'] . "
+ " . $_SESSION['global_filter'];
+// Hide high spam/mcp from regular users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U') {
+  $sql .= "
+    AND
+     ishighspam=0
+    AND
+     ishighmcp=0";
+}
+$sql .= "  
 ORDER BY
  date DESC,
  time DESC

@@ -207,7 +207,18 @@ WHERE
 AND
  ((to_address=%s) OR (to_domain=%s))
 AND 
- a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)
+ a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)";
+
+ // Hide high spam/mcp from users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM) {
+  $sql .= "
+    AND
+     ishighspam=0
+    AND
+     ishighmcp=0";
+} 
+
+$sql .= " 
 ORDER BY a.date DESC, a.time DESC";
 
     $result = dbquery($users_sql);
