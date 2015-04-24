@@ -2855,19 +2855,17 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 }
             } else {
                 // Only sa-learn required
-                if (SA_MAXSIZE) {
-                    exec(
-                        SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . ' --max-size ' . SA_MAXSIZE . ' 2>&1',
-                        $output_array,
-                        $retval
-                    );
-                } else {
-                    exec(
-                        SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . ' 2>&1',
-                        $output_array,
-                        $retval
-                    );
-                };
+                $max_size_option = '';
+                if (defined(SA_MAXSIZE) && is_int(SA_MAXSIZE) && SA_MAXSIZE > 0) {
+                    $max_size_option = ' --max-size ' . SA_MAXSIZE;
+                }
+
+                exec(
+                    SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . $max_size_option . ' 2>&1',
+                    $output_array,
+                    $retval
+                );
+
                 if ($retval == 0) {
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
