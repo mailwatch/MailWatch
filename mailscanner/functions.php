@@ -2856,7 +2856,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
             } else {
                 // Only sa-learn required
                 $max_size_option = '';
-                if (defined(SA_MAXSIZE) && is_int(SA_MAXSIZE) && SA_MAXSIZE > 0) {
+                if (defined('SA_MAXSIZE') && is_int(SA_MAXSIZE) && SA_MAXSIZE > 0) {
                     $max_size_option = ' --max-size ' . SA_MAXSIZE;
                 }
 
