@@ -41,7 +41,7 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
     error_reporting(E_ALL);
 } else {
     // E_DEPRECATED added in PHP 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED);
+    error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 }
 
 // Read in MailWatch configuration file
@@ -1665,14 +1665,15 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo ' </tr>' . "\n";
         // Rows
-        $JsFunc = '';
+        $jsRadioCheck = '';
+        $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
             $row = mysql_fetch_row($sth);
             if ($operations != false) {
                 // Prepend operations elements - later on, replace REPLACEME w/ message id
                 array_unshift(
                     $row,
-                    "<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"S\">&nbsp;<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"H\">&nbsp;<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"F\">&nbsp;<input name=\"OPT-REPLACEME\" type=\"RADIO\" value=\"R\">"
+                    '<input name="OPT-REPLACEME" type="RADIO" value="S">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="H">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="F">&nbsp;<input name="OPTRELEASE-REPLACEME" type="checkbox" value="R">'
                 );
             }
             // Work out field colourings and mofidy the incoming data as necessary
@@ -1831,7 +1832,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             // Now add the id to the operations form elements
             if ($operations != false) {
                 $row[0] = str_replace("REPLACEME", $id, $row[0]);
-                $JsFunc .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
+                $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
+                $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
             }
             // Colorise the row
             switch (true) {
@@ -1879,42 +1881,51 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         echo '</table>' . "\n";
         // Javascript function to clear radio buttons
         if ($operations != false) {
-            echo '<script type="text/javascript">
-   function ClearRadios() {
-   e=document.operations.elements
-   for(i=0; i<e.length; i++) {
-   if (e[i].type=="radio") {
-   e[i].checked=false;
-     }
+            echo "
+<script type='text/javascript'>
+    function ClearRadios() {
+        var e=document.operations.elements
+        for(i=0; i<e.length; i++) {
+            if (e[i].type=='radio' || e[i].type=='checkbox') {
+                e[i].checked=false;
+            }
+        }
     }
-   }
-   function SetRadios(p) {
-    var val;
-    if (p == \'S\') {
-     val = 0;
-    } else if (p == \'H\') {
-     val = 1;
-    } else if (p == \'F\') {
-     val = 2;
-    } else if (p == \'R\') {
-     val = 3;
-    } else if (p == \'C\') {
-     ClearRadios();
-    return;
-     } else {
-	  return;
-     }
-	' . $JsFunc . '
-   }
-   </script>
-   <p>&nbsp; <a href="javascript:SetRadios(\'S\')">S</a>
-   &nbsp; <a href="javascript:SetRadios(\'H\')">H</a>
-   &nbsp; <a href="javascript:SetRadios(\'F\')">F</a>
-   &nbsp; <a href="javascript:SetRadios(\'R\')">R</a>
-   &nbsp; or <a href="javascript:SetRadios(\'C\')">Clear</a> all</p>
-   <p><input type="SUBMIT" name="SUBMIT" value="Learn"></p>
+
+    function SetRadios(p) {
+        var val;
+        var values = {
+            'S'  : 0,
+            'H'  : 1,
+            'F'  : 2,
+            'R'  : 3
+        };
+        switch (p) {
+            case 'S':
+            case 'H':
+            case 'F':
+                val = values[p];
+                $jsRadioCheck
+                break;
+            case 'R':
+                $jsReleaseCheck
+                break;
+            case 'C':
+                ClearRadios();
+                break;
+            default:
+                return;
+        }
+    }
+</script>
+   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">S</a>
+   &nbsp; <a href=\"javascript:SetRadios('H')\">H</a>
+   &nbsp; <a href=\"javascript:SetRadios('F')\">F</a>
+   &nbsp; <a href=\"javascript:SetRadios('R')\">R</a>
+   &nbsp; or <a href=\"javascript:SetRadios('C')\">Clear</a> all</p>
+   <p><input type='SUBMIT' name='SUBMIT' value='Learn'></p>
    </form>
-   <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release' . "\n";
+   <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release" . "\n";
         }
         echo '<br>' . "\n";
         if ($pager) {
@@ -2692,9 +2703,11 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $mail_param = array('host' => QUARANTINE_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
-            $mail =& Mail::factory('smtp', $mail_param);
+            $mail = new Mail;
+            $mail = $mail->factory('smtp', $mail_param);
+
             $m_result = $mail->send($to, $hdrs, $body);
-            if (PEAR::isError($m_result)) {
+            if (is_a($m_result, 'PEAR_Error')) {
                 // Error
                 $status = 'Release: error (' . $m_result->getMessage() . ')';
                 global $error;
@@ -2964,6 +2977,14 @@ function quarantine_delete($list, $num, $rpc_only = false)
         }
         return $response . " (RPC)";
     }
+}
+
+function fixMessageId($id) {
+    $mta = get_conf_var('mta');
+    if ($mta == 'postfix') {
+        $id = str_replace('_', '.', $id);
+    }
+    return $id;
 }
 
 function audit_log($action)

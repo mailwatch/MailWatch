@@ -5,7 +5,8 @@
  - Redirect to original link after login (e.g. from quarantine report)
  - Fix to GPL v2 licensing problems
  - Updated MailScanner default path to comply with version 4.85.2-1
- - add `--max-size` support to `sa-learn` if spamassassin >= 3.4.0
+ - Add `--max-size` support to `sa-learn` if spamassassin >= 3.4.0
+ - Separate release action in Message Operations from Spam/Ham/Forget radio button
 
 1.2.0 - Beta 6
 -----------
