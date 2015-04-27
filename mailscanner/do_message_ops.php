@@ -34,7 +34,6 @@
 */
 
 require_once('./functions.php');
-require_once('MDB2.php');
 require_once('./filter.inc');
 
 session_start();
@@ -46,7 +45,7 @@ echo '<table border="0" width="100%" class="maildetail">' . "\n";
 echo ' <tr>' . "\n";
 echo '  <th colspan="3">Spam Learn Results</th>' . "\n";
 echo ' </tr>' . "\n";
-echo '  <tr>' . "\n";
+echo ' <tr>' . "\n";
 echo '  <td colspan="3" class="detail">' . "\n";
 
 // Iterate through the POST variables
@@ -55,10 +54,10 @@ if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
             $id = $Regs[1];
-            $mta = get_conf_var('mta');
-            if ($mta == 'postfix') {
-                $id = str_replace('_', '.', $id);
-            }
+            $id = fixMessageId($id);
+        } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
+            $id = $Regs[1];
+            $id = fixMessageId($id);
         } else {
             continue;
         }
@@ -84,31 +83,32 @@ if (isset($_POST) && !empty($_POST)) {
         if (count($items) > 0) {
             $num = 0;
             $itemnum = array($num);
+            echo '<tr><td><a href="detail.php?id=' . $id . '">' . $id . '</a></td><td>' . $type . '</td><td>';
             if ($type == 'release') {
                 if ($quarantined = quarantine_list_items($id, RPC_ONLY)) {
                     $to = $quarantined[0]['to'];
                 }
-                echo "<tr><td><a href=\"detail.php?id=$id\">$id</a></td><td>$type</td><td>" . quarantine_release(
-                        $quarantined,
-                        $itemnum,
-                        $to,
-                        RPC_ONLY
-                    ) . "</td></tr>\n";
+                echo quarantine_release(
+                    $quarantined,
+                    $itemnum,
+                    $to,
+                    RPC_ONLY
+                );
             } else {
-                echo '<tr><td><a href="detail.php?id=' . $id . '">' . $id . '</a></td><td>' . $type . '</td><td>' . quarantine_learn(
-                        $items,
-                        $itemnum,
-                        $type,
-                        RPC_ONLY
-                    ) . '</td></tr>' . "\n";
+                echo quarantine_learn(
+                    $items,
+                    $itemnum,
+                    $type,
+                    RPC_ONLY
+                );
             }
+            echo '</td></tr>' . "\n";
         }
     }
 } else {
     echo '<tr><td colspan="3">Message not found in quarantine</td></tr>' . "\n";
 }
 echo '</table>' . "\n";
-
 
 echo '  </td>' . "\n";
 echo ' </tr>' . "\n";
