@@ -7,6 +7,7 @@
  - Updated MailScanner default path to comply with version 4.85.2-1
  - Add `--max-size` support to `sa-learn` if spamassassin >= 3.4.0
  - Separate release action in Message Operations from Spam/Ham/Forget radio button
+ - Domain Administrator get all domain emails if their username is either an email address or a domain name
 
 1.2.0 - Beta 6
 -----------
