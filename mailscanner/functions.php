@@ -3192,5 +3192,5 @@ function clear_cache_dir()
 
 function mailwatch_version()
 {
-    return ("1.2.0 - Beta 7");
+    return ("1.2.0 - Beta 8 DEV");
 }
