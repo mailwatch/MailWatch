@@ -145,9 +145,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     $output .= ' <tr>' . "\n";
                     $output .= ' <td>' . $relay . '</td>' . "\n";
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-                    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $relay)) {
-                        $relay = current(array_slice(explode(':', $relay), 0, 1));
-                    }
+                    $relay = stripPortFromIp($relay);
                     // Reverse lookup on address. Possibly need to remove it.
                     if (($host = gethostbyaddr($relay)) <> $relay) {
                         $output .= " <td>$host</td>\n";
