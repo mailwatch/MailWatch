@@ -159,6 +159,7 @@ function decode_structure($structure)
                 $structure->body = utf8_encode($structure->body);
             }
             if (STRIP_HTML) {
+                $structure->body = str_replace('<!DOCTYPE','<DOCTYPE', $structure->body);
                 echo strip_tags($structure->body, ALLOWED_TAGS);
             } else {
                 echo $structure->body;
