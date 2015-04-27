@@ -82,7 +82,7 @@ if ($required_constant_missing_count == 0) {
     ** HTML Template
     */
 
-    $html = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+    $html = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" http://www.w3.org/TR/html4/loose.dtd>
 <html>
 <head>
  <title>Message Quarantine Report</title>
@@ -103,7 +103,7 @@ if ($required_constant_missing_count == 0) {
   <td><img src="mailwatch-logo.png"/></td>
   <td align="center" valign="middle">
    <h2>Quarantine Report for %s</h2>
-   In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below.  All messages in the quarantine are automatically deleted %s days after the date that they were received.
+   In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
   </td>
  </tr>
  <tr>
@@ -116,6 +116,7 @@ if ($required_constant_missing_count == 0) {
     $html_table = '<table width="100%%" border="0">
  <tr>
   <td bgcolor="#F7CE4A"><b>Received</b></td>
+  <td bgcolor="#F7CE4A"><b>To</b></td>
   <td bgcolor="#F7CE4A"><b>From</b></td>
   <td bgcolor="#F7CE4A"><b>Subject</b></td>
   <td bgcolor="#F7CE4A"><b>Reason</b></td>
@@ -130,6 +131,7 @@ if ($required_constant_missing_count == 0) {
   <td bgcolor="#EBEBEB">%s</td>
   <td bgcolor="#EBEBEB">%s</td>
   <td bgcolor="#EBEBEB">%s</td>
+  <td bgcolor="#EBEBEB">%s</td>
  </tr>
 ';
 
@@ -139,7 +141,7 @@ if ($required_constant_missing_count == 0) {
 
     $text = 'Quarantine Report for %s
 
-In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below.  All messages in the quarantine are automatically deleted %s days after the date that they were received.
+In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
 
 %s';
 
@@ -182,6 +184,7 @@ AND
 SELECT DISTINCT
 a.id AS id,
 DATE_FORMAT(timestamp,'" . str_replace('%', '%%', DATE_FORMAT) . " <br/>" . str_replace('%', '%%', TIME_FORMAT) . "') AS datetime,
+a.to_address AS to_address,
 a.from_address AS from_address,
 a.subject AS subject,
 CASE
@@ -224,24 +227,34 @@ ORDER BY a.date DESC, a.time DESC";
                     } else {
                         $email = $user->username;
                     }
+                    $to_address = $user->username;
+                    $to_domain = $user->username;
                     break;
                 case 'D':
                     // Type: domain admin - this must be overridden
                     $email = $user->quarantine_rcpt;
+                    $to_address = $user->username;
+                    if (preg_match('/(\S+)@(\S+)/', $user->username, $split)) {
+                        $to_domain = $split[2];
+                    } else {
+                        $to_domain = $user->username;
+                    }
                     break;
                 default:
                     // Shouldn't ever get here - but just in case...
                     $email = $user->quarantine_rcpt;
+                    $to_address = $user->username;
+                    $to_domain = $user->username;
                     break;
             }
             // Make sure we have a destination address
             if (!empty($email)) {
                 dbg(" ==== Recipient e-mail address is $email");
                 // Get any additional reports required
-                $filters = array_merge(array($user->username), return_user_filters($user->username));
+                $filters = array_merge(array($email), return_user_filters($user->username));
                 foreach ($filters as $filter) {
                     dbg(" ==== Building list for $filter");
-                    $quarantined = return_quarantine_list_array($filter);
+                    $quarantined = return_quarantine_list_array($filter, $to_domain);
                     dbg(" ==== Found " . count($quarantined) . " quarantined e-mails");
                     //print_r($quarantined);
                     if (count($quarantined) > 0) {
@@ -275,10 +288,10 @@ function return_user_filters($user)
     return $array;
 }
 
-function return_quarantine_list_array($filter)
+function return_quarantine_list_array($to_address, $to_domain)
 {
     global $sql;
-    $result = dbquery(sprintf($sql, quote_smart($filter), quote_smart($filter)));
+    $result = dbquery(sprintf($sql, quote_smart($to_address), quote_smart($to_domain)));
     $rows = mysql_num_rows($result);
     $array = array();
     if ($rows > 0) {
@@ -286,6 +299,7 @@ function return_quarantine_list_array($filter)
             $array[] = array(
                 'id' => trim($row->id),
                 'datetime' => trim($row->datetime),
+                'to' => trim_output($row->to_address, FROMTO_MAXLEN),
                 'from' => trim_output($row->from_address, FROMTO_MAXLEN),
                 'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
                 'reason' => trim($row->reason)
@@ -307,6 +321,7 @@ function send_quarantine_email($email, $filter, $quarantined)
         $h1 .= sprintf(
             $html_content,
             $qitem['datetime'],
+            $qitem['to'],
             $qitem['from'],
             $qitem['subject'],
             $qitem['reason'],
@@ -316,6 +331,7 @@ function send_quarantine_email($email, $filter, $quarantined)
         $t1 .= sprintf(
             $text_content,
             strip_tags($qitem['datetime']),
+            $qitem['to'],
             $qitem['from'],
             $qitem['subject'],
             $qitem['reason'],
@@ -333,7 +349,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     // Text
     $text_report = sprintf($text, $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $t1);
     if (DEBUG) {
-        echo "<PRE>$text_report</PRE>\n";
+        echo "<pre>$text_report</pre>\n";
     }
 
     // Send e-mail
