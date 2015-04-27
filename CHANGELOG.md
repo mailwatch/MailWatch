@@ -1,4 +1,4 @@
-1.2.0 - DEV
+1.2.0 - Beta 7
 -----------
 
  - Fix documentation regarding magic_quotes_gpc
