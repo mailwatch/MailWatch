@@ -1,7 +1,7 @@
 1.2.0 - DEV
 -----------
  - Correct unexpected behaviour in viewpart.php if one or more headers are not set
- 
+ - Refactor message part viewer
 
 1.2.0 - Beta 7
 -----------

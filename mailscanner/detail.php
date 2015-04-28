@@ -442,10 +442,9 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
                     $item['type']
                 )
             ) {
-                echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '&amp;filename=' . substr(
-                        $item['path'],
-                        strlen($quarantinedir) + 1
-                    ) . '">' . substr($item['path'], strlen($quarantinedir) + 1) . '</a></td>' . "\n";
+                echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
+                    substr($item['path'], strlen($quarantinedir) + 1) .
+                    '</a></td>' . "\n";
             } else {
                 echo "  <td>" . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
             }

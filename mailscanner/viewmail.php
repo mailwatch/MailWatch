@@ -55,24 +55,25 @@ dbconn();
 if (!isset($_GET['id'])) {
     die("No input Message ID");
 } else {
-    $sql = "SELECT * FROM maillog WHERE id='" . mysql_real_escape_string($_GET['id']) . "' AND " . $_SESSION["global_filter"] . "";
-    $row = @mysql_fetch_object(dbquery($sql));
+    $message_id = sanitizeInput($_GET['id']);
+    $sql = "SELECT * FROM maillog WHERE id='" . mysql_real_escape_string($message_id) . "' AND " . $_SESSION["global_filter"];
+    $message = @mysql_fetch_object(dbquery($sql));
     // See if message is local
-    if (empty($row)) {
-        die("Message '" . $_GET['id'] . "' not found\n");
+    if (empty($message)) {
+        die("Message '" . $message_id . "' not found\n");
     } else {
-        audit_log('Quarantined message (' . $_GET['id'] . ') body viewed');
+        audit_log('Quarantined message (' . $message_id . ') body viewed');
     }
     $using_rpc = false;
-    if (!is_local($row->hostname) || RPC_ONLY) {
+    if (!is_local($message->hostname) || RPC_ONLY) {
         // Host is remote - use XML-RPC
         $using_rpc = true;
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
-        $input = new xmlrpcval($_GET['id']);
+        $input = new xmlrpcval($message_id);
         $parameters = array($input);
         $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
         //$rsp = $client->send($msg);
-        $rsp = xmlrpc_wrapper($row->hostname, $msg);
+        $rsp = xmlrpc_wrapper($message->hostname, $msg);
         if ($rsp->faultcode() == 0) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
@@ -80,36 +81,29 @@ if (!isset($_GET['id'])) {
         }
         $file = base64_decode($response);
     } else {
-        // If filename input not present - work out path
-        $date = @mysql_result(dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . mysql_real_escape_string($_GET['id']) . "'"), 0);
-        $qdir = get_conf_var('QuarantineDir');
+        //build filename path
+        $date = DateTime::createFromFormat('Y-m-d', $message->date)->format('Ymd');
+        $quarantine_dir = get_conf_var('QuarantineDir');
+        $filename = '';
         switch (true) {
-            case (file_exists($qdir . '/' . $date . '/nonspam/' . $_GET['id'])):
-                $_GET['filename'] = $date . '/nonspam/' . $_GET['id'];
+            case (file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id)):
+                $filename = $date . '/nonspam/' . $message_id;
                 break;
-            case (file_exists($qdir . '/' . $date . '/spam/' . $_GET['id'])):
-                $_GET['filename'] = $date . '/spam/' . $_GET['id'];
+            case (file_exists($quarantine_dir . '/' . $date . '/spam/' . $message_id)):
+                $filename = $date . '/spam/' . $message_id;
                 break;
-            case (file_exists($qdir . '/' . $date . '/mcp/' . $_GET['id'])):
-                $_GET['filename'] = $date . '/mcp/' . $_GET['id'];
+            case (file_exists($quarantine_dir . '/' . $date . '/mcp/' . $message_id)):
+                $filename = $date . '/mcp/' . $message_id;
                 break;
-            case (file_exists($qdir . '/' . $date . '/' . $_GET['id'] . '/message')):
-                $_GET['filename'] = $date . '/' . $_GET['id'] . '/message';
+            case (file_exists($quarantine_dir . '/' . $date . '/' . $message_id . '/message')):
+                $filename = $date . '/' . $message_id . '/message';
                 break;
         }
 
-        // File is local
-        if (!isset($_GET['filename'])) {
-            die("No input filename");
-        } else {
-            // SECURITY - strip off any potential nasties
-            $_GET['filename'] = preg_replace('[\.\/|\.\.\/]', '', $_GET['filename']);
-            $filename = get_conf_var('QuarantineDir') . "/" . $_GET['filename'];
-            if (!@file_exists($filename)) {
-                die("Error: file not found\n");
-            }
-            $file = file_get_contents($filename);
+        if (!@file_exists($quarantine_dir . '/' . $filename)) {
+            die("Error: file not found\n");
         }
+        $file = file_get_contents($quarantine_dir . '/' . $filename);
     }
 }
 
@@ -125,9 +119,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo "<table border=0 cellspacing=1 cellpadding=1 class=\"maildetail\" width=100%>\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = "Message Viewer: " . $_GET['id'] . " on " . $row->hostname;
+    $title = "Message Viewer: " . $message_id . " on " . $message->hostname;
 } else {
-    $title = "Message Viewer: " . $_GET['id'];
+    $title = "Message Viewer: " . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -171,10 +165,10 @@ foreach ($header_fields as $field) {
     }
 }
 
-if (($row->virusinfected == 0 && $row->nameinfected == 0 && $row->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
+if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
         "Actions:",
-        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $row->id . "','delete')\">Delete this message</a>",
+        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">Delete this message</a>",
         false
     );
 }
@@ -187,11 +181,11 @@ foreach ($mime_struct as $key => $part) {
     switch ($type) {
         case "text/plain":
         case "text/html":
-            echo " <tr>\n";
-            echo "  <td colspan=2>\n";
-            echo "   <iframe frameborder=0 width=\"100%\" height=300 src=\"viewpart.php?id=" . $_GET['id'] . "&amp;filename=" . $_GET['filename'] . "&amp;part=" . $part->mime_id . "\"></iframe>\n";
-            echo "  </td>\n";
-            echo " </tr>\n";
+            echo ' <tr>' . "\n";
+            echo '  <td colspan="2">' . "\n";
+            echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
+            echo '  </td>' . "\n";
+            echo ' </tr>' . "\n";
             break;
         case "message/rfc822":
             break;
@@ -203,8 +197,8 @@ foreach ($mime_struct as $key => $part) {
             echo " <tr>\n";
 
             echo "  <td colspan=2 class=\"detail\">" . $part->d_parameters['filename'];
-            if (($row->virusinfected == 0 && $row->nameinfected == 0 && $row->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
-                echo " <a href=\"viewpart.php?id=" . $_GET['id'] . "&amp;filename=" . $_GET['filename'] . "&amp;part=" . $part->mime_id . "\">Download</a>";
+            if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
+                echo ' <a href="viewpart.php?id=' . $message_id . '"&amp;part=' . $part->mime_id . '">Download</a>';
             }
             echo "  </td>";
 
