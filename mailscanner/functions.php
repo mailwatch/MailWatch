@@ -1367,7 +1367,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     $orderby = null;
     $orderdir = '';
     if (isset($_GET['orderby'])) {
-        $orderby = $_GET['orderby'];
+        $orderby = sanitizeInput($_GET['orderby']);
         switch (strtoupper($_GET['orderdir'])) {
             case 'A':
                 $orderdir = 'ASC';
@@ -1381,8 +1381,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         if (($p = stristr($sql, 'ORDER BY')) !== false) {
             // We already have an existing ORDER BY clause
             $p = "ORDER BY\n  " . $orderby . ' ' . $orderdir . ',' . substr($p, (strlen('ORDER BY') + 2));
-            $p = substr($sql, 0, strpos($sql, 'ORDER BY')) . $p;
-            $sql = $p;
+            $sql = substr($sql, 0, strpos($sql, 'ORDER BY')) . $p;
         } else {
             // No existing ORDER BY - disable feature
             $order = false;
