@@ -148,43 +148,27 @@ function lazy($title, $val, $dohtmlentities = true)
 }
 
 // Display the headers
-switch (true) {
-    case isset($structure->headers['date']):
+$header_fields = array(
+    array('name' => 'date', 'replaceQuote' => false),
+    array('name' => 'from', 'replaceQuote' => true),
+    array('name' => 'to', 'replaceQuote' => true),
+    array('name' => 'subject', 'replaceQuote' => false),
+);
+
+foreach ($header_fields as $field) {
+    if (isset($structure->headers[$field['name']])) {
         if (function_exists('mb_check_encoding')) {
-            if (!mb_check_encoding($structure->headers['date'], 'UTF-8')) {
-                $structure->headers['date'] = mb_convert_encoding($structure->headers['date'], 'UTF-8');
+            if (!mb_check_encoding($structure->headers[$field['name']], 'UTF-8')) {
+                $structure->headers[$field['name']] = mb_convert_encoding($structure->headers[$field['name']], 'UTF-8');
             }
         } else {
-            $structure->headers['date'] = utf8_encode($structure->headers['date']);
+            $structure->headers[$field['name']] = utf8_encode($structure->headers[$field['name']]);
         }
-        lazy("Date:", $structure->headers['date']);
-    case isset($structure->headers['from']):
-        if (function_exists('mb_check_encoding')) {
-            if (!mb_check_encoding($structure->headers['from'], 'UTF-8')) {
-                $structure->headers['from'] = mb_convert_encoding($structure->headers['from'], 'UTF-8');
-            }
-        } else {
-            $structure->headers['from'] = utf8_encode($structure->headers['from']);
+        if ($field['replaceQuote']) {
+            $structure->headers[$field['name']] = str_replace('"', '', $structure->headers[$field['name']]);
         }
-        lazy("From:", str_replace('"', '', $structure->headers['from']));
-    case isset($structure->headers['to']):
-        if (function_exists('mb_check_encoding')) {
-            if (!mb_check_encoding($structure->headers['to'], 'UTF-8')) {
-                $structure->headers['to'] = mb_convert_encoding($structure->headers['to'], 'UTF-8');
-            }
-        } else {
-            $structure->headers['to'] = utf8_encode($structure->headers['to']);
-        }
-        lazy("To:", str_replace('"', '', $structure->headers['to']));
-    case isset($structure->headers['subject']):
-        if (function_exists('mb_check_encoding')) {
-            if (!mb_check_encoding($structure->headers['subject'], 'UTF-8')) {
-                $structure->headers['subject'] = mb_convert_encoding($structure->headers['subject'], 'UTF-8');
-            }
-        } else {
-            $structure->headers['subject'] = utf8_encode($structure->headers['subject']);
-        }
-        lazy("Subject:", $structure->headers['subject']);
+        lazy(ucfirst($field['name']) . ':', $structure->headers[$field['name']]);
+    }
 }
 
 if (($row->virusinfected == 0 && $row->nameinfected == 0 && $row->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
