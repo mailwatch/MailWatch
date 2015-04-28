@@ -111,7 +111,7 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 // Make sure that part being requested actually exists
 if (isset($_GET['part'])) {
     if (!isset($mime_struct[$_GET['part']])) {
-        die("Part " . $_GET['part'] . " not found\n");
+        die("Part " . sanitizeInput($_GET['part']) . " not found\n");
     }
 }
 

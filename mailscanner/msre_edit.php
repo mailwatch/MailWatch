@@ -33,7 +33,7 @@ if ($_SESSION['user_type'] != 'A') {
     audit_log('Non-admin user attempted to view MailScanner Rule Editor Page');
 } else {
     // add the header information such as the logo, search, menu, ....
-    $pageheader = "Edit MailScanner Ruleset " . $_GET["file"];
+    $pageheader = "Edit MailScanner Ruleset " . sanitizeInput($_GET["file"]);
     $filter = html_start($pageheader, 0, false, false);
 
     // ############################
@@ -61,7 +61,7 @@ if ($_SESSION['user_type'] != 'A') {
     // ############
 
     // get the filename and put it into some easier to read variables
-    $short_filename = $_GET["file"];
+    $short_filename = sanitizeInput($_GET["file"]);
     $full_filename = MSRE_RULESET_DIR . "/" . $short_filename;
 
     // read the file into a variable, so that each function doesn't

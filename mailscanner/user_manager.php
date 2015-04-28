@@ -244,29 +244,31 @@ if ($_SESSION['user_type'] == 'A') {
                 break;
             case 'filters':
                 $id = sanitizeInput($_GET['id']);
+                $getFilter = sanitizeInput($_GET['filter']);
                 if (isset($_GET['new'])) {
-                    $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . mysql_real_escape_string($id) . "','" . mysql_real_escape_string($_GET['filter']) . "','" . mysql_real_escape_string($_GET['active']) . "')";
+                    $getActive = sanitizeInput($_GET['active']);
+                    $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . mysql_real_escape_string($id) . "','" . mysql_real_escape_string($getFilter) . "','" . mysql_real_escape_string($getActive) . "')";
                     dbquery($sql);
                     if (DEBUG == 'true') {
                         echo $sql;
                     }
                 }
                 if (isset($_GET['delete'])) {
-                    $sql = "DELETE FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($_GET['filter']) . "'";
+                    $sql = "DELETE FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
                     dbquery($sql);
                     if (DEBUG == 'true') {
                         echo $sql;
                     }
                 }
                 if (isset($_GET['change_state'])) {
-                    $sql = "SELECT active FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($_GET['filter']) . "'";
+                    $sql = "SELECT active FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
                     $active = mysql_fetch_row(dbquery($sql));
                     $active = $active[0];
                     if ($active == 'Y') {
-                        $sql = "UPDATE user_filters SET active='N' WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($_GET['filter']) . "'";
+                        $sql = "UPDATE user_filters SET active='N' WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
                         dbquery($sql);
                     } else {
-                        $sql = "UPDATE user_filters SET active='Y' WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($_GET['filter']) . "'";
+                        $sql = "UPDATE user_filters SET active='Y' WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
                         dbquery($sql);
                     }
                 }

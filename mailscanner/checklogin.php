@@ -45,7 +45,8 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = $_POST['myusername'];
     $mypassword = $_POST['mypassword'];
 }
-
+$myusername = sanitizeInput($myusername);
+$mypassword = sanitizeInput($mypassword);
 if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) != null)) {
     $_SESSION['user_ldap'] = '1';
     $myusername = safe_value($result);

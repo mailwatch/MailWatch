@@ -163,7 +163,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die("Unknown action: " . $_GET['action']);
+        die("Unknown action: " . sanitizeInput($_GET['action']));
 }
 
 dbclose();
