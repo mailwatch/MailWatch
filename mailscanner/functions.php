@@ -801,12 +801,7 @@ function sanitizeInput($string) {
 
 function quote_smart($value)
 {
-    dbconn();
-    if (get_magic_quotes_gpc()) {
-        $value = stripslashes($value);
-    }
-    $value = "'" . mysql_real_escape_string($value) . "'";
-    return $value;
+    return "'" . safe_value($value) . "'";
 }
 
 function safe_value($value)
