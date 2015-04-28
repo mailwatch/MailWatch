@@ -64,6 +64,9 @@ ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . 
 @include_once('lib/xmlrpc/xmlrpcs.inc');
 @include_once('lib/xmlrpc/xmlrpc_wrappers.inc');
 
+//HTLMPurifier
+require_once('lib/htmlpurifier/HTMLPurifier.standalone.php');
+
 include "postfix.inc";
 
 /*
@@ -788,6 +791,12 @@ function dbquery($sql)
     }
     $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
     return $result;
+}
+
+function sanitizeInput($string) {
+    $config = HTMLPurifier_Config::createDefault();
+    $purifier = new HTMLPurifier($config);
+    return $purifier->purify($string);
 }
 
 function quote_smart($value)
