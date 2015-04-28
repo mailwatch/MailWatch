@@ -40,7 +40,7 @@ require('login.function.php');
 
 html_start("Quarantine Viewer", 0, false, false);
 
-if (!isset($_GET['dir']) && !isset($_GET["msgdir"])) {
+if (!isset($_GET['dir'])) {
     // Get the top-level list
     if (QUARANTINE_USE_FLAG) {
         // Don't use the database any more - it's too slow on big datasets
@@ -90,7 +90,8 @@ if (!isset($_GET['dir']) && !isset($_GET["msgdir"])) {
 } else {
     if (QUARANTINE_USE_FLAG) {
         dbconn();
-        $date = mysql_real_escape_string(translateQuarantineDate($_GET['dir'], 'sql'));
+        $dir = sanitizeInput($_GET['dir']);
+        $date = mysql_real_escape_string(translateQuarantineDate($dir, 'sql'));
         $sql = "
 SELECT
  id AS id2,
@@ -129,15 +130,15 @@ AND
  quarantined = 1
 ORDER BY
  date DESC, time DESC";
-        db_colorised_table($sql, 'Folder: ' . translateQuarantineDate($_GET['dir'], DATE_FORMAT), true, true);
+        db_colorised_table($sql, 'Folder: ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
-        $_GET['dir'] = preg_replace('[\.|\.\.|\/]', '', $_GET['dir']);
-        $items = quarantine_list($_GET['dir']);
+        $dir = preg_replace('[\.|\.\.|\/]', '', $dir);
+        $items = quarantine_list($dir);
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
             $msg_ids = join($items, ",");
-            $date = mysql_real_escape_string(translateQuarantineDate($_GET['dir'], 'sql'));
+            $date = mysql_real_escape_string(translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
    id AS id2,
@@ -177,7 +178,7 @@ ORDER BY
   ORDER BY
    date DESC, time DESC
   ";
-            db_colorised_table($sql, 'Folder: ' . translateQuarantineDate($_GET['dir']), true, true);
+            db_colorised_table($sql, 'Folder: ' . translateQuarantineDate($dir), true, true);
         } else {
             echo "No quarantined messages found\n";
         }
