@@ -125,7 +125,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' \'' . stripslashes(
                         $val[2]
-                    ) . '\'</td><td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=remove&amp;column=' . $key . '">Remove</a></td></tr>' . "\n";
+                    ) . '\'</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">Remove</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">None</td></tr>' . "\n";
@@ -239,7 +239,7 @@ WHERE
     function DisplayForm()
     {
         // Form
-        $return = '<form action="' . $_SERVER['PHP_SELF'] . '">' . "\n";
+        $return = '<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
 
         // Table
         $return .= '<table width="100%">' . "\n";

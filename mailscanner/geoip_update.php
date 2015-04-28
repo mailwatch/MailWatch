@@ -44,7 +44,7 @@ html_start("GeoIP Database Update", 0, false, false);
 
 if (!isset($_POST['run'])) {
 
-    echo '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">
+    echo '<form method="POST" action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">
 	 <input type="hidden" name="run" value="true">
 	 <table class="boxtable" width="100%">
 	    <tr>

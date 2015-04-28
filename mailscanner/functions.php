@@ -212,7 +212,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
 
     if (isset($_GET['id'])) {
-        $message_id = $_GET['id'];
+        $message_id = sanitizeInput($_GET['id']);
     } else {
         $message_id = " ";
     }

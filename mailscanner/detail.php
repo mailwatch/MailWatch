@@ -41,7 +41,7 @@ session_start();
 // Require the login function code
 require('./login.function.php');
 
-$url_id = $_GET['id'];
+$url_id = sanitizeInput($_GET['id']);
 
 $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
@@ -354,7 +354,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         if (isset($_GET['release'])) {
             // Send to the original recipient(s) or to an alternate address
             if (isset($_GET['alt_recpt_yn']) && ($_GET['alt_recpt_yn'] == "y")) {
-                $to = $_GET['alt_recpt'];
+                $to = sanitizeInput($_GET['alt_recpt']);
                 $to = htmlentities($to);
             } else {
                 $to = $quarantined[0]['to'];
@@ -399,7 +399,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
     } else {
-        echo '<form action="' . $_SERVER['PHP_SELF'] . '" name="quarantine">' . "\n";
+        echo '<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '" name="quarantine">' . "\n";
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th colspan="7">Quarantine</th>' . "\n";
@@ -437,10 +437,8 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
             echo '  <td>' . $item['file'] . '</td>' . "\n";
             echo '  <td>' . $item['type'] . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
-            if (($item['dangerous'] == "N" || $_SESSION['user_type'] == 'A') && preg_match(
-                    '!message/rfc822!',
-                    $item['type']
-                )
+            if (($item['dangerous'] == "N" || $_SESSION['user_type'] == 'A') &&
+                preg_match('!message/rfc822!', $item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
                     substr($item['path'], strlen($quarantinedir) + 1) .
@@ -471,7 +469,6 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo '</form>' . "\n";
     }
 } else {
-
     // Error??
     if (!is_array($quarantined)) {
         echo '<br>' . $quarantined . '';
