@@ -93,11 +93,11 @@ if ($_SESSION['user_type'] == 'A') {
     echo '
    <p>Links</p>
    <ul>
-    <li><a href="http://mailwatch.sourceforge.net">MailWatch for MailScanner</a>
+    <li><a href="http://mailwatch.org">MailWatch for MailScanner</a>
     <li><a href="http://www.mailscanner.info">MailScanner</a>';
 
     if (get_conf_truefalse('UseSpamAssassin')) {
-        echo '<li><a href="http://www.spamassassin.org">SpamAssassin</a>';
+        echo '<li><a href="http://spamassassin.apache.org/">SpamAssassin</a>';
     }
 
     if (preg_match('/sophos/i', get_conf_var('VirusScanners'))) {
@@ -105,7 +105,7 @@ if ($_SESSION['user_type'] == 'A') {
     }
 
     if (preg_match('/clam/i', get_conf_var('VirusScanners'))) {
-        echo '<li><a href="http://clamav.sourceforge.net">ClamAV</A>';
+        echo '<li><a href="http://clamav.net">ClamAV</A>';
     }
 
     echo '
