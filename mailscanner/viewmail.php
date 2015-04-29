@@ -198,7 +198,7 @@ foreach ($mime_struct as $key => $part) {
 
             echo "  <td colspan=2 class=\"detail\">" . $part->d_parameters['filename'];
             if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
-                echo ' <a href="viewpart.php?id=' . $message_id . '"&amp;part=' . $part->mime_id . '">Download</a>';
+                echo ' <a href="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }
             echo "  </td>";
 
