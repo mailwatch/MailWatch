@@ -49,7 +49,7 @@ if (!(@include_once('conf.php')) == true) {
     die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
 }
 
-if (SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
+if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] == 'on') {
         header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
         exit;
