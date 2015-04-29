@@ -78,7 +78,7 @@ include "postfix.inc";
  report against.  It defaults to the first scanner found in MailScanner.conf.
 
  Please submit any new regular expressions to the MailWatch mailing-list or
- to me - smf@f2s.com.
+ open an issue on GitHub.
 
  If you are running MailWatch in DISTRIBUTED_MODE or you wish to override the
  selection of the regular expression - you will need to add one of the following
