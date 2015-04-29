@@ -1728,6 +1728,17 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             $row[$f] = trim_output($row[$f], FROMTO_MAXLEN);
                         }
                         break;
+                    case 'clientip':
+                        $clientip = $row[$f];
+                        if (net_match('10.0.0.0/8', $clientip) || net_match('172.16.0.0/12',
+                                $clientip) || net_match('192.168.0.0/16', $clientip)
+                        ) {
+                            $host = 'Internal Network';
+                        } elseif (($host = gethostbyaddr($clientip)) == $clientip) {
+                            $host = 'Unknown';
+                        }
+                        $row[$f] .= " ($host)";
+                        break;
                     case 'to_address':
                         $row[$f] = htmlentities($row[$f]);
                         if (FROMTO_MAXLEN > 0) {
@@ -3122,10 +3133,10 @@ function is_rpc_client_allowed()
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ($client == 'allprivate' && (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) || net_match(
-                        '172.16.0.0/12',
-                        $_SERVER['SERVER_ADDR']
-                    ) || net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
+            if ($client == 'allprivate' &&
+                (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) ||
+                    net_match('172.16.0.0/12', $_SERVER['SERVER_ADDR']) ||
+                    net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
             ) {
                 return true;
             }
