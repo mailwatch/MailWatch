@@ -1450,7 +1450,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
 
@@ -1459,20 +1459,20 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
     }
 
     if ($rows > 0) {
-        if ($operations != false) {
+        if ($operations !== false) {
             // Start form for operations
             echo '<form name="operations" action="./do_message_ops.php" method="POST">' . "\n";
         }
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         // Work out which columns to display
         for ($f = 0; $f < $fields; $f++) {
-            if ($f == 0 and $operations != false) {
+            if ($f == 0 && $operations !== false) {
                 // Set up display for operations form elements
                 $display[$f] = true;
                 $orderable[$f] = false;
@@ -1485,7 +1485,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $orderable[$f] = true;
             $align[$f] = false;
             // Set up the mysql column to account for operations
-            if ($operations != false) {
+            if ($operations !== false) {
                 $colnum = $f - 1;
             } else {
                 $colnum = $f;
@@ -1655,7 +1655,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             if ($display[$f]) {
                 if ($order && $orderable[$f]) {
                     // Set up the mysql column to account for operations
-                    if ($operations != false) {
+                    if ($operations !== false) {
                         $colnum = $f - 1;
                     } else {
                         $colnum = $f;
@@ -1682,7 +1682,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
             $row = mysql_fetch_row($sth);
-            if ($operations != false) {
+            if ($operations !== false) {
                 // Prepend operations elements - later on, replace REPLACEME w/ message id
                 array_unshift(
                     $row,
@@ -1700,7 +1700,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $mcp = false;
             $highmcp = false;
             for ($f = 0; $f < $fields; $f++) {
-                if ($operations != false) {
+                if ($operations !== false) {
                     if ($f == 0) {
                         // Skip the first field if it is operations
                         continue;
@@ -1854,7 +1854,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 }
             }
             // Now add the id to the operations form elements
-            if ($operations != false) {
+            if ($operations !== false) {
                 $row[0] = str_replace("REPLACEME", $id, $row[0]);
                 $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
                 $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
@@ -1904,7 +1904,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '</table>' . "\n";
         // Javascript function to clear radio buttons
-        if ($operations != false) {
+        if ($operations !== false) {
             echo "
 <script type='text/javascript'>
     function ClearRadios() {
@@ -2066,7 +2066,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
 
@@ -2075,7 +2075,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         $rows = mysql_num_rows($sth);
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
-        if ($operations != false) {
+        if ($operations !== false) {
             $fields++;
         }
     }
