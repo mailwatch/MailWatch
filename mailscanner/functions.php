@@ -232,7 +232,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="./index.php"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
