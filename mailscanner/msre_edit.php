@@ -33,7 +33,8 @@ if ($_SESSION['user_type'] != 'A') {
     audit_log('Non-admin user attempted to view MailScanner Rule Editor Page');
 } else {
     // add the header information such as the logo, search, menu, ....
-    $pageheader = "Edit MailScanner Ruleset " . sanitizeInput($_GET["file"]);
+    $short_filename = basename(sanitizeInput($_GET["file"]));
+    $pageheader = "Edit MailScanner Ruleset " . $short_filename;
     $filter = html_start($pageheader, 0, false, false);
 
     // ############################
@@ -61,8 +62,11 @@ if ($_SESSION['user_type'] != 'A') {
     // ############
 
     // get the filename and put it into some easier to read variables
-    $short_filename = sanitizeInput($_GET["file"]);
     $full_filename = MSRE_RULESET_DIR . "/" . $short_filename;
+
+    if (!file_exists($full_filename)) {
+        die("File not found: " . $full_filename);
+    }
 
     // read the file into a variable, so that each function doesn't
     // need to do it themselves
@@ -687,7 +691,8 @@ function Process_Form()
     */
 
     // mmmkay, now we should be able to write the new file
-    $filename = MSRE_RULESET_DIR . "/" . $_GET["file"];
+    $getFile = basename(sanitizeInput($_GET["file"]));
+    $filename = MSRE_RULESET_DIR . "/" . $getFile;
     list ($bytes, $status_msg) = Write_File($filename, $new_file);
 
     // schedule a reload of mailscanner's stuff. We can't do an immediate
