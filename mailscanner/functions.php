@@ -178,6 +178,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
         header("Pragma: cache");
     }
+    //security headers
+    header('X-XSS-Protection: 1; mode=block');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+
     page_creation_timer();
     echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
     echo '<html>' . "\n";
