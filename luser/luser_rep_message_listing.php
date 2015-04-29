@@ -20,8 +20,7 @@
 
 require_once('../functions.php');
 require_once('./luser_functions.php');
-require_once('DB.php');
-require_once('DB/Pager.php');
+require_once('Pager.php');
 require_once('../filter.inc');
 session_start();
 //authenticate();
