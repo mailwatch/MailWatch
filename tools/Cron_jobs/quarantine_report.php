@@ -82,7 +82,7 @@ if ($required_constant_missing_count == 0) {
     ** HTML Template
     */
 
-    $html = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" http://www.w3.org/TR/html4/loose.dtd>
+    $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
  <title>Message Quarantine Report</title>
@@ -95,10 +95,10 @@ if ($required_constant_missing_count == 0) {
  -->
  </style>
 </head>
-<body marginheight="5" marginwidth="5" topmargin="0" leftmargin="0">
+<body style="margin: 5px;">
 
 <!-- Outer table -->
-<table width=100%% border="0">
+<table width="100%%" border="0">
  <tr>
   <td><img src="mailwatch-logo.png"/></td>
   <td align="center" valign="middle">
@@ -107,7 +107,7 @@ if ($required_constant_missing_count == 0) {
   </td>
  </tr>
  <tr>
-  <td colspan=2>%s</td>
+  <td colspan="2">%s</td>
  </tr>
 </table>
 </body>
@@ -115,23 +115,23 @@ if ($required_constant_missing_count == 0) {
 
     $html_table = '<table width="100%%" border="0">
  <tr>
-  <td bgcolor="#F7CE4A"><b>Received</b></td>
-  <td bgcolor="#F7CE4A"><b>To</b></td>
-  <td bgcolor="#F7CE4A"><b>From</b></td>
-  <td bgcolor="#F7CE4A"><b>Subject</b></td>
-  <td bgcolor="#F7CE4A"><b>Reason</b></td>
-  <td bgcolor="#F7CE4A"><b>Action</b></td>
+  <td style="background-color: #F7CE4A"><b>Received</b></td>
+  <td style="background-color: #F7CE4A"><b>To</b></td>
+  <td style="background-color: #F7CE4A"><b>From</b></td>
+  <td style="background-color: #F7CE4A"><b>Subject</b></td>
+  <td style="background-color: #F7CE4A"><b>Reason</b></td>
+  <td style="background-color: #F7CE4A"><b>Action</b></td>
  </tr>
 %s
 </table>';
 
     $html_content = ' <tr>
-  <td bgcolor="#EBEBEB">%s</td>
-  <td bgcolor="#EBEBEB">%s</td>
-  <td bgcolor="#EBEBEB">%s</td>
-  <td bgcolor="#EBEBEB">%s</td>
-  <td bgcolor="#EBEBEB">%s</td>
-  <td bgcolor="#EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
  </tr>
 ';
 
