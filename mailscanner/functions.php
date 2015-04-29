@@ -45,9 +45,10 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
 }
 
 // Read in MailWatch configuration file
-if (!(@include_once('conf.php')) == true) {
+if (!is_readable(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php')) {
     die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
 }
+require_once(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php');
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] == 'on') {
@@ -60,9 +61,9 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
 
 // XML-RPC
-@include_once('lib/xmlrpc/xmlrpc.inc');
-@include_once('lib/xmlrpc/xmlrpcs.inc');
-@include_once('lib/xmlrpc/xmlrpc_wrappers.inc');
+require_once('lib/xmlrpc/xmlrpc.inc');
+require_once('lib/xmlrpc/xmlrpcs.inc');
+require_once('lib/xmlrpc/xmlrpc_wrappers.inc');
 
 //HTLMPurifier
 require_once('lib/htmlpurifier/HTMLPurifier.standalone.php');
