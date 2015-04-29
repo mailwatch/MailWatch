@@ -179,7 +179,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         header("Pragma: cache");
     }
     page_creation_timer();
-    echo '<!doctype html public "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">' . "\n";
+    echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
     echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
