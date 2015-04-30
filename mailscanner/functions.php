@@ -336,69 +336,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         // drive display
         if ($_SESSION['user_type'] == 'A') {
             echo '    <tr><td colspan="3" class="heading" align="center">Free Drive Space</td></tr>' . "\n";
-            function formatSize($size, $precision = 2)
-            {
-                $base = log($size) / log(1024);
-                $suffixes = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-
-                return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
-            }
-
-            function get_disks()
-            {
-                $disks = array();
-                if (php_uname('s') == 'Windows NT') {
-                    // windows
-                    $disks = `fsutil fsinfo drives`;
-                    $disks = str_word_count($disks, 1);
-                    //TODO: won't work on non english installation, we need to find an universal command
-                    if ($disks[0] != 'Drives') {
-                        return '';
-                    }
-                    unset($disks[0]);
-                    foreach ($disks as $key => $disk) {
-                        $disks[]['mountpoint'] = $disk . ':\\';
-                    }
-                } else {
-                    // unix
-                    /*
-                     * Using /proc/mounts as it seem to be standard on unix
-                     *
-                     * http://unix.stackexchange.com/a/24230/33366
-                     * http://unix.stackexchange.com/a/12086/33366
-                     */
-                    $temp_drive = array();
-                    if (is_file('/proc/mounts')) {
-                        $mounted_fs = file("/proc/mounts");
-                        foreach ($mounted_fs as $fs_row) {
-                            $drive = preg_split("/[\s]+/", $fs_row);
-                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
-                                $temp_drive['device'] = $drive[0];
-                                $temp_drive['mountpoint'] = $drive[1];
-                                $disks[] = $temp_drive;
-                                unset($temp_drive);
-                            }
-                            // TODO: list nfs mount (and other relevant fs type) in $disks[]
-                        }
-                    } else {
-                        // fallback to mount command
-                        $data = `mount`;
-                        $data = explode("\n", $data);
-                        foreach ($data as $disk) {
-                            $drive = preg_split("/[\s]+/", $disk);
-                            if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[2], '/chroot/') === false)) {
-                                $temp_drive['device'] = $drive[0];
-                                $temp_drive['mountpoint'] = $drive[2];
-                                $disks[] = $temp_drive;
-                                unset($temp_drive);
-                            }
-                        }
-                    }
-                }
-
-                return $disks;
-            }
-
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
                 $total_space = disk_total_space($disk['mountpoint']);
@@ -413,8 +350,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 $percent .= '</span>';
                 echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
             }
-
-
         }
         echo '  </table>' . "\n";
         echo '  </td>' . "\n";
@@ -1013,6 +948,69 @@ AND
     } else {
         return "None";
     }
+}
+
+function get_disks()
+{
+    $disks = array();
+    if (php_uname('s') == 'Windows NT') {
+        // windows
+        $disks = `fsutil fsinfo drives`;
+        $disks = str_word_count($disks, 1);
+        //TODO: won't work on non english installation, we need to find an universal command
+        if ($disks[0] != 'Drives') {
+            return '';
+        }
+        unset($disks[0]);
+        foreach ($disks as $key => $disk) {
+            $disks[]['mountpoint'] = $disk . ':\\';
+        }
+    } else {
+        // unix
+        /*
+         * Using /proc/mounts as it seem to be standard on unix
+         *
+         * http://unix.stackexchange.com/a/24230/33366
+         * http://unix.stackexchange.com/a/12086/33366
+         */
+        $temp_drive = array();
+        if (is_file('/proc/mounts')) {
+            $mounted_fs = file("/proc/mounts");
+            foreach ($mounted_fs as $fs_row) {
+                $drive = preg_split("/[\s]+/", $fs_row);
+                if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
+                    $temp_drive['device'] = $drive[0];
+                    $temp_drive['mountpoint'] = $drive[1];
+                    $disks[] = $temp_drive;
+                    unset($temp_drive);
+                }
+                // TODO: list nfs mount (and other relevant fs type) in $disks[]
+            }
+        } else {
+            // fallback to mount command
+            $data = `mount`;
+            $data = explode("\n", $data);
+            foreach ($data as $disk) {
+                $drive = preg_split("/[\s]+/", $disk);
+                if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[2], '/chroot/') === false)) {
+                    $temp_drive['device'] = $drive[0];
+                    $temp_drive['mountpoint'] = $drive[2];
+                    $disks[] = $temp_drive;
+                    unset($temp_drive);
+                }
+            }
+        }
+    }
+
+    return $disks;
+}
+
+function formatSize($size, $precision = 2)
+{
+    $base = log($size) / log(1024);
+    $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
+
+    return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
 
 function format_mail_size($size_in_bytes, $decimal_places = 1)
