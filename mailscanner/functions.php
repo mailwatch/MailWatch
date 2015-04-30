@@ -159,6 +159,10 @@ if (!defined('VIRUS_REGEX')) {
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
+function mailwatch_version()
+{
+    return ("1.2.0 - Beta 8");
+}
 
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
@@ -3210,9 +3214,4 @@ function clear_cache_dir()
             }
         }
     }
-}
-
-function mailwatch_version()
-{
-    return ("1.2.0 - Beta 8 DEV");
 }
