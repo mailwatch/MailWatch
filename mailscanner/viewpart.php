@@ -157,7 +157,7 @@ function decode_structure($structure)
         case "multipart/alternative":
             break;
         default:
-            header("Content-type: " . $structure->headers['content-type']);
+            header("Content-Type: " . $structure->headers['content-type']);
             header("Content-Disposition: " . $structure->headers['content-disposition']);
             echo $structure->body;
             break;
