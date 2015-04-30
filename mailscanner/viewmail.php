@@ -195,8 +195,19 @@ foreach ($mime_struct as $key => $part) {
             break;
         default:
             echo " <tr>\n";
-
-            echo "  <td colspan=2 class=\"detail\">" . $part->d_parameters['filename'];
+            echo "  <td colspan=2 class=\"detail\">";
+            if (property_exists($part, 'd_parameters')) {
+                if (isset($part->d_parameters['filename'])) {
+                    echo $part->d_parameters['filename'];
+                } else {
+                    echo 'Attachment without name';
+                }
+                if (isset($part->d_parameters['size'])) {
+                    echo '&nbsp;(size ' . formatSize($part->d_parameters['size']) . ')';
+                }
+            } else {
+                echo 'Attachment without name';
+            }
             if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
                 echo ' <a href="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }
