@@ -115,6 +115,9 @@ if (mysql_num_rows($result) == 0) {
     audit_log('Viewed message detail (id=' . $url_id . ')');
 }
 
+// Check if MCP is enabled
+$is_MCP_enabled = get_conf_truefalse('mcpchecks');
+
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
     $listurl = "lists.php?host=" . $row['Received from:'] . "&amp;from=" . $row['From:'] . "&amp;to=" . $row['To:'];
@@ -251,8 +254,20 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     get_conf_var("HighScoringSpamActions")
                 );
         }
-        if ($fieldn == "MCP Report:") {
-            $row[$f] = format_mcp_report($row[$f]);
+
+        if ( $is_MCP_enabled=== true) {
+            if ($fieldn == "MCP Report:") {
+                $row[$f] = format_mcp_report($row[$f]);
+            }
+        }
+
+        if ($is_MCP_enabled !== true) {
+            if (mysql_field_name($result, $f) == 'HEADER' && strpos($row[$f], 'MCP') !== false) {
+                continue;
+            }
+            if (strpos(mysql_field_name($result, $f), 'MCP') !== false) {
+                continue;
+            }
         }
         // Handle dummy header fields
         if (mysql_field_name($result, $f) == 'HEADER') {

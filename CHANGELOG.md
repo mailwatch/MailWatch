@@ -3,6 +3,7 @@
  - Correct unexpected behaviour in viewpart.php if one or more headers are not set
  - Refactor message part viewer
  - Sanitize user input
+ - Hide MCP-related fields if MCP is not enabled in MailScanner
 
 1.2.0 - Beta 7
 -----------
