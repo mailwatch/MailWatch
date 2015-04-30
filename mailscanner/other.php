@@ -49,46 +49,44 @@ echo '<table width="100%" class="boxtable">
    <ul>';
 
 echo '<li><a href="user_manager.php">User Management</a>';
-
-if (preg_match('/sophos/i', get_conf_var('VirusScanners')) && $_SESSION['user_type'] == 'A') {
-    echo '<li><a href="sophos_status.php">Sophos Status</a>';
-}
-if (preg_match('/f-secure/i', get_conf_var('VirusScanners')) && $_SESSION['user_type'] == 'A') {
-    echo '<li><a href="f-secure_status.php">F-Secure Status</a>';
-}
-if (preg_match('/clam/i', get_conf_var('VirusScanners')) && $_SESSION['user_type'] == 'A') {
-    echo '<li><a href="clamav_status.php">ClamAV Status</a>';
-}
-if (preg_match('/mcafee/i', get_conf_var('VirusScanners')) && $_SESSION['user_type'] == 'A') {
-    echo '<li><a href="mcafee_status.php">McAfee Status</a>';
-}
-if (preg_match('/f-prot/i', get_conf_var('VirusScanners')) && $_SESSION['user_type'] == 'A') {
-    echo '<li><a href="f-prot_status.php">F-Prot Status</a>';
-}
 if ($_SESSION['user_type'] == 'A') {
+    $virusScanner = get_conf_var('VirusScanners');
+    if (preg_match('/sophos/i', $virusScanner)) {
+        echo '<li><a href="sophos_status.php">Sophos Status</a>';
+    }
+    if (preg_match('/f-secure/i', $virusScanner)) {
+        echo '<li><a href="f-secure_status.php">F-Secure Status</a>';
+    }
+    if (preg_match('/clam/i', $virusScanner)) {
+        echo '<li><a href="clamav_status.php">ClamAV Status</a>';
+    }
+    if (preg_match('/mcafee/i', $virusScanner)) {
+        echo '<li><a href="mcafee_status.php">McAfee Status</a>';
+    }
+    if (preg_match('/f-prot/i', $virusScanner)) {
+        echo '<li><a href="f-prot_status.php">F-Prot Status</a>';
+    }
+
     echo '<li><a href="mysql_status.php">MySQL Database Status</a>';
     echo '<li><a href="msconfig.php">View MailScanner Configuration</a>';
-	if (defined('MSRE') && MSRE) { 
-      echo '<li><a href="msre_index.php">Edit MailScanner Rulesets</a>';
-	}
-}
-if (!DISTRIBUTED_SETUP
-    && !in_array(strtolower(get_conf_var('UseSpamAssassin')), array('0', 'no', false))
-    && $_SESSION['user_type'] == 'A'
-) {
-    echo '
+    if (defined('MSRE') && MSRE === true) {
+        echo '<li><a href="msre_index.php">Edit MailScanner Rulesets</a>';
+    }
+
+    if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') === true) {
+        echo '
      <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
      <li><a href="sa_rules_update.php">Update SpamAssassin Rule Descriptions</a>';
-}
-if (!DISTRIBUTED_SETUP && get_conf_truefalse('MCPChecks') && $_SESSION['user_type'] == 'A') {
-    echo '<li><a href="mcp_rules_update.php">Update MCP Rule Descriptions</a>';
-}
-if ($_SESSION['user_type'] == 'A') {
+    }
+    if (!DISTRIBUTED_SETUP && get_conf_truefalse('MCPChecks') === true) {
+        echo '<li><a href="mcp_rules_update.php">Update MCP Rule Descriptions</a>';
+    }
     echo '<li><a href="geoip_update.php">Update GeoIP Database</a>';
 }
 echo '</ul>';
+
 if ($_SESSION['user_type'] == 'A') {
     echo '
    <p>Links</p>
@@ -100,11 +98,11 @@ if ($_SESSION['user_type'] == 'A') {
         echo '<li><a href="http://spamassassin.apache.org/">SpamAssassin</a>';
     }
 
-    if (preg_match('/sophos/i', get_conf_var('VirusScanners'))) {
+    if (preg_match('/sophos/i', $virusScanner)) {
         echo '<li><a href="http://www.sophos.com">Sophos</a>';
     }
 
-    if (preg_match('/clam/i', get_conf_var('VirusScanners'))) {
+    if (preg_match('/clam/i', $virusScanner)) {
         echo '<li><a href="http://clamav.net">ClamAV</A>';
     }
 
