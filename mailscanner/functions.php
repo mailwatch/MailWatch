@@ -161,7 +161,7 @@ if (!defined('VIRUS_REGEX')) {
 ///////////////////////////////////////////////////////////////////////////////
 function mailwatch_version()
 {
-    return ("1.2.0 - Beta 8");
+    return ("1.2.0 - RC1 DEV");
 }
 
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
