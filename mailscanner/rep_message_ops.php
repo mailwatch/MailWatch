@@ -85,7 +85,18 @@ $sql .= "
   maillog
  WHERE
   $flag_sql
-" . $_SESSION["filter"]->CreateSQL() . "
+" . $_SESSION["filter"]->CreateSQL();
+
+// Hide high spam/mcp from regular users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U') {
+  $sql .= "
+    AND
+     ishighspam=0
+    AND
+     ishighmcp=0";
+}
+
+$sql .= "
  ORDER BY
   date DESC, time DESC
 ";

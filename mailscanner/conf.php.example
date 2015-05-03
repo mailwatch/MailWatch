@@ -220,3 +220,7 @@ define('MSRE_RULESET_DIR', "/etc/MailScanner/rules");
 // Spamassassin sa-learn max message size (Spamassassin Version >= 3.4.0)
 // Size is in bytes
 define('SA_MAXSIZE', 0);
+
+// Hide High Spam and high mcp from regular users
+// Prevent regular users from seeing high spam and high mcp
+define('HIDE_HIGH_SPAM', false);

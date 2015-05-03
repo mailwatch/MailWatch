@@ -78,6 +78,15 @@ $sql .= "
  WHERE
 " . $_SESSION['global_filter'];
 
+// Hide high spam/mcp from regular users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U') {
+  $sql .= "
+    AND
+     ishighspam=0
+    AND
+     ishighmcp=0";
+}
+
 // Check if we've passed in a relay that we want to check the headers for, this is from detail.php
 $relay_regex = "";
 if (isset($_GET['relay'])) {
