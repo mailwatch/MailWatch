@@ -45,7 +45,8 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = $_POST['myusername'];
     $mypassword = $_POST['mypassword'];
 }
-
+$myusername = sanitizeInput($myusername);
+$mypassword = sanitizeInput($mypassword);
 if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) != null)) {
     $_SESSION['user_ldap'] = '1';
     $myusername = safe_value($result);
@@ -137,7 +138,7 @@ if ($usercount == 0) {
         $_SESSION['global_array'] = $filter;
         $redirect_url = 'index.php';
         if (isset($_SESSION['REQUEST_URI'])) {
-            $redirect_url = $_SESSION['REQUEST_URI'];
+            $redirect_url = sanitizeInput($_SESSION['REQUEST_URI']);
             unset($_SESSION['REQUEST_URI']);
         }
         header('Location: ' . $redirect_url);

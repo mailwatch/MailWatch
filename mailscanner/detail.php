@@ -41,7 +41,7 @@ session_start();
 // Require the login function code
 require('./login.function.php');
 
-$url_id = $_GET['id'];
+$url_id = sanitizeInput($_GET['id']);
 
 $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
@@ -115,6 +115,9 @@ if (mysql_num_rows($result) == 0) {
     audit_log('Viewed message detail (id=' . $url_id . ')');
 }
 
+// Check if MCP is enabled
+$is_MCP_enabled = get_conf_truefalse('mcpchecks');
+
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
     $listurl = "lists.php?host=" . $row['Received from:'] . "&amp;from=" . $row['From:'] . "&amp;to=" . $row['To:'];
@@ -145,9 +148,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     $output .= ' <tr>' . "\n";
                     $output .= ' <td>' . $relay . '</td>' . "\n";
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-                    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $relay)) {
-                        $relay = current(array_slice(explode(':', $relay), 0, 1));
-                    }
+                    $relay = stripPortFromIp($relay);
                     // Reverse lookup on address. Possibly need to remove it.
                     if (($host = gethostbyaddr($relay)) <> $relay) {
                         $output .= " <td>$host</td>\n";
@@ -253,8 +254,20 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     get_conf_var("HighScoringSpamActions")
                 );
         }
-        if ($fieldn == "MCP Report:") {
-            $row[$f] = format_mcp_report($row[$f]);
+
+        if ( $is_MCP_enabled=== true) {
+            if ($fieldn == "MCP Report:") {
+                $row[$f] = format_mcp_report($row[$f]);
+            }
+        }
+
+        if ($is_MCP_enabled !== true) {
+            if (mysql_field_name($result, $f) == 'HEADER' && strpos($row[$f], 'MCP') !== false) {
+                continue;
+            }
+            if (strpos(mysql_field_name($result, $f), 'MCP') !== false) {
+                continue;
+            }
         }
         // Handle dummy header fields
         if (mysql_field_name($result, $f) == 'HEADER') {
@@ -356,7 +369,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         if (isset($_GET['release'])) {
             // Send to the original recipient(s) or to an alternate address
             if (isset($_GET['alt_recpt_yn']) && ($_GET['alt_recpt_yn'] == "y")) {
-                $to = $_GET['alt_recpt'];
+                $to = sanitizeInput($_GET['alt_recpt']);
                 $to = htmlentities($to);
             } else {
                 $to = $quarantined[0]['to'];
@@ -401,7 +414,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
     } else {
-        echo '<form action="' . $_SERVER['PHP_SELF'] . '" name="quarantine">' . "\n";
+        echo '<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '" name="quarantine">' . "\n";
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th colspan="7">Quarantine</th>' . "\n";
@@ -439,15 +452,12 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
             echo '  <td>' . $item['file'] . '</td>' . "\n";
             echo '  <td>' . $item['type'] . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
-            if (($item['dangerous'] == "N" || $_SESSION['user_type'] == 'A') && preg_match(
-                    '!message/rfc822!',
-                    $item['type']
-                )
+            if (($item['dangerous'] == "N" || $_SESSION['user_type'] == 'A') &&
+                preg_match('!message/rfc822!', $item['type'])
             ) {
-                echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '&amp;filename=' . substr(
-                        $item['path'],
-                        strlen($quarantinedir) + 1
-                    ) . '">' . substr($item['path'], strlen($quarantinedir) + 1) . '</a></td>' . "\n";
+                echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
+                    substr($item['path'], strlen($quarantinedir) + 1) .
+                    '</a></td>' . "\n";
             } else {
                 echo "  <td>" . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
             }
@@ -474,7 +484,6 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo '</form>' . "\n";
     }
 } else {
-
     // Error??
     if (!is_array($quarantined)) {
         echo '<br>' . $quarantined . '';

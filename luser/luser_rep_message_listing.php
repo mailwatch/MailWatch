@@ -20,8 +20,7 @@
 
 require_once('../functions.php');
 require_once('./luser_functions.php');
-require_once('DB.php');
-require_once('DB/Pager.php');
+require_once('Pager.php');
 require_once('../filter.inc');
 session_start();
 //authenticate();
@@ -91,7 +90,7 @@ echo " <THEAD>\n";
 // Previous page link
 // tgf - Don't show a Prev link on the first page.
 if ($data['current'] != '1') {
-    printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">&lt;&lt;Prev</A></TH>', $_SERVER['PHP_SELF'], $data['prev']);
+    printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">&lt;&lt;Prev</A></TH>', sanitizeInput($_SERVER['PHP_SELF']), $data['prev']);
 } else {
     printf('<TH ALIGN="CENTER">&nbsp;</TH>');
 }
@@ -101,7 +100,7 @@ echo "  <TH COLSPAN=6>Showing records " . $data['from'] . " to " . $data['to'] .
 // Next page link
 // tgf - Don't show a Next link on the last page.
 if ($data['current'] != $data['numpages']) {
-    printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TH>', $_SERVER['PHP_SELF'], $data['next']);
+    printf('<TH ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TH>', sanitizeInput($_SERVER['PHP_SELF']), $data['next']);
 } else {
     printf('<TH ALIGN="CENTER">&nbsp;</TH>');
 }
@@ -182,7 +181,7 @@ echo "  <TABLE WIDTH=100% BORDER=0><TR>\n";
 if ($data['current'] != '1') {
     printf(
         '<TD ALIGN="CENTER"><A HREF="%s?offset=%d">&lt;&lt;Prev</A></TD><TD ALIGN="CENTER">',
-        $_SERVER['PHP_SELF'],
+        sanitizeInput($_SERVER['PHP_SELF']),
         $data['prev']
     );
 } else {
@@ -192,7 +191,7 @@ if ($data['current'] != '1') {
 // Links to each page
 foreach ($data['pages'] as $page => $start) {
     if ($data['current'] != $page) {
-        printf('<A HREF="%s?offset=%d">%s</A> ', $_SERVER['PHP_SELF'], $start, $page);
+        printf('<A HREF="%s?offset=%d">%s</A> ', sanitizeInput($_SERVER['PHP_SELF']), $start, $page);
     } else {
         printf('%s ', $page);
     }
@@ -201,7 +200,7 @@ foreach ($data['pages'] as $page => $start) {
 // Next page link
 // tgf - Don't show a Next link on the last page.
 if ($data['current'] != $data['numpages']) {
-    printf('</TD><TD ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TD>', $_SERVER['PHP_SELF'], $data['next']);
+    printf('</TD><TD ALIGN="CENTER"><A HREF="%s?offset=%d">Next&gt;&gt;</A></TD>', sanitizeInput($_SERVER['PHP_SELF']), $data['next']);
 } else {
     printf('</TD><TD ALIGN="CENTER">&nbsp;</TD>');
 }

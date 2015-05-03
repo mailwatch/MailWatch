@@ -75,9 +75,6 @@ foreach ($scanners as $vscanner) {
             $scanner[$vscanner]['regexp'] = "/(.+) Infection: (\S+)/";
             break;
         case("mcafee"):
-            $scanner[$vscanner]['name'] = "McAfee";
-            $scanner[$vscanner]['regexp'] = "/(.+) Found the (\S+) (trojan|virus) !!!/";
-            break;
         case("mcafee6"):
             $scanner[$vscanner]['name'] = "McAfee";
             $scanner[$vscanner]['regexp'] = "/(.+) Found the (\S+) (trojan|virus) !!!/";

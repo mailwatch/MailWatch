@@ -45,7 +45,11 @@ if ($_SESSION['user_type'] != 'A') {
 
     // limit accessible files to the ones in MailScanner etc directory
     $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));
-    $FilePath = realpath($_GET['file']);
+    if (!isset($_GET['file'])) {
+        $FilePath = false;
+    } else {
+        $FilePath = realpath(sanitizeInput($_GET['file']));
+    }
 
     if ($FilePath === false || strpos($FilePath, $MailscannerEtcDir) !== 0) {
         //Directory Traversal
@@ -71,8 +75,6 @@ if ($_SESSION['user_type'] != 'A') {
         }
         echo '</pre></td></tr>' . "\n";
         echo '</table>' . "\n";
-
-
     }
     // Add the footer
     html_end();

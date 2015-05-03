@@ -40,35 +40,35 @@ require('./login.function.php');
 
 html_start("Whitelist/Blacklist", 0, false, false);
 
-$url_type = (isset($_GET['type']) ? $_GET['type'] : '');
+$url_type = (isset($_GET['type']) ? sanitizeInput($_GET['type']) : '');
 $url_type = htmlentities($url_type);
 $url_type = safe_value($url_type);
 
-$url_to = (isset($_GET['to']) ? $_GET['to'] : '');
+$url_to = (isset($_GET['to']) ? sanitizeInput($_GET['to']) : '');
 $url_to = htmlentities($url_to);
 $url_to = safe_value($url_to);
 
-$url_host = (isset($_GET['host']) ? $_GET['host'] : '');
+$url_host = (isset($_GET['host']) ? sanitizeInput($_GET['host']) : '');
 $url_host = htmlentities($url_host);
 $url_host = safe_value($url_host);
 
-$url_from = (isset($_GET['from']) ? $_GET['from'] : '');
+$url_from = (isset($_GET['from']) ? sanitizeInput($_GET['from']) : '');
 $url_from = htmlentities($url_from);
 $url_from = safe_value($url_from);
 
-$url_submit = (isset($_GET['submit']) ? $_GET['submit'] : '');
+$url_submit = (isset($_GET['submit']) ? sanitizeInput($_GET['submit']) : '');
 $url_submit = htmlentities($url_submit);
 $url_submit = safe_value($url_submit);
 
-$url_list = (isset($_GET['list']) ? $_GET['list'] : '');
+$url_list = (isset($_GET['list']) ? sanitizeInput($_GET['list']) : '');
 $url_list = htmlentities($url_list);
 $url_list = safe_value($url_list);
 
-$url_domain = (isset($_GET['domain']) ? $_GET['domain'] : '');
+$url_domain = (isset($_GET['domain']) ? sanitizeInput($_GET['domain']) : '');
 $url_domain = htmlentities($url_domain);
 $url_domain = safe_value($url_domain);
 
-$url_id = (isset($_GET['id']) ? $_GET['id'] : '');
+$url_id = (isset($_GET['id']) ? sanitizeInput($_GET['id']) : '');
 $url_id = htmlentities($url_id);
 $url_id = safe_value($url_id);
 
@@ -247,7 +247,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . $_SERVER['PHP_SELF'] . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -257,7 +257,7 @@ function build_table($sql, $list)
 }
 
 echo '
-<form action="' . $_SERVER['PHP_SELF'] . '">
+<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">
 <table cellspacing="1" class="mail">
  <tr>
   <th colspan=2>Add to Whitelist/Blacklist</th>

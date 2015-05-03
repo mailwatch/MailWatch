@@ -262,6 +262,11 @@ A:hover {
     color:#FFF;
 }
 
+A.logo {
+    color: transparent;
+    background-color: transparent;
+}
+
 TABLE.boxtable TR {
     /*border-collapse: collapse;*/
     border-bottom:1px solid #000;

@@ -24,7 +24,7 @@
 
 // Who should password change messages appear to come from?
 // Don't forget to whitelist this address.
-define(LUSER_PASSCHANGEFROM, 'password_change@yourdomain.com');
+define('LUSER_PASSCHANGEFROM', 'password_change@yourdomain.com');
 
 // Which domains do we serve?  This list should include any
 // domain that you want "lusers" to be able to use this
@@ -72,7 +72,7 @@ function luser_create($user, $pass)
     // Make sure no one can do bad stuff with our sql.
     if (!lusername_sanitycheck($user)) {
         echo "Error: That username is not allowed - failed sanitycheck.\n<br>\n";
-        echo "Error: Username supplied was: $user\n<br>\n";
+        echo "Error: Username supplied was: " . sanitizeInput($user) . "\n<br>\n";
         return false;
     }
 
@@ -125,7 +125,7 @@ function luser_newpass($user, $pass)
     // Make sure no one can do bad stuff with our sql.
     if (!lusername_sanitycheck($user)) {
         echo "Error: That username is not allowed - failed sanitycheck.\n<br>\n";
-        echo "Error: Username supplied was: $user\n";
+        echo "Error: Username supplied was: " . sanitizeInput($user) . "\n";
         return false;
     }
 
@@ -136,12 +136,11 @@ function luser_newpass($user, $pass)
             if (luser_sendpass($user, $pass)) {
                 // Sent the password.
                 // echo "Yay!\n";
-                ;
-            } else {
-                // Failed to email the password for some reason
-                echo "Error: Sending password failed.\n";
+                return true;
             }
-            return true;
+            // Failed to email the password for some reason
+            echo "Error: Sending password failed.\n";
+            return false;
         } else {
             echo "Error: User doesn't exist, but and I'm unable to create it.\n<br>\n";
             return false;
@@ -179,7 +178,7 @@ function luser_sendpass($user, $pass)
     $message = "Your new password for MailWatch is:\n\n";
     $message .= "\tUsername: $user\n\tPassword: $pass\n\n";
     $message .= "You may use this information to log into the system here:\n";
-    $message .= "http://relay.public.herff-jones.com/" . $_SERVER['PHP_SELF'];
+    $message .= "http://relay.public.herff-jones.com/" . sanitizeInput($_SERVER['PHP_SELF']);
     $message .= "\n\nPlease save this message securely for future reference.\n";
 
     if (
@@ -278,7 +277,7 @@ function lusername_sanitycheck($lusername)
         ++$i;
     }
     if (!$sane) {
-        echo "Error: ($i, $domaincount, $valid_domains) Email domain ($domain) is not one handled by this sytem.\n<br>\n";
+        echo "Error: ($i, $domaincount, $valid_domains) Email domain ($domain) is not one handled by this system.\n<br>\n";
         return false;
     }
 
@@ -384,7 +383,7 @@ function luser_html_start($title, $refresh = 0, $cacheable = true)
     ?>
     <HTML>
     <HEAD>
-        <TITLE>MailWatch for MailScanner - <?= $title ?></TITLE>
+        <TITLE>MailWatch for MailScanner - <?php echo $title; ?></TITLE>
         <LINK REL="StyleSheet" TYPE="text/css" HREF="../style.css">
         <?php
         if ($refresh > 0) {

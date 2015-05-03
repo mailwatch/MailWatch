@@ -42,7 +42,7 @@ if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
     exit;
 } elseif (!isset($_SESSION['myusername'])) {
     if (isset($_SERVER['REQUEST_URI'])) {
-        $_SESSION['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
+        $_SESSION['REQUEST_URI'] = sanitizeInput($_SERVER['REQUEST_URI']);
     }
     header("Location: login.php");
     exit;

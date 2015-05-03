@@ -52,7 +52,7 @@ if ($_SESSION['user_type'] != 'A') {
     echo "</tr>";
     echo " <tr>";
     echo "  <td align=\"center\">
-    <form method=\"post\" action=\"" . $_SERVER['PHP_SELF'] . "\">
+    <form method=\"post\" action=\"" . sanitizeInput($_SERVER['PHP_SELF']) . "\">
     <div style=\"margin: 5px\">
     <input type=\"submit\" value=\"run now\">
     <input type=\"hidden\" name=\"run\" value=\"true\">

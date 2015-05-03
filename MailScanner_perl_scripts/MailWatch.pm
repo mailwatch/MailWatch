@@ -109,6 +109,7 @@ my($db_pass) = 'mailwatch';
      alarm $timeout;
      # Make sure we"re only receiving local connections
      if ($dotted_quad ne "127.0.0.1") {
+        MailScanner::Log::WarnLog("Error: unexpected connection from %s", $dotted_quad);
         close CLIENT;
         next;
      }

@@ -81,22 +81,19 @@ function simple_html_result($status)
 <?php
 }
 
-switch (false) {
-    case (isset($_GET['id'])):
-        die("Error: No Message ID");
-    case (isset($_GET['action'])):
-        die("Error: No action");
+if (!isset($_GET['id'])) {
+    die("Error: No Message ID");
+}
+if (!isset($_GET['action'])) {
+    die("Error: No action");
 }
 
-
-$list = quarantine_list_items($_GET['id']);
+$list = quarantine_list_items(sanitizeInput($_GET['id']));
 if (count($list) == 0) {
     die("Error: Message not found in quarantine");
 }
 
-
 switch ($_GET['action']) {
-
     case 'release':
         $result = '';
         if (count($list) == 1) {
@@ -134,7 +131,7 @@ switch ($_GET['action']) {
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="<?php echo $_SERVER['PHP_SELF']; ?>?id=<?php echo $_GET['id']; ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
+                                        <a href="<?php echo sanitizeInput($_SERVER['PHP_SELF']); ?>?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
                                         &nbsp;&nbsp;
                                         <a href="javascript:void(0)" onClick="javascript:window.close()">No</a>
                                     </td>
@@ -166,7 +163,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die("Unknown action: " . $_GET['action']);
+        die("Unknown action: " . sanitizeInput($_GET['action']));
 }
 
 dbclose();
