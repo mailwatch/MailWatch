@@ -219,4 +219,4 @@ define('MSRE_RULESET_DIR', "/etc/MailScanner/rules");
 
 // Spamassassin sa-learn max message size (Spamassassin Version >= 3.4.0)
 // Size is in bytes
-define('SA_MAXSIZE', '');
+define('SA_MAXSIZE', 0);
