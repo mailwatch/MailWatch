@@ -127,7 +127,18 @@ WHERE
 AND
  date = '$date'
 AND
- quarantined = 1
+ quarantined = 1";
+ 
+// Hide high spam/mcp from regular users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U') {
+  $sql .= "
+    AND
+     ishighspam=0
+    AND
+     ishighmcp=0";
+}
+ 
+$sql .= " 
 ORDER BY
  date DESC, time DESC";
         db_colorised_table($sql, 'Folder: ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
@@ -174,7 +185,18 @@ ORDER BY
   AND
    date = '$date'
   AND
-   BINARY id IN ($msg_ids)
+   BINARY id IN ($msg_ids)";
+
+// Hide high spam/mcp from regular users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U') {
+  $sql .= "
+    AND
+     ishighspam=0
+    AND
+     ishighmcp=0";
+}
+   
+$sql .= "  
   ORDER BY
    date DESC, time DESC
   ";
