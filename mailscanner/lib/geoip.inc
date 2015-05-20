@@ -1532,7 +1532,7 @@ function geoip_open($filename, $flags)
     if ($gi->flags & GEOIP_SHARED_MEMORY) {
         $gi->shmid = @shmop_open(GEOIP_SHM_KEY, "a", 0, 0);
     } else {
-        $gi->filehandle = fopen($filename, "rb") or die("Can not open $filename\n");
+        $gi->filehandle = fopen($filename, "rb") or trigger_error("GeoIP API: Can not open $filename\n", E_USER_ERROR);
         if ($gi->flags & GEOIP_MEMORY_CACHE) {
             $s_array = fstat($gi->filehandle);
             $gi->memory_buffer = fread($gi->filehandle, $s_array['size']);
@@ -1697,7 +1697,7 @@ function _geoip_seek_country_v6($gi, $ipnum)
             );
         } else {
             fseek($gi->filehandle, 2 * $gi->record_length * $offset, SEEK_SET) == 0
-            or die("fseek failed");
+            or trigger_error("GeoIP API: fseek failed", E_USER_ERROR);
             $buf = fread($gi->filehandle, 2 * $gi->record_length);
         }
         $x = array(0, 0);
@@ -1722,7 +1722,7 @@ function _geoip_seek_country_v6($gi, $ipnum)
             $offset = $x[0];
         }
     }
-    trigger_error("error traversing database - perhaps it is corrupt?", E_USER_ERROR);
+    trigger_error("GeoIP API: Error traversing database - perhaps it is corrupt?", E_USER_ERROR);
     return false;
 }
 
@@ -1744,7 +1744,7 @@ function _geoip_seek_country($gi, $ipnum)
             );
         } else {
             fseek($gi->filehandle, 2 * $gi->record_length * $offset, SEEK_SET) == 0
-            or die("fseek failed");
+            or trigger_error("GeoIP API: fseek failed", E_USER_ERROR);
             $buf = fread($gi->filehandle, 2 * $gi->record_length);
         }
         $x = array(0, 0);
@@ -1765,7 +1765,7 @@ function _geoip_seek_country($gi, $ipnum)
             $offset = $x[0];
         }
     }
-    trigger_error("error traversing database - perhaps it is corrupt?", E_USER_ERROR);
+    trigger_error("GeoIP API: Error traversing database - perhaps it is corrupt?", E_USER_ERROR);
     return false;
 }
 
@@ -1848,11 +1848,12 @@ function _get_region($gi, $ipnum)
             $country_code = "CA";
             $region = chr(($seek_region - CANADA_OFFSET) / 26 + 65) . chr(($seek_region - CANADA_OFFSET) % 26 + 65);
         } else {
-            $country_code = $gi->GEOIP_COUNTRY_CODES[($seek_region - WORLD_OFFSET) / FIPS_RANGE];
+            $country_code = $gi->GEOIP_COUNTRY_CODES[(int) (($seek_region - WORLD_OFFSET) / FIPS_RANGE)];
             $region = "";
         }
         return array($country_code, $region);
     }
+    return null;
 }
 
 function geoip_region_by_addr($gi, $addr)
