@@ -60,7 +60,7 @@ Install & Configure MailWatch
 
 # mv mailscanner /var/www/html/
 
-- Check the permissions of /var/www/html/mailscanner/images and /var/www/html/images/cache - they should be ug+rwx and owned by root and in the same group as the web server user (apache on RedHat 9).
+- Check the permissions of /var/www/html/mailscanner/images and /var/www/html/mailscanner/images/cache - they should be ug+rwx and owned by root and in the same group as the web server user (apache on RedHat 9).
 
 # chown root:apache images
 # chmod ug+rwx images
