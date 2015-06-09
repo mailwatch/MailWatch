@@ -2522,14 +2522,14 @@ function return_geoip_country($ip)
     $countryname = false;
     if (strpos($ip, ':') === false) {
         //ipv4
-        if (file_exists('./temp/GeoIP.dat')) {
+        if (file_exists('./temp/GeoIP.dat') && filesize('./temp/GeoIP.dat') > 0) {
             $gi = geoip_open('./temp/GeoIP.dat', GEOIP_STANDARD);
             $countryname = geoip_country_name_by_addr($gi, $ip);
             geoip_close($gi);
         }
     } else {
         //ipv6
-        if (file_exists('./temp/GeoIPv6.dat')) {
+        if (file_exists('./temp/GeoIPv6.dat') && filesize('./temp/GeoIPv6.dat') > 0) {
             $gi = geoip_open('./temp/GeoIPv6.dat', GEOIP_STANDARD);
             $countryname = geoip_country_name_by_addr_v6($gi, $ip);
             geoip_close($gi);

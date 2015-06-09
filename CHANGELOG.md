@@ -7,6 +7,7 @@
  - Fix path in the install manual
  - Add Microsoft Active Directory compatibility support
  - Fix timezone warning on sf_version and viewmail
+ - Check GeoIP data file size before using GeoIP functions
 
 1.2.0 - Beta 8
 -----------
