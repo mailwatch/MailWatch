@@ -6,6 +6,7 @@
  - Update geoip.inc to v1.15
  - Fix path in the install manual
  - Add Microsoft Active Directory compatibility support
+ - Fix timezone warning on sf_version and viewmail
 
 1.2.0 - Beta 8
 -----------

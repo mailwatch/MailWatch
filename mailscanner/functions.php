@@ -33,9 +33,6 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Background colours
-$bg_colors = array("#EBEBEB", "#D8D8D8");
-
 // Set error level (some distro's have php.ini set to E_ALL)
 if (version_compare(phpversion(), '5.3.0', '<')) {
     error_reporting(E_ALL);
@@ -59,6 +56,12 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 
 // Set PHP path to use local PEAR modules only
 ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
+
+// set default timezone
+date_default_timezone_set(TIME_ZONE);
+
+// Background colours
+$bg_colors = array("#EBEBEB", "#D8D8D8");
 
 // XML-RPC
 require_once('lib/xmlrpc/xmlrpc.inc');
@@ -3094,7 +3097,6 @@ function get_virus_conf($scanner)
 
 function return_quarantine_dates()
 {
-    date_default_timezone_set(TIME_ZONE);
     $array = array();
     for ($d = 0; $d < (QUARANTINE_DAYS_TO_KEEP); $d++) {
         $array[] = date('Ymd', mktime(0, 0, 0, date("m"), date("d") - $d, date("Y")));

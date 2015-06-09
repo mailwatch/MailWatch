@@ -44,10 +44,6 @@ require('login.function.php');
 // add the header information such as the logo, search, menu, ....
 $filter = html_start("Top Senders by Quantity", 0, false, true);
 
-//Set timezone
-$timezone = "" . TIME_ZONE . "";
-date_default_timezone_set($timezone);
-
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
 
