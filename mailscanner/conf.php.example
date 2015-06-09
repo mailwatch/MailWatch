@@ -64,8 +64,8 @@ define('LDAP_PASS',        'secret');
 define('LDAP_SITE',        'default');
 // can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
 define('LDAP_EMAIL_FIELD', 'proxyaddresses');
-// AD Compatibility support for searches from Domain Base DN
-define('AD_COMPAT',        false);
+// Microsoft Active Directory compatibility support for searches from Domain Base DN
+define('LDAP_MS_AD_COMPATIBILITY', false);
 
 // Set Time Zone
 define('TIME_ZONE', 'America/New_York');

@@ -2336,8 +2336,8 @@ function ldap_authenticate($USER, $PASS)
     $USER = strtolower($USER);
     if ($USER != "" && $PASS != "") {
         $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die ("Could not connect to " . LDAP_HOST);
-        // Check if AD Compatibility is enabled
-        if (defined('AD_COMPAT') && AD_COMPAT) {
+        // Check if Microsoft Active Directory compatibility is enabled
+        if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         }

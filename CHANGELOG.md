@@ -1,6 +1,11 @@
 1.2.0 - RC1 DEV
 -----------
-
+ - Display load average if /proc/loadavg doesn't exists but /usr/bin/uptime does
+ - Improve loggings for connections not coming from 127.0.0.1
+ - Add hide High Spam and High MCP options
+ - Update geoip.inc to v1.15
+ - Fix path in the install manual
+ - Add Microsoft Active Directory compatibility support
 
 1.2.0 - Beta 8
 -----------
