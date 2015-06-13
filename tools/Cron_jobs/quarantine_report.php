@@ -219,7 +219,13 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM) {
      ishighspam=0
     AND
      ishighmcp=0";
-}  
+}
+
+if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM) {
+  $sql .= "
+    AND
+     isspam>0"
+}
 
 $sql .= " 
 ORDER BY a.date DESC, a.time DESC";
