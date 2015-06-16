@@ -8,6 +8,8 @@
  - Add Microsoft Active Directory compatibility support
  - Fix timezone warning on sf_version and viewmail
  - Check GeoIP data file size before using GeoIP functions
+ - Add hide Non Spam option
+ - Quick hack on fixing duplicate header issue (#154)
 
 1.2.0 - Beta 8
 -----------
