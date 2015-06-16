@@ -151,6 +151,10 @@ $header_fields = array(
 
 foreach ($header_fields as $field) {
     if (isset($structure->headers[$field['name']])) {
+        /* this is a quick hack to fix issue #154, This need to be recoded in next version */
+        if (is_array($structure->headers[$field['name']])) {
+            $structure->headers[$field['name']] = implode("; ", $structure->headers[$field['name']]);
+        }
         if (function_exists('mb_check_encoding')) {
             if (!mb_check_encoding($structure->headers[$field['name']], 'UTF-8')) {
                 $structure->headers[$field['name']] = mb_convert_encoding($structure->headers[$field['name']], 'UTF-8');
