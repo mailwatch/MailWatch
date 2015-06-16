@@ -216,7 +216,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         audit_log('Ran report ' . $title);
 
     } else {
-        echo '<title>Mailwatch for Mailscanner - ' . $title . '</title>' . "\n";
+        echo '<title>MailWatch for Mailscanner - ' . $title . '</title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
     }
 

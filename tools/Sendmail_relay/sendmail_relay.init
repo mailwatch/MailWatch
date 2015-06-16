@@ -4,7 +4,7 @@
 
 #
 # chkconfig: 345 35 85
-# description: sendmail_relay.php is a handy mailwatch utility that\
+# description: sendmail_relay.php is a handy MailWatch utility that\
 #              watches the mail log  for relay log lines and records\
 #              each into the MailWatch database and  displays the relay\
 #              information for each message on the 'Message Detail' page.

@@ -199,8 +199,8 @@
 1.1
 ----
 
- - Mailwatch can now monitor postfix
- - Mailscanner --lint form the Mailwatch
+ - MailWatch can now monitor postfix
+ - Mailscanner --lint form the MailWatch
  - new jpgraph
  - updated xmlrpc
  - new auth verification

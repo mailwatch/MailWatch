@@ -136,7 +136,7 @@ if ($graphok == true)
     if (is_readable($filename)) {
        echo '<IMG SRC="' . $filename . '" ALT="Graph">';
     } else {
-        echo "File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by Mailwatch.";
+        echo "File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
     }
 } else {
     echo "Not enough data to generate a graph.";
