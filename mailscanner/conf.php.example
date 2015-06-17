@@ -228,4 +228,4 @@ define('SA_MAXSIZE', 0);
 define('HIDE_HIGH_SPAM', false);
 
 // Hide Non Spam from quarantine reports
-define('HIDE_NON_SPAM, false);
+define('HIDE_NON_SPAM', false);
