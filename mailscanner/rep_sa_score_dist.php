@@ -96,19 +96,22 @@ if (is_writable(CACHE_DIR)) {
     $graph = new Graph(750, 350, 0, false);
     $graph->SetShadow();
     $graph->SetScale("textlin");
-    $graph->yaxis->SetTitleMargin(40);
     $graph->img->SetMargin(60, 60, 30, 70);
     $graph->title->Set("SpamAssassin Score Distribution");
     $graph->xaxis->title->Set("Score (rounded)");
     $graph->xaxis->SetTextLabelInterval($labelinterval);
     $graph->xaxis->SetTickLabels($data_labels);
     $graph->yaxis->title->Set("No. of messages");
+    $graph->yaxis->SetTitleMargin(30);
+    $graph->yaxis->title->SetMargin(20);
     $graph->legend->SetLayout(LEGEND_HOR);
     $graph->legend->Pos(0.52, 0.87, 'center');
     $bar1 = new LinePlot($data_count);
-    $bar1->SetFillColor('blue');
 
     $graph->Add($bar1);
+
+    $bar1->SetFillColor('blue');
+
     $graph->Stroke($filename);
 }
 

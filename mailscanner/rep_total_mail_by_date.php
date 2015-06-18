@@ -50,6 +50,9 @@ $date_format = "'" . DATE_FORMAT . "'";
 // File name
 $filename = "" . CACHE_DIR . "/total_mail_by_date.png." . time() . "";
 
+// Check if MCP is enabled
+$is_MCP_enabled = get_conf_truefalse('mcpchecks');
+
 // SQL query to pull the data from maillog
 $sql = "
  SELECT
@@ -152,46 +155,62 @@ if (is_writable(CACHE_DIR)) {
 
     format_report_volume($data_total_size, $size_info);
 
-    $graph = new Graph(750, 350, 0, false);
+    $graph = new Graph(850, 350, 0, false);
     $graph->SetShadow();
     $graph->SetScale("textlin");
     $graph->SetY2Scale("lin");
-    $graph->y2axis->title->Set("Volume (" . $size_info['longdesc'] . ")");
-    $graph->yaxis->SetTitleMargin(30);
-    $graph->y2axis->SetTitleMargin(50);
     $graph->img->SetMargin(60, 60, 30, 70);
     $graph->title->Set("Total Mail Processed by Date");
+    $graph->y2axis->title->Set("Volume (" . $size_info['longdesc'] . ")");
+    $graph->y2axis->title->SetMargin(0);
+    $graph->y2axis->SetTitleMargin(40);
+    $graph->yaxis->title->Set("No. of messages");
+    $graph->yaxis->title->SetMargin(20);
+    $graph->yaxis->SetTitleMargin(30);
     $graph->xaxis->title->Set("Date");
+    $graph->xaxis->SetTitleMargin(30);
     $graph->xaxis->SetTickLabels($graph_labels);
     $graph->xaxis->SetLabelAngle(45);
-    $graph->yaxis->title->Set("No. of messages");
     $graph->legend->SetLayout(LEGEND_HOR);
     $graph->legend->Pos(0.52, 0.92, 'center');
+
     $bar1 = new BarPlot($data_total_mail);
+    $bar2 = new BarPlot($data_total_virii);
+    $bar3 = new BarPlot($data_total_spam);
+    if ($is_MCP_enabled == true) {
+       $bar4 = new BarPlot($data_total_mcp);
+    }
+    $line1 = new LinePlot($data_total_size);
+    if ($is_MCP_enabled == true) {
+       $abar1 = new AccBarPlot(array($bar2, $bar3, $bar4));
+    } else {
+       $abar1 = new AccBarPlot(array($bar2, $bar3));
+    }
+    $gbplot = new GroupBarPlot(array($bar1, $abar1));
+    
+    $graph->Add($gbplot);
+    $graph->AddY2($line1);
+
+    $bar1->SetColor('blue');
     $bar1->SetFillColor('blue');
     $bar1->SetLegend('Mail');
-    $bar2 = new BarPlot($data_total_virii);
-    $bar2->SetFillColor('red');
+    $bar2->SetColor('pink');
+    $bar2->SetFillColor('pink');
     $bar2->SetLegend('Viruses');
-    $bar3 = new BarPlot($data_total_spam);
-    $bar3->SetFillColor('pink');
+    $bar3->SetColor('red');
+    $bar3->SetFillColor('red');
     $bar3->SetLegend('Spam');
-    $bar4 = new BarPlot($data_total_mcp);
-    $bar4->SetFillColor('lightblue');
-    $bar4->SetLegend('MCP');
-
-    $line1 = new LinePlot($data_total_size);
-    $line1->SetColor('green');
-    $line1->SetFillColor('green');
+    if ($is_MCP_enabled == true) {
+       $bar4->SetFillColor('lightblue');
+       $bar4->SetLegend('MCP');
+    }
+    $line1->SetColor('lightblue');
+    $line1->SetFillColor('lightblue');
     $line1->SetLegend('Volume (' . $size_info['shortdesc'] . ')');
     $line1->SetCenter();
 
-    $abar1 = new AccBarPlot(array($bar2, $bar3, $bar4));
-    $gbplot = new GroupBarPlot(array($bar1, $abar1));
-
-    $graph->AddY2($line1);
-    $graph->Add($gbplot);
     $graph->Stroke($filename);
+
 }
 
 // HTML Code to display the graph
@@ -217,8 +236,10 @@ echo "  <TH>Virus</TH>\n";
 echo "  <TH>%</TH>\n";
 echo "  <TH>Spam</TH>\n";
 echo "  <TH>%</TH>\n";
-echo "  <TH>MCP</TH>\n";
-echo "  <TH>%</TH>\n";
+if ($is_MCP_enabled == true) {
+     echo "  <TH>MCP</TH>\n";
+     echo "  <TH>%</TH>\n";
+}
 echo "  <TH>Volume</TH>\n";
 echo "  <TH>&nbsp;&nbsp;&nbsp;&nbsp;</TH>\n";
 echo "  <TH>Unknown<BR>Users</TH>\n";
@@ -234,8 +255,10 @@ for ($i = 0; $i < count($data_total_mail); $i++) {
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_virii[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_spam[$i]) . "</TD>\n";
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_spam[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_mcp[$i]) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
+    if ($is_MCP_enabled == true) {
+         echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_mcp[$i]) . "</TD>\n";
+         echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
+    }
     echo " <TD ALIGN=\"RIGHT\">" . format_mail_size($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
     echo " <TD><BR></TD>\n";
     echo " <TD ALIGN=\"RIGHT\">" . number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0) . "</TD>\n";
@@ -248,23 +271,14 @@ echo " <TR BGCOLOR=\"#F7CE4A\">\n";
 echo " <TH ALIGN=\"RIGHT\">Totals</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mail)) . "</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_virii)) . "</TH>\n";
-echo " <TH ALIGN=\"RIGHT\">" . number_format(
-        mailwatch_array_sum($data_total_virii) / mailwatch_array_sum($data_total_mail) * 100,
-        1
-    ) . "</TH>\n";
+echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_virii) / mailwatch_array_sum($data_total_mail) * 100, 1) . "</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_spam)) . "</TH>\n";
-echo " <TH ALIGN=\"RIGHT\">" . number_format(
-        mailwatch_array_sum($data_total_spam) / mailwatch_array_sum($data_total_mail) * 100,
-        1
-    ) . "</TH>\n";
-echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp)) . "</TH>\n";
-echo " <TH ALIGN=\"RIGHT\">" . number_format(
-        mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100,
-        1
-    ) . "</TH>\n";
-echo " <TH ALIGN=\"RIGHT\">" . format_mail_size(
-        mailwatch_array_sum($data_total_size) * $size_info['formula']
-    ) . "</TH>\n";
+echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_spam) / mailwatch_array_sum($data_total_mail) * 100, 1) . "</TH>\n";
+if ($is_MCP_enabled == true) {
+     echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp)) . "</TH>\n";
+     echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 1) . "</TH>\n";
+}
+echo " <TH ALIGN=\"RIGHT\">" . format_mail_size(mailwatch_array_sum($data_total_size) * $size_info['formula']) . "</TH>\n";
 echo " <TD><BR></TD>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_unknown_users)) . "</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_unresolveable)) . "</TH>\n";
