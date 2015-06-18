@@ -40,7 +40,7 @@ ini_set("memory_limit", MEMORY_LIMIT);
 session_start();
 require('login.function.php');
 
-html_start("Message Viewer", 0, false, false);
+html_start(MSGVIEWER06, 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -119,9 +119,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = "Message Viewer: " . $message_id . " on " . $message->hostname;
+    $title = MSGVIEWER06 .": " . $message_id . " on " . $message->hostname;
 } else {
-    $title = "Message Viewer: " . $message_id;
+    $title = MSGVIEWER06 .": " . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -135,8 +135,23 @@ function lazy($title, $val, $dohtmlentities = true)
     } else {
         $v = $val;
     }
-    echo ' <tr>
-   <td class="heading" align="right" width="10%">' . $title . '</td>
+   $titleintl=$title;
+   switch ($title) {
+        case "Date:":
+                $titleintl=DATE06;
+                break;
+        case "From:":
+                $titleintl=FROM06;
+                break;
+        case "To:":
+                $titleintl=TO06;
+                break;
+        case "Subject:":
+                $titleintl=SUBJECT06;
+                break;
+   }
+   echo ' <tr>
+   <td class="heading" align="right" width="10%">' . $titleintl . '</td>
    <td class="detail" width="80%">' . $v . '</td>
    </tr>' . "\n";
 }
@@ -171,8 +186,8 @@ foreach ($header_fields as $field) {
 
 if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
-        "Actions:",
-        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">Delete this message</a>",
+        ACTIONS06 . ":",
+        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">" . RELEASEMSG06 . "</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">" . DELETEMSG06 . "</a>",
         false
     );
 }
