@@ -43,7 +43,7 @@
     <link rel="shortcut icon" href="images/favicon.png">
     <style type="text/css">
         body {
-            background-color: #ebebeb;
+            background-color: #ffffff;
             color: #000;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 16px;
