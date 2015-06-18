@@ -260,10 +260,10 @@ function doit($input)
 }
 
 if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == "--refresh") {
-    doit('cat /var/log/maillog');
+    doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first
-    doit('cat /var/log/maillog');
+    doit('cat ' . MAIL_LOG);
     // Start watching the maillog
-    doit('tail -F -n0 /var/log/maillog');
+    doit('tail -F -n0 ' . MAIL_LOG);
 }
