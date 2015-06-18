@@ -38,7 +38,7 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-$refresh = html_start("Recent Messages", STATUS_REFRESH, false, false);
+$refresh = html_start($RECENTMESSAGES01, STATUS_REFRESH, false, false);
 
 $sql = "
 SELECT
@@ -79,13 +79,13 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U'
     AND
      ishighmcp=0";
 }
-$sql .= "  
+$sql .= "
 ORDER BY
  date DESC,
  time DESC
 LIMIT " . MAX_RESULTS;
 
-db_colorised_table($sql, "Last " . MAX_RESULTS . " Messages (Refreshing every $refresh seconds)");
+db_colorised_table($sql, LAST05 . " " . MAX_RESULTS . " " . MESSAGES05 . " (" . REFEVERY05 . " $refresh " . SECONDS05 . ")");
 
 // Add footer
 html_end();
