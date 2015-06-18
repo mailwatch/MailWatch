@@ -13,7 +13,8 @@
  - Fix reports graph color management
  - A better sendmail_relay init file
  - Fix GeoIP extension and php libary conflict on constants definition
- - get_conf_truefalse returns true if value is a string 
+ - get_conf_truefalse returns true if value is a string
+ - Enable LDAP over SSL
 
 1.2.0 - Beta 8
 -----------

@@ -56,6 +56,7 @@ define('DB_DSN',  DB_TYPE.'://'.DB_USER.":".DB_PASS."@".DB_HOST."/".DB_NAME);
 
 // LDAP settings
 define('USE_LDAP',         '0');
+define('LDAP_SSL',         false); // set to true if using LDAP with SSL encryption
 define('LDAP_HOST',        'server.example.com');
 define('LDAP_PORT',        '389');
 define('LDAP_DN',          'DC=example,DC=com');

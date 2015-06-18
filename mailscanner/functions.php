@@ -2340,17 +2340,34 @@ function address_filter_sql($addresses, $type)
     return $sqladdr;
 }
 
+/**
+ * @return resource
+ */
+function get_ldap_connection()
+{
+    $ldap_protocol = '';
+    if (LDAP_SSL === TRUE) {
+        $ldap_protocol = 'ldaps://';
+    }
+    $ds = ldap_connect($ldap_protocol . LDAP_HOST, LDAP_PORT)
+        or die ("[LDAP] Error: could not connect to LDAP directory on " . LDAP_HOST);
+
+    return $ds;
+}
+
 function ldap_authenticate($USER, $PASS)
 {
     $USER = strtolower($USER);
     if ($USER != "" && $PASS != "") {
-        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die ("Could not connect to " . LDAP_HOST);
+
+        $ds = get_ldap_connection();
         // Check if Microsoft Active Directory compatibility is enabled
         if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
+
         if (strpos($USER, '@')) {
             $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD."=SMTP:$USER") or die ("Could not search");
         } else {
@@ -2393,8 +2410,7 @@ function ldap_get_conf_var($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    $lh = get_ldap_connection();
 
     @ldap_bind($lh)
         or die("Error: unable to bind to LDAP directory\n");
@@ -2429,8 +2445,7 @@ function ldap_get_conf_truefalse($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    $lh = get_ldap_connection();
 
     @ldap_bind($lh)
         or die("Error: unable to bind to LDAP directory\n");
