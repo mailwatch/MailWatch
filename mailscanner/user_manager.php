@@ -46,7 +46,7 @@ if ($_SESSION['user_type'] == 'A') {
         <!--
         function delete_user(id) {
             var yesno = confirm("Are you sure you want to delete user " + id + "?");
-            if (yesno == true) {
+            if (yesno === true) {
                 window.location = "?action=delete&id=" + id;
             } else {
                 return false;
@@ -55,7 +55,7 @@ if ($_SESSION['user_type'] == 'A') {
 
         function delete_filter(id, filter) {
             var yesno = confirm("Are you sure?");
-            if (yesno == true) {
+            if (yesno === true) {
                 window.location = "?action=filters&id=" + id + "&filter=" + filter + "&delete=true";
             } else {
                 return false;
@@ -64,7 +64,7 @@ if ($_SESSION['user_type'] == 'A') {
 
         function change_state(id, filter) {
             var yesno = confirm("Are you sure?");
-            if (yesno == true) {
+            if (yesno === true) {
                 window.location = "?action=filters&id=" + id + "&filter=" + filter + "&change_state=true";
             } else {
                 return false;

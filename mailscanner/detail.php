@@ -255,7 +255,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                 );
         }
 
-        if ( $is_MCP_enabled=== true) {
+        if ( $is_MCP_enabled === true) {
             if ($fieldn == "MCP Report:") {
                 $row[$f] = format_mcp_report($row[$f]);
             }

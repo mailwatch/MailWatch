@@ -131,7 +131,7 @@ echo "<TR>";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 echo '<TD ALIGN="CENTER">';
-if ($graphok == true)
+if ($graphok === true)
 {
     if (is_readable($filename)) {
        echo '<IMG SRC="' . $filename . '" ALT="Graph">';
