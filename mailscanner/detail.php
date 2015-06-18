@@ -63,40 +63,40 @@ $mta = get_conf_var('mta');
 // The sql command to pull the data
 $sql = "
  SELECT
-  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS 'Received on:',
-  hostname AS 'Received by:',
-  clientip AS 'Received from:',
-  headers 'Received Via:',
+  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS '" . RECEIVEDON04 . ":',
+  hostname AS '" . RECEIVEDBY04 . ":',
+  clientip AS '" . RECEIVEDFROM04 . ":',
+  headers '" . RECEIVEDVIA04 . ":',
   id AS 'ID:',
-  headers AS 'Message Headers:',
-  from_address AS 'From:',
-  to_address AS 'To:',
-  subject AS 'Subject:',
-  size AS 'Size:',
+  headers AS '" . MSGHEADERS04 . ":',
+  from_address AS '" . FROM04 . ":',
+  to_address AS '" . TO04 . ":',
+  subject AS '" . SUBJECT04 . ":',
+  size AS '" . SIZE04 . ":',
   archive AS 'Archive:',
-  'Anti-Virus/Dangerous Content Protection' AS 'HEADER',
+  '" . HDRANTIVIRUS04 . "' AS 'HEADER',
   CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS 'Virus:',
-  CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS 'Blocked File:',
-  CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS 'Other Infection:',
+  CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . BLKFILE04 . ":',
+  CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . OTHERINFEC04 . ":',
   report AS 'Report:',
   'SpamAssassin' AS 'HEADER',
   CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS 'Spam:',
-  CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS 'High Scoring Spam:',
+  CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . HSCOSPAM04 . ":',
   CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin Spam:',
-  CASE WHEN isrblspam>0 THEN '$yes' ELSE '$no' END AS 'Listed in RBL:',
-  CASE WHEN spamwhitelisted>0 THEN '$yes' ELSE '$no' END AS 'Spam Whitelisted:',
-  CASE WHEN spamblacklisted>0 THEN '$yes' ELSE '$no' END AS 'Spam Blacklisted:',
-  spamreport AS 'SpamAssassin Autolearn:',
-  sascore AS 'SpamAssassin Score:',
-  spamreport AS 'Spam Report:',
-  'Message Content Protection (MCP)' AS 'HEADER',
+  CASE WHEN isrblspam>0 THEN '$yes' ELSE '$no' END AS '" . LISTEDRBL04 . ":',
+  CASE WHEN spamwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . SPAMWL04 . ":',
+  CASE WHEN spamblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . SPAMBL04 . ":',
+  spamreport AS '" . SAAUTOLEARN04 . ":',
+  sascore AS '" . SASCORE04 . ":',
+  spamreport AS '" . SPAMREP04 . ":',
+  '" . HDRMCP04 . "' AS 'HEADER',
   CASE WHEN ismcp>0 THEN '$yes' ELSE '$no' END AS 'MCP:',
-  CASE WHEN ishighmcp>0 THEN '$yes' ELSE '$no' END AS 'High Scoring MCP:',
+  CASE WHEN ishighmcp>0 THEN '$yes' ELSE '$no' END AS '" . HIGHSCOMCP04 . ":',
   CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin MCP:',
-  CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS 'MCP Whitelisted:',
-  CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS 'MCP Blacklisted:',
-  mcpsascore AS 'MCP Score:',
-  mcpreport AS 'MCP Report:'
+  CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . MCPWL04 . ":',
+  CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . MCPBL04 . ":',
+  mcpsascore AS '" . MCPSCORE04 . ":',
+  mcpreport AS '" . MCPREP04 . ":'
  FROM
   maillog
  WHERE
@@ -123,25 +123,25 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
     $listurl = "lists.php?host=" . $row['Received from:'] . "&amp;from=" . $row['From:'] . "&amp;to=" . $row['To:'];
     for ($f = 0; $f < mysql_num_fields($result); $f++) {
         $fieldn = mysql_field_name($result, $f);
-        if ($fieldn == "Received from:") {
+        if ($fieldn == RECEIVEDFROM04 . ":") {
             $output = "<table class=\"sa_rules_report\" width=\"100%\" cellspacing=0 cellpadding=0><tr><td>" . $row[$f] . "</td>";
             if (LISTS) {
-                $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">Add to Whitelist</a>&nbsp;|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">Add to Blacklist</a>]</td>";
+                $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">" . ADDWL04 . "</a>&nbsp;|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">" . ADDBL04 . "</a>]</td>";
             }
             $output .= "</tr></table>\n";
             $row[$f] = $output;
         }
-        if ($fieldn == "Received Via:") {
+        if ($fieldn == RECEIVEDVIA04.":") {
             // Start Table
             $output = '<table width="100%" class="sa_rules_report">' . "\n";
             $output .= ' <tr>' . "\n";
-            $output .= ' <th>IP Address</th>' . "\n";
+            $output .= ' <th>' . IPADDRESS04 . '</th>' . "\n";
             $output .= ' <th>Hostname</th>' . "\n";
-            $output .= ' <th>Country</th>' . "\n";
+            $output .= ' <th>' . COUNTRY04 . '</th>' . "\n";
             $output .= ' <th>RBL</th>' . "\n";
             $output .= ' <th>Spam</th>' . "\n";
             $output .= ' <th>Virus</th>' . "\n";
-            $output .= ' <th>All</th>' . "\n";
+            $output .= ' <th>' . ALL04 . '</th>' . "\n";
             $output .= ' </tr>' . "\n";
             if (is_array(($relays = get_mail_relays($row[$f])))) {
                 foreach ($relays as $relay) {
@@ -182,20 +182,20 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $row[$f] = nl2br(str_replace(",", "<br>", htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", "<br>", $row[$f]);
         }
-        if ($fieldn == "From:") {
+        if ($fieldn == FROM04 . ":") {
             $row[$f] = htmlentities($row[$f]);
             $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
             if (LISTS) {
-                $output .= '<td align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">Add to Whitelist</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">Add to Blacklist</a>]</td>' . "\n";
+                $output .= '<td align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . ADDWL04 . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . ADDBL04 . '</a>]</td>' . "\n";
             }
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
         }
-        if ($fieldn == "To:") {
+        if ($fieldn == TO04 . ":") {
             $row[$f] = htmlspecialchars($row[$f]);
             $row[$f] = str_replace(",", "<br>", $row[$f]);
         }
-        if ($fieldn == "Subject:") {
+        if ($fieldn == SUBJECT04 .":") {
             $row[$f] = decode_header($row[$f]);
             if (function_exists('mb_check_encoding')) {
                 if (!mb_check_encoding($row[$f], 'UTF-8')) {
@@ -206,13 +206,13 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             }
             $row[$f] = htmlspecialchars($row[$f]);
         }
-        if ($fieldn == "Spam Report:") {
+        if ($fieldn == SPAMREP04 . ":") {
             $row[$f] = format_spam_report($row[$f]);
         }
-        if ($fieldn == "Size:") {
+        if ($fieldn == SIZE04 . ":") {
             $row[$f] = format_mail_size($row[$f]);
         }
-        if ($fieldn == "Message Headers:") {
+        if ($fieldn == MSGHEADERS04 . ":") {
             if (version_compare(phpversion(), "5.4", ">=")) {
                 $row[$f] = nl2br(
                     str_replace(array("\n", "\t"), array("<br>", "&nbsp; &nbsp; &nbsp;"), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
@@ -227,7 +227,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             }
             $row[$f] = preg_replace("/<br \/>/", "<br>", $row[$f]);
         }
-        if ($fieldn == "SpamAssassin Autolearn:") {
+        if ($fieldn == SAAUTOLEARN04 . ":") {
             if (($autolearn = sa_autolearn($row[$f])) !== false) {
                 $row[$f] = $yes . " ($autolearn)";
             } else {
@@ -246,9 +246,9 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     );
             }
         }
-        if ($fieldn == "High Scoring Spam:" && $row[$f] == $yes) {
+        if ($fieldn == HSCOSPAM04 . ":" && $row[$f] == $yes) {
             // Display actions if high-scoring
-            $row[$f] = $row[$f] . "&nbsp;&nbsp;Action(s): " . str_replace(
+            $row[$f] = $row[$f] . "&nbsp;&nbsp;" . ACTIONS04 . ": " . str_replace(
                     " ",
                     ", ",
                     get_conf_var("HighScoringSpamActions")
@@ -256,7 +256,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
         }
 
         if ( $is_MCP_enabled=== true) {
-            if ($fieldn == "MCP Report:") {
+            if ($fieldn == MCPREP04 . ":") {
                 $row[$f] = format_mcp_report($row[$f]);
             }
         }
@@ -300,7 +300,7 @@ if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfi
   m.status AS 'Status'
  FROM
   mtalog AS m
-	LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
+        LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
  WHERE
   i.smtpd_id='" . $url_id . "'
  AND
@@ -360,7 +360,7 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if ((is_array($quarantined)) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_GET['submit']) && ($_GET['submit'] == "Submit")) {
+    if (isset($_GET['submit']) && ($_GET['submit'] == SUBMIT04)) {
         debug("submit branch taken");
         // Reset error status
         $error = 0;
@@ -386,11 +386,11 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         }
         echo '<table border="0" cellpadding="1" cellspacing="1" width="100%" class="maildetail">' . "\n";
         echo ' <tr>' . "\n";
-        echo '  <th colspan="2">Quarantine Command Results</th>' . "\n";
+        echo '  <th colspan="2">' . QUARCMDRES04 . '</th>' . "\n";
         echo ' </tr>' . "\n";
         if (!empty($status)) {
             echo '  <tr>' . "\n";
-            echo '  <td class="heading" width="150" align="right" valign="top">Result Messages:</td>' . "\n";
+            echo '  <td class="heading" width="150" align="right" valign="top">' . RESULTMSG04 . ':</td>' . "\n";
             echo '  <td class="detail">' . "\n";
             foreach ($status as $key => $val) {
                 echo "  $val<br>\n";
@@ -420,20 +420,20 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo '  <th colspan="7">Quarantine</th>' . "\n";
         echo ' </tr>' . "\n";
         echo ' <tr>' . "\n";
-        echo '  <th>Release</th>' . "\n";
-        echo '  <th>Delete</th>' . "\n";
-        echo '  <th>SA Learn</th>' . "\n";
-        echo '  <th>File</th>' . "\n";
-        echo '  <th>Type</th>' . "\n";
-        echo '  <th>Path</th>' . "\n";
-        echo '  <th>Dangerous?</th>' . "\n";
+        echo '  <th>' . RELEASE04 . '</th>' . "\n";
+        echo '  <th>' . DELETE04 . '</th>' . "\n";
+        echo '  <th>' . SALEARN04 . '</th>' . "\n";
+        echo '  <th>' . FILE04 . '</th>' . "\n";
+        echo '  <th>' . TYPE04 . '</th>' . "\n";
+        echo '  <th>' . PATH04 . '</th>' . "\n";
+        echo '  <th>' . DANG04 . '?</th>' . "\n";
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
             // Currently this only applies to messages that contain viruses.
-            if ($item['dangerous'] !== "Y" || $_SESSION['user_type'] == 'A') {
+           if ($item['dangerous'] !== "Y" || $_SESSION['user_type'] == 'A') {
                 echo '  <td align="center"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
                 echo '<td>&nbsp;&nbsp;</td>' . "\n";
@@ -474,11 +474,11 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         if ($is_dangerous > 0 && $_SESSION['user_type'] != 'A') {
             echo '  <td colspan="6">&nbsp;</td>' . "\n";
         } else {
-            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;Alternate Recipient(s):&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
+            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . ALTRECIP04 . ':&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
-        echo '<input type="SUBMIT" name="submit" value="Submit">' . "\n";
+        echo '<input type="SUBMIT" name="submit" value="' . SUBMIT04 . '">' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";
         echo '</form>' . "\n";
