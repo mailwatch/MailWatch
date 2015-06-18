@@ -83,6 +83,7 @@ if ($_SESSION['user_type'] != 'A') {
     } else {
         echo 'No database downloaded';
     }
+    echo "<br>\n<br>\n";
     echo '</td>' . "\n";
     echo '</tr>' . "\n";
     echo '</table>' . "\n";
