@@ -109,11 +109,11 @@ $filter->AddReport("rep_top_sender_domains_by_volume.php", "Top Sender Domains b
 $filter->AddReport("rep_top_recipient_domains_by_quantity.php", "Top Recipient Domains by Quantity");
 $filter->AddReport("rep_top_recipient_domains_by_volume.php", "Top Recipient Domains by Volume");
 
-if (get_conf_truefalse('UseSpamAssassin')) {
+if (get_conf_truefalse('UseSpamAssassin') === true) {
     $filter->AddReport("rep_sa_score_dist.php", "SpamAssassin Score Distribution");
     $filter->AddReport("rep_sa_rule_hits.php", "SpamAssassin Rule Hits");
 }
-if (get_conf_truefalse('MCPChecks')) {
+if (get_conf_truefalse('MCPChecks') === true) {
     $filter->AddReport("rep_mcp_score_dist.php", "MCP Score Distribution");
     $filter->AddReport("rep_mcp_rule_hits.php", "MCP Rule Hits");
 }
