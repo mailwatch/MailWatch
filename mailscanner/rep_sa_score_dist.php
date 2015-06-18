@@ -93,7 +93,7 @@ if (is_writable(CACHE_DIR)) {
     }
     // ##### AJOS1 CHANGE #####
 
-    $graph = new Graph(750, 350, 0, false);
+    $graph = new Graph(850, 350, 0, false);
     $graph->SetShadow();
     $graph->SetScale("textlin");
     $graph->img->SetMargin(60, 60, 30, 70);

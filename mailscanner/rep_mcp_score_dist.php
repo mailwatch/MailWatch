@@ -94,7 +94,7 @@ if (is_writable(CACHE_DIR)) {
     }
 
 // Graphing 
-    $graph = new Graph(750, 350, 0, false);
+    $graph = new Graph(850, 350, 0, false);
     $graph->SetShadow();
     $graph->SetScale("textlin");
     $graph->yaxis->SetTitleMargin(40);

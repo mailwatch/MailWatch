@@ -10,6 +10,8 @@
  - Check GeoIP data file size before using GeoIP functions
  - Add hide Non Spam option
  - Quick hack on fixing duplicate header issue (#154)
+ - Fix reports graph color management
+ - A better sendmail_relay init file
 
 1.2.0 - Beta 8
 -----------

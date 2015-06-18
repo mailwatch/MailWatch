@@ -194,8 +194,8 @@ if (is_writable(CACHE_DIR)) {
     $bar1->SetColor('blue');
     $bar1->SetFillColor('blue');
     $bar1->SetLegend('Mail');
-    $bar2->SetColor('pink');
-    $bar2->SetFillColor('pink');
+    $bar2->SetColor('orange');
+    $bar2->SetFillColor('orange');
     $bar2->SetLegend('Viruses');
     $bar3->SetColor('red');
     $bar3->SetFillColor('red');
@@ -204,8 +204,8 @@ if (is_writable(CACHE_DIR)) {
        $bar4->SetFillColor('lightblue');
        $bar4->SetLegend('MCP');
     }
-    $line1->SetColor('lightblue');
-    $line1->SetFillColor('lightblue');
+    $line1->SetColor('lightgreen');
+    $line1->SetFillColor('lightgreen');
     $line1->SetLegend('Volume (' . $size_info['shortdesc'] . ')');
     $line1->SetCenter();
 
