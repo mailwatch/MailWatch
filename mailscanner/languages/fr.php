@@ -1,7 +1,7 @@
 <?php
 
 /* language/fr.php */
-/* v0.0.2 */
+/* v0.0.3 */
 
 $lang = array(
 	// 01-login.php
@@ -31,7 +31,7 @@ $lang = array(
 	'QUARANTINE03' => 'Quarantaine',
 	'DATETIME03' => 'Date/Heure',
 	'FROM03' => 'De',
-	'TO03' => 'A',
+	'TO03' => 'À',
 	'SIZE03' => 'Taille',
 	'SUBJECT03' => 'Sujet',
 	'SASCORE03' => 'Score SA',
@@ -43,7 +43,7 @@ $lang = array(
 	'RECEIVEDVIA04' => 'Reçu via',
 	'MSGHEADERS04' => 'Headers du message',
 	'FROM04' => 'De',
-	'TO04' => 'A',
+	'TO04' => 'À',
 	'SIZE04' => 'Taille',
 	'SUBJECT04' => 'Sujet',
 	'HDRANTIVIRUS04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
