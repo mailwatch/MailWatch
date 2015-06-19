@@ -40,7 +40,7 @@ ini_set("memory_limit", MEMORY_LIMIT);
 session_start();
 require('login.function.php');
 
-html_start($lang['MSGVIEWER06'], 0, false, false);
+html_start($lang['msgviewer06'], 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -119,9 +119,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = MSGVIEWER06 .": " . $message_id . " on " . $message->hostname;
+    $title = $lang['msgviewer06'] .": " . $message_id . " on " . $message->hostname;
 } else {
-    $title = MSGVIEWER06 .": " . $message_id;
+    $title = $lang['msgviewer06'] .": " . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -139,16 +139,16 @@ function lazy($title, $val, $dohtmlentities = true)
    $titleintl=$title;
    switch ($title) {
 	case "Date:":
-		$titleintl=$lang['DATE06'];
+		$titleintl=$lang['date06'];
 		break;
 	case "From:":
-		$titleintl=$lang['FROM06'];
+		$titleintl=$lang['from06'];
 		break;
 	case "To:":
-		$titleintl=$lang['TO06'];
+		$titleintl=$lang['to06'];
 		break;
 	case "Subject:":
-		$titleintl=$lang['SUBJECT06'];
+		$titleintl=$lang['subject06'];
 		break;
    }
    echo ' <tr>
@@ -187,8 +187,8 @@ foreach ($header_fields as $field) {
 
 if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
-        $lang['ACTIONS06'] . ":",
-        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">" . $lang['RELEASEMSG06'] . "</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">" . $lang['DELETEMSG06'] . "</a>",
+        $lang['actions06'] . ":",
+        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . $lang['releasemsg06'] . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . $lang['deletemsg06'] . "</a>",
         false
     );
 }

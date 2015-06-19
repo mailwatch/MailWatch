@@ -85,7 +85,7 @@ ORDER BY
  time DESC
 LIMIT " . MAX_RESULTS;
 
-db_colorised_table($sql, $lang['LAST05'] . " " . MAX_RESULTS . " " . $lang['MESSAGES05'] . " (" . $lang['REFEVERY05'] . " $refresh " . $lang['SECONDS05'] . ")");
+db_colorised_table($sql, $lang['last05'] . " " . MAX_RESULTS . " " . $lang['messages05'] . " (" . $lang['refevery05'] . " $refresh " . $lang['seconds05'] . ")");
 
 // Add footer
 html_end();

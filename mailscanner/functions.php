@@ -249,29 +249,29 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
     echo '<form action="./detail.php">' . "\n";
-    echo '<p>'.$lang['JUMPMESSAGE03'].'<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
+    echo '<p>'.$lang['jumpmessage03'].'<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
     echo '</form>' . "\n";
     echo '</table>' . "\n";
     echo '<table cellspacing="1" class="mail">' . "\n";
-    echo '<tr><td class="heading" align="center">'.$lang['CUSER03'] . '</td><td class="heading" align="center">' . $lang['CST03'] . '</td></tr>' . "\n";
+    echo '<tr><td class="heading" align="center">'.$lang['cuser03'] . '</td><td class="heading" align="center">' . $lang['cst03'] . '</td></tr>' . "\n";
     echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
     echo '</table>' . "\n";
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-    echo '    <tr> <th colspan="2">' . $lang['COLORCODES03'] . '</th> </tr>' . "\n";
-    echo '    <tr> <td>' . $lang['CCODES01_03'] . '</TD> <td class="infected"></TD> </TR>' . "\n";
+    echo '    <tr> <th colspan="2">' . $lang['colorcodes03'] . '</th> </tr>' . "\n";
+    echo '    <tr> <td>' . $lang['ccodes01_03'] . '</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>' . "\n";
     echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
         echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
         echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
     }
-    echo '    <tr> <td>' . $lang['CCODES02_03'] . '</td> <td class="whitelisted"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . $lang['CCODES03_03'] . '</td> <td class="blacklisted"></td> </tr>' . "\n";
-    echo '        <tr> <td>' . $lang['CCODES04_03'] . '</td> <td class="notscanned"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . $lang['CCODES05_03'] . '</td> <td></td> </tr>' . "\n";
+    echo '    <tr> <td>' . $lang['ccodes02_03'] . '</td> <td class="whitelisted"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . $lang['ccodes03_03'] . '</td> <td class="blacklisted"></td> </tr>' . "\n";
+    echo '        <tr> <td>' . $lang['ccodes04_03'] . '</td> <td class="notscanned"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . $lang['ccodes05_03'] . '</td> <td></td> </tr>' . "\n";
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
 
@@ -354,7 +354,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
         // drive display
         if ($_SESSION['user_type'] == 'A') {
-            echo '    <tr><td colspan="3" class="heading" align="center">' . $lang['FREEDSPACE03'] . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="3" class="heading" align="center">' . $lang['freedspace03'] . '</td></tr>' . "\n";
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
                 $total_space = disk_total_space($disk['mountpoint']);
@@ -551,36 +551,36 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     $sth = dbquery($sql);
     while ($row = mysql_fetch_object($sth)) {
         echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
-        echo ' <tr><th align="center" colspan="3">' . $lang['TODAYSTOTALS03'] . '</th></tr>' . "\n";
-        echo ' <tr><td>' . $lang['PROCESSED03'] . ':</td><td align="right">' . number_format(
+        echo ' <tr><th align="center" colspan="3">' . $lang['todaystotals03'] . '</th></tr>' . "\n";
+        echo ' <tr><td>' . $lang['processed03'] . ':</td><td align="right">' . number_format(
                 $row->processed
             ) . '</td><td align="right">' . format_mail_size(
                 $row->size
             ) . '</td></tr>' . "\n";
-        echo ' <tr><td>' . $lang['CLEAN03'] . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . $lang['clean03'] . ':</td><td align="right">' . number_format(
                 $row->clean
             ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . $lang['VIRUSES03'] . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . $lang['viruses03'] . ':</td><td align="right">' . number_format(
                 $row->viruses
             ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
         echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
-        echo ' <tr><td>' . $lang['BLOCKEDFILES03'] . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . $lang['blockedfiles03'] . ':</td><td align="right">' . number_format(
                 $row->blockedfiles
             ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . $lang['OTHERS03'] . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . $lang['others03'] . ':</td><td align="right">' . number_format(
                 $row->otherinfected
             ) . '</td><td align="right">' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
         echo ' <tr><td>Spam:</td><td align="right">' . number_format(
                 $row->spam
             ) . '</td><td align="right">' . $row->spampercent . '%</td></tr>' . "\n";
-        echo ' <tr><td style="white-space:nowrap">' . $lang['HSCOSPAM03'] . ':</td><td align="right">' . number_format(
+        echo ' <tr><td style="white-space:nowrap">' . $lang['hscospam03'] . ':</td><td align="right">' . number_format(
                 $row->highspam
             ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
         if (get_conf_truefalse('mcpchecks')) {
             echo ' <tr><td>MCP:</td><td align="right">' . number_format(
                     $row->mcp
                 ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
-            echo ' <tr><td style="white-space:nowrap">' . $lang['HSCOMCP03'] . ':</td><td align="right">' . number_format(
+            echo ' <tr><td style="white-space:nowrap">' . $lang['hscomcp03'] . ':</td><td align="right">' . number_format(
                     $row->highmcp
                 ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
         }
@@ -590,12 +590,12 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     // Navigation links - put them into an array to allow them to be switched
     // on or off as necessary and to allow for the table widths to be calculated.
     $nav = array();
-    $nav['status.php'] = $lang['RECENTMESSAGES03'];
+    $nav['status.php'] = $lang['recentmessages03'];
     if (LISTS) {
-        $nav['lists.php'] = $lang['LISTS03'];
+        $nav['lists.php'] = $lang['lists03'];
     }
     if (!DISTRIBUTED_SETUP) {
-        $nav['quarantine.php'] = $lang['QUARANTINE03'];
+        $nav['quarantine.php'] = $lang['quarantine03'];
     }
     $nav['reports.php'] = "Reports";
     $nav['other.php'] = "Tools/Links";
@@ -1518,11 +1518,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     }
                     break;
                 case 'timestamp':
-                    $fieldname[$f] = $lang['DATETIME03'];
+                    $fieldname[$f] = $lang['datetime03'];
                     $align[$f] = "center";
                     break;
                 case 'datetime':
-                    $fieldname[$f] = $lang['DATETIME03'];
+                    $fieldname[$f] = $lang['datetime03'];
                     $align[$f] = "center";
                     break;
                 case 'id':
@@ -1536,17 +1536,17 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $align[$f] = "center";
                     break;
                 case 'size':
-                    $fieldname[$f] = $lang['SIZE03'];
+                    $fieldname[$f] = $lang['size03'];
                     $align[$f] = "right";
                     break;
                 case 'from_address':
-                    $fieldname[$f] = $lang['FROM03'];
+                    $fieldname[$f] = $lang['from03'];
                     break;
                 case 'to_address':
-                    $fieldname[$f] = $lang['TO03'];
+                    $fieldname[$f] = $lang['to03'];
                     break;
                 case 'subject':
-                    $fieldname[$f] = $lang['SUBJECT03'];
+                    $fieldname[$f] = $lang['subject03'];
                     break;
                 case 'clientip':
                     if (defined('DISPLAY_IP') && DISPLAY_IP) {
@@ -1623,7 +1623,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'sascore':
                     if (get_conf_truefalse('UseSpamAssassin')) {
-                        $fieldname[$f] = $lang['SASCORE03'];
+                        $fieldname[$f] = $lang['sascore03'];
                         $align[$f] = "right";
                     } else {
                         $display[$f] = false;
@@ -1631,7 +1631,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'mcpsascore':
                     if (get_conf_truefalse('MCPChecks')) {
-                        $fieldname[$f] = $lang['MCPSCORE03'];
+                        $fieldname[$f] = $lang['mcpscore03'];
                         $align[$f] = "right";
                     } else {
                         $display[$f] = false;
