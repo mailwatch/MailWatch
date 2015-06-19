@@ -51,7 +51,6 @@ $lang = array(
     'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
     'blkfile04' => 'Fichier bloqu&eacute;',
     'otherinfec04' => 'Autre infection',
-    'otherinfec04' => 'Autre infection',
     'hscospam04' => 'Spam &agrave; score tr&egrave;s haut',
     'listedrbl04' => 'List&eacute; en RBL',
     'spamwl04' => 'SPAM en Liste Blanche',
