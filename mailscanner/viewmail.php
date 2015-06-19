@@ -40,7 +40,7 @@ ini_set("memory_limit", MEMORY_LIMIT);
 session_start();
 require('login.function.php');
 
-html_start(MSGVIEWER06, 0, false, false);
+html_start($lang['MSGVIEWER06'], 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -130,6 +130,7 @@ echo " </thead>\n";
 
 function lazy($title, $val, $dohtmlentities = true)
 {
+    global $lang;
     if ($dohtmlentities) {
         $v = htmlentities($val);
     } else {
@@ -137,18 +138,18 @@ function lazy($title, $val, $dohtmlentities = true)
     }
    $titleintl=$title;
    switch ($title) {
-        case "Date:":
-                $titleintl=DATE06;
-                break;
-        case "From:":
-                $titleintl=FROM06;
-                break;
-        case "To:":
-                $titleintl=TO06;
-                break;
-        case "Subject:":
-                $titleintl=SUBJECT06;
-                break;
+	case "Date:":
+		$titleintl=$lang['DATE06'];
+		break;
+	case "From:":
+		$titleintl=$lang['FROM06'];
+		break;
+	case "To:":
+		$titleintl=$lang['TO06'];
+		break;
+	case "Subject:":
+		$titleintl=$lang['SUBJECT06'];
+		break;
    }
    echo ' <tr>
    <td class="heading" align="right" width="10%">' . $titleintl . '</td>
@@ -186,8 +187,8 @@ foreach ($header_fields as $field) {
 
 if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
-        ACTIONS06 . ":",
-        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">" . RELEASEMSG06 . "</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">" . DELETEMSG06 . "</a>",
+        $lang['ACTIONS06'] . ":",
+        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">" . $lang['RELEASEMSG06'] . "</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">" . $lang['DELETEMSG06'] . "</a>",
         false
     );
 }

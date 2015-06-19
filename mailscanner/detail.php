@@ -63,40 +63,40 @@ $mta = get_conf_var('mta');
 // The sql command to pull the data
 $sql = "
  SELECT
-  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS '" . RECEIVEDON04 . ":',
-  hostname AS '" . RECEIVEDBY04 . ":',
-  clientip AS '" . RECEIVEDFROM04 . ":',
-  headers '" . RECEIVEDVIA04 . ":',
+  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS '" . $lang['RECEIVEDON04'] . ":',
+  hostname AS '" . $lang['RECEIVEDBY04'] . ":',
+  clientip AS '" . $lang['RECEIVEDFROM04'] . ":',
+  headers '" . $lang['RECEIVEDVIA04'] . ":',
   id AS 'ID:',
-  headers AS '" . MSGHEADERS04 . ":',
-  from_address AS '" . FROM04 . ":',
-  to_address AS '" . TO04 . ":',
-  subject AS '" . SUBJECT04 . ":',
-  size AS '" . SIZE04 . ":',
+  headers AS '" . $lang['MSGHEADERS04'] . ":',
+  from_address AS '" . $lang['FROM04'] . ":',
+  to_address AS '" . $lang['TO04'] . ":',
+  subject AS '" . $lang['SUBJECT04'] . ":',
+  size AS '" . $lang['SIZE04'] . ":',
   archive AS 'Archive:',
-  '" . HDRANTIVIRUS04 . "' AS 'HEADER',
+  '" . $lang['HDRANTIVIRUS04'] . "' AS 'HEADER',
   CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS 'Virus:',
-  CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . BLKFILE04 . ":',
-  CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . OTHERINFEC04 . ":',
+  CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . $lang['BLKFILE04'] . ":',
+  CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . $lang['OTHERINFEC04'] . ":',
   report AS 'Report:',
   'SpamAssassin' AS 'HEADER',
   CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS 'Spam:',
-  CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . HSCOSPAM04 . ":',
+  CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . $lang['HSCOSPAM04'] . ":',
   CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin Spam:',
-  CASE WHEN isrblspam>0 THEN '$yes' ELSE '$no' END AS '" . LISTEDRBL04 . ":',
-  CASE WHEN spamwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . SPAMWL04 . ":',
-  CASE WHEN spamblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . SPAMBL04 . ":',
-  spamreport AS '" . SAAUTOLEARN04 . ":',
-  sascore AS '" . SASCORE04 . ":',
-  spamreport AS '" . SPAMREP04 . ":',
+  CASE WHEN isrblspam>0 THEN '$yes' ELSE '$no' END AS '" . $lang['LISTEDRBL04'] . ":',
+  CASE WHEN spamwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . $lang['SPAMWL04'] . ":',
+  CASE WHEN spamblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . $lang['SPAMBL04'] . ":',
+  spamreport AS '" . $lang['SAAUTOLEARN04'] . ":',
+  sascore AS '" . $lang['SASCORE04'] . ":',
+  spamreport AS '" . $lang['SPAMREP04'] . ":',
   '" . HDRMCP04 . "' AS 'HEADER',
   CASE WHEN ismcp>0 THEN '$yes' ELSE '$no' END AS 'MCP:',
-  CASE WHEN ishighmcp>0 THEN '$yes' ELSE '$no' END AS '" . HIGHSCOMCP04 . ":',
+  CASE WHEN ishighmcp>0 THEN '$yes' ELSE '$no' END AS '" . $lang['HIGHSCOMCP04'] . ":',
   CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin MCP:',
-  CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . MCPWL04 . ":',
-  CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . MCPBL04 . ":',
-  mcpsascore AS '" . MCPSCORE04 . ":',
-  mcpreport AS '" . MCPREP04 . ":'
+  CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . $lang['MCPWL04'] . ":',
+  CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . $lang['MCPBL04'] . ":',
+  mcpsascore AS '" . $lang['MCPSCORE04'] . ":',
+  mcpreport AS '" . $lang['MCPREP04'] . ":'
  FROM
   maillog
  WHERE
@@ -120,6 +120,7 @@ $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
+    #var_dump($row);
     $listurl = "lists.php?host=" . $row['Received from:'] . "&amp;from=" . $row['From:'] . "&amp;to=" . $row['To:'];
     for ($f = 0; $f < mysql_num_fields($result); $f++) {
         $fieldn = mysql_field_name($result, $f);
@@ -135,13 +136,13 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             // Start Table
             $output = '<table width="100%" class="sa_rules_report">' . "\n";
             $output .= ' <tr>' . "\n";
-            $output .= ' <th>' . IPADDRESS04 . '</th>' . "\n";
+            $output .= ' <th>' . $lang['IPADDRESS04'] . '</th>' . "\n";
             $output .= ' <th>Hostname</th>' . "\n";
-            $output .= ' <th>' . COUNTRY04 . '</th>' . "\n";
+            $output .= ' <th>' . $lang['COUNTRY04'] . '</th>' . "\n";
             $output .= ' <th>RBL</th>' . "\n";
             $output .= ' <th>Spam</th>' . "\n";
             $output .= ' <th>Virus</th>' . "\n";
-            $output .= ' <th>' . ALL04 . '</th>' . "\n";
+            $output .= ' <th>' . $lang['ALL04'] . '</th>' . "\n";
             $output .= ' </tr>' . "\n";
             if (is_array(($relays = get_mail_relays($row[$f])))) {
                 foreach ($relays as $relay) {
@@ -186,7 +187,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $row[$f] = htmlentities($row[$f]);
             $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
             if (LISTS) {
-                $output .= '<td align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . ADDWL04 . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . ADDBL04 . '</a>]</td>' . "\n";
+                $output .= '<td align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . $lang['ADDWL04'] . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . $lang['ADDBL04'] . '</a>]</td>' . "\n";
             }
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
@@ -248,7 +249,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
         }
         if ($fieldn == HSCOSPAM04 . ":" && $row[$f] == $yes) {
             // Display actions if high-scoring
-            $row[$f] = $row[$f] . "&nbsp;&nbsp;" . ACTIONS04 . ": " . str_replace(
+            $row[$f] = $row[$f] . "&nbsp;&nbsp;" . $lang['ACTIONS04'] . ": " . str_replace(
                     " ",
                     ", ",
                     get_conf_var("HighScoringSpamActions")
@@ -300,7 +301,7 @@ if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfi
   m.status AS 'Status'
  FROM
   mtalog AS m
-        LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
+	LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
  WHERE
   i.smtpd_id='" . $url_id . "'
  AND
@@ -386,11 +387,11 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         }
         echo '<table border="0" cellpadding="1" cellspacing="1" width="100%" class="maildetail">' . "\n";
         echo ' <tr>' . "\n";
-        echo '  <th colspan="2">' . QUARCMDRES04 . '</th>' . "\n";
+        echo '  <th colspan="2">' . $lang['QUARCMDRES04'] . '</th>' . "\n";
         echo ' </tr>' . "\n";
         if (!empty($status)) {
             echo '  <tr>' . "\n";
-            echo '  <td class="heading" width="150" align="right" valign="top">' . RESULTMSG04 . ':</td>' . "\n";
+            echo '  <td class="heading" width="150" align="right" valign="top">' . $lang['RESULTMSG04'] . ':</td>' . "\n";
             echo '  <td class="detail">' . "\n";
             foreach ($status as $key => $val) {
                 echo "  $val<br>\n";
@@ -420,13 +421,13 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo '  <th colspan="7">Quarantine</th>' . "\n";
         echo ' </tr>' . "\n";
         echo ' <tr>' . "\n";
-        echo '  <th>' . RELEASE04 . '</th>' . "\n";
-        echo '  <th>' . DELETE04 . '</th>' . "\n";
-        echo '  <th>' . SALEARN04 . '</th>' . "\n";
-        echo '  <th>' . FILE04 . '</th>' . "\n";
-        echo '  <th>' . TYPE04 . '</th>' . "\n";
-        echo '  <th>' . PATH04 . '</th>' . "\n";
-        echo '  <th>' . DANG04 . '?</th>' . "\n";
+        echo '  <th>' . $lang['RELEASE04'] . '</th>' . "\n";
+        echo '  <th>' . $lang['DELETE04'] . '</th>' . "\n";
+        echo '  <th>' . $lang['SALEARN04'] . '</th>' . "\n";
+        echo '  <th>' . $lang['FILE04'] . '</th>' . "\n";
+        echo '  <th>' . $lang['TYPE04'] . '</th>' . "\n";
+        echo '  <th>' . $lang['PATH04'] . '</th>' . "\n";
+        echo '  <th>' . $lang['DANG04'] . '?</th>' . "\n";
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
@@ -474,11 +475,11 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         if ($is_dangerous > 0 && $_SESSION['user_type'] != 'A') {
             echo '  <td colspan="6">&nbsp;</td>' . "\n";
         } else {
-            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . ALTRECIP04 . ':&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
+            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . $lang['ALTRECIP04'] . ':&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
-        echo '<input type="SUBMIT" name="submit" value="' . SUBMIT04 . '">' . "\n";
+        echo '<input type="SUBMIT" name="submit" value="' . $lang['SUBMIT04'] . '">' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";
         echo '</form>' . "\n";

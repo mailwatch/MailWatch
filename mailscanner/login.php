@@ -170,11 +170,11 @@ require_once("./functions.php");
                     </p>
                 <?php } ?>
 
-                <p><label for="myusername"><?php echo USERNAME01 ?></label></p>
+                <p><label for="myusername"><?php echo $lang['username'] ?></label></p>
 
                 <p><input name="myusername" type="text" id="myusername" autofocus></p>
 
-                <p><label for="mypassword"><?php echo PASSWORD01 ?></label></p>
+                <p><label for="mypassword"><?php echo $lang['password'] ?></label></p>
 
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 
