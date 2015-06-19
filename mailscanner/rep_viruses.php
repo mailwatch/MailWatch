@@ -157,6 +157,11 @@ while ($row = mysql_fetch_object($result)) {
 }
 
 reset($virus_array);
+foreach ($virus_array as $key => $row) {
+    $virus_count[$key] = $row['count'];
+}
+array_multisort($virus_count, SORT_DESC, $virus_array);
+
 $count = 0;
 $data_names = array();
 while ((list($key, $val) = each($virus_array))) {
