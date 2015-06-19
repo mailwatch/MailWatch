@@ -38,7 +38,7 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-$refresh = html_start($lang['RECENTMESSAGES01'], STATUS_REFRESH, false, false);
+$refresh = html_start($lang['recentmsg05'], STATUS_REFRESH, false, false);
 
 $sql = "
 SELECT

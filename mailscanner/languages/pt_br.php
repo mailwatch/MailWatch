@@ -83,6 +83,7 @@ $lang = array(
     'resultmsg04' => 'Resultados',
 
     // 05-status.php
+    'recentmsg05' => 'Mensagens Recentes',
     'last05' => '&Uacute;ltimas',
     'messages05' => 'Mensagens',
     'refevery05' => 'Recarregando a cada',
