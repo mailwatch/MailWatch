@@ -1,12 +1,11 @@
 <?php
 
 $lang = array(
+
      // 01-login.php
     'username' => 'User',
     'password' => 'Password',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
-    'USERNAME01' => 'User',
-    'PASSWORD01' => 'Password',
 
      // 03-funtions.php
     'jumpmessage03' => 'Go to message:',

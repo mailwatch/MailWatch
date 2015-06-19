@@ -1,6 +1,7 @@
 <?php
 
 $lang = array(
+    'i18_missing' => 'Non traduit en français,
 
     // 01-login.php
     'username' => 'Utilisateur',
