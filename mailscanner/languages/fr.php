@@ -1,7 +1,7 @@
 <?php
 
 /* language/fr.php */
-/* v0.0.3 */
+/* v0.0.4 */
 
 $lang = array(
 	// 01-login.php
@@ -41,7 +41,7 @@ $lang = array(
 	'RECEIVEDBY04' => 'Reçu par',
 	'RECEIVEDFROM04' => 'Reçu de',
 	'RECEIVEDVIA04' => 'Reçu via',
-	'MSGHEADERS04' => 'Headers du message',
+	'MSGHEADERS04' => 'En-tête',
 	'FROM04' => 'De',
 	'TO04' => 'À',
 	'SIZE04' => 'Taille',
@@ -49,16 +49,15 @@ $lang = array(
 	'HDRANTIVIRUS04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
 	'BLKFILE04' => 'Fichier bloqué',
 	'OTHERINFEC04' => 'Autre infection',
-	'OTHERINFEC04' => 'Autre infection',
-	'HSCOSPAM04' => 'Spam à score très haut',
+	'HSCOSPAM04' => 'SPAM à score très haut',
 	'LISTEDRBL04' => 'Listé en RBL',
 	'SPAMWL04' => 'SPAM en Liste Blanche',
 	'SPAMBL04' => 'SPAM en Liste Noire',
 	'SAAUTOLEARN04' => 'Auto aprentissage Spamassassin',
-	'SASCORE04' => 'Spamassassin Score',
-	'SPAMREP04' => 'Rapport de Spam',
-	'HDRMCP04' => 'Message Content Protection (MCP)',
-	'HIGHSCOMCP04' => 'High Scoring MCP',
+	'SASCORE04' => 'Score Spamassassin',
+	'SPAMREP04' => 'Rapport de SPAM',
+	'HDRMCP04' => 'Protection des contenus (MCP)',
+	'HIGHSCOMCP04' => 'MCP à score très haut',
 	'MCPWL04' => 'MCP en Liste Blanche',
 	'MCPBL04' => 'MCP en Liste Noire',
 	'MCPSCORE04' => 'Score MCP',
@@ -78,21 +77,21 @@ $lang = array(
 	'ALTRECIP04' => 'Destinataire alternatif',
 	'SUBMIT04' => 'Soumettre',
 	'ACTIONS04' => 'Action(s)',
-	'QUARCMDRES04' => 'Quarantine Command Results',
-	'RESULTMSGS04' => 'Result Messages',
+	'QUARCMDRES04' => 'Résultat des commandes de quarantaine',
+	'RESULTMSGS04' => 'Résultat du message',
 	// 05-status.php
 	'LAST05' => 'Derniers',
 	'MESSAGES05' => 'Messages',
-	'REFEVERY05' => 'Rafraichir tous les',
+	'REFEVERY05' => 'Rafraichir toutes les',
 	'SECONDS05' => 'segunds',
 	// 06 - viewmail.php
-	'MSGVIEWER06' => 'Message Viewer',
+	'MSGVIEWER06' => 'Visualisation d\'un message',
 	'RELEASEMSG06' => 'Libérer ce message',
 	'DELETEMSG06' => 'Supprimer ce message',
 	'ACTIONS06' => 'Actions',
 	'DATE06' => 'Date :',
 	'FROM06' => 'De :',
-	'TO06' => 'A :',
+	'TO06' => 'À :',
 	'SUBJECT06' => 'Sujet :',    
 	'i18_missing' => 'Non traduit en français'
 	'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
