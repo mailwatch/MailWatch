@@ -125,7 +125,7 @@ Copy SQLBlackWhiteList.pm from the folder MailScanner_perl_scripts to /usr/share
 Then edit SQLBlackWhitelist.pm and change the connection string in the 
 CreateList subroutine to match MailWatch.pm.
 
-On Debian, new &SQL modules need Perl Encoding::FixLatin lib who is not packaged on Debian/Ubuntu. If Mailscanner crash at restart, install the Perl lib manualy via CPAN (http://www.cpan.org).
+On Debian, new &SQL modules need Perl Encoding::FixLatin lib who is not packaged on Debian/Ubuntu. If Mailscanner crash at restart (see log), install the Perl lib manualy via CPAN (http://www.cpan.org).
 
 - Move the Bayesian Databases and set-up permissions (skip this if you don't use bayes).
 
