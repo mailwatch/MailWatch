@@ -1,7 +1,7 @@
 <?php
 
 /* language/fr.php */
-/* v0.0.1 */
+/* v0.0.2 */
 
 $lang = array(
 	// 01-login.php
@@ -94,8 +94,8 @@ $lang = array(
 	'FROM06' => 'De :',
 	'TO06' => 'A :',
 	'SUBJECT06' => 'Sujet :',    
-    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
-    'i18_missing' => 'Non traduit en français'
+	'i18_missing' => 'Non traduit en français'
+	'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
 );
 
 return $lang;
