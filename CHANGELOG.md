@@ -15,6 +15,8 @@
  - Fix GeoIP extension and php libary conflict on constants definition
  - get_conf_truefalse returns true if value is a string
  - Enable LDAP over SSL
+ - Fix virus count sorting on "Virus Report"
+ - Remove additional slashes in "SpamAssassin Rule Description Update"
 
 1.2.0 - Beta 8
 -----------
