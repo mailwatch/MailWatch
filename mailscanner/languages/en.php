@@ -36,6 +36,7 @@ $lang = array(
     'subject03' => 'Subject',
     'sascore03' => 'SA Score',
     'mcpscore03' => 'MCP Score',
+    'found03' => 'found',
 
      // 04-details.php
     'receivedon04' => 'Received on',
