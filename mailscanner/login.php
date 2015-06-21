@@ -146,7 +146,7 @@
 </head>
 <body>
 <div class="login">
-    <img src="images/mailwatch-logo.png" alt="MailWatch Logo">
+    <img src="' . IMAGES_DIR . MW_LOGO . '" alt="MailWatch Logo">
     <h1>MailWatch Login</h1>
     <?php if (file_exists('conf.php')) { ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php">
@@ -192,3 +192,4 @@
 
 </body>
 </html>
+r
