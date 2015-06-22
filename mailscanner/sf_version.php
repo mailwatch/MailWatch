@@ -72,7 +72,7 @@ if ($_SESSION['user_type'] != 'A') {
     echo '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'SpamAssassin version: ';
-    passthru("spamassassin -V | cut -d' ' -f3 | tr '\\\n' ' ' | cut -d' ' -f1");
+    passthru("spamassassin -V | tr '\\\n' ' ' | cut -d' ' -f3");
     echo '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'PHP version: ' . $php_version . '<br>' . "\n";
