@@ -89,7 +89,7 @@ $lang = array(
     'refevery05' => 'Refreshing every',
     'seconds05' => 'segunds',
 
-     // 05-viewmail.php
+     // 06-viewmail.php
     'msgviewer06' => 'Message Viewer',
     'releasemsg06' => 'Release this message',
     'deletemsg06' => 'Delete this message',
@@ -97,7 +97,46 @@ $lang = array(
     'date06' => 'Date:',
     'from06' => 'From:',
     'to06' => 'To:',
-    'subject06' => 'Subject:'
+    'subject06' => 'Subject:',
+
+    // Added in 2015-06-22
+
+    // 03-functions.php
+    'reports03' => 'Reports',
+    'toolslinks03' => 'Tools/Links',
+    'softwareversions03' => 'Software Versions',
+    'documentation03' => 'Documentation',
+    'logout03' => 'Logout',
+    'pggen03' => 'Page generated in',
+    'seconds03' => 'secondS',
+    'disppage03' => 'Displaying page',
+    'of03' => 'from',
+    'records03' => 'Records',
+    'to0203' => 'to©',// This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
+   
+    // 07-lists.php
+    'addwlbl07' => 'Add to Whitelist/Blacklist',
+    'from07' => 'From',
+    'to07' => 'To',
+    'list07' => 'List',
+    'action07' => 'Action',
+    'wl07' => 'Whitelist',
+    'bl07' => 'Blacklist',
+    'reset07' => 'Reset',
+    'add07' => 'Add',
+    'delete07' => 'Delete',
+
+    // 08-quarantine.php
+    'folder08' => 'Folder',
+    'items08' => 'items'
+
+    // 09-filter.inc
+    'activefilters09' => 'Active Filters',
+    'none09' => 'None',
+    'addfilter09' => 'Add Filter',
+    'loadsavef09' => 'Load/Save Filter',
+    'tosetdate09' => 'To set date you must use YYYY-mm-dd format',
+
     );
 
 return $lang;

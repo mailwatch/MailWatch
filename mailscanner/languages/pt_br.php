@@ -98,7 +98,46 @@ $lang = array(
     'date06' => 'Data:',
     'from06' => 'De:',
     'to06' => 'Para:',
-    'subject06' => 'Assunto:'
+    'subject06' => 'Assunto:',
+
+    // Added in 2015-06-22
+
+    // 03-functions.php
+    'reports03' => 'Relatórios',
+    'toolslinks03' => 'Ferramentas/Links',
+    'softwareversions03' => 'Versões dos Softwares',
+    'documentation03' => 'Documentação',
+    'logout03' => 'Sair',
+    'pggen03' => 'Página criada em',
+    'seconds03' => 'segundos',
+    'disppage03' => 'Mostando página',
+    'of03' => 'de',
+    'records03' => 'Registros de',
+    'to0203' => 'até',
+
+    // 07-lists.php
+    'addwlbl07' => 'Adicionar à Lista Branca/Lista Negra',
+    'from07' => 'De',
+    'to07' => 'Para',
+    'list07' => 'Lista',
+    'action07' => 'Ação',
+    'wl07' => 'Lista Branca',
+    'bl07' => 'Lista Negra',
+    'reset07' => 'Limpa',
+    'add07' => 'Adiciona',
+    'delete07' => 'Excluir',
+
+    // 08-quarantine.php
+    'folder08' => 'Pasta',
+    'items08' => 'itens',
+
+    // 09-filter.inc
+    'activefilters09' => 'Filtros Ativos',
+    'none09' => 'Nenhum',
+    'addfilter09' => 'Adicionar Filtro',
+    'loadsavef09' => 'Carregar/Salvar Filtro',
+    'tosetdate09' => 'Para filtro por data utilize o formato YYYY-mm-dd',
+
     );
 
 

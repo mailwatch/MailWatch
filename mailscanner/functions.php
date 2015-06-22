@@ -597,19 +597,19 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     if (!DISTRIBUTED_SETUP) {
         $nav['quarantine.php'] = $lang['quarantine03'];
     }
-    $nav['reports.php'] = "Reports";
-    $nav['other.php'] = "Tools/Links";
+    $nav['reports.php'] = $lang['reports03'];
+    $nav['other.php'] = $lang['toolslinks03'];
 
     if (SHOW_SFVERSION == true) {
         if ($_SESSION['user_type'] === 'A') {
-            $nav['sf_version.php'] = "Software Versions";
+            $nav['sf_version.php'] = $lang['softwareversions03'];
         }
     }
 
     if (SHOW_DOC == true) {
-        $nav['docs.php'] = "Documentation";
+        $nav['docs.php'] = $lang['documentation03'];
     }
-    $nav['logout.php'] = "Logout";
+    $nav['logout.php'] = $lang['logout03'];
     //$table_width = round(100 / count($nav));
 
     //Navigation table
@@ -1447,7 +1447,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . $lang['disppage03'] . ' ' . $pager->getCurrentPageID() . ' ' . $lang['of03'] . ' ' . $pager->numPages() . ' - ' . $lang['records03'] . ' ' . $from . ' ' . $lang['to0203'] . ' ' . $to . ' ' . $lang['of03'] . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2001,7 +2001,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
             echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . $lang['disppage03'] . ' ' . $pager->getCurrentPageID() . ' ' . $lang['of03'] . ' ' . $pager->numPages() . ' - ' . $lang['records03'] . ' ' . $from . ' ' . $lang['to0203'] . ' ' . $to . ' ' . $lang['of03'] . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2200,12 +2200,13 @@ function get_microtime()
 
 function page_creation_timer()
 {
+    global $lang;
     if (!isset($GLOBALS['pc_start_time'])) {
         $GLOBALS['pc_start_time'] = get_microtime();
     } else {
         $pc_end_time = get_microtime();
         $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
-        printf("Page generated in %f seconds\n", $pc_total_time);
+        printf($lang['pggen03'] . " %f " . $lang['seconds03']. "\n", $pc_total_time);
     }
 }
 
