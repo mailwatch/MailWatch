@@ -1,12 +1,13 @@
 <?php
 
 /* language/fr.php */
-/* v0.0.7 */
+/* v0.0.8 */
 
 $lang = array(
 	// 01-login.php
 	'username01' => 'Utilisateur',
 	'password01' => 'Mot de passe',
+	
 	// 03-functions.php
 	'jumpmessage03' => 'Aller au message :',
 	'cuser03' => 'Utilisateur',
@@ -36,6 +37,7 @@ $lang = array(
 	'subject03' => 'Sujet',
 	'sascore03' => 'Score SA',
 	'mcpscore03' => 'Score MCP',
+	
 	// 04-detail.php
 	'receivedon04' => 'Reçu le',
 	'receivedby04' => 'Reçu par',
@@ -79,11 +81,13 @@ $lang = array(
 	'actions04' => 'Action(s)',
 	'quarcmdres04' => 'Résultat des commandes de quarantaine',
 	'resultmsgs04' => 'Résultat du message',
+	
 	// 05-status.php
 	'last05' => 'Derniers',
 	'messages05' => 'Messages',
 	'refevery05' => 'Rafraichir toutes les',
 	'seconds05' => 'segunds',
+	
 	// 06 - viewmail.php
 	'msgviewer06' => 'Visualisation d\'un message',
 	'releasemsg06' => 'Libérer ce message',
@@ -93,6 +97,44 @@ $lang = array(
 	'from06' => 'De :',
 	'to06' => 'À :',
 	'subject06' => 'Sujet :',
+	
+	// Added in 2015-06-22
+    // 03-functions.php
+    'reports03' => 'Rapports',
+    'toolslinks03' => 'Outils/Liens',
+    'softwareversions03' => 'Version des logiciels',
+    'documentation03' => 'Documentation',
+    'logout03' => 'Déconnexion',
+    'pggen03' => 'Page générée en',
+    'seconds03' => 'seconde(s)',
+    'disppage03' => 'Affichage de la page',
+    'of03' => 'de',
+    'records03' => 'Enregistrements',
+    'to0203' => 'à', // This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."	
+
+    // 07-lists.php
+    'addwlbl07' => 'Ajouter à la Liste Blanche/Liste Noire',
+    'from07' => 'De',
+    'to07' => 'À',
+    'list07' => 'Liste',
+    'action07' => 'Action',
+    'wl07' => 'Liste Blanche',
+    'bl07' => 'Liste Noire',
+    'reset07' => 'Reset',
+    'add07' => 'Ajouter',
+    'delete07' => 'Effacer',
+    
+    // 08-quarantine.php
+    'folder08' => 'Dossier',
+    'items08' => 'éléments'
+	
+	// 09-filter.inc
+    'activefilters09' => 'Filtre actif',
+    'none09' => 'Aucun',
+    'addfilter09' => 'Ajouter un filtre',
+    'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
+    'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',
+	
 	// 99 - General
 	'i18_missing' => 'Non traduit en français',
 	'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
