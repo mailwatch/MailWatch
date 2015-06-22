@@ -710,8 +710,13 @@ function html_end($footer = "")
     echo '</table>' . "\n";
     echo $footer;
     echo '<p class="center" style="font-size:13px"><i>' . "\n";
-    page_creation_timer();
+    if (DEBUG) { page_creation_timer(); }
     echo '</i></p>' . "\n";
+    echo '<p class="center" style="font-size:13px">' . "\n";
+    echo 'MailWatch for MailScanner v';
+    echo mailwatch_version();
+    echo ' - @ 2006-2015';
+    echo '</p>' . "\n";
     echo '</body>' . "\n";
     echo '</html>' . "\n";
 }
