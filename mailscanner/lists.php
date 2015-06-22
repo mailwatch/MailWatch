@@ -198,7 +198,7 @@ if ($url_submit == $lang['add07']) {
 }
 
 // Delete
-if ($url_submit == 'Delete' ) {
+if ($url_submit == 'Delete') {
     $id = $url_id;
     switch ($url_list) {
         case 'w':
