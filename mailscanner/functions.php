@@ -100,7 +100,7 @@ if (!defined('VIRUS_REGEX')) {
             define('VIRUS_REGEX', '/^Dummy$/');
             break;
         case 'sophos':
-            define('VIRUS_REGEX', '/(>>>) Virus \'(\S+)\' '.$lang['found03'].'/');
+            define('VIRUS_REGEX', '/(>>>) Virus \'(\S+)\' found'/');
             break;
         case 'sophossavi':
             define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
