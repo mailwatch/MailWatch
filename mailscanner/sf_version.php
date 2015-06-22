@@ -63,22 +63,30 @@ if ($_SESSION['user_type'] != 'A') {
     echo '<td>' . "\n";
 
     echo '<br>' . "\n";
-    echo 'MailWatch Version = ' . $mailwatch_version . '<br>' . "\n";
+    echo 'MailWatch version: ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MailScanner Version = ' . $mailscanner_version . '<br>' . "\n";
+    echo 'MailScanner version: ' . $mailscanner_version . '<br>' . "\n";
+    echo '<br>';
+    echo 'ClamAV version: ';
+    passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
     echo '<br>' . "\n";
-    echo 'PHP Version = ' . $php_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MySQL Version = ' . $mysql_version . '<br>' . "\n";
+    echo 'SpamAssassin version: ';
+    passthru("spamassassin -V | cut -d' ' -f3 | tr '\\\n' ' ' | cut -d' ' -f1");
     echo '<br>' . "\n";
-    echo 'GeoIP Database Version = ';
+    echo '<br>' . "\n";
+    echo 'PHP version: ' . $php_version . '<br>' . "\n";
+    echo '<br>' . "\n";
+    echo 'MySQL version: ' . $mysql_version . '<br>' . "\n";
+    echo '<br>' . "\n";
+    echo 'GeoIP Database version: ';
     if (FALSE != $geoipv4_version) {
         echo $geoipv4_version;
     } else {
         echo 'No database downloaded';
     }
     echo "<br>\n<br>\n";
-    echo 'GeoIPv6 Database Version = ';
+    echo 'GeoIPv6 Database version: ';
     if (FALSE != $geoipv6_version) {
         echo $geoipv6_version;
     } else {
