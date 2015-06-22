@@ -99,5 +99,3 @@ $lang = array(
 );
 
 return $lang;
-
-?>
