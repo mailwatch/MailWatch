@@ -63,7 +63,7 @@ $mta = get_conf_var('mta');
 // The sql command to pull the data
 $sql = "
  SELECT
-  DATE_FORMAT(timestamp, '" . date_format . " " . time_format . "') AS '" . $lang['receivedon04'] . ":',
+  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS '" . $lang['receivedon04'] . ":',
   hostname AS '" . $lang['receivedby04'] . ":',
   clientip AS '" . $lang['receivedfrom04'] . ":',
   headers '" . $lang['receivedvia04'] . ":',
