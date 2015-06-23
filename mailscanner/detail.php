@@ -120,10 +120,10 @@ $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
-    $listurl = "lists.php?host=" . $row['Received from:'] . "&amp;from=" . $row['From:'] . "&amp;to=" . $row['To:'];
+    $listurl = "lists.php?host=" . $row[$lang['receivedfrom04']] . "&amp;from=" . $row[$lang['from04']] . "&amp;to=" . $row[$lang['to04']];
     for ($f = 0; $f < mysql_num_fields($result); $f++) {
         $fieldn = mysql_field_name($result, $f);
-        if ($fieldn == $lang['receivedfrom04'] . ":") {
+        if ($fieldn == $lang['receivedfrom04']) {
             $output = "<table class=\"sa_rules_report\" width=\"100%\" cellspacing=0 cellpadding=0><tr><td>" . $row[$f] . "</td>";
             if (LISTS) {
                 $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">" . $lang['addwl04'] . "</a>&nbsp;|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">" . $lang['addbl04'] . "</a>]</td>";
@@ -178,11 +178,11 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                 $row[$f] = "127.0.0.1"; // Must be local mailer (Exim)
             }
         }
-        if ($fieldn == "Report:") {
+        if ($fieldn == $lang['report04']) {
             $row[$f] = nl2br(str_replace(",", "<br>", htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", "<br>", $row[$f]);
         }
-        if ($fieldn == $lang['from04'] . ":") {
+        if ($fieldn == $lang['from04']) {
             $row[$f] = htmlentities($row[$f]);
             $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
             if (LISTS) {
@@ -191,11 +191,11 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
         }
-        if ($fieldn == $lang['to04'] . ":") {
+        if ($fieldn == $lang['to04']) {
             $row[$f] = htmlspecialchars($row[$f]);
             $row[$f] = str_replace(",", "<br>", $row[$f]);
         }
-        if ($fieldn == $lang['subject04'] .":") {
+        if ($fieldn == $lang['subject04']) {
             $row[$f] = decode_header($row[$f]);
             if (function_exists('mb_check_encoding')) {
                 if (!mb_check_encoding($row[$f], 'UTF-8')) {
@@ -209,7 +209,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
         if ($fieldn == $lang['spamrep04']) {
             $row[$f] = format_spam_report($row[$f]);
         }
-        if ($fieldn == $lang['size04'] . ":") {
+        if ($fieldn == $lang['size04']) {
             $row[$f] = format_mail_size($row[$f]);
         }
         if ($fieldn == $lang['msgheaders04'] ) {
@@ -227,7 +227,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             }
             $row[$f] = preg_replace("/<br \/>/", "<br>", $row[$f]);
         }
-        if ($fieldn == $lang['saautolearn04'] . ":") {
+        if ($fieldn == $lang['saautolearn04']) {
             if (($autolearn = sa_autolearn($row[$f])) !== false) {
                 $row[$f] = $yes . " ($autolearn)";
             } else {
@@ -246,7 +246,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     );
             }
         }
-        if ($fieldn == $lang['hscospam04'] . ":" && $row[$f] == $yes) {
+        if ($fieldn == $lang['hscospam04'] && $row[$f] == $yes) {
             // Display actions if high-scoring
             $row[$f] = $row[$f] . "&nbsp;&nbsp;" . $lang['actions04'] . ": " . str_replace(
                     " ",
