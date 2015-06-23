@@ -100,7 +100,7 @@ if (!defined('VIRUS_REGEX')) {
             define('VIRUS_REGEX', '/^Dummy$/');
             break;
         case 'sophos':
-            define('VIRUS_REGEX', '/(>>>) Virus \'(\S+)\' found/');
+            define('VIRUS_REGEX', '/(>>>) Virus \'(\S+)\' '.$lang['found03'].'/');
             break;
         case 'sophossavi':
             define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
@@ -792,7 +792,6 @@ function sa_autolearn($spamreport)
 
 function format_spam_report($spamreport)
 {
-    global $lang;
     // Run regex against the MailScanner spamreport picking out the (score=xx, required x, RULES...)
     if (preg_match('/\s\((.+?)\)/i', $spamreport, $sa_rules)) {
         // Get rid of the first match from the array
@@ -815,7 +814,7 @@ function format_spam_report($spamreport)
         }
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
-            return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . $lang['score03'] . '</th><th>' . $lang['matrule03'] . '</th><th>' . $lang['description03'] . '</th></tr>' . implode(
+            return '<table class="sa_rules_report" cellspacing="2">' . '<tr><Th>Score</th><th>Matching Rule</th><th>Description</th></tr>' . implode(
                 "\n",
                 $output_array
             ) . '</table>' . "\n";
@@ -859,7 +858,6 @@ function return_sa_rule_desc($rule)
 
 function format_mcp_report($mcpreport)
 {
-    global $lang;
     // Clean-up input
     $mcpreport = preg_replace('/\n/', '', $mcpreport);
     $mcpreport = preg_replace('/\t/', ' ', $mcpreport);
@@ -885,7 +883,7 @@ function format_mcp_report($mcpreport)
         }
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
-            return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . $lang['score03'] . '</th><th>' . $lang['matrule03'] . '</th><th>' . $lang['description03'] . '</th></tr>' . implode(
+            return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>Score</th><th>Matching Rule</th><th>Description</th></tr>' . implode(
                 "\n",
                 $output_array
             ) . '</table>' . "\n";
