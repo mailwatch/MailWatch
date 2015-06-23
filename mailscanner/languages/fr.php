@@ -1,7 +1,7 @@
 <?php
 
 /* language/fr.php */
-/* v0.0.8 */
+/* v0.0.9 */
 
 $lang = array(
 	// 01-login.php
@@ -132,7 +132,7 @@ $lang = array(
     'activefilters09' => 'Filtre actif',
     'none09' => 'Aucun',
     'addfilter09' => 'Ajouter un filtre',
-    'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
+    'loadsavef09' => 'Ouvrir\/Enregistrer un filtre',
     'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',
 	
 	// 99 - General
