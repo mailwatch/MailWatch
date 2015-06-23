@@ -43,11 +43,12 @@ if ($_SESSION['user_type'] != 'A') {
 } else {
     html_start("SpamAssassin Rule Description Update", 0, false, false);
     echo "<table class=\"boxtable\" width=\"100%\">";
+    echo "<tr><th>SpamAssassin Rule Description Update</th></tr>";
     echo "<tr>";
     echo "  <td>";
     echo "   This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.<br>";
     echo "   <br>";
-    echo "   This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br>";
+    echo "   <br>This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br>";
     echo "  </td>";
     echo "</tr>";
     echo " <tr>";
