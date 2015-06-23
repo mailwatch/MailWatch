@@ -1,7 +1,7 @@
 <?php
 
 /* language/fr.php */
-/* v0.0.9 */
+/* v0.1.0 */
 
 $lang = array(
 	// 01-login.php
@@ -126,18 +126,19 @@ $lang = array(
     
     // 08-quarantine.php
     'folder08' => 'Dossier',
-    'items08' => 'éléments'
+    'items08' => 'éléments',
 	
 	// 09-filter.inc
     'activefilters09' => 'Filtre actif',
     'none09' => 'Aucun',
     'addfilter09' => 'Ajouter un filtre',
-    'loadsavef09' => 'Ouvrir\/Enregistrer un filtre',
+    'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
     'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',
 	
 	// 99 - General
 	'i18_missing' => 'Non traduit en français',
 	'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
-);
+
+	);
 
 return $lang;
