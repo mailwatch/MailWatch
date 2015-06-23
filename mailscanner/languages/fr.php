@@ -1,7 +1,7 @@
 <?php
 
 /* language/fr.php */
-/* v0.1.0 */
+/* v0.1.1 */
 
 $lang = array(
 	// 01-login.php
@@ -24,7 +24,7 @@ $lang = array(
 	'clean03' => 'Bon',
 	'viruses03' => 'Virussé',
 	'blockedfiles03' => 'Fichier bloqué',
-	'others03' => 'Otherd',
+	'others03' => 'Autres',
 	'hscospam03' => 'Spam à score très haut',
 	'hscomcp03' => 'MCP à score très haut',
 	'recentmessages03' => 'Messages récent',
@@ -86,7 +86,7 @@ $lang = array(
 	'last05' => 'Derniers',
 	'messages05' => 'Messages',
 	'refevery05' => 'Rafraichir toutes les',
-	'seconds05' => 'segunds',
+	'seconds05' => 'seconde(s)',
 	
 	// 06 - viewmail.php
 	'msgviewer06' => 'Visualisation d\'un message',
@@ -109,7 +109,7 @@ $lang = array(
     'seconds03' => 'seconde(s)',
     'disppage03' => 'Affichage de la page',
     'of03' => 'de',
-    'records03' => 'Enregistrements',
+    'records03' => 'Enregistrements de',
     'to0203' => 'à', // This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."	
 
     // 07-lists.php
@@ -120,12 +120,13 @@ $lang = array(
     'action07' => 'Action',
     'wl07' => 'Liste Blanche',
     'bl07' => 'Liste Noire',
-    'reset07' => 'Reset',
+    'reset07' => 'Réinitialiser',
     'add07' => 'Ajouter',
     'delete07' => 'Effacer',
     
     // 08-quarantine.php
-    'folder08' => 'Dossier',
+    'folder08' => 'Dossier de quarantaine',
+    'folder09' => 'Dossier :',
     'items08' => 'éléments',
 	
 	// 09-filter.inc
