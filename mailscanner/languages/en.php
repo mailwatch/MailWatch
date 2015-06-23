@@ -175,6 +175,27 @@ $lang = array(
     'filters12' => 'Filters',
     'newuser12' => 'New User',
     'forallusers12' => 'For all users other than Administrator you must use an email address for the username',
+    'username0212' => 'Username:',
+    'name12' => 'Name:',
+    'password12' => 'Password:',
+    'usertype12' => 'User Type:',
+    'user12' => 'User',
+    'domainadmin12' => 'Domain Administrator',
+    'admin12' => 'Administrator',
+    'quarrep12' => 'Quarantine Report:',
+    'senddaily12' => 'Send Daily Report?:',
+    'quarreprec12' => 'Quarantine Report Recipient:',
+    'overrec12' => 'Override quarantine report recipient?<BR>(uses your username if blank)',
+    'scanforspam12' => 'Scan for Spam:',
+    'scaneforspam12' => 'Scan e-mail for Spam?',
+    'pontspam12' => 'Spam Score:',
+    'hpontspam12' => 'High Spam Score:',
+    'usedefault12' => 'Use Default',
+    'action_0212' => 'Action:',
+    'reset12' => 'Reset',
+    'areusuredel12' => 'Are you sure you want to delete user',
+    'errorpass12' => 'Passwords do not match',
+
 
     );
 

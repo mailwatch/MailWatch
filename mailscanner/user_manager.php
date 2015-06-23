@@ -45,7 +45,7 @@ if ($_SESSION['user_type'] == 'A') {
     <script type="text/javascript">
         <!--
         function delete_user(id) {
-            var yesno = confirm("Are you sure you want to delete user " + id + "?");
+            var yesno = confirm("<?php echo $lang['areusuredel12']; ?>" + id + "?");
             if (yesno == true) {
                 window.location = "?action=delete&id=" + id;
             } else {
@@ -82,27 +82,27 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
                     echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
                     echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . $lang['newuser12'] . "  <br> " . $lang['forallusers12'] . "</TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Username: <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Name:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">User Type:</TD>
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['username0212'] . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['name12'] . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['password12'] . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['password12'] . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['usertype12'] . "</TD>
     <TD><SELECT NAME=\"type\">
-         <OPTION VALUE=\"U\">User</OPTION>
-         <OPTION VALUE=\"D\">Domain Administrator</OPTION>
-         <OPTION VALUE=\"A\">Administrator</OPTION>
+         <OPTION VALUE=\"U\">" . $lang['user12'] ."</OPTION>
+         <OPTION VALUE=\"D\">" . $lang['domainadmin12'] . "</OPTION>
+         <OPTION VALUE=\"A\">" . $lang['admin12'] . "</OPTION>
         </SELECT></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Quarantine Report:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\"> <font size=-2>Send Daily Report?</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Quarantine Report Recipient:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\"><br><font size=\"-2\">Override quarantine report recipient?<BR>(uses your username if blank)</font></TD>\n";
-                    echo " <TR><TD CLASS=\"heading\">Scan for Spam:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" CHECKED> <font size=\"-2\">Scan e-mail for Spam?</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=Use Default</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">High Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=Use Default</font></TD></TR>\n";
-                    echo "<TR><TD CLASS=\"heading\">Action:</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"Reset\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Create\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['quarrep12'] . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\"> <font size=-2>" . $lang['senddaily12'] . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['quarreprec12'] . "</td><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\"><br><font size=\"-2\">" . $lang['overrec12'] . "</font></TD>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['scanforspam12'] . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" CHECKED> <font size=\"-2\">" . $lang['scanespam12'] . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['pontspam12'] . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . $lang['usedefault12'] . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['hpontspam12'] . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . $lang['usedefault12'] . "</font></TD></TR>\n";
+                    echo "<TR><TD CLASS=\"heading\">" . $lang['action_0212'] . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . $lang['reset12'] . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Create\"></TD></TR>\n";
                     echo "</TABLE></FORM><BR>\n";
                 } else {
                     if ($_GET['password'] != $_GET['password1']) {
 
-                        echo "Passwords do not match";
+                        echo $lang['errorpass12'] ;
                     } else {
 
                         $n_username = mysql_real_escape_string($_GET['username']);
@@ -187,7 +187,7 @@ if ($_SESSION['user_type'] == 'A') {
                 } else {
                     // Do update
                     if ($_GET['password'] != $_GET['password1']) {
-                        echo "Passwords do not match";
+                        echo $lang['errorpass12'];
                     } else {
                         $do_pwd = false;
                         $key = mysql_real_escape_string($_GET['key']);
