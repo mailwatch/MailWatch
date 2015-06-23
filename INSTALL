@@ -125,6 +125,8 @@ Copy SQLBlackWhiteList.pm from the folder MailScanner_perl_scripts to /usr/share
 Then edit SQLBlackWhitelist.pm and change the connection string in the 
 CreateList subroutine to match MailWatch.pm.
 
+On Debian, new &SQL modules need Perl Encoding::FixLatin lib who is not packaged on Debian/Ubuntu. If Mailscanner crash at restart (see log), install the Perl lib manualy via CPAN (http://www.cpan.org).
+
 - Move the Bayesian Databases and set-up permissions (skip this if you don't use bayes).
 
 Edit /etc/MailScanner/spam.assassin.prefs.conf and set:
@@ -236,11 +238,13 @@ Note: mailq.php re-creates all entries on each run, so for busy sites you will p
 
 You can get MailWatch to watch your sendmail logs and store all message relay information which is then displayed on the 'Message Detail' page which helps debugging and makes it easy for a Helpdesk to actually see where a message was delivered to by the MTA and what the response back was (e.g. the remote queue id etc.).
 
-# cp tools/Sendmail_relay/sendmail_relay.php /usr/local/bin
-# cp tools/Sendmail_relay/sendmail_relay.init /etc/rc.d/init.d/
-# chmod 777 /etc/rc.d/init.d/sendmail_relay.init
-# /etc/rc.d/init.d/sendmail_relay.init start
-# ln -s /etc/rc.d/ini.d/sendmail_relay.init /etc/rc.2/S30sendmail_relay.init
+# cp tools/Sendmail_relay/sendmail_relay.php /usr/local/bin/.
+# cp tools/Sendmail_relay/sendmail_relay.init /etc/init.d/sendmail_relay
+# chmod +x /etc/init.d/sendmail_relay
+# /etc/rc.d/init.d/sendmail_relay start
+# update-rc.d sendmail_relay.init defaults
+
+ATTENTION: By default, sendmail_relay.php run as root user. Change init script user to your Apache or MTA user and check right of /var/log/mail.log.
 
 ----------------------------------------------------------
 Optional for item Postfix

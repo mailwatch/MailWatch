@@ -239,7 +239,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="MailWatch for MailScanner"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
@@ -709,9 +709,16 @@ function html_end($footer = "")
     echo '</tr>' . "\n";
     echo '</table>' . "\n";
     echo $footer;
-    echo '<p class="center" style="font-size:13px"><i>' . "\n";
-    page_creation_timer();
-    echo '</i></p>' . "\n";
+    if (DEBUG) {
+       echo '<p class="center" style="font-size:13px"><i>' . "\n";
+       page_creation_timer();
+       echo '</i></p>' . "\n";
+    }
+    echo '<p class="center" style="font-size:13px">' . "\n";
+    echo 'MailWatch for MailScanner v';
+    echo mailwatch_version();
+    echo ' - @ 2006-2015';
+    echo '</p>' . "\n";
     echo '</body>' . "\n";
     echo '</html>' . "\n";
 }

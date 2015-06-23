@@ -40,6 +40,11 @@
 // Debug messages
 define('DEBUG', false);
 
+// Define language
+// https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+// Currently supported (en, fr, pt)
+define('LANG','en');
+
 // Database settings
 //
 // As this file might be publically readable. It might be very userful to
@@ -97,6 +102,12 @@ define('SA_DIR','/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spam.assassin.prefs.conf');
 define('TEMP_DIR', '/tmp/');
+
+// Define MailWatch logo name
+define('MW_LOGO', 'mailwatch-logo.png');
+
+// Define MailScanner logo name
+define('MS_LOGO', 'mailscannerlogo.gif');
 
 // Log file location
 define('MS_LOG', '/var/log/mail.log');
