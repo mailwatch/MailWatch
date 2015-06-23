@@ -38,7 +38,7 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-html_start("User Manager", 0, false, false);
+html_start($lang['usermgnt12'], 0, false, false);
 
 if ($_SESSION['user_type'] == 'A') {
     ?>
@@ -81,7 +81,7 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"new\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
                     echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-                    echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">New User  <br> For all users other than Administrator you must use an email address for the username</TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . $lang['newuser12'] . "  <br> " . $lang['forallusers12'] . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">Username: <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">Name:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\"></TD></TR>\n";
@@ -293,8 +293,8 @@ if ($_SESSION['user_type'] == 'A') {
     }
     $sql = "
 SELECT
- username AS 'Username',
- fullname AS 'Full Name',
+ username AS '" . $lang['username12'] . "',
+ fullname AS '" . $lang['fullname12'] . "',
  CASE
   WHEN type = 'A' THEN 'Administrator'
   WHEN type = 'D' THEN 'Domain Administrator'
@@ -302,24 +302,24 @@ SELECT
   WHEN type = 'R' THEN 'User (Regexp)'
  ELSE
   'Unknown Type'
- END AS 'Type',
+ END AS '" . $lang['type12'] . "',
  CASE
   WHEN noscan = 1 THEN 'N'
   WHEN noscan = 0 THEN 'Y'
  ELSE
   'Y'
- END AS 'Spam Check',
-  spamscore AS 'Spam Score',
-  highspamscore AS 'High Spam Score',
- CONCAT('<a href=\"?action=edit&amp;id=',username,'\">Edit</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">Delete</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">Filters</a>') AS 'Actions'
+ END AS '" . $lang['spamcheck12'] . "',
+  spamscore AS '" . $lang['spamscore12'] . "',
+  highspamscore AS '" . $lang['spamhscore12'] . "',
+ CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . $lang['edit12'] . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . $lang['delete12'] . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . $lang['filters12'] . "</a>') AS '" . $lang['action12'] . "'
 FROM
  users
 ORDER BY
  username
 ";
-    dbtable($sql, 'User Management');
+    dbtable($sql, $lang['usermgnt12']);
     echo "<br>\n";
-    echo "<a href=\"?action=new\">New User</a>\n";
+    echo "<a href=\"?action=new\">" . $lang['newuser12'] . "</a>\n";
 } else {
     if (!isset($_GET['submit'])) {
         $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . mysql_real_escape_string($_SESSION['myusername']) . "'";

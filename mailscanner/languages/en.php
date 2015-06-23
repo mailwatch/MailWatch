@@ -39,31 +39,31 @@ $lang = array(
     'found03' => 'found',
 
      // 04-details.php
-    'receivedon04' => 'Received on',
-    'receivedby04' => 'Received by',
-    'receivedfrom04' => 'Received from',
-    'receivedvia04' => 'Received Via',
-    'msgheaders04' => 'Message Headers',
-    'from04' => 'From',
-    'to04' => 'To',
-    'size04' => 'Size',
-    'subject04' => 'Subject',
+    'receivedon04' => 'Received on:',
+    'receivedby04' => 'Received by:',
+    'receivedfrom04' => 'Received from:',
+    'receivedvia04' => 'Received Via:',
+    'msgheaders04' => 'Message Headers:',
+    'from04' => 'From:',
+    'to04' => 'To:',
+    'size04' => 'Size:',
+    'subject04' => 'Subject:',
     'hdrantivirus04' => 'Anti-Virus/Dangerous Content Protection',
-    'blkfile04' => 'Blocked File',
-    'otherinfec04' => 'Other Infection',
-    'hscospam04' => 'High Score Spam',
-    'listedrbl04' => 'Listed in RBL',
-    'spamwl04' => 'SPAM Whitelisted',
-    'spambl04' => 'SPAM Blaclisted',
-    'saautolearn04' => 'Spamassassin Autolearn',
-    'sascore04' => 'Spamassassin Score',
-    'spamrep04' => 'Spam Report',
+    'blkfile04' => 'Blocked File:',
+    'otherinfec04' => 'Other Infection:',
+    'hscospam04' => 'High Score Spam:',
+    'listedrbl04' => 'Listed in RBL:',
+    'spamwl04' => 'SPAM Whitelisted:',
+    'spambl04' => 'SPAM Blaclisted:',
+    'saautolearn04' => 'Spamassassin Autolearn:',
+    'sascore04' => 'Spamassassin Score:',
+    'spamrep04' => 'Spam Report:',
     'hdrmcp04' => 'Message Content Protection (MCP)',
-    'highscomcp04' => 'High Scoring MCP',
-    'mcpwl04' => 'MCP Whitelisted',
-    'mcpbl04' => 'MCP Blaclisted',
-    'mcpscore04' => 'MCP Score',
-    'mcprep04' => 'MCP Report',
+    'highscomcp04' => 'High Scoring MCP:',
+    'mcpwl04' => 'MCP Whitelisted:',
+    'mcpbl04' => 'MCP Blaclisted:',
+    'mcpscore04' => 'MCP Score:',
+    'mcprep04' => 'MCP Report:',
     'ipaddress04' => 'IP Address',
     'country04' => 'Country',
     'all04' => 'All',
@@ -128,7 +128,7 @@ $lang = array(
 
     // 08-quarantine.php
     'folder08' => 'Folder',
-    'items08' => 'items'
+    'items08' => 'items',
 
     // 09-filter.inc
     'activefilters09' => 'Active Filters',
@@ -136,6 +136,45 @@ $lang = array(
     'addfilter09' => 'Add Filter',
     'loadsavef09' => 'Load/Save Filter',
     'tosetdate09' => 'To set date you must use YYYY-mm-dd format',
+
+    // Added in 2015-06-23
+
+    // 04-details.php
+    'quarantine04' => 'Quarentine',
+
+    // 03-functons.php
+    'score03' => 'Score',
+    'matrule03' => 'Matching Rule',
+    'description03' => 'Description',
+
+    // 10-other.php
+    'tools10' => 'Tools',
+    'usermgnt10' => 'User Management',
+    'viewconfms10' => 'View MailScanner Configuration',
+    'editmsrules10' => 'Edit MailScanner Rulesets',
+    'updatesadesc10' => 'Update SpamAssassin Rule Descriptions',
+    'updatemcpdesc10' => 'Update MCP Rule Descriptions',
+    'updategeoip10' => 'Update GeoIP Database',
+
+    // 11-sf_versions.php
+    'softver11' => 'Software Versions',
+    'nodbdown11' => 'No database downloaded',
+    'version11' => 'Version',
+
+    // 12-user_manager.php
+    'usermgnt12' => 'User Management',
+    'username12' => 'Username',
+    'fullname12' => 'Full Name',
+    'type12' => 'Type',
+    'spamcheck12' => 'Spam Check',
+    'spamscore12' => 'Spam Score',
+    'spamhscore12' => 'High Spam Score',
+    'action12' => 'Actions',
+    'edit12' => 'Edit',
+    'delete12' => 'Delete',
+    'filters12' => 'Filters',
+    'newuser12' => 'New User',
+    'forallusers12' => 'For all users other than Administrator you must use an email address for the username',
 
     );
 
