@@ -261,17 +261,17 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td align="left" valign="top">' . "\n";
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
     echo '    <tr> <th colspan="2">' . $lang['colorcodes03'] . '</th> </tr>' . "\n";
-    echo '    <tr> <td>' . $lang['ccodes01_03'] . '</TD> <td class="infected"></TD> </TR>' . "\n";
+    echo '    <tr> <td>' . $lang['badcontentinfected03'] . '</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>' . "\n";
     echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
         echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
         echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
     }
-    echo '    <tr> <td>' . $lang['ccodes02_03'] . '</td> <td class="whitelisted"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . $lang['ccodes03_03'] . '</td> <td class="blacklisted"></td> </tr>' . "\n";
-    echo '        <tr> <td>' . $lang['ccodes04_03'] . '</td> <td class="notscanned"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . $lang['ccodes05_03'] . '</td> <td></td> </tr>' . "\n";
+    echo '    <tr> <td>' . $lang['whitelisted03'] . '</td> <td class="whitelisted"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . $lang['blacklisted03'] . '</td> <td class="blacklisted"></td> </tr>' . "\n";
+    echo '        <tr> <td>' . $lang['notverified03'] . '</td> <td class="notscanned"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . $lang['clean03'] . '</td> <td></td> </tr>' . "\n";
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
 
@@ -557,7 +557,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             ) . '</td><td align="right">' . format_mail_size(
                 $row->size
             ) . '</td></tr>' . "\n";
-        echo ' <tr><td>' . $lang['clean03'] . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . $lang['cleans03'] . ':</td><td align="right">' . number_format(
                 $row->clean
             ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
         echo ' <tr><td>' . $lang['viruses03'] . ':</td><td align="right">' . number_format(

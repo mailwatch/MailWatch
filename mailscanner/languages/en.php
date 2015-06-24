@@ -12,15 +12,15 @@ $lang = array(
     'cuser03' => 'User',
     'cst03' => 'System Time',
     'colorcodes03' => 'Color Codes',
-    'ccodes01_03' => 'Bad Contect/Infected',
-    'ccodes02_03' => 'Whitelisted',
-    'ccodes03_03' => 'Blacklisted',
-    'ccodes04_03' => 'Not Verified',
-    'ccodes05_03' => 'Clean',
+    'badcontentinfected03' => 'Bad Contect/Infected',
+    'whitelisted03' => 'Whitelisted',
+    'blacklisted03' => 'Blacklisted',
+    'notverified03' => 'Not Verified',
+    'clean03' => 'Clean',
     'freedspace03' => 'Free Disk Space',
     'todaystotals03' => 'Today\'s Totals',
     'processed03' => 'Processed',
-    'clean03' => 'Clean',
+    'cleans03' => 'Clean',
     'viruses03' => 'Viruses',
     'blockedfiles03' => 'Blocked Files',
     'others03' => 'Otherd',
@@ -128,6 +128,7 @@ $lang = array(
 
     // 08-quarantine.php
     'folder08' => 'Folder',
+    'folder_0208' => 'Folder',
     'items08' => 'items',
 
     // 09-filter.inc

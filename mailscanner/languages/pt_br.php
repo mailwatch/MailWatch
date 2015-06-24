@@ -13,15 +13,15 @@ $lang = array(
     'cuser03' => 'Usu&aacute;rio',
     'cst03' => 'Hora do Sistema',
     'colorcodes03' => 'C&oacute;digo de Cores',
-    'ccodes01_03' => 'Conte&uacute;do Bloq./Infectado',
-    'ccodes02_03' => 'Lista Branca',
-    'ccodes03_03' => 'Lista Negra',
-    'ccodes04_03' => 'N&atilde;o Verificado',
-    'ccodes05_03' => 'Limpo',
+    'badcontentinfected03' => 'Conte&uacute;do Bloq./Infectado',
+    'whitelisted03' => 'Lista Branca',
+    'blacklisted03' => 'Lista Negra',
+    'notverified03' => 'N&atilde;o Verificado',
+    'clean03' => 'Limpo',
     'freedspace03' => 'Espaço em Disco Livre',
     'todaystotals03' => 'Totais do Dia',
     'processed03' => 'Processados',
-    'clean03' => 'Limpos',
+    'cleans03' => 'Limpos',
     'viruses03' => 'Virus',
     'blockedfiles03' => 'Arquivos Bloqueados',
     'others03' => 'Outros',
@@ -129,6 +129,7 @@ $lang = array(
 
     // 08-quarantine.php
     'folder08' => 'Pasta',
+    'folder_0208' => 'Pasta',
     'items08' => 'itens',
 
     // 09-filter.inc

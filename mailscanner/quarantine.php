@@ -200,7 +200,7 @@ $sql .= "
   ORDER BY
    date DESC, time DESC
   ";
-            db_colorised_table($sql, $lang['folder08'] . ': ' . translateQuarantineDate($dir), true, true);
+            db_colorised_table($sql, $lang['folder_0208'] . ': ' . translateQuarantineDate($dir), true, true);
         } else {
             echo "No quarantined messages found\n";
         }
