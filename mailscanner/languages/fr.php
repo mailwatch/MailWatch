@@ -1,7 +1,7 @@
 <?php
 
-/* language/fr.php */
-/* v0.1.1 */
+/* languages/fr.php */
+/* v0.1.2 */
 
 $lang = array(
 	// 01-login.php
@@ -25,7 +25,7 @@ $lang = array(
 	'viruses03' => 'Virussé',
 	'blockedfiles03' => 'Fichier bloqué',
 	'others03' => 'Autres',
-	'hscospam03' => 'Spam à score très haut',
+	'hscospam03' => 'SPAM à score très haut',
 	'hscomcp03' => 'MCP à score très haut',
 	'recentmessages03' => 'Messages récent',
 	'lists03' => 'Listes',
@@ -39,31 +39,31 @@ $lang = array(
 	'mcpscore03' => 'Score MCP',
 	
 	// 04-detail.php
-	'receivedon04' => 'Reçu le',
-	'receivedby04' => 'Reçu par',
-	'receivedfrom04' => 'Reçu de',
-	'receivedvia04' => 'Reçu via',
-	'msgheaders04' => 'En-tête',
-	'from04' => 'De',
-	'to04' => 'À',
-	'size04' => 'Taille',
-	'subject04' => 'Sujet',
+	'receivedon04' => 'Reçu le :',
+	'receivedby04' => 'Reçu par :',
+	'receivedfrom04' => 'Reçu de :',
+	'receivedvia04' => 'Reçu via :',
+	'msgheaders04' => 'En-tête :',
+	'from04' => 'De :',
+	'to04' => 'À :',
+	'size04' => 'Taille :',
+	'subject04' => 'Sujet :',
 	'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
-	'blkfile04' => 'Fichier bloqué',
-	'otherinfec04' => 'Autre infection',
-	'hscospam04' => 'SPAM à score très haut',
-	'listedrbl04' => 'Listé en RBL',
-	'spamwl04' => 'SPAM en Liste Blanche',
-	'spambl04' => 'SPAM en Liste Noire',
-	'saautolearn04' => 'Auto aprentissage Spamassassin',
-	'sascore04' => 'Score Spamassassin',
-	'spamrep04' => 'Rapport de SPAM',
+	'blkfile04' => 'Fichier bloqué :',
+	'otherinfec04' => 'Autre infection :',
+	'hscospam04' => 'SPAM à score très haut :',
+	'listedrbl04' => 'Listé en RBL :',
+	'spamwl04' => 'SPAM en Liste Blanche :',
+	'spambl04' => 'SPAM en Liste Noire: ',
+	'saautolearn04' => 'Auto aprentissage Spamassassin :',
+	'sascore04' => 'Score Spamassassin :',
+	'spamrep04' => 'Rapport de SPAM :',
 	'hdrmcp04' => 'Protection des contenus (MCP)',
-	'highscomcp04' => 'MCP à score très haut',
-	'mcpwl04' => 'MCP en Liste Blanche',
-	'mcpbl04' => 'MCP en Liste Noire',
-	'mcpscore04' => 'Score MCP',
-	'mcprep04' => 'Rapport MCP',
+	'highscomcp04' => 'MCP à score très haut :',
+	'mcpwl04' => 'MCP en Liste Blanche :',
+	'mcpbl04' => 'MCP en Liste Noire :',
+	'mcpscore04' => 'Score MCP :',
+	'mcprep04' => 'Rapport MCP :',
 	'ipaddress04' => 'Adresse IP',
 	'country04' => 'Pays',
 	'all04' => 'Tous',
@@ -99,45 +99,105 @@ $lang = array(
 	'subject06' => 'Sujet :',
 	
 	// Added in 2015-06-22
-    // 03-functions.php
-    'reports03' => 'Rapports',
-    'toolslinks03' => 'Outils/Liens',
-    'softwareversions03' => 'Version des logiciels',
-    'documentation03' => 'Documentation',
-    'logout03' => 'Déconnexion',
-    'pggen03' => 'Page générée en',
-    'seconds03' => 'seconde(s)',
-    'disppage03' => 'Affichage de la page',
-    'of03' => 'de',
-    'records03' => 'Enregistrements de',
-    'to0203' => 'à', // This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."	
+	
+	// 03-functions.php
+	'reports03' => 'Rapports',
+	'toolslinks03' => 'Outils/Liens',
+	'softwareversions03' => 'Version des logiciels',
+	'documentation03' => 'Documentation',
+	'logout03' => 'Déconnexion',
+	'pggen03' => 'Page générée en',
+	'seconds03' => 'seconde(s)',
+	'disppage03' => 'Affichage de la page',
+	'of03' => 'de',
+	'records03' => 'Enregistrements de',
+	'to0203' => 'à', // This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."	
 
-    // 07-lists.php
-    'addwlbl07' => 'Ajouter à la Liste Blanche/Liste Noire',
-    'from07' => 'De',
-    'to07' => 'À',
-    'list07' => 'Liste',
-    'action07' => 'Action',
-    'wl07' => 'Liste Blanche',
-    'bl07' => 'Liste Noire',
-    'reset07' => 'Réinitialiser',
-    'add07' => 'Ajouter',
-    'delete07' => 'Effacer',
-    
-    // 08-quarantine.php
-    'folder08' => 'Dossier de quarantaine',
-    'folder09' => 'Dossier :',
-    'items08' => 'éléments',
+	// 07-lists.php
+	'addwlbl07' => 'Ajouter à la Liste Blanche/Liste Noire',
+	'from07' => 'De',
+	'to07' => 'À',
+	'list07' => 'Liste',
+	'action07' => 'Action',
+	'wl07' => 'Liste Blanche',
+	'bl07' => 'Liste Noire',
+	'reset07' => 'Réinitialiser',
+	'add07' => 'Ajouter',
+	'delete07' => 'Effacer',
+	
+	// 08-quarantine.php
+	'folder08' => 'Dossier de quarantaine',
+	'folder09' => 'Dossier :',
+	'items08' => 'éléments',
 	
 	// 09-filter.inc
-    'activefilters09' => 'Filtre actif',
-    'none09' => 'Aucun',
-    'addfilter09' => 'Ajouter un filtre',
-    'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
-    'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',
+	'activefilters09' => 'Filtre actif',
+	'none09' => 'Aucun',
+	'addfilter09' => 'Ajouter un filtre',
+	'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
+	'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',
+	
+	// Added in 2015-06-23
+
+	// 04-details.php
+	'quarantine04' => 'Quarantaine',
+
+	// 03-functons.php
+	'score03' => 'Score',
+	'matrule03' => 'Règle associée',
+	'description03' => 'Description',
+
+	// 10-other.php
+	'tools10' => 'Outils',
+	'usermgnt10' => 'Gestion des utilisateurs',
+	'viewconfms10' => 'Afficher la configuration de MailScanner',
+	'editmsrules10' => 'Editer les filtres MailScanner',
+	'updatesadesc10' => 'Mettre à jour les descriptions des règles SpamAssassin',
+	'updatemcpdesc10' => 'Mettre à jour les descriptions des règles MCP',
+	'updategeoip10' => 'Mettre à jour la base GeoIP',
+
+	// 11-sf_versions.php
+	'softver11' => 'Version des logiciels',
+	'nodbdown11' => 'Aucune base de données téléchargée',
+	'version11' => 'version',
+
+	// 12-user_manager.php
+	'usermgnt12' => 'Gestion des utilisateurs',
+	'username12' => 'Nom d\'utilisateur',
+	'fullname12' => 'Nom complet',
+	'type12' => 'Type',
+	'spamcheck12' => 'Vérifier les SPAM',
+	'spamscore12' => 'Score de SPAM',
+	'spamhscore12' => 'Score de SPAM à score très haut',
+	'action12' => 'Actions',
+	'edit12' => 'Editer',
+	'delete12' => 'Effacer',
+	'filters12' => 'Filtres',
+	'newuser12' => 'Nouveau utilisateur',
+	'forallusers12' => 'Pour tous les utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'utilisateur.',
+	'username0212' => 'Nom d\'utilisateur :',
+	'name12' => 'Nom :',
+	'password12' => 'Mot de passe :',
+	'usertype12' => 'Type d\'utilisateur :',
+	'user12' => 'Utilisateur :',
+	'domainadmin12' => 'Administrateur de Domaine',
+	'admin12' => 'Administrateur',
+	'quarrep12' => 'Rapport de quarantaine :',
+	'senddaily12' => 'Envoyer un rapport de SPAM ?',
+	'quarreprec12' => 'Destinataire pour le rapport de SPAM :',
+	'overrec12' => 'Remplacer le destinataire par défaut <BR>(utilise le nom d\'utilisateur par défaut si vide)',
+	'scanforspam12' => 'Scan des SPAM :',
+	'scaneforspam12' => 'Scan des E-Mail pour les SPAM ?',
+	'pontspam12' => 'Score de SPAM :',
+	'hpontspam12' => 'Score de SPAM à score très haut :',
+	'usedefault12' => 'Utiliser les réglages par défaut',
+	'action_0212' => 'Action :',
+	'reset12' => 'Réinitialiser',
+	'areusuredel12' => 'Voulez-vous vraiment effacer cet utilisateur ?',
+	'errorpass12' => 'Le mot de passe de correspond pas.',
 	
 	// 99 - General
-	'i18_missing' => 'Non traduit en français',
+	'i18_missing' => 'Non traduit en français', // To code - Printed if i18 item is missing in the coresponding language.
 	'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
 
 	);
