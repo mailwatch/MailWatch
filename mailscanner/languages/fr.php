@@ -1,27 +1,25 @@
 <?php
 
-$lang = array(
-    'i18_missing' => 'Non traduit en français,
-
+return array(
     // 01-login.php
     'username' => 'Utilisateur',
     'password' => 'Mot de passe',
-    
+    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Cr&eacute;ez un fichier de configuration conf.php.example et modifiez les param&egrave;tres de configuration comme n&eacute;cess',
+
     // 03-functions.php
-    'message01_03' => 'Impossible de lire le fichier conf.php - Cr&eacute;ez un fichier de configuration conf.php.example et modifiez les param&egrave;tres de configuration comme n&eacute;cess',
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',
     'cst03' => 'Heure syst&egrave;me',
     'colorcodes03' => 'Codes couleur',
-    'ccodes01_03' => 'Contenu dangereux/Infect&eacute;',
-    'ccodes02_03' => 'Liste Blanche',
-    'ccodes03_03' => 'Liste Noire',
-    'ccodes04_03' => 'Non v&eacute;rifi&eacute;',
-    'ccodes05_03' => 'Bon',
+    'badcontentinfected03' => 'Contenu dangereux/Infect&eacute;',
+    'whitelisted03' => 'Liste Blanche',
+    'blacklisted03' => 'Liste Noire',
+    'notverified03' => 'Non v&eacute;rifi&eacute;',
+    'clean03' => 'Bon',
     'freedspace03' => 'Espace disque libre',
     'todaystotals03' => 'Total aujourd\'hui',
     'processed03' => 'Trait&eacute;',
-    'clean03' => 'Bon',
+    'cleans03' => 'Bon',
     'viruses03' => 'Viruss&eacute;',
     'blockedfiles03' => 'Fichier bloqu&eacute;',
     'others03' => 'Otherd',
@@ -37,7 +35,7 @@ $lang = array(
     'subject03' => 'Sujet',
     'sascore03' => 'Score SA',
     'mcpscore03' => 'Score MCP',
-    
+
     // 04-detail.php
     'receivedon04' => 'Reçu le',
     'receivedby04' => 'Reçu par',
@@ -81,15 +79,14 @@ $lang = array(
     'actions04' => 'Action(s)',
     'quarcmdres04' => 'Quarantine Command Results',
     'resultmsgs04' => 'Result Messages',
-    
+
     // 05-status.php
     'last05' => 'Derniers',
     'messages05' => 'Messages',
     'refevery05' => 'Rafraichir tous les',
     'seconds05' => 'segunds',
-    
+
     // 06 - viewmail.php
-    
     'msgviewer06' => 'Message Viewer',
     'releasemsg06' => 'Lib&eacute;rer ce message',
     'deletemsg06' => 'Supprimer ce message',
@@ -97,9 +94,7 @@ $lang = array(
     'date06' => 'Date :',
     'from06' => 'De :',
     'to06' => 'A :',
-    'subject06' => 'Sujet :'
-    );
+    'subject06' => 'Sujet :',
 
-return $lang;
-    
-?>
+    'i18_missing' => 'Non traduit en français',
+);

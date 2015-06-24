@@ -17,6 +17,7 @@
  - Enable LDAP over SSL
  - Fix virus count sorting on "Virus Report"
  - Remove additional slashes in "SpamAssassin Rule Description Update"
+ - Adding translation to user interface
 
 1.2.0 - Beta 8
 -----------

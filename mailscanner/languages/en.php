@@ -1,13 +1,12 @@
 <?php
 
-$lang = array(
-
-     // 01-login.php
+return array(
+    // 01-login.php
     'username' => 'User',
     'password' => 'Password',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
-     // 03-funtions.php
+    // 03-funtions.php
     'jumpmessage03' => 'Go to message:',
     'cuser03' => 'User',
     'cst03' => 'System Time',
@@ -38,7 +37,7 @@ $lang = array(
     'mcpscore03' => 'MCP Score',
     'found03' => 'found',
 
-     // 04-details.php
+    // 04-details.php
     'receivedon04' => 'Received on:',
     'receivedby04' => 'Received by:',
     'receivedfrom04' => 'Received from:',
@@ -82,14 +81,14 @@ $lang = array(
     'quarcmdres04' => 'Quarantine Command Results',
     'resultmsgs04' => 'Result Messages',
 
-     // 05-status.php
+    // 05-status.php
     'recentmsg05' => 'Recent Messages',
     'last05' => 'Last',
     'messages05' => 'Messages',
     'refevery05' => 'Refreshing every',
     'seconds05' => 'seconds',
 
-     // 06-viewmail.php
+    // 06-viewmail.php
     'msgviewer06' => 'Message Viewer',
     'releasemsg06' => 'Release this message',
     'deletemsg06' => 'Delete this message',
@@ -98,7 +97,6 @@ $lang = array(
     'from06' => 'From:',
     'to06' => 'To:',
     'subject06' => 'Subject:',
-
     // Added in 2015-06-22
 
     // 03-functions.php
@@ -113,7 +111,7 @@ $lang = array(
     'of03' => 'from',
     'records03' => 'Records',
     'to0203' => 'to',// This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
-   
+
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
     'from07' => 'From',
@@ -139,7 +137,6 @@ $lang = array(
     'tosetdate09' => 'To set date you must use YYYY-mm-dd format',
 
     // Added in 2015-06-23
-
     // 04-details.php
     'quarantine04' => 'Quarentine',
 
@@ -197,9 +194,5 @@ $lang = array(
     'areusuredel12' => 'Are you sure you want to delete user',
     'errorpass12' => 'Passwords do not match',
 
-
-    );
-
-return $lang;
-
-?>
+    'i18_missing' => 'No translation in English',
+);

@@ -1,14 +1,12 @@
 <?php
 
-$lang = array(
-
-    'i18_missing' => 'Não traduzido em português',
+return array(
     // 01-login.php
     'username' => 'Usu&aacute;rio',
     'password' => 'Senha',
+    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
     // 03-funtions.php
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
     'jumpmessage03' => 'Carregar a mensagem:',
     'cuser03' => 'Usu&aacute;rio',
     'cst03' => 'Hora do Sistema',
@@ -101,7 +99,6 @@ $lang = array(
     'subject06' => 'Assunto:',
 
     // Added in 2015-06-22
-
     // 03-functions.php
     'reports03' => 'Relatórios',
     'toolslinks03' => 'Ferramentas/Links',
@@ -140,7 +137,6 @@ $lang = array(
     'tosetdate09' => 'Para filtro por data utilize o formato YYYY-mm-dd',
 
     // Added in 2015-06-23
-
     // 04-details.php
     'quarantine04' => 'Quarentena',
 
@@ -177,50 +173,26 @@ $lang = array(
     'filters12' => 'Filtros',
     'newuser12' => 'Novo Usuário',
     'forallusers12' => 'Para usuários que não são Administradores deve-se usar o email como usuário (login)',
-    //'username0212' => 'Username:',
     'username0212' => 'Usuário:',
-    //'name12' => 'Name:',
     'name12' => 'Nome:',
-    //'password12' => 'Password:',
     'password12' => 'Senha:',
-    //'usertype12' => 'User Type:',
     'usertype12' => 'Tipo de Usuário:',
-    //'user12' => 'User',
     'user12' => 'Usuário',
-    //'domainadmin12' => 'Domain Administrator',
     'domainadmin12' => 'Administrador de Domínio',
-    //'admin12' => 'Administrator',
     'admin12' => 'Administrador',
-    //'quarrep12' => 'Quarantine Report:',
     'quarrep12' => 'Relatório de Quarentena:',
-    //'senddaily12' => 'Send Daily Report?:',
     'senddaily12' => 'Enviar relatório diário?',
-    //'quarreprec12' => 'Quarantine Report Recipient:',
     'quarreprec12' => 'Destinatário do Relatório de Quarentena:',
-    //'overrec12' => 'Override quarantine report recipient?<BR>(uses your username if blank)',
     'overrec12' => 'Alterar destinarário do relatório?<BR>(usará seu Usuário se em branco)',
-    //'scanforspam12' => 'Scan for Spam:',
     'scanforspam12' => 'Procurar Spam:',
-    //'scaneforspam12' => 'Scan e-mail for Spam?',
     'scaneforspam12' => 'Buscar spam nos e-mails?',
-    //'pontspam12' => 'Spam Score:',
     'pontspam12' => 'Pontuação Spam:',
-    //'hpontspam12' => 'High Spam Score:',
     'hpontspam12' => 'Pontuação Alta Spam:',
-    //'usedefault12' => 'Use Default',
     'usedefault12' => 'Usar Padrão',
-    //'action_0212' => 'Action:',
     'action_0212' => 'Ação:',
-    //'reset12' => 'Reset',
     'reset12' => 'Limpar',
-    //'areusuredel12' => 'Are you sure you want to delete user',
     'areusuredel12' => 'Tem certeza de que quer excluir o usuário ',
-    //'errorpass12' => 'Passwords do not match',
     'errorpass12' => 'As senhas não são iguais',
 
-    );
-
-
-return $lang;
-
-?>
+    'i18_missing' => 'Não traduzido em português',
+);
