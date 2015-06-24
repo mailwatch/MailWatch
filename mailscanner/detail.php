@@ -478,7 +478,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
-        echo '<input type="submit" name="SUBMIT" value="' . $lang['submit04'] . '">' . "\n";
+        echo '<input type="SUBMIT" name="submit" value="' . $lang['submit04'] . '">' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";
         echo '</form>' . "\n";

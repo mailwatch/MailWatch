@@ -48,8 +48,12 @@ if (!is_readable(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php')) {
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php');
 
 // Load Language File
-// require(__DIR__ . DIRECTORY_SEPARATOR . 'languages/'.LANG.'.php');
-$lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG.'.php');
+// If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
+if (!is_file(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG.'.php')) {
+  $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php');
+} else {
+  $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG.'.php');
+}
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] == 'on') {
