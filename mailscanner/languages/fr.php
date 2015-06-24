@@ -1,7 +1,7 @@
 <?php
 
 /* languages/fr.php */
-/* v0.1.4 */
+/* v0.1.5 */
 
 $lang = array(
 	// 01-login.php
@@ -86,7 +86,7 @@ $lang = array(
 	'last05' => 'Derniers',
 	'messages05' => 'Messages',
 	'refevery05' => 'Rafraichir toutes les',
-	'seconds05' => 'seconde(s)',
+	'seconds05' => 'secondes',
 	
 	// 06 - viewmail.php
 	'msgviewer06' => 'Visualisation d\'un message',
@@ -107,7 +107,7 @@ $lang = array(
 	'documentation03' => 'Documentation',
 	'logout03' => 'Déconnexion',
 	'pggen03' => 'Page générée en',
-	'seconds03' => 'seconde(s)',
+	'seconds03' => 'secondes',
 	'disppage03' => 'Affichage de la page',
 	'of03' => 'de',
 	'records03' => 'Enregistrements de',
