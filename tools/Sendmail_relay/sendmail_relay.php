@@ -69,7 +69,7 @@ class syslog_parser
         'Dec' => '12'
     );
 
-    function syslog_parser($line)
+    public function syslog_parser($line)
     {
 
         // Parse the date, time, host, process pid and log entry
@@ -106,7 +106,7 @@ class sendmail_parser
     var $entry;
     var $entries;
 
-    function sendmail_parser($line)
+    public function sendmail_parser($line)
     {
         $this->raw = $line;
         if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {
