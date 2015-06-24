@@ -791,6 +791,19 @@ function __($string)
     return $lang['i18_missing'];
 }
 
+function getUTF8String($string)
+{
+    if (function_exists('mb_check_encoding')) {
+        if (!mb_check_encoding($string, 'UTF-8')) {
+            $string = mb_convert_encoding($string, 'UTF-8');
+        }
+    } else {
+        $string = utf8_encode($string);
+    }
+
+    return $string;
+}
+
 function sa_autolearn($spamreport)
 {
     switch (true) {
@@ -1793,15 +1806,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = str_replace(",", "<br>", $row[$f]);
                         break;
                     case 'subject':
-                        $row[$f] = decode_header($row[$f]);
-                        if (function_exists('mb_check_encoding')) {
-                            if (!mb_check_encoding($row[$f], 'UTF-8')) {
-                                $row[$f] = mb_convert_encoding($row[$f], 'UTF-8');
-                            }
-                        } else {
-                            $row[$f] = utf8_encode($row[$f]);
-                        }
-                        $row[$f] = htmlspecialchars($row[$f]);
+                        $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
                         if (SUBJECT_MAXLEN > 0) {
                             $row[$f] = trim_output($row[$f], SUBJECT_MAXLEN);
                         }

@@ -170,13 +170,7 @@ foreach ($header_fields as $field) {
         if (is_array($structure->headers[$field['name']])) {
             $structure->headers[$field['name']] = implode("; ", $structure->headers[$field['name']]);
         }
-        if (function_exists('mb_check_encoding')) {
-            if (!mb_check_encoding($structure->headers[$field['name']], 'UTF-8')) {
-                $structure->headers[$field['name']] = mb_convert_encoding($structure->headers[$field['name']], 'UTF-8');
-            }
-        } else {
-            $structure->headers[$field['name']] = utf8_encode($structure->headers[$field['name']]);
-        }
+        $structure->headers[$field['name']] = getUTF8String($structure->headers[$field['name']]);
         if ($field['replaceQuote']) {
             $structure->headers[$field['name']] = str_replace('"', '', $structure->headers[$field['name']]);
         }

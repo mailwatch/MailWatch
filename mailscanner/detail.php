@@ -196,15 +196,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $row[$f] = str_replace(",", "<br>", $row[$f]);
         }
         if ($fieldn == __('subject04')) {
-            $row[$f] = decode_header($row[$f]);
-            if (function_exists('mb_check_encoding')) {
-                if (!mb_check_encoding($row[$f], 'UTF-8')) {
-                    $row[$f] = mb_convert_encoding($row[$f], 'UTF-8');
-                }
-            } else {
-                $row[$f] = utf8_encode($row[$f]);
-            }
-            $row[$f] = htmlspecialchars($row[$f]);
+            $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
         }
         if ($fieldn == __('spamrep04')) {
             $row[$f] = format_spam_report($row[$f]);
