@@ -231,7 +231,7 @@ if ($url_submit == 'Delete') {
 function build_table($sql, $list)
 {
     global $bg_colors;
-    global $lang;
+
     $sth = dbquery($sql);
     $rows = mysql_num_rows($sth);
     if ($rows > 0) {

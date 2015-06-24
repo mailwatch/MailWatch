@@ -130,28 +130,27 @@ echo " </thead>\n";
 
 function lazy($title, $val, $dohtmlentities = true)
 {
-    global $lang;
     if ($dohtmlentities) {
         $v = htmlentities($val);
     } else {
         $v = $val;
     }
-   $titleintl=$title;
-   switch ($title) {
-	case "Date:":
-		$titleintl=__('date06');
-		break;
-	case "From:":
-		$titleintl=__('from06');
-		break;
-	case "To:":
-		$titleintl=__('to06');
-		break;
-	case "Subject:":
-		$titleintl=__('subject06');
-		break;
-   }
-   echo ' <tr>
+    $titleintl = $title;
+    switch ($title) {
+        case "Date:":
+            $titleintl = __('date06');
+            break;
+        case "From:":
+            $titleintl = __('from06');
+            break;
+        case "To:":
+            $titleintl = __('to06');
+            break;
+        case "Subject:":
+            $titleintl = __('subject06');
+            break;
+    }
+    echo ' <tr>
    <td class="heading" align="right" width="10%">' . $titleintl . '</td>
    <td class="detail" width="80%">' . $v . '</td>
    </tr>' . "\n";

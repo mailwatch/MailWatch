@@ -117,7 +117,6 @@ class Filter
 
     public function Display()
     {
-        global $lang;
         echo '<table width="600" border="0" class="boxtable">' . "\n";
         echo ' <tr><th colspan="2">' . __('activefilters09') . '</th></tr>' . "\n";
         if (count($this->item) > 0) {
@@ -239,7 +238,6 @@ WHERE
 
     public function DisplayForm()
     {
-        global $lang;
         // Form
         $return = '<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
 

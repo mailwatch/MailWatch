@@ -177,7 +177,6 @@ function mailwatch_version()
 
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
-    global $lang;
     if (!$cacheable) {
         // Cache control (as per PHP website)
         header("Expires: Sat, 10 May 2003 00:00:00 GMT");
@@ -806,7 +805,6 @@ function sa_autolearn($spamreport)
 
 function format_spam_report($spamreport)
 {
-    global $lang;
     // Run regex against the MailScanner spamreport picking out the (score=xx, required x, RULES...)
     if (preg_match('/\s\((.+?)\)/i', $spamreport, $sa_rules)) {
         // Get rid of the first match from the array
@@ -873,7 +871,6 @@ function return_sa_rule_desc($rule)
 
 function format_mcp_report($mcpreport)
 {
-    global $lang;
     // Clean-up input
     $mcpreport = preg_replace('/\n/', '', $mcpreport);
     $mcpreport = preg_replace('/\t/', ' ', $mcpreport);
@@ -1402,9 +1399,15 @@ function subtract_multi_get_vars($preserve)
     }
 }
 
+/**
+ * @param $sql
+ * @param bool|string $table_heading
+ * @param bool $pager
+ * @param bool $order
+ * @param bool $operations
+ */
 function db_colorised_table($sql, $table_heading = false, $pager = false, $order = false, $operations = false)
 {
-    global $lang;
     require_once('Mail/mimeDecode.php');
 
     // Ordering
@@ -2216,7 +2219,6 @@ function get_microtime()
 
 function page_creation_timer()
 {
-    global $lang;
     if (!isset($GLOBALS['pc_start_time'])) {
         $GLOBALS['pc_start_time'] = get_microtime();
     } else {
