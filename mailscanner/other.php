@@ -45,10 +45,10 @@ html_start('Tools', "0", false, false);
 echo '<table width="100%" class="boxtable">
  <tr>
   <td>
-   <p>Tools</p>
+   <p>' . $lang['tools10'] . '</p>
    <ul>';
 
-echo '<li><a href="user_manager.php">User Management</a>';
+echo '<li><a href="user_manager.php">' . $lang['usermgnt10'] . '</a>';
 if ($_SESSION['user_type'] == 'A') {
     $virusScanner = get_conf_var('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
@@ -68,9 +68,9 @@ if ($_SESSION['user_type'] == 'A') {
     }
 
     echo '<li><a href="mysql_status.php">MySQL Database Status</a>';
-    echo '<li><a href="msconfig.php">View MailScanner Configuration</a>';
+    echo '<li><a href="msconfig.php">' . $lang['viewconfms10'] . '</a>';
     if (defined('MSRE') && MSRE === true) {
-        echo '<li><a href="msre_index.php">Edit MailScanner Rulesets</a>';
+        echo '<li><a href="msre_index.php">' . $lang['editmsrules10'] . '</a>';
     }
 
     if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') === true) {
@@ -78,12 +78,12 @@ if ($_SESSION['user_type'] == 'A') {
      <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
-     <li><a href="sa_rules_update.php">Update SpamAssassin Rule Descriptions</a>';
+     <li><a href="sa_rules_update.php">' . $lang['updatesadesc10'] . '</a>';
     }
     if (!DISTRIBUTED_SETUP && get_conf_truefalse('MCPChecks') === true) {
-        echo '<li><a href="mcp_rules_update.php">Update MCP Rule Descriptions</a>';
+        echo '<li><a href="mcp_rules_update.php">' . $lang['updatemcpdesc10'] . '</a>';
     }
-    echo '<li><a href="geoip_update.php">Update GeoIP Database</a>';
+    echo '<li><a href="geoip_update.php">' . $lang['updategeoip10'] . '</a>';
 }
 echo '</ul>';
 

@@ -61,27 +61,27 @@ if ($_SESSION['user_type'] != 'A') {
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
 
-    echo '<p class="center" style="font-size:20px"><b>Software Versions</b></p>' . "\n";
-    echo 'MailWatch Version = ' . $mailwatch_version . '<br>' . "\n";
+    echo '<p class="center" style="font-size:20px"><b>' . $lang['softver11'] . '</b></p>' . "\n";
+    echo 'MailWatch ' . $lang['version11'] . ' = ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MailScanner Version = ' . $mailscanner_version . '<br>' . "\n";
+    echo 'MailScanner ' . $lang['version11'] . ' = ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'PHP Version = ' . $php_version . '<br>' . "\n";
+    echo 'PHP ' . $lang['version11'] . ' = ' . $php_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MySQL Version = ' . $mysql_version . '<br>' . "\n";
+    echo 'MySQL ' . $lang['version11'] . ' = ' . $mysql_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'GeoIP Database Version = ';
+    echo 'GeoIP Database ' . $lang['version11'] . ' = ';
     if (FALSE != $geoipv4_version) {
         echo $geoipv4_version;
     } else {
-        echo 'No database downloaded';
+        echo $lang['nodbdown11'];
     }
     echo "<br>\n<br>\n";
-    echo 'GeoIPv6 Database Version = ';
+    echo 'GeoIPv6 Database ' . $lang['version11'] . ' = ';
     if (FALSE != $geoipv6_version) {
         echo $geoipv6_version;
     } else {
-        echo 'No database downloaded';
+        echo $lang['nodbdown11'];
     }
     echo '</td>' . "\n";
     echo '</tr>' . "\n";

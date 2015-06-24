@@ -38,7 +38,7 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-$refresh = html_start("Recent Messages", STATUS_REFRESH, false, false);
+$refresh = html_start($lang['recentmsg05'], STATUS_REFRESH, false, false);
 
 $sql = "
 SELECT
@@ -85,7 +85,7 @@ ORDER BY
  time DESC
 LIMIT " . MAX_RESULTS;
 
-db_colorised_table($sql, "Last " . MAX_RESULTS . " Messages (Refreshing every $refresh seconds)");
+db_colorised_table($sql, $lang['last05'] . " " . MAX_RESULTS . " " . $lang['messages05'] . " (" . $lang['refevery05'] . " $refresh " . $lang['seconds05'] . ")");
 
 // Add footer
 html_end();
