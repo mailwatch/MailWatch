@@ -12,7 +12,7 @@ $lang = array(
     'cuser03' => 'User',
     'cst03' => 'System Time',
     'colorcodes03' => 'Color Codes',
-    'badcontentinfected03' => 'Bad Contect/Infected',
+    'badcontentinfected03' => 'Bad Content/Infected',
     'whitelisted03' => 'Whitelisted',
     'blacklisted03' => 'Blacklisted',
     'notverified03' => 'Not Verified',
@@ -23,7 +23,7 @@ $lang = array(
     'cleans03' => 'Clean',
     'viruses03' => 'Viruses',
     'blockedfiles03' => 'Blocked Files',
-    'others03' => 'Otherd',
+    'others03' => 'Other',
     'hscospam03' => 'High Score Spam',
     'hscomcp03' => 'High Score MCP',
     'recentmessages03' => 'Recent Messages',
@@ -87,7 +87,7 @@ $lang = array(
     'last05' => 'Last',
     'messages05' => 'Messages',
     'refevery05' => 'Refreshing every',
-    'seconds05' => 'segunds',
+    'seconds05' => 'seconds',
 
      // 06-viewmail.php
     'msgviewer06' => 'Message Viewer',
@@ -112,7 +112,7 @@ $lang = array(
     'disppage03' => 'Displaying page',
     'of03' => 'from',
     'records03' => 'Records',
-    'to0203' => 'to©',// This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
+    'to0203' => 'to',// This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
    
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
