@@ -74,7 +74,7 @@ class syslog_parser
         'Dec' => '12'
     );
 
-    function syslog_parser($line)
+    public function syslog_parser($line)
     {
         // Parse the date, time, host, process pid and log entry 04CF7F970F
         if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
@@ -110,7 +110,7 @@ class postfix_parser
     var $entry;
     var $entries;
 
-    function postfix_parser($line)
+    public function postfix_parser($line)
     {
         $this->raw = $line;
         if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {

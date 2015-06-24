@@ -88,7 +88,7 @@ class Filter
     var $last_value;
     var $display_last = 0;
 
-    function Add($column, $operator, $value)
+    public function Add($column, $operator, $value)
     {
         // Don't show the last column, operator, and value now
         $this->display_last = 0;
@@ -105,7 +105,7 @@ class Filter
         $this->item[] = array($column, $operator, $value);
     }
 
-    function Remove($item)
+    public function Remove($item)
     {
         // Store the last column, operator, and value, and force the form to default to them
         $this->last_column = $this->item[$item][0];
@@ -115,7 +115,7 @@ class Filter
         unset($this->item[$item]);
     }
 
-    function Display()
+    public function Display()
     {
         global $lang;
         echo '<table width="600" border="0" class="boxtable">' . "\n";
@@ -161,7 +161,7 @@ WHERE
         echo '</table>' . "\n";
     }
 
-    function CreateMtalogSQL()
+    public function CreateMtalogSQL()
     {
         $sql = '';
         if (count($this->item) > 0) {
@@ -195,7 +195,7 @@ WHERE
         return $sql;
     }
 
-    function CreateSQL()
+    public function CreateSQL()
     {
         $sql = "AND " . $_SESSION['global_filter'] . "\n";
         if (count($this->item) > 0) {
@@ -227,17 +227,17 @@ WHERE
         }
     }
 
-    function TranslateColumn($column)
+    public function TranslateColumn($column)
     {
         return ($this->columns[$column]);
     }
 
-    function TranslateOperator($operator)
+    public function TranslateOperator($operator)
     {
         return ($this->operators[$operator]);
     }
 
-    function DisplayForm()
+    public function DisplayForm()
     {
         global $lang;
         // Form
@@ -300,12 +300,12 @@ WHERE
         return $return;
     }
 
-    function AddReport($url, $description)
+    public function AddReport($url, $description)
     {
         $this->reports[$description] = $url;
     }
 
-    function Save($name)
+    public function Save($name)
     {
         dbconn();
         if (count($this->item) > 0) {
@@ -325,7 +325,7 @@ WHERE
         }
     }
 
-    function Load($name)
+    public function Load($name)
     {
         dbconn();
         $sql = "SELECT col, operator, value FROM saved_filters WHERE name='" . mysql_real_escape_string(
@@ -337,7 +337,7 @@ WHERE
         }
     }
 
-    function Delete($name)
+    public function Delete($name)
     {
         dbconn();
         $sql = "DELETE FROM saved_filters WHERE username='" . $_SESSION['myusername'] . "' AND name='" . mysql_real_escape_string(
@@ -346,7 +346,7 @@ WHERE
         dbquery($sql);
     }
 
-    function ListSaved()
+    public function ListSaved()
     {
         $sql = "SELECT DISTINCT name FROM saved_filters WHERE username='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
