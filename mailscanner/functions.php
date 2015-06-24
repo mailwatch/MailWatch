@@ -1121,7 +1121,8 @@ function format_report_volume(&$data_in, &$info_out)
     }
 
     // Modify the original data accordingly
-    for ($i = 0; $i < sizeof($data_in); $i++) {
+    $num_data_in = sizeof($data_in);
+    for ($i = 0; $i < $num_data_in; $i++) {
         $data_in[$i] = $data_in[$i] / $info_out['formula'];
     }
 }
@@ -1781,7 +1782,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         if (FROMTO_MAXLEN > 0) {
                             // Trim each address to specified size
                             $to_temp = explode(",", $row[$f]);
-                            for ($t = 0; $t < count($to_temp); $t++) {
+                            $num_to_temp = count($to_temp);
+                            for ($t = 0; $t < $num_to_temp; $t++) {
                                 $to_temp[$t] = trim_output($to_temp[$t], FROMTO_MAXLEN);
                             }
                             // Return the data
