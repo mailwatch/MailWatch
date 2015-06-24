@@ -119,7 +119,7 @@ class Filter
     {
         global $lang;
         echo '<table width="600" border="0" class="boxtable">' . "\n";
-        echo ' <tr><th colspan="2">' . $lang['activefilters09'] . '</th></tr>' . "\n";
+        echo ' <tr><th colspan="2">' . __('activefilters09') . '</th></tr>' . "\n";
         if (count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
                 echo '<tr><td>' .
@@ -129,11 +129,11 @@ class Filter
                     ) . '\'</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">Remove</a></td></tr>' . "\n";
             }
         } else {
-            echo '<tr><td colspan="2">' . $lang['none09'] . '</td></tr>' . "\n";
+            echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
         }
 
         // Add filter
-        echo ' <tr><th colspan="2">' . $lang['addfilter09'] . '</th></tr>' . "\n";
+        echo ' <tr><th colspan="2">' . __('addfilter09') . '</th></tr>' . "\n";
         echo ' <tr><td colspan="2">' . $this->DisplayForm() . '</td></tr>' . "\n";
         echo ' <tr><th colspan="2">Statistics (Filtered)</th></tr>' . "\n";
         $query = "
@@ -287,8 +287,8 @@ WHERE
         }
         $return .= ">\n";
         $return .= '</td><td align="right"><input type="submit" name="action" value="Add"></td></tr>' . "\n";
-        $return .= '<tr><td align="left">' . $lang['tosetdate09'] . '</td>' . "\n" . ' <td></td></tr>' . "\n";
-        $return .= '<tr><th colspan="2">' . $lang['loadsavef09'] . '</th></tr>' . "\n";
+        $return .= '<tr><td align="left">' . __('tosetdate09') . '</td>' . "\n" . ' <td></td></tr>' . "\n";
+        $return .= '<tr><th colspan="2">' . __('loadsavef09') . '</th></tr>' . "\n";
         $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><input type="SUBMIT" name="action" value="Save"></td></tr>' . "\n";
         $return .= '<tr><td>' . "\n";
         $return .= $this->ListSaved(

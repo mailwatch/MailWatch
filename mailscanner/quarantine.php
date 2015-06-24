@@ -46,14 +46,14 @@ if (!isset($_GET['dir'])) {
         // Don't use the database any more - it's too slow on big datasets
         $dates = return_quarantine_dates();
         echo '<table class="mail" cellspacing="2" align="center">' . "\n";
-        echo '<tr><th>' . $lang['folder08'] . '</th></tr>' . "\n";
+        echo '<tr><th>' . __('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
             $sql = "SELECT id FROM maillog WHERE " . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
             $result = dbquery($sql);
             $rowcnt = mysql_num_rows($result);
             $rowstr = " - ----------";
             if ($rowcnt > 0) {
-                $rowstr = sprintf(" - %02d " . $lang['items08'], $rowcnt);
+                $rowstr = sprintf(" - %02d " . __('items08'), $rowcnt);
             }
             echo '<tr><td align="center"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?dir=' . $date . '">' . translateQuarantineDate(
                     $date,
@@ -141,7 +141,7 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U'
 $sql .= " 
 ORDER BY
  date DESC, time DESC";
-        db_colorised_table($sql, $lang['folder08'] . ': ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
+        db_colorised_table($sql, __('folder08') . ': ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
         $dir = preg_replace('[\.|\.\.|\/]', '', $dir);
@@ -200,7 +200,7 @@ $sql .= "
   ORDER BY
    date DESC, time DESC
   ";
-            db_colorised_table($sql, $lang['folder_0208'] . ': ' . translateQuarantineDate($dir), true, true);
+            db_colorised_table($sql, __('folder_0208') . ': ' . translateQuarantineDate($dir), true, true);
         } else {
             echo "No quarantined messages found\n";
         }

@@ -1,7 +1,4 @@
 <?php
-
-require_once("./functions.php");
-
 /*
  MailWatch for MailScanner
  Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
@@ -34,6 +31,8 @@ require_once("./functions.php");
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+require_once("./functions.php");
 ?>
 <!doctype html>
 <html>
@@ -170,11 +169,11 @@ require_once("./functions.php");
                     </p>
                 <?php } ?>
 
-                <p><label for="myusername"><?php echo $lang['username']; ?></label></p>
+                <p><label for="myusername"><?php echo __('username'); ?></label></p>
 
                 <p><input name="myusername" type="text" id="myusername" autofocus></p>
 
-                <p><label for="mypassword"><?php echo $lang['password']; ?></label></p>
+                <p><label for="mypassword"><?php echo __('password'); ?></label></p>
 
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 

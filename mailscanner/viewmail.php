@@ -40,7 +40,7 @@ ini_set("memory_limit", MEMORY_LIMIT);
 session_start();
 require('login.function.php');
 
-html_start($lang['msgviewer06'], 0, false, false);
+html_start(__('msgviewer06'), 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -119,9 +119,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = $lang['msgviewer06'] .": " . $message_id . " on " . $message->hostname;
+    $title = __('msgviewer06') .": " . $message_id . " on " . $message->hostname;
 } else {
-    $title = $lang['msgviewer06'] .": " . $message_id;
+    $title = __('msgviewer06') .": " . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -139,16 +139,16 @@ function lazy($title, $val, $dohtmlentities = true)
    $titleintl=$title;
    switch ($title) {
 	case "Date:":
-		$titleintl=$lang['date06'];
+		$titleintl=__('date06');
 		break;
 	case "From:":
-		$titleintl=$lang['from06'];
+		$titleintl=__('from06');
 		break;
 	case "To:":
-		$titleintl=$lang['to06'];
+		$titleintl=__('to06');
 		break;
 	case "Subject:":
-		$titleintl=$lang['subject06'];
+		$titleintl=__('subject06');
 		break;
    }
    echo ' <tr>
@@ -187,8 +187,8 @@ foreach ($header_fields as $field) {
 
 if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
-        $lang['actions06'] . ":",
-        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . $lang['releasemsg06'] . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . $lang['deletemsg06'] . "</a>",
+        __('actions06') . ":",
+        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . "</a>",
         false
     );
 }
