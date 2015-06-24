@@ -103,7 +103,7 @@ reset($sa_array);
 arsort($sa_array);
 
 echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="' . IMAGES_DIR . 'mailscannerlogo.gif" alt="MailScanner Logo"></td></tr>
+ <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="MailScanner Logo"></td></tr>
  <tr><td align="center">
  <table class="boxtable" align="center" border="0">
  <tr bgcolor="#F7CE4A">

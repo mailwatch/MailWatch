@@ -35,7 +35,7 @@ unset SMUSER VERBOSE
 # Default values
 # Can me changed in /etc/default/sendmail_relay
 SMUSER="root";
-MAILLOG="/var/log/maillog"
+MAILLOG="/var/log/mail.log"
 VERBOSE="yes"
 
 # Exit if sendmail_relay not installed

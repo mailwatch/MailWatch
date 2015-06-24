@@ -43,6 +43,7 @@ require('login.function.php');
 html_start('Tools', "0", false, false);
 
 echo '<table width="100%" class="boxtable">
+ <tr><th>Tools/Links</th></tr>
  <tr>
   <td>
    <p>Tools</p>
@@ -72,7 +73,6 @@ if ($_SESSION['user_type'] == 'A') {
     if (defined('MSRE') && MSRE === true) {
         echo '<li><a href="msre_index.php">Edit MailScanner Rulesets</a>';
     }
-
     if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') === true) {
         echo '
      <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>

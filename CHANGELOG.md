@@ -17,6 +17,17 @@
  - Enable LDAP over SSL
  - Fix virus count sorting on "Virus Report"
  - Remove additional slashes in "SpamAssassin Rule Description Update"
+ - Add of logo mgt in conf.php
+ - Add LOGO path in conf.php.example and changes done in corresponding files.
+ - layout changes in quarantine.php, other.php, sf_version.php
+ - Removed duplicate PHP function in tools/Cron_jobs/quarantine_report.php (is in functions.php)
+ - Changes in tools/Sendmail_relay/INSTALL
+ - Changes in tools/Sendmail_relay/sendmail_relay.init
+ - Background color change in login.php
+ - Add clamav and spamassassin version in sf_version.php
+ - Changes in INSTALL and UPGRADING
+ - Modified footer function in functions.php (page footer and DEBUG for page_creation_timer)
+ - Add a check for 'subtests=' to add space after comma (to fit the screen) in sa_lint.php
 
 1.2.0 - Beta 8
 -----------
