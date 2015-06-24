@@ -38,14 +38,14 @@ require_once("./functions.php");
 session_start();
 require('login.function.php');
 
-html_start("User Manager", 0, false, false);
+html_start($lang['usermgnt12'], 0, false, false);
 
 if ($_SESSION['user_type'] == 'A') {
     ?>
     <script type="text/javascript">
         <!--
         function delete_user(id) {
-            var yesno = confirm("Are you sure you want to delete user " + id + "?");
+            var yesno = confirm("<?php echo $lang['areusuredel12']; ?>" + id + "?");
             if (yesno === true) {
                 window.location = "?action=delete&id=" + id;
             } else {
@@ -81,28 +81,28 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"new\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
                     echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-                    echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">New User  <br> For all users other than Administrator you must use an email address for the username</TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Username: <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Name:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">User Type:</TD>
+                    echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . $lang['newuser12'] . "  <br> " . $lang['forallusers12'] . "</TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['username0212'] . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['name12'] . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['password12'] . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['password12'] . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['usertype12'] . "</TD>
     <TD><SELECT NAME=\"type\">
-         <OPTION VALUE=\"U\">User</OPTION>
-         <OPTION VALUE=\"D\">Domain Administrator</OPTION>
-         <OPTION VALUE=\"A\">Administrator</OPTION>
+         <OPTION VALUE=\"U\">" . $lang['user12'] ."</OPTION>
+         <OPTION VALUE=\"D\">" . $lang['domainadmin12'] . "</OPTION>
+         <OPTION VALUE=\"A\">" . $lang['admin12'] . "</OPTION>
         </SELECT></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Quarantine Report:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\"> <font size=-2>Send Daily Report?</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Quarantine Report Recipient:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\"><br><font size=\"-2\">Override quarantine report recipient?<BR>(uses your username if blank)</font></TD>\n";
-                    echo " <TR><TD CLASS=\"heading\">Scan for Spam:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" CHECKED> <font size=\"-2\">Scan e-mail for Spam?</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=Use Default</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">High Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=Use Default</font></TD></TR>\n";
-                    echo "<TR><TD CLASS=\"heading\">Action:</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"Reset\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Create\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['quarrep12'] . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\"> <font size=-2>" . $lang['senddaily12'] . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['quarreprec12'] . "</td><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\"><br><font size=\"-2\">" . $lang['overrec12'] . "</font></TD>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['scanforspam12'] . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" CHECKED> <font size=\"-2\">" . $lang['scanespam12'] . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['pontspam12'] . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . $lang['usedefault12'] . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . $lang['hpontspam12'] . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . $lang['usedefault12'] . "</font></TD></TR>\n";
+                    echo "<TR><TD CLASS=\"heading\">" . $lang['action_0212'] . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . $lang['reset12'] . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Create\"></TD></TR>\n";
                     echo "</TABLE></FORM><BR>\n";
                 } else {
                     if ($_GET['password'] != $_GET['password1']) {
 
-                        echo "Passwords do not match";
+                        echo $lang['errorpass12'] ;
                     } else {
 
                         $n_username = mysql_real_escape_string($_GET['username']);
@@ -187,7 +187,7 @@ if ($_SESSION['user_type'] == 'A') {
                 } else {
                     // Do update
                     if ($_GET['password'] != $_GET['password1']) {
-                        echo "Passwords do not match";
+                        echo $lang['errorpass12'];
                     } else {
                         $do_pwd = false;
                         $key = mysql_real_escape_string($_GET['key']);
@@ -293,8 +293,8 @@ if ($_SESSION['user_type'] == 'A') {
     }
     $sql = "
 SELECT
- username AS 'Username',
- fullname AS 'Full Name',
+ username AS '" . $lang['username12'] . "',
+ fullname AS '" . $lang['fullname12'] . "',
  CASE
   WHEN type = 'A' THEN 'Administrator'
   WHEN type = 'D' THEN 'Domain Administrator'
@@ -302,24 +302,24 @@ SELECT
   WHEN type = 'R' THEN 'User (Regexp)'
  ELSE
   'Unknown Type'
- END AS 'Type',
+ END AS '" . $lang['type12'] . "',
  CASE
   WHEN noscan = 1 THEN 'N'
   WHEN noscan = 0 THEN 'Y'
  ELSE
   'Y'
- END AS 'Spam Check',
-  spamscore AS 'Spam Score',
-  highspamscore AS 'High Spam Score',
- CONCAT('<a href=\"?action=edit&amp;id=',username,'\">Edit</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">Delete</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">Filters</a>') AS 'Actions'
+ END AS '" . $lang['spamcheck12'] . "',
+  spamscore AS '" . $lang['spamscore12'] . "',
+  highspamscore AS '" . $lang['spamhscore12'] . "',
+ CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . $lang['edit12'] . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . $lang['delete12'] . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . $lang['filters12'] . "</a>') AS '" . $lang['action12'] . "'
 FROM
  users
 ORDER BY
  username
 ";
-    dbtable($sql, 'User Management');
+    dbtable($sql, $lang['usermgnt12']);
     echo "<br>\n";
-    echo "<a href=\"?action=new\">New User</a>\n";
+    echo "<a href=\"?action=new\">" . $lang['newuser12'] . "</a>\n";
 } else {
     if (!isset($_GET['submit'])) {
         $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . mysql_real_escape_string($_SESSION['myusername']) . "'";

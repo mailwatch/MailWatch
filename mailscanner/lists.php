@@ -166,7 +166,7 @@ switch (true) {
 }
 
 // Submitted
-if ($url_submit == 'Add') {
+if ($url_submit == $lang['add07']) {
     // Check input is valid
     if (empty($url_list)) {
         $errors[] = "You must select a list to create the entry.";
@@ -231,14 +231,15 @@ if ($url_submit == 'Delete') {
 function build_table($sql, $list)
 {
     global $bg_colors;
+    global $lang;
     $sth = dbquery($sql);
     $rows = mysql_num_rows($sth);
     if ($rows > 0) {
         echo '<table class="blackwhitelist">' . "\n";
         echo ' <tr>' . "\n";
-        echo '  <th>From</th>' . "\n";
-        echo '  <th>To</th>' . "\n";
-        echo '  <th>Action</th>' . "\n";
+        echo '  <th>' . $lang['from07'] . '</th>' . "\n";
+        echo '  <th>' . $lang['to07'] . '</th>' . "\n";
+        echo '  <th>' . $lang['action07'] . '</th>' . "\n";
         echo ' </tr>' . "\n";
         $i = 1;
         while ($row = mysql_fetch_row($sth)) {
@@ -247,7 +248,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">Delete</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . $lang['delete07'] . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -260,14 +261,14 @@ echo '
 <form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">
 <table cellspacing="1" class="mail">
  <tr>
-  <th colspan=2>Add to Whitelist/Blacklist</th>
+  <th colspan=2>' . $lang['addwlbl07'] . '</th>
  </tr>
  <tr>
-  <td class="heading">From:</td>
+  <td class="heading">' . $lang['from07'] . ':</td>
   <td><input type="text" name="from" size=50 value="' . $from . '"></td>
  </tr>
  <tr>
-  <td class="heading">To:</td>';
+  <td class="heading">' . $lang['to07'] . ':</td>';
 
 switch ($_SESSION['user_type']) {
     case 'A':
@@ -307,7 +308,7 @@ switch ($_SESSION['user_type']) {
 echo '
  </tr>
  <tr>
-  <td class="heading">List:</td>
+  <td class="heading">' . $lang['list07'] . ':</td>
   <td>';
 
 $w = '';
@@ -320,14 +321,14 @@ switch ($url_list) {
         $b = 'CHECKED';
         break;
 }
-echo '   <input type="radio" value="w" name="list" ' . $w . '>Whitelist &nbsp;&nbsp;' . "\n";
-echo '   <input type="radio" value="b" name="list" ' . $b . '>Blacklist' . "\n";
+echo '   <input type="radio" value="w" name="list" ' . $w . '>'. $lang['wl07'] . '&nbsp;&nbsp;' . "\n";
+echo '   <input type="radio" value="b" name="list" ' . $b . '>' . $lang['bl07'] . '' . "\n";
 
 echo '  </td>
  </tr>
  <tr>
-  <td class="heading">Action:</td>
-  <td><input type="reset" value="Reset">&nbsp;&nbsp;<input type="submit" value="Add" name="submit"></td>
+  <td class="heading">' . $lang['action07'] . ':</td>
+  <td><input type="reset" value="' . $lang['reset07'] . '">&nbsp;&nbsp;<input type="submit" value="' . $lang['add07'] . '" name="submit"></td>
  </tr>';
 if (isset($errors)) {
     echo '<tr>
@@ -340,8 +341,8 @@ echo '</table>
    <br>
 <table cellspacing="1" width="100%" class="mail">
 <tr>
-  <th class="whitelist">Whitelist</th>
-  <th class="blacklist">Blacklist</th>
+  <th class="whitelist">' . $lang['wl07'] . '</th>
+  <th class="blacklist">' . $lang['bl07'] . '</th>
 </tr>
 <tr>
   <td class="blackwhitelist">

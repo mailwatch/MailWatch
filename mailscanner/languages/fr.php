@@ -1,0 +1,105 @@
+<?php
+
+$lang = array(
+    'i18_missing' => 'Non traduit en français,
+
+    // 01-login.php
+    'username' => 'Utilisateur',
+    'password' => 'Mot de passe',
+    
+    // 03-functions.php
+    'message01_03' => 'Impossible de lire le fichier conf.php - Cr&eacute;ez un fichier de configuration conf.php.example et modifiez les param&egrave;tres de configuration comme n&eacute;cess',
+    'jumpmessage03' => 'Aller au message :',
+    'cuser03' => 'Utilisateur',
+    'cst03' => 'Heure syst&egrave;me',
+    'colorcodes03' => 'Codes couleur',
+    'ccodes01_03' => 'Contenu dangereux/Infect&eacute;',
+    'ccodes02_03' => 'Liste Blanche',
+    'ccodes03_03' => 'Liste Noire',
+    'ccodes04_03' => 'Non v&eacute;rifi&eacute;',
+    'ccodes05_03' => 'Bon',
+    'freedspace03' => 'Espace disque libre',
+    'todaystotals03' => 'Total aujourd\'hui',
+    'processed03' => 'Trait&eacute;',
+    'clean03' => 'Bon',
+    'viruses03' => 'Viruss&eacute;',
+    'blockedfiles03' => 'Fichier bloqu&eacute;',
+    'others03' => 'Otherd',
+    'hscospam03' => 'Spam &agrave; score tr&egrave;s haut',
+    'hscomcp03' => 'MCP &agrave; score tr&egrave;s haut',
+    'recentmessages03' => 'Messages r&eacute;cent',
+    'lists03' => 'Listes',
+    'quarantine03' => 'Quarantaine',
+    'datetime03' => 'Date/Heure',
+    'from03' => 'De',
+    'to03' => 'A',
+    'size03' => 'Taille',
+    'subject03' => 'Sujet',
+    'sascore03' => 'Score SA',
+    'mcpscore03' => 'Score MCP',
+    
+    // 04-detail.php
+    'receivedon04' => 'Reçu le',
+    'receivedby04' => 'Reçu par',
+    'receivedfrom04' => 'Reçu de',
+    'receivedvia04' => 'Reçu via',
+    'msgheaders04' => 'Headers du message',
+    'from04' => 'De',
+    'to04' => 'A',
+    'size04' => 'Taille',
+    'subject04' => 'Sujet',
+    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
+    'blkfile04' => 'Fichier bloqu&eacute;',
+    'otherinfec04' => 'Autre infection',
+    'hscospam04' => 'Spam &agrave; score tr&egrave;s haut',
+    'listedrbl04' => 'List&eacute; en RBL',
+    'spamwl04' => 'SPAM en Liste Blanche',
+    'spambl04' => 'SPAM en Liste Noire',
+    'saautolearn04' => 'Auto aprentissage Spamassassin',
+    'sascore04' => 'Spamassassin Score',
+    'spamrep04' => 'Rapport de Spam',
+    'hdrmcp04' => 'Message Content Protection (MCP)',
+    'highscomcp04' => 'High Scoring MCP',
+    'mcpwl04' => 'MCP en Liste Blanche',
+    'mcpbl04' => 'MCP en Liste Noire',
+    'mcpscore04' => 'Score MCP',
+    'mcprep04' => 'Rapport MCP',
+    'ipaddress04' => 'Adresse IP',
+    'country04' => 'Pays',
+    'all04' => 'Tous',
+    'addwl04' => 'Ajouter &agrave; la Liste Blanche',
+    'addbl04' => 'Ajouter &agrave; la Liste Noire',
+    'release04' => 'Lib&eacute;rer',
+    'delete04' => 'Supprimer',
+    'salearn04' => 'Apprentissage SA',
+    'file04' => 'Fichier',
+    'type04' => 'Type',
+    'path04' => 'Chemin',
+    'dang04' => 'Dangereux',
+    'altrecip04' => 'Destinataire alternatif',
+    'submit04' => 'Soumettre',
+    'actions04' => 'Action(s)',
+    'quarcmdres04' => 'Quarantine Command Results',
+    'resultmsgs04' => 'Result Messages',
+    
+    // 05-status.php
+    'last05' => 'Derniers',
+    'messages05' => 'Messages',
+    'refevery05' => 'Rafraichir tous les',
+    'seconds05' => 'segunds',
+    
+    // 06 - viewmail.php
+    
+    'msgviewer06' => 'Message Viewer',
+    'releasemsg06' => 'Lib&eacute;rer ce message',
+    'deletemsg06' => 'Supprimer ce message',
+    'actions06' => 'Actions',
+    'date06' => 'Date :',
+    'from06' => 'De :',
+    'to06' => 'A :',
+    'subject06' => 'Sujet :'
+    );
+
+return $lang;
+    
+?>
