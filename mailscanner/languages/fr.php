@@ -1,7 +1,7 @@
 <?php
 
 /* languages/fr.php */
-/* v0.1.3 */
+/* v0.1.4 */
 
 $lang = array(
 	// 01-login.php
@@ -13,15 +13,15 @@ $lang = array(
 	'cuser03' => 'Utilisateur',
 	'cst03' => 'Heure système',
 	'colorcodes03' => 'Codes couleur',
-	'ccodes01_03' => 'Contenu dangereux/Infecté',
-	'ccodes02_03' => 'Liste Blanche',
-	'ccodes03_03' => 'Liste Noire',
-	'ccodes04_03' => 'Non vérifié',
-	'ccodes05_03' => 'Bon',
+	'badcontentinfected03' => 'Contenu dangereux/infecté',
+	'whitelisted03' => 'Liste Blanche',
+	'blacklisted03' => 'Liste Noire',
+	'notverified03' => 'Non vérifié',
+	'clean03' => 'Bon',
 	'freedspace03' => 'Espace disque libre',
 	'todaystotals03' => 'Total aujourd\'hui',
 	'processed03' => 'Traité',
-	'clean03' => 'Bon',
+	'cleans03' => 'Bon',
 	'viruses03' => 'Virussé',
 	'blockedfiles03' => 'Fichier bloqué',
 	'others03' => 'Autres',
