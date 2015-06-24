@@ -1,7 +1,7 @@
 <?php
 
 /* languages/fr.php */
-/* v0.1.2 */
+/* v0.1.3 */
 
 $lang = array(
 	// 01-login.php
@@ -25,7 +25,7 @@ $lang = array(
 	'viruses03' => 'Virussé',
 	'blockedfiles03' => 'Fichier bloqué',
 	'others03' => 'Autres',
-	'hscospam03' => 'SPAM à score très haut',
+	'hscospam03' => 'Spam à score très haut',
 	'hscomcp03' => 'MCP à score très haut',
 	'recentmessages03' => 'Messages récent',
 	'lists03' => 'Listes',
@@ -51,13 +51,13 @@ $lang = array(
 	'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
 	'blkfile04' => 'Fichier bloqué :',
 	'otherinfec04' => 'Autre infection :',
-	'hscospam04' => 'SPAM à score très haut :',
+	'hscospam04' => 'Spam à score très haut :',
 	'listedrbl04' => 'Listé en RBL :',
-	'spamwl04' => 'SPAM en Liste Blanche :',
-	'spambl04' => 'SPAM en Liste Noire: ',
+	'spamwl04' => 'Spam en Liste Blanche :',
+	'spambl04' => 'Spam en Liste Noire: ',
 	'saautolearn04' => 'Auto aprentissage Spamassassin :',
 	'sascore04' => 'Score Spamassassin :',
-	'spamrep04' => 'Rapport de SPAM :',
+	'spamrep04' => 'Rapport de Spam :',
 	'hdrmcp04' => 'Protection des contenus (MCP)',
 	'highscomcp04' => 'MCP à score très haut :',
 	'mcpwl04' => 'MCP en Liste Blanche :',
@@ -127,7 +127,7 @@ $lang = array(
 	
 	// 08-quarantine.php
 	'folder08' => 'Dossier de quarantaine',
-	'folder09' => 'Dossier :',
+	'folder_0208' => 'Dossier :',
 	'items08' => 'éléments',
 	
 	// 09-filter.inc
@@ -166,9 +166,9 @@ $lang = array(
 	'username12' => 'Nom d\'utilisateur',
 	'fullname12' => 'Nom complet',
 	'type12' => 'Type',
-	'spamcheck12' => 'Vérifier les SPAM',
-	'spamscore12' => 'Score de SPAM',
-	'spamhscore12' => 'Score de SPAM à score très haut',
+	'spamcheck12' => 'Vérifier les Spam',
+	'spamscore12' => 'Score de Spam',
+	'spamhscore12' => 'Score de Spam à score très haut',
 	'action12' => 'Actions',
 	'edit12' => 'Editer',
 	'delete12' => 'Effacer',
@@ -183,13 +183,13 @@ $lang = array(
 	'domainadmin12' => 'Administrateur de Domaine',
 	'admin12' => 'Administrateur',
 	'quarrep12' => 'Rapport de quarantaine :',
-	'senddaily12' => 'Envoyer un rapport de SPAM ?',
-	'quarreprec12' => 'Destinataire pour le rapport de SPAM :',
+	'senddaily12' => 'Envoyer un rapport de Spam ?',
+	'quarreprec12' => 'Destinataire pour le rapport de Spam :',
 	'overrec12' => 'Remplacer le destinataire par défaut <BR>(utilise le nom d\'utilisateur par défaut si vide)',
-	'scanforspam12' => 'Scan des SPAM :',
-	'scaneforspam12' => 'Scan des E-Mail pour les SPAM ?',
-	'pontspam12' => 'Score de SPAM :',
-	'hpontspam12' => 'Score de SPAM à score très haut :',
+	'scanforspam12' => 'Scan des Spam :',
+	'scaneforspam12' => 'Scan des E-Mail pour les Spam ?',
+	'pontspam12' => 'Score de Spam :',
+	'hpontspam12' => 'Score de Spam à score très haut :',
 	'usedefault12' => 'Utiliser les réglages par défaut',
 	'action_0212' => 'Action :',
 	'reset12' => 'Réinitialiser',
