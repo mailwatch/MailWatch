@@ -1260,6 +1260,12 @@ function get_conf_truefalse($name)
                 case "0":
                     return false;
                 default:
+                    // if $parameter_value is a ruleset or a function call return true
+                    $parameter_value = trim($parameter_value);
+                    if (strlen($parameter_value) > 0) {
+                        return true;
+                    }
+
                     return false;
             }
         }
