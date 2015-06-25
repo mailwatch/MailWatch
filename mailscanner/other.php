@@ -44,6 +44,7 @@ html_start('Tools', "0", false, false);
 
 echo '<table width="100%" class="boxtable">
 echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
+echo '
  <tr>
   <td>
    <p>';
