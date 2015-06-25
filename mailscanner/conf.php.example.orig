@@ -40,8 +40,12 @@
 // Debug messages
 define('DEBUG', false);
 
-// Define language (de, en, fr, nl, pt_br);
+<<<<<<< HEAD
+// Define language (en, pt-br, fr);
 // See http://www.lingoes.net/en/translator/langcode.htm
+=======
+// Define language (de, en, fr, nl, pt_br);
+>>>>>>> master
 define('LANG', 'en');
 
 // Database settings
