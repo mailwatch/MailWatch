@@ -44,7 +44,7 @@ require_once("./functions.php");
     <link rel="shortcut icon" href="images/favicon.png">
     <style type="text/css">
         body {
-            background-color: #ebebeb;
+            background-color: #ffffff;
             color: #000;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 16px;
@@ -147,7 +147,7 @@ require_once("./functions.php");
 </head>
 <body>
 <div class="login">
-    <img src="images/mailwatch-logo.png" alt="MailWatch Logo">
+    <img src="' . IMAGES_DIR . MW_LOGO . '" alt="MailWatch Logo">
     <h1>MailWatch Login</h1>
     <?php if (file_exists('conf.php')) { ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php">
@@ -193,3 +193,4 @@ require_once("./functions.php");
 
 </body>
 </html>
+r

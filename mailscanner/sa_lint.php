@@ -62,6 +62,10 @@ while ($line = fgets($fp, 2096)) {
         if (!$last) {
             $last = $linet;
         }
+        // Check for 'subtests=' to add space after comma (to fit the screen)
+        if (preg_match("/subtests=/i", $line)) {
+                $line = str_replace(",", ", ", $line);
+        }
         echo "<!-- Timer: $timer, Line Start: $linet -->\n";
         echo "    <TR>\n";
         echo "     <TD>$line</TD>\n";

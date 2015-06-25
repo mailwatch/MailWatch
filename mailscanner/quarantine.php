@@ -45,20 +45,21 @@ if (!isset($_GET['dir'])) {
     if (QUARANTINE_USE_FLAG) {
         // Don't use the database any more - it's too slow on big datasets
         $dates = return_quarantine_dates();
-        echo '<table class="mail" cellspacing="2" align="center">' . "\n";
+        echo '<table class="mail" width="100%" cellspacing="2" align="center">' . "\n";
         echo '<tr><th>' . __('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
             $sql = "SELECT id FROM maillog WHERE " . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
             $result = dbquery($sql);
             $rowcnt = mysql_num_rows($result);
-            $rowstr = " - ----------";
+            $rowstr = "&nbsp&nbsp&nbsp ----------";
             if ($rowcnt > 0) {
-                $rowstr = sprintf(" - %02d " . __('items08'), $rowcnt);
+                $rowstr = sprintf(" &nbsp&nbsp&nbsp %02d " . __('items08'), $rowcnt);
             }
-            echo '<tr><td align="center"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?dir=' . $date . '">' . translateQuarantineDate(
+            echo '<tr><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?dir=' . $date . '">' . translateQuarantineDate(
                     $date,
                     DATE_FORMAT
-                ) . $rowstr . '</a></td></tr>' . "\n";
+                ) .  '</a></td>' . "\n";
+            echo '<td align="left">' . $rowstr . '</a></td></tr>' . "\n";
         }
         echo '</table>' . "\n";
     } else {
@@ -66,8 +67,8 @@ if (!isset($_GET['dir'])) {
         if (count($items) > 0) {
             // Sort in reverse chronological order
             arsort($items);
-            echo '<table class="mail" cellspacing="1" align="center">' . "\n";
-            echo '<tr><th>Folder</th></tr>' . "\n";
+            echo '<table class="mail" width="100%" cellspacing="2" align="center">' . "\n";
+            echo '<tr><th colspan=2>Quarantine Folder</th></tr>' . "\n";
             $count = 0;
             foreach ($items as $f) {
                 //To look and see if any of the folders in the quarantine folder are strings and not numbers.
