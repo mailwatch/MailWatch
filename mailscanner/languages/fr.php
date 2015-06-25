@@ -33,7 +33,7 @@
 */
 
 /* languages/fr.php */
-/* v0.1.7 */
+/* v0.1.8 */
 
 return array(
 	// 01-login.php
@@ -193,7 +193,7 @@ return array(
 	// 11-sf_versions.php
 	'softver11' => 'Version des logiciels',
 	'nodbdown11' => 'Aucune base de données téléchargée',
-	'version11' => 'version',
+	'version11' => 'version :',
 
 	// 12-user_manager.php
 	'usermgnt12' => 'Gestion des utilisateurs',
@@ -229,7 +229,17 @@ return array(
 	'reset12' => 'Réinitialiser',
 	'areusuredel12' => 'Voulez-vous vraiment effacer cet utilisateur ?',
 	'errorpass12' => 'Le mot de passe de correspond pas.',
-	
+	    
+	// Added in 2015-06-25
+	// 03-funtions.php
+	'footer01' => 'MailWatch pour MailScanner v',
+
+	// 08-quarantine.php
+	'folder_0308' => 'Dossier de quarantaine',
+
+	// 13-sa_rules_update.php
+	'folder_0308' => 'Run Now',
+			
 	// 99 - General
 	'i18_missing' => 'Non traduit en français',
 	'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'

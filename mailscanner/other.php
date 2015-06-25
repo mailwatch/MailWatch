@@ -43,7 +43,7 @@ require('login.function.php');
 html_start('Tools', "0", false, false);
 
 echo '<table width="100%" class="boxtable">
- <tr><th>Tools/Links</th></tr>
+echo '<tr><th>' . __('toolslinks03') . </th></tr>';
  <tr>
   <td>
    <p>' . __('tools10') . '</p>

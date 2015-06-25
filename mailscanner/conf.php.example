@@ -41,6 +41,7 @@
 define('DEBUG', false);
 
 // Define language (en, pt-br, fr);
+// See http://www.lingoes.net/en/translator/langcode.htm
 define('LANG', 'en');
 
 // Database settings
@@ -72,6 +73,7 @@ define('LDAP_EMAIL_FIELD', 'proxyaddresses');
 define('LDAP_MS_AD_COMPATIBILITY', false);
 
 // Set Time Zone
+// See http://php.net/manual/en/timezones.php
 define('TIME_ZONE', 'America/New_York');
 /*
 For a list of usable timezones please check:
@@ -239,3 +241,4 @@ define('HIDE_HIGH_SPAM', false);
 
 // Hide Non Spam from quarantine reports
 define('HIDE_NON_SPAM', false);
+

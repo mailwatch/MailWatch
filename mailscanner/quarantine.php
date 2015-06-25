@@ -68,7 +68,7 @@ if (!isset($_GET['dir'])) {
             // Sort in reverse chronological order
             arsort($items);
             echo '<table class="mail" width="100%" cellspacing="2" align="center">' . "\n";
-            echo '<tr><th colspan=2>Quarantine Folder</th></tr>' . "\n";
+            echo '<tr><th colspan=2>' . __('folder_0308') . '</th></tr>' . "\n";
             $count = 0;
             foreach ($items as $f) {
                 //To look and see if any of the folders in the quarantine folder are strings and not numbers.

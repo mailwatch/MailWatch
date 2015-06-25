@@ -723,7 +723,7 @@ function html_end($footer = "")
        echo '</i></p>' . "\n";
     }
     echo '<p class="center" style="font-size:13px">' . "\n";
-    echo 'MailWatch for MailScanner v';
+    echo __('footer01');
     echo mailwatch_version();
     echo ' - @ 2006-2015';
     echo '</p>' . "\n";
