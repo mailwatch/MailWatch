@@ -47,7 +47,9 @@ if (!isset($_POST['run'])) {
     echo '<form method="POST" action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">
 	 <input type="hidden" name="run" value="true">
 	 <table class="boxtable" width="100%">
-            <tr><th>Update GeoIP Database</th></tr>
+            <tr><th>";
+    echo '__('updategeoip10');
+    echo "</th></tr>
 	    <tr>
 	        <td>
                     <br>
