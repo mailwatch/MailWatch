@@ -40,7 +40,7 @@
 // Debug messages
 define('DEBUG', false);
 
-// Define language (en, pt-br, fr);
+// Define language (de, en, fr, nl, pt_br);
 define('LANG', 'en');
 
 // Database settings
