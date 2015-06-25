@@ -42,7 +42,7 @@ session_start();
 require('login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Total Mail by Date", 0, false, true);
+$filter = html_start(__('totalmailbydate14'), 0, false, true);
 
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
@@ -160,14 +160,14 @@ if (is_writable(CACHE_DIR)) {
     $graph->SetScale("textlin");
     $graph->SetY2Scale("lin");
     $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set("Total Mail Processed by Date");
+    $graph->title->Set(__('totalmailbydate14'));
     $graph->y2axis->title->Set("Volume (" . $size_info['longdesc'] . ")");
     $graph->y2axis->title->SetMargin(0);
     $graph->y2axis->SetTitleMargin(40);
-    $graph->yaxis->title->Set("No. of messages");
+    $graph->yaxis->title->Set(__('nroofmsg14'));
     $graph->yaxis->title->SetMargin(20);
     $graph->yaxis->SetTitleMargin(30);
-    $graph->xaxis->title->Set("Date");
+    $graph->xaxis->title->Set(__('data14'));
     $graph->xaxis->SetTitleMargin(30);
     $graph->xaxis->SetTickLabels($graph_labels);
     $graph->xaxis->SetLabelAngle(45);
@@ -230,7 +230,7 @@ echo " <TR>\n";
 echo "  <TD ALIGN=\"CENTER\">\n";
 echo "<TABLE BORDER=0>\n";
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo "  <TH>Date</TH>\n";
+echo "  <TH>" . __('data14') . "</TH>\n";
 echo "  <TH>Mail</TH>\n";
 echo "  <TH>Virus</TH>\n";
 echo "  <TH>%</TH>\n";
@@ -242,8 +242,8 @@ if ($is_MCP_enabled === true) {
 }
 echo "  <TH>Volume</TH>\n";
 echo "  <TH>&nbsp;&nbsp;&nbsp;&nbsp;</TH>\n";
-echo "  <TH>Unknown<BR>Users</TH>\n";
-echo "  <TH>Can't<BR>Resolve</TH>\n";
+echo "  <TH>" . __('unknown14') . "</TH>\n";
+echo "  <TH>" . __('cantresolve14') . "</TH>\n";
 echo "  <TH>RBL</TH>\n";
 echo " </TR>\n";
 
@@ -268,7 +268,7 @@ for ($i = 0; $i < count($data_total_mail); $i++) {
 }
 
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo " <TH ALIGN=\"RIGHT\">Totals</TH>\n";
+echo " <TH ALIGN=\"RIGHT\">" . __('totals14') . "</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mail)) . "</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_virii)) . "</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_virii) / mailwatch_array_sum($data_total_mail) * 100, 1) . "</TH>\n";

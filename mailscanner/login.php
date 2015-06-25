@@ -157,13 +157,13 @@ require_once("./functions.php");
                         <?php
                         switch ($_GET['error']) {
                             case 'baduser':
-                                echo 'Bad Username or Password';
+                                echo __('baduserpass01') ;
                                 break;
                             case 'emptypassword':
-                                echo 'Password cannot be empty';
+                                echo __('passwdnotempy01');
                                 break;
                             default:
-                                echo 'An undefined error occurred';
+                                echo __('undefined01');
                         }
                         ?>
                     </p>
@@ -184,7 +184,7 @@ require_once("./functions.php");
     } else {
         ?>
         <p class="error">
-            Sorry, this installation of MailWatch is missing <span>conf.php</span> file. Please create the file by copying <span>conf.php.example</span> and making the required changes.
+            <php echo $lang['sorryconf01']; ?>
         </p>
     <?php
     }

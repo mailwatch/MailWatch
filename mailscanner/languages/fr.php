@@ -232,6 +232,41 @@ return array(
 	
 	// 99 - General
 	'i18_missing' => 'Non traduit en français',
-	'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
+
+    // Added in 2015-06-25
+
+    // 01-login.php
+    'passwdnotempy01' => 'Password cannot be empty',
+    'baduserpass01' => 'Bad Username or Password',
+    'undefined01' => 'An undefined error ocurred',
+    'sorry01' => 'Sorry, this installation of MailWatch is missing <span>conf.php</span> file. Please create the file by copying <span>conf.php.example</span> and making the required changes.',
+
+    // 12-user-manager.php
+    'edituser12' => 'Edit user',
+
+    // 09-filter.inc
+    'statistics09' => 'Statistics (Filtered)',
+    'oldest09' => 'Oldest record:',
+    'newest09' => 'Newest record:',
+    'messagecount09' => 'Message count:',
+    'reports09' => 'Reports',
+
+    //13-reports.php
+    'messagelisting13' => 'Message Listing',
+    'messageoper13' => 'Message Operations',
+    'totalbydate13' => 'Total Messages by Date',
+
+    //14-rep_total_mail_by_date.php
+    'totalmailbydate14' => 'Total Mail Processed by Date',
+    'nroofmsg14' => 'No. of messages',
+    'data14' => 'Date',
+    'unknown14' => 'Unknown<br>Users',
+    'cantresolve14' => 'Can\'t<br>Resolve',
+    'totals14' => 'Totals',
+
+    //03-functions.php
+    'clearall03' => 'Clear</a> all',
+    'forget03' => 'Forget',
+    'release03' => 'Release',
 	
 );

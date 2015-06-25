@@ -43,7 +43,7 @@ session_start();
 require('login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Message Listing", 0, false, false);
+$filter = html_start(__('messagelisting13'), 0, false, false);
 
 $sql = "
  SELECT
@@ -113,7 +113,7 @@ $sql .= "
  ";
 
 // function to display the data from functions.php
-db_colorised_table($sql, 'Message Listing', true, true);
+db_colorised_table($sql, __('messagelisting13'), true, true);
 
 // Add footer
 html_end();

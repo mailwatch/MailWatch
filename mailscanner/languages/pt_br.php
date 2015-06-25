@@ -227,4 +227,60 @@ return array(
     'errorpass12' => 'As senhas não são iguais',
 
     'i18_missing' => 'Não traduzido em português',
+
+    // Added in 2015-06-25
+
+    // 01-login.php
+    'passwdnotempy01' => 'A senha não pode ser vazia',
+    'baduserpass01' => 'Usuário ou Senha Inválidos',
+    'undefined01' => 'Ocorreu um erro desconhecido',
+    'sorry01' => 'Esta instalação do MailWatch não acho o arquivo <span>conf.php</span>. Crie o arquivo copiando <span>conf.php.example</span> e efetuando as alterações necessárias.',
+
+    // 12-user-manager.php
+    'edituser12' => 'Editar usuário',
+
+    // 09-filter.inco
+    //'statistics09' => 'Statistics (Filtered)',
+    'statistics09' => 'Estatísticas (Filtrado)',
+    //'oldest09' => 'Oldest record:',
+    'oldest09' => 'Registro mais antigo:',
+    //'newest09' => 'Newest record:',
+    'newest09' => 'Registro mais recente:',
+    //'messagecount09' => 'Message count:',
+    'messagecount09' => 'Número de mensagens:',
+    //'reports09' => 'Reports',
+    'reports09' => 'Relatórios',
+
+    //13-reports.php
+    //'messagelisting13' => 'Message Listing',
+    'messagelisting13' => 'Lista de Mensagens',
+    //'messageoper13' => 'Message Operations',
+    'messageoper13' => 'Ações com Mensagens',
+    //'totalbydate13' => 'Total Messages by Date',
+    'totalbydate13' => 'Total de Mensagens por Data',
+    //'totalbydate13' => 'Total Messages by Date',
+
+    //14-rep_total_mail_by_date.php
+    //'totalmailbydate14' => 'Total Mail Processed by Date',
+    'totalmailbydate14' => 'Total de Emails Processados por Data',
+    //'nroofmsg14' => 'No. of messages',
+    'nroofmsg14' => 'No. de mensages',
+    //'data14' => 'Date',
+    'data14' => 'Data',
+    //'unknown14' => 'Unknown<br>Users',
+    'unknown14' => 'Usuários<br>Desconhecido',
+    //'cantresolve14' => 'Can\'t<br>Resolve',
+    'cantresolve14' => 'Não<br>Resolve',
+    //'totals14' => 'Totals',
+    'totals14' => 'Totais',
+
+    //03-functions.php
+    //'clearall03' => 'Clear</a> all',
+    'clearall03' => 'Limpar</a> tudo',
+    //'forget03' => 'Forget',
+    'forget03' => 'Esquecer',
+    //'release03' => 'Release',
+    'release03' => 'Liberar',
+   
+
 );
