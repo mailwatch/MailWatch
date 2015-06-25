@@ -73,12 +73,8 @@ define('LDAP_EMAIL_FIELD', 'proxyaddresses');
 define('LDAP_MS_AD_COMPATIBILITY', false);
 
 // Set Time Zone
-// See http://php.net/manual/en/timezones.php
+// See http://php.net/manual/en/timezones.php for a list of usable timezones
 define('TIME_ZONE', 'America/New_York');
-/*
-For a list of usable timezones please check:
-http://php.net/manual/en/timezones.php
-*/
 
 // Proxy Settings
 define('USE_PROXY', false);
