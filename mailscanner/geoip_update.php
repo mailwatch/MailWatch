@@ -48,7 +48,7 @@ if (!isset($_POST['run'])) {
 	 <input type="hidden" name="run" value="true">
 	 <table class="boxtable" width="100%">
             <tr><th>";
-    echo '__('updategeoip10');
+    echo __('updategeoip10');
     echo "</th></tr>
 	    <tr>
 	        <td>

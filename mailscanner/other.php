@@ -46,7 +46,9 @@ echo '<table width="100%" class="boxtable">
 echo '<tr><th>' . __('toolslinks03') . </th></tr>';
  <tr>
   <td>
-   <p>' . __('tools10') . '</p>
+   <p>';
+   echo __('tools10');
+   echo '</p>
    <ul>';
 
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
