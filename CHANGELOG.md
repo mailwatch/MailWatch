@@ -17,7 +17,7 @@
  - Enable LDAP over SSL
  - Fix virus count sorting on "Virus Report"
  - Remove additional slashes in "SpamAssassin Rule Description Update"
- - Add of logo mgt in conf.php
+ - Adding translation to user interface
  - Add LOGO path in conf.php.example and changes done in corresponding files.
  - layout changes in quarantine.php, other.php, sf_version.php
  - Removed duplicate PHP function in tools/Cron_jobs/quarantine_report.php (is in functions.php)
