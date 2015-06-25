@@ -40,7 +40,7 @@ ini_set("memory_limit", MEMORY_LIMIT);
 session_start();
 require('login.function.php');
 
-html_start("Message Viewer", 0, false, false);
+html_start(__('msgviewer06'), 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -119,9 +119,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = "Message Viewer: " . $message_id . " on " . $message->hostname;
+    $title = __('msgviewer06') .": " . $message_id . " on " . $message->hostname;
 } else {
-    $title = "Message Viewer: " . $message_id;
+    $title = __('msgviewer06') .": " . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -135,8 +135,23 @@ function lazy($title, $val, $dohtmlentities = true)
     } else {
         $v = $val;
     }
+    $titleintl = $title;
+    switch ($title) {
+        case "Date:":
+            $titleintl = __('date06');
+            break;
+        case "From:":
+            $titleintl = __('from06');
+            break;
+        case "To:":
+            $titleintl = __('to06');
+            break;
+        case "Subject:":
+            $titleintl = __('subject06');
+            break;
+    }
     echo ' <tr>
-   <td class="heading" align="right" width="10%">' . $title . '</td>
+   <td class="heading" align="right" width="10%">' . $titleintl . '</td>
    <td class="detail" width="80%">' . $v . '</td>
    </tr>' . "\n";
 }
@@ -155,13 +170,7 @@ foreach ($header_fields as $field) {
         if (is_array($structure->headers[$field['name']])) {
             $structure->headers[$field['name']] = implode("; ", $structure->headers[$field['name']]);
         }
-        if (function_exists('mb_check_encoding')) {
-            if (!mb_check_encoding($structure->headers[$field['name']], 'UTF-8')) {
-                $structure->headers[$field['name']] = mb_convert_encoding($structure->headers[$field['name']], 'UTF-8');
-            }
-        } else {
-            $structure->headers[$field['name']] = utf8_encode($structure->headers[$field['name']]);
-        }
+        $structure->headers[$field['name']] = getUTF8String($structure->headers[$field['name']]);
         if ($field['replaceQuote']) {
             $structure->headers[$field['name']] = str_replace('"', '', $structure->headers[$field['name']]);
         }
@@ -171,8 +180,8 @@ foreach ($header_fields as $field) {
 
 if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
-        "Actions:",
-        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">Delete this message</a>",
+        __('actions06') . ":",
+        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . "</a>",
         false
     );
 }
