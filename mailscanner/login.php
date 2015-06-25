@@ -184,7 +184,7 @@ require_once("./functions.php");
     } else {
         ?>
         <p class="error">
-            <php echo $lang['sorryconf01']; ?>
+            <php echo __('sorryconf01'); ?>
         </p>
     <?php
     }

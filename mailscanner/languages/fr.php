@@ -239,7 +239,7 @@ return array(
     'passwdnotempy01' => 'Password cannot be empty',
     'baduserpass01' => 'Bad Username or Password',
     'undefined01' => 'An undefined error ocurred',
-    'sorry01' => 'Sorry, this installation of MailWatch is missing <span>conf.php</span> file. Please create the file by copying <span>conf.php.example</span> and making the required changes.',
+    'sorry01' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.',
 
     // 12-user-manager.php
     'edituser12' => 'Edit user',
