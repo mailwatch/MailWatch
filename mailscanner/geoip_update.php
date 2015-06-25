@@ -49,7 +49,7 @@ if (!isset($_POST['run'])) {
 	 <table class="boxtable" width="100%">
             <tr><th>";
     echo __('updategeoip10');
-    echo "</th></tr>
+    echo '</th></tr>
 	    <tr>
 	        <td>
                     <br>
