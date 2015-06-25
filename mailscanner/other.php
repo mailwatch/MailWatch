@@ -42,11 +42,12 @@ require('login.function.php');
 
 html_start('Tools', "0", false, false);
 
-echo '<table width="100%" class="boxtable">
- <tr>
-  <td>
-   <p>' . __('tools10') . '</p>
-   <ul>';
+echo '<table width="100%" class="boxtable">';
+echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
+echo '<tr>
+        <td>
+         <p>' . __('tools10') . '</p>
+      <ul>';
 
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
 if ($_SESSION['user_type'] == 'A') {
@@ -72,7 +73,6 @@ if ($_SESSION['user_type'] == 'A') {
     if (defined('MSRE') && MSRE === true) {
         echo '<li><a href="msre_index.php">' . __('editmsrules10') . '</a>';
     }
-
     if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') === true) {
         echo '
      <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>

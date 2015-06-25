@@ -43,19 +43,20 @@ if ($_SESSION['user_type'] != 'A') {
 } else {
     html_start("SpamAssassin Rule Description Update", 0, false, false);
     echo "<table class=\"boxtable\" width=\"100%\">";
+    echo "<tr><th>SpamAssassin Rule Description Update</th></tr>";
     echo "<tr>";
     echo "  <td>";
-    echo "   This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.<br>";
+    echo "   <br>This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.<br>";
     echo "   <br>";
-    echo "   This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br>";
+    echo "   This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br><br>";
     echo "  </td>";
     echo "</tr>";
     echo " <tr>";
     echo "  <td align=\"center\">
     <form method=\"post\" action=\"" . sanitizeInput($_SERVER['PHP_SELF']) . "\">
-    <div style=\"margin: 5px\">
-    <input type=\"submit\" value=\"run now\">
-    <input type=\"hidden\" name=\"run\" value=\"true\">
+    <div style=\"margin: 5px\">\n";
+    echo "<input type=\"submit\" value=\"" . __('input01') . "\"><br><br>";
+    echo "<input type=\"hidden\" name=\"run\" value=\"true\">
     </div>
     </form>
     </td>";

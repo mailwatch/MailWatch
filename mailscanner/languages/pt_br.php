@@ -32,11 +32,13 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/* languages/pt_br.php */
+/* v0.0.1 */
+
 return array(
     // 01-login.php
     'username' => 'Usu&aacute;rio',
     'password' => 'Senha',
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
     // 03-funtions.php
     'jumpmessage03' => 'Carregar a mensagem:',
@@ -226,5 +228,19 @@ return array(
     'areusuredel12' => 'Tem certeza de que quer excluir o usuário ',
     'errorpass12' => 'As senhas não são iguais',
 
+    // Added in 2015-06-25
+    // 03-funtions.php
+    'footer01' => 'MailWatch for MailScanner v',
+
+    // 08-quarantine.php
+    'input01' => 'Quarantine Folder',
+
+    // 13-sa_rules_update.php
+    'folder_0308' => 'Run Now',
+
+    // 99 - General
     'i18_missing' => 'Não traduzido em português',
+    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
+
 );
+

@@ -32,11 +32,13 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/* languages/nl.php */
+/* v0.0.1 */
+
 return array(
     // 01-login.php
     'username' => 'Gebruiker',
     'password' => 'Wachtwoord',
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
     // 03-funtions.php
     'jumpmessage03' => 'Ga naar email:',
@@ -226,5 +228,8 @@ return array(
     'areusuredel12' => 'Weet U zeker dat de gebruiker wordt verwijderd?',
     'errorpass12' => 'Niet hetzelfde paswoord',
 
+    // 99 - General
     'i18_missing' => 'Geen vertaling in het Nederlands',
+    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
+
 );

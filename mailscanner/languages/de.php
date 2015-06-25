@@ -32,11 +32,13 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/* languages/de.php */
+/* v0.0.1 */
+
 return array(
     // 01-login.php
     'username' => 'Benutzername',
     'password' => 'Passwort',
-    'cannot_read_conf' => "Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren, und die Parameter entsprechend anpassen.",
 
     // 03-funtions.php
     'jumpmessage03' => 'Zu Nachricht gehen:',
@@ -226,5 +228,9 @@ return array(
     'areusuredel12' => 'Soll der Benutzer tatsächlich gelöscht werden',
     'errorpass12' => 'Passwörter stimmen nicht überein',
 
+    // 99 - General
     'i18_missing' => 'Keine deutsche Übersetzung',
+    'cannot_read_conf' => "Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren, und die Parameter entsprechend anpassen.",
+
 );
+

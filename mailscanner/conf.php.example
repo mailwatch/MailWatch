@@ -41,6 +41,7 @@
 define('DEBUG', false);
 
 // Define language (de, en, fr, nl, pt_br);
+// See http://www.lingoes.net/en/translator/langcode.htm
 define('LANG', 'en');
 
 // Database settings
@@ -72,6 +73,7 @@ define('LDAP_EMAIL_FIELD', 'proxyaddresses');
 define('LDAP_MS_AD_COMPATIBILITY', false);
 
 // Set Time Zone
+// See http://php.net/manual/en/timezones.php
 define('TIME_ZONE', 'America/New_York');
 /*
 For a list of usable timezones please check:
@@ -100,6 +102,12 @@ define('SA_DIR','/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spam.assassin.prefs.conf');
 define('TEMP_DIR', '/tmp/');
+
+// Define MailWatch logo name
+define('MW_LOGO', 'mailwatch-logo.png');
+
+// Define MailScanner logo name
+define('MS_LOGO', 'mailscannerlogo.gif');
 
 // Log file location
 define('MS_LOG', '/var/log/mail.log');
@@ -233,3 +241,4 @@ define('HIDE_HIGH_SPAM', false);
 
 // Hide Non Spam from quarantine reports
 define('HIDE_NON_SPAM', false);
+

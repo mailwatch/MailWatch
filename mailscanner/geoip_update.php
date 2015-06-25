@@ -47,8 +47,12 @@ if (!isset($_POST['run'])) {
     echo '<form method="POST" action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">
 	 <input type="hidden" name="run" value="true">
 	 <table class="boxtable" width="100%">
+            <tr><th>';
+    echo __('updategeoip10');
+    echo '</th></tr>
 	    <tr>
 	        <td>
+                    <br>
 	            This utility is used to download the GeoIP database files (which are updated on the first Tuesday of each month) from <a href="http://dev.maxmind.com/geoip/legacy/geolite/" target="_maxmind">MaxMind</a> which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.<br><br>
 	        </td>
 	    </tr>

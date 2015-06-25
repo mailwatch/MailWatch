@@ -32,11 +32,13 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/* languages/en.php */
+/* v0.0.1 */
+
 return array(
     // 01-login.php
     'username' => 'User',
     'password' => 'Password',
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
     // 03-funtions.php
     'jumpmessage03' => 'Go to message:',
@@ -129,6 +131,7 @@ return array(
     'from06' => 'From:',
     'to06' => 'To:',
     'subject06' => 'Subject:',
+
     // Added in 2015-06-22
 
     // 03-functions.php
@@ -189,7 +192,7 @@ return array(
     // 11-sf_versions.php
     'softver11' => 'Software Versions',
     'nodbdown11' => 'No database downloaded',
-    'version11' => 'Version',
+    'version11' => 'Version:',
 
     // 12-user_manager.php
     'usermgnt12' => 'User Management',
@@ -226,5 +229,18 @@ return array(
     'areusuredel12' => 'Are you sure you want to delete user',
     'errorpass12' => 'Passwords do not match',
 
+    // Added in 2015-06-25
+    // 03-funtions.php
+    'footer01' => 'MailWatch for MailScanner v',
+
+    // 08-quarantine.php
+    'input01' => 'Quarantine Folder',
+
+    // 13-sa_rules_update.php
+    'folder_0308' => 'Run Now',
+
+    // 99 - General
     'i18_missing' => 'No translation in English',
+    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 );
+
