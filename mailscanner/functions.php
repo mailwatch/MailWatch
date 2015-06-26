@@ -725,7 +725,7 @@ function html_end($footer = "")
     echo '<p class="center" style="font-size:13px">' . "\n";
     echo __('footer01');
     echo mailwatch_version();
-    echo ' - @ 2006-2015';
+    echo ' - @ 2006-' . date('Y');
     echo '</p>' . "\n";
     echo '</body>' . "\n";
     echo '</html>' . "\n";
