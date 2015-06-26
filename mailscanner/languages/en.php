@@ -141,11 +141,11 @@ return array(
     'documentation03' => 'Documentation',
     'logout03' => 'Logout',
     'pggen03' => 'Page generated in',
-    'seconds03' => 'secondS',
+    'seconds03' => 'seconds',
     'disppage03' => 'Displaying page',
     'of03' => 'from',
     'records03' => 'Records',
-    'to0203' => 'to',// This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
+    'to0203' => 'to', // This means to as "from number x to number Y". The first to03 means "from mail ... to mail ..."
 
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
