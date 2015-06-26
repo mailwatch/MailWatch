@@ -33,12 +33,12 @@
 */
 
 /* languages/fr.php */
-/* v0.1.8 */
+/* v0.2.0 */
 
 return array(
     // 01-login.php
-    'username01' => 'Utilisateur',
-    'password01' => 'Mot de passe',
+    'username' => 'Utilisateur :',
+    'password' => 'Mot de passe :',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
@@ -54,13 +54,13 @@ return array(
     'todaystotals03' => 'Total aujourd\'hui',
     'processed03' => 'Traité',
     'cleans03' => 'Bon',
-    'viruses03' => 'Virussé',
-    'blockedfiles03' => 'Fichier bloqué',
-    'others03' => 'Autres',
-    'hscospam03' => 'Spam à score très haut',
-    'hscomcp03' => 'MCP à score très haut',
+    'viruses03' => 'Virus',
+    'blockedfiles03' => 'Fichier(s) bloqué(s)',
+    'others03' => 'Autre',
+    'hscospam03' => 'Spam à score haut',
+    'hscomcp03' => 'MCP à score haut',
     'recentmessages03' => 'Messages récent',
-    'lists03' => 'Listes',
+    'lists03' => 'Listes N/B',
     'quarantine03' => 'Quarantaine',
     'datetime03' => 'Date/Heure',
     'from03' => 'De',
@@ -84,22 +84,22 @@ return array(
     'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
     'blkfile04' => 'Fichier bloqué :',
     'otherinfec04' => 'Autre infection :',
-    'hscospam04' => 'Spam à score très haut :',
+    'hscospam04' => 'Spam à score haut :',
     'listedrbl04' => 'Listé en RBL :',
     'spamwl04' => 'Spam en Liste Blanche :',
-    'spambl04' => 'Spam en Liste Noire: ',
+    'spambl04' => 'Spam en Liste Noire : ',
     'saautolearn04' => 'Auto aprentissage Spamassassin :',
     'sascore04' => 'Score Spamassassin :',
     'spamrep04' => 'Rapport de Spam :',
     'hdrmcp04' => 'Protection des contenus (MCP)',
-    'highscomcp04' => 'MCP à score très haut :',
+    'highscomcp04' => 'MCP à score haut :',
     'mcpwl04' => 'MCP en Liste Blanche :',
     'mcpbl04' => 'MCP en Liste Noire :',
     'mcpscore04' => 'Score MCP :',
     'mcprep04' => 'Rapport MCP :',
     'ipaddress04' => 'Adresse IP',
     'country04' => 'Pays',
-    'all04' => 'Tous',
+    'all04' => 'Tout',
     'addwl04' => 'Ajouter à la Liste Blanche',
     'addbl04' => 'Ajouter à la Liste Noire',
     'release04' => 'Libérer',
@@ -118,8 +118,8 @@ return array(
     // 05-status.php
     'recentmsg05' => 'Messages récents',
     'last05' => 'Derniers',
-    'messages05' => 'Messages',
-    'refevery05' => 'Rafraichir toutes les',
+    'messages05' => 'messages',
+    'refevery05' => 'Se rafraichit toutes les',
     'seconds05' => 'secondes',
 
     // 06 - viewmail.php
@@ -145,10 +145,10 @@ return array(
     'disppage03' => 'Affichage de la page',
     'of03' => 'de',
     'records03' => 'Enregistrements de',
-    'to0203' => 'à', // This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."    
+    'to0203' => 'à', // This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
 
     // 07-lists.php
-    'addwlbl07' => 'Ajouter à la Liste Blanche/Liste Noire',
+    'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
     'from07' => 'De',
     'to07' => 'À',
     'list07' => 'Liste',
@@ -157,13 +157,13 @@ return array(
     'bl07' => 'Liste Noire',
     'reset07' => 'Réinitialiser',
     'add07' => 'Ajouter',
-    'delete07' => 'Effacer',
+    'delete07' => 'Supprimer',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine',
     'folder_0208' => 'Dossier :',
     'items08' => 'éléments',
-    
+
     // 09-filter.inc
     'activefilters09' => 'Filtre actif',
     'none09' => 'Aucun',
@@ -202,10 +202,10 @@ return array(
     'type12' => 'Type',
     'spamcheck12' => 'Vérifier les Spam',
     'spamscore12' => 'Score de Spam',
-    'spamhscore12' => 'Score de Spam à score très haut',
+    'spamhscore12' => 'Score de Spam haut',
     'action12' => 'Actions',
     'edit12' => 'Editer',
-    'delete12' => 'Effacer',
+    'delete12' => 'Supprimer',
     'filters12' => 'Filtres',
     'newuser12' => 'Nouveau utilisateur',
     'forallusers12' => 'Pour tous les utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'utilisateur.',
@@ -223,7 +223,7 @@ return array(
     'scanforspam12' => 'Scan des Spam :',
     'scaneforspam12' => 'Scan des E-Mail pour les Spam ?',
     'pontspam12' => 'Score de Spam :',
-    'hpontspam12' => 'Score de Spam à score très haut :',
+    'hpontspam12' => 'Score de Spam haut :',
     'usedefault12' => 'Utiliser les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
