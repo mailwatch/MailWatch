@@ -406,7 +406,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
     } else {
-        echo '<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '" name="quarantine">' . "\n";
+        echo '<form action="detail.php" name="quarantine">' . "\n";
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th colspan="7">' . __('quarantine04') . '</th>' . "\n";

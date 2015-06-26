@@ -55,7 +55,7 @@ if (!isset($_GET['dir'])) {
             if ($rowcnt > 0) {
                 $rowstr = sprintf("  %02d " . __('items08'), $rowcnt);
             }
-            echo '<tr><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?dir=' . $date . '">' . translateQuarantineDate(
+            echo '<tr><td align="right"><a href="quarantine.php?dir=' . $date . '">' . translateQuarantineDate(
                     $date,
                     DATE_FORMAT
                 ) .  '</a></td>' . "\n";
@@ -74,7 +74,7 @@ if (!isset($_GET['dir'])) {
                 //To look and see if any of the folders in the quarantine folder are strings and not numbers.
                 if (is_numeric($f)) {
                     // Display the Quarantine folders and create links for them.
-                    echo '<tr><td align="center"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?dir=' . $f . '">' . translateQuarantineDate(
+                    echo '<tr><td align="center"><a href="quarantine.php?dir=' . $f . '">' . translateQuarantineDate(
                             $f,
                             DATE_FORMAT
                         ) . '</a></td></tr>' . "\n";

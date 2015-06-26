@@ -248,7 +248,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -258,7 +258,7 @@ function build_table($sql, $list)
 }
 
 echo '
-<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">
+<form action="lists.php">
 <table cellspacing="1" class="mail">
  <tr>
   <th colspan=2>' . __('addwlbl07') . '</th>

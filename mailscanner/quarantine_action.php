@@ -131,7 +131,7 @@ switch ($_GET['action']) {
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="<?php echo sanitizeInput($_SERVER['PHP_SELF']); ?>?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
+                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
                                         &nbsp;&nbsp;
                                         <a href="javascript:void(0)" onClick="javascript:window.close()">No</a>
                                     </td>
