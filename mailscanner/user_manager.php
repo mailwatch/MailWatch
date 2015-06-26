@@ -293,8 +293,8 @@ if ($_SESSION['user_type'] == 'A') {
     }
     $sql = "
 SELECT
- username AS '" . __('username12') . "',
- fullname AS '" . __('fullname12') . "',
+ username AS '" . mysql_real_escape_string(__('username12')) . "',
+ fullname AS '" . mysql_real_escape_string(__('fullname12')) . "',
  CASE
   WHEN type = 'A' THEN 'Administrator'
   WHEN type = 'D' THEN 'Domain Administrator'
@@ -302,16 +302,16 @@ SELECT
   WHEN type = 'R' THEN 'User (Regexp)'
  ELSE
   'Unknown Type'
- END AS '" . __('type12') . "',
+ END AS '" . mysql_real_escape_string(__('type12')) . "',
  CASE
   WHEN noscan = 1 THEN 'N'
   WHEN noscan = 0 THEN 'Y'
  ELSE
   'Y'
- END AS '" . __('spamcheck12') . "',
-  spamscore AS '" . __('spamscore12') . "',
-  highspamscore AS '" . __('spamhscore12') . "',
- CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . __('edit12') . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . __('filters12') . "</a>') AS '" . __('action12') . "'
+ END AS '" . mysql_real_escape_string(__('spamcheck12')) . "',
+  spamscore AS '" . mysql_real_escape_string(__('spamscore12')) . "',
+  highspamscore AS '" . mysql_real_escape_string(__('spamhscore12')) . "',
+ CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . mysql_real_escape_string(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . mysql_real_escape_string(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . mysql_real_escape_string(__('filters12')) . "</a>') AS '" . mysql_real_escape_string(__('action12')) . "'
 FROM
  users
 ORDER BY
