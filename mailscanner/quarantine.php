@@ -45,15 +45,15 @@ if (!isset($_GET['dir'])) {
     if (QUARANTINE_USE_FLAG) {
         // Don't use the database any more - it's too slow on big datasets
         $dates = return_quarantine_dates();
-        echo '<table class="mail" width="100%" cellspacing="2" align="center">' . "\n";
-        echo '<tr><th>' . __('folder08') . '</th></tr>' . "\n";
+        echo '<table class="mail" cellspacing="2" align="center">' . "\n";
+        echo '<tr><th colspan=2>' . __('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
             $sql = "SELECT id FROM maillog WHERE " . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
             $result = dbquery($sql);
             $rowcnt = mysql_num_rows($result);
-            $rowstr = "&nbsp&nbsp&nbsp ----------";
+            $rowstr = "  ----------";
             if ($rowcnt > 0) {
-                $rowstr = sprintf(" &nbsp&nbsp&nbsp %02d " . __('items08'), $rowcnt);
+                $rowstr = sprintf("  %02d " . __('items08'), $rowcnt);
             }
             echo '<tr><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?dir=' . $date . '">' . translateQuarantineDate(
                     $date,
@@ -129,7 +129,7 @@ AND
  date = '$date'
 AND
  quarantined = 1";
- 
+
 // Hide high spam/mcp from regular users if enabled
 if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U') {
   $sql .= "
@@ -138,8 +138,8 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U'
     AND
      ishighmcp=0";
 }
- 
-$sql .= " 
+
+$sql .= "
 ORDER BY
  date DESC, time DESC";
         db_colorised_table($sql, __('folder08') . ': ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
@@ -196,8 +196,8 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U'
     AND
      ishighmcp=0";
 }
-   
-$sql .= "  
+
+$sql .= "
   ORDER BY
    date DESC, time DESC
   ";
