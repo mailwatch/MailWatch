@@ -116,11 +116,11 @@ if ($_SESSION['user_type'] == 'A') {
                         } else {
                             $quarantine_report = '1';
                         }
+                        $noscan = '0';
                         if (!isset($_GET['noscan'])) {
                             $noscan = '1';
-                        } else {
-                            $noscan = '0';
                         }
+
                         $quarantine_rcpt = mysql_real_escape_string($_GET['quarantine_rcpt']);
                         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt) VALUES ('$n_username','$n_fullname','$n_password','$n_type','$quarantine_report','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
                         dbquery($sql);
@@ -148,8 +148,9 @@ if ($_SESSION['user_type'] == 'A') {
                     if ($row->quarantine_report == 1) {
                         $quarantine_report = "CHECKED";
                     }
+                    $noscan = '';
                     if ($row->noscan == 0) {
-                        $noscan = "CHECKED";
+                        $noscan = 'checked="checked"';
                     }
 
                     $s["A"] = '';
@@ -244,7 +245,10 @@ if ($_SESSION['user_type'] == 'A') {
                 break;
             case 'filters':
                 $id = sanitizeInput($_GET['id']);
-                $getFilter = sanitizeInput($_GET['filter']);
+                if (isset($_GET['filter'])) {
+                    $getFilter = sanitizeInput($_GET['filter']);
+                }
+
                 if (isset($_GET['new'])) {
                     $getActive = sanitizeInput($_GET['active']);
                     $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . mysql_real_escape_string($id) . "','" . mysql_real_escape_string($getFilter) . "','" . mysql_real_escape_string($getActive) . "')";
