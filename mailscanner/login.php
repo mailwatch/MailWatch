@@ -147,7 +147,7 @@ require_once("./functions.php");
 </head>
 <body>
 <div class="login">
-    <img src="' . IMAGES_DIR . MW_LOGO . '" alt="MailWatch Logo">
+    <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="MailWatch Logo">
     <h1>MailWatch Login</h1>
     <?php if (file_exists('conf.php')) { ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php">
