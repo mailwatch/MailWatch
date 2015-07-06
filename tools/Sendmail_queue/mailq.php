@@ -34,7 +34,8 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define('MAILWATCH_HOME', '/var/www/html/mailscanner/');
+// Change this path to the right one containing functions.php
+$MailWatchHome = '/var/www/html/mailscanner/';
 
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');
@@ -46,7 +47,7 @@ set_time_limit(0);
 $fl = fopen("/var/run/mailq.lock", "w+");
 // Attempt to create an exclusive lock - continue if successful
 if (flock($fl, LOCK_EX + LOCK_NB)) {
-    require "" . MAILWATCH_HOME . "functions.php";
+    require $MailWatchHome . 'functions.php';
     date_default_timezone_set(TIME_ZONE);
 
     $queue['inq'] = get_conf_var('IncomingQueueDir') . '/';
