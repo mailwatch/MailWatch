@@ -33,19 +33,20 @@
 */
 
 /* languages/fr.php */
-/* v0.2.0 */
+/* v0.2.4 */
 
 return array(
     // 01-login.php
     'username' => 'Utilisateur :',
-    'password' => 'Mot de passe :',
+    'password' => 'Mot de Passe :',
+    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',
-    'cst03' => 'Heure système',
+    'cst03' => 'Heure Système',
     'colorcodes03' => 'Codes couleur',
-    'badcontentinfected03' => 'Contenu dangereux/infecté',
+    'badcontentinfected03' => 'Contenu nocif/infecté',
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
     'notverified03' => 'Non vérifié',
@@ -57,8 +58,8 @@ return array(
     'viruses03' => 'Virus',
     'blockedfiles03' => 'Fichier(s) bloqué(s)',
     'others03' => 'Autre',
-    'hscospam03' => 'Spam à score haut',
-    'hscomcp03' => 'MCP à score haut',
+    'hscospam03' => 'Spam à Score Haut',
+    'hscomcp03' => 'MCP à Score Haut',
     'recentmessages03' => 'Messages récent',
     'lists03' => 'Listes N/B',
     'quarantine03' => 'Quarantaine',
@@ -81,18 +82,18 @@ return array(
     'to04' => 'À :',
     'size04' => 'Taille :',
     'subject04' => 'Sujet :',
-    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangeureux',
+    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers nocif',
     'blkfile04' => 'Fichier bloqué :',
     'otherinfec04' => 'Autre infection :',
-    'hscospam04' => 'Spam à score haut :',
+    'hscospam04' => 'Spam à Score Haut :',
     'listedrbl04' => 'Listé en RBL :',
     'spamwl04' => 'Spam en Liste Blanche :',
     'spambl04' => 'Spam en Liste Noire : ',
-    'saautolearn04' => 'Auto aprentissage Spamassassin :',
-    'sascore04' => 'Score Spamassassin :',
+    'saautolearn04' => 'Auto aprentissage SpamAssassin :',
+    'sascore04' => 'Score SpamAssassin :',
     'spamrep04' => 'Rapport de Spam :',
-    'hdrmcp04' => 'Protection des contenus (MCP)',
-    'highscomcp04' => 'MCP à score haut :',
+    'hdrmcp04' => 'Protection des Contenus (MCP)',
+    'highscomcp04' => 'MCP à Score Haut :',
     'mcpwl04' => 'MCP en Liste Blanche :',
     'mcpbl04' => 'MCP en Liste Noire :',
     'mcpscore04' => 'Score MCP :',
@@ -108,7 +109,7 @@ return array(
     'file04' => 'Fichier',
     'type04' => 'Type',
     'path04' => 'Chemin',
-    'dang04' => 'Dangereux',
+    'dang04' => 'Nocif',
     'altrecip04' => 'Destinataire alternatif',
     'submit04' => 'Soumettre',
     'actions04' => 'Action(s)',
@@ -145,7 +146,7 @@ return array(
     'disppage03' => 'Affichage de la page',
     'of03' => 'de',
     'records03' => 'Enregistrements de',
-    'to0203' => 'à', // This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
+    'to0203' => 'à',
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
@@ -183,7 +184,7 @@ return array(
 
     // 10-other.php
     'tools10' => 'Outils',
-    'usermgnt10' => 'Gestion des utilisateurs',
+    'usermgnt10' => 'Gestion des Utilisateurs',
     'viewconfms10' => 'Afficher la configuration de MailScanner',
     'editmsrules10' => 'Editer les filtres MailScanner',
     'updatesadesc10' => 'Mettre à jour les descriptions des règles SpamAssassin',
@@ -196,39 +197,39 @@ return array(
     'version11' => 'version :',
 
     // 12-user_manager.php
-    'usermgnt12' => 'Gestion des utilisateurs',
-    'username12' => 'Nom d\'utilisateur',
+    'usermgnt12' => 'Gestion des Utilisateurs',
+    'username12' => 'Nom d\'Utilisateur',
     'fullname12' => 'Nom complet',
     'type12' => 'Type',
     'spamcheck12' => 'Vérifier les Spam',
     'spamscore12' => 'Score de Spam',
-    'spamhscore12' => 'Score de Spam haut',
+    'spamhscore12' => 'Score de Spam Haut',
     'action12' => 'Actions',
     'edit12' => 'Editer',
     'delete12' => 'Supprimer',
     'filters12' => 'Filtres',
-    'newuser12' => 'Nouveau utilisateur',
-    'forallusers12' => 'Pour tous les utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'utilisateur.',
-    'username0212' => 'Nom d\'utilisateur :',
+    'newuser12' => 'Nouveau Utilisateur',
+    'forallusers12' => 'Pour tous les Utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'Utilisateur.',
+    'username0212' => 'Nom d\'Utilisateur :',
     'name12' => 'Nom :',
-    'password12' => 'Mot de passe :',
-    'usertype12' => 'Type d\'utilisateur :',
+    'password12' => 'Mot de Passe :',
+    'usertype12' => 'Type d\'Utilisateur :',
     'user12' => 'Utilisateur :',
     'domainadmin12' => 'Administrateur de Domaine',
     'admin12' => 'Administrateur',
-    'quarrep12' => 'Rapport de quarantaine :',
-    'senddaily12' => 'Envoyer un rapport de Spam ?',
-    'quarreprec12' => 'Destinataire pour le rapport de Spam :',
-    'overrec12' => 'Remplacer le destinataire par défaut <BR>(utilise le nom d\'utilisateur par défaut si vide)',
+    'quarrep12' => 'Rapport de Quarantaine :',
+    'senddaily12' => 'Envoyer un Rapport de Spam ?',
+    'quarreprec12' => 'Destinataire pour le Rapport de Spam :',
+    'overrec12' => 'Remplacer le destinataire par défaut <BR>(Utilise le nom d\'Utilisateur par défaut si vide)',
     'scanforspam12' => 'Scan des Spam :',
-    'scaneforspam12' => 'Scan des E-Mail pour les Spam ?',
+    'scanespam12' => 'Scan des E-Mail pour les Spam ?',
     'pontspam12' => 'Score de Spam :',
-    'hpontspam12' => 'Score de Spam haut :',
+    'hpontspam12' => 'Score de Spam Haut :',
     'usedefault12' => 'Utiliser les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
-    'areusuredel12' => 'Voulez-vous vraiment effacer cet utilisateur ?',
-    'errorpass12' => 'Le mot de passe de correspond pas.',
+    'areusuredel12' => 'Voulez-vous vraiment effacer cet Utilisateur ?',
+    'errorpass12' => 'Le Mot de Passe de correspond pas.',
 
     // Added in 2015-06-25
     // 03-funtions.php
@@ -240,8 +241,57 @@ return array(
     // 13-sa_rules_update.php
     'folder_0308' => 'Run Now',
 
+    // Added in 2015-06-25
+
+    // 01-login.php
+    'passwdnotempy01' => 'Le champ Mot de Passe ne peut être vide',
+    'baduserpass01' => 'Mauvais nom d\'Utilisateur ou Mot de Passe',
+    'undefined01' => 'Une erreur indéfinie c\'est produite',
+    'sorry01' => 'Désolé, le fichier <spam>conf.php>/spam> est manquant sur cette installation de MailWatch. Créez un fichier de configuration <spam>conf.php<s/pam> à partir du fichier conf.php..examplei, et modifiez les paramètres de configuration comme nécessaire.',
+
+    // 12-user-manager.php
+    'edituser12' => 'Editer l\'Utilisateur',
+
+    // 09-filter.inc
+    'statistics09' => 'Statistiques (Filtrès)',
+    'oldest09' => 'Plus ancien enregistrement :',
+    'newest09' => 'Plus récent enregistrement :',
+    'messagecount09' => 'Nombre de messages :',
+    'reports09' => 'Rapports',
+
+    //13-reports.php
+    'messagelisting13' => 'Liste des Messages',
+    'messageoper13' => 'Opérations sur les Messages',
+    'totalbydate13' => 'Total des Messages par date',
+
+    //14-rep_total_mail_by_date.php
+    'totalmailbydate14' => 'Total des E-Mail traité par date',
+    'nroofmsg14' => 'Nombre de message',
+    'data14' => 'Date',
+    'unknown14' => 'Utilisateur<br>inconnu',
+    'cantresolve14' => 'Impossible<br>à résoudre',
+    'totals14' => 'Totals',
+
+    //03-functions.php
+    'clearall03' => 'Tout</a> effacer',
+    'forget03' => 'Omettre',
+    'release03' => 'Libérer',
+
+    // Added in 2015-06-26 (stefaweb)
+
+    //03-functions.php
+    'spam03' => 'Spam :',
+    'mcp03' => 'MCP :',
+    'clientip05' => 'IP Client',
+
+    //04-details.php
+    'spam04' => 'Spam :',
+    'virus04' => 'Virus :',
+    'saspam04' => 'Spam SpamAssassin :',
+    'mcp04' => 'MCP:',
+    'samcp04' => 'MCP SpamAssassin :',
+
     // 99 - General
     'i18_missing' => 'Non traduit en français',
-    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php.example et modifiez les paramètres de configuration comme nécessaire.'
 
 );
