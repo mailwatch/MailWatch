@@ -84,14 +84,14 @@ if ($_SESSION['user_type'] != 'A') {
     echo 'MySQL ' . __('version11') . $mysql_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'GeoIP Database ' . __('version11');
-    if (FALSE != $geoipv4_version) {
+    if (false !== $geoipv4_version) {
         echo $geoipv4_version;
     } else {
         echo __('nodbdown11');
     }
     echo "<br>\n<br>\n";
     echo 'GeoIPv6 Database ' . __('version11');
-    if (FALSE != $geoipv6_version) {
+    if (false !== $geoipv6_version) {
         echo $geoipv6_version;
     } else {
         echo __('nodbdown11');
