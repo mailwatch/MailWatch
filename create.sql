@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `spamscores` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `password` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `fullname` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `type` enum('A','D','U','R','H') COLLATE utf8_unicode_ci DEFAULT NULL,
   `quarantine_report` tinyint(1) DEFAULT '0',

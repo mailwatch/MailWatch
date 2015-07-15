@@ -28,6 +28,7 @@
  - Changes in INSTALL and UPGRADING (to be accurate with Debian/Ubuntu)
  - Modified footer function in functions.php (page footer and DEBUG for page_creation_timer)
  - Add a check for 'subtests=' to add space after comma (to fit the screen) in sa_lint.php
+ - Upgrade password hash function from MD5 to a crypt() compatible one
 
 1.2.0 - Beta 8
 -----------

@@ -33,7 +33,9 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once("./functions.php");
+require_once 'functions.php';
+require_once 'lib/password.php';
+require_once 'lib/hash_equals.php';
 
 session_start();
 
@@ -47,22 +49,20 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 }
 $myusername = sanitizeInput($myusername);
 $mypassword = sanitizeInput($mypassword);
-if ((USE_LDAP == 1) && (($result = ldap_authenticate($myusername, $mypassword)) != null)) {
+if ((USE_LDAP === true) && (($result = ldap_authenticate($myusername, $mypassword)) != null)) {
     $_SESSION['user_ldap'] = '1';
     $myusername = safe_value($result);
-    $sql = "SELECT * FROM users WHERE username='$myusername'";
 } else {
-    $myusername = safe_value($myusername);
-    if ($mypassword != "") {
+    if ($mypassword != '') {
+        $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
-        $encrypted_mypassword = md5($mypassword);
-        $sql = "SELECT * FROM users WHERE username='$myusername' and password='$encrypted_mypassword'";
     } else {
         header("Location: login.php?error=emptypassword");
         die();
     }
 }
 
+$sql = "SELECT * FROM users WHERE username='$myusername'";
 $result = dbquery($sql);
 
 if (!$result) {
@@ -78,6 +78,25 @@ if ($usercount == 0) {
     dbclose();
     header("Location: login.php?error=baduser");
 } else {
+    if (USE_LDAP === false) {
+        $passwordInDb = mysql_result($result, 0, 'password');
+        if (!password_verify($mypassword, $passwordInDb)) {
+            if (!hash_equals(md5($mypassword), $passwordInDb)) {
+                header("Location: login.php?error=baduser");
+                die();
+            } else {
+                $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
+                updateUserPasswordHash($myusername, $newPasswordHash);
+            }
+        } else {
+            // upgraded password is valid, continue as normal
+            if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
+                $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
+                updateUserPasswordHash($myusername, $newPasswordHash);
+            }
+        }
+    }
+
     $fullname = mysql_result($result, 0, 'fullname');
     $usertype = mysql_result($result, 0, 'type');
 

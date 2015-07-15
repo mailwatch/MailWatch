@@ -49,10 +49,10 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php');
 
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
-if (!is_file(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG.'.php')) {
-  $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php');
+if (!is_file(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG . '.php')) {
+    $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php');
 } else {
-  $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG.'.php');
+    $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG . '.php');
 }
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
@@ -252,11 +252,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
     echo '<form action="./detail.php">' . "\n";
-    echo '<p>'.__('jumpmessage03').'<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
+    echo '<p>' . __('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
     echo '</form>' . "\n";
     echo '</table>' . "\n";
     echo '<table cellspacing="1" class="mail">' . "\n";
-    echo '<tr><td class="heading" align="center">'.__('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
+    echo '<tr><td class="heading" align="center">' . __('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
     echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
     echo '</table>' . "\n";
     echo '</td>' . "\n";
@@ -645,6 +645,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     } else {
         $return_items = $refresh;
     }
+
     return $return_items;
 }
 
@@ -718,9 +719,9 @@ function html_end($footer = "")
     echo '</table>' . "\n";
     echo $footer;
     if (DEBUG) {
-       echo '<p class="center" style="font-size:13px"><i>' . "\n";
-       page_creation_timer();
-       echo '</i></p>' . "\n";
+        echo '<p class="center" style="font-size:13px"><i>' . "\n";
+        page_creation_timer();
+        echo '</i></p>' . "\n";
     }
     echo '<p class="center" style="font-size:13px">' . "\n";
     echo __('footer01');
@@ -764,12 +765,15 @@ function dbquery($sql)
         echo "\n-->\n\n";
     }
     $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+
     return $result;
 }
 
-function sanitizeInput($string) {
+function sanitizeInput($string)
+{
     $config = HTMLPurifier_Config::createDefault();
     $purifier = new HTMLPurifier($config);
+
     return $purifier->purify($string);
 }
 
@@ -785,6 +789,7 @@ function safe_value($value)
         $value = stripslashes($value);
     }
     $value = mysql_real_escape_string($value);
+
     return $value;
 }
 
@@ -1151,6 +1156,7 @@ function trim_output($input, $maxlen)
 {
     if ($maxlen > 0 && strlen($input) >= $maxlen) {
         $output = substr($input, 0, $maxlen) . "...";
+
         return $output;
     } else {
         return $input;
@@ -1169,6 +1175,7 @@ function get_default_ruleset_value($file)
         }
     }
     fclose($fh);
+
     return false;
 }
 
@@ -1223,6 +1230,7 @@ function parse_conf_dir($conf_dir)
         }
     }
     closedir($dh);
+
     return ($array_output1);
 }
 
@@ -1364,6 +1372,7 @@ function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(" ", get_conf_var('VirusScanners'));
+
     return $scanners[0];
 }
 
@@ -1384,6 +1393,7 @@ function translateQuarantineDate($date, $format = 'dmy')
             $format = preg_replace("/%y/", $y, $format);
             $format = preg_replace("/%m/", $m, $format);
             $format = preg_replace("/%d/", $d, $format);
+
             return $format;
     }
 }
@@ -1398,6 +1408,7 @@ function subtract_get_vars($preserve)
         }
         if (isset($output) && is_array($output)) {
             $output = join('&amp;', $output);
+
             return '&amp;' . $output;
         } else {
             return false;
@@ -1417,6 +1428,7 @@ function subtract_multi_get_vars($preserve)
         }
         if (isset($output) && is_array($output)) {
             $output = join('&amp;', $output);
+
             return '&amp;' . $output;
         } else {
             return false;
@@ -1596,7 +1608,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'clientip':
                     if (defined('DISPLAY_IP') && DISPLAY_IP) {
-                        $fieldname[$f]= "Client IP";
+                        $fieldname[$f] = "Client IP";
                     }
                     $display[$f] = true;
                     break;
@@ -2264,6 +2276,7 @@ function return_24_hour_array()
         }
         $hour_array[$h] = 0;
     }
+
     return $hour_array;
 }
 
@@ -2276,6 +2289,7 @@ function return_60_minute_array()
         }
         $minute_array[$m] = 0;
     }
+
     return $minute_array;
 }
 
@@ -2293,6 +2307,7 @@ function return_time_array()
             $time_array[$h][$m] = 0;
         }
     }
+
     return $time_array;
 }
 
@@ -2309,6 +2324,7 @@ function count_files_in_dir($dir)
             }
         }
     }
+
     return count($file_list_array);
 }
 
@@ -2391,7 +2407,7 @@ function ldap_authenticate($USER, $PASS)
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
         if (strpos($USER, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD."=SMTP:$USER") or die ("Could not search");
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$USER") or die ("Could not search");
         } else {
             $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$USER") or die ("Could not search");
         }
@@ -2408,22 +2424,24 @@ function ldap_authenticate($USER, $PASS)
                             }
                         }
 
-                        $sql = sprintf("SELECT username from users where username = %s", quote_smart($email));
+                        $sql = sprintf("SELECT username FROM users WHERE username = %s", quote_smart($email));
                         $sth = dbquery($sql);
                         if (mysql_num_rows($sth) == 0) {
                             $sql = sprintf(
-                                "REPLACE into users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                                "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                                 quote_smart($email),
                                 quote_smart($result[0]['cn'][0])
                             );
                             dbquery($sql);
                         }
+
                         return $email;
                     }
                 }
             }
         }
     }
+
     return null;
 }
 
@@ -2433,10 +2451,10 @@ function ldap_get_conf_var($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-        or die("Error: unable to bind to LDAP directory\n");
+    or die("Error: unable to bind to LDAP directory\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2455,6 +2473,7 @@ function ldap_get_conf_var($entry)
             for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
                 $return[] = $info[0][$info[0][0]][$n];
             }
+
             return join(" ", $return);
         }
     } else {
@@ -2469,10 +2488,10 @@ function ldap_get_conf_truefalse($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-        or die("Error: unable to bind to LDAP directory\n");
+    or die("Error: unable to bind to LDAP directory\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2547,6 +2566,7 @@ function decode_header($input)
         }
         $input = str_replace($encoded, $text, $input);
     }
+
     return $input;
 }
 
@@ -2556,6 +2576,7 @@ function debug_print_r($input)
     print_r($input);
     $return = ob_get_contents();
     ob_end_clean();
+
     return $return;
 }
 
@@ -2584,7 +2605,8 @@ function return_geoip_country($ip)
     return $countryname;
 }
 
-function stripPortFromIp($ip) {
+function stripPortFromIp($ip)
+{
     if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
         $ip = current(array_slice(explode(':', $ip), 0, 1));
     }
@@ -2744,6 +2766,7 @@ SELECT
             }
             closedir($d);
         }
+
         return $quarantined;
     } else {
         // Host is remote call quarantine_list_items by RPC
@@ -2759,6 +2782,7 @@ SELECT
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response;
     }
 }
@@ -2808,6 +2832,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $status = "Release: message released to " . str_replace(",", ", ", $to);
                 audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
             }
+
             return ($status);
         } else {
             // Use sendmail to release message
@@ -2828,6 +2853,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                         global $error;
                         $error = true;
                     }
+
                     return ($status);
                 }
             }
@@ -2858,6 +2884,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response . " (RPC)";
     }
 }
@@ -2989,6 +3016,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 }
             }
         }
+
         return join("\n", $status);
     } else {
         // Call by RPC
@@ -3016,6 +3044,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response . " (RPC)";
     }
 }
@@ -3034,13 +3063,14 @@ function quarantine_delete($list, $num, $rpc_only = false)
             if (@unlink($list[$val]['path'])) {
                 $status[] = "Delete: deleted file " . $list[$val]['path'];
                 dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                audit_log('Delete file from quarantine: ' . $list[$val]['path']);
+                audit_log('Deleted file from quarantine: ' . $list[$val]['path']);
             } else {
                 $status[] = "Delete: error deleting file " . $list[$val]['path'];
                 global $error;
                 $error = true;
             }
         }
+
         return join("\n", $status);
     } else {
         // Call by RPC
@@ -3067,15 +3097,18 @@ function quarantine_delete($list, $num, $rpc_only = false)
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response . " (RPC)";
     }
 }
 
-function fixMessageId($id) {
+function fixMessageId($id)
+{
     $mta = get_conf_var('mta');
     if ($mta == 'postfix') {
         $id = str_replace('_', '.', $id);
     }
+
     return $id;
 }
 
@@ -3087,10 +3120,11 @@ function audit_log($action)
         $action = mysql_real_escape_string($action);
         $ip = mysql_real_escape_string($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
-        if ($ret){
+        if ($ret) {
             return true;
         }
     }
+
     return false;
 }
 
@@ -3131,12 +3165,14 @@ function get_virus_conf($scanner)
         if (preg_match("/(^[^#]\S+)\s+(\S+)\s+(\S+)/", $line, $regs)) {
             if ($regs[1] == $scanner) {
                 fclose($fh);
+
                 return $regs[2] . " " . $regs[3];
             }
         }
     }
     // Not found
     fclose($fh);
+
     return false;
 }
 
@@ -3146,6 +3182,7 @@ function return_quarantine_dates()
     for ($d = 0; $d < (QUARANTINE_DAYS_TO_KEEP); $d++) {
         $array[] = date('Ymd', mktime(0, 0, 0, date("m"), date("d") - $d, date("Y")));
     }
+
     return $array;
 }
 
@@ -3153,6 +3190,7 @@ function return_virus_link($virus)
 {
     if ((defined('VIRUS_INFO') && VIRUS_INFO !== false)) {
         $link = sprintf(VIRUS_INFO, $virus);
+
         return sprintf("<a href=\"%s\">%s</a>", $link, $virus);
     } else {
         return $virus;
@@ -3222,6 +3260,7 @@ function is_rpc_client_allowed()
                 return true;
             }
         }
+
         // If all else fails
         return false;
     } else {
@@ -3254,6 +3293,7 @@ function xmlrpc_wrapper($host, $msg)
     $client->setSSLVerifyPeer(0);
     $client->setSSLVerifyHost(0);
     $response = $client->send($msg, 0, $method);
+
     return $response;
 }
 
@@ -3273,4 +3313,21 @@ function clear_cache_dir()
             }
         }
     }
+}
+
+function updateUserPasswordHash($user, $hash)
+{
+    $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
+    $passwordFiledLengthResult = dbquery($sqlCheckLenght);
+    $passwordFiledLength = intval(mysql_result($passwordFiledLengthResult, 0, 'passwordfieldlength'));
+
+    if ($passwordFiledLength != 255) {
+        $sqlUpdateFieldLength = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL";
+        dbquery($sqlUpdateFieldLength);
+        audit_log('Updated password field length from ' . $passwordFiledLength . ' to 255');
+    }
+
+    $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
+    dbquery($sqlUpdateHash);
+    audit_log('Updated password for user ' . $user);
 }

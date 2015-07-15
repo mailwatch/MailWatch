@@ -33,7 +33,8 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once("./functions.php");
+require_once 'functions.php';
+require_once 'lib/password.php';
 
 session_start();
 require('login.function.php');
@@ -107,7 +108,7 @@ if ($_SESSION['user_type'] == 'A') {
 
                         $n_username = mysql_real_escape_string($_GET['username']);
                         $n_fullname = mysql_real_escape_string($_GET['fullname']);
-                        $n_password = mysql_real_escape_string(md5($_GET['password']));
+                        $n_password = mysql_real_escape_string(password_hash($_GET['password'], PASSWORD_DEFAULT));
                         $n_type = mysql_real_escape_string($_GET['type']);
                         $spamscore = mysql_real_escape_string($_GET['spamscore']);
                         $highspamscore = mysql_real_escape_string($_GET['highspamscore']);
@@ -194,7 +195,7 @@ if ($_SESSION['user_type'] == 'A') {
                         $key = mysql_real_escape_string($_GET['key']);
                         $n_username = mysql_real_escape_string($_GET['username']);
                         $n_fullname = mysql_real_escape_string($_GET['fullname']);
-                        $n_password = mysql_real_escape_string(md5($_GET['password']));
+                        $n_password = mysql_real_escape_string(password_hash($_GET['password'], PASSWORD_DEFAULT));
                         $n_type = mysql_real_escape_string($_GET['type']);
                         $spamscore = mysql_real_escape_string($_GET['spamscore']);
                         $highspamscore = mysql_real_escape_string($_GET['highspamscore']);
@@ -381,7 +382,8 @@ ORDER BY
 
             if ($_GET['password'] !== 'XXXXXXXX') {
                 // Password reset required
-                $sql = "UPDATE users SET password=md5('$n_password'), quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
+                $password = password_hash($n_password, PASSWORD_DEFAULT);
+                $sql = "UPDATE users SET password='" . $password . "', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
                 dbquery($sql);
             } else {
                 $sql = "UPDATE users SET quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
@@ -390,7 +392,7 @@ ORDER BY
 
             // Audit
             audit_log("User [$username] updated their own account");
-            echo "<center><h1><font color='green'>Update Completed</font></h1></center>";
+            echo '<h1 style="text-align: center; color: green;">Update Completed</h1>';
             echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"3;user_manager.php\">";
         }
     }
