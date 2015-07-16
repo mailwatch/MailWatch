@@ -88,12 +88,12 @@ $sql .= "
 " . $_SESSION["filter"]->CreateSQL();
 
 // Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM && $_SESSION['user_type'] == 'U') {
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] == 'U') {
   $sql .= "
     AND
      ishighspam=0
     AND
-     ishighmcp=0";
+     COALESCE(ishighmcp,0)=0";
 }
 
 $sql .= "

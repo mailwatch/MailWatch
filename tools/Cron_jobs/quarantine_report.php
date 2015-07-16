@@ -207,12 +207,12 @@ AND
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)";
 
  // Hide high spam/mcp from users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM) {
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
   $sql .= "
     AND
      ishighspam=0
     AND
-     ishighmcp=0";
+     COALESCE(ishighmcp,0)=0";
 }
 
 if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
