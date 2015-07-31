@@ -166,11 +166,21 @@ if (!defined('VIRUS_REGEX')) {
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
+/**
+ * @return string
+ */
 function mailwatch_version()
 {
     return ("1.2.0 - RC1 DEV");
 }
 
+/**
+ * @param $title
+ * @param int $refresh
+ * @param bool|true $cacheable
+ * @param bool|false $report
+ * @return Filter|int
+ */
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
     if (!$cacheable) {
@@ -707,6 +717,9 @@ function row_highandclick()
   }';
 }
 
+/**
+ * @param string $footer
+ */
 function html_end($footer = '')
 {
     echo '</td>' . "\n";
@@ -727,6 +740,9 @@ function html_end($footer = '')
     echo '</html>' . "\n";
 }
 
+/**
+ * @return resource
+ */
 function dbconn()
 {
     $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, false, 128)
@@ -737,11 +753,18 @@ function dbconn()
     return $link;
 }
 
+/**
+ * @return bool
+ */
 function dbclose()
 {
     return mysql_close();
 }
 
+/**
+ * @param $sql
+ * @return resource
+ */
 function dbquery($sql)
 {
     dbconn();
@@ -764,6 +787,10 @@ function dbquery($sql)
     return $result;
 }
 
+/**
+ * @param $string
+ * @return string
+ */
 function sanitizeInput($string)
 {
     $config = HTMLPurifier_Config::createDefault();
@@ -772,11 +799,19 @@ function sanitizeInput($string)
     return $purifier->purify($string);
 }
 
+/**
+ * @param $value
+ * @return string
+ */
 function quote_smart($value)
 {
     return "'" . safe_value($value) . "'";
 }
 
+/**
+ * @param $value
+ * @return string
+ */
 function safe_value($value)
 {
     dbconn();
@@ -788,6 +823,10 @@ function safe_value($value)
     return $value;
 }
 
+/**
+ * @param $string
+ * @return mixed
+ */
 function __($string)
 {
     global $lang;
@@ -798,6 +837,10 @@ function __($string)
     return $lang['i18_missing'];
 }
 
+/**
+ * @param $string
+ * @return string
+ */
 function getUTF8String($string)
 {
     if (function_exists('mb_check_encoding')) {
@@ -811,6 +854,10 @@ function getUTF8String($string)
     return $string;
 }
 
+/**
+ * @param $spamreport
+ * @return bool|string
+ */
 function sa_autolearn($spamreport)
 {
     switch (true) {
@@ -823,6 +870,10 @@ function sa_autolearn($spamreport)
     }
 }
 
+/**
+ * @param $spamreport
+ * @return string
+ */
 function format_spam_report($spamreport)
 {
     // Run regex against the MailScanner spamreport picking out the (score=xx, required x, RULES...)
@@ -860,6 +911,10 @@ function format_spam_report($spamreport)
     }
 }
 
+/**
+ * @param $rule
+ * @return string
+ */
 function get_sa_rule_desc($rule)
 {
     // Check if SA scoring is enabled
@@ -878,6 +933,10 @@ function get_sa_rule_desc($rule)
     }
 }
 
+/**
+ * @param $rule
+ * @return bool
+ */
 function return_sa_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
@@ -889,6 +948,10 @@ function return_sa_rule_desc($rule)
     return false;
 }
 
+/**
+ * @param $mcpreport
+ * @return mixed|string
+ */
 function format_mcp_report($mcpreport)
 {
     // Clean-up input
@@ -929,6 +992,10 @@ function format_mcp_report($mcpreport)
     }
 }
 
+/**
+ * @param $rule
+ * @return string
+ */
 function get_mcp_rule_desc($rule)
 {
     // Check if SA scoring is enabled
@@ -947,6 +1014,10 @@ function get_mcp_rule_desc($rule)
     }
 }
 
+/**
+ * @param $rule
+ * @return bool
+ */
 function return_mcp_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
@@ -958,6 +1029,9 @@ function return_mcp_rule_desc($rule)
     return false;
 }
 
+/**
+ * @return string
+ */
 function return_todays_top_virus()
 {
     $sql = "
@@ -1002,6 +1076,9 @@ AND
     }
 }
 
+/**
+ * @return array|mixed
+ */
 function get_disks()
 {
     $disks = array();
@@ -1057,6 +1134,11 @@ function get_disks()
     return $disks;
 }
 
+/**
+ * @param $size
+ * @param int $precision
+ * @return string
+ */
 function formatSize($size, $precision = 2)
 {
     $base = log($size) / log(1024);
@@ -1065,6 +1147,11 @@ function formatSize($size, $precision = 2)
     return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
 
+/**
+ * @param $size_in_bytes
+ * @param int $decimal_places
+ * @return string
+ */
 function format_mail_size($size_in_bytes, $decimal_places = 1)
 {
     // Setup common measurements
@@ -1091,6 +1178,10 @@ function format_mail_size($size_in_bytes, $decimal_places = 1)
     }
 }
 
+/**
+ * @param $data_in
+ * @param $info_out
+ */
 function format_report_volume(&$data_in, &$info_out)
 {
     // Measures
@@ -1147,6 +1238,11 @@ function format_report_volume(&$data_in, &$info_out)
     }
 }
 
+/**
+ * @param $input
+ * @param $maxlen
+ * @return string
+ */
 function trim_output($input, $maxlen)
 {
     if ($maxlen > 0 && strlen($input) >= $maxlen) {
@@ -1158,6 +1254,10 @@ function trim_output($input, $maxlen)
     }
 }
 
+/**
+ * @param $file
+ * @return bool
+ */
 function get_default_ruleset_value($file)
 {
     $fh = fopen($file, 'r') or die("Cannot open ruleset file $file");
@@ -1174,6 +1274,10 @@ function get_default_ruleset_value($file)
     return false;
 }
 
+/**
+ * @param $name
+ * @return bool
+ */
 function get_conf_var($name)
 {
     if (DISTRIBUTED_SETUP) {
@@ -1207,6 +1311,10 @@ function get_conf_var($name)
     die("Cannot find configuration value: $name in $MailScanner_conf_file\n");
 }
 
+/**
+ * @param $conf_dir
+ * @return array
+ */
 function parse_conf_dir($conf_dir)
 {
     $array_output1 = array();
@@ -1229,6 +1337,10 @@ function parse_conf_dir($conf_dir)
     return ($array_output1);
 }
 
+/**
+ * @param $name
+ * @return bool
+ */
 function get_conf_truefalse($name)
 {
     if (DISTRIBUTED_SETUP) {
@@ -1277,6 +1389,9 @@ function get_conf_truefalse($name)
     return false;
 }
 
+/**
+ * @return bool|mixed
+ */
 function get_conf_include_folder()
 {
     $name = 'include';
@@ -1318,7 +1433,12 @@ function get_conf_include_folder()
     die("Cannot find configuration value: $name in $msconfig\n");
 }
 
-// Parse conf files
+/**
+ * Parse conf files
+ *
+ * @param $name
+ * @return array
+ */
 function parse_conf_file($name)
 {
     $array_output = array();
@@ -1363,6 +1483,9 @@ function parse_conf_file($name)
     return $array_output;
 }
 
+/**
+ * @return mixed
+ */
 function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
@@ -1371,6 +1494,11 @@ function get_primary_scanner()
     return $scanners[0];
 }
 
+/**
+ * @param $date
+ * @param string $format
+ * @return mixed|string
+ */
 function translateQuarantineDate($date, $format = 'dmy')
 {
     $y = substr($date, 0, 4);
@@ -1393,6 +1521,10 @@ function translateQuarantineDate($date, $format = 'dmy')
     }
 }
 
+/**
+ * @param $preserve
+ * @return bool|string
+ */
 function subtract_get_vars($preserve)
 {
     if (is_array($_GET)) {
@@ -1413,6 +1545,10 @@ function subtract_get_vars($preserve)
     }
 }
 
+/**
+ * @param $preserve
+ * @return bool|string
+ */
 function subtract_multi_get_vars($preserve)
 {
     if (is_array($_GET)) {
@@ -2062,7 +2198,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 }
 
-// Function to display data as a table
+/**
+ * Function to display data as a table
+ *
+ * @param $sql
+ * @param bool|false $title
+ * @param bool|false $pager
+ * @param bool|false $operations
+ */
 function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
     global $bg_colors;
@@ -2215,6 +2358,9 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     }
 }
 
+/**
+ * @param $sql
+ */
 function db_vertical_table($sql)
 {
     $sth = dbquery($sql);
@@ -2237,11 +2383,17 @@ function db_vertical_table($sql)
     }
 }
 
+/**
+ * @return mixed
+ */
 function get_microtime()
 {
     return microtime(true);
 }
 
+/**
+ * @return string
+ */
 function page_creation_timer()
 {
     if (!isset($GLOBALS['pc_start_time'])) {
@@ -2253,6 +2405,9 @@ function page_creation_timer()
     }
 }
 
+/**
+ * @param $text
+ */
 function debug($text)
 {
     if (DEBUG && headers_sent()) {
@@ -2260,6 +2415,9 @@ function debug($text)
     }
 }
 
+/**
+ * @return array
+ */
 function return_24_hour_array()
 {
     $hour_array = array();
@@ -2273,6 +2431,9 @@ function return_24_hour_array()
     return $hour_array;
 }
 
+/**
+ * @return array
+ */
 function return_60_minute_array()
 {
     $minute_array = array();
@@ -2284,6 +2445,9 @@ function return_60_minute_array()
     return $minute_array;
 }
 
+/**
+ * @return array
+ */
 function return_time_array()
 {
     $time_array = array();
@@ -2298,6 +2462,10 @@ function return_time_array()
     return $time_array;
 }
 
+/**
+ * @param $dir
+ * @return bool|int
+ */
 function count_files_in_dir($dir)
 {
     //TODO: Refactor
@@ -2315,6 +2483,10 @@ function count_files_in_dir($dir)
     return count($file_list_array);
 }
 
+/**
+ * @param $message_headers
+ * @return array|bool
+ */
 function get_mail_relays($message_headers)
 {
     $headers = explode("\\n", $message_headers);
@@ -2334,6 +2506,11 @@ function get_mail_relays($message_headers)
     return false;
 }
 
+/**
+ * @param $addresses
+ * @param $type
+ * @return string
+ */
 function address_filter_sql($addresses, $type)
 {
     $sqladdr = '';
@@ -2382,10 +2559,15 @@ function address_filter_sql($addresses, $type)
     return $sqladdr;
 }
 
-function ldap_authenticate($USER, $PASS)
+/**
+ * @param $user
+ * @param $password
+ * @return null|string
+ */
+function ldap_authenticate($user, $password)
 {
-    $USER = strtolower($USER);
-    if ($USER != "" && $PASS != "") {
+    $user = strtolower($user);
+    if ($user != "" && $password != "") {
         $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die("Could not connect to " . LDAP_HOST);
         // Check if Microsoft Active Directory compatibility is enabled
         if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
@@ -2393,16 +2575,16 @@ function ldap_authenticate($USER, $PASS)
             ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
-        if (strpos($USER, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$USER") or die("Could not search");
+        if (strpos($user, '@')) {
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die("Could not search");
         } else {
-            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$USER") or die("Could not search");
+            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die("Could not search");
         }
         if ($r) {
             $result = ldap_get_entries($ds, $r) or die("Could not get entries");
             if ($result[0]) {
-                $USER = $result[0]['userprincipalname']['0'];
-                if (ldap_bind($ds, $USER, "$PASS")) {
+                $user = $result[0]['userprincipalname']['0'];
+                if (ldap_bind($ds, $user, "$password")) {
                     if (isset($result[0][LDAP_EMAIL_FIELD])) {
                         foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
                             if (substr($email, 0, 4) == "SMTP") {
@@ -2432,6 +2614,10 @@ function ldap_authenticate($USER, $PASS)
     return null;
 }
 
+/**
+ * @param $entry
+ * @return string
+ */
 function ldap_get_conf_var($entry)
 {
     // Translate MailScanner.conf vars to internal
@@ -2469,6 +2655,10 @@ function ldap_get_conf_var($entry)
     }
 }
 
+/**
+ * @param $entry
+ * @return bool
+ */
 function ldap_get_conf_truefalse($entry)
 {
     // Translate MailScanner.conf vars to internal
@@ -2506,6 +2696,10 @@ function ldap_get_conf_truefalse($entry)
     }
 }
 
+/**
+ * @param $name
+ * @return string
+ */
 function translate_etoi($name)
 {
     $name = strtolower($name);
@@ -2529,6 +2723,10 @@ function translate_etoi($name)
     }
 }
 
+/**
+ * @param $input
+ * @return mixed
+ */
 function decode_header($input)
 {
     // Remove white space between encoded-words
@@ -2557,6 +2755,10 @@ function decode_header($input)
     return $input;
 }
 
+/**
+ * @param $input
+ * @return string
+ */
 function debug_print_r($input)
 {
     ob_start();
@@ -2567,6 +2769,10 @@ function debug_print_r($input)
     return $return;
 }
 
+/**
+ * @param $ip
+ * @return bool
+ */
 function return_geoip_country($ip)
 {
     require_once 'lib/geoip.inc';
@@ -2592,6 +2798,10 @@ function return_geoip_country($ip)
     return $countryname;
 }
 
+/**
+ * @param $ip
+ * @return mixed
+ */
 function stripPortFromIp($ip)
 {
     if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
@@ -2601,6 +2811,10 @@ function stripPortFromIp($ip)
     return $ip;
 }
 
+/**
+ * @param string $input
+ * @return array
+ */
 function quarantine_list($input = "/")
 {
     $quarantinedir = get_conf_var('QuarantineDir') . '/';
@@ -2640,6 +2854,10 @@ function quarantine_list($input = "/")
     return $item;
 }
 
+/**
+ * @param $host
+ * @return bool
+ */
 function is_local($host)
 {
     $host = strtolower($host);
@@ -2655,6 +2873,11 @@ function is_local($host)
     }
 }
 
+/**
+ * @param $msgid
+ * @param bool|false $rpc_only
+ * @return array|mixed|string
+ */
 function quarantine_list_items($msgid, $rpc_only = false)
 {
     $sql = "
@@ -2774,6 +2997,13 @@ SELECT
     }
 }
 
+/**
+ * @param $list
+ * @param $num
+ * @param $to
+ * @param bool|false $rpc_only
+ * @return string
+ */
 function quarantine_release($list, $num, $to, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
@@ -2876,6 +3106,13 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
     }
 }
 
+/**
+ * @param $list
+ * @param $num
+ * @param $type
+ * @param bool|false $rpc_only
+ * @return string
+ */
 function quarantine_learn($list, $num, $type, $rpc_only = false)
 {
     dbconn();
@@ -3036,6 +3273,12 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     }
 }
 
+/**
+ * @param $list
+ * @param $num
+ * @param bool|false $rpc_only
+ * @return string
+ */
 function quarantine_delete($list, $num, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
@@ -3089,6 +3332,10 @@ function quarantine_delete($list, $num, $rpc_only = false)
     }
 }
 
+/**
+ * @param $id
+ * @return mixed
+ */
 function fixMessageId($id)
 {
     $mta = get_conf_var('mta');
@@ -3099,6 +3346,10 @@ function fixMessageId($id)
     return $id;
 }
 
+/**
+ * @param $action
+ * @return bool
+ */
 function audit_log($action)
 {
     dbconn();
@@ -3115,6 +3366,10 @@ function audit_log($action)
     return false;
 }
 
+/**
+ * @param $array
+ * @return array|number
+ */
 function mailwatch_array_sum($array)
 {
     if (!is_array($array)) {
@@ -3125,6 +3380,10 @@ function mailwatch_array_sum($array)
     }
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function read_ruleset_default($file)
 {
     $fh = fopen($file, 'r')
@@ -3144,6 +3403,10 @@ function read_ruleset_default($file)
     }
 }
 
+/**
+ * @param $scanner
+ * @return bool|string
+ */
 function get_virus_conf($scanner)
 {
     $fh = fopen(MS_CONFIG_DIR . 'virus.scanners.conf', 'r');
@@ -3163,6 +3426,9 @@ function get_virus_conf($scanner)
     return false;
 }
 
+/**
+ * @return array
+ */
 function return_quarantine_dates()
 {
     $array = array();
@@ -3173,6 +3439,10 @@ function return_quarantine_dates()
     return $array;
 }
 
+/**
+ * @param $virus
+ * @return string
+ */
 function return_virus_link($virus)
 {
     if ((defined('VIRUS_INFO') && VIRUS_INFO !== false)) {
@@ -3184,6 +3454,11 @@ function return_virus_link($virus)
     }
 }
 
+/**
+ * @param $network
+ * @param $ip
+ * @return bool
+ */
 function net_match($network, $ip)
 {
     // Skip invalid entries
@@ -3207,6 +3482,9 @@ function net_match($network, $ip)
     return ($ip_long & $mask) == ($network_long & $mask);
 }
 
+/**
+ * @return bool
+ */
 function is_rpc_client_allowed()
 {
     // If no server address supplied
@@ -3255,6 +3533,11 @@ function is_rpc_client_allowed()
     }
 }
 
+/**
+ * @param $host
+ * @param $msg
+ * @return xmlrpcresp
+ */
 function xmlrpc_wrapper($host, $msg)
 {
     $method = 'http';
@@ -3284,7 +3567,9 @@ function xmlrpc_wrapper($host, $msg)
     return $response;
 }
 
-// Clean Cache folder
+/**
+ * Clean Cache folder
+ */
 function clear_cache_dir()
 {
     $cache_dir = MAILWATCH_HOME . '/' . CACHE_DIR;
@@ -3302,6 +3587,10 @@ function clear_cache_dir()
     }
 }
 
+/**
+ * @param $user
+ * @param $hash
+ */
 function updateUserPasswordHash($user, $hash)
 {
     $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
