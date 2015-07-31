@@ -1,0 +1,7 @@
+preset: psr2
+
+linting: true
+
+finder:
+  exclude:
+    - lib
