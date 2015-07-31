@@ -46,7 +46,8 @@ if ($_SESSION['user_type'] == 'A') {
     <script type="text/javascript">
         <!--
         function delete_user(id) {
-            var yesno = confirm("<?php echo __('areusuredel12'); ?>" + id + "?");
+            var yesno = confirm("<?php echo __('areusuredel12');
+    ?>" + id + "?");
             if (yesno === true) {
                 window.location = "?action=delete&id=" + id;
             } else {
@@ -102,10 +103,8 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "</TABLE></FORM><BR>\n";
                 } else {
                     if ($_GET['password'] != $_GET['password1']) {
-
                         echo __('errorpass12') ;
                     } else {
-
                         $n_username = mysql_real_escape_string($_GET['username']);
                         $n_fullname = mysql_real_escape_string($_GET['fullname']);
                         $n_password = mysql_real_escape_string(password_hash($_GET['password'], PASSWORD_DEFAULT));

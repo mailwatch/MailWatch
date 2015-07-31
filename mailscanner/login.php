@@ -149,10 +149,12 @@ require_once("./functions.php");
 <div class="login">
     <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="MailWatch Logo">
     <h1>MailWatch Login</h1>
-    <?php if (file_exists('conf.php')) { ?>
+    <?php if (file_exists('conf.php')) {
+    ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php">
             <fieldset>
-                <?php if (isset($_GET['error'])) { ?>
+                <?php if (isset($_GET['error'])) {
+    ?>
                     <p class="loginerror">
                         <?php
                         switch ($_GET['error']) {
@@ -165,15 +167,19 @@ require_once("./functions.php");
                             default:
                                 echo 'An undefined error occurred';
                         }
-                        ?>
+    ?>
                     </p>
-                <?php } ?>
+                <?php 
+}
+    ?>
 
-                <p><label for="myusername"><?php echo __('username'); ?></label></p>
+                <p><label for="myusername"><?php echo __('username');
+    ?></label></p>
 
                 <p><input name="myusername" type="text" id="myusername" autofocus></p>
 
-                <p><label for="mypassword"><?php echo __('password'); ?></label></p>
+                <p><label for="mypassword"><?php echo __('password');
+    ?></label></p>
 
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 
@@ -181,13 +187,15 @@ require_once("./functions.php");
             </fieldset>
         </form>
     <?php
-    } else {
-        ?>
+
+} else {
+    ?>
         <p class="error">
             Sorry, this installation of MailWatch is missing <span>conf.php</span> file. Please create the file by copying <span>conf.php.example</span> and making the required changes.
         </p>
     <?php
-    }
+
+}
     ?>
 </div>
 

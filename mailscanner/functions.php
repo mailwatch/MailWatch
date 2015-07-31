@@ -1,37 +1,33 @@
 <?php
 
 /*
- MailWatch for MailScanner
- Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
- Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- In addition, as a special exception, the copyright holder gives permission to link the code of this program
- with those files in the PEAR library that are licensed under the PHP License (or with modified versions of those
- files that use the same license as those files), and distribute linked combinations including the two.
- You must obey the GNU General Public License in all respects for all of the code used other than those files in the
- PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
- your version of the program, but you are not obligated to do so.
- If you do not wish to do so, delete this exception statement from your version.
-
- As a special exception, you have permission to link this program with the JpGraph library and
- distribute executables, as long as you follow the requirements of the GNU GPL in regard to all of the software
- in the executable aside from JpGraph.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * MailWatch for MailScanner
+ * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+ * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+ * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+ * those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+ * that use the same license as those files), and distribute linked combinations including the two.
+ * You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+ * PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+ * your version of the program, but you are not obligated to do so.
+ * If you do not wish to do so, delete this exception statement from your version.
+ *
+ * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+ * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+ * JpGraph.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 // Set error level (some distro's have php.ini set to E_ALL)
 if (version_compare(phpversion(), '5.3.0', '<')) {
@@ -222,7 +218,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $filter = $_SESSION["filter"];
         }
         audit_log('Ran report ' . $title);
-
     } else {
         echo '<title>MailWatch for Mailscanner - ' . $title . '</title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
@@ -735,7 +730,7 @@ function html_end($footer = "")
 function dbconn()
 {
     $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, false, 128)
-    or die ("Could not connect to database: " . mysql_error());
+    or die("Could not connect to database: " . mysql_error());
     mysql_set_charset('utf8', $link);
     mysql_select_db(DB_NAME) or die("Could not select db: " . mysql_error());
 
@@ -1529,7 +1524,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         if ($operations !== false) {
             $fields++;
         }
-
     } else {
         $sth = dbquery($sql);
         $rows = mysql_num_rows($sth);
@@ -2138,7 +2132,6 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         if ($operations !== false) {
             $fields++;
         }
-
     } else {
         $sth = dbquery($sql);
         $rows = mysql_num_rows($sth);
@@ -2399,7 +2392,7 @@ function ldap_authenticate($USER, $PASS)
 {
     $USER = strtolower($USER);
     if ($USER != "" && $PASS != "") {
-        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die ("Could not connect to " . LDAP_HOST);
+        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die("Could not connect to " . LDAP_HOST);
         // Check if Microsoft Active Directory compatibility is enabled
         if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
@@ -2407,16 +2400,16 @@ function ldap_authenticate($USER, $PASS)
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
         if (strpos($USER, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$USER") or die ("Could not search");
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$USER") or die("Could not search");
         } else {
-            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$USER") or die ("Could not search");
+            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$USER") or die("Could not search");
         }
         if ($r) {
-            $result = ldap_get_entries($ds, $r) or die ("Could not get entries");
+            $result = ldap_get_entries($ds, $r) or die("Could not get entries");
             if ($result[0]) {
                 $USER = $result[0]['userprincipalname']['0'];
                 if (ldap_bind($ds, $USER, "$PASS")) {
-                    if (isset ($result[0][LDAP_EMAIL_FIELD])) {
+                    if (isset($result[0][LDAP_EMAIL_FIELD])) {
                         foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
                             if (substr($email, 0, 4) == "SMTP") {
                                 $email = strtolower(substr($email, 5));
