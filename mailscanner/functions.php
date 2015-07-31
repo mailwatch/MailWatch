@@ -194,7 +194,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
 
-    page_creation_timer();
+    echo page_creation_timer();
     echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
@@ -707,7 +707,7 @@ function row_highandclick()
   }';
 }
 
-function html_end($footer = "")
+function html_end($footer = '')
 {
     echo '</td>' . "\n";
     echo '</tr>' . "\n";
@@ -715,7 +715,7 @@ function html_end($footer = "")
     echo $footer;
     if (DEBUG) {
         echo '<p class="center" style="font-size:13px"><i>' . "\n";
-        page_creation_timer();
+        echo page_creation_timer();
         echo '</i></p>' . "\n";
     }
     echo '<p class="center" style="font-size:13px">' . "\n";
@@ -780,7 +780,7 @@ function quote_smart($value)
 function safe_value($value)
 {
     dbconn();
-    if (get_magic_quotes_gpc()) {
+    if ((function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())) {
         $value = stripslashes($value);
     }
     $value = mysql_real_escape_string($value);
@@ -1011,7 +1011,7 @@ function get_disks()
         $disks = str_word_count($disks, 1);
         //TODO: won't work on non english installation, we need to find an universal command
         if ($disks[0] != 'Drives') {
-            return '';
+            return array();
         }
         unset($disks[0]);
         foreach ($disks as $key => $disk) {
@@ -2249,7 +2249,7 @@ function page_creation_timer()
     } else {
         $pc_end_time = get_microtime();
         $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
-        printf(__('pggen03') . " %f " . __('seconds03') . "\n", $pc_total_time);
+        return sprintf(__('pggen03') . " %f " . __('seconds03') . "\n", $pc_total_time);
     }
 }
 
@@ -2277,9 +2277,7 @@ function return_60_minute_array()
 {
     $minute_array = array();
     for ($m = 0; $m < 60; $m++) {
-        if (strlen($m) < 2) {
-            $m = "0" . $m;
-        }
+        $m = str_pad($m, 2, '0', STR_PAD_LEFT);
         $minute_array[$m] = 0;
     }
 
@@ -2290,13 +2288,9 @@ function return_time_array()
 {
     $time_array = array();
     for ($h = 0; $h < 24; $h++) {
-        if (strlen($h) < 2) {
-            $h = "0" . $h;
-        }
+        $h = str_pad($h, 2, '0', STR_PAD_LEFT);
         for ($m = 0; $m < 60; $m++) {
-            if (strlen($m) < 2) {
-                $m = "0" . $m;
-            }
+            $m = str_pad($m, 2, '0', STR_PAD_LEFT);
             $time_array[$h][$m] = 0;
         }
     }
@@ -2650,7 +2644,7 @@ function is_local($host)
 {
     $host = strtolower($host);
     // Is RPC required to look-up??
-    $sys_hostname = strtolower(chop(`hostname`));
+    $sys_hostname = strtolower(rtrim(gethostname()));
     switch ($host) {
         case $sys_hostname:
         case gethostbyaddr('127.0.0.1'):
@@ -3234,7 +3228,7 @@ function is_rpc_client_allowed()
             }
             if ($client == 'local24') {
                 // Get machine IP address from the hostname
-                $ip = gethostbyname(chop(`hostname`));
+                $ip = gethostbyname(rtrim(gethostname()));
                 // Change IP address to a /24 network
                 $ipsplit = explode('.', $ip);
                 $ipsplit[3] = '0';
@@ -3314,7 +3308,7 @@ function updateUserPasswordHash($user, $hash)
     $passwordFiledLengthResult = dbquery($sqlCheckLenght);
     $passwordFiledLength = intval(mysql_result($passwordFiledLengthResult, 0, 'passwordfieldlength'));
 
-    if ($passwordFiledLength != 255) {
+    if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL";
         dbquery($sqlUpdateFieldLength);
         audit_log('Updated password field length from ' . $passwordFiledLength . ' to 255');

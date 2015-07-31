@@ -237,7 +237,7 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
         }
         closedir($dh);
         // Get our hostname
-        $sys_hostname = chop(`hostname`);
+        $sys_hostname = rtrim(gethostname());
         // Drop everything from the table first
         dbquery("DELETE FROM " . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
