@@ -230,13 +230,12 @@ return array(
     'footer01' => 'MailWatch for MailScanner v',
 
     // 08-quarantine.php
-    'input01' => 'Quarantine Folder',
+    'input01' => 'Run Now',
 
     // 13-sa_rules_update.php
-    'folder_0308' => 'Run Now',
+    'folder_0308' => 'Quarantine Folder',
 
     // 99 - General
     'i18_missing' => 'Não traduzido em português',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
-
 );

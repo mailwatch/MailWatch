@@ -111,7 +111,7 @@ return array(
     'submit04' => 'Soumettre',
     'actions04' => 'Action(s)',
     'quarcmdres04' => 'Résultat des commandes de quarantaine',
-    'resultmsgs04' => 'Résultat du message',
+    'resultmsg04' => 'Résultat du message',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
@@ -233,10 +233,10 @@ return array(
     'footer01' => 'MailWatch pour MailScanner v',
 
     // 08-quarantine.php
-    'folder_0308' => 'Dossier de quarantaine',
+    'input01' => 'Dossier de quarantaine',
 
     // 13-sa_rules_update.php
-    'folder_0308' => 'Run Now',
+    'folder_0308' => 'Dossier de quarantaine',
 
     // Added in 2015-06-25
 
@@ -290,5 +290,4 @@ return array(
 
     // 99 - General
     'i18_missing' => 'Non traduit en français',
-
 );

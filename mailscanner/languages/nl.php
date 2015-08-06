@@ -110,7 +110,7 @@ return array(
     'submit04' => 'Invoeren',
     'actions04' => 'Actie(s)',
     'quarcmdres04' => 'Quarantaine Instructie Resultaten',
-    'resultmsgs04' => 'Resultaat Emails',
+    'resultmsg04' => 'Resultaat Emails',
 
     // 05-status.php
     'recentmsg05' => 'Recente Emails',

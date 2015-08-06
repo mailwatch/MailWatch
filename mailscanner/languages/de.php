@@ -110,7 +110,7 @@ return array(
     'submit04' => 'Bestätigen',
     'actions04' => 'Aktion(en)',
     'quarcmdres04' => 'Ergebnisse des Quarantänebefehls',
-    'resultmsgs04' => 'Detailierte Ergebnisse',
+    'resultmsg04' => 'Detailierte Ergebnisse',
 
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',

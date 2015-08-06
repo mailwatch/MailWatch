@@ -110,7 +110,7 @@ return array(
     'submit04' => 'Submit',
     'actions04' => 'Action(s)',
     'quarcmdres04' => 'Quarantine Command Results',
-    'resultmsgs04' => 'Result Messages',
+    'resultmsg04' => 'Result Messages',
 
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
@@ -140,7 +140,7 @@ return array(
     'pggen03' => 'Page generated in',
     'seconds03' => 'seconds',
     'disppage03' => 'Displaying page',
-    'of03' => 'from',
+    'of03' => 'of',
     'records03' => 'Records',
     'to0203' => 'to', // This means to as "from number x to number Y". The first to03 means "from mail ... to mail ..."
 
@@ -231,10 +231,10 @@ return array(
     'footer01' => 'MailWatch for MailScanner v',
 
     // 08-quarantine.php
-    'input01' => 'Quarantine Folder',
+    'input01' => 'Run Now',
 
     // 13-sa_rules_update.php
-    'folder_0308' => 'Run Now',
+    'folder_0308' => 'Quarantine Folder',
 
     // 99 - General
     'i18_missing' => 'No translation in English',
