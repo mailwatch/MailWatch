@@ -85,9 +85,9 @@ if (!isset($_GET['dir'])) {
         }
     }
 } else {
+    $dir = sanitizeInput($_GET['dir']);
     if (QUARANTINE_USE_FLAG) {
         dbconn();
-        $dir = sanitizeInput($_GET['dir']);
         $date = mysql_real_escape_string(translateQuarantineDate($dir, 'sql'));
         $sql = "
 SELECT
