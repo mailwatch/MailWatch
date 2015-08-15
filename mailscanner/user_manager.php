@@ -295,6 +295,8 @@ if ($_SESSION['user_type'] == 'A') {
                 break;
         }
     }
+    echo "<a href=\"?action=new\">" . __('newuser12') . "</a>\n";
+    echo "<br>\n";
     $sql = "
 SELECT
  username AS '" . mysql_real_escape_string(__('username12')) . "',
@@ -323,7 +325,6 @@ ORDER BY
 ";
     dbtable($sql, __('usermgnt12'));
     echo "<br>\n";
-    echo "<a href=\"?action=new\">" . __('newuser12') . "</a>\n";
 } else {
     if (!isset($_GET['submit'])) {
         $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . mysql_real_escape_string($_SESSION['myusername']) . "'";
