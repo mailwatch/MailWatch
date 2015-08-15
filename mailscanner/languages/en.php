@@ -57,7 +57,7 @@ return array(
     'hscospam03' => 'High Score Spam',
     'hscomcp03' => 'High Score MCP',
     'recentmessages03' => 'Recent Messages',
-    'lists03' => 'Lists',
+    'lists03' => 'B/W Lists',
     'quarantine03' => 'Quarantine',
     'datetime03' => 'Date/Time',
     'from03' => 'From',
