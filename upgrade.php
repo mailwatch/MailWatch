@@ -50,6 +50,8 @@ function executeQuery($sql)
     }
 }
 
+$errors = false;
+
 // Test connectivity to the database
 echo pad("Testing connectivity to the database ");
 if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_NAME)) {
@@ -81,7 +83,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
         "whitelist",
     );
 
-    foreach ($utf8_tables as $table => $utf8_query) {
+    foreach ($utf8_tables as $table) {
         echo pad(" - Convert table `" . $table . "` to UTF-8");
         $sql = "ALTER TABLE `" . $table . "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
         executeQuery($sql);
@@ -107,12 +109,13 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(" - Enlarge user field in `spamscore` table");
-    $sql = "ALTER TABLE `spamscore` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    echo pad(" - Enlarge user field in `spamscores` table");
+    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     echo pad(" - Drop `geoip_country` table");
-    $sql = "DROP TABLE `geoip_country`";
+
+    $sql = "DROP TABLE IF EXISTS `geoip_country`";
     executeQuery($sql);
 
     /*

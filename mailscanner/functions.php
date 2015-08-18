@@ -45,6 +45,9 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php');
 
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
+if (!defined('LANG')) {
+    define('LANG', 'en');
+}
 if (!is_file(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG . '.php')) {
     $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php');
 } else {
@@ -1284,8 +1287,7 @@ function get_conf_var($name)
         return false;
     }
     $conf_dir = get_conf_include_folder();
-    $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
-    //$array_output = array();
+    $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
     $array_output1 = parse_conf_file($MailScanner_conf_file);
     $array_output2 = parse_conf_dir($conf_dir);
@@ -1295,7 +1297,7 @@ function get_conf_var($name)
     } else {
         $array_output = $array_output1;
     }
-    //echo '<pre>'; var_dump($array_output); echo '</pre>';
+
     foreach ($array_output as $parameter_name => $parameter_value) {
         $parameter_name = preg_replace('/ */', '', $parameter_name);
 
@@ -1400,8 +1402,7 @@ function get_conf_include_folder()
     }
 
     $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
-    $fh = fopen($msconfig, 'r')
-    or die("Cannot open MailScanner configuration file");
+    $fh = fopen($msconfig, 'r') or die("Cannot open MailScanner configuration file");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($msconfig)));
         //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
@@ -1471,7 +1472,8 @@ function parse_conf_file($name)
 
             // Remove any html entities from the code
             $key = htmlentities($regs['name']);
-            $string = htmlentities($regs['value']);
+            //$string = htmlentities($regs['value']);
+            $string = $regs['value'];
 
             // Stuff all of the data to an array
             $array_output[$key] = $string;
@@ -3386,8 +3388,7 @@ function mailwatch_array_sum($array)
  */
 function read_ruleset_default($file)
 {
-    $fh = fopen($file, 'r')
-    or die("Cannot open MailScanner ruleset file ($file)");
+    $fh = fopen($file, 'r') or die("Cannot open MailScanner ruleset file ($file)");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/(\S+)\s+(\S+)\s+(\S+)/', $line, $regs)) {
