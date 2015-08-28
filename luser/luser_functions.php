@@ -1,22 +1,33 @@
 <?php
+
 /*
- MailWatch for MailScanner
- Copyright (C) 2003  Steve Freegard (smf@f2s.com)
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * MailWatch for MailScanner
+ * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+ * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+ * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+ * those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+ * that use the same license as those files), and distribute linked combinations including the two.
+ * You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+ * PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+ * your version of the program, but you are not obligated to do so.
+ * If you do not wish to do so, delete this exception statement from your version.
+ *
+ * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+ * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+ * JpGraph.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 ///////////////////////////////////////////////////////////////////////////////
 // Settings - modify to suit your configuration
@@ -47,6 +58,7 @@ function luser_loginstart($title)
     <BODY>
     <br>&nbsp;<br>
 <?php
+
 }
 
 function luser_auth($user, $pass)
@@ -383,13 +395,14 @@ function luser_html_start($title, $refresh = 0, $cacheable = true)
     ?>
     <HTML>
     <HEAD>
-        <TITLE>MailWatch for MailScanner - <?php echo $title; ?></TITLE>
+        <TITLE>MailWatch for MailScanner - <?php echo $title;
+    ?></TITLE>
         <LINK REL="StyleSheet" TYPE="text/css" HREF="../style.css">
         <?php
         if ($refresh > 0) {
             echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"$refresh\">";
         }
-        ?>
+    ?>
     </HEAD>
 <BODY>
 <TABLE BORDER=0 CELLPADDING=5 WIDTH=100%>
@@ -408,9 +421,9 @@ function luser_html_start($title, $refresh = 0, $cacheable = true)
             echo "  </TD>\n";
         }
 
-        echo '<TD WIDTH="20%" ALIGN="RIGHT">';
+    echo '<TD WIDTH="20%" ALIGN="RIGHT">';
 
-        $sth = dbquery(
+    $sth = dbquery(
             "
  SELECT
   COUNT(*) AS processed,
@@ -433,26 +446,27 @@ function luser_html_start($title, $refresh = 0, $cacheable = true)
 "
         );
 
-        while ($row = mysql_fetch_object($sth)) {
-            echo "<TABLE BORDER=0 CLASS=\"mail\" WIDTH=200>\n";
-            echo " <THEAD><TH ALIGN=\"CENTER\" COLSPAN=3>Today's Totals for $luser</TH></THEAD>\n";
-            echo " <TR><TD>Processed:</TD><TD ALIGN=\"RIGHT\">" . $row->processed . "</TD><TD ALIGN=\"RIGHT\">" . format_mail_size(
+    while ($row = mysql_fetch_object($sth)) {
+        echo "<TABLE BORDER=0 CLASS=\"mail\" WIDTH=200>\n";
+        echo " <THEAD><TH ALIGN=\"CENTER\" COLSPAN=3>Today's Totals for $luser</TH></THEAD>\n";
+        echo " <TR><TD>Processed:</TD><TD ALIGN=\"RIGHT\">" . $row->processed . "</TD><TD ALIGN=\"RIGHT\">" . format_mail_size(
                     $row->size
                 ) . "</TD></TR>\n";
-            echo " <TR><TD>Spam:</TD><TD ALIGN=\"RIGHT\">$row->spam</TD><TD ALIGN=\"RIGHT\">$row->spampercent%</TD></TR>\n";
-            echo " <TR><TD>High Scoring Spam:</TD><TD ALIGN=\"RIGHT\">$row->highspam</TD><TD ALIGN=\"RIGHT\">$row->highspampercent%</TD></TR>\n";
-            echo " <TR><TD>Virii:</TD><TD ALIGN=\"RIGHT\">$row->virii</TD><TD ALIGN=\"RIGHT\">$row->viriipercent%</TR>\n";
-            echo " <TR><TD>Top Virus:</TD><TD COLSPAN=\"3\" ALIGN=\"RIGHT\">" . return_todays_top_virus(
+        echo " <TR><TD>Spam:</TD><TD ALIGN=\"RIGHT\">$row->spam</TD><TD ALIGN=\"RIGHT\">$row->spampercent%</TD></TR>\n";
+        echo " <TR><TD>High Scoring Spam:</TD><TD ALIGN=\"RIGHT\">$row->highspam</TD><TD ALIGN=\"RIGHT\">$row->highspampercent%</TD></TR>\n";
+        echo " <TR><TD>Virii:</TD><TD ALIGN=\"RIGHT\">$row->virii</TD><TD ALIGN=\"RIGHT\">$row->viriipercent%</TR>\n";
+        echo " <TR><TD>Top Virus:</TD><TD COLSPAN=\"3\" ALIGN=\"RIGHT\">" . return_todays_top_virus(
                 ) . "</TD></TR>\n";
-            echo " <TR><TD>Blocked files:</TD><TD ALIGN=\"RIGHT\">$row->blockedfiles</TD><TD ALIGN=\"RIGHT\">$row->blockedfilespercent%</TD></TR>\n";
-            echo " <TR><TD>Others:</TD><TD ALIGN=\"RIGHT\">$row->otherinfected</TD><TD ALIGN=\"RIGHT\">$row->otherinfectedpercent%</TD></TR>\n";
-            echo "</TABLE>\n";
-        }
-        ?>
+        echo " <TR><TD>Blocked files:</TD><TD ALIGN=\"RIGHT\">$row->blockedfiles</TD><TD ALIGN=\"RIGHT\">$row->blockedfilespercent%</TD></TR>\n";
+        echo " <TR><TD>Others:</TD><TD ALIGN=\"RIGHT\">$row->otherinfected</TD><TD ALIGN=\"RIGHT\">$row->otherinfectedpercent%</TD></TR>\n";
+        echo "</TABLE>\n";
+    }
+    ?>
         </TD>
     </TR>
     <TR>
-        <TD COLSPAN=<?php echo(MAILQ ? 3 : 2); ?>>
+        <TD COLSPAN=<?php echo(MAILQ ? 3 : 2);
+    ?>>
             <TABLE CLASS="navigation" WIDTH=100%>
                 <TR ALIGN=CENTER>
                     <TD><A HREF="luser_login.php?reqtype=logout">Log Out</A></TD>

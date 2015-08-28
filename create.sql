@@ -21,7 +21,7 @@ USE `mailscanner`;
 
 CREATE TABLE IF NOT EXISTS `audit_log` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `user` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `ip_address` varchar(15) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `action` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `sa_rules` (
 --
 
 CREATE TABLE IF NOT EXISTS `spamscores` (
-  `user` varchar(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `user` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `lowspamscore` decimal(10,0) NOT NULL DEFAULT '0',
   `highspamscore` decimal(10,0) NOT NULL DEFAULT '0',
   PRIMARY KEY (`user`)
@@ -232,9 +232,9 @@ CREATE TABLE IF NOT EXISTS `spamscores` (
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
-  `username` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `password` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fullname` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `fullname` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `type` enum('A','D','U','R','H') COLLATE utf8_unicode_ci DEFAULT NULL,
   `quarantine_report` tinyint(1) DEFAULT '0',
   `spamscore` tinyint(4) DEFAULT '0',
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 CREATE TABLE IF NOT EXISTS `user_filters` (
-  `username` varchar(60) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `filter` mediumtext COLLATE utf8_unicode_ci,
   `verify_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `active` enum('N','Y') COLLATE utf8_unicode_ci DEFAULT 'N',

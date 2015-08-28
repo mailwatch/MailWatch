@@ -2,37 +2,33 @@
 <?php
 
 /*
- MailWatch for MailScanner
- Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
- Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- In addition, as a special exception, the copyright holder gives permission to link the code of this program
- with those files in the PEAR library that are licensed under the PHP License (or with modified versions of those
- files that use the same license as those files), and distribute linked combinations including the two.
- You must obey the GNU General Public License in all respects for all of the code used other than those files in the
- PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
- your version of the program, but you are not obligated to do so.
- If you do not wish to do so, delete this exception statement from your version.
-
- As a special exception, you have permission to link this program with the JpGraph library and
- distribute executables, as long as you follow the requirements of the GNU GPL in regard to all of the software
- in the executable aside from JpGraph.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * MailWatch for MailScanner
+ * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+ * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+ * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+ * those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+ * that use the same license as those files), and distribute linked combinations including the two.
+ * You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+ * PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+ * your version of the program, but you are not obligated to do so.
+ * If you do not wish to do so, delete this exception statement from your version.
+ *
+ * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+ * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+ * JpGraph.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 // Change the following to reflect the location of functions.php
 require_once('/var/www/html/mailscanner/functions.php');
@@ -60,7 +56,6 @@ foreach ($required_constant as $constant) {
     }
 }
 if ($required_constant_missing_count == 0) {
-
     require_once('Mail.php');
     require_once('Mail/mime.php');
     date_default_timezone_set(TIME_ZONE);
@@ -71,13 +66,7 @@ if ($required_constant_missing_count == 0) {
     ini_set("memory_limit", '256M');
     ini_set("error_reporting", E_ALL);
     ini_set("max_execution_time", 0);
-    if (version_compare(phpversion(), '5.3.0', '<')) {
-        error_reporting(E_ALL ^ E_STRICT);
-    } else {
-        // E_DEPRECATED added in PHP 5.3
-        error_reporting(E_ALL ^ E_STRICT ^ E_DEPRECATED);
-    }
-
+    
     /*
     ** HTML Template
     */
@@ -213,15 +202,21 @@ AND
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)";
 
  // Hide high spam/mcp from users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM) {
-  $sql .= "
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
+    $sql .= "
     AND
      ishighspam=0
     AND
-     ishighmcp=0";
-}  
+     COALESCE(ishighmcp,0)=0";
+}
 
-$sql .= " 
+    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
+        $sql .= "
+    AND
+     isspam>0";
+    }
+
+    $sql .= " 
 ORDER BY a.date DESC, a.time DESC";
 
     $result = dbquery($users_sql);

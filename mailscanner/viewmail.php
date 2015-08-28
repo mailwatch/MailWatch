@@ -1,37 +1,33 @@
 <?php
 
 /*
- MailWatch for MailScanner
- Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
- Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- In addition, as a special exception, the copyright holder gives permission to link the code of this program
- with those files in the PEAR library that are licensed under the PHP License (or with modified versions of those
- files that use the same license as those files), and distribute linked combinations including the two.
- You must obey the GNU General Public License in all respects for all of the code used other than those files in the
- PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
- your version of the program, but you are not obligated to do so.
- If you do not wish to do so, delete this exception statement from your version.
-
- As a special exception, you have permission to link this program with the JpGraph library and
- distribute executables, as long as you follow the requirements of the GNU GPL in regard to all of the software
- in the executable aside from JpGraph.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * MailWatch for MailScanner
+ * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+ * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+ * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+ * those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+ * that use the same license as those files), and distribute linked combinations including the two.
+ * You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+ * PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+ * your version of the program, but you are not obligated to do so.
+ * If you do not wish to do so, delete this exception statement from your version.
+ *
+ * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+ * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+ * JpGraph.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 require_once('./functions.php');
 require_once('Mail/mimeDecode.php');
@@ -40,7 +36,7 @@ ini_set("memory_limit", MEMORY_LIMIT);
 session_start();
 require('login.function.php');
 
-html_start("Message Viewer", 0, false, false);
+html_start(__('msgviewer06'), 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -119,9 +115,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = "Message Viewer: " . $message_id . " on " . $message->hostname;
+    $title = __('msgviewer06') .": " . $message_id . " on " . $message->hostname;
 } else {
-    $title = "Message Viewer: " . $message_id;
+    $title = __('msgviewer06') .": " . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -135,8 +131,23 @@ function lazy($title, $val, $dohtmlentities = true)
     } else {
         $v = $val;
     }
+    $titleintl = $title;
+    switch ($title) {
+        case "Date:":
+            $titleintl = __('date06');
+            break;
+        case "From:":
+            $titleintl = __('from06');
+            break;
+        case "To:":
+            $titleintl = __('to06');
+            break;
+        case "Subject:":
+            $titleintl = __('subject06');
+            break;
+    }
     echo ' <tr>
-   <td class="heading" align="right" width="10%">' . $title . '</td>
+   <td class="heading" align="right" width="10%">' . $titleintl . '</td>
    <td class="detail" width="80%">' . $v . '</td>
    </tr>' . "\n";
 }
@@ -151,13 +162,11 @@ $header_fields = array(
 
 foreach ($header_fields as $field) {
     if (isset($structure->headers[$field['name']])) {
-        if (function_exists('mb_check_encoding')) {
-            if (!mb_check_encoding($structure->headers[$field['name']], 'UTF-8')) {
-                $structure->headers[$field['name']] = mb_convert_encoding($structure->headers[$field['name']], 'UTF-8');
-            }
-        } else {
-            $structure->headers[$field['name']] = utf8_encode($structure->headers[$field['name']]);
+        /* this is a quick hack to fix issue #154, This need to be recoded in next version */
+        if (is_array($structure->headers[$field['name']])) {
+            $structure->headers[$field['name']] = implode("; ", $structure->headers[$field['name']]);
         }
+        $structure->headers[$field['name']] = getUTF8String($structure->headers[$field['name']]);
         if ($field['replaceQuote']) {
             $structure->headers[$field['name']] = str_replace('"', '', $structure->headers[$field['name']]);
         }
@@ -167,8 +176,8 @@ foreach ($header_fields as $field) {
 
 if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
-        "Actions:",
-        "<a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','release')\">Release this message</a> | <a href=\"javascript:void(0)\" onClick=\"do_action('" . $message->id . "','delete')\">Delete this message</a>",
+        __('actions06') . ":",
+        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . "</a>",
         false
     );
 }

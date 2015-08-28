@@ -42,7 +42,7 @@ mysql> GRANT ALL ON mailscanner.* TO mailwatch@localhost IDENTIFIED BY '<passwor
 mysql> GRANT FILE ON *.* TO mailwatch@localhost IDENTIFIED BY '<password>'; 
 mysql> FLUSH PRIVILEGES;
 
-Edit MailWatch.pm and change the $db_user and $db_pass values accordingly and move MailWatch.pm to /usr/lib/MailScanner/MailScanner/CustomFunctions (this could be /opt/MailScanner/lib/MailScanner/MailScanner/CustomFunctions on non-RPM systems).
+Edit MailScanner_perl_scripts/MailWatch.pm and change the $db_user and $db_pass values accordingly and move MailWatch.pm to /usr/lib/MailScanner/MailScanner/CustomFunctions (this could be /opt/MailScanner/lib/MailScanner/MailScanner/CustomFunctions on non-RPM systems).
 
 ---------------------------------------------------
 Create a MailWatch web user
@@ -60,7 +60,7 @@ Install & Configure MailWatch
 
 # mv mailscanner /var/www/html/
 
-- Check the permissions of /var/www/html/mailscanner/images and /var/www/html/images/cache - they should be ug+rwx and owned by root and in the same group as the web server user (apache on RedHat 9).
+- Check the permissions of /var/www/html/mailscanner/images and /var/www/html/mailscanner/images/cache - they should be ug+rwx and owned by root and in the same group as the web server user (apache on RedHat 9).
 
 # chown root:apache images
 # chmod ug+rwx images
@@ -83,7 +83,7 @@ Install & Configure MailWatch
 
    The new quarantine flag is used by default and you must disable
    the clean.quarantine script supplied by MailScanner and use the new
-   quarantine_maint.php script in the tools directory instead.
+   quarantine_maint.php script in the tools/Cron_jobs directory instead.
    To clean the quarantine - set 'QUARANTINE_DAYS_TO_KEEP' in conf.php and
    run './quarantine_maint --clean'. This should then be run daily from cron.
 
@@ -118,12 +118,14 @@ If you want to use the integrate Blacklist/Whitelist (optional):
 
    then edit the file and change the connection string in the CreateList subroutine to match MailWatch.pm.
 
-Copy SQLBlackWhiteList.pm to /usr/share/MailScanner/MailScanner/CustomFunctions and in MailScanner.conf set:
+Copy SQLBlackWhiteList.pm from the folder MailScanner_perl_scripts to /usr/share/MailScanner/MailScanner/CustomFunctions and in MailScanner.conf set:
  Is Definitely Not Spam = &SQLWhitelist
  Is Definitely Spam = &SQLBlacklist
 
 Then edit SQLBlackWhitelist.pm and change the connection string in the 
 CreateList subroutine to match MailWatch.pm.
+
+On Debian, new &SQL modules need Perl Encoding::FixLatin lib who is not packaged on Debian/Ubuntu. If Mailscanner crash at restart (see log), install the Perl lib manualy via CPAN (http://www.cpan.org).
 
 - Move the Bayesian Databases and set-up permissions (skip this if you don't use bayes).
 
@@ -176,10 +178,10 @@ the follow instruction in tools/sudo/INSTALL
 Database cleanup of maillog records
 -------------------------------------------
 
-add db_clean.php to /etc/cron.daily/
+add db_clean.php from folder tools/Cron_jobs to /etc/cron.daily/
 
 You will then to edit conf.php the RECORD_DAYS_TO_KEEP definition.
-You will need to edit the db_clean.php to reflect the location of the functions.php file
+You will need to edit the db_clean.php to reflect the location of the mailscanner/functions.php file
 
 --------------------------------------------
 Quarantine Maintenance
@@ -187,16 +189,17 @@ Quarantine Maintenance
 
 Remove the clean.quarantine cronjob configured with MailScanner.
 
-Edit and copy quarantine_maint.sh to /etc/cron.daily/
+Edit and copy quarantine_maint.sh from folder tools/Cron_jobs to /etc/cron.daily/
 
 You will then to edit conf.php the QUARANTINE_DAYS_TO_KEEP definition.
+You will need to edit the quarantine_maint.sh to reflect the location of the quarantine_maint.php file.
 You will need to edit the quarantine_maint.php to reflect the location of the functions.php file
 
 --------------------------------------------
 Quarantine Reporting
 --------------------------------------------
 
-Add quarantine_report.php to /etc/cron.daily
+Add quarantine_report.php from folder tools/Cron_jobs to /etc/cron.daily
 
 You will need to edit the quarantine_report.php to reflect the location of the functions.php file
 
@@ -235,11 +238,13 @@ Note: mailq.php re-creates all entries on each run, so for busy sites you will p
 
 You can get MailWatch to watch your sendmail logs and store all message relay information which is then displayed on the 'Message Detail' page which helps debugging and makes it easy for a Helpdesk to actually see where a message was delivered to by the MTA and what the response back was (e.g. the remote queue id etc.).
 
-# cp tools/Sendmail_relay/sendmail_relay.php /usr/local/bin
-# cp tools/Sendmail_relay/sendmail_relay.init /etc/rc.d/init.d/
-# chmod 777 /etc/rc.d/init.d/sendmail_relay.init
-# /etc/rc.d/init.d/sendmail_relay.init start
-# ln -s /etc/rc.d/ini.d/sendmail_relay.init /etc/rc.2/S30sendmail_relay.init
+# cp tools/Sendmail_relay/sendmail_relay.php /usr/local/bin/.
+# cp tools/Sendmail_relay/sendmail_relay.init /etc/init.d/sendmail_relay
+# chmod +x /etc/init.d/sendmail_relay
+# /etc/init.d/sendmail_relay start
+# update-rc.d sendmail_relay defaults
+
+ATTENTION: By default, sendmail_relay.php run as root user. Change init script user to your Apache or MTA user and check right of /var/log/mail.log.
 
 ----------------------------------------------------------
 Optional for item Postfix

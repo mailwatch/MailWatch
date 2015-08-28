@@ -40,7 +40,6 @@ require('login.function.php');
 
 function simple_html_start()
 {
-
     echo '<html>
 <head>
 <title>MailWatch for Mailscanner</title>
@@ -69,7 +68,8 @@ function simple_html_result($status)
                         <th>Result</th>
                     </tr>
                     <tr>
-                        <td><?php echo $status; ?></td>
+                        <td><?php echo $status;
+    ?></td>
                     </tr>
                     <tr>
                         <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
@@ -79,6 +79,7 @@ function simple_html_result($status)
         </tr>
     </table>
 <?php
+
 }
 
 if (!isset($_GET['id'])) {
@@ -131,7 +132,8 @@ switch ($_GET['action']) {
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="<?php echo sanitizeInput($_SERVER['PHP_SELF']); ?>?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
+                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']);
+                ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
                                         &nbsp;&nbsp;
                                         <a href="javascript:void(0)" onClick="javascript:window.close()">No</a>
                                     </td>

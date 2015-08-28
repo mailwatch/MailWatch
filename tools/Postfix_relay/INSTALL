@@ -13,6 +13,6 @@ Optional for item Postfix
 
 - Edit the parser and add it as an hourly cron job
 
-Edit the parser for location of mailwatch webpages
+Edit the parser for location of MailWatch webpages
 
 Edit mailscanner_relay.php in the mailscanner folder

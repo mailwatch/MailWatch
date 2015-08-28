@@ -1,40 +1,33 @@
 <?php
 
 /*
- MailWatch for MailScanner
- Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
- Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- In addition, as a special exception, the copyright holder gives permission to link the code of this program
- with those files in the PEAR library that are licensed under the PHP License (or with modified versions of those
- files that use the same license as those files), and distribute linked combinations including the two.
- You must obey the GNU General Public License in all respects for all of the code used other than those files in the
- PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
- your version of the program, but you are not obligated to do so.
- If you do not wish to do so, delete this exception statement from your version.
-
- As a special exception, you have permission to link this program with the JpGraph library and
- distribute executables, as long as you follow the requirements of the GNU GPL in regard to all of the software
- in the executable aside from JpGraph.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
-// Background colours
-$bg_colors = array("#EBEBEB", "#D8D8D8");
+ * MailWatch for MailScanner
+ * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+ * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+ * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+ * those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+ * that use the same license as those files), and distribute linked combinations including the two.
+ * You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+ * PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+ * your version of the program, but you are not obligated to do so.
+ * If you do not wish to do so, delete this exception statement from your version.
+ *
+ * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+ * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+ * JpGraph.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 // Set error level (some distro's have php.ini set to E_ALL)
 if (version_compare(phpversion(), '5.3.0', '<')) {
@@ -50,6 +43,17 @@ if (!is_readable(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php')) {
 }
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php');
 
+// Load Language File
+// If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
+if (!defined('LANG')) {
+    define('LANG', 'en');
+}
+if (!is_file(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG . '.php')) {
+    $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php');
+} else {
+    $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG . '.php');
+}
+
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] == 'on') {
         header("Location: https://" . sanitizeInput($_SERVER['HTTP_HOST']) . sanitizeInput($_SERVER['REQUEST_URI']));
@@ -59,6 +63,12 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 
 // Set PHP path to use local PEAR modules only
 ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
+
+// set default timezone
+date_default_timezone_set(TIME_ZONE);
+
+// Background colours
+$bg_colors = array("#EBEBEB", "#D8D8D8");
 
 // XML-RPC
 require_once('lib/xmlrpc/xmlrpc.inc');
@@ -159,11 +169,21 @@ if (!defined('VIRUS_REGEX')) {
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
+/**
+ * @return string
+ */
 function mailwatch_version()
 {
     return ("1.2.0 - RC1 DEV");
 }
 
+/**
+ * @param $title
+ * @param int $refresh
+ * @param bool|true $cacheable
+ * @param bool|false $report
+ * @return Filter|int
+ */
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
     if (!$cacheable) {
@@ -187,7 +207,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
 
-    page_creation_timer();
+    echo page_creation_timer();
     echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
@@ -211,9 +231,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $filter = $_SESSION["filter"];
         }
         audit_log('Ran report ' . $title);
-
     } else {
-        echo '<title>Mailwatch for Mailscanner - ' . $title . '</title>' . "\n";
+        echo '<title>MailWatch for Mailscanner - ' . $title . '</title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
     }
 
@@ -236,34 +255,34 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src="./images/mailwatch-logo.png" alt="MailWatch for MailScanner"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="MailWatch for MailScanner"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
     echo '<form action="./detail.php">' . "\n";
-    echo '<p>Jump to message:<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
+    echo '<p>' . __('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
     echo '</form>' . "\n";
     echo '</table>' . "\n";
     echo '<table cellspacing="1" class="mail">' . "\n";
-    echo '<tr><td class="heading" align="center">Current User</td><td class="heading" align="center">Current Sytem Time</td></tr>' . "\n";
+    echo '<tr><td class="heading" align="center">' . __('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
     echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
     echo '</table>' . "\n";
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-    echo '    <tr> <th colspan="2">Color Codes</th> </tr>' . "\n";
-    echo '    <tr> <td>Bad Content/Infected</TD> <td class="infected"></TD> </TR>' . "\n";
+    echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
+    echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>' . "\n";
     echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
         echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
         echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
     }
-    echo '    <tr> <td>Whitelisted</td> <td class="whitelisted"></td> </tr>' . "\n";
-    echo '    <tr> <td>Blacklisted</td> <td class="blacklisted"></td> </tr>' . "\n";
-    echo '	  <tr> <td>Not Scanned</td> <td class="notscanned"></td> </tr>' . "\n";
-    echo '    <tr> <td>Clean</td> <td></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('whitelisted03') . '</td> <td class="whitelisted"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('blacklisted03') . '</td> <td class="blacklisted"></td> </tr>' . "\n";
+    echo '        <tr> <td>' . __('notverified03') . '</td> <td class="notscanned"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('clean03') . '</td> <td></td> </tr>' . "\n";
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
 
@@ -346,7 +365,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
         // drive display
         if ($_SESSION['user_type'] == 'A') {
-            echo '    <tr><td colspan="3" class="heading" align="center">Free Drive Space</td></tr>' . "\n";
+            echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
                 $total_space = disk_total_space($disk['mountpoint']);
@@ -543,36 +562,36 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     $sth = dbquery($sql);
     while ($row = mysql_fetch_object($sth)) {
         echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
-        echo ' <tr><th align="center" colspan="3">Today\'s Totals</th></tr>' . "\n";
-        echo ' <tr><td>Processed:</td><td align="right">' . number_format(
+        echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
+        echo ' <tr><td>' . __('processed03') . ':</td><td align="right">' . number_format(
                 $row->processed
             ) . '</td><td align="right">' . format_mail_size(
                 $row->size
             ) . '</td></tr>' . "\n";
-        echo ' <tr><td>Clean:</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('cleans03') . ':</td><td align="right">' . number_format(
                 $row->clean
             ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>Viruses:</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('viruses03') . ':</td><td align="right">' . number_format(
                 $row->viruses
             ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
         echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
-        echo ' <tr><td>Blocked files:</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('blockedfiles03') . ':</td><td align="right">' . number_format(
                 $row->blockedfiles
             ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>Others:</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('others03') . ':</td><td align="right">' . number_format(
                 $row->otherinfected
             ) . '</td><td align="right">' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
         echo ' <tr><td>Spam:</td><td align="right">' . number_format(
                 $row->spam
             ) . '</td><td align="right">' . $row->spampercent . '%</td></tr>' . "\n";
-        echo ' <tr><td style="white-space:nowrap">High Scoring Spam:</td><td align="right">' . number_format(
+        echo ' <tr><td style="white-space:nowrap">' . __('hscospam03') . ':</td><td align="right">' . number_format(
                 $row->highspam
             ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
         if (get_conf_truefalse('mcpchecks')) {
             echo ' <tr><td>MCP:</td><td align="right">' . number_format(
                     $row->mcp
                 ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
-            echo ' <tr><td style="white-space:nowrap">High Scoring MCP:</td><td align="right">' . number_format(
+            echo ' <tr><td style="white-space:nowrap">' . __('hscomcp03') . ':</td><td align="right">' . number_format(
                     $row->highmcp
                 ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
         }
@@ -582,28 +601,28 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     // Navigation links - put them into an array to allow them to be switched
     // on or off as necessary and to allow for the table widths to be calculated.
     $nav = array();
-    $nav['status.php'] = "Recent Messages";
+    $nav['status.php'] = __('recentmessages03');
     if (LISTS) {
-        $nav['lists.php'] = "Lists";
+        $nav['lists.php'] = __('lists03');
     }
     if (!DISTRIBUTED_SETUP) {
-        $nav['quarantine.php'] = "Quarantine";
+        $nav['quarantine.php'] = __('quarantine03');
     }
-    $nav['reports.php'] = "Reports";
-    $nav['other.php'] = "Tools/Links";
+    $nav['reports.php'] = __('reports03');
+    $nav['other.php'] = __('toolslinks03');
 
     if (SHOW_SFVERSION == true) {
         if ($_SESSION['user_type'] === 'A') {
-            $nav['sf_version.php'] = "Software Versions";
+            $nav['sf_version.php'] = __('softwareversions03');
         }
     }
 
     if (SHOW_DOC == true) {
-        $nav['docs.php'] = "Documentation";
+        $nav['docs.php'] = __('documentation03');
     }
-    $nav['logout.php'] = "Logout";
+    $nav['logout.php'] = __('logout03');
     //$table_width = round(100 / count($nav));
-    
+
     //Navigation table
     echo '  </td>' . "\n";
     echo ' </tr>' . "\n";
@@ -634,6 +653,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     } else {
         $return_items = $refresh;
     }
+
     return $return_items;
 }
 
@@ -666,7 +686,7 @@ function updateClock ( )
     }
 
     echo '
-  
+
   // Compose the string for display
   var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
 
@@ -687,47 +707,67 @@ function row_highandclick()
     {
       tableRow.style.backgroundColor = \'#dcfac9\';
     }
-	else
-	{
-		tableRow.sytle.backgroundColor = \'white\';
-	}
+        else
+        {
+                tableRow.sytle.backgroundColor = \'white\';
+        }
   }
 
-  
+
     function DoNav(theUrl)
   {
   document.location.href = theUrl;
   }';
 }
 
-function html_end($footer = "")
+/**
+ * @param string $footer
+ */
+function html_end($footer = '')
 {
     echo '</td>' . "\n";
     echo '</tr>' . "\n";
     echo '</table>' . "\n";
     echo $footer;
-    echo '<p class="center" style="font-size:13px"><i>' . "\n";
-    page_creation_timer();
-    echo '</i></p>' . "\n";
+    if (DEBUG) {
+        echo '<p class="center" style="font-size:13px"><i>' . "\n";
+        echo page_creation_timer();
+        echo '</i></p>' . "\n";
+    }
+    echo '<p class="center" style="font-size:13px">' . "\n";
+    echo __('footer01');
+    echo mailwatch_version();
+    echo ' - @ 2006-' . date('Y');
+    echo '</p>' . "\n";
     echo '</body>' . "\n";
     echo '</html>' . "\n";
 }
 
+/**
+ * @return resource
+ */
 function dbconn()
 {
     $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, false, 128)
-    or die ("Could not connect to database: " . mysql_error());
+    or die("Could not connect to database: " . mysql_error());
     mysql_set_charset('utf8', $link);
     mysql_select_db(DB_NAME) or die("Could not select db: " . mysql_error());
 
     return $link;
 }
 
+/**
+ * @return bool
+ */
 function dbclose()
 {
     return mysql_close();
 }
 
+/**
+ * @param $sql
+ * @return resource
+ */
 function dbquery($sql)
 {
     dbconn();
@@ -746,30 +786,81 @@ function dbquery($sql)
         echo "\n-->\n\n";
     }
     $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+
     return $result;
 }
 
-function sanitizeInput($string) {
+/**
+ * @param $string
+ * @return string
+ */
+function sanitizeInput($string)
+{
     $config = HTMLPurifier_Config::createDefault();
     $purifier = new HTMLPurifier($config);
+
     return $purifier->purify($string);
 }
 
+/**
+ * @param $value
+ * @return string
+ */
 function quote_smart($value)
 {
     return "'" . safe_value($value) . "'";
 }
 
+/**
+ * @param $value
+ * @return string
+ */
 function safe_value($value)
 {
     dbconn();
-    if (get_magic_quotes_gpc()) {
+    if ((function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())) {
         $value = stripslashes($value);
     }
     $value = mysql_real_escape_string($value);
+
     return $value;
 }
 
+/**
+ * @param $string
+ * @return mixed
+ */
+function __($string)
+{
+    global $lang;
+    if (isset($lang[$string])) {
+        return $lang[$string];
+    }
+
+    return $lang['i18_missing'];
+}
+
+/**
+ * @param $string
+ * @return string
+ */
+function getUTF8String($string)
+{
+    if (function_exists('mb_check_encoding')) {
+        if (!mb_check_encoding($string, 'UTF-8')) {
+            $string = mb_convert_encoding($string, 'UTF-8');
+        }
+    } else {
+        $string = utf8_encode($string);
+    }
+
+    return $string;
+}
+
+/**
+ * @param $spamreport
+ * @return bool|string
+ */
 function sa_autolearn($spamreport)
 {
     switch (true) {
@@ -782,6 +873,10 @@ function sa_autolearn($spamreport)
     }
 }
 
+/**
+ * @param $spamreport
+ * @return string
+ */
 function format_spam_report($spamreport)
 {
     // Run regex against the MailScanner spamreport picking out the (score=xx, required x, RULES...)
@@ -806,7 +901,7 @@ function format_spam_report($spamreport)
         }
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
-            return '<table class="sa_rules_report" cellspacing="2">' . '<tr><Th>Score</th><th>Matching Rule</th><th>Description</th></tr>' . implode(
+            return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
                 "\n",
                 $output_array
             ) . '</table>' . "\n";
@@ -819,6 +914,10 @@ function format_spam_report($spamreport)
     }
 }
 
+/**
+ * @param $rule
+ * @return string
+ */
 function get_sa_rule_desc($rule)
 {
     // Check if SA scoring is enabled
@@ -837,6 +936,10 @@ function get_sa_rule_desc($rule)
     }
 }
 
+/**
+ * @param $rule
+ * @return bool
+ */
 function return_sa_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
@@ -848,6 +951,10 @@ function return_sa_rule_desc($rule)
     return false;
 }
 
+/**
+ * @param $mcpreport
+ * @return mixed|string
+ */
 function format_mcp_report($mcpreport)
 {
     // Clean-up input
@@ -875,7 +982,7 @@ function format_mcp_report($mcpreport)
         }
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
-            return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>Score</th><th>Matching Rule</th><th>Description</th></tr>' . implode(
+            return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
                 "\n",
                 $output_array
             ) . '</table>' . "\n";
@@ -888,6 +995,10 @@ function format_mcp_report($mcpreport)
     }
 }
 
+/**
+ * @param $rule
+ * @return string
+ */
 function get_mcp_rule_desc($rule)
 {
     // Check if SA scoring is enabled
@@ -900,12 +1011,16 @@ function get_mcp_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
     if ($row && $row->rule && $row->rule_desc) {
-        return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
+        return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200px;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
         return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";
     }
 }
 
+/**
+ * @param $rule
+ * @return bool
+ */
 function return_mcp_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
@@ -917,6 +1032,9 @@ function return_mcp_rule_desc($rule)
     return false;
 }
 
+/**
+ * @return string
+ */
 function return_todays_top_virus()
 {
     $sql = "
@@ -961,6 +1079,9 @@ AND
     }
 }
 
+/**
+ * @return array|mixed
+ */
 function get_disks()
 {
     $disks = array();
@@ -970,7 +1091,7 @@ function get_disks()
         $disks = str_word_count($disks, 1);
         //TODO: won't work on non english installation, we need to find an universal command
         if ($disks[0] != 'Drives') {
-            return '';
+            return array();
         }
         unset($disks[0]);
         foreach ($disks as $key => $disk) {
@@ -1016,6 +1137,11 @@ function get_disks()
     return $disks;
 }
 
+/**
+ * @param $size
+ * @param int $precision
+ * @return string
+ */
 function formatSize($size, $precision = 2)
 {
     $base = log($size) / log(1024);
@@ -1024,6 +1150,11 @@ function formatSize($size, $precision = 2)
     return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
 
+/**
+ * @param $size_in_bytes
+ * @param int $decimal_places
+ * @return string
+ */
 function format_mail_size($size_in_bytes, $decimal_places = 1)
 {
     // Setup common measurements
@@ -1050,6 +1181,10 @@ function format_mail_size($size_in_bytes, $decimal_places = 1)
     }
 }
 
+/**
+ * @param $data_in
+ * @param $info_out
+ */
 function format_report_volume(&$data_in, &$info_out)
 {
     // Measures
@@ -1100,21 +1235,32 @@ function format_report_volume(&$data_in, &$info_out)
     }
 
     // Modify the original data accordingly
-    for ($i = 0; $i < sizeof($data_in); $i++) {
+    $num_data_in = sizeof($data_in);
+    for ($i = 0; $i < $num_data_in; $i++) {
         $data_in[$i] = $data_in[$i] / $info_out['formula'];
     }
 }
 
+/**
+ * @param $input
+ * @param $maxlen
+ * @return string
+ */
 function trim_output($input, $maxlen)
 {
     if ($maxlen > 0 && strlen($input) >= $maxlen) {
         $output = substr($input, 0, $maxlen) . "...";
+
         return $output;
     } else {
         return $input;
     }
 }
 
+/**
+ * @param $file
+ * @return bool
+ */
 function get_default_ruleset_value($file)
 {
     $fh = fopen($file, 'r') or die("Cannot open ruleset file $file");
@@ -1127,17 +1273,21 @@ function get_default_ruleset_value($file)
         }
     }
     fclose($fh);
+
     return false;
 }
 
+/**
+ * @param $name
+ * @return bool
+ */
 function get_conf_var($name)
 {
     if (DISTRIBUTED_SETUP) {
         return false;
     }
     $conf_dir = get_conf_include_folder();
-    $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
-    //$array_output = array();
+    $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
     $array_output1 = parse_conf_file($MailScanner_conf_file);
     $array_output2 = parse_conf_dir($conf_dir);
@@ -1147,7 +1297,7 @@ function get_conf_var($name)
     } else {
         $array_output = $array_output1;
     }
-    //echo '<pre>'; var_dump($array_output); echo '</pre>';
+
     foreach ($array_output as $parameter_name => $parameter_value) {
         $parameter_name = preg_replace('/ */', '', $parameter_name);
 
@@ -1163,6 +1313,10 @@ function get_conf_var($name)
     die("Cannot find configuration value: $name in $MailScanner_conf_file\n");
 }
 
+/**
+ * @param $conf_dir
+ * @return array
+ */
 function parse_conf_dir($conf_dir)
 {
     $array_output1 = array();
@@ -1181,9 +1335,14 @@ function parse_conf_dir($conf_dir)
         }
     }
     closedir($dh);
+
     return ($array_output1);
 }
 
+/**
+ * @param $name
+ * @return bool
+ */
 function get_conf_truefalse($name)
 {
     if (DISTRIBUTED_SETUP) {
@@ -1218,6 +1377,12 @@ function get_conf_truefalse($name)
                 case "0":
                     return false;
                 default:
+                    // if $parameter_value is a ruleset or a function call return true
+                    $parameter_value = trim($parameter_value);
+                    if (strlen($parameter_value) > 0) {
+                        return true;
+                    }
+
                     return false;
             }
         }
@@ -1226,6 +1391,9 @@ function get_conf_truefalse($name)
     return false;
 }
 
+/**
+ * @return bool|mixed
+ */
 function get_conf_include_folder()
 {
     $name = 'include';
@@ -1234,8 +1402,7 @@ function get_conf_include_folder()
     }
 
     $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
-    $fh = fopen($msconfig, 'r')
-    or die("Cannot open MailScanner configuration file");
+    $fh = fopen($msconfig, 'r') or die("Cannot open MailScanner configuration file");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($msconfig)));
         //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
@@ -1267,7 +1434,12 @@ function get_conf_include_folder()
     die("Cannot find configuration value: $name in $msconfig\n");
 }
 
-// Parse conf files
+/**
+ * Parse conf files
+ *
+ * @param $name
+ * @return array
+ */
 function parse_conf_file($name)
 {
     $array_output = array();
@@ -1300,7 +1472,8 @@ function parse_conf_file($name)
 
             // Remove any html entities from the code
             $key = htmlentities($regs['name']);
-            $string = htmlentities($regs['value']);
+            //$string = htmlentities($regs['value']);
+            $string = $regs['value'];
 
             // Stuff all of the data to an array
             $array_output[$key] = $string;
@@ -1312,13 +1485,22 @@ function parse_conf_file($name)
     return $array_output;
 }
 
+/**
+ * @return mixed
+ */
 function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(" ", get_conf_var('VirusScanners'));
+
     return $scanners[0];
 }
 
+/**
+ * @param $date
+ * @param string $format
+ * @return mixed|string
+ */
 function translateQuarantineDate($date, $format = 'dmy')
 {
     $y = substr($date, 0, 4);
@@ -1336,10 +1518,15 @@ function translateQuarantineDate($date, $format = 'dmy')
             $format = preg_replace("/%y/", $y, $format);
             $format = preg_replace("/%m/", $m, $format);
             $format = preg_replace("/%d/", $d, $format);
+
             return $format;
     }
 }
 
+/**
+ * @param $preserve
+ * @return bool|string
+ */
 function subtract_get_vars($preserve)
 {
     if (is_array($_GET)) {
@@ -1350,6 +1537,7 @@ function subtract_get_vars($preserve)
         }
         if (isset($output) && is_array($output)) {
             $output = join('&amp;', $output);
+
             return '&amp;' . $output;
         } else {
             return false;
@@ -1359,6 +1547,10 @@ function subtract_get_vars($preserve)
     }
 }
 
+/**
+ * @param $preserve
+ * @return bool|string
+ */
 function subtract_multi_get_vars($preserve)
 {
     if (is_array($_GET)) {
@@ -1369,6 +1561,7 @@ function subtract_multi_get_vars($preserve)
         }
         if (isset($output) && is_array($output)) {
             $output = join('&amp;', $output);
+
             return '&amp;' . $output;
         } else {
             return false;
@@ -1378,6 +1571,13 @@ function subtract_multi_get_vars($preserve)
     }
 }
 
+/**
+ * @param $sql
+ * @param bool|string $table_heading
+ * @param bool $pager
+ * @param bool $order
+ * @param bool $operations
+ */
 function db_colorised_table($sql, $table_heading = false, $pager = false, $order = false, $operations = false)
 {
     require_once('Mail/mimeDecode.php');
@@ -1438,15 +1638,15 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
         //show the links
         echo $pager->links;
         echo '</td>
-		</tr>
-	  </table>
+                </tr>
+          </table>
 </tr>
 <tr>
  <td colspan="4">';
@@ -1462,7 +1662,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         if ($operations !== false) {
             $fields++;
         }
-
     } else {
         $sth = dbquery($sql);
         $rows = mysql_num_rows($sth);
@@ -1509,11 +1708,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     }
                     break;
                 case 'timestamp':
-                    $fieldname[$f] = "Date/Time";
+                    $fieldname[$f] = __('datetime03');
                     $align[$f] = "center";
                     break;
                 case 'datetime':
-                    $fieldname[$f] = "Date/Time";
+                    $fieldname[$f] = __('datetime03');
                     $align[$f] = "center";
                     break;
                 case 'id':
@@ -1527,22 +1726,22 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $align[$f] = "center";
                     break;
                 case 'size':
-                    $fieldname[$f] = "Size";
+                    $fieldname[$f] = __('size03');
                     $align[$f] = "right";
                     break;
                 case 'from_address':
-                    $fieldname[$f] = "From";
+                    $fieldname[$f] = __('from03');
                     break;
                 case 'to_address':
-                    $fieldname[$f] = "To";
+                    $fieldname[$f] = __('to03');
                     break;
                 case 'subject':
-                    $fieldname[$f] = "Subject";
+                    $fieldname[$f] = __('subject03');
                     break;
                 case 'clientip':
                     if (defined('DISPLAY_IP') && DISPLAY_IP) {
-                        $fieldname[$f]= "Client IP";
-                    }	
+                        $fieldname[$f] = "Client IP";
+                    }
                     $display[$f] = true;
                     break;
                 case 'archive':
@@ -1614,7 +1813,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'sascore':
                     if (get_conf_truefalse('UseSpamAssassin')) {
-                        $fieldname[$f] = "SA Score";
+                        $fieldname[$f] = __('sascore03');
                         $align[$f] = "right";
                     } else {
                         $display[$f] = false;
@@ -1622,7 +1821,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'mcpsascore':
                     if (get_conf_truefalse('MCPChecks')) {
-                        $fieldname[$f] = "MCP Score";
+                        $fieldname[$f] = __('mcpscore03');
                         $align[$f] = "right";
                     } else {
                         $display[$f] = false;
@@ -1739,21 +1938,26 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         break;
                     case 'clientip':
                         $clientip = $row[$f];
-                        if (net_match('10.0.0.0/8', $clientip) || net_match('172.16.0.0/12',
-                                $clientip) || net_match('192.168.0.0/16', $clientip)
-                        ) {
-                            $host = 'Internal Network';
-                        } elseif (($host = gethostbyaddr($clientip)) == $clientip) {
-                            $host = 'Unknown';
+                        if (defined('RESOLVE_IP_ON_DISPLAY') && RESOLVE_IP_ON_DISPLAY === true) {
+                            if (
+                                net_match('10.0.0.0/8', $clientip) ||
+                                net_match('172.16.0.0/12', $clientip) ||
+                                net_match('192.168.0.0/16', $clientip)
+                            ) {
+                                $host = 'Internal Network';
+                            } elseif (($host = gethostbyaddr($clientip)) == $clientip) {
+                                $host = 'Unknown';
+                            }
+                            $row[$f] .= " ($host)";
                         }
-                        $row[$f] .= " ($host)";
                         break;
                     case 'to_address':
                         $row[$f] = htmlentities($row[$f]);
                         if (FROMTO_MAXLEN > 0) {
                             // Trim each address to specified size
                             $to_temp = explode(",", $row[$f]);
-                            for ($t = 0; $t < count($to_temp); $t++) {
+                            $num_to_temp = count($to_temp);
+                            for ($t = 0; $t < $num_to_temp; $t++) {
                                 $to_temp[$t] = trim_output($to_temp[$t], FROMTO_MAXLEN);
                             }
                             // Return the data
@@ -1763,15 +1967,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = str_replace(",", "<br>", $row[$f]);
                         break;
                     case 'subject':
-                        $row[$f] = decode_header($row[$f]);
-                        if (function_exists('mb_check_encoding')) {
-                            if (!mb_check_encoding($row[$f], 'UTF-8')) {
-                                $row[$f] = mb_convert_encoding($row[$f], 'UTF-8');
-                            }
-                        } else {
-                            $row[$f] = utf8_encode($row[$f]);
-                        }
-                        $row[$f] = htmlspecialchars($row[$f]);
+                        $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
                         if (SUBJECT_MAXLEN > 0) {
                             $row[$f] = trim_output($row[$f], SUBJECT_MAXLEN);
                         }
@@ -1992,15 +2188,15 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
             echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
             //show the links
             echo $pager->links;
             echo '</td>
-		</tr>
-	  </table>
+                </tr>
+          </table>
 </tr>
 <tr>
  <td colspan="4">';
@@ -2008,7 +2204,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 }
 
-// Function to display data as a table
+/**
+ * Function to display data as a table
+ *
+ * @param $sql
+ * @param bool|false $title
+ * @param bool|false $pager
+ * @param bool|false $operations
+ */
 function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
     global $bg_colors;
@@ -2063,8 +2266,8 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         //show the links
         echo $pager->links;
         echo '</td>
-		</tr>
-	  </table>
+                </tr>
+          </table>
 </tr>
 <tr>
  <td colspan="4">';
@@ -2078,7 +2281,6 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         if ($operations !== false) {
             $fields++;
         }
-
     } else {
         $sth = dbquery($sql);
         $rows = mysql_num_rows($sth);
@@ -2154,14 +2356,17 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         //show the links
         echo $pager->links;
         echo '</td>
-		</tr>
-	  </table>
+                </tr>
+          </table>
 </tr>
 <tr>
  <td colspan="4">';
     }
 }
 
+/**
+ * @param $sql
+ */
 function db_vertical_table($sql)
 {
     $sth = dbquery($sql);
@@ -2184,11 +2389,17 @@ function db_vertical_table($sql)
     }
 }
 
+/**
+ * @return mixed
+ */
 function get_microtime()
 {
     return microtime(true);
 }
 
+/**
+ * @return string
+ */
 function page_creation_timer()
 {
     if (!isset($GLOBALS['pc_start_time'])) {
@@ -2196,10 +2407,13 @@ function page_creation_timer()
     } else {
         $pc_end_time = get_microtime();
         $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
-        printf("Page generated in %f seconds\n", $pc_total_time);
+        return sprintf(__('pggen03') . " %f " . __('seconds03') . "\n", $pc_total_time);
     }
 }
 
+/**
+ * @param $text
+ */
 function debug($text)
 {
     if (DEBUG && headers_sent()) {
@@ -2207,47 +2421,53 @@ function debug($text)
     }
 }
 
+/**
+ * @return array
+ */
 function return_24_hour_array()
 {
     $hour_array = array();
     for ($h = 0; $h < 24; $h++) {
-        if (strlen($h) < 2) {
-            $h = "0" . $h;
-        }
+        $h = str_pad($h, 2, '0', STR_PAD_LEFT);
         $hour_array[$h] = 0;
     }
+
     return $hour_array;
 }
 
+/**
+ * @return array
+ */
 function return_60_minute_array()
 {
     $minute_array = array();
     for ($m = 0; $m < 60; $m++) {
-        if (strlen($m) < 2) {
-            $m = "0" . $m;
-        }
+        $m = str_pad($m, 2, '0', STR_PAD_LEFT);
         $minute_array[$m] = 0;
     }
+
     return $minute_array;
 }
 
+/**
+ * @return array
+ */
 function return_time_array()
 {
     $time_array = array();
+    $minute_array = return_60_minute_array();
     for ($h = 0; $h < 24; $h++) {
-        if (strlen($h) < 2) {
-            $h = "0" . $h;
-        }
-        for ($m = 0; $m < 60; $m++) {
-            if (strlen($m) < 2) {
-                $m = "0" . $m;
-            }
-            $time_array[$h][$m] = 0;
-        }
+        $h = str_pad($h, 2, '0', STR_PAD_LEFT);
+        $time_array[$h] = $minute_array;
     }
+
     return $time_array;
 }
 
+/**
+ * @param $dir
+ * @return bool|int
+ */
 function count_files_in_dir($dir)
 {
     //TODO: Refactor
@@ -2261,9 +2481,14 @@ function count_files_in_dir($dir)
             }
         }
     }
+
     return count($file_list_array);
 }
 
+/**
+ * @param $message_headers
+ * @return array|bool
+ */
 function get_mail_relays($message_headers)
 {
     $headers = explode("\\n", $message_headers);
@@ -2283,6 +2508,11 @@ function get_mail_relays($message_headers)
     return false;
 }
 
+/**
+ * @param $addresses
+ * @param $type
+ * @return string
+ */
 function address_filter_sql($addresses, $type)
 {
     $sqladdr = '';
@@ -2331,23 +2561,33 @@ function address_filter_sql($addresses, $type)
     return $sqladdr;
 }
 
-function ldap_authenticate($USER, $PASS)
+/**
+ * @param $user
+ * @param $password
+ * @return null|string
+ */
+function ldap_authenticate($user, $password)
 {
-    $USER = strtolower($USER);
-    if ($USER != "" && $PASS != "") {
-        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die ("Could not connect to " . LDAP_HOST);
+    $user = strtolower($user);
+    if ($user != "" && $password != "") {
+        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die("Could not connect to " . LDAP_HOST);
+        // Check if Microsoft Active Directory compatibility is enabled
+        if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
+            ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+            ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+        }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
-        if (strpos($USER, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD."=SMTP:$USER") or die ("Could not search");
+        if (strpos($user, '@')) {
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die("Could not search");
         } else {
-            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$USER") or die ("Could not search");
+            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die("Could not search");
         }
         if ($r) {
-            $result = ldap_get_entries($ds, $r) or die ("Could not get entries");
+            $result = ldap_get_entries($ds, $r) or die("Could not get entries");
             if ($result[0]) {
-                $USER = $result[0]['userprincipalname']['0'];
-                if (ldap_bind($ds, $USER, "$PASS")) {
-                    if (isset ($result[0][LDAP_EMAIL_FIELD])) {
+                $user = $result[0]['userprincipalname']['0'];
+                if (ldap_bind($ds, $user, "$password")) {
+                    if (isset($result[0][LDAP_EMAIL_FIELD])) {
                         foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
                             if (substr($email, 0, 4) == "SMTP") {
                                 $email = strtolower(substr($email, 5));
@@ -2355,35 +2595,41 @@ function ldap_authenticate($USER, $PASS)
                             }
                         }
 
-                        $sql = sprintf("SELECT username from users where username = %s", quote_smart($email));
+                        $sql = sprintf("SELECT username FROM users WHERE username = %s", quote_smart($email));
                         $sth = dbquery($sql);
                         if (mysql_num_rows($sth) == 0) {
                             $sql = sprintf(
-                                "REPLACE into users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                                "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                                 quote_smart($email),
                                 quote_smart($result[0]['cn'][0])
                             );
                             dbquery($sql);
                         }
+
                         return $email;
                     }
                 }
             }
         }
     }
+
     return null;
 }
 
+/**
+ * @param $entry
+ * @return string
+ */
 function ldap_get_conf_var($entry)
 {
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-        or die("Error: unable to bind to LDAP directory\n");
+    or die("Error: unable to bind to LDAP directory\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2402,6 +2648,7 @@ function ldap_get_conf_var($entry)
             for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
                 $return[] = $info[0][$info[0][0]][$n];
             }
+
             return join(" ", $return);
         }
     } else {
@@ -2410,16 +2657,20 @@ function ldap_get_conf_var($entry)
     }
 }
 
+/**
+ * @param $entry
+ * @return bool
+ */
 function ldap_get_conf_truefalse($entry)
 {
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-        or die("Error: unable to bind to LDAP directory\n");
+    or die("Error: unable to bind to LDAP directory\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2447,6 +2698,10 @@ function ldap_get_conf_truefalse($entry)
     }
 }
 
+/**
+ * @param $name
+ * @return string
+ */
 function translate_etoi($name)
 {
     $name = strtolower($name);
@@ -2470,6 +2725,10 @@ function translate_etoi($name)
     }
 }
 
+/**
+ * @param $input
+ * @return mixed
+ */
 function decode_header($input)
 {
     // Remove white space between encoded-words
@@ -2494,18 +2753,28 @@ function decode_header($input)
         }
         $input = str_replace($encoded, $text, $input);
     }
+
     return $input;
 }
 
+/**
+ * @param $input
+ * @return string
+ */
 function debug_print_r($input)
 {
     ob_start();
     print_r($input);
     $return = ob_get_contents();
     ob_end_clean();
+
     return $return;
 }
 
+/**
+ * @param $ip
+ * @return bool
+ */
 function return_geoip_country($ip)
 {
     require_once 'lib/geoip.inc';
@@ -2514,14 +2783,14 @@ function return_geoip_country($ip)
     $countryname = false;
     if (strpos($ip, ':') === false) {
         //ipv4
-        if (file_exists('./temp/GeoIP.dat')) {
+        if (file_exists('./temp/GeoIP.dat') && filesize('./temp/GeoIP.dat') > 0) {
             $gi = geoip_open('./temp/GeoIP.dat', GEOIP_STANDARD);
             $countryname = geoip_country_name_by_addr($gi, $ip);
             geoip_close($gi);
         }
     } else {
         //ipv6
-        if (file_exists('./temp/GeoIPv6.dat')) {
+        if (file_exists('./temp/GeoIPv6.dat') && filesize('./temp/GeoIPv6.dat') > 0) {
             $gi = geoip_open('./temp/GeoIPv6.dat', GEOIP_STANDARD);
             $countryname = geoip_country_name_by_addr_v6($gi, $ip);
             geoip_close($gi);
@@ -2531,7 +2800,12 @@ function return_geoip_country($ip)
     return $countryname;
 }
 
-function stripPortFromIp($ip) {
+/**
+ * @param $ip
+ * @return mixed
+ */
+function stripPortFromIp($ip)
+{
     if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
         $ip = current(array_slice(explode(':', $ip), 0, 1));
     }
@@ -2539,6 +2813,10 @@ function stripPortFromIp($ip) {
     return $ip;
 }
 
+/**
+ * @param string $input
+ * @return array
+ */
 function quarantine_list($input = "/")
 {
     $quarantinedir = get_conf_var('QuarantineDir') . '/';
@@ -2578,11 +2856,15 @@ function quarantine_list($input = "/")
     return $item;
 }
 
+/**
+ * @param $host
+ * @return bool
+ */
 function is_local($host)
 {
     $host = strtolower($host);
     // Is RPC required to look-up??
-    $sys_hostname = strtolower(chop(`hostname`));
+    $sys_hostname = strtolower(rtrim(gethostname()));
     switch ($host) {
         case $sys_hostname:
         case gethostbyaddr('127.0.0.1'):
@@ -2593,6 +2875,11 @@ function is_local($host)
     }
 }
 
+/**
+ * @param $msgid
+ * @param bool|false $rpc_only
+ * @return array|mixed|string
+ */
 function quarantine_list_items($msgid, $rpc_only = false)
 {
     $sql = "
@@ -2691,6 +2978,7 @@ SELECT
             }
             closedir($d);
         }
+
         return $quarantined;
     } else {
         // Host is remote call quarantine_list_items by RPC
@@ -2706,10 +2994,18 @@ SELECT
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response;
     }
 }
 
+/**
+ * @param $list
+ * @param $num
+ * @param $to
+ * @param bool|false $rpc_only
+ * @return string
+ */
 function quarantine_release($list, $num, $to, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
@@ -2755,6 +3051,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $status = "Release: message released to " . str_replace(",", ", ", $to);
                 audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
             }
+
             return ($status);
         } else {
             // Use sendmail to release message
@@ -2775,6 +3072,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                         global $error;
                         $error = true;
                     }
+
                     return ($status);
                 }
             }
@@ -2805,10 +3103,18 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response . " (RPC)";
     }
 }
 
+/**
+ * @param $list
+ * @param $num
+ * @param $type
+ * @param bool|false $rpc_only
+ * @return string
+ */
 function quarantine_learn($list, $num, $type, $rpc_only = false)
 {
     dbconn();
@@ -2936,6 +3242,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 }
             }
         }
+
         return join("\n", $status);
     } else {
         // Call by RPC
@@ -2963,10 +3270,17 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response . " (RPC)";
     }
 }
 
+/**
+ * @param $list
+ * @param $num
+ * @param bool|false $rpc_only
+ * @return string
+ */
 function quarantine_delete($list, $num, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
@@ -2981,13 +3295,14 @@ function quarantine_delete($list, $num, $rpc_only = false)
             if (@unlink($list[$val]['path'])) {
                 $status[] = "Delete: deleted file " . $list[$val]['path'];
                 dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                audit_log('Delete file from quarantine: ' . $list[$val]['path']);
+                audit_log('Deleted file from quarantine: ' . $list[$val]['path']);
             } else {
                 $status[] = "Delete: error deleting file " . $list[$val]['path'];
                 global $error;
                 $error = true;
             }
         }
+
         return join("\n", $status);
     } else {
         // Call by RPC
@@ -3014,18 +3329,29 @@ function quarantine_delete($list, $num, $rpc_only = false)
         } else {
             $response = "XML-RPC Error: " . $rsp->faultstring();
         }
+
         return $response . " (RPC)";
     }
 }
 
-function fixMessageId($id) {
+/**
+ * @param $id
+ * @return mixed
+ */
+function fixMessageId($id)
+{
     $mta = get_conf_var('mta');
     if ($mta == 'postfix') {
         $id = str_replace('_', '.', $id);
     }
+
     return $id;
 }
 
+/**
+ * @param $action
+ * @return bool
+ */
 function audit_log($action)
 {
     dbconn();
@@ -3034,13 +3360,18 @@ function audit_log($action)
         $action = mysql_real_escape_string($action);
         $ip = mysql_real_escape_string($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
-        if ($ret){
+        if ($ret) {
             return true;
         }
     }
+
     return false;
 }
 
+/**
+ * @param $array
+ * @return array|number
+ */
 function mailwatch_array_sum($array)
 {
     if (!is_array($array)) {
@@ -3051,10 +3382,13 @@ function mailwatch_array_sum($array)
     }
 }
 
+/**
+ * @param $file
+ * @return mixed
+ */
 function read_ruleset_default($file)
 {
-    $fh = fopen($file, 'r')
-    or die("Cannot open MailScanner ruleset file ($file)");
+    $fh = fopen($file, 'r') or die("Cannot open MailScanner ruleset file ($file)");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/(\S+)\s+(\S+)\s+(\S+)/', $line, $regs)) {
@@ -3070,6 +3404,10 @@ function read_ruleset_default($file)
     }
 }
 
+/**
+ * @param $scanner
+ * @return bool|string
+ */
 function get_virus_conf($scanner)
 {
     $fh = fopen(MS_CONFIG_DIR . 'virus.scanners.conf', 'r');
@@ -3078,35 +3416,50 @@ function get_virus_conf($scanner)
         if (preg_match("/(^[^#]\S+)\s+(\S+)\s+(\S+)/", $line, $regs)) {
             if ($regs[1] == $scanner) {
                 fclose($fh);
+
                 return $regs[2] . " " . $regs[3];
             }
         }
     }
     // Not found
     fclose($fh);
+
     return false;
 }
 
+/**
+ * @return array
+ */
 function return_quarantine_dates()
 {
-    date_default_timezone_set(TIME_ZONE);
     $array = array();
     for ($d = 0; $d < (QUARANTINE_DAYS_TO_KEEP); $d++) {
         $array[] = date('Ymd', mktime(0, 0, 0, date("m"), date("d") - $d, date("Y")));
     }
+
     return $array;
 }
 
+/**
+ * @param $virus
+ * @return string
+ */
 function return_virus_link($virus)
 {
     if ((defined('VIRUS_INFO') && VIRUS_INFO !== false)) {
         $link = sprintf(VIRUS_INFO, $virus);
+
         return sprintf("<a href=\"%s\">%s</a>", $link, $virus);
     } else {
         return $virus;
     }
 }
 
+/**
+ * @param $network
+ * @param $ip
+ * @return bool
+ */
 function net_match($network, $ip)
 {
     // Skip invalid entries
@@ -3130,6 +3483,9 @@ function net_match($network, $ip)
     return ($ip_long & $mask) == ($network_long & $mask);
 }
 
+/**
+ * @return bool
+ */
 function is_rpc_client_allowed()
 {
     // If no server address supplied
@@ -3151,7 +3507,7 @@ function is_rpc_client_allowed()
             }
             if ($client == 'local24') {
                 // Get machine IP address from the hostname
-                $ip = gethostbyname(chop(`hostname`));
+                $ip = gethostbyname(rtrim(gethostname()));
                 // Change IP address to a /24 network
                 $ipsplit = explode('.', $ip);
                 $ipsplit[3] = '0';
@@ -3170,6 +3526,7 @@ function is_rpc_client_allowed()
                 return true;
             }
         }
+
         // If all else fails
         return false;
     } else {
@@ -3177,6 +3534,11 @@ function is_rpc_client_allowed()
     }
 }
 
+/**
+ * @param $host
+ * @param $msg
+ * @return xmlrpcresp
+ */
 function xmlrpc_wrapper($host, $msg)
 {
     $method = 'http';
@@ -3202,10 +3564,13 @@ function xmlrpc_wrapper($host, $msg)
     $client->setSSLVerifyPeer(0);
     $client->setSSLVerifyHost(0);
     $response = $client->send($msg, 0, $method);
+
     return $response;
 }
 
-// Clean Cache folder
+/**
+ * Clean Cache folder
+ */
 function clear_cache_dir()
 {
     $cache_dir = MAILWATCH_HOME . '/' . CACHE_DIR;
@@ -3221,4 +3586,25 @@ function clear_cache_dir()
             }
         }
     }
+}
+
+/**
+ * @param $user
+ * @param $hash
+ */
+function updateUserPasswordHash($user, $hash)
+{
+    $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
+    $passwordFiledLengthResult = dbquery($sqlCheckLenght);
+    $passwordFiledLength = intval(mysql_result($passwordFiledLengthResult, 0, 'passwordfieldlength'));
+
+    if ($passwordFiledLength < 255) {
+        $sqlUpdateFieldLength = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL";
+        dbquery($sqlUpdateFieldLength);
+        audit_log('Updated password field length from ' . $passwordFiledLength . ' to 255');
+    }
+
+    $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
+    dbquery($sqlUpdateHash);
+    audit_log('Updated password for user ' . $user);
 }
