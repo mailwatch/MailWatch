@@ -50,6 +50,24 @@ function executeQuery($sql)
     }
 }
 
+function check_utf8_table($db, $table)
+{
+    $sql = 'SELECT c.character_set_name
+            FROM information_schema.tables AS t, information_schema.collation_character_set_applicability AS c
+            WHERE c.collation_name = t.table_collation
+            AND t.table_schema = "' . mysql_real_escape_string($db) . '"
+            AND t.table_name = "' . mysql_real_escape_string($table) . '"';
+    $result = @mysql_query($sql);
+
+    if (strtolower(mysql_result($result, 0)) === 'utf8') {
+        mysql_free_result($result);
+
+        return true;
+    }
+
+    return false;
+}
+
 $errors = false;
 
 // Test connectivity to the database
@@ -85,8 +103,13 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
 
     foreach ($utf8_tables as $table) {
         echo pad(" - Convert table `" . $table . "` to UTF-8");
-        $sql = "ALTER TABLE `" . $table . "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
-        executeQuery($sql);
+        if (check_utf8_table(DB_NAME, $table) === false) {
+            $sql = "ALTER TABLE `" . $table . "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
+            executeQuery($sql);
+        } else {
+            echo " SKIPPING\n";
+        }
+
     }
 
     echo pad(" - Enlarge username field in `audit_log` table");
