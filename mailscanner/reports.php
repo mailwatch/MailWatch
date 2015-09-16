@@ -50,12 +50,12 @@ html_start("Reports", "0", false, false);
 
 // Add filters and save them
 if (isset($_GET["action"])) {
-    switch (strtolower($_GET["action"])) {
+    switch (strtolower(sanitizeInput($_GET["action"]))) {
         case "add":
-            $filter->Add($_GET["column"], $_GET["operator"], $_GET["value"]);
+            $filter->Add(sanitizeInput($_GET["column"]), sanitizeInput($_GET["operator"]), sanitizeInput($_GET["value"]));
             break;
         case "remove":
-            $filter->Remove($_GET["column"]);
+            $filter->Remove(sanitizeInput($_GET["column"]));
             break;
         case "destroy":
             session_destroy();
@@ -63,20 +63,20 @@ if (isset($_GET["action"])) {
             exit;
         case "save":
             if (isset($_GET['save_as'])) {
-                $name = $_GET['save_as'];
+                $name = sanitizeInput($_GET['save_as']);
             }
             if (isset($_GET['filter']) && $_GET['filter'] != "_none_") {
-                $name = $_GET['filter'];
+                $name = sanitizeInput($_GET['filter']);
             }
             if (!empty($name)) {
                 $filter->Save($name);
             }
             break;
         case "load":
-            $filter->Load($_GET['filter']);
+            $filter->Load(sanitizeInput($_GET['filter']));
             break;
         case "delete":
-            $filter->Delete($_GET['filter']);
+            $filter->Delete(sanitizeInput($_GET['filter']));
             break;
     }
 }

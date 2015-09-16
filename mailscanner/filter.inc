@@ -119,9 +119,9 @@ class Filter
             foreach ($this->item as $key => $val) {
                 echo '<tr><td>' .
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
-                    ' \'' . stripslashes(
+                    ' "' . stripslashes(
                         $val[2]
-                    ) . '\'</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">Remove</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">Remove</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
