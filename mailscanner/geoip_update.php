@@ -57,160 +57,155 @@ if (!isset($_POST['run'])) {
 	 </table>
 	 </form>' . "\n";
 } else {
+    require_once(__DIR__ . '/lib/request/Requests.php');
+    Requests::register_autoloader();
+
     ob_start();
-    echo "Downloading file, please wait....<br>\n";
+    echo 'Downloading file, please wait....<br>' . "\n";
 
-    $ipv4_database_url = 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
-    $ipv6_database_url = 'http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz';
+    $files_base_url = 'http://geolite.maxmind.com';
+    $files['ipv4']['description'] = 'GeoIP IPv4 data file';
+    $files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
+    $files['ipv4']['destination'] = __DIR__ . '/temp/GeoIP.dat.gz';
+    $files['ipv6']['description'] = 'GeoIP IPv6 data file';
+    $files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
+    $files['ipv6']['destination'] = __DIR__ . '/temp/GeoIPv6.dat.gz';
 
-    $ipv4_file = './temp/GeoIP.dat.gz';
-    $ipv6_file = './temp/GeoIPv6.dat.gz';
-    $extract_dir = './temp/';
+    $extract_dir = __DIR__ . '/temp/';
 
     // Clean-up from last run
-    if (file_exists($ipv4_file)) {
-        unlink($ipv4_file);
+    foreach ($files as $file) {
+        if (file_exists($file['destination'])) {
+            unlink($file['destination']);
+        }
     }
-    if (file_exists($ipv6_file)) {
-        unlink($ipv6_file);
-    }
-
     ob_flush();
+    flush();
 
-    if (!file_exists($ipv4_file) && !file_exists($ipv6_file)) {
+    if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['destination'])) {
         if (is_writable($extract_dir) && is_readable($extract_dir)) {
-            if (extension_loaded('curl')) {
-                $curl_generic_options = array(
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_BINARYTRANSFER => true,
-                    CURLOPT_TIMEOUT => 180
-                );
+            if (function_exists('fsockopen') || extension_loaded('curl')) {
+                $requestSession = new Requests_Session($files_base_url . '/');
+                $requestSession->useragent = 'MailWatch/' . str_replace(array(' - ', ' '), array('-', '-'),
+                        mailwatch_version());
+
                 if (USE_PROXY === true) {
-                    $curl_proxy_options = array(
-                        CURLOPT_PROXY => PROXY_SERVER,
-                        CURLOPT_PROXYPORT => PROXY_PORT,
-                        CURLOPT_PROXYTYPE => PROXY_TYPE
-                    );
                     if (PROXY_USER != '') {
-                        $curl_proxy_options[CURLOPT_PROXYUSERPWD] = PROXY_USER . ':' . PROXY_PASS;
+                        $requestSession->options['proxy']['authentication'] = array(
+                            PROXY_SERVER . ':' . PROXY_PORT,
+                            PROXY_USER,
+                            PROXY_PASS
+                        );
+                    } else {
+                        $requestSession->options['proxy']['authentication'] = array(
+                            PROXY_SERVER . ':' . PROXY_PORT
+                        );
                     }
 
-                    $curl_generic_options = $curl_generic_options + $curl_proxy_options;
-                }
-
-                // IPv4 download
-                $ch_ipv4 = curl_init();
-                $fp_ipv4 = fopen($ipv4_file, "w+");
-                $curl_ipv4_options = array(
-                    CURLOPT_URL => $ipv4_database_url,
-                    CURLOPT_FILE => $fp_ipv4,
-                );
-                curl_setopt_array($ch_ipv4, ($curl_generic_options + $curl_ipv4_options));
-                if (false == curl_exec($ch_ipv4)) {
-                    die("Unable to download GeoIP ipv4 data file (CURL reported: ".curl_errno($ch_ipv4) .' ' . curl_error($ch_ipv4) . ").\n");
-                } else {
-                    curl_close($ch_ipv4);
-                    fclose($fp_ipv4);
-                    unset($fp_ipv4);
-                }
-
-                // IPv6 download
-                $ch_ipv6 = curl_init();
-                $fp_ipv6 = fopen($ipv6_file, "w+");
-                $curl_ipv6_options = array(
-                    CURLOPT_URL => $ipv6_database_url,
-                    CURLOPT_FILE => $fp_ipv6,
-                );
-                curl_setopt_array($ch_ipv6, ($curl_generic_options + $curl_ipv6_options));
-                if (false == curl_exec($ch_ipv6)) {
-                    die("Unable to download GeoIP ipv6 data file (CURL reported: ".curl_errno($ch_ipv6) .' ' . curl_error($ch_ipv6) . ").\n");
-                } else {
-                    curl_close($ch_ipv6);
-                    fclose($fp_ipv6);
-                    unset($fp_ipv6);
-                }
-            } elseif (ini_get('allow_url_fopen')) {
-                // try fopen
-                $context = null;
-                if (USE_PROXY) {
-                    $context_options = array(
-                        'http' => array(
-                            'proxy' => 'tcp://' . PROXY_SERVER . ':' . PROXY_PORT,
-                            'request_fulluri' => true,
-                            'method' => 'GET'
-                        )
-                    );
-                    if (PROXY_USER != '') {
-                        $proxy_login_data = base64_encode(PROXY_USER . ':' . PROXY_PASS);
-                        $context_options['http']['header'] = "Proxy-Authorization: Basic $proxy_login_data";
+                    switch (PROXY_TYPE) {
+                        case 'HTTP':
+                        case 'CURLPROXY_HTTP': //BC for old constant name
+                            //$requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
+                            $requestSession->options['proxy']['type'] = 'HTTP';
+                            break;
+                        case 'SOCKS5':
+                        case 'CURLPROXY_SOCKS5': //BC for old constant name
+                            $requestSession->options['proxy']['type'] = 'SOCKS5';
+                            break;
+                        default:
+                            die('Proxy type should be either "HTTP" or "SOCKS5", check your configuration file');
                     }
-                    $context = stream_context_create($context_options);
                 }
 
-                file_put_contents($ipv4_file, fopen($ipv4_database_url, 'r', false, $context));
-                file_put_contents($ipv6_file, fopen($ipv6_database_url, 'r', false, $context));
+                foreach ($files as $file) {
+                    try {
+                        $requestSession->filename = $file['destination'];
+                        $result = $requestSession->get($file['path']);
+                        if ($result->success === true) {
+                            echo $file['description'] . ' successfully downloaded<br>' . "\n";
+                        } else {
+
+                        }
+                    } catch (Requests_Exception $e) {
+                        echo 'Error occurred while downloading ' . $file['description'] . ': ' . $e->getMessage() . "<br>\n";
+                    }
+
+                    ob_flush();
+                    flush();
+                }
+
+                echo 'Download complete, unpacking files...<br>' . "\n";
+                ob_flush();
+                flush();
             } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
                 //wget
+                $proxyString = '';
                 if (USE_PROXY) {
-                    exec('wget -e use_proxy=on -e http_proxy='.PROXY_SERVER.':'.PROXY_PORT.' --proxy-user='.PROXY_USER.' --proxy-password='.PROXY_PASS.' -N ' . $ipv4_database_url . ' -O ' . $ipv4_file, $output_wget_ipv4, $retval_wget_ipv4);
-                    exec('wget -e use_proxy=on -e http_proxy='.PROXY_SERVER.':'.PROXY_PORT.' --proxy-user='.PROXY_USER.' --proxy-password='.PROXY_PASS.' -N ' . $ipv6_database_url . ' -O ' . $ipv6_file, $output_wget_ipv6, $retval_wget_ipv6);
-                } else {
-                    exec('wget -N ' . $ipv4_database_url . ' -O ' . $ipv4_file, $output_wget_ipv4, $retval_wget_ipv4);
-                    exec('wget -N ' . $ipv6_database_url . ' -O ' . $ipv6_file, $output_wget_ipv6, $retval_wget_ipv6);
+                    if (PROXY_USER != '') {
+                        $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
+                    } else {
+                        $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
+                    }
                 }
-                if ($retval_wget_ipv4 > 0) {
-                    die("Unable to download GeoIP ipv4 data file.\n");
-                }
-                if ($retval_wget_ipv6 > 0) {
-                    die("Unable to download GeoIP ipv6 data file.\n");
+
+                foreach ($files as $file) {
+                    exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
+                        $output_wget, $retval_wget);
+                    if ($retval_wget > 0) {
+                        echo 'Error occurred while downloading ' . $file['description'] . "<br>\n";
+                    } else {
+                        echo $file['description'] . ' successfully downloaded<br>' . "\n";
+                    }
                 }
             } else {
-                die("Unable to download GeoIP data file (tried CURL, fopen and wget).\n");
+                $error_message = "Unable to download GeoIP data file (tried CURL and fsockopen).<br>\n";
+                $error_message .= "Install either cURL extension (preferred) or enable fsockopen in your php.ini";
+                die($error_message);
             }
-
-            echo 'Download complete, unpacking files...<br>' . "\n";
-            ob_flush();
-
+            // Extract files
+            echo "<br>\n";
             if (function_exists('gzopen')) {
-                $zp_ipv4_gz = gzopen($ipv4_file, 'r');
-                $targetFileipv4 = fopen(str_replace('.gz', '', $ipv4_file), 'wb');
-                while ($string = gzread($zp_ipv4_gz, 4096)) {
-                    fwrite($targetFileipv4, $string, strlen($string));
+                foreach ($files as $file) {
+                    $zp_gz = gzopen($file['destination'], 'r');
+                    $targetFile = fopen(str_replace('.gz', '', $file['destination']), 'wb');
+                    while ($string = gzread($zp_gz, 4096)) {
+                        fwrite($targetFile, $string, strlen($string));
+                    }
+                    gzclose($zp_gz);
+                    fclose($targetFile);
+                    echo $file['description'] . ' successfully unpacked<br>' . "\n";
+                    unlink($file['destination']);
+                    ob_flush();
+                    flush();
                 }
-                gzclose($zp_ipv4_gz);
-                fclose($targetFileipv4);
-
-                $zp_ipv6_gz = gzopen($ipv6_file, 'r');
-                $targetFileipv6 = fopen(str_replace('.gz', '', $ipv6_file), 'wb');
-                while ($string = gzread($zp_ipv6_gz, 4096)) {
-                    fwrite($targetFileipv6, $string, strlen($string));
-                }
-                gzclose($zp_ipv6_gz);
-                fclose($targetFileipv6);
             } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
-                exec('gunzip -f ' . $ipv4_file, $output_gunzip_ipv4, $retval_gunzip_ipv4);
-                exec('gunzip -f ' . $ipv6_file, $output_gunzip_ipv6, $retval_gunzip_ipv6);
-                //TODO: add error handling
-                if ($retval_gunzip_ipv4 > 0) {
-                    die("Unable to extract GeoIP ipv4 data file.\n");
-                }
-                if ($retval_gunzip_ipv6 > 0) {
-                    die("Unable to extract GeoIP ipv6 data file.\n");
+                foreach ($files as $file) {
+                    exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
+                    if ($retval_gunzip > 0) {
+                        die('Unable to extract' . $file['description'] . "<br>\n");
+                    } else {
+                        echo $file['description'] . ' successfully extracted<br>' . "\n";
+                    }
                 }
             } else {
                 // unable to extract the file correctly
-                die("Unable to extract GeoIP data file.\n");
+                $error_message = "Unable to extract GeoIP data file.<br>\n";
+                $error_message .= "Enable Zlib in your PHP installation or install gunzip executable";
+                die($error_message);
             }
 
             echo 'Process completed!' . "\n";
             ob_flush();
+            flush();
             audit_log('Ran GeoIP update');
         } else {
             // unable to read or write to the directory
             die("Unable to read or write to the " . $extract_dir . " directory.\n");
         }
     } else {
-        die("Files still exist for some reason\n");
+        $error_message = "Files still exist for some reason.<br>\n";
+        $error_message .= "Delete them manually from $extract_dir";
+        die($error_message);
     }
 }
 

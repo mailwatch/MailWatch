@@ -76,8 +76,8 @@ define('TIME_ZONE', 'America/New_York');
 define('USE_PROXY', false);
 define('PROXY_SERVER', '127.0.0.1');
 define('PROXY_PORT', '8080');
-// Can be set to CURLPROXY_HTTP or CURLPROXY_SOCKS5
-define('PROXY_TYPE', 'CURLPROXY_HTTP');
+// Can be set to HTTP or SOCKS5
+define('PROXY_TYPE', 'HTTP');
 // If left blank no authenication will be used
 define('PROXY_USER', '');
 define('PROXY_PASS', '');

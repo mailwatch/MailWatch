@@ -19,7 +19,7 @@
  - Remove additional slashes in "SpamAssassin Rule Description Update"
  - Adding translation to user interface
  - Add LOGO path in conf.php.example and changes done in corresponding files.
- - layout changes in quarantine.php, other.php, sf_version.php
+ - Layout changes in quarantine.php, other.php, sf_version.php
  - Removed duplicate PHP function in tools/Cron_jobs/quarantine_report.php (is in functions.php)
  - Changes in tools/Sendmail_relay/INSTALL (to be accurate with Debian/Ubuntu)
  - Changes in tools/Sendmail_relay/sendmail_relay.init (change maillog to mail.log)
@@ -30,6 +30,9 @@
  - Add a check for 'subtests=' to add space after comma (to fit the screen) in sa_lint.php
  - Upgrade password hash function from MD5 to a crypt() compatible one
  - Add option to enable/disable IP address resolution on status page
+ - Improving upgrade.php script
+ - Sanitize user input on reports
+ - Rewrite of GeoIP file download procedure
 
 1.2.0 - Beta 8
 -----------

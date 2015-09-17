@@ -6,8 +6,15 @@ MailWatch for MailScanner is developed on RedHat 9 & RHEL 3.0, so these docs wil
 
 BEFORE YOU START
 
-You must have a working MailScanner set-up and have running copies of MySQL, Apache, PHP (with MySQL and GD support) and for MailScanner to be able to use a database you need Perl DBI and DBD::mysql;
+You must have a working MailScanner set-up and have running copies of MySQL, Apache, PHP (with MySQL and GD support) and, for MailScanner to be able to use a database, you need Perl DBI and DBD::mysql;
 you also need Perl Encoding::FixLatin to deal with email subjects that contain characters in more than one encoding.
+
+Some PHP extensions are required to make MailWatch fully works:
+* MySQL extension (required to connect to database)
+* GD extension (required to generate graphs on reports)
+* MBstring extension (required to display non-ascii characters)
+* Curl extension or fsockopen function enabled (needed to download GeoIP files)
+* Ldap extension (needed if you are authenticating users on LDAP server)
 
 SUPPORT
 
