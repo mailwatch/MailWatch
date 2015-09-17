@@ -109,7 +109,6 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
         } else {
             echo " SKIPPING\n";
         }
-
     }
 
     echo pad(" - Enlarge username field in `audit_log` table");
