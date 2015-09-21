@@ -123,8 +123,6 @@ if (!isset($_POST['run'])) {
                         $result = $requestSession->get($file['path']);
                         if ($result->success === true) {
                             echo $file['description'] . ' successfully downloaded<br>' . "\n";
-                        } else {
-
                         }
                     } catch (Requests_Exception $e) {
                         echo 'Error occurred while downloading ' . $file['description'] . ': ' . $e->getMessage() . "<br>\n";
