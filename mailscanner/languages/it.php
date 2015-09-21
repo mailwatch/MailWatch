@@ -114,7 +114,7 @@ return array(
 
     // 05-status.php
     'recentmsg05' => 'Messaggi Recenti',
-    'last05' => 'Ultimo',
+    'last05' => 'Ultimi',
     'messages05' => 'Messaggi',
     'refevery05' => 'Aggiornamento ogni',
     'seconds05' => 'secondi',
@@ -180,8 +180,14 @@ return array(
     // 10-other.php
     'tools10' => 'Strumenti',
     'usermgnt10' => 'Gestione Utenti',
+    'avfsecurestatus10' => 'Stato F-Secure',
+    'avclamavstatus10' => 'Stato ClamAV',
+    'avmcafeestatus10' => 'Stato McAfee',
+    'avfprotstatus10' => 'Stato F-Prot',
+    'mysqldatabasestatus10' => 'MySQL Database Status',
     'viewconfms10' => 'Visualizza la Configurazione di MailScanner',
     'editmsrules10' => 'Modifica Set di Regole di MailScanner',
+    'spamassassinbayesdatabaseinfo10' => 'Informazioni su Database SpamAssassin Bayes',
     'updatesadesc10' => 'Aggiorna Descrizione Regole SpamAssassin',
     'updatemcpdesc10' => 'Aggiorna Descrizione Regole MCP',
     'updategeoip10' => 'Aggiorna Database GeoIP',

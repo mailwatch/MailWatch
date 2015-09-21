@@ -833,11 +833,26 @@ function safe_value($value)
 function __($string)
 {
     global $lang;
-    if (isset($lang[$string])) {
-        return $lang[$string];
+
+    $debug_message = '';
+    $pre_string = '';
+    $post_string = '';
+    if (DEBUG === true) {
+        $debug_message = ' (' . $string . ')';
+        $pre_string = '<span style="color:red">';
+        $post_string = '</span>';
     }
 
-    return $lang['i18_missing'];
+    if (isset($lang[$string])) {
+        return $lang[$string] . $debug_message;
+    } else {
+        $en_lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php');
+        if (isset($en_lang[$string])) {
+            return $pre_string . $en_lang[$string] . $debug_message . $post_string;
+        } else {
+            return $pre_string . $lang['i18_missing'] . $debug_message . $post_string;
+        }
+    }
 }
 
 /**

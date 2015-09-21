@@ -49,29 +49,29 @@ echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
 if ($_SESSION['user_type'] == 'A') {
     $virusScanner = get_conf_var('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
-        echo '<li><a href="sophos_status.php">Sophos Status</a>';
+        echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
     }
     if (preg_match('/f-secure/i', $virusScanner)) {
-        echo '<li><a href="f-secure_status.php">F-Secure Status</a>';
+        echo '<li><a href="f-secure_status.php">' . __('avfsecurestatus10') . '</a>';
     }
     if (preg_match('/clam/i', $virusScanner)) {
-        echo '<li><a href="clamav_status.php">ClamAV Status</a>';
+        echo '<li><a href="clamav_status.php">' . __('avclamavstatus10') . '</a>';
     }
     if (preg_match('/mcafee/i', $virusScanner)) {
-        echo '<li><a href="mcafee_status.php">McAfee Status</a>';
+        echo '<li><a href="mcafee_status.php">' . __('avmcafeestatus10') . '</a>';
     }
     if (preg_match('/f-prot/i', $virusScanner)) {
-        echo '<li><a href="f-prot_status.php">F-Prot Status</a>';
+        echo '<li><a href="f-prot_status.php">' . __('avfprotstatus10') . '</a>';
     }
 
-    echo '<li><a href="mysql_status.php">MySQL Database Status</a>';
+    echo '<li><a href="mysql_status.php">'.__('mysqldatabasestatus10').'</a>';
     echo '<li><a href="msconfig.php">' . __('viewconfms10') . '</a>';
     if (defined('MSRE') && MSRE === true) {
         echo '<li><a href="msre_index.php">' . __('editmsrules10') . '</a>';
     }
     if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') === true) {
         echo '
-     <li><a href="bayes_info.php">SpamAssassin Bayes Database Info</a>
+     <li><a href="bayes_info.php">'.__('spamassassinbayesdatabaseinfo10').'</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
      <li><a href="sa_rules_update.php">' . __('updatesadesc10') . '</a>';

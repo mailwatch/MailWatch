@@ -36,7 +36,7 @@
 // Debug messages
 define('DEBUG', false);
 
-// Define language (de, en, fr, nl, pt_br);
+// Define language (de, en, fr, it, nl, pt_br);
 // See http://www.lingoes.net/en/translator/langcode.htm
 define('LANG', 'en');
 
