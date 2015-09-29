@@ -29,9 +29,9 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once 'functions.php';
-require_once 'lib/password.php';
-require_once 'lib/hash_equals.php';
+require_once(__DIR__ . '/functions.php');
+require_once(__DIR__ . '/lib/password.php');
+require_once(__DIR__ . '/lib/hash_equals.php');
 
 session_start();
 

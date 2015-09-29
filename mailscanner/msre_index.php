@@ -50,13 +50,12 @@ Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
 */
 
 // Include of necessary functions
-require_once("./functions.php");
-
-include("msre_table_functions.php");
+require_once(__DIR__ . '/functions.php');
+include(__DIR__ . '/msre_table_functions.php');
 
 // Authentication checking
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 // Check to see if the user is an administrator
 if ($_SESSION['user_type'] != 'A') {
     // If the user isn't an administrator send them back to the index page.

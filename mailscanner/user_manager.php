@@ -33,11 +33,11 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once 'functions.php';
-require_once 'lib/password.php';
+require_once(__DIR__ . '/functions.php');
+require_once(__DIR__ . '/lib/password.php');
 
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 html_start(__('usermgnt12'), 0, false, false);
 

@@ -29,12 +29,12 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once('./functions.php');
-require_once('Mail/mimeDecode.php');
+require_once(__DIR__ . '/functions.php');
+require_once(__DIR__ . '/lib/pear/Mail/mimeDecode.php');
 ini_set("memory_limit", MEMORY_LIMIT);
 
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 html_start(__('msgviewer06'), 0, false, false);
 ?>

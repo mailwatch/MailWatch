@@ -30,7 +30,7 @@
  */
 
 if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
-    include 'checklogin.php';
+    include(__DIR__ . '/checklogin.php');
 } elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername']) && isset($_GET['httpbasic'])) {
     header('WWW-Authenticate: Basic realm="MailWatch for MailScanner"');
     header('HTTP/1.0 401 Unauthorized');

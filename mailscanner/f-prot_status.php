@@ -30,11 +30,11 @@
  */
 
 // Include of necessary functions
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 // Authentication checking
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
@@ -46,9 +46,9 @@ if ($_SESSION['user_type'] != 'A') {
   <td align="center">';
 
     if (preg_match('/-6/i', get_conf_var('VirusScanners'))) {
-        passthru(get_virus_conf('f-prot') . " -virno | awk -f ./f-prot.awk");
+        passthru(get_virus_conf('f-prot') . " -virno | awk -f " . __DIR__ . "/f-prot.awk");
     } else {
-        passthru(get_virus_conf('f-prot') . " -verno | awk -f ./f-prot.awk");
+        passthru(get_virus_conf('f-prot') . " -verno | awk -f " . __DIR__ . "/f-prot.awk");
     }
     echo '
 </td>

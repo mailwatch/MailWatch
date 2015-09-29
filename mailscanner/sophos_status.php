@@ -29,17 +29,17 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 session_start();
-include 'login.function.php';
+include(__DIR__ . '/login.function.php');
 
 html_start("Sophos", 0, false, false);
 
 echo "<TABLE CLASS=\"boxtable\" WIDTH=\"100%\">";
 echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
-passthru(get_virus_conf('sophos') . " -v | awk -f ./sophos.awk");
+passthru(get_virus_conf('sophos') . " -v | awk -f " . __DIR__ . "/sophos.awk");
 echo "</TD>";
 echo "</TR>";
 echo "</TABLE>";

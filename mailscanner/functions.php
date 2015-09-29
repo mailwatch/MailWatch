@@ -38,20 +38,20 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
 }
 
 // Read in MailWatch configuration file
-if (!is_readable(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php')) {
+if (!is_readable(__DIR__ . '/conf.php')) {
     die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
 }
-require_once(__DIR__ . DIRECTORY_SEPARATOR . 'conf.php');
+require_once(__DIR__ . '/conf.php');
 
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
 if (!defined('LANG')) {
     define('LANG', 'en');
 }
-if (!is_file(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG . '.php')) {
-    $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php');
+if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
+    $lang = require_once(__DIR__ . '/languages/en.php');
 } else {
-    $lang = require_once(__DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . LANG . '.php');
+    $lang = require_once(__DIR__ . '/languages/' . LANG . '.php');
 }
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
@@ -71,14 +71,14 @@ date_default_timezone_set(TIME_ZONE);
 $bg_colors = array("#EBEBEB", "#D8D8D8");
 
 // XML-RPC
-require_once('lib/xmlrpc/xmlrpc.inc');
-require_once('lib/xmlrpc/xmlrpcs.inc');
-require_once('lib/xmlrpc/xmlrpc_wrappers.inc');
+require_once(__DIR__ . '/lib/xmlrpc/xmlrpc.inc');
+require_once(__DIR__ . '/lib/xmlrpc/xmlrpcs.inc');
+require_once(__DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc');
 
 //HTLMPurifier
-require_once('lib/htmlpurifier/HTMLPurifier.standalone.php');
+require_once(__DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php');
 
-include "postfix.inc";
+include(__DIR__ . '/postfix.inc');
 
 /*
  For reporting of Virus names and statistics a regular expression matching
@@ -223,7 +223,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '<title>MailWatch Filter Report: ' . $title . ' </title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION["filter"])) {
-            require_once('./filter.inc');
+            require_once(__DIR__ . '/filter.inc');
             $filter = new Filter;
             $_SESSION["filter"] = $filter;
         } else {
@@ -660,13 +660,12 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 function java_time()
 {
     echo '
-function updateClock ( )
-{
-  var currentTime = new Date ( );
+function updateClock() {
+  var currentTime = new Date();
 
-  var currentHours = currentTime.getHours ( );
-  var currentMinutes = currentTime.getMinutes ( );
-  var currentSeconds = currentTime.getSeconds ( );
+  var currentHours = currentTime.getHours();
+  var currentMinutes = currentTime.getMinutes();
+  var currentSeconds = currentTime.getSeconds();
 
   // Pad the minutes and seconds with leading zeros, if required
   currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
@@ -701,22 +700,19 @@ function updateClock ( )
 function row_highandclick()
 {
     echo '
-  function ChangeColor(tableRow, highLight)
-    {
+  function ChangeColor(tableRow, highLight) {
     if (highLight)
     {
       tableRow.style.backgroundColor = \'#dcfac9\';
     }
-        else
-        {
-                tableRow.sytle.backgroundColor = \'white\';
-        }
+    else
+    {
+      tableRow.sytle.backgroundColor = \'white\';
+    }
   }
 
-
-    function DoNav(theUrl)
-  {
-  document.location.href = theUrl;
+  function DoNav(theUrl) {
+    document.location.href = theUrl;
   }';
 }
 
@@ -737,7 +733,7 @@ function html_end($footer = '')
     echo '<p class="center" style="font-size:13px">' . "\n";
     echo __('footer01');
     echo mailwatch_version();
-    echo ' - @ 2006-' . date('Y');
+    echo ' - &copy; 2006-' . date('Y');
     echo '</p>' . "\n";
     echo '</body>' . "\n";
     echo '</html>' . "\n";
@@ -1595,7 +1591,7 @@ function subtract_multi_get_vars($preserve)
  */
 function db_colorised_table($sql, $table_heading = false, $pager = false, $order = false, $operations = false)
 {
-    require_once('Mail/mimeDecode.php');
+    require_once(__DIR__ . '/lib/pear/Mail/mimeDecode.php');
 
     // Ordering
     $orderby = null;
@@ -1623,7 +1619,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        require_once('Pager.php');
+        require_once(__DIR__ . '/lib/pear/Pager.php');
         if (isset($_GET['offset'])) {
             $from = intval($_GET['offset']);
         } else {
@@ -2173,7 +2169,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '<br>' . "\n";
         if ($pager) {
-            require_once('Pager.php');
+            require_once(__DIR__ . '/lib/pear/Pager.php');
             if (isset($_GET['offset'])) {
                 $from = intval($_GET['offset']);
             } else {
@@ -2244,7 +2240,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
     // Turn on paging of for the database
     if ($pager) {
-        require_once('Pager.php');
+        require_once(__DIR__ . '/lib/pear/Pager.php');
         if (isset($_GET['offset'])) {
             $from = intval($_GET['offset']);
         } else {
@@ -2334,7 +2330,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     }
     echo '<br>' . "\n";
     if ($pager) {
-        require_once('Pager.php');
+        require_once(__DIR__ . '/lib/pear/Pager.php');
         if (isset($_GET['offset'])) {
             $from = intval($_GET['offset']);
         } else {
@@ -2792,7 +2788,7 @@ function debug_print_r($input)
  */
 function return_geoip_country($ip)
 {
-    require_once 'lib/geoip.inc';
+    require_once(__DIR__ . '/lib/geoip.inc');
     //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
     $ip = stripPortFromIp($ip);
     $countryname = false;
@@ -3033,9 +3029,9 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
     if (!$rpc_only && is_local($list[0]['host'])) {
         if (!QUARANTINE_USE_SENDMAIL) {
             // Load in the required PEAR modules
-            require_once('PEAR.php');
-            require_once('Mail.php');
-            require_once('Mail/mime.php');
+            require_once(__DIR__ . '/lib/pear/PEAR.php');
+            require_once(__DIR__ . '/lib/pear/Mail.php');
+            require_once(__DIR__ . '/lib/pear/Mail/mime.php');
             $crlf = "\r\n";
             $hdrs = array('From' => QUARANTINE_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date("r"));
             $mime = new Mail_mime($crlf);

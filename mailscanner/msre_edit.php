@@ -49,11 +49,11 @@ Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 // Include of necessary functions
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 // Authentication checking
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 // Check to see if the user is an administrator
 if ($_SESSION['user_type'] != 'A') {

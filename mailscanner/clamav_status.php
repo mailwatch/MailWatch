@@ -30,12 +30,12 @@
  */
 
 // Require the functions page
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 // Start the session
 session_start();
 // Require the login function code
-require('./login.function.php');
+require(__DIR__ . '/login.function.php');
 
 // Check to see if the user is an administrater
 if ($_SESSION['user_type'] != 'A') {
@@ -45,14 +45,13 @@ if ($_SESSION['user_type'] != 'A') {
 } else {
     // Start the header code and Title
     html_start("ClamAV Status", 0, false, false);
-
     // Create the table
     echo '<table class="boxtable" width="100%">';
     echo '<tr>';
     echo '<td align="center">';
 
     // Output the information from the conf file
-    passthru(get_virus_conf('clamav') . " -V | awk -f ./clamav.awk");
+    passthru(get_virus_conf('clamav') . " -V | awk -f " . __DIR__ . "/clamav.awk");
 
     echo '</td>';
     echo '</tr>';

@@ -30,12 +30,12 @@
  */
 
 // Include of necessary functions
-require_once("./functions.php");
-require_once("./filter.inc");
+require_once(__DIR__ . '/functions.php');
+require_once(__DIR__ . '/filter.inc');
 
 // Authentication checking
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start("Top Recipients by Volume", 0, false, true);

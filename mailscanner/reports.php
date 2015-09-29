@@ -30,12 +30,12 @@
  */
 
 //Require files
-require_once('./functions.php');
-require_once('./filter.inc');
+require_once(__DIR__ . '/functions.php');
+require_once(__DIR__ . '/filter.inc');
 
 // verify login
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 // Checking to see if there are any filters
 if (!isset($_SESSION["filter"]) || !is_object($_SESSION["filter"])) {

@@ -30,11 +30,11 @@
  */
 
 // Include of necessary functions
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 // Authentication checking
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
@@ -44,7 +44,7 @@ if ($_SESSION['user_type'] != 'A') {
     echo '<table class="boxtable" width="100%">' . "\n";
     echo '<tr>' . "\n";
     echo '<td align="center">' . "\n";
-    passthru(get_virus_conf('mcafee') . " --version | awk -f ./mcafee.awk");
+    passthru(get_virus_conf('mcafee') . " --version | awk -f " . __DIR__ . "/mcafee.awk");
     echo '</td>' . "\n";
     echo '</tr>' . "\n";
     echo '</table>' . "\n";

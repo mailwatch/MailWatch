@@ -30,11 +30,11 @@
  */
 
 // Include of necessary functions
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 // Authentication checking
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 html_start('Tools', "0", false, false);
 

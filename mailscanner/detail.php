@@ -30,12 +30,12 @@
  */
 
 // Require the functions page
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 // Start the session
 session_start();
 // Require the login function code
-require('./login.function.php');
+require(__DIR__ . '/login.function.php');
 
 $url_id = sanitizeInput($_GET['id']);
 

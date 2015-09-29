@@ -30,11 +30,11 @@
  */
 
 // Include of necessary functions
-require_once("./functions.php");
+require_once(__DIR__ . '/functions.php');
 
 // Authentication checking
 session_start();
-require('login.function.php');
+require(__DIR__ . '/login.function.php');
 
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
@@ -45,8 +45,8 @@ if ($_SESSION['user_type'] != 'A') {
 <table class="boxtable" width="100%">
  <tr>
   <td align="center">';
-    passthru("/opt/f-secure/fsav/bin/fsav --version | awk -f ./f-secure.awk");
-    // --FOR TESTING-- passthru("cat /var/www/html/mailscanner/f-sec_output.txt | awk -f ./f-secure.awk");
+    passthru("/opt/f-secure/fsav/bin/fsav --version | awk -f " . __DIR__ . "/f-secure.awk");
+    // --FOR TESTING-- passthru("cat " . __DIR__ . "/f-sec_output.txt | awk -f " . __DIR__ . "/f-secure.awk");
 
     echo '
  </td>
