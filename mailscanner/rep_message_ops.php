@@ -31,7 +31,6 @@
 
 // Include of necessary functions
 require_once("./functions.php");
-require_once("MDB2.php");
 require_once("./filter.inc");
 
 // Authentication checking
