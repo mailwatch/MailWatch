@@ -29,7 +29,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . './functions.php');
+require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/lib/pear/Mail/mimeDecode.php');
 
 session_start();
