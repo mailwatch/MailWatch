@@ -52,7 +52,7 @@ html_start("Reports", "0", false, false);
 if (isset($_GET["action"])) {
     switch (strtolower(sanitizeInput($_GET["action"]))) {
         case "add":
-            $filter->Add(sanitizeInput($_GET["column"]), sanitizeInput($_GET["operator"]), sanitizeInput($_GET["value"]));
+            $filter->Add(sanitizeInput($_GET["column"]), $_GET["operator"], sanitizeInput($_GET["value"]));
             break;
         case "remove":
             $filter->Remove(sanitizeInput($_GET["column"]));

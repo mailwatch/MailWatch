@@ -86,6 +86,9 @@ class Filter
 
     public function Add($column, $operator, $value)
     {
+        if (!$this->ValidateOperator($operator)) {
+            return;
+        }
         // Don't show the last column, operator, and value now
         $this->display_last = 0;
 
@@ -187,6 +190,7 @@ WHERE
                 }
             }
         }
+
         return $sql;
     }
 
@@ -216,6 +220,7 @@ WHERE
                     }
                 }
             }
+
             return $sql;
         } else {
             return "AND " . $_SESSION['global_filter'] . "\n";
@@ -285,8 +290,7 @@ WHERE
         $return .= '<tr><th colspan="2">' . __('loadsavef09') . '</th></tr>' . "\n";
         $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><input type="SUBMIT" name="action" value="Save"></td></tr>' . "\n";
         $return .= '<tr><td>' . "\n";
-        $return .= $this->ListSaved(
-            ) . '</td><td style="white-space: nowrap; text-align:right;"><input type="SUBMIT" name="action" value="Load">&nbsp;<input type="SUBMIT" name="action" value="Save">&nbsp;<input type="SUBMIT" name="action" value="Delete"></td></tr>' . "\n";
+        $return .= $this->ListSaved() . '</td><td style="white-space: nowrap; text-align:right;"><input type="SUBMIT" name="action" value="Load">&nbsp;<input type="SUBMIT" name="action" value="Save">&nbsp;<input type="SUBMIT" name="action" value="Delete"></td></tr>' . "\n";
         $return .= '</table>' . "\n";
         $return .= '</form>' . "\n";
 
@@ -304,12 +308,12 @@ WHERE
         dbconn();
         if (count($this->item) > 0) {
             // Delete the existing first
-            $dsql = "DELETE FROM saved_filters WHERE username='" . $_SESSION['myusername'] . "' AND name='" . mysql_real_escape_string(
+            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . mysql_real_escape_string(
                     $name
                 ) . "'";
             dbquery($dsql);
             foreach ($this->item as $key => $val) {
-                $sql = "REPLACE INTO saved_filters VALUES ('$name',";
+                $sql = "REPLACE INTO `saved_filters` VALUES ('$name',";
                 foreach ($val as $value) {
                     $sql .= "'$value',";
                 }
@@ -322,7 +326,7 @@ WHERE
     public function Load($name)
     {
         dbconn();
-        $sql = "SELECT col, operator, value FROM saved_filters WHERE name='" . mysql_real_escape_string(
+        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='" . mysql_real_escape_string(
                 $name
             ) . "' AND username='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
@@ -334,7 +338,7 @@ WHERE
     public function Delete($name)
     {
         dbconn();
-        $sql = "DELETE FROM saved_filters WHERE username='" . $_SESSION['myusername'] . "' AND name='" . mysql_real_escape_string(
+        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . mysql_real_escape_string(
                 $name
             ) . "'";
         dbquery($sql);
@@ -342,7 +346,7 @@ WHERE
 
     public function ListSaved()
     {
-        $sql = "SELECT DISTINCT name FROM saved_filters WHERE username='" . $_SESSION['myusername'] . "'";
+        $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
         $return = '<select name="filter">' . "\n";
         $return .= ' <option value="_none_">None</option>' . "\n";
@@ -350,7 +354,14 @@ WHERE
             $return .= ' <option value="' . $row[0] . '">' . $row[0] . '</option>' . "\n";
         }
         $return .= '</select>' . "\n";
+
         return $return;
     }
 
+    private function ValidateOperator($operator)
+    {
+        $validKeys = array_keys($this->operators);
+
+        return (in_array($operator, $validKeys));
+    }
 }
