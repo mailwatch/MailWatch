@@ -114,7 +114,8 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   KEY `maillog_host` (`hostname`(30)),
   KEY `from_domain_idx` (`from_domain`(50)),
   KEY `to_domain_idx` (`to_domain`(50)),
-  KEY `maillog_quarantined` (`quarantined`)
+  KEY `maillog_quarantined` (`quarantined`),
+  KEY `timestamp_idx` (`timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

@@ -87,7 +87,6 @@ my($db_pass) = 'mailwatch';
    MailScanner::Log::WarnLog($DBI::errstr);
  }
 
-
  sub ExitLogging {
    # Server exit - commit changes, close socket, and exit gracefully.
    close(SERVER);
@@ -174,7 +173,7 @@ my($db_pass) = 'mailwatch';
     } else {
      MailScanner::Log::InfoLog("$$message{id}: Logged to MailWatch SQL");
     }
-    
+
     # Unset
     $message = undef;
 
@@ -224,8 +223,8 @@ my($db_pass) = 'mailwatch';
    # Set quarantine flag - this only works on 4.43.7 or later
    my($quarantined);
    $quarantined = 0;
-   if ( (scalar(@{$message->{quarantineplaces}})) 
-      + (scalar(@{$message->{spamarchive}})) > 0 ) 
+   if ( (scalar(@{$message->{quarantineplaces}}))
+      + (scalar(@{$message->{spamarchive}})) > 0 )
    {
    	$quarantined = 1;
    }
