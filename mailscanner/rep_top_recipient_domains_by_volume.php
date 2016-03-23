@@ -41,7 +41,7 @@ require(__DIR__ . '/login.function.php');
 $filter = html_start("Top Recipient Domains by Volume", 0, false, true);
 
 // File name
-$filename = "" . CACHE_DIR . "/top_recipient_domains_by_volume.png." . time() . "";
+$filename = CACHE_DIR . "/top_recipient_domains_by_volume.png." . time();
 
 $sql = "
  SELECT

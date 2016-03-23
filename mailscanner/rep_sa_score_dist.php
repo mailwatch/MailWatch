@@ -41,7 +41,7 @@ require(__DIR__ . '/login.function.php');
 $filter = html_start("SpamAssassin Score Distribution", 0, false, true);
 
 // File name
-$filename = "" . CACHE_DIR . "/sa_score_dist.png." . time() . "";
+$filename = CACHE_DIR . "/sa_score_dist.png." . time();
 
 $sql = "
  SELECT

@@ -41,7 +41,7 @@ require(__DIR__ . '/login.function.php');
 $filter = html_start("MCP Score Distribution", 0, false, true);
 
 // File name
-$filename = "" . CACHE_DIR . "/mcp_score_dist.png." . time() . "";
+$filename = CACHE_DIR . "/mcp_score_dist.png." . time();
 
 $sql = "
  SELECT

@@ -633,7 +633,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
     // Display the different words
     foreach ($nav as $url => $desc) {
-        $active_url = "" . MAILWATCH_HOME . "/" . $url . "";
+        $active_url = MAILWATCH_HOME . "/" . $url;
         if ($_SERVER['SCRIPT_FILENAME'] == $active_url) {
             echo "<li class=\"active\"><a href=\"$url\">$desc</a></li>\n";
         } else {

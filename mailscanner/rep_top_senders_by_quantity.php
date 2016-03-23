@@ -43,7 +43,7 @@ $filter = html_start("Top Senders by Quantity", 0, false, true);
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
 
-$filename = "" . CACHE_DIR . "/top_senders_by_quantity.png" . time() . "";
+$filename = CACHE_DIR . "/top_senders_by_quantity.png" . time();
 
 $sql = "
  SELECT
