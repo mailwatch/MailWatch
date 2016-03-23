@@ -39,7 +39,7 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
 
 // check if php version is not greater that 5.*
 if (PHP_MAJOR_VERSION > 5) {
-    die ('MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it');
+    die('MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it');
 }
 
 // Read in MailWatch configuration file
@@ -2129,7 +2129,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo "
 <script type='text/javascript'>
     function ClearRadios() {
-        var e=document.operations.elements
+        var e=document.operations.elements;
         for(i=0; i<e.length; i++) {
             if (e[i].type=='radio' || e[i].type=='checkbox') {
                 e[i].checked=false;
