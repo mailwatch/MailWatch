@@ -33,6 +33,8 @@
  - Improving upgrade.php script
  - Sanitize user input on reports
  - Rewrite of GeoIP file download procedure
+ - Decline login as LDAP group
+ - Move luser add-on to another git repository
 
 1.2.0 - Beta 8
 -----------
