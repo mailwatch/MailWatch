@@ -37,6 +37,11 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
     error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 }
 
+// check if php version is not greater that 5.*
+if (PHP_MAJOR_VERSION > 5) {
+    die('MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it');
+}
+
 // Read in MailWatch configuration file
 if (!is_readable(__DIR__ . '/conf.php')) {
     die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
@@ -78,7 +83,7 @@ require_once(__DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc');
 //HTLMPurifier
 require_once(__DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php');
 
-include(__DIR__ . '/postfix.inc');
+include(__DIR__ . '/postfix.inc.php');
 
 /*
  For reporting of Virus names and statistics a regular expression matching
@@ -174,7 +179,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return ("1.2.0 - RC1 DEV");
+    return ("1.2.0 - RC1");
 }
 
 /**
@@ -198,7 +203,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         // calc the string in GMT not localtime and add the offset
         $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
         //output the HTTP header
-        Header($expire);
+        header($expire);
         header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
         header("Pragma: cache");
     }
@@ -223,7 +228,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '<title>MailWatch Filter Report: ' . $title . ' </title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION["filter"])) {
-            require_once(__DIR__ . '/filter.inc');
+            require_once(__DIR__ . '/filter.inc.php');
             $filter = new Filter;
             $_SESSION["filter"] = $filter;
         } else {
@@ -2124,7 +2129,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo "
 <script type='text/javascript'>
     function ClearRadios() {
-        var e=document.operations.elements
+        var e=document.operations.elements;
         for(i=0; i<e.length; i++) {
             if (e[i].type=='radio' || e[i].type=='checkbox') {
                 e[i].checked=false;
@@ -2596,6 +2601,9 @@ function ldap_authenticate($user, $password)
         if ($r) {
             $result = ldap_get_entries($ds, $r) or die("Could not get entries");
             if ($result[0]) {
+                if (in_array("group", array_values($result[0]["objectclass"]))) {
+                    return null;
+                }
                 $user = $result[0]['userprincipalname']['0'];
                 if (ldap_bind($ds, $user, "$password")) {
                     if (isset($result[0][LDAP_EMAIL_FIELD])) {

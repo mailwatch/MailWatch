@@ -160,7 +160,7 @@ return array(
     'folder_0208' => 'Map',
     'items08' => 'dingen',
 
-    // 09-filter.inc
+    // 09-filter.inc.php
     'activefilters09' => 'Actieve Filters',
     'none09' => 'None',
     'addfilter09' => 'Voeg Filter Toe',

@@ -29,7 +29,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-function  postfixinq()
+function postfixinq()
 {
     $handle = opendir('/var/spool/postfix/hold/');
     $inq = 0;
@@ -40,19 +40,21 @@ function  postfixinq()
         }
     }
     closedir($handle);
+
     return $inq;
 }
 
-function  postfixallq()
+function postfixallq()
 {
     $last_line = exec('mailq');
     $pos = strpos($last_line, 'in ');
     $start = substr($last_line, $pos + 3);
     $allq = intval($start);
+
     return $allq;
 }
 
-function  postfixmailq()
+function postfixmailq()
 {
     $last_line = exec('mailq', $output);
     while (list(, $row) = each($output)) {

@@ -161,7 +161,7 @@ return array(
     'folder_0208' => 'Cartella',
     'items08' => 'oggetti',
 
-    // 09-filter.inc
+    // 09-filter.inc.php
     'activefilters09' => 'Filtri Attivi',
     'none09' => 'Nessuno',
     'addfilter09' => 'Aggiungi Filtro',

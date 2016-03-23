@@ -1,4 +1,4 @@
-1.2.0 - RC1 DEV
+1.2.0 - RC1
 -----------
  - Display load average if /proc/loadavg doesn't exists but /usr/bin/uptime does
  - Improve loggings for connections not coming from 127.0.0.1
@@ -33,6 +33,9 @@
  - Improving upgrade.php script
  - Sanitize user input on reports
  - Rewrite of GeoIP file download procedure
+ - Decline login as LDAP group
+ - Move luser add-on to another git repository
+ - Better logging of UTF8 subjects
 
 1.2.0 - Beta 8
 -----------
