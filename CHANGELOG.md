@@ -35,6 +35,7 @@
  - Rewrite of GeoIP file download procedure
  - Decline login as LDAP group
  - Move luser add-on to another git repository
+ - Better logging of UTF8 subjects
 
 1.2.0 - Beta 8
 -----------
