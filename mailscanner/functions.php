@@ -78,7 +78,7 @@ require_once(__DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc');
 //HTLMPurifier
 require_once(__DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php');
 
-include(__DIR__ . '/postfix.inc');
+include(__DIR__ . '/postfix.inc.php');
 
 /*
  For reporting of Virus names and statistics a regular expression matching
@@ -198,7 +198,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         // calc the string in GMT not localtime and add the offset
         $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
         //output the HTTP header
-        Header($expire);
+        header($expire);
         header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
         header("Pragma: cache");
     }
