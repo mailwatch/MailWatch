@@ -1,3 +1,7 @@
+1.2.0 - RC2 DEV
+-----------
+
+
 1.2.0 - RC1
 -----------
  - Display load average if /proc/loadavg doesn't exists but /usr/bin/uptime does
