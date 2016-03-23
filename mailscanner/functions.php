@@ -37,6 +37,11 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
     error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 }
 
+// check if php version is not greater that 5.*
+if (PHP_MAJOR_VERSION > 5) {
+    die ('MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it');
+}
+
 // Read in MailWatch configuration file
 if (!is_readable(__DIR__ . '/conf.php')) {
     die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
