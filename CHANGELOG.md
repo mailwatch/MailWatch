@@ -1,4 +1,4 @@
-1.2.0 - RC1 DEV
+1.2.0 - RC1
 -----------
  - Display load average if /proc/loadavg doesn't exists but /usr/bin/uptime does
  - Improve loggings for connections not coming from 127.0.0.1
