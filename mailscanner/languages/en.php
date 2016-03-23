@@ -161,7 +161,7 @@ return array(
     'folder_0208' => 'Folder',
     'items08' => 'items',
 
-    // 09-filter.inc
+    // 09-filter.inc.php
     'activefilters09' => 'Active Filters',
     'none09' => 'None',
     'addfilter09' => 'Add Filter',

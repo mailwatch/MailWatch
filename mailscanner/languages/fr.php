@@ -162,7 +162,7 @@ return array(
     'folder_0208' => 'Dossier :',
     'items08' => 'éléments',
 
-    // 09-filter.inc
+    // 09-filter.inc.php
     'activefilters09' => 'Filtre actif',
     'none09' => 'Aucun',
     'addfilter09' => 'Ajouter un filtre',
@@ -249,7 +249,7 @@ return array(
     // 12-user-manager.php
     'edituser12' => 'Editer l\'Utilisateur',
 
-    // 09-filter.inc
+    // 09-filter.inc.php
     'statistics09' => 'Statistiques (Filtrès)',
     'oldest09' => 'Plus ancien enregistrement :',
     'newest09' => 'Plus récent enregistrement :',

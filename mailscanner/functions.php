@@ -223,7 +223,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '<title>MailWatch Filter Report: ' . $title . ' </title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION["filter"])) {
-            require_once(__DIR__ . '/filter.inc');
+            require_once(__DIR__ . '/filter.inc.php');
             $filter = new Filter;
             $_SESSION["filter"] = $filter;
         } else {
