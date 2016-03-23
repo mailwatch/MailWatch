@@ -2596,6 +2596,9 @@ function ldap_authenticate($user, $password)
         if ($r) {
             $result = ldap_get_entries($ds, $r) or die("Could not get entries");
             if ($result[0]) {
+                if (in_array("group", array_values($result[0]["objectclass"]))) {
+                    return null;
+                }
                 $user = $result[0]['userprincipalname']['0'];
                 if (ldap_bind($ds, $user, "$password")) {
                     if (isset($result[0][LDAP_EMAIL_FIELD])) {
