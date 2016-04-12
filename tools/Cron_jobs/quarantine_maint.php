@@ -84,6 +84,11 @@ if ($required_constant_missing_count == 0) {
                         // Update the quarantine flag
                         $sql = "UPDATE maillog SET timestamp=timestamp, quarantined = NULL WHERE id='$id'";
                         dbquery($sql);
+                        //ASU MODIFIED CODE BEGIN
+                        //remove any corresponding record in mod_release
+                        $sql = "DELETE FROM mod_release WHERE id = '$id'";
+                        dbquery($sql);
+                        //ASU MODIFIED CODE END
                     }
                     dbg("Deleting: " . escapeshellarg($quarantine . '/' . $f));
                     exec('rm -rf ' . escapeshellarg($quarantine . '/' . $f), $output, $return);
