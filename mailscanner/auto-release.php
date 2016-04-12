@@ -39,7 +39,9 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
     $token = mysqli_real_escape_string($db, $_GET['r']);
     $query = "SELECT * FROM mod_release WHERE msg_id = '$mid'";
     $result = mysqli_query($db, $query);
-    if (!$result) die("Error fetching from database");
+    if (!$result) {
+        die("Error fetching from database");
+    }
     if (mysqli_num_rows($result) == 0) {
         echo "<p>Message not found.  You may have already released this message.</p>
 <p>Please contact your email administrator and provide them with this message ID: ".$mid." if you need this message released</p> ";
@@ -66,8 +68,12 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
             $releaseID = $row['id'];
             $query = "DELETE FROM mod_release WHERE id = '$releaseID'";
             $result = mysqli_query($db, $query);
-            if (!$result) die('ERROR cleaning up database... ' . mysqli_error($db));
-        } else echo "Error releasing message - token missmatch";
+            if (!$result) {
+                die('ERROR cleaning up database... ' . mysqli_error($db));
+            }
+        } else {
+            echo "Error releasing message - token missmatch";
+        }
     }
 } else {
     echo "You are not allowed to be here!";
