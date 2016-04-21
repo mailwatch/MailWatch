@@ -63,14 +63,14 @@ if ($_SESSION['user_type'] != 'A') {
         echo "<table width=\"100%\">";
         echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>Rule</th><th>Description</th></tr>\n";
         $fh = popen(
-            "grep -hr '^describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
+            "grep -hr '^\s*describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
             'r'
         );
         audit_log('Ran SpamAssassin Rules Description Update');
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             // debug("line: ".$line."\n");
-            preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
+            preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1]) && isset($regs[2])) {
                 $regs[1] = trim($regs[1]);
                 $regs[2] = trim($regs[2]);
