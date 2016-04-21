@@ -1,6 +1,6 @@
 1.2.0 - RC2 DEV
 -----------
-
+ - Fix name collision in queries (GH #243)
 
 1.2.0 - RC1
 -----------

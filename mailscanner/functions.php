@@ -2540,9 +2540,9 @@ function address_filter_sql($addresses, $type)
         case 'U': // User - show only specific addresses
             foreach ($addresses as $address) {
                 if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                    $sqladdr_arr[] = "to_address like '%$address%'";
+                    $sqladdr_arr[] = "to_address like '$address%'";
                 } else {
-                    $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
+                    $sqladdr_arr[] = "to_address like '$address%' OR from_address = '$address'";
                 }
             }
             $sqladdr = join(' OR ', $sqladdr_arr);
