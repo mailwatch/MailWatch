@@ -52,6 +52,7 @@ if ((USE_LDAP === true) && (($result = ldap_authenticate($myusername, $mypasswor
     if ($mypassword != '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
+        $_SESSION['user_ldap'] = '0';
     } else {
         header("Location: login.php?error=emptypassword");
         die();
@@ -74,7 +75,7 @@ if ($usercount == 0) {
     dbclose();
     header("Location: login.php?error=baduser");
 } else {
-    if (USE_LDAP === false) {
+    if ($_SESSION['user_ldap'] == '0') {
         $passwordInDb = mysql_result($result, 0, 'password');
         if (!password_verify($mypassword, $passwordInDb)) {
             if (!hash_equals(md5($mypassword), $passwordInDb)) {
