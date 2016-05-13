@@ -174,6 +174,14 @@ if (!defined('VIRUS_REGEX')) {
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
+function suppress_zeros($number)
+{
+	if (abs($number - 0.0) < 0.1) {
+		return '.';
+	} else {
+		return $number;
+	}
+}
 /**
  * @return string
  */
@@ -436,8 +444,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     nameinfected>0
     AND (virusinfected=0 OR virusinfected IS NULL)
     AND (otherinfected=0 OR otherinfected IS NULL)
-    AND (isspam=0 OR isspam IS NULL)
-    AND (ishighspam=0 OR ishighspam IS NULL)
+    -- AND (isspam=0 OR isspam IS NULL)
+    -- AND (ishighspam=0 OR ishighspam IS NULL)
    THEN 1 ELSE 0 END
   ) AS blockedfiles,
   ROUND((
@@ -446,8 +454,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
      nameinfected>0
      AND (virusinfected=0 OR virusinfected IS NULL)
      AND (otherinfected=0 OR otherinfected IS NULL)
-     AND (isspam=0 OR isspam IS NULL)
-     AND (ishighspam=0 OR ishighspam IS NULL)
+     -- AND (isspam=0 OR isspam IS NULL)
+     -- AND (ishighspam=0 OR ishighspam IS NULL)
     THEN 1 ELSE 0 END
    )/COUNT(*))*100,1
   ) AS blockedfilespercent,
@@ -625,6 +633,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     if (SHOW_DOC == true) {
         $nav['docs.php'] = __('documentation03');
     }
+        //Begin EFA
+        if ($_SESSION['user_type'] == 'A' && SHOW_GREYLIST == true) {
+            $nav['grey.php'] = "greylist";
+        }
+        //End EFA
     $nav['logout.php'] = __('logout03');
     //$table_width = round(100 / count($nav));
 
