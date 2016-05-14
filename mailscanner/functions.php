@@ -2593,7 +2593,9 @@ function ldap_authenticate($user, $password)
             ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
-        if (strpos($user, '@')) {
+        if (strpos($user, '@') and LDAP_EMAIL_FIELD === 'mail') {
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die("Could not search");
+        } elseif (strpos($user, '@')) {
             $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die("Could not search");
         } else {
             $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die("Could not search");
