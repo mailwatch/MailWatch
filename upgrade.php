@@ -68,6 +68,23 @@ function check_utf8_table($db, $table)
     return false;
 }
 
+function getTableIndexes($table)
+{
+    $sql = 'SHOW INDEX FROM `' . $table . '`';
+    $result = @mysql_query($sql);
+
+    $indexes = array();
+    if (!$result || mysql_num_rows($result) === 0) {
+        return $indexes;
+    }
+
+    while ($row = mysql_fetch_assoc($result)) {
+        $indexes[] = $row['Key_name'];
+    }
+
+    return $indexes;
+}
+
 $errors = false;
 
 // Test connectivity to the database
@@ -139,6 +156,32 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
 
     $sql = "DROP TABLE IF EXISTS `geoip_country`";
     executeQuery($sql);
+
+    // check for missing indexes
+    $indexes = array(
+        'maillog' => array(
+            'maillog_datetime_idx' => '(`date`,`time`)',
+            'maillog_id_idx' => '(`id`(20))',
+            'maillog_clientip_idx' => '(`clientip`(20))',
+            'maillog_from_idx' => '(`from_address`(200))',
+            'maillog_to_idx' => '(`to_address`(200))',
+            'maillog_host' => '(`hostname`(30))',
+            'from_domain_idx' => '(`from_domain`(50))',
+            'to_domain_idx' => '(`to_domain`(50))',
+            'maillog_quarantined' => '(`quarantined`)',
+            'timestamp_idx' => '(`timestamp`)'
+        )
+    );
+
+    foreach ($indexes as $table => $indexlist) {
+        $existingIndexes = getTableIndexes($table);
+        foreach ($indexlist as $indexname => $value) {
+            if (!in_array($indexname, $existingIndexes)) {
+                $sql = 'ALTER TABLE `' . $table . '` ADD KEY `' . $indexname . '` ' . $value . ';';
+                executeQuery($sql);
+            }
+        }
+    }
 
     /*
     ** Updates to the schema for 1.0.3

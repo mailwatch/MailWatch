@@ -31,7 +31,7 @@
 
 //Require files
 require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc');
+require_once(__DIR__ . '/filter.inc.php');
 
 // verify login
 session_start();

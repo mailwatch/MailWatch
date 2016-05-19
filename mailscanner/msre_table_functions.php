@@ -29,7 +29,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* 
+/*
 msre = MailScanner Ruleset Editor
 (c) 2004 Kevin Hanser
 Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1

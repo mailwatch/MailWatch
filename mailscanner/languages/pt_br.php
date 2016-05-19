@@ -160,7 +160,7 @@ return array(
     'folder_0208' => 'Pasta',
     'items08' => 'itens',
 
-    // 09-filter.inc
+    // 09-filter.inc.php
     'activefilters09' => 'Filtros Ativos',
     'none09' => 'Nenhum',
     'addfilter09' => 'Adicionar Filtro',

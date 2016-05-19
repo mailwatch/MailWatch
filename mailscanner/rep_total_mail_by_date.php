@@ -31,7 +31,7 @@
 
 // Include of necessary functions
 require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc');
+require_once(__DIR__ . '/filter.inc.php');
 
 // Authentication checking
 session_start();
@@ -44,7 +44,7 @@ $filter = html_start("Total Mail by Date", 0, false, true);
 $date_format = "'" . DATE_FORMAT . "'";
 
 // File name
-$filename = "" . CACHE_DIR . "/total_mail_by_date.png." . time() . "";
+$filename = CACHE_DIR . "/total_mail_by_date.png." . time();
 
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');

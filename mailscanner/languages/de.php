@@ -160,7 +160,7 @@ return array(
     'folder_0208' => 'Ordner',
     'items08' => 'Einträge',
 
-    // 09-filter.inc
+    // 09-filter.inc.php
     'activefilters09' => 'Aktive Filter',
     'none09' => 'Keiner',
     'addfilter09' => 'Filter hinzufügen',

@@ -31,7 +31,7 @@
 
 // Include of necessary functions
 require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc');
+require_once(__DIR__ . '/filter.inc.php');
 
 // Authentication checking
 session_start();
@@ -41,7 +41,7 @@ require(__DIR__ . '/login.function.php');
 $filter = html_start("MCP Rule Hits", 0, false, true);
 
 // File name
-$filename = "" . CACHE_DIR . "/rep_mcp_rule_hits.png." . time() . "";
+$filename = CACHE_DIR . "/rep_mcp_rule_hits.png." . time();
 
 $sql = "
  SELECT
