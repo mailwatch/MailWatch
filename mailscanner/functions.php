@@ -174,20 +174,25 @@ if (!defined('VIRUS_REGEX')) {
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
-function suppress_zeros($number)
-{
-	if (abs($number - 0.0) < 0.1) {
-		return '.';
-	} else {
-		return $number;
-	}
-}
 /**
  * @return string
  */
 function mailwatch_version()
 {
     return ("1.2.0 - RC2 DEV");
+}
+
+/**
+ * @param $number
+ * @return string
+ */
+function suppress_zeros($number)
+{
+    if (abs($number - 0.0) < 0.1) {
+        return '.';
+    } else {
+        return $number;
+    }
 }
 
 /**
@@ -870,7 +875,8 @@ function __($string)
  * @param $string
  * @return boolean
  */
-function is_utf8($string) {
+function is_utf8($string)
+{
 
     // From http://w3.org/International/questions/qa-forms-utf-8.html
     return preg_match('%^(?:
