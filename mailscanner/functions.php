@@ -179,7 +179,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return ("1.2.0 - RC2 DEV");
+    return ("1.2.0 - RC2");
 }
 
 /**
