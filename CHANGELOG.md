@@ -1,4 +1,4 @@
-1.2.0 - RC2 DEV
+1.2.0 - RC2
 -----------
  - Fix name collision in queries (GH #243)
  - Fix loading of SpamAssassin rule description if it starts with a space (GH #242)
