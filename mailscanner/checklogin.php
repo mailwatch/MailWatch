@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -52,6 +52,7 @@ if ((USE_LDAP === true) && (($result = ldap_authenticate($myusername, $mypasswor
     if ($mypassword != '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
+        $_SESSION['user_ldap'] = '0';
     } else {
         header("Location: login.php?error=emptypassword");
         die();
