@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -179,7 +179,20 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return ("1.2.0 - RC1");
+    return ("1.2.0 - RC2");
+}
+
+/**
+ * @param $number
+ * @return string
+ */
+function suppress_zeros($number)
+{
+    if (abs($number - 0.0) < 0.1) {
+        return '.';
+    } else {
+        return $number;
+    }
 }
 
 /**
@@ -436,8 +449,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     nameinfected>0
     AND (virusinfected=0 OR virusinfected IS NULL)
     AND (otherinfected=0 OR otherinfected IS NULL)
-    AND (isspam=0 OR isspam IS NULL)
-    AND (ishighspam=0 OR ishighspam IS NULL)
+    -- AND (isspam=0 OR isspam IS NULL)
+    -- AND (ishighspam=0 OR ishighspam IS NULL)
    THEN 1 ELSE 0 END
   ) AS blockedfiles,
   ROUND((
@@ -446,8 +459,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
      nameinfected>0
      AND (virusinfected=0 OR virusinfected IS NULL)
      AND (otherinfected=0 OR otherinfected IS NULL)
-     AND (isspam=0 OR isspam IS NULL)
-     AND (ishighspam=0 OR ishighspam IS NULL)
+     -- AND (isspam=0 OR isspam IS NULL)
+     -- AND (ishighspam=0 OR ishighspam IS NULL)
     THEN 1 ELSE 0 END
    )/COUNT(*))*100,1
   ) AS blockedfilespercent,
@@ -857,6 +870,28 @@ function __($string)
 }
 
 /**
+ * Returns true if $string is valid UTF-8 and false otherwise.
+ *
+ * @param $string
+ * @return boolean
+ */
+function is_utf8($string)
+{
+
+    // From http://w3.org/International/questions/qa-forms-utf-8.html
+    return preg_match('%^(?:
+          [\x09\x0A\x0D\x20-\x7E]            # ASCII
+        | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+        |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+        |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+        |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+        | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+        |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+    )*$%xs', $string);
+}
+
+/**
  * @param $string
  * @return string
  */
@@ -867,7 +902,9 @@ function getUTF8String($string)
             $string = mb_convert_encoding($string, 'UTF-8');
         }
     } else {
-        $string = utf8_encode($string);
+        if (!is_utf8($string)) {
+            $string = utf8_encode($string);
+        }
     }
 
     return $string;
@@ -2540,9 +2577,9 @@ function address_filter_sql($addresses, $type)
         case 'U': // User - show only specific addresses
             foreach ($addresses as $address) {
                 if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                    $sqladdr_arr[] = "to_address like '%$address%'";
+                    $sqladdr_arr[] = "to_address like '$address%'";
                 } else {
-                    $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
+                    $sqladdr_arr[] = "to_address like '$address%' OR from_address = '$address'";
                 }
             }
             $sqladdr = join(' OR ', $sqladdr_arr);
@@ -2593,7 +2630,9 @@ function ldap_authenticate($user, $password)
             ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
-        if (strpos($user, '@')) {
+        if (strpos($user, '@') and LDAP_EMAIL_FIELD === 'mail') {
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die("Could not search");
+        } elseif (strpos($user, '@')) {
             $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die("Could not search");
         } else {
             $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die("Could not search");

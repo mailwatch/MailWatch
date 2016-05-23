@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -63,14 +63,14 @@ if ($_SESSION['user_type'] != 'A') {
         echo "<table width=\"100%\">";
         echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>Rule</th><th>Description</th></tr>\n";
         $fh = popen(
-            "grep -hr '^describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
+            "grep -hr '^\s*describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
             'r'
         );
         audit_log('Ran SpamAssassin Rules Description Update');
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             // debug("line: ".$line."\n");
-            preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
+            preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1]) && isset($regs[2])) {
                 $regs[1] = trim($regs[1]);
                 $regs[2] = trim($regs[2]);
