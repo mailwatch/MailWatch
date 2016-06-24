@@ -236,3 +236,6 @@ define('HIDE_HIGH_SPAM', false);
 // Hide Non Spam from quarantine reports
 define('HIDE_NON_SPAM', false);
 
+// Hide Unknown Mail from quarantine reports
+define('HIDE_UNKNOWN', false);
+

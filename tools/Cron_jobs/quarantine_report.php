@@ -210,12 +210,44 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
      COALESCE(ishighmcp,0)=0";
 }
 
-    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
-        $sql .= "
+if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
+	$sql .= "
     AND
-     isspam>0";
-    }
+    isspam>0";
+}
 
+if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
+	$sql .= "
+	AND
+	(
+	virusinfected>0
+	OR
+	nameinfected>0
+	OR
+	otherinfected>0
+	OR
+	ishighspam>0 
+	OR
+	isaspam>0
+	OR
+	isrblspam>0
+	OR
+	spamblacklisted>0
+	OR
+	isspam>0
+	OR
+	ismcp>0
+	OR
+	ishighmcp>0
+	OR
+	issamcp>0
+	OR
+	ismcpblacklisted>0
+	OR
+	isspam>0
+	)";
+}
+ 
     $sql .= " 
 ORDER BY a.date DESC, a.time DESC";
 
