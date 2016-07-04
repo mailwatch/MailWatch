@@ -21,11 +21,11 @@ package MailScanner::CustomConfig;
 
 use strict;
 use DBI;
+use utf8;
 use Sys::Hostname;
 use Storable(qw[freeze thaw]);
 use POSIX;
 use Socket;
-use Encoding::FixLatin qw(fix_latin);
 
 # Trace settings - uncomment this to debug
 # DBI->trace(2,'/root/dbitrace.log');
@@ -281,7 +281,7 @@ my($db_pass) = 'mailwatch';
    $msg{from_domain} = $message->{fromdomain};
    $msg{to} = join(",", @{$message->{to}});
    $msg{to_domain} = $todomain;
-   $msg{subject} = fix_latin($message->{subject});
+   $msg{subject} = $message->{utf8subject};
    $msg{clientip} = $clientip;
    $msg{archiveplaces} = join(",", @{$message->{archiveplaces}});
    $msg{isspam} = $message->{isspam};
@@ -306,7 +306,7 @@ my($db_pass) = 'mailwatch';
    $msg{hostname} = $hostname;
    $msg{date} = $date;
    $msg{"time"} = $time;
-   $msg{headers} = fix_latin(join("\n",@{$message->{headers}}));
+   $msg{headers} = join("\n",@{$message->{headers}});
    $msg{quarantined} = $quarantined;
 
    # Prepare data for transmission
