@@ -1,9 +1,8 @@
 #directories
-mailscanner/images/cache/*
+/mailscanner/images/cache/*
 
 #files
-mailscanner/conf.php
-mailscanner/temp/GeoIP.dat
-mailscanner/temp/GeoIPv6.dat.gz
-mailscanner/temp/GeoIPv6.dat
-mailscanner/temp/GeoIP.dat.gz
+/mailscanner/conf.php
+
+#development files
+/_msconfig/
