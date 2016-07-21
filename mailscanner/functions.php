@@ -48,6 +48,14 @@ if (!is_readable(__DIR__ . '/conf.php')) {
 }
 require_once(__DIR__ . '/conf.php');
 
+// Set PHP path to use local PEAR modules only
+set_include_path(
+    get_include_path() . PATH_SEPARATOR .
+    '.' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/xmlrpc'
+);
+
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
 if (!defined('LANG')) {
@@ -65,9 +73,6 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
         exit;
     }
 }
-
-// Set PHP path to use local PEAR modules only
-ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
