@@ -86,7 +86,7 @@ if ($required_constant_missing_count == 0) {
                         dbquery($sql);
                         //ASU MODIFIED CODE BEGIN
                         //remove any corresponding record in mod_release
-                        $sql = "DELETE FROM mod_release WHERE id = '$id'";
+                        $sql = "DELETE FROM mod_release WHERE msg_id = '$id'";
                         dbquery($sql);
                         //ASU MODIFIED CODE END
                     }
