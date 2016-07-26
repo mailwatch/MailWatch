@@ -3,8 +3,8 @@
 /*
  * Mailwatch for Mailscanner Modification
  * Author: Alan Urquhart - ASU Web Services Ltd
- * Version: 1.0
- * Date: 12-04-2016
+ * Version: 1.1
+ * Updated: 26-07-2016
  *
  * Requires: Mailwatch 1.2.0
  *
@@ -13,8 +13,8 @@
  * SETUP:
  *
  * Create the following table in the mailscanner database:
- * CREATE TABLE `mod_release` (
- *  `id` int(11) NOT NULL AUTO_INCREMENT,
+ * CREATE TABLE `autorelease` (
+ *  `id` bigint(20) NOT NULL AUTO_INCREMENT,
  *  `msg_id` varchar(255) NOT_NULL,
  *  `uid` varchar(255) NOT_NULL,
  *  PRIMARY_KEY (`id`)
@@ -23,30 +23,23 @@
  * Update cron.daily/quarantine_report.php with the modified file
  * Update cron.daily/quarantine_maint.php with the modified file
  *
- * Create a new database user with limited privileges on the mod_release table - minimum is SELECT,DELETE
- * Enter database credentials below.
  */
+require_once(__DIR__ . '/functions.php');
 if (isset($_GET['mid']) && isset($_GET['r'])) {
-    // Change the following to reflect the location of functions.php
-    require_once('/var/www/html/mailscanner/functions.php');
-    //Database Credentials
-    $host = 'localhost';//change if using a remote db
-    $user = '';
-    $pass = '';
-    $database = 'mailscanner'; //change is your database is called something else
-    $db = mysqli_connect($host, $user, $pass, $database) or die("CONNECT ERROR" . mysqli_connect_error());
-    $mid = mysqli_real_escape_string($db, $_GET['mid']);
-    $token = mysqli_real_escape_string($db, $_GET['r']);
-    $query = "SELECT * FROM mod_release WHERE msg_id = '$mid'";
-    $result = mysqli_query($db, $query);
+    dbconn();
+    $mid = mysql_real_escape_string($_GET['mid']);
+    $token = mysql_real_escape_string($_GET['r']);
+    $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
+    $result = dbquery($sql);
     if (!$result) {
-        die("Error fetching from database");
+        dbg("Error fetching from database" . mysql_error());
+        echo __('dberror99');
     }
-    if (mysqli_num_rows($result) == 0) {
-        echo "<p>Message not found.  You may have already released this message.</p>
-<p>Please contact your email administrator and provide them with this message ID: ".$mid." if you need this message released</p> ";
+    if (mysql_num_rows($result) == 0) {
+        echo "<p>". __('msgnotfound1')."</p>";
+        echo "<p>". __('msgnotfound2').$mid." ". __('msgnotfound3')."</p>";
     } else {
-        $row = mysqli_fetch_assoc($result);
+        $row = mysql_fetch_assoc($result);
         if ($row['uid'] == $token) {
             $list = quarantine_list_items($mid);
             $result = '';
@@ -63,20 +56,20 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
 
 
             // Display success
-            echo "<p>Message released<br>It may take a few minutes to appear in your inbox.</p>";
+            echo "<p>". __('msgreleased1'). "</p>";
             //cleanup
             $releaseID = $row['id'];
-            $query = "DELETE FROM mod_release WHERE id = '$releaseID'";
-            $result = mysqli_query($db, $query);
+            $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
+            $result = dbquery($query);
             if (!$result) {
-                die('ERROR cleaning up database... ' . mysqli_error($db));
+                dbg("ERROR cleaning up database... " . mysql_error());
             }
         } else {
-            echo "Error releasing message - token missmatch";
+            echo __('tokenmismatch1');
         }
     }
 } else {
-    echo "You are not allowed to be here!";
+    echo __('notallowed99');
 }
 ?>
 

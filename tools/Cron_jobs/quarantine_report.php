@@ -347,10 +347,9 @@ function return_quarantine_list_array($to_address, $to_domain)
     return $array;
 }
 
-//ASU MODIFIED CODE BEGIN
-function get_random_string()
+function get_random_string($count)
 {
-    $bytes = openssl_random_pseudo_bytes(10);
+    $bytes = openssl_random_pseudo_bytes($count);
     return bin2hex($bytes);
 }
 
@@ -358,7 +357,7 @@ function store_auto_release($qitem)
 {
     $id = $qitem['id'];
     $rand = $qitem['rand'];
-    $result = dbquery("INSERT INTO mod_release (msg_id,uid) VALUES ('$id','$rand')");
+    $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')");
     if (!$result) {
         dbg(" ==== Error generating auto_release....skipping...");
         return false;
@@ -367,7 +366,6 @@ function store_auto_release($qitem)
     }
 }
 
-//ASU MODIFIED CODE END
 function send_quarantine_email($email, $filter, $quarantined)
 {
     global $html, $html_table, $html_content, $text, $text_content;
@@ -376,15 +374,21 @@ function send_quarantine_email($email, $filter, $quarantined)
     $t1 = "";
     // Build the quarantine list for this recipient
     foreach ($quarantined as $qitem) {
-        //ASU MODIFIED CODE BEGIN
-        $qitem['rand'] = get_random_string();
-        $auto_release = store_auto_release($qitem);
-        if ($auto_release) {
-            $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">Release</a>';
-        } else {
+        //Check if auto-release is enabled
+        if(AUTO_RELEASE) {
+            $qitem['rand'] = get_random_string(AR_RANDOM_COUNT);
+            $auto_release = store_auto_release($qitem);
+            if ($auto_release) {
+                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">Release</a>';
+            } else {
+                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>';
+            }
+        }
+        else{
+            //auto-release disabled
             $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>';
         }
-        //ASU MODIFIED CODE END
+
         // HTML Version
         $h1 .= sprintf(
             $html_content,
@@ -393,9 +397,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             $qitem['from'],
             $qitem['subject'],
             $qitem['reason'],
-            //MODIFIED
             $links
-            //END MOD
         );
         // Text Version
         $t1 .= sprintf(
@@ -405,10 +407,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             $qitem['from'],
             $qitem['subject'],
             $qitem['reason'],
-            //MOD
             $links
-            //END MOD
-
         );
     }
 
