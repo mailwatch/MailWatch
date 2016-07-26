@@ -1,3 +1,12 @@
+1.2.0 - RC2
+-----------
+ - Fix name collision in queries (GH #243)
+ - Fix loading of SpamAssassin rule description if it starts with a space (GH #242)
+ - Fix login bypass on LDAP introduced in RC1 (GH #246, GH #248)
+ - Improve rep_total_mail_by_date report (GH #249, GH #250, GH #251)
+ - Fix LDAP search for 'mail' prefix (GH #252)
+ - Try to not encode multiple times a string that is already UTF8 (GH #225)
+ 
 1.2.0 - RC1
 -----------
  - Display load average if /proc/loadavg doesn't exists but /usr/bin/uptime does
