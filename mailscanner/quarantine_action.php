@@ -68,8 +68,7 @@ function simple_html_result($status)
                         <th>Result</th>
                     </tr>
                     <tr>
-                        <td><?php echo $status;
-    ?></td>
+                        <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
                         <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
@@ -121,8 +120,7 @@ switch ($_GET['action']) {
         if (isset($_GET['html'])) {
             if (!isset($_GET['confirm'])) {
                 // Dislay an 'Are you sure' dialog
-                simple_html_start();
-                ?>
+                simple_html_start(); ?>
                 <table width="100%" height="100%">
                     <tr>
                         <td align="center" valign="middle">
@@ -132,8 +130,7 @@ switch ($_GET['action']) {
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']);
-                ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
+                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
                                         &nbsp;&nbsp;
                                         <a href="javascript:void(0)" onClick="javascript:window.close()">No</a>
                                     </td>
