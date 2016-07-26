@@ -246,4 +246,14 @@ return array(
     // 99 - General
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
+
+    //auto-release.php
+    'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
+    'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
+    'msgnotfound3' => 'if you need this message released',
+    'msgreleased1' => 'Message released<br>It may take a few minutes to appear in your inbox.',
+    'tokenmismatch1' => 'Error releasing message - token missmatch',
+    'notallowed99' => 'You are not allowed to be here!',
+    'dberror99' => 'Something went wrong - please contact support',
+
 );
