@@ -154,7 +154,7 @@ require_once(__DIR__ . '/functions.php');
         <form name="loginform" class="loginform" method="post" action="checklogin.php">
             <fieldset>
                 <?php if (isset($_GET['error'])) {
-    ?>
+        ?>
                     <p class="loginerror">
                         <?php
                         switch ($_GET['error']) {
@@ -166,20 +166,16 @@ require_once(__DIR__ . '/functions.php');
                                 break;
                             default:
                                 echo 'An undefined error occurred';
-                        }
-    ?>
+                        } ?>
                     </p>
                 <?php 
-}
-    ?>
+    } ?>
 
-                <p><label for="myusername"><?php echo __('username');
-    ?></label></p>
+                <p><label for="myusername"><?php echo __('username'); ?></label></p>
 
                 <p><input name="myusername" type="text" id="myusername" autofocus></p>
 
-                <p><label for="mypassword"><?php echo __('password');
-    ?></label></p>
+                <p><label for="mypassword"><?php echo __('password'); ?></label></p>
 
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 
