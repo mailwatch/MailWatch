@@ -375,11 +375,11 @@ function send_quarantine_email($email, $filter, $quarantined)
     // Build the quarantine list for this recipient
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
-        if(AUTO_RELEASE) {
-            $qitem['rand'] = get_random_string(AR_RANDOM_COUNT);
+        if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
+            $qitem['rand'] = get_random_string(10);
             $auto_release = store_auto_release($qitem);
             if ($auto_release) {
-                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">Release</a>';
+                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">.'.__('arview01').'</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">'.__('arrelease01').'</a>';
             } else {
                 $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>';
             }

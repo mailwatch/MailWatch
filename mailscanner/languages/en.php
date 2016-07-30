@@ -255,5 +255,7 @@ return array(
     'tokenmismatch1' => 'Error releasing message - token missmatch',
     'notallowed99' => 'You are not allowed to be here!',
     'dberror99' => 'Something went wrong - please contact support',
+    'arview01' => 'View',
+    'arrelease01' => 'Release',
 
 );
