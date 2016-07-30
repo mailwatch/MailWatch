@@ -210,14 +210,14 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
      COALESCE(ishighmcp,0)=0";
 }
 
-if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
-	$sql .= "
+    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
+        $sql .= "
     AND
     isspam>0";
-}
+    }
 
-if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
-	$sql .= "
+    if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
+        $sql .= "
 	AND
 	(
 	virusinfected>0
@@ -246,7 +246,7 @@ if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
 	OR
 	isspam>0
 	)";
-}
+    }
  
     $sql .= " 
 ORDER BY a.date DESC, a.time DESC";
@@ -383,8 +383,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             } else {
                 $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>';
             }
-        }
-        else{
+        } else {
             //auto-release disabled
             $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">View</a>';
         }
