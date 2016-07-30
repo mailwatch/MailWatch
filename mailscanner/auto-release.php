@@ -71,4 +71,3 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
 } else {
     echo __('notallowed99');
 }
-
