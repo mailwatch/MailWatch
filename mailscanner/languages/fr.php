@@ -292,10 +292,10 @@ return array(
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
     
     //auto-release.php
-    'msgnotfound1' => 'Message non trouvé.  Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
+    'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',
     'msgnotfound3' => 'si vous avez besoin de libérer ce message.',
-    'msgreleased1' => 'Message liébéré<br>Il faut attendre quelques minutes avant que le message apparaisse dans votre Boite aux lettres.',
+    'msgreleased1' => 'Message libéré<br>Il faut attendre quelques minutes avant que le message apparaisse dans votre Boite aux lettres.',
     'tokenmismatch1' => 'Erreur pendant la libération du message - Erreur de jeton',
     'notallowed99' => 'Vous n\êtes pas autorisé à accéder à cette page !',
     'dberror99' => 'Quelque-chose s\'est mal passé - Contactez le support',
