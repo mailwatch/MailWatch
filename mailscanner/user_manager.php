@@ -46,8 +46,7 @@ if ($_SESSION['user_type'] == 'A') {
     <script type="text/javascript">
         <!--
         function delete_user(id) {
-            var yesno = confirm("<?php echo __('areusuredel12');
-    ?>" + id + "?");
+            var yesno = confirm("<?php echo __('areusuredel12'); ?>" + id + "?");
             if (yesno === true) {
                 window.location = "?action=delete&id=" + id;
             } else {
