@@ -252,8 +252,10 @@ return array(
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
     'msgnotfound3' => 'if you need this message released',
     'msgreleased1' => 'Message released<br>It may take a few minutes to appear in your inbox.',
-    'tokenmismatch1' => 'Error releasing message - token missmatch',
+    'tokenmismatch1' => 'Error releasing message - token mismatch',
     'notallowed99' => 'You are not allowed to be here!',
     'dberror99' => 'Something went wrong - please contact support',
+    'arview01' => 'View',
+    'arrelease01' => 'Release',
 
 );
