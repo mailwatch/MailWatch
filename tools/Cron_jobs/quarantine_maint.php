@@ -84,6 +84,11 @@ if ($required_constant_missing_count == 0) {
                         // Update the quarantine flag
                         $sql = "UPDATE maillog SET timestamp=timestamp, quarantined = NULL WHERE id='$id'";
                         dbquery($sql);
+                        //If auto quarantine release is enabled, remove from autorelease table when quarantined email expires
+                        if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
+                            $sql = "DELETE FROM autorelease WHERE msg_id = '$id'";
+                            dbquery($sql);
+                        }
                     }
                     dbg("Deleting: " . escapeshellarg($quarantine . '/' . $f));
                     exec('rm -rf ' . escapeshellarg($quarantine . '/' . $f), $output, $return);

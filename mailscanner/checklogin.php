@@ -57,6 +57,8 @@ if ((USE_LDAP === true) && (($result = ldap_authenticate($myusername, $mypasswor
         header("Location: login.php?error=emptypassword");
         die();
     }
+
+    $_SESSION['user_ldap'] = '0';
 }
 
 $sql = "SELECT * FROM users WHERE username='$myusername'";

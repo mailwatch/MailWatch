@@ -235,3 +235,10 @@ define('HIDE_HIGH_SPAM', false);
 
 // Hide Non Spam from quarantine reports
 define('HIDE_NON_SPAM', false);
+
+// Hide Unknown Mail from quarantine reports
+define('HIDE_UNKNOWN', false);
+
+//Quarantine Auto Release
+//Set true to allow auto release of quarantined items from quarantine report - note, requires DB modification, see auto-release.php
+define('AUTO_RELEASE', false);

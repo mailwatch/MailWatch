@@ -121,7 +121,21 @@ if ($_SESSION['user_type'] == 'A') {
                         }
 
                         $quarantine_rcpt = mysql_real_escape_string($_GET['quarantine_rcpt']);
-                        $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt) VALUES ('$n_username','$n_fullname','$n_password','$n_type','$quarantine_report','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
+                        $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, ";
+                        if ($spamscore !== '0') {
+                            $sql .= "spamscore, ";
+                        }
+                        if ($highspamscore !== '0') {
+                            $sql .= "highspamscore, ";
+                        }
+                        $sql .= "noscan, quarantine_rcpt) VALUES ('$n_username','$n_fullname','$n_password','$n_type','$quarantine_report',";
+                        if ($spamscore !== '0') {
+                            $sql .= "'$spamscore',";
+                        }
+                        if ($highspamscore !== '0') {
+                            $sql .= "'$highspamscore',";
+                        }
+                        $sql .= "'$noscan','$quarantine_rcpt')";
                         dbquery($sql);
                         switch ($n_type) {
                             case 'A':
