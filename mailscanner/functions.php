@@ -1163,8 +1163,8 @@ function get_disks()
             $mounted_fs = file("/proc/mounts");
             foreach ($mounted_fs as $fs_row) {
                 $drive = preg_split("/[\s]+/", $fs_row);
-                if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
-                    $temp_drive['device'] = $drive[0];
+		if (((substr($drive[0], 0, 5) == '/dev/') || substr($drive[0], 0, 5) == 'simfs') && (stripos($drive[1], '/chroot/') === false)) {
+                    $temp_drive['device'] = ($drive[0] == 'simfs' ? '/dev/simfs' : $drive[0]);
                     $temp_drive['mountpoint'] = $drive[1];
                     $disks[] = $temp_drive;
                     unset($temp_drive);
