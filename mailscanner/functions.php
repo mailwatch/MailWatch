@@ -1003,7 +1003,7 @@ function return_sa_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
     if ($row) {
-        return $row->rule_desc;
+        return htmlentities($row->rule_desc);
     }
 
     return false;
