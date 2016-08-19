@@ -371,21 +371,16 @@ function check_auto_release($qitem)
     //function checks if message already has an autorelease entry
     $id = $qitem['id'];
     $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'");
-    if(!$result)
-    {
+    if (!$result) {
         dbg(" === Error checking if msg_id already exists.....skipping....");
     } else {
-        if(mysql_num_rows($result) == 0)
-        {
+        if (mysql_num_rows($result) == 0) {
             return false;//msg_id not found,
-        }
-        else if (mysql_num_rows($result) == 1)
-        {
+        } elseif (mysql_num_rows($result) == 1) {
             $row = mysql_fetch_array($result);
             $rand = $row['uid'];
             return $rand; //return the stored uid
-        }
-        else {
+        } else {
             dbg("=== Error, msg_id exists more than once....generating new one...");
             return false;
         }
@@ -404,11 +399,10 @@ function send_quarantine_email($email, $filter, $quarantined)
         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
             //Check if email already has an autorelease entry
             $exists = check_auto_release($qitem);
-            if(!$exists) {
+            if (!$exists) {
                 $qitem['rand'] = get_random_string(10);
                 $auto_release = store_auto_release($qitem);
-            }
-            else {
+            } else {
                 $qitem['rand'] = $exists;
                 $auto_release = true;
             }
