@@ -85,11 +85,16 @@ while ($row = mysql_fetch_object($result)) {
         // Check if SA scoring is present
         if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
             $rule = $regs[1];
+            $score = $regs[2];
         }
         if (isset($sa_array[$rule]['total'])) {
             $sa_array[$rule]['total']++;
         } else {
             $sa_array[$rule]['total'] = 1;
+        }
+
+        if (!isset($sa_array[$rule]['score'])) {
+            $sa_array[$rule]['score'] = $score;
         }
 
         // Initialise the other dimensions of the array
@@ -120,6 +125,7 @@ echo "
 <TR BGCOLOR=\"#F7CE4A\">
  <TH>Rule</TH>
  <TH>Description</TH>
+ <TH>Score</TH>
  <TH>Total</TH>
  <TH>Ham</TH>
  <TH>%</TH>
@@ -132,6 +138,7 @@ while ((list($key, $val) = each($sa_array))) {
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
  <TD>" . return_sa_rule_desc(strtoupper($key)) . "</TD>
+ <TD ALIGN=\"RIGHT\">" . sprintf("%0.2f",$val['score']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['total']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['not-spam']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . round(($val['not-spam'] / $val['total']) * 100, 1) . "</TD>
