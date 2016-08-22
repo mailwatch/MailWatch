@@ -182,7 +182,7 @@ return array(
     'delete07' => 'Delete',
 
     // 08-quarantine.php
-    'folder08' => 'Folder',
+    'folder08' => 'Folder:',
     'folder_0208' => 'Folder',
     'items08' => 'items',
 
