@@ -148,7 +148,7 @@ require_once(__DIR__ . '/functions.php');
 <body>
 <div class="login">
     <center><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="MailWatch Logo"></center>
-    <h1><?php echo __('mwlogin01')?></h1>
+    <h1><?php echo __('mwlogin01'); ?></h1>
     <?php if (file_exists('conf.php')) {
     ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php">
@@ -169,6 +169,7 @@ require_once(__DIR__ . '/functions.php');
                         } ?>
                     </p>
                 <?php
+                
     } ?>
 
                 <p><label for="myusername"><?php echo __('username'); ?></label></p>
@@ -179,15 +180,16 @@ require_once(__DIR__ . '/functions.php');
 
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 
-                <p><input type="submit" name="Submit" value="<?php echo __('login01');?>"></p>
+                <p><input type="submit" name="Submit" value="<?php echo __('login01') ;?>"></p>
             </fieldset>
         </form>
+    <?php
     <?php
 
 } else {
     ?>
         <p class="error">
-            <?php echo __('cannot_read_conf')?>
+            <?php echo __('cannot_read_conf'); ?>
         </p>
     <?php
 
