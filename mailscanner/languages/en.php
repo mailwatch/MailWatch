@@ -192,6 +192,15 @@ return array(
     'addfilter09' => 'Add Filter',
     'loadsavef09' => 'Load/Save Filter',
     'tosetdate09' => 'To set date you must use YYYY-mm-dd format',
+    'oldrecord09' => 'Oldest record:',
+    'newrecord09' => 'Newest record:',
+    'messagecount09' => 'Message count:',
+    'stats09' => 'Statistics (Filtered)',
+    'add09' => 'Add',
+    'load09' => 'Load',
+    'save09' => 'Save',
+    'delete09' => 'Delete',
+    'none09' => 'None',
 
     // Added in 2015-06-23
     // 04-details.php

@@ -192,6 +192,14 @@ return array(
     'addfilter09' => 'Ajouter un filtre',
     'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
     'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',
+    'oldrecord09' => 'Enregistrement le plus vieux :',
+    'newrecord09' => 'Enregistrement le plus jeune :',
+    'messagecount09' => 'Nombre de message :',
+    'stats09' => 'Statistiques (Filtrées)',
+    'add09' => 'Ajouter',
+    'load09' => 'Charger',
+    'save09' => 'Enregistrer',
+    'none09' => 'Aucun',
 
     // Added in 2015-06-23
 
