@@ -133,6 +133,9 @@ return array(
     'quarcmdres04' => 'Résultat des commandes de quarantaine',
     'resultmsg04' => 'Résultat du message',
     'id04' => 'ID :',
+    'virus04' => 'Virus :',
+    'spam04' => 'Spam :',
+    'assassinspam04' => 'Spam SpamAssassin :',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',

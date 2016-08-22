@@ -71,14 +71,14 @@ $sql = "
   size AS '" . __('size04') . "',
   archive AS 'Archive',
   '" . __('hdrantivirus04') . "' AS 'HEADER',
-  CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS 'Virus:',
+  CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('virus04') . "',
   CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('blkfile04') . "',
   CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('otherinfec04') . "',
   report AS 'Report:',
   'SpamAssassin' AS 'HEADER',
-  CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS 'Spam:',
+  CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spam04') . "',
   CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . __('hscospam04') . "',
-  CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin Spam:',
+  CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS '" . __('assassinspam04') . "',
   CASE WHEN isrblspam>0 THEN '$yes' ELSE '$no' END AS '" . __('listedrbl04') . "',
   CASE WHEN spamwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . __('spamwl04') . "',
   CASE WHEN spamblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . __('spambl04') . "',
@@ -288,7 +288,7 @@ if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfi
   m.status AS 'Status'
  FROM
   mtalog AS m
-	LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
+       	LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
  WHERE
   i.smtpd_id='" . $url_id . "'
  AND
