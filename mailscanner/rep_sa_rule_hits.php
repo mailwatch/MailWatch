@@ -131,7 +131,7 @@ while ((list($key, $val) = each($sa_array))) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
- <TD>" . return_sa_rule_desc(strtoupper($key)) . "</TD>
+ <TD>" . htmlentities(return_sa_rule_desc(strtoupper($key))) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['total']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['not-spam']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . round(($val['not-spam'] / $val['total']) * 100, 1) . "</TD>
