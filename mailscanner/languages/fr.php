@@ -36,7 +36,13 @@ return array(
     // 01-login.php
     'username' => 'Utilisateur :',
     'password' => 'Mot de Passe :',
-
+    'mwloginpage01' => 'MailWatch Login Page',
+    'mwlogin01' => 'Connexion&nbsp;à&nbsp;MailWatch',
+    'badup01' => 'Mauvais Utilisateur ou Mot de Passe',
+    'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
+    'errorund01' => 'Une rreur inconnue c\'est produite',
+    'login01' => 'Connexion',
+    
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',

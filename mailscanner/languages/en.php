@@ -36,6 +36,12 @@ return array(
     // 01-login.php
     'username' => 'User',
     'password' => 'Password',
+    'mwloginpage01' => 'MailWatch Login Page',
+    'mwlogin01' => 'MailWatch Login',
+    'badup01' => 'Bad Username or Password',
+    'emptypassword01' => 'Password cannot be empty',
+    'errorund01' => 'An undefined error occurred',
+    'login01' => 'Login',
 
     // 03-funtions.php
     'jumpmessage03' => 'Go to message:',
