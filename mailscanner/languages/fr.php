@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.2.4 */
+/* v0.2.5 */
 
 return array(
     // 01-login.php
@@ -47,15 +47,30 @@ return array(
     'blacklisted03' => 'Liste Noire',
     'notverified03' => 'Non vérifié',
     'clean03' => 'Bon',
+    'status03' => 'Statut',
+    'mailscanner03' => 'Mailscanner :',
+    'none03' => 'Aucun',
+    'comma03' => ' :',
+    'yes03' => 'OUI',
+    'no03' => 'NON',
+    'message03' => 'Message',
+    'tries03' => 'Essais',
+    'last03' => 'Dernier',
+    'loadaverage03' => 'Charge Moyenne :',
+    'mailqueue03' => 'Files d\'attente de courrier',
+    'inbound03' => 'En arrivé :',
+    'outbound03' => 'En partance :',
+    'topvirus03' => 'Top Virus :',
     'freedspace03' => 'Espace disque libre',
     'todaystotals03' => 'Total aujourd\'hui',
-    'processed03' => 'Traité',
-    'cleans03' => 'Bon',
-    'viruses03' => 'Virus',
-    'blockedfiles03' => 'Fichier(s) bloqué(s)',
-    'others03' => 'Autre',
-    'hscospam03' => 'Spam à Score Haut',
-    'hscomcp03' => 'MCP à Score Haut',
+    'processed03' => 'Traité :',
+    'cleans03' => 'Bon :',
+    'viruses03' => 'Virus :',
+    'blockedfiles03' => 'Fichier(s) bloqué(s) :',
+    'others03' => 'Autre :',
+    'spam03' => 'Spam :',
+    'hscospam03' => 'Spam à Score Haut :',
+    'hscomcp03' => 'MCP à Score Haut :',
     'recentmessages03' => 'Messages récent',
     'lists03' => 'Listes N/B',
     'quarantine03' => 'Quarantaine',
@@ -181,12 +196,12 @@ return array(
     // 10-other.php
     'tools10' => 'Outils',
     'usermgnt10' => 'Gestion des Utilisateurs',
-    'avsophosstatus10' => 'Sophos Status',
-    'avfsecurestatus10' => 'F-Secure Status',
-    'avclamavstatus10' => 'ClamAV Status',
-    'avmcafeestatus10' => 'McAfee Status',
-    'avfprotstatus10' => 'F-Prot Status',
-    'mysqldatabasestatus10' => 'Status de la base de données MySQL',
+    'avsophosstatus10' => 'Statut Sophos',
+    'avfsecurestatus10' => 'Statut F-Secure',
+    'avclamavstatus10' => 'Statut ClamAV',
+    'avmcafeestatus10' => 'Statut McAfee',
+    'avfprotstatus10' => 'Statut F-Prot',
+    'mysqldatabasestatus10' => 'Statut de la base de données MySQL',
     'viewconfms10' => 'Afficher la configuration de MailScanner',
     'editmsrules10' => 'Editer les filtres MailScanner',
     'spamassassinbayesdatabaseinfo10' => 'Information sur la base de données Bayes SpamAssassin',
@@ -263,9 +278,9 @@ return array(
     'reports09' => 'Rapports',
 
     //13-reports.php
-    'messagelisting13' => 'Liste des Messages',
-    'messageoper13' => 'Opérations sur les Messages',
-    'totalbydate13' => 'Total des Messages par date',
+    'messagelisting13' => 'Liste des messages',
+    'messageoper13' => 'Opérations sur les messages',
+    'totalbydate13' => 'Total des messages par date',
 
     //14-rep_total_mail_by_date.php
     'totalmailbydate14' => 'Total des E-Mail traité par date',
@@ -291,13 +306,13 @@ return array(
     'spam04' => 'Spam :',
     'virus04' => 'Virus :',
     'saspam04' => 'Spam SpamAssassin :',
-    'mcp04' => 'MCP:',
+    'mcp04' => 'MCP :',
     'samcp04' => 'MCP SpamAssassin :',
 
     // 99 - General
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
-    
+
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',

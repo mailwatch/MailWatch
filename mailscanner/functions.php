@@ -308,13 +308,13 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
-        echo '    <tr><th colspan="3">Status</th></tr>' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
 
         // MailScanner running?
         if (!DISTRIBUTED_SETUP) {
-            $no = '<span class="yes">&nbsp;NO&nbsp;</span>' . "\n";
-            $yes = '<span class="no">&nbsp;YES&nbsp;</span>' . "\n";
+            $no = '<span class="yes">&nbsp;' . __('no03') . '&nbsp;</span>' . "\n";
+            $yes = '<span class="no">&nbsp;' . __('yes03') . '&nbsp;</span>' . "\n";
             exec("ps ax | grep MailScanner | grep -v grep", $output);
             if (count($output) > 0) {
                 $running = $yes;
@@ -323,7 +323,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 $running = $no;
                 $procs = count($output) . " proc(s)";
             }
-            echo '     <tr><td>MailScanner:</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+            echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
             $mta = get_conf_var('mta');
@@ -336,7 +336,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $procs = count($output) . " proc(s)";
             echo '    <tr><td>' . ucwords(
                     $mta
-                ) . ':</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+                ) . __('comma03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
 
         // Load average
@@ -346,7 +346,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_1m = $loadavg[0];
             $la_5m = $loadavg[1];
             $la_15m = $loadavg[2];
-            echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
         } elseif (file_exists("/usr/bin/uptime") && !DISTRIBUTED_SETUP) {
             $loadavg = shell_exec('/usr/bin/uptime');
             $loadavg = explode(" ", $loadavg);
@@ -366,9 +366,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             if (is_readable($incomingdir) && is_readable($outgoingdir)) {
                 $inq = postfixinq();
                 $outq = postfixallq() - $inq;
-                echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>' . "\n";
-                echo '    <tr><td colspan="2"><a href="postfixmailq.php">Inbound:</a></td><td align="right">' . $inq . '</td>' . "\n";
-                echo '    <tr><td colspan="2"><a href="postfixmailq.php">Outbound:</a></td><td align="right">' . $outq . '</td>' . "\n";
+                echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             } else {
                 echo '    <tr><td colspan="3">Please verify read permissions on ' . $incomingdir . ' and ' . $outgoingdir . '</td></tr>' . "\n";
             }
@@ -376,9 +376,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         } elseif (MAILQ && ($_SESSION['user_type'] == 'A')) {
             $inq = mysql_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
             $outq = mysql_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
-            echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>' . "\n";
-            echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">Inbound:</a></td><td align="right">' . $inq . '</td>' . "\n";
-            echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">Outbound:</a></td><td align="right">' . $outq . '</td>' . "\n";
+            echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
         }
 
         // drive display
@@ -581,35 +581,35 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     while ($row = mysql_fetch_object($sth)) {
         echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
-        echo ' <tr><td>' . __('processed03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
                 $row->processed
             ) . '</td><td align="right">' . format_mail_size(
                 $row->size
             ) . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('cleans03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('cleans03') . '</td><td align="right">' . number_format(
                 $row->clean
             ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('viruses03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('viruses03') . '</td><td align="right">' . number_format(
                 $row->viruses
             ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
-        echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('blockedfiles03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
+        echo ' <tr><td>' . __('blockedfiles03') . '</td><td align="right">' . number_format(
                 $row->blockedfiles
             ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('others03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('others03') . '</td><td align="right">' . number_format(
                 $row->otherinfected
             ) . '</td><td align="right">' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>Spam:</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('spam03') . '</td><td align="right">' . number_format(
                 $row->spam
             ) . '</td><td align="right">' . $row->spampercent . '%</td></tr>' . "\n";
-        echo ' <tr><td style="white-space:nowrap">' . __('hscospam03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td style="white-space:nowrap">' . __('hscospam03') . '</td><td align="right">' . number_format(
                 $row->highspam
             ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
         if (get_conf_truefalse('mcpchecks')) {
             echo ' <tr><td>MCP:</td><td align="right">' . number_format(
                     $row->mcp
                 ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
-            echo ' <tr><td style="white-space:nowrap">' . __('hscomcp03') . ':</td><td align="right">' . number_format(
+            echo ' <tr><td style="white-space:nowrap">' . __('hscomcp03') . '</td><td align="right">' . number_format(
                     $row->highmcp
                 ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
         }
@@ -1125,10 +1125,10 @@ AND
         } else {
             // Tied first place - return none
             // FIXME: Should return all top viruses
-            return "None";
+            return __('none03');
         }
     } else {
-        return "None";
+        return __('none03');
     }
 }
 
@@ -1881,18 +1881,18 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     }
                     break;
                 case 'status':
-                    $fieldname[$f] = "Status";
+                    $fieldname[$f] = __('status03');
                     $orderable[$f] = false;
                     break;
                 case 'message':
-                    $fieldname[$f] = "Message";
+                    $fieldname[$f] = __('message03');
                     break;
                 case 'attempts':
-                    $fieldname[$f] = "Tries";
+                    $fieldname[$f] = __('tries03');
                     $align[$f] = "right";
                     break;
                 case 'lastattempt':
-                    $fieldname[$f] = "Last";
+                    $fieldname[$f] = __('last03');
                     $align[$f] = "right";
                     break;
             }
