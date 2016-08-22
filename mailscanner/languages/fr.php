@@ -126,6 +126,7 @@ return array(
     'actions04' => 'Action(s)',
     'quarcmdres04' => 'Résultat des commandes de quarantaine',
     'resultmsg04' => 'Résultat du message',
+    'id04' => 'ID :',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',

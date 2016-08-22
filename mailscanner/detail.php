@@ -63,7 +63,7 @@ $sql = "
   hostname AS '" . __('receivedby04') . "',
   clientip AS '" . __('receivedfrom04') . "',
   headers '" . __('receivedvia04') . "',
-  id AS 'ID:',
+  id AS '" . __('id04') . "',
   headers AS '" . __('msgheaders04') . "',
   from_address AS '" . __('from04') . "',
   to_address AS '" . __('to04') . "',

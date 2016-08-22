@@ -69,7 +69,7 @@ return array(
     'blockedfiles03' => 'Blocked Files:',
     'others03' => 'Other:',
     'spam03' => 'Spam:',
-    'hscospam03' => 'High Score Spam:',
+    'hscospam03' => 'High Score Spam:',    'id04' => 'ID :',
     'hscomcp03' => 'High Score MCP:',
     'recentmessages03' => 'Recent Messages',
     'lists03' => 'B/W Lists',
@@ -126,6 +126,7 @@ return array(
     'actions04' => 'Action(s)',
     'quarcmdres04' => 'Quarantine Command Results',
     'resultmsg04' => 'Result Messages',
+    'id04' => 'ID:',
 
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
