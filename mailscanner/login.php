@@ -169,7 +169,7 @@ require_once(__DIR__ . '/functions.php');
                         } ?>
                     </p>
                 <?php
-                
+
     } ?>
 
                 <p><label for="myusername"><?php echo __('username'); ?></label></p>
@@ -180,7 +180,7 @@ require_once(__DIR__ . '/functions.php');
 
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 
-                <p><input type="submit" name="Submit" value="<?php echo __('login01') ;?>"></p>
+                <p><input type="submit" name="Submit" value="<?php echo __('login01'); ?>"></p>
             </fieldset>
         </form>
     <?php
