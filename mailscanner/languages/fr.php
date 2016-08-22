@@ -42,7 +42,7 @@ return array(
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
     'errorund01' => 'Une rreur inconnue c\'est produite',
     'login01' => 'Connexion',
-    
+
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',
@@ -199,10 +199,10 @@ return array(
     'add09' => 'Ajouter',
     'load09' => 'Charger',
     'save09' => 'Enregistrer',
+    'delete09' => 'Effacer',
     'none09' => 'Aucun',
 
     // Added in 2015-06-23
-
     // 04-details.php
     'quarantine04' => 'Quarantaine',
 
@@ -226,6 +226,7 @@ return array(
     'updatesadesc10' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'updatemcpdesc10' => 'Mettre à jour les descriptions des règles MCP',
     'updategeoip10' => 'Mettre à jour la base GeoIP',
+    'links10' => 'Liens',
 
     // 11-sf_versions.php
     'softver11' => 'Version des logiciels',
@@ -277,59 +278,27 @@ return array(
     // 13-sa_rules_update.php
     'folder_0308' => 'Dossier de quarantaine',
 
-    // Added in 2015-06-25
-
-    // 01-login.php
-    'passwdnotempy01' => 'Le champ Mot de Passe ne peut être vide',
-    'baduserpass01' => 'Mauvais nom d\'Utilisateur ou Mot de Passe',
-    'undefined01' => 'Une erreur indéfinie c\'est produite',
-    'sorry01' => 'Désolé, le fichier <spam>conf.php>/spam> est manquant sur cette installation de MailWatch. Créez un fichier de configuration <spam>conf.php<s/pam> à partir du fichier conf.php..examplei, et modifiez les paramètres de configuration comme nécessaire.',
-
-    // 12-user-manager.php
-    'edituser12' => 'Editer l\'Utilisateur',
-
-    // 09-filter.inc.php
-    'statistics09' => 'Statistiques (Filtrès)',
-    'oldest09' => 'Plus ancien enregistrement :',
-    'newest09' => 'Plus récent enregistrement :',
-    'messagecount09' => 'Nombre de messages :',
-    'reports09' => 'Rapports',
-
-    //13-reports.php
-    'messagelisting13' => 'Liste des messages',
-    'messageoper13' => 'Opérations sur les messages',
-    'totalbydate13' => 'Total des messages par date',
-
-    //14-rep_total_mail_by_date.php
-    'totalmailbydate14' => 'Total des E-Mail traité par date',
-    'nroofmsg14' => 'Nombre de message',
-    'data14' => 'Date',
-    'unknown14' => 'Utilisateur<br>inconnu',
-    'cantresolve14' => 'Impossible<br>à résoudre',
-    'totals14' => 'Totals',
-
-    //03-functions.php
-    'clearall03' => 'Tout</a> effacer',
-    'forget03' => 'Omettre',
-    'release03' => 'Libérer',
-
-    // Added in 2015-06-26 (stefaweb)
-
-    //03-functions.php
-    'spam03' => 'Spam :',
-    'mcp03' => 'MCP :',
-    'clientip05' => 'IP Client',
-
-    //04-details.php
-    'spam04' => 'Spam :',
-    'virus04' => 'Virus :',
-    'saspam04' => 'Spam SpamAssassin :',
-    'mcp04' => 'MCP :',
-    'samcp04' => 'MCP SpamAssassin :',
-
-    // 99 - General
-    'i18_missing' => 'Non traduit en français',
-    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
+    // 14-reports.php
+    'messlistin14' => 'Message Listing',
+    'messop14' => 'Message Operations',
+    'messdate14' => 'Total Messages by Date',
+    'topmailrelay14' => 'Top Mail Relays',
+    'topvirus14' => 'Top Viruses',
+    'virusrepor14' => 'Virus Report',
+    'topsendersqt14' => 'Top Senders by Quantity',
+    'topsendersvol14' => 'Top Senders by Volume',
+    'toprecipqt14' => 'Top Recipients by Quantity',
+    'toprecipvol14' => 'Top Recipients by Volume',
+    'topsendersdomqt14' => 'Top Sender Domains by Quantity',
+    'topsendersdomqt14' => 'Top Sender Domains by Volume',
+    'toprecipdomqt14' => 'Top Recipient Domains by Quantity',
+    'toprecipdomvol14' => 'Top Recipient Domains by Volume',
+    'assassinscoredist14' => 'SpamAssassin Score Distribution',
+    'assassinrulhit14' => 'SpamAssassin Rule Hits',
+    'auditlog14' => 'Audit Log',
+    'mrtgreport14' => 'MRTG Style Report',
+    'mcpscoredist14' => 'MCP Score Distribution'
+    'mcprulehit14' => 'MCP Rule Hit'
 
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
@@ -341,4 +310,9 @@ return array(
     'dberror99' => 'Quelque-chose s\'est mal passé - Contactez le support',
     'arview01' => 'Afficher',
     'arrelease01' => 'Libérer',
+    
+    // 99 - General
+    'i18_missing' => 'Non traduit en français',
+    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
+    
 );

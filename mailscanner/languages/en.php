@@ -75,7 +75,7 @@ return array(
     'blockedfiles03' => 'Blocked Files:',
     'others03' => 'Other:',
     'spam03' => 'Spam:',
-    'hscospam03' => 'High Score Spam:',    'id04' => 'ID :',
+    'hscospam03' => 'High Score Spam:',
     'hscomcp03' => 'High Score MCP:',
     'recentmessages03' => 'Recent Messages',
     'lists03' => 'B/W Lists',
@@ -226,6 +226,7 @@ return array(
     'updatesadesc10' => 'Update SpamAssassin Rule Descriptions',
     'updatemcpdesc10' => 'Update MCP Rule Descriptions',
     'updategeoip10' => 'Update GeoIP Database',
+    'links10' => 'Links',
 
     // 11-sf_versions.php
     'softver11' => 'Software Versions',
@@ -277,10 +278,28 @@ return array(
     // 13-sa_rules_update.php
     'folder_0308' => 'Quarantine Folder',
 
-    // 99 - General
-    'i18_missing' => 'No translation in English',
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
-
+    // 14-reports.php
+    'messlistin14' => 'Message Listing',
+    'messop14' => 'Message Operations',
+    'messdate14' => 'Total Messages by Date',
+    'topmailrelay14' => 'Top Mail Relays',
+    'topvirus14' => 'Top Viruses',
+    'virusrepor14' => 'Virus Report',
+    'topsendersqt14' => 'Top Senders by Quantity',
+    'topsendersvol14' => 'Top Senders by Volume',
+    'toprecipqt14' => 'Top Recipients by Quantity',
+    'toprecipvol14' => 'Top Recipients by Volume',
+    'topsendersdomqt14' => 'Top Sender Domains by Quantity',
+    'topsendersdomqt14' => 'Top Sender Domains by Volume',
+    'toprecipdomqt14' => 'Top Recipient Domains by Quantity',
+    'toprecipdomvol14' => 'Top Recipient Domains by Volume',
+    'assassinscoredist14' => 'SpamAssassin Score Distribution',
+    'assassinrulhit14' => 'SpamAssassin Rule Hits',
+    'auditlog14' => 'Audit Log',
+    'mrtgreport14' => 'MRTG Style Report',
+    'mcpscoredist14' => 'MCP Score Distribution'
+    'mcprulehit14' => 'MCP Rule Hit'
+    
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
@@ -291,5 +310,9 @@ return array(
     'dberror99' => 'Something went wrong - please contact support',
     'arview01' => 'View',
     'arrelease01' => 'Release',
+
+    // 99 - General
+    'i18_missing' => 'No translation in English',
+    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
 );

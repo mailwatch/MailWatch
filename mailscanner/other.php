@@ -85,7 +85,7 @@ echo '</ul>';
 
 if ($_SESSION['user_type'] == 'A') {
     echo '
-   <p>Links</p>
+   <p>' . __('links10') . '</p>
    <ul>
     <li><a href="http://mailwatch.org">MailWatch for MailScanner</a>
     <li><a href="http://www.mailscanner.info">MailScanner</a>';
