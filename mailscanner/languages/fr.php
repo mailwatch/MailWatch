@@ -297,8 +297,8 @@ return array(
     'assassinrulhit14' => 'SpamAssassin Rule Hits',
     'auditlog14' => 'Audit Log',
     'mrtgreport14' => 'MRTG Style Report',
-    'mcpscoredist14' => 'MCP Score Distribution'
-    'mcprulehit14' => 'MCP Rule Hit'
+    'mcpscoredist14' => 'MCP Score Distribution',
+    'mcprulehit14' => 'MCP Rule Hit',
 
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
