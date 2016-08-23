@@ -282,7 +282,8 @@ return array(
     'no12' => 'Non',
     'questionmark12' => ' ?',
     'toggle12' => 'Activer/Désactiver',
-                            
+    'sure12' => 'Êtes-vous sûr ?',
+                                
     // Added in 2015-06-25
     // 03-funtions.php
     'footer01' => 'MailWatch pour MailScanner v',
