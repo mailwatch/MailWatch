@@ -294,7 +294,11 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
     'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
-    
+    'updategeoip15' => 'Update GeoIP Database',
+    'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
+    'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
+    'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
+        
     // 14-reports.php
     'messlistin14' => 'Message Listing',
     'messop14' => 'Message Operations',
@@ -320,7 +324,9 @@ return array(
     // 15-geoip_update.php
     'input15' => 'Run Now',
     'updategeoip15' => 'Update GeoIP Database',
-        
+    'message115' => 'This utility is used to download the GeoIP database files (which are updated on the first Tuesday of each month) from',
+    'message215' => 'which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.',
+            
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',

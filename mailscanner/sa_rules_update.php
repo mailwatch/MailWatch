@@ -42,9 +42,9 @@ if ($_SESSION['user_type'] != 'A') {
     echo "<tr><th>" . __('updatesadesc13') . "</th></tr>";
     echo "<tr>";
     echo "  <td>";
-    echo "   <br>This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.<br>";
+    echo "   <br>" . __('message113') . "<br>";
     echo "   <br>";
-    echo "   This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br><br>";
+    echo "   " . __('message213') . "<br><br>";
     echo "  </td>";
     echo "</tr>";
     echo " <tr>";

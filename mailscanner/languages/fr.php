@@ -294,7 +294,10 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
     'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
-        
+    'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
+    'message113' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles de SpamAssassin qui sont affichés sur l\'écran Message Détail mise à jour.',
+    'message213' => 'Cet utilitaire doit généralement être exécuté après une mise à jour SpamAssassin, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
+            
     // 14-reports.php
     'messlistin14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
@@ -321,7 +324,9 @@ return array(
     'updatesadesc15' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'input15' => 'Démarrer',
     'updategeoip15' => 'Mettre à jour la base GeoIP',
-    
+    'message115' => 'Cet utilitaire est utilisé pour télécharger les fichiers de la base de données GeoIP (qui sont mis à jour sur le premier mardi de chaque mois) à partir de',
+    'message215' => 'qui est utilisé pour travailler sur le pays d\'origine pour une adresse IP donnée et est affiché sur la page Message Détail.',
+        
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',
