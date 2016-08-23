@@ -289,11 +289,12 @@ return array(
     'footer01' => 'MailWatch for MailScanner v',
 
     // 08-quarantine.php
-    'input01' => 'Run Now',
+    'folder_0308' => 'Quarantine Folder'
 
     // 13-sa_rules_update.php
-    'folder_0308' => 'Quarantine Folder',
-
+    'input13' => 'Run Now',
+    'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
+    
     // 14-reports.php
     'messlistin14' => 'Message Listing',
     'messop14' => 'Message Operations',
@@ -315,7 +316,11 @@ return array(
     'mrtgreport14' => 'MRTG Style Report',
     'mcpscoredist14' => 'MCP Score Distribution',
     'mcprulehit14' => 'MCP Rule Hit',
-    
+
+    // 15-geoip_update.php
+    'input15' => 'Run Now',
+    'updategeoip15' => 'Update GeoIP Database',
+        
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',

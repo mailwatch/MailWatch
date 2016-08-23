@@ -40,22 +40,22 @@ html_start("GeoIP Database Update", 0, false, false);
 
 if (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">
-	 <input type="hidden" name="run" value="true">
-	 <table class="boxtable" width="100%">
+       	 <input type="hidden" name="run" value="true">
+       	 <table class="boxtable" width="100%">
             <tr><th>';
-    echo __('updategeoip10');
+    echo __('updategeoip15');
     echo '</th></tr>
-	    <tr>
-	        <td>
+       	    <tr>
+       	        <td>
                     <br>
-	            This utility is used to download the GeoIP database files (which are updated on the first Tuesday of each month) from <a href="http://dev.maxmind.com/geoip/legacy/geolite/" target="_maxmind">MaxMind</a> which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.<br><br>
-	        </td>
-	    </tr>
-	    <tr>
-	        <td align="center"><br><input type="SUBMIT" value="Run Now"><br><br></td>
-	    </tr>
-	 </table>
-	 </form>' . "\n";
+       	            This utility is used to download the GeoIP database files (which are updated on the first Tuesday of each month) from <a href="http://dev.maxmind.com/geoip/legacy/geolite/" target="_maxmind">MaxMind</a> which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.<br><br>
+       	        </td>
+       	    </tr>
+       	    <tr>
+       	        <td align="center"><br><input type="SUBMIT" value="' . __('input15') . '"><br><br></td>
+       	    </tr>
+       	 </table>
+       	 </form>' . "\n";
 } else {
     require_once(__DIR__ . '/lib/request/Requests.php');
     Requests::register_autoloader();

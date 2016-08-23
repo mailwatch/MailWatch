@@ -248,7 +248,7 @@ return array(
     'edit12' => 'Editer',
     'delete12' => 'Supprimer',
     'filters12' => 'Filtres',
-    'newuser12' => 'Nouveau Utilisateur',
+    'newuser12' => 'Créer un nouveau compte Utilisateur',
     'forallusers12' => 'Pour tous les Utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'Utilisateur.',
     'username0212' => 'Nom d\'Utilisateur :',
     'name12' => 'Nom :',
@@ -289,11 +289,11 @@ return array(
     'footer01' => 'MailWatch pour MailScanner v',
 
     // 08-quarantine.php
-    'input01' => 'Dossier de quarantaine',
-
-    // 13-sa_rules_update.php
     'folder_0308' => 'Dossier de quarantaine',
-
+    
+    // 13-sa_rules_update.php
+    'input13' => 'Démarrer',
+    
     // 14-reports.php
     'messlistin14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
@@ -316,6 +316,11 @@ return array(
     'mcpscoredist14' => 'Score MCP par point',
     'mcprulehit14' => 'Score MCP par règle',
 
+    // 15-geoip_update.php
+    'updatesadesc15' => 'Mettre à jour les descriptions des règles SpamAssassin',
+    'input15' => 'Démarrer',
+    'updategeoip15' => 'Mettre à jour la base GeoIP',
+    
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',
