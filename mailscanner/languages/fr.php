@@ -294,7 +294,6 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
     'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
-    'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'message113' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles de SpamAssassin qui sont affichés sur l\'écran Message Détail mise à jour.',
     'message213' => 'Cet utilitaire doit généralement être exécuté après une mise à jour SpamAssassin, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
             
@@ -321,11 +320,27 @@ return array(
     'mcprulehit14' => 'Score MCP par règle',
 
     // 15-geoip_update.php
-    'updatesadesc15' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'input15' => 'Démarrer',
     'updategeoip15' => 'Mettre à jour la base GeoIP',
     'message115' => 'Cet utilitaire est utilisé pour télécharger les fichiers de la base de données GeoIP (qui sont mis à jour sur le premier mardi de chaque mois) à partir de',
     'message215' => 'qui est utilisé pour travailler sur le pays d\'origine pour une adresse IP donnée et est affiché sur la page Message Détail.',
+    'downfile15' => 'Téléchargement du fichier en cours, veuillez patienter...',
+    'geoipv415' => 'Fichier de données GeoIP IPv4',
+    'geoipv615' => 'Fichier de données GeoIP IPv6',
+    'downok15' => ': téléchargement réussi',
+    'downbad15' => 'Une erreur c\'est produite pendant le téléchargement',
+    'downokunpack15' => 'Téléchargement complet, extraction des fichiers...',
+    'message315' => 'Impossible de télécharger le fichier de données GeoIP (curl et fsockopen essayés).',
+    'message415' => 'Veuillez installer le module PHP cURL (préféré) ou activer fsockopen dans votre fichier php.ini',
+    'unpackok15' => ': décompactage réussi',
+    'extractnotok15' => 'Impossible d\'extraire',
+    'extractok15' => 'extraction réussie',
+    'message515' => 'Impossible d\'extraire le fichier de données GeoIP.',
+    'message615' => 'Activez le module PHP Zlib dans votre configuration PHP ou installez le binaire gunzip.',
+    'processok' => 'Processus terminé !',
+    'norread15' => 'Impossible de lire ou d\'écrire sur le',
+    'message715' => 'Les fichiers existent toujours pour une raison inconnue.',
+    'message815' => 'Effacez-les à la main à partir de',
         
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
