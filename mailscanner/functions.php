@@ -291,7 +291,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
-    echo '    <tr> <td>' . __('spam03') . '</td> <td class="spam"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
     echo '    <tr> <td>' . __('highspam03') . '</td> <td class="highspam"></td> </tr>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
         echo '    <tr> <td>' . __('mcp03') . '</td> <td class="mcp"></td> </tr>' . "\n";

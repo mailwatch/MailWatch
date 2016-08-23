@@ -75,6 +75,7 @@ return array(
     'blockedfiles03' => 'Fichier(s) bloqué(s) :',
     'others03' => 'Autre :',
     'spam03' => 'Spam :',
+    'spam103' => 'Spam',
     'hscospam03' => 'Spam à haut score :',
     'hscomcp03' => 'MCP à haut score :',
     'recentmessages03' => 'Messages récent',
