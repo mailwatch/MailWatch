@@ -139,7 +139,7 @@ return array(
     'id04' => 'ID :',
     'virus04' => 'Virus :',
     'spam04' => 'Spam :',
-    'assassinspam04' => 'Spam SpamAssassin :',
+    'spamassassinspam04' => 'Spam SpamAssassin :',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
