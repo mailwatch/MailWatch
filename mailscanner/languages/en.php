@@ -88,7 +88,10 @@ return array(
     'sascore03' => 'SA Score',
     'mcpscore03' => 'MCP Score',
     'found03' => 'found',
-
+    'highspam03' => 'High Spam',
+    'mcp03' => 'MCP',
+    'highmcp03' => 'High MCP',
+    
     // 04-details.php
     'receivedon04' => 'Received on:',
     'receivedby04' => 'Received by:',
@@ -259,7 +262,7 @@ return array(
     'quarreprec12' => 'Quarantine Report Recipient:',
     'overrec12' => 'Override quarantine report recipient?<BR>(uses your username if blank)',
     'scanforspam12' => 'Scan for Spam:',
-    'scaneforspam12' => 'Scan e-mail for Spam?',
+    'scanforspam212' => 'Scan e-mail for Spam?',
     'pontspam12' => 'Spam Score:',
     'hpontspam12' => 'High Spam Score:',
     'usedefault12' => 'Use Default',
@@ -267,7 +270,20 @@ return array(
     'reset12' => 'Reset',
     'areusuredel12' => 'Are you sure you want to delete user',
     'errorpass12' => 'Passwords do not match',
-
+    'edituser12' => 'Edit User',
+    'create12' => 'Create',
+    'userregex12' => 'User (Regexp)',
+    'update12' => 'Update',
+    'userfilter12' => 'User Filters for',
+    'filter12' => 'Filter',
+    'add12' => 'Add',
+    'active12' => 'Active',
+    'yes12' => 'Yes',
+    'no12' => 'No',
+    'questionmark12' => '?',
+    'toggle12' => 'Activate/Deactivate',
+    'sure12' => 'Are you sure?',
+          
     // Added in 2015-06-25
     // 03-funtions.php
     'footer01' => 'MailWatch for MailScanner v',

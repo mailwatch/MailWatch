@@ -291,11 +291,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
-    echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>' . "\n";
-    echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('spam03') . '</td> <td class="spam"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('highspam03') . '</td> <td class="highspam"></td> </tr>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
-        echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
-        echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
+        echo '    <tr> <td>' . __('mcp03') . '</td> <td class="mcp"></td> </tr>' . "\n";
+        echo '    <tr> <td>' . __('highmcp03') . '</td><td class="highmcp"></td></tr>' . "\n";
     }
     echo '    <tr> <td>' . __('whitelisted03') . '</td> <td class="whitelisted"></td> </tr>' . "\n";
     echo '    <tr> <td>' . __('blacklisted03') . '</td> <td class="blacklisted"></td> </tr>' . "\n";
@@ -303,7 +303,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '    <tr> <td>' . __('clean03') . '</td> <td></td> </tr>' . "\n";
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
-
+    
     if (!DISTRIBUTED_SETUP && ($_SESSION['user_type'] == 'A' || $_SESSION['user_type'] == 'D')) {
         echo '  <td align="center" valign="top">' . "\n";
 

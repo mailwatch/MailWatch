@@ -46,7 +46,7 @@ if ($_SESSION['user_type'] == 'A') {
     <script type="text/javascript">
         <!--
         function delete_user(id) {
-            var yesno = confirm("<?php echo __('areusuredel12'); ?>" + id + "?");
+            var yesno = confirm("<?php echo " " . __('areusuredel12') . " "; ?>" + id + "<?php echo __('questionmark12'); ?>");
             if (yesno === true) {
                 window.location = "?action=delete&id=" + id;
             } else {
@@ -55,7 +55,7 @@ if ($_SESSION['user_type'] == 'A') {
         }
 
         function delete_filter(id, filter) {
-            var yesno = confirm("Are you sure?");
+            var yesno = confirm("<?php echo __('sure12'); ?>");
             if (yesno === true) {
                 window.location = "?action=filters&id=" + id + "&filter=" + filter + "&delete=true";
             } else {
@@ -64,7 +64,7 @@ if ($_SESSION['user_type'] == 'A') {
         }
 
         function change_state(id, filter) {
-            var yesno = confirm("Are you sure?");
+            var yesno = confirm("<?php echo __('sure12'); ?>");
             if (yesno === true) {
                 window.location = "?action=filters&id=" + id + "&filter=" + filter + "&change_state=true";
             } else {
@@ -95,10 +95,10 @@ if ($_SESSION['user_type'] == 'A') {
         </SELECT></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\"> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</td><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" CHECKED> <font size=\"-2\">" . __('scanespam12') . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" CHECKED> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('pontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('hpontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-                    echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Create\"></TD></TR>\n";
+                    echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"". __('create12') . "\"></TD></TR>\n";
                     echo "</TABLE></FORM><BR>\n";
                 } else {
                     if ($_GET['password'] != $_GET['password1']) {
@@ -177,24 +177,24 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
                     echo "<TABLE CLASS=\"mail\" BORDER=0 CELLPADDING=1 CELLSPACING=1>\n";
-                    echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">Edit User " . $row->username . "</TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Username:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Name:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">User Type:</TD>
+                    echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . " " . $row->username . "</TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
-         <OPTION " . $s["A"] . " VALUE=\"A\">Administrator</OPTION>
-         <OPTION " . $s["D"] . " VALUE=\"D\">Domain Administrator</OPTION>
-         <OPTION " . $s["U"] . " VALUE=\"U\">User</OPTION>
-         <OPTION " . $s["R"] . " VALUE=\"R\">User (Regexp)</OPTION>
+         <OPTION " . $s["A"] . " VALUE=\"A\">" . __('admin12') . "</OPTION>
+         <OPTION " . $s["D"] . " VALUE=\"D\">" . __('domainadmin12') . "</OPTION>
+         <OPTION " . $s["U"] . " VALUE=\"U\">" . __('user12') . "</OPTION>
+         <OPTION " . $s["R"] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
         </SELECT></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Quarantine Report:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=-2>Send Daily Report?</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Quarantine Report Recipient:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">Override quarantine report recipient?<br>(uses your username if blank)</font></TD>\n";
-                    echo " <TR><TD CLASS=\"heading\">Scan for Spam:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">Scan eMail for Spam?</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=Use Default</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">High Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=\"-2\">0=Use Default</font></TD></TR>\n";
-                    echo "<TR><TD CLASS=\"heading\">Action:</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"Reset\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Update\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('pontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('hpontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
+                    echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"" . __('update12') . "\"></TD></TR>\n";
                     echo "</TABLE></FORM><BR>\n";
                     $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
                     $result = dbquery($sql);
@@ -289,20 +289,20 @@ if ($_SESSION['user_type'] == 'A') {
                         dbquery($sql);
                     }
                 }
-                $sql = "SELECT filter, CASE WHEN active='Y' THEN 'Yes' ELSE 'No' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\'\)\">Delete</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\')\">Activate/Deactivate</a>') AS actions FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "'";
+                $sql = "SELECT filter, CASE WHEN active='Y' THEN 'Yes' ELSE 'No' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "'";
                 $result = dbquery($sql);
                 echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"id\" VALUE=\"" . $id . "\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"filters\">\n";
                 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-                echo " <TR><TH COLSPAN=3>User Filters for " . $id . "</TH></TR>\n";
-                echo " <TR><TH>Filter</TH><TH>Active</TH><TH>Actions</TH></TR>\n";
+                echo " <TR><TH COLSPAN=3>" . __('userfilter12') . " " . $id . "</TH></TR>\n";
+                echo " <TR><TH>" . __('filter12') . "</TH><TH>" . __('active12') . "</TH><TH>" . __('action12') . "</TH></TR>\n";
                 if (mysql_num_rows($result) > 0) {
                     while ($row = mysql_fetch_object($result)) {
                         echo " <TR><TD>" . $row->filter . "</TD><TD>" . $row->active . "</TD><TD>" . $row->actions . "</TD></TR>\n";
                     }
                 }
-                echo " <TR><TD><INPUT TYPE=\"text\" NAME=\"filter\"></TD><TD><SELECT NAME=\"active\"><OPTION VALUE=\"Y\">Yes<OPTION VALUE=\"N\">No</SELECT></TD><TD><INPUT TYPE=\"hidden\" NAME=\"new\" VALUE=\"true\"><INPUT TYPE=\"submit\" VALUE=\"Add\"></TD></TR>\n";
+                echo " <TR><TD><INPUT TYPE=\"text\" NAME=\"filter\"></TD><TD><SELECT NAME=\"active\"><OPTION VALUE=\"Y\">" . __('yes12') . "<OPTION VALUE=\"N\">" . __('no12') . "</SELECT></TD><TD><INPUT TYPE=\"hidden\" NAME=\"new\" VALUE=\"true\"><INPUT TYPE=\"submit\" VALUE=\"" . __('add12') . "\"></TD></TR>\n";
                 echo "</TABLE><BR>\n";
                 echo "</FORM>\n";
                 break;
@@ -355,25 +355,25 @@ ORDER BY
         echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
         echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
         echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-        echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">Edit User " . $row->username . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">Username:</TD><TD>" . $_SESSION['myusername'] . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">Name:</TD><TD>" . $_SESSION['fullname'] . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">Password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">' . __('edituser12') . ' " . $row->username . "</TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('username0212') . '</TD><TD>" . $_SESSION['myusername'] . "</TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('name12') . '</TD><TD>" . $_SESSION['fullname'] . "</TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('password12') . '</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('password12') . '</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
 
-        echo " <TR><TD CLASS=\"heading\">Quarantine Report:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=\"-2\">Send Daily Report?</font></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">Quarantine Report Recipient:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">Override quarantine report recipient?<br>(uses your username if blank)</font></TD>\n";
-        echo " <TR><TD CLASS=\"heading\">Scan for Spam:</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">Scan e-mail for Spam?</font></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=Use Default</font></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">High Spam Score:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=-2>0=Use Default</font></TD></TR>\n";
-        echo "<TR><TD CLASS=\"heading\">Action:</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"Reset\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Update\"></TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('quarrep12') . '</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=\"-2\">Send Daily Report?</font></TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('quarreprec12') . '</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">' . __('overrec12') . '</font></TD>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('scanforspam12') . '</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('pontspam12') . '</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=' . __('usedefault12') . '</font></TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">' . __('hpontspam12') . '</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=-2>0=' . __('usedefault12') . '</font></TD></TR>\n";
+        echo "<TR><TD CLASS=\"heading\">' . __('action_0212') . '</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"Reset\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"Update\"></TD></TR>\n";
         echo "</TABLE></FORM><BR>\n";
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
     } else {
         // Do update
         if ($_GET['password'] != $_GET['password1']) {
-            echo "Passwords do not match";
+            echo __('errorpass12');
         } else {
             $do_pwd = false;
             $username = mysql_real_escape_string($_SESSION['myusername']);
