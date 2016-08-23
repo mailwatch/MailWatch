@@ -293,7 +293,8 @@ return array(
     
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
-    
+    'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
+        
     // 14-reports.php
     'messlistin14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',

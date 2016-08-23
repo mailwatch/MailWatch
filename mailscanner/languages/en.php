@@ -289,7 +289,7 @@ return array(
     'footer01' => 'MailWatch for MailScanner v',
 
     // 08-quarantine.php
-    'folder_0308' => 'Quarantine Folder'
+    'folder_0308' => 'Quarantine Folder',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
