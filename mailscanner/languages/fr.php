@@ -342,7 +342,8 @@ return array(
     'norread15' => 'Impossible de lire ou d\'écrire sur le',
     'message715' => 'Les fichiers existent toujours pour une raison inconnue.',
     'message815' => 'Effacez-les à la main à partir de',
-        
+    'directory15' => 'répertoire'
+            
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',

@@ -344,7 +344,8 @@ return array(
     'norread15' => 'Unable to read or write to the',
     'message715' => 'Files still exist for some reason.',
     'message815' => 'Delete them manually from',
-                
+    'directory15' => 'directory'
+                    
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
