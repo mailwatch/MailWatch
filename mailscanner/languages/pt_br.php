@@ -216,7 +216,7 @@ return array(
     'quarreprec12' => 'Destinatário do Relatório de Quarentena:',
     'overrec12' => 'Alterar destinarário do relatório?<BR>(usará seu Usuário se em branco)',
     'scanforspam12' => 'Procurar Spam:',
-    'scaneforspam12' => 'Buscar spam nos e-mails?',
+    'scanforspam212' => 'Buscar spam nos e-mails?',
     'pontspam12' => 'Pontuação Spam:',
     'hpontspam12' => 'Pontuação Alta Spam:',
     'usedefault12' => 'Usar Padrão',

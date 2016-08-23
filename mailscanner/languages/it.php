@@ -223,7 +223,7 @@ return array(
     'quarreprec12' => 'Destinaratio Report Quarantena:',
     'overrec12' => 'Sostituire il destinatario del report di quarantena?<BR>(verrà utilizzato il tuo nome utente, se vuoto)',
     'scanforspam12' => 'Analizzare per Spam?',
-    'scaneforspam12' => 'Analizzare le e-mail per Spam?',
+    'scanforspam212' => 'Analizzare le e-mail per Spam?',
     'pontspam12' => 'Punteggio Spam:',
     'hpontspam12' => 'Alto Punteggio Spam:',
     'usedefault12' => 'Utilizza Predefinito',
