@@ -289,7 +289,7 @@ if ($_SESSION['user_type'] == 'A') {
                         dbquery($sql);
                     }
                 }
-                $sql = "SELECT filter, CASE WHEN active='Y' THEN 'Yes' ELSE 'No' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "'";
+                $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "'";
                 $result = dbquery($sql);
                 echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"id\" VALUE=\"" . $id . "\">\n";
@@ -313,18 +313,18 @@ SELECT
  username AS '" . mysql_real_escape_string(__('username12')) . "',
  fullname AS '" . mysql_real_escape_string(__('fullname12')) . "',
  CASE
-  WHEN type = 'A' THEN 'Administrator'
-  WHEN type = 'D' THEN 'Domain Administrator'
-  WHEN type = 'U' THEN 'User'
-  WHEN type = 'R' THEN 'User (Regexp)'
+  WHEN type = 'A' THEN '" . __('admin12') . "'
+  WHEN type = 'D' THEN '" . __('domainadmin12') . "'
+  WHEN type = 'U' THEN '" . __('user12') . "'
+  WHEN type = 'R' THEN '" . __('userregex12') . "'
  ELSE
-  'Unknown Type'
+  '" . __('unknowtype12') . "'
  END AS '" . mysql_real_escape_string(__('type12')) . "',
  CASE
-  WHEN noscan = 1 THEN 'N'
-  WHEN noscan = 0 THEN 'Y'
+  WHEN noscan = 1 THEN '" . __('noshort12') . "'
+  WHEN noscan = 0 THEN '" . __('yesshort12') . "'
  ELSE
-  'Y'
+  '" . __('yesshort12') . "'
  END AS '" . mysql_real_escape_string(__('spamcheck12')) . "',
   spamscore AS '" . mysql_real_escape_string(__('spamscore12')) . "',
   highspamscore AS '" . mysql_real_escape_string(__('spamhscore12')) . "',

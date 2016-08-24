@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.2.5 */
+/* v0.2.6 */
 
 return array(
     // 01-login.php
@@ -64,7 +64,7 @@ return array(
     'last03' => 'Dernier',
     'loadaverage03' => 'Charge Moyenne :',
     'mailqueue03' => 'Files d\'attente de courrier',
-    'inbound03' => 'En arrivé :',
+    'inbound03' => 'En entrée :',
     'outbound03' => 'En partance :',
     'topvirus03' => 'Top Virus :',
     'freedspace03' => 'Espace disque libre',
@@ -284,7 +284,10 @@ return array(
     'questionmark12' => ' ?',
     'toggle12' => 'Activer/Désactiver',
     'sure12' => 'Êtes-vous sûr ?',
-                                
+    'unknowtype12' => 'Type Inconnu',
+    'yesshort12' => 'O',
+    'noshort12' => 'N',
+                                    
     // Added in 2015-06-25
     // 03-funtions.php
     'footer01' => 'MailWatch pour MailScanner v',

@@ -284,7 +284,10 @@ return array(
     'questionmark12' => '?',
     'toggle12' => 'Activate/Deactivate',
     'sure12' => 'Are you sure?',
-          
+    'unknowtype12' => 'Unknown Type',
+    'yesshort12' => 'Y',
+    'noshort12' => 'N',
+              
     // Added in 2015-06-25
     // 03-funtions.php
     'footer01' => 'MailWatch for MailScanner v',
