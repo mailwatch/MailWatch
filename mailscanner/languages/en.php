@@ -304,7 +304,7 @@ return array(
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
         
     // 14-reports.php
-    'messlistin14' => 'Message Listing',
+    'messlisting14' => 'Message Listing',
     'messop14' => 'Message Operations',
     'messdate14' => 'Total Messages by Date',
     'topmailrelay14' => 'Top Mail Relays',

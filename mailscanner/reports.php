@@ -84,7 +84,7 @@ if (isset($_GET["action"])) {
 // add the session filters to the variables
 $_SESSION["filter"] = $filter;
 
-$filter->AddReport("rep_message_listing.php", __('messlistin14'));
+$filter->AddReport("rep_message_listing.php", __('messlisting14'));
 $filter->AddReport("rep_message_ops.php", __('messop14'));
 
 $filter->AddReport("rep_total_mail_by_date.php", __('messdate14'));

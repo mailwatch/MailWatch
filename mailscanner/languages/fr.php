@@ -302,7 +302,7 @@ return array(
     'message213' => 'Cet utilitaire doit généralement être exécuté après une mise à jour SpamAssassin, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
             
     // 14-reports.php
-    'messlistin14' => 'Listing des messages',
+    'messlisting14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
     'messdate14' => 'Total des messages par date',
     'topmailrelay14' => 'Top relais de messagerie',
