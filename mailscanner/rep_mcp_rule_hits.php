@@ -113,16 +113,15 @@ echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  </tr>' . "\n";
 while ((list($key, $val) = each($sa_array)) && $count < 10) {
     echo '
-<TR BGCOLOR=\"#EBEBEB\">
- <TD>$key</TD>
- <TD>" . htmlentities(return_sa_rule_desc(strtoupper($key))) . "</TD>
- <TD ALIGN=\"RIGHT\">" . sprintf("%0.2f", $val['score']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['total']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['not-spam']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . round(($val['not-spam'] / $val['total']) * 100, 1) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['spam']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . round(($val['spam'] / $val['total']) * 100, 1) .
-        "</TD></TR>";
+<tr bgcolor="#ebebeb">
+ <td>' . $key . '</td>
+ <td>' . htmlentities(return_mcp_rule_desc(strtoupper($key))) . '</td>
+ <td align="right">' . number_format($val['total']) . '</td>
+ <td align="right">' . number_format($val['not-mcp']) . '</td>
+ <td align="right">' . round(($val['not-mcp'] / $val['total']) * 100, 1) . '</td>
+ <td align="right">' . number_format($val['mcp']) . '</td>
+ <td align="right">' . round(($val['mcp'] / $val['total']) * 100, 1) . '</td>
+ </tr>' . "\n";
 }
 echo "
   </table>
