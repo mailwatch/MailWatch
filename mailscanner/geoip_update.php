@@ -198,7 +198,7 @@ if (!isset($_POST['run'])) {
             audit_log('Ran GeoIP update');
         } else {
             // unable to read or write to the directory
-            die(__('norread15') . " " . $extract_dir . " " . __('directory15') . ".\n");            
+            die(__('norread15') . " " . $extract_dir . " " . __('directory15') . ".\n");
         }
     } else {
         $error_message = __('message715') . "<br>\n";
