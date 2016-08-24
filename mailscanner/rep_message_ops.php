@@ -97,7 +97,7 @@ $sql .= "
 ";
 
 // function to display the data from functions.php
-db_colorised_table($sql, 'Message Operations', true, true, "SPAM");
+db_colorised_table($sql, __('messageops17'), true, true, "SPAM");
 
 // Add footer
 html_end();

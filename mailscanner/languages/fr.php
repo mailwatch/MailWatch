@@ -349,6 +349,9 @@ return array(
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Listing des messages',
+
+    // 17-rep_message_ops.php
+    'messageops17' => 'Manipulation sur les Messages',
                 
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',

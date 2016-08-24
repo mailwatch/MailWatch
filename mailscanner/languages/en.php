@@ -351,6 +351,9 @@ return array(
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Message Listing',
+
+    // 17-rep_message_ops.php
+    'messageops17' => 'Message Operations',
                         
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
