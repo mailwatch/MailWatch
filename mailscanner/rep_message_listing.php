@@ -108,7 +108,7 @@ $sql .= "
  ";
 
 // function to display the data from functions.php
-db_colorised_table($sql, 'Message Listing', true, true);
+db_colorised_table($sql, __('messlisting16'), true, true);
 
 // Add footer
 html_end();

@@ -346,7 +346,10 @@ return array(
     'message715' => 'Les fichiers existent toujours pour une raison inconnue.',
     'message815' => 'Effacez-les à la main à partir de',
     'directory15' => 'répertoire',
-            
+
+    // 16-rep_message_listing.php
+    'messlisting16' => 'Listing des messages',
+                
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',
