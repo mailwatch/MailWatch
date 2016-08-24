@@ -138,7 +138,7 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type
         $sql .= "
 ORDER BY
  date DESC, time DESC";
-        db_colorised_table($sql, __('folder08') . ': ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
+        db_colorised_table($sql, __('folder08') . ' ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
         $dir = preg_replace('[\.|\.\.|\/]', '', $dir);

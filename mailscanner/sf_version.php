@@ -60,34 +60,34 @@ if ($_SESSION['user_type'] != 'A') {
     echo '<td>' . "\n";
 
     echo '<br>' . "\n";
-    echo 'MailWatch ' . __('version11') . $mailwatch_version . '<br>' . "\n";
+    echo 'MailWatch ' . __('version11') . " ". $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MailScanner ' . __('version11') . $mailscanner_version . '<br>' . "\n";
+    echo 'MailScanner ' . __('version11') . " ". $mailscanner_version . '<br>' . "\n";
     echo '<br>';
     $virusScanner = get_conf_var('VirusScanners');
     // Add test for others virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {
-        echo 'ClamAV ' . __('version11');
+        echo 'ClamAV ' . __('version11') . " ";
         passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
     echo '<br>' . "\n";
-    echo 'SpamAssassin ' . __('version11');
+    echo 'SpamAssassin ' . __('version11') . " ";
     passthru("spamassassin -V | tr '\\\n' ' ' | cut -d' ' -f3");
     echo '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'PHP ' . __('version11') . $php_version . '<br>' . "\n";
+    echo 'PHP ' . __('version11') . " " . $php_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MySQL ' . __('version11') . $mysql_version . '<br>' . "\n";
+    echo 'MySQL ' . __('version11') . " " . $mysql_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'GeoIP Database ' . __('version11');
+    echo 'GeoIP Database ' . __('version11') . " ";
     if (false !== $geoipv4_version) {
         echo $geoipv4_version;
     } else {
-        echo __('nodbdown11');
+        echo __('nodbdown11') ." ";
     }
     echo "<br>\n<br>\n";
-    echo 'GeoIPv6 Database ' . __('version11');
+    echo 'GeoIPv6 Database ' . __('version11') ." ";
     if (false !== $geoipv6_version) {
         echo $geoipv6_version;
     } else {

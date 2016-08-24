@@ -216,7 +216,7 @@ return array(
     'quarreprec12' => 'Quarantaine Rapport Ontvanger:',
     'overrec12' => 'Andere quarantaine rapport ontvanger?<BR>(gebruiker email wanneer geen invoer)',
     'scanforspam12' => 'Zoek naar Spam:',
-    'scaneforspam12' => 'Zoek in email naar Spam?',
+    'scanforspam212' => 'Zoek in email naar Spam?',
     'pontspam12' => 'Spam Score:',
     'hpontspam12' => 'Hoge Spam Score:',
     'usedefault12' => 'Gebruik Standaardwaarden',

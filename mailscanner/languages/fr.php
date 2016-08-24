@@ -30,12 +30,18 @@
  */
 
 /* languages/fr.php */
-/* v0.2.4 */
+/* v0.2.6 */
 
 return array(
     // 01-login.php
     'username' => 'Utilisateur :',
     'password' => 'Mot de Passe :',
+    'mwloginpage01' => 'MailWatch Login Page',
+    'mwlogin01' => 'Connexion&nbsp;à&nbsp;MailWatch',
+    'badup01' => 'Mauvais Utilisateur ou Mot de Passe',
+    'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
+    'errorund01' => 'Une rreur inconnue c\'est produite',
+    'login01' => 'Connexion',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
@@ -47,15 +53,31 @@ return array(
     'blacklisted03' => 'Liste Noire',
     'notverified03' => 'Non vérifié',
     'clean03' => 'Bon',
+    'status03' => 'Statut',
+    'mailscanner03' => 'Mailscanner :',
+    'none03' => 'Aucun',
+    'comma03' => ' :',
+    'yes03' => 'OUI',
+    'no03' => 'NON',
+    'message03' => 'Message',
+    'tries03' => 'Essais',
+    'last03' => 'Dernier',
+    'loadaverage03' => 'Charge Moyenne :',
+    'mailqueue03' => 'Files d\'attente de courrier',
+    'inbound03' => 'En entrée :',
+    'outbound03' => 'En partance :',
+    'topvirus03' => 'Top Virus :',
     'freedspace03' => 'Espace disque libre',
     'todaystotals03' => 'Total aujourd\'hui',
-    'processed03' => 'Traité',
-    'cleans03' => 'Bon',
-    'viruses03' => 'Virus',
-    'blockedfiles03' => 'Fichier(s) bloqué(s)',
-    'others03' => 'Autre',
-    'hscospam03' => 'Spam à Score Haut',
-    'hscomcp03' => 'MCP à Score Haut',
+    'processed03' => 'Traité :',
+    'cleans03' => 'Bon :',
+    'viruses03' => 'Virus :',
+    'blockedfiles03' => 'Fichier(s) bloqué(s) :',
+    'others03' => 'Autre :',
+    'spam03' => 'Spam :',
+    'spam103' => 'Spam',
+    'hscospam03' => 'Spam à haut score :',
+    'hscomcp03' => 'MCP à haut score :',
     'recentmessages03' => 'Messages récent',
     'lists03' => 'Listes N/B',
     'quarantine03' => 'Quarantaine',
@@ -67,7 +89,10 @@ return array(
     'sascore03' => 'Score SA',
     'mcpscore03' => 'Score MCP',
     'found03' => 'trouvé',
-
+    'highspam03' => 'Spam Haut',
+    'mcp03' => 'MCP',
+    'highmcp03' => 'MCP Haut',
+    
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
     'receivedby04' => 'Reçu par :',
@@ -81,7 +106,7 @@ return array(
     'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers nocif',
     'blkfile04' => 'Fichier bloqué :',
     'otherinfec04' => 'Autre infection :',
-    'hscospam04' => 'Spam à Score Haut :',
+    'hscospam04' => 'Spam à haut score :',
     'listedrbl04' => 'Listé en RBL :',
     'spamwl04' => 'Spam en Liste Blanche :',
     'spambl04' => 'Spam en Liste Noire : ',
@@ -111,12 +136,16 @@ return array(
     'actions04' => 'Action(s)',
     'quarcmdres04' => 'Résultat des commandes de quarantaine',
     'resultmsg04' => 'Résultat du message',
+    'id04' => 'ID :',
+    'virus04' => 'Virus :',
+    'spam04' => 'Spam :',
+    'spamassassinspam04' => 'Spam SpamAssassin :',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
     'last05' => 'Derniers',
     'messages05' => 'messages',
-    'refevery05' => 'Se rafraichit toutes les',
+    'refevery05' => 'La page se rafraîchit toutes les',
     'seconds05' => 'secondes',
 
     // 06 - viewmail.php
@@ -157,7 +186,7 @@ return array(
     'delete07' => 'Supprimer',
 
     // 08-quarantine.php
-    'folder08' => 'Dossier de quarantaine',
+    'folder08' => 'Dossier de quarantaine :',
     'folder_0208' => 'Dossier :',
     'items08' => 'éléments',
 
@@ -167,9 +196,17 @@ return array(
     'addfilter09' => 'Ajouter un filtre',
     'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
     'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',
+    'oldrecord09' => 'Enregistrement le plus vieux :',
+    'newrecord09' => 'Enregistrement le plus jeune :',
+    'messagecount09' => 'Nombre de message :',
+    'stats09' => 'Statistiques (Filtrées)',
+    'add09' => 'Ajouter',
+    'load09' => 'Charger',
+    'save09' => 'Enregistrer',
+    'delete09' => 'Effacer',
+    'none09' => 'Aucun',
 
     // Added in 2015-06-23
-
     // 04-details.php
     'quarantine04' => 'Quarantaine',
 
@@ -181,11 +218,19 @@ return array(
     // 10-other.php
     'tools10' => 'Outils',
     'usermgnt10' => 'Gestion des Utilisateurs',
+    'avsophosstatus10' => 'Statut Sophos',
+    'avfsecurestatus10' => 'Statut F-Secure',
+    'avclamavstatus10' => 'Statut ClamAV',
+    'avmcafeestatus10' => 'Statut McAfee',
+    'avfprotstatus10' => 'Statut F-Prot',
+    'mysqldatabasestatus10' => 'Statut de la base de données MySQL',
     'viewconfms10' => 'Afficher la configuration de MailScanner',
     'editmsrules10' => 'Editer les filtres MailScanner',
+    'spamassassinbayesdatabaseinfo10' => 'Information sur la base de données Bayes SpamAssassin',
     'updatesadesc10' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'updatemcpdesc10' => 'Mettre à jour les descriptions des règles MCP',
     'updategeoip10' => 'Mettre à jour la base GeoIP',
+    'links10' => 'Liens',
 
     // 11-sf_versions.php
     'softver11' => 'Version des logiciels',
@@ -204,93 +249,110 @@ return array(
     'edit12' => 'Editer',
     'delete12' => 'Supprimer',
     'filters12' => 'Filtres',
-    'newuser12' => 'Nouveau Utilisateur',
+    'newuser12' => 'Créer un nouveau compte Utilisateur',
     'forallusers12' => 'Pour tous les Utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'Utilisateur.',
     'username0212' => 'Nom d\'Utilisateur :',
     'name12' => 'Nom :',
     'password12' => 'Mot de Passe :',
     'usertype12' => 'Type d\'Utilisateur :',
-    'user12' => 'Utilisateur :',
+    'user12' => 'Utilisateur',
     'domainadmin12' => 'Administrateur de Domaine',
     'admin12' => 'Administrateur',
     'quarrep12' => 'Rapport de Quarantaine :',
     'senddaily12' => 'Envoyer un Rapport de Spam ?',
-    'quarreprec12' => 'Destinataire pour le Rapport de Spam :',
+    'quarreprec12' => 'Destinataire du Rapport de Spam :',
     'overrec12' => 'Remplacer le destinataire par défaut <BR>(Utilise le nom d\'Utilisateur par défaut si vide)',
     'scanforspam12' => 'Scan des Spam :',
-    'scanespam12' => 'Scan des E-Mail pour les Spam ?',
+    'scanforspam212' => 'Scan des E-Mail pour les Spam ?',
     'pontspam12' => 'Score de Spam :',
     'hpontspam12' => 'Score de Spam Haut :',
     'usedefault12' => 'Utiliser les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
-    'areusuredel12' => 'Voulez-vous vraiment effacer cet Utilisateur ?',
+    'areusuredel12' => 'Voulez-vous vraiment effacer l\'Utilisateur',
     'errorpass12' => 'Le Mot de Passe de correspond pas.',
-
+    'edituser12' => 'Editer l\'Utilisateur',
+    'create12' => 'Créer',
+    'userregex12' => 'Utilisateur (Regexp)',
+    'update12' => 'Mettre à jour',
+    'userfilter12' => 'Filtres d\'Utilsateur pour',
+    'filter12' => 'Filtre',
+    'add12' => 'Ajouter',
+    'active12' => 'Etat',
+    'yes12' => 'Oui',
+    'no12' => 'Non',
+    'questionmark12' => ' ?',
+    'toggle12' => 'Activer/Désactiver',
+    'sure12' => 'Êtes-vous sûr ?',
+    'unknowtype12' => 'Type Inconnu',
+    'yesshort12' => 'O',
+    'noshort12' => 'N',
+                                    
     // Added in 2015-06-25
     // 03-funtions.php
     'footer01' => 'MailWatch pour MailScanner v',
 
     // 08-quarantine.php
-    'input01' => 'Dossier de quarantaine',
-
-    // 13-sa_rules_update.php
     'folder_0308' => 'Dossier de quarantaine',
-
-    // Added in 2015-06-25
-
-    // 01-login.php
-    'passwdnotempy01' => 'Le champ Mot de Passe ne peut être vide',
-    'baduserpass01' => 'Mauvais nom d\'Utilisateur ou Mot de Passe',
-    'undefined01' => 'Une erreur indéfinie c\'est produite',
-    'sorry01' => 'Désolé, le fichier <spam>conf.php>/spam> est manquant sur cette installation de MailWatch. Créez un fichier de configuration <spam>conf.php<s/pam> à partir du fichier conf.php..examplei, et modifiez les paramètres de configuration comme nécessaire.',
-
-    // 12-user-manager.php
-    'edituser12' => 'Editer l\'Utilisateur',
-
-    // 09-filter.inc.php
-    'statistics09' => 'Statistiques (Filtrès)',
-    'oldest09' => 'Plus ancien enregistrement :',
-    'newest09' => 'Plus récent enregistrement :',
-    'messagecount09' => 'Nombre de messages :',
-    'reports09' => 'Rapports',
-
-    //13-reports.php
-    'messagelisting13' => 'Liste des Messages',
-    'messageoper13' => 'Opérations sur les Messages',
-    'totalbydate13' => 'Total des Messages par date',
-
-    //14-rep_total_mail_by_date.php
-    'totalmailbydate14' => 'Total des E-Mail traité par date',
-    'nroofmsg14' => 'Nombre de message',
-    'data14' => 'Date',
-    'unknown14' => 'Utilisateur<br>inconnu',
-    'cantresolve14' => 'Impossible<br>à résoudre',
-    'totals14' => 'Totals',
-
-    //03-functions.php
-    'clearall03' => 'Tout</a> effacer',
-    'forget03' => 'Omettre',
-    'release03' => 'Libérer',
-
-    // Added in 2015-06-26 (stefaweb)
-
-    //03-functions.php
-    'spam03' => 'Spam :',
-    'mcp03' => 'MCP :',
-    'clientip05' => 'IP Client',
-
-    //04-details.php
-    'spam04' => 'Spam :',
-    'virus04' => 'Virus :',
-    'saspam04' => 'Spam SpamAssassin :',
-    'mcp04' => 'MCP:',
-    'samcp04' => 'MCP SpamAssassin :',
-
-    // 99 - General
-    'i18_missing' => 'Non traduit en français',
-    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
     
+    // 13-sa_rules_update.php
+    'input13' => 'Démarrer',
+    'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
+    'message113' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles de SpamAssassin qui sont affichés sur l\'écran Message Détail mise à jour.',
+    'message213' => 'Cet utilitaire doit généralement être exécuté après une mise à jour SpamAssassin, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
+            
+    // 14-reports.php
+    'messlisting14' => 'Listing des messages',
+    'messop14' => 'Manipulation sur les messages',
+    'messdate14' => 'Total des messages par date',
+    'topmailrelay14' => 'Top relais de messagerie',
+    'topvirus14' => 'Top Virus',
+    'virusrepor14' => 'Rapport sur les Virus',
+    'topsendersqt14' => 'Top expéditeurs par quantité',
+    'topsendersvol14' => 'Top expéditeurs par volume',
+    'toprecipqt14' => 'Top destinataires par qunatité',
+    'toprecipvol14' => 'Top destinataires par volume',
+    'topsendersdomqt14' => 'Top des domaines d\'expédition par quantité',
+    'topsendersdomqt14' => 'Top des domaines d\'expédition par volume',
+    'toprecipdomqt14' => 'Top des domaines de destination par quantité',
+    'toprecipdomvol14' => 'Top des domaines de destination par volume',
+    'assassinscoredist14' => 'Score de SpamAssassin par point',
+    'assassinrulhit14' => 'Score de SpamAssassin par règle',
+    'auditlog14' => 'Log de l\'Audit',
+    'mrtgreport14' => 'Rapport MRTG',
+    'mcpscoredist14' => 'Score MCP par point',
+    'mcprulehit14' => 'Score MCP par règle',
+
+    // 15-geoip_update.php
+    'input15' => 'Démarrer',
+    'updategeoip15' => 'Mettre à jour la base GeoIP',
+    'message115' => 'Cet utilitaire est utilisé pour télécharger les fichiers de la base de données GeoIP (qui sont mis à jour sur le premier mardi de chaque mois) à partir de',
+    'message215' => 'qui est utilisé pour travailler sur le pays d\'origine pour une adresse IP donnée et est affiché sur la page Message Détail.',
+    'downfile15' => 'Téléchargement du fichier en cours, veuillez patienter...',
+    'geoipv415' => 'Fichier de données GeoIP IPv4',
+    'geoipv615' => 'Fichier de données GeoIP IPv6',
+    'downok15' => ': téléchargement réussi',
+    'downbad15' => 'Une erreur c\'est produite pendant le téléchargement',
+    'downokunpack15' => 'Téléchargement complet, extraction des fichiers...',
+    'message315' => 'Impossible de télécharger le fichier de données GeoIP (curl et fsockopen essayés).',
+    'message415' => 'Veuillez installer le module PHP cURL (préféré) ou activer fsockopen dans votre fichier php.ini',
+    'unpackok15' => ': décompactage réussi',
+    'extractnotok15' => 'Impossible d\'extraire',
+    'extractok15' => 'extraction réussie',
+    'message515' => 'Impossible d\'extraire le fichier de données GeoIP.',
+    'message615' => 'Activez le module PHP Zlib dans votre configuration PHP ou installez le binaire gunzip.',
+    'processok' => 'Processus terminé !',
+    'norread15' => 'Impossible de lire ou d\'écrire sur le',
+    'message715' => 'Les fichiers existent toujours pour une raison inconnue.',
+    'message815' => 'Effacez-les à la main à partir de',
+    'directory15' => 'répertoire',
+
+    // 16-rep_message_listing.php
+    'messlisting16' => 'Listing des messages',
+
+    // 17-rep_message_ops.php
+    'messageops17' => 'Manipulation sur les Messages',
+                
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',
@@ -301,4 +363,9 @@ return array(
     'dberror99' => 'Quelque-chose s\'est mal passé - Contactez le support',
     'arview01' => 'Afficher',
     'arrelease01' => 'Libérer',
+
+    // 99 - General
+    'i18_missing' => 'Non traduit en français',
+    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
+
 );

@@ -39,7 +39,7 @@ require_once(__DIR__ . '/functions.php');
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>MailWatch Login Page</title>
+    <title><?php echo __('mwloginpage01')?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
     <style type="text/css">
@@ -53,7 +53,7 @@ require_once(__DIR__ . '/functions.php');
 
         .login {
             margin: 50px auto;
-            width: 308px;
+            width: 350px;
         }
 
         .login h1 {
@@ -147,8 +147,8 @@ require_once(__DIR__ . '/functions.php');
 </head>
 <body>
 <div class="login">
-    <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="MailWatch Logo">
-    <h1>MailWatch Login</h1>
+    <center><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="MailWatch Logo"></center>
+    <h1><?php echo __('mwlogin01'); ?></h1>
     <?php if (file_exists('conf.php')) {
     ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php">
@@ -159,16 +159,17 @@ require_once(__DIR__ . '/functions.php');
                         <?php
                         switch ($_GET['error']) {
                             case 'baduser':
-                                echo 'Bad Username or Password';
+                                echo __('badup01');
                                 break;
                             case 'emptypassword':
-                                echo 'Password cannot be empty';
+                                echo __('emptypassword01');
                                 break;
                             default:
-                                echo 'An undefined error occurred';
+                                echo __('errorund01');
                         } ?>
                     </p>
-                <?php 
+                <?php
+
     } ?>
 
                 <p><label for="myusername"><?php echo __('username'); ?></label></p>
@@ -179,7 +180,7 @@ require_once(__DIR__ . '/functions.php');
 
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 
-                <p><input type="submit" name="Submit" value="Login"></p>
+                <p><input type="submit" name="Submit" value="<?php echo __('login01'); ?>"></p>
             </fieldset>
         </form>
     <?php
@@ -187,7 +188,7 @@ require_once(__DIR__ . '/functions.php');
 } else {
     ?>
         <p class="error">
-            Sorry, this installation of MailWatch is missing <span>conf.php</span> file. Please create the file by copying <span>conf.php.example</span> and making the required changes.
+            <?php echo __('cannot_read_conf'); ?>
         </p>
     <?php
 

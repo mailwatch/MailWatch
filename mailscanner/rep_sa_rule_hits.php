@@ -92,6 +92,10 @@ while ($row = mysql_fetch_object($result)) {
         } else {
             $sa_array[$rule]['total'] = 1;
         }
+        
+        if (!isset($sa_array[$rule]['score'])) {
+            $sa_array[$rule]['score'] = $score;
+        }
 
         if (!isset($sa_array[$rule]['score'])) {
             $sa_array[$rule]['score'] = $score;
@@ -137,6 +141,7 @@ while ((list($key, $val) = each($sa_array))) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
+ <TD>" . htmlentities(return_sa_rule_desc(strtoupper($key))) . "</TD>
  <TD>" . return_sa_rule_desc(strtoupper($key)) . "</TD>
  <TD ALIGN=\"RIGHT\">" . sprintf("%0.2f", $val['score']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['total']) . "</TD>
