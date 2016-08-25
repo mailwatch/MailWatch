@@ -115,7 +115,7 @@ while ((list($key, $val) = each($sa_array)) && $count < 10) {
     echo '
 <tr bgcolor="#ebebeb">
  <td>' . $key . '</td>
- <td>' . htmlentities(return_mcp_rule_desc(strtoupper($key))) . '</td>
+ <td>' . return_mcp_rule_desc(strtoupper($key)) . '</td>
  <td align="right">' . number_format($val['total']) . '</td>
  <td align="right">' . number_format($val['not-mcp']) . '</td>
  <td align="right">' . round(($val['not-mcp'] / $val['total']) * 100, 1) . '</td>

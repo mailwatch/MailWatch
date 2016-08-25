@@ -66,7 +66,7 @@ if ($required_constant_missing_count == 0) {
     ini_set("memory_limit", '256M');
     ini_set("error_reporting", E_ALL);
     ini_set("max_execution_time", 0);
-
+    
     /*
     ** HTML Template
     */
@@ -194,21 +194,21 @@ CASE
 END AS reason
 FROM
  maillog a
-WHERE
+WHERE 
  a.quarantined = 1
 AND
  ((to_address=%s) OR (to_domain=%s))
-AND
+AND 
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)";
 
-    // Hide high spam/mcp from users if enabled
-    if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
-        $sql .= "
+ // Hide high spam/mcp from users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
+    $sql .= "
     AND
      ishighspam=0
     AND
      COALESCE(ishighmcp,0)=0";
-    }
+}
 
     if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
         $sql .= "
@@ -226,7 +226,7 @@ AND
 	OR
 	otherinfected>0
 	OR
-	ishighspam>0
+	ishighspam>0 
 	OR
 	isaspam>0
 	OR
@@ -247,8 +247,8 @@ AND
 	isspam>0
 	)";
     }
-
-    $sql .= "
+ 
+    $sql .= " 
 ORDER BY a.date DESC, a.time DESC";
 
     $result = dbquery($users_sql);
@@ -366,27 +366,6 @@ function store_auto_release($qitem)
     }
 }
 
-function check_auto_release($qitem)
-{
-    //function checks if message already has an autorelease entry
-    $id = $qitem['id'];
-    $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'");
-    if (!$result) {
-        dbg(" === Error checking if msg_id already exists.....skipping....");
-    } else {
-        if (mysql_num_rows($result) == 0) {
-            return false;//msg_id not found,
-        } elseif (mysql_num_rows($result) == 1) {
-            $row = mysql_fetch_array($result);
-            $rand = $row['uid'];
-            return $rand; //return the stored uid
-        } else {
-            dbg("=== Error, msg_id exists more than once....generating new one...");
-            return false;
-        }
-    }
-}
-
 function send_quarantine_email($email, $filter, $quarantined)
 {
     global $html, $html_table, $html_content, $text, $text_content;
@@ -397,19 +376,12 @@ function send_quarantine_email($email, $filter, $quarantined)
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
-            //Check if email already has an autorelease entry
-            $exists = check_auto_release($qitem);
-            if (!$exists) {
-                $qitem['rand'] = get_random_string(10);
-                $auto_release = store_auto_release($qitem);
-            } else {
-                $qitem['rand'] = $exists;
-                $auto_release = true;
-            }
+            $qitem['rand'] = get_random_string(10);
+            $auto_release = store_auto_release($qitem);
             if ($auto_release) {
-                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('arview01').'</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">'.__('arrelease01').'</a>';
+                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">.'.__('arview01').'</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">'.__('arrelease01').'</a>';
             } else {
-                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('arview01').'</a>';
+                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">.'.__('arview01').'</a>';
             }
         } else {
             //auto-release disabled

@@ -30,13 +30,19 @@
  */
 
 /* languages/pt_br.php */
-/* v0.0.1 */
+/* v0.2.6 */
 
 return array(
     // 01-login.php
     'username' => 'Usu&aacute;rio',
     'password' => 'Senha',
-
+    'mwloginpage01' => 'MailWatch Login Page',
+    'mwlogin01' => 'MailWatch Login',
+    'badup01' => 'Bad Username or Password',
+    'emptypassword01' => 'Password cannot be empty',
+    'errorund01' => 'An undefined error occurred',
+    'login01' => 'Login',
+    
     // 03-funtions.php
     'jumpmessage03' => 'Carregar a mensagem:',
     'cuser03' => 'Usu&aacute;rio',
@@ -46,16 +52,32 @@ return array(
     'whitelisted03' => 'Lista Branca',
     'blacklisted03' => 'Lista Negra',
     'notverified03' => 'N&atilde;o Verificado',
-    'clean03' => 'Limpo',
+    'mailscanner03' => 'Mailscanner:',
+    'none03' => 'None',
+    'comma03' => ':',
+    'yes03' => 'YES',
+    'no03' => 'NO',
+    'status03' => 'Status',
+    'message03' => 'Message',
+    'tries03' => 'Tries',
+    'last03' => 'Last',
+    'loadaverage03' => 'Load Average:',
+    'mailqueue03' => 'Mail Queues',
+    'inbound03' => 'Inbound:',
+    'outbound03' => 'Oubound:',
+    'clean03' => 'Limpo:',
+    'topvirus03' => 'Top Virus:', 
     'freedspace03' => 'Espaço em Disco Livre',
     'todaystotals03' => 'Totais do Dia',
-    'processed03' => 'Processados',
-    'cleans03' => 'Limpos',
-    'viruses03' => 'Virus',
-    'blockedfiles03' => 'Arquivos Bloqueados',
-    'others03' => 'Outros',
-    'hscospam03' => 'Spam Pont. Alta',
-    'hscomcp03' => 'MCP Pont. Alta',
+    'processed03' => 'Processados:',
+    'cleans03' => 'Limpos:',
+    'viruses03' => 'Virus:',
+    'blockedfiles03' => 'Arquivos Bloqueados:',
+    'others03' => 'Outros:',
+    'spam03' => 'Spam:',
+    'spam103' => 'Spam',
+    'hscospam03' => 'Spam Pont. Alta:',
+    'hscomcp03' => 'MCP Pont. Alta:',
     'recentmessages03' => 'Mensagens Recentes',
     'lists03' => 'Listas',
     'quarantine03' => 'Quarantena',
@@ -67,7 +89,10 @@ return array(
     'sascore03' => 'Pontos SA',
     'mcpscore03' => 'Pontos MCP',
     'found03' => 'encontrado',
-
+    'highspam03' => 'High Spam',
+    'mcp03' => 'MCP',
+    'highmcp03' => 'High MCP',
+    
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
     'receivedby04' => 'Recebido por:',
@@ -111,7 +136,11 @@ return array(
     'actions04' => 'A&ccedil;&atilde;o',
     'quarcmdres04' => 'Resultado da A&ccedil;&atilde;o da Quarentena',
     'resultmsg04' => 'Resultados',
-
+    'id04' => 'ID:',
+    'virus04' => 'Virus:',
+    'spam04' => 'Spam:',
+    'spamassassinspam04' => 'SpamAssassin Spam:',
+    
     // 05-status.php
     'recentmsg05' => 'Mensagens Recentes',
     'last05' => '&Uacute;ltimas',
@@ -130,6 +159,7 @@ return array(
     'subject06' => 'Assunto:',
 
     // Added in 2015-06-22
+    
     // 03-functions.php
     'reports03' => 'Relatórios',
     'toolslinks03' => 'Ferramentas/Links',
@@ -166,8 +196,18 @@ return array(
     'addfilter09' => 'Adicionar Filtro',
     'loadsavef09' => 'Carregar/Salvar Filtro',
     'tosetdate09' => 'Para filtro por data utilize o formato YYYY-mm-dd',
-
+    'oldrecord09' => 'Oldest record:',
+    'newrecord09' => 'Newest record:',
+    'messagecount09' => 'Message count:',
+    'stats09' => 'Statistics (Filtered)',
+    'add09' => 'Add',
+    'load09' => 'Load',
+    'save09' => 'Save',
+    'delete09' => 'Delete',
+    'none09' => 'None',
+    
     // Added in 2015-06-23
+    
     // 04-details.php
     'quarantine04' => 'Quarentena',
 
@@ -179,11 +219,19 @@ return array(
     // 10-other.php
     'tools10' => 'Ferramentas',
     'usermgnt10' => 'Gerenciamento de Usuários',
+    'avsophosstatus10' => 'Sophos Status',
+    'avfsecurestatus10' => 'F-Secure Status',
+    'avclamavstatus10' => 'ClamAV Status',
+    'avmcafeestatus10' => 'McAfee Status',
+    'avfprotstatus10' => 'F-Prot Status',
+    'mysqldatabasestatus10' => 'MySQL Database Status',
     'viewconfms10' => 'Ver configurações do MailScanner',
     'editmsrules10' => 'Editar Regras do MailScanner',
+    'spamassassinbayesdatabaseinfo10' => 'SpamAssassin Bayes Database Info',
     'updatesadesc10' => 'Atualiar as descrições do SpamAssassin',
     'updatemcpdesc10' => 'Atualiar as descrições do MCP',
     'updategeoip10' => 'Atualizar Database GeoIP',
+    'links10' => 'Links',
 
     // 11-sf_versions.php
     'softver11' => 'Versões dos Software',
@@ -224,8 +272,25 @@ return array(
     'reset12' => 'Limpar',
     'areusuredel12' => 'Tem certeza de que quer excluir o usuário ',
     'errorpass12' => 'As senhas não são iguais',
-
+    'edituser12' => 'Edit User',
+    'create12' => 'Create',
+    'userregex12' => 'User (Regexp)',
+    'update12' => 'Update',
+    'userfilter12' => 'User Filters for',
+    'filter12' => 'Filter',
+    'add12' => 'Add',
+    'active12' => 'Active',
+    'yes12' => 'Yes',
+    'no12' => 'No',
+    'questionmark12' => '?',
+    'toggle12' => 'Activate/Deactivate',
+    'sure12' => 'Are you sure?',
+    'unknowtype12' => 'Unknown Type',
+    'yesshort12' => 'Y',
+    'noshort12' => 'N',
+    
     // Added in 2015-06-25
+    
     // 03-funtions.php
     'footer01' => 'MailWatch for MailScanner v',
 
@@ -233,9 +298,78 @@ return array(
     'input01' => 'Run Now',
 
     // 13-sa_rules_update.php
-    'folder_0308' => 'Quarantine Folder',
+    'input13' => 'Run Now',
+    'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
+    'updategeoip15' => 'Update GeoIP Database',
+    'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
+    'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
+    'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
+
+    // 14-reports.php
+    'messlisting14' => 'Message Listing',
+    'messop14' => 'Message Operations',
+    'messdate14' => 'Total Messages by Date',
+    'topmailrelay14' => 'Top Mail Relays',
+    'topvirus14' => 'Top Viruses',
+    'virusrepor14' => 'Virus Report',
+    'topsendersqt14' => 'Top Senders by Quantity',
+    'topsendersvol14' => 'Top Senders by Volume',
+    'toprecipqt14' => 'Top Recipients by Quantity',
+    'toprecipvol14' => 'Top Recipients by Volume',
+    'topsendersdomqt14' => 'Top Sender Domains by Quantity',
+    'topsendersdomqt14' => 'Top Sender Domains by Volume',
+    'toprecipdomqt14' => 'Top Recipient Domains by Quantity',
+    'toprecipdomvol14' => 'Top Recipient Domains by Volume',
+    'assassinscoredist14' => 'SpamAssassin Score Distribution',
+    'assassinrulhit14' => 'SpamAssassin Rule Hits',
+    'auditlog14' => 'Audit Log',
+    'mrtgreport14' => 'MRTG Style Report',
+    'mcpscoredist14' => 'MCP Score Distribution',
+    'mcprulehit14' => 'MCP Rule Hit',
+
+    // 15-geoip_update.php
+    'input15' => 'Run Now',
+    'updategeoip15' => 'Update GeoIP Database',
+    'message115' => 'This utility is used to download the GeoIP database files (which are updated on the first Tuesday of each month) from',
+    'message215' => 'which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.',
+    'downfile15' => 'Downloading file, please wait...',
+    'geoipv415' => 'GeoIP IPv4 data file',
+    'geoipv615' => 'GeoIP IPv6 data file',
+    'downok15' => 'successfully downloaded',
+    'downbad15' => 'Error occurred while downloading',
+    'downokunpack15' => 'Download complete, unpacking files...',
+    'message315' => 'Unable to download GeoIP data file (tried CURL and fsockopen).',
+    'message415' => 'Install either cURL extension (preferred) or enable fsockopen in your php.ini',
+    'unpackok15' => 'successfully unpacked',
+    'extractnotok15' => 'Unable to extract',
+    'extractok15' => 'successfully extracted',
+    'message515' => 'Unable to extract GeoIP data file.',
+    'message615' => 'Enable Zlib in your PHP installation or install gunzip executable.',
+    'processok' => 'Process completed!',
+    'norread15' => 'Unable to read or write to the',
+    'message715' => 'Files still exist for some reason.',
+    'message815' => 'Delete them manually from',
+    'directory15' => 'directory',
+
+    // 16-rep_message_listing.php
+    'messlisting16' => 'Message Listing',
+
+    // 17-rep_message_ops.php
+    'messageops17' => 'Message Operations',
+                        
+    //auto-release.php
+    'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
+    'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
+    'msgnotfound3' => 'if you need this message released',
+    'msgreleased1' => 'Message released<br>It may take a few minutes to appear in your inbox.',
+    'tokenmismatch1' => 'Error releasing message - token mismatch',
+    'notallowed99' => 'You are not allowed to be here!',
+    'dberror99' => 'Something went wrong - please contact support',
+    'arview01' => 'View',
+    'arrelease01' => 'Release',
 
     // 99 - General
     'i18_missing' => 'Não traduzido em português',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
+    
 );

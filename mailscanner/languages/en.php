@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.0.1 */
+/* v0.2.6 */
 
 return array(
     // 01-login.php
@@ -207,6 +207,7 @@ return array(
     'none09' => 'None',
 
     // Added in 2015-06-23
+    
     // 04-details.php
     'quarantine04' => 'Quarentine',
 
@@ -289,6 +290,7 @@ return array(
     'noshort12' => 'N',
               
     // Added in 2015-06-25
+    
     // 03-funtions.php
     'footer01' => 'MailWatch for MailScanner v',
 
