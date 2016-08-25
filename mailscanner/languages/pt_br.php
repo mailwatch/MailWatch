@@ -301,7 +301,6 @@ return array(
     'input13' => 'Run Now',
     'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
     'updategeoip15' => 'Update GeoIP Database',
-    'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
 

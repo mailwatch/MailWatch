@@ -207,6 +207,7 @@ return array(
     'none09' => 'Aucun',
 
     // Added in 2015-06-23
+    
     // 04-details.php
     'quarantine04' => 'Quarantaine',
 
@@ -289,6 +290,7 @@ return array(
     'noshort12' => 'N',
                                     
     // Added in 2015-06-25
+    
     // 03-funtions.php
     'footer01' => 'MailWatch pour MailScanner v',
 
