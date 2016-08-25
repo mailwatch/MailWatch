@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.2.6 */
+/* v0.2.7 */
 
 return array(
     // 01-login.php
@@ -158,11 +158,9 @@ return array(
     'to06' => 'À :',
     'subject06' => 'Sujet :',
 
-    // Added in 2015-06-22
-
     // 03-functions.php
     'reports03' => 'Rapports',
-    'toolslinks03' => 'Outils/Liens',
+    'toolslinks03' => 'Outils-Liens',
     'softwareversions03' => 'Version des logiciels',
     'documentation03' => 'Documentation',
     'logout03' => 'Déconnexion',
@@ -205,8 +203,6 @@ return array(
     'save09' => 'Enregistrer',
     'delete09' => 'Effacer',
     'none09' => 'Aucun',
-
-    // Added in 2015-06-23
     
     // 04-details.php
     'quarantine04' => 'Quarantaine',
