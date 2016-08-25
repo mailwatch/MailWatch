@@ -66,7 +66,7 @@ return array(
     'inbound03' => 'Inbound:',
     'outbound03' => 'Oubound:',
     'clean03' => 'Limpo:',
-    'topvirus03' => 'Top Virus:', 
+    'topvirus03' => 'Top Virus:',
     'freedspace03' => 'Espaço em Disco Livre',
     'todaystotals03' => 'Totais do Dia',
     'processed03' => 'Processados:',

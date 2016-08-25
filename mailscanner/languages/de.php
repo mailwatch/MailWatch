@@ -226,7 +226,7 @@ return array(
     'mysqldatabasestatus10' => 'MySQL Database Status',
     'viewconfms10' => 'MailScanner Einstellungen betrachten',
     'editmsrules10' => 'MailScanner Regeln bearbeiten',
-    'spamassassinbayesdatabaseinfo10' => 'SpamAssassin Bayes Database Info',    
+    'spamassassinbayesdatabaseinfo10' => 'SpamAssassin Bayes Database Info',
     'updatesadesc10' => 'Aktualisiere die Beschreibungen der SpamAssassin Regeln',
     'updatemcpdesc10' => 'Aktualisiere die Beschreibungen der MCP Regeln',
     'updategeoip10' => 'Aktualisiere die GeoIP Datenbank',
