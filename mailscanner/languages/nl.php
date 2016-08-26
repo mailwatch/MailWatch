@@ -30,7 +30,7 @@
  */
 
 /* languages/nl.php */
-/* v0.2.6 */
+/* v0.2.8 */
 
 return array(
     // 01-login.php
@@ -42,7 +42,7 @@ return array(
     'emptypassword01' => 'Password cannot be empty',
     'errorund01' => 'An undefined error occurred',
     'login01' => 'Login',
-    
+
     // 03-funtions.php
     'jumpmessage03' => 'Ga naar email:',
     'cuser03' => 'Gebruiker',
@@ -54,7 +54,6 @@ return array(
     'notverified03' => 'Niet Gecontroleerd',
     'mailscanner03' => 'Mailscanner:',
     'none03' => 'None',
-    'comma03' => ':',
     'yes03' => 'YES',
     'no03' => 'NO',
     'status03' => 'Status',
@@ -92,7 +91,7 @@ return array(
     'highspam03' => 'High Spam',
     'mcp03' => 'MCP',
     'highmcp03' => 'High MCP',
-    
+
     // 04-details.php
     'receivedon04' => 'Ontvangen op:',
     'receivedby04' => 'Ontvangen door:',
@@ -140,7 +139,7 @@ return array(
     'virus04' => 'Virus:',
     'spam04' => 'Spam:',
     'spamassassinspam04' => 'SpamAssassin Spam:',
-    
+
     // 05-status.php
     'recentmsg05' => 'Recente Emails',
     'last05' => 'Laaste',
@@ -157,8 +156,6 @@ return array(
     'from06' => 'Van:',
     'to06' => 'Naar:',
     'subject06' => 'Onderwerp:',
-    
-    // Added in 2015-06-22
 
     // 03-functions.php
     'reports03' => 'Rapporten',
@@ -171,7 +168,7 @@ return array(
     'disppage03' => 'Presenteren pagina',
     'of03' => 'van',
     'records03' => 'Velden',
-    'to0203' => 'to',// This means to as "from numer x to number Y". The first to03 means "from mail ... to mail ..."
+    'to0203' => 'to',
 
     // 07-lists.php
     'addwlbl07' => 'Voeg toe aan Vrijwaring/Blokkering',
@@ -205,9 +202,7 @@ return array(
     'save09' => 'Save',
     'delete09' => 'Delete',
     'none09' => 'None',
-    
-    // Added in 2015-06-23
-    
+
     // 04-details.php
     'quarantine04' => 'Quarantaine',
 
@@ -290,7 +285,7 @@ return array(
     'noshort12' => 'N',
 
     // Added in 2015-06-25
-    
+
     // 03-funtions.php
     'footer01' => 'MailWatch for MailScanner v',
 
@@ -303,7 +298,7 @@ return array(
     'updategeoip15' => 'Update GeoIP Database',
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
-        
+
     // 14-reports.php
     'messlisting14' => 'Message Listing',
     'messop14' => 'Message Operations',
@@ -355,7 +350,7 @@ return array(
 
     // 17-rep_message_ops.php
     'messageops17' => 'Message Operations',
-                        
+
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
@@ -366,9 +361,11 @@ return array(
     'dberror99' => 'Something went wrong - please contact support',
     'arview01' => 'View',
     'arrelease01' => 'Release',
-    
+
     // 99 - General
+    // Space rule for comma. Change it according to your langage typographical rule.
+    'comma99' => ' :',
     'i18_missing' => 'Geen vertaling in het Nederlands',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
-    
+
 );

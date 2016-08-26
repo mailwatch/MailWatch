@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.2.6 */
+/* v0.2.8 */
 
 return array(
     // 01-login.php
@@ -42,7 +42,7 @@ return array(
     'emptypassword01' => 'Password cannot be empty',
     'errorund01' => 'An undefined error occurred',
     'login01' => 'Login',
-    
+
     // 03-funtions.php
     'jumpmessage03' => 'Vai al messaggio:',
     'cuser03' => 'Utente',
@@ -54,7 +54,6 @@ return array(
     'notverified03' => 'Non Verificato',
     'mailscanner03' => 'Mailscanner:',
     'none03' => 'None',
-    'comma03' => ':',
     'yes03' => 'YES',
     'no03' => 'NO',
     'status03' => 'Status',
@@ -92,7 +91,7 @@ return array(
     'highspam03' => 'High Spam',
     'mcp03' => 'MCP',
     'highmcp03' => 'High MCP',
-    
+
     // 04-details.php
     'receivedon04' => 'Ricevuto il:',
     'receivedby04' => 'Ricevuto su:',
@@ -140,7 +139,7 @@ return array(
     'virus04' => 'Virus:',
     'spam04' => 'Spam:',
     'spamassassinspam04' => 'SpamAssassin Spam:',
-    
+
     // 05-status.php
     'recentmsg05' => 'Messaggi Recenti',
     'last05' => 'Ultimi',
@@ -157,8 +156,6 @@ return array(
     'from06' => 'Da:',
     'to06' => 'A:',
     'subject06' => 'Oggetto:',
-
-    // Added in 2015-06-22
 
     // 03-functions.php
     'reports03' => 'Rapporti',
@@ -205,8 +202,7 @@ return array(
     'save09' => 'Save',
     'delete09' => 'Delete',
     'none09' => 'None',
-    
-    // Added in 2015-06-23
+
     // 04-details.php
     'quarantine04' => 'Quarantena',
 
@@ -287,22 +283,22 @@ return array(
     'unknowtype12' => 'Unknown Type',
     'yesshort12' => 'Y',
     'noshort12' => 'N',
-    
+
     // Added in 2015-06-25
-    
+
     // 03-funtions.php
     'footer01' => 'MailWatch for MailScanner v',
 
     // 08-quarantine.php
     'folder_0308' => 'Quarantine Folder',
-    
+
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
     'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
     'updategeoip15' => 'Update GeoIP Database',
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
-        
+
     // 14-reports.php
     'messlisting14' => 'Message Listing',
     'messop14' => 'Message Operations',
@@ -354,7 +350,7 @@ return array(
 
     // 17-rep_message_ops.php
     'messageops17' => 'Message Operations',
-                        
+
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
@@ -367,7 +363,9 @@ return array(
     'arrelease01' => 'Release',
 
     // 99 - General
+    // Space rule for comma. Change it according to your langage typographical rule.
+    'comma99' => ' :',
     'i18_missing' => 'Non tradotto in Italiano',
     'cannot_read_conf' => "Impossibile leggere il file conf.php - per favore crealo copiando il file conf.php.example e modifica i parametri necessari",
-    
+
 );

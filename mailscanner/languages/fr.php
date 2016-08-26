@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.2.7 */
+/* v0.2.8 */
 
 return array(
     // 01-login.php
@@ -56,7 +56,6 @@ return array(
     'status03' => 'Statut',
     'mailscanner03' => 'Mailscanner :',
     'none03' => 'Aucun',
-    'comma03' => ' :',
     'yes03' => 'OUI',
     'no03' => 'NON',
     'message03' => 'Message',
@@ -92,7 +91,7 @@ return array(
     'highspam03' => 'Spam Haut',
     'mcp03' => 'MCP',
     'highmcp03' => 'MCP Haut',
-    
+
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
     'receivedby04' => 'Reçu par :',
@@ -203,7 +202,7 @@ return array(
     'save09' => 'Enregistrer',
     'delete09' => 'Effacer',
     'none09' => 'Aucun',
-    
+
     // 04-details.php
     'quarantine04' => 'Quarantaine',
 
@@ -214,7 +213,7 @@ return array(
 
     // 10-other.php
     'tools10' => 'Outils',
-    'usermgnt10' => 'Gestion des Utilisateurs',
+    'usermgnt10' => 'Gestion des utilisateurs',
     'avsophosstatus10' => 'Statut Sophos',
     'avfsecurestatus10' => 'Statut F-Secure',
     'avclamavstatus10' => 'Statut ClamAV',
@@ -235,8 +234,8 @@ return array(
     'version11' => 'version :',
 
     // 12-user_manager.php
-    'usermgnt12' => 'Gestion des Utilisateurs',
-    'username12' => 'Nom d\'Utilisateur',
+    'usermgnt12' => 'Gestion des utilisateurs',
+    'username12' => 'Nom d\'utilisateur',
     'fullname12' => 'Nom complet',
     'type12' => 'Type',
     'spamcheck12' => 'Vérifier les Spam',
@@ -246,19 +245,19 @@ return array(
     'edit12' => 'Editer',
     'delete12' => 'Supprimer',
     'filters12' => 'Filtres',
-    'newuser12' => 'Créer un nouveau compte Utilisateur',
-    'forallusers12' => 'Pour tous les Utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'Utilisateur.',
-    'username0212' => 'Nom d\'Utilisateur :',
+    'newuser12' => 'Créer un nouveau compte utilisateur',
+    'forallusers12' => 'Pour tous les utilisateurs autre que les administrateurs, vous devez utiliser une adresse E-Mail pour le nom d\'utilisateur.',
+    'username0212' => 'Nom d\'utilisateur :',
     'name12' => 'Nom :',
     'password12' => 'Mot de Passe :',
-    'usertype12' => 'Type d\'Utilisateur :',
+    'usertype12' => 'Type d\'utilisateur :',
     'user12' => 'Utilisateur',
     'domainadmin12' => 'Administrateur de Domaine',
     'admin12' => 'Administrateur',
     'quarrep12' => 'Rapport de Quarantaine :',
     'senddaily12' => 'Envoyer un Rapport de Spam ?',
     'quarreprec12' => 'Destinataire du Rapport de Spam :',
-    'overrec12' => 'Remplacer le destinataire par défaut <BR>(Utilise le nom d\'Utilisateur par défaut si vide)',
+    'overrec12' => 'Remplacer le destinataire par défaut <BR>(Utilise le nom d\'utilisateur par défaut si vide)',
     'scanforspam12' => 'Scan des Spam :',
     'scanforspam212' => 'Scan des E-Mail pour les Spam ?',
     'pontspam12' => 'Score de Spam :',
@@ -266,13 +265,13 @@ return array(
     'usedefault12' => 'Utiliser les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
-    'areusuredel12' => 'Voulez-vous vraiment effacer l\'Utilisateur',
+    'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
     'errorpass12' => 'Le Mot de Passe de correspond pas.',
-    'edituser12' => 'Editer l\'Utilisateur',
+    'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',
     'update12' => 'Mettre à jour',
-    'userfilter12' => 'Filtres d\'Utilsateur pour',
+    'userfilter12' => 'Filtres d\'utilsateur pour',
     'filter12' => 'Filtre',
     'add12' => 'Ajouter',
     'active12' => 'Etat',
@@ -284,21 +283,21 @@ return array(
     'unknowtype12' => 'Type Inconnu',
     'yesshort12' => 'O',
     'noshort12' => 'N',
-                                    
+
     // Added in 2015-06-25
-    
+
     // 03-funtions.php
     'footer01' => 'MailWatch pour MailScanner v',
 
     // 08-quarantine.php
     'folder_0308' => 'Dossier de quarantaine',
-    
+
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
     'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'message113' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles de SpamAssassin qui sont affichés sur l\'écran Message Détail mise à jour.',
     'message213' => 'Cet utilitaire doit généralement être exécuté après une mise à jour SpamAssassin, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
-            
+
     // 14-reports.php
     'messlisting14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
@@ -324,7 +323,7 @@ return array(
     // 15-geoip_update.php
     'input15' => 'Démarrer',
     'updategeoip15' => 'Mettre à jour la base GeoIP',
-    'message115' => 'Cet utilitaire est utilisé pour télécharger les fichiers de la base de données GeoIP (qui sont mis à jour sur le premier mardi de chaque mois) à partir de',
+    'message115' => 'Cet utilitaire est utilisé pour télécharger les fichiers de la base de données GeoIP (qui sont mis à jour le premier mardi de chaque mois) à partir de',
     'message215' => 'qui est utilisé pour travailler sur le pays d\'origine pour une adresse IP donnée et est affiché sur la page Message Détail.',
     'downfile15' => 'Téléchargement du fichier en cours, veuillez patienter...',
     'geoipv415' => 'Fichier de données GeoIP IPv4',
@@ -350,20 +349,22 @@ return array(
 
     // 17-rep_message_ops.php
     'messageops17' => 'Manipulation sur les Messages',
-                
+
     //auto-release.php
-    'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus plus bon.',
+    'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
     'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',
     'msgnotfound3' => 'si vous avez besoin de libérer ce message.',
     'msgreleased1' => 'Message libéré<br>Il faut attendre quelques minutes avant que le message apparaisse dans votre Boite aux lettres.',
-    'tokenmismatch1' => 'Erreur pendant la libération du message - Erreur de jeton',
+    'tokenmismatch1' => 'Erreur pendant la libération du message - Erreur de Jeton',
     'notallowed99' => 'Vous n\êtes pas autorisé à accéder à cette page !',
     'dberror99' => 'Quelque-chose s\'est mal passé - Contactez le support',
     'arview01' => 'Afficher',
     'arrelease01' => 'Libérer',
 
     // 99 - General
+    // Space rule for comma. Change it according to your langage typographical rule.
+    'comma99' => ' :',
     'i18_missing' => 'Non traduit en français',
-    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php..example, et modifiez les paramètres de configuration comme nécessaire.',
+    'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
 
 );

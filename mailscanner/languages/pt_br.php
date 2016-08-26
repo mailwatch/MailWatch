@@ -30,7 +30,7 @@
  */
 
 /* languages/pt_br.php */
-/* v0.2.6 */
+/* v0.2.8 */
 
 return array(
     // 01-login.php
@@ -42,7 +42,7 @@ return array(
     'emptypassword01' => 'Password cannot be empty',
     'errorund01' => 'An undefined error occurred',
     'login01' => 'Login',
-    
+
     // 03-funtions.php
     'jumpmessage03' => 'Carregar a mensagem:',
     'cuser03' => 'Usu&aacute;rio',
@@ -54,7 +54,6 @@ return array(
     'notverified03' => 'N&atilde;o Verificado',
     'mailscanner03' => 'Mailscanner:',
     'none03' => 'None',
-    'comma03' => ':',
     'yes03' => 'YES',
     'no03' => 'NO',
     'status03' => 'Status',
@@ -92,7 +91,7 @@ return array(
     'highspam03' => 'High Spam',
     'mcp03' => 'MCP',
     'highmcp03' => 'High MCP',
-    
+
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
     'receivedby04' => 'Recebido por:',
@@ -140,7 +139,7 @@ return array(
     'virus04' => 'Virus:',
     'spam04' => 'Spam:',
     'spamassassinspam04' => 'SpamAssassin Spam:',
-    
+
     // 05-status.php
     'recentmsg05' => 'Mensagens Recentes',
     'last05' => '&Uacute;ltimas',
@@ -158,8 +157,6 @@ return array(
     'to06' => 'Para:',
     'subject06' => 'Assunto:',
 
-    // Added in 2015-06-22
-    
     // 03-functions.php
     'reports03' => 'Relatórios',
     'toolslinks03' => 'Ferramentas/Links',
@@ -205,9 +202,7 @@ return array(
     'save09' => 'Save',
     'delete09' => 'Delete',
     'none09' => 'None',
-    
-    // Added in 2015-06-23
-    
+
     // 04-details.php
     'quarantine04' => 'Quarentena',
 
@@ -288,9 +283,9 @@ return array(
     'unknowtype12' => 'Unknown Type',
     'yesshort12' => 'Y',
     'noshort12' => 'N',
-    
+
     // Added in 2015-06-25
-    
+
     // 03-funtions.php
     'footer01' => 'MailWatch for MailScanner v',
 
@@ -355,7 +350,7 @@ return array(
 
     // 17-rep_message_ops.php
     'messageops17' => 'Message Operations',
-                        
+
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
@@ -368,7 +363,9 @@ return array(
     'arrelease01' => 'Release',
 
     // 99 - General
+    // Space rule for comma. Change it according to your langage typographical rule.
+    'comma99' => ' :',
     'i18_missing' => 'Não traduzido em português',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
-    
+
 );
