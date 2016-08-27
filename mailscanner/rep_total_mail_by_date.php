@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Total Mail by Date", 0, false, true);
+$filter = html_start(__('totalmaildate49'), 0, false, true);
 
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
@@ -98,14 +98,14 @@ $sql = "
     ) THEN 1 ELSE 0 END
   ) AS total_blocked,
 
-  SUM(CASE WHEN ( 
+  SUM(CASE WHEN (
     (virusinfected=0 OR virusinfected IS NULL)
     AND (nameinfected=0 OR nameinfected IS NULL)
     AND (otherinfected=0 OR otherinfected IS NULL)
     AND (isspam=0 OR isspam IS NULL)
     AND (ishighspam=0 OR ishighspam IS NULL)
-    AND (ismcp=0 OR ismcp IS NULL) 
-    AND (ishighmcp=0 OR ishighmcp IS NULL) 
+    AND (ismcp=0 OR ismcp IS NULL)
+    AND (ishighmcp=0 OR ishighmcp IS NULL)
     ) THEN 1 ELSE 0 END
   ) as total_clean,
 
@@ -239,7 +239,7 @@ if (is_writable(CACHE_DIR)) {
         $abar1 = new AccBarPlot(array($bar2, $bar3));
     }
     $gbplot = new GroupBarPlot(array($bar1, $abar1));
-    
+
     $graph->Add($gbplot);
     $graph->AddY2($line1);
 

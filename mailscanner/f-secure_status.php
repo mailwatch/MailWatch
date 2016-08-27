@@ -39,7 +39,7 @@ require(__DIR__ . '/login.function.php');
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
 } else {
-    html_start("F-Secure Status");
+    html_start(__('fsecurestatus23'));
 
     echo '
 <table class="boxtable" width="100%">

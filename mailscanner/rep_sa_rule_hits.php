@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("SpamAssassin Rule Hits", 0, false, true);
+$filter = html_start(__('sarulehits37'), 0, false, true);
 
 $sql = "
  SELECT

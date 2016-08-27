@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // Start the header code and Title
-html_start("SpamAssassin Bayes Database Info", 0, false, false);
+html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 
 // Enter the Action in the Audit log
 audit_log('Viewed SpamAssassin Bayes Database Info');

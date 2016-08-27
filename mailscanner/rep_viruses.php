@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Virus Report", 0, false, true);
+$filter = html_start(__('virusreport50'), 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
 $scanner = array();

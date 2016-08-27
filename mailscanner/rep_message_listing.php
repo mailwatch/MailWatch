@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Message Listing", 0, false, false);
+$filter = html_start(__('messlisting16'), 0, false, false);
 
 $sql = "
  SELECT

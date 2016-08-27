@@ -40,7 +40,7 @@ if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
     audit_log('Non-admin user attemped to view Software Version Page');
 } else {
-    html_start('MailWatch and MailScanner Version information', '0', false, false);
+    html_start(__('mwandmsversion52'), '0', false, false);
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = phpversion();

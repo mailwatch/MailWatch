@@ -44,7 +44,7 @@ $url_id = htmlentities($url_id);
 $url_id = trim($url_id, " ");
 
 // Start the header code and Title
-html_start("Message Detail $url_id", 0, false, false);
+html_start(__('messdetail04') . " " . $url_id, 0, false, false);
 
 // Set the Memory usage
 ini_set("memory_limit", MEMORY_LIMIT);

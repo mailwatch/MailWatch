@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("MCP Rule Hits", 0, false, true);
+$filter = html_start(__('mcprulehits34'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/rep_mcp_rule_hits.png." . time();

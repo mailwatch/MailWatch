@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.2.8 */
+/* v0.2.9 */
 
 return array(
     // 01-login.php
@@ -43,7 +43,7 @@ return array(
     'errorund01' => 'An undefined error occurred',
     'login01' => 'Login',
 
-    // 03-funtions.php
+    // 03-functions.php
     'jumpmessage03' => 'Go to message:',
     'cuser03' => 'User',
     'cst03' => 'System Time',
@@ -78,7 +78,7 @@ return array(
     'hscospam03' => 'High Score Spam:',
     'hscomcp03' => 'High Score MCP:',
     'recentmessages03' => 'Recent Messages',
-    'lists03' => 'B/W Lists',
+    'lists03' => 'Black and White Lists',
     'quarantine03' => 'Quarantine',
     'datetime03' => 'Date/Time',
     'from03' => 'From',
@@ -91,8 +91,24 @@ return array(
     'highspam03' => 'High Spam',
     'mcp03' => 'MCP',
     'highmcp03' => 'High MCP',
+    'reports03' => 'Search and Reports',
+    'toolslinks03' => 'Tools and Links',
+    'softwareversions03' => 'Software Versions',
+    'documentation03' => 'Documentation',
+    'logout03' => 'Logout',
+    'pggen03' => 'Page generated in',
+    'seconds03' => 'seconds',
+    'disppage03' => 'Displaying page',
+    'of03' => 'of',
+    'records03' => 'Records',
+    'to0203' => 'to',
+    'score03' => 'Score',
+    'matrule03' => 'Matching Rule',
+    'description03' => 'Description',
+    'footer03' => 'MailWatch for MailScanner v',
+    'mailwatchtitle03' => 'MailWatch for Mailscanner',
 
-    // 04-details.php
+    // 04-detail.php
     'receivedon04' => 'Received on:',
     'receivedby04' => 'Received by:',
     'receivedfrom04' => 'Received from:',
@@ -139,6 +155,8 @@ return array(
     'virus04' => 'Virus:',
     'spam04' => 'Spam:',
     'spamassassinspam04' => 'SpamAssassin Spam:',
+    'quarantine04' => 'Quarentine',
+    'messdetail04' => 'Message Detail',
 
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
@@ -157,19 +175,6 @@ return array(
     'to06' => 'To:',
     'subject06' => 'Subject:',
 
-    // 03-functions.php
-    'reports03' => 'Reports',
-    'toolslinks03' => 'Tools/Links',
-    'softwareversions03' => 'Software Versions',
-    'documentation03' => 'Documentation',
-    'logout03' => 'Logout',
-    'pggen03' => 'Page generated in',
-    'seconds03' => 'seconds',
-    'disppage03' => 'Displaying page',
-    'of03' => 'of',
-    'records03' => 'Records',
-    'to0203' => 'to', // This means to as "from number x to number Y". The first to03 means "from mail ... to mail ..."
-
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
     'from07' => 'From',
@@ -181,11 +186,13 @@ return array(
     'reset07' => 'Reset',
     'add07' => 'Add',
     'delete07' => 'Delete',
+    'wblists07' => 'Whitelist/Blacklist',
 
     // 08-quarantine.php
     'folder08' => 'Folder:',
     'folder_0208' => 'Folder',
     'items08' => 'items',
+    'qviewer08' => 'Quarantine Viewer',
 
     // 09-filter.inc.php
     'activefilters09' => 'Active Filters',
@@ -202,14 +209,6 @@ return array(
     'save09' => 'Save',
     'delete09' => 'Delete',
     'none09' => 'None',
-
-    // 04-details.php
-    'quarantine04' => 'Quarentine',
-
-    // 03-functons.php
-    'score03' => 'Score',
-    'matrule03' => 'Matching Rule',
-    'description03' => 'Description',
 
     // 10-other.php
     'tools10' => 'Tools',
@@ -284,20 +283,13 @@ return array(
     'yesshort12' => 'Y',
     'noshort12' => 'N',
 
-    // Added in 2015-06-25
-
-    // 03-funtions.php
-    'footer01' => 'MailWatch for MailScanner v',
-
-    // 08-quarantine.php
-    'folder_0308' => 'Quarantine Folder',
-
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
     'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
     'updategeoip15' => 'Update GeoIP Database',
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
+    'saruldesupdate13' => 'SpamAssassin Rule Description Update',
 
     // 14-reports.php
     'messlisting14' => 'Message Listing',
@@ -320,6 +312,7 @@ return array(
     'mrtgreport14' => 'MRTG Style Report',
     'mcpscoredist14' => 'MCP Score Distribution',
     'mcprulehit14' => 'MCP Rule Hit',
+    'reports14' => 'Reports',
 
     // 15-geoip_update.php
     'input15' => 'Run Now',
@@ -344,12 +337,123 @@ return array(
     'message715' => 'Files still exist for some reason.',
     'message815' => 'Delete them manually from',
     'directory15' => 'directory',
+    'geoipupdate15' => 'GeoIP Database Update',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Message Listing',
 
     // 17-rep_message_ops.php
     'messageops17' => 'Message Operations',
+    'messagelisting17' => 'Message Listing',
+
+    // 18-bayes_info.php
+    'spamassassinbayesdatabaseinfo18' => 'SpamAssassin Bayes Database Info',
+
+    // 19-clamav_status.php
+    'avclamavstatus19' => 'ClamAV Status',
+
+    // 20-docs.php
+    'doc20' => 'Documentation',
+    'message20' => 'This page does require authentication, so you can put links to your site documentation here and allow your users to access it if you wish.',
+    
+    // 21-do_message_ops.php
+    'opresult21' => 'Operation Results',
+
+    // 22-f-prot_status.php
+    'fprotstatus22' => 'F-Prot Status',
+
+    // 23-f-secure_status.php
+    'fsecurestatus23' => 'F-Secure Status',
+
+    // 24-mailq.php
+    'mqviewer24' => 'Mail Queue Viewer',
+
+    // 25-mcafee_status.php
+    'mcafeestatus25' => 'McAfee Status',
+
+    // 26-mcp_rules_update.php
+    'mcpruledesc26' => 'MCP Rule Description Update',
+
+    // 27-msconfig.php
+    'config27' => 'Configuration',
+
+    // 28-ms_lint.php
+    'mailscannerlint28' => 'MailScanner Lint',
+
+    // 29-msre_index.php
+    'rulesetedit29' => 'Ruleset Editor',
+
+    // 30-msrule.php
+    'rules30' => 'Rules',
+
+    // 31-mysql_status.php
+    'mysqlstatus31' => 'MySQL Status',
+
+    // 32-postfixmailq.php
+    'mqviewer32' => 'Mail Queue Viewer',
+
+    // 33-rep_audit_log.php
+    'auditlog33' => 'Audit Log',
+
+    // 34-rep_mcp_rule_hits.php
+    'mcprulehits34' => 'MCP Rule Hits',
+
+    // 35-rep_mcp_score_dist.php
+    'mcpscoredist35' => 'MCP Score Distribution',
+
+    // 36-rep_mrtg_style.php
+    'mrtgstyle36' => 'MRTG Style Mail Report',
+
+    // 37-rep_sa_rule_hits.php
+    'sarulehits37' => 'SpamAssassin Rule Hits',
+
+    // 38-rep_sa_score_dist.php
+    'sascoredist38' => 'SpamAssassin Score Distribution',
+
+    // 39-rep_top_mail_relays.php
+    'topmailrelays39' => 'Top Mail Relays',
+
+    // 40-rep_top_recipient_domains_by_quantity.php
+    'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
+
+    // 41-rep_top_recipient_domains_by_volume.php
+    'toprecipdomvol41' => 'Top Recipients Domains by Volume',
+
+    // 42-rep_top_recipients_by_quantity.php
+    'toprecipqt42' => 'Top Recipients by Quantity',
+
+    // 43-rep_top_recipients_by_volume.php
+    'toprecipvol43' => 'Top Recipients by Volume',
+
+    // 44-rep_top_sender_domains_by_quantity.php
+    'topsenderdomqt44' => 'Top Sender Domains by Quantity',
+
+    // 45-rep_top_sender_domains_by_volume.php
+    'topsenderdomvol45' => 'Top Sender Domains by Volume',
+
+    // 46-rep_top_senders_by_quantity.php
+    'topsendersqt46' => 'Top Senders by Quantity',
+
+    // 47-rep_top_senders_by_volume.php
+    'topsendersvol47' => 'Top Senders by Volume',
+
+    // 48-rep_top_viruses.php
+    'topvirus48' => 'Top Viruses',
+
+    // 49-rep_total_mail_by_date.php
+    'totalmaildate49' => 'Total Mail by Date',
+
+    // 50-rep_viruses.php
+    'virusreport50' => 'Virus Report',
+
+    // 51-sa_lint.php
+    'salint51' => 'SpamAssassin Lint',
+
+    // 52-sf_version.php
+    'mwandmsversion52' => 'MailWatch and MailScanner Version information',
+
+    // 53-sophos_status.php
+    'sophos53' => 'Sophos',
 
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',

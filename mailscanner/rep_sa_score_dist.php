@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("SpamAssassin Score Distribution", 0, false, true);
+$filter = html_start(__('sascoredist38'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/sa_score_dist.png." . time();

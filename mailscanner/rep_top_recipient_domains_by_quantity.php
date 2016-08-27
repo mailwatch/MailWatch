@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Top Recipients Domains by Quantity", 0, false, true);
+$filter = html_start(__('toprecipdomqt40'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/rep_top_recipient_domains_by_quantity.png." . time();
@@ -51,9 +51,9 @@ $sql = "
  FROM
   maillog
  WHERE
-  from_address <> \"\"		-- Exclude delivery receipts
+  from_address <> \"\" 		-- Exclude delivery receipts
  AND
-  from_address IS NOT NULL	-- Exclude delivery receipts
+  from_address IS NOT NULL     	-- Exclude delivery receipts
 " . $filter->CreateSQL() . "
  GROUP BY
   to_domain

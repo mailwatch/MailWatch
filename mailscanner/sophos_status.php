@@ -34,7 +34,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 include(__DIR__ . '/login.function.php');
 
-html_start("Sophos", 0, false, false);
+html_start(__('sophos53'), 0, false, false);
 
 echo "<TABLE CLASS=\"boxtable\" WIDTH=\"100%\">";
 echo "<TR>";

@@ -37,7 +37,7 @@ require(__DIR__ . '/login.function.php');
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
 } else {
-    html_start("Configuration");
+    html_start(__('config27'));
     audit_log('Viewed MailScanner configuration');
 
     $conf_dir = get_conf_include_folder();

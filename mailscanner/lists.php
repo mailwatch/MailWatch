@@ -34,7 +34,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("Whitelist/Blacklist", 0, false, false);
+html_start(__('wblists07'), 0, false, false);
 
 $url_type = (isset($_GET['type']) ? sanitizeInput($_GET['type']) : '');
 $url_type = htmlentities($url_type);
@@ -260,11 +260,11 @@ echo '
   <th colspan=2>' . __('addwlbl07') . '</th>
  </tr>
  <tr>
-  <td class="heading">' . __('from07') . ':</td>
+  <td class="heading">' . __('from07') . __('comma99') . '</td>
   <td><input type="text" name="from" size=50 value="' . $from . '"></td>
  </tr>
  <tr>
-  <td class="heading">' . __('to07') . ':</td>';
+  <td class="heading">' . __('to07') . __('comma99') . '</td>';
 
 switch ($_SESSION['user_type']) {
     case 'A':
@@ -304,7 +304,7 @@ switch ($_SESSION['user_type']) {
 echo '
  </tr>
  <tr>
-  <td class="heading">' . __('list07') . ':</td>
+  <td class="heading">' . __('list07') . __('comma99') . '</td>
   <td>';
 
 $w = '';
@@ -323,7 +323,7 @@ echo '   <input type="radio" value="b" name="list" ' . $b . '>' . __('bl07') . '
 echo '  </td>
  </tr>
  <tr>
-  <td class="heading">' . __('action07') . ':</td>
+  <td class="heading">' . __('action07') . __('comma99') . '</td>
   <td><input type="reset" value="' . __('reset07') . '">&nbsp;&nbsp;<input type="submit" value="' . __('add07') . '" name="submit"></td>
  </tr>';
 if (isset($errors)) {

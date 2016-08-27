@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Message Listing", 0, false, true);
+$filter = html_start(__('messagelisting17'), 0, false, true);
 
 // Checks to see if you are looking for quarantined files only
 if (QUARANTINE_USE_FLAG) {

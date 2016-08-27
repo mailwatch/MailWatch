@@ -36,7 +36,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("GeoIP Database Update", 0, false, false);
+html_start(__('geoipupdate15'), 0, false, false);
 
 if (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">

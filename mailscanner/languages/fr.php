@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.2.8 */
+/* v0.2.9 */
 
 return array(
     // 01-login.php
@@ -78,7 +78,7 @@ return array(
     'hscospam03' => 'Spam à haut score :',
     'hscomcp03' => 'MCP à haut score :',
     'recentmessages03' => 'Messages récent',
-    'lists03' => 'Listes N/B',
+    'lists03' => 'Listes Noire et Blanche',
     'quarantine03' => 'Quarantaine',
     'datetime03' => 'Date/Heure',
     'from03' => 'De',
@@ -91,6 +91,22 @@ return array(
     'highspam03' => 'Spam Haut',
     'mcp03' => 'MCP',
     'highmcp03' => 'MCP Haut',
+    'reports03' => 'Recherche et Rapports',
+    'toolslinks03' => 'Outils',
+    'softwareversions03' => 'Version des logiciels',
+    'documentation03' => 'Documentation',
+    'logout03' => 'Déconnexion',
+    'pggen03' => 'Page générée en',
+    'seconds03' => 'secondes',
+    'disppage03' => 'Affichage de la page',
+    'of03' => 'de',
+    'records03' => 'Enregistrements de',
+    'to0203' => 'à',
+    'score03' => 'Score',
+    'matrule03' => 'Règle associée',
+    'description03' => 'Description',
+    'footer03' => 'MailWatch pour MailScanner v',
+    'mailwatchtitle03' => 'MailWatch pour Mailscanner',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -129,7 +145,7 @@ return array(
     'file04' => 'Fichier',
     'type04' => 'Type',
     'path04' => 'Chemin',
-    'dang04' => 'Nocif',
+    'dang04' => 'Nocif ',
     'altrecip04' => 'Destinataire alternatif',
     'submit04' => 'Soumettre',
     'actions04' => 'Action(s)',
@@ -139,6 +155,8 @@ return array(
     'virus04' => 'Virus :',
     'spam04' => 'Spam :',
     'spamassassinspam04' => 'Spam SpamAssassin :',
+    'quarantine04' => 'Quarantaine',
+    'messdetail04' => 'Détail du message',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
@@ -157,19 +175,6 @@ return array(
     'to06' => 'À :',
     'subject06' => 'Sujet :',
 
-    // 03-functions.php
-    'reports03' => 'Rapports',
-    'toolslinks03' => 'Outils-Liens',
-    'softwareversions03' => 'Version des logiciels',
-    'documentation03' => 'Documentation',
-    'logout03' => 'Déconnexion',
-    'pggen03' => 'Page générée en',
-    'seconds03' => 'secondes',
-    'disppage03' => 'Affichage de la page',
-    'of03' => 'de',
-    'records03' => 'Enregistrements de',
-    'to0203' => 'à',
-
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
     'from07' => 'De',
@@ -181,11 +186,13 @@ return array(
     'reset07' => 'Réinitialiser',
     'add07' => 'Ajouter',
     'delete07' => 'Supprimer',
+    'wblists07' => 'Listes Noire et Blanche',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
     'folder_0208' => 'Dossier :',
     'items08' => 'éléments',
+    'qviewer08' => 'Visualisation de la quarantaine',
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtre actif',
@@ -202,14 +209,6 @@ return array(
     'save09' => 'Enregistrer',
     'delete09' => 'Effacer',
     'none09' => 'Aucun',
-
-    // 04-details.php
-    'quarantine04' => 'Quarantaine',
-
-    // 03-functons.php
-    'score03' => 'Score',
-    'matrule03' => 'Règle associée',
-    'description03' => 'Description',
 
     // 10-other.php
     'tools10' => 'Outils',
@@ -284,30 +283,23 @@ return array(
     'yesshort12' => 'O',
     'noshort12' => 'N',
 
-    // Added in 2015-06-25
-
-    // 03-funtions.php
-    'footer01' => 'MailWatch pour MailScanner v',
-
-    // 08-quarantine.php
-    'folder_0308' => 'Dossier de quarantaine',
-
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
     'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'message113' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles de SpamAssassin qui sont affichés sur l\'écran Message Détail mise à jour.',
     'message213' => 'Cet utilitaire doit généralement être exécuté après une mise à jour SpamAssassin, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
+    'saruldesupdate13' => 'Mise à jour des descriptions des règles SpamAssassin',
 
     // 14-reports.php
     'messlisting14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
     'messdate14' => 'Total des messages par date',
-    'topmailrelay14' => 'Top relais de messagerie',
+    'topmailrelay14' => 'Top des relais de messagerie',
     'topvirus14' => 'Top Virus',
     'virusrepor14' => 'Rapport sur les Virus',
     'topsendersqt14' => 'Top expéditeurs par quantité',
     'topsendersvol14' => 'Top expéditeurs par volume',
-    'toprecipqt14' => 'Top destinataires par qunatité',
+    'toprecipqt14' => 'Top destinataires par quantité',
     'toprecipvol14' => 'Top destinataires par volume',
     'topsendersdomqt14' => 'Top des domaines d\'expédition par quantité',
     'topsendersdomqt14' => 'Top des domaines d\'expédition par volume',
@@ -316,13 +308,14 @@ return array(
     'assassinscoredist14' => 'Score de SpamAssassin par point',
     'assassinrulhit14' => 'Score de SpamAssassin par règle',
     'auditlog14' => 'Log de l\'Audit',
-    'mrtgreport14' => 'Rapport MRTG',
+    'mrtgreport14' => 'Rapport de message MRTG',
     'mcpscoredist14' => 'Score MCP par point',
     'mcprulehit14' => 'Score MCP par règle',
+    'reports14' => 'Rapports',
 
     // 15-geoip_update.php
     'input15' => 'Démarrer',
-    'updategeoip15' => 'Mettre à jour la base GeoIP',
+    'updategeoip15' => 'Mettre à jour les bases GeoIP',
     'message115' => 'Cet utilitaire est utilisé pour télécharger les fichiers de la base de données GeoIP (qui sont mis à jour le premier mardi de chaque mois) à partir de',
     'message215' => 'qui est utilisé pour travailler sur le pays d\'origine pour une adresse IP donnée et est affiché sur la page Message Détail.',
     'downfile15' => 'Téléchargement du fichier en cours, veuillez patienter...',
@@ -343,12 +336,123 @@ return array(
     'message715' => 'Les fichiers existent toujours pour une raison inconnue.',
     'message815' => 'Effacez-les à la main à partir de',
     'directory15' => 'répertoire',
+    'geoipupdate15' => 'Mise à jour des bases GeoIP',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Listing des messages',
 
     // 17-rep_message_ops.php
     'messageops17' => 'Manipulation sur les Messages',
+    'messagelisting17' => 'Listing des Messages',
+
+    // 18-bayes_info.php
+    'spamassassinbayesdatabaseinfo18' => 'Information sur la base SpamAssassin Bayes',
+
+    // 19-clamav_status.php
+    'avclamavstatus19' => 'Statut ClamAV',
+
+    // 20-docs.php
+    'doc20' => 'Documentation',
+    'message20' => 'Cette page ne peut être accédée qu\'en mode autentifié. Vous poouvez y mettre un lien vers la docuemntation interne de votre site pour que les utilisateurs puissent y avoir accès.',
+        
+    // 21-do_message_ops.php
+    'opresult21' => 'Résultat des opérations',
+
+    // 22-f-prot_status.php
+    'fprotstatus22' => 'Statut F-Prot',
+
+    // 23-f-secure_status.php
+    'fsecurestatus23' => 'Statut F-Secure',
+
+    // 24-mailq.php
+    'mqviewer24' => 'Mail Queue Viewer',
+
+    // 25-mcafee_status.php
+    'mcafeestatus25' => 'Statut McAfee',
+
+    // 26-mcp_rules_update.php
+    'mcpruledesc26' => 'Mise à jour des descriptions des règles MCP',
+
+    // 27-msconfig.php
+    'config27' => 'Configuration',
+
+    // 28-ms_lint.php
+    'mailscannerlint28' => 'MailScanner Lint',
+
+    // 29-msre_index.php
+    'rulesetedit29' => 'Ruleset Editor',
+
+    // 30-msrule.php
+    'rules30' => 'Règles',
+
+    // 31-mysql_status.php
+    'mysqlstatus31' => 'Statut MySQL',
+
+    // 32-postfixmailq.php
+    'mqviewer32' => 'Mail Queue Viewer',
+
+    // 33-rep_audit_log.php
+    'auditlog33' => 'Log de l\'Audit',
+
+    // 34-rep_mcp_rule_hits.php
+    'mcprulehits34' => 'Score MCP par point',
+
+    // 35-rep_mcp_score_dist.php
+    'mcpscoredist35' => 'Score MCP par règle',
+
+    // 36-rep_mrtg_style.php
+    'mrtgstyle36' => 'Rapport de message MRTG',
+
+    // 37-rep_sa_rule_hits.php
+    'sarulehits37' => 'Score de SpamAssassin par règle',
+
+    // 38-rep_sa_score_dist.php
+    'sascoredist38' => 'Score de SpamAssassin par point',
+
+    // 39-rep_top_mail_relays.php
+    'topmailrelays39' => 'Top des relais de messagerie',
+
+    // 40-rep_top_recipient_domains_by_quantity.php
+    'toprecipdomqt40' => 'Top des domaines de destination par quantité',
+
+    // 41-rep_top_recipient_domains_by_volume.php
+    'toprecipdomvol41' => 'Top des domaines de destination par volume',
+
+    // 42-rep_top_recipients_by_quantity.php
+    'toprecipqt42' => 'Top destinataires par quantité',
+
+    // 43-rep_top_recipients_by_volume.php
+    'toprecipvol43' => 'Top destinataires par volume',
+
+    // 44-rep_top_sender_domains_by_quantity.php
+    'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
+
+    // 45-rep_top_sender_domains_by_volume.php
+    'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
+
+    // 46-rep_top_senders_by_quantity.php
+    'topsendersqt46' => 'Top expéditeurs par quantité',
+
+    // 47-rep_top_senders_by_volume.php
+    'topsendersvol47' => 'Top expéditeurs par volume',
+
+    // 48-rep_top_viruses.php
+    'topvirus48' => 'Top Virus',
+
+    // 49-rep_total_mail_by_date.php
+    'totalmaildate49' => 'Total des messages par date',
+
+    // 50-rep_viruses.php
+    'virusreport50' => 'Rapport sur les Virus',
+
+    // 51-sa_lint.php
+    'salint51' => 'SpamAssassin Lint',
+
+    // 52-sf_version.php
+    'mwandmsversion52' => 'Information sur les versions des logiciels',
+
+    // 53-sophos_status.php
+    'sophos53' => 'Sophos',
 
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',

@@ -37,7 +37,7 @@ require(__DIR__ . '/login.function.php');
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
 } else {
-    html_start("Rules");
+    html_start(__('rules30'));
 
     // limit accessible files to the ones in MailScanner etc directory
     $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));

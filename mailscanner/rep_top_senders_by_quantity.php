@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Top Senders by Quantity", 0, false, true);
+$filter = html_start(__('topsendersqt46'), 0, false, true);
 
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
@@ -53,9 +53,9 @@ $sql = "
  FROM
   maillog
  WHERE
-  from_address <> \"\"		-- Exclude delivery receipts
+  from_address <> \"\" 		-- Exclude delivery receipts
  AND
-  from_address IS NOT NULL	-- Exclude delivery receipts
+  from_address IS NOT NULL     	-- Exclude delivery receipts
 " . $filter->CreateSQL() . "
  GROUP BY
   from_address

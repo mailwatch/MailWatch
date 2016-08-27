@@ -37,7 +37,7 @@ require(__DIR__ . '/login.function.php');
 if ($_SESSION['user_type'] != 'A') {
     header('Location: index.php');
 } else {
-    html_start("MCP Rule Description Update", 0, false, false);
+    html_start(__('mcpruledesc26'), 0, false, false);
 
     echo '<form method="post" action="mcp_rules_update.php" >' . "\n";
     echo '<input type="hidden" name="run" value="true">' . "\n";
