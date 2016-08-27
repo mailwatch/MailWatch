@@ -39,12 +39,12 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
 
 // check if php version is not greater that 5.*
 if (PHP_MAJOR_VERSION > 5) {
-    die('MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it');
+    die(__('php703'));
 }
 
 // Read in MailWatch configuration file
 if (!is_readable(__DIR__ . '/conf.php')) {
-    die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
+    die(__('cannot_read_conf'));
 }
 require_once(__DIR__ . '/conf.php');
 
@@ -1747,7 +1747,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 $orderable[$f] = false;
                 // Set it up not to wrap - tricky way to leach onto the align field
                 $align[$f] = 'center" style="white-space:nowrap';
-                $fieldname[$f] = 'Ops<br><a href="javascript:SetRadios(\'S\')">S</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'H\')">H</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'F\')">F</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'R\')">R</a>';
+                $fieldname[$f] = __('ops03') . '<br><a href="javascript:SetRadios(\'S\')">' . __('radiospam203') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'H\')">' . __('radioham03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'F\')">' . __('radioforget03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'R\')">' . __('radiorelease03') . '</a>';
                 continue;
             }
             $display[$f] = true;
@@ -2208,14 +2208,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
     }
 </script>
-   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">S</a>
-   &nbsp; <a href=\"javascript:SetRadios('H')\">H</a>
-   &nbsp; <a href=\"javascript:SetRadios('F')\">F</a>
-   &nbsp; <a href=\"javascript:SetRadios('R')\">R</a>
-   &nbsp; or <a href=\"javascript:SetRadios('C')\">Clear</a> all</p>
-   <p><input type='SUBMIT' name='SUBMIT' value='Learn'></p>
+   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">" . __('radiospam203') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('H')\">" . __('radioham03') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('F')\">" . __('radioforget03') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('R')\">" . __('radiorelease03') . "</a>
+   &nbsp; " . __('or03') . " <a href=\"javascript:SetRadios('C')\">" . __('clear03') . "</p>
+   <p><input type='SUBMIT' name='SUBMIT' value='" . __('learn03') . "'></p>
    </form>
-   <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release" . "\n";
+   <p><b>" . __('spam203') . " &nbsp; <b>" . __('ham03') . " &nbsp; <b>" . __('forget03') . " &nbsp; <b>" . __('release03') . "" . "\n";
         }
         echo '<br>' . "\n";
         if ($pager) {
