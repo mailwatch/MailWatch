@@ -521,7 +521,7 @@ return array(
     'top10virus48' => 'Top 10 Viruses',
     'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
-    'count48' => 'Count'
+    'count48' => 'Count',
     
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
