@@ -120,7 +120,9 @@ return array(
     'learn03' => 'Apprendre',
     'ops03' => 'Options',
     'or03' => 'ou',
-    
+    'mwfilterreport03' => 'Rapport pour MailWatch :',
+    'mwforms03' => 'MailWatch pour Mailscanner - ',
+        
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
     'receivedby04' => 'Reçu par :',
@@ -454,7 +456,29 @@ return array(
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total des messages par date',
-
+    'totalmailprocdate49' => 'Total des messages traités par date',
+    'volume49' => 'Volume',
+    'nomessages49' => 'Nb de messages',
+    'date49' => 'Date',
+    'barmail49' => 'Mail',
+    'barvirus49' => 'Virus',
+    'barspam49' => 'Spam',
+    'barmcp49' => 'MCP',
+    'barvolume49' => 'Volume',
+    'message149' => 'Le fichier n\'est pas lisible. Vérifiez que le fichier File',
+    'message249' => 'est lisible et peu être écrit par MailWatch',
+    'total49' => 'Total<br>Mail',
+    'clean49' => 'Bon',
+    'lowespam49' => 'Spam Bas',
+    'highspam49' => 'Spam Haut',
+    'blocked49' => 'Bloqué',
+    'virus49' => 'Virus',
+    'mcp49' => 'MCP',
+    'unknoweusers49' => 'Utilisateurs<br>inconnus',
+    'resolve49' => 'Impossible<br>à résoudre',
+    'rbl49' => 'RBL',
+    'totals49' => 'Total',
+    
     // 50-rep_viruses.php
     'virusreport50' => 'Rapport sur les Virus',
 
@@ -481,6 +505,7 @@ return array(
     // 99 - General
     // Space rule for comma. Change it according to your langage typographical rule.
     'comma99' => ' :',
+    'diemysql99' => 'Erreur : aucun enregistrement trouvé dans la base de données',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
 

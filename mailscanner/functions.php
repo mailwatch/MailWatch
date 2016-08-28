@@ -246,7 +246,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '' . row_highandclick() . '';
     echo '</script>';
     if ($report) {
-        echo '<title>MailWatch Filter Report: ' . $title . ' </title>' . "\n";
+        echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION["filter"])) {
             require_once(__DIR__ . '/filter.inc.php');
@@ -258,7 +258,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         audit_log('Ran report ' . $title);
     } else {
-        echo '<title>MailWatch for Mailscanner - ' . $title . '</title>' . "\n";
+        echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
     }
 

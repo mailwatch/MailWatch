@@ -152,7 +152,7 @@ if (is_writable(CACHE_DIR)) {
     // Must be one or more row
     $result = dbquery($sql);
     if (!mysql_num_rows($result) > 0) {
-        die("Error: no rows retrieved from database\n");
+        die(__('diemysql99') . "\n");
     }
 
     // Connecting to the DB and running the query
@@ -212,14 +212,14 @@ if (is_writable(CACHE_DIR)) {
     $graph->SetScale("textlin");
     $graph->SetY2Scale("lin");
     $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set("Total Mail Processed by Date");
-    $graph->y2axis->title->Set("Volume (" . $size_info['longdesc'] . ")");
+    $graph->title->Set(__('totalmailprocdate49'));
+    $graph->y2axis->title->Set(__('volume49') . " (" . $size_info['longdesc'] . ")");
     $graph->y2axis->title->SetMargin(0);
     $graph->y2axis->SetTitleMargin(40);
-    $graph->yaxis->title->Set("No. of messages");
+    $graph->yaxis->title->Set(__('nomessages49'));
     $graph->yaxis->title->SetMargin(20);
     $graph->yaxis->SetTitleMargin(30);
-    $graph->xaxis->title->Set("Date");
+    $graph->xaxis->title->Set(__('date49'));
     $graph->xaxis->SetTitleMargin(30);
     $graph->xaxis->SetTickLabels($graph_labels);
     $graph->xaxis->SetLabelAngle(45);
@@ -245,20 +245,20 @@ if (is_writable(CACHE_DIR)) {
 
     $bar1->SetColor('blue');
     $bar1->SetFillColor('blue');
-    $bar1->SetLegend('Mail');
+    $bar1->SetLegend(__('barmail49'));
     $bar2->SetColor('orange');
     $bar2->SetFillColor('orange');
-    $bar2->SetLegend('Viruses');
+    $bar2->SetLegend(__('barvirus49'));
     $bar3->SetColor('red');
     $bar3->SetFillColor('red');
-    $bar3->SetLegend('Spam');
+    $bar3->SetLegend(__('barspam49'));
     if ($is_MCP_enabled === true) {
         $bar4->SetFillColor('lightblue');
-        $bar4->SetLegend('MCP');
+        $bar4->SetLegend(__('barmcp49'));
     }
     $line1->SetColor('lightgreen');
     $line1->SetFillColor('lightgreen');
-    $line1->SetLegend('Volume (' . $size_info['shortdesc'] . ')');
+    $line1->SetLegend(__('barvolume49') . ' (' . $size_info['shortdesc'] . ')');
     $line1->SetCenter();
 
     $graph->Stroke($filename);
@@ -273,7 +273,7 @@ echo " <TR>\n";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message149') . " " . CACHE_DIR . " " . __('message249');
 }
 
 echo " </TR>\n";
@@ -281,21 +281,21 @@ echo " <TR>\n";
 echo "  <TD ALIGN=\"CENTER\">\n";
 echo "<TABLE BORDER=0 cellspacing=1 cellpadding=2>\n";
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo "  <TH rowspan='2'>Date</TH>\n";
-echo "  <TH rowspan='2' align='right'>Total<br>Mail</TH>\n";
-echo "  <TH colspan='2'>Clean</TH>\n";
-echo "  <TH nowrap colspan='2'>Low Spam</TH>\n";
-echo "  <TH nowrap colspan='2'>High Spam</TH>\n";
-echo "  <TH nowrap colspan='2'>Blocked</TH>\n";
-echo "  <TH colspan='2'>Virus</TH>\n";
+echo "  <TH rowspan='2'>" . __('date49') . "</TH>\n";
+echo "  <TH rowspan='2' align='right'>" . __('total49') . "</TH>\n";
+echo "  <TH colspan='2'>" . __('clean49') . "</TH>\n";
+echo "  <TH nowrap colspan='2'>" . __('lowespam49') . "</TH>\n";
+echo "  <TH nowrap colspan='2'>" . __('highspam49') . "</TH>\n";
+echo "  <TH nowrap colspan='2'>" . __('blocked49') . "</TH>\n";
+echo "  <TH colspan='2'>" . __('virus49') . "</TH>\n";
 if ($is_MCP_enabled === true) {
-    echo "  <TH colspan='2'>MCP</TH>\n";
+    echo "  <TH colspan='2'>" . __('mcp49') . "</TH>\n";
 }
-echo "  <TH rowspan='2'>Volume</TH>\n";
+echo "  <TH rowspan='2'>" . __('volume49') . "</TH>\n";
 echo "  <TH bgcolor='#ffffff' rowspan='2'>&nbsp;</TH>\n";
-echo "  <TH rowspan='2'>Unknown<BR>Users</TH>\n";
-echo "  <TH rowspan='2'>Can't<BR>Resolve</TH>\n";
-echo "  <TH rowspan='2'>RBL</TH>\n";
+echo "  <TH rowspan='2'>" . __('unknoweusers49') . "</TH>\n";
+echo "  <TH rowspan='2'>" . __('resolve49') . "</TH>\n";
+echo "  <TH rowspan='2'>" . __('rbl49') . "</TH>\n";
 echo " </TR>\n";
 
 echo "<tr BGCOLOR='#F7CE4A'>\n";
@@ -336,7 +336,7 @@ for ($i = 0; $i < count($data_total_mail); $i++) {
 }
 
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo " <TH ALIGN=\"RIGHT\">Totals</TH>\n";
+echo " <TH ALIGN=\"RIGHT\">" . __('totals49') . "</TH>\n";
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mail)) . "</TH>\n";
 
 echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_clean)) . "</TH>\n";

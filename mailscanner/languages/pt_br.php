@@ -120,7 +120,9 @@ return array(
     'learn03' => 'Learn',
     'ops03' => 'Options',
     'or03' => 'or',
-
+    'mwfilterreport03' => 'MailWatch Filter Report:',
+    'mwforms03' => 'MailWatch for Mailscanner - ',
+    
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
     'receivedby04' => 'Recebido por:',
@@ -455,7 +457,29 @@ return array(
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
-
+    'totalmailprocdate49' => 'Total Mail Processed by Date',
+    'volume49' => 'Volume',
+    'nomessages49' => 'No. of messages',
+    'date49' => 'Date',
+    'barmail49' => 'Mail',
+    'barvirus49' => 'Viruses',
+    'barspam49' => 'Spam',
+    'barmcp49' => 'MCP',
+    'barvolume49' => 'Volume',
+    'message149' => 'File isn't readable. Please make sure that',
+    'message249' => 'is readable and writable by MailWatch',
+    'total49' => 'Total<br>Mail',
+    'clean49' => 'Clean',
+    'lowespam49' => 'Low Spam',
+    'highspam49' => 'High Spam',
+    'blocked49' => 'Blocked',
+    'virus49' => 'Virus',
+    'mcp49' => 'MCP',
+    'unknoweusers49' => 'Unknown<br>Users',
+    'resolve49' => 'Can\'t<br>Resolve',
+    'rbl49' => 'RBL',
+    'totals49' => 'Totals',
+    
     // 50-rep_viruses.php
     'virusreport50' => 'Virus Report',
 
@@ -483,6 +507,7 @@ return array(
     // Space rule for comma. Change it according to your langage typographical rule.
     'comma99' => ' :',
     'i18_missing' => 'Não traduzido em português',
+    'diemysql99' => 'Error: no rows retrieved from database',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
 );
