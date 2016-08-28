@@ -466,7 +466,7 @@ return array(
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volume',
-    'message149' => 'File isn't readable. Please make sure that',
+    'message149' => 'File isn\'t readable. Please make sure that',
     'message249' => 'is readable and writable by MailWatch',
     'total49' => 'Total<br>Mail',
     'clean49' => 'Clean',
