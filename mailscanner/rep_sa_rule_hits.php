@@ -53,7 +53,7 @@ $sql = "
 
 $result = dbquery($sql);
 if (!mysql_num_rows($result) > 0) {
-    die("Error: no rows retrieved from database\n");
+    die(__('diemysql99') . "\n");
 }
 
 // Initialise the array
@@ -123,13 +123,13 @@ echo "<TR><TD ALIGN=\"CENTER\">";
 echo "<TABLE CLASS=\"boxtable\" ALIGN=\"CENTER\" BORDER=\"0\">\n";
 echo "
 <TR BGCOLOR=\"#F7CE4A\">
- <TH>Rule</TH>
- <TH>Description</TH>
- <TH>Score</TH>
- <TH>Total</TH>
- <TH>Ham</TH>
+ <TH>" . __('rule37') . "</TH>
+ <TH>" . __('desc37') . "</TH>
+ <TH>" . __('score37') . "</TH>
+ <TH>" . __('total37') . "</TH>
+ <TH>" . __('ham37') . "</TH>
  <TH>%</TH>
- <TH>Spam</TH>
+ <TH>" . __('spam37') . "</TH>
  <TH>%</TH>
 </TR>\n";
 

@@ -175,12 +175,12 @@ echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"Mail
 echo "</TR>";
 echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"500\">";
+echo "<TABLE WIDTH=\"840\">";
 echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo "<TH>Virus</TH>";
-echo "<TH>Scanner</TH>";
-echo "<TH>First Seen</TH>";
-echo "<TH>Count</TH>";
+echo "<TH>" . __('virus50') . "</TH>";
+echo "<TH>" . __('scanner50') . "</TH>";
+echo "<TH>" . __('firstseen50') . "</TH>";
+echo "<TH>" . __('count50') . "</TH>";
 echo "</TR>";
 
 // Write the data in table

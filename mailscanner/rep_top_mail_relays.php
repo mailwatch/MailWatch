@@ -98,7 +98,7 @@ if (is_writable(CACHE_DIR)) {
     $graph = new PieGraph(800, 385, 0, false);
     $graph->SetShadow();
     $graph->img->SetAntiAliasing();
-    $graph->title->Set("Top 10 Mail Relays");
+    $graph->title->Set(__('top10mailrelays39'));
     //$graph->legend->SetLayout(LEGEND_HOR);
     $graph->legend->Pos(0.52, 0.87, 'center');
 
@@ -126,7 +126,7 @@ echo "<TR>";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 echo "</TR>";
@@ -134,13 +134,13 @@ echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
 echo "<TABLE WIDTH=\"500\">";
 echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo "    <TH>Hostname</TH>";
-echo "    <TH>IP Address</TH>";
-echo "    <TH>Country</TH>";
-echo "    <TH>Messages</TH>";
-echo "    <TH>Viruses</TH>";
-echo "    <TH>Spam</TH>";
-echo "    <TH>Volume</TH>";
+echo "    <TH>" . __('hostname39') . "</TH>";
+echo "    <TH>" . __('ipaddresses39') . "</TH>";
+echo "    <TH>" . __('country39') . "</TH>";
+echo "    <TH>" . __('messages39') . "</TH>";
+echo "    <TH>" . __('viruses39') . "</TH>";
+echo "    <TH>" . __('spam39') . "</TH>";
+echo "    <TH>" . __('volume39') . "</TH>";
 echo "   </TR>";
 
 for ($i = 0; $i < count($data_names); $i++) {

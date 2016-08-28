@@ -93,11 +93,11 @@ if (is_writable(CACHE_DIR)) {
     $graph->SetShadow();
     $graph->SetScale("textlin");
     $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set("SpamAssassin Score Distribution");
-    $graph->xaxis->title->Set("Score (rounded)");
+    $graph->title->Set(__('sascoredist38'));
+    $graph->xaxis->title->Set(__('scorerounded38'));
     $graph->xaxis->SetTextLabelInterval($labelinterval);
     $graph->xaxis->SetTickLabels($data_labels);
-    $graph->yaxis->title->Set("No. of messages");
+    $graph->yaxis->title->Set(__('nbmessage38'));
     $graph->yaxis->SetTitleMargin(30);
     $graph->yaxis->title->SetMargin(20);
     $graph->legend->SetLayout(LEGEND_HOR);
@@ -119,7 +119,7 @@ echo " <TR>\n";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 echo " </TR>\n";
@@ -127,8 +127,8 @@ echo " <TR>\n";
 echo "  <TD ALIGN=\"CENTER\">\n";
 echo "<TABLE BORDER=\"0\" WIDTH=\"500\">\n";
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo "  <TH>Score</TH>\n";
-echo "  <TH>Count</TH>\n";
+echo "  <TH>" . __('score38') . "</TH>\n";
+echo "  <TH>" . __('count38') . "</TH>\n";
 echo " </TR>\n";
 
 for ($i = 0; $i < count($data_count); $i++) {

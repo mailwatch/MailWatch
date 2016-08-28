@@ -72,7 +72,7 @@ if (is_writable(CACHE_DIR)) {
 ///////AJOS1 NOTE////////
     $result = dbquery($sql);
     if (mysql_num_rows($result) <= 1) {
-        die("Error: Needs 2 or more rows of data to be retrieved from database\n");
+        die(__('die35') . "\n");
     }
 
     while ($row = mysql_fetch_object($result)) {
@@ -95,11 +95,11 @@ if (is_writable(CACHE_DIR)) {
     $graph->SetScale("textlin");
     $graph->yaxis->SetTitleMargin(40);
     $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set("MCP Score Distribution");
-    $graph->xaxis->title->Set("Score (rounded)");
+    $graph->title->Set(__('mcpscoredist35'));
+    $graph->xaxis->title->Set(__('scorerounded35'));
     $graph->xaxis->SetTextLabelInterval($labelinterval);
     $graph->xaxis->SetTickLabels($data_labels);
-    $graph->yaxis->title->Set("No. of messages");
+    $graph->yaxis->title->Set(__('nbmessages35'));
     $graph->legend->SetLayout(LEGEND_HOR);
     $graph->legend->Pos(0.52, 0.87, 'center');
     $bar1 = new LinePlot($data_count);
@@ -118,7 +118,7 @@ echo " <TR>\n";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 // Create the table
@@ -127,8 +127,8 @@ echo " <TR>\n";
 echo "  <TD ALIGN=\"CENTER\">\n";
 echo "<TABLE BORDER=\"0\" WIDTH=\"500\">\n";
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo "  <TH>Score</TH>\n";
-echo "  <TH>Count</TH>\n";
+echo "  <TH>" . __('score35') . "</TH>\n";
+echo "  <TH>" . __('count35') . "</TH>\n";
 echo " </TR>\n";
 
 // Displaying data

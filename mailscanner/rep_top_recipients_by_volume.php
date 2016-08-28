@@ -87,7 +87,7 @@ if (is_writable(CACHE_DIR)) {
     $graph = new PieGraph(800, 385, 0, false);
     $graph->SetShadow();
     $graph->img->SetAntiAliasing();
-    $graph->title->Set("Top 10 Recipients by Volume");
+    $graph->title->Set(__('top10recipvol43'));
 
     $p1 = new PiePlot3d($data);
     $p1->SetTheme('sand');
@@ -112,7 +112,7 @@ echo "<TR>";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 echo "</TR>";
@@ -120,9 +120,9 @@ echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
 echo "<TABLE WIDTH=\"500\">";
 echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo "<TH>E-Mail Address</TH>";
-echo "<TH>Count</TH>";
-echo "<TH>Size</TH>";
+echo "<TH>" . __('email43') . "</TH>";
+echo "<TH>" . __('count43') . "</TH>";
+echo "<TH>" . __('size43') . "</TH>";
 echo "</TR>";
 
 for ($i = 0; $i < count($data); $i++) {

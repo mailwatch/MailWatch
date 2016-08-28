@@ -52,7 +52,7 @@ return array(
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
     'notverified03' => 'Non vérifié',
-    'clean03' => 'Bon',
+    'clean03' => 'Légitime',
     'status03' => 'Statut',
     'mailscanner03' => 'Mailscanner :',
     'none03' => 'Aucun',
@@ -69,7 +69,7 @@ return array(
     'freedspace03' => 'Espace disque libre',
     'todaystotals03' => 'Total aujourd\'hui',
     'processed03' => 'Traité :',
-    'cleans03' => 'Bon :',
+    'cleans03' => 'Légitime :',
     'viruses03' => 'Virus :',
     'blockedfiles03' => 'Fichier(s) bloqué(s) :',
     'others03' => 'Autre :',
@@ -85,8 +85,8 @@ return array(
     'to03' => 'À',
     'size03' => 'Taille',
     'subject03' => 'Sujet',
-    'sascore03' => 'Score SA',
-    'mcpscore03' => 'Score MCP',
+    'sascore03' => 'Points SA',
+    'mcpscore03' => 'POints MCP',
     'found03' => 'trouvé',
     'highspam03' => 'Spam Haut',
     'mcp03' => 'MCP',
@@ -102,17 +102,17 @@ return array(
     'of03' => 'de',
     'records03' => 'Enregistrements de',
     'to0203' => 'à',
-    'score03' => 'Score',
+    'score03' => 'Points',
     'matrule03' => 'Règle associée',
     'description03' => 'Description',
     'footer03' => 'MailWatch pour MailScanner v',
     'mailwatchtitle03' => 'MailWatch pour Mailscanner',
-    'php703' => 'MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it.',
+    'php703' => 'MailWatch a besoin du pilote MySQL pour fonctionner : PHP7 a supprimé ce pilote qui est devenu obsoléte',
     'radiospam203' => 'S',
     'radioham03' => 'D',
     'radioforget03' => 'O',
     'radiorelease03' => 'L',
-    'clear03' => 'Effacer</a>',
+    'clear03' => 'Effacer</a> la sélection',
     'spam203' => 'S</b> = Spam',
     'ham03' => 'D</b> = Déclarer comme légitime',
     'forget03' => 'O</b> = Oublier',
@@ -122,7 +122,7 @@ return array(
     'or03' => 'ou',
     'mwfilterreport03' => 'Rapport pour MailWatch :',
     'mwforms03' => 'MailWatch pour Mailscanner - ',
-        
+
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
     'receivedby04' => 'Reçu par :',
@@ -141,13 +141,13 @@ return array(
     'spamwl04' => 'Spam en Liste Blanche :',
     'spambl04' => 'Spam en Liste Noire : ',
     'saautolearn04' => 'Auto aprentissage SpamAssassin :',
-    'sascore04' => 'Score SpamAssassin :',
+    'sascore04' => 'Points SpamAssassin :',
     'spamrep04' => 'Rapport de Spam :',
     'hdrmcp04' => 'Protection des Contenus (MCP)',
-    'highscomcp04' => 'MCP à Score Haut :',
+    'highscomcp04' => 'MCP à Point Haut :',
     'mcpwl04' => 'MCP en Liste Blanche :',
     'mcpbl04' => 'MCP en Liste Noire :',
-    'mcpscore04' => 'Score MCP :',
+    'mcpscore04' => 'Points MCP :',
     'mcprep04' => 'Rapport MCP :',
     'ipaddress04' => 'Adresse IP',
     'country04' => 'Pays',
@@ -253,8 +253,8 @@ return array(
     'fullname12' => 'Nom complet',
     'type12' => 'Type',
     'spamcheck12' => 'Vérifier les Spam',
-    'spamscore12' => 'Score de Spam',
-    'spamhscore12' => 'Score de Spam Haut',
+    'spamscore12' => 'Points de Spam',
+    'spamhscore12' => 'Points de Spam Haut',
     'action12' => 'Actions',
     'edit12' => 'Editer',
     'delete12' => 'Supprimer',
@@ -274,8 +274,8 @@ return array(
     'overrec12' => 'Remplacer le destinataire par défaut <BR>(Utilise le nom d\'utilisateur par défaut si vide)',
     'scanforspam12' => 'Scan des Spam :',
     'scanforspam212' => 'Scan des E-Mail pour les Spam ?',
-    'pontspam12' => 'Score de Spam :',
-    'hpontspam12' => 'Score de Spam Haut :',
+    'pontspam12' => 'Points de Spam :',
+    'hpontspam12' => 'Points de Spam Haut :',
     'usedefault12' => 'Utiliser les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
@@ -312,16 +312,16 @@ return array(
     'topmailrelay14' => 'Top des relais de messagerie',
     'topvirus14' => 'Top Virus',
     'virusrepor14' => 'Rapport sur les Virus',
-    'topsendersqt14' => 'Top expéditeurs par quantité',
-    'topsendersvol14' => 'Top expéditeurs par volume',
-    'toprecipqt14' => 'Top destinataires par quantité',
-    'toprecipvol14' => 'Top destinataires par volume',
+    'topsendersqt14' => 'Top des expéditeurs par quantité',
+    'topsendersvol14' => 'Top des expéditeurs par volume',
+    'toprecipqt14' => 'Top des destinataires par quantité',
+    'toprecipvol14' => 'Top des destinataires par volume',
     'topsendersdomqt14' => 'Top des domaines d\'expédition par quantité',
     'topsendersdomqt14' => 'Top des domaines d\'expédition par volume',
     'toprecipdomqt14' => 'Top des domaines de destination par quantité',
     'toprecipdomvol14' => 'Top des domaines de destination par volume',
-    'assassinscoredist14' => 'Score de SpamAssassin par point',
-    'assassinrulhit14' => 'Score de SpamAssassin par règle',
+    'assassinscoredist14' => 'Distribution SpamAssassin par point',
+    'assassinrulhit14' => 'Distribution SpamAssassin par règle',
     'auditlog14' => 'Log de l\'Audit',
     'mrtgreport14' => 'Rapport de message MRTG',
     'mcpscoredist14' => 'Score MCP par point',
@@ -369,7 +369,7 @@ return array(
     // 20-docs.php
     'doc20' => 'Documentation',
     'message20' => 'Cette page ne peut être accédée qu\'en mode autentifié. Vous poouvez y mettre un lien vers la docuemntation interne de votre site pour que les utilisateurs puissent y avoir accès.',
-        
+
     // 21-do_message_ops.php
     'opresult21' => 'Résultat des opérations',
 
@@ -408,57 +408,125 @@ return array(
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Log de l\'Audit',
+    'datetime33' => 'Date/Heure',
+    'user33' => 'Utilisateur',
+    'ipaddress33' => 'Adresse IP',
+    'action33' => 'Action',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',
+    'rule34' => 'Règle',
+    'des34' => 'Description',
+    'total34' => 'Total',
+    'clean34' => 'Légitime',
+    'mcp34' => 'MCP',
 
     // 35-rep_mcp_score_dist.php
     'mcpscoredist35' => 'Score MCP par règle',
+    'die35' => 'Erreur : il est nécessaire d\'avoir deux enregistrements ou plus dans la base de données',
+    'scorerounded35' => 'Points (arondis)',
+    'nbmessages35' => 'Nb de message',
+    'score35' => 'Distribution',
+    'count35' => 'Total',
 
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'Rapport de message MRTG',
 
     // 37-rep_sa_rule_hits.php
-    'sarulehits37' => 'Score de SpamAssassin par règle',
+    'sarulehits37' => 'Distribution de SpamAssassin par règle',
+    'rule37' => 'Règle',
+    'desc37' => 'Description',
+    'score37' => 'Points',
+    'total37' => 'Total',
+    'ham37' => 'Légitime',
+    'spam37' => 'Spam',
 
     // 38-rep_sa_score_dist.php
-    'sascoredist38' => 'Score de SpamAssassin par point',
+    'sascoredist38' => 'Distribution SpamAssassin par point',
+    'scorerounded38' => 'Points (arondis)',
+    'nbmessage38' => 'Nb de message',
+    'score38' => 'Points',
+    'count38' => 'Nombre',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top des relais de messagerie',
+    'top10mailrelays39' => 'Top 10 des relais de messagerie',
+    'hostname39' => 'Nom de serveur',
+    'ipaddresses39' => 'Adresse IP',
+    'country39' => 'Pays',
+    'messages39' => 'Messages',
+    'viruses39' => 'Virus',
+    'spam39' => 'Spam',
+    'volume39' => 'Volume',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
+    'top10recipdomqt40' => 'Top 10 des domaines de destination par quantité',
+    'domain40' => 'Domaine',
+    'count40' => 'Nombre',
+    'size40' => 'Taille',
 
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
+    'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
+    'domain41' => 'Domaine',
+    'count41' => 'Nombre',
+    'size41' => 'Taille',
 
     // 42-rep_top_recipients_by_quantity.php
-    'toprecipqt42' => 'Top destinataires par quantité',
+    'toprecipqt42' => 'Top des destinataires par quantité',
+    'top10recipqt42' => 'Top 10 des destinataires par quantité',
+    'email42' => 'Adresse E-Mail',
+    'count42' => 'Nombre',
+    'size42' => 'Taille',
 
     // 43-rep_top_recipients_by_volume.php
-    'toprecipvol43' => 'Top destinataires par volume',
+    'toprecipvol43' => 'Top des destinataires par volume',
+    'top10recipvol43' => 'Top 10 des destinataires par volume',
+    'email43' => 'Adresse E-Mail',
+    'count43' => 'Nombre',
+    'size43' => 'Taille',
 
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
+    'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
+    'domain44' => 'Domaine',
+    'count44' => 'Nombre',
+    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
+    'top10senderdomvol45' => 'Top 10 des domaines d\'expédition par volume',
+    'domain45' => 'Domaine',
+    'count45' => 'Nombre',
+    'size45' => 'Taille',
 
     // 46-rep_top_senders_by_quantity.php
-    'topsendersqt46' => 'Top expéditeurs par quantité',
+    'topsendersqt46' => 'Top des expéditeurs par quantité',
+    'top10sendersqt46' => 'Top 10 des expéditeurs par quantité',
+    'email46' => 'Adresse E-Mail',
+    'count46' => 'Nombre',
+    'size46' => 'Taille',
 
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top expéditeurs par volume',
+    'topsendersvol47' => 'Top ders expéditeurs par volume',
+    'top10sendersvol47' => 'Top 10 des expéditeurs par volume',
+    'email47' => 'Adresse E-Mail',
+    'count47' => 'Nombre',
+    'size47' => 'Taille',
 
     // 48-rep_top_viruses.php
-    'topvirus48' => 'Top Virus',
+    'topvirus48' => 'Top des Virus',
+    'top10virus48' => 'Top 10 des Virus',
+    'nodata48' => 'Pas assez de données pour générer le graphique.',
+    'virus48' => 'Virus',
+    'count48' => 'Nombre',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total des messages par date',
     'totalmailprocdate49' => 'Total des messages traités par date',
     'volume49' => 'Volume',
-    'nomessages49' => 'Nb de messages',
+    'nomessages49' => 'Nb de message',
     'date49' => 'Date',
     'barmail49' => 'Mail',
     'barvirus49' => 'Virus',
@@ -468,7 +536,7 @@ return array(
     'message149' => 'Le fichier n\'est pas lisible. Vérifiez que le fichier File',
     'message249' => 'est lisible et peu être écrit par MailWatch',
     'total49' => 'Total<br>Mail',
-    'clean49' => 'Bon',
+    'clean49' => 'Légitime',
     'lowespam49' => 'Spam Bas',
     'highspam49' => 'Spam Haut',
     'blocked49' => 'Bloqué',
@@ -478,9 +546,13 @@ return array(
     'resolve49' => 'Impossible<br>à résoudre',
     'rbl49' => 'RBL',
     'totals49' => 'Total',
-    
+
     // 50-rep_viruses.php
     'virusreport50' => 'Rapport sur les Virus',
+    'virus50' => 'Virus',
+    'scanner50' => 'Scanner',
+    'firstseen50' => 'Date de première apparition',
+    'count50' => 'Nombre',
 
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',

@@ -409,52 +409,120 @@ return array(
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Audit Log',
-
+    'datetime33' => 'Date/Time',
+    'user33' => 'User',
+    'ipaddress33' => 'IP Address',
+    'action33' => 'Action',
+    
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
-
+    'rule34' => 'Rule',
+    'des34' => 'Description',
+    'total34' => 'Total',
+    'clean34' => 'Clean',
+    'mcp34' => 'MCP',
+    
     // 35-rep_mcp_score_dist.php
     'mcpscoredist35' => 'MCP Score Distribution',
-
+    'die35' => 'Error: Needs 2 or more rows of data to be retrieved from database',
+    'scorerounded35' => 'Score (rounded)',
+    'nbmessages35' => 'No. of messages',
+    'score35' => 'Score',
+    'count35' => 'Count',
+    
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'MRTG Style Mail Report',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
-
+    'rule37' => 'Rule',
+    'desc37' => 'Description',
+    'score37' => 'Score',
+    'total37' => 'Total',
+    'ham37' => 'Ham',
+    'spam37' => 'Spam',
+    
     // 38-rep_sa_score_dist.php
     'sascoredist38' => 'SpamAssassin Score Distribution',
+    'scorerounded38' => 'Score (rounded)',
+    'nbmessage38' => 'No. of messages',
+    'score38' => 'Score',
+    'count38' => 'Count',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',
-
+    'top10mailrelays39' => 'Top 10 Mail Relays',
+    'hostname39' => 'Hostname',
+    'ipaddresses39' => 'IP Address',
+    'country39' => 'Country',
+    'messages39' => 'Messages',
+    'viruses39' => 'Viruses',
+    'spam39' => 'Spam',
+    'volume39' => 'Volume',
+    
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
-
+    'top10recipdomqt40' => 'Top 10 Sender Domains by Volume',
+    'domain40' => 'Domain',
+    'count40' => 'Count',
+    'size40' => 'Size',
+    
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Recipients Domains by Volume',
-
+    'top10recipdomvol41' => 'Top 10 Recipient Domains by Volume',
+    'domain41' => 'Domain',
+    'count41' => 'Count',
+    'size41' => 'Size',
+    
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Recipients by Quantity',
-
+    'top10recipqt42' => 'Top 10 Recipients by Quantity',
+    'email42' => 'E-Mail Address',
+    'count42' => 'Count',
+    'size42' => 'Size',
+    
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
-
+    'top10recipvol43' => 'Top 10 Recipients by Volume',
+    'email43' => 'E-Mail Address',
+    'count43' => 'Count',
+    'size43' => 'Size',
+    
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Sender Domains by Quantity',
-
+    'top10senderdomqt44' => 'Top 10 Sender Domains by Quantity',
+    'domain44' => 'Domain',
+    'count44' => 'Count',
+    'size44' => 'Size',
+    
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Sender Domains by Volume',
-
+    'top10sendersqt46' => 'Top 10 Senders by Quantity',
+    'email46' => 'E-Mail Address',
+    'count46' => 'Count',
+    'size46' => 'Size',
+    
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
-
+    'top10sendersqt46' => 'Top 10 Senders by Quantity',
+    'email46' => 'E-Mail Address',
+    'count46' => 'Count',
+    'size46' => 'Size',
+    
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
-
+    'top10sendersvol47' => 'Top 10 Senders by Volume',
+    'email47' => 'E-Mail Address',
+    'count47' => 'Count',
+    'size47' => 'Size',
+    
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
-
+    'top10virus48' => 'Top 10 Viruses',
+    'nodata48' => 'Not enough data to generate a graph.',
+    'virus48' => 'Virus',
+    'count48' => 'Count',
+    
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
     'totalmailprocdate49' => 'Total Mail Processed by Date',
@@ -482,7 +550,11 @@ return array(
     
     // 50-rep_viruses.php
     'virusreport50' => 'Virus Report',
-
+    'virus50' => 'Virus',
+    'scanner50' => 'Scanner',
+    'firstseen50' => 'First Seen',
+    'count50' => 'Count',
+    
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
 
@@ -507,6 +579,8 @@ return array(
     // Space rule for comma. Change it according to your langage typographical rule.
     'comma99' => ' :',
     'diemysql99' => 'Error: no rows retrieved from database',
+    'message199' => 'File isn\'t readable. Please make sure that',
+    'message299' => 'is readable and writable by MailWatch',
     'i18_missing' => 'Geen vertaling in het Nederlands',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 

@@ -47,10 +47,10 @@ if ($_SESSION['user_type'] != 'A') {
     // SQL query for the audit log
     $sql = "
  SELECT
-  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS 'Date/Time',
-  b.fullname AS 'User',
-  a.ip_address AS 'IP Address',
-  a.action AS 'Action'
+  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS '" . __('datetime33') . "',
+  b.fullname AS '" . __('user33') . "',
+  a.ip_address AS '" . __('ipaddress33') . "',
+  a.action AS '" . __('action33') . "'
  FROM
   audit_log a,
   users b
@@ -65,7 +65,7 @@ if ($_SESSION['user_type'] != 'A') {
  <tr><td>' . "\n";
 
     // Function to to query and display the data
-    dbtable($sql, "Audit Log", true);
+    dbtable($sql, __('auditlog33'), true);
 
     // close off the table
     echo '</td></tr>
