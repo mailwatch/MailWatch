@@ -218,34 +218,28 @@ AND
 
     if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
         $sql .= "
-	AND
-	(
-	virusinfected>0
-	OR
-	nameinfected>0
-	OR
-	otherinfected>0
-	OR
-	ishighspam>0
-	OR
-	isaspam>0
-	OR
-	isrblspam>0
-	OR
-	spamblacklisted>0
-	OR
-	isspam>0
-	OR
-	ismcp>0
-	OR
-	ishighmcp>0
-	OR
-	issamcp>0
-	OR
-	ismcpblacklisted>0
-	OR
-	isspam>0
-	)";
+    AND
+    (
+    virusinfected>0
+    OR
+    nameinfected>0
+    OR
+    otherinfected>0
+    OR
+    ishighspam>0
+    OR
+    isrblspam>0
+    OR
+    spamblacklisted>0
+    OR
+    ismcp>0
+    OR
+    ishighmcp>0
+    OR
+    issamcp>0
+    OR
+    isspam>0
+    )";
     }
 
     $sql .= "
