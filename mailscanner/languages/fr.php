@@ -399,7 +399,7 @@ return array(
 
     // 20-docs.php
     'doc20' => 'Documentation',
-    'message20' => 'Cette page ne peut être accédée qu\'en mode autentifié. Vous poouvez y mettre un lien vers la docuemntation interne de votre site pour que les utilisateurs puissent y avoir accès.',
+    'message20' => 'Cette page ne peut être accédée qu\'en mode autentifié. Vous poouvez y mettre un lien vers la documentation interne de votre site pour que les utilisateurs puissent y avoir accès.',
 
     // 21-do_message_ops.php
     'opresult21' => 'Résultat des opérations',
@@ -428,7 +428,7 @@ return array(
     'diepipe28' => 'Impossible d\'ouvrir le conduit',
 
     // 29-msre_index.php
-    'rulesetedit29' => 'Ruleset Editor',
+    'rulesetedit29' => 'Editeur de règle',
 
     // 30-msrule.php
     'rules30' => 'Règles',
@@ -437,7 +437,7 @@ return array(
     'mysqlstatus31' => 'Statut MySQL',
 
     // 32-postfixmailq.php
-    'mqviewer32' => 'Visualisateur de file d'attente de courrier',
+    'mqviewer32' => 'Visualisateur de file d\'attente de courrier',
     'mqcombined32' => 'File d\'attente combinée de courrier (d\'arrivée et en partance)',
 
     // 33-rep_audit_log.php
