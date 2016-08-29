@@ -49,14 +49,14 @@ html_start(__('msgviewer06'), 0, false, false);
 <?php
 dbconn();
 if (!isset($_GET['id'])) {
-    die("No input Message ID");
+    die(__('nomessid06'));
 } else {
     $message_id = sanitizeInput($_GET['id']);
     $sql = "SELECT * FROM maillog WHERE id='" . mysql_real_escape_string($message_id) . "' AND " . $_SESSION["global_filter"];
     $message = @mysql_fetch_object(dbquery($sql));
     // See if message is local
     if (empty($message)) {
-        die("Message '" . $message_id . "' not found\n");
+        die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
     } else {
         audit_log('Quarantined message (' . $message_id . ') body viewed');
     }
@@ -73,7 +73,7 @@ if (!isset($_GET['id'])) {
         if ($rsp->faultcode() == 0) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
-            die("Error: " . $rsp->faultstring());
+            die(__('error06') . " " . $rsp->faultstring());
         }
         $file = base64_decode($response);
     } else {
@@ -97,7 +97,7 @@ if (!isset($_GET['id'])) {
         }
 
         if (!@file_exists($quarantine_dir . '/' . $filename)) {
-            die("Error: file not found\n");
+            die(__('errornfd06') . "\n");
         }
         $file = file_get_contents($quarantine_dir . '/' . $filename);
     }

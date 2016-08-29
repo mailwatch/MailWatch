@@ -122,6 +122,28 @@ return array(
     'or03' => 'or',
     'mwfilterreport03' => 'MailWatch Filter Report:',
     'mwforms03' => 'MailWatch for Mailscanner - ',
+    'dieerror03' => 'Error:',
+    'dievirus03' => 'You are running MailWatch in distributed mode therefore MailWatch cannot read your MailScanner configuration files to acertain your primary virus scanner - please edit functions.php and manually set the VIRUS_REGEX constant for your primary scanner.',
+    'diescanner03' => 'Unable to select a regular expression for your primary virus scanner ($scanner) - please see the examples in functions.php to create one.',
+    'diedbconn103' => 'Could not connect to database:',
+    'diedbconn203' => 'Could not select db:',
+    'diedbquery03' => 'Error executing query:',
+    'dieruleset03' => 'Cannot open ruleset file',
+    'dienomsconf03' => 'Cannot open MailScanner configuration file',
+    'dienoconfigval103' => 'Cannot find configuration value:',
+    'dienoconfigval203' => 'in',
+    'ldpaauth103' => 'Could not connect to',
+    'ldpaauth203' => 'Could not search',
+    'ldpaauth303' => 'Could not get entries',
+    'ldapgetconfvar103' => 'Error: could not connect to LDAP directory on:',
+    'ldapgetconfvar203' => 'Error: unable to bind to LDAP directory',
+    'ldapgetconfvar303' => 'Error: cannot find configuration value',
+    'ldapgetconfvar403' => 'in LDAP directory.',
+    'dietranslateetoi03' => 'Cannot open MailScanner ConfigDefs file:',
+    'diequarantine103' => 'Message ID',
+    'diequarantine203' => 'not found.',
+    'diequarantine303' => 'Cannot open quarantine dir:',
+    'diereadruleset03' => 'Cannot open MailScanner ruleset file',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -170,8 +192,10 @@ return array(
     'virus04' => 'Virus:',
     'spam04' => 'Spam:',
     'spamassassinspam04' => 'SpamAssassin Spam:',
-    'quarantine04' => 'Quarentine',
+    'quarantine04' => 'Quarantine',
     'messdetail04' => 'Message Detail',
+    'dieid04' => 'Message ID',
+    'dienotfound04' => 'not found!',
 
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
@@ -189,6 +213,11 @@ return array(
     'from06' => 'From:',
     'to06' => 'To:',
     'subject06' => 'Subject:',
+    'nomessid06' => 'No input Message ID',
+    'mess06' => 'Message',
+    'notfound06' => 'not found',
+    'error06' => 'Error:',
+    'errornfd06' => 'Error: file not found',
 
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
@@ -208,6 +237,7 @@ return array(
     'folder_0208' => 'Folder',
     'items08' => 'items',
     'qviewer08' => 'Quarantine Viewer',
+    'dienodir08' => 'No quarantine directories found',
 
     // 09-filter.inc.php
     'activefilters09' => 'Active Filters',
@@ -318,7 +348,7 @@ return array(
     'toprecipqt14' => 'Top Recipients by Quantity',
     'toprecipvol14' => 'Top Recipients by Volume',
     'topsendersdomqt14' => 'Top Sender Domains by Quantity',
-    'topsendersdomqt14' => 'Top Sender Domains by Volume',
+    'topsendersdomvol14' => 'Top Sender Domains by Volume',
     'toprecipdomqt14' => 'Top Recipient Domains by Quantity',
     'toprecipdomvol14' => 'Top Recipient Domains by Volume',
     'assassinscoredist14' => 'SpamAssassin Score Distribution',
@@ -353,6 +383,7 @@ return array(
     'message815' => 'Delete them manually from',
     'directory15' => 'directory',
     'geoipupdate15' => 'GeoIP Database Update',
+    'dieproxy15' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Message Listing',
@@ -382,6 +413,7 @@ return array(
 
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
+    'diemq24' => 'No queue specified',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'McAfee Status',
@@ -394,6 +426,7 @@ return array(
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
+    'diepipe28' => 'Cannot open pipe',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Ruleset Editor',
@@ -406,6 +439,7 @@ return array(
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Mail Queue Viewer',
+    'mqcombined32' => 'Combined mail queue (Inbound and Outbound)',
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Audit Log',
@@ -432,6 +466,7 @@ return array(
 
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'MRTG Style Mail Report',
+    'die36' => 'Error: Needs 2 or more rows of data to be retrieved from database',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
@@ -441,14 +476,15 @@ return array(
     'total37' => 'Total',
     'ham37' => 'Ham',
     'spam37' => 'Spam',
-    
+
     // 38-rep_sa_score_dist.php
     'sascoredist38' => 'SpamAssassin Score Distribution',
     'scorerounded38' => 'Score (rounded)',
     'nbmessage38' => 'No. of messages',
     'score38' => 'Score',
     'count38' => 'Count',
-    
+    'die38' => 'Error: Needs 2 or more rows of data to be retrieved from database',
+
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',
     'top10mailrelays39' => 'Top 10 Mail Relays',
@@ -501,7 +537,7 @@ return array(
     'domain45' => 'Domain',
     'count45' => 'Count',
     'size45' => 'Size',
-    
+
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
@@ -522,6 +558,7 @@ return array(
     'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
     'count48' => 'Count',
+    'dienorow48' => 'Error: no rows retrieved from database...',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
@@ -555,12 +592,36 @@ return array(
 
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
+    'diepipe51' => 'Cannot open pipe',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch and MailScanner Version information',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
+
+    // 54-mailscanner_relay.php
+    'diepipe54' => 'Cannot open pipe',
+
+    // 55-msre_edit.php
+    'diefnf55' => 'File not found:',
+
+    // 56-postfix_relay.php
+    'diepipe56' => 'Cannot open pipe',
+
+    // 57-quarantine_action.php
+    'dienoid57' => 'Error: No Message ID',
+    'dienoaction57' => 'Error: No action',
+    'diemnf57' => 'Error: Message not found in quarantine',
+    'dieuaction57' => 'Unknown action:',
+
+    // 58-viewpart.php
+    'nomessid58' => 'No input Message ID',
+    'mess58' => 'Message',
+    'notfound58' => 'not found',
+    'error58' => 'Error:',
+    'errornfd58' => 'Error: file not found',
+    'part58' => 'Part',
 
     //auto-release.php
     'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
@@ -574,8 +635,8 @@ return array(
     'arrelease01' => 'Release',
 
     // 99 - General
-    // Space rule for comma. Change it according to your langage typographical rule.
-    'comma99' => ' :',
+    // Space rule for colon. Change it according to your langage typographical rule.
+    'colon99' => ' :',
     'diemysql99' => 'Error: no rows retrieved from database',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',

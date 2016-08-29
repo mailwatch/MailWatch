@@ -72,7 +72,7 @@ if (is_writable(CACHE_DIR)) {
     // ##### AJOS1 NOTE #####
     $result = dbquery($sql);
     if (mysql_num_rows($result) <= 1) {
-        die("Error: Needs 2 or more rows of data to be retrieved from database\n");
+        die(__('die38') . "\n");
     }
 
     while ($row = mysql_fetch_object($result)) {

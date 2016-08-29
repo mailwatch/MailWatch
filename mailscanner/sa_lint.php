@@ -37,7 +37,7 @@ require(__DIR__ . '/login.function.php');
 html_start(__('salint51'), 0, false, true);
 
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
-    die("Cannot open pipe");
+    die(__('diepipe51'));
 } else {
     audit_log('Run SpamAssassin lint');
 }

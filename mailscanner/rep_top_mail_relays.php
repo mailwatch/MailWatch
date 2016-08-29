@@ -71,7 +71,7 @@ if (is_writable(CACHE_DIR)) {
 
     $result = dbquery($sql);
     if (!mysql_num_rows($result) > 0) {
-        die("Error: no rows retrieved from database\n");
+        die(__('diemysql99') . "\n");
     }
 
     $relay_array = array();

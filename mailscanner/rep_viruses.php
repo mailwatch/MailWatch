@@ -130,7 +130,7 @@ ORDER BY
 
 $result = dbquery($sql);
 if (!mysql_num_rows($result) > 0) {
-    die("Error: no rows retrieved from database\n");
+    die(__('diemysql99') . "\n");
 }
 
 $virus_array = array();

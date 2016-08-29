@@ -81,7 +81,7 @@ if (!isset($_GET['dir'])) {
             }
             echo '</table>' . "\n";
         } else {
-            die("No quarantine directories found\n");
+            die(__('dienodir08') . "\n");
         }
     }
 } else {

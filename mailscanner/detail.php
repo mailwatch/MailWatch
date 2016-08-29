@@ -106,7 +106,7 @@ $result = dbquery($sql);
 
 // Check to make sure something was returned
 if (mysql_num_rows($result) == 0) {
-    die("Message ID '" . $url_id . "' not found!\n </TABLE>");
+    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 } else {
     audit_log('Viewed message detail (id=' . $url_id . ')');
 }

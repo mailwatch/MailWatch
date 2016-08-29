@@ -81,7 +81,7 @@ if (is_writable(CACHE_DIR)) {
     // ##### AJOS1 NOTE #####
     $result = dbquery($sql_last24hrs);
     if (mysql_num_rows($result) <= 1) {
-        die("Error: Needs 2 or more rows of data to be retrieved from database\n");
+        die(__('dieid36') . "\n");
     }
 
 

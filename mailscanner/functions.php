@@ -48,14 +48,6 @@ if (!is_readable(__DIR__ . '/conf.php')) {
 }
 require_once(__DIR__ . '/conf.php');
 
-// Set PHP path to use local PEAR modules only
-set_include_path(
-    get_include_path() . PATH_SEPARATOR .
-    '.' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/xmlrpc'
-);
-
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
 if (!defined('LANG')) {
@@ -170,12 +162,12 @@ if (!defined('VIRUS_REGEX')) {
             define('VIRUS_REGEX', '/(ALERT:) \[(\S+) \S+\]/');
             break;
         //default:
-        // die("<B>Error:</B><BR>\n&nbsp;Unable to select a regular expression for your primary virus scanner ($scanner) - please see the examples in functions.php to create one.\n");
+        // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
         // break;
     }
 } else {
     // Have to set manually as running in DISTRIBUTED_MODE
-    die("<B>Error:</B><BR>\n&nbsp;You are running MailWatch in distributed mode therefore MailWatch cannot read your MailScanner configuration files to acertain your primary virus scanner - please edit functions.php and manually set the VIRUS_REGEX constant for your primary scanner.\n");
+    die("<B>" . __('dierror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
 }
 
 
@@ -344,7 +336,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $procs = count($output) . " proc(s)";
             echo '    <tr><td>' . ucwords(
                     $mta
-                ) . __('comma99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+                ) . __('colon99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
 
         // Load average
@@ -771,9 +763,9 @@ function html_end($footer = '')
 function dbconn()
 {
     $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, false, 128)
-    or die("Could not connect to database: " . mysql_error());
+    or die(__('diedbconn103') . " " . mysql_error());
     mysql_set_charset('utf8', $link);
-    mysql_select_db(DB_NAME) or die("Could not select db: " . mysql_error());
+    mysql_select_db(DB_NAME) or die(__('diedbconn203') . " " . mysql_error());
 
     return $link;
 }
@@ -797,7 +789,7 @@ function dbquery($sql)
         echo "<!--\n\n";
         $dbg_sql = "EXPLAIN " . $sql;
         echo "SQL:\n\n$sql\n\n";
-        $result = mysql_query($dbg_sql) or die("Error executing query: " . mysql_errno() . " - " . mysql_error());
+        $result = mysql_query($dbg_sql) or die(__('diedbquery03') . " " . mysql_errno() . " - " . mysql_error());
         $fields = mysql_num_fields($result);
         while ($row = mysql_fetch_row($result)) {
             for ($f = 0; $f < $fields; $f++) {
@@ -807,7 +799,7 @@ function dbquery($sql)
         //dbtable("SHOW STATUS");
         echo "\n-->\n\n";
     }
-    $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = mysql_query($sql) or die("<B>" . __('diedbquery03') . " </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
 
     return $result;
 }
@@ -1006,7 +998,7 @@ function return_sa_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
     if ($row) {
-        return htmlentities($row->rule_desc);
+        return $row->rule_desc;
     }
 
     return false;
@@ -1087,7 +1079,7 @@ function return_mcp_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
     if ($row) {
-        return htmlentities($row->rule_desc);
+        return $row->rule_desc;
     }
 
     return false;
@@ -1324,7 +1316,7 @@ function trim_output($input, $maxlen)
  */
 function get_default_ruleset_value($file)
 {
-    $fh = fopen($file, 'r') or die("Cannot open ruleset file $file");
+    $fh = fopen($file, 'r') or die(__('dieruleset03') . " $file");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/^([^#]\S+:)\s+(\S+)\s+([^#]\S+)/', $line, $regs)) {
@@ -1371,7 +1363,7 @@ function get_conf_var($name)
         }
     }
 
-    die("Cannot find configuration value: $name in $MailScanner_conf_file\n");
+    die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $MailScanner_conf_file\n");
 }
 
 /**
@@ -1463,7 +1455,7 @@ function get_conf_include_folder()
     }
 
     $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
-    $fh = fopen($msconfig, 'r') or die("Cannot open MailScanner configuration file");
+    $fh = fopen($msconfig, 'r') or die(__('dienomsconf03'));
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($msconfig)));
         //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
@@ -1492,7 +1484,7 @@ function get_conf_include_folder()
         }
     }
     fclose($fh);
-    die("Cannot find configuration value: $name in $msconfig\n");
+    die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $msconfig\n");
 }
 
 /**
@@ -1507,7 +1499,7 @@ function parse_conf_file($name)
     $var = array();
     // open each file and read it
     //$fh = fopen($name . $file, 'r')
-    $fh = fopen($name, 'r') or die("Cannot open MailScanner configuration file");
+    $fh = fopen($name, 'r') or die(__('dienomsconf03'));
     while (!feof($fh)) {
 
         // read each line to the $line varable
@@ -2320,7 +2312,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2410,7 +2402,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2631,7 +2623,7 @@ function ldap_authenticate($user, $password)
 {
     $user = strtolower($user);
     if ($user != "" && $password != "") {
-        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die("Could not connect to " . LDAP_HOST);
+        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(__('ldpaauth103') . " " . LDAP_HOST);
         // Check if Microsoft Active Directory compatibility is enabled
         if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
@@ -2639,14 +2631,14 @@ function ldap_authenticate($user, $password)
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
         if (strpos($user, '@') and LDAP_EMAIL_FIELD === 'mail') {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die("Could not search");
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
         } elseif (strpos($user, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die("Could not search");
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
         } else {
-            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die("Could not search");
+            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
         }
         if ($r) {
-            $result = ldap_get_entries($ds, $r) or die("Could not get entries");
+            $result = ldap_get_entries($ds, $r) or die(__('ldpaauth303'));
             if ($result[0]) {
                 if (in_array("group", array_values($result[0]["objectclass"]))) {
                     return null;
@@ -2692,10 +2684,10 @@ function ldap_get_conf_var($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die(__('ldapgetconfvar103') . " " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-    or die("Error: unable to bind to LDAP directory\n");
+    or die(__('ldapgetconfvar203') . "\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2733,10 +2725,10 @@ function ldap_get_conf_truefalse($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die(__('ldapgetconfvar103') . " " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-    or die("Error: unable to bind to LDAP directory\n");
+    or die(__('ldapgetconfvar203') . "\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2759,7 +2751,7 @@ function ldap_get_conf_truefalse($entry)
         }
     } else {
         // No results
-        //die("Error: cannot find configuration value '$entry' in LDAP directory.\n");
+        //die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
         return false;
     }
 }
@@ -2773,7 +2765,7 @@ function translate_etoi($name)
     $name = strtolower($name);
     $file = MS_LIB_DIR . 'MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'r')
-    or die("Cannot open MailScanner ConfigDefs file: $file\n");
+    or die(__('dietranslateetoi03') . " $file\n");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/^([^#].+)\s=\s([^#].+)/i', $line, $regs)) {
@@ -2965,7 +2957,7 @@ SELECT
     $sth = dbquery($sql);
     $rows = mysql_num_rows($sth);
     if ($rows <= 0) {
-        die("Message ID $msgid not found.\n");
+        die(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
     }
     $row = mysql_fetch_object($sth);
     if (!$rpc_only && is_local($row->hostname)) {
@@ -3025,7 +3017,7 @@ SELECT
         }
         // Check the main quarantine
         if (is_dir($quarantine) && is_readable($quarantine)) {
-            $d = opendir($quarantine) or die("Cannot open quarantine dir: $quarantine\n");
+            $d = opendir($quarantine) or die(__('diequarantine303') . " $quarantine\n");
             while (false !== ($f = readdir($d))) {
                 if ($f !== '..' && $f !== '.') {
                     $quarantined[$count]['id'] = $count;
@@ -3454,7 +3446,7 @@ function mailwatch_array_sum($array)
  */
 function read_ruleset_default($file)
 {
-    $fh = fopen($file, 'r') or die("Cannot open MailScanner ruleset file ($file)");
+    $fh = fopen($file, 'r') or die(__('diereadruleset03') . " ($file)");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/(\S+)\s+(\S+)\s+(\S+)/', $line, $regs)) {

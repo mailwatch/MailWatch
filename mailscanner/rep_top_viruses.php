@@ -66,7 +66,7 @@ if (is_writable(CACHE_DIR)) {
     // Must be one or more rows
     $result = dbquery($sql);
     if (mysql_num_rows($result) <= 0) {
-        die("Error: no rows retrieved from database..." . mysql_num_rows($result) . "\n");
+        die(__('dienorow48') . mysql_num_rows($result) . "\n");
     }
 
     $virus_array = array();

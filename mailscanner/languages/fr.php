@@ -86,7 +86,7 @@ return array(
     'size03' => 'Taille',
     'subject03' => 'Sujet',
     'sascore03' => 'Points SA',
-    'mcpscore03' => 'POints MCP',
+    'mcpscore03' => 'Points MCP',
     'found03' => 'trouvé',
     'highspam03' => 'Spam Haut',
     'mcp03' => 'MCP',
@@ -107,7 +107,7 @@ return array(
     'description03' => 'Description',
     'footer03' => 'MailWatch pour MailScanner v',
     'mailwatchtitle03' => 'MailWatch pour Mailscanner',
-    'php703' => 'MailWatch a besoin du pilote MySQL pour fonctionner : PHP7 a supprimé ce pilote qui est devenu obsoléte',
+    'php703' => 'MailWatch a besoin du pilote MySQL pour fonctionner. Dans PHP7 ce pilote qui est devenu obsoléte',
     'radiospam203' => 'S',
     'radioham03' => 'D',
     'radioforget03' => 'O',
@@ -122,6 +122,28 @@ return array(
     'or03' => 'ou',
     'mwfilterreport03' => 'Rapport pour MailWatch :',
     'mwforms03' => 'MailWatch pour Mailscanner - ',
+    'dieerror03' => 'Erreur :',
+    'dievirus03' => 'Vous exécutez MailWatch en mode distribué ce qui entraine que MailWatch ne peut pas lire vos fichiers de configuration MailScanner pour vérifier votre scanner de virus primaire. Vous devez éditer le fichier functions.php et manuellement définir la contante VIRUS_REGEX en fonction de votre logiciel de scan de virus.',
+    'diescanner03' => 'Impossible de séelctionner une expression régulière pour votre scanner de virus primaire ($scanner). Regardez les exemples dans functions.php pour en créer un nouveau.',
+    'diedbconn103' => 'Impossible de se connecter à la base de données :',
+    'diedbconn203' => 'Impossible de sélectionner la base de données :',
+    'diedbquery03' => 'Erreur lors de l\'exécution de la requête :',
+    'dieruleset03' => 'Impossible d\'ouvrir le fichier de règle',
+    'dienomsconf03' => 'Impossible d\'ouvrir le fichier de configuration MailScanner',
+    'dienoconfigval103' => 'Impossible de trouver la variable de configuration :',
+    'dienoconfigval203' => 'dans',
+    'ldpaauth103' => 'Impossible de se connecter à',
+    'ldpaauth203' => 'Impossible de rechercher',
+    'ldpaauth303' => 'Impossible d\'obtenir les entrées',
+    'ldapgetconfvar103' => 'Erreur : impossible de se connecter à l\'annuaire LDAP sur :',
+    'ldapgetconfvar203' => 'Erreur : impossible de se lier à l\'annuaire LDAP',
+    'ldapgetconfvar303' => 'Erreur : impossible de trouver la variable de configuration',
+    'ldapgetconfvar403' => 'dans l\'annuaire LDAP.',
+    'dietranslateetoi03' => 'Impossible d\'ouvrir le fichier ConfigDefs de MailScanner :',
+    'diequarantine103' => 'ID du message',
+    'diequarantine203' => 'non trouvé.',
+    'diequarantine303' => 'Impossible d\'ouvrir le répertoire de quarantaine :',
+    'diereadruleset03' => 'Impossible d\'ouvrir le fichier de règle MailScanner',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -143,7 +165,7 @@ return array(
     'saautolearn04' => 'Auto aprentissage SpamAssassin :',
     'sascore04' => 'Points SpamAssassin :',
     'spamrep04' => 'Rapport de Spam :',
-    'hdrmcp04' => 'Protection des Contenus (MCP)',
+    'hdrmcp04' => 'Protection des contenus (MCP)',
     'highscomcp04' => 'MCP à Point Haut :',
     'mcpwl04' => 'MCP en Liste Blanche :',
     'mcpbl04' => 'MCP en Liste Noire :',
@@ -172,6 +194,8 @@ return array(
     'spamassassinspam04' => 'Spam SpamAssassin :',
     'quarantine04' => 'Quarantaine',
     'messdetail04' => 'Détail du message',
+    'dieid04' => 'ID du message',
+    'dienotfound04' => 'non trouvé !',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
@@ -189,6 +213,11 @@ return array(
     'from06' => 'De :',
     'to06' => 'À :',
     'subject06' => 'Sujet :',
+    'nomessid06' => 'Aucun ID de message saisie',
+    'mess06' => 'Message',
+    'notfound06' => 'non trouvé',
+    'error06' => 'Erreur :',
+    'errornfd06' => 'Erreur : fichier non trouvé',
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
@@ -208,6 +237,7 @@ return array(
     'folder_0208' => 'Dossier :',
     'items08' => 'éléments',
     'qviewer08' => 'Visualisation de la quarantaine',
+    'dienodir08' => 'Aucun répertoire de quarantaine trouvé',
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtre actif',
@@ -317,7 +347,7 @@ return array(
     'toprecipqt14' => 'Top des destinataires par quantité',
     'toprecipvol14' => 'Top des destinataires par volume',
     'topsendersdomqt14' => 'Top des domaines d\'expédition par quantité',
-    'topsendersdomqt14' => 'Top des domaines d\'expédition par volume',
+    'topsendersdomvol14' => 'Top des domaines d\'expédition par volume',
     'toprecipdomqt14' => 'Top des domaines de destination par quantité',
     'toprecipdomvol14' => 'Top des domaines de destination par volume',
     'assassinscoredist14' => 'Distribution SpamAssassin par point',
@@ -352,6 +382,7 @@ return array(
     'message815' => 'Effacez-les à la main à partir de',
     'directory15' => 'répertoire',
     'geoipupdate15' => 'Mise à jour des bases GeoIP',
+    'dieproxy15' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Listing des messages',
@@ -381,6 +412,7 @@ return array(
 
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
+    'diemq24' => 'Aucune file d\'attente définie',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'Statut McAfee',
@@ -393,6 +425,7 @@ return array(
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
+    'diepipe28' => 'Impossible d\'ouvrir le conduit',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Ruleset Editor',
@@ -404,7 +437,8 @@ return array(
     'mysqlstatus31' => 'Statut MySQL',
 
     // 32-postfixmailq.php
-    'mqviewer32' => 'Mail Queue Viewer',
+    'mqviewer32' => 'Visualisateur de file d'attente de courrier',
+    'mqcombined32' => 'File d'attente combinée de courrier (d'arrivée et en partance)',
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Log de l\'Audit',
@@ -431,6 +465,7 @@ return array(
 
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'Rapport de message MRTG',
+    'die36' => 'Erreur : il est nécessaire d\'avoir deux enregistrements ou plus dans la base de données',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'Distribution de SpamAssassin par règle',
@@ -447,6 +482,7 @@ return array(
     'nbmessage38' => 'Nb de message',
     'score38' => 'Points',
     'count38' => 'Nombre',
+    'die38' => 'Erreur : il est nécessaire d\'avoir deux enregistrements ou plus dans la base de données',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top des relais de messagerie',
@@ -521,6 +557,7 @@ return array(
     'nodata48' => 'Pas assez de données pour générer le graphique.',
     'virus48' => 'Virus',
     'count48' => 'Nombre',
+    'dienorow48' => 'Erreur : aucun enregistrement trouvé dans la base de données...',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total des messages par date',
@@ -556,12 +593,36 @@ return array(
 
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
+    'diepipe51' => 'Impossible d\'ouvrir le conduit',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'Information sur les versions des logiciels',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
+
+    // 54-mailscanner_relay.php
+    'diepipe54' => 'Impossible d\'ouvrir le conduit',
+
+    // 55-msre_edit.php
+    'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
+
+    // 56-postfix_relay.php
+    'diepipe56' => 'Impossible d\'ouvrir le conduit',
+
+    // 57-quarantine_action.php
+    'dienoid57' => 'Erreur : pas de ID de message',
+    'dienoaction57' => 'Erreur : aucune action',
+    'diemnf57' => 'Erreur : aucun message trouvé en quarantaine',
+    'dieuaction57' => 'Action inconnue :',
+
+    // 58-viewpart.php
+    'nomessid58' => 'Aucun ID de message saisie',
+    'mess58' => 'Message',
+    'notfound58' => 'non trouvé',
+    'error58' => 'Erreur :',
+    'errornfd58' => 'Erreur : fichier non trouvé',
+    'part58' => 'Partie',
 
     //auto-release.php
     'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
@@ -575,8 +636,8 @@ return array(
     'arrelease01' => 'Libérer',
 
     // 99 - General
-    // Space rule for comma. Change it according to your langage typographical rule.
-    'comma99' => ' :',
+    // Space rule for colon. Change it according to your langage typographical rule.
+    'colon99' => ' :',
     'diemysql99' => 'Erreur : aucun enregistrement trouvé dans la base de données',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',

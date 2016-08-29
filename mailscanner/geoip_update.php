@@ -113,7 +113,7 @@ if (!isset($_POST['run'])) {
                             $requestSession->options['proxy']['type'] = 'SOCKS5';
                             break;
                         default:
-                            die('Proxy type should be either "HTTP" or "SOCKS5", check your configuration file');
+                            die(__('dieproxy15'));
                     }
                 }
 

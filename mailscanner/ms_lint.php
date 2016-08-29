@@ -34,7 +34,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("MailScanner Lint", 0, false, false);
+html_start(__('mailscannerlint28'), 0, false, false);
 echo '<table class="mail" cellspacing="1" width="100%">' . "\n";
 echo ' <tr>' . "\n";
 echo '  <th colspan="2">MailScanner Lint</th>' . "\n";
@@ -46,7 +46,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     </tr>';
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {
-        die("Cannot open pipe");
+        die(__('diepipe28'));
     } else {
         audit_log('Run MailScanner lint');
     }

@@ -46,7 +46,7 @@ switch ($_GET['queue']) {
         $display = 'Outbound Mail Queue';
         break;
     default:
-        die("No queue specified\n");
+        die(__('diemq24') . "\n");
 }
 
 db_colorised_table(

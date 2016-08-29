@@ -43,7 +43,7 @@ function doit($input)
 {
     global $fp;
     if (!$fp = popen($input, 'r')) {
-        die('Cannot open pipe');
+        die(__('diepipe54'));
     }
 
     $lines = 1;
