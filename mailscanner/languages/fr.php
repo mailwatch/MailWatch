@@ -201,7 +201,7 @@ return array(
     'forget04' => 'Oublier',
     'spamreport04' => 'Comme Spam+Etat',
     'spamrevoke04' => 'Comme Légitime+Retirez',
-    
+
     // 05-status.php
     'recentmsg05' => 'Messages récents',
     'last05' => 'Derniers',
@@ -213,7 +213,7 @@ return array(
     'msgviewer06' => 'Visualisation d\'un message',
     'releasemsg06' => 'Libérer ce message',
     'deletemsg06' => 'Supprimer ce message',
-    'actions06' => 'Actions',
+    'actions06' => 'Actions :',
     'date06' => 'Date :',
     'from06' => 'De :',
     'to06' => 'À :',
@@ -223,6 +223,7 @@ return array(
     'notfound06' => 'non trouvé',
     'error06' => 'Erreur :',
     'errornfd06' => 'Erreur : fichier non trouvé',
+    'mymetype06' => 'Type MIME :',
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',

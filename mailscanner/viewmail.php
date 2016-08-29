@@ -176,7 +176,7 @@ foreach ($header_fields as $field) {
 
 if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
     lazy(
-        __('actions06') . ":",
+        __('actions06'),
         "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . "</a>",
         false
     );
@@ -185,7 +185,7 @@ if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->ot
 foreach ($mime_struct as $key => $part) {
     $type = $part->ctype_primary . '/' . $part->ctype_secondary;
     echo " <tr>\n";
-    echo "  <td colspan=2 class=\"heading\">MIME Type: $type</td>\n";
+    echo "  <td colspan=2 class=\"heading\">" . __('mymetype06') . " $type</td>\n";
 
     switch ($type) {
         case "text/plain":

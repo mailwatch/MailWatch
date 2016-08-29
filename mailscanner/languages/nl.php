@@ -213,7 +213,7 @@ return array(
     'msgviewer06' => 'Email Beschouwer',
     'releasemsg06' => 'Laat deze email gaan',
     'deletemsg06' => 'Verwijder deze email',
-    'actions06' => 'Acties',
+    'actions06' => 'Acties:',
     'date06' => 'Datum:',
     'from06' => 'Van:',
     'to06' => 'Naar:',
@@ -223,6 +223,7 @@ return array(
     'notfound06' => 'not found',
     'error06' => 'Error:',
     'errornfd06' => 'Error: file not found',
+    'mymetype06' => 'MIME Type:',
     
     // 07-lists.php
     'addwlbl07' => 'Voeg toe aan Vrijwaring/Blokkering',

@@ -213,7 +213,7 @@ return array(
     'msgviewer06' => 'Nachrichtenbetrachter',
     'releasemsg06' => 'Diese Nachricht freigeben',
     'deletemsg06' => 'Diese Nachricht löschen',
-    'actions06' => 'Aktionen',
+    'actions06' => 'Aktionen:',
     'date06' => 'Datum:',
     'from06' => 'Von:',
     'to06' => 'An:',
@@ -223,6 +223,7 @@ return array(
     'notfound06' => 'not found',
     'error06' => 'Error:',
     'errornfd06' => 'Error: file not found',
+    'mymetype06' => 'MIME Type:',
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',

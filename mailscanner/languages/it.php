@@ -213,7 +213,7 @@ return array(
     'msgviewer06' => 'Visualizzatore Messagio',
     'releasemsg06' => 'Rilascia questo messaggio',
     'deletemsg06' => 'Cancella questo messaggio',
-    'actions06' => 'Azioni',
+    'actions06' => 'Azioni:',
     'date06' => 'Data:',
     'from06' => 'Da:',
     'to06' => 'A:',
@@ -223,7 +223,8 @@ return array(
     'notfound06' => 'not found',
     'error06' => 'Error:',
     'errornfd06' => 'Error: file not found',
-
+    'mymetype06' => 'MIME Type:',
+    
     // 07-lists.php
     'addwlbl07' => 'Aggiungi a Whitelist/Blacklist',
     'from07' => 'Da',

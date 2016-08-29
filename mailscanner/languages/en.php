@@ -122,6 +122,7 @@ return array(
     'or03' => 'or',
     'mwfilterreport03' => 'MailWatch Filter Report:',
     'mwforms03' => 'MailWatch for Mailscanner - ',
+
     'dieerror03' => 'Error:',
     'dievirus03' => 'You are running MailWatch in distributed mode therefore MailWatch cannot read your MailScanner configuration files to acertain your primary virus scanner - please edit functions.php and manually set the VIRUS_REGEX constant for your primary scanner.',
     'diescanner03' => 'Unable to select a regular expression for your primary virus scanner ($scanner) - please see the examples in functions.php to create one.',
@@ -201,7 +202,7 @@ return array(
     'forget04' => 'Forget',
     'spamreport04' => 'As Spam+Report',
     'spamrevoke04' => 'As Ham+Revoke',
-    
+
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
     'last05' => 'Last',
@@ -213,7 +214,7 @@ return array(
     'msgviewer06' => 'Message Viewer',
     'releasemsg06' => 'Release this message',
     'deletemsg06' => 'Delete this message',
-    'actions06' => 'Actions',
+    'actions06' => 'Actions:',
     'date06' => 'Date:',
     'from06' => 'From:',
     'to06' => 'To:',
@@ -223,6 +224,7 @@ return array(
     'notfound06' => 'not found',
     'error06' => 'Error:',
     'errornfd06' => 'Error: file not found',
+    'mymetype06' => 'MIME Type:',
 
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
