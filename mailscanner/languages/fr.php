@@ -438,7 +438,7 @@ return array(
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Visualisateur de file d'attente de courrier',
-    'mqcombined32' => 'File d'attente combinée de courrier (d'arrivée et en partance)',
+    'mqcombined32' => 'File d'attente combinée de courrier (d\'arrivée et en partance)',
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Log de l\'Audit',
