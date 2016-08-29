@@ -101,7 +101,7 @@ $filter->AddReport("rep_top_recipients_by_volume.php", __('toprecipvol14'));
 //$filter->AddReport("rep_mrtg_style.php","__('mrtgreport14'));
 
 $filter->AddReport("rep_top_sender_domains_by_quantity.php", __('topsendersdomqt14'));
-$filter->AddReport("rep_top_sender_domains_by_volume.php", __('topsendersdomqt14'));
+$filter->AddReport("rep_top_sender_domains_by_volume.php", __('topsendersdomvol14'));
 $filter->AddReport("rep_top_recipient_domains_by_quantity.php", __('toprecipdomqt14'));
 $filter->AddReport("rep_top_recipient_domains_by_volume.php", __('toprecipdomvol14'));
 
