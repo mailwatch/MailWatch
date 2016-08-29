@@ -196,7 +196,12 @@ return array(
     'messdetail04' => 'Détail du message',
     'dieid04' => 'ID du message',
     'dienotfound04' => 'non trouvé !',
-
+    'asham04' => 'Comme Légitime',
+    'aspam04' => 'Comme Spam',
+    'forget04' => 'Oublier',
+    'spamreport04' => 'Comme Spam+Etat',
+    'spamrevoke04' => 'Comme Légitime+Retirez',
+    
     // 05-status.php
     'recentmsg05' => 'Messages récents',
     'last05' => 'Derniers',

@@ -196,6 +196,11 @@ return array(
     'messdetail04' => 'Message Detail',
     'dieid04' => 'Message ID',
     'dienotfound04' => 'not found!',
+    'asham04' => 'As Ham',
+    'aspam04' => 'As Spam',
+    'forget04' => 'Forget',
+    'spamreport04' => 'As Spam+Report',
+    'spamrevoke04' => 'As Ham+Revoke',
     
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',
