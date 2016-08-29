@@ -349,7 +349,7 @@ WHERE
         $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
         $return = '<select name="filter">' . "\n";
-        $return .= ' <option value="_none_">None</option>' . "\n";
+        $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";
         while ($row = mysql_fetch_array($sth)) {
             $return .= ' <option value="' . $row[0] . '">' . $row[0] . '</option>' . "\n";
         }
