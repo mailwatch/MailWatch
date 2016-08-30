@@ -124,7 +124,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">Remove</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
@@ -150,7 +150,7 @@ WHERE
             echo ' <tr><td>' . __('newrecord09') . '</td><td align="right">' . $row->newest . '</td></tr>' . "\n";
             echo ' <tr><td>' . __('messagecount09') . '</td><td align="right">' . number_format($row->messages) . '</td></tr>' . "\n";
         }
-        echo '<tr><th colspan="2">Reports</th></tr>' . "\n";
+        echo '<tr><th colspan="2">' . __('reports09') . '</th></tr>' . "\n";
         echo '<tr><td colspan="2"><ul>' . "\n";
         foreach ($this->reports as $description => $url) {
             echo '<li><a href="' . $url . '">' . $description . '</a>' . "\n";

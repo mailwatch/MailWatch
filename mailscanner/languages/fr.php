@@ -302,7 +302,9 @@ return array(
     'otherinfected09' => 'contained other infections (>0 = TRUE)',
     'report09' => 'Virus Report',
     'hostname09' => 'MailScanner Hostname',
-
+    'remove09' => 'Supprimer',
+    'reports09' => 'Rapports',
+    
     // 10-other.php
     'tools10' => 'Outils',
     'toolslinks10' => 'Outils et Liens',
