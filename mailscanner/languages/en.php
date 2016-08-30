@@ -306,6 +306,7 @@ return array(
 
     // 10-other.php
     'tools10' => 'Tools',
+    'toolslinks10' => 'Tools and Links',
     'usermgnt10' => 'User Management',
     'avsophosstatus10' => 'Sophos Status',
     'avfsecurestatus10' => 'F-Secure Status',

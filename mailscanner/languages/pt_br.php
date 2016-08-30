@@ -263,6 +263,7 @@ return array(
 
     // 10-other.php
     'tools10' => 'Ferramentas',
+    'toolslinks10' => 'Tools and Links',
     'usermgnt10' => 'Gerenciamento de Usuários',
     'avsophosstatus10' => 'Sophos Status',
     'avfsecurestatus10' => 'F-Secure Status',

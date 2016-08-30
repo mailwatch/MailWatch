@@ -304,7 +304,8 @@ return array(
     'hostname09' => 'MailScanner Hostname',
 
     // 10-other.php
-    'tools10' => 'Outils et Liens',
+    'tools10' => 'Outils',
+    'toolslinks10' => 'Outils et Liens',
     'usermgnt10' => 'Gestion des utilisateurs',
     'avsophosstatus10' => 'Statut Sophos',
     'avfsecurestatus10' => 'Statut F-Secure',
