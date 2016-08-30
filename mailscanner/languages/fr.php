@@ -199,7 +199,7 @@ return array(
     'asham04' => 'Comme Légitime',
     'aspam04' => 'Comme Spam',
     'forget04' => 'Oublier',
-    'spamreport04' => 'Comme Spam+Etat',
+    'spamreport04' => 'Comme Spam+Rapport',
     'spamrevoke04' => 'Comme Légitime+Retirez',
 
     // 05-status.php
@@ -385,6 +385,8 @@ return array(
     'message113' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles de SpamAssassin qui sont affichés sur l\'écran Message Détail mise à jour.',
     'message213' => 'Cet utilitaire doit généralement être exécuté après une mise à jour SpamAssassin, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
     'saruldesupdate13' => 'Mise à jour des descriptions des règles SpamAssassin',
+    'rule13' => 'Règle',
+    'description13' => 'Description',
 
     // 14-reports.php
     'messlisting14' => 'Listing des messages',
@@ -473,6 +475,7 @@ return array(
 
     // 27-msconfig.php
     'config27' => 'Configuration',
+    'msconfig27' => 'Configuration de MailScanner',
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',

@@ -303,6 +303,8 @@ return array(
     'otherinfected09' => 'contained other infections (>0 = TRUE)',
     'report09' => 'Virus Report',
     'hostname09' => 'MailScanner Hostname',
+    'remove09' => 'Remove',
+    'reports09' => 'Reports',
 
     // 10-other.php
     'tools10' => 'Tools',
@@ -385,6 +387,8 @@ return array(
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
     'saruldesupdate13' => 'SpamAssassin Rule Description Update',
+    'rule13' => 'Rule',
+    'description13' => 'Description',
 
     // 14-reports.php
     'messlisting14' => 'Message Listing',
@@ -473,6 +477,7 @@ return array(
 
     // 27-msconfig.php
     'config27' => 'Configuration',
+    'msconfig27' => 'MailScanner Configuration',
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
