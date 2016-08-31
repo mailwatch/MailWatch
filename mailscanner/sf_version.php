@@ -55,7 +55,7 @@ if ($_SESSION['user_type'] != 'A') {
     }
 
     echo '<table width="100%" class="boxtable">' . "\n";
-    echo '<tr><th>Software Versions</th></tr>' . "\n";
+    echo '<tr><th>' . __('softver11') . '</th></tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
 
