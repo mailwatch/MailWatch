@@ -2711,7 +2711,7 @@ function ldap_get_conf_var($entry)
         }
     } else {
         // No results
-        die("Error: cannot find configuration value '$entry' in LDAP directory.\n");
+        die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
     }
 }
 
