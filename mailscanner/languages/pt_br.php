@@ -447,7 +447,17 @@ return array(
     
     // 18-bayes_info.php
     'spamassassinbayesdatabaseinfo18' => 'SpamAssassin Bayes Database Info',
-
+    'bayesdatabaseinfo18' => 'Information sur la base Bayes',
+    'nbrspammessage18' => 'Nombre de message de Spam :',
+    'nbrhammessage18' => 'Nombre de message légitime :',
+    'nbrtoken18' => 'Nombre de Jetons :',
+    'oldesttoken18' => 'Le plus vieux Jetons :',
+    'newesttoken18' => 'Le plus nouveau Jetons :',
+    'lastjournalsync18' => 'Dernière synchronisation du journal :',
+    'lastexpiry18' => 'Dernière échéance :',
+    'lastexpirycount18' => 'Dernier compte de réduction d\'échéance :',
+    'tokens18' => 'jetons',
+    
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
 

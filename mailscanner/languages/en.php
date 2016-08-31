@@ -448,6 +448,16 @@ return array(
 
     // 18-bayes_info.php
     'spamassassinbayesdatabaseinfo18' => 'SpamAssassin Bayes Database Info',
+    'bayesdatabaseinfo18' => 'Bayes Database Information',
+    'nbrspammessage18' => 'Number of Spam Messages:',
+    'nbrhammessage18' => 'Number of Ham Messages:',
+    'nbrtoken18' => 'Number of Tokens:',
+    'oldesttoken18' => 'Oldest Token:',
+    'newesttoken18' => 'Newest Token:',
+    'lastjournalsync18' => 'Last Journal Sync:',
+    'lastexpiry18' => 'Last Expiry:',
+    'lastexpirycount18' => 'Last Expiry Reduction Count:',
+    'tokens18' => 'tokens',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',

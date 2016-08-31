@@ -123,7 +123,7 @@ return array(
     'mwfilterreport03' => 'Rapport pour MailWatch :',
     'mwforms03' => 'MailWatch pour Mailscanner - ',
     'dieerror03' => 'Erreur :',
-    'dievirus03' => 'Vous ex&eacute;cutez MailWatch en mode distribu&eacute; ce qui entraine que MailWatch ne peut pas lire vos fichiers de configuration MailScanner pour v&eacute;rifier votre scanner de virus primaire. Vous devez &eacute;diter le fichier functions.php et manuellement d&eacute;finir la contante VIRUS_REGEX en fonction de votre logiciel de scan de virus.',
+    'dievirus03' => 'Vous ex&eacute;cutez MailWatch en mode distribu&eacute; ce qui entraine que MailWatch ne peut pas lire vos fichiers de configuration MailScanner pour v&eacute;rifier votre scanner de virus primaire. Vous devez &eacute;diter le fichier functions.php et manuellement d&eacute;finir la constante VIRUS_REGEX en fonction de votre logiciel de scan de virus.',
     'diescanner03' => 'Impossible de sélectionner une expression régulière pour votre scanner de virus primaire ($scanner). Regardez les exemples dans functions.php pour en créer un nouveau.',
     'diedbconn103' => 'Impossible de se connecter à la base de données :',
     'diedbconn203' => 'Impossible de sélectionner la base de données :',
@@ -446,6 +446,16 @@ return array(
 
     // 18-bayes_info.php
     'spamassassinbayesdatabaseinfo18' => 'Information sur la base SpamAssassin Bayes',
+    'bayesdatabaseinfo18' => 'Information sur la base Bayes',
+    'nbrspammessage18' => 'Nombre de message de Spam :',
+    'nbrhammessage18' => 'Nombre de message légitime :',
+    'nbrtoken18' => 'Nombre de Jetons :',
+    'oldesttoken18' => 'Le plus vieux Jetons :',
+    'newesttoken18' => 'Le plus nouveau Jetons :',
+    'lastjournalsync18' => 'Dernière synchronisation du journal :',
+    'lastexpiry18' => 'Dernière échéance :',
+    'lastexpirycount18' => 'Dernier compte de réduction d\'échéance :',
+    'tokens18' => 'jetons',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'Statut ClamAV',
