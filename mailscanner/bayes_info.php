@@ -44,7 +44,7 @@ html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 audit_log('Viewed SpamAssassin Bayes Database Info');
 
 // Create the table
-echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="650">';
+echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="690">';
 // Add a Header to the table
 echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>';
 

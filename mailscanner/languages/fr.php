@@ -454,7 +454,7 @@ return array(
     'newesttoken18' => 'Le plus nouveau Jetons :',
     'lastjournalsync18' => 'Dernière synchronisation du journal :',
     'lastexpiry18' => 'Dernière échéance :',
-    'lastexpirycount18' => 'Dernier compte de réduction d\'échéance :',
+    'lastexpirycount18' => 'Dernier comptage lors de la réduction d\'échéance :',
     'tokens18' => 'jetons',
 
     // 19-clamav_status.php
