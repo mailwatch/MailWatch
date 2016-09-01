@@ -687,16 +687,25 @@ return array(
     'errornfd58' => 'Error: file not found',
     'part58' => 'Part',
 
-    //auto-release.php
-    'msgnotfound1' => 'Message not found.  You may have already released this message or the link may have expired.',
-    'msgnotfound2' => 'Please contact your email administrator and provide them with this message ID: ',
-    'msgnotfound3' => 'if you need this message released',
-    'msgreleased1' => 'Message released<br>It may take a few minutes to appear in your inbox.',
-    'tokenmismatch1' => 'Error releasing message - token mismatch',
-    'notallowed99' => 'You are not allowed to be here!',
-    'dberror99' => 'Something went wrong - please contact support',
-    'arview01' => 'View',
-    'arrelease01' => 'Release',
+    // 59-auto-release.php
+    'msgnotfound159' => 'Message not found.  You may have already released this message or the link may have expired.',
+    'msgnotfound259' => 'Please contact your Mail Administrator and provide him with this message ID: ',
+    'msgnotfound393' => 'if you need this message released',
+    'msgreleased59' => 'Message released<br>It may take a few minutes to appear in your Inbox.',
+    'tokenmismatch59' => 'Error releasing message - token mismatch',
+    'notallowed59' => 'You are not allowed to be here!',
+    'dberror59' => 'Something went wrong - please contact support',
+    'arview059' => 'View',
+    'arrelease59' => 'Release',
+
+     // 60-rpcserver.php
+    'paratype160' => 'Parameter type',
+    'paratype260' => 'mismatch expected type.',
+    'paratype160' => 'mismatch expected type.',
+    'notfile60' => 'is not a file.',
+    'permdenied60' => 'permission denied.',
+    'client160' => 'Client',
+    'client260' => 'is not authorized to connect.',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

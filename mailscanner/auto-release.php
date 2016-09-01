@@ -3,8 +3,8 @@
 /*
  * Mailwatch for Mailscanner Modification
  * Author: Alan Urquhart - ASU Web Services Ltd
- * Version: 1.1
- * Updated: 26-07-2016
+ * Version: 1.1.1
+ * Updated: 31-08-2016
  *
  * Requires: Mailwatch 1.2.0
  *
@@ -33,11 +33,11 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
     $result = dbquery($sql);
     if (!$result) {
         dbg("Error fetching from database" . mysql_error());
-        echo __('dberror99');
+        echo __('dberror59');
     }
     if (mysql_num_rows($result) == 0) {
-        echo "<p>". __('msgnotfound1')."</p>";
-        echo "<p>". __('msgnotfound2').$mid." ". __('msgnotfound3')."</p>";
+        echo "<p>". __('msgnotfound159')."</p>";
+        echo "<p>". __('msgnotfound259').$mid." ". __('msgnotfound359')."</p>";
     } else {
         $row = mysql_fetch_assoc($result);
         if ($row['uid'] == $token) {
@@ -56,7 +56,7 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
 
 
             // Display success
-            echo "<p>". __('msgreleased1'). "</p>";
+            echo "<p>". __('msgreleased59'). "</p>";
             //cleanup
             $releaseID = $row['id'];
             $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
@@ -65,9 +65,9 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
                 dbg("ERROR cleaning up database... " . mysql_error());
             }
         } else {
-            echo __('tokenmismatch1');
+            echo __('tokenmismatch59');
         }
     }
 } else {
-    echo __('notallowed99');
+    echo __('notallowed59');
 }

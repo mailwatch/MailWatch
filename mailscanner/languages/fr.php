@@ -435,7 +435,7 @@ return array(
     'message815' => 'Effacez-les à la main à partir de',
     'directory15' => 'répertoire',
     'geoipupdate15' => 'Mise à jour des bases GeoIP',
-    'dieproxy15' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
+    'dieproxy15' => 'Le type de proxy doit être en "HTTP" ou en "SOCKS5". Vérifiez votre fichier de configuration.',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Listing des messages',
@@ -449,9 +449,9 @@ return array(
     'bayesdatabaseinfo18' => 'Information sur la base Bayes',
     'nbrspammessage18' => 'Nombre de message de Spam :',
     'nbrhammessage18' => 'Nombre de message légitime :',
-    'nbrtoken18' => 'Nombre de Jetons :',
-    'oldesttoken18' => 'Le plus vieux Jetons :',
-    'newesttoken18' => 'Le plus nouveau Jetons :',
+    'nbrtoken18' => 'Nombre de jetons :',
+    'oldesttoken18' => 'Le plus vieux jeton :',
+    'newesttoken18' => 'Le plus jeune jeton :',
     'lastjournalsync18' => 'Dernière synchronisation du journal :',
     'lastexpiry18' => 'Dernière échéance :',
     'lastexpirycount18' => 'Dernier comptage lors de la réduction d\'échéance :',
@@ -688,16 +688,25 @@ return array(
     'errornfd58' => 'Erreur : fichier non trouvé',
     'part58' => 'Partie',
 
-    //auto-release.php
-    'msgnotfound1' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
-    'msgnotfound2' => 'Contactez votre administrateur de messagerie en lui indiquant ce numéro du message : ',
-    'msgnotfound3' => 'si vous avez besoin de libérer ce message.',
-    'msgreleased1' => 'Message libéré<br>Il faut attendre quelques minutes avant que le message apparaisse dans votre Boite aux lettres.',
-    'tokenmismatch1' => 'Erreur pendant la libération du message - Erreur de Jeton',
-    'notallowed99' => 'Vous n\êtes pas autorisé à accéder à cette page !',
-    'dberror99' => 'Quelque-chose s\'est mal passé - Contactez le support',
-    'arview01' => 'Afficher',
-    'arrelease01' => 'Libérer',
+    // 59-auto-release.php
+    'msgnotfound159' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
+    'msgnotfound259' => 'Contactez votre Administrateur de messagerie en lui indiquant le numéro du message : ',
+    'msgnotfound359' => 'si vous avez besoin de libérer ce message.',
+    'msgreleased59' => 'Message libéré<br>Il faut attendre quelques minutes avant que le message apparaisse dans votre Boite aux lettres.',
+    'tokenmismatch59' => 'Erreur pendant la libération du message - Erreur de Jeton',
+    'notallowed59' => 'Vous n\êtes pas autorisé à accéder à cette page !',
+    'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
+    'arview059' => 'Afficher',
+    'arrelease059' => 'Libérer',
+
+    // 60-rpcserver.php
+    'paratype160' => 'Parameter type',
+    'paratype260' => 'mismatch expected type.',
+    'paratype160' => 'mismatch expected type.',
+    'notfile60' => 'n\est pas un fichier.',
+    'permdenied60' => 'permission refusée.',
+    'client160' => 'Le client',
+    'client260' => 'n\'est pas autorisé à ce connecter.',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
