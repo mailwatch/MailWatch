@@ -95,7 +95,7 @@ if (is_writable(CACHE_DIR)) {
     }
 
     // Graphing code
-    $graph = new PieGraph(800, 385, 0, false);
+    $graph = new PieGraph(850, 385, 0, false);
     $graph->SetShadow();
     $graph->img->SetAntiAliasing();
     $graph->title->Set(__('top10virus48'));
@@ -104,7 +104,7 @@ if (is_writable(CACHE_DIR)) {
     $p1->SetTheme('sand');
     $p1->SetLegends($data_names);
 
-    $p1->SetCenter(0.70, 0.4);
+    $p1->SetCenter(0.75, 0.4);
     $graph->legend->SetLayout(LEGEND_VERT);
     $graph->legend->Pos(0.25, 0.20, 'center');
 
@@ -120,7 +120,7 @@ if (is_writable(CACHE_DIR)) {
 // HTML to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
 echo "</TR>";
 echo "<TR>";
 

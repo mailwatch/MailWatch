@@ -707,10 +707,12 @@ return array(
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ' :',
-    'i18_missing' => 'Não traduzido em português',
+    'diemysql99' => 'Error: no rows retrieved from database',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
-    'diemysql99' => 'Error: no rows retrieved from database',
+    'mwlogo99' => 'MailWatch Logo',
+    'mslogo99' => 'MailScanner Logo',
+    'i18_missing' => 'Não traduzido em português',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
 );

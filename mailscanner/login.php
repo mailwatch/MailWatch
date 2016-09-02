@@ -147,7 +147,7 @@ require_once(__DIR__ . '/functions.php');
 </head>
 <body>
 <div class="login">
-    <center><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="MailWatch Logo"></center>
+    <center><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>"></center>
     <h1><?php echo __('mwlogin01'); ?></h1>
     <?php if (file_exists('conf.php')) {
     ?>

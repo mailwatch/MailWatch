@@ -713,7 +713,9 @@ return array(
     'diemysql99' => 'Error: no rows retrieved from database',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
-    'i18_missing' => 'Keine deutsche Übersetzung',
+    'mwlogo99' => 'MailWatch Logo',
+    'mslogo99' => 'MailScanner Logo',
+    'i18_missing' => 'No translation in English',
     'cannot_read_conf' => "Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren, und die Parameter entsprechend anpassen.",
 
 );

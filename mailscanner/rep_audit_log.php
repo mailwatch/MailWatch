@@ -61,7 +61,7 @@ if ($_SESSION['user_type'] != 'A') {
 " . $filter->CreateMtalogSQL() . "
  ORDER BY timestamp DESC";
     echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="MailScanner Logo"></td></tr>
+ <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' .  __('mslogo99') . '"></td></tr>
  <tr><td>' . "\n";
 
     // Function to to query and display the data

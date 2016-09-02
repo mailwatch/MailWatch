@@ -699,7 +699,7 @@ return array(
     'arview059' => 'View',
     'arrelease59' => 'Release',
 
-     // 60-rpcserver.php
+    // 60-rpcserver.php
     'paratype160' => 'Parameter type',
     'paratype260' => 'mismatch expected type.',
     'paratype160' => 'mismatch expected type.',
@@ -714,6 +714,8 @@ return array(
     'diemysql99' => 'Error: no rows retrieved from database',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
+    'mwlogo99' => 'MailWatch Logo',
+    'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
 
