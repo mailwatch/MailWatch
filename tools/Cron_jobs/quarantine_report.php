@@ -66,7 +66,7 @@ if ($required_constant_missing_count == 0) {
     ini_set("memory_limit", '256M');
     ini_set("error_reporting", E_ALL);
     ini_set("max_execution_time", 0);
-
+    
     /*
     ** HTML Template
     */
@@ -194,27 +194,27 @@ CASE
 END AS reason
 FROM
  maillog a
-WHERE
+WHERE 
  a.quarantined = 1
 AND
  ((to_address=%s) OR (to_domain=%s))
-AND
+AND 
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)";
 
-    // Hide high spam/mcp from users if enabled
-    if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
-        $sql .= "
+ // Hide high spam/mcp from users if enabled
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
+    $sql .= "
     AND
      ishighspam=0
     AND
      COALESCE(ishighmcp,0)=0";
-    }
+}
 
-    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
-        $sql .= "
+if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
+	$sql .= "
     AND
     isspam>0";
-    }
+}
 
     if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
         $sql .= "
