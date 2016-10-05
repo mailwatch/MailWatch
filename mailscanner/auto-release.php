@@ -61,8 +61,8 @@
 require_once(__DIR__ . '/functions.php');
 if (isset($_GET['mid']) && isset($_GET['r'])) {
     dbconn();
-    $mid = mysql_real_escape_string($_GET['mid']);
-    $token = mysql_real_escape_string($_GET['r']);
+    $mid = safe_value($_GET['mid']);
+    $token = safe_value($_GET['r']);
     $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
     $result = dbquery($sql);
     if (!$result) {
