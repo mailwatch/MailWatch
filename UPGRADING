@@ -92,10 +92,6 @@ UPGRADING FROM 0.5.1 TO 1.0
 - Restart MailScanner and check /var/log/maillog for errors.
    # service MailScanner start
    
-   On Debian, new &SQL modules need Perl Encoding::FixLatin lib who is not packaged 
-   on Debian/Ubuntu. If Mailscanner crash at restart (see log), install the Perl 
-   lib manualy via CPAN (http://www.cpan.org).
-
 - Test the new web interface.
 
   Run the SpamAssassin Rules Update and the MCP Rules Update (is you use MCP) 

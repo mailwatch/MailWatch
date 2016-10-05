@@ -29,7 +29,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* languages/en.php */
+/* languages/it.php */
 /* v0.0.1 */
 
 return array(
@@ -57,7 +57,7 @@ return array(
     'hscospam03' => 'Alto Punteggio Spam',
     'hscomcp03' => 'Alto Punteggio MCP',
     'recentmessages03' => 'Messaggi Recenti',
-    'lists03' => 'Liste',
+    'lists03' => 'B/W List',
     'quarantine03' => 'Quarantena',
     'datetime03' => 'Data/Ora',
     'from03' => 'Da',

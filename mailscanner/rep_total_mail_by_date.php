@@ -304,8 +304,11 @@ echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
-echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
+if ($is_MCP_enabled === true) {
+    echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
+}
 echo "</tr>\n";
+
 for ($i = 0; $i < count($data_total_mail); $i++) {
     echo "<TR BGCOLOR=\"#EBEBEB\">\n";
     echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";

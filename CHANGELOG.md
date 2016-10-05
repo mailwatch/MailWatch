@@ -1,3 +1,9 @@
+Unreleased
+-----------
+ - Add HIDE_UNKNOWN config option (GH #240, GH #254)
+ - Add Autorelease feature (one click release of quarantined emails) (GH #260)
+ - Fix per user spam score defaults (GH #263)
+
 1.2.0 - RC2
 -----------
  - Fix name collision in queries (GH #243)
