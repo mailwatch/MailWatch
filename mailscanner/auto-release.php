@@ -32,22 +32,27 @@
 /*
  * Mailwatch for Mailscanner Modification
  * Author: Alan Urquhart - ASU Web Services Ltd
- * Version: 1.1
- * Updated: 26-07-2016
+ * Version: 1.2
+ * Updated: 30-09-2016
  *
  * Requires: Mailwatch 1.2.0
  *
  * Provides the mechanism for one click release of quarantined emails as reported by the quarantine_report.php cron
  *
+ * Changelog:
+ *
+ * V1.2 - 30-09-2016
+ * Fixes table definition - GitHub Issue #291 (https://github.com/mailwatch/1.2.0/issues/291)
+ *
  * SETUP:
  *
  * Create the following table in the mailscanner database:
- * CREATE TABLE `autorelease` (
- *  `id` bigint(20) NOT NULL AUTO_INCREMENT,
- *  `msg_id` varchar(255) NOT_NULL,
- *  `uid` varchar(255) NOT_NULL,
- *  PRIMARY_KEY (`id`)
- * );
+ * CREATE TABLE IF NOT EXISTS `autorelease` (
+ * `id` bigint(20) NOT NULL AUTO_INCREMENT,
+ * `msg_id` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ * `uid` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ * PRIMARY KEY (`id`)
+ * ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1 ;
  *
  * Update cron.daily/quarantine_report.php with the modified file
  * Update cron.daily/quarantine_maint.php with the modified file
