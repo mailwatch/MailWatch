@@ -65,6 +65,9 @@ class syslog_parser
         'Dec' => '12'
     );
 
+    /**
+     * @param string $line
+     */
     public function syslog_parser($line)
     {
         // Parse the date, time, host, process pid and log entry 04CF7F970F
@@ -143,6 +146,9 @@ class postfix_parser
     }
 }
 
+/**
+ * @return string
+ */
 function get_ip($line)
 {
     if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $line, $match)) {
@@ -152,6 +158,9 @@ function get_ip($line)
     }
 }
 
+/**
+ * @return string
+ */
 function get_email($line)
 {
     if (preg_match('/<(\S+)>/', $line, $match)) {
