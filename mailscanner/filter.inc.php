@@ -313,12 +313,13 @@ WHERE
             $return .= " value=\"" . htmlentities(stripslashes($this->last_value)) . "\"";
         }
         $return .= ">\n";
-        $return .= '</td><td align="right"><input type="submit" name="action" value="' . __('add09') . '"></td></tr>' . "\n";
+        $return .= '</td><td align="right"><button type="submit" name="action" value="add">' . __('add09') . '</button></td></tr>' . "\n";
         $return .= '<tr><td align="left">' . __('tosetdate09') . '</td>' . "\n" . ' <td></td></tr>' . "\n";
         $return .= '<tr><th colspan="2">' . __('loadsavef09') . '</th></tr>' . "\n";
-        $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><input type="SUBMIT" name="action" value="' . __('save09') . '"></td></tr>' . "\n";
+        $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><button type="submit" name="action" value="save">' . __('save09') . '</button></td></tr>' . "\n";
         $return .= '<tr><td>' . "\n";
-        $return .= $this->ListSaved() . '</td><td style="white-space: nowrap; text-align:right;"><input type="SUBMIT" name="action" value="' . __('load09') . '">&nbsp;<input type="SUBMIT" name="action" value="' . __('save09') . '">&nbsp;<input type="SUBMIT" name="action" value="' . __('delete09') . '"></td></tr>' . "\n";
+        $return .= $this->ListSaved();
+        $return .= '</td><td style="white-space: nowrap; text-align:right;"><button type="submit" name="action" value="load">' . __('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . __('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . __('delete09') . '</button></td></tr>' . "\n";
         $return .= '</table>' . "\n";
         $return .= '</form>' . "\n";
 
