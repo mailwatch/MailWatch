@@ -247,7 +247,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION["filter"])) {
             require_once(__DIR__ . '/filter.inc.php');
-            $filter = new Filter;
+            $filter = new Filter();
             $_SESSION["filter"] = $filter;
         } else {
             // Use existing filters

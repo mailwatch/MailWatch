@@ -29,61 +29,78 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/**
+ * Class Filter
+ */
 class Filter
 {
     public $item;
-    public $operators = array(
-        '=' => "is equal to",
-        '<>' => "is not equal to",
-        '>' => "is greater than",
-        '>=' => "is greater than or equal to",
-        '<' => "is less than",
-        '<=' => "is less than or equal to",
-        'LIKE' => "contains",
-        'NOT LIKE' => "does not contain",
-        'REGEXP' => "matches the regular expression",
-        'NOT REGEXP' => "does not match the regular expression",
-        'IS NULL' => "is null",
-        'IS NOT NULL' => "is not null"
-    );
-    public $columns = array(
-        'date' => "Date",
-        'headers' => "Headers",
-        'id' => "Message ID",
-        'size' => "Size (bytes)",
-        'from_address' => "From",
-        'from_domain' => "From Domain",
-        'to_address' => "To",
-        'to_domain' => "To Domain",
-        'subject' => "Subject",
-        'clientip' => "Received from (IP Address)",
-        'isspam' => "is Spam (>0 = TRUE)",
-        'ishighspam' => "is High Scoring Spam (>0 = TRUE)",
-        'issaspam' => "is Spam according to SpamAssassin (>0 = TRUE)",
-        'isrblspam' => "is Listed in one or more RBL's (>0 = TRUE)",
-        'spamwhitelisted' => "is Whitelisted (>0 = TRUE)",
-        'spamblacklisted' => "is Blacklisted (>0 = TRUE)",
-        'sascore' => "SpamAssassin Score",
-        'spamreport' => "Spam Report",
-        'ismcp' => "is MCP (>0 = TRUE)",
-        'ishighmcp' => "is High Scoring MCP (>0 = TRUE)",
-        'issamcp' => "is MCP according to SpamAssassin (>0 = TRUE)",
-        'mcpwhitelisted' => "is MCP Whitelisted (>0 = TRUE)",
-        'mcpblacklisted' => "is MCP Blacklisted (>0 = TRUE)",
-        'mcpscore' => "MCP Score",
-        'mcpreport' => "MCP Report",
-        'virusinfected' => "contained a Virus (>0 = TRUE)",
-        'nameinfected' => "contained an Unacceptable Attachment (>0 = TRUE)",
-        'otherinfected' => "contained other infections (>0 = TRUE)",
-        'report' => "Virus Report",
-        'hostname' => "MailScanner Hostname"
-    );
+    public $operators = array();
+    public $columns = array();
     public $reports = array();
     public $last_operator;
     public $last_column;
     public $last_value;
     public $display_last = 0;
 
+    /**
+     * Filter constructor.
+     */
+    public function __construct()
+    {
+        $this->operators = array(
+            '=' => __('equal09'),
+            '<>' => __('notequal09'),
+            '>' => __('greater09'),
+            '>=' => __('greaterequal09'),
+            '<' => __('less09'),
+            '<=' => __('lessequal09'),
+            'LIKE' => __('like09'),
+            'NOT LIKE' => __('notlike09'),
+            'REGEXP' => __('regexp09'),
+            'NOT REGEXP' => __('notregexp09'),
+            'IS NULL' => __('isnull09'),
+            'IS NOT NULL' => __('isnotnull09')
+        );
+        $this->columns = array(
+            'date' => __('date09'),
+            'headers' => __('headers09'),
+            'id' => __('id09'),
+            'size' => __('size09'),
+            'from_address' => __('fromaddress09'),
+            'from_domain' => __('fromdomain09'),
+            'to_address' => __('toaddress09'),
+            'to_domain' => __('todomain09'),
+            'subject' => __('subject09'),
+            'clientip' => __('clientip09'),
+            'isspam' => __('isspam09'),
+            'ishighspam' => __('ishighspam09'),
+            'issaspam' => __('issaspam09'),
+            'isrblspam' => __('isrblspam09'),
+            'spamwhitelisted' => __('spamwhitelisted09'),
+            'spamblacklisted' => __('spamblacklisted09'),
+            'sascore' => __('sascore09'),
+            'spamreport' => __('spamreport09'),
+            'ismcp' => __('ismcp09'),
+            'ishighmcp' => __('ishighmcp09'),
+            'issamcp' => __('issamcp09'),
+            'mcpwhitelisted' => __('mcpwhitelisted09'),
+            'mcpblacklisted' => __('mcpblacklisted09'),
+            'mcpscore' => __('mcpscore09'),
+            'mcpreport' => __('mcpreport09'),
+            'virusinfected' => __('virusinfected09'),
+            'nameinfected' => __('nameinfected09'),
+            'otherinfected' => __('otherinfected09'),
+            'report' => __('report09'),
+            'hostname' => __('hostname09')
+        );
+    }
+
+    /**
+     * @param $column
+     * @param $operator
+     * @param $value
+     */
     public function Add($column, $operator, $value)
     {
         if (!$this->ValidateOperator($operator)) {
@@ -104,6 +121,9 @@ class Filter
         $this->item[] = array($column, $operator, $value);
     }
 
+    /**
+     * @param array $item
+     */
     public function Remove($item)
     {
         // Store the last column, operator, and value, and force the form to default to them
@@ -227,11 +247,19 @@ WHERE
         }
     }
 
+    /**
+     * @param $column
+     * @return mixed
+     */
     public function TranslateColumn($column)
     {
         return ($this->columns[$column]);
     }
 
+    /**
+     * @param $operator
+     * @return mixed
+     */
     public function TranslateOperator($operator)
     {
         return ($this->operators[$operator]);
@@ -298,11 +326,18 @@ WHERE
         return $return;
     }
 
+    /**
+     * @param string $url
+     * @param string $description
+     */
     public function AddReport($url, $description)
     {
         $this->reports[$description] = $url;
     }
 
+    /**
+     * @param string $name
+     */
     public function Save($name)
     {
         dbconn();
@@ -323,6 +358,9 @@ WHERE
         }
     }
 
+    /**
+     * @param string $name
+     */
     public function Load($name)
     {
         dbconn();
@@ -335,6 +373,9 @@ WHERE
         }
     }
 
+    /**
+     * @param string $name
+     */
     public function Delete($name)
     {
         dbconn();
@@ -358,6 +399,10 @@ WHERE
         return $return;
     }
 
+    /**
+     * @param string $operator
+     * @return bool
+     */
     private function ValidateOperator($operator)
     {
         $validKeys = array_keys($this->operators);
