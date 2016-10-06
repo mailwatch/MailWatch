@@ -210,11 +210,11 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
      COALESCE(ishighmcp,0)=0";
 }
 
-if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
-	$sql .= "
+    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
+        $sql .= "
     AND
     isspam>0";
-}
+    }
 
     if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
         $sql .= "
