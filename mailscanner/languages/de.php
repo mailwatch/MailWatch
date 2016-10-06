@@ -247,7 +247,6 @@ return array(
 
     // 09-filter.inc.php
     'activefilters09' => 'Aktive Filter',
-    'none09' => 'Keiner',
     'addfilter09' => 'Filter hinzufügen',
     'loadsavef09' => 'Filter öffnen/speichern',
     'tosetdate09' => 'Für das Datum muss das Format JJJJ-mm-tt verwendet werden',
@@ -259,7 +258,7 @@ return array(
     'load09' => 'Load',
     'save09' => 'Save',
     'delete09' => 'Delete',
-    'none09' => 'None',
+    'none09' => 'Keiner',
     'equal09' => 'is equal to',
     'notequal09' => 'is not equal to',
     'greater09' => 'is greater than',

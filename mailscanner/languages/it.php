@@ -247,7 +247,6 @@ return array(
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtri Attivi',
-    'none09' => 'Nessuno',
     'addfilter09' => 'Aggiungi Filtro',
     'loadsavef09' => 'Carica/Salva Filtri',
     'tosetdate09' => 'Per impostare la data devi utilizzare il formato YYYY-mm-dd',
@@ -259,7 +258,7 @@ return array(
     'load09' => 'Load',
     'save09' => 'Save',
     'delete09' => 'Delete',
-    'none09' => 'None',
+    'none09' => 'Nessuno',
     'equal09' => 'is equal to',
     'notequal09' => 'is not equal to',
     'greater09' => 'is greater than',

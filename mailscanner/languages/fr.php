@@ -247,7 +247,6 @@ return array(
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtre actif',
-    'none09' => 'Aucun',
     'addfilter09' => 'Ajouter un filtre',
     'loadsavef09' => 'Ouvrir/Enregistrer un filtre',
     'tosetdate09' => 'Entrer la date sous le format AAAA-MM-JJ',

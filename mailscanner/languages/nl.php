@@ -247,7 +247,6 @@ return array(
 
     // 09-filter.inc.php
     'activefilters09' => 'Actieve Filters',
-    'none09' => 'None',
     'addfilter09' => 'Voeg Filter Toe',
     'loadsavef09' => 'Laad/Bewaar Filter',
     'tosetdate09' => 'Om datum in te voeren gebruik YYYY-mm-dd patroon',

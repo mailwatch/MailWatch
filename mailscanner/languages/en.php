@@ -248,7 +248,6 @@ return array(
 
     // 09-filter.inc.php
     'activefilters09' => 'Active Filters',
-    'none09' => 'None',
     'addfilter09' => 'Add Filter',
     'loadsavef09' => 'Load/Save Filter',
     'tosetdate09' => 'To set date you must use YYYY-mm-dd format',
