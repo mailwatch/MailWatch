@@ -846,8 +846,8 @@ function safe_value($value)
 }
 
 /**
- * @param $string
- * @return mixed
+ * @param string $string
+ * @return string
  */
 function __($string)
 {
@@ -878,7 +878,7 @@ function __($string)
  * Returns true if $string is valid UTF-8 and false otherwise.
  *
  * @param $string
- * @return boolean
+ * @return integer
  */
 function is_utf8($string)
 {
@@ -917,7 +917,7 @@ function getUTF8String($string)
 
 /**
  * @param $spamreport
- * @return bool|string
+ * @return string|false
  */
 function sa_autolearn($spamreport)
 {
@@ -996,7 +996,7 @@ function get_sa_rule_desc($rule)
 
 /**
  * @param $rule
- * @return bool
+ * @return string|false
  */
 function return_sa_rule_desc($rule)
 {
@@ -1196,7 +1196,7 @@ function get_disks()
 }
 
 /**
- * @param $size
+ * @param double $size
  * @param int $precision
  * @return string
  */
@@ -1336,7 +1336,7 @@ function get_default_ruleset_value($file)
 }
 
 /**
- * @param $name
+ * @param string $name
  * @return bool
  */
 function get_conf_var($name)
@@ -1398,7 +1398,7 @@ function parse_conf_dir($conf_dir)
 }
 
 /**
- * @param $name
+ * @param string $name
  * @return bool
  */
 function get_conf_truefalse($name)
@@ -1495,7 +1495,7 @@ function get_conf_include_folder()
 /**
  * Parse conf files
  *
- * @param $name
+ * @param string $name
  * @return array
  */
 function parse_conf_file($name)
@@ -1583,7 +1583,7 @@ function translateQuarantineDate($date, $format = 'dmy')
 
 /**
  * @param $preserve
- * @return bool|string
+ * @return string|false
  */
 function subtract_get_vars($preserve)
 {
@@ -1606,8 +1606,8 @@ function subtract_get_vars($preserve)
 }
 
 /**
- * @param $preserve
- * @return bool|string
+ * @param string[] $preserve
+ * @return string|false
  */
 function subtract_multi_get_vars($preserve)
 {
@@ -2448,7 +2448,7 @@ function db_vertical_table($sql)
 }
 
 /**
- * @return mixed
+ * @return double
  */
 function get_microtime()
 {
@@ -2865,7 +2865,7 @@ function return_geoip_country($ip)
 
 /**
  * @param $ip
- * @return mixed
+ * @return string
  */
 function stripPortFromIp($ip)
 {
@@ -3412,7 +3412,7 @@ function fixMessageId($id)
 }
 
 /**
- * @param $action
+ * @param string $action
  * @return bool
  */
 function audit_log($action)
@@ -3469,7 +3469,7 @@ function read_ruleset_default($file)
 
 /**
  * @param $scanner
- * @return bool|string
+ * @return string|false
  */
 function get_virus_conf($scanner)
 {
@@ -3504,7 +3504,7 @@ function return_quarantine_dates()
 }
 
 /**
- * @param $virus
+ * @param string $virus
  * @return string
  */
 function return_virus_link($virus)
