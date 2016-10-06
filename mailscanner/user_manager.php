@@ -89,7 +89,7 @@ if ($_SESSION['user_type'] == 'A') {
                     echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
-         <OPTION VALUE=\"U\">" . __('user12') ."</OPTION>
+         <OPTION VALUE=\"U\">" . __('user12') . "</OPTION>
          <OPTION VALUE=\"D\">" . __('domainadmin12') . "</OPTION>
          <OPTION VALUE=\"A\">" . __('admin12') . "</OPTION>
         </SELECT></TD></TR>\n";
@@ -102,7 +102,7 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "</TABLE></FORM><BR>\n";
                 } else {
                     if ($_GET['password'] != $_GET['password1']) {
-                        echo __('errorpass12') ;
+                        echo __('errorpass12');
                     } else {
                         $n_username = mysql_real_escape_string($_GET['username']);
                         $n_fullname = mysql_real_escape_string($_GET['fullname']);
@@ -308,35 +308,36 @@ if ($_SESSION['user_type'] == 'A') {
                 break;
         }
     }
-    $sql = "
-SELECT
- username AS '" . mysql_real_escape_string(__('username12')) . "',
- fullname AS '" . mysql_real_escape_string(__('fullname12')) . "',
- CASE
-  WHEN type = 'A' THEN '" . __('admin12') . "'
-  WHEN type = 'D' THEN '" . __('domainadmin12') . "'
-  WHEN type = 'U' THEN '" . __('user12') . "'
-  WHEN type = 'R' THEN '" . __('userregex12') . "'
- ELSE
-  '" . __('unknowtype12') . "'
- END AS '" . mysql_real_escape_string(__('type12')) . "',
- CASE
-  WHEN noscan = 1 THEN '" . __('noshort12') . "'
-  WHEN noscan = 0 THEN '" . __('yesshort12') . "'
- ELSE
-  '" . __('yesshort12') . "'
- END AS '" . mysql_real_escape_string(__('spamcheck12')) . "',
-  spamscore AS '" . mysql_real_escape_string(__('spamscore12')) . "',
-  highspamscore AS '" . mysql_real_escape_string(__('spamhscore12')) . "',
- CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . mysql_real_escape_string(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . mysql_real_escape_string(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . mysql_real_escape_string(__('filters12')) . "</a>') AS '" . mysql_real_escape_string(__('action12')) . "'
-FROM
- users
-ORDER BY
- username
-";
-    dbtable($sql, __('usermgnt12'));
-    echo "<br>\n";
+
     echo "<a href=\"?action=new\">" . __('newuser12') . "</a>\n";
+    echo "<br>\n";
+
+    $sql = "
+        SELECT
+          username AS '" . mysql_real_escape_string(__('username12')) . "',
+          fullname AS '" . mysql_real_escape_string(__('fullname12')) . "',
+        CASE
+          WHEN type = 'A' THEN '" . __('admin12') . "'
+          WHEN type = 'D' THEN '" . __('domainadmin12') . "'
+          WHEN type = 'U' THEN '" . __('user12') . "'
+          WHEN type = 'R' THEN '" . __('userregex12') . "'
+        ELSE
+          '" . __('unknowtype12') . "'
+        END AS '" . mysql_real_escape_string(__('type12')) . "',
+        CASE
+          WHEN noscan = 1 THEN '" . __('noshort12') . "'
+          WHEN noscan = 0 THEN '" . __('yesshort12') . "'
+        ELSE
+          '" . __('yesshort12') . "'
+        END AS '" . mysql_real_escape_string(__('spamcheck12')) . "',
+          spamscore AS '" . mysql_real_escape_string(__('spamscore12')) . "',
+          highspamscore AS '" . mysql_real_escape_string(__('spamhscore12')) . "',
+        CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . mysql_real_escape_string(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . mysql_real_escape_string(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . mysql_real_escape_string(__('filters12')) . "</a>') AS '" . mysql_real_escape_string(__('action12')) . "'
+        FROM
+          users
+        ORDER BY
+          username";
+    dbtable($sql, __('usermgnt12'));
 } else {
     if (!isset($_GET['submit'])) {
         $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . mysql_real_escape_string($_SESSION['myusername']) . "'";
@@ -413,3 +414,4 @@ ORDER BY
 html_end();
 // Close any open db connections
 dbclose();
+

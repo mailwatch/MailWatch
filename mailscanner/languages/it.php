@@ -29,7 +29,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* languages/en.php */
+/* languages/it.php */
 /* v0.2.9 */
 
 return array(
