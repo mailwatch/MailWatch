@@ -34,7 +34,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("MySQL Status", 0, false, true);
+html_start(__('mysqlstatus31'), 0, false, true);
 
 if ($_SESSION['user_type'] != 'A') {
     echo "Not Authorized";

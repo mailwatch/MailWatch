@@ -174,7 +174,7 @@ function doit($input)
 {
     global $fp;
     if (!$fp = popen($input, 'r')) {
-        die("Cannot open pipe");
+        die(__('diepipe56'));
     }
 
     dbconn();

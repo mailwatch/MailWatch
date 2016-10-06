@@ -38,7 +38,7 @@ require(__DIR__ . '/login.function.php');
 ini_set("memory_limit", MEMORY_LIMIT);
 
 if (!isset($_GET['id'])) {
-    die('No input Message ID');
+    die(__('nomessid58'));
 } else {
     $message_id = sanitizeInput($_GET['id']);
     // See if message is local
@@ -52,7 +52,7 @@ if (!isset($_GET['id'])) {
     );
 
     if (!$message_data) {
-        die("Message '" . $message_id . "' not found\n");
+        die(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
     }
 
     if (!is_local($message_data->hostname) || RPC_ONLY) {
@@ -66,7 +66,7 @@ if (!isset($_GET['id'])) {
         if ($rsp->faultcode() == 0) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
-            die("Error: " . $rsp->faultstring());
+            die(__('error58') . " " . $rsp->faultstring());
         }
         $file = base64_decode($response);
     } else {
@@ -89,7 +89,7 @@ if (!isset($_GET['id'])) {
         }
 
         if (!@file_exists($quarantine_dir . '/' . $filename)) {
-            die("Error: file not found\n");
+            die(__('errornfd58') . "\n");
         }
         $file = file_get_contents($quarantine_dir . '/' . $filename);
     }
@@ -107,7 +107,7 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 // Make sure that part being requested actually exists
 if (isset($_GET['part'])) {
     if (!isset($mime_struct[$_GET['part']])) {
-        die("Part " . sanitizeInput($_GET['part']) . " not found\n");
+        die(__('part58') . " " . sanitizeInput($_GET['part']) . " " . __('notfound58') . "\n");
     }
 }
 

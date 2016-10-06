@@ -124,7 +124,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">Remove</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
@@ -133,7 +133,7 @@ class Filter
         // Add filter
         echo ' <tr><th colspan="2">' . __('addfilter09') . '</th></tr>' . "\n";
         echo ' <tr><td colspan="2">' . $this->DisplayForm() . '</td></tr>' . "\n";
-        echo ' <tr><th colspan="2">Statistics (Filtered)</th></tr>' . "\n";
+        echo ' <tr><th colspan="2">' . __('stats09') . '</th></tr>' . "\n";
         $query = "
 SELECT
  DATE_FORMAT(MIN(date),'" . DATE_FORMAT . "') AS oldest,
@@ -142,15 +142,15 @@ SELECT
 FROM
  maillog
 WHERE
- 1=1 
+ 1=1
 " . $this->CreateSQL();
         $sth = dbquery($query);
         while ($row = mysql_fetch_object($sth)) {
-            echo ' <tr><td>Oldest record:</td><td align="right">' . $row->oldest . '</td></tr>' . "\n";
-            echo ' <tr><td>Newest record:</td><td align="right">' . $row->newest . '</td></tr>' . "\n";
-            echo ' <tr><td>Message count:</td><td align="right">' . number_format($row->messages) . '</td></tr>' . "\n";
+            echo ' <tr><td>' . __('oldrecord09') . '</td><td align="right">' . $row->oldest . '</td></tr>' . "\n";
+            echo ' <tr><td>' . __('newrecord09') . '</td><td align="right">' . $row->newest . '</td></tr>' . "\n";
+            echo ' <tr><td>' . __('messagecount09') . '</td><td align="right">' . number_format($row->messages) . '</td></tr>' . "\n";
         }
-        echo '<tr><th colspan="2">Reports</th></tr>' . "\n";
+        echo '<tr><th colspan="2">' . __('reports09') . '</th></tr>' . "\n";
         echo '<tr><td colspan="2"><ul>' . "\n";
         foreach ($this->reports as $description => $url) {
             echo '<li><a href="' . $url . '">' . $description . '</a>' . "\n";
@@ -285,12 +285,12 @@ WHERE
             $return .= " value=\"" . htmlentities(stripslashes($this->last_value)) . "\"";
         }
         $return .= ">\n";
-        $return .= '</td><td align="right"><input type="submit" name="action" value="Add"></td></tr>' . "\n";
+        $return .= '</td><td align="right"><input type="submit" name="action" value="' . __('add09') . '"></td></tr>' . "\n";
         $return .= '<tr><td align="left">' . __('tosetdate09') . '</td>' . "\n" . ' <td></td></tr>' . "\n";
         $return .= '<tr><th colspan="2">' . __('loadsavef09') . '</th></tr>' . "\n";
-        $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><input type="SUBMIT" name="action" value="Save"></td></tr>' . "\n";
+        $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><input type="SUBMIT" name="action" value="' . __('save09') . '"></td></tr>' . "\n";
         $return .= '<tr><td>' . "\n";
-        $return .= $this->ListSaved() . '</td><td style="white-space: nowrap; text-align:right;"><input type="SUBMIT" name="action" value="Load">&nbsp;<input type="SUBMIT" name="action" value="Save">&nbsp;<input type="SUBMIT" name="action" value="Delete"></td></tr>' . "\n";
+        $return .= $this->ListSaved() . '</td><td style="white-space: nowrap; text-align:right;"><input type="SUBMIT" name="action" value="' . __('load09') . '">&nbsp;<input type="SUBMIT" name="action" value="' . __('save09') . '">&nbsp;<input type="SUBMIT" name="action" value="' . __('delete09') . '"></td></tr>' . "\n";
         $return .= '</table>' . "\n";
         $return .= '</form>' . "\n";
 
@@ -349,7 +349,7 @@ WHERE
         $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
         $return = '<select name="filter">' . "\n";
-        $return .= ' <option value="_none_">None</option>' . "\n";
+        $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";
         while ($row = mysql_fetch_array($sth)) {
             $return .= ' <option value="' . $row[0] . '">' . $row[0] . '</option>' . "\n";
         }
