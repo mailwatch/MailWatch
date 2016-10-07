@@ -88,7 +88,6 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
                 }
             }
 
-
             // Display success
             echo "<p>" . __('msgreleased59') . "</p>";
             //cleanup

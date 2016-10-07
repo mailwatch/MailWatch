@@ -48,6 +48,14 @@ if (!is_readable(__DIR__ . '/conf.php')) {
 }
 require_once(__DIR__ . '/conf.php');
 
+// Set PHP path to use local PEAR modules only
+set_include_path(
+    get_include_path() . PATH_SEPARATOR .
+    '.' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/xmlrpc'
+);
+
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
 if (!defined('LANG')) {
@@ -65,9 +73,6 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
         exit;
     }
 }
-
-// Set PHP path to use local PEAR modules only
-ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
@@ -242,7 +247,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION["filter"])) {
             require_once(__DIR__ . '/filter.inc.php');
-            $filter = new Filter;
+            $filter = new Filter();
             $_SESSION["filter"] = $filter;
         } else {
             // Use existing filters
@@ -841,8 +846,8 @@ function safe_value($value)
 }
 
 /**
- * @param $string
- * @return mixed
+ * @param string $string
+ * @return string
  */
 function __($string)
 {
@@ -873,7 +878,7 @@ function __($string)
  * Returns true if $string is valid UTF-8 and false otherwise.
  *
  * @param $string
- * @return boolean
+ * @return integer
  */
 function is_utf8($string)
 {
@@ -912,7 +917,7 @@ function getUTF8String($string)
 
 /**
  * @param $spamreport
- * @return bool|string
+ * @return string|false
  */
 function sa_autolearn($spamreport)
 {
@@ -991,14 +996,14 @@ function get_sa_rule_desc($rule)
 
 /**
  * @param $rule
- * @return bool
+ * @return string|false
  */
 function return_sa_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
     if ($row) {
-        return $row->rule_desc;
+        return htmlentities($row->rule_desc);
     }
 
     return false;
@@ -1191,7 +1196,7 @@ function get_disks()
 }
 
 /**
- * @param $size
+ * @param double $size
  * @param int $precision
  * @return string
  */
@@ -1331,7 +1336,7 @@ function get_default_ruleset_value($file)
 }
 
 /**
- * @param $name
+ * @param string $name
  * @return bool
  */
 function get_conf_var($name)
@@ -1393,7 +1398,7 @@ function parse_conf_dir($conf_dir)
 }
 
 /**
- * @param $name
+ * @param string $name
  * @return bool
  */
 function get_conf_truefalse($name)
@@ -1490,7 +1495,7 @@ function get_conf_include_folder()
 /**
  * Parse conf files
  *
- * @param $name
+ * @param string $name
  * @return array
  */
 function parse_conf_file($name)
@@ -1578,7 +1583,7 @@ function translateQuarantineDate($date, $format = 'dmy')
 
 /**
  * @param $preserve
- * @return bool|string
+ * @return string|false
  */
 function subtract_get_vars($preserve)
 {
@@ -1601,8 +1606,8 @@ function subtract_get_vars($preserve)
 }
 
 /**
- * @param $preserve
- * @return bool|string
+ * @param string[] $preserve
+ * @return string|false
  */
 function subtract_multi_get_vars($preserve)
 {
@@ -2443,7 +2448,7 @@ function db_vertical_table($sql)
 }
 
 /**
- * @return mixed
+ * @return double
  */
 function get_microtime()
 {
@@ -2860,7 +2865,7 @@ function return_geoip_country($ip)
 
 /**
  * @param $ip
- * @return mixed
+ * @return string
  */
 function stripPortFromIp($ip)
 {
@@ -3407,7 +3412,7 @@ function fixMessageId($id)
 }
 
 /**
- * @param $action
+ * @param string $action
  * @return bool
  */
 function audit_log($action)
@@ -3464,7 +3469,7 @@ function read_ruleset_default($file)
 
 /**
  * @param $scanner
- * @return bool|string
+ * @return string|false
  */
 function get_virus_conf($scanner)
 {
@@ -3499,7 +3504,7 @@ function return_quarantine_dates()
 }
 
 /**
- * @param $virus
+ * @param string $virus
  * @return string
  */
 function return_virus_link($virus)

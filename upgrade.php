@@ -177,6 +177,7 @@ if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_N
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $value) {
             if (!in_array($indexname, $existingIndexes)) {
+                echo pad(' - Adding missing index `' . $indexname . '` on table `' . $table . '`');
                 $sql = 'ALTER TABLE `' . $table . '` ADD KEY `' . $indexname . '` ' . $value . ';';
                 executeQuery($sql);
             }

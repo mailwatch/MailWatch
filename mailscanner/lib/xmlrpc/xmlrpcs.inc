@@ -1231,7 +1231,7 @@
 		*/
 		function echoInput()
 		{
-			$r=new xmlrpcresp(new xmlrpcval( "'Aha said I: '" . $GLOBALS['HTTP_RAW_POST_DATA'], 'string'));
+			$r=new xmlrpcresp(new xmlrpcval( "'Aha said I: '" . file_get_contents('php://input'), 'string'));
 			print $r->serialize();
 		}
 	}

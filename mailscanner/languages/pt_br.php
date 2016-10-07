@@ -247,7 +247,6 @@ return array(
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtros Ativos',
-    'none09' => 'Nenhum',
     'addfilter09' => 'Adicionar Filtro',
     'loadsavef09' => 'Carregar/Salvar Filtro',
     'tosetdate09' => 'Para filtro por data utilize o formato YYYY-mm-dd',
@@ -259,7 +258,11 @@ return array(
     'load09' => 'Load',
     'save09' => 'Save',
     'delete09' => 'Delete',
+<<<<<<< HEAD
     'none09' => 'None',
+=======
+    'none09' => 'Nenhum',
+>>>>>>> mailwatch/develop
     'equal09' => 'is equal to',
     'notequal09' => 'is not equal to',
     'greater09' => 'is greater than',

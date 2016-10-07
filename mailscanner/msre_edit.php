@@ -764,6 +764,9 @@ function Read_File($filename, $size)
 }
 
 
+/**
+ * @param string $filename
+ */
 function Write_File($filename, $content)
 {
     // writes a file to $filename (which must include the full path!)

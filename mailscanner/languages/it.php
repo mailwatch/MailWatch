@@ -78,7 +78,7 @@ return array(
     'hscospam03' => 'Alto Punteggio Spam',
     'hscomcp03' => 'Alto Punteggio MCP',
     'recentmessages03' => 'Messaggi Recenti',
-    'lists03' => 'Liste',
+    'lists03' => 'B/W List',
     'quarantine03' => 'Quarantena',
     'datetime03' => 'Data/Ora',
     'from03' => 'Da',
@@ -247,7 +247,6 @@ return array(
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtri Attivi',
-    'none09' => 'Nessuno',
     'addfilter09' => 'Aggiungi Filtro',
     'loadsavef09' => 'Carica/Salva Filtri',
     'tosetdate09' => 'Per impostare la data devi utilizzare il formato YYYY-mm-dd',
@@ -259,7 +258,11 @@ return array(
     'load09' => 'Load',
     'save09' => 'Save',
     'delete09' => 'Delete',
+<<<<<<< HEAD
     'none09' => 'None',
+=======
+    'none09' => 'Nessuno',
+>>>>>>> mailwatch/develop
     'equal09' => 'is equal to',
     'notequal09' => 'is not equal to',
     'greater09' => 'is greater than',
