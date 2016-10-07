@@ -258,11 +258,7 @@ return array(
     'load09' => 'Load',
     'save09' => 'Save',
     'delete09' => 'Delete',
-<<<<<<< HEAD
-    'none09' => 'None',
-=======
     'none09' => 'Nenhum',
->>>>>>> mailwatch/develop
     'equal09' => 'is equal to',
     'notequal09' => 'is not equal to',
     'greater09' => 'is greater than',
