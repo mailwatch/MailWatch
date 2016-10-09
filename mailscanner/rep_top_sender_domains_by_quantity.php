@@ -66,9 +66,9 @@ $sql = "
 if (is_writable(CACHE_DIR)) {
 
     // JPGraph
-    include_once("./lib/jpgraph/jpgraph/jpgraph.php");
-    include_once("./lib/jpgraph/jpgraph/jpgraph_pie.php");
-    include_once("./lib/jpgraph/jpgraph/jpgraph_pie3d.php");
+    include_once("./lib/jpgraph/jpgraph.php");
+    include_once("./lib/jpgraph/jpgraph_pie.php");
+    include_once("./lib/jpgraph/jpgraph_pie3d.php");
 
     $result = dbquery($sql);
     if (!mysql_num_rows($result) > 0) {
