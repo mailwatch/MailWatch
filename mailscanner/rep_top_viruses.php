@@ -59,9 +59,9 @@ AND
 if (is_writable(CACHE_DIR)) {
 
     // JpGraph functions
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
+    include_once("./lib/jpgraph/jpgraph.php");
+    include_once("./lib/jpgraph/jpgraph_pie.php");
+    include_once("./lib/jpgraph/jpgraph_pie3d.php");
 
     // Must be one or more rows
     $result = dbquery($sql);
