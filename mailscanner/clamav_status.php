@@ -44,7 +44,7 @@ if ($_SESSION['user_type'] != 'A') {
     audit_log('Non-admin user attemped to view ClamAV Status page');
 } else {
     // Start the header code and Title
-    html_start("ClamAV Status", 0, false, false);
+    html_start(__('avclamavstatus19'), 0, false, false);
     // Create the table
     echo '<table class="boxtable" width="100%">';
     echo '<tr>';

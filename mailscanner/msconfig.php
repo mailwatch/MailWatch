@@ -37,14 +37,14 @@ require(__DIR__ . '/login.function.php');
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
 } else {
-    html_start("Configuration");
+    html_start(__('config27'));
     audit_log('Viewed MailScanner configuration');
 
     $conf_dir = get_conf_include_folder();
     $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
 
     echo '<table border="0" cellpadding="1" cellspacing="1" class="maildetail" width="100%">';
-    echo '<tr><th colspan="2">MailScanner Configuration</th></tr>';
+    echo '<tr><th colspan="2">' . __('msconfig27') . '</th></tr>';
 
     $array_output = array();
     $array_output1 = parse_conf_file($MailScanner_conf_file);

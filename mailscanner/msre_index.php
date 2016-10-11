@@ -62,7 +62,7 @@ if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
     audit_log('Non-admin user attempted to view MailScanner Rule Editor Page');
 } else {
-    html_start('Ruleset Editor', "0", false, false);
+    html_start(__('rulesetedit29'), "0", false, false);
 
     // ############
     // ### Main ###

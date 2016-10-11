@@ -37,21 +37,21 @@ require(__DIR__ . '/login.function.php');
 if ($_SESSION['user_type'] != 'A') {
     header('Location: index.php');
 } else {
-    html_start("SpamAssassin Rule Description Update", 0, false, false);
+    html_start(__('saruldesupdate13'), 0, false, false);
     echo "<table class=\"boxtable\" width=\"100%\">";
-    echo "<tr><th>SpamAssassin Rule Description Update</th></tr>";
+    echo "<tr><th>" . __('updatesadesc13') . "</th></tr>";
     echo "<tr>";
     echo "  <td>";
-    echo "   <br>This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.<br>";
+    echo "   <br>" . __('message113') . "<br>";
     echo "   <br>";
-    echo "   This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br><br>";
+    echo "   " . __('message213') . "<br><br>";
     echo "  </td>";
     echo "</tr>";
     echo " <tr>";
     echo '  <td align="center">
     <form method="post" action="sa_rules_update.php">
     <div style="margin: 5px">' . "\n";
-    echo "<input type=\"submit\" value=\"" . __('input01') . "\"><br><br>";
+    echo "<input type=\"submit\" value=\"" . __('input13') . "\"><br><br>";
     echo "<input type=\"hidden\" name=\"run\" value=\"true\">
     </div>
     </form>
@@ -61,7 +61,7 @@ if ($_SESSION['user_type'] != 'A') {
 
     if (isset($_POST['run'])) {
         echo "<table width=\"100%\">";
-        echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>Rule</th><th>Description</th></tr>\n";
+        echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>" . __('rule13') . "</th><th>" . __('description13') . "</th></tr>\n";
         $fh = popen(
             "grep -hr '^\s*describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
             'r'

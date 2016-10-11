@@ -3,7 +3,7 @@
 // File:        IMGDATA_ROUNDBALLS.INC
 // Description: Base64 encoded images for small round markers
 // Created:     2003-03-20
-// Ver:         $Id: imgdata_balls.inc.php,v 1.7 2011/12/14 18:21:28 lorodoes Exp $
+// Ver:         $Id: imgdata_balls.inc.php 1106 2009-02-22 20:16:35Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================

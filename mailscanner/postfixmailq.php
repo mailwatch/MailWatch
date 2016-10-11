@@ -34,7 +34,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("Mail Queue Viewer");
+html_start(__('mqviewer32'));
 
 echo '<b>Combined mail queue (Inbound and Outbound)</b>' . "\n";
 echo '<pre>';

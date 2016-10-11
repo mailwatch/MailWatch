@@ -34,7 +34,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("Quarantine Viewer", 0, false, false);
+html_start(__('qviewer08'), 0, false, false);
 
 if (!isset($_GET['dir'])) {
     // Get the top-level list
@@ -81,7 +81,7 @@ if (!isset($_GET['dir'])) {
             }
             echo '</table>' . "\n";
         } else {
-            die("No quarantine directories found\n");
+            die(__('dienodir08') . "\n");
         }
     }
 } else {
@@ -138,7 +138,7 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type
         $sql .= "
 ORDER BY
  date DESC, time DESC";
-        db_colorised_table($sql, __('folder08') . ': ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
+        db_colorised_table($sql, __('folder08') . ' ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
         $dir = preg_replace('[\.|\.\.|\/]', '', $dir);

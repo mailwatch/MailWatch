@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Top Recipient Domains by Volume", 0, false, true);
+$filter = html_start(__('toprecipdomvol41'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/top_recipient_domains_by_volume.png." . time();
@@ -51,9 +51,9 @@ $sql = "
  FROM
   maillog
  WHERE
-  from_address <> \"\"		-- Exclude delivery receipts
+  from_address <> \"\" 		-- Exclude delivery receipts
  AND
-  from_address IS NOT NULL	-- Exclude delivery receipts
+  from_address IS NOT NULL     	-- Exclude delivery receipts
 " . $filter->CreateSQL() . "
  GROUP BY
   to_domain
@@ -72,7 +72,7 @@ if (is_writable(CACHE_DIR)) {
 
     $result = dbquery($sql);
     if (!mysql_num_rows($result) > 0) {
-        die("Error: no rows retrieved from database\n");
+        die(__('diemysql99') . "\n");
     }
 
     while ($row = mysql_fetch_object($result)) {
@@ -84,7 +84,7 @@ if (is_writable(CACHE_DIR)) {
     $graph = new PieGraph(800, 385, 0, false);
     $graph->SetShadow();
     $graph->img->SetAntiAliasing();
-    $graph->title->Set("Top 10 Recipient Domains by Volume");
+    $graph->title->Set(__('top10recipdomvol41'));
 
     $p1 = new PiePlot3d($data);
     $p1->SetTheme('sand');
@@ -100,7 +100,7 @@ if (is_writable(CACHE_DIR)) {
 
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
 echo "</TR>";
 echo "<TR>";
 
@@ -108,7 +108,7 @@ echo "<TR>";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 echo "</TR>";
@@ -116,9 +116,9 @@ echo "<TR>";
 echo " <TD ALIGN=\"CENTER\">";
 echo "  <TABLE WIDTH=\"500\">";
 echo "   <TR BGCOLOR=\"#F7CE4A\">";
-echo "    <TH>Domain</TH>";
-echo "    <TH>Count</TH>";
-echo "    <TH>Size</TH>";
+echo "    <TH>" . __('domain41') . "</TH>";
+echo "    <TH>" . __('count41') . "</TH>";
+echo "    <TH>" . __('size41') . "</TH>";
 echo "   </TR>";
 
 for ($i = 0; $i < count($data); $i++) {

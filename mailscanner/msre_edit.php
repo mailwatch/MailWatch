@@ -94,7 +94,7 @@ if ($_SESSION['user_type'] != 'A') {
     $full_filename = MSRE_RULESET_DIR . "/" . $short_filename;
 
     if (!file_exists($full_filename)) {
-        die("File not found: " . $full_filename);
+        die(__('diefnf55') . " " . $full_filename);
     }
 
     // read the file into a variable, so that each function doesn't
@@ -131,12 +131,12 @@ function Show_Form($status_msg)
     // displays the form
     //
     // inputs:
-    //		status_msg		if there's anything in the status_msg variable,
-    //						it'll be printed below the header when the form
-    //						is displayed
+    // 		status_msg     		if there's anything in the status_msg variable,
+    // 						it'll be printed below the header when the form
+    // 						is displayed
     //
     // ouput:
-    //		displays the form
+    // 		displays the form
     //
 
     include("msre_function_global_vars.php");
@@ -764,6 +764,9 @@ function Read_File($filename, $size)
 }
 
 
+/**
+ * @param string $filename
+ */
 function Write_File($filename, $content)
 {
     // writes a file to $filename (which must include the full path!)

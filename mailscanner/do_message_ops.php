@@ -35,7 +35,7 @@ require_once(__DIR__ . '/filter.inc.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-$refresh = html_start("Operation Results");
+$refresh = html_start(__('opresult21'));
 
 echo '<table border="0" width="100%" class="maildetail">' . "\n";
 echo ' <tr>' . "\n";

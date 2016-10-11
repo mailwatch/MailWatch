@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Virus Report", 0, false, true);
+$filter = html_start(__('virusreport50'), 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
 $scanner = array();
@@ -130,7 +130,7 @@ ORDER BY
 
 $result = dbquery($sql);
 if (!mysql_num_rows($result) > 0) {
-    die("Error: no rows retrieved from database\n");
+    die(__('diemysql99') . "\n");
 }
 
 $virus_array = array();
@@ -171,16 +171,16 @@ while ((list($key, $val) = each($virus_array))) {
 // HTML Code
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
 echo "</TR>";
 echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"500\">";
+echo "<TABLE WIDTH=\"840\">";
 echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo "<TH>Virus</TH>";
-echo "<TH>Scanner</TH>";
-echo "<TH>First Seen</TH>";
-echo "<TH>Count</TH>";
+echo "<TH>" . __('virus50') . "</TH>";
+echo "<TH>" . __('scanner50') . "</TH>";
+echo "<TH>" . __('firstseen50') . "</TH>";
+echo "<TH>" . __('count50') . "</TH>";
 echo "</TR>";
 
 // Write the data in table

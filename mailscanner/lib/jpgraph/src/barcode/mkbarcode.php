@@ -5,7 +5,7 @@ require_once('jpgraph/jpgraph_barcode.php');
  // File:        MKBARCODE.PHP
  // Description: Comman line tool to generate linear barcodes
  // Created:     2009-06-20
- // Ver:         $Id: mkbarcode.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+ // Ver:         $Id: mkbarcode.php 1455 2009-07-03 18:52:25Z ljp $
  //
  // Copyright (c) Asial Corporation. All rights reserved.
  //=======================================================================
