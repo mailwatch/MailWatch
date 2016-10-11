@@ -80,7 +80,7 @@ if (is_writable(CACHE_DIR)) {
         $data[] = $row->count;
         $hostname = gethostbyaddr($row->clientip);
         if ($hostname == $row->clientip) {
-            $data_names[] = "(Hostname lookup failed)";
+            $data_names[] = __('hostfailed39');
         } else {
             $data_names[] = $hostname;
         }
@@ -88,7 +88,7 @@ if (is_writable(CACHE_DIR)) {
         if ($geoip = return_geoip_country($row->clientip)) {
             $data_geoip[] = $geoip;
         } else {
-            $data_geoip[] = "(GeoIP lookup failed)";
+            $data_geoip[] = __('geoipfailed39');
         }
         $data_virus[] = $row->total_viruses;
         $data_spam[] = $row->total_spam;

@@ -2099,7 +2099,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'clienthost':
                         $hostname = gethostbyaddr($row[$f]);
                         if ($hostname == $row[$f]) {
-                            $row[$f] = "(Hostname lookup failed)";
+                            $row[$f] = __('hostfailed03');
                         } else {
                             $row[$f] = $hostname;
                         }
