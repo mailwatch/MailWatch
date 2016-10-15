@@ -144,7 +144,8 @@ return array(
     'diequarantine203' => 'not found.',
     'diequarantine303' => 'Cannot open quarantine dir:',
     'diereadruleset03' => 'Cannot open MailScanner ruleset file',
-    
+    'hostfailed03' => '(Hostname lookup failed)',
+
     // 04-details.php
     'receivedon04' => 'Ontvangen op:',
     'receivedby04' => 'Ontvangen door:',
@@ -201,7 +202,10 @@ return array(
     'forget04' => 'Forget',
     'spamreport04' => 'As Spam+Report',
     'spamrevoke04' => 'As Ham+Revoke',
-    
+    'geoipfailed04' => '(GeoIP lookup failed)',
+    'reversefailed04' => '(Reverse Lookup Failed)',
+    'hostname04' => 'Hostname',
+
     // 05-status.php
     'recentmsg05' => 'Recente Emails',
     'last05' => 'Laaste',
@@ -557,21 +561,23 @@ return array(
     'viruses39' => 'Viruses',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
-    
+    'geoipfailed39' => '(GeoIP lookup failed)',
+    'hostfailed39' => '(Hostname lookup failed)',
+
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
     'top10recipdomqt40' => 'Top 10 Sender Domains by Volume',
     'domain40' => 'Domain',
     'count40' => 'Count',
     'size40' => 'Size',
-    
+
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Recipients Domains by Volume',
     'top10recipdomvol41' => 'Top 10 Recipient Domains by Volume',
     'domain41' => 'Domain',
     'count41' => 'Count',
     'size41' => 'Size',
-    
+
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Recipients by Quantity',
     'top10recipqt42' => 'Top 10 Recipients by Quantity',

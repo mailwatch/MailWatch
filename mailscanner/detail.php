@@ -132,7 +132,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $output = '<table width="100%" class="sa_rules_report">' . "\n";
             $output .= ' <tr>' . "\n";
             $output .= ' <th>' . __('ipaddress04') . '</th>' . "\n";
-            $output .= ' <th>Hostname</th>' . "\n";
+            $output .= ' <th>' . __('hostname04') . '</th>' . "\n";
             $output .= ' <th>' . __('country04') . '</th>' . "\n";
             $output .= ' <th>RBL</th>' . "\n";
             $output .= ' <th>Spam</th>' . "\n";
@@ -149,13 +149,13 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     if (($host = gethostbyaddr($relay)) <> $relay) {
                         $output .= " <td>$host</td>\n";
                     } else {
-                        $output .= " <td>(Reverse Lookup Failed)</td>\n";
+                        $output .= " <td>" . __('reversefailed04') . "</td>\n";
                     }
                     // Do GeoIP lookup on address
                     if ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
-                        $output .= ' <td>(GeoIP Lookup Failed)</td>' . "\n";
+                        $output .= ' <td>(' . __('geoipfailed04') . ')</td>' . "\n";
                     }
                     // Link to RBL Lookup
                     $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";

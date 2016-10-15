@@ -122,7 +122,6 @@ return array(
     'or03' => 'or',
     'mwfilterreport03' => 'MailWatch Filter Report:',
     'mwforms03' => 'MailWatch for Mailscanner - ',
-
     'dieerror03' => 'Error:',
     'dievirus03' => 'You are running MailWatch in distributed mode therefore MailWatch cannot read your MailScanner configuration files to acertain your primary virus scanner - please edit functions.php and manually set the VIRUS_REGEX constant for your primary scanner.',
     'diescanner03' => 'Unable to select a regular expression for your primary virus scanner ($scanner) - please see the examples in functions.php to create one.',
@@ -145,6 +144,7 @@ return array(
     'diequarantine203' => 'not found.',
     'diequarantine303' => 'Cannot open quarantine dir:',
     'diereadruleset03' => 'Cannot open MailScanner ruleset file',
+    'hostfailed03' => '(Hostname lookup failed)',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -202,6 +202,9 @@ return array(
     'forget04' => 'Forget',
     'spamreport04' => 'As Spam+Report',
     'spamrevoke04' => 'As Ham+Revoke',
+    'geoipfailed04' => '(GeoIP lookup failed)',
+    'reversefailed04' => '(Reverse Lookup Failed)',
+    'hostname04' => 'Hostname',
 
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
@@ -559,6 +562,8 @@ return array(
     'viruses39' => 'Viruses',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
+    'geoipfailed39' => '(GeoIP lookup failed)',
+    'hostfailed39' => '(Hostname lookup failed)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',

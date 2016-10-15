@@ -144,6 +144,7 @@ return array(
     'diequarantine203' => 'non trouvé.',
     'diequarantine303' => 'Impossible d\'ouvrir le répertoire de quarantaine :',
     'diereadruleset03' => 'Impossible d\'ouvrir le fichier de règle MailScanner',
+    'hostfailed03' => '(Nom d\'hôte indéfini)',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -201,6 +202,9 @@ return array(
     'forget04' => 'Oublier',
     'spamreport04' => 'Comme Spam+Rapport',
     'spamrevoke04' => 'Comme Légitime+Retirez',
+    'geoipfailed04' => '(Pas de réponse de GeoIP)',
+    'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
+    'hostname04' => 'Nom d\'hôte',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
@@ -557,6 +561,8 @@ return array(
     'viruses39' => 'Virus',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
+    'geoipfailed39' => '(Pas de réponse de GeoIP)',
+    'hostfailed39' => '(Nom d\'hôte indéfini)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',

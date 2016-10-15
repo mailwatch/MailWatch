@@ -144,6 +144,7 @@ return array(
     'diequarantine203' => 'not found.',
     'diequarantine303' => 'Cannot open quarantine dir:',
     'diereadruleset03' => 'Cannot open MailScanner ruleset file',
+    'hostfailed03' => '(Hostname lookup failed)',
 
     // 04-details.php
     'receivedon04' => 'Ricevuto il:',
@@ -201,6 +202,9 @@ return array(
     'forget04' => 'Forget',
     'spamreport04' => 'As Spam+Report',
     'spamrevoke04' => 'As Ham+Revoke',
+    'geoipfailed04' => '(GeoIP lookup failed)',
+    'reversefailed04' => '(Reverse Lookup Failed)',
+    'hostname04' => 'Hostname',
     
     // 05-status.php
     'recentmsg05' => 'Messaggi Recenti',
@@ -557,6 +561,8 @@ return array(
     'viruses39' => 'Viruses',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
+    'geoipfailed39' => '(GeoIP lookup failed)',
+    'hostfailed39' => '(Hostname lookup failed)',
     
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
