@@ -162,7 +162,7 @@ switch (true) {
 }
 
 // Submitted
-if ($url_submit == __('add07')) {
+if ($url_submit == htmlentities(__('add07'))) {
     // Check input is valid
     if (empty($url_list)) {
         $errors[] = "You must select a list to create the entry.";

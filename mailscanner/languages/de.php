@@ -128,6 +128,7 @@ return array(
     'from06' => 'Von:',
     'to06' => 'An:',
     'subject06' => 'Betreff:',
+	
     // Added in 2015-06-22
 
     // 03-functions.php
@@ -179,8 +180,15 @@ return array(
     // 10-other.php
     'tools10' => 'Werkzeuge',
     'usermgnt10' => 'Benutzerverwaltung',
+	'avsophosstatus10' => 'Sophos Status',
+    'avfsecurestatus10' => 'F-Secure Status',
+    'avclamavstatus10' => 'ClamAV Status',
+    'avmcafeestatus10' => 'McAfee Status',
+    'avfprotstatus10' => 'F-Prot Status',
+    'mysqldatabasestatus10' => 'MySQL Datenbank Status',    
     'viewconfms10' => 'MailScanner Einstellungen betrachten',
     'editmsrules10' => 'MailScanner Regeln bearbeiten',
+    'spamassassinbayesdatabaseinfo10' => 'SpamAssassin Bayes Datenbank Info',
     'updatesadesc10' => 'Aktualisiere die Beschreibungen der SpamAssassin Regeln',
     'updatemcpdesc10' => 'Aktualisiere die Beschreibungen der MCP Regeln',
     'updategeoip10' => 'Aktualisiere die GeoIP Datenbank',
@@ -224,6 +232,16 @@ return array(
     'reset12' => 'Zurücksetzen',
     'areusuredel12' => 'Soll der Benutzer tatsächlich gelöscht werden',
     'errorpass12' => 'Passwörter stimmen nicht überein',
+
+	// Added in 2015-06-25
+    // 03-funtions.php
+    'footer01' => 'MailWatch für MailScanner v',
+
+    // 08-quarantine.php
+    'input01' => 'Jetzt ausführen',
+
+    // 13-sa_rules_update.php
+    'folder_0308' => 'Quarantäne Ordner',
 
     // 99 - General
     'i18_missing' => 'Keine deutsche Übersetzung',
