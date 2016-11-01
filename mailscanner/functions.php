@@ -1477,7 +1477,7 @@ function get_conf_include_folder()
             // expand %var% variables
             if (preg_match("/(%[^%]+%)/", $regs['value'], $matches)) {
                 array_shift($matches);
-                foreach ( $matches as  $varname ) {
+                foreach ($matches as $varname) {
                     $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
                 }
             }
@@ -1529,7 +1529,7 @@ function parse_conf_file($name)
             // expand %var% variables
             if (preg_match("/(%[^%]+%)/", $regs['value'], $matches)) {
                 array_shift($matches);
-                foreach ( $matches as  $varname ) {
+                foreach ($matches as $varname) {
                     $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
                 }
             }
