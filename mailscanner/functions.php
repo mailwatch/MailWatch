@@ -1475,8 +1475,11 @@ function get_conf_include_folder()
                 $var[$regs['name']] = $regs['value'];
             }
             // expand %var% variables
-            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
-                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
+            if (preg_match("/(%[^%]+%)/", $regs['value'], $matches)) {
+                array_shift($matches);
+                foreach ($matches as $varname) {
+                    $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
+                }
             }
             if ((strtolower($regs[1])) == (strtolower($name))) {
                 fclose($fh) or die($php_errormsg);
@@ -1524,8 +1527,11 @@ function parse_conf_file($name)
             }
 
             // expand %var% variables
-            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
-                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
+            if (preg_match("/(%[^%]+%)/", $regs['value'], $matches)) {
+                array_shift($matches);
+                foreach ($matches as $varname) {
+                    $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
+                }
             }
 
             // Remove any html entities from the code
