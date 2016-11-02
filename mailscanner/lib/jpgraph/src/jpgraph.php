@@ -3,7 +3,7 @@
 // File:        JPGRAPH.PHP
 // Description: PHP Graph Plotting library. Base module.
 // Created:     2001-01-08
-// Ver:         $Id: jpgraph.php,v 1.5 2011/12/14 18:21:28 lorodoes Exp $
+// Ver:         $Id: jpgraph.php 1924 2010-01-11 14:03:26Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================
@@ -18,12 +18,8 @@ require_once('jpgraph_legend.inc.php');
 require_once('jpgraph_theme.inc.php');
 require_once('gd_image.inc.php');
 
-//Set timezone
-$timezone = "".TIME_ZONE."";
-date_default_timezone_set($timezone);
-
 // Version info
-define('JPG_VERSION','3.5.0b1');
+define('JPG_VERSION','4.0.1');
 
 // Minimum required PHP version
 define('MIN_PHPVERSION','5.1.0');
@@ -235,13 +231,16 @@ function CheckPHPVersion($aMinVersion) {
     list($majorC, $minorC, $editC) = preg_split('/[\/.-]/', PHP_VERSION);
     list($majorR, $minorR, $editR) = preg_split('/[\/.-]/', $aMinVersion);
 
-    if ($majorC != $majorR) return false;
     if ($majorC < $majorR) return false;
-    // same major - check minor
-    if ($minorC > $minorR) return true;
-    if ($minorC < $minorR) return false;
-    // and same minor
-    if ($editC  >= $editR)  return true;
+
+    if ($majorC == $majorR) {
+        if($minorC < $minorR) return false;
+
+        if($minorC == $minorR){
+            if($editC < $editR) return false;
+        }
+    }
+
     return true;
 }
 
@@ -4485,7 +4484,7 @@ class LinearTicks extends Ticks {
         // If precision hasn't been specified set it to a sensible value
         if( $this->precision==-1 ) {
             $t = log10($this->minor_step);
-            if( $t > 0 ) {
+            if( $t > 0 || $t === 0.0) {
                 $precision = 0;
             }
             else {

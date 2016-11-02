@@ -84,7 +84,7 @@ function rpc_get_quarantine($msg)
         }
         return new xmlrpcresp(new xmlrpcval($output, 'array'));
     } else {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($input) . " mismatch expected type.");
+        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($input) . " " . __('paratype260'));
     }
 }
 
@@ -118,11 +118,11 @@ function rpc_return_quarantined_file($msg)
     $quarantinedir = get_conf_var('QuarantineDir');
     switch (true) {
         case(!is_string($file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($file) . " mismatch expected type.");
+            return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($file) . " " . __('paratyper260'));
         case(!is_file($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file is not a file.");
+            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$" . __('notfile60'));
         case(!is_readable($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file: permission denied.");
+            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file" . __('colon99') . " " . __('permdenied60'));
         default:
             $output = base64_encode(file_get_contents($quarantinedir . '/' . $file));
             break;
@@ -135,7 +135,7 @@ function rpc_quarantine_list_items($msg)
     global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (!is_string($input)) {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($input) . " mismatch expected type.");
+        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($input) . " " . __('paratyper260'));
     }
     $return = quarantine_list_items($input);
     $output = array();
@@ -189,7 +189,7 @@ function rpc_get_conf_var($msg)
     if (is_string($input)) {
         return new xmlrpcresp(new xmlrpcval(get_conf_var($input), 'string'));
     } else {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, "Parameter type " . gettype($input) . " mismatch expected type.");
+        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($input) . " " . __('paratype260'));
     }
 }
 
@@ -311,6 +311,6 @@ if (is_rpc_client_allowed()) {
     $s->service();
 } else {
     global $xmlrpcerruser;
-    $output = new xmlrpcresp(0, $xmlrpcerruser + 1, "Client {$_SERVER['SERVER_ADDR']} is not authorized to connect.");
+    $output = new xmlrpcresp(0, $xmlrpcerruser + 1, __('client160') ." {$_SERVER['SERVER_ADDR']} " . __('client260'));
     print $output->serialize();
 }

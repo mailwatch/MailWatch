@@ -39,7 +39,7 @@ require(__DIR__ . '/login.function.php');
 if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
 } else {
-    html_start("McAfee Status", 0, false, false);
+    html_start(__('mcafeestatus25'), 0, false, false);
 
     echo '<table class="boxtable" width="100%">' . "\n";
     echo '<tr>' . "\n";

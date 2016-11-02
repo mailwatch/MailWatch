@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Top Viruses", 0, false, true);
+$filter = html_start(__('topvirus48'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/top_viruses.png." . time();
@@ -66,7 +66,7 @@ if (is_writable(CACHE_DIR)) {
     // Must be one or more rows
     $result = dbquery($sql);
     if (mysql_num_rows($result) <= 0) {
-        die("Error: no rows retrieved from database..." . mysql_num_rows($result) . "\n");
+        die(__('dienorow48') . mysql_num_rows($result) . "\n");
     }
 
     $virus_array = array();
@@ -95,16 +95,16 @@ if (is_writable(CACHE_DIR)) {
     }
 
     // Graphing code
-    $graph = new PieGraph(800, 385, 0, false);
+    $graph = new PieGraph(850, 385, 0, false);
     $graph->SetShadow();
     $graph->img->SetAntiAliasing();
-    $graph->title->Set("Top 10 Viruses");
+    $graph->title->Set(__('top10virus48'));
 
     $p1 = new PiePlot3d($data);
     $p1->SetTheme('sand');
     $p1->SetLegends($data_names);
 
-    $p1->SetCenter(0.70, 0.4);
+    $p1->SetCenter(0.75, 0.4);
     $graph->legend->SetLayout(LEGEND_VERT);
     $graph->legend->Pos(0.25, 0.20, 'center');
 
@@ -120,7 +120,7 @@ if (is_writable(CACHE_DIR)) {
 // HTML to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
 echo "</TR>";
 echo "<TR>";
 
@@ -130,10 +130,10 @@ if ($graphok === true) {
     if (is_readable($filename)) {
         echo '<IMG SRC="' . $filename . '" ALT="Graph">';
     } else {
-        echo "File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+        echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
     }
 } else {
-    echo "Not enough data to generate a graph.";
+    echo __('nodata48');
 }
 echo '</TD>';
 echo "</TR>";
@@ -141,8 +141,8 @@ echo "<TR>";
 echo " <TD ALIGN=\"CENTER\">";
 echo "  <TABLE WIDTH=\"500\">";
 echo "   <TR style=\"background-color: #f7ce4a\">";
-echo "    <TH>Virus</TH>";
-echo "    <TH>Count</TH>";
+echo "    <TH>" . __('virus48') . "</TH>";
+echo "    <TH>" . __('count48') . "</TH>";
 echo "   </TR>";
 
 // Write the data out

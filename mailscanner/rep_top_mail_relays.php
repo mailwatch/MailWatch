@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Top Mail Relays", 0, false, true);
+$filter = html_start(__('topmailrelays39'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/top_mail_relays.png." . time();
@@ -71,7 +71,7 @@ if (is_writable(CACHE_DIR)) {
 
     $result = dbquery($sql);
     if (!mysql_num_rows($result) > 0) {
-        die("Error: no rows retrieved from database\n");
+        die(__('diemysql99') . "\n");
     }
 
     $relay_array = array();
@@ -80,7 +80,7 @@ if (is_writable(CACHE_DIR)) {
         $data[] = $row->count;
         $hostname = gethostbyaddr($row->clientip);
         if ($hostname == $row->clientip) {
-            $data_names[] = "(Hostname lookup failed)";
+            $data_names[] = __('hostfailed39');
         } else {
             $data_names[] = $hostname;
         }
@@ -88,7 +88,7 @@ if (is_writable(CACHE_DIR)) {
         if ($geoip = return_geoip_country($row->clientip)) {
             $data_geoip[] = $geoip;
         } else {
-            $data_geoip[] = "(GeoIP lookup failed)";
+            $data_geoip[] = __('geoipfailed39');
         }
         $data_virus[] = $row->total_viruses;
         $data_spam[] = $row->total_spam;
@@ -98,7 +98,7 @@ if (is_writable(CACHE_DIR)) {
     $graph = new PieGraph(800, 385, 0, false);
     $graph->SetShadow();
     $graph->img->SetAntiAliasing();
-    $graph->title->Set("Top 10 Mail Relays");
+    $graph->title->Set(__('top10mailrelays39'));
     //$graph->legend->SetLayout(LEGEND_HOR);
     $graph->legend->Pos(0.52, 0.87, 'center');
 
@@ -118,7 +118,7 @@ if (is_writable(CACHE_DIR)) {
 // HTML code to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
 echo "</TR>";
 echo "<TR>";
 
@@ -126,7 +126,7 @@ echo "<TR>";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 echo "</TR>";
@@ -134,13 +134,13 @@ echo "<TR>";
 echo "<TD ALIGN=\"CENTER\">";
 echo "<TABLE WIDTH=\"500\">";
 echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo "    <TH>Hostname</TH>";
-echo "    <TH>IP Address</TH>";
-echo "    <TH>Country</TH>";
-echo "    <TH>Messages</TH>";
-echo "    <TH>Viruses</TH>";
-echo "    <TH>Spam</TH>";
-echo "    <TH>Volume</TH>";
+echo "    <TH>" . __('hostname39') . "</TH>";
+echo "    <TH>" . __('ipaddresses39') . "</TH>";
+echo "    <TH>" . __('country39') . "</TH>";
+echo "    <TH>" . __('messages39') . "</TH>";
+echo "    <TH>" . __('viruses39') . "</TH>";
+echo "    <TH>" . __('spam39') . "</TH>";
+echo "    <TH>" . __('volume39') . "</TH>";
 echo "   </TR>";
 
 for ($i = 0; $i < count($data_names); $i++) {

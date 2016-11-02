@@ -3,7 +3,7 @@
  // File:        JPGRAPH_WINDROSE.PHP
  // Description: Windrose extension for JpGraph
  // Created:     2003-09-17
- // Ver:         $Id: jpgraph_windrose.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+ // Ver:         $Id: jpgraph_windrose.php 1928 2010-01-11 19:56:51Z ljp $
  //
  // Copyright (c) Asial Corporation. All rights reserved.
  //========================================================================

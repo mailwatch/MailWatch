@@ -67,6 +67,9 @@ class syslog_parser
         'Dec' => '12'
     );
 
+    /**
+     * @param string $line
+     */
     public function syslog_parser($line)
     {
 
@@ -104,6 +107,9 @@ class sendmail_parser
     public $entry;
     public $entries;
 
+    /**
+     * @param string $line
+     */
     public function sendmail_parser($line)
     {
         $this->raw = $line;
@@ -159,6 +165,9 @@ class sendmail_parser
     }
 }
 
+/**
+ * @return string
+ */
 function get_ip($line)
 {
     if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $line, $match)) {
@@ -168,6 +177,9 @@ function get_ip($line)
     }
 }
 
+/**
+ * @return string
+ */
 function get_email($line)
 {
     if (preg_match('/<(\S+)>/', $line, $match)) {

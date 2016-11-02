@@ -3,13 +3,13 @@
  // File:  		 JPGRAPH_LINE.PHP
  // Description: Line plot extension for JpGraph
  // Created:  	 2001-01-08
- // Ver:  		 $Id: jpgraph_line.php,v 1.5 2011/12/14 19:25:53 lorodoes Exp $
+ // Ver:  		 $Id: jpgraph_line.php 1921 2009-12-11 11:46:39Z ljp $
  //
  // Copyright (c) Asial Corporation. All rights reserved.
  //========================================================================
  */
 
-require_once('jpgraph_plotmark.inc.php');
+require_once ('jpgraph_plotmark.inc.php');
 
 // constants for the (filled) area
 DEFINE("LP_AREA_FILLED", true);

@@ -36,38 +36,38 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("GeoIP Database Update", 0, false, false);
+html_start(__('geoipupdate15'), 0, false, false);
 
 if (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">
-	 <input type="hidden" name="run" value="true">
-	 <table class="boxtable" width="100%">
+            <input type="hidden" name="run" value="true">
+            <table class="boxtable" width="100%">
             <tr><th>';
-    echo __('updategeoip10');
+    echo __('updategeoip15');
     echo '</th></tr>
-	    <tr>
-	        <td>
+               <tr>
+                   <td>
                     <br>
-	            This utility is used to download the GeoIP database files (which are updated on the first Tuesday of each month) from <a href="http://dev.maxmind.com/geoip/legacy/geolite/" target="_maxmind">MaxMind</a> which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.<br><br>
-	        </td>
-	    </tr>
-	    <tr>
-	        <td align="center"><br><input type="SUBMIT" value="Run Now"><br><br></td>
-	    </tr>
-	 </table>
-	 </form>' . "\n";
+                       ' . __('message115') . ' <a href="http://dev.maxmind.com/geoip/legacy/geolite/" target="_maxmind">MaxMind</a> ' . __('message215') . '<br><br>
+                   </td>
+               </tr>
+               <tr>
+                   <td align="center"><br><input type="SUBMIT" value="' . __('input15') . '"><br><br></td>
+               </tr>
+            </table>
+            </form>' . "\n";
 } else {
     require_once(__DIR__ . '/lib/request/Requests.php');
     Requests::register_autoloader();
 
     ob_start();
-    echo 'Downloading file, please wait....<br>' . "\n";
+    echo __('downfile15') . '<br>' . "\n";
 
     $files_base_url = 'http://geolite.maxmind.com';
-    $files['ipv4']['description'] = 'GeoIP IPv4 data file';
+    $files['ipv4']['description'] = __('geoipv415');
     $files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
     $files['ipv4']['destination'] = __DIR__ . '/temp/GeoIP.dat.gz';
-    $files['ipv6']['description'] = 'GeoIP IPv6 data file';
+    $files['ipv6']['description'] =  __('geoipv615');
     $files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
     $files['ipv6']['destination'] = __DIR__ . '/temp/GeoIPv6.dat.gz';
 
@@ -113,7 +113,7 @@ if (!isset($_POST['run'])) {
                             $requestSession->options['proxy']['type'] = 'SOCKS5';
                             break;
                         default:
-                            die('Proxy type should be either "HTTP" or "SOCKS5", check your configuration file');
+                            die(__('dieproxy15'));
                     }
                 }
 
@@ -122,17 +122,17 @@ if (!isset($_POST['run'])) {
                         $requestSession->filename = $file['destination'];
                         $result = $requestSession->get($file['path']);
                         if ($result->success === true) {
-                            echo $file['description'] . ' successfully downloaded<br>' . "\n";
+                            echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                         }
                     } catch (Requests_Exception $e) {
-                        echo 'Error occurred while downloading ' . $file['description'] . ': ' . $e->getMessage() . "<br>\n";
+                        echo __('downbad15') . ' ' . $file['description'] . ': ' . $e->getMessage() . "<br>\n";
                     }
 
                     ob_flush();
                     flush();
                 }
 
-                echo 'Download complete, unpacking files...<br>' . "\n";
+                echo __('downokunpack15') . '<br>' . "\n";
                 ob_flush();
                 flush();
             } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
@@ -150,14 +150,14 @@ if (!isset($_POST['run'])) {
                     exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
                         $output_wget, $retval_wget);
                     if ($retval_wget > 0) {
-                        echo 'Error occurred while downloading ' . $file['description'] . "<br>\n";
+                        echo __('downbad15') . ' ' . $file['description'] . "<br>\n";
                     } else {
-                        echo $file['description'] . ' successfully downloaded<br>' . "\n";
+                        echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                     }
                 }
             } else {
-                $error_message = "Unable to download GeoIP data file (tried CURL and fsockopen).<br>\n";
-                $error_message .= "Install either cURL extension (preferred) or enable fsockopen in your php.ini";
+                $error_message = __('message315') . "<br>\n";
+                $error_message .= __('message415');
                 die($error_message);
             }
             // Extract files
@@ -171,7 +171,7 @@ if (!isset($_POST['run'])) {
                     }
                     gzclose($zp_gz);
                     fclose($targetFile);
-                    echo $file['description'] . ' successfully unpacked<br>' . "\n";
+                    echo $file['description'] . ' ' . __('unpackok15') . '<br>' . "\n";
                     unlink($file['destination']);
                     ob_flush();
                     flush();
@@ -180,29 +180,29 @@ if (!isset($_POST['run'])) {
                 foreach ($files as $file) {
                     exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
                     if ($retval_gunzip > 0) {
-                        die('Unable to extract' . $file['description'] . "<br>\n");
+                        die(__('extractnotok15') . $file['description'] . "<br>\n");
                     } else {
-                        echo $file['description'] . ' successfully extracted<br>' . "\n";
+                        echo $file['description'] . ' ' . __('extractok15') . '<br>' . "\n";
                     }
                 }
             } else {
                 // unable to extract the file correctly
-                $error_message = "Unable to extract GeoIP data file.<br>\n";
-                $error_message .= "Enable Zlib in your PHP installation or install gunzip executable";
+                $error_message = __('message515') . "<br>\n";
+                $error_message .= __('message615');
                 die($error_message);
             }
 
-            echo 'Process completed!' . "\n";
+            echo __('processok') . "\n";
             ob_flush();
             flush();
             audit_log('Ran GeoIP update');
         } else {
             // unable to read or write to the directory
-            die("Unable to read or write to the " . $extract_dir . " directory.\n");
+            die(__('norread15') . " " . $extract_dir . " " . __('directory15') . ".\n");
         }
     } else {
-        $error_message = "Files still exist for some reason.<br>\n";
-        $error_message .= "Delete them manually from $extract_dir";
+        $error_message = __('message715') . "<br>\n";
+        $error_message .= __('message815') . " $extract_dir";
         die($error_message);
     }
 }

@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("SpamAssassin Rule Hits", 0, false, true);
+$filter = html_start(__('sarulehits37'), 0, false, true);
 
 $sql = "
  SELECT
@@ -53,7 +53,7 @@ $sql = "
 
 $result = dbquery($sql);
 if (!mysql_num_rows($result) > 0) {
-    die("Error: no rows retrieved from database\n");
+    die(__('diemysql99') . "\n");
 }
 
 // Initialise the array
@@ -117,19 +117,19 @@ reset($sa_array);
 arsort($sa_array);
 
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo "<TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD></TR>";
+echo "<TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD></TR>";
 echo "<TR><TD ALIGN=\"CENTER\">";
 
 echo "<TABLE CLASS=\"boxtable\" ALIGN=\"CENTER\" BORDER=\"0\">\n";
 echo "
 <TR BGCOLOR=\"#F7CE4A\">
- <TH>Rule</TH>
- <TH>Description</TH>
- <TH>Score</TH>
- <TH>Total</TH>
- <TH>Ham</TH>
+ <TH>" . __('rule37') . "</TH>
+ <TH>" . __('desc37') . "</TH>
+ <TH>" . __('score37') . "</TH>
+ <TH>" . __('total37') . "</TH>
+ <TH>" . __('ham37') . "</TH>
  <TH>%</TH>
- <TH>Spam</TH>
+ <TH>" . __('spam37') . "</TH>
  <TH>%</TH>
 </TR>\n";
 

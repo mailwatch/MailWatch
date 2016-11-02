@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("SpamAssassin Score Distribution", 0, false, true);
+$filter = html_start(__('sascoredist38'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/sa_score_dist.png." . time();
@@ -72,7 +72,7 @@ if (is_writable(CACHE_DIR)) {
     // ##### AJOS1 NOTE #####
     $result = dbquery($sql);
     if (mysql_num_rows($result) <= 1) {
-        die("Error: Needs 2 or more rows of data to be retrieved from database\n");
+        die(__('die38') . "\n");
     }
 
     while ($row = mysql_fetch_object($result)) {
@@ -93,11 +93,11 @@ if (is_writable(CACHE_DIR)) {
     $graph->SetShadow();
     $graph->SetScale("textlin");
     $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set("SpamAssassin Score Distribution");
-    $graph->xaxis->title->Set("Score (rounded)");
+    $graph->title->Set(__('sascoredist38'));
+    $graph->xaxis->title->Set(__('scorerounded38'));
     $graph->xaxis->SetTextLabelInterval($labelinterval);
     $graph->xaxis->SetTickLabels($data_labels);
-    $graph->yaxis->title->Set("No. of messages");
+    $graph->yaxis->title->Set(__('nbmessage38'));
     $graph->yaxis->SetTitleMargin(30);
     $graph->yaxis->title->SetMargin(20);
     $graph->legend->SetLayout(LEGEND_HOR);
@@ -112,14 +112,14 @@ if (is_writable(CACHE_DIR)) {
 }
 
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD></TR>";
+echo " <TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD></TR>";
 echo " <TR>\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 echo " </TR>\n";
@@ -127,8 +127,8 @@ echo " <TR>\n";
 echo "  <TD ALIGN=\"CENTER\">\n";
 echo "<TABLE BORDER=\"0\" WIDTH=\"500\">\n";
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo "  <TH>Score</TH>\n";
-echo "  <TH>Count</TH>\n";
+echo "  <TH>" . __('score38') . "</TH>\n";
+echo "  <TH>" . __('count38') . "</TH>\n";
 echo " </TR>\n";
 
 for ($i = 0; $i < count($data_count); $i++) {

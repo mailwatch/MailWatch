@@ -3,7 +3,7 @@
 // File:        JPGRAPH_MESHINTERPOLATE.INC.PHP
 // Description: Utility class to do mesh linear interpolation of a matrix
 // Created:     2009-03-09
-// Ver:         $Id: jpgraph_meshinterpolate.inc.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+// Ver:         $Id: jpgraph_meshinterpolate.inc.php 1709 2009-07-30 08:00:08Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================
