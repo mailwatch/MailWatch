@@ -566,7 +566,7 @@ return array(
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
-    'top10recipdomqt40' => 'Top 10 Sender Domains by Volume',
+    'top10recipdomqt40' => 'Top 10 Recipients Domains by Volume',
     'domain40' => 'Domain',
     'count40' => 'Count',
     'size40' => 'Size',
