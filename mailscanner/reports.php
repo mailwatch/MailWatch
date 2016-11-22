@@ -39,14 +39,14 @@ require(__DIR__ . '/login.function.php');
 
 // Checking to see if there are any filters
 if (!isset($_SESSION["filter"]) || !is_object($_SESSION["filter"])) {
-    $filter = new Filter;
+    $filter = new Filter();
     $_SESSION["filter"] = $filter;
 } else {
     $filter = $_SESSION["filter"];
 }
 
 // add the header information such as the logo, search, menu, ....
-html_start("Reports", "0", false, false);
+html_start(__('reports14'), "0", false, false);
 
 // Add filters and save them
 if (isset($_GET["action"])) {
@@ -84,37 +84,37 @@ if (isset($_GET["action"])) {
 // add the session filters to the variables
 $_SESSION["filter"] = $filter;
 
-$filter->AddReport("rep_message_listing.php", "Message Listing");
-$filter->AddReport("rep_message_ops.php", "Message Operations");
+$filter->AddReport("rep_message_listing.php", __('messlisting14'));
+$filter->AddReport("rep_message_ops.php", __('messop14'));
 
-$filter->AddReport("rep_total_mail_by_date.php", "Total Messages by Date");
-$filter->AddReport("rep_top_mail_relays.php", "Top Mail Relays");
+$filter->AddReport("rep_total_mail_by_date.php", __('messdate14'));
+$filter->AddReport("rep_top_mail_relays.php", __('topmailrelay14'));
 
-$filter->AddReport("rep_top_viruses.php", "Top Viruses");
-$filter->AddReport("rep_viruses.php", "Virus Report");
+$filter->AddReport("rep_top_viruses.php", __('topvirus14'));
+$filter->AddReport("rep_viruses.php", __('virusrepor14'));
 
-$filter->AddReport("rep_top_senders_by_quantity.php", "Top Senders by Quantity");
-$filter->AddReport("rep_top_senders_by_volume.php", "Top Senders by Volume");
-$filter->AddReport("rep_top_recipients_by_quantity.php", "Top Recipients by Quantity");
-$filter->AddReport("rep_top_recipients_by_volume.php", "Top Recipients by Volume");
+$filter->AddReport("rep_top_senders_by_quantity.php", __('topsendersqt14'));
+$filter->AddReport("rep_top_senders_by_volume.php", __('topsendersvol14'));
+$filter->AddReport("rep_top_recipients_by_quantity.php", __('toprecipqt14'));
+$filter->AddReport("rep_top_recipients_by_volume.php", __('toprecipvol14'));
 
-//$filter->AddReport("rep_mrtg_style.php","MRTG Style Report");
+//$filter->AddReport("rep_mrtg_style.php","__('mrtgreport14'));
 
-$filter->AddReport("rep_top_sender_domains_by_quantity.php", "Top Sender Domains by Quantity");
-$filter->AddReport("rep_top_sender_domains_by_volume.php", "Top Sender Domains by Volume");
-$filter->AddReport("rep_top_recipient_domains_by_quantity.php", "Top Recipient Domains by Quantity");
-$filter->AddReport("rep_top_recipient_domains_by_volume.php", "Top Recipient Domains by Volume");
+$filter->AddReport("rep_top_sender_domains_by_quantity.php", __('topsendersdomqt14'));
+$filter->AddReport("rep_top_sender_domains_by_volume.php", __('topsendersdomvol14'));
+$filter->AddReport("rep_top_recipient_domains_by_quantity.php", __('toprecipdomqt14'));
+$filter->AddReport("rep_top_recipient_domains_by_volume.php", __('toprecipdomvol14'));
 
 if (get_conf_truefalse('UseSpamAssassin') === true) {
-    $filter->AddReport("rep_sa_score_dist.php", "SpamAssassin Score Distribution");
-    $filter->AddReport("rep_sa_rule_hits.php", "SpamAssassin Rule Hits");
+    $filter->AddReport("rep_sa_score_dist.php", __('assassinscoredist14'));
+    $filter->AddReport("rep_sa_rule_hits.php", __('assassinrulhit14'));
 }
 if (get_conf_truefalse('MCPChecks') === true) {
-    $filter->AddReport("rep_mcp_score_dist.php", "MCP Score Distribution");
-    $filter->AddReport("rep_mcp_rule_hits.php", "MCP Rule Hits");
+    $filter->AddReport("rep_mcp_score_dist.php", __('mcpscoredist14'));
+    $filter->AddReport("rep_mcp_rule_hits.php", __('mcprulehit14'));
 }
 
-$filter->AddReport("rep_audit_log.php", "Audit Log");
+$filter->AddReport("rep_audit_log.php", __('auditlog14'));
 $filter->Display();
 
 clear_cache_dir();

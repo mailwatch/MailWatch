@@ -42,15 +42,15 @@ if ($_SESSION['user_type'] != 'A') {
     header("Location: index.php");
 } else {
     // add the header information such as the logo, search, menu, ....
-    $filter = html_start("Audit Log", 0, false, true);
+    $filter = html_start(__('auditlog33'), 0, false, true);
 
     // SQL query for the audit log
     $sql = "
  SELECT
-  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS 'Date/Time',
-  b.fullname AS 'User',
-  a.ip_address AS 'IP Address',
-  a.action AS 'Action'
+  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS '" . __('datetime33') . "',
+  b.fullname AS '" . __('user33') . "',
+  a.ip_address AS '" . __('ipaddress33') . "',
+  a.action AS '" . __('action33') . "'
  FROM
   audit_log a,
   users b
@@ -61,11 +61,11 @@ if ($_SESSION['user_type'] != 'A') {
 " . $filter->CreateMtalogSQL() . "
  ORDER BY timestamp DESC";
     echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="MailScanner Logo"></td></tr>
+ <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' .  __('mslogo99') . '"></td></tr>
  <tr><td>' . "\n";
 
     // Function to to query and display the data
-    dbtable($sql, "Audit Log", true);
+    dbtable($sql, __('auditlog33'), true);
 
     // close off the table
     echo '</td></tr>

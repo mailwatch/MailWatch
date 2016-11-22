@@ -4,7 +4,7 @@
 // Description: Special localization file with the same error messages
 //              for all errors.
 // Created: 	2006-02-18
-// Ver:		$Id: prod.inc.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+// Ver:		$Id: prod.inc.php 1886 2009-10-01 23:30:16Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================

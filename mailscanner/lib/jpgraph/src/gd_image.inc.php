@@ -3,7 +3,7 @@
 // File:        GD_IMAGE.INC.PHP
 // Description: PHP Graph Plotting library. Low level image drawing routines
 // Created:     2001-01-08, refactored 2008-03-29
-// Ver:         $Id: gd_image.inc.php,v 1.7.10.1 2012/04/22 17:27:15 lorodoes Exp $
+// Ver:         $Id: gd_image.inc.php 1922 2010-01-11 11:42:50Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================
@@ -102,8 +102,13 @@ class Image {
 
     // Should we use anti-aliasing. Note: This really slows down graphics!
     function SetAntiAliasing($aFlg=true) {
-      
-      
+        $this->use_anti_aliasing = $aFlg;
+        if( function_exists('imageantialias') ) {
+            imageantialias($this->img,$aFlg);
+        }
+        else {
+            JpGraphError::RaiseL(25128);//('The function imageantialias() is not available in your PHP installation. Use the GD version that comes with PHP and not the standalone version.')
+        }
     }
 
     function GetAntiAliasing() {
@@ -1655,15 +1660,24 @@ class Image {
     }
 
     // Stream image to browser or to file
-    function Stream($aFile="") {
+    function Stream($aFile=NULL) {
         $this->DoSupersampling();
 
         $func="image".$this->img_format;
         if( $this->img_format=="jpeg" && $this->quality != null ) {
             $res = @$func($this->img,$aFile,$this->quality);
-        }
+			
+			if(!$res){
+				if($aFile != NULL){	
+                    JpGraphError::RaiseL(25107,$aFile);//("Can't write to file '$aFile'. Check that the process running PHP has enough permission.");
+				}else{
+                    JpGraphError::RaiseL(25108);//("Can't stream image. This is most likely due to a faulty PHP/GD setup. Try to recompile PHP and use the built-in GD library that comes with PHP.");
+				}
+		
+			}
+		}
         else {
-            if( $aFile != "" ) {
+            if( $aFile != NULL ) {
                 $res = @$func($this->img,$aFile);
                 if( !$res ) {
                     JpGraphError::RaiseL(25107,$aFile);//("Can't write to file '$aFile'. Check that the process running PHP has enough permission.");

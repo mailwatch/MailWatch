@@ -82,15 +82,15 @@ function simple_html_result($status)
 }
 
 if (!isset($_GET['id'])) {
-    die("Error: No Message ID");
+    die(__('dienoid57'));
 }
 if (!isset($_GET['action'])) {
-    die("Error: No action");
+    die(__('dienoaction57'));
 }
 
 $list = quarantine_list_items(sanitizeInput($_GET['id']));
 if (count($list) == 0) {
-    die("Error: Message not found in quarantine");
+    die(__('diemnf57'));
 }
 
 switch ($_GET['action']) {
@@ -162,7 +162,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die("Unknown action: " . sanitizeInput($_GET['action']));
+        die(__('dieuaction57') . " " . sanitizeInput($_GET['action']));
 }
 
 dbclose();

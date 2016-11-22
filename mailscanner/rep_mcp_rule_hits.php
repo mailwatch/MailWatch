@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("MCP Rule Hits", 0, false, true);
+$filter = html_start(__('mcprulehits34'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/rep_mcp_rule_hits.png." . time();
@@ -56,7 +56,7 @@ $sql = "
 
 $result = dbquery($sql);
 if (!mysql_num_rows($result) > 0) {
-    die("Error: no rows retrieved from database\n");
+    die(__('diemysql99') . "\n");
 }
 
 // Initialise the array
@@ -99,16 +99,16 @@ reset($sa_array);
 arsort($sa_array);
 
 echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="MailScanner Logo"></td></tr>
+ <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td></tr>
  <tr><td align="center">
  <table class="boxtable" align="center" border="0">
  <tr bgcolor="#F7CE4A">
- <th>Rule</th>
- <th>Description</th>
- <th>Total</th>
- <th>Clean</th>
+ <th>' . __('rule34') . '</th>
+ <th>' . __('des34') . '</th>
+ <th>' . __('total34') . '</th>
+ <th>' . __('clean34') . '</th>
  <th>%</th>
- <th>MCP</th>
+ <th>' . __('mcp34') . '</th>
  <th>%</th>
  </tr>' . "\n";
 while ((list($key, $val) = each($sa_array)) && $count < 10) {

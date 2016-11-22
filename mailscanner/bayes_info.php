@@ -38,19 +38,18 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // Start the header code and Title
-html_start("SpamAssassin Bayes Database Info", 0, false, false);
+html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 
 // Enter the Action in the Audit log
 audit_log('Viewed SpamAssassin Bayes Database Info');
 
 // Create the table
-echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="600">';
+echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="690">';
 // Add a Header to the table
-echo '<tr><th colspan="2">Bayes Database Information</th></tr>';
+echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>';
 
 // Open the spamassassin file
 $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
-
 
 while (!feof($fh)) {
     $line = rtrim(fgets($fh, 4096));
@@ -60,52 +59,52 @@ while (!feof($fh)) {
     if (preg_match('/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+non-token data: (.+)/', $line, $regs)) {
         switch ($regs[5]) {
             case 'nspam':
-                echo '<tr><td class="heading">Number of Spam Messages:</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . __('nbrspammessage18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>';
                 break;
 
             case 'nham':
-                echo '<tr><td class="heading">Number of Ham Messages:</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . __('nbrhammessage18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>';
                 break;
 
             case 'ntokens':
-                echo '<tr><td class="heading">Number of Tokens:</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . __('nbrtoken18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>';
                 break;
 
             case 'oldest atime':
-                echo '<tr><td class="heading">Oldest Token:</td><td align="right">' . date(
+                echo '<tr><td class="heading">' . __('oldesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>';
                 break;
 
             case 'newest atime':
-                echo '<tr><td class="heading">Newest Token:</td><td align="right">' . date(
+                echo '<tr><td class="heading">' . __('newesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>';
                 break;
 
             case 'last journal sync atime':
-                echo '<tr><td class="heading">Last Journal Sync:</td><td align="right">' . date(
+                echo '<tr><td class="heading">' . __('lastjournalsync18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>';
                 break;
 
             case 'last expiry atime':
-                echo '<tr><td class="heading">Last Expiry:</td><td align="right">' . date('r', $regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">' . __('lastexpiry18') . '</td><td align="right">' . date('r', $regs[3]) . '</td></tr>';
                 break;
 
             case 'last expire reduction count':
-                echo '<tr><td class="heading">Last Expiry Reduction Count:</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . __('lastexpirycount18') . '</td><td align="right">' . number_format(
                         $regs[3]
-                    ) . ' tokens</td></tr>';
+                    ) . ' ' . __('tokens18') .'</td></tr>';
                 break;
         }
     }
