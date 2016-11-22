@@ -162,7 +162,7 @@ switch (true) {
 }
 
 // Submitted
-if ($url_submit == htmlentities(__('add07'))) {
+if ($url_submit == 'add') {
     // Check input is valid
     if (empty($url_list)) {
         $errors[] = "You must select a list to create the entry.";
@@ -194,7 +194,7 @@ if ($url_submit == htmlentities(__('add07'))) {
 }
 
 // Delete
-if ($url_submit == 'Delete') {
+if ($url_submit == 'delete') {
     $id = $url_id;
     switch ($url_list) {
         case 'w':
@@ -244,7 +244,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -254,7 +254,7 @@ function build_table($sql, $list)
 }
 
 echo '
-<form action="lists.php">
+<form action="lists.php" method="get">
 <table cellspacing="1" class="mail">
  <tr>
   <th colspan=2>' . __('addwlbl07') . '</th>
@@ -324,7 +324,7 @@ echo '  </td>
  </tr>
  <tr>
   <td class="heading">' . __('action07') . __('colon99') . '</td>
-  <td><input type="reset" value="' . __('reset07') . '">&nbsp;&nbsp;<input type="submit" value="' . __('add07') . '" name="submit"></td>
+  <td><button type="reset" value="reset">' . __('reset07') . '</button>&nbsp;&nbsp;<button type="submit" name="submit" value="add">' . __('add07') . '</button></td>
  </tr>';
 if (isset($errors)) {
     echo '<tr>
