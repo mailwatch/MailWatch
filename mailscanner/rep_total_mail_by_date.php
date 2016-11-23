@@ -144,10 +144,10 @@ ORDER BY
 if (is_writable(CACHE_DIR)) {
 
     // Includes for JPgraph
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_log.php");
-    include_once("./lib/jpgraph/src/jpgraph_bar.php");
-    include_once("./lib/jpgraph/src/jpgraph_line.php");
+    include_once("./lib/jpgraph/jpgraph.php");
+    include_once("./lib/jpgraph/jpgraph_log.php");
+    include_once("./lib/jpgraph/jpgraph_bar.php");
+    include_once("./lib/jpgraph/jpgraph_line.php");
 
     // Must be one or more row
     $result = dbquery($sql);
