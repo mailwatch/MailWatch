@@ -86,7 +86,7 @@ if (is_writable(CACHE_DIR)) {
 
 
     $last = "";
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         if ($last == substr($row->xaxis, 0, 2)) {
             $data_labels_hour[] = "";
         } else {
@@ -101,7 +101,7 @@ if (is_writable(CACHE_DIR)) {
     }
 
     /*
-    while($row=mysql_fetch_object($result)) {
+    while($row=$result->fetch_object()) {
      $data_labels[] = $row->xaxis;
      $data_total_mail[] = $row->total_mail;
      $data_total_virii[] = $row->total_virii;

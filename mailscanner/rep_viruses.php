@@ -135,7 +135,7 @@ if (!$result->num_rows > 0) {
 
 $virus_array = array();
 
-while ($row = mysql_fetch_object($result)) {
+while ($row = $result->fetch_object()) {
     foreach ($scanner as $scan => $vals) {
         if (preg_match($vals['regexp'], $row->report, $virus_report)) {
             $virus = $virus_report[2];

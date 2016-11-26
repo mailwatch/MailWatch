@@ -76,7 +76,7 @@ if (is_writable(CACHE_DIR)) {
 
     $relay_array = array();
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data[] = $row->count;
         $hostname = gethostbyaddr($row->clientip);
         if ($hostname == $row->clientip) {

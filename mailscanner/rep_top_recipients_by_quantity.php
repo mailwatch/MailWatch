@@ -75,7 +75,7 @@ if (is_writable(CACHE_DIR)) {
         die(__('diemysql99') . "\n");
     }
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data[] = $row->count;
         $data_names[] = $row->to_address;
         $data_size[] = $row->size;

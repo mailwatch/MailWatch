@@ -992,7 +992,7 @@ function get_sa_rule_desc($rule)
         $rule_score = "";
     }
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
@@ -1007,7 +1007,7 @@ function get_sa_rule_desc($rule)
 function return_sa_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row) {
         return htmlentities($row->rule_desc);
     }
@@ -1073,7 +1073,7 @@ function get_mcp_rule_desc($rule)
         $rule_score = "";
     }
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200px;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
@@ -1088,7 +1088,7 @@ function get_mcp_rule_desc($rule)
 function return_mcp_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row) {
         return $row->rule_desc;
     }

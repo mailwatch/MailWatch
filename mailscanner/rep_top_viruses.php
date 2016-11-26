@@ -71,7 +71,7 @@ if (is_writable(CACHE_DIR)) {
 
     $virus_array = array();
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         if (preg_match(VIRUS_REGEX, $row->report, $virus_report)) {
             $virus = $virus_report[2];
             if (isset($virus_array[$virus])) {

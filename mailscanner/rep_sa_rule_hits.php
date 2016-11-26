@@ -60,7 +60,7 @@ if (!$result->num_rows > 0) {
 $sa_array = array();
 
 // Retrieve rows and insert into array
-while ($row = mysql_fetch_object($result)) {
+while ($row = $result->fetch_object()) {
     //##### TODEL/TODO #
     //##### TODEL/TODO # stdClass Object
     //##### TODEL/TODO # (

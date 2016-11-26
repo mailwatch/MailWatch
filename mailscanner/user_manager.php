@@ -156,7 +156,7 @@ if ($_SESSION['user_type'] == 'A') {
                 if (!isset($_GET['submit'])) {
                     $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . mysql_real_escape_string(sanitizeInput($_GET['id'])) . "'";
                     $result = dbquery($sql);
-                    $row = mysql_fetch_object($result);
+                    $row = $result->fetch_object();
                     $quarantine_report = '';
                     if ($row->quarantine_report == 1) {
                         $quarantine_report = "CHECKED";
@@ -298,7 +298,7 @@ if ($_SESSION['user_type'] == 'A') {
                 echo " <TR><TH COLSPAN=3>" . __('userfilter12') . " " . $id . "</TH></TR>\n";
                 echo " <TR><TH>" . __('filter12') . "</TH><TH>" . __('active12') . "</TH><TH>" . __('action12') . "</TH></TR>\n";
                 if ($result->num_rows > 0) {
-                    while ($row = mysql_fetch_object($result)) {
+                    while ($row = $result->fetch_object()) {
                         echo " <TR><TD>" . $row->filter . "</TD><TD>" . $row->active . "</TD><TD>" . $row->actions . "</TD></TR>\n";
                     }
                 }
@@ -342,7 +342,7 @@ if ($_SESSION['user_type'] == 'A') {
     if (!isset($_GET['submit'])) {
         $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . mysql_real_escape_string($_SESSION['myusername']) . "'";
         $result = dbquery($sql);
-        $row = mysql_fetch_object($result);
+        $row = $result->fetch_object();
         $quarantine_report = '';
         if ($row->quarantine_report == 1) {
             $quarantine_report = "CHECKED";
