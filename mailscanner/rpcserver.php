@@ -94,7 +94,7 @@ function rpc_return_quarantined_file($msg)
     dbconn();
     $input = php_xmlrpc_decode(array_shift($msg->params));
     $input = preg_replace('[\.\/|\.\.\/]', '', $input);
-    $date = @mysql_result(
+    $date = @database::mysqli_result(
         dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . mysql_real_escape_string($input) . "'"),
         0
     );

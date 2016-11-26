@@ -224,7 +224,7 @@ if ($_SESSION['user_type'] == 'A') {
                         $quarantine_rcpt = mysql_real_escape_string($_GET['quarantine_rcpt']);
 
                         // Record old user type to audit user type promotion/demotion
-                        $o_type = mysql_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
+                        $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
 
                         if ($_GET['password'] !== 'XXXXXXXX') {
                             // Password reset required

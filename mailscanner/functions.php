@@ -380,8 +380,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             }
             // else use mailq which is for sendmail and exim
         } elseif (MAILQ && ($_SESSION['user_type'] == 'A')) {
-            $inq = mysql_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
-            $outq = mysql_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
+            $inq = database::mysqli_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
+            $outq = database::mysqli_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
             echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
             echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
@@ -2315,7 +2315,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         // Count the number of rows that would be returned by the query
         $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-        $rows = mysql_result(dbquery($sqlcount), 0);
+        $rows = database::mysqli_result(dbquery($sqlcount), 0);
 
         // Build the pager data
         $pager_options = array(
@@ -2405,7 +2405,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         // Count the number of rows that would be returned by the query
         $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-        $rows = mysql_result(dbquery($sqlcount), 0);
+        $rows = database::mysqli_result(dbquery($sqlcount), 0);
 
         // Build the pager data
         $pager_options = array(
@@ -3673,7 +3673,7 @@ function updateUserPasswordHash($user, $hash)
 {
     $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
     $passwordFiledLengthResult = dbquery($sqlCheckLenght);
-    $passwordFiledLength = intval(mysql_result($passwordFiledLengthResult, 0, 'passwordfieldlength'));
+    $passwordFiledLength = intval(database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength'));
 
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL";
