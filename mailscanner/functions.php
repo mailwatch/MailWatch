@@ -2953,7 +2953,7 @@ function is_local($host)
 }
 
 /**
- * @param $msgid
+ * @param string $msgid
  * @param bool|false $rpc_only
  * @return array|mixed|string
  */
@@ -2974,11 +2974,11 @@ SELECT
  WHERE
   id = '$msgid'";
     $sth = dbquery($sql);
-    $rows = mysql_num_rows($sth);
+    $rows = $sth->num_rows;
     if ($rows <= 0) {
         die(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
     }
-    $row = mysql_fetch_object($sth);
+    $row = $sth->fetch_object();
     if (!$rpc_only && is_local($row->hostname)) {
         $quarantinedir = get_conf_var("QuarantineDir");
         $quarantine = $quarantinedir . '/' . $row->date . '/' . $row->id;
