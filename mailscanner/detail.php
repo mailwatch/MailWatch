@@ -117,7 +117,7 @@ $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
     $listurl = "lists.php?host=" . $row[__('receivedfrom04')] . "&amp;from=" . $row[__('from04')] . "&amp;to=" . $row[__('to04')];
-    for ($f = 0; $f < mysql_num_fields($result); $f++) {
+    for ($f = 0; $f < $result->field_count; $f++) {
         $fieldn = mysql_field_name($result, $f);
         if ($fieldn == __('receivedfrom04')) {
             $output = "<table class=\"sa_rules_report\" width=\"100%\" cellspacing=0 cellpadding=0><tr><td>" . $row[$f] . "</td>";
@@ -319,7 +319,7 @@ if ($sth1->num_rows > 0) {
     echo ' <tr><td class="heading-w175">Relay Information:</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
-    for ($f = 0; $f < mysql_num_fields($sth1); $f++) {
+    for ($f = 0; $f < $sth1->field_count; $f++) {
         echo '   <th>' . mysql_field_name($sth1, $f) . '</th>' . "\n";
     }
     echo "   </tr>\n";

@@ -2296,7 +2296,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     $rows = $sth->num_rows;
 
     // Count the nubmer of fields
-    $fields = mysql_num_fields($sth);
+    $fields = $sth->field_count;
     */
 
     // Turn on paging of for the database
@@ -2348,7 +2348,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         $sql .= " LIMIT $from," . MAX_RESULTS;
         $sth = dbquery($sql);
         $rows = $sth->num_rows;
-        $fields = mysql_num_fields($sth);
+        $fields = $sth->field_count;
         // Account for extra operations column
         if ($operations !== false) {
             $fields++;
@@ -2356,7 +2356,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     } else {
         $sth = dbquery($sql);
         $rows = $sth->num_rows;
-        $fields = mysql_num_fields($sth);
+        $fields = $sth->field_count;
         // Account for extra operations column
         if ($operations !== false) {
             $fields++;
@@ -2443,7 +2443,7 @@ function db_vertical_table($sql)
 {
     $sth = dbquery($sql);
     $rows = $sth->num_rows;
-    $fields = mysql_num_fields($sth);
+    $fields = $sth->field_count;
 
     if ($rows > 0) {
         echo '<table border="1" class="mail">' . "\n";
