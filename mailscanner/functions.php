@@ -1692,7 +1692,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
         // Count the number of rows that would be returned by the query
         $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-        $rows = mysql_result(dbquery($sqlcount), 0);
+        $results = dbquery($sqlcount);
+        $rows = database::mysqli_result($results, 0);
 
         // Build the pager data
         $pager_options = array(
@@ -2242,7 +2243,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
             // Count the number of rows that would be returned by the query
             $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-            $rows = mysql_result(dbquery($sqlcount), 0);
+            $results = dbquery($sqlcount);
+            $rows = database::mysqli_result($results, 0);
 
             // Build the pager data
             $pager_options = array(
