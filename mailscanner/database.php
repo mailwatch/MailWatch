@@ -52,7 +52,12 @@ class database
             if (self::$link->connect_error) {
                 die(__('diedbconn103') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
             }
-            self::$link->set_charset('utf8');
+            $charset = 'utf8';
+            if (self::$link->server_version >= 50503) {
+                //mysql version supports utf8mb4
+                $charset = 'utf8mb4';
+            }
+            self::$link->set_charset($charset);
         }
         return self::$link;
     }
