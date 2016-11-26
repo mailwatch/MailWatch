@@ -105,7 +105,7 @@ $sql = "
 $result = dbquery($sql);
 
 // Check to make sure something was returned
-if (mysql_num_rows($result) == 0) {
+if ($result->num_rows == 0) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 } else {
     audit_log('Viewed message detail (id=' . $url_id . ')');
@@ -278,7 +278,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 // rows in the relay table (maillog.id = relay.msg_id)...
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
-if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfix
+if ($mta == 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
     $sql1 = "
  SELECT
   DATE_FORMAT(m.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS 'Date/Time',
@@ -314,7 +314,7 @@ if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfi
 }
 
 $sth1 = dbquery($sql1);
-if (mysql_num_rows($sth1) > 0) {
+if ($sth1->num_rows > 0) {
     // Display the relay table entries
     echo ' <tr><td class="heading-w175">Relay Information:</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";

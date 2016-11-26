@@ -52,7 +52,7 @@ $sql = "
 " . $filter->CreateSQL();
 
 $result = dbquery($sql);
-if (!mysql_num_rows($result) > 0) {
+if (!$result->num_rows > 0) {
     die(__('diemysql99') . "\n");
 }
 

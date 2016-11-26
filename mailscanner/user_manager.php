@@ -297,7 +297,7 @@ if ($_SESSION['user_type'] == 'A') {
                 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
                 echo " <TR><TH COLSPAN=3>" . __('userfilter12') . " " . $id . "</TH></TR>\n";
                 echo " <TR><TH>" . __('filter12') . "</TH><TH>" . __('active12') . "</TH><TH>" . __('action12') . "</TH></TR>\n";
-                if (mysql_num_rows($result) > 0) {
+                if ($result->num_rows > 0) {
                     while ($row = mysql_fetch_object($result)) {
                         echo " <TR><TD>" . $row->filter . "</TD><TD>" . $row->active . "</TD><TD>" . $row->actions . "</TD></TR>\n";
                     }

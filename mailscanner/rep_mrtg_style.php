@@ -80,7 +80,7 @@ if (is_writable(CACHE_DIR)) {
     // ### AjosNote - Must be 2 or more rows...
     // ##### AJOS1 NOTE #####
     $result = dbquery($sql_last24hrs);
-    if (mysql_num_rows($result) <= 1) {
+    if ($result->num_rows <= 1) {
         die(__('dieid36') . "\n");
     }
 

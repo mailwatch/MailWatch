@@ -2293,7 +2293,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     $sth = dbquery($sql);
 
     // Count the number of rows in a table
-    $rows = mysql_num_rows($sth);
+    $rows = $sth->num_rows;
 
     // Count the nubmer of fields
     $fields = mysql_num_fields($sth);
@@ -2347,7 +2347,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         // Re-run the original query and limit the rows
         $sql .= " LIMIT $from," . MAX_RESULTS;
         $sth = dbquery($sql);
-        $rows = mysql_num_rows($sth);
+        $rows = $sth->num_rows;
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
         if ($operations !== false) {
@@ -2355,7 +2355,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
     } else {
         $sth = dbquery($sql);
-        $rows = mysql_num_rows($sth);
+        $rows = $sth->num_rows;
         $fields = mysql_num_fields($sth);
         // Account for extra operations column
         if ($operations !== false) {
@@ -2442,7 +2442,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 function db_vertical_table($sql)
 {
     $sth = dbquery($sql);
-    $rows = mysql_num_rows($sth);
+    $rows = $sth->num_rows;
     $fields = mysql_num_fields($sth);
 
     if ($rows > 0) {
@@ -2674,7 +2674,7 @@ function ldap_authenticate($user, $password)
 
                         $sql = sprintf("SELECT username FROM users WHERE username = %s", quote_smart($email));
                         $sth = dbquery($sql);
-                        if (mysql_num_rows($sth) == 0) {
+                        if ($sth->num_rows == 0) {
                             $sql = sprintf(
                                 "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                                 quote_smart($email),

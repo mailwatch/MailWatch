@@ -70,7 +70,7 @@ if (is_writable(CACHE_DIR)) {
     include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
 
     $result = dbquery($sql);
-    if (!mysql_num_rows($result) > 0) {
+    if (!$result->num_rows > 0) {
         die(__('diemysql99') . "\n");
     }
 

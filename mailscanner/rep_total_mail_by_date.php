@@ -151,7 +151,7 @@ if (is_writable(CACHE_DIR)) {
 
     // Must be one or more row
     $result = dbquery($sql);
-    if (!mysql_num_rows($result) > 0) {
+    if (!$result->num_rows > 0) {
         die(__('diemysql99') . "\n");
     }
 
@@ -159,7 +159,7 @@ if (is_writable(CACHE_DIR)) {
     $result1 = dbquery($sql1);
 
     // pulling the data in variables
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data_labels[] = $row->xaxis;
         $data_total_mail[] = $row->total_mail;
         $data_total_virii[] = $row->total_virus;
@@ -176,7 +176,7 @@ if (is_writable(CACHE_DIR)) {
     $data_total_unknown_users = array();
     $data_total_rbl = array();
     $data_total_unresolveable = array();
-    while ($row1 = mysql_fetch_object($result1)) {
+    while ($row1 = $result1->fetch_object()) {
         if (is_numeric($key = array_search($row1->xaxis, $data_labels))) {
             switch (true) {
                 case($row1->type == 'unknown_user'):

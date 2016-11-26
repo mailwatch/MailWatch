@@ -69,7 +69,7 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
         dbg("Error fetching from database" . mysql_error());
         echo __('dberror59');
     }
-    if (mysql_num_rows($result) == 0) {
+    if ($result->num_rows == 0) {
         echo "<p>" . __('msgnotfound159') . "</p>";
         echo "<p>" . __('msgnotfound259') . htmlentities($mid) . " " . __('msgnotfound359') . "</p>";
     } else {
