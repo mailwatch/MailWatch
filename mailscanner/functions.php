@@ -2314,8 +2314,11 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
 
         // Count the number of rows that would be returned by the query
-        $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-        $rows = database::mysqli_result(dbquery($sqlcount), 0);
+        $sqlcount = "SELECT COUNT(*) AS numrows " . strstr($sqlcount, "FROM");
+
+        $results = dbquery($sqlcount);
+        $resultsFirstRow = $results->fetch_array();
+        $rows = intval($resultsFirstRow['numrows']);
 
         // Build the pager data
         $pager_options = array(
@@ -2345,7 +2348,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
  <td colspan="4">';
 
         // Re-run the original query and limit the rows
-        $sql .= " LIMIT $from," . MAX_RESULTS;
+        $sql .= " LIMIT " . ($from - 1) . "," . MAX_RESULTS;
         $sth = dbquery($sql);
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
@@ -2370,13 +2373,17 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
         // Column headings
         echo ' <tr>' . "\n";
-        for ($f = 0; $f < $fields; $f++) {
-            echo '  <th>' . mysql_field_name($sth, $f) . '</th>' . "\n";
+        if ($operations !== false) {
+            echo '<td></td>';
+        }
+
+        foreach ($sth->fetch_fields() as $field) {
+            echo '  <th>' .$field->name . '</th>' . "\n";
         }
         echo ' </tr>' . "\n";
         // Rows
         $i = 1;
-        while ($row = mysql_fetch_row($sth)) {
+        while ($row = $sth->fetch_row()) {
             $i = 1 - $i;
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
