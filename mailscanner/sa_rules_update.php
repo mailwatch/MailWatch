@@ -63,7 +63,7 @@ if ($_SESSION['user_type'] != 'A') {
         echo "<table width=\"100%\">";
         echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>" . __('rule13') . "</th><th>" . __('description13') . "</th></tr>\n";
         $fh = popen(
-            "grep -hr '^\s*describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
+            "grep -hr '^\s*describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin " . SA_PREFS . " /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
             'r'
         );
         audit_log('Ran SpamAssassin Rules Description Update');
