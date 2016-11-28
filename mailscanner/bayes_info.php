@@ -49,6 +49,9 @@ echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadd
 echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>';
 
 // Open the spamassassin file
+if (!is_file(SA_DIR . 'sa-learn')) {
+    die('Cannot find ' . SA_DIR . 'sa-learn');
+}
 $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 
 while (!feof($fh)) {
