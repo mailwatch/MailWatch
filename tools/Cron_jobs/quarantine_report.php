@@ -301,11 +301,18 @@ ORDER BY a.date DESC, a.time DESC";
     }
 }
 
+/**
+ * @param $text
+ */
 function dbg($text)
 {
     echo $text . "\n";
 }
 
+/**
+ * @param string $user
+ * @return array
+ */
 function return_user_filters($user)
 {
     global $filters_sql;
@@ -320,6 +327,11 @@ function return_user_filters($user)
     return $array;
 }
 
+/**
+ * @param string $to_address
+ * @param string $to_domain
+ * @return array
+ */
 function return_quarantine_list_array($to_address, $to_domain)
 {
     global $sql;
@@ -343,6 +355,7 @@ function return_quarantine_list_array($to_address, $to_domain)
 
 /**
  * @param integer $count
+ * @return string
  */
 function get_random_string($count)
 {
@@ -350,6 +363,10 @@ function get_random_string($count)
     return bin2hex($bytes);
 }
 
+/**
+ * @param array $qitem
+ * @return bool
+ */
 function store_auto_release($qitem)
 {
     $id = $qitem['id'];
@@ -363,6 +380,10 @@ function store_auto_release($qitem)
     }
 }
 
+/**
+ * @param string $qitem
+ * @return bool
+ */
 function check_auto_release($qitem)
 {
     //function checks if message already has an autorelease entry
@@ -384,6 +405,11 @@ function check_auto_release($qitem)
     }
 }
 
+/**
+ * @param string $email
+ * @param string $filter
+ * @param array $quarantined
+ */
 function send_quarantine_email($email, $filter, $quarantined)
 {
     global $html, $html_table, $html_content, $text, $text_content;
