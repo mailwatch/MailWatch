@@ -67,6 +67,14 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
     $lang = require_once(__DIR__ . '/languages/' . LANG . '.php');
 }
 
+// more secure session cookies
+ini_set("session.use_cookies", 1);
+ini_set("session.use_only_cookies", 1);
+ini_set("session.use_trans_sid", 0);
+if (SSL_ONLY === true) {
+    ini_set("session.cookie_secure", 1);
+}
+
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] == 'on') {
         header("Location: https://" . sanitizeInput($_SERVER['HTTP_HOST']) . sanitizeInput($_SERVER['REQUEST_URI']));
