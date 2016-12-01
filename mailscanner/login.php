@@ -123,7 +123,7 @@ require_once(__DIR__ . '/functions.php');
             background-color: #e9e9e9;
             color: #222;
             padding: 4px;
-            width: 256px;
+            width: 298px;
             margin-bottom: 16px;
         }
 
