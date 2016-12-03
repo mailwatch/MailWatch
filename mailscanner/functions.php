@@ -2454,10 +2454,11 @@ function db_vertical_table($sql)
 
     if ($rows > 0) {
         echo '<table border="1" class="mail">' . "\n";
-        while ($row = mysql_fetch_row($sth)) {
+        while ($row = $sth->fetch_row()) {
             for ($f = 0; $f < $fields; $f++) {
+                $fieldInfo = $sth->fetch_field_direct($f);
                 echo " <tr>\n";
-                echo "  <td>" . mysql_field_name($sth, $f) . "</td>\n";
+                echo "  <td>" . $fieldInfo->name . "</td>\n";
                 echo "  <td>" . $row[$f] . "</td>\n";
                 echo " </tr>\n";
             }
