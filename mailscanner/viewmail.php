@@ -52,8 +52,9 @@ if (!isset($_GET['id'])) {
     die(__('nomessid06'));
 } else {
     $message_id = sanitizeInput($_GET['id']);
-    $sql = "SELECT * FROM maillog WHERE id='" . mysql_real_escape_string($message_id) . "' AND " . $_SESSION["global_filter"];
-    $message = @mysql_fetch_object(dbquery($sql));
+    $sql = "SELECT * FROM maillog WHERE id='" . safe_value($message_id) . "' AND " . $_SESSION["global_filter"];
+    $result = dbquery($sql);
+    $message = $result->fetch_object();
     // See if message is local
     if (empty($message)) {
         die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
