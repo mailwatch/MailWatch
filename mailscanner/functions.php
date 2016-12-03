@@ -2445,7 +2445,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
 /**
  * @param $sql
- */
+
 function db_vertical_table($sql)
 {
     $sth = dbquery($sql);
@@ -2468,6 +2468,7 @@ function db_vertical_table($sql)
         echo "No rows retrieved\n";
     }
 }
+*/
 
 /**
  * @return double
