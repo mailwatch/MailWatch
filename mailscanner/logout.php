@@ -35,6 +35,7 @@ $_SESSION = array();
 
 // delete the session cookie.
 if (ini_get("session.use_cookies")) {
+    ini_set("session.cookie_httponly", 1);
     $params = session_get_cookie_params();
     setcookie(
         session_name(),

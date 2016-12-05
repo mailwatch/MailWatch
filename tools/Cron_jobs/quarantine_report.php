@@ -380,6 +380,10 @@ function store_auto_release($qitem)
     }
 }
 
+/**
+ * @param string $qitem
+ * @return bool
+ */
 function check_auto_release($qitem)
 {
     //function checks if message already has an autorelease entry
@@ -404,9 +408,9 @@ function check_auto_release($qitem)
 }
 
 /**
- * @param $email
- * @param $filter
- * @param $quarantined
+ * @param string $email
+ * @param string $filter
+ * @param array $quarantined
  */
 function send_quarantine_email($email, $filter, $quarantined)
 {
@@ -417,6 +421,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     // Build the quarantine list for this recipient
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
+        $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('arview01').'</a>';
         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
             //Check if email already has an autorelease entry
             $exists = check_auto_release($qitem);
@@ -428,13 +433,9 @@ function send_quarantine_email($email, $filter, $quarantined)
                 $auto_release = true;
             }
             if ($auto_release) {
-                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">' . __('arview01') . '</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('arrelease01') . '</a>';
-            } else {
-                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">' . __('arview01') . '</a>';
+                // add auto release link if enabled
+                $links .= '  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">'.__('arrelease01').'</a>';
             }
-        } else {
-            //auto-release disabled
-            $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">' . __('arview01') . '</a>';
         }
 
         // HTML Version

@@ -68,6 +68,20 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
     $lang = require_once(__DIR__ . '/languages/' . LANG . '.php');
 }
 
+//security headers
+header('X-XSS-Protection: 1; mode=block');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+
+// more secure session cookies
+ini_set("session.use_cookies", 1);
+ini_set("session.cookie_httponly", 1);
+ini_set("session.use_only_cookies", 1);
+ini_set("session.use_trans_sid", 0);
+if (SSL_ONLY === true) {
+    ini_set("session.cookie_secure", 1);
+}
+
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] == 'on') {
         header("Location: https://" . sanitizeInput($_SERVER['HTTP_HOST']) . sanitizeInput($_SERVER['REQUEST_URI']));
@@ -226,10 +240,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
         header("Pragma: cache");
     }
-    //security headers
-    header('X-XSS-Protection: 1; mode=block');
-    header('X-Frame-Options: SAMEORIGIN');
-    header('X-Content-Type-Options: nosniff');
 
     echo page_creation_timer();
     echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
