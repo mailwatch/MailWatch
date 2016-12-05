@@ -30,12 +30,12 @@
  */
 
 // Require the functions page
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Start the session
 session_start();
 // Require the login function code
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // Start the header code and Title
 html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
@@ -57,7 +57,7 @@ $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 while (!feof($fh)) {
     $line = rtrim(fgets($fh, 4096));
 
-    debug("line: " . $line . "\n");
+    debug('line: ' . $line . "\n");
 
     if (preg_match('/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+non-token data: (.+)/', $line, $regs)) {
         switch ($regs[5]) {
