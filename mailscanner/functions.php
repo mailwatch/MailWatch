@@ -798,12 +798,13 @@ function dbclose()
  */
 function dbquery($sql)
 {
+    $link = dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
         echo "<!--\n\n";
         $dbg_sql = "EXPLAIN " . $sql;
         echo "SQL:\n\n$sql\n\n";
         /** @var mysqli_result $result */
-        $result = database::$link->query($dbg_sql) || die(__('diedbquery03') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
+        $result = $link->query($dbg_sql) || die(__('diedbquery03') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
 
         $finfo = $result->fetch_fields();
         foreach ($finfo as $val) {
@@ -811,7 +812,7 @@ function dbquery($sql)
         }
 
         /*while ($row = $result->fetch_row()) {
-            for ($f = 0; $f < database::$link->field_count; $f++) {
+            for ($f = 0; $f < $link->field_count; $f++) {
                 echo mysqli_field_name($result, $f) . ": " . $row[$f] . "\n";
             }
         }*/
@@ -820,7 +821,7 @@ function dbquery($sql)
         $result->free_result();
     }
 
-    $result = database::$link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . self::$link->connect_errno . ": " . self::$link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . self::$link->connect_errno . ": " . self::$link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
 
     return $result;
 }
@@ -853,7 +854,7 @@ function quote_smart($value)
 function safe_value($value)
 {
     $link = dbconn();
-    if ((function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())) {
+    if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
         $value = stripslashes($value);
     }
     $value = $link->real_escape_string($value);
