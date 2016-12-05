@@ -50,8 +50,8 @@ html_start(__('messdetail04') . " " . $url_id, 0, false, false);
 ini_set("memory_limit", MEMORY_LIMIT);
 
 // Setting the yes and no variable
-$yes = '<span class="yes">&nbsp;Y&nbsp;</span>';
-$no = '<span class="no">&nbsp;N&nbsp;</span>';
+$yes = '<span class="yes">&nbsp;' . __('yes04') . '&nbsp;</span>';
+$no = '<span class="no">&nbsp;' . __('no04') . '&nbsp;</span>';
 
 // Setting what Mail Transfer Agent is being used
 $mta = get_conf_var('mta');
