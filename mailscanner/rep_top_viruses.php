@@ -65,13 +65,13 @@ if (is_writable(CACHE_DIR)) {
 
     // Must be one or more rows
     $result = dbquery($sql);
-    if (mysql_num_rows($result) <= 0) {
-        die(__('dienorow48') . mysql_num_rows($result) . "\n");
+    if ($result->num_rows <= 0) {
+        die(__('dienorow48') . $result->num_rows . "\n");
     }
 
     $virus_array = array();
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         if (preg_match(VIRUS_REGEX, $row->report, $virus_report)) {
             $virus = $virus_report[2];
             if (isset($virus_array[$virus])) {

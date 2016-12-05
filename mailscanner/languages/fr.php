@@ -205,6 +205,8 @@ return array(
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
     'hostname04' => 'Nom d\'hôte',
+    'yes04' => 'O',
+    'no04' => 'N',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',

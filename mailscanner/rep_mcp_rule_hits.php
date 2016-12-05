@@ -55,7 +55,7 @@ $sql = "
 " . $filter->CreateSQL();
 
 $result = dbquery($sql);
-if (!mysql_num_rows($result) > 0) {
+if (!$result->num_rows > 0) {
     die(__('diemysql99') . "\n");
 }
 
@@ -63,7 +63,7 @@ if (!mysql_num_rows($result) > 0) {
 $sa_array = array();
 
 // Retrieve rows and insert into array
-while ($row = mysql_fetch_object($result)) {
+while ($row = $result->fetch_object()) {
     // Clean-up input
     $row->mcpreport = preg_replace('/\n/', '', $row->mcpreport);
     $row->mcpreport = preg_replace('/\t/', ' ', $row->mcpreport);

@@ -47,6 +47,7 @@ if (!is_readable(__DIR__ . '/conf.php')) {
     die(__('cannot_read_conf'));
 }
 require_once(__DIR__ . '/conf.php');
+require_once(__DIR__ . '/database.php');
 
 // Set PHP path to use local PEAR modules only
 set_include_path(
@@ -65,6 +66,20 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
     $lang = require_once(__DIR__ . '/languages/en.php');
 } else {
     $lang = require_once(__DIR__ . '/languages/' . LANG . '.php');
+}
+
+//security headers
+header('X-XSS-Protection: 1; mode=block');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+
+// more secure session cookies
+ini_set("session.use_cookies", 1);
+ini_set("session.cookie_httponly", 1);
+ini_set("session.use_only_cookies", 1);
+ini_set("session.use_trans_sid", 0);
+if (SSL_ONLY === true) {
+    ini_set("session.cookie_secure", 1);
 }
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
@@ -225,10 +240,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         header("Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1");
         header("Pragma: cache");
     }
-    //security headers
-    header('X-XSS-Protection: 1; mode=block');
-    header('X-Frame-Options: SAMEORIGIN');
-    header('X-Content-Type-Options: nosniff');
 
     echo page_creation_timer();
     echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
@@ -379,8 +390,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             }
             // else use mailq which is for sendmail and exim
         } elseif (MAILQ && ($_SESSION['user_type'] == 'A')) {
-            $inq = mysql_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
-            $outq = mysql_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
+            $inq = database::mysqli_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
+            $outq = database::mysqli_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
             echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
             echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
@@ -583,7 +594,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 ";
 
     $sth = dbquery($sql);
-    while ($row = mysql_fetch_object($sth)) {
+    while ($row = $sth->fetch_object()) {
         echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
         echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
@@ -763,15 +774,13 @@ function html_end($footer = '')
 }
 
 /**
- * @return resource
+ * @return mysqli
  */
 function dbconn()
 {
-    $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, false, 128)
-    or die(__('diedbconn103') . " " . mysql_error());
-    mysql_set_charset('utf8', $link);
-    mysql_select_db(DB_NAME) or die(__('diedbconn203') . " " . mysql_error());
+    //$link = mysql_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, false, 128);
 
+    $link = database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     return $link;
 }
 
@@ -780,31 +789,38 @@ function dbconn()
  */
 function dbclose()
 {
-    return mysql_close();
+    return database::close();
 }
 
 /**
- * @param $sql
- * @return resource
+ * @param string $sql
+ * @return mysqli_result|bool
  */
 function dbquery($sql)
 {
-    dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
         echo "<!--\n\n";
         $dbg_sql = "EXPLAIN " . $sql;
         echo "SQL:\n\n$sql\n\n";
-        $result = mysql_query($dbg_sql) or die(__('diedbquery03') . " " . mysql_errno() . " - " . mysql_error());
-        $fields = mysql_num_fields($result);
-        while ($row = mysql_fetch_row($result)) {
-            for ($f = 0; $f < $fields; $f++) {
-                echo mysql_field_name($result, $f) . ": " . $row[$f] . "\n";
-            }
+        /** @var mysqli_result $result */
+        $result = database::$link->query($dbg_sql) || die(__('diedbquery03') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
+
+        $finfo = $result->fetch_fields();
+        foreach ($finfo as $val) {
+            echo $val . "\n";
         }
+
+        /*while ($row = $result->fetch_row()) {
+            for ($f = 0; $f < database::$link->field_count; $f++) {
+                echo mysqli_field_name($result, $f) . ": " . $row[$f] . "\n";
+            }
+        }*/
         //dbtable("SHOW STATUS");
         echo "\n-->\n\n";
+        $result->free_result();
     }
-    $result = mysql_query($sql) or die("<B>" . __('diedbquery03') . " </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+
+    $result = database::$link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . self::$link->connect_errno . ": " . self::$link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
 
     return $result;
 }
@@ -836,11 +852,11 @@ function quote_smart($value)
  */
 function safe_value($value)
 {
-    dbconn();
+    $link = dbconn();
     if ((function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc())) {
         $value = stripslashes($value);
     }
-    $value = mysql_real_escape_string($value);
+    $value = $link->real_escape_string($value);
 
     return $value;
 }
@@ -986,7 +1002,7 @@ function get_sa_rule_desc($rule)
         $rule_score = "";
     }
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
@@ -1001,7 +1017,7 @@ function get_sa_rule_desc($rule)
 function return_sa_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row) {
         return htmlentities($row->rule_desc);
     }
@@ -1067,7 +1083,7 @@ function get_mcp_rule_desc($rule)
         $rule_score = "";
     }
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200px;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
@@ -1082,7 +1098,7 @@ function get_mcp_rule_desc($rule)
 function return_mcp_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
-    $row = mysql_fetch_object($result);
+    $row = $result->fetch_object();
     if ($row) {
         return $row->rule_desc;
     }
@@ -1107,7 +1123,7 @@ AND
 ";
     $result = dbquery($sql);
     $virus_array = array();
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         if (preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
             $virus = return_virus_link($virus_reports[2]);
             if (!isset($virus_array[$virus])) {
@@ -1686,7 +1702,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
         // Count the number of rows that would be returned by the query
         $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-        $rows = mysql_result(dbquery($sqlcount), 0);
+        $results = dbquery($sqlcount);
+        $rows = database::mysqli_result($results, 0);
 
         // Build the pager data
         $pager_options = array(
@@ -1720,16 +1737,16 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $limit = $from - 1;
         $sql .= " LIMIT $limit," . MAX_RESULTS;
         $sth = dbquery($sql);
-        $rows = mysql_num_rows($sth);
-        $fields = mysql_num_fields($sth);
+        $rows = $sth->num_rows;
+        $fields = $sth->field_count;
         // Account for extra operations column
         if ($operations !== false) {
             $fields++;
         }
     } else {
         $sth = dbquery($sql);
-        $rows = mysql_num_rows($sth);
-        $fields = mysql_num_fields($sth);
+        $rows = $sth->num_rows;
+        $fields = $sth->field_count;
         // Account for extra operations column
         if ($operations !== false) {
             $fields++;
@@ -1762,7 +1779,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             } else {
                 $colnum = $f;
             }
-            switch ($fieldname[$f] = mysql_field_name($sth, $colnum)) {
+            //var_dump($sth->field_seek($colnum));
+            $fieldInfo = $sth->fetch_field_direct($colnum);
+            switch ($fieldname[$f] = $fieldInfo->name) {
                 case 'host':
                     $fieldname[$f] = "Host";
                     if (DISTRIBUTED_SETUP) {
@@ -1922,7 +1941,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo ' </tr>' . "\n";
         }
         // Column headings
-        echo '<tr>' . "\n";
+        echo '<tr class="sonoqui">' . "\n";
         for ($f = 0; $f < $fields; $f++) {
             if ($display[$f]) {
                 if ($order && $orderable[$f]) {
@@ -1932,16 +1951,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     } else {
                         $colnum = $f;
                     }
+                    $fieldInfo = $sth->fetch_field_direct($colnum);
                     echo "  <th>\n";
-                    echo "  $fieldname[$f] (<a href=\"?orderby=" . mysql_field_name(
-                            $sth,
-                            $colnum
-                        ) . "&amp;orderdir=a" . subtract_multi_get_vars(
+                    echo "  $fieldname[$f] (<a href=\"?orderby=" . $fieldInfo->name
+                        . "&amp;orderdir=a" . subtract_multi_get_vars(
                             array('orderby', 'orderdir')
-                        ) . "\">A</a>/<a href=\"?orderby=" . mysql_field_name(
-                            $sth,
-                            $colnum
-                        ) . "&amp;orderdir=d" . subtract_multi_get_vars(array('orderby', 'orderdir')) . "\">D</a>)\n";
+                        ) . "\">A</a>/<a href=\"?orderby=" .  $fieldInfo->name
+                        . "&amp;orderdir=d" . subtract_multi_get_vars(array('orderby', 'orderdir')) . "\">D</a>)\n";
                     echo "  </th>\n";
                 } else {
                     echo '  <th>' . $fieldname[$f] . '</th>' . "\n";
@@ -1953,7 +1969,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $jsRadioCheck = '';
         $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
-            $row = mysql_fetch_row($sth);
+            $row = $sth->fetch_row();
             if ($operations !== false) {
                 // Prepend operations elements - later on, replace REPLACEME w/ message id
                 array_unshift(
@@ -1977,11 +1993,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // Skip the first field if it is operations
                         continue;
                     }
-                    $field = mysql_field_name($sth, $f - 1);
+                    $fieldNumber = $f - 1;
                 } else {
-                    $field = mysql_field_name($sth, $f);
+                    $fieldNumber = $f;
                 }
-                switch ($field) {
+                $field = $sth->fetch_field_direct($fieldNumber);
+                switch ($field->name) {
                     case 'id':
                         // Store the id for later use
                         $id = $row[$f];
@@ -2165,7 +2182,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     if ($align[$f]) {
                         echo ' <td align="' . $align[$f] . '">' . $row[$f] . '</td>' . "\n";
                     } else {
-                        echo ' <td >' . $row[$f] . '</td>' . "\n";
+                        echo ' <td>' . $row[$f] . '</td>' . "\n";
                     }
                 }
             }
@@ -2236,7 +2253,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 
             // Count the number of rows that would be returned by the query
             $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-            $rows = mysql_result(dbquery($sqlcount), 0);
+            $results = dbquery($sqlcount);
+            $rows = database::mysqli_result($results, 0);
 
             // Build the pager data
             $pager_options = array(
@@ -2285,10 +2303,10 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     $sth = dbquery($sql);
 
     // Count the number of rows in a table
-    $rows = mysql_num_rows($sth);
+    $rows = $sth->num_rows;
 
     // Count the nubmer of fields
-    $fields = mysql_num_fields($sth);
+    $fields = $sth->field_count;
     */
 
     // Turn on paging of for the database
@@ -2306,8 +2324,11 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
 
         // Count the number of rows that would be returned by the query
-        $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-        $rows = mysql_result(dbquery($sqlcount), 0);
+        $sqlcount = "SELECT COUNT(*) AS numrows " . strstr($sqlcount, "FROM");
+
+        $results = dbquery($sqlcount);
+        $resultsFirstRow = $results->fetch_array();
+        $rows = intval($resultsFirstRow['numrows']);
 
         // Build the pager data
         $pager_options = array(
@@ -2337,18 +2358,18 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
  <td colspan="4">';
 
         // Re-run the original query and limit the rows
-        $sql .= " LIMIT $from," . MAX_RESULTS;
+        $sql .= " LIMIT " . ($from - 1) . "," . MAX_RESULTS;
         $sth = dbquery($sql);
-        $rows = mysql_num_rows($sth);
-        $fields = mysql_num_fields($sth);
+        $rows = $sth->num_rows;
+        $fields = $sth->field_count;
         // Account for extra operations column
         if ($operations !== false) {
             $fields++;
         }
     } else {
         $sth = dbquery($sql);
-        $rows = mysql_num_rows($sth);
-        $fields = mysql_num_fields($sth);
+        $rows = $sth->num_rows;
+        $fields = $sth->field_count;
         // Account for extra operations column
         if ($operations !== false) {
             $fields++;
@@ -2362,13 +2383,17 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
         // Column headings
         echo ' <tr>' . "\n";
-        for ($f = 0; $f < $fields; $f++) {
-            echo '  <th>' . mysql_field_name($sth, $f) . '</th>' . "\n";
+        if ($operations !== false) {
+            echo '<td></td>';
+        }
+
+        foreach ($sth->fetch_fields() as $field) {
+            echo '  <th>' .$field->name . '</th>' . "\n";
         }
         echo ' </tr>' . "\n";
         // Rows
         $i = 1;
-        while ($row = mysql_fetch_row($sth)) {
+        while ($row = $sth->fetch_row()) {
             $i = 1 - $i;
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
@@ -2397,7 +2422,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         // Count the number of rows that would be returned by the query
         $sqlcount = "SELECT COUNT(*) " . strstr($sqlcount, "FROM");
-        $rows = mysql_result(dbquery($sqlcount), 0);
+        $rows = database::mysqli_result(dbquery($sqlcount), 0);
 
         // Build the pager data
         $pager_options = array(
@@ -2430,19 +2455,20 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
 /**
  * @param $sql
- */
+
 function db_vertical_table($sql)
 {
     $sth = dbquery($sql);
-    $rows = mysql_num_rows($sth);
-    $fields = mysql_num_fields($sth);
+    $rows = $sth->num_rows;
+    $fields = $sth->field_count;
 
     if ($rows > 0) {
         echo '<table border="1" class="mail">' . "\n";
-        while ($row = mysql_fetch_row($sth)) {
+        while ($row = $sth->fetch_row()) {
             for ($f = 0; $f < $fields; $f++) {
+                $fieldInfo = $sth->fetch_field_direct($f);
                 echo " <tr>\n";
-                echo "  <td>" . mysql_field_name($sth, $f) . "</td>\n";
+                echo "  <td>" . $fieldInfo->name . "</td>\n";
                 echo "  <td>" . $row[$f] . "</td>\n";
                 echo " </tr>\n";
             }
@@ -2452,6 +2478,7 @@ function db_vertical_table($sql)
         echo "No rows retrieved\n";
     }
 }
+*/
 
 /**
  * @return double
@@ -2666,7 +2693,7 @@ function ldap_authenticate($user, $password)
 
                         $sql = sprintf("SELECT username FROM users WHERE username = %s", quote_smart($email));
                         $sth = dbquery($sql);
-                        if (mysql_num_rows($sth) == 0) {
+                        if ($sth->num_rows == 0) {
                             $sql = sprintf(
                                 "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                                 quote_smart($email),
@@ -2945,7 +2972,7 @@ function is_local($host)
 }
 
 /**
- * @param $msgid
+ * @param string $msgid
  * @param bool|false $rpc_only
  * @return array|mixed|string
  */
@@ -2966,11 +2993,11 @@ SELECT
  WHERE
   id = '$msgid'";
     $sth = dbquery($sql);
-    $rows = mysql_num_rows($sth);
+    $rows = $sth->num_rows;
     if ($rows <= 0) {
         die(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
     }
-    $row = mysql_fetch_object($sth);
+    $row = $sth->fetch_object();
     if (!$rpc_only && is_local($row->hostname)) {
         $quarantinedir = get_conf_var("QuarantineDir");
         $quarantine = $quarantinedir . '/' . $row->date . '/' . $row->id;
@@ -3202,12 +3229,12 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $learn_type = "ham";
                     if ($list[$val]['isspam'] == 'Y') {
                         // Learning SPAM as HAM - this is a false-positive
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=1, isfn=0 WHERE id='" . mysql_real_escape_string(
+                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=1, isfn=0 WHERE id='" . safe_value(
                                 $list[$val]['msgid']
                             ) . "'";
                     } else {
                         // Learning HAM as HAM - better reset the flags just in case
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . mysql_real_escape_string(
+                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . safe_value(
                                 $list[$val]['msgid']
                             ) . "'";
                     }
@@ -3216,33 +3243,33 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $learn_type = "spam";
                     if ($list[$val]['isspam'] == 'N') {
                         // Learning HAM as SPAM - this is a false-negative
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=1 WHERE id='" . mysql_real_escape_string(
+                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=1 WHERE id='" . safe_value(
                                 $list[$val]['msgid']
                             ) . "'";
                     } else {
                         // Learning SPAM as SPAM - better reset the flags just in case
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . mysql_real_escape_string(
+                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . safe_value(
                                 $list[$val]['msgid']
                             ) . "'";
                     }
                     break;
                 case "forget":
                     $learn_type = "forget";
-                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . mysql_real_escape_string(
+                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . safe_value(
                             $list[$val]['msgid']
                         ) . "'";
                     break;
                 case "report":
                     $use_spamassassin = true;
                     $learn_type = "-r";
-                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=1 WHERE id='" . mysql_real_escape_string(
+                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=1 WHERE id='" . safe_value(
                             $list[$val]['msgid']
                         ) . "'";
                     break;
                 case "revoke":
                     $use_spamassassin = true;
                     $learn_type = "-k";
-                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=1, isfn=0 WHERE id='" . mysql_real_escape_string(
+                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=1, isfn=0 WHERE id='" . safe_value(
                             $list[$val]['msgid']
                         ) . "'";
                     break;
@@ -3423,11 +3450,11 @@ function fixMessageId($id)
  */
 function audit_log($action)
 {
-    dbconn();
+    $link = dbconn();
     if (AUDIT) {
-        $user = mysql_real_escape_string($_SESSION['myusername']);
-        $action = mysql_real_escape_string($action);
-        $ip = mysql_real_escape_string($_SERVER['REMOTE_ADDR']);
+        $user = $link->real_escape_string($_SESSION['myusername']);
+        $action = safe_value($action);
+        $ip = safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
         if ($ret) {
             return true;
@@ -3665,7 +3692,7 @@ function updateUserPasswordHash($user, $hash)
 {
     $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
     $passwordFiledLengthResult = dbquery($sqlCheckLenght);
-    $passwordFiledLength = intval(mysql_result($passwordFiledLengthResult, 0, 'passwordfieldlength'));
+    $passwordFiledLength = intval(database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength'));
 
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL";

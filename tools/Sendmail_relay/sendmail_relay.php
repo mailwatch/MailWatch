@@ -199,8 +199,8 @@ function doit($input)
     $lines = 1;
     while ($line = fgets($fp, 2096)) {
         $parsed = new syslog_parser($line);
-        $_timestamp = mysql_real_escape_string($parsed->timestamp);
-        $_host = mysql_real_escape_string($parsed->host);
+        $_timestamp = safe_value($parsed->timestamp);
+        $_host = safe_value($parsed->host);
         $_dsn = "";
         $_delay = "";
         $_relay = "";
@@ -212,20 +212,20 @@ function doit($input)
                 print_r($sendmail);
             }
 
-            $_msg_id = mysql_real_escape_string($sendmail->id);
+            $_msg_id = safe_value($sendmail->id);
 
             // Rulesets
             if (isset($sendmail->entries['ruleset'])) {
                 if ($sendmail->entries['ruleset'] == 'check_relay') {
                     // Listed in RBL(s)
-                    $_type = mysql_real_escape_string('rbl');
-                    $_relay = mysql_real_escape_string($sendmail->entries['arg2']);
-                    $_status = mysql_real_escape_string($sendmail->entries['reject']);
+                    $_type = safe_value('rbl');
+                    $_relay = safe_value($sendmail->entries['arg2']);
+                    $_status = safe_value($sendmail->entries['reject']);
                 }
                 if ($sendmail->entries['ruleset'] == 'check_mail') {
                     // Domain does not resolve
-                    $_type = mysql_real_escape_string('unresolveable');
-                    $_status = mysql_real_escape_string(get_email($sendmail->entries['reject']));
+                    $_type = safe_value('unresolveable');
+                    $_status = safe_value(get_email($sendmail->entries['reject']));
                 }
             }
 
@@ -235,24 +235,24 @@ function doit($input)
                     $sendmail->entries['reject']
                 ))
             ) {
-                $_type = mysql_real_escape_string('unknown_user');
-                $_status = mysql_real_escape_string(get_email($sendmail->entries['to']));
+                $_type = safe_value('unknown_user');
+                $_status = safe_value(get_email($sendmail->entries['to']));
             }
 
             // Unknown users
             if (preg_match('/user unknown/i', $sendmail->entry)) {
                 // Unknown users
-                $_type = mysql_real_escape_string('unknown_user');
-                $_status = mysql_real_escape_string($sendmail->raw);
+                $_type = safe_value('unknown_user');
+                $_status = safe_value($sendmail->raw);
             }
 
             // Relay lines
             if (isset($sendmail->entries['relay']) && isset($sendmail->entries['stat'])) {
-                $_type = mysql_real_escape_string('relay');
-                $_delay = mysql_real_escape_string($sendmail->entries['xdelay']);
-                $_relay = mysql_real_escape_string(get_ip($sendmail->entries['relay']));
-                $_dsn = mysql_real_escape_string($sendmail->entries['dsn']);
-                $_status = mysql_real_escape_string($sendmail->entries['stat']);
+                $_type = safe_value('relay');
+                $_delay = safe_value($sendmail->entries['xdelay']);
+                $_relay = safe_value(get_ip($sendmail->entries['relay']));
+                $_dsn = safe_value($sendmail->entries['dsn']);
+                $_status = safe_value($sendmail->entries['stat']);
             }
         }
         if (isset($_type)) {

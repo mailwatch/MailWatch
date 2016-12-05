@@ -165,7 +165,7 @@ WHERE
  1=1
 " . $this->CreateSQL();
         $sth = dbquery($query);
-        while ($row = mysql_fetch_object($sth)) {
+        while ($row = $sth->fetch_object()) {
             echo ' <tr><td>' . __('oldrecord09') . '</td><td align="right">' . $row->oldest . '</td></tr>' . "\n";
             echo ' <tr><td>' . __('newrecord09') . '</td><td align="right">' . $row->newest . '</td></tr>' . "\n";
             echo ' <tr><td>' . __('messagecount09') . '</td><td align="right">' . number_format($row->messages) . '</td></tr>' . "\n";
@@ -344,7 +344,7 @@ WHERE
         dbconn();
         if (count($this->item) > 0) {
             // Delete the existing first
-            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . mysql_real_escape_string(
+            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . safe_value(
                     $name
                 ) . "'";
             dbquery($dsql);
@@ -365,11 +365,11 @@ WHERE
     public function Load($name)
     {
         dbconn();
-        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='" . mysql_real_escape_string(
+        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='" . safe_value(
                 $name
             ) . "' AND username='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
-        while ($row = mysql_fetch_row($sth)) {
+        while ($row = $sth->fetch_row()) {
             $this->item[] = $row;
         }
     }
@@ -380,7 +380,7 @@ WHERE
     public function Delete($name)
     {
         dbconn();
-        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . mysql_real_escape_string(
+        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . safe_value(
                 $name
             ) . "'";
         dbquery($sql);
@@ -392,7 +392,7 @@ WHERE
         $sth = dbquery($sql);
         $return = '<select name="filter">' . "\n";
         $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";
-        while ($row = mysql_fetch_array($sth)) {
+        while ($row = $sth->fetch_array()) {
             $return .= ' <option value="' . $row[0] . '">' . $row[0] . '</option>' . "\n";
         }
         $return .= '</select>' . "\n";

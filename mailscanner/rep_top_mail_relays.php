@@ -70,13 +70,13 @@ if (is_writable(CACHE_DIR)) {
     include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
 
     $result = dbquery($sql);
-    if (!mysql_num_rows($result) > 0) {
+    if (!$result->num_rows > 0) {
         die(__('diemysql99') . "\n");
     }
 
     $relay_array = array();
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data[] = $row->count;
         $hostname = gethostbyaddr($row->clientip);
         if ($hostname == $row->clientip) {

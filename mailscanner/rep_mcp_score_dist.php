@@ -71,11 +71,11 @@ if (is_writable(CACHE_DIR)) {
 // AjosNote - Must be 2 or more rows...
 ///////AJOS1 NOTE////////
     $result = dbquery($sql);
-    if (mysql_num_rows($result) <= 1) {
+    if ($result->num_rows <= 1) {
         die(__('die35') . "\n");
     }
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data_labels[] = $row->score;
         $data_count[] = $row->count;
     }

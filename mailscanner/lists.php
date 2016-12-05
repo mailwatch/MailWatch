@@ -101,13 +101,15 @@ switch ($_SESSION['user_type']) {
         $result1 = dbquery($sql1);
 
         if (!$result1) {
-            $message = 'Invalid query: ' . mysql_error() . "\n";
+            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
             $message .= 'Whole query: ' . $sql1;
             die($message);
         }
-        while ($row = mysql_fetch_array($result1)) {
+        $filter = array();
+        while ($row = $result1->fetch_row()) {
             $filter[] = $row['filter'];
         }
+        $user_filter = array();
         foreach ($filter as $user_filter_check) {
             if (preg_match("/^[^@]{1,64}@[^@]{1,255}$/", $user_filter_check)) {
                 $user_filter[] = $user_filter_check;
@@ -131,11 +133,11 @@ switch ($_SESSION['user_type']) {
         $result1 = dbquery($sql1);
 
         if (!$result1) {
-            $message = 'Invalid query: ' . mysql_error() . "\n";
+            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
             $message .= 'Whole query: ' . $sql1;
             die($message);
         }
-        while ($row = mysql_fetch_array($result1)) {
+        while ($row = $result1->fetch_row()) {
             $to_domain_filter[] = $row['filter'];
         }
         if (strpos($_SESSION['myusername'], '@')) {
@@ -183,9 +185,9 @@ if ($url_submit == 'add') {
                 break;
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES';
-        $sql .= '(\'' . mysql_real_escape_string($to_address);
-        $sql .= '\',\'' . mysql_real_escape_string($to_domain);
-        $sql .= '\',\'' . mysql_real_escape_string($from) . '\')';
+        $sql .= "('" . safe_value($to_address) . "',";
+        $sql .= "'" . safe_value($to_domain) . "',";
+        $sql .= "'" . safe_value($from) . "')";
         @dbquery($sql);
         audit_log("Added " . $from . " to " . $list . " for " . $to_address);
         //unset($from);
@@ -220,7 +222,7 @@ if ($url_submit == 'delete') {
             break;
     }
 
-    $id = mysql_real_escape_string($url_id);
+    $id = safe_value($url_id);
     dbquery($sql);
 }
 
@@ -229,8 +231,7 @@ function build_table($sql, $list)
     global $bg_colors;
 
     $sth = dbquery($sql);
-    $rows = mysql_num_rows($sth);
-    if ($rows > 0) {
+    if ($sth->num_rows > 0) {
         echo '<table class="blackwhitelist">' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th>' . __('from07') . '</th>' . "\n";
@@ -238,7 +239,7 @@ function build_table($sql, $list)
         echo '  <th>' . __('action07') . '</th>' . "\n";
         echo ' </tr>' . "\n";
         $i = 1;
-        while ($row = mysql_fetch_row($sth)) {
+        while ($row = $sth->fetch_row()) {
             $i = 1 - $i;
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";

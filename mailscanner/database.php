@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 
 /*
@@ -30,42 +29,63 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change the following to reflect the location of functions.php
-require('/var/www/html/mailscanner/functions.php');
+class database
+{
+    /** @var mysqli $link */
+    public static $link;
 
-ini_set('error_log', 'syslog');
-ini_set('html_errors', 'off');
-ini_set('display_errors', 'on');
-ini_set('implicit_flush', 'false');
-
-if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
-    die("The variable RECORD_DAYS_TO_KEEP is empty, please set a value in conf.php.");
-} elseif (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
-    die("The variable AUDIT_DAYS_TO_KEEP is empty, please set a value in conf.php.");
-} else {
-    // Cleaning the maillog table
-    dbquery("DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
-
-    // Cleaning the mta_log and optionally the mta_log_id table
-    $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
-    $tablecheck = dbquery($sqlcheck);
-    $mta = get_conf_var('mta');
-    $optimize_mtalog_id = '';
-    if ($mta == 'postfix' && $tablecheck->num_rows > 0) {
-        //version for postfix with mtalog_ids enabled
-        dbquery(
-            "DELETE i.*, m.* FROM mtalog AS m
-             LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id
-             WHERE m.timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)"
-        );
-        $optimize_mtalog_id = ', mtalog_ids';
-    } else {
-        dbquery("DELETE FROM mtalog WHERE timestamp < (NOW() - INTERVAL " . RECORD_DAYS_TO_KEEP . " DAY)");
+    private function __construct()
+    {
     }
 
-    // Clean the audit log
-    dbquery("DELETE FROM audit_log WHERE timestamp < (NOW() - INTERVAL " . AUDIT_DAYS_TO_KEEP . " DAY)");
+    /**
+     * @param string $host
+     * @param string $username
+     * @param string $password
+     * @param string $database
+     * @return mysqli
+     */
+    public static function connect($host = '', $username = '', $password = '', $database = '')
+    {
+        if (!self::$link) {
+            self::$link = new mysqli($host, $username, $password, $database);
+            if (self::$link->connect_error) {
+                die(__('diedbconn103') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
+            }
+            $charset = 'utf8';
+            if (self::$link->server_version >= 50503) {
+                //mysql version supports utf8mb4
+                $charset = 'utf8mb4';
+            }
+            self::$link->set_charset($charset);
+        }
+        return self::$link;
+    }
 
-    // Optimize all of tables
-    dbquery("OPTIMIZE TABLE maillog, mtalog, audit_log" . $optimize_mtalog_id);
+    /**
+     * @return bool
+     */
+    public static function close()
+    {
+        return self::$link->close();
+    }
+
+    /**
+     * @param mysqli_result $result
+     * @param int $row
+     * @param int|string $col
+     * @return bool|mixed
+     */
+    public static function mysqli_result(mysqli_result $result, $row = 0, $col = 0)
+    {
+        $numrows = $result->num_rows;
+        if ($numrows && $row <= ($numrows - 1) && $row >= 0) {
+            mysqli_data_seek($result, $row);
+            $resrow = is_numeric($col) ? mysqli_fetch_row($result) : mysqli_fetch_assoc($result);
+            if (isset($resrow[$col])) {
+                return $resrow[$col];
+            }
+        }
+        return false;
+    }
 }

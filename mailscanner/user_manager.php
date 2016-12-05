@@ -104,12 +104,12 @@ if ($_SESSION['user_type'] == 'A') {
                     if ($_GET['password'] != $_GET['password1']) {
                         echo __('errorpass12');
                     } else {
-                        $n_username = mysql_real_escape_string($_GET['username']);
-                        $n_fullname = mysql_real_escape_string($_GET['fullname']);
-                        $n_password = mysql_real_escape_string(password_hash($_GET['password'], PASSWORD_DEFAULT));
-                        $n_type = mysql_real_escape_string($_GET['type']);
-                        $spamscore = mysql_real_escape_string($_GET['spamscore']);
-                        $highspamscore = mysql_real_escape_string($_GET['highspamscore']);
+                        $n_username = safe_value($_GET['username']);
+                        $n_fullname = safe_value($_GET['fullname']);
+                        $n_password = safe_value(password_hash($_GET['password'], PASSWORD_DEFAULT));
+                        $n_type = safe_value($_GET['type']);
+                        $spamscore = safe_value($_GET['spamscore']);
+                        $highspamscore = safe_value($_GET['highspamscore']);
                         if (!isset($_GET['quarantine_report'])) {
                             $quarantine_report = '0';
                         } else {
@@ -120,7 +120,7 @@ if ($_SESSION['user_type'] == 'A') {
                             $noscan = '1';
                         }
 
-                        $quarantine_rcpt = mysql_real_escape_string($_GET['quarantine_rcpt']);
+                        $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
                         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, ";
                         if ($spamscore !== '0') {
                             $sql .= "spamscore, ";
@@ -154,9 +154,9 @@ if ($_SESSION['user_type'] == 'A') {
                 break;
             case 'edit':
                 if (!isset($_GET['submit'])) {
-                    $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . mysql_real_escape_string(sanitizeInput($_GET['id'])) . "'";
+                    $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . safe_value(sanitizeInput($_GET['id'])) . "'";
                     $result = dbquery($sql);
-                    $row = mysql_fetch_object($result);
+                    $row = $result->fetch_object();
                     $quarantine_report = '';
                     if ($row->quarantine_report == 1) {
                         $quarantine_report = "CHECKED";
@@ -204,13 +204,13 @@ if ($_SESSION['user_type'] == 'A') {
                         echo __('errorpass12');
                     } else {
                         $do_pwd = false;
-                        $key = mysql_real_escape_string($_GET['key']);
-                        $n_username = mysql_real_escape_string($_GET['username']);
-                        $n_fullname = mysql_real_escape_string($_GET['fullname']);
-                        $n_password = mysql_real_escape_string(password_hash($_GET['password'], PASSWORD_DEFAULT));
-                        $n_type = mysql_real_escape_string($_GET['type']);
-                        $spamscore = mysql_real_escape_string($_GET['spamscore']);
-                        $highspamscore = mysql_real_escape_string($_GET['highspamscore']);
+                        $key = safe_value($_GET['key']);
+                        $n_username = safe_value($_GET['username']);
+                        $n_fullname = safe_value($_GET['fullname']);
+                        $n_password = safe_value(password_hash($_GET['password'], PASSWORD_DEFAULT));
+                        $n_type = safe_value($_GET['type']);
+                        $spamscore = safe_value($_GET['spamscore']);
+                        $highspamscore = safe_value($_GET['highspamscore']);
                         if (!isset($_GET['quarantine_report'])) {
                             $n_quarantine_report = '0';
                         } else {
@@ -221,10 +221,10 @@ if ($_SESSION['user_type'] == 'A') {
                         } else {
                             $noscan = '0';
                         }
-                        $quarantine_rcpt = mysql_real_escape_string($_GET['quarantine_rcpt']);
+                        $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
 
                         // Record old user type to audit user type promotion/demotion
-                        $o_type = mysql_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
+                        $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
 
                         if ($_GET['password'] !== 'XXXXXXXX') {
                             // Password reset required
@@ -251,7 +251,7 @@ if ($_SESSION['user_type'] == 'A') {
             case 'delete':
                 if (isset($_GET['id'])) {
                     $id = sanitizeInput($_GET['id']);
-                    $sql = "DELETE FROM users WHERE username='" . mysql_real_escape_string($id) . "'";
+                    $sql = "DELETE FROM users WHERE username='" . safe_value($id) . "'";
                     dbquery($sql);
                     audit_log("User '" . $_GET['id'] . "' deleted");
                 }
@@ -264,32 +264,33 @@ if ($_SESSION['user_type'] == 'A') {
 
                 if (isset($_GET['new'])) {
                     $getActive = sanitizeInput($_GET['active']);
-                    $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . mysql_real_escape_string($id) . "','" . mysql_real_escape_string($getFilter) . "','" . mysql_real_escape_string($getActive) . "')";
+                    $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value($id) . "','" . safe_value($getFilter) . "','" . safe_value($getActive) . "')";
                     dbquery($sql);
                     if (DEBUG == 'true') {
                         echo $sql;
                     }
                 }
                 if (isset($_GET['delete'])) {
-                    $sql = "DELETE FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
+                    $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     dbquery($sql);
                     if (DEBUG == 'true') {
                         echo $sql;
                     }
                 }
                 if (isset($_GET['change_state'])) {
-                    $sql = "SELECT active FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
-                    $active = mysql_fetch_row(dbquery($sql));
+                    $sql = "SELECT active FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
+                    $result = dbquery($sql);
+                    $active = $result->fetch_row();
                     $active = $active[0];
                     if ($active == 'Y') {
-                        $sql = "UPDATE user_filters SET active='N' WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
+                        $sql = "UPDATE user_filters SET active='N' WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                         dbquery($sql);
                     } else {
-                        $sql = "UPDATE user_filters SET active='Y' WHERE username='" . mysql_real_escape_string($id) . "' AND filter='" . mysql_real_escape_string($getFilter) . "'";
+                        $sql = "UPDATE user_filters SET active='Y' WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                         dbquery($sql);
                     }
                 }
-                $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . mysql_real_escape_string($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . mysql_real_escape_string($id) . "'";
+                $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value($id) . "'";
                 $result = dbquery($sql);
                 echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"id\" VALUE=\"" . $id . "\">\n";
@@ -297,8 +298,8 @@ if ($_SESSION['user_type'] == 'A') {
                 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
                 echo " <TR><TH COLSPAN=3>" . __('userfilter12') . " " . $id . "</TH></TR>\n";
                 echo " <TR><TH>" . __('filter12') . "</TH><TH>" . __('active12') . "</TH><TH>" . __('action12') . "</TH></TR>\n";
-                if (mysql_num_rows($result) > 0) {
-                    while ($row = mysql_fetch_object($result)) {
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_object()) {
                         echo " <TR><TD>" . $row->filter . "</TD><TD>" . $row->active . "</TD><TD>" . $row->actions . "</TD></TR>\n";
                     }
                 }
@@ -314,8 +315,8 @@ if ($_SESSION['user_type'] == 'A') {
 
     $sql = "
         SELECT
-          username AS '" . mysql_real_escape_string(__('username12')) . "',
-          fullname AS '" . mysql_real_escape_string(__('fullname12')) . "',
+          username AS '" . safe_value(__('username12')) . "',
+          fullname AS '" . safe_value(__('fullname12')) . "',
         CASE
           WHEN type = 'A' THEN '" . __('admin12') . "'
           WHEN type = 'D' THEN '" . __('domainadmin12') . "'
@@ -323,16 +324,16 @@ if ($_SESSION['user_type'] == 'A') {
           WHEN type = 'R' THEN '" . __('userregex12') . "'
         ELSE
           '" . __('unknowtype12') . "'
-        END AS '" . mysql_real_escape_string(__('type12')) . "',
+        END AS '" . safe_value(__('type12')) . "',
         CASE
           WHEN noscan = 1 THEN '" . __('noshort12') . "'
           WHEN noscan = 0 THEN '" . __('yesshort12') . "'
         ELSE
           '" . __('yesshort12') . "'
-        END AS '" . mysql_real_escape_string(__('spamcheck12')) . "',
-          spamscore AS '" . mysql_real_escape_string(__('spamscore12')) . "',
-          highspamscore AS '" . mysql_real_escape_string(__('spamhscore12')) . "',
-        CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . mysql_real_escape_string(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . mysql_real_escape_string(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . mysql_real_escape_string(__('filters12')) . "</a>') AS '" . mysql_real_escape_string(__('action12')) . "'
+        END AS '" . safe_value(__('spamcheck12')) . "',
+          spamscore AS '" . safe_value(__('spamscore12')) . "',
+          highspamscore AS '" . safe_value(__('spamhscore12')) . "',
+        CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
         FROM
           users
         ORDER BY
@@ -340,9 +341,9 @@ if ($_SESSION['user_type'] == 'A') {
     dbtable($sql, __('usermgnt12'));
 } else {
     if (!isset($_GET['submit'])) {
-        $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . mysql_real_escape_string($_SESSION['myusername']) . "'";
+        $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value($_SESSION['myusername']) . "'";
         $result = dbquery($sql);
-        $row = mysql_fetch_object($result);
+        $row = $result->fetch_object();
         $quarantine_report = '';
         if ($row->quarantine_report == 1) {
             $quarantine_report = "CHECKED";
@@ -377,10 +378,10 @@ if ($_SESSION['user_type'] == 'A') {
             echo __('errorpass12');
         } else {
             $do_pwd = false;
-            $username = mysql_real_escape_string($_SESSION['myusername']);
-            $n_password = mysql_real_escape_string($_GET['password']);
-            $spamscore = mysql_real_escape_string($_GET['spamscore']);
-            $highspamscore = mysql_real_escape_string($_GET['highspamscore']);
+            $username = safe_value($_SESSION['myusername']);
+            $n_password = safe_value($_GET['password']);
+            $spamscore = safe_value($_GET['spamscore']);
+            $highspamscore = safe_value($_GET['highspamscore']);
             if (!isset($_GET['quarantine_report'])) {
                 $n_quarantine_report = '0';
             } else {
@@ -391,7 +392,7 @@ if ($_SESSION['user_type'] == 'A') {
             } else {
                 $noscan = '0';
             }
-            $quarantine_rcpt = mysql_real_escape_string($_GET['quarantine_rcpt']);
+            $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
 
             if ($_GET['password'] !== 'XXXXXXXX') {
                 // Password reset required

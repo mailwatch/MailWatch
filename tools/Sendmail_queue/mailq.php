@@ -257,18 +257,18 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
      lastattempt,
      hostname)
     VALUES
-    ('" . mysql_real_escape_string($msgid) . "','" .
-                    mysql_real_escape_string($msginfo['cdate']) . "','" .
-                    mysql_real_escape_string($msginfo['ctime']) . "','" .
-                    mysql_real_escape_string($msginfo['sender']) . "','" .
-                    mysql_real_escape_string(@join(",", $msginfo['rcpts'])) . "','" .
-                    mysql_real_escape_string($msginfo['subject']) . "','" .
-                    mysql_real_escape_string($msginfo['message']) . "','" .
-                    mysql_real_escape_string($msginfo['size']) . "','" .
-                    mysql_real_escape_string($msginfo['priority']) . "','" .
-                    mysql_real_escape_string($msginfo['attempts']) . "','" .
-                    mysql_real_escape_string($msginfo['lastattempttime']) . "','" .
-                    mysql_real_escape_string($sys_hostname) . "')";
+    ('" . safe_value($msgid) . "','" .
+                    safe_value($msginfo['cdate']) . "','" .
+                    safe_value($msginfo['ctime']) . "','" .
+                    safe_value($msginfo['sender']) . "','" .
+                    safe_value(@join(",", $msginfo['rcpts'])) . "','" .
+                    safe_value($msginfo['subject']) . "','" .
+                    safe_value($msginfo['message']) . "','" .
+                    safe_value($msginfo['size']) . "','" .
+                    safe_value($msginfo['priority']) . "','" .
+                    safe_value($msginfo['attempts']) . "','" .
+                    safe_value($msginfo['lastattempttime']) . "','" .
+                    safe_value($sys_hostname) . "')";
                 dbquery($sql);
             }
         }

@@ -66,14 +66,14 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
     $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
     $result = dbquery($sql);
     if (!$result) {
-        dbg("Error fetching from database" . mysql_error());
+        dbg("Error fetching from database" . database::$link->error);
         echo __('dberror59');
     }
-    if (mysql_num_rows($result) == 0) {
+    if ($result->num_rows == 0) {
         echo "<p>" . __('msgnotfound159') . "</p>";
         echo "<p>" . __('msgnotfound259') . htmlentities($mid) . " " . __('msgnotfound359') . "</p>";
     } else {
-        $row = mysql_fetch_assoc($result);
+        $row = $result->fetch_assoc();
         if ($row['uid'] == $token) {
             $list = quarantine_list_items($mid);
             $result = '';
@@ -95,7 +95,7 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
             $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
             $result = dbquery($query);
             if (!$result) {
-                dbg("ERROR cleaning up database... " . mysql_error());
+                dbg("ERROR cleaning up database... " . database::$link->error);
             }
         } else {
             echo __('tokenmismatch59');

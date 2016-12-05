@@ -46,7 +46,7 @@ if (!isset($_GET['dir'])) {
         foreach ($dates as $date) {
             $sql = "SELECT id FROM maillog WHERE " . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
             $result = dbquery($sql);
-            $rowcnt = mysql_num_rows($result);
+            $rowcnt = $result->num_rows;
             $rowstr = "  ----------";
             if ($rowcnt > 0) {
                 $rowstr = sprintf("  %02d " . __('items08'), $rowcnt);
@@ -88,7 +88,7 @@ if (!isset($_GET['dir'])) {
     $dir = sanitizeInput($_GET['dir']);
     if (QUARANTINE_USE_FLAG) {
         dbconn();
-        $date = mysql_real_escape_string(translateQuarantineDate($dir, 'sql'));
+        $date = safe_value(translateQuarantineDate($dir, 'sql'));
         $sql = "
 SELECT
  id AS id2,
@@ -146,7 +146,7 @@ ORDER BY
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
             $msg_ids = join($items, ",");
-            $date = mysql_real_escape_string(translateQuarantineDate($dir, 'sql'));
+            $date = safe_value(translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
    id AS id2,

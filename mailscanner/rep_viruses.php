@@ -129,13 +129,13 @@ ORDER BY
  date ASC, time ASC";
 
 $result = dbquery($sql);
-if (!mysql_num_rows($result) > 0) {
+if (!$result->num_rows > 0) {
     die(__('diemysql99') . "\n");
 }
 
 $virus_array = array();
 
-while ($row = mysql_fetch_object($result)) {
+while ($row = $result->fetch_object()) {
     foreach ($scanner as $scan => $vals) {
         if (preg_match($vals['regexp'], $row->report, $virus_report)) {
             $virus = $virus_report[2];
