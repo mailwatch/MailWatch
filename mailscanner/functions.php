@@ -2661,15 +2661,15 @@ function address_filter_sql($addresses, $type)
 function ldap_authenticate($user, $password)
 {
     $user = strtolower($user);
-    if ($user != "" && $password != "") {
-        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(__('ldpaauth103') . " " . LDAP_HOST);
+    if ($user !== '' && $password !== '') {
+        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(__('ldpaauth103') . ' ' . LDAP_HOST);
         // Check if Microsoft Active Directory compatibility is enabled
         if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
-        if (strpos($user, '@') and LDAP_EMAIL_FIELD === 'mail') {
+        if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
             $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
         } elseif (strpos($user, '@')) {
             $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
@@ -2679,22 +2679,22 @@ function ldap_authenticate($user, $password)
         if ($r) {
             $result = ldap_get_entries($ds, $r) or die(__('ldpaauth303'));
             if ($result[0]) {
-                if (in_array("group", array_values($result[0]["objectclass"]))) {
+                if (in_array('group', array_values($result[0]['objectclass']))) {
                     return null;
                 }
                 $user = $result[0]['userprincipalname']['0'];
                 if (ldap_bind($ds, $user, "$password")) {
                     if (isset($result[0][LDAP_EMAIL_FIELD])) {
                         foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
-                            if (substr($email, 0, 4) == "SMTP") {
+                            if (substr($email, 0, 4) === 'SMTP') {
                                 $email = strtolower(substr($email, 5));
                                 break;
                             }
                         }
 
-                        $sql = sprintf("SELECT username FROM users WHERE username = %s", quote_smart($email));
+                        $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($email));
                         $sth = dbquery($sql);
-                        if ($sth->num_rows == 0) {
+                        if ($sth->num_rows === 0) {
                             $sql = sprintf(
                                 "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                                 quote_smart($email),
@@ -2713,6 +2713,84 @@ function ldap_authenticate($user, $password)
     return null;
 }
 
+if (!function_exists('ldap_escape')) {
+    define('LDAP_ESCAPE_FILTER', 0x01);
+    define('LDAP_ESCAPE_DN',     0x02);
+
+    /**
+     * function ldap_escape
+     *
+     * @source http://stackoverflow.com/questions/8560874/php-ldap-add-function-to-escape-ldap-special-characters-in-dn-syntax#answer-8561604
+     * @author Chris Wright
+     * @param string $subject The subject string
+     * @param string $ignore Set of characters to leave untouched
+     * @param int $flags Any combination of LDAP_ESCAPE_* flags to indicate the
+     *                   set(s) of characters to escape.
+     * @return string The escaped string
+     */
+    function ldap_escape($subject, $ignore = '', $flags = 0)
+    {
+        $charMaps = array(
+            LDAP_ESCAPE_FILTER => array('\\', '*', '(', ')', "\x00"),
+            LDAP_ESCAPE_DN     => array('\\', ',', '=', '+', '<', '>', ';', '"', '#')
+        );
+
+        // Pre-process the char maps on first call
+        if (!isset($charMaps[0])) {
+            $charMaps[0] = array();
+            for ($i = 0; $i < 256; $i++) {
+                $charMaps[0][chr($i)] = sprintf('\\%02x', $i);
+            }
+
+            for ($i = 0, $l = count($charMaps[LDAP_ESCAPE_FILTER]); $i < $l; $i++) {
+                $chr = $charMaps[LDAP_ESCAPE_FILTER][$i];
+                unset($charMaps[LDAP_ESCAPE_FILTER][$i]);
+                $charMaps[LDAP_ESCAPE_FILTER][$chr] = $charMaps[0][$chr];
+            }
+
+            for ($i = 0, $l = count($charMaps[LDAP_ESCAPE_DN]); $i < $l; $i++) {
+                $chr = $charMaps[LDAP_ESCAPE_DN][$i];
+                unset($charMaps[LDAP_ESCAPE_DN][$i]);
+                $charMaps[LDAP_ESCAPE_DN][$chr] = $charMaps[0][$chr];
+            }
+        }
+
+        // Create the base char map to escape
+        $flags = (int)$flags;
+        $charMap = array();
+        if ($flags & LDAP_ESCAPE_FILTER) {
+            $charMap += $charMaps[LDAP_ESCAPE_FILTER];
+        }
+        if ($flags & LDAP_ESCAPE_DN) {
+            $charMap += $charMaps[LDAP_ESCAPE_DN];
+        }
+        if (!$charMap) {
+            $charMap = $charMaps[0];
+        }
+
+        // Remove any chars to ignore from the list
+        $ignore = (string)$ignore;
+        for ($i = 0, $l = strlen($ignore); $i < $l; $i++) {
+            unset($charMap[$ignore[$i]]);
+        }
+
+        // Do the main replacement
+        $result = strtr($subject, $charMap);
+
+        // Encode leading/trailing spaces if LDAP_ESCAPE_DN is passed
+        if ($flags & LDAP_ESCAPE_DN) {
+            if ($result[0] === ' ') {
+                $result = '\\20' . substr($result, 1);
+            }
+            if ($result[strlen($result) - 1] === ' ') {
+                $result = substr($result, 0, -1) . '\\20';
+            }
+        }
+
+        return $result;
+    }
+}
+
 /**
  * @param $entry
  * @return string
@@ -2723,20 +2801,20 @@ function ldap_get_conf_var($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die(__('ldapgetconfvar103') . " " . LDAP_HOST . "\n");
+    or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
     or die(__('ldapgetconfvar203') . "\n");
 
     # As per MailScanner Config.pm
-    $filter = "(objectClass=mailscannerconfmain)";
+    $filter = '(objectClass=mailscannerconfmain)';
     $filter = "(&$filter(mailScannerConfBranch=main))";
 
     $sh = ldap_search($lh, LDAP_DN, $filter, array($entry));
 
     $info = ldap_get_entries($lh, $sh);
-    if ($info['count'] > 0 && $info[0]['count'] <> 0) {
-        if ($info[0]['count'] == 0) {
+    if ($info['count'] > 0 && $info[0]['count'] !== 0) {
+        if ($info[0]['count'] === 0) {
             // Return single value
             return $info[0][$info[0][0]][0];
         } else {
@@ -2746,7 +2824,7 @@ function ldap_get_conf_var($entry)
                 $return[] = $info[0][$info[0][0]][$n];
             }
 
-            return join(" ", $return);
+            return implode(' ', $return);
         }
     } else {
         // No results
@@ -2764,13 +2842,13 @@ function ldap_get_conf_truefalse($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die(__('ldapgetconfvar103') . " " . LDAP_HOST . "\n");
+    or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
     or die(__('ldapgetconfvar203') . "\n");
 
     # As per MailScanner Config.pm
-    $filter = "(objectClass=mailscannerconfmain)";
+    $filter = '(objectClass=mailscannerconfmain)';
     $filter = "(&$filter(mailScannerConfBranch=main))";
 
     $sh = ldap_search($lh, LDAP_DN, $filter, array($entry));
@@ -2778,7 +2856,7 @@ function ldap_get_conf_truefalse($entry)
     $info = ldap_get_entries($lh, $sh);
     debug(debug_print_r($info));
     if ($info['count'] > 0) {
-        debug("Entry: " . debug_print_r($info[0][$info[0][0]][0]));
+        debug('Entry: ' . debug_print_r($info[0][$info[0][0]][0]));
         switch ($info[0][$info[0][0]][0]) {
             case 'yes':
             case '1':

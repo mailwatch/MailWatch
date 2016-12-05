@@ -29,9 +29,9 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/lib/password.php');
-require_once(__DIR__ . '/lib/hash_equals.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/lib/password.php';
+require_once __DIR__ . '/lib/hash_equals.php';
 
 session_start();
 
@@ -43,22 +43,23 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = $_POST['myusername'];
     $mypassword = $_POST['mypassword'];
 }
-$myusername = sanitizeInput($myusername);
-$mypassword = sanitizeInput($mypassword);
-if ((USE_LDAP === true) && (($result = ldap_authenticate($myusername, $mypassword)) !== null)) {
+
+if (
+    (USE_LDAP === true) &&
+    (($result = ldap_authenticate(ldap_escape($myusername, '', LDAP_ESCAPE_DN), ldap_escape($mypassword, '', LDAP_ESCAPE_DN))) !== null)
+) {
     $_SESSION['user_ldap'] = '1';
-    $myusername = safe_value($result);
+    $myusername = safe_value($myusername);
+    $mypassword = safe_value($mypassword);
 } else {
-    if ($mypassword != '') {
+    $_SESSION['user_ldap'] = '0';
+    if ($mypassword !== '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
-        $_SESSION['user_ldap'] = '0';
     } else {
-        header("Location: login.php?error=emptypassword");
+        header('Location: login.php?error=emptypassword');
         die();
     }
-
-    $_SESSION['user_ldap'] = '0';
 }
 
 $sql = "SELECT * FROM users WHERE username='$myusername'";
@@ -74,13 +75,14 @@ $usercount = $result->num_rows;
 if ($usercount === 0) {
     //no user found, redirect to login
     dbclose();
-    //header("Location: login.php?error=baduser");
+    header('Location: login.php?error=baduser');
+    die();
 } else {
-    if ($_SESSION['user_ldap'] == '0') {
+    if ($_SESSION['user_ldap'] === '0') {
         $passwordInDb = database::mysqli_result($result, 0, 'password');
         if (!password_verify($mypassword, $passwordInDb)) {
             if (!hash_equals(md5($mypassword), $passwordInDb)) {
-                header("Location: login.php?error=baduser");
+                header('Location: login.php?error=baduser');
                 die(__LINE__);
             } else {
                 $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
@@ -115,17 +117,17 @@ if ($usercount === 0) {
     $global_filter = address_filter_sql($filter, $usertype);
 
     switch ($usertype) {
-        case "A":
-            $global_list = "1=1";
+        case 'A':
+            $global_list = '1=1';
             break;
-        case "D":
+        case 'D':
             if (strpos($myusername, '@')) {
-                $ar = explode("@", $myusername);
+                $ar = explode('@', $myusername);
                 $domainname = $ar[1];
-                if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                    $global_filter = $global_filter . " OR to_domain='$domainname'";
+                if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
+                    $global_filter .= " OR to_domain='$domainname'";
                 } else {
-                    $global_filter = $global_filter . " OR to_domain='$domainname' OR from_domain='$domainname'";
+                    $global_filter .= " OR to_domain='$domainname' OR from_domain='$domainname'";
                 }
                 $global_list = "to_domain='$domainname'";
             } else {
@@ -135,7 +137,7 @@ if ($usercount === 0) {
                 }
             }
             break;
-        case "U":
+        case 'U':
             $global_list = "to_address='$myusername'";
             foreach ($filter as $to_address) {
                 $global_list .= " OR to_address='$to_address'";
