@@ -66,7 +66,7 @@ if ($required_constant_missing_count == 0) {
     ini_set("memory_limit", '256M');
     ini_set("error_reporting", E_ALL);
     ini_set("max_execution_time", 0);
-    
+
     /*
     ** HTML Template
     */
@@ -201,14 +201,14 @@ AND
 AND 
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)";
 
- // Hide high spam/mcp from users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
-    $sql .= "
+    // Hide high spam/mcp from users if enabled
+    if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
+        $sql .= "
     AND
      ishighspam=0
     AND
      COALESCE(ishighmcp,0)=0";
-}
+    }
 
     if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
         $sql .= "
@@ -246,9 +246,9 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
 ORDER BY a.date DESC, a.time DESC";
 
     $result = dbquery($users_sql);
-    $rows = mysql_num_rows($result);
+    $rows = $result->num_rows;
     if ($rows > 0) {
-        while ($user = mysql_fetch_object($result)) {
+        while ($user = $result->fetch_object()) {
             dbg("\n === Generating report for " . $user->username . " type=" . $user->type);
             // Work out destination e-mail address
             switch ($user->type) {
@@ -301,33 +301,45 @@ ORDER BY a.date DESC, a.time DESC";
     }
 }
 
+/**
+ * @param string $text
+ */
 function dbg($text)
 {
     echo $text . "\n";
 }
 
+/**
+ * @param string $user
+ * @return array
+ */
 function return_user_filters($user)
 {
     global $filters_sql;
     $result = dbquery(sprintf($filters_sql, quote_smart($user)));
-    $rows = mysql_num_rows($result);
+    $rows = $result->num_rows;
     $array = array();
     if ($rows > 0) {
-        while ($row = mysql_fetch_object($result)) {
+        while ($row = $result->fetch_object()) {
             $array[] = $row->filter;
         }
     }
     return $array;
 }
 
+/**
+ * @param string $to_address
+ * @param string $to_domain
+ * @return array
+ */
 function return_quarantine_list_array($to_address, $to_domain)
 {
     global $sql;
     $result = dbquery(sprintf($sql, quote_smart($to_address), quote_smart($to_domain)));
-    $rows = mysql_num_rows($result);
+    $rows = $result->num_rows;
     $array = array();
     if ($rows > 0) {
-        while ($row = mysql_fetch_object($result)) {
+        while ($row = $result->fetch_object()) {
             $array[] = array(
                 'id' => trim($row->id),
                 'datetime' => trim($row->datetime),
@@ -343,6 +355,7 @@ function return_quarantine_list_array($to_address, $to_domain)
 
 /**
  * @param integer $count
+ * @return string
  */
 function get_random_string($count)
 {
@@ -350,6 +363,10 @@ function get_random_string($count)
     return bin2hex($bytes);
 }
 
+/**
+ * @param array $qitem
+ * @return bool
+ */
 function store_auto_release($qitem)
 {
     $id = $qitem['id'];
@@ -371,10 +388,10 @@ function check_auto_release($qitem)
     if (!$result) {
         dbg(" === Error checking if msg_id already exists.....skipping....");
     } else {
-        if (mysql_num_rows($result) == 0) {
+        if ($result->num_rows === 0) {
             return false;//msg_id not found,
-        } elseif (mysql_num_rows($result) == 1) {
-            $row = mysql_fetch_array($result);
+        } elseif ($result->num_rows === 1) {
+            $row = $result->fetch_array();
             $rand = $row['uid'];
             return $rand; //return the stored uid
         } else {
@@ -382,8 +399,15 @@ function check_auto_release($qitem)
             return false;
         }
     }
+
+    return false;
 }
 
+/**
+ * @param $email
+ * @param $filter
+ * @param $quarantined
+ */
 function send_quarantine_email($email, $filter, $quarantined)
 {
     global $html, $html_table, $html_content, $text, $text_content;
@@ -404,13 +428,13 @@ function send_quarantine_email($email, $filter, $quarantined)
                 $auto_release = true;
             }
             if ($auto_release) {
-                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('arview01').'</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">'.__('arrelease01').'</a>';
+                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">' . __('arview01') . '</a>  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('arrelease01') . '</a>';
             } else {
-                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('arview01').'</a>';
+                $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">' . __('arview01') . '</a>';
             }
         } else {
             //auto-release disabled
-            $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('arview01').'</a>';
+            $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">' . __('arview01') . '</a>';
         }
 
         // HTML Version

@@ -51,7 +51,7 @@ if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
     $tablecheck = dbquery($sqlcheck);
     $mta = get_conf_var('mta');
     $optimize_mtalog_id = '';
-    if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) {
+    if ($mta == 'postfix' && $tablecheck->num_rows > 0) {
         //version for postfix with mtalog_ids enabled
         dbquery(
             "DELETE i.*, m.* FROM mtalog AS m
