@@ -205,6 +205,8 @@ return array(
     'geoipfailed04' => '(GeoIP Lookup fehlgeschlagen)',
     'reversefailed04' => '(Reverse Lookup fehlgeschlagen)',
     'hostname04' => 'Hostname',
+    'yes04' => 'Y',
+    'no04' => 'N',
     
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',
