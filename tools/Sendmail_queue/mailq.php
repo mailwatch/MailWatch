@@ -40,9 +40,10 @@ ini_set('implicit_flush', 'false');
 set_time_limit(0);
 
 // Prevent multiple copies running
-$fl = fopen("/var/run/mailq.lock", "w+");
+$lockFile = '/var/run/mailq.lock';
+$fl = @fopen($lockFile, 'w+b');
 // Attempt to create an exclusive lock - continue if successful
-if (flock($fl, LOCK_EX + LOCK_NB)) {
+if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     require $MailWatchHome . 'functions.php';
     date_default_timezone_set(TIME_ZONE);
 
@@ -55,14 +56,14 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
         $output = array();
         if ($dh = @opendir($queuedir)) {
             while (false !== ($file = readdir($dh))) {
-                if ($MTA == "exim") {
+                if ($MTA === 'exim') {
                     if (preg_match("/-H$/", $file)) {
                         // Get rid of the '-H' from the end of the filename to get the msgid
                         $msgid = substr($file, 0, strlen($file) - 2);
-                        if (($fh = @fopen($queuedir . $file, "r"))) {
+                        if ($fh = @fopen($queuedir . $file, 'rb')) {
                             // Work out the total size (df+qf) of the mail
-                            $output[$msgid]['size'] = (@filesize($queuedir . $msgid . "-D") + filesize(
-                                    $queuedir . $msgid . "-H"
+                            $output[$msgid]['size'] = (@filesize($queuedir . $msgid . '-D') + filesize(
+                                    $queuedir . $msgid . '-H'
                                 ));
                             $output[$msgid]['version'] = 'N/A';
                             $output[$msgid]['ctladdr'] = 'N/A';
@@ -74,7 +75,7 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
                             $output[$msgid]['lastattempttime'] = 'N/A';
                             $output[$msgid]['message'] = 'N/A';
                             while (!@feof($fh)) {
-                                if (($line = @fgets($fh, 1024))) {
+                                if ($line = @fgets($fh, 1024)) {
                                     switch (true) {
                                         case preg_match('/^-ident (.+)$/', $line, $match):
                                             $output[$msgid]['auth'] = $match[1];
@@ -87,23 +88,23 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
                                             break;
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
                                             $ctime = getdate($match[1]);
-                                            $output[$msgid]['cdate'] = $ctime['year'] . "-" . str_pad(
+                                            $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
                                                     $ctime['mon'],
                                                     2,
-                                                    "0",
+                                                    '0',
                                                     STR_PAD_LEFT
-                                                ) . "-" . str_pad($ctime['mday'], 2, "0", STR_PAD_LEFT);
+                                                ) . '-' . str_pad($ctime['mday'], 2, '0', STR_PAD_LEFT);
                                             $output[$msgid]['ctime'] = str_pad(
                                                     $ctime['hours'],
                                                     2,
-                                                    "0",
+                                                    '0',
                                                     STR_PAD_LEFT
-                                                ) . ":" . str_pad(
+                                                ) . ':' . str_pad(
                                                     $ctime['minutes'],
                                                     2,
-                                                    "0",
+                                                    '0',
                                                     STR_PAD_LEFT
-                                                ) . ":" . str_pad($ctime['seconds'], 2, "0", STR_PAD_LEFT);
+                                                ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
                                         case preg_match('/^\d{3}I Message-ID: <(.+)>$/', $line, $match):
                                             #$output[$msgid]['message'] = $match[1];
@@ -120,12 +121,12 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
                             fclose($fh);
                             //  Get the message file
                             $MsgDir = preg_replace('/^(.*)\/input\/$/', '$1/msglog/', $queuedir);
-                            if (($fh = @fopen($MsgDir . $msgid, "r"))) {
+                            if ($fh = @fopen($MsgDir . $msgid, 'rb')) {
                                 $output[$msgid]['message'] = '';
                                 $output[$msgid]['attempts'] = 0;
                                 // Get the current message log
                                 while (!@feof($fh)) {
-                                    if (($line = @fgets($fh, 1024))) {
+                                    if ($line = @fgets($fh, 1024)) {
                                         if (preg_match('/retry time not reached/', $line)) {
                                             continue;
                                         }
@@ -139,30 +140,30 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
                                         $output[$msgid]['message'] .= nl2br($line);
                                         $output[$msgid]['message'] = preg_replace(
                                             "/<br \/>/",
-                                            "<BR>",
+                                            '<br>',
                                             $output[$msgid]['message']
                                         );
                                     }
                                 }
                                 fclose($fh);
-                                if ($output[$msgid]['lastattempttime'] != 'N/A') {
+                                if ($output[$msgid]['lastattempttime'] !== 'N/A') {
                                     $output[$msgid]['lastattempttime'] = strtotime($output[$msgid]['lastattempttime']);
                                 }
                             }
                         }
                     }
                 } else {
-                    if (preg_match("/^qf/", $file)) {
+                    if (preg_match('/^qf/', $file)) {
                         // Get rid of the 'qf' from the front of the filename to get the msgid
                         $msgid = substr($file, 2);
-                        if (($fh = @fopen($queuedir . $file, "r"))) {
+                        if ($fh = @fopen($queuedir . $file, 'rb')) {
                             // Work out the total size (df+qf) of the mail
-                            $output[$msgid]['size'] = (@filesize($queuedir . "df" . $msgid) + @filesize(
-                                    $queuedir . "qf" . $msgid
+                            $output[$msgid]['size'] = (@filesize($queuedir . 'df' . $msgid) + @filesize(
+                                    $queuedir . 'qf' . $msgid
                                 ));
                             $output[$msgid]['message'] = '';
                             while (!@feof($fh)) {
-                                if (($line = @fgets($fh, 1024))) {
+                                if ($line = @fgets($fh, 1024)) {
                                     switch (true) {
                                         case preg_match('/^V(.+)$/', $line, $match):
                                             $output[$msgid]['version'] = $match[1];
@@ -187,23 +188,23 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
                                             break;
                                         case preg_match('/^T(.+)$/', $line, $match):
                                             $ctime = getdate($match[1]);
-                                            $output[$msgid]['cdate'] = $ctime['year'] . "-" . str_pad(
+                                            $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
                                                     $ctime['mon'],
                                                     2,
-                                                    "0",
+                                                    '0',
                                                     STR_PAD_LEFT
-                                                ) . "-" . str_pad($ctime['mday'], 2, "0", STR_PAD_LEFT);
+                                                ) . '-' . str_pad($ctime['mday'], 2, '0', STR_PAD_LEFT);
                                             $output[$msgid]['ctime'] = str_pad(
                                                     $ctime['hours'],
                                                     2,
-                                                    "0",
+                                                    '0',
                                                     STR_PAD_LEFT
-                                                ) . ":" . str_pad(
+                                                ) . ':' . str_pad(
                                                     $ctime['minutes'],
                                                     2,
-                                                    "0",
+                                                    '0',
                                                     STR_PAD_LEFT
-                                                ) . ":" . str_pad($ctime['seconds'], 2, "0", STR_PAD_LEFT);
+                                                ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
                                         case preg_match('/^P(.+)$/', $line, $match):
                                             $output[$msgid]['priority'] = $match[1];
@@ -239,11 +240,11 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
         // Get our hostname
         $sys_hostname = rtrim(gethostname());
         // Drop everything from the table first
-        dbquery("DELETE FROM " . $table_name . " WHERE hostname='" . $sys_hostname . "'");
+        dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
                 // Insert each record
-                $sql = "INSERT INTO " . $table_name . "
+                $sql = 'INSERT INTO ' . $table_name . "
     (id,
      cdate,
      ctime,
@@ -261,7 +262,7 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
                     safe_value($msginfo['sender']) . "','" .
-                    safe_value(@join(",", $msginfo['rcpts'])) . "','" .
+                    safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
                     safe_value($msginfo['subject']) . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
@@ -275,9 +276,10 @@ if (flock($fl, LOCK_EX + LOCK_NB)) {
     }
     // Unlock the file
     flock($fl, LOCK_UN);
+
+    // Close the file
+    fclose($fl);
 } else {
     // Lock was not successful - drop out
-    // echo "Unable to lock - not running.\n";
+    echo 'Unable to lock file "' . $lockFile . '" - not running.' . "\n";
 }
-// Close the file
-fclose($fl);
