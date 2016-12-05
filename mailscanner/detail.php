@@ -105,7 +105,7 @@ $sql = "
 $result = dbquery($sql);
 
 // Check to make sure something was returned
-if (mysql_num_rows($result) == 0) {
+if ($result->num_rows == 0) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 } else {
     audit_log('Viewed message detail (id=' . $url_id . ')');
@@ -115,10 +115,11 @@ if (mysql_num_rows($result) == 0) {
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
-while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
+while ($row = $result->fetch_array()) {
     $listurl = "lists.php?host=" . $row[__('receivedfrom04')] . "&amp;from=" . $row[__('from04')] . "&amp;to=" . $row[__('to04')];
-    for ($f = 0; $f < mysql_num_fields($result); $f++) {
-        $fieldn = mysql_field_name($result, $f);
+    for ($f = 0; $f < $result->field_count; $f++) {
+        $fieldInfo = $result->fetch_field_direct($f);
+        $fieldn = $fieldInfo->name;
         if ($fieldn == __('receivedfrom04')) {
             $output = "<table class=\"sa_rules_report\" width=\"100%\" cellspacing=0 cellpadding=0><tr><td>" . $row[$f] . "</td>";
             if (LISTS) {
@@ -243,32 +244,27 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                 );
         }
 
-        if ($is_MCP_enabled=== true) {
+        if ($is_MCP_enabled === true) {
             if ($fieldn == __('mcprep04')) {
                 $row[$f] = format_mcp_report($row[$f]);
             }
-        }
-
-        if ($is_MCP_enabled !== true) {
-            if (mysql_field_name($result, $f) == 'HEADER' && strpos($row[$f], 'MCP') !== false) {
+        } else {
+            if ($fieldn == 'HEADER' && strpos($row[$f], 'MCP') !== false) {
                 continue;
             }
-            if (strpos(mysql_field_name($result, $f), 'MCP') !== false) {
+            if (strpos($fieldn, 'MCP') !== false) {
                 continue;
             }
         }
         // Handle dummy header fields
-        if (mysql_field_name($result, $f) == 'HEADER') {
+        if ($fieldn == 'HEADER') {
             // Display header
             echo '<tr><td class="heading" align="center" valign="top" colspan="2">' . $row[$f] . '</td></tr>' . "\n";
         } else {
             // Actual data
             if (!empty($row[$f])) {
                 // Skip empty rows (notably Spam Report when SpamAssassin didn't run)
-                echo '<tr><td class="heading-w175">' . mysql_field_name(
-                        $result,
-                        $f
-                    ) . '</td><td class="detail">' . $row[$f] . '</td></tr>' . "\n";
+                echo '<tr><td class="heading-w175">' . $fieldn . '</td><td class="detail">' . $row[$f] . '</td></tr>' . "\n";
             }
         }
     }
@@ -278,7 +274,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 // rows in the relay table (maillog.id = relay.msg_id)...
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
-if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfix
+if ($mta == 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
     $sql1 = "
  SELECT
   DATE_FORMAT(m.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS 'Date/Time',
@@ -314,16 +310,17 @@ if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfi
 }
 
 $sth1 = dbquery($sql1);
-if (mysql_num_rows($sth1) > 0) {
+if ($sth1->num_rows > 0) {
     // Display the relay table entries
     echo ' <tr><td class="heading-w175">Relay Information:</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
-    for ($f = 0; $f < mysql_num_fields($sth1); $f++) {
-        echo '   <th>' . mysql_field_name($sth1, $f) . '</th>' . "\n";
+    for ($f = 0; $f < $sth1->field_count; $f++) {
+        $fieldInfo1 = $sth1->fetch_field_direct($f);
+        echo '   <th>' . $fieldInfo1->name . '</th>' . "\n";
     }
     echo "   </tr>\n";
-    while ($row = mysql_fetch_row($sth1)) {
+    while ($row = $sth1->fetch_row()) {
         echo '    <tr>' . "\n";
         echo '     <td class="detail" align="left">' . $row[0] . '</td>' . "\n"; // Date/Time
         echo '     <td class="detail" align="left">' . $row[1] . '</td>' . "\n"; // Relayed by

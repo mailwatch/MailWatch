@@ -73,8 +73,8 @@ if ($_SESSION['user_type'] != 'A') {
             debug("line: " . $line . "\n");
             preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1]) && isset($regs[2])) {
-                $regs[1] = mysql_real_escape_string(ltrim(rtrim($regs[1])));
-                $regs[2] = mysql_real_escape_string(ltrim(rtrim($regs[2])));
+                $regs[1] = safe_value(ltrim(rtrim($regs[1])));
+                $regs[2] = safe_value(ltrim(rtrim($regs[2])));
                 echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . '</td></tr>' . "\n";
                 dbquery("REPLACE INTO mcp_rules VALUES ('$regs[1]','$regs[2]')");
                 //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);

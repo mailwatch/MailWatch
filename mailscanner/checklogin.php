@@ -63,26 +63,25 @@ if ((USE_LDAP === true) && (($result = ldap_authenticate($myusername, $mypasswor
 
 $sql = "SELECT * FROM users WHERE username='$myusername'";
 $result = dbquery($sql);
-
 if (!$result) {
-    $message = 'Invalid query: ' . mysql_error() . "\n";
+    $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
     $message .= 'Whole query: ' . $sql;
     die($message);
 }
 
 // mysql_num_row is counting table row
-$usercount = mysql_num_rows($result);
-if ($usercount == 0) {
+$usercount = $result->num_rows;
+if ($usercount === 0) {
     //no user found, redirect to login
     dbclose();
-    header("Location: login.php?error=baduser");
+    //header("Location: login.php?error=baduser");
 } else {
     if ($_SESSION['user_ldap'] == '0') {
-        $passwordInDb = mysql_result($result, 0, 'password');
+        $passwordInDb = database::mysqli_result($result, 0, 'password');
         if (!password_verify($mypassword, $passwordInDb)) {
             if (!hash_equals(md5($mypassword), $passwordInDb)) {
                 header("Location: login.php?error=baduser");
-                die();
+                die(__LINE__);
             } else {
                 $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
                 updateUserPasswordHash($myusername, $newPasswordHash);
@@ -96,20 +95,20 @@ if ($usercount == 0) {
         }
     }
 
-    $fullname = mysql_result($result, 0, 'fullname');
-    $usertype = mysql_result($result, 0, 'type');
+    $fullname = database::mysqli_result($result, 0, 'fullname');
+    $usertype = database::mysqli_result($result, 0, 'type');
 
     $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
     $result_userfilter = dbquery($sql_userfilter);
 
     if (!$result_userfilter) {
-        $message = 'Invalid query: ' . mysql_error() . "\n";
+        $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
         $message .= 'Whole query: ' . $sql_userfilter;
         die($message);
     }
 
     $filter[] = $myusername;
-    while ($row = mysql_fetch_array($result_userfilter)) {
+    while ($row = $result_userfilter->fetch_array()) {
         $filter[] = $row['filter'];
     }
 
@@ -145,7 +144,7 @@ if ($usercount == 0) {
     }
 
     // If result matched $myusername and $mypassword, table row must be 1 row
-    if ($usercount == 1) {
+    if ($usercount === 1) {
         // Register $myusername, $mypassword and redirect to file "login_success.php"
         $_SESSION['myusername'] = $myusername;
         $_SESSION['fullname'] = $fullname;

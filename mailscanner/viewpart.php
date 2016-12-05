@@ -43,13 +43,12 @@ if (!isset($_GET['id'])) {
     $message_id = sanitizeInput($_GET['id']);
     // See if message is local
     dbconn(); // required db link for mysql_real_escape_string
-    $message_data = mysql_fetch_object(
-        dbquery(
-            "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
-            mysql_real_escape_string($message_id) . "' AND "
-            . $_SESSION["global_filter"]
-        )
+    $result = dbquery(
+        "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
+        safe_value($message_id) . "' AND "
+        . $_SESSION["global_filter"]
     );
+    $message_data = $result->fetch_object();
 
     if (!$message_data) {
         die(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
