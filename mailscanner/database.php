@@ -45,7 +45,7 @@ class database
      * @param string $database
      * @return mysqli
      */
-    static function connect($host = '', $username = '', $password = '', $database = '')
+    public static function connect($host = '', $username = '', $password = '', $database = '')
     {
         if (!self::$link) {
             self::$link = new mysqli($host, $username, $password, $database);
@@ -65,7 +65,7 @@ class database
     /**
      * @return bool
      */
-    static function close()
+    public static function close()
     {
         return self::$link->close();
     }
@@ -76,7 +76,7 @@ class database
      * @param int|string $col
      * @return bool|mixed
      */
-    static function mysqli_result(mysqli_result $result, $row = 0, $col = 0)
+    public static function mysqli_result(mysqli_result $result, $row = 0, $col = 0)
     {
         $numrows = $result->num_rows;
         if ($numrows && $row <= ($numrows - 1) && $row >= 0) {
