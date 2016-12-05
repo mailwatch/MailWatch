@@ -185,8 +185,8 @@ function doit($input)
         unset($parsed, $postfix, $_timestamp, $_host, $_type, $_msg_id, $_relay, $_dsn, $_status, $_delay);
 
         $parsed = new syslog_parser($line);
-        $_timestamp = mysql_real_escape_string($parsed->timestamp);
-        $_host = mysql_real_escape_string($parsed->host);
+        $_timestamp = safe_value($parsed->timestamp);
+        $_host = safe_value($parsed->host);
 
         // Postfix
         if ($parsed->process == 'postfix/smtp' && class_exists('postfix_parser')) {
@@ -194,7 +194,7 @@ function doit($input)
             if (DEBUG) {
                 print_r($postfix);
             }
-            $_msg_id = mysql_real_escape_string($postfix->id);
+            $_msg_id = safe_value($postfix->id);
 
             // Milter-ahead rejections
             if ((preg_match('/Milter: /i', $postfix->raw)) && (preg_match(
@@ -202,34 +202,34 @@ function doit($input)
                     $postfix->entries['reject']
                 ))
             ) {
-                $_type = mysql_real_escape_string('unknown_user');
-                $_status = mysql_real_escape_string(get_email($postfix->entries['to']));
+                $_type = safe_value('unknown_user');
+                $_status = safe_value(get_email($postfix->entries['to']));
             }
 
             // Unknown users
             if (preg_match('/user unknown/i', $postfix->entry)) {
                 // Unknown users
-                $_type = mysql_real_escape_string('unknown_user');
-                $_status = mysql_real_escape_string($postfix->raw);
+                $_type = safe_value('unknown_user');
+                $_status = safe_value($postfix->raw);
             }
 
             // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
             // example
             if (preg_match('/NOQUEUE/i', $postfix->entry)) {
                 if (preg_match('/Client host rejected: cannot find your hostname/i', $postfix->entry)) {
-                    $_type = mysql_real_escape_string('unknown_hostname');
+                    $_type = safe_value('unknown_hostname');
                 } else {
-                    $_type = mysql_real_escape_string('NOQUEUE');
+                    $_type = safe_value('NOQUEUE');
                 }
-                $_status = mysql_real_escape_string($postfix->raw);
+                $_status = safe_value($postfix->raw);
             }
             // Relay lines
             if (isset($postfix->entries['relay']) && isset($postfix->entries['status'])) {
-                $_type = mysql_real_escape_string('relay');
-                $_delay = mysql_real_escape_string($postfix->entries['delay']);
-                $_relay = mysql_real_escape_string(get_ip($postfix->entries['relay']));
-                $_dsn = mysql_real_escape_string($postfix->entries['dsn']);
-                $_status = mysql_real_escape_string($postfix->entries['status']);
+                $_type = safe_value('relay');
+                $_delay = safe_value($postfix->entries['delay']);
+                $_relay = safe_value(get_ip($postfix->entries['relay']));
+                $_dsn = safe_value($postfix->entries['dsn']);
+                $_status = safe_value($postfix->entries['status']);
             }
         }
         if (isset($_type)) {
