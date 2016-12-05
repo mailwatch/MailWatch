@@ -81,7 +81,7 @@ class database
         $numrows = $result->num_rows;
         if ($numrows && $row <= ($numrows - 1) && $row >= 0) {
             mysqli_data_seek($result, $row);
-            $resrow = (is_numeric($col)) ? mysqli_fetch_row($result) : mysqli_fetch_assoc($result);
+            $resrow = is_numeric($col) ? mysqli_fetch_row($result) : mysqli_fetch_assoc($result);
             if (isset($resrow[$col])) {
                 return $resrow[$col];
             }
