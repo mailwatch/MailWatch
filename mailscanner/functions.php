@@ -2715,7 +2715,7 @@ function ldap_authenticate($user, $password)
 
 if (!function_exists('ldap_escape')) {
     define('LDAP_ESCAPE_FILTER', 0x01);
-    define('LDAP_ESCAPE_DN',     0x02);
+    define('LDAP_ESCAPE_DN', 0x02);
 
     /**
      * function ldap_escape
