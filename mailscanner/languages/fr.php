@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.2.9 */
+/* v0.3.0 */
 
 return array(
     // 01-login.php
@@ -145,6 +145,10 @@ return array(
     'diequarantine303' => 'Impossible d\'ouvrir le répertoire de quarantaine :',
     'diereadruleset03' => 'Impossible d\'ouvrir le fichier de règle MailScanner',
     'hostfailed03' => '(Nom d\'hôte indéfini)',
+    'clientip03' => 'IP Client',
+    'host03' => 'Hôte',
+    'date03' => 'Date',
+    'time03' => 'Heure',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',

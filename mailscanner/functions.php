@@ -1824,7 +1824,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'clientip':
                     if (defined('DISPLAY_IP') && DISPLAY_IP) {
-                        $fieldname[$f] = "Client IP";
+                        $fieldname[$f] = __('clientip03');
                     }
                     $display[$f] = true;
                     break;
@@ -1883,14 +1883,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $display[$f] = false;
                     break;
                 case 'hostname':
-                    $fieldname[$f] = 'Host';
+                    $fieldname[$f] = __('host03');
                     $display[$f] = true;
                     break;
                 case 'date':
-                    $fieldname[$f] = 'Date';
+                    $fieldname[$f] = __('date03');
                     break;
                 case 'time':
-                    $fieldname[$f] = 'Time';
+                    $fieldname[$f] = __('time03');
                     break;
                 case 'headers':
                     $display[$f] = false;
@@ -2715,7 +2715,7 @@ function ldap_authenticate($user, $password)
 
 if (!function_exists('ldap_escape')) {
     define('LDAP_ESCAPE_FILTER', 0x01);
-    define('LDAP_ESCAPE_DN',     0x02);
+    define('LDAP_ESCAPE_DN', 0x02);
 
     /**
      * function ldap_escape

@@ -30,7 +30,7 @@
  */
 
 /* languages/pt_br.php */
-/* v0.2.9 */
+/* v0.3.0 */
 
 return array(
     // 01-login.php
@@ -145,7 +145,11 @@ return array(
     'diequarantine303' => 'Cannot open quarantine dir:',
     'diereadruleset03' => 'Cannot open MailScanner ruleset file',
     'hostfailed03' => '(Hostname lookup failed)',
-    
+    'clientip03' => 'Client IP',
+    'host03' => 'Host',
+    'date03' => 'Date',
+    'time03' => 'Time',
+ 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
     'receivedby04' => 'Recebido por:',
