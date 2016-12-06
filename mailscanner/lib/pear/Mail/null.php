@@ -2,7 +2,7 @@
 /**
  * Null implementation of the PEAR Mail interface
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  *
@@ -74,9 +74,8 @@ class Mail_null extends Mail {
      * @return mixed Returns true on success, or a PEAR_Error
      *               containing a descriptive error message on
      *               failure.
-     * @access public
      */
-    function send($recipients, $headers, $body)
+    public function send($recipients, $headers, $body)
     {
         return true;
     }

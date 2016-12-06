@@ -4,7 +4,7 @@
 /**
  * Contains the Pager_Sliding class
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE: Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -54,7 +54,7 @@ require_once 'Pager/Common.php';
  */
 class Pager_Sliding extends Pager_Common
 {
-    // {{{ Pager_Sliding()
+    // {{{ __construct()
 
     /**
      * Constructor
@@ -63,7 +63,7 @@ class Pager_Sliding extends Pager_Common
      *
      * @access public
      */
-    function Pager_Sliding($options = array())
+    public function __construct($options = array())
     {
         //set default Pager_Sliding options
         $this->_delta                 = 2;
@@ -95,7 +95,7 @@ class Pager_Sliding extends Pager_Common
      * @deprecated
      * @access public
      */
-    function getPageIdByOffset($index)
+    public function getPageIdByOffset($index)
     {
     }
 
@@ -115,7 +115,7 @@ class Pager_Sliding extends Pager_Common
      * @return array  First and last offsets
      * @access public
      */
-    function getPageRangeByPageId($pageid = null)
+    public function getPageRangeByPageId($pageid = null)
     {
         $pageid = isset($pageid) ? (int)$pageid : $this->_currentPage;
         if (!isset($this->_pageData)) {
@@ -151,7 +151,7 @@ class Pager_Sliding extends Pager_Common
      * @return array back/pages/next/first/last/all links
      * @access public
      */
-    function getLinks($pageID = null, $dummy='')
+    public function getLinks($pageID = null, $dummy = '')
     {
         if (!is_null($pageID)) {
             $_sav = $this->_currentPage;
@@ -210,16 +210,16 @@ class Pager_Sliding extends Pager_Common
      * @param string $url URL string [deprecated]
      *
      * @return string Links
-     * @access private
+     * @access protected
      */
-    function _getPageLinks($url = '')
+    public function _getPageLinks($url = '')
     {
         //legacy setting... the preferred way to set an option now
         //is adding it to the constuctor
         if (!empty($url)) {
             $this->_path = $url;
         }
-        
+
         //If there's only one page, don't display links
         if ($this->_clearIfVoid && ($this->_totalPages < 2)) {
             return '';
@@ -235,7 +235,7 @@ class Pager_Sliding extends Pager_Common
                 }
                 for ($i = $this->_currentPage - $this->_delta - $expansion_before; $expansion_before; $expansion_before--, $i++) {
                     $print_separator_flag = ($i != $this->_currentPage + $this->_delta); // && ($i != $this->_totalPages - 1)
-                    
+
                     $this->range[$i] = false;
                     $this->_linkData[$this->_urlVar] = $i;
                     $links .= $this->_renderLink(str_replace('%d', $i, $this->_altPage), $i)
@@ -256,7 +256,11 @@ class Pager_Sliding extends Pager_Common
 
                 if ($i == $this->_currentPage) {
                     $this->range[$i] = true;
-                    $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
+                    if (!empty($this->_linkContainer)) {
+                        $links .=  '<'.$this->_linkContainerPre.'>' . $this->_curPageSpanPre . $i . $this->_curPageSpanPost . '</'.$this->_linkContainer.'>';
+                    } else {
+                        $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
+                    }
                 } else {
                     $this->range[$i] = false;
                     $this->_linkData[$this->_urlVar] = $i;
@@ -280,14 +284,18 @@ class Pager_Sliding extends Pager_Common
 
         } else {
             //if $this->_totalPages <= (2*Delta+1) show them all
-            for ($i=1; $i<=$this->_totalPages; $i++) {
+            for ($i = 1; $i <= $this->_totalPages; $i++) {
                 if ($i != $this->_currentPage) {
                     $this->range[$i] = false;
                     $this->_linkData[$this->_urlVar] = $i;
                     $links .= $this->_renderLink(str_replace('%d', $i, $this->_altPage), $i);
                 } else {
                     $this->range[$i] = true;
-                    $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
+                    if (!empty($this->_linkContainer)) {
+                        $links .=  '<'.$this->_linkContainerPre.'>' . $this->_curPageSpanPre . $i . $this->_curPageSpanPost . '</'.$this->_linkContainer.'>';
+                    } else {
+                        $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
+                    }
                 }
                 $links .= $this->_spacesBefore
                        . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
@@ -298,4 +306,3 @@ class Pager_Sliding extends Pager_Common
 
     // }}}
 }
-?>

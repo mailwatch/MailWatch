@@ -3,7 +3,7 @@
  * Dummy file, used to maintain backward compatibility.
  * The real file was moved to the PEAR root directory
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * @category  HTML
  * @package   Pager
@@ -16,4 +16,3 @@
  */
 
 require_once 'Pager.php';
-?>

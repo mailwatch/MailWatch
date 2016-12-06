@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
@@ -6,7 +6,7 @@
  *
  * SMTP MX implementation of the PEAR Mail interface. Requires the Net_SMTP class.
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  *
