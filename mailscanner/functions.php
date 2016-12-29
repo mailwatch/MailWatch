@@ -799,7 +799,7 @@ function dbquery($sql)
         $dbg_sql = "EXPLAIN " . $sql;
         echo "SQL:\n\n$sql\n\n";
         /** @var mysqli_result $result */
-        $result = $link->query($dbg_sql) || die(__('diedbquery03') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
+        $result = $link->query($dbg_sql) || die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
 
         $finfo = $result->fetch_fields();
         foreach ($finfo as $val) {
@@ -816,7 +816,7 @@ function dbquery($sql)
         $result->free_result();
     }
 
-    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . self::$link->connect_errno . ": " . self::$link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
 
     return $result;
 }
