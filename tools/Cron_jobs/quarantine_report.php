@@ -341,6 +341,9 @@ function return_quarantine_list_array($to_address, $to_domain)
     return $array;
 }
 
+/**
+ * @param integer $count
+ */
 function get_random_string($count)
 {
     $bytes = openssl_random_pseudo_bytes($count);

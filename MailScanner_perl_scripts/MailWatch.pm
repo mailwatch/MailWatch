@@ -21,6 +21,7 @@ package MailScanner::CustomConfig;
 
 use strict;
 use DBI;
+use utf8;
 use Sys::Hostname;
 use Storable(qw[freeze thaw]);
 use POSIX;
@@ -306,7 +307,7 @@ my($db_pass) = 'mailwatch';
    $msg{hostname} = $hostname;
    $msg{date} = $date;
    $msg{"time"} = $time;
-   $msg{headers} = fix_latin(join("\n",@{$message->{headers}}));
+   $msg{headers} = join("\n",@{$message->{headers}});
    $msg{quarantined} = $quarantined;
 
    # Prepare data for transmission

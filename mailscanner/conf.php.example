@@ -52,17 +52,17 @@ define('DB_USER', 'mailwatch');
 define('DB_PASS', 'mailwatch');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'mailscanner');
-define('DB_DSN',  DB_TYPE.'://'.DB_USER.":".DB_PASS."@".DB_HOST."/".DB_NAME);
+define('DB_DSN', DB_TYPE . '://' . DB_USER . ":" . DB_PASS . "@" . DB_HOST . "/" . DB_NAME);
 
 // LDAP settings
-define('USE_LDAP',         false);
-define('LDAP_SSL',         false); // set to true if using LDAP with SSL encryption
-define('LDAP_HOST',        'server.example.com');
-define('LDAP_PORT',        '389');
-define('LDAP_DN',          'DC=example,DC=com');
-define('LDAP_USER',        'LDAPProxy@example.com');
-define('LDAP_PASS',        'secret');
-define('LDAP_SITE',        'default');
+define('USE_LDAP', false);
+define('LDAP_SSL', false); // set to true if using LDAP with SSL encryption
+define('LDAP_HOST', 'server.example.com');
+define('LDAP_PORT', '389');
+define('LDAP_DN', 'DC=example,DC=com');
+define('LDAP_USER', 'LDAPProxy@example.com');
+define('LDAP_PASS', 'secret');
+define('LDAP_SITE', 'default');
 // can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
 define('LDAP_EMAIL_FIELD', 'proxyaddresses');
 // Microsoft Active Directory compatibility support for searches from Domain Base DN
@@ -89,8 +89,8 @@ define('MS_LIB_DIR', '/usr/share/MailScanner/');
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
 define('IMAGES_DIR', './images/'); // trailing slash needed
 define('CACHE_DIR', './images/cache/'); // JpGraph cache
-define('TTF_DIR','./lib/jpgraph/src/fonts/'); // JpGraph fonts
-define('SA_DIR','/usr/bin/');
+define('TTF_DIR', './lib/jpgraph/src/fonts/'); // JpGraph fonts
+define('SA_DIR', '/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spam.assassin.prefs.conf');
 define('TEMP_DIR', '/tmp/');
@@ -242,4 +242,3 @@ define('HIDE_UNKNOWN', false);
 //Quarantine Auto Release
 //Set true to allow auto release of quarantined items from quarantine report - note, requires DB modification, see auto-release.php
 define('AUTO_RELEASE', false);
-

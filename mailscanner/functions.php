@@ -39,14 +39,22 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
 
 // check if php version is not greater that 5.*
 if (PHP_MAJOR_VERSION > 5) {
-    die('MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it');
+    die(__('php703'));
 }
 
 // Read in MailWatch configuration file
 if (!is_readable(__DIR__ . '/conf.php')) {
-    die("Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.\n");
+    die(__('cannot_read_conf'));
 }
 require_once(__DIR__ . '/conf.php');
+
+// Set PHP path to use local PEAR modules only
+set_include_path(
+    get_include_path() . PATH_SEPARATOR .
+    '.' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/xmlrpc'
+);
 
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
@@ -65,9 +73,6 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
         exit;
     }
 }
-
-// Set PHP path to use local PEAR modules only
-ini_set('include_path', '.:' . MAILWATCH_HOME . '/lib/pear:' . MAILWATCH_HOME . '/lib/xmlrpc');
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
@@ -162,12 +167,12 @@ if (!defined('VIRUS_REGEX')) {
             define('VIRUS_REGEX', '/(ALERT:) \[(\S+) \S+\]/');
             break;
         //default:
-        // die("<B>Error:</B><BR>\n&nbsp;Unable to select a regular expression for your primary virus scanner ($scanner) - please see the examples in functions.php to create one.\n");
+        // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
         // break;
     }
 } else {
     // Have to set manually as running in DISTRIBUTED_MODE
-    die("<B>Error:</B><BR>\n&nbsp;You are running MailWatch in distributed mode therefore MailWatch cannot read your MailScanner configuration files to acertain your primary virus scanner - please edit functions.php and manually set the VIRUS_REGEX constant for your primary scanner.\n");
+    die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
 }
 
 
@@ -179,7 +184,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return ("1.2.0 - RC2");
+    return ("1.2.0 - RC3");
 }
 
 /**
@@ -238,11 +243,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '' . row_highandclick() . '';
     echo '</script>';
     if ($report) {
-        echo '<title>MailWatch Filter Report: ' . $title . ' </title>' . "\n";
+        echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION["filter"])) {
             require_once(__DIR__ . '/filter.inc.php');
-            $filter = new Filter;
+            $filter = new Filter();
             $_SESSION["filter"] = $filter;
         } else {
             // Use existing filters
@@ -250,7 +255,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         audit_log('Ran report ' . $title);
     } else {
-        echo '<title>MailWatch for Mailscanner - ' . $title . '</title>' . "\n";
+        echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
     }
 
@@ -291,11 +296,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
-    echo '    <tr> <td>Spam</td> <td class="spam"></td> </tr>' . "\n";
-    echo '    <tr> <td>High Spam</td> <td class="highspam"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
+    echo '    <tr> <td>' . __('highspam03') . '</td> <td class="highspam"></td> </tr>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
-        echo '    <tr> <td>MCP</td> <td class="mcp"></td> </tr>' . "\n";
-        echo '    <tr> <td>High MCP</td><td class="highmcp"></td></tr>' . "\n";
+        echo '    <tr> <td>' . __('mcp03') . '</td> <td class="mcp"></td> </tr>' . "\n";
+        echo '    <tr> <td>' . __('highmcp03') . '</td><td class="highmcp"></td></tr>' . "\n";
     }
     echo '    <tr> <td>' . __('whitelisted03') . '</td> <td class="whitelisted"></td> </tr>' . "\n";
     echo '    <tr> <td>' . __('blacklisted03') . '</td> <td class="blacklisted"></td> </tr>' . "\n";
@@ -308,13 +313,13 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
-        echo '    <tr><th colspan="3">Status</th></tr>' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
 
         // MailScanner running?
         if (!DISTRIBUTED_SETUP) {
-            $no = '<span class="yes">&nbsp;NO&nbsp;</span>' . "\n";
-            $yes = '<span class="no">&nbsp;YES&nbsp;</span>' . "\n";
+            $no = '<span class="yes">&nbsp;' . __('no03') . '&nbsp;</span>' . "\n";
+            $yes = '<span class="no">&nbsp;' . __('yes03') . '&nbsp;</span>' . "\n";
             exec("ps ax | grep MailScanner | grep -v grep", $output);
             if (count($output) > 0) {
                 $running = $yes;
@@ -323,7 +328,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 $running = $no;
                 $procs = count($output) . " proc(s)";
             }
-            echo '     <tr><td>MailScanner:</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+            echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
             $mta = get_conf_var('mta');
@@ -336,7 +341,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $procs = count($output) . " proc(s)";
             echo '    <tr><td>' . ucwords(
                     $mta
-                ) . ':</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+                ) . __('colon99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
 
         // Load average
@@ -346,7 +351,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_1m = $loadavg[0];
             $la_5m = $loadavg[1];
             $la_15m = $loadavg[2];
-            echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
         } elseif (file_exists("/usr/bin/uptime") && !DISTRIBUTED_SETUP) {
             $loadavg = shell_exec('/usr/bin/uptime');
             $loadavg = explode(" ", $loadavg);
@@ -366,9 +371,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             if (is_readable($incomingdir) && is_readable($outgoingdir)) {
                 $inq = postfixinq();
                 $outq = postfixallq() - $inq;
-                echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>' . "\n";
-                echo '    <tr><td colspan="2"><a href="postfixmailq.php">Inbound:</a></td><td align="right">' . $inq . '</td>' . "\n";
-                echo '    <tr><td colspan="2"><a href="postfixmailq.php">Outbound:</a></td><td align="right">' . $outq . '</td>' . "\n";
+                echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             } else {
                 echo '    <tr><td colspan="3">Please verify read permissions on ' . $incomingdir . ' and ' . $outgoingdir . '</td></tr>' . "\n";
             }
@@ -376,9 +381,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         } elseif (MAILQ && ($_SESSION['user_type'] == 'A')) {
             $inq = mysql_result(dbquery("SELECT COUNT(*) FROM inq WHERE " . $_SESSION['global_filter']), 0);
             $outq = mysql_result(dbquery("SELECT COUNT(*) FROM outq WHERE " . $_SESSION['global_filter']), 0);
-            echo '    <tr><td colspan="3" class="heading" align="center">Mail Queues</td></tr>' . "\n";
-            echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">Inbound:</a></td><td align="right">' . $inq . '</td>' . "\n";
-            echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">Outbound:</a></td><td align="right">' . $outq . '</td>' . "\n";
+            echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
         }
 
         // drive display
@@ -581,35 +586,35 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     while ($row = mysql_fetch_object($sth)) {
         echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
-        echo ' <tr><td>' . __('processed03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
                 $row->processed
             ) . '</td><td align="right">' . format_mail_size(
                 $row->size
             ) . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('cleans03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('cleans03') . '</td><td align="right">' . number_format(
                 $row->clean
             ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('viruses03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('viruses03') . '</td><td align="right">' . number_format(
                 $row->viruses
             ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
-        echo ' <tr><td>Top Virus:</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('blockedfiles03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
+        echo ' <tr><td>' . __('blockedfiles03') . '</td><td align="right">' . number_format(
                 $row->blockedfiles
             ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('others03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('others03') . '</td><td align="right">' . number_format(
                 $row->otherinfected
             ) . '</td><td align="right">' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>Spam:</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('spam03') . '</td><td align="right">' . number_format(
                 $row->spam
             ) . '</td><td align="right">' . $row->spampercent . '%</td></tr>' . "\n";
-        echo ' <tr><td style="white-space:nowrap">' . __('hscospam03') . ':</td><td align="right">' . number_format(
+        echo ' <tr><td style="white-space:nowrap">' . __('hscospam03') . '</td><td align="right">' . number_format(
                 $row->highspam
             ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
         if (get_conf_truefalse('mcpchecks')) {
             echo ' <tr><td>MCP:</td><td align="right">' . number_format(
                     $row->mcp
                 ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
-            echo ' <tr><td style="white-space:nowrap">' . __('hscomcp03') . ':</td><td align="right">' . number_format(
+            echo ' <tr><td style="white-space:nowrap">' . __('hscomcp03') . '</td><td align="right">' . number_format(
                     $row->highmcp
                 ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
         }
@@ -749,7 +754,7 @@ function html_end($footer = '')
         echo '</i></p>' . "\n";
     }
     echo '<p class="center" style="font-size:13px">' . "\n";
-    echo __('footer01');
+    echo __('footer03');
     echo mailwatch_version();
     echo ' - &copy; 2006-' . date('Y');
     echo '</p>' . "\n";
@@ -763,9 +768,9 @@ function html_end($footer = '')
 function dbconn()
 {
     $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, false, 128)
-    or die("Could not connect to database: " . mysql_error());
+    or die(__('diedbconn103') . " " . mysql_error());
     mysql_set_charset('utf8', $link);
-    mysql_select_db(DB_NAME) or die("Could not select db: " . mysql_error());
+    mysql_select_db(DB_NAME) or die(__('diedbconn203') . " " . mysql_error());
 
     return $link;
 }
@@ -789,7 +794,7 @@ function dbquery($sql)
         echo "<!--\n\n";
         $dbg_sql = "EXPLAIN " . $sql;
         echo "SQL:\n\n$sql\n\n";
-        $result = mysql_query($dbg_sql) or die("Error executing query: " . mysql_errno() . " - " . mysql_error());
+        $result = mysql_query($dbg_sql) or die(__('diedbquery03') . " " . mysql_errno() . " - " . mysql_error());
         $fields = mysql_num_fields($result);
         while ($row = mysql_fetch_row($result)) {
             for ($f = 0; $f < $fields; $f++) {
@@ -799,7 +804,7 @@ function dbquery($sql)
         //dbtable("SHOW STATUS");
         echo "\n-->\n\n";
     }
-    $result = mysql_query($sql) or die("<B>Error executing query: </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = mysql_query($sql) or die("<B>" . __('diedbquery03') . " </B><BR><BR>" . mysql_errno() . ": " . mysql_error() . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
 
     return $result;
 }
@@ -841,8 +846,8 @@ function safe_value($value)
 }
 
 /**
- * @param $string
- * @return mixed
+ * @param string $string
+ * @return string
  */
 function __($string)
 {
@@ -873,7 +878,7 @@ function __($string)
  * Returns true if $string is valid UTF-8 and false otherwise.
  *
  * @param $string
- * @return boolean
+ * @return integer
  */
 function is_utf8($string)
 {
@@ -912,7 +917,7 @@ function getUTF8String($string)
 
 /**
  * @param $spamreport
- * @return bool|string
+ * @return string|false
  */
 function sa_autolearn($spamreport)
 {
@@ -991,14 +996,14 @@ function get_sa_rule_desc($rule)
 
 /**
  * @param $rule
- * @return bool
+ * @return string|false
  */
 function return_sa_rule_desc($rule)
 {
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = mysql_fetch_object($result);
     if ($row) {
-        return $row->rule_desc;
+        return htmlentities($row->rule_desc);
     }
 
     return false;
@@ -1125,10 +1130,10 @@ AND
         } else {
             // Tied first place - return none
             // FIXME: Should return all top viruses
-            return "None";
+            return __('none03');
         }
     } else {
-        return "None";
+        return __('none03');
     }
 }
 
@@ -1163,8 +1168,8 @@ function get_disks()
             $mounted_fs = file("/proc/mounts");
             foreach ($mounted_fs as $fs_row) {
                 $drive = preg_split("/[\s]+/", $fs_row);
-                if (((substr($drive[0], 0, 5) == '/dev/') || substr($drive[0], 0, 5) == 'simfs') && (stripos($drive[1], '/chroot/') === false)) {
-                    $temp_drive['device'] = ($drive[0] == 'simfs' ? '/dev/simfs' : $drive[0]);
+                if ((substr($drive[0], 0, 5) == '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
+                    $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[1];
                     $disks[] = $temp_drive;
                     unset($temp_drive);
@@ -1191,7 +1196,7 @@ function get_disks()
 }
 
 /**
- * @param $size
+ * @param double $size
  * @param int $precision
  * @return string
  */
@@ -1316,7 +1321,7 @@ function trim_output($input, $maxlen)
  */
 function get_default_ruleset_value($file)
 {
-    $fh = fopen($file, 'r') or die("Cannot open ruleset file $file");
+    $fh = fopen($file, 'r') or die(__('dieruleset03') . " $file");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/^([^#]\S+:)\s+(\S+)\s+([^#]\S+)/', $line, $regs)) {
@@ -1331,7 +1336,7 @@ function get_default_ruleset_value($file)
 }
 
 /**
- * @param $name
+ * @param string $name
  * @return bool
  */
 function get_conf_var($name)
@@ -1363,7 +1368,7 @@ function get_conf_var($name)
         }
     }
 
-    die("Cannot find configuration value: $name in $MailScanner_conf_file\n");
+    die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $MailScanner_conf_file\n");
 }
 
 /**
@@ -1393,7 +1398,7 @@ function parse_conf_dir($conf_dir)
 }
 
 /**
- * @param $name
+ * @param string $name
  * @return bool
  */
 function get_conf_truefalse($name)
@@ -1455,7 +1460,7 @@ function get_conf_include_folder()
     }
 
     $msconfig = MS_CONFIG_DIR . "MailScanner.conf";
-    $fh = fopen($msconfig, 'r') or die("Cannot open MailScanner configuration file");
+    $fh = fopen($msconfig, 'r') or die(__('dienomsconf03'));
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($msconfig)));
         //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
@@ -1470,8 +1475,11 @@ function get_conf_include_folder()
                 $var[$regs['name']] = $regs['value'];
             }
             // expand %var% variables
-            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
-                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
+            if (preg_match("/(%[^%]+%)/", $regs['value'], $matches)) {
+                array_shift($matches);
+                foreach ($matches as $varname) {
+                    $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
+                }
             }
             if ((strtolower($regs[1])) == (strtolower($name))) {
                 fclose($fh) or die($php_errormsg);
@@ -1484,13 +1492,13 @@ function get_conf_include_folder()
         }
     }
     fclose($fh);
-    die("Cannot find configuration value: $name in $msconfig\n");
+    die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $msconfig\n");
 }
 
 /**
  * Parse conf files
  *
- * @param $name
+ * @param string $name
  * @return array
  */
 function parse_conf_file($name)
@@ -1499,7 +1507,7 @@ function parse_conf_file($name)
     $var = array();
     // open each file and read it
     //$fh = fopen($name . $file, 'r')
-    $fh = fopen($name, 'r') or die("Cannot open MailScanner configuration file");
+    $fh = fopen($name, 'r') or die(__('dienomsconf03'));
     while (!feof($fh)) {
 
         // read each line to the $line varable
@@ -1519,8 +1527,11 @@ function parse_conf_file($name)
             }
 
             // expand %var% variables
-            if (preg_match("/(%.+%)/", $regs['value'], $match)) {
-                $regs['value'] = preg_replace("/%.+%/", $var[$match[1]], $regs['value']);
+            if (preg_match("/(%[^%]+%)/", $regs['value'], $matches)) {
+                array_shift($matches);
+                foreach ($matches as $varname) {
+                    $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
+                }
             }
 
             // Remove any html entities from the code
@@ -1578,7 +1589,7 @@ function translateQuarantineDate($date, $format = 'dmy')
 
 /**
  * @param $preserve
- * @return bool|string
+ * @return string|false
  */
 function subtract_get_vars($preserve)
 {
@@ -1601,8 +1612,8 @@ function subtract_get_vars($preserve)
 }
 
 /**
- * @param $preserve
- * @return bool|string
+ * @param string[] $preserve
+ * @return string|false
  */
 function subtract_multi_get_vars($preserve)
 {
@@ -1739,7 +1750,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 $orderable[$f] = false;
                 // Set it up not to wrap - tricky way to leach onto the align field
                 $align[$f] = 'center" style="white-space:nowrap';
-                $fieldname[$f] = 'Ops<br><a href="javascript:SetRadios(\'S\')">S</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'H\')">H</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'F\')">F</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'R\')">R</a>';
+                $fieldname[$f] = __('ops03') . '<br><a href="javascript:SetRadios(\'S\')">' . __('radiospam203') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'H\')">' . __('radioham03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'F\')">' . __('radioforget03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'R\')">' . __('radiorelease03') . '</a>';
                 continue;
             }
             $display[$f] = true;
@@ -1881,18 +1892,18 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     }
                     break;
                 case 'status':
-                    $fieldname[$f] = "Status";
+                    $fieldname[$f] = __('status03');
                     $orderable[$f] = false;
                     break;
                 case 'message':
-                    $fieldname[$f] = "Message";
+                    $fieldname[$f] = __('message03');
                     break;
                 case 'attempts':
-                    $fieldname[$f] = "Tries";
+                    $fieldname[$f] = __('tries03');
                     $align[$f] = "right";
                     break;
                 case 'lastattempt':
-                    $fieldname[$f] = "Last";
+                    $fieldname[$f] = __('last03');
                     $align[$f] = "right";
                     break;
             }
@@ -2094,7 +2105,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'clienthost':
                         $hostname = gethostbyaddr($row[$f]);
                         if ($hostname == $row[$f]) {
-                            $row[$f] = "(Hostname lookup failed)";
+                            $row[$f] = __('hostfailed03');
                         } else {
                             $row[$f] = $hostname;
                         }
@@ -2200,14 +2211,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
     }
 </script>
-   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">S</a>
-   &nbsp; <a href=\"javascript:SetRadios('H')\">H</a>
-   &nbsp; <a href=\"javascript:SetRadios('F')\">F</a>
-   &nbsp; <a href=\"javascript:SetRadios('R')\">R</a>
-   &nbsp; or <a href=\"javascript:SetRadios('C')\">Clear</a> all</p>
-   <p><input type='SUBMIT' name='SUBMIT' value='Learn'></p>
+   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">" . __('radiospam203') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('H')\">" . __('radioham03') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('F')\">" . __('radioforget03') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('R')\">" . __('radiorelease03') . "</a>
+   &nbsp; " . __('or03') . " <a href=\"javascript:SetRadios('C')\">" . __('clear03') . "</p>
+   <p><input type='SUBMIT' name='SUBMIT' value='" . __('learn03') . "'></p>
    </form>
-   <p><b>S</b> = Spam &nbsp; <b>H</b> = Ham &nbsp; <b>F</b> = Forget &nbsp; <b>R</b> = Release" . "\n";
+   <p><b>" . __('spam203') . " &nbsp; <b>" . __('ham03') . " &nbsp; <b>" . __('forget03') . " &nbsp; <b>" . __('release03') . "" . "\n";
         }
         echo '<br>' . "\n";
         if ($pager) {
@@ -2312,7 +2323,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2402,7 +2413,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">Displaying page ' . $pager->getCurrentPageID() . ' of ' . $pager->numPages() . ' - Records ' . $from . ' to ' . $to . ' of ' . $pager->numItems() . '</th>
+   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -2443,7 +2454,7 @@ function db_vertical_table($sql)
 }
 
 /**
- * @return mixed
+ * @return double
  */
 function get_microtime()
 {
@@ -2623,7 +2634,7 @@ function ldap_authenticate($user, $password)
 {
     $user = strtolower($user);
     if ($user != "" && $password != "") {
-        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die("Could not connect to " . LDAP_HOST);
+        $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(__('ldpaauth103') . " " . LDAP_HOST);
         // Check if Microsoft Active Directory compatibility is enabled
         if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
@@ -2631,14 +2642,14 @@ function ldap_authenticate($user, $password)
         }
         ldap_bind($ds, LDAP_USER, LDAP_PASS);
         if (strpos($user, '@') and LDAP_EMAIL_FIELD === 'mail') {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die("Could not search");
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
         } elseif (strpos($user, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die("Could not search");
+            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
         } else {
-            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die("Could not search");
+            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
         }
         if ($r) {
-            $result = ldap_get_entries($ds, $r) or die("Could not get entries");
+            $result = ldap_get_entries($ds, $r) or die(__('ldpaauth303'));
             if ($result[0]) {
                 if (in_array("group", array_values($result[0]["objectclass"]))) {
                     return null;
@@ -2684,10 +2695,10 @@ function ldap_get_conf_var($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die(__('ldapgetconfvar103') . " " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-    or die("Error: unable to bind to LDAP directory\n");
+    or die(__('ldapgetconfvar203') . "\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2711,7 +2722,7 @@ function ldap_get_conf_var($entry)
         }
     } else {
         // No results
-        die("Error: cannot find configuration value '$entry' in LDAP directory.\n");
+        die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
     }
 }
 
@@ -2725,10 +2736,10 @@ function ldap_get_conf_truefalse($entry)
     $entry = translate_etoi($entry);
 
     $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die("Error: could not connect to LDAP directory on: " . LDAP_HOST . "\n");
+    or die(__('ldapgetconfvar103') . " " . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
-    or die("Error: unable to bind to LDAP directory\n");
+    or die(__('ldapgetconfvar203') . "\n");
 
     # As per MailScanner Config.pm
     $filter = "(objectClass=mailscannerconfmain)";
@@ -2751,7 +2762,7 @@ function ldap_get_conf_truefalse($entry)
         }
     } else {
         // No results
-        //die("Error: cannot find configuration value '$entry' in LDAP directory.\n");
+        //die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
         return false;
     }
 }
@@ -2765,7 +2776,7 @@ function translate_etoi($name)
     $name = strtolower($name);
     $file = MS_LIB_DIR . 'MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'r')
-    or die("Cannot open MailScanner ConfigDefs file: $file\n");
+    or die(__('dietranslateetoi03') . " $file\n");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/^([^#].+)\s=\s([^#].+)/i', $line, $regs)) {
@@ -2860,7 +2871,7 @@ function return_geoip_country($ip)
 
 /**
  * @param $ip
- * @return mixed
+ * @return string
  */
 function stripPortFromIp($ip)
 {
@@ -2957,7 +2968,7 @@ SELECT
     $sth = dbquery($sql);
     $rows = mysql_num_rows($sth);
     if ($rows <= 0) {
-        die("Message ID $msgid not found.\n");
+        die(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
     }
     $row = mysql_fetch_object($sth);
     if (!$rpc_only && is_local($row->hostname)) {
@@ -3017,7 +3028,7 @@ SELECT
         }
         // Check the main quarantine
         if (is_dir($quarantine) && is_readable($quarantine)) {
-            $d = opendir($quarantine) or die("Cannot open quarantine dir: $quarantine\n");
+            $d = opendir($quarantine) or die(__('diequarantine303') . " $quarantine\n");
             while (false !== ($f = readdir($d))) {
                 if ($f !== '..' && $f !== '.') {
                     $quarantined[$count]['id'] = $count;
@@ -3407,7 +3418,7 @@ function fixMessageId($id)
 }
 
 /**
- * @param $action
+ * @param string $action
  * @return bool
  */
 function audit_log($action)
@@ -3446,7 +3457,7 @@ function mailwatch_array_sum($array)
  */
 function read_ruleset_default($file)
 {
-    $fh = fopen($file, 'r') or die("Cannot open MailScanner ruleset file ($file)");
+    $fh = fopen($file, 'r') or die(__('diereadruleset03') . " ($file)");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/(\S+)\s+(\S+)\s+(\S+)/', $line, $regs)) {
@@ -3464,7 +3475,7 @@ function read_ruleset_default($file)
 
 /**
  * @param $scanner
- * @return bool|string
+ * @return string|false
  */
 function get_virus_conf($scanner)
 {
@@ -3499,7 +3510,7 @@ function return_quarantine_dates()
 }
 
 /**
- * @param $virus
+ * @param string $virus
  * @return string
  */
 function return_virus_link($virus)

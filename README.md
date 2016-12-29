@@ -21,8 +21,6 @@ It comes with a CustomConfig module for MailScanner which causes MailScanner to 
 
 ## Developed with the help of
 
-![Powered by PhpStorm](https://www.jetbrains.com/phpstorm/documentation/docs/logo_phpstorm.png)
-
 * eFa - email Filter appliance
 * Pear Mail
 * Pear Pager

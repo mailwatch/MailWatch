@@ -3,7 +3,7 @@
 // File:        IMGDATA_STARS.INC
 // Description: Base64 encoded images for stars
 // Created:     2003-03-20
-// Ver:         $Id: imgdata_stars.inc.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+// Ver:         $Id: imgdata_stars.inc.php 1106 2009-02-22 20:16:35Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================

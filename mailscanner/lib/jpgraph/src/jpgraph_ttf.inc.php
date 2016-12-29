@@ -3,7 +3,7 @@
 // File:        jpgraph_ttf.inc.php
 // Description: Handling of TTF fonts
 // Created:     2006-11-19
-// Ver:         $Id: jpgraph_ttf.inc.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+// Ver:         $Id: jpgraph_ttf.inc.php 1858 2009-09-28 14:39:51Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================
@@ -183,7 +183,7 @@ class LanguageConv {
         elseif( $aFF === FF_SIMSUN ) {
             // Do Chinese conversion
             if( $this->g2312 == null ) {
-                include_once 'jpgraph_gb2312.php';
+                include_once 'jpgraph_gb2312.php' ;
                 $this->g2312 = new GB2312toUTF8();
             }
             return $this->g2312->gb2utf8($aTxt);

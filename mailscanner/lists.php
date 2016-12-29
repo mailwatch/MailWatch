@@ -34,7 +34,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start("Whitelist/Blacklist", 0, false, false);
+html_start(__('wblists07'), 0, false, false);
 
 $url_type = (isset($_GET['type']) ? sanitizeInput($_GET['type']) : '');
 $url_type = htmlentities($url_type);
@@ -162,7 +162,7 @@ switch (true) {
 }
 
 // Submitted
-if ($url_submit == __('add07')) {
+if ($url_submit == 'add') {
     // Check input is valid
     if (empty($url_list)) {
         $errors[] = "You must select a list to create the entry.";
@@ -194,7 +194,7 @@ if ($url_submit == __('add07')) {
 }
 
 // Delete
-if ($url_submit == 'Delete') {
+if ($url_submit == 'delete') {
     $id = $url_id;
     switch ($url_list) {
         case 'w':
@@ -244,7 +244,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=Delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -254,17 +254,17 @@ function build_table($sql, $list)
 }
 
 echo '
-<form action="lists.php">
+<form action="lists.php" method="get">
 <table cellspacing="1" class="mail">
  <tr>
   <th colspan=2>' . __('addwlbl07') . '</th>
  </tr>
  <tr>
-  <td class="heading">' . __('from07') . ':</td>
+  <td class="heading">' . __('from07') . __('colon99') . '</td>
   <td><input type="text" name="from" size=50 value="' . $from . '"></td>
  </tr>
  <tr>
-  <td class="heading">' . __('to07') . ':</td>';
+  <td class="heading">' . __('to07') . __('colon99') . '</td>';
 
 switch ($_SESSION['user_type']) {
     case 'A':
@@ -304,7 +304,7 @@ switch ($_SESSION['user_type']) {
 echo '
  </tr>
  <tr>
-  <td class="heading">' . __('list07') . ':</td>
+  <td class="heading">' . __('list07') . __('colon99') . '</td>
   <td>';
 
 $w = '';
@@ -323,8 +323,8 @@ echo '   <input type="radio" value="b" name="list" ' . $b . '>' . __('bl07') . '
 echo '  </td>
  </tr>
  <tr>
-  <td class="heading">' . __('action07') . ':</td>
-  <td><input type="reset" value="' . __('reset07') . '">&nbsp;&nbsp;<input type="submit" value="' . __('add07') . '" name="submit"></td>
+  <td class="heading">' . __('action07') . __('colon99') . '</td>
+  <td><button type="reset" value="reset">' . __('reset07') . '</button>&nbsp;&nbsp;<button type="submit" name="submit" value="add">' . __('add07') . '</button></td>
  </tr>';
 if (isset($errors)) {
     echo '<tr>

@@ -3,13 +3,13 @@
  // File:        JPGRAPH_POLAR.PHP
  // Description: Polar plot extension for JpGraph
  // Created:     2003-02-02
- // Ver:         $Id: jpgraph_polar.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+ // Ver:         $Id: jpgraph_polar.php 1796 2009-09-07 09:37:19Z ljp $
  //
  // Copyright (c) Asial Corporation. All rights reserved.
  //========================================================================
  */
 
-require_once('jpgraph_plotmark.inc.php');
+require_once ('jpgraph_plotmark.inc.php');
 require_once "jpgraph_log.php";
 
 

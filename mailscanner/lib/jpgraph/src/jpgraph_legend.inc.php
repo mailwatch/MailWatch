@@ -5,7 +5,7 @@
 //              names on the data series. The number of rows and columns
 //              in the legend are user specifyable.
 // Created:     2001-01-08 (Refactored to separate file 2008-08-01)
-// Ver:         $Id: jpgraph_legend.inc.php,v 1.7 2011/12/14 19:25:53 lorodoes Exp $
+// Ver:         $Id: jpgraph_legend.inc.php 1926 2010-01-11 16:33:07Z ljp $
 //
 // Copyright (c) Asial Corporation. All rights reserved.
 //========================================================================

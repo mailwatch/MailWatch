@@ -36,7 +36,7 @@ require_once(__DIR__ . '/functions.php');
 session_start();
 require(__DIR__ . '/login.function.php');
 
-html_start('Tools', "0", false, false);
+html_start(__('toolslinks10'), "0", false, false);
 
 echo '<table width="100%" class="boxtable">';
 echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
@@ -85,7 +85,7 @@ echo '</ul>';
 
 if ($_SESSION['user_type'] == 'A') {
     echo '
-   <p>Links</p>
+   <p>' . __('links10') . '</p>
    <ul>
     <li><a href="http://mailwatch.org">MailWatch for MailScanner</a>
     <li><a href="http://www.mailscanner.info">MailScanner</a>';

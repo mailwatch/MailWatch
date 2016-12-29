@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("Message Listing", 0, false, false);
+$filter = html_start(__('messlisting16'), 0, false, false);
 
 $sql = "
  SELECT
@@ -108,7 +108,7 @@ $sql .= "
  ";
 
 // function to display the data from functions.php
-db_colorised_table($sql, 'Message Listing', true, true);
+db_colorised_table($sql, __('messlisting16'), true, true);
 
 // Add footer
 html_end();

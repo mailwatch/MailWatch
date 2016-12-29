@@ -44,7 +44,7 @@ $url_id = htmlentities($url_id);
 $url_id = trim($url_id, " ");
 
 // Start the header code and Title
-html_start("Message Detail $url_id", 0, false, false);
+html_start(__('messdetail04') . " " . $url_id, 0, false, false);
 
 // Set the Memory usage
 ini_set("memory_limit", MEMORY_LIMIT);
@@ -63,7 +63,7 @@ $sql = "
   hostname AS '" . __('receivedby04') . "',
   clientip AS '" . __('receivedfrom04') . "',
   headers '" . __('receivedvia04') . "',
-  id AS 'ID:',
+  id AS '" . __('id04') . "',
   headers AS '" . __('msgheaders04') . "',
   from_address AS '" . __('from04') . "',
   to_address AS '" . __('to04') . "',
@@ -71,14 +71,14 @@ $sql = "
   size AS '" . __('size04') . "',
   archive AS 'Archive',
   '" . __('hdrantivirus04') . "' AS 'HEADER',
-  CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS 'Virus:',
+  CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('virus04') . "',
   CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('blkfile04') . "',
   CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('otherinfec04') . "',
   report AS 'Report:',
   'SpamAssassin' AS 'HEADER',
-  CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS 'Spam:',
+  CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spam04') . "',
   CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . __('hscospam04') . "',
-  CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin Spam:',
+  CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spamassassinspam04') . "',
   CASE WHEN isrblspam>0 THEN '$yes' ELSE '$no' END AS '" . __('listedrbl04') . "',
   CASE WHEN spamwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . __('spamwl04') . "',
   CASE WHEN spamblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . __('spambl04') . "',
@@ -106,7 +106,7 @@ $result = dbquery($sql);
 
 // Check to make sure something was returned
 if (mysql_num_rows($result) == 0) {
-    die("Message ID '" . $url_id . "' not found!\n </TABLE>");
+    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 } else {
     audit_log('Viewed message detail (id=' . $url_id . ')');
 }
@@ -132,7 +132,7 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
             $output = '<table width="100%" class="sa_rules_report">' . "\n";
             $output .= ' <tr>' . "\n";
             $output .= ' <th>' . __('ipaddress04') . '</th>' . "\n";
-            $output .= ' <th>Hostname</th>' . "\n";
+            $output .= ' <th>' . __('hostname04') . '</th>' . "\n";
             $output .= ' <th>' . __('country04') . '</th>' . "\n";
             $output .= ' <th>RBL</th>' . "\n";
             $output .= ' <th>Spam</th>' . "\n";
@@ -149,16 +149,16 @@ while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
                     if (($host = gethostbyaddr($relay)) <> $relay) {
                         $output .= " <td>$host</td>\n";
                     } else {
-                        $output .= " <td>(Reverse Lookup Failed)</td>\n";
+                        $output .= " <td>" . __('reversefailed04') . "</td>\n";
                     }
                     // Do GeoIP lookup on address
                     if ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
-                        $output .= ' <td>(GeoIP Lookup Failed)</td>' . "\n";
+                        $output .= ' <td>(' . __('geoipfailed04') . ')</td>' . "\n";
                     }
                     // Link to RBL Lookup
-                    $output .= ' <td align="center">[<a href="http://www.mxtoolbox.com/SuperTool.aspx?action=blacklist:' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Spam Report for this relay
                     $output .= ' <td align="center">[<a href="rep_message_listing.php?relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Virus Report for this relay
@@ -288,7 +288,7 @@ if ($mta == 'postfix' && mysql_num_rows($tablecheck) > 0) { //version for postfi
   m.status AS 'Status'
  FROM
   mtalog AS m
-	LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
+       	LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
  WHERE
   i.smtpd_id='" . $url_id . "'
  AND
@@ -433,7 +433,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
                         get_conf_var("UseSpamAssassin")
                     ) == "YES")
             ) {
-                echo '   <td align="center"><input type="checkbox" name="learn[]" value="' . $item['id'] . '"><select name="learn_type"><option value="ham">As Ham</option><option value="spam">As Spam</option><option value="forget">Forget</option><option value="report">As Spam+Report</option><option value="revoke">As Ham+Revoke</option></select></td>' . "\n";
+                echo '   <td align="center"><input type="checkbox" name="learn[]" value="' . $item['id'] . '"><select name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
                 echo '   <td>&nbsp;&nbsp;</td>' . "\n";
             }
@@ -462,7 +462,7 @@ if ((is_array($quarantined)) && (count($quarantined) > 0)) {
         if ($is_dangerous > 0 && $_SESSION['user_type'] != 'A') {
             echo '  <td colspan="6">&nbsp;</td>' . "\n";
         } else {
-            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . ':&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
+            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . __('colon99') . '&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";

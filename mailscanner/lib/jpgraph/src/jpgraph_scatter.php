@@ -3,12 +3,12 @@
  // File:        JPGRAPH_SCATTER.PHP
  // Description: Scatter (and impuls) plot extension for JpGraph
  // Created:     2001-02-11
- // Ver:         $Id: jpgraph_scatter.php,v 1.5 2011/12/14 19:25:53 lorodoes Exp $
+ // Ver:         $Id: jpgraph_scatter.php 1397 2009-06-27 21:34:14Z ljp $
  //
  // Copyright (c) Asial Corporation. All rights reserved.
  //========================================================================
  */
-require_once('jpgraph_plotmark.inc.php');
+require_once ('jpgraph_plotmark.inc.php');
 
 //===================================================
 // CLASS FieldArrow

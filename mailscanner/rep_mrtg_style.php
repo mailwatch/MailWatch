@@ -38,7 +38,7 @@ session_start();
 require(__DIR__ . '/login.function.php');
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("MRTG Style Mail Report", 0, false, true);
+$filter = html_start(__('mrtgstyle36'), 0, false, true);
 
 // File name
 $filename = CACHE_DIR . "/rep_mrtg_style.png." . time();
@@ -81,7 +81,7 @@ if (is_writable(CACHE_DIR)) {
     // ##### AJOS1 NOTE #####
     $result = dbquery($sql_last24hrs);
     if (mysql_num_rows($result) <= 1) {
-        die("Error: Needs 2 or more rows of data to be retrieved from database\n");
+        die(__('dieid36') . "\n");
     }
 
 
@@ -158,14 +158,14 @@ if (is_writable(CACHE_DIR)) {
 }
 
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD>";
+echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') ."\"></TD>";
 echo " <TR>\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> File isn't readable. Please make sure that " . CACHE_DIR . " is readable and writable by MailWatch.";
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
 }
 
 echo " </TR>\n";
