@@ -796,24 +796,22 @@ function dbquery($sql)
     $link = dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
         echo "<!--\n\n";
-        $dbg_sql = "EXPLAIN " . $sql;
+        $dbg_sql = 'EXPLAIN ' . $sql;
         echo "SQL:\n\n$sql\n\n";
         /** @var mysqli_result $result */
-        $result = $link->query($dbg_sql) || die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
-
-        $finfo = $result->fetch_fields();
-        foreach ($finfo as $val) {
-            echo $val . "\n";
-        }
-
-        /*while ($row = $result->fetch_row()) {
-            for ($f = 0; $f < $link->field_count; $f++) {
-                echo mysqli_field_name($result, $f) . ": " . $row[$f] . "\n";
+        $result = $link->query($dbg_sql);
+        if ($result){
+            while ($row = $result->fetch_row()) {
+                for ($f = 0; $f < $link->field_count; $f++) {
+                    echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+                }
             }
-        }*/
-        //dbtable("SHOW STATUS");
-        echo "\n-->\n\n";
-        $result->free_result();
+
+            echo "\n-->\n\n";
+            $result->free_result();
+        } else {
+            die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
+        }
     }
 
     $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
