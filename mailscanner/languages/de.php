@@ -107,7 +107,6 @@ return array(
     'description03' => 'Beschreibung',
     'footer03' => 'MailWatch für MailScanner v',
     'mailwatchtitle03' => 'MailWatch für Mailscanner',
-    'php703' => 'MailWatch benötigt die (veraltete) MySQL extension zum Arbeiten: PHP7 hat diese extension entfernt und diese Software wird nicht funktionieren.',
     'radiospam203' => 'S',
     'radioham03' => 'H',
     'radioforget03' => 'F',

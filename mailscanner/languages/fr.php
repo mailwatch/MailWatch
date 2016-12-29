@@ -107,7 +107,6 @@ return array(
     'description03' => 'Description',
     'footer03' => 'MailWatch pour MailScanner v',
     'mailwatchtitle03' => 'MailWatch pour MailScanner',
-    'php703' => 'MailWatch a besoin du pilote MySQL pour fonctionner. Dans PHP7 ce pilote qui est devenu obsoléte',
     'radiospam203' => 'S',
     'radioham03' => 'D',
     'radioforget03' => 'O',
