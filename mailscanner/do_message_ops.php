@@ -71,7 +71,7 @@ if (isset($_POST) && !empty($_POST)) {
                 $type = 'release';
                 break;
             default:
-                continue;
+                continue 2; //continue with next foreach loop
         }
         $items = quarantine_list_items($id, RPC_ONLY);
         // Commenting out the below line since it shouldn't make a table for every message
