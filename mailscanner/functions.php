@@ -2489,49 +2489,6 @@ function debug($text)
 }
 
 /**
- * @return array
- */
-function return_24_hour_array()
-{
-    $hour_array = array();
-    for ($h = 0; $h < 24; $h++) {
-        $h = str_pad($h, 2, '0', STR_PAD_LEFT);
-        $hour_array[$h] = 0;
-    }
-
-    return $hour_array;
-}
-
-/**
- * @return array
- */
-function return_60_minute_array()
-{
-    $minute_array = array();
-    for ($m = 0; $m < 60; $m++) {
-        $m = str_pad($m, 2, '0', STR_PAD_LEFT);
-        $minute_array[$m] = 0;
-    }
-
-    return $minute_array;
-}
-
-/**
- * @return array
- */
-function return_time_array()
-{
-    $time_array = array();
-    $minute_array = return_60_minute_array();
-    for ($h = 0; $h < 24; $h++) {
-        $h = str_pad($h, 2, '0', STR_PAD_LEFT);
-        $time_array[$h] = $minute_array;
-    }
-
-    return $time_array;
-}
-
-/**
  * @param $dir
  * @return bool|int
  */
