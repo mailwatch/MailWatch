@@ -326,7 +326,7 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i])) . "</TD>\n";
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . "</TD>\n";
     }
-    echo " <TD ALIGN=\"RIGHT\">" . format_mail_size($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
+    echo " <TD ALIGN=\"RIGHT\">" . formatSize($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
     echo " <TD bgcolor='#ffffff'><BR></TD>\n";
     echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . "</TD>\n";
     echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . "</TD>\n";
@@ -356,7 +356,7 @@ if ($is_MCP_enabled === true) {
     echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp)) . "</TH>\n";
     echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }
-echo " <TH ALIGN=\"RIGHT\">" . format_mail_size(mailwatch_array_sum($data_total_size) * $size_info['formula']) . "</TH>\n";
+echo " <TH ALIGN=\"RIGHT\">" . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . "</TH>\n";
 echo " <TD bgcolor='#ffffff'><BR></TD>\n";
 echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unknown_users)) . "</TH>\n";
 echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unresolveable)) . "</TH>\n";

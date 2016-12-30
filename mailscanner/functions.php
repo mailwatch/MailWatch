@@ -593,7 +593,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
         echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
                 $row->processed
-            ) . '</td><td align="right">' . format_mail_size(
+            ) . '</td><td align="right">' . formatSize(
                 $row->size
             ) . '</td></tr>' . "\n";
         echo ' <tr><td>' . __('cleans03') . '</td><td align="right">' . number_format(
@@ -1207,37 +1207,6 @@ function formatSize($size, $precision = 2)
     $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
 
     return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
-}
-
-/**
- * @param $size_in_bytes
- * @param int $decimal_places
- * @return string
- */
-function format_mail_size($size_in_bytes, $decimal_places = 1)
-{
-    // Setup common measurements
-    $kb = 1024; // Kilobyte
-    $mb = 1024 * $kb; // Megabyte
-    $gb = 1024 * $mb; // Gigabyte
-    $tb = 1024 * $gb; // Terabyte
-    if ($size_in_bytes < $kb) {
-        return $size_in_bytes . 'b';
-    } else {
-        if ($size_in_bytes < $mb) {
-            return round($size_in_bytes / $kb, $decimal_places) . 'Kb';
-        } else {
-            if ($size_in_bytes < $gb) {
-                return round($size_in_bytes / $mb, $decimal_places) . 'Mb';
-            } else {
-                if ($size_in_bytes < $tb) {
-                    return round($size_in_bytes / $gb, $decimal_places) . 'Gb';
-                } else {
-                    return round($size_in_bytes / $tb, $decimal_places) . 'Tb';
-                }
-            }
-        }
-    }
 }
 
 /**
@@ -2083,7 +2052,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         }
                         break;
                     case 'size':
-                        $row[$f] = format_mail_size($row[$f]);
+                        $row[$f] = formatSize($row[$f]);
                         break;
                     case 'spamwhitelisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {

@@ -129,7 +129,7 @@ for ($i = 0; $i < $dataCount; $i++) {
     echo '<tr style="background-color: #EBEBEB">
  <td>' . $data_names[$i] . '</td>
  <td style="text-align: center">' . number_format($data[$i]) . '</td>
- <td style="text-align: center">' . format_mail_size($data_size[$i] * $size_info['formula']) . '</td>
+ <td style="text-align: center">' . formatSize($data_size[$i] * $size_info['formula']) . '</td>
 </tr>' . "\n";
 }
 

@@ -199,7 +199,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = format_spam_report($row[$f]);
         }
         if ($fieldn === __('size04')) {
-            $row[$f] = format_mail_size($row[$f]);
+            $row[$f] = formatSize($row[$f]);
         }
         if ($fieldn === __('msgheaders04')) {
             if (version_compare(phpversion(), '5.4', '>=')) {
@@ -427,7 +427,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // If the file is an rfc822 message then allow the file to be learnt
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
-                (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message' ) &&
+                (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message') &&
                 (strtoupper(get_conf_var('UseSpamAssassin')) === 'YES')
             ) {
                 echo '   <td align="center"><input type="checkbox" name="learn[]" value="' . $item['id'] . '"><select name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";

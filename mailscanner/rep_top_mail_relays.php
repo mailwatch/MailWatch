@@ -151,7 +151,7 @@ for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; $i+
     <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>\n
     <TD ALIGN=\"RIGHT\">" . number_format($data_virus[$i]) . "</TD>\n
     <TD ALIGN=\"RIGHT\">" . number_format($data_spam[$i]) . "</TD>\n
-    <TD ALIGN=\"RIGHT\">" . format_mail_size($data_size[$i]) . "</TD></TR>\n";
+    <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i]) . "</TD></TR>\n";
 }
 echo '
   </TABLE>

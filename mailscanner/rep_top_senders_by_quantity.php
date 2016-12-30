@@ -134,7 +134,7 @@ for ($i = 0, $count_data = count($data); $i < $count_data; $i++) {
    <TR BGCOLOR=\"#EBEBEB\">
     <TD>$data_names[$i]</TD>
     <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
-    <TD ALIGN=\"RIGHT\">" . format_mail_size($data_size[$i] * $size_info['formula']) . "</TD>
+    <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i] * $size_info['formula']) . "</TD>
    </TR>\n";
 }
 

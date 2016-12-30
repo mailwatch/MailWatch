@@ -79,7 +79,6 @@ function rpc_get_quarantine($msg)
                     return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir$input is a file.");
                     break;
             }
-
         }
         return new xmlrpcresp(new xmlrpcval($output, 'array'));
     } else {

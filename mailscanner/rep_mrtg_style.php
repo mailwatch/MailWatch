@@ -185,7 +185,7 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_mail[$i]) . "</TD>\n";
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_spam[$i]) . "</TD>\n";
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_virii[$i]) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . format_mail_size(
+    echo " <TD ALIGN=\"RIGHT\">" . formatSize(
             $data_total_size[$i] * $size_info['formula']
         ) . "&nbsp;&nbsp;</TD>\n";
     echo "</TR>\n";
