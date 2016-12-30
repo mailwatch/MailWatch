@@ -29,10 +29,10 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('salint51'), 0, false, true);
 
@@ -50,17 +50,17 @@ echo " </TR>\n";
 $start = get_microtime();
 $last = false;
 while ($line = fgets($fp, 2096)) {
-    $line = preg_replace("/\n/i", "", $line);
-    $line = preg_replace("/</", "&lt;", $line);
-    if ($line !== "" && $line !== " ") {
+    $line = preg_replace("/\n/i", '', $line);
+    $line = preg_replace('/</', '&lt;', $line);
+    if ($line !== '' && $line !== ' ') {
         $timer = get_microtime();
         $linet = $timer - $start;
         if (!$last) {
             $last = $linet;
         }
         // Check for 'subtests=' to add space after comma (to fit the screen)
-        if (preg_match("/subtests=/i", $line)) {
-            $line = str_replace(",", ", ", $line);
+        if (preg_match('/subtests=/i', $line)) {
+            $line = str_replace(',', ', ', $line);
         }
         echo "<!-- Timer: $timer, Line Start: $linet -->\n";
         echo "    <TR>\n";

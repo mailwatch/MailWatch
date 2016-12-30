@@ -29,13 +29,13 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/lib/pear/Mail/mimeDecode.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-ini_set("memory_limit", MEMORY_LIMIT);
+ini_set('memory_limit', MEMORY_LIMIT);
 
 if (!isset($_GET['id'])) {
     die(__('nomessid58'));
@@ -46,7 +46,7 @@ if (!isset($_GET['id'])) {
     $result = dbquery(
         "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
         safe_value($message_id) . "' AND "
-        . $_SESSION["global_filter"]
+        . $_SESSION['global_filter']
     );
     $message_data = $result->fetch_object();
 
@@ -54,7 +54,7 @@ if (!isset($_GET['id'])) {
         die(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
     }
 
-    if (!is_local($message_data->hostname) || RPC_ONLY) {
+    if (RPC_ONLY || !is_local($message_data->hostname)) {
         // Host is remote - use XML-RPC
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php', $host, 80);
         $input = new xmlrpcval($message_id);
@@ -62,10 +62,10 @@ if (!isset($_GET['id'])) {
         $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
         //$rsp = $client->send($msg);
         $rsp = xmlrpc_wrapper($message_data->hostname, $msg);
-        if ($rsp->faultcode() == 0) {
+        if ($rsp->faultCode() === 0) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
-            die(__('error58') . " " . $rsp->faultstring());
+            die(__('error58') . ' ' . $rsp->faultString());
         }
         $file = base64_decode($response);
     } else {
@@ -104,17 +104,15 @@ $structure = $Mail_mimeDecode->decode($params);
 $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 // Make sure that part being requested actually exists
-if (isset($_GET['part'])) {
-    if (!isset($mime_struct[$_GET['part']])) {
-        die(__('part58') . " " . sanitizeInput($_GET['part']) . " " . __('notfound58') . "\n");
-    }
+if (isset($_GET['part']) && !isset($mime_struct[$_GET['part']])) {
+    die(__('part58') . ' ' . sanitizeInput($_GET['part']) . ' ' . __('notfound58') . "\n");
 }
 
 function decode_structure($structure)
 {
-    $type = $structure->ctype_primary . "/" . $structure->ctype_secondary;
+    $type = $structure->ctype_primary . '/' . $structure->ctype_secondary;
     switch ($type) {
-        case "text/plain":
+        case 'text/plain':
             /*
             if (isset ($structure->ctype_parameters['charset']) &&
                 strtolower($structure->ctype_parameters['charset']) == 'utf-8'
@@ -134,11 +132,11 @@ function decode_structure($structure)
  </body>
  </html>' . "\n";
             break;
-        case "text/html":
+        case 'text/html':
             echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
-            if (isset($structure->ctype_parameters['charset']) && strtolower(
-                    $structure->ctype_parameters['charset']
-                ) != 'utf-8'
+            if (
+                isset($structure->ctype_parameters['charset']) &&
+                strtolower($structure->ctype_parameters['charset']) !== 'utf-8'
             ) {
                 $structure->body = utf8_encode($structure->body);
             }
@@ -149,11 +147,11 @@ function decode_structure($structure)
                 echo $structure->body;
             }
             break;
-        case "multipart/alternative":
+        case 'multipart/alternative':
             break;
         default:
-            header("Content-Type: " . $structure->headers['content-type']);
-            header("Content-Disposition: " . $structure->headers['content-disposition']);
+            header('Content-Type: ' . $structure->headers['content-type']);
+            header('Content-Disposition: ' . $structure->headers['content-disposition']);
             echo $structure->body;
             break;
     }

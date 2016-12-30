@@ -29,12 +29,12 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
+if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     html_start(__('mcpruledesc26'), 0, false, false);
@@ -58,7 +58,7 @@ if ($_SESSION['user_type'] != 'A') {
         $mcp_prefs_file = get_conf_var('MCPSpamAssassinPrefsFile');
         $mcp_local_rules_dir = get_conf_var('MCPSpamAssassinLocalRulesDir');
         $mcp_default_rules_dir = get_conf_var('MCPSpamAssassinDefaultRulesDir');
-        if ($mcp_local_rules_dir != $mcp_default_rules_dir) {
+        if ($mcp_local_rules_dir !== $mcp_default_rules_dir) {
             $fh = popen(
                 "ls $mcp_prefs_file $mcp_local_rules_dir/*.cf $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'",
                 'r'
@@ -70,9 +70,9 @@ if ($_SESSION['user_type'] != 'A') {
         audit_log('Ran MCP Rules Description Update');
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
-            debug("line: " . $line . "\n");
+            debug('line: ' . $line . "\n");
             preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
-            if (isset($regs[1]) && isset($regs[2])) {
+            if (isset($regs[1], $regs[2])) {
                 $regs[1] = safe_value(ltrim(rtrim($regs[1])));
                 $regs[2] = safe_value(ltrim(rtrim($regs[2])));
                 echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . '</td></tr>' . "\n";

@@ -29,12 +29,12 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/lib/pear/Mail/mimeDecode.php');
-ini_set("memory_limit", MEMORY_LIMIT);
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
+ini_set('memory_limit', MEMORY_LIMIT);
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('msgviewer06'), 0, false, false);
 ?>
@@ -52,7 +52,7 @@ if (!isset($_GET['id'])) {
     die(__('nomessid06'));
 } else {
     $message_id = sanitizeInput($_GET['id']);
-    $sql = "SELECT * FROM maillog WHERE id='" . safe_value($message_id) . "' AND " . $_SESSION["global_filter"];
+    $sql = "SELECT * FROM maillog WHERE id='" . safe_value($message_id) . "' AND " . $_SESSION['global_filter'];
     $result = dbquery($sql);
     $message = $result->fetch_object();
     // See if message is local
@@ -62,7 +62,7 @@ if (!isset($_GET['id'])) {
         audit_log('Quarantined message (' . $message_id . ') body viewed');
     }
     $using_rpc = false;
-    if (!is_local($message->hostname) || RPC_ONLY) {
+    if (RPC_ONLY || !is_local($message->hostname)) {
         // Host is remote - use XML-RPC
         $using_rpc = true;
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
@@ -71,10 +71,10 @@ if (!isset($_GET['id'])) {
         $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
         //$rsp = $client->send($msg);
         $rsp = xmlrpc_wrapper($message->hostname, $msg);
-        if ($rsp->faultcode() == 0) {
+        if ($rsp->faultCode() === 0) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
-            die(__('error06') . " " . $rsp->faultstring());
+            die(__('error06') . ' ' . $rsp->faultString());
         }
         $file = base64_decode($response);
     } else {
@@ -116,9 +116,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = __('msgviewer06') .": " . $message_id . " on " . $message->hostname;
+    $title = __('msgviewer06') . ': ' . $message_id . ' on ' . $message->hostname;
 } else {
-    $title = __('msgviewer06') .": " . $message_id;
+    $title = __('msgviewer06') . ': ' . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -134,16 +134,16 @@ function lazy($title, $val, $dohtmlentities = true)
     }
     $titleintl = $title;
     switch ($title) {
-        case "Date:":
+        case 'Date:':
             $titleintl = __('date06');
             break;
-        case "From:":
+        case 'From:':
             $titleintl = __('from06');
             break;
-        case "To:":
+        case 'To:':
             $titleintl = __('to06');
             break;
-        case "Subject:":
+        case 'Subject:':
             $titleintl = __('subject06');
             break;
     }
@@ -165,7 +165,7 @@ foreach ($header_fields as $field) {
     if (isset($structure->headers[$field['name']])) {
         /* this is a quick hack to fix issue #154, This need to be recoded in next version */
         if (is_array($structure->headers[$field['name']])) {
-            $structure->headers[$field['name']] = implode("; ", $structure->headers[$field['name']]);
+            $structure->headers[$field['name']] = implode('; ', $structure->headers[$field['name']]);
         }
         $structure->headers[$field['name']] = getUTF8String($structure->headers[$field['name']]);
         if ($field['replaceQuote']) {
@@ -175,10 +175,10 @@ foreach ($header_fields as $field) {
     }
 }
 
-if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
+if (($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) || $_SESSION['user_type'] === 'A') {
     lazy(
         __('actions06'),
-        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . "</a>",
+        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . '</a>',
         false
     );
 }
@@ -189,19 +189,19 @@ foreach ($mime_struct as $key => $part) {
     echo "  <td colspan=2 class=\"heading\">" . __('mymetype06') . " $type</td>\n";
 
     switch ($type) {
-        case "text/plain":
-        case "text/html":
+        case 'text/plain':
+        case 'text/html':
             echo ' <tr>' . "\n";
             echo '  <td colspan="2">' . "\n";
             echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
             echo '  </td>' . "\n";
             echo ' </tr>' . "\n";
             break;
-        case "message/rfc822":
+        case 'message/rfc822':
             break;
-        case "multipart/related":
+        case 'multipart/related':
             break;
-        case "multipart/alternative":
+        case 'multipart/alternative':
             break;
         default:
             echo " <tr>\n";
@@ -218,10 +218,10 @@ foreach ($mime_struct as $key => $part) {
             } else {
                 echo 'Attachment without name';
             }
-            if (($message->virusinfected == 0 && $message->nameinfected == 0 && $message->otherinfected == 0) || $_SESSION['user_type'] == 'A') {
+            if (($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) || $_SESSION['user_type'] === 'A') {
                 echo ' <a href="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }
-            echo "  </td>";
+            echo '  </td>';
 
             echo " </tr>\n";
             break;

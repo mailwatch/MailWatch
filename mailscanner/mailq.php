@@ -29,19 +29,19 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('mqviewer24'), 0, false, false);
 
 switch ($_GET['queue']) {
-    case "inq":
+    case 'inq':
         $queue = 'inq';
         $display = 'Inbound Mail Queue';
         break;
-    case "outq":
+    case 'outq':
         $queue = 'outq';
         $display = 'Outbound Mail Queue';
         break;
@@ -63,11 +63,11 @@ db_colorised_table(
  attempts,
  CASE WHEN lastattempt=0 THEN '00:00:00' ELSE SEC_TO_TIME((UNIX_TIMESTAMP() - lastattempt)) END AS lastattempt
 FROM
- " . $queue . "
+ " . $queue . '
 WHERE
- " . $_SESSION['global_filter'] . "
+ ' . $_SESSION['global_filter'] . '
 ORDER BY
- cdate, ctime",
+ cdate, ctime',
     $display,
     true,
     true

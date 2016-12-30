@@ -36,7 +36,7 @@ ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
 // Edit this to reflect the full path to functions.php
-require("/var/www/html/mailscanner/functions.php");
+require '/var/www/html/mailscanner/functions.php';
 
 // Set-up environment
 set_time_limit(0);
@@ -70,7 +70,7 @@ class syslog_parser
     /**
      * @param string $line
      */
-    public function syslog_parser($line)
+    public function __construct($line)
     {
 
         // Parse the date, time, host, process pid and log entry
@@ -110,7 +110,7 @@ class sendmail_parser
     /**
      * @param string $line
      */
-    public function sendmail_parser($line)
+    public function __construct($line)
     {
         $this->raw = $line;
         if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {
@@ -193,7 +193,7 @@ function doit($input)
 {
     global $fp;
     if (!$fp = popen($input, 'r')) {
-        die("Cannot open pipe");
+        die('Cannot open pipe');
     }
 
     $lines = 1;
@@ -201,14 +201,14 @@ function doit($input)
         $parsed = new syslog_parser($line);
         $_timestamp = safe_value($parsed->timestamp);
         $_host = safe_value($parsed->host);
-        $_dsn = "";
-        $_delay = "";
-        $_relay = "";
+        $_dsn = '';
+        $_delay = '';
+        $_relay = '';
 
         // Sendmail
-        if ($parsed->process == 'sendmail' && class_exists('sendmail_parser')) {
+        if ($parsed->process === 'sendmail' && class_exists('sendmail_parser')) {
             $sendmail = new sendmail_parser($parsed->entry);
-            if (DEBUG) {
+            if (true === DEBUG) {
                 print_r($sendmail);
             }
 
@@ -216,13 +216,13 @@ function doit($input)
 
             // Rulesets
             if (isset($sendmail->entries['ruleset'])) {
-                if ($sendmail->entries['ruleset'] == 'check_relay') {
+                if ($sendmail->entries['ruleset'] === 'check_relay') {
                     // Listed in RBL(s)
                     $_type = safe_value('rbl');
                     $_relay = safe_value($sendmail->entries['arg2']);
                     $_status = safe_value($sendmail->entries['reject']);
                 }
-                if ($sendmail->entries['ruleset'] == 'check_mail') {
+                if ($sendmail->entries['ruleset'] === 'check_mail') {
                     // Domain does not resolve
                     $_type = safe_value('unresolveable');
                     $_status = safe_value(get_email($sendmail->entries['reject']));
@@ -230,10 +230,10 @@ function doit($input)
             }
 
             // Milter-ahead rejections
-            if ((preg_match('/Milter: /i', $sendmail->raw)) && (preg_match(
+            if (preg_match('/Milter: /i', $sendmail->raw) && preg_match(
                     '/(rejected recipient|user unknown)/i',
                     $sendmail->entries['reject']
-                ))
+                )
             ) {
                 $_type = safe_value('unknown_user');
                 $_status = safe_value(get_email($sendmail->entries['to']));
@@ -247,7 +247,7 @@ function doit($input)
             }
 
             // Relay lines
-            if (isset($sendmail->entries['relay']) && isset($sendmail->entries['stat'])) {
+            if (isset($sendmail->entries['relay'], $sendmail->entries['stat'])) {
                 $_type = safe_value('relay');
                 $_delay = safe_value($sendmail->entries['xdelay']);
                 $_relay = safe_value(get_ip($sendmail->entries['relay']));
@@ -268,7 +268,7 @@ function doit($input)
     pclose($fp);
 }
 
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == "--refresh") {
+if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
     doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first

@@ -29,10 +29,10 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('qviewer08'), 0, false, false);
 
@@ -44,12 +44,12 @@ if (!isset($_GET['dir'])) {
         echo '<table class="mail" cellspacing="2" align="center">' . "\n";
         echo '<tr><th colspan=2>' . __('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
-            $sql = "SELECT id FROM maillog WHERE " . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
+            $sql = 'SELECT id FROM maillog WHERE ' . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
             $result = dbquery($sql);
             $rowcnt = $result->num_rows;
-            $rowstr = "  ----------";
+            $rowstr = '  ----------';
             if ($rowcnt > 0) {
-                $rowstr = sprintf("  %02d " . __('items08'), $rowcnt);
+                $rowstr = sprintf('  %02d ' . __('items08'), $rowcnt);
             }
             echo '<tr><td align="right"><a href="quarantine.php?dir=' . $date . '">' . translateQuarantineDate(
                     $date,
@@ -92,10 +92,10 @@ if (!isset($_GET['dir'])) {
         $sql = "
 SELECT
  id AS id2,
- DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
+ DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
  from_address,";
         if (defined('DISPLAY_IP') && DISPLAY_IP) {
-            $sql .= "clientip,";
+            $sql .= 'clientip,';
         }
         $sql .= "
  to_address,
@@ -127,17 +127,17 @@ AND
  quarantined = 1";
 
 // Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] == 'U') {
-    $sql .= "
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+    $sql .= '
     AND
      ishighspam=0
     AND
-     COALESCE(ishighmcp,0)=0";
+     COALESCE(ishighmcp,0)=0';
 }
 
-        $sql .= "
+        $sql .= '
 ORDER BY
- date DESC, time DESC";
+ date DESC, time DESC';
         db_colorised_table($sql, __('folder08') . ' ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
@@ -145,15 +145,15 @@ ORDER BY
         $items = quarantine_list($dir);
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
-            $msg_ids = join($items, ",");
+            $msg_ids = implode($items, ',');
             $date = safe_value(translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
    id AS id2,
-   DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
+   DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
    from_address,";
             if (defined('DISPLAY_IP') && DISPLAY_IP) {
-                $sql .= "clientip,";
+                $sql .= 'clientip,';
             }
             $sql .= "
    to_address,
@@ -185,18 +185,18 @@ ORDER BY
    BINARY id IN ($msg_ids)";
 
 // Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] == 'U') {
-    $sql .= "
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+    $sql .= '
     AND
      ishighspam=0
     AND
-     COALESCE(ishighmcp,0)=0";
+     COALESCE(ishighmcp,0)=0';
 }
 
-            $sql .= "
+            $sql .= '
   ORDER BY
    date DESC, time DESC
-  ";
+  ';
             db_colorised_table($sql, __('folder_0208') . ': ' . translateQuarantineDate($dir), true, true);
         } else {
             echo "No quarantined messages found\n";

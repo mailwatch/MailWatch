@@ -34,6 +34,7 @@
  */
 class Filter
 {
+    /** @var array */
     public $item;
     public $operators = array();
     public $columns = array();
@@ -112,7 +113,7 @@ class Filter
         //  Make sure this is not a duplicate
         if (count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
-                if (($val[0] == $column) && ($val[1] == $operator) && ($val[2] == $value)) {
+                if (($val[0] === $column) && ($val[1] === $operator) && ($val[2] === $value)) {
                     return;
                 }
             }
@@ -122,7 +123,7 @@ class Filter
     }
 
     /**
-     * @param array $item
+     * @param string $item
      */
     public function Remove($item)
     {
@@ -144,7 +145,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER["PHP_SELF"]) . '?action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
@@ -184,22 +185,22 @@ WHERE
         $sql = '';
         if (count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
-                if ($val[0] == 'date') {
+                if ($val[0] === 'date') {
                     // Change field from timestamp to date format
                     $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
                     // If LIKE selected - place wildcards either side of the query string
-                    if ($val[1] == "LIKE" or $val[1] == "NOT LIKE") {
+                    if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
                         $val[2] = '%' . $val[2] . '%';
                     }
                     if (is_numeric($val[2])) {
                         $sql .= "AND\n $val[0] $val[1] $val[2]\n";
                     } else {
                         // Handle NULL and NOT NULL's
-                        if ($val[1] == "IS NULL" || $val[1] == "IS NOT NULL") {
+                        if ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
                             $sql .= "AND\n $val[0] $val[1]\n";
                         } else {
                             // Allow !<sql_function>
-                            if ($val[2]{0} == "!") {
+                            if ($val[2]{0} === '!') {
                                 $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
                             } else {
                                 // Regular string
@@ -216,22 +217,22 @@ WHERE
 
     public function CreateSQL()
     {
-        $sql = "AND " . $_SESSION['global_filter'] . "\n";
+        $sql = 'AND ' . $_SESSION['global_filter'] . "\n";
         if (count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
                 // If LIKE selected - place wildcards either side of the query string
-                if ($val[1] == "LIKE" or $val[1] == "NOT LIKE") {
+                if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
                     $val[2] = '%' . $val[2] . '%';
                 }
                 if (is_numeric($val[2])) {
                     $sql .= "AND\n $val[0] $val[1] $val[2]\n";
                 } else {
                     // Handle NULL and NOT NULL's
-                    if ($val[1] == "IS NULL" || $val[1] == "IS NOT NULL") {
+                    if ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
                         $sql .= "AND\n $val[0] $val[1]\n";
                     } else {
                         // Allow !<sql_function>
-                        if ($val[2]{0} == "!") {
+                        if ($val[2]{0} === '!') {
                             $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
                         } else {
                             // Regular string
@@ -243,7 +244,7 @@ WHERE
 
             return $sql;
         } else {
-            return "AND " . $_SESSION['global_filter'] . "\n";
+            return 'AND ' . $_SESSION['global_filter'] . "\n";
         }
     }
 
@@ -253,7 +254,7 @@ WHERE
      */
     public function TranslateColumn($column)
     {
-        return ($this->columns[$column]);
+        return $this->columns[$column];
     }
 
     /**
@@ -262,7 +263,7 @@ WHERE
      */
     public function TranslateOperator($operator)
     {
-        return ($this->operators[$operator]);
+        return $this->operators[$operator];
     }
 
     public function DisplayForm()
@@ -280,8 +281,8 @@ WHERE
             $return .= ' <option value="' . $key . '"';
             if ($this->display_last) {
                 //  Use the last value as the default
-                if ($key == $this->last_column) {
-                    $return .= " SELECTED";
+                if ($key === $this->last_column) {
+                    $return .= ' SELECTED';
                 }
             }
             $return .= '>' . $val . '</option>' . "\n";
@@ -296,8 +297,8 @@ WHERE
             $return .= ' <option value="' . $key . '"';
             if ($this->display_last) {
                 //  Use the last value as the default
-                if ($key == $this->last_operator) {
-                    $return .= " SELECTED";
+                if ($key === $this->last_operator) {
+                    $return .= ' SELECTED';
                 }
             }
             $return .= '>' . $val . '</option>' . "\n";
@@ -408,6 +409,6 @@ WHERE
     {
         $validKeys = array_keys($this->operators);
 
-        return (in_array($operator, $validKeys));
+        return in_array($operator, $validKeys, true);
     }
 }

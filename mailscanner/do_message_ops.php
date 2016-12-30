@@ -29,11 +29,11 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));
 
@@ -88,7 +88,7 @@ if (isset($_POST) && !empty($_POST)) {
                 $num = 0;
                 $itemnum = array($num);
                 echo '<td>';
-                if ($type == 'release') {
+                if ($type === 'release') {
                     $quarantined = quarantine_list_items($id, RPC_ONLY);
                     if (is_array($quarantined)) {
                         $to = $quarantined[0]['to'];

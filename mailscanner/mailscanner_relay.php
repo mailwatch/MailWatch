@@ -34,7 +34,7 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-require(__DIR__ . '/functions.php');
+require __DIR__ . '/functions.php';
 
 // Set-up environment
 set_time_limit(0);
@@ -58,7 +58,7 @@ function doit($input)
     pclose($fp);
 }
 
-if ($_SERVER['argv'][1] == '--refresh') {
+if ($_SERVER['argv'][1] === '--refresh') {
     doit('cat ' . MS_LOG);
 } else {
     // Refresh first

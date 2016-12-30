@@ -726,6 +726,6 @@ return array(
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'No translation in English',
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
+    'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
 
 );

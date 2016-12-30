@@ -29,10 +29,10 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('mailscannerlint28'), 0, false, false);
 echo '<table class="mail" cellspacing="1" width="100%">' . "\n";
@@ -55,8 +55,8 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     $start = get_microtime();
     $last = false;
     while ($line = fgets($fp, 2096)) {
-        $line = preg_replace("/\n/i", "", $line);
-        if ($line !== "" && $line !== " ") {
+        $line = preg_replace("/\n/i", '', $line);
+        if ($line !== '' && $line !== ' ') {
             $timer = get_microtime();
             $linet = $timer - $start;
             if (!$last) {

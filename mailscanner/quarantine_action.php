@@ -33,10 +33,10 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 function simple_html_start()
 {
@@ -71,7 +71,7 @@ function simple_html_result($status)
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
+                        <td align="center"><b><a href="window.close()">Close Window</a></td>
                     </tr>
                 </table>
             </td>
@@ -89,18 +89,18 @@ if (!isset($_GET['action'])) {
 }
 
 $list = quarantine_list_items(sanitizeInput($_GET['id']));
-if (count($list) == 0) {
+if (count($list) === 0) {
     die(__('diemnf57'));
 }
 
 switch ($_GET['action']) {
     case 'release':
         $result = '';
-        if (count($list) == 1) {
+        if (count($list) === 1) {
             $to = $list[0]['to'];
             $result = quarantine_release($list, array(0), $to);
         } else {
-            for ($i = 0; $i < count($list); $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
                     $result = quarantine_release($list, array($i), $list[$i]['to']);
                 }
@@ -132,7 +132,7 @@ switch ($_GET['action']) {
                                     <td align="center">
                                         <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="javascript:window.close()">No</a>
+                                        <a href="javascript:void(0)" onClick="window.close()">No</a>
                                     </td>
                                 </tr>
                             </table>
@@ -143,16 +143,16 @@ switch ($_GET['action']) {
                 simple_html_end();
             } else {
                 simple_html_start();
-                for ($i = 0; $i < count($list); $i++) {
+                for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                     $status[] = quarantine_delete($list, array($i));
                 }
-                $status = join('<br/>', $status);
+                $status = implode('<br/>', $status);
                 simple_html_result($status);
                 simple_html_end();
             }
         } else {
             // Delete
-            for ($i = 0; $i < count($list); $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 $status[] = quarantine_delete($list, array($i));
             }
         }
@@ -162,7 +162,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die(__('dieuaction57') . " " . sanitizeInput($_GET['action']));
+        die(__('dieuaction57') . ' ' . sanitizeInput($_GET['action']));
 }
 
 dbclose();

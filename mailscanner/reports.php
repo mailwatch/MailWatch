@@ -30,91 +30,91 @@
  */
 
 //Require files
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // verify login
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // Checking to see if there are any filters
-if (!isset($_SESSION["filter"]) || !is_object($_SESSION["filter"])) {
+if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {
     $filter = new Filter();
-    $_SESSION["filter"] = $filter;
+    $_SESSION['filter'] = $filter;
 } else {
-    $filter = $_SESSION["filter"];
+    $filter = $_SESSION['filter'];
 }
 
 // add the header information such as the logo, search, menu, ....
-html_start(__('reports14'), "0", false, false);
+html_start(__('reports14'), '0', false, false);
 
 // Add filters and save them
-if (isset($_GET["action"])) {
-    switch (strtolower(sanitizeInput($_GET["action"]))) {
-        case "add":
-            $filter->Add(sanitizeInput($_GET["column"]), $_GET["operator"], sanitizeInput($_GET["value"]));
+if (isset($_GET['action'])) {
+    switch (strtolower(sanitizeInput($_GET['action']))) {
+        case 'add':
+            $filter->Add(sanitizeInput($_GET['column']), $_GET['operator'], sanitizeInput($_GET['value']));
             break;
-        case "remove":
-            $filter->Remove(sanitizeInput($_GET["column"]));
+        case 'remove':
+            $filter->Remove(sanitizeInput($_GET['column']));
             break;
-        case "destroy":
+        case 'destroy':
             session_destroy();
             echo "Session destroyed\n";
             exit;
-        case "save":
+        case 'save':
             if (isset($_GET['save_as'])) {
                 $name = sanitizeInput($_GET['save_as']);
             }
-            if (isset($_GET['filter']) && $_GET['filter'] != "_none_") {
+            if (isset($_GET['filter']) && $_GET['filter'] !== '_none_') {
                 $name = sanitizeInput($_GET['filter']);
             }
             if (!empty($name)) {
                 $filter->Save($name);
             }
             break;
-        case "load":
+        case 'load':
             $filter->Load(sanitizeInput($_GET['filter']));
             break;
-        case "delete":
+        case 'delete':
             $filter->Delete(sanitizeInput($_GET['filter']));
             break;
     }
 }
 
 // add the session filters to the variables
-$_SESSION["filter"] = $filter;
+$_SESSION['filter'] = $filter;
 
-$filter->AddReport("rep_message_listing.php", __('messlisting14'));
-$filter->AddReport("rep_message_ops.php", __('messop14'));
+$filter->AddReport('rep_message_listing.php', __('messlisting14'));
+$filter->AddReport('rep_message_ops.php', __('messop14'));
 
-$filter->AddReport("rep_total_mail_by_date.php", __('messdate14'));
-$filter->AddReport("rep_top_mail_relays.php", __('topmailrelay14'));
+$filter->AddReport('rep_total_mail_by_date.php', __('messdate14'));
+$filter->AddReport('rep_top_mail_relays.php', __('topmailrelay14'));
 
-$filter->AddReport("rep_top_viruses.php", __('topvirus14'));
-$filter->AddReport("rep_viruses.php", __('virusrepor14'));
+$filter->AddReport('rep_top_viruses.php', __('topvirus14'));
+$filter->AddReport('rep_viruses.php', __('virusrepor14'));
 
-$filter->AddReport("rep_top_senders_by_quantity.php", __('topsendersqt14'));
-$filter->AddReport("rep_top_senders_by_volume.php", __('topsendersvol14'));
-$filter->AddReport("rep_top_recipients_by_quantity.php", __('toprecipqt14'));
-$filter->AddReport("rep_top_recipients_by_volume.php", __('toprecipvol14'));
+$filter->AddReport('rep_top_senders_by_quantity.php', __('topsendersqt14'));
+$filter->AddReport('rep_top_senders_by_volume.php', __('topsendersvol14'));
+$filter->AddReport('rep_top_recipients_by_quantity.php', __('toprecipqt14'));
+$filter->AddReport('rep_top_recipients_by_volume.php', __('toprecipvol14'));
 
 //$filter->AddReport("rep_mrtg_style.php","__('mrtgreport14'));
 
-$filter->AddReport("rep_top_sender_domains_by_quantity.php", __('topsendersdomqt14'));
-$filter->AddReport("rep_top_sender_domains_by_volume.php", __('topsendersdomvol14'));
-$filter->AddReport("rep_top_recipient_domains_by_quantity.php", __('toprecipdomqt14'));
-$filter->AddReport("rep_top_recipient_domains_by_volume.php", __('toprecipdomvol14'));
+$filter->AddReport('rep_top_sender_domains_by_quantity.php', __('topsendersdomqt14'));
+$filter->AddReport('rep_top_sender_domains_by_volume.php', __('topsendersdomvol14'));
+$filter->AddReport('rep_top_recipient_domains_by_quantity.php', __('toprecipdomqt14'));
+$filter->AddReport('rep_top_recipient_domains_by_volume.php', __('toprecipdomvol14'));
 
 if (get_conf_truefalse('UseSpamAssassin') === true) {
-    $filter->AddReport("rep_sa_score_dist.php", __('assassinscoredist14'));
-    $filter->AddReport("rep_sa_rule_hits.php", __('assassinrulhit14'));
+    $filter->AddReport('rep_sa_score_dist.php', __('assassinscoredist14'));
+    $filter->AddReport('rep_sa_rule_hits.php', __('assassinrulhit14'));
 }
 if (get_conf_truefalse('MCPChecks') === true) {
-    $filter->AddReport("rep_mcp_score_dist.php", __('mcpscoredist14'));
-    $filter->AddReport("rep_mcp_rule_hits.php", __('mcprulehit14'));
+    $filter->AddReport('rep_mcp_score_dist.php', __('mcpscoredist14'));
+    $filter->AddReport('rep_mcp_rule_hits.php', __('mcprulehit14'));
 }
 
-$filter->AddReport("rep_audit_log.php", __('auditlog14'));
+$filter->AddReport('rep_audit_log.php', __('auditlog14'));
 $filter->Display();
 
 clear_cache_dir();

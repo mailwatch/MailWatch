@@ -29,22 +29,22 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('mysqlstatus31'), 0, false, true);
 
-if ($_SESSION['user_type'] != 'A') {
-    echo "Not Authorized";
+if ($_SESSION['user_type'] !== 'A') {
+    echo 'Not Authorized';
 } else {
     audit_log('Viewed MySQL Status');
-    dbtable("SHOW TABLE STATUS");
+    dbtable('SHOW TABLE STATUS');
     echo "<BR>\n";
-    dbtable("SHOW FULL PROCESSLIST");
+    dbtable('SHOW FULL PROCESSLIST');
     echo "<BR>\n";
-    dbtable("SHOW VARIABLES");
+    dbtable('SHOW VARIABLES');
 
     // Add footer
     html_end();

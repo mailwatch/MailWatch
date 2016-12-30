@@ -29,13 +29,13 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
-    header("Location: index.php");
+if ($_SESSION['user_type'] !== 'A') {
+    header('Location: index.php');
 } else {
     html_start(__('rules30'));
 
@@ -54,7 +54,7 @@ if ($_SESSION['user_type'] != 'A') {
         echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
         echo '<tr><td class="heading">File: ' . $FilePath . '</td></tr>' . "\n";
         echo '<tr><td><pre>' . "\n";
-        if ($fh = @@fopen($FilePath, 'r')) {
+        if ($fh = @@fopen($FilePath, 'rb')) {
             while (!feof($fh)) {
                 $line = rtrim(fgets($fh, 4096));
                 if (isset($_GET['strip_comments']) && $_GET['strip_comments']) {

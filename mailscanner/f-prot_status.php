@@ -30,14 +30,14 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
-    header("Location: index.php");
+if ($_SESSION['user_type'] !== 'A') {
+    header('Location: index.php');
 } else {
     html_start(__('fprotstatus22'), 0, false, false);
     echo '
@@ -45,10 +45,10 @@ if ($_SESSION['user_type'] != 'A') {
  <tr>
   <td align="center">';
 
-    if (preg_match('/-6/i', get_conf_var('VirusScanners'))) {
-        passthru(get_virus_conf('f-prot') . " -virno | awk -f " . __DIR__ . "/f-prot.awk");
+    if (false !== strpos(get_conf_var('VirusScanners'), '/-6/')) {
+        passthru(get_virus_conf('f-prot') . ' -virno | awk -f ' . __DIR__ . '/f-prot.awk');
     } else {
-        passthru(get_virus_conf('f-prot') . " -verno | awk -f " . __DIR__ . "/f-prot.awk");
+        passthru(get_virus_conf('f-prot') . ' -verno | awk -f ' . __DIR__ . '/f-prot.awk');
     }
     echo '
 </td>

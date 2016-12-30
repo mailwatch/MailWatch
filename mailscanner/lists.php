@@ -29,10 +29,10 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('wblists07'), 0, false, false);
 
@@ -118,7 +118,7 @@ switch ($_SESSION['user_type']) {
         $user_filter[] = $myusername;
         foreach ($user_filter as $tempvar) {
             if (strpos($tempvar, '@')) {
-                $ar = explode("@", $tempvar);
+                $ar = explode('@', $tempvar);
                 $username = $ar[0];
                 $domainname = $ar[1];
                 $to_user_filter[] = $username;
@@ -141,7 +141,7 @@ switch ($_SESSION['user_type']) {
             $to_domain_filter[] = $row['filter'];
         }
         if (strpos($_SESSION['myusername'], '@')) {
-            $ar = explode("@", $_SESSION['myusername']);
+            $ar = explode('@', $_SESSION['myusername']);
             $domainname = $ar[1];
             $to_domain_filter[] = $domainname;
         }
@@ -164,13 +164,13 @@ switch (true) {
 }
 
 // Submitted
-if ($url_submit == 'add') {
+if ($url_submit === 'add') {
     // Check input is valid
     if (empty($url_list)) {
-        $errors[] = "You must select a list to create the entry.";
+        $errors[] = 'You must select a list to create the entry.';
     }
     if (empty($from)) {
-        $errors[] = "You must enter a from address (user@domain, domain or IP).";
+        $errors[] = 'You must enter a from address (user@domain, domain or IP).';
     }
 
     $to_domain = strtolower($url_domain);
@@ -184,19 +184,19 @@ if ($url_submit == 'add') {
                 $list = 'blacklist';
                 break;
         }
-        $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES';
-        $sql .= "('" . safe_value($to_address) . "',";
-        $sql .= "'" . safe_value($to_domain) . "',";
-        $sql .= "'" . safe_value($from) . "')";
+        $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
+            . "('" . safe_value($to_address) . "',"
+            . "'" . safe_value($to_domain) . "',"
+            . "'" . safe_value($from) . "')";
         @dbquery($sql);
-        audit_log("Added " . $from . " to " . $list . " for " . $to_address);
+        audit_log('Added ' . $from . ' to ' . $list . ' for ' . $to_address);
         //unset($from);
         //unset($url_list);
     }
 }
 
 // Delete
-if ($url_submit == 'delete') {
+if ($url_submit === 'delete') {
     $id = $url_id;
     switch ($url_list) {
         case 'w':
@@ -274,7 +274,7 @@ switch ($_SESSION['user_type']) {
     case 'U':
         echo '<td> <select name="to">';
         foreach ($to_user_filter as $to_user_selection) {
-            if ($touser == $to_user_selection) {
+            if ($touser === $to_user_selection) {
                 echo '<option selected>' . $to_user_selection . '</option>';
             } else {
                 echo '<option>' . $to_user_selection . '</option>';
@@ -282,7 +282,7 @@ switch ($_SESSION['user_type']) {
         }
         echo '</select>@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
-            if ($to_domain == $to_domain_selection) {
+            if ($to_domain === $to_domain_selection) {
                 echo '<option selected>' . $to_domain_selection . '</option>';
             } else {
                 echo '<option>' . $to_domain_selection . '</option>';
@@ -293,7 +293,7 @@ switch ($_SESSION['user_type']) {
     case 'D':
         echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
-            if ($to_domain == $to_domain_selection) {
+            if ($to_domain === $to_domain_selection) {
                 echo '<option selected>' . $to_domain_selection . '</option>';
             } else {
                 echo '<option>' . $to_domain_selection . '</option>';
@@ -330,7 +330,7 @@ echo '  </td>
 if (isset($errors)) {
     echo '<tr>
   <td class="heading">Errors:</td>
-  <td>' . implode("<br>", $errors) . '</td>
+  <td>' . implode('<br>', $errors) . '</td>
  </tr>';
 }
 echo '</table>
@@ -346,14 +346,14 @@ echo '</table>
     <!-- Whitelist -->';
 
 build_table(
-    "SELECT id, from_address, to_address FROM whitelist WHERE " . $_SESSION['global_list'] . " ORDER BY from_address",
+    'SELECT id, from_address, to_address FROM whitelist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
     'w'
 );
 echo '</td>
  <td  class="blackwhitelist">
   <!-- Blacklist -->';
 build_table(
-    "SELECT id, from_address, to_address FROM blacklist WHERE " . $_SESSION['global_list'] . " ORDER BY from_address",
+    'SELECT id, from_address, to_address FROM blacklist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
     'b'
 );
 echo '</td>

@@ -29,20 +29,20 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-include(__DIR__ . '/login.function.php');
+include __DIR__ . '/login.function.php';
 
 html_start(__('sophos53'), 0, false, false);
 
 echo "<TABLE CLASS=\"boxtable\" WIDTH=\"100%\">";
-echo "<TR>";
+echo '<TR>';
 echo "<TD ALIGN=\"CENTER\">";
-passthru(get_virus_conf('sophos') . " -v | awk -f " . __DIR__ . "/sophos.awk");
-echo "</TD>";
-echo "</TR>";
-echo "</TABLE>";
+passthru(get_virus_conf('sophos') . ' -v | awk -f ' . __DIR__ . '/sophos.awk');
+echo '</TD>';
+echo '</TR>';
+echo '</TABLE>';
 
 // Add footer
 html_end();

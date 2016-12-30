@@ -30,13 +30,13 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-html_start(__('toolslinks10'), "0", false, false);
+html_start(__('toolslinks10'), '0', false, false);
 
 echo '<table width="100%" class="boxtable">';
 echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
@@ -46,7 +46,7 @@ echo '<tr>
       <ul>';
 
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
-if ($_SESSION['user_type'] == 'A') {
+if ($_SESSION['user_type'] === 'A') {
     $virusScanner = get_conf_var('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
         echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
@@ -83,7 +83,7 @@ if ($_SESSION['user_type'] == 'A') {
 }
 echo '</ul>';
 
-if ($_SESSION['user_type'] == 'A') {
+if ($_SESSION['user_type'] === 'A') {
     echo '
    <p>' . __('links10') . '</p>
    <ul>

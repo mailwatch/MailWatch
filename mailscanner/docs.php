@@ -29,16 +29,16 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('doc20'));
 
 if (isset($_GET['doc'])) {
     $file = preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['doc']);
-    include_once("docs/" . $file . ".html");
+    include_once 'docs/' . $file . '.html';
 } else {
     echo '<table width="100%" class="boxtable">' . "\n";
     echo ' <tr>' . "\n";

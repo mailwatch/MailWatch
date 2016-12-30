@@ -30,20 +30,20 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('toprecipqt42'), 0, false, true);
 
 // File name
-$filename = CACHE_DIR . "/top_recipients_by_quantity.png." . time();
+$filename = CACHE_DIR . '/top_recipients_by_quantity.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
   to_address,
   COUNT(*) as count,
@@ -51,24 +51,24 @@ $sql = "
  FROM
   maillog
  WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
+  from_address <> "" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . "
+' . $filter->CreateSQL() . '
  GROUP BY
   to_address
  ORDER BY
   count DESC
  LIMIT 10
-";
+';
 
 // Check permissions to see if apache can actually create the file
 if (is_writable(CACHE_DIR)) {
 
     // JPGraph
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
 
     $result = dbquery($sql);
     if (!$result->num_rows > 0) {
@@ -101,42 +101,42 @@ if (is_writable(CACHE_DIR)) {
 }
 
 // HTML to display the graph
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo "<TR>";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo "</TR>";
-echo "<TR>";
+echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
+echo '<tr>';
+echo '    <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
+echo '</tr>';
+echo '<tr>';
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+    echo ' <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
+    echo '<td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
-echo "</TR>";
-echo "<TR>";
-echo " <TD ALIGN=\"CENTER\">";
-echo "  <TABLE WIDTH=\"500\">";
-echo "   <TR BGCOLOR=\"#F7CE4A\">";
-echo "    <TH>" . __('email42') . "</TH>";
-echo "    <TH>" . __('count42') . "</TH>";
-echo "    <TH>" . __('size42') . "</TH>";
-echo "   </TR>";
+echo '</tr>';
+echo '<tr>';
+echo ' <td align="center">';
+echo '  <table style="width: 500px">';
+echo '   <tr style="background-color: #F7CE4A">';
+echo '    <th>' . __('email42') . '</th>';
+echo '    <th>' . __('count42') . '</th>';
+echo '    <th>' . __('size42') . '</th>';
+echo '   </tr>';
 
-
-for ($i = 0; $i < count($data); $i++) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">
- <TD>$data_names[$i]</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
- <TD ALIGN=\"RIGHT\">" . format_mail_size($data_size[$i] * $size_info['formula']) . "</TD>
-</TR>\n";
+$dataCount = count($data);
+for ($i = 0; $i < $dataCount; $i++) {
+    echo '<tr style="background-color: #EBEBEB">
+ <td>' . $data_names[$i] . '</td>
+ <td style="text-align: center">' . number_format($data[$i]) . '</td>
+ <td style="text-align: center">' . format_mail_size($data_size[$i] * $size_info['formula']) . '</td>
+</tr>' . "\n";
 }
 
-echo "  </TABLE>
- </TD>
-</TR>
-</TABLE>";
+echo '  </table>
+ </td>
+</tr>
+</table>';
 
 // Add footer
 html_end();

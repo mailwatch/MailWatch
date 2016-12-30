@@ -30,16 +30,16 @@
  */
 
 if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
-    include(__DIR__ . '/checklogin.php');
+    include __DIR__ . '/checklogin.php';
 } elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername']) && isset($_GET['httpbasic'])) {
     header('WWW-Authenticate: Basic realm="MailWatch for MailScanner"');
     header('HTTP/1.0 401 Unauthorized');
-    header("Location: login.php?error=baduser");
+    header('Location: login.php?error=baduser');
     exit;
 } elseif (!isset($_SESSION['myusername'])) {
     if (isset($_SERVER['REQUEST_URI'])) {
         $_SESSION['REQUEST_URI'] = sanitizeInput($_SERVER['REQUEST_URI']);
     }
-    header("Location: login.php");
+    header('Location: login.php');
     exit;
 }

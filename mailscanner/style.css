@@ -30,343 +30,343 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-BODY {
-    margin:0;
-    font-family:verdana, sans-serif;
+body {
+    margin: 0;
+    font-family: verdana, sans-serif;
 }
 
-TABLE.mail TH,TABLE.boxtable TH,TABLE.maildetail TH {
-    font-size:10pt;
-    font-weight:700;
-    text-align:center;
-    background-color:#F7CE4A;
+table.mail TH, table.boxtable TH, table.maildetail TH {
+    font-size: 10pt;
+    font-weight: 700;
+    text-align: center;
+    background-color: #F7CE4A;
 }
 
-TABLE.blackwhitelist {
-    width:100%;
-    border:0;
+table.blackwhitelist {
+    width: 100%;
+    border: 0;
 }
 
-TD.blackwhitelist {
-    width:50%;
-    vertical-align:text-top;
+td.blackwhitelist {
+    width: 50%;
+    vertical-align: text-top;
 }
 
-TABLE.sa_rule_report {
-    padding:0;
-    width:100%;
+table.sa_rule_report {
+    padding: 0;
+    width: 100%;
 }
 
-TABLE.mail TR,TABLE.sophos TR,TABLE.sa_rules_report TR {
-    font-size:8pt;
-    background-color:#EBEBEB;
+table.mail tr, table.sophos tr, table.sa_rules_report tr {
+    font-size: 8pt;
+    background-color: #EBEBEB;
 }
 
-TABLE.sa_rules_report TH {
-    text-align:left;
+table.sa_rules_report TH {
+    text-align: left;
 }
 
-TABLE.mail TR.infected {
-    background-color:#B22222;
-    color:#FFF;
+table.mail tr.infected {
+    background-color: #B22222;
+    color: #FFF;
 }
 
-TD.rule_desc {
-    text-align:left;
-    width:200px;
+td.rule_desc {
+    text-align: left;
+    width: 200px;
 }
 
-TABLE.mail TD.infected {
-    background-color:#B22222;
-    width:15px;
+table.mail td.infected {
+    background-color: #B22222;
+    width: 15px;
 }
 
-TABLE.mail TR.spam {
-    background-color:#F5BBBB;
-    color:#000;
+table.mail tr.spam {
+    background-color: #F5BBBB;
+    color: #000;
 }
 
-TABLE.mail TD.spam {
-    background-color:#F5BBBB;
-    width:15px;
+table.mail td.spam {
+    background-color: #F5BBBB;
+    width: 15px;
 }
 
-TABLE.mail TR.highspam {
-    background-color:#EE6262;
-    color:#000;
+table.mail tr.highspam {
+    background-color: #EE6262;
+    color: #000;
 }
 
-TABLE.mail TD.highspam {
-    background-color:#EE6262;
-    width:15px;
+table.mail td.highspam {
+    background-color: #EE6262;
+    width: 15px;
 }
 
-TABLE.mail TR.mcp {
-    background-color:#ADD8E6;
-    color:#000;
+table.mail tr.mcp {
+    background-color: #ADD8E6;
+    color: #000;
 }
 
-TABLE.mail TR.notscanned {
-    background-color:#800080;
-    color:#FFF;
+table.mail tr.notscanned {
+    background-color: #800080;
+    color: #FFF;
 }
 
-TABLE.mail TD.notscanned {
-    background-color:#800080;
-    width:15px;
+table.mail td.notscanned {
+    background-color: #800080;
+    width: 15px;
 }
 
-TABLE.mail TD.mcp {
-    background-color:#ADD8E6;
-    width:15px;
+table.mail td.mcp {
+    background-color: #ADD8E6;
+    width: 15px;
 }
 
-TABLE.mail TR.highmcp {
-    background-color:#00008B;
-    color:#FFF;
+table.mail tr.highmcp {
+    background-color: #00008B;
+    color: #FFF;
 }
 
-TABLE.mail TD.highmcp {
-    background-color:#00008B;
-    width:15px;
+table.mail td.highmcp {
+    background-color: #00008B;
+    width: 15px;
 }
 
-TABLE.mail TR.whitelisted {
-    background-color:#90EE90;
-    color:#000;
+table.mail tr.whitelisted {
+    background-color: #90EE90;
+    color: #000;
 }
 
-TABLE.mail TD.whitelisted {
-    background-color:#90EE90;
-    width:15px;
+table.mail td.whitelisted {
+    background-color: #90EE90;
+    width: 15px;
 }
 
-TABLE.mail TR.blacklisted {
-    color:#FFF;
-    background-color:#000;
+table.mail tr.blacklisted {
+    color: #FFF;
+    background-color: #000;
 }
 
-TABLE.mail TD.blacklisted {
-    background-color:#000;
-    width:15px;
+table.mail td.blacklisted {
+    background-color: #000;
+    width: 15px;
 }
 
-TABLE.mail,TABLE.maildetail,TABLE.navigation,TABLE.boxtable {
-    border:1px solid #000;
-    padding:0;
+table.mail, table.maildetail, table.navigation, table.boxtable {
+    border: 1px solid #000;
+    padding: 0;
 }
 
-TABLE.boxtable {
-    margin-left:auto;
-    margin-right:auto;
+table.boxtable {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #menu {
-    font-family:Arial, sans-serif;
-    font-weight:700;
-    text-transform:uppercase;
-    margin:10px 0;
-    padding:0 0 0 10px;
-    list-style-type:none;
-    font-size:13px;
-    background:#eee;
-    height:40px;
-    min-width:960px;
-    -moz-border-radius:10px;
-    -webkit-border-radius:10px;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 10px 0;
+    padding: 0 0 0 10px;
+    list-style-type: none;
+    font-size: 13px;
+    background: #eee;
+    height: 40px;
+    min-width: 960px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
     border-radius: 10px;
-    border:2px solid #eee;
-    border-right-color:#ccc;
-    border-bottom-color:#ccc;
+    border: 2px solid #eee;
+    border-right-color: #ccc;
+    border-bottom-color: #ccc;
 }
 
 #menu li {
-    float:left;
-    margin:0;
+    float: left;
+    margin: 0;
 }
 
 #menu li a {
-    text-decoration:none;
-    display:block;
-    padding:0 20px;
-    line-height:40px;
-    color:#666;
+    text-decoration: none;
+    display: block;
+    padding: 0 20px;
+    line-height: 40px;
+    color: #666;
 }
 
-#menu li a:hover,#menu li.active a {
-    background-color:#f5f5f5;
-    border-bottom:2px solid #DDD;
-    color:#999;
+#menu li a:hover, #menu li.active a {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #DDD;
+    color: #999;
 }
 
 /* Yellow Menu */
 #menu.yellow {
-    border:2px solid #000;
-    background:#F7CE4A;
+    border: 2px solid #000;
+    background: #F7CE4A;
 }
 
 #menu.yellow a {
-    color:#000;
+    color: #000;
 }
 
-#menu.yellow li a:hover,#menu.yellow li.active a {
-    color:#fff;
-    background:#4973f7;
-    border-bottom:2px solid #000;
+#menu.yellow li a:hover, #menu.yellow li.active a {
+    color: #fff;
+    background: #4973f7;
+    border-bottom: 2px solid #000;
 }
 
-TD.heading {
-    background-color:#F7CE4A;
-    font-weight:700;
-    font-size:10pt;
+td.heading {
+    background-color: #F7CE4A;
+    font-weight: 700;
+    font-size: 10pt;
 }
 
-TD.heading-w175 {
-    background-color:#F7CE4A;
-    font-weight:700;
-    font-size:10pt;
-    width:175px;
-    text-align:right;
-    vertical-align:top;
+td.heading-w175 {
+    background-color: #F7CE4A;
+    font-weight: 700;
+    font-size: 10pt;
+    width: 175px;
+    text-align: right;
+    vertical-align: top;
 }
 
-TABLE.maildetail TD.detail {
-    background-color:#EBEBEB;
-    font-size:8pt;
+table.maildetail td.detail {
+    background-color: #EBEBEB;
+    font-size: 8pt;
 }
 
-SPAN.yes {
-    background-color:red;
-    color:#FFF;
-    font-weight:700;
+span.yes {
+    background-color: red;
+    color: #FFF;
+    font-weight: 700;
 }
 
-SPAN.no {
-    background-color:green;
-    color:#FFF;
-    font-weight:700;
+span.no {
+    background-color: green;
+    color: #FFF;
+    font-weight: 700;
 }
 
-A {
-    text-decoration:none;
-    color:blue;
+a {
+    text-decoration: none;
+    color: blue;
 }
 
-A:visited {
-    text-decoration:none;
-    color:blue;
+a:visited {
+    text-decoration: none;
+    color: blue;
 }
 
-A:hover {
-    background-color:blue;
-    color:#FFF;
+a:hover {
+    background-color: blue;
+    color: #FFF;
 }
 
-A.logo {
+a.logo {
     color: transparent;
     background-color: transparent;
 }
 
-TABLE.boxtable TR {
+table.boxtable tr {
     /*border-collapse: collapse;*/
-    border-bottom:1px solid #000;
+    border-bottom: 1px solid #000;
 }
 
 /* Lint */
-TD.lint_1 {
-    background-color:green;
-    color:#FFF;
-    text-align:right;
+td.lint_1 {
+    background-color: green;
+    color: #FFF;
+    text-align: right;
 }
 
-TD.lint_2 {
-    background-color:#FF0;
-    color:#000;
-    text-align:right;
+td.lint_2 {
+    background-color: #FF0;
+    color: #000;
+    text-align: right;
 }
 
-TD.lint_3 {
-    background-color:orange;
-    color:#000;
-    text-align:right;
+td.lint_3 {
+    background-color: orange;
+    color: #000;
+    text-align: right;
 }
 
-TD.lint_4 {
-    background-color:#FF4500;
-    color:#000;
-    text-align:right;
+td.lint_4 {
+    background-color: #FF4500;
+    color: #000;
+    text-align: right;
 }
 
-TD.lint_5 {
-    background-color:red;
-    color:#000;
-    text-align:right;
+td.lint_5 {
+    background-color: red;
+    color: #000;
+    text-align: right;
 }
 
 p.center {
-    text-align:center;
+    text-align: center;
 }
 
 /* MSRE */
 
-TABLE.mailwatch TH {
-	font-size: 10pt;
-	font-weight: bold;
-	text-align: center;
-	background-color: #F7CE4A;
+table.mailwatch TH {
+    font-size: 10pt;
+    font-weight: bold;
+    text-align: center;
+    background-color: #F7CE4A;
 }
 
-TABLE.mailwatch TR {
-	font-size: 8pt;
-	background-color: #ebebeb;
+table.mailwatch tr {
+    font-size: 8pt;
+    background-color: #ebebeb;
 }
 
-TABLE.mailwatch TR.alt {
-	font-size: 8pt;
-	background-color: #cfccdf;
+table.mailwatch tr.alt {
+    font-size: 8pt;
+    background-color: #cfccdf;
 }
 
-TABLE.mailwatch TD.footer {
-	font-size: 9pt;
-	background-color: white;
-}	
-
-TABLE.mailwatch TR.footer {
-	font-size: 9pt;
-	background-color: white;
-}	
-
-TABLE.mailwatch TD.header {
-	font-size: 9pt;
-}
-	
-TABLE.mailwatch TR.header {
-	font-size: 9pt;
+table.mailwatch td.footer {
+    font-size: 9pt;
+    background-color: white;
 }
 
-SPAN.status {
-	font-size: 8pt;
-	color: blue;
+table.mailwatch tr.footer {
+    font-size: 9pt;
+    background-color: white;
 }
 
-SPAN.debug {
-	font-size: 8pt;
-	color: green;
+table.mailwatch td.header {
+    font-size: 9pt;
 }
 
-SPAN.error {
-	font-size: 10pt;
-	color: red;
-}                 
- 
-TD.dashblackbox {
-	border: 2px dashed black;
-	background-color: white; 
-	padding: 5px;
+table.mailwatch tr.header {
+    font-size: 9pt;
 }
 
-TD.dashgreybox {
-	border: 2px dashed #cccccc;
-	background-color: white; 
-	padding: 5px;
+span.status {
+    font-size: 8pt;
+    color: blue;
+}
+
+span.debug {
+    font-size: 8pt;
+    color: green;
+}
+
+span.error {
+    font-size: 10pt;
+    color: red;
+}
+
+td.dashblackbox {
+    border: 2px dashed black;
+    background-color: white;
+    padding: 5px;
+}
+
+td.dashgreybox {
+    border: 2px dashed #cccccc;
+    background-color: white;
+    padding: 5px;
 }

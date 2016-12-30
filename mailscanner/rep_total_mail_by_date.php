@@ -30,12 +30,12 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('totalmaildate49'), 0, false, true);
@@ -44,7 +44,7 @@ $filter = html_start(__('totalmaildate49'), 0, false, true);
 $date_format = "'" . DATE_FORMAT . "'";
 
 // File name
-$filename = CACHE_DIR . "/total_mail_by_date.png." . time();
+$filename = CACHE_DIR . '/total_mail_by_date.png.' . time();
 
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
@@ -114,12 +114,12 @@ $sql = "
   maillog
  WHERE
   1=1
-" . $filter->CreateSQL() . "
+" . $filter->CreateSQL() . '
  GROUP BY
   xaxis
  ORDER BY
   date
-";
+';
 
 // Fetch MTA stats
 $sql1 = "
@@ -144,10 +144,10 @@ ORDER BY
 if (is_writable(CACHE_DIR)) {
 
     // Includes for JPgraph
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_log.php");
-    include_once("./lib/jpgraph/src/jpgraph_bar.php");
-    include_once("./lib/jpgraph/src/jpgraph_line.php");
+    include_once './lib/jpgraph/src/jpgraph.php';
+    include_once './lib/jpgraph/src/jpgraph_log.php';
+    include_once './lib/jpgraph/src/jpgraph_bar.php';
+    include_once './lib/jpgraph/src/jpgraph_line.php';
 
     // Must be one or more row
     $result = dbquery($sql);
@@ -177,15 +177,15 @@ if (is_writable(CACHE_DIR)) {
     $data_total_rbl = array();
     $data_total_unresolveable = array();
     while ($row1 = $result1->fetch_object()) {
-        if (is_numeric($key = array_search($row1->xaxis, $data_labels))) {
+        if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
             switch (true) {
-                case($row1->type == 'unknown_user'):
+                case($row1->type === 'unknown_user'):
                     $data_total_unknown_users[$key] = $row1->count;
                     break;
-                case($row1->type == 'rbl'):
+                case($row1->type === 'rbl'):
                     $data_total_rbl[$key] = $row1->count;
                     break;
-                case($row1->type == 'unresolveable'):
+                case($row1->type === 'unresolveable'):
                     $data_total_unresolveable[$key] = $row1->count;
                     break;
             }
@@ -198,9 +198,9 @@ if (is_writable(CACHE_DIR)) {
     // Reduce the number of labels on the graph to prevent them being sqashed.
     if (count($graph_labels) > 20) {
         $b = substr(count($graph_labels), 0, 1);
-        for ($a = 0; $a < count($graph_labels); $a++) {
+        for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
             if ($a % $b) {
-                $graph_labels[$a] = "";
+                $graph_labels[$a] = '';
             }
         }
     }
@@ -209,11 +209,11 @@ if (is_writable(CACHE_DIR)) {
 
     $graph = new Graph(850, 350, 0, false);
     $graph->SetShadow();
-    $graph->SetScale("textlin");
-    $graph->SetY2Scale("lin");
+    $graph->SetScale('textlin');
+    $graph->SetY2Scale('lin');
     $graph->img->SetMargin(60, 60, 30, 70);
     $graph->title->Set(__('totalmailprocdate49'));
-    $graph->y2axis->title->Set(__('volume49') . " (" . $size_info['longdesc'] . ")");
+    $graph->y2axis->title->Set(__('volume49') . ' (' . $size_info['longdesc'] . ')');
     $graph->y2axis->title->SetMargin(0);
     $graph->y2axis->SetTitleMargin(40);
     $graph->yaxis->title->Set(__('nomessages49'));
@@ -273,7 +273,7 @@ echo " <TR>\n";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
 echo " </TR>\n";
@@ -308,8 +308,7 @@ if ($is_MCP_enabled === true) {
     echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 }
 echo "</tr>\n";
-
-for ($i = 0; $i < count($data_total_mail); $i++) {
+for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; $i++) {
     echo "<TR BGCOLOR=\"#EBEBEB\">\n";
     echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
     echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_mail[$i]) . "</TD>\n";

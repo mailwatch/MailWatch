@@ -49,9 +49,8 @@ function postfixallq()
     $last_line = exec('mailq');
     $pos = strpos($last_line, 'in ');
     $start = substr($last_line, $pos + 3);
-    $allq = intval($start);
 
-    return $allq;
+    return (int)$start;
 }
 
 function postfixmailq()

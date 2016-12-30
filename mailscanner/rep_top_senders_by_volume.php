@@ -30,18 +30,18 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsendersvol47'), 0, false, true);
 
 // File name
-$filename = CACHE_DIR . "/top_senders_by_volume.png." . time();
+$filename = CACHE_DIR . '/top_senders_by_volume.png.' . time();
 
 $sql = "
  SELECT
@@ -54,21 +54,21 @@ $sql = "
   from_address <> \"\" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . "
+" . $filter->CreateSQL() . '
  GROUP BY
   from_address
  ORDER BY
   size DESC
  LIMIT 10
-";
+';
 
 // Check permissions to see if apache can actually create the file
 if (is_writable(CACHE_DIR)) {
 
     // JPGraph
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
+    include_once './lib/jpgraph/src/jpgraph.php';
+    include_once './lib/jpgraph/src/jpgraph_pie.php';
+    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
 
     $result = dbquery($sql);
     if (!$result->num_rows > 0) {
@@ -103,29 +103,29 @@ if (is_writable(CACHE_DIR)) {
 
 // HTML code to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo "<TR>";
+echo '<TR>';
 echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD>";
-echo "</TR>";
-echo "<TR>";
+echo '</TR>';
+echo '<TR>';
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
-echo "</TR>";
-echo "<TR>";
+echo '</TR>';
+echo '<TR>';
 echo " <TD ALIGN=\"CENTER\">";
-echo "  <TABLE WIDTH=500>";
+echo '  <TABLE WIDTH=500>';
 echo "   <TR BGCOLOR=\"#F7CE4A\">";
-echo "    <TH>" . __('email47') . "</TH>";
-echo "    <TH>" . __('count47') . "</TH>";
-echo "    <TH>" . __('size47') . "</TH>";
-echo "   </TR>";
+echo '    <TH>' . __('email47') . '</TH>';
+echo '    <TH>' . __('count47') . '</TH>';
+echo '    <TH>' . __('size47') . '</TH>';
+echo '   </TR>';
 
-for ($i = 0; $i < count($data); $i++) {
+for ($i = 0, $count_data = count($data); $i < $count_data; $i++) {
     echo "<TR BGCOLOR=\"#EBEBEB\">
  <TD>$data_names[$i]</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
@@ -133,11 +133,11 @@ for ($i = 0; $i < count($data); $i++) {
 </TR>\n";
 }
 
-echo "
+echo '
   </TABLE>
  </TD>
 </TR>
-</TABLE>";
+</TABLE>';
 
 // Add footer
 html_end();

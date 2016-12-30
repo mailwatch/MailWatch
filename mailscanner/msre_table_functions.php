@@ -71,7 +71,7 @@ function TR()
         $tr_param = null;
     }
 
-    echo "<tr";
+    echo '<tr';
     if ($tr_param) {
         echo " $tr_param";
     }
@@ -148,7 +148,7 @@ function TR_Extended($row_data, $tr_param)
     //
 
     // start out by making the initial <tr>
-    $my_tr = "<tr";
+    $my_tr = '<tr';
     if ($tr_param) {
         //echo "tr param: $tr_param<br>\n";
         $my_tr .= " $tr_param";
@@ -172,5 +172,5 @@ function TR_Extended($row_data, $tr_param)
     echo "</tr>\n";
 
     // return
-    return (0);
+    return 0;
 }

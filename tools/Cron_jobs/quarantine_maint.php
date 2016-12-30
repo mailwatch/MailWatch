@@ -31,7 +31,7 @@
  */
 
 // Change the following to reflect the location of functions.php
-require('/var/www/html/mailscanner/functions.php');
+require '/var/www/html/mailscanner/functions.php';
 
 $required_constant = array('TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP');
 $required_constant_missing_count = 0;
@@ -41,7 +41,7 @@ foreach ($required_constant as $constant) {
         $required_constant_missing_count++;
     }
 }
-if ($required_constant_missing_count == 0) {
+if ($required_constant_missing_count === 0) {
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('error_log', 'syslog');
@@ -54,13 +54,11 @@ if ($required_constant_missing_count == 0) {
         $quarantine = get_conf_var('QuarantineDir');
         $d = dir($quarantine) or die($php_errormsg);
         while (false !== ($f = $d->read())) {
-            if (preg_match('/^\d{8}$/', $f)) {
-                if (is_array(($array = quarantine_list_dir($f)))) {
-                    foreach ($array as $id) {
-                        dbg("Updating: $id");
-                        $sql = "UPDATE maillog SET timestamp=timestamp, quarantined=1 WHERE id='$id'";
-                        dbquery($sql);
-                    }
+            if (preg_match('/^\d{8}$/', $f) && is_array($array = quarantine_list_dir($f))) {
+                foreach ($array as $id) {
+                    dbg("Updating: $id");
+                    $sql = "UPDATE maillog SET timestamp=timestamp, quarantined=1 WHERE id='$id'";
+                    dbquery($sql);
                 }
             }
         }
@@ -68,7 +66,7 @@ if ($required_constant_missing_count == 0) {
 
     function quarantine_clean()
     {
-        $oldest = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . " days"));
+        $oldest = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
         $quarantine = get_conf_var('QuarantineDir');
 
         $d = dir($quarantine) or die($php_errormsg);
@@ -79,7 +77,7 @@ if ($required_constant_missing_count == 0) {
                 if ($unixtime < $oldest) {
                     // Needs to be deleted
                     $array = quarantine_list_dir($f);
-                    dbg("Processing directory $f: found " . count($array) . " records to delete");
+                    dbg("Processing directory $f: found " . count($array) . ' records to delete');
                     foreach ($array as $id) {
                         // Update the quarantine flag
                         $sql = "UPDATE maillog SET timestamp=timestamp, quarantined = NULL WHERE id='$id'";
@@ -90,7 +88,7 @@ if ($required_constant_missing_count == 0) {
                             dbquery($sql);
                         }
                     }
-                    dbg("Deleting: " . escapeshellarg($quarantine . '/' . $f));
+                    dbg('Deleting: ' . escapeshellarg($quarantine . '/' . $f));
                     exec('rm -rf ' . escapeshellarg($quarantine . '/' . $f), $output, $return);
                     if ($return > 0) {
                         echo "Error: $output\n";
@@ -106,8 +104,8 @@ if ($required_constant_missing_count == 0) {
         $y = substr($dirname, 0, 4);
         $m = substr($dirname, 4, 2);
         $d = substr($dirname, 6, 2);
-        $unixtime = mktime(0, 0, 0, $m, $d, $y);
-        return $unixtime;
+
+        return mktime(0, 0, 0, $m, $d, $y);
     }
 
     function dbg($text)
@@ -129,7 +127,7 @@ if ($required_constant_missing_count == 0) {
             // Main quarantine
             $d = dir($dir) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f != '.' && $f != '..' && $f != 'spam' && $f != 'nonspam' && $f != 'mcp') {
+                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
                     //dbg("Found $dir/$f");
                     $array[] = $f;
                 }
@@ -141,7 +139,7 @@ if ($required_constant_missing_count == 0) {
             // Spam folder
             $d = dir($spam) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f != '.' && $f != '..' && $f != 'spam' && $f != 'nonspam' && $f != 'mcp') {
+                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
                     //dbg("Found $spam/$f");
                     $array[] = $f;
                 }
@@ -152,7 +150,7 @@ if ($required_constant_missing_count == 0) {
         if (is_dir($nonspam)) {
             $d = dir($nonspam) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f != '.' && $f != '..' && $f != 'spam' && $f != 'nonspam' && $f != 'mcp') {
+                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
                     //dbg("Found $nonspam/$f");
                     $array[] = $f;
                 }
@@ -163,7 +161,7 @@ if ($required_constant_missing_count == 0) {
         if (is_dir($mcp)) {
             $d = dir($mcp) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f != '.' && $f != '..' && $f != 'spam' && $f != 'nonspam' && $f != 'mcp') {
+                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
                     //dbg("Found $mcp/$f");
                     $array[] = $f;
                 }
@@ -174,7 +172,7 @@ if ($required_constant_missing_count == 0) {
         return $array;
     }
 
-    if ($_SERVER['argc'] == 1 || $_SERVER['argc'] > 2) {
+    if ($_SERVER['argc'] === 1 || $_SERVER['argc'] > 2) {
         die('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
     } else {
         switch ($_SERVER['argv'][1]) {

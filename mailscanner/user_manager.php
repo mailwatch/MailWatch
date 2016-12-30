@@ -33,20 +33,20 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/lib/password.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/lib/password.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('usermgnt12'), 0, false, false);
 
-if ($_SESSION['user_type'] == 'A') {
+if ($_SESSION['user_type'] === 'A') {
     ?>
     <script type="text/javascript">
         <!--
         function delete_user(id) {
-            var yesno = confirm("<?php echo " " . __('areusuredel12') . " "; ?>" + id + "<?php echo __('questionmark12'); ?>");
+            var yesno = confirm("<?php echo ' ' . __('areusuredel12') . ' '; ?>" + id + "<?php echo __('questionmark12'); ?>");
             if (yesno === true) {
                 window.location = "?action=delete&id=" + id;
             } else {
@@ -82,7 +82,7 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"new\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
                     echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-                    echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('newuser12') . "  <br> " . __('forallusers12') . "</TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('newuser12') . '  <br> ' . __('forallusers12') . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\"></TD></TR>\n";
@@ -101,7 +101,7 @@ if ($_SESSION['user_type'] == 'A') {
                     echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"". __('create12') . "\"></TD></TR>\n";
                     echo "</TABLE></FORM><BR>\n";
                 } else {
-                    if ($_GET['password'] != $_GET['password1']) {
+                    if ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12');
                     } else {
                         $n_username = safe_value($_GET['username']);
@@ -121,12 +121,12 @@ if ($_SESSION['user_type'] == 'A') {
                         }
 
                         $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
-                        $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, ";
+                        $sql = 'INSERT INTO users (username, fullname, password, type, quarantine_report, ';
                         if ($spamscore !== '0') {
-                            $sql .= "spamscore, ";
+                            $sql .= 'spamscore, ';
                         }
                         if ($highspamscore !== '0') {
-                            $sql .= "highspamscore, ";
+                            $sql .= 'highspamscore, ';
                         }
                         $sql .= "noscan, quarantine_rcpt) VALUES ('$n_username','$n_fullname','$n_password','$n_type','$quarantine_report',";
                         if ($spamscore !== '0') {
@@ -139,16 +139,16 @@ if ($_SESSION['user_type'] == 'A') {
                         dbquery($sql);
                         switch ($n_type) {
                             case 'A':
-                                $n_typedesc = "administrator";
+                                $n_typedesc = 'administrator';
                                 break;
                             case 'D':
-                                $n_typedesc = "domain administrator";
+                                $n_typedesc = 'domain administrator';
                                 break;
                             default:
-                                $n_typedesc = "user";
+                                $n_typedesc = 'user';
                                 break;
                         }
-                        audit_log("New " . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ") created");
+                        audit_log('New ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') created');
                     }
                 }
                 break;
@@ -158,36 +158,36 @@ if ($_SESSION['user_type'] == 'A') {
                     $result = dbquery($sql);
                     $row = $result->fetch_object();
                     $quarantine_report = '';
-                    if ($row->quarantine_report == 1) {
-                        $quarantine_report = "CHECKED";
+                    if ($row->quarantine_report === 1) {
+                        $quarantine_report = 'CHECKED';
                     }
                     $noscan = '';
-                    if ($row->noscan == 0) {
+                    if ($row->noscan === 0) {
                         $noscan = 'checked="checked"';
                     }
 
-                    $s["A"] = '';
-                    $s["D"] = '';
-                    $s["U"] = '';
-                    $s["R"] = '';
+                    $s['A'] = '';
+                    $s['D'] = '';
+                    $s['U'] = '';
+                    $s['R'] = '';
 
-                    $s[$row->type] = "SELECTED";
+                    $s[$row->type] = 'SELECTED';
                     echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"edit\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
                     echo "<TABLE CLASS=\"mail\" BORDER=0 CELLPADDING=1 CELLSPACING=1>\n";
-                    echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . " " . $row->username . "</TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
-         <OPTION " . $s["A"] . " VALUE=\"A\">" . __('admin12') . "</OPTION>
-         <OPTION " . $s["D"] . " VALUE=\"D\">" . __('domainadmin12') . "</OPTION>
-         <OPTION " . $s["U"] . " VALUE=\"U\">" . __('user12') . "</OPTION>
-         <OPTION " . $s["R"] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
+         <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
+         <OPTION ' . $s['D'] . " VALUE=\"D\">" . __('domainadmin12') . '</OPTION>
+         <OPTION ' . $s['U'] . " VALUE=\"U\">" . __('user12') . '</OPTION>
+         <OPTION ' . $s['R'] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
         </SELECT></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
@@ -200,7 +200,7 @@ if ($_SESSION['user_type'] == 'A') {
                     $result = dbquery($sql);
                 } else {
                     // Do update
-                    if ($_GET['password'] != $_GET['password1']) {
+                    if ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12');
                     } else {
                         $do_pwd = false;
@@ -236,13 +236,13 @@ if ($_SESSION['user_type'] == 'A') {
                         }
 
                         // Audit
-                        $type['A'] = "administrator";
-                        $type['D'] = "domain administrator";
-                        $type['U'] = "user";
-                        $type['R'] = "user";
-                        if ($o_type <> $n_type) {
+                        $type['A'] = 'administrator';
+                        $type['D'] = 'domain administrator';
+                        $type['U'] = 'user';
+                        $type['R'] = 'user';
+                        if ($o_type !== $n_type) {
                             audit_log(
-                                "User type changed for user '" . $n_username . "' (" . $n_fullname . ") from " . $type[$o_type] . " to " . $type[$n_type]
+                                "User type changed for user '" . $n_username . "' (" . $n_fullname . ') from ' . $type[$o_type] . ' to ' . $type[$n_type]
                             );
                         }
                     }
@@ -266,14 +266,14 @@ if ($_SESSION['user_type'] == 'A') {
                     $getActive = sanitizeInput($_GET['active']);
                     $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value($id) . "','" . safe_value($getFilter) . "','" . safe_value($getActive) . "')";
                     dbquery($sql);
-                    if (DEBUG == 'true') {
+                    if (DEBUG === true) {
                         echo $sql;
                     }
                 }
                 if (isset($_GET['delete'])) {
                     $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     dbquery($sql);
-                    if (DEBUG == 'true') {
+                    if (DEBUG === true) {
                         echo $sql;
                     }
                 }
@@ -282,7 +282,7 @@ if ($_SESSION['user_type'] == 'A') {
                     $result = dbquery($sql);
                     $active = $result->fetch_row();
                     $active = $active[0];
-                    if ($active == 'Y') {
+                    if ($active === 'Y') {
                         $sql = "UPDATE user_filters SET active='N' WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                         dbquery($sql);
                     } else {
@@ -296,11 +296,11 @@ if ($_SESSION['user_type'] == 'A') {
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"id\" VALUE=\"" . $id . "\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"filters\">\n";
                 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-                echo " <TR><TH COLSPAN=3>" . __('userfilter12') . " " . $id . "</TH></TR>\n";
-                echo " <TR><TH>" . __('filter12') . "</TH><TH>" . __('active12') . "</TH><TH>" . __('action12') . "</TH></TR>\n";
+                echo ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . $id . "</TH></TR>\n";
+                echo ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . "</TH></TR>\n";
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_object()) {
-                        echo " <TR><TD>" . $row->filter . "</TD><TD>" . $row->active . "</TD><TD>" . $row->actions . "</TD></TR>\n";
+                        echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD><TD>' . $row->actions . "</TD></TR>\n";
                     }
                 }
                 echo " <TR><TD><INPUT TYPE=\"text\" NAME=\"filter\"></TD><TD><SELECT NAME=\"active\"><OPTION VALUE=\"Y\">" . __('yes12') . "<OPTION VALUE=\"N\">" . __('no12') . "</SELECT></TD><TD><INPUT TYPE=\"hidden\" NAME=\"new\" VALUE=\"true\"><INPUT TYPE=\"submit\" VALUE=\"" . __('add12') . "\"></TD></TR>\n";
@@ -345,21 +345,21 @@ if ($_SESSION['user_type'] == 'A') {
         $result = dbquery($sql);
         $row = $result->fetch_object();
         $quarantine_report = '';
-        if ($row->quarantine_report == 1) {
-            $quarantine_report = "CHECKED";
+        if ($row->quarantine_report === 1) {
+            $quarantine_report = 'CHECKED';
         }
-        if ($row->noscan == 0) {
-            $noscan = "CHECKED";
+        if ($row->noscan === 0) {
+            $noscan = 'CHECKED';
         }
-        $s[$row->type] = "SELECTED";
+        $s[$row->type] = 'SELECTED';
         echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
         echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"edit\">\n";
         echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
         echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
         echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-        echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . " " . $row->username . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD>" . $_SESSION['myusername'] . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD>" . $_SESSION['fullname'] . "</TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">" . __('username0212') . '</TD><TD>' . $_SESSION['myusername'] . "</TD></TR>\n";
+        echo " <TR><TD CLASS=\"heading\">" . __('name12') . '</TD><TD>' . $_SESSION['fullname'] . "</TD></TR>\n";
         echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
         echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
 
@@ -374,7 +374,7 @@ if ($_SESSION['user_type'] == 'A') {
         $result = dbquery($sql);
     } else {
         // Do update
-        if ($_GET['password'] != $_GET['password1']) {
+        if ($_GET['password'] !== $_GET['password1']) {
             echo __('errorpass12');
         } else {
             $do_pwd = false;

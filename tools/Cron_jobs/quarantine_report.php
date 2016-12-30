@@ -31,7 +31,7 @@
  */
 
 // Change the following to reflect the location of functions.php
-require_once('/var/www/html/mailscanner/functions.php');
+require_once '/var/www/html/mailscanner/functions.php';
 
 $required_constant = array(
     'QUARANTINE_REPORT_DAYS',
@@ -55,17 +55,17 @@ foreach ($required_constant as $constant) {
         $required_constant_missing_count++;
     }
 }
-if ($required_constant_missing_count == 0) {
-    require_once('Mail.php');
-    require_once('Mail/mime.php');
+if ($required_constant_missing_count === 0) {
+    require_once 'Mail.php';
+    require_once 'Mail/mime.php';
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('html_errors', 'off');
     ini_set('display_errors', 'on');
     ini_set('implicit_flush', 'false');
-    ini_set("memory_limit", '256M');
-    ini_set("error_reporting", E_ALL);
-    ini_set("max_execution_time", 0);
+    ini_set('memory_limit', '256M');
+    ini_set('error_reporting', E_ALL);
+    ini_set('max_execution_time', 0);
 
     /*
     ** HTML Template
@@ -147,7 +147,7 @@ Action:
     ** SQL Templates
     */
 
-    $users_sql = "
+    $users_sql = '
 SELECT
  username,
  quarantine_rcpt,
@@ -156,7 +156,7 @@ FROM
  users
 WHERE
  quarantine_report=1
-";
+';
 
     $filters_sql = "
 SELECT
@@ -172,7 +172,7 @@ AND
     $sql = "
 SELECT DISTINCT
 a.id AS id,
-DATE_FORMAT(timestamp,'" . str_replace('%', '%%', DATE_FORMAT) . " <br/>" . str_replace('%', '%%', TIME_FORMAT) . "') AS datetime,
+DATE_FORMAT(timestamp,'" . str_replace('%', '%%', DATE_FORMAT) . ' <br/>' . str_replace('%', '%%', TIME_FORMAT) . "') AS datetime,
 a.to_address AS to_address,
 a.from_address AS from_address,
 a.subject AS subject,
@@ -199,25 +199,25 @@ WHERE
 AND
  ((to_address=%s) OR (to_domain=%s))
 AND 
- a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . " DAY)";
+ a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . ' DAY)';
 
     // Hide high spam/mcp from users if enabled
     if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
-        $sql .= "
+        $sql .= '
     AND
      ishighspam=0
     AND
-     COALESCE(ishighmcp,0)=0";
+     COALESCE(ishighmcp,0)=0';
     }
 
     if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
-        $sql .= "
+        $sql .= '
     AND
-    isspam>0";
+    isspam>0';
     }
 
     if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
-        $sql .= "
+        $sql .= '
     AND
     (
     virusinfected>0
@@ -239,17 +239,17 @@ AND
     issamcp>0
     OR
     isspam>0
-    )";
+    )';
     }
 
-    $sql .= "
-ORDER BY a.date DESC, a.time DESC";
+    $sql .= '
+ORDER BY a.date DESC, a.time DESC';
 
     $result = dbquery($users_sql);
     $rows = $result->num_rows;
     if ($rows > 0) {
         while ($user = $result->fetch_object()) {
-            dbg("\n === Generating report for " . $user->username . " type=" . $user->type);
+            dbg("\n === Generating report for " . $user->username . ' type=' . $user->type);
             // Work out destination e-mail address
             switch ($user->type) {
                 case 'U':
@@ -287,7 +287,7 @@ ORDER BY a.date DESC, a.time DESC";
                 foreach ($filters as $filter) {
                     dbg(" ==== Building list for $filter");
                     $quarantined = return_quarantine_list_array($filter, $to_domain);
-                    dbg(" ==== Found " . count($quarantined) . " quarantined e-mails");
+                    dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
                     //print_r($quarantined);
                     if (count($quarantined) > 0) {
                         send_quarantine_email($email, $filter, $quarantined);
@@ -295,7 +295,7 @@ ORDER BY a.date DESC, a.time DESC";
                     unset($quarantined);
                 }
             } else {
-                dbg(" ==== " . $user->username . " has empty e-mail recipient address, skipping...");
+                dbg(' ==== ' . $user->username . ' has empty e-mail recipient address, skipping...');
             }
         }
     }
@@ -373,7 +373,7 @@ function store_auto_release($qitem)
     $rand = $qitem['rand'];
     $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')");
     if (!$result) {
-        dbg(" ==== Error generating auto_release....skipping...");
+        dbg(' ==== Error generating auto_release....skipping...');
         return false;
     } else {
         return true;
@@ -390,16 +390,16 @@ function check_auto_release($qitem)
     $id = $qitem['id'];
     $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'");
     if (!$result) {
-        dbg(" === Error checking if msg_id already exists.....skipping....");
+        dbg(' === Error checking if msg_id already exists.....skipping....');
     } else {
         if ($result->num_rows === 0) {
             return false;//msg_id not found,
         } elseif ($result->num_rows === 1) {
             $row = $result->fetch_array();
-            $rand = $row['uid'];
-            return $rand; //return the stored uid
+
+            return $row['uid']; //return the stored uid
         } else {
-            dbg("=== Error, msg_id exists more than once....generating new one...");
+            dbg('=== Error, msg_id exists more than once....generating new one...');
             return false;
         }
     }
@@ -416,8 +416,8 @@ function send_quarantine_email($email, $filter, $quarantined)
 {
     global $html, $html_table, $html_content, $text, $text_content;
     // Setup variables to prevent warnings
-    $h1 = "";
-    $t1 = "";
+    $h1 = '';
+    $t1 = '';
     // Build the quarantine list for this recipient
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
@@ -479,7 +479,7 @@ function send_quarantine_email($email, $filter, $quarantined)
         'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>',
         'To' => $email,
         'Subject' => QUARANTINE_REPORT_SUBJECT,
-        'Date' => date("r")
+        'Date' => date('r')
     );
     $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
     $mime->setTXTBody($text_report);
