@@ -390,7 +390,6 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
     'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
-    'updategeoip15' => 'Update GeoIP Database',
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
     'saruldesupdate13' => 'SpamAssassin Rule Description Update',
@@ -644,8 +643,6 @@ return array(
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volume',
-    'message149' => 'File isn\'t readable. Please make sure that',
-    'message249' => 'is readable and writable by MailWatch',
     'total49' => 'Total<br>Mail',
     'clean49' => 'Clean',
     'lowespam49' => 'Low Spam',
@@ -708,7 +705,6 @@ return array(
      // 60-rpcserver.php
     'paratype160' => 'Parameter type',
     'paratype260' => 'mismatch expected type.',
-    'paratype160' => 'mismatch expected type.',
     'notfile60' => 'is not a file.',
     'permdenied60' => 'permission denied.',
     'client160' => 'Client',

@@ -644,8 +644,6 @@ return array(
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volume',
-    'message149' => 'Le fichier n\'est pas lisible. Vérifiez que le fichier File',
-    'message249' => 'est lisible et peu être écrit par MailWatch',
     'total49' => 'Total<br>Mail',
     'clean49' => 'Légitime',
     'lowespam49' => 'Spam Bas',
@@ -712,7 +710,6 @@ return array(
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',
     'paratype260' => 'mismatch expected type.',
-    'paratype160' => 'mismatch expected type.',
     'notfile60' => 'n\est pas un fichier.',
     'permdenied60' => 'permission refusée.',
     'client160' => 'Le client',

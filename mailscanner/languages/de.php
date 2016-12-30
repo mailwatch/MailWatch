@@ -390,7 +390,6 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
     'updatesadesc13' => 'SpamAssassin Regel-Beschreibungen aktualieren',
-    'updategeoip15' => 'GeoIP Datenbank aktualisieren',
     'message113' => 'Dieses Programm wird benutzt, um die aktuellen SpamAssassin Regeln, die auf der Nachrichten-Detail-Seite angezeigt werden, in der SQL-Datenbank zu aktualieren.',
     'message213' => 'Dieses Programm sollte generell nach einem SpamAssassin-Update ausgeführt werden. Es kann aber auch zu jeder anderen Zeit gestartet werden, da es lediglich aktualisierte Regeln ersetzt und neue Regeln hinzufügt. Dadurch werden Beschreibungen von veralteten oder entfernten Regeln erhalten.',
     'saruldesupdate13' => 'Aktualisierung der SpamAssassin Regel-Beschreibungen',
@@ -422,7 +421,7 @@ return array(
 
     // 15-geoip_update.php
     'input15' => 'Jetzt ausführen',
-    'updategeoip15' => 'GeoIP Database aktualisieren',
+    'updategeoip15' => 'GeoIP Datenbank aktualisieren',
     'message115' => 'Dieses Programm wird die GeoIP Datenbankdateien (werden an jedem ersten Dienstag eines Monats aktualisert) von ',
     'message215' => 'herunterladen, wodurch das Ursprungsland für jede IP-Adresse herausgefunden und auf der Detailseite der Nachrichten angezeigt.',
     'downfile15' => 'Laden Dateien herunter, bitte warten...',
@@ -711,7 +710,6 @@ return array(
      // 60-rpcserver.php
     'paratype160' => 'Parameter-Typ',
     'paratype260' => 'entspricht nicht dem erwarteten Typ.',
-    'paratype160' => 'entspricht nicht dem erwarteten Typ.',
     'notfile60' => 'ist keine Datei.',
     'permdenied60' => 'Zugriff verweigert.',
     'client160' => 'Client',
