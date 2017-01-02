@@ -1,4 +1,4 @@
-1.2.0 - dev
+1.2.0 - RC4
 -----------
  - Move to MySQLi PHP extension
  - PHP 7 compatibility
