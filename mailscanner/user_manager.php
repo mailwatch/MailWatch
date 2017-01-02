@@ -158,11 +158,11 @@ if ($_SESSION['user_type'] === 'A') {
                     $result = dbquery($sql);
                     $row = $result->fetch_object();
                     $quarantine_report = '';
-                    if ($row->quarantine_report === 1) {
+                    if ((int)$row->quarantine_report === 1) {
                         $quarantine_report = 'CHECKED';
                     }
                     $noscan = '';
-                    if ($row->noscan === 0) {
+                    if ((int)$row->noscan === 0) {
                         $noscan = 'checked="checked"';
                     }
 
@@ -200,6 +200,7 @@ if ($_SESSION['user_type'] === 'A') {
                     $result = dbquery($sql);
                 } else {
                     // Do update
+
                     if ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12');
                     } else {
@@ -211,15 +212,13 @@ if ($_SESSION['user_type'] === 'A') {
                         $n_type = safe_value($_GET['type']);
                         $spamscore = safe_value($_GET['spamscore']);
                         $highspamscore = safe_value($_GET['highspamscore']);
+                        $n_quarantine_report = '1';
                         if (!isset($_GET['quarantine_report'])) {
                             $n_quarantine_report = '0';
-                        } else {
-                            $n_quarantine_report = '1';
                         }
+                        $noscan = '0';
                         if (!isset($_GET['noscan'])) {
                             $noscan = '1';
-                        } else {
-                            $noscan = '0';
                         }
                         $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
 
@@ -310,8 +309,8 @@ if ($_SESSION['user_type'] === 'A') {
         }
     }
 
-    echo "<a href=\"?action=new\">" . __('newuser12') . "</a>\n";
-    echo "<br>\n";
+    echo '<a href="?action=new">' . __('newuser12') . '</a>'."\n";
+    echo '<br>'."\n";
 
     $sql = "
         SELECT
@@ -340,61 +339,61 @@ if ($_SESSION['user_type'] === 'A') {
           username";
     dbtable($sql, __('usermgnt12'));
 } else {
-    if (!isset($_GET['submit'])) {
+    if (!isset($_POST['submit'])) {
         $sql = "SELECT username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value($_SESSION['myusername']) . "'";
         $result = dbquery($sql);
         $row = $result->fetch_object();
         $quarantine_report = '';
-        if ($row->quarantine_report === 1) {
-            $quarantine_report = 'CHECKED';
+        if ((int)$row->quarantine_report === 1) {
+            $quarantine_report = 'checked="checked"';
         }
-        if ($row->noscan === 0) {
-            $noscan = 'CHECKED';
-        }
-        $s[$row->type] = 'SELECTED';
-        echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
-        echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"edit\">\n";
-        echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
-        echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
-        echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-        echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('username0212') . '</TD><TD>' . $_SESSION['myusername'] . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('name12') . '</TD><TD>' . $_SESSION['fullname'] . "</TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
 
-        echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=\"-2\">" . __('senddaily12') . "</font></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('pontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-        echo " <TR><TD CLASS=\"heading\">" . __('hpontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=-2>0=" . __('usedefault12') . "</font></TD></TR>\n";
-        echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"" . __('update12') . "\"></TD></TR>\n";
-        echo "</TABLE></FORM><BR>\n";
+        $noscan='';
+        if ((int)$row->noscan === 0) {
+            $noscan = 'checked="checked"';
+        }
+        $s[$row->type] = 'selected';
+        echo '<form method="post" action="user_manager.php">'."\n";
+        echo '<input type="hidden" name="action" value="edit">'."\n";
+        echo '<input type="hidden" name="key" value="' . $row->username . '">'."\n";
+        echo '<input type="hidden" name="submit" value="true">'."\n";
+        echo '<table class="mail" border="0" cellpadding="1" cellspacing="1">'."\n";
+        echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>'."\n";
+        echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>'."\n";
+        echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>'."\n";
+        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
+        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" name="password1" value="xxxxxxxx"></td></tr>'."\n";
+
+        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" '.$quarantine_report.'> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>'."\n";
+        echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>'."\n";
+        echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" '.$noscan.'> <span style="font-size:90%">' . __('scanforspam212') . '</span></td></tr>'."\n";
+        echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>'."\n";
+        echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>'."\n";
+        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" value="' . __('update12') . '"></td></tr>'."\n";
+        echo '</table></form><br>'."\n";
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
     } else {
         // Do update
-        if ($_GET['password'] !== $_GET['password1']) {
+        if ($_POST['password'] !== $_POST['password1']) {
             echo __('errorpass12');
         } else {
             $do_pwd = false;
             $username = safe_value($_SESSION['myusername']);
-            $n_password = safe_value($_GET['password']);
-            $spamscore = safe_value($_GET['spamscore']);
-            $highspamscore = safe_value($_GET['highspamscore']);
-            if (!isset($_GET['quarantine_report'])) {
+            $n_password = safe_value($_POST['password']);
+            $spamscore = safe_value($_POST['spamscore']);
+            $highspamscore = safe_value($_POST['highspamscore']);
+            $n_quarantine_report = '1';
+            if (!isset($_POST['quarantine_report'])) {
                 $n_quarantine_report = '0';
-            } else {
-                $n_quarantine_report = '1';
             }
-            if (!isset($_GET['noscan'])) {
+            $noscan = '0';
+            if (!isset($_POST['noscan'])) {
                 $noscan = '1';
-            } else {
-                $noscan = '0';
             }
-            $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
+            $quarantine_rcpt = safe_value($_POST['quarantine_rcpt']);
 
-            if ($_GET['password'] !== 'XXXXXXXX') {
+            if (isset($_POST['password']) && $_POST['password'] !== 'XXXXXXXX') {
                 // Password reset required
                 $password = password_hash($n_password, PASSWORD_DEFAULT);
                 $sql = "UPDATE users SET password='" . $password . "', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
@@ -407,7 +406,7 @@ if ($_SESSION['user_type'] === 'A') {
             // Audit
             audit_log("User [$username] updated their own account");
             echo '<h1 style="text-align: center; color: green;">Update Completed</h1>';
-            echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"3;user_manager.php\">";
+            echo '<META HTTP-EQUIV="refresh" CONTENT="3;user_manager.php">';
         }
     }
 }
