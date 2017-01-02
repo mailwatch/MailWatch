@@ -361,8 +361,10 @@ if ($_SESSION['user_type'] === 'A') {
         echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>'."\n";
-        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
-        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" name="password1" value="xxxxxxxx"></td></tr>'."\n";
+        if ($_SESSION['user_ldap'] !== true) {
+            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
+            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" name="password1" value="xxxxxxxx"></td></tr>'."\n";
+        }
 
         echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" '.$quarantine_report.'> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>'."\n";
@@ -375,12 +377,14 @@ if ($_SESSION['user_type'] === 'A') {
         $result = dbquery($sql);
     } else {
         // Do update
-        if ($_POST['password'] !== $_POST['password1']) {
+        if (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
             echo __('errorpass12');
         } else {
             $do_pwd = false;
             $username = safe_value($_SESSION['myusername']);
-            $n_password = safe_value($_POST['password']);
+            if (isset($_POST['password'])) {
+                $n_password = safe_value($_POST['password']);
+            }
             $spamscore = safe_value($_POST['spamscore']);
             $highspamscore = safe_value($_POST['highspamscore']);
             $n_quarantine_report = '1';

@@ -2610,13 +2610,13 @@ function ldap_authenticate($user, $password)
 
         if ($ldap_search_results) {
             $result = ldap_get_entries($ds, $ldap_search_results) or die(__('ldpaauth303'));
+            ldap_free_result($ldap_search_results);
             if (isset($result[0])) {
                 if (in_array('group', array_values($result[0]['objectclass']), true)) {
                     // do not login as group
                     return null;
                 }
 
-                $user = '';
                 if (isset($result[0]['userprincipalname'][0])) {
                     $user = $result[0]['userprincipalname'][0];
                 } else {
@@ -2651,7 +2651,7 @@ function ldap_authenticate($user, $password)
 
                     return $email;
                 } else {
-                    die (ldap_print_error($ds));
+                    die(ldap_print_error($ds));
                 }
             }
         }
@@ -2664,7 +2664,8 @@ function ldap_authenticate($user, $password)
  * @param Resource $ds
  * @return string
  */
-function ldap_print_error($ds) {
+function ldap_print_error($ds)
+{
     return sprintf(
         'Could not bind to server %s. Returned Error was: [%s] %s',
         LDAP_HOST,

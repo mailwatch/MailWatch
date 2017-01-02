@@ -48,11 +48,11 @@ if (
     (USE_LDAP === true) &&
     (($result = ldap_authenticate(ldap_escape($myusername, '', LDAP_ESCAPE_DN), ldap_escape($mypassword, '', LDAP_ESCAPE_DN))) !== null)
 ) {
-    $_SESSION['user_ldap'] = '1';
+    $_SESSION['user_ldap'] = true;
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
 } else {
-    $_SESSION['user_ldap'] = '0';
+    $_SESSION['user_ldap'] = false;
     if ($mypassword !== '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
@@ -78,7 +78,7 @@ if ($usercount === 0) {
     header('Location: login.php?error=baduser');
     die();
 } else {
-    if ($_SESSION['user_ldap'] === '0') {
+    if ($_SESSION['user_ldap'] === false) {
         $passwordInDb = database::mysqli_result($result, 0, 'password');
         if (!password_verify($mypassword, $passwordInDb)) {
             if (!hash_equals(md5($mypassword), $passwordInDb)) {
