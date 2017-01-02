@@ -1203,6 +1203,9 @@ function get_disks()
  */
 function formatSize($size, $precision = 2)
 {
+    if (null === $size) {
+        return 'n/a';
+    }
     $base = log($size) / log(1024);
     $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
 
