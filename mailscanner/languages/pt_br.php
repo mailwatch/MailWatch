@@ -246,6 +246,9 @@ return array(
     'add07' => 'Adiciona',
     'delete07' => 'Excluir',
     'wblists07' => 'Whitelist/Blacklist',
+    'errors07' => 'Errors:',
+    'error071' => 'You must select a list to create the entry.',
+    'error072' => 'You must enter a from address (user@domain, domain or IP).',
 
     // 08-quarantine.php
     'folder08' => 'Pasta',

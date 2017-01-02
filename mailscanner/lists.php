@@ -167,10 +167,10 @@ switch (true) {
 if ($url_submit === 'add') {
     // Check input is valid
     if (empty($url_list)) {
-        $errors[] = 'You must select a list to create the entry.';
+        $errors[] = __('error071');
     }
     if (empty($from)) {
-        $errors[] = 'You must enter a from address (user@domain, domain or IP).';
+        $errors[] = __('error072');
     }
 
     $to_domain = strtolower($url_domain);
@@ -329,7 +329,7 @@ echo '  </td>
  </tr>';
 if (isset($errors)) {
     echo '<tr>
-  <td class="heading">Errors:</td>
+  <td class="heading">' . __('errors07') . '</td>
   <td>' . implode('<br>', $errors) . '</td>
  </tr>';
 }

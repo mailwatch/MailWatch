@@ -246,6 +246,9 @@ return array(
     'add07' => 'Ajouter',
     'delete07' => 'Supprimer',
     'wblists07' => 'Listes Noire et Blanche',
+    'errors07' => 'Erreurs :',
+    'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
+    'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
