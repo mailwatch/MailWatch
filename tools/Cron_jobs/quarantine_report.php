@@ -252,19 +252,13 @@ ORDER BY a.date DESC, a.time DESC';
             dbg("\n === Generating report for " . $user->username . ' type=' . $user->type);
             // Work out destination e-mail address
             switch ($user->type) {
-                case 'U':
-                    // Type: user - see if to address needs to be overridden
+                case 'D':
+                    // Type: domain admin - this must be overridden
                     if (!empty($user->quarantine_rcpt)) {
                         $email = $user->quarantine_rcpt;
                     } else {
-                        $email = $user->username;
+                        $email = filter_var($user->username, FILTER_VALIDATE_EMAIL);
                     }
-                    $to_address = $user->username;
-                    $to_domain = $user->username;
-                    break;
-                case 'D':
-                    // Type: domain admin - this must be overridden
-                    $email = $user->quarantine_rcpt;
                     $to_address = $user->username;
                     if (preg_match('/(\S+)@(\S+)/', $user->username, $split)) {
                         $to_domain = $split[2];
@@ -272,15 +266,21 @@ ORDER BY a.date DESC, a.time DESC';
                         $to_domain = $user->username;
                     }
                     break;
+                case 'A':
+                case 'U':
                 default:
-                    // Shouldn't ever get here - but just in case...
-                    $email = $user->quarantine_rcpt;
+                    // Type 'A'dministrator, 'U'ser and everything else just in case...
+                    if (!empty($user->quarantine_rcpt)) {
+                        $email = $user->quarantine_rcpt;
+                    } else {
+                        $email = filter_var($user->username, FILTER_VALIDATE_EMAIL);
+                    }
                     $to_address = $user->username;
                     $to_domain = $user->username;
                     break;
             }
             // Make sure we have a destination address
-            if (!empty($email)) {
+            if (!empty($email) && false !== $email) {
                 dbg(" ==== Recipient e-mail address is $email");
                 // Get any additional reports required
                 $filters = array_merge(array($email), return_user_filters($user->username));
