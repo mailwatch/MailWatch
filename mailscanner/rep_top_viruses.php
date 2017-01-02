@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,21 +30,21 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topvirus48'), 0, false, true);
 
 // File name
-$filename = CACHE_DIR . "/top_viruses.png." . time();
+$filename = CACHE_DIR . '/top_viruses.png.' . time();
 
 // SQL query to find all emails with a virus found
-$sql = "
+$sql = '
 SELECT
  report
 FROM
@@ -53,15 +53,15 @@ WHERE
  virusinfected = 1
 AND
  report IS NOT NULL
-" . $filter->CreateSQL();
+' . $filter->CreateSQL();
 
 // Check permissions to see if apache can actually create the file
 if (is_writable(CACHE_DIR)) {
 
     // JpGraph functions
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
+    include_once './lib/jpgraph/src/jpgraph.php';
+    include_once './lib/jpgraph/src/jpgraph_pie.php';
+    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
 
     // Must be one or more rows
     $result = dbquery($sql);
@@ -119,10 +119,10 @@ if (is_writable(CACHE_DIR)) {
 
 // HTML to display the graph
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo "<TR>";
+echo '<TR>';
 echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo "</TR>";
-echo "<TR>";
+echo '</TR>';
+echo '<TR>';
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 echo '<TD ALIGN="CENTER">';
@@ -130,33 +130,33 @@ if ($graphok === true) {
     if (is_readable($filename)) {
         echo '<IMG SRC="' . $filename . '" ALT="Graph">';
     } else {
-        echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
+        echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
     }
 } else {
     echo __('nodata48');
 }
 echo '</TD>';
-echo "</TR>";
-echo "<TR>";
+echo '</TR>';
+echo '<TR>';
 echo " <TD ALIGN=\"CENTER\">";
 echo "  <TABLE WIDTH=\"500\">";
 echo "   <TR style=\"background-color: #f7ce4a\">";
-echo "    <TH>" . __('virus48') . "</TH>";
-echo "    <TH>" . __('count48') . "</TH>";
-echo "   </TR>";
+echo '    <TH>' . __('virus48') . '</TH>';
+echo '    <TH>' . __('count48') . '</TH>';
+echo '   </TR>';
 
 // Write the data out
-for ($i = 0; $i < count($data_names); $i++) {
+for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; $i++) {
     echo "<TR style=\"background-color: #EBEBEB\">
  <TD>$data_names[$i]</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
 </TR>\n";
 }
 
-echo "  </TABLE>";
-echo " </TD>";
-echo "</TR>";
-echo "</TABLE>";
+echo '  </TABLE>';
+echo ' </TD>';
+echo '</TR>';
+echo '</TABLE>';
 
 // Add footer
 html_end();

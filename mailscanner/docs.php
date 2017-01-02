@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,16 +29,16 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('doc20'));
 
 if (isset($_GET['doc'])) {
     $file = preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['doc']);
-    include_once("docs/" . $file . ".html");
+    include_once 'docs/' . $file . '.html';
 } else {
     echo '<table width="100%" class="boxtable">' . "\n";
     echo ' <tr>' . "\n";

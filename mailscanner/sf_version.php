@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,21 +30,21 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
-    header("Location: index.php");
+if ($_SESSION['user_type'] !== 'A') {
+    header('Location: index.php');
     audit_log('Non-admin user attemped to view Software Version Page');
 } else {
     html_start(__('mwandmsversion52'), '0', false, false);
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = phpversion();
-    $mysql_version = database::mysqli_result(dbquery("SELECT VERSION()"), 0);
+    $mysql_version = database::mysqli_result(dbquery('SELECT VERSION()'), 0);
     $geoipv4_version = false;
     $geoipv6_version = false;
     if (file_exists('./temp/GeoIP.dat')) {
@@ -60,34 +60,34 @@ if ($_SESSION['user_type'] != 'A') {
     echo '<td>' . "\n";
 
     echo '<br>' . "\n";
-    echo 'MailWatch ' . __('version11') . " ". $mailwatch_version . '<br>' . "\n";
+    echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MailScanner ' . __('version11') . " ". $mailscanner_version . '<br>' . "\n";
+    echo 'MailScanner ' . __('version11') . ' ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>';
     $virusScanner = get_conf_var('VirusScanners');
     // Add test for others virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {
-        echo 'ClamAV ' . __('version11') . " ";
+        echo 'ClamAV ' . __('version11') . ' ';
         passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
     echo '<br>' . "\n";
-    echo 'SpamAssassin ' . __('version11') . " ";
+    echo 'SpamAssassin ' . __('version11') . ' ';
     passthru("spamassassin -V | tr '\\\n' ' ' | cut -d' ' -f3");
     echo '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'PHP ' . __('version11') . " " . $php_version . '<br>' . "\n";
+    echo 'PHP ' . __('version11') . ' ' . $php_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'MySQL ' . __('version11') . " " . $mysql_version . '<br>' . "\n";
+    echo 'MySQL ' . __('version11') . ' ' . $mysql_version . '<br>' . "\n";
     echo '<br>' . "\n";
-    echo 'GeoIP Database ' . __('version11') . " ";
+    echo 'GeoIP Database ' . __('version11') . ' ';
     if (false !== $geoipv4_version) {
         echo $geoipv4_version;
     } else {
-        echo __('nodbdown11') ." ";
+        echo __('nodbdown11') . ' ';
     }
     echo "<br>\n<br>\n";
-    echo 'GeoIPv6 Database ' . __('version11') ." ";
+    echo 'GeoIPv6 Database ' . __('version11') . ' ';
     if (false !== $geoipv6_version) {
         echo $geoipv6_version;
     } else {

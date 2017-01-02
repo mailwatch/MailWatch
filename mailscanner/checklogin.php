@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -48,11 +48,11 @@ if (
     (USE_LDAP === true) &&
     (($result = ldap_authenticate(ldap_escape($myusername, '', LDAP_ESCAPE_DN), ldap_escape($mypassword, '', LDAP_ESCAPE_DN))) !== null)
 ) {
-    $_SESSION['user_ldap'] = '1';
+    $_SESSION['user_ldap'] = true;
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
 } else {
-    $_SESSION['user_ldap'] = '0';
+    $_SESSION['user_ldap'] = false;
     if ($mypassword !== '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
@@ -78,7 +78,7 @@ if ($usercount === 0) {
     header('Location: login.php?error=baduser');
     die();
 } else {
-    if ($_SESSION['user_ldap'] === '0') {
+    if ($_SESSION['user_ldap'] === false) {
         $passwordInDb = database::mysqli_result($result, 0, 'password');
         if (!password_verify($mypassword, $passwordInDb)) {
             if (!hash_equals(md5($mypassword), $passwordInDb)) {

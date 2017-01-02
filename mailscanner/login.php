@@ -3,7 +3,7 @@
  MailWatch for MailScanner
  Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 ?>
 <!doctype html>
 <html>
@@ -89,8 +89,7 @@ require_once(__DIR__ . '/functions.php');
 
         .login fieldset p {
             color: #222;
-            margin: 0;
-            margin-bottom: 8px;
+            margin: 0 0 8px;
         }
 
         .login fieldset p:last-child {
@@ -147,7 +146,7 @@ require_once(__DIR__ . '/functions.php');
 </head>
 <body>
 <div class="login">
-    <center><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>"></center>
+    <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>"></div>
     <h1><?php echo __('mwlogin01'); ?></h1>
     <?php if (file_exists('conf.php')) {
     ?>

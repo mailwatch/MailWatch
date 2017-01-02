@@ -70,7 +70,7 @@ LDAP_USERS="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x 
 		grep -Ev "DiscoverySearchMailbox|FederatedEmail|SystemMailbox" | sort)"
 
 [ -f "$TEMPFILE" ] && rm -f "$TEMPFILE"
-for USER in $LDAP_USERS; do
+for USER in ${LDAP_USERS}; do
 	unset DN FULLNAME ALIASES GROUP_ALIASES TYPE REPORT SPAMSCORE HIGHSPAMSCORE NOSCAN RECIPIENT RESULT
 	USER="$(echo "$USER" | sed -e "s/\(.*\)/\L\1/")"
 	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" \
@@ -108,7 +108,7 @@ for USER in $LDAP_USERS; do
 	echo "REPLACE INTO users (username, password, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt)
 	VALUES ('$USER', NULL, '$FULLNAME', '$TYPE', $REPORT, $SPAMSCORE, $HIGHSPAMSCORE, $NOSCAN, $RECIPIENT);" >> "$TEMPFILE"
 	echo "DELETE FROM user_filters WHERE username = '$USER';" >> "$TEMPFILE"
-	for ALIAS in $ALIASES $GROUP_ALIASES; do
+	for ALIAS in ${ALIASES} ${GROUP_ALIASES}; do
 		ALIAS="$(echo "$ALIAS" | sed -e "s/\(.*\)/\L\1/" -e "s/@/\\\@/g")"
 		echo "INSERT INTO user_filters (username, filter, active) VALUES ('$USER', '$ALIAS', 'Y');" >> "$TEMPFILE"
 	done
@@ -119,7 +119,7 @@ MYSQL_USERS="$(echo "SELECT username FROM users WHERE password IS NULL;" |
 		--user="$MYSQL_USER" \
 		--password="$MYSQL_PASS" \
 		--skip-column-names "$MYSQL_NAME")"
-for USER in $MYSQL_USERS; do
+for USER in ${MYSQL_USERS}; do
 	unset DN RESULT
 	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" "(proxyAddresses=SMTP:$USER)" "dn" | sed -n '1 {h;$!d}; ${x;s/\n //g;p}; /^ /{H;d}; /^ /!{x;s/\n //g;p}')"
 	echo "$RESULT" | grep -qs "dn:: "

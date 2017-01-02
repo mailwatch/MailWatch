@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,13 +30,13 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-html_start(__('toolslinks10'), "0", false, false);
+html_start(__('toolslinks10'), '0', false, false);
 
 echo '<table width="100%" class="boxtable">';
 echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
@@ -46,7 +46,7 @@ echo '<tr>
       <ul>';
 
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
-if ($_SESSION['user_type'] == 'A') {
+if ($_SESSION['user_type'] === 'A') {
     $virusScanner = get_conf_var('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
         echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
@@ -83,7 +83,7 @@ if ($_SESSION['user_type'] == 'A') {
 }
 echo '</ul>';
 
-if ($_SESSION['user_type'] == 'A') {
+if ($_SESSION['user_type'] === 'A') {
     echo '
    <p>' . __('links10') . '</p>
    <ul>

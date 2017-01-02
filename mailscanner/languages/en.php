@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -390,7 +390,6 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
     'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
-    'updategeoip15' => 'Update GeoIP Database',
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
     'saruldesupdate13' => 'SpamAssassin Rule Description Update',
@@ -711,7 +710,6 @@ return array(
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',
     'paratype260' => 'mismatch expected type.',
-    'paratype160' => 'mismatch expected type.',
     'notfile60' => 'is not a file.',
     'permdenied60' => 'permission denied.',
     'client160' => 'Client',
@@ -726,6 +724,6 @@ return array(
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'No translation in English',
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
+    'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
 
 );

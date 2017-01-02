@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,11 +30,11 @@
  */
 
 //Require files
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Authentication verification and keep the session alive
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('geoipupdate15'), 0, false, false);
 
@@ -57,7 +57,7 @@ if (!isset($_POST['run'])) {
             </table>
             </form>' . "\n";
 } else {
-    require_once(__DIR__ . '/lib/request/Requests.php');
+    require_once __DIR__ . '/lib/request/Requests.php';
     Requests::register_autoloader();
 
     ob_start();
@@ -90,7 +90,7 @@ if (!isset($_POST['run'])) {
                         mailwatch_version());
 
                 if (USE_PROXY === true) {
-                    if (PROXY_USER != '') {
+                    if (PROXY_USER !== '') {
                         $requestSession->options['proxy']['authentication'] = array(
                             PROXY_SERVER . ':' . PROXY_PORT,
                             PROXY_USER,
@@ -135,11 +135,11 @@ if (!isset($_POST['run'])) {
                 echo __('downokunpack15') . '<br>' . "\n";
                 ob_flush();
                 flush();
-            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
                 //wget
                 $proxyString = '';
                 if (USE_PROXY) {
-                    if (PROXY_USER != '') {
+                    if (PROXY_USER !== '') {
                         $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
                     } else {
                         $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
@@ -176,7 +176,7 @@ if (!isset($_POST['run'])) {
                     ob_flush();
                     flush();
                 }
-            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
                 foreach ($files as $file) {
                     exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
                     if ($retval_gunzip > 0) {
@@ -198,7 +198,7 @@ if (!isset($_POST['run'])) {
             audit_log('Ran GeoIP update');
         } else {
             // unable to read or write to the directory
-            die(__('norread15') . " " . $extract_dir . " " . __('directory15') . ".\n");
+            die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");
         }
     } else {
         $error_message = __('message715') . "<br>\n";

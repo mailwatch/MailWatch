@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -644,8 +644,6 @@ return array(
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volume',
-    'message149' => 'Le fichier n\'est pas lisible. Vérifiez que le fichier File',
-    'message249' => 'est lisible et peu être écrit par MailWatch',
     'total49' => 'Total<br>Mail',
     'clean49' => 'Légitime',
     'lowespam49' => 'Spam Bas',
@@ -712,7 +710,6 @@ return array(
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',
     'paratype260' => 'mismatch expected type.',
-    'paratype160' => 'mismatch expected type.',
     'notfile60' => 'n\est pas un fichier.',
     'permdenied60' => 'permission refusée.',
     'client160' => 'Le client',

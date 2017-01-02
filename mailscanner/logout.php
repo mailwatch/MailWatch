@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -34,20 +34,20 @@ session_start();
 $_SESSION = array();
 
 // delete the session cookie.
-if (ini_get("session.use_cookies")) {
-    ini_set("session.cookie_httponly", 1);
+if (ini_get('session.use_cookies')) {
+    ini_set('session.cookie_httponly', 1);
     $params = session_get_cookie_params();
     setcookie(
         session_name(),
         '',
         time() - 42000,
-        $params["path"],
-        $params["domain"],
-        $params["secure"],
-        $params["httponly"]
+        $params['path'],
+        $params['domain'],
+        $params['secure'],
+        $params['httponly']
     );
 }
 
 session_destroy();
 
-header("Location: index.php");
+header('Location: index.php');
