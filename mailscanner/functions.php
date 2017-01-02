@@ -194,7 +194,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.0 - RC3';
+    return '1.2.0 - RC4';
 }
 
 /**
@@ -2651,6 +2651,10 @@ function ldap_authenticate($user, $password)
 
                     return $email;
                 } else {
+                    if (ldap_errno($ds) === 49) {
+                        //LDAP_INVALID_CREDENTIALS
+                        return null;
+                    }
                     die(ldap_print_error($ds));
                 }
             }

@@ -46,7 +46,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 
 if (
     (USE_LDAP === true) &&
-    (($result = ldap_authenticate(ldap_escape($myusername, '', LDAP_ESCAPE_DN), ldap_escape($mypassword, '', LDAP_ESCAPE_DN))) !== null)
+    (($result = ldap_authenticate(ldap_escape($myusername, '', LDAP_ESCAPE_DN), $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
     $myusername = safe_value($myusername);
