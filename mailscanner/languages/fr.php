@@ -249,6 +249,7 @@ return array(
     'errors07' => 'Erreurs :',
     'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
     'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
+    'noentries07' => 'Aucune entrée trouvée.',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',

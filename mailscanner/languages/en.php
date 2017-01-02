@@ -249,6 +249,7 @@ return array(
     'errors07' => 'Errors:',
     'error071' => 'You must select a list to create the entry.',
     'error072' => 'You must enter a from address (user@domain, domain or IP).',
+    'noentries07' => 'No entries found.',
 
     // 08-quarantine.php
     'folder08' => 'Folder:',
