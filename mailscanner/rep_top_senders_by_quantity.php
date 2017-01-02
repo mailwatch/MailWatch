@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,12 +30,12 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsendersqt46'), 0, false, true);
@@ -43,7 +43,7 @@ $filter = html_start(__('topsendersqt46'), 0, false, true);
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
 
-$filename = CACHE_DIR . "/top_senders_by_quantity.png" . time();
+$filename = CACHE_DIR . '/top_senders_by_quantity.png' . time();
 
 $sql = "
  SELECT
@@ -56,28 +56,28 @@ $sql = "
   from_address <> \"\" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . "
+" . $filter->CreateSQL() . '
  GROUP BY
   from_address
  ORDER BY
   count DESC
  LIMIT 10
-";
+';
 
 // Check permissions to see if apache can actually create the file
 if (is_writable(CACHE_DIR)) {
 
     // JPGraph
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie.php");
-    include_once("./lib/jpgraph/src/jpgraph_pie3d.php");
+    include_once './lib/jpgraph/src/jpgraph.php';
+    include_once './lib/jpgraph/src/jpgraph_pie.php';
+    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
 
     $result = dbquery($sql);
-    if (!mysql_num_rows($result) > 0) {
+    if (!$result->num_rows > 0) {
         die(__('diemysql99') . "\n");
     }
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data[] = $row->count;
         $data_names[] = $row->from_address;
         $data_size[] = $row->size;
@@ -106,42 +106,42 @@ if (is_writable(CACHE_DIR)) {
 
 // Table to Display data
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo "<TR>";
+echo '<TR>';
 echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo "</TR>";
-echo "<TR>";
+echo '</TR>';
+echo '<TR>';
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
-echo "</TR>";
-echo "<TR>";
+echo '</TR>';
+echo '<TR>';
 echo " <TD ALIGN=\"CENTER\">";
-echo "  <TABLE WIDTH=500>";
+echo '  <TABLE WIDTH=500>';
 echo "   <TR BGCOLOR=\"#F7CE4A\">";
-echo "    <TH>" . __('email46') . "</TH>";
-echo "    <TH>" . __('count46') . "</TH>";
-echo "    <TH>" . __('size46') . "</TH>";
-echo "   </TR>";
+echo '    <TH>' . __('email46') . '</TH>';
+echo '    <TH>' . __('count46') . '</TH>';
+echo '    <TH>' . __('size46') . '</TH>';
+echo '   </TR>';
 
 // Parsing out the data
-for ($i = 0; $i < count($data); $i++) {
+for ($i = 0, $count_data = count($data); $i < $count_data; $i++) {
     echo "
    <TR BGCOLOR=\"#EBEBEB\">
     <TD>$data_names[$i]</TD>
     <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
-    <TD ALIGN=\"RIGHT\">" . format_mail_size($data_size[$i] * $size_info['formula']) . "</TD>
+    <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i] * $size_info['formula']) . "</TD>
    </TR>\n";
 }
 
-echo "  </TABLE>";
-echo " </TD>";
-echo "</TR>";
-echo "</TABLE>";
+echo '  </TABLE>';
+echo ' </TD>';
+echo '</TR>';
+echo '</TABLE>';
 
 // Add footer
 html_end();

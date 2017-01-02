@@ -29,6 +29,19 @@ CREATE TABLE IF NOT EXISTS `audit_log` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `autorelease`
+--
+
+CREATE TABLE IF NOT EXISTS `autorelease` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `msg_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `uid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `blacklist`
 --
 

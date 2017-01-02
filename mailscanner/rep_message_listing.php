@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,12 +30,12 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('messlisting16'), 0, false, false);
@@ -43,10 +43,10 @@ $filter = html_start(__('messlisting16'), 0, false, false);
 $sql = "
  SELECT
   id AS id2,
-  DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
+  DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
   from_address,";
 if (defined('DISPLAY_IP') && DISPLAY_IP) {
-    $sql .= "clientip,";
+    $sql .= 'clientip,';
 }
 $sql .= "
   to_address,
@@ -74,38 +74,36 @@ $sql .= "
 " . $_SESSION['global_filter'];
 
 // Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] == 'U') {
-    $sql .= "
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+    $sql .= '
     AND
      ishighspam=0
     AND
-     COALESCE(ishighmcp,0)=0";
+     COALESCE(ishighmcp,0)=0';
 }
 
 // Check if we've passed in a relay that we want to check the headers for, this is from detail.php
-$relay_regex = "";
-if (isset($_GET['relay'])) {
-    if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $_GET['relay'])) {
-        $relay_regex = "[[:<:]]" . str_replace('.', '\.', $_GET['relay']) . "[[:>:]]";
-    }
+$relay_regex = '';
+if (isset($_GET['relay']) && preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $_GET['relay'])) {
+    $relay_regex = '[[:<:]]' . str_replace('.', '\.', $_GET['relay']) . '[[:>:]]';
 }
 if (strlen($relay_regex) > 0) {
     $sql .= " AND headers REGEXP '$relay_regex'";
     if (isset($_GET['isspam'])) {
-        $sql .= " AND isspam > 0";
+        $sql .= ' AND isspam > 0';
     }
     if (isset($_GET['isvirus'])) {
-        $sql .= " AND virusinfected > 0";
+        $sql .= ' AND virusinfected > 0';
     }
-    $sql .= " AND " . $_SESSION['global_filter'];
+    $sql .= ' AND ' . $_SESSION['global_filter'];
 } else {
-    $sql .= " " . $_SESSION["filter"]->CreateSQL();
+    $sql .= ' ' . $_SESSION['filter']->CreateSQL();
 }
 
-$sql .= "
+$sql .= '
   ORDER BY
    date DESC, time DESC
- ";
+ ';
 
 // function to display the data from functions.php
 db_colorised_table($sql, __('messlisting16'), true, true);

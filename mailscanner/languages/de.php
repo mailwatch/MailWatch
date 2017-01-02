@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.2.9 */
+/* v0.3.0 */
 
 return array(
     // 01-login.php
@@ -107,7 +107,6 @@ return array(
     'description03' => 'Beschreibung',
     'footer03' => 'MailWatch für MailScanner v',
     'mailwatchtitle03' => 'MailWatch für Mailscanner',
-    'php703' => 'MailWatch benötigt die (veraltete) MySQL extension zum Arbeiten: PHP7 hat diese extension entfernt und diese Software wird nicht funktionieren.',
     'radiospam203' => 'S',
     'radioham03' => 'H',
     'radioforget03' => 'F',
@@ -145,6 +144,10 @@ return array(
     'diequarantine303' => 'Konnte Quarantäneordner nicht öffnen:',
     'diereadruleset03' => 'Konnte MailScanner ruleset Datei nicht öffnen',
     'hostfailed03' => '(Hostname lookup fehlgeschlagen)',
+    'clientip03' => 'Client IP',
+    'host03' => 'Host',
+    'date03' => 'Date',
+    'time03' => 'Time',
 
     // 04-details.php
     'receivedon04' => 'Empfangen um:',
@@ -205,6 +208,8 @@ return array(
     'geoipfailed04' => '(GeoIP Lookup fehlgeschlagen)',
     'reversefailed04' => '(Reverse Lookup fehlgeschlagen)',
     'hostname04' => 'Hostname',
+    'yes04' => 'Y',
+    'no04' => 'N',
     
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',
@@ -241,6 +246,10 @@ return array(
     'add07' => 'Hinzufügen',
     'delete07' => 'Löschen',
     'wblists07' => 'Whitelist/Blacklist',
+    'errors07' => 'Errors:',
+    'error071' => 'You must select a list to create the entry.',
+    'error072' => 'You must enter a from address (user@domain, domain or IP).',
+    'noentries07' => 'No entries found.',
 
     // 08-quarantine.php
     'folder08' => 'Ordner',
@@ -385,7 +394,6 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
     'updatesadesc13' => 'SpamAssassin Regel-Beschreibungen aktualieren',
-    'updategeoip15' => 'GeoIP Datenbank aktualisieren',
     'message113' => 'Dieses Programm wird benutzt, um die aktuellen SpamAssassin Regeln, die auf der Nachrichten-Detail-Seite angezeigt werden, in der SQL-Datenbank zu aktualieren.',
     'message213' => 'Dieses Programm sollte generell nach einem SpamAssassin-Update ausgeführt werden. Es kann aber auch zu jeder anderen Zeit gestartet werden, da es lediglich aktualisierte Regeln ersetzt und neue Regeln hinzufügt. Dadurch werden Beschreibungen von veralteten oder entfernten Regeln erhalten.',
     'saruldesupdate13' => 'Aktualisierung der SpamAssassin Regel-Beschreibungen',
@@ -417,7 +425,7 @@ return array(
 
     // 15-geoip_update.php
     'input15' => 'Jetzt ausführen',
-    'updategeoip15' => 'GeoIP Database aktualisieren',
+    'updategeoip15' => 'GeoIP Datenbank aktualisieren',
     'message115' => 'Dieses Programm wird die GeoIP Datenbankdateien (werden an jedem ersten Dienstag eines Monats aktualisert) von ',
     'message215' => 'herunterladen, wodurch das Ursprungsland für jede IP-Adresse herausgefunden und auf der Detailseite der Nachrichten angezeigt.',
     'downfile15' => 'Laden Dateien herunter, bitte warten...',
@@ -706,7 +714,6 @@ return array(
      // 60-rpcserver.php
     'paratype160' => 'Parameter-Typ',
     'paratype260' => 'entspricht nicht dem erwarteten Typ.',
-    'paratype160' => 'entspricht nicht dem erwarteten Typ.',
     'notfile60' => 'ist keine Datei.',
     'permdenied60' => 'Zugriff verweigert.',
     'client160' => 'Client',
@@ -721,6 +728,6 @@ return array(
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
-    'cannot_read_conf' => "Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.",
+    'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
 
 );

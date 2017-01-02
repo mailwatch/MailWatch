@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,12 +30,12 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('sarulehits37'), 0, false, true);
@@ -52,7 +52,7 @@ $sql = "
 " . $filter->CreateSQL();
 
 $result = dbquery($sql);
-if (!mysql_num_rows($result) > 0) {
+if (!$result->num_rows > 0) {
     die(__('diemysql99') . "\n");
 }
 
@@ -60,7 +60,7 @@ if (!mysql_num_rows($result) > 0) {
 $sa_array = array();
 
 // Retrieve rows and insert into array
-while ($row = mysql_fetch_object($result)) {
+while ($row = $result->fetch_object()) {
     //##### TODEL/TODO #
     //##### TODEL/TODO # stdClass Object
     //##### TODEL/TODO # (
@@ -75,7 +75,7 @@ while ($row = mysql_fetch_object($result)) {
     $junk = array_shift($sa_rules);
     // Split the array, and get rid of the score and required values
     if (isset($sa_rules[0])) {
-        $sa_rules = explode(", ", $sa_rules[0]);
+        $sa_rules = explode(', ', $sa_rules[0]);
     } else {
         $sa_rules = array();
     }
@@ -105,7 +105,7 @@ while ($row = mysql_fetch_object($result)) {
             $sa_array[$rule]['not-spam'] = 0;
         }
 
-        if ($row->isspam <> 0) {
+        if ($row->isspam !== 0) {
             $sa_array[$rule]['spam']++;
         } else {
             $sa_array[$rule]['not-spam']++;
@@ -123,34 +123,34 @@ echo "<TR><TD ALIGN=\"CENTER\">";
 echo "<TABLE CLASS=\"boxtable\" ALIGN=\"CENTER\" BORDER=\"0\">\n";
 echo "
 <TR BGCOLOR=\"#F7CE4A\">
- <TH>" . __('rule37') . "</TH>
- <TH>" . __('desc37') . "</TH>
- <TH>" . __('score37') . "</TH>
- <TH>" . __('total37') . "</TH>
- <TH>" . __('ham37') . "</TH>
+ <TH>" . __('rule37') . '</TH>
+ <TH>' . __('desc37') . '</TH>
+ <TH>' . __('score37') . '</TH>
+ <TH>' . __('total37') . '</TH>
+ <TH>' . __('ham37') . '</TH>
  <TH>%</TH>
- <TH>" . __('spam37') . "</TH>
+ <TH>' . __('spam37') . "</TH>
  <TH>%</TH>
 </TR>\n";
 
-while ((list($key, $val) = each($sa_array))) {
+while (list($key, $val) = each($sa_array)) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
  <TD>" . return_sa_rule_desc(strtoupper($key)) . "</TD>
- <TD ALIGN=\"RIGHT\">" . sprintf("%0.2f", $val['score']) . "</TD>
+ <TD ALIGN=\"RIGHT\">" . sprintf('%0.2f', $val['score']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['total']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['not-spam']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . round(($val['not-spam'] / $val['total']) * 100, 1) . "</TD>
  <TD ALIGN=\"RIGHT\">" . number_format($val['spam']) . "</TD>
  <TD ALIGN=\"RIGHT\">" . round(($val['spam'] / $val['total']) * 100, 1) .
-        "</TD></TR>";
+        '</TD></TR>';
 }
 echo "</TABLE>\n";
 
-echo "
+echo '
   </TABLE>
-";
+';
 
 // Add footer
 html_end();

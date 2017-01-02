@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,7 +30,7 @@
  */
 
 /* languages/nl.php */
-/* v0.2.9 */
+/* v0.3.0 */
 
 return array(
     // 01-login.php
@@ -107,7 +107,6 @@ return array(
     'description03' => 'Beschrijving',
     'footer03' => 'MailWatch for MailScanner v',
     'mailwatchtitle03' => 'MailWatch for Mailscanner',
-    'php703' => 'MailWatch needs the (deprecated) MySQL extension to work: PHP7 has removed this extension and this software will not work on it.',
     'radiospam203' => 'S',
     'radioham03' => 'H',
     'radioforget03' => 'F',
@@ -145,8 +144,12 @@ return array(
     'diequarantine303' => 'Cannot open quarantine dir:',
     'diereadruleset03' => 'Cannot open MailScanner ruleset file',
     'hostfailed03' => '(Hostname lookup failed)',
+    'clientip03' => 'Client IP',
+    'host03' => 'Host',
+    'date03' => 'Date',
+    'time03' => 'Time',
 
-    // 04-details.php
+    // 04-detail.php
     'receivedon04' => 'Ontvangen op:',
     'receivedby04' => 'Ontvangen door:',
     'receivedfrom04' => 'Ontvangen van:',
@@ -205,6 +208,8 @@ return array(
     'geoipfailed04' => '(GeoIP lookup failed)',
     'reversefailed04' => '(Reverse Lookup Failed)',
     'hostname04' => 'Hostname',
+    'yes04' => 'Y',
+    'no04' => 'N',
 
     // 05-status.php
     'recentmsg05' => 'Recente Emails',
@@ -228,7 +233,7 @@ return array(
     'error06' => 'Error:',
     'errornfd06' => 'Error: file not found',
     'mymetype06' => 'MIME Type:',
-    
+
     // 07-lists.php
     'addwlbl07' => 'Voeg toe aan Vrijwaring/Blokkering',
     'from07' => 'Van',
@@ -241,6 +246,10 @@ return array(
     'add07' => 'Voeg toe',
     'delete07' => 'Verwijder',
     'wblists07' => 'Whitelist/Blacklist',
+    'errors07' => 'Errors:',
+    'error071' => 'You must select a list to create the entry.',
+    'error072' => 'You must enter a from address (user@domain, domain or IP).',
+    'noentries07' => 'No entries found.',
 
     // 08-quarantine.php
     'folder08' => 'Map',
@@ -307,7 +316,7 @@ return array(
     'hostname09' => 'MailScanner Hostname',
     'remove09' => 'Remove',
     'reports09' => 'Reports',
-    
+
     // 10-other.php
     'tools10' => 'Tools',
     'toolslinks10' => 'Tools and Links',
@@ -385,13 +394,12 @@ return array(
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
     'updatesadesc13' => 'Update SpamAssassin Rule Descriptions',
-    'updategeoip15' => 'Update GeoIP Database',
     'message113' => 'This utility is used to update the SQL database with up-to-date descriptions of the SpamAssassin rules which are displayed on the Message Detail screen.',
     'message213' => 'This utility should generally be run after a SpamAssassin update, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
     'saruldesupdate13' => 'SpamAssassin Rule Description Update',
     'rule13' => 'Rule',
     'description13' => 'Description',
-    
+
     // 14-reports.php
     'messlisting14' => 'Message Listing',
     'messop14' => 'Message Operations',
@@ -460,14 +468,14 @@ return array(
     'lastexpiry18' => 'Last Expiry:',
     'lastexpirycount18' => 'Last Expiry Reduction Count:',
     'tokens18' => 'tokens',
-    
+
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
 
     // 20-docs.php
     'doc20' => 'Documentation',
     'message20' => 'This page does require authentication, so you can put links to your site documentation here and allow your users to access it if you wish.',
-    
+
     // 21-do_message_ops.php
     'opresult21' => 'Operation Results',
 
@@ -479,6 +487,7 @@ return array(
 
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
+    'diemq24' => 'No queue specified',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'McAfee Status',
@@ -489,7 +498,7 @@ return array(
     // 27-msconfig.php
     'config27' => 'Configuration',
     'msconfig27' => 'MailScanner Configuration',
-    
+
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Cannot open pipe',
@@ -513,7 +522,7 @@ return array(
     'user33' => 'User',
     'ipaddress33' => 'IP Address',
     'action33' => 'Action',
-    
+
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
     'rule34' => 'Rule',
@@ -521,7 +530,7 @@ return array(
     'total34' => 'Total',
     'clean34' => 'Clean',
     'mcp34' => 'MCP',
-    
+
     // 35-rep_mcp_score_dist.php
     'mcpscoredist35' => 'MCP Score Distribution',
     'die35' => 'Error: Needs 2 or more rows of data to be retrieved from database',
@@ -529,7 +538,7 @@ return array(
     'nbmessages35' => 'No. of messages',
     'score35' => 'Score',
     'count35' => 'Count',
-    
+
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'MRTG Style Mail Report',
     'die36' => 'Error: Needs 2 or more rows of data to be retrieved from database',
@@ -542,7 +551,7 @@ return array(
     'total37' => 'Total',
     'ham37' => 'Ham',
     'spam37' => 'Spam',
-    
+
     // 38-rep_sa_score_dist.php
     'sascoredist38' => 'SpamAssassin Score Distribution',
     'scorerounded38' => 'Score (rounded)',
@@ -584,42 +593,42 @@ return array(
     'email42' => 'E-Mail Address',
     'count42' => 'Count',
     'size42' => 'Size',
-    
+
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
     'top10recipvol43' => 'Top 10 Recipients by Volume',
     'email43' => 'E-Mail Address',
     'count43' => 'Count',
     'size43' => 'Size',
-    
+
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Sender Domains by Quantity',
     'top10senderdomqt44' => 'Top 10 Sender Domains by Quantity',
     'domain44' => 'Domain',
     'count44' => 'Count',
     'size44' => 'Size',
-    
+
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Sender Domains by Volume',
-    'top10sendersqt46' => 'Top 10 Senders by Quantity',
-    'email46' => 'E-Mail Address',
-    'count46' => 'Count',
-    'size46' => 'Size',
-    
+    'top10senderdomvol45' => 'Top 10 Sender Domains by Volume',
+    'domain45' => 'Domain',
+    'count45' => 'Count',
+    'size45' => 'Size',
+
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
     'email46' => 'E-Mail Address',
     'count46' => 'Count',
     'size46' => 'Size',
-    
+
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
     'email47' => 'E-Mail Address',
     'count47' => 'Count',
     'size47' => 'Size',
-    
+
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',
@@ -639,8 +648,6 @@ return array(
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volume',
-    'message149' => 'File isn\'t readable. Please make sure that',
-    'message249' => 'is readable and writable by MailWatch',
     'total49' => 'Total<br>Mail',
     'clean49' => 'Clean',
     'lowespam49' => 'Low Spam',
@@ -652,14 +659,14 @@ return array(
     'resolve49' => 'Can\'t<br>Resolve',
     'rbl49' => 'RBL',
     'totals49' => 'Totals',
-    
+
     // 50-rep_viruses.php
     'virusreport50' => 'Virus Report',
     'virus50' => 'Virus',
     'scanner50' => 'Scanner',
     'firstseen50' => 'First Seen',
     'count50' => 'Count',
-    
+
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Cannot open pipe',
@@ -704,10 +711,9 @@ return array(
     'arview059' => 'View',
     'arrelease59' => 'Release',
 
-     // 60-rpcserver.php
+    // 60-rpcserver.php
     'paratype160' => 'Parameter type',
     'paratype260' => 'mismatch expected type.',
-    'paratype160' => 'mismatch expected type.',
     'notfile60' => 'is not a file.',
     'permdenied60' => 'permission denied.',
     'client160' => 'Client',
@@ -722,6 +728,6 @@ return array(
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Geen vertaling in het Nederlands',
-    'cannot_read_conf' => "Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.",
+    'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
 
 );

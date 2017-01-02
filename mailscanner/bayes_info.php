@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,12 +30,12 @@
  */
 
 // Require the functions page
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Start the session
 session_start();
 // Require the login function code
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // Start the header code and Title
 html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
@@ -49,12 +49,15 @@ echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadd
 echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>';
 
 // Open the spamassassin file
+if (!is_file(SA_DIR . 'sa-learn')) {
+    die('Cannot find ' . SA_DIR . 'sa-learn');
+}
 $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 
 while (!feof($fh)) {
     $line = rtrim(fgets($fh, 4096));
 
-    debug("line: " . $line . "\n");
+    debug('line: ' . $line . "\n");
 
     if (preg_match('/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+non-token data: (.+)/', $line, $regs)) {
         switch ($regs[5]) {

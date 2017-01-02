@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -49,39 +49,40 @@
  * Create the following table in the mailscanner database:
  * CREATE TABLE IF NOT EXISTS `autorelease` (
  * `id` bigint(20) NOT NULL AUTO_INCREMENT,
- * `msg_id` varchar(255) COLLATE utf8_general_ci NOT NULL,
- * `uid` varchar(255) COLLATE utf8_general_ci NOT NULL,
+ * `msg_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+ * `uid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
  * PRIMARY KEY (`id`)
- * ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=1 ;
+ * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1 ;
  *
  * Update cron.daily/quarantine_report.php with the modified file
  * Update cron.daily/quarantine_maint.php with the modified file
  *
  */
-require_once(__DIR__ . '/functions.php');
-if (isset($_GET['mid']) && isset($_GET['r'])) {
+require_once __DIR__ . '/functions.php';
+if (isset($_GET['mid'], $_GET['r'])) {
     dbconn();
     $mid = safe_value($_GET['mid']);
     $token = safe_value($_GET['r']);
     $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
     $result = dbquery($sql);
     if (!$result) {
-        dbg("Error fetching from database" . mysql_error());
+        dbg('Error fetching from database' . database::$link->error);
         echo __('dberror59');
     }
-    if (mysql_num_rows($result) == 0) {
-        echo "<p>" . __('msgnotfound159') . "</p>";
-        echo "<p>" . __('msgnotfound259') . htmlentities($mid) . " " . __('msgnotfound359') . "</p>";
+    if ($result->num_rows === 0) {
+        echo '<p>' . __('msgnotfound159') . '</p>';
+        echo '<p>' . __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359') . '</p>';
     } else {
-        $row = mysql_fetch_assoc($result);
-        if ($row['uid'] == $token) {
+        $row = $result->fetch_assoc();
+        if ($row['uid'] === $token) {
             $list = quarantine_list_items($mid);
             $result = '';
-            if (count($list) == 1) {
+            if (count($list) === 1) {
                 $to = $list[0]['to'];
                 $result = quarantine_release($list, array(0), $to);
             } else {
-                for ($i = 0; $i < count($list); $i++) {
+                $listCount = count($list);
+                for ($i = 0; $i < $listCount; $i++) {
                     if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
                         $result = quarantine_release($list, array($i), $list[$i]['to']);
                     }
@@ -89,13 +90,13 @@ if (isset($_GET['mid']) && isset($_GET['r'])) {
             }
 
             // Display success
-            echo "<p>" . __('msgreleased59') . "</p>";
+            echo '<p>' . __('msgreleased59') . '</p>';
             //cleanup
             $releaseID = $row['id'];
             $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
             $result = dbquery($query);
             if (!$result) {
-                dbg("ERROR cleaning up database... " . mysql_error());
+                dbg('ERROR cleaning up database... ' . database::$link->error);
             }
         } else {
             echo __('tokenmismatch59');

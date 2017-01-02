@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -50,19 +50,19 @@ Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
 */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-include(__DIR__ . '/msre_table_functions.php');
+require_once __DIR__ . '/functions.php';
+include __DIR__ . '/msre_table_functions.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 // Check to see if the user is an administrator
-if ($_SESSION['user_type'] != 'A') {
+if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrator send them back to the index page.
-    header("Location: index.php");
+    header('Location: index.php');
     audit_log('Non-admin user attempted to view MailScanner Rule Editor Page');
 } else {
-    html_start(__('rulesetedit29'), "0", false, false);
+    html_start(__('rulesetedit29'), '0', false, false);
 
     // ############
     // ### Main ###
@@ -70,16 +70,16 @@ if ($_SESSION['user_type'] != 'A') {
 
     // start a table
     echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
-    TRH(array("Choose a ruleset to edit:"));
+    TRH(array('Choose a ruleset to edit:'));
 
     $ruleset_file = array();
     // open directory and read its contents
     if (is_dir(MSRE_RULESET_DIR)) {
         if ($dh = opendir(MSRE_RULESET_DIR)) {
-            while (($file = readdir($dh))) {
+            while ($file = readdir($dh)) {
                 // if it's a ruleset (*.rules), add it to the array
                 if (preg_match("/.+\.rules$/", $file)) {
-                    array_push($ruleset_file, $file);
+                    $ruleset_file[] = $file;
                 }
             }
             closedir($dh);
@@ -95,7 +95,7 @@ if ($_SESSION['user_type'] != 'A') {
             TR(array("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>"));
         }
         // put a blank header line on the bottom... it just looks nicer that way to me
-        TRH(array(""));
+        TRH(array(''));
     }
     echo "</table><tr><td>\n";
     html_end();

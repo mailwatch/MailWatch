@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -34,7 +34,7 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-require(__DIR__ . '/functions.php');
+require __DIR__ . '/functions.php';
 
 // Set-up environment
 set_time_limit(0);
@@ -66,9 +66,10 @@ class syslog_parser
     );
 
     /**
+     * syslog_parser constructor.
      * @param string $line
      */
-    public function syslog_parser($line)
+    public function __construct($line)
     {
         // Parse the date, time, host, process pid and log entry 04CF7F970F
         if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
@@ -104,7 +105,7 @@ class postfix_parser
     public $entry;
     public $entries;
 
-    public function postfix_parser($line)
+    public function __construct($line)
     {
         $this->raw = $line;
         if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {
@@ -147,6 +148,7 @@ class postfix_parser
 }
 
 /**
+ * @param string $line
  * @return string
  */
 function get_ip($line)
@@ -159,6 +161,7 @@ function get_ip($line)
 }
 
 /**
+ * @param string $line
  * @return string
  */
 function get_email($line)
@@ -185,51 +188,51 @@ function doit($input)
         unset($parsed, $postfix, $_timestamp, $_host, $_type, $_msg_id, $_relay, $_dsn, $_status, $_delay);
 
         $parsed = new syslog_parser($line);
-        $_timestamp = mysql_real_escape_string($parsed->timestamp);
-        $_host = mysql_real_escape_string($parsed->host);
+        $_timestamp = safe_value($parsed->timestamp);
+        $_host = safe_value($parsed->host);
 
         // Postfix
-        if ($parsed->process == 'postfix/smtp' && class_exists('postfix_parser')) {
+        if ($parsed->process === 'postfix/smtp' && class_exists('postfix_parser')) {
             $postfix = new postfix_parser($parsed->entry);
-            if (DEBUG) {
+            if (true === DEBUG) {
                 print_r($postfix);
             }
-            $_msg_id = mysql_real_escape_string($postfix->id);
+            $_msg_id = safe_value($postfix->id);
 
             // Milter-ahead rejections
-            if ((preg_match('/Milter: /i', $postfix->raw)) && (preg_match(
+            if (preg_match('/Milter: /i', $postfix->raw) && preg_match(
                     '/(rejected recipient|user unknown)/i',
                     $postfix->entries['reject']
-                ))
+                )
             ) {
-                $_type = mysql_real_escape_string('unknown_user');
-                $_status = mysql_real_escape_string(get_email($postfix->entries['to']));
+                $_type = safe_value('unknown_user');
+                $_status = safe_value(get_email($postfix->entries['to']));
             }
 
             // Unknown users
             if (preg_match('/user unknown/i', $postfix->entry)) {
                 // Unknown users
-                $_type = mysql_real_escape_string('unknown_user');
-                $_status = mysql_real_escape_string($postfix->raw);
+                $_type = safe_value('unknown_user');
+                $_status = safe_value($postfix->raw);
             }
 
             // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
             // example
             if (preg_match('/NOQUEUE/i', $postfix->entry)) {
                 if (preg_match('/Client host rejected: cannot find your hostname/i', $postfix->entry)) {
-                    $_type = mysql_real_escape_string('unknown_hostname');
+                    $_type = safe_value('unknown_hostname');
                 } else {
-                    $_type = mysql_real_escape_string('NOQUEUE');
+                    $_type = safe_value('NOQUEUE');
                 }
-                $_status = mysql_real_escape_string($postfix->raw);
+                $_status = safe_value($postfix->raw);
             }
             // Relay lines
-            if (isset($postfix->entries['relay']) && isset($postfix->entries['status'])) {
-                $_type = mysql_real_escape_string('relay');
-                $_delay = mysql_real_escape_string($postfix->entries['delay']);
-                $_relay = mysql_real_escape_string(get_ip($postfix->entries['relay']));
-                $_dsn = mysql_real_escape_string($postfix->entries['dsn']);
-                $_status = mysql_real_escape_string($postfix->entries['status']);
+            if (isset($postfix->entries['relay'], $postfix->entries['status'])) {
+                $_type = safe_value('relay');
+                $_delay = safe_value($postfix->entries['delay']);
+                $_relay = safe_value(get_ip($postfix->entries['relay']));
+                $_dsn = safe_value($postfix->entries['dsn']);
+                $_status = safe_value($postfix->entries['status']);
             }
         }
         if (isset($_type)) {
@@ -244,7 +247,7 @@ function doit($input)
     pclose($fp);
 }
 
-if ($_SERVER['argv'][1] == '--refresh') {
+if ($_SERVER['argv'][1] === '--refresh') {
     doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first

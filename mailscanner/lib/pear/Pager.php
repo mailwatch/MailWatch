@@ -4,7 +4,7 @@
 /**
  * Contains the Pager class
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE: Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -138,20 +138,12 @@ class Pager
      *
      * @access public
      */
-    function Pager($options = array())
+    public function __construct($options = array())
     {
-        //this check evaluates to true on 5.0.0RC-dev,
-        //so i'm using another one, for now...
-        //if (version_compare(phpversion(), '5.0.0') == -1) {
-        if (get_class($this) == 'pager') { //php4 lowers class names
-            // assign factoried method to this for PHP 4
-            eval('$this = Pager::factory($options);');
-        } else { //php5 is case sensitive
-            $msg = 'Pager constructor is deprecated.'
-                  .' You must use the "Pager::factory($params)" method'
-                  .' instead of "new Pager($params)"';
-            trigger_error($msg, E_USER_ERROR);
-        }
+        $msg = 'Pager constructor is deprecated.'
+              .' You must use the "Pager::factory($params)" method'
+              .' instead of "new Pager($params)"';
+        trigger_error($msg, E_USER_ERROR);
     }
 
     // }}}
@@ -166,7 +158,7 @@ class Pager
      * @static
      * @access public
      */
-    function &factory($options = array())
+    public static function factory($options = array())
     {
         $mode = (isset($options['mode']) ? ucfirst($options['mode']) : 'Jumping');
         $classname = 'Pager_' . $mode;
@@ -175,20 +167,17 @@ class Pager
         // Attempt to include a custom version of the named class, but don't treat
         // a failure as fatal.  The caller may have already included their own
         // version of the named class.
-        if (!class_exists($classname)) {
+        if (!class_exists($classname, false)) {
             include_once $classfile;
         }
 
         // If the class exists, return a new instance of it.
-        if (class_exists($classname)) {
-            $pager = new $classname($options);
-            return $pager;
+        if (class_exists($classname, false)) {
+            return new $classname($options);
         }
 
-        $null = null;
-        return $null;
+        return null;
     }
 
     // }}}
 }
-?>

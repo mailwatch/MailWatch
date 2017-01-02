@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,12 +30,12 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('totalmaildate49'), 0, false, true);
@@ -44,7 +44,7 @@ $filter = html_start(__('totalmaildate49'), 0, false, true);
 $date_format = "'" . DATE_FORMAT . "'";
 
 // File name
-$filename = CACHE_DIR . "/total_mail_by_date.png." . time();
+$filename = CACHE_DIR . '/total_mail_by_date.png.' . time();
 
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
@@ -114,12 +114,12 @@ $sql = "
   maillog
  WHERE
   1=1
-" . $filter->CreateSQL() . "
+" . $filter->CreateSQL() . '
  GROUP BY
   xaxis
  ORDER BY
   date
-";
+';
 
 // Fetch MTA stats
 $sql1 = "
@@ -144,14 +144,14 @@ ORDER BY
 if (is_writable(CACHE_DIR)) {
 
     // Includes for JPgraph
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_log.php");
-    include_once("./lib/jpgraph/src/jpgraph_bar.php");
-    include_once("./lib/jpgraph/src/jpgraph_line.php");
+    include_once './lib/jpgraph/src/jpgraph.php';
+    include_once './lib/jpgraph/src/jpgraph_log.php';
+    include_once './lib/jpgraph/src/jpgraph_bar.php';
+    include_once './lib/jpgraph/src/jpgraph_line.php';
 
     // Must be one or more row
     $result = dbquery($sql);
-    if (!mysql_num_rows($result) > 0) {
+    if (!$result->num_rows > 0) {
         die(__('diemysql99') . "\n");
     }
 
@@ -159,7 +159,7 @@ if (is_writable(CACHE_DIR)) {
     $result1 = dbquery($sql1);
 
     // pulling the data in variables
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data_labels[] = $row->xaxis;
         $data_total_mail[] = $row->total_mail;
         $data_total_virii[] = $row->total_virus;
@@ -176,16 +176,16 @@ if (is_writable(CACHE_DIR)) {
     $data_total_unknown_users = array();
     $data_total_rbl = array();
     $data_total_unresolveable = array();
-    while ($row1 = mysql_fetch_object($result1)) {
-        if (is_numeric($key = array_search($row1->xaxis, $data_labels))) {
+    while ($row1 = $result1->fetch_object()) {
+        if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
             switch (true) {
-                case($row1->type == 'unknown_user'):
+                case($row1->type === 'unknown_user'):
                     $data_total_unknown_users[$key] = $row1->count;
                     break;
-                case($row1->type == 'rbl'):
+                case($row1->type === 'rbl'):
                     $data_total_rbl[$key] = $row1->count;
                     break;
-                case($row1->type == 'unresolveable'):
+                case($row1->type === 'unresolveable'):
                     $data_total_unresolveable[$key] = $row1->count;
                     break;
             }
@@ -198,9 +198,9 @@ if (is_writable(CACHE_DIR)) {
     // Reduce the number of labels on the graph to prevent them being sqashed.
     if (count($graph_labels) > 20) {
         $b = substr(count($graph_labels), 0, 1);
-        for ($a = 0; $a < count($graph_labels); $a++) {
+        for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
             if ($a % $b) {
-                $graph_labels[$a] = "";
+                $graph_labels[$a] = '';
             }
         }
     }
@@ -209,11 +209,11 @@ if (is_writable(CACHE_DIR)) {
 
     $graph = new Graph(850, 350, 0, false);
     $graph->SetShadow();
-    $graph->SetScale("textlin");
-    $graph->SetY2Scale("lin");
+    $graph->SetScale('textlin');
+    $graph->SetY2Scale('lin');
     $graph->img->SetMargin(60, 60, 30, 70);
     $graph->title->Set(__('totalmailprocdate49'));
-    $graph->y2axis->title->Set(__('volume49') . " (" . $size_info['longdesc'] . ")");
+    $graph->y2axis->title->Set(__('volume49') . ' (' . $size_info['longdesc'] . ')');
     $graph->y2axis->title->SetMargin(0);
     $graph->y2axis->SetTitleMargin(40);
     $graph->yaxis->title->Set(__('nomessages49'));
@@ -273,7 +273,7 @@ echo " <TR>\n";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
 echo " </TR>\n";
@@ -308,8 +308,7 @@ if ($is_MCP_enabled === true) {
     echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 }
 echo "</tr>\n";
-
-for ($i = 0; $i < count($data_total_mail); $i++) {
+for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; $i++) {
     echo "<TR BGCOLOR=\"#EBEBEB\">\n";
     echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
     echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_mail[$i]) . "</TD>\n";
@@ -327,7 +326,7 @@ for ($i = 0; $i < count($data_total_mail); $i++) {
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i])) . "</TD>\n";
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . "</TD>\n";
     }
-    echo " <TD ALIGN=\"RIGHT\">" . format_mail_size($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
+    echo " <TD ALIGN=\"RIGHT\">" . formatSize($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
     echo " <TD bgcolor='#ffffff'><BR></TD>\n";
     echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . "</TD>\n";
     echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . "</TD>\n";
@@ -357,7 +356,7 @@ if ($is_MCP_enabled === true) {
     echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp)) . "</TH>\n";
     echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }
-echo " <TH ALIGN=\"RIGHT\">" . format_mail_size(mailwatch_array_sum($data_total_size) * $size_info['formula']) . "</TH>\n";
+echo " <TH ALIGN=\"RIGHT\">" . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . "</TH>\n";
 echo " <TD bgcolor='#ffffff'><BR></TD>\n";
 echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unknown_users)) . "</TH>\n";
 echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unresolveable)) . "</TH>\n";
