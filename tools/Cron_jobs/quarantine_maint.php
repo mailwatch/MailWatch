@@ -37,7 +37,7 @@ $required_constant = array('TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP');
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
-        echo __('message62') . "\n";
+        echo sprintf(__('message62'), $constant) . "\n";
         $required_constant_missing_count++;
     }
 }

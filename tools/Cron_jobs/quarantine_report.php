@@ -51,7 +51,7 @@ $required_constant = array(
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
-        echo __('message61') . "\n";
+        echo sprintf(__('message61'), $constant) . "\n";
         $required_constant_missing_count++;
     }
 }
