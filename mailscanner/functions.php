@@ -2651,6 +2651,10 @@ function ldap_authenticate($user, $password)
 
                     return $email;
                 } else {
+                    if (ldap_errno($ds) === 49) {
+                        //LDAP_INVALID_CREDENTIALS
+                        return null;
+                    }
                     die(ldap_print_error($ds));
                 }
             }
