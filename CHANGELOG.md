@@ -11,6 +11,7 @@
  - Filter LDAP username and password before passing them to LDAP server
  - Improve LDAP compatibility with server other than Active Directory
  - Remove password change functionality for LDAP Domain Admin and User
+ - Permit LDAP login with password containing special characters
  - Code cleanup
  - Updated translations
 
