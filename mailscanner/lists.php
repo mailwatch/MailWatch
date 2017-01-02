@@ -250,7 +250,7 @@ function build_table($sql, $list)
         }
         echo '</table>' . "\n";
     } else {
-        echo "No entries found.\n";
+        echo __('noentries07') . "\n";
     }
 }
 

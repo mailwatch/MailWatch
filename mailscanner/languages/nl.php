@@ -30,7 +30,7 @@
  */
 
 /* languages/nl.php */
-/* v0.3.0 */
+/* v0.3.1 */
 
 return array(
     // 01-login.php
@@ -718,6 +718,23 @@ return array(
     'permdenied60' => 'permission denied.',
     'client160' => 'Client',
     'client260' => 'is not authorized to connect.',
+
+    // 61-quarantine_report.php
+    'view61' => 'View',
+    'received61' => 'Received',
+    'to61' => 'To',
+    'from61' => 'From',
+    'subject61' => 'Subject',
+    'reason61' => 'Reason',
+    'action61' => 'Action',
+    'title61' => 'Message Quarantine Report',
+    'message61' => 'The variable $constant is empty, please set a value in conf.php.',
+    'text611' => 'Quarantine Report for %s',
+    'text612' => 'In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.',
+
+    // 62-quarantine_maint.php
+    'message62' => 'The variable $constant is empty, please set a value in conf.php.',
+    'errors07' => 'Error:',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

@@ -51,7 +51,7 @@ $required_constant = array(
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
-        echo "The variable $constant is empty, please set a value in conf.php.\n";
+        echo __('message61') . "\n";
         $required_constant_missing_count++;
     }
 }
@@ -74,7 +74,7 @@ if ($required_constant_missing_count === 0) {
     $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
- <title>Message Quarantine Report</title>
+ <title>' . __('title61') . '</title>
  <style type="text/css">
  <!--
   body, td, tr {
@@ -91,8 +91,8 @@ if ($required_constant_missing_count === 0) {
  <tr>
   <td><img src="mailwatch-logo.png"/></td>
   <td align="center" valign="middle">
-   <h2>Quarantine Report for %s</h2>
-   In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
+   <h2>' . __('text611') . '</h2>
+   ' . __('text612') . '
   </td>
  </tr>
  <tr>
@@ -104,12 +104,12 @@ if ($required_constant_missing_count === 0) {
 
     $html_table = '<table width="100%%" border="0">
  <tr>
-  <td style="background-color: #F7CE4A"><b>Received</b></td>
-  <td style="background-color: #F7CE4A"><b>To</b></td>
-  <td style="background-color: #F7CE4A"><b>From</b></td>
-  <td style="background-color: #F7CE4A"><b>Subject</b></td>
-  <td style="background-color: #F7CE4A"><b>Reason</b></td>
-  <td style="background-color: #F7CE4A"><b>Action</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('received61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('to61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('from61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('subject61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('reason61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('action61') . '</b></td>
  </tr>
 %s
 </table>';
@@ -434,7 +434,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             }
             if ($auto_release) {
                 // add auto release link if enabled
-                $links .= '  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">'.__('arrelease01').'</a>';
+                $links .= '  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('view61') . '</a>';
             }
         }
 
