@@ -2555,8 +2555,8 @@ function address_filter_sql($addresses, $type)
 }
 
 /**
- * @param $user
- * @param $password
+ * @param string $user
+ * @param string $password
  * @return null|string
  */
 function ldap_authenticate($user, $password)
@@ -2564,28 +2564,70 @@ function ldap_authenticate($user, $password)
     $user = strtolower($user);
     if ($user !== '' && $password !== '') {
         $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(__('ldpaauth103') . ' ' . LDAP_HOST);
+
+        $ldap_protocol_version = 3;
+        if (defined('LDAP_PROTOCOL_VERSION')) {
+            $ldap_protocol_version = LDAP_PROTOCOL_VERSION;
+        }
         // Check if Microsoft Active Directory compatibility is enabled
         if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
             ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-            ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+            $ldap_protocol_version = 3;
         }
-        ldap_bind($ds, LDAP_USER, LDAP_PASS);
+        ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, $ldap_protocol_version);
+
+        $bindResult = @ldap_bind($ds, LDAP_USER, LDAP_PASS);
+        if (false === $bindResult) {
+            die(ldap_print_error($ds));
+        }
+
+        //search for $user in LDAP directory
         if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
+            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
         } elseif (strpos($user, '@')) {
-            $r = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
+            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
         } else {
-            $r = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
+            // Windows LDAP (with legacy NT support)
+            $ldap_search_results = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
         }
-        if ($r) {
-            $result = ldap_get_entries($ds, $r) or die(__('ldpaauth303'));
-            if ($result[0]) {
+
+        if (false === $ldap_search_results) {
+            @trigger_error('LDAP: The server returned no result-set for user "' . $user . '"');
+            return null;
+        }
+        if (1 > ldap_count_entries($ds, $ldap_search_results)) {
+            //
+            @trigger_error('LDAP: The returned result set contains no data for user "' . $user . '"');
+            return null;
+        }
+        if (ldap_count_entries($ds, $ldap_search_results) > 1) {
+            @trigger_error('LDAP: The returned result-set contains more than one person. So we can not be sure that the user "' . $user . '" is unique');
+            return null;
+        }
+
+        if ($ldap_search_results) {
+            $result = ldap_get_entries($ds, $ldap_search_results) or die(__('ldpaauth303'));
+            if (isset($result[0])) {
                 if (in_array('group', array_values($result[0]['objectclass']), true)) {
+                    // do not login as group
                     return null;
                 }
 
-                $user = $result[0]['userprincipalname']['0'];
-                if (ldap_bind($ds, $user, "$password") && isset($result[0][LDAP_EMAIL_FIELD])) {
+                $user = '';
+                if (isset($result[0]['userprincipalname'][0])) {
+                    $user = $result[0]['userprincipalname'][0];
+                } else {
+                    // build DN for user, when LDAP server is not an AD
+                    $user = 'cn=' . $result[0]['cn'][0] . ',' . LDAP_DN;
+                }
+
+                if (!isset($result[0][LDAP_EMAIL_FIELD])) {
+                    @trigger_error('no "' . LDAP_EMAIL_FIELD . '" in LDAP results');
+                    return null;
+                }
+
+                $bindResult = @ldap_bind($ds, $user, $password);
+                if (false !== $bindResult) {
                     foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
                         if (0 === strpos($email, 'SMTP')) {
                             $email = strtolower(substr($email, 5));
@@ -2605,12 +2647,27 @@ function ldap_authenticate($user, $password)
                     }
 
                     return $email;
+                } else {
+                    die (ldap_print_error($ds));
                 }
             }
         }
     }
 
     return null;
+}
+
+/**
+ * @param Resource $ds
+ * @return string
+ */
+function ldap_print_error($ds) {
+    return sprintf(
+        'Could not bind to server %s. Returned Error was: [%s] %s',
+        LDAP_HOST,
+        ldap_errno($ds),
+        ldap_error($ds)
+    );
 }
 
 if (!function_exists('ldap_escape')) {
