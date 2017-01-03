@@ -138,7 +138,6 @@ define('SHOW_SFVERSION', true);
 define('SHOW_DOC', false);
 
 // Show supplemental Postfix info in report
-// Activate for Posfix MTA
 define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 
 /* Quarantine settings */
