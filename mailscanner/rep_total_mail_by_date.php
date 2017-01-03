@@ -214,7 +214,7 @@ if (is_writable(CACHE_DIR)) {
     $graph->img->SetMargin(60, 60, 30, 70);
     $graph->title->Set(__('totalmailprocdate49'));
     $graph->y2axis->title->Set(__('volume49') . ' (' . $size_info['longdesc'] . ')');
-    $graph->y2axis->title->SetMargin(0);
+    $graph->y2axis->title->SetMargin(10);
     $graph->y2axis->SetTitleMargin(40);
     $graph->yaxis->title->Set(__('nomessages49'));
     $graph->yaxis->title->SetMargin(20);
@@ -293,9 +293,11 @@ if ($is_MCP_enabled === true) {
 }
 echo "  <TH rowspan='2'>" . __('volume49') . "</TH>\n";
 echo "  <TH bgcolor='#ffffff' rowspan='2'>&nbsp;</TH>\n";
-echo "  <TH rowspan='2'>" . __('unknoweusers49') . "</TH>\n";
-echo "  <TH rowspan='2'>" . __('resolve49') . "</TH>\n";
-echo "  <TH rowspan='2'>" . __('rbl49') . "</TH>\n";
+if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo "  <TH rowspan='2'>" . __('unknoweusers49') . "</TH>\n";
+    echo "  <TH rowspan='2'>" . __('resolve49') . "</TH>\n";
+    echo "  <TH rowspan='2'>" . __('rbl49') . "</TH>\n";
+}
 echo " </TR>\n";
 
 echo "<tr BGCOLOR='#F7CE4A'>\n";
@@ -328,9 +330,11 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
     }
     echo " <TD ALIGN=\"RIGHT\">" . formatSize($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
     echo " <TD bgcolor='#ffffff'><BR></TD>\n";
-    echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . "</TD>\n";
-    echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . "</TD>\n";
-    echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . "</TD>\n";
+    if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+        echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . "</TD>\n";
+        echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . "</TD>\n";
+        echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . "</TD>\n";
+    }
     echo "</TR>\n";
 }
 
@@ -358,9 +362,11 @@ if ($is_MCP_enabled === true) {
 }
 echo " <TH ALIGN=\"RIGHT\">" . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . "</TH>\n";
 echo " <TD bgcolor='#ffffff'><BR></TD>\n";
-echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unknown_users)) . "</TH>\n";
-echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unresolveable)) . "</TH>\n";
-echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_rbl)) . "</TH>\n";
+if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unknown_users)) . "</TH>\n";
+    echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unresolveable)) . "</TH>\n";
+    echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_rbl)) . "</TH>\n";
+}
 echo "</TR>\n";
 echo "</TABLE>\n";
 echo "</TABLE>\n";

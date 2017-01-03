@@ -137,6 +137,10 @@ define('SHOW_SFVERSION', true);
 // Show Documentation tab
 define('SHOW_DOC', false);
 
+// Show supplemental Postfix info in report
+// Activate for Posfix MTA
+define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
+
 /* Quarantine settings */
 
 // The quarantine flag is only available on MailScanner >=4.43
