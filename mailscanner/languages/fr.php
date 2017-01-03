@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.0 */
+/* v0.3.1 */
 
 return array(
     // 01-login.php
@@ -698,7 +698,7 @@ return array(
     'notfound58' => 'non trouvé',
     'error58' => 'Erreur :',
     'errornfd58' => 'Erreur : fichier non trouvé',
-    'part58' => 'Partie',
+    'part58' => 'Expédié',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
@@ -718,6 +718,24 @@ return array(
     'permdenied60' => 'permission refusée.',
     'client160' => 'Le client',
     'client260' => 'n\'est pas autorisé à ce connecter.',
+
+    // 61-quarantine_report.php
+    'view61' => 'Visualiser',
+    'received61' => 'Reçu',
+    'to61' => 'Á',
+    'from61' => 'De',
+    'subject61' => 'Sujet',
+    'reason61' => 'Raison',
+    'action61' => 'Action',
+    'title61' => 'Rapport de message en Quarantaine',
+    'message61' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
+    'text611' => 'Rapport de Quarantaine pour %s',
+    'text612' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine et dont vous retrouverez la liste ci-dessous. Les messages en Quarantaine sont automatiquement effacés %s jours après la date à laquelle ils ont été reçus.',
+    'release61' => 'Libérer',
+
+    // 62-quarantine_maint.php
+    'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
+    'errors07' => 'Erreur :',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
