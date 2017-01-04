@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,10 +29,10 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 html_start(__('wblists07'), 0, false, false);
 
@@ -101,13 +101,15 @@ switch ($_SESSION['user_type']) {
         $result1 = dbquery($sql1);
 
         if (!$result1) {
-            $message = 'Invalid query: ' . mysql_error() . "\n";
+            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
             $message .= 'Whole query: ' . $sql1;
             die($message);
         }
-        while ($row = mysql_fetch_array($result1)) {
+        $filter = array();
+        while ($row = $result1->fetch_row()) {
             $filter[] = $row['filter'];
         }
+        $user_filter = array();
         foreach ($filter as $user_filter_check) {
             if (preg_match("/^[^@]{1,64}@[^@]{1,255}$/", $user_filter_check)) {
                 $user_filter[] = $user_filter_check;
@@ -116,7 +118,7 @@ switch ($_SESSION['user_type']) {
         $user_filter[] = $myusername;
         foreach ($user_filter as $tempvar) {
             if (strpos($tempvar, '@')) {
-                $ar = explode("@", $tempvar);
+                $ar = explode('@', $tempvar);
                 $username = $ar[0];
                 $domainname = $ar[1];
                 $to_user_filter[] = $username;
@@ -131,15 +133,15 @@ switch ($_SESSION['user_type']) {
         $result1 = dbquery($sql1);
 
         if (!$result1) {
-            $message = 'Invalid query: ' . mysql_error() . "\n";
+            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
             $message .= 'Whole query: ' . $sql1;
             die($message);
         }
-        while ($row = mysql_fetch_array($result1)) {
+        while ($row = $result1->fetch_row()) {
             $to_domain_filter[] = $row['filter'];
         }
         if (strpos($_SESSION['myusername'], '@')) {
-            $ar = explode("@", $_SESSION['myusername']);
+            $ar = explode('@', $_SESSION['myusername']);
             $domainname = $ar[1];
             $to_domain_filter[] = $domainname;
         }
@@ -162,13 +164,13 @@ switch (true) {
 }
 
 // Submitted
-if ($url_submit == 'add') {
+if ($url_submit === 'add') {
     // Check input is valid
     if (empty($url_list)) {
-        $errors[] = "You must select a list to create the entry.";
+        $errors[] = __('error071');
     }
     if (empty($from)) {
-        $errors[] = "You must enter a from address (user@domain, domain or IP).";
+        $errors[] = __('error072');
     }
 
     $to_domain = strtolower($url_domain);
@@ -182,19 +184,19 @@ if ($url_submit == 'add') {
                 $list = 'blacklist';
                 break;
         }
-        $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES';
-        $sql .= '(\'' . mysql_real_escape_string($to_address);
-        $sql .= '\',\'' . mysql_real_escape_string($to_domain);
-        $sql .= '\',\'' . mysql_real_escape_string($from) . '\')';
+        $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
+            . "('" . safe_value($to_address) . "',"
+            . "'" . safe_value($to_domain) . "',"
+            . "'" . safe_value($from) . "')";
         @dbquery($sql);
-        audit_log("Added " . $from . " to " . $list . " for " . $to_address);
+        audit_log('Added ' . $from . ' to ' . $list . ' for ' . $to_address);
         //unset($from);
         //unset($url_list);
     }
 }
 
 // Delete
-if ($url_submit == 'delete') {
+if ($url_submit === 'delete') {
     $id = $url_id;
     switch ($url_list) {
         case 'w':
@@ -220,7 +222,7 @@ if ($url_submit == 'delete') {
             break;
     }
 
-    $id = mysql_real_escape_string($url_id);
+    $id = safe_value($url_id);
     dbquery($sql);
 }
 
@@ -229,8 +231,7 @@ function build_table($sql, $list)
     global $bg_colors;
 
     $sth = dbquery($sql);
-    $rows = mysql_num_rows($sth);
-    if ($rows > 0) {
+    if ($sth->num_rows > 0) {
         echo '<table class="blackwhitelist">' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th>' . __('from07') . '</th>' . "\n";
@@ -238,7 +239,7 @@ function build_table($sql, $list)
         echo '  <th>' . __('action07') . '</th>' . "\n";
         echo ' </tr>' . "\n";
         $i = 1;
-        while ($row = mysql_fetch_row($sth)) {
+        while ($row = $sth->fetch_row()) {
             $i = 1 - $i;
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
@@ -273,7 +274,7 @@ switch ($_SESSION['user_type']) {
     case 'U':
         echo '<td> <select name="to">';
         foreach ($to_user_filter as $to_user_selection) {
-            if ($touser == $to_user_selection) {
+            if ($touser === $to_user_selection) {
                 echo '<option selected>' . $to_user_selection . '</option>';
             } else {
                 echo '<option>' . $to_user_selection . '</option>';
@@ -281,7 +282,7 @@ switch ($_SESSION['user_type']) {
         }
         echo '</select>@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
-            if ($to_domain == $to_domain_selection) {
+            if ($to_domain === $to_domain_selection) {
                 echo '<option selected>' . $to_domain_selection . '</option>';
             } else {
                 echo '<option>' . $to_domain_selection . '</option>';
@@ -292,7 +293,7 @@ switch ($_SESSION['user_type']) {
     case 'D':
         echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
-            if ($to_domain == $to_domain_selection) {
+            if ($to_domain === $to_domain_selection) {
                 echo '<option selected>' . $to_domain_selection . '</option>';
             } else {
                 echo '<option>' . $to_domain_selection . '</option>';
@@ -328,8 +329,8 @@ echo '  </td>
  </tr>';
 if (isset($errors)) {
     echo '<tr>
-  <td class="heading">Errors:</td>
-  <td>' . implode("<br>", $errors) . '</td>
+  <td class="heading">' . __('errors07') . '</td>
+  <td>' . implode('<br>', $errors) . '</td>
  </tr>';
 }
 echo '</table>
@@ -345,14 +346,14 @@ echo '</table>
     <!-- Whitelist -->';
 
 build_table(
-    "SELECT id, from_address, to_address FROM whitelist WHERE " . $_SESSION['global_list'] . " ORDER BY from_address",
+    'SELECT id, from_address, to_address FROM whitelist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
     'w'
 );
 echo '</td>
  <td  class="blackwhitelist">
   <!-- Blacklist -->';
 build_table(
-    "SELECT id, from_address, to_address FROM blacklist WHERE " . $_SESSION['global_list'] . " ORDER BY from_address",
+    'SELECT id, from_address, to_address FROM blacklist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
     'b'
 );
 echo '</td>

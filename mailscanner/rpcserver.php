@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,8 +29,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-ini_set("memory_limit", MEMORY_LIMIT);
+require_once __DIR__ . '/functions.php';
+ini_set('memory_limit', MEMORY_LIMIT);
 
 function rpc_get_quarantine($msg)
 {
@@ -41,50 +41,48 @@ function rpc_get_quarantine($msg)
         $quarantinedir = get_conf_var('QuarantineDir');
         $item = array();
         $output = array();
-        switch ($input) {
-            case '/':
-                // Return top-level directory
-                $d = @opendir($quarantinedir);
-                while (false !== ($f = readdir($d))) {
-                    if ($f !== "." && $f !== "..") {
-                        $item[] = $f;
+        if ($input === '/') {
+
+            // Return top-level directory
+            $d = @opendir($quarantinedir);
+            while (false !== ($f = readdir($d))) {
+                if ($f !== '.' && $f !== '..') {
+                    $item[] = $f;
+                }
+            }
+            if (count($item) > 0) {
+                // Sort in reverse chronological order
+                arsort($item);
+            }
+            closedir($d);
+            foreach ($item as $items) {
+                $output[] = new xmlrpcval($items);
+            }
+        } else {
+            switch (true) {
+                case(is_dir($quarantinedir . $input)):
+                    $d = @opendir($quarantinedir . $input);
+                    while (false !== ($f = readdir($d))) {
+                        if ($f !== '.' && $f !== '..') {
+                            $item[] = $f;
+                        }
                     }
-                }
-                if (count($item) > 0) {
-                    // Sort in reverse chronological order
-                    arsort($item);
-                }
-                closedir($d);
-                foreach ($item as $items) {
-                    $output[] = new xmlrpcval($items);
-                }
-                break;
-            default:
-                switch (true) {
-                    case(is_dir($quarantinedir . $input)):
-                        $d = @opendir($quarantinedir . $input);
-                        while (false !== ($f = readdir($d))) {
-                            if ($f !== "." && $f !== "..") {
-                                $item[] = $f;
-                            }
-                        }
-                        if (count($item) > 0) {
-                            asort($item);
-                        }
-                        closedir($d);
-                        foreach ($item as $items) {
-                            $output[] = new xmlrpcval($items);
-                        }
-                        break;
-                    case(is_file($quarantinedir . $input)):
-                        return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir$input is a file.");
-                        break;
-                }
-                break;
+                    if (count($item) > 0) {
+                        asort($item);
+                    }
+                    closedir($d);
+                    foreach ($item as $items) {
+                        $output[] = new xmlrpcval($items);
+                    }
+                    break;
+                case(is_file($quarantinedir . $input)):
+                    return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir$input is a file.");
+                    break;
+            }
         }
         return new xmlrpcresp(new xmlrpcval($output, 'array'));
     } else {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($input) . " " . __('paratype260'));
+        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
     }
 }
 
@@ -94,8 +92,8 @@ function rpc_return_quarantined_file($msg)
     dbconn();
     $input = php_xmlrpc_decode(array_shift($msg->params));
     $input = preg_replace('[\.\/|\.\.\/]', '', $input);
-    $date = @mysql_result(
-        dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . mysql_real_escape_string($input) . "'"),
+    $date = @database::mysqli_result(
+        dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . safe_value($input) . "'"),
         0
     );
     $qdir = get_conf_var('QuarantineDir');
@@ -118,11 +116,11 @@ function rpc_return_quarantined_file($msg)
     $quarantinedir = get_conf_var('QuarantineDir');
     switch (true) {
         case(!is_string($file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($file) . " " . __('paratyper260'));
+            return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($file) . ' ' . __('paratyper260'));
         case(!is_file($quarantinedir . '/' . $file)):
             return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$" . __('notfile60'));
         case(!is_readable($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file" . __('colon99') . " " . __('permdenied60'));
+            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file" . __('colon99') . ' ' . __('permdenied60'));
         default:
             $output = base64_encode(file_get_contents($quarantinedir . '/' . $file));
             break;
@@ -135,7 +133,7 @@ function rpc_quarantine_list_items($msg)
     global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (!is_string($input)) {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($input) . " " . __('paratyper260'));
+        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratyper260'));
     }
     $return = quarantine_list_items($input);
     $output = array();
@@ -189,25 +187,25 @@ function rpc_get_conf_var($msg)
     if (is_string($input)) {
         return new xmlrpcresp(new xmlrpcval(get_conf_var($input), 'string'));
     } else {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . " " . gettype($input) . " " . __('paratype260'));
+        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
     }
 }
 
 function rpc_dump_mailscanner_conf()
 {
-    $fh = fopen(MS_CONFIG_DIR . 'MailScanner.conf', 'r');
+    $fh = fopen(MS_CONFIG_DIR . 'MailScanner.conf', 'rb');
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, 4096));
-        if (preg_match("/^([^#].+) = ([^#].*)/", $line, $regs)) {
+        if (preg_match('/^([^#].+) = ([^#].*)/', $line, $regs)) {
             # Strip trailing comments
-            $regs[2] = preg_replace("/#.*$/", "", $regs[2]);
+            $regs[2] = preg_replace("/#.*$/", '', $regs[2]);
             # store %var% variables
-            if (preg_match("/%.+%/", $regs[1])) {
+            if (preg_match('/%.+%/', $regs[1])) {
                 $var[$regs[1]] = $regs[2];
             }
             # expand %var% variables
-            if (preg_match("/(%.+%)/", $regs[2], $match)) {
-                $regs[2] = preg_replace("/%.+%/", $var[$match[1]], $regs[2]);
+            if (preg_match('/(%.+%)/', $regs[2], $match)) {
+                $regs[2] = preg_replace('/%.+%/', $var[$match[1]], $regs[2]);
             }
             $output[$regs[1]] = new xmlrpcval($regs[2]);
         }

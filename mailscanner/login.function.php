@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,16 +30,16 @@
  */
 
 if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
-    include(__DIR__ . '/checklogin.php');
+    include __DIR__ . '/checklogin.php';
 } elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername']) && isset($_GET['httpbasic'])) {
     header('WWW-Authenticate: Basic realm="MailWatch for MailScanner"');
     header('HTTP/1.0 401 Unauthorized');
-    header("Location: login.php?error=baduser");
+    header('Location: login.php?error=baduser');
     exit;
 } elseif (!isset($_SESSION['myusername'])) {
     if (isset($_SERVER['REQUEST_URI'])) {
         $_SESSION['REQUEST_URI'] = sanitizeInput($_SERVER['REQUEST_URI']);
     }
-    header("Location: login.php");
+    header('Location: login.php');
     exit;
 }

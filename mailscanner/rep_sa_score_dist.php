@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,20 +30,20 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('sascoredist38'), 0, false, true);
 
 // File name
-$filename = CACHE_DIR . "/sa_score_dist.png." . time();
+$filename = CACHE_DIR . '/sa_score_dist.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
   ROUND(sascore) AS score,
   COUNT(*) AS count
@@ -51,31 +51,31 @@ $sql = "
   maillog
  WHERE
   spamwhitelisted=0
-" . $filter->CreateSQL() . "
+' . $filter->CreateSQL() . '
  GROUP BY
   score
  ORDER BY
   score
-";
+';
 
 // Check permissions to see if apache can actually create the file
 if (is_writable(CACHE_DIR)) {
 
     // JPGraph
-    include_once("./lib/jpgraph/src/jpgraph.php");
-    include_once("./lib/jpgraph/src/jpgraph_log.php");
-    include_once("./lib/jpgraph/src/jpgraph_bar.php");
-    include_once("./lib/jpgraph/src/jpgraph_line.php");
+    include_once './lib/jpgraph/src/jpgraph.php';
+    include_once './lib/jpgraph/src/jpgraph_log.php';
+    include_once './lib/jpgraph/src/jpgraph_bar.php';
+    include_once './lib/jpgraph/src/jpgraph_line.php';
 
     // ##### AJOS1 NOTE #####
     // ### AjosNote - Must be 2 or more rows...
     // ##### AJOS1 NOTE #####
     $result = dbquery($sql);
-    if (mysql_num_rows($result) <= 1) {
+    if ($result->num_rows <= 1) {
         die(__('die38') . "\n");
     }
 
-    while ($row = mysql_fetch_object($result)) {
+    while ($row = $result->fetch_object()) {
         $data_labels[] = $row->score;
         $data_count[] = $row->count;
     }
@@ -91,7 +91,7 @@ if (is_writable(CACHE_DIR)) {
 
     $graph = new Graph(850, 350, 0, false);
     $graph->SetShadow();
-    $graph->SetScale("textlin");
+    $graph->SetScale('textlin');
     $graph->img->SetMargin(60, 60, 30, 70);
     $graph->title->Set(__('sascoredist38'));
     $graph->xaxis->title->Set(__('scorerounded38'));
@@ -119,7 +119,7 @@ echo " <TR>\n";
 if (is_readable($filename)) {
     echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . " " . CACHE_DIR . " " . __('message299');
+    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
 echo " </TR>\n";
@@ -127,11 +127,11 @@ echo " <TR>\n";
 echo "  <TD ALIGN=\"CENTER\">\n";
 echo "<TABLE BORDER=\"0\" WIDTH=\"500\">\n";
 echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo "  <TH>" . __('score38') . "</TH>\n";
-echo "  <TH>" . __('count38') . "</TH>\n";
+echo '  <TH>' . __('score38') . "</TH>\n";
+echo '  <TH>' . __('count38') . "</TH>\n";
 echo " </TR>\n";
 
-for ($i = 0; $i < count($data_count); $i++) {
+for ($i = 0, $data_count_num = count($data_count); $i < $data_count_num; $i++) {
     echo "<TR BGCOLOR=\"#EBEBEB\">\n";
     echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
     echo " <TD ALIGN=\"RIGHT\">" . number_format($data_count[$i]) . "</TD>\n";

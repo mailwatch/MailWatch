@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -52,15 +52,16 @@ define('DB_USER', 'mailwatch');
 define('DB_PASS', 'mailwatch');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'mailscanner');
-define('DB_DSN', DB_TYPE . '://' . DB_USER . ":" . DB_PASS . "@" . DB_HOST . "/" . DB_NAME);
+define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . '/' . DB_NAME);
 
 // LDAP settings
 define('USE_LDAP', false);
 define('LDAP_SSL', false); // set to true if using LDAP with SSL encryption
 define('LDAP_HOST', 'server.example.com');
 define('LDAP_PORT', '389');
+define('LDAP_PROTOCOL_VERSION', 3);
 define('LDAP_DN', 'DC=example,DC=com');
-define('LDAP_USER', 'LDAPProxy@example.com');
+define('LDAP_USER', 'LDAPProxy@example.com'); // if no email set: cn=admin,dc=example,dc=com
 define('LDAP_PASS', 'secret');
 define('LDAP_SITE', 'default');
 // can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword

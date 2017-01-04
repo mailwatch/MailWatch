@@ -34,32 +34,32 @@ use vars qw($VERSION);
 $VERSION = substr q$Revision: 1.4 $, 10;
 
 use DBI;
-my(%LowSpamScores, %HighSpamScores);
-my(%ScanList);
-my($db_name) = 'mailscanner';
-my($db_host) = 'localhost';
-my($db_user) = 'mailwatch';
-my($db_pass) = 'mailwatch';
+my (%LowSpamScores, %HighSpamScores);
+my (%ScanList);
+my ($db_name) = 'mailscanner';
+my ($db_host) = 'localhost';
+my ($db_user) = 'mailwatch';
+my ($db_pass) = 'mailwatch';
 
 #
 # Initialise the arrays with the users Spam settings
 #
 sub InitSQLSpamScores
 {
-  my($entries) = CreateScoreList('spamscore', \%LowSpamScores);
-  MailScanner::Log::InfoLog("Read %d Spam entries", $entries);
+    my ($entries) = CreateScoreList('spamscore', \%LowSpamScores);
+    MailScanner::Log::InfoLog("MailWatch: Read %d Spam entries", $entries);
 }
 
 sub InitSQLHighSpamScores
 {
-  my $entries = CreateScoreList('highspamscore', \%HighSpamScores);
-  MailScanner::Log::InfoLog("Read %d high Spam entries", $entries);
+    my $entries = CreateScoreList('highspamscore', \%HighSpamScores);
+    MailScanner::Log::InfoLog("MailWatch: Read %d high Spam entries", $entries);
 }
 
 sub InitSQLNoScan
 {
-  my $entries = CreateNoScanList('noscan', \%ScanList);
-  MailScanner::Log::InfoLog("Read %d No Spam Scan entries", $entries);
+    my $entries = CreateNoScanList('noscan', \%ScanList);
+    MailScanner::Log::InfoLog("MailWatch: Read %d No Spam Scan entries", $entries);
 }
 
 #
@@ -67,24 +67,24 @@ sub InitSQLNoScan
 #
 sub SQLSpamScores
 {
-  my($message) = @_;
-  my($score)   = LookupScoreList($message, \%LowSpamScores);
-  return $score;
+    my ($message) = @_;
+    my ($score) = LookupScoreList($message, \%LowSpamScores);
+    return $score;
 }
 
 sub SQLHighSpamScores
 {
-  my($message) = @_;
-  my($score)   = LookupScoreList($message, \%HighSpamScores);
-  return $score;
+    my ($message) = @_;
+    my ($score) = LookupScoreList($message, \%HighSpamScores);
+    return $score;
 }
 
 sub SQLNoScan
 {
-  my($message) = @_;
-  my($noscan)  = LookupNoScanList($message, \%ScanList);
-# MailScanner::Log::InfoLog("Returning %d from SQLNoScan", $noscan);
-  return $noscan;
+    my ($message) = @_;
+    my ($noscan) = LookupNoScanList($message, \%ScanList);
+    # MailScanner::Log::InfoLog("Returning %d from SQLNoScan", $noscan);
+    return $noscan;
 }
 
 #
@@ -92,90 +92,95 @@ sub SQLNoScan
 #
 sub EndSQLSpamScores
 {
-  MailScanner::Log::InfoLog("Closing down SQL Spam Scores");
+    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL Spam Scores");
 }
 
 sub EndSQLHighSpamScores
 {
-  MailScanner::Log::InfoLog("Closing down SQL High Spam Scores");
+    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL High Spam Scores");
 }
 
 sub EndSQLNoScan
 {
-  MailScanner::Log::InfoLog("Closing down SQL No Scan");
+    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL No Scan");
 }
 
 # Read the list of users that have defined their own Spam Score value. Also
 # read the domain defaults and the system defaults (defined by the admin user).
 sub CreateScoreList
 {
-  my($type, $UserList) = @_;
+    my ($type, $UserList) = @_;
 
-  my($dbh, $sth, $sql, $username, $count);
+    my ($dbh, $sth, $sql, $username, $count);
 
-  # Connect to the database
-  $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, {PrintError => 0});
+    # Connect to the database
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        $db_user, $db_pass,
+        { PrintError => 0, RaiseError => 1, mysql_enable_utf8 => 1 }
+    );
 
-  # Check if connection was successfull - if it isn't
-  # then generate a warning and return to MailScanner so it can continue processing.
-  if (!$dbh)
-  {
-    MailScanner::Log::InfoLog("SQLSpamSettings::CreateList Unable to initialise database connection: %s", $DBI::errstr);
-    return;
-  }
+    # Check if connection was successfull - if it isn't
+    # then generate a warning and return to MailScanner so it can continue processing.
+    if (!$dbh)
+    {
+        MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings::CreateList Unable to initialise database connection: %s",
+            $DBI::errstr);
+        return;
+    }
 
-  $sql = "SELECT username, $type FROM users WHERE $type > 0";
-  $sth = $dbh->prepare($sql);
-  $sth->execute;
-  $sth->bind_columns(undef, \$username, \$type);
-  $count = 0;
-  while($sth->fetch())
-  {
-    $UserList->{lc($username)} = $type; # Store entry
-    $count++;
-  }
+    $sql = "SELECT username, $type FROM users WHERE $type > 0";
+    $sth = $dbh->prepare($sql);
+    $sth->execute;
+    $sth->bind_columns(undef, \$username, \$type);
+    $count = 0;
+    while($sth->fetch())
+    {
+        $UserList->{lc($username)} = $type; # Store entry
+        $count++;
+    }
 
-  # Close connections
-  $sth->finish();
-  $dbh->disconnect();
+    # Close connections
+    $sth->finish();
+    $dbh->disconnect();
 
-  return $count;
+    return $count;
 }
 
 # Read the list of users that have defined that don't want Spam scanning.
 sub CreateNoScanList
 {
-  my($type, $NoScanList) = @_;
+    my ($type, $NoScanList) = @_;
 
-  my($dbh, $sth, $sql, $username, $count);
+    my ($dbh, $sth, $sql, $username, $count);
 
-  # Connect to the database
-  $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, {PrintError => 0});
+    # Connect to the database
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, { PrintError => 0 });
 
-  # Check if connection was successfull - if it isn't
-  # then generate a warning and return to MailScanner so it can continue processing.
-  if (!$dbh)
-  {
-    MailScanner::Log::InfoLog("SQLSpamSettings::CreateNoScanList Unable to initialise database connection: %s", $DBI::errstr);
-    return;
-  }
+    # Check if connection was successfull - if it isn't
+    # then generate a warning and return to MailScanner so it can continue processing.
+    if (!$dbh)
+    {
+        MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings::CreateNoScanList Unable to initialise database connection: %s",
+            $DBI::errstr);
+        return;
+    }
 
-  $sql = "SELECT username, $type FROM users WHERE $type > 0";
-  $sth = $dbh->prepare($sql);
-  $sth->execute;
-  $sth->bind_columns(undef, \$username, \$type);
-  $count = 0;
-  while($sth->fetch())
-  {
-    $NoScanList->{lc($username)} = 1; # Store entry
-    $count++;
-  }
+    $sql = "SELECT username, $type FROM users WHERE $type > 0";
+    $sth = $dbh->prepare($sql);
+    $sth->execute;
+    $sth->bind_columns(undef, \$username, \$type);
+    $count = 0;
+    while($sth->fetch())
+    {
+        $NoScanList->{lc($username)} = 1; # Store entry
+        $count++;
+    }
 
-  # Close connections
-  $sth->finish();
-  $dbh->disconnect();
+    # Close connections
+    $sth->finish();
+    $dbh->disconnect();
 
-  return $count;
+    return $count;
 }
 
 # Based on the address it is going to, choose the correct Spam score.
@@ -189,50 +194,50 @@ sub CreateNoScanList
 #
 sub LookupScoreList
 {
-  my($message, $LowHigh) = @_;
+    my ($message, $LowHigh) = @_;
 
-  return 0 unless $message; # Sanity check the input
+    return 0 unless $message; # Sanity check the input
 
-  # Find the first "to" address and the "to domain"
-  my(@todomain, $todomain, @to, $to);
-  @todomain   = @{$message->{todomain}};
-  $todomain   = $todomain[0];
-  @to         = @{$message->{to}};
-  $to         = $to[0];
+    # Find the first "to" address and the "to domain"
+    my (@todomain, $todomain, @to, $to);
+    @todomain = @{$message->{todomain}};
+    $todomain = $todomain[0];
+    @to = @{$message->{to}};
+    $to = $to[0];
 
-  # It is in the list with the exact address? if not found, get the domain,
-  # if that's not found,  get the system default otherwise return a high
-  # value to just let the email through.
-  return $LowHigh->{$to}       if $LowHigh->{$to};
-  return $LowHigh->{$todomain} if $LowHigh->{$todomain};
-  return $LowHigh->{"admin"}   if $LowHigh->{"admin"};
+    # It is in the list with the exact address? if not found, get the domain,
+    # if that's not found,  get the system default otherwise return a high
+    # value to just let the email through.
+    return $LowHigh->{$to} if $LowHigh->{$to};
+    return $LowHigh->{$todomain} if $LowHigh->{$todomain};
+    return $LowHigh->{"admin"} if $LowHigh->{"admin"};
 
-  # There are no Spam scores to return if we made it this far, so let the email through.
-  return 999;
+    # There are no Spam scores to return if we made it this far, so let the email through.
+    return 999;
 }
 
 # Based on the address it is going to, decide whether or not to scan.
 # the users email for Spam.
 sub LookupNoScanList
 {
-  my($message, $NoScan) = @_;
+    my ($message, $NoScan) = @_;
 
-  return 0 unless $message; # Sanity check the input
+    return 0 unless $message; # Sanity check the input
 
-  # Find the first "to" address and the "to domain"
-  my(@todomain, $todomain, @to, $to);
-  @todomain   = @{$message->{todomain}};
-  $todomain   = $todomain[0];
-  @to         = @{$message->{to}};
-  $to         = $to[0];
+    # Find the first "to" address and the "to domain"
+    my (@todomain, $todomain, @to, $to);
+    @todomain = @{$message->{todomain}};
+    $todomain = $todomain[0];
+    @to = @{$message->{to}};
+    $to = $to[0];
 
-  # It is in the list with the exact address? if not found, get the domain,
-  # if that's not found, return 0
-  return 0 if $NoScan->{$to};
-  return 0 if $NoScan->{$todomain};
+    # It is in the list with the exact address? if not found, get the domain,
+    # if that's not found, return 0
+    return 0 if $NoScan->{$to};
+    return 0 if $NoScan->{$todomain};
 
-  # There is no setting, then go ahead and scan for Spam, be on the safe side.
-  return 1;
+    # There is no setting, then go ahead and scan for Spam, be on the safe side.
+    return 1;
 }
 
 1;

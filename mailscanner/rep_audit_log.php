@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,16 +30,16 @@
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // If the user isn't an administrator to send them back to the main page
-if ($_SESSION['user_type'] != 'A') {
-    header("Location: index.php");
+if ($_SESSION['user_type'] !== 'A') {
+    header('Location: index.php');
 } else {
     // add the header information such as the logo, search, menu, ....
     $filter = html_start(__('auditlog33'), 0, false, true);
@@ -47,7 +47,7 @@ if ($_SESSION['user_type'] != 'A') {
     // SQL query for the audit log
     $sql = "
  SELECT
-  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . " " . TIME_FORMAT . "') AS '" . __('datetime33') . "',
+  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS '" . __('datetime33') . "',
   b.fullname AS '" . __('user33') . "',
   a.ip_address AS '" . __('ipaddress33') . "',
   a.action AS '" . __('action33') . "'
@@ -58,8 +58,8 @@ if ($_SESSION['user_type'] != 'A') {
   a.user=b.username
  AND
   1=1
-" . $filter->CreateMtalogSQL() . "
- ORDER BY timestamp DESC";
+" . $filter->CreateMtalogSQL() . '
+ ORDER BY timestamp DESC';
     echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' .  __('mslogo99') . '"></td></tr>
  <tr><td>' . "\n";

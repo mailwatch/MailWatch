@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,11 +29,11 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/filter.inc.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));
 
@@ -71,38 +71,51 @@ if (isset($_POST) && !empty($_POST)) {
                 $type = 'release';
                 break;
             default:
-                continue;
+                continue 2; //continue with next foreach loop
         }
         $items = quarantine_list_items($id, RPC_ONLY);
         // Commenting out the below line since it shouldn't make a table for every message
         // echo "<TABLE WIDTH=\"100%\">\n";
-        if (count($items) > 0) {
-            $num = 0;
-            $itemnum = array($num);
-            echo '<tr><td><a href="detail.php?id=' . $id . '">' . $id . '</a></td><td>' . $type . '</td><td>';
-            if ($type == 'release') {
-                if ($quarantined = quarantine_list_items($id, RPC_ONLY)) {
-                    $to = $quarantined[0]['to'];
+        echo '<tr>' . "\n";
+        echo '<td><a href="detail.php?id=' . $id . '">' . $id . '</a></td>';
+        echo '<td>' . $type . '</td>';
+        if (empty($items)) {
+            echo '<td style="color: #ff0000;">' . __('diemnf57') . '</td>' . "\n";
+        } elseif (is_string($items)) {
+            echo '<td style="color: #ff0000;">' . $items . '</td>' . "\n";
+        } else {
+            if (count($items) > 0) {
+                $num = 0;
+                $itemnum = array($num);
+                echo '<td>';
+                if ($type === 'release') {
+                    $quarantined = quarantine_list_items($id, RPC_ONLY);
+                    if (is_array($quarantined)) {
+                        $to = $quarantined[0]['to'];
+                        echo quarantine_release(
+                            $quarantined,
+                            $itemnum,
+                            $to,
+                            RPC_ONLY
+                        );
+                    } else {
+                        echo $quarantined;
+                    }
+                } else {
+                    echo quarantine_learn(
+                        $items,
+                        $itemnum,
+                        $type,
+                        RPC_ONLY
+                    );
                 }
-                echo quarantine_release(
-                    $quarantined,
-                    $itemnum,
-                    $to,
-                    RPC_ONLY
-                );
-            } else {
-                echo quarantine_learn(
-                    $items,
-                    $itemnum,
-                    $type,
-                    RPC_ONLY
-                );
+                echo '</td>' . "\n";
             }
-            echo '</td></tr>' . "\n";
         }
+        echo '</tr>' . "\n";
     }
 } else {
-    echo '<tr><td colspan="3">Message not found in quarantine</td></tr>' . "\n";
+    echo '<tr><td colspan="3">' . __('diemnf57') . '</td></tr>' . "\n";
 }
 echo '</table>' . "\n";
 

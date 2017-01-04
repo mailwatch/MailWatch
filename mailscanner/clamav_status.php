@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,17 +30,17 @@
  */
 
 // Require the functions page
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 // Start the session
 session_start();
 // Require the login function code
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrater
-if ($_SESSION['user_type'] != 'A') {
+if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrater send them back to the index page.
-    header("Location: index.php");
+    header('Location: index.php');
     audit_log('Non-admin user attemped to view ClamAV Status page');
 } else {
     // Start the header code and Title
@@ -51,7 +51,7 @@ if ($_SESSION['user_type'] != 'A') {
     echo '<td align="center">';
 
     // Output the information from the conf file
-    passthru(get_virus_conf('clamav') . " -V | awk -f " . __DIR__ . "/clamav.awk");
+    passthru(get_virus_conf('clamav') . ' -V | awk -f ' . __DIR__ . '/clamav.awk');
 
     echo '</td>';
     echo '</tr>';

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,25 +29,25 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
+if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     html_start(__('saruldesupdate13'), 0, false, false);
     echo "<table class=\"boxtable\" width=\"100%\">";
-    echo "<tr><th>" . __('updatesadesc13') . "</th></tr>";
-    echo "<tr>";
-    echo "  <td>";
-    echo "   <br>" . __('message113') . "<br>";
-    echo "   <br>";
-    echo "   " . __('message213') . "<br><br>";
-    echo "  </td>";
-    echo "</tr>";
-    echo " <tr>";
+    echo '<tr><th>' . __('updatesadesc13') . '</th></tr>';
+    echo '<tr>';
+    echo '  <td>';
+    echo '   <br>' . __('message113') . '<br>';
+    echo '   <br>';
+    echo '   ' . __('message213') . '<br><br>';
+    echo '  </td>';
+    echo '</tr>';
+    echo ' <tr>';
     echo '  <td align="center">
     <form method="post" action="sa_rules_update.php">
     <div style="margin: 5px">' . "\n";
@@ -56,14 +56,14 @@ if ($_SESSION['user_type'] != 'A') {
     </div>
     </form>
     </td>";
-    echo "</tr>";
+    echo '</tr>';
     echo "</table>\n";
 
     if (isset($_POST['run'])) {
         echo "<table width=\"100%\">";
-        echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>" . __('rule13') . "</th><th>" . __('description13') . "</th></tr>\n";
+        echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>" . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
         $fh = popen(
-            "grep -hr '^\s*describe' " . SA_RULES_DIR . " /usr/share/spamassassin /usr/local/share/spamassassin /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq",
+            "grep -hr '^\s*describe' " . SA_RULES_DIR . ' /usr/share/spamassassin /usr/local/share/spamassassin ' . SA_PREFS . ' /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq',
             'r'
         );
         audit_log('Ran SpamAssassin Rules Description Update');
@@ -71,12 +71,12 @@ if ($_SESSION['user_type'] != 'A') {
             $line = rtrim(fgets($fh, 4096));
             // debug("line: ".$line."\n");
             preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
-            if (isset($regs[1]) && isset($regs[2])) {
+            if (isset($regs[1], $regs[2])) {
                 $regs[1] = trim($regs[1]);
                 $regs[2] = trim($regs[2]);
-                echo "<tr><td>" . htmlentities($regs[1]) . "</td><td>" . htmlentities($regs[2]) . "</td></tr>\n";
-                $regs[1] = mysql_real_escape_string($regs[1]);
-                $regs[2] = mysql_real_escape_string($regs[2]);
+                echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . "</td></tr>\n";
+                $regs[1] = safe_value($regs[1]);
+                $regs[2] = safe_value($regs[2]);
                 dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
                 //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
@@ -85,7 +85,7 @@ if ($_SESSION['user_type'] != 'A') {
         }
         pclose($fh);
         echo "</table><br></td></tr>\n";
-        echo "</table>";
+        echo '</table>';
     }
 }
 // Add footer

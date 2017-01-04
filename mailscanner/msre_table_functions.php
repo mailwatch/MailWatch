@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -71,7 +71,7 @@ function TR()
         $tr_param = null;
     }
 
-    echo "<tr";
+    echo '<tr';
     if ($tr_param) {
         echo " $tr_param";
     }
@@ -148,7 +148,7 @@ function TR_Extended($row_data, $tr_param)
     //
 
     // start out by making the initial <tr>
-    $my_tr = "<tr";
+    $my_tr = '<tr';
     if ($tr_param) {
         //echo "tr param: $tr_param<br>\n";
         $my_tr .= " $tr_param";
@@ -172,5 +172,5 @@ function TR_Extended($row_data, $tr_param)
     echo "</tr>\n";
 
     // return
-    return (0);
+    return 0;
 }

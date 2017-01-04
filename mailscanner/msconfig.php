@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,13 +29,13 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
-    header("Location: index.php");
+if ($_SESSION['user_type'] !== 'A') {
+    header('Location: index.php');
 } else {
     html_start(__('config27'));
     audit_log('Viewed MailScanner configuration');
@@ -59,8 +59,8 @@ if ($_SESSION['user_type'] != 'A') {
     // Display the information from the configuration files
     foreach ($array_output as $out_key => $value) {
         // expand %var% variables
-        if (preg_match("/(%.+%)/", $value, $match)) {
-            $value = preg_replace("/%.+%/", $var[$match[1]], $value);
+        if (preg_match('/(%.+%)/', $value, $match)) {
+            $value = preg_replace('/%.+%/', $var[$match[1]], $value);
         }
 
         // See if parameter is a rules file
@@ -71,8 +71,8 @@ if ($_SESSION['user_type'] != 'A') {
         // Change newline charactors to <br />
         $value = nl2br(str_replace("\\n", "\n", $value));
 
-        // change <br /> to <BR> to keep with html 4.01 and above
-        $value = preg_replace("/<br \/>/", "<br>", $value);
+        // change <br /> to <br> to keep with html 4.01 and above
+        $value = preg_replace("/<br \/>/i", '<br>', $value);
 
         echo '<tr><td class="heading">' . $out_key . '</td><td>' . $value . '</td></tr>' . "\n";
     }

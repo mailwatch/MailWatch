@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2016  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,9 +29,9 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/lib/password.php');
-require_once(__DIR__ . '/lib/hash_equals.php');
+require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/lib/password.php';
+require_once __DIR__ . '/lib/hash_equals.php';
 
 session_start();
 
@@ -43,46 +43,47 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = $_POST['myusername'];
     $mypassword = $_POST['mypassword'];
 }
-$myusername = sanitizeInput($myusername);
-$mypassword = sanitizeInput($mypassword);
-if ((USE_LDAP === true) && (($result = ldap_authenticate($myusername, $mypassword)) !== null)) {
-    $_SESSION['user_ldap'] = '1';
-    $myusername = safe_value($result);
+
+if (
+    (USE_LDAP === true) &&
+    (($result = ldap_authenticate(ldap_escape($myusername, '', LDAP_ESCAPE_DN), $mypassword)) !== null)
+) {
+    $_SESSION['user_ldap'] = true;
+    $myusername = safe_value($myusername);
+    $mypassword = safe_value($mypassword);
 } else {
-    if ($mypassword != '') {
+    $_SESSION['user_ldap'] = false;
+    if ($mypassword !== '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
-        $_SESSION['user_ldap'] = '0';
     } else {
-        header("Location: login.php?error=emptypassword");
+        header('Location: login.php?error=emptypassword');
         die();
     }
-
-    $_SESSION['user_ldap'] = '0';
 }
 
 $sql = "SELECT * FROM users WHERE username='$myusername'";
 $result = dbquery($sql);
-
 if (!$result) {
-    $message = 'Invalid query: ' . mysql_error() . "\n";
+    $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
     $message .= 'Whole query: ' . $sql;
     die($message);
 }
 
 // mysql_num_row is counting table row
-$usercount = mysql_num_rows($result);
-if ($usercount == 0) {
+$usercount = $result->num_rows;
+if ($usercount === 0) {
     //no user found, redirect to login
     dbclose();
-    header("Location: login.php?error=baduser");
+    header('Location: login.php?error=baduser');
+    die();
 } else {
-    if ($_SESSION['user_ldap'] == '0') {
-        $passwordInDb = mysql_result($result, 0, 'password');
+    if ($_SESSION['user_ldap'] === false) {
+        $passwordInDb = database::mysqli_result($result, 0, 'password');
         if (!password_verify($mypassword, $passwordInDb)) {
             if (!hash_equals(md5($mypassword), $passwordInDb)) {
-                header("Location: login.php?error=baduser");
-                die();
+                header('Location: login.php?error=baduser');
+                die(__LINE__);
             } else {
                 $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
                 updateUserPasswordHash($myusername, $newPasswordHash);
@@ -96,37 +97,37 @@ if ($usercount == 0) {
         }
     }
 
-    $fullname = mysql_result($result, 0, 'fullname');
-    $usertype = mysql_result($result, 0, 'type');
+    $fullname = database::mysqli_result($result, 0, 'fullname');
+    $usertype = database::mysqli_result($result, 0, 'type');
 
     $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
     $result_userfilter = dbquery($sql_userfilter);
 
     if (!$result_userfilter) {
-        $message = 'Invalid query: ' . mysql_error() . "\n";
+        $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
         $message .= 'Whole query: ' . $sql_userfilter;
         die($message);
     }
 
     $filter[] = $myusername;
-    while ($row = mysql_fetch_array($result_userfilter)) {
+    while ($row = $result_userfilter->fetch_array()) {
         $filter[] = $row['filter'];
     }
 
     $global_filter = address_filter_sql($filter, $usertype);
 
     switch ($usertype) {
-        case "A":
-            $global_list = "1=1";
+        case 'A':
+            $global_list = '1=1';
             break;
-        case "D":
+        case 'D':
             if (strpos($myusername, '@')) {
-                $ar = explode("@", $myusername);
+                $ar = explode('@', $myusername);
                 $domainname = $ar[1];
-                if ((defined('FILTER_TO_ONLY') && FILTER_TO_ONLY)) {
-                    $global_filter = $global_filter . " OR to_domain='$domainname'";
+                if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
+                    $global_filter .= " OR to_domain='$domainname'";
                 } else {
-                    $global_filter = $global_filter . " OR to_domain='$domainname' OR from_domain='$domainname'";
+                    $global_filter .= " OR to_domain='$domainname' OR from_domain='$domainname'";
                 }
                 $global_list = "to_domain='$domainname'";
             } else {
@@ -136,7 +137,7 @@ if ($usercount == 0) {
                 }
             }
             break;
-        case "U":
+        case 'U':
             $global_list = "to_address='$myusername'";
             foreach ($filter as $to_address) {
                 $global_list .= " OR to_address='$to_address'";
@@ -145,7 +146,7 @@ if ($usercount == 0) {
     }
 
     // If result matched $myusername and $mypassword, table row must be 1 row
-    if ($usercount == 1) {
+    if ($usercount === 1) {
         // Register $myusername, $mypassword and redirect to file "login_success.php"
         $_SESSION['myusername'] = $myusername;
         $_SESSION['fullname'] = $fullname;

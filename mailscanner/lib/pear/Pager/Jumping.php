@@ -4,7 +4,7 @@
 /**
  * Contains the Pager_Jumping class
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE: Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -56,7 +56,7 @@ require_once 'Pager/Common.php';
  */
 class Pager_Jumping extends Pager_Common
 {
-    // {{{ Pager_Jumping()
+    // {{{ __construct()
 
     /**
      * Constructor
@@ -65,7 +65,7 @@ class Pager_Jumping extends Pager_Common
      *
      * @access public
      */
-    function Pager_Jumping($options = array())
+    public function __construct($options = array())
     {
         $err = $this->setOptions($options);
         if ($err !== PAGER_OK) {
@@ -84,7 +84,7 @@ class Pager_Jumping extends Pager_Common
      *
      * @return int PageID for given offset
      */
-    function getPageIdByOffset($index)
+    public function getPageIdByOffset($index)
     {
         if (!isset($this->_pageData)) {
             $this->_generatePageData();
@@ -115,7 +115,7 @@ class Pager_Jumping extends Pager_Common
      * @return array  First and last offsets
      * @access public
      */
-    function getPageRangeByPageId($pageid = null)
+    public function getPageRangeByPageId($pageid = null)
     {
         $pageid = isset($pageid) ? (int)$pageid : $this->_currentPage;
         if (isset($this->_pageData[$pageid]) || is_null($this->_itemData)) {
@@ -145,7 +145,7 @@ class Pager_Jumping extends Pager_Common
      * the method act as it previously did. This hack's only purpose is to
      * mantain backward compatibility.
      *
-     * @param integer $pageID    Optional pageID. If specified, links for that 
+     * @param integer $pageID    Optional pageID. If specified, links for that
      *                           page are provided instead of current one.
      *                           [ADDED IN NEW PAGER VERSION]
      * @param string  $next_html HTML to put inside the next link
@@ -153,7 +153,7 @@ class Pager_Jumping extends Pager_Common
      *
      * @return array Back/pages/next links
      */
-    function getLinks($pageID=null, $next_html='')
+    public function getLinks($pageID = null, $next_html = '')
     {
         //BC hack
         if (!empty($next_html)) {
@@ -222,9 +222,9 @@ class Pager_Jumping extends Pager_Common
      *                    [deprecated: use the constructor instead]
      *
      * @return string Links
-     * @access private
+     * @access protected
      */
-    function _getPageLinks($url = '')
+    public function _getPageLinks($url = '')
     {
         //legacy setting... the preferred way to set an option now
         //is adding it to the constuctor
@@ -239,15 +239,20 @@ class Pager_Jumping extends Pager_Common
 
         $links = '';
         $limits = $this->getPageRangeByPageId($this->_currentPage);
+        $end = min($limits[1], $this->_totalPages);
 
-        for ($i=$limits[0]; $i<=min($limits[1], $this->_totalPages); $i++) {
+        for ($i = $limits[0]; $i <= $end; $i++) {
             if ($i != $this->_currentPage) {
                 $this->range[$i] = false;
                 $this->_linkData[$this->_urlVar] = $i;
                 $links .= $this->_renderLink(str_replace('%d', $i, $this->_altPage), $i);
             } else {
                 $this->range[$i] = true;
-                $links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
+                if (!empty($this->_linkContainer)) {
+                    $links .=  '<'.$this->_linkContainerPre.'>' . $this->_curPageSpanPre . $i . $this->_curPageSpanPost . '</'.$this->_linkContainer.'>';
+                } else {
+                	$links .= $this->_curPageSpanPre . $i . $this->_curPageSpanPost;
+                }
             }
             $links .= $this->_spacesBefore
                    . (($i != $this->_totalPages) ? $this->_separator.$this->_spacesAfter : '');
@@ -257,4 +262,3 @@ class Pager_Jumping extends Pager_Common
 
     // }}}
 }
-?>
