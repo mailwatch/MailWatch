@@ -33,6 +33,7 @@
 header("Content-type: text/plain\n\n");
 require("/var/www/html/mailscanner/functions.php");
 
+$link = dbconn();
 function pad($input)
 {
     $input = str_pad($input, 70, ".", STR_PAD_RIGHT);
@@ -42,25 +43,27 @@ function pad($input)
 
 function executeQuery($sql)
 {
-    if (@mysql_query($sql)) {
+    global $link;
+    if (@mysqli_query($link,$sql)) {
         echo " OK\n";
     } else {
         echo " ERROR\n";
-        die("MySQL error: " . @mysql_error());
+        die("MySQL error: " . @mysqli_error($link));
     }
 }
 
 function check_utf8_table($db, $table)
 {
+    global $link;
     $sql = 'SELECT c.character_set_name
             FROM information_schema.tables AS t, information_schema.collation_character_set_applicability AS c
             WHERE c.collation_name = t.table_collation
-            AND t.table_schema = "' . mysql_real_escape_string($db) . '"
-            AND t.table_name = "' . mysql_real_escape_string($table) . '"';
-    $result = @mysql_query($sql);
+            AND t.table_schema = "' . mysqli_real_escape_string($link,$db) . '"
+            AND t.table_name = "' . mysqli_real_escape_string($link,$table) . '"';
+    $result = @mysqli_query($link,$sql);
 
-    if (strtolower(mysql_result($result, 0)) === 'utf8') {
-        mysql_free_result($result);
+    if (strtolower(database::mysqli_result($result, 0)) === 'utf8') {
+        mysqli_free_result($result);
 
         return true;
     }
@@ -70,15 +73,17 @@ function check_utf8_table($db, $table)
 
 function getTableIndexes($table)
 {
+    //global $link
     $sql = 'SHOW INDEX FROM `' . $table . '`';
-    $result = @mysql_query($sql);
+    //$result = @mysqli_query($sql);
+    $result = dbquery($sql);
 
     $indexes = array();
-    if (!$result || mysql_num_rows($result) === 0) {
+    if (!$result || $result->num_rows === 0) {
         return $indexes;
     }
 
-    while ($row = mysql_fetch_assoc($result)) {
+    while ($row = $result->fetch_assoc()) {
         $indexes[] = $row['Key_name'];
     }
 
@@ -89,7 +94,7 @@ $errors = false;
 
 // Test connectivity to the database
 echo pad("Testing connectivity to the database ");
-if (($link = @mysql_connect(DB_HOST, DB_USER, DB_PASS)) && @mysql_select_db(DB_NAME)) {
+if (($link = dbconn()) && @mysqli_select_db($link,DB_NAME)) {
     echo " OK\n";
     // Update schema at this point
     echo "Updating database schema: \n";
