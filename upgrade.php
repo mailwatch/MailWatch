@@ -44,11 +44,11 @@ function pad($input)
 function executeQuery($sql)
 {
     global $link;
-    if (@mysqli_query($link,$sql)) {
+    if ($link->query($sql)) {
         echo " OK\n";
     } else {
         echo " ERROR\n";
-        die("MySQL error: " . @mysqli_error($link));
+        die("Database error: " . $link->error);
     }
 }
 
@@ -58,12 +58,12 @@ function check_utf8_table($db, $table)
     $sql = 'SELECT c.character_set_name
             FROM information_schema.tables AS t, information_schema.collation_character_set_applicability AS c
             WHERE c.collation_name = t.table_collation
-            AND t.table_schema = "' . mysqli_real_escape_string($link,$db) . '"
-            AND t.table_name = "' . mysqli_real_escape_string($link,$table) . '"';
-    $result = @mysqli_query($link,$sql);
+            AND t.table_schema = "' . $link->real_escape_string($db) . '"
+            AND t.table_name = "' . $link->real_escape_string($table) . '"';
+    $result = $link->query($sql);
 
     if (strtolower(database::mysqli_result($result, 0)) === 'utf8') {
-        mysqli_free_result($result);
+        //mysqli_free_result($result);
 
         return true;
     }
@@ -73,10 +73,9 @@ function check_utf8_table($db, $table)
 
 function getTableIndexes($table)
 {
-    //global $link
+    global $link;
     $sql = 'SHOW INDEX FROM `' . $table . '`';
-    //$result = @mysqli_query($sql);
-    $result = dbquery($sql);
+    $result = $link->query($sql);
 
     $indexes = array();
     if (!$result || $result->num_rows === 0) {
@@ -94,7 +93,7 @@ $errors = false;
 
 // Test connectivity to the database
 echo pad("Testing connectivity to the database ");
-if (($link = dbconn()) && @mysqli_select_db($link,DB_NAME)) {
+if ($link) {
     echo " OK\n";
     // Update schema at this point
     echo "Updating database schema: \n";
@@ -405,10 +404,10 @@ if (($link = dbconn()) && @mysqli_select_db($link,DB_NAME)) {
     */
 
     // Phew! - finished
-    mysql_close($link);
+    dbclose();
 } else {
     echo " FAILED\n";
-    $errors[] = "Database connection failed: " . @mysql_error();
+    $errors[] = "Database connection failed: " . $link->error;
 }
 
 echo "\n";
