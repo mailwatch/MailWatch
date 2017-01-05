@@ -978,7 +978,7 @@ function format_spam_report($spamreport)
 }
 
 /**
- * @param $rule
+ * @param string $rule
  * @return string
  */
 function get_sa_rule_desc($rule)
@@ -986,19 +986,20 @@ function get_sa_rule_desc($rule)
     // Check if SA scoring is enabled
     $rule_score = '';
     if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
-        list($rule, $rule_score) = $regs;
+        $rule = $regs[1];
+        $rule_score = $regs[2];
     }
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
-        return "<tr><td>$rule_score<td>$rule</td><td>&nbsp;</td></tr>";
+        return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
     }
 }
 
 /**
- * @param $rule
+ * @param string $rule
  * @return string|false
  */
 function return_sa_rule_desc($rule)
@@ -1013,7 +1014,7 @@ function return_sa_rule_desc($rule)
 }
 
 /**
- * @param $mcpreport
+ * @param string $mcpreport
  * @return mixed|string
  */
 function format_mcp_report($mcpreport)
