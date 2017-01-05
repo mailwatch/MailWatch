@@ -986,7 +986,8 @@ function get_sa_rule_desc($rule)
     // Check if SA scoring is enabled
     $rule_score = '';
     if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
-        list($rule, $rule_score) = $regs;
+        $rule = $regs[1];
+        $rule_score = $regs[2];
     }
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
