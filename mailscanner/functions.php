@@ -965,9 +965,10 @@ function format_spam_report($spamreport)
         });
 
         $output_array = array();
-        while (list($key, $val) = each($sa_rules)) {
-            $output_array[] = get_sa_rule_desc($val);
+        foreach ($sa_rules as $sa_rule) {
+            $output_array[] = get_sa_rule_desc($sa_rule);
         }
+
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
