@@ -481,10 +481,16 @@ function send_quarantine_email($email, $filter, $quarantined)
         'Subject' => QUARANTINE_REPORT_SUBJECT,
         'Date' => date('r')
     );
+    $mime_params = array(
+        'text_encoding' => '7bit',
+        'text_charset' => 'UTF-8',
+        'html_charset' => 'UTF-8',
+        'head_charset' => 'UTF-8'
+    );
     $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
     $mime->setTXTBody($text_report);
     $mime->setHTMLBody($html_report);
-    $body = $mime->get();
+    $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
     $mail_param = array('host' => QUARANTINE_MAIL_HOST);
     $mail =& Mail::factory('smtp', $mail_param);
