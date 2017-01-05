@@ -960,7 +960,9 @@ function format_spam_report($spamreport)
             //italian
             'punteggio=', 'necessario',
             //german
-            'benoetigt', 'Wertung=', 'gecached'
+            'benoetigt', 'Wertung=', 'gecached',
+            //french
+            'requis'
         );
         array_walk($notRulesLines, function ($value) {
             return preg_quote($value, '/');
