@@ -30,8 +30,10 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change the following to reflect the location of functions.php
-require_once '/var/www/html/mailscanner/functions.php';
+// Change the following to reflect the location of MailWatch installation, with trailing /
+$mailwatch_dir = '/var/www/html/mailscanner/';
+
+require_once $mailwatch_dir . 'functions.php';
 
 $required_constant = array(
     'QUARANTINE_REPORT_DAYS',
@@ -56,8 +58,8 @@ foreach ($required_constant as $constant) {
     }
 }
 if ($required_constant_missing_count === 0) {
-    require_once 'Mail.php';
-    require_once 'Mail/mime.php';
+    require_once $mailwatch_dir . 'lib/pear/Mail/mail.php';
+    require_once $mailwatch_dir . 'lib/pear/Mail/mime.php';
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('html_errors', 'off');
@@ -71,7 +73,7 @@ if ($required_constant_missing_count === 0) {
     ** HTML Template
     */
 
-    $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    $html = '<!DOCTYPE html>
 <html>
 <head>
  <title>' . __('title61') . '</title>
