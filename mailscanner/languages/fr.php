@@ -742,6 +742,13 @@ return array(
     'text611' => 'Rapport de Quarantaine pour %s',
     'text612' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine et dont vous retrouverez la liste ci-dessous. Les messages en Quarantaine sont automatiquement effacés %s jours après la date à laquelle ils ont été reçus.',
     'release61' => 'Libérer',
+    'virus61' => 'Virus',
+    'badcontent61' => 'Contenu nocif',
+    'infected61' => 'Infecté',
+    'spam61' => 'Spam',
+    'blacklisted61' => 'Liste Noire',
+    'policy61' => 'Politique',
+    'unknow61' => 'INCONNU',
 
     // 62-quarantine_maint.php
     'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
