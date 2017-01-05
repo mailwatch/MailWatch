@@ -71,7 +71,7 @@ function simple_html_result($status)
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                       <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
+                        <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
                     </tr>
                 </table>
             </td>
