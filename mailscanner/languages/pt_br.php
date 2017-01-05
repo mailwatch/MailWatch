@@ -148,7 +148,9 @@ return array(
     'host03' => 'Host',
     'date03' => 'Date',
     'time03' => 'Time',
- 
+    'releaseerror03' => 'Release: error',
+    'releasemessage03' => 'Release: message released to',
+
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
     'receivedby04' => 'Recebido por:',

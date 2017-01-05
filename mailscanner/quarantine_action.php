@@ -65,13 +65,13 @@ function simple_html_result($status)
             <td valign="middle" align="center">
                 <table border=0>
                     <tr>
-                        <th>' . __('result57') . '</th>
+                        <th><?php echo __('result57') ?></th>
                     </tr>
                     <tr>
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="window.close()">' . __('closewindow57') . '</a></td>
+                       <td align="center"><b><a href="window.close()"><?php echo __('closewindow57') ?></a></td>
                     </tr>
                 </table>
             </td>
