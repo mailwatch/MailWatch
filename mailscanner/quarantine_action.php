@@ -71,7 +71,7 @@ function simple_html_result($status)
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
+                        <td align="center"><b><a href="javascript:window.close()"><?php echo __('closewindow57') ?></a></td>
                     </tr>
                 </table>
             </td>
@@ -132,7 +132,7 @@ switch ($_GET['action']) {
                                     <td align="center">
                                         <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">' . __('yes57') . '</a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="window.close()">' . __('no57') . '</a>
+                                        <a href="javascript:void(0)" onClick="javascript:window.close()">' . __('no57') . '</a>
                                     </td>
                                 </tr>
                             </table>
