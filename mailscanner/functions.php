@@ -954,14 +954,21 @@ function format_spam_report($spamreport)
         }
 
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
-        $notRulesLines = array('cached', 'score=', 'required', 'autolearn=', 'punteggio=', 'necessario');
+        $notRulesLines = array(
+            //english
+            'cached', 'score=', 'required', 'autolearn=',
+            //italian
+            'punteggio=', 'necessario',
+            //german
+            'benoetigt', 'Wertung=', 'gecached'
+        );
         array_walk($notRulesLines, function ($value) {
             return preg_quote($value, '/');
         });
         $notRulesLinesRegex = '(' . implode('|', $notRulesLines) . ')';
 
         $sa_rules = array_filter($sa_rules, function ($val) use ($notRulesLinesRegex) {
-            return preg_match("/$notRulesLinesRegex/", $val) === 0;
+            return preg_match("/$notRulesLinesRegex/i", $val) === 0;
         });
 
         $output_array = array();
