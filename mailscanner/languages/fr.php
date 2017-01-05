@@ -691,6 +691,12 @@ return array(
     'dienoaction57' => 'Erreur : aucune action',
     'diemnf57' => 'Erreur : aucun message trouvé en quarantaine',
     'dieuaction57' => 'Action inconnue :',
+    'closewindow57' => 'Fermer la fenêtre',
+    'mailwatchtitle57' => 'MailWatch pour Mailscanner',
+    'result57' => 'Résultat',
+    'delete57' => 'Effacer : êtes-vous sur ?',
+    'yes57' => 'Oui',
+    'no57' => 'Non',
 
     // 58-viewpart.php
     'nomessid58' => 'Aucun ID de message saisie',

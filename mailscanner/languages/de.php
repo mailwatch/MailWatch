@@ -691,6 +691,12 @@ return array(
     'dienoaction57' => 'Error: Keine Aktion',
     'diemnf57' => 'Error: Nachricht in Quarantäne nicht gefunden',
     'dieuaction57' => 'Unbekannte Aktion:',
+    'closewindow57' => 'Close Window',
+    'mailwatchtitle57' => 'MailWatch for Mailscanner',
+    'result57' => 'Result',
+    'delete57' => 'Delete: Are you sure?',
+    'yes57' => 'Yes',
+    'no57' => 'No',
 
     // 58-viewpart.php
     'nomessid58' => 'Keine Nachrichten-ID übertragen',
