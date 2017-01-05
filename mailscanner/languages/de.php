@@ -150,6 +150,8 @@ return array(
     'time03' => 'Time',
     'releaseerror03' => 'Release: error',
     'releasemessage03' => 'Release: message released to',
+    'releaseerrorcode03' => 'Release: error code',
+    'returnedfrom03' => 'returned from Sendmail:',
 
     // 04-details.php
     'receivedon04' => 'Empfangen um:',

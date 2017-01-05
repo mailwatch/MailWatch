@@ -3201,10 +3201,10 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     debug($cmd . $list[$val]['path']);
                     exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                     if ($retval === 0) {
-                        $status = 'Release: message released to ' . str_replace(',', ', ', $to);
+                        $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                         audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
                     } else {
-                        $status = 'Release: error code ' . $retval . " returned from Sendmail:\n" . implode(
+                        $status = __('releaseerrorcode03') . ' ' . $retval . " " . __('returnedfrom03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
