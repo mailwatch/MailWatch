@@ -46,8 +46,8 @@ REPAIR TABLE `user_filters`;
 OPTIMIZE TABLE `user_filters`;
 
 ALTER TABLE `users` CHANGE `username` `username` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
-ALTER TABLE `users` CHANGE `username` `password` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
-ALTER TABLE `users` CHANGE `username` `fullname` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `users` CHANGE `password` `password` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 ALTER TABLE `users` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 REPAIR TABLE `users`;
 OPTIMIZE TABLE `users`;
