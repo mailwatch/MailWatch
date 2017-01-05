@@ -151,7 +151,7 @@ return array(
     'releaseerror03' => 'Libérer : erreur',
     'releasemessage03' => 'Libérer : message libéré vers',
     'releaseerrorcode03' => 'Libérer : erreur de code',
-    'returnedfrom03' => 'retour en provenance du MTA :',
+    'returnedfrom03' => 'retour en provenance du Sendmail :',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
