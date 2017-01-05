@@ -125,7 +125,7 @@ if ($link) {
     foreach ($utf8_tables as $table) {
         echo pad(" - Convert table `" . $table . "` to UTF-8");
         if (check_utf8_table(DB_NAME, $table) === false) {
-            $sql = "ALTER TABLE `" . $table . "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
+            $sql = "ALTER TABLE `" . $table . "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci";
             executeQuery($sql);
         } else {
             echo " SKIPPING\n";
@@ -133,27 +133,27 @@ if ($link) {
     }
 
     echo pad(" - Enlarge username field in `audit_log` table");
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     echo pad(" - Enlarge password field in `users` table");
-    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     echo pad(" - Enlarge username field in `users` table");
-    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     echo pad(" - Enlarge fullname field in `users` table");
-    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     echo pad(" - Enlarge username field in `user_filters` table");
-    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     echo pad(" - Enlarge user field in `spamscores` table");
-    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     echo pad(" - Drop `geoip_country` table");

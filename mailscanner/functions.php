@@ -3754,7 +3754,7 @@ function updateUserPasswordHash($user, $hash)
     $passwordFiledLength = (int)database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
 
     if ($passwordFiledLength < 255) {
-        $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL';
+        $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
         dbquery($sqlUpdateFieldLength);
         audit_log('Updated password field length from ' . $passwordFiledLength . ' to 255');
     }
