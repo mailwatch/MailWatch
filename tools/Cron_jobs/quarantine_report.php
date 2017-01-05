@@ -179,20 +179,20 @@ a.to_address AS to_address,
 a.from_address AS from_address,
 a.subject AS subject,
 CASE
- WHEN a.virusinfected>0 THEN 'Virus'
- WHEN a.nameinfected>0 THEN 'Bad Content'
- WHEN a.otherinfected>0 THEN 'Infected'
- WHEN a.ishighspam>0 THEN 'Spam'
- WHEN a.issaspam>0 THEN 'Spam'
- WHEN a.isrblspam>0 THEN 'Spam'
- WHEN a.spamblacklisted>0 THEN 'Blacklisted'
- WHEN a.isspam THEN 'Spam'
- WHEN a.ismcp>0 THEN 'Policy'
- WHEN a.ishighmcp>0 THEN 'Policy'
- WHEN a.issamcp>0 THEN 'Policy'
- WHEN a.mcpblacklisted>0 THEN 'Policy'
- WHEN a.isspam>0 THEN 'Spam'
- ELSE 'UNKNOWN'
+ WHEN a.virusinfected>0 THEN '" . __('virus61') . "'
+ WHEN a.nameinfected>0 THEN '" . __('badcontent61') . "'
+ WHEN a.otherinfected>0 THEN '" . __('infected61') . "'
+ WHEN a.ishighspam>0 THEN '" . __('spam61') . "'
+ WHEN a.issaspam>0 THEN '" . __('spam61') . "'
+ WHEN a.isrblspam>0 THEN '" . __('spam61') . "'
+ WHEN a.spamblacklisted>0 THEN '" . __('blacklisted61') . "'
+ WHEN a.isspam THEN '" . __('spam61') . "'
+ WHEN a.ismcp>0 THEN '" . __('policy61') . "'
+ WHEN a.ishighmcp>0 THEN '" . __('policy61') . "'
+ WHEN a.issamcp>0 THEN '" . __('policy61') . "'
+ WHEN a.mcpblacklisted>0 THEN '" . __('policy61') . "'
+ WHEN a.isspam>0 THEN '" . __('spam61') . "'
+ ELSE '" . __('unknow61') . "'
 END AS reason
 FROM
  maillog a
@@ -483,10 +483,16 @@ function send_quarantine_email($email, $filter, $quarantined)
         'Subject' => QUARANTINE_REPORT_SUBJECT,
         'Date' => date('r')
     );
+    $mime_params = array(
+        'text_encoding' => '7bit',
+        'text_charset' => 'UTF-8',
+        'html_charset' => 'UTF-8',
+        'head_charset' => 'UTF-8'
+    );
     $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
     $mime->setTXTBody($text_report);
     $mime->setHTMLBody($html_report);
-    $body = $mime->get();
+    $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
     $mail_param = array('host' => QUARANTINE_MAIL_HOST);
     $mail =& Mail::factory('smtp', $mail_param);

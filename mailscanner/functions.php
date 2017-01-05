@@ -3191,11 +3191,11 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $m_result = $mail->send($to, $hdrs, $body);
             if (is_a($m_result, 'PEAR_Error')) {
                 // Error
-                $status = 'Release: error (' . $m_result->getMessage() . ')';
+                $status = __('releaseerror03') . ' (' . $m_result->getMessage() . ')';
                 global $error;
                 $error = true;
             } else {
-                $status = 'Release: message released to ' . str_replace(',', ', ', $to);
+                $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                 audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
             }
 
@@ -3209,10 +3209,10 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     debug($cmd . $list[$val]['path']);
                     exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                     if ($retval === 0) {
-                        $status = 'Release: message released to ' . str_replace(',', ', ', $to);
+                        $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                         audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
                     } else {
-                        $status = 'Release: error code ' . $retval . " returned from Sendmail:\n" . implode(
+                        $status = __('releaseerrorcode03') . ' ' . $retval . " " . __('returnedfrom03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );

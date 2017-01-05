@@ -148,6 +148,10 @@ return array(
     'host03' => 'Hôte',
     'date03' => 'Date',
     'time03' => 'Heure',
+    'releaseerror03' => 'Libérer : erreur',
+    'releasemessage03' => 'Libérer : message libéré vers',
+    'releaseerrorcode03' => 'Libérer : erreur de code',
+    'returnedfrom03' => 'retour en provenance du Sendmail :',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -691,6 +695,12 @@ return array(
     'dienoaction57' => 'Erreur : aucune action',
     'diemnf57' => 'Erreur : aucun message trouvé en quarantaine',
     'dieuaction57' => 'Action inconnue :',
+    'closewindow57' => 'Fermer la fenêtre',
+    'mailwatchtitle57' => 'MailWatch pour Mailscanner',
+    'result57' => 'Résultat',
+    'delete57' => 'Effacer : êtes-vous sur ?',
+    'yes57' => 'Oui',
+    'no57' => 'Non',
 
     // 58-viewpart.php
     'nomessid58' => 'Aucun ID de message saisie',
@@ -732,6 +742,13 @@ return array(
     'text611' => 'Rapport de Quarantaine pour %s',
     'text612' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine et dont vous retrouverez la liste ci-dessous. Les messages en Quarantaine sont automatiquement effacés %s jours après la date à laquelle ils ont été reçus.',
     'release61' => 'Libérer',
+    'virus61' => 'Virus',
+    'badcontent61' => 'Contenu nocif',
+    'infected61' => 'Infecté',
+    'spam61' => 'Spam',
+    'blacklisted61' => 'Liste Noire',
+    'policy61' => 'Politique',
+    'unknow61' => 'INCONNU',
 
     // 62-quarantine_maint.php
     'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',

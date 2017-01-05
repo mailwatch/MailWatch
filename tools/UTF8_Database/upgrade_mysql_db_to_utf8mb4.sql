@@ -36,7 +36,7 @@ ALTER TABLE `saved_filters` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_gen
 REPAIR TABLE `saved_filters`;
 OPTIMIZE TABLE `saved_filters`;
 
-ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 ALTER TABLE `spamscores` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 REPAIR TABLE `spamscores`;
 OPTIMIZE TABLE `spamscores`;
@@ -45,7 +45,9 @@ ALTER TABLE `user_filters` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_gene
 REPAIR TABLE `user_filters`;
 OPTIMIZE TABLE `user_filters`;
 
-ALTER TABLE `users` CHANGE `username` `username` VARCHAR(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `users` CHANGE `username` `username` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `users` CHANGE `password` `password` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 ALTER TABLE `users` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 REPAIR TABLE `users`;
 OPTIMIZE TABLE `users`;

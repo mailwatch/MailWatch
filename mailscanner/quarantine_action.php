@@ -42,7 +42,7 @@ function simple_html_start()
 {
     echo '<html>
 <head>
-<title>MailWatch for Mailscanner</title>
+<title>' . __('mailwatchtitle57') . '</title>
 <link rel="shortcut icon" href="images/favicon.png">
 <style type="text/css">
 
@@ -65,13 +65,13 @@ function simple_html_result($status)
             <td valign="middle" align="center">
                 <table border=0>
                     <tr>
-                        <th>Result</th>
+                        <th><?php echo __('result57') ?></th>
                     </tr>
                     <tr>
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
+                        <td align="center"><b><a href="javascript:window.close()"><?php echo __('closewindow57') ?></a></td>
                     </tr>
                 </table>
             </td>
@@ -126,13 +126,13 @@ switch ($_GET['action']) {
                         <td align="center" valign="middle">
                             <table>
                                 <tr>
-                                    <th>Delete: Are you sure?</th>
+                                    <th>' . __('delete57') . '</th>
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
+                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">' . __('yes57') . '</a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="window.close()">No</a>
+                                        <a href="javascript:void(0)" onClick="javascript:window.close()">' . __('no57') . '</a>
                                     </td>
                                 </tr>
                             </table>

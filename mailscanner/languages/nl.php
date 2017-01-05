@@ -148,6 +148,10 @@ return array(
     'host03' => 'Host',
     'date03' => 'Date',
     'time03' => 'Time',
+    'releaseerror03' => 'Release: error',
+    'releasemessage03' => 'Release: message released to',
+    'releaseerrorcode03' => 'Release: error code',
+    'returnedfrom03' => 'returned from Sendmail:',
 
     // 04-detail.php
     'receivedon04' => 'Ontvangen op:',
@@ -691,6 +695,12 @@ return array(
     'dienoaction57' => 'Error: No action',
     'diemnf57' => 'Error: Message not found in quarantine',
     'dieuaction57' => 'Unknown action:',
+    'closewindow57' => 'Close Window',
+    'mailwatchtitle57' => 'MailWatch for Mailscanner',
+    'result57' => 'Result',
+    'delete57' => 'Delete: Are you sure?',
+    'yes57' => 'Yes',
+    'no57' => 'No',
 
     // 58-viewpart.php
     'nomessid58' => 'No input Message ID',
@@ -732,6 +742,13 @@ return array(
     'text611' => 'Quarantine Report for %s',
     'text612' => 'In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.',
     'release61' => 'Release',
+    'virus61' => 'Virus',
+    'badcontent61' => 'Bad Content',
+    'infected61' => 'Infected',
+    'spam61' => 'Spam',
+    'blacklisted61' => 'Blacklisted',
+    'policy61' => 'Policy',
+    'unknow61' => 'UNKNOWN',
 
     // 62-quarantine_maint.php
     'message62' => 'The variable %s is empty, please set a value in conf.php.',
