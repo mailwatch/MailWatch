@@ -31,8 +31,8 @@
  */
 
 header("Content-type: text/plain\n\n");
-//require '/var/www/html/mailscanner/functions.php';
-require __DIR__ . '/functions.php';
+require '/var/www/html/mailscanner/functions.php';
+//require __DIR__ . '/functions.php';
 
 $link = dbconn();
 
