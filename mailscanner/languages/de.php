@@ -574,8 +574,8 @@ return array(
     'viruses39' => 'Viren',
     'spam39' => 'Spam',
     'volume39' => 'Volumen',
-    'geoipfailed39' => '(GeoIP lookup fehlgeschlagen)',
-    'hostfailed39' => '(Hostname lookup fehlgeschlagen)',
+    'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
+    'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
     
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
