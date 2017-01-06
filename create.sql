@@ -131,6 +131,11 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   KEY `timestamp_idx` (`timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Indexes for table `maillog`
+--
+ALTER TABLE `maillog` ADD FULLTEXT KEY `subject_idx` (`subject`);
+
 -- --------------------------------------------------------
 
 --

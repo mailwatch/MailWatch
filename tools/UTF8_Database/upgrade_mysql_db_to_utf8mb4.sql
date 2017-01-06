@@ -4,6 +4,10 @@ ALTER TABLE `audit_log` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode
 REPAIR TABLE `audit_log`;
 OPTIMIZE TABLE `audit_log`;
 
+ALTER TABLE `autorelease` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+REPAIR TABLE `autorelease`;
+OPTIMIZE TABLE `autorelease`;
+
 ALTER TABLE `blacklist` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 REPAIR TABLE `blacklist`;
 OPTIMIZE TABLE `blacklist`;
@@ -36,7 +40,7 @@ ALTER TABLE `saved_filters` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_uni
 REPAIR TABLE `saved_filters`;
 OPTIMIZE TABLE `saved_filters`;
 
-ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
 ALTER TABLE `spamscores` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 REPAIR TABLE `spamscores`;
 OPTIMIZE TABLE `spamscores`;

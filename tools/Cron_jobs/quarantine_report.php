@@ -58,7 +58,8 @@ foreach ($required_constant as $constant) {
     }
 }
 if ($required_constant_missing_count === 0) {
-    require_once $mailwatch_dir . 'lib/pear/Mail/mail.php';
+    require_once $mailwatch_dir . 'lib/pear/Mail.php';
+    require_once $mailwatch_dir . 'lib/pear/Mail/smtp.php';
     require_once $mailwatch_dir . 'lib/pear/Mail/mime.php';
     date_default_timezone_set(TIME_ZONE);
 
@@ -494,8 +495,8 @@ function send_quarantine_email($email, $filter, $quarantined)
     $mime->setHTMLBody($html_report);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => QUARANTINE_MAIL_HOST);
-    $mail =& Mail::factory('smtp', $mail_param);
+    $mail_param = array('host' => QUARANTINE_MAIL_HOST, 'port' => QUARANTINE_MAIL_PORT);
+    $mail = new Mail_smtp($mail_param);
     $mail->send($email, $hdrs, $body);
     dbg(" ==== Sent e-mail to $email");
 }

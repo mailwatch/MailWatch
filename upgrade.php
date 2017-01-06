@@ -105,7 +105,7 @@ function getTableIndexes($table)
     $result = $link->query($sql);
 
     $indexes = array();
-    if (!$result || $result->num_rows === 0) {
+    if (false === $result || $result->num_rows === 0) {
         return $indexes;
     }
 
@@ -206,25 +206,29 @@ if ($link) {
     // check for missing indexes
     $indexes = array(
         'maillog' => array(
-            'maillog_datetime_idx' => '(`date`,`time`)',
-            'maillog_id_idx' => '(`id`(20))',
-            'maillog_clientip_idx' => '(`clientip`(20))',
-            'maillog_from_idx' => '(`from_address`(200))',
-            'maillog_to_idx' => '(`to_address`(200))',
-            'maillog_host' => '(`hostname`(30))',
-            'from_domain_idx' => '(`from_domain`(50))',
-            'to_domain_idx' => '(`to_domain`(50))',
-            'maillog_quarantined' => '(`quarantined`)',
-            'timestamp_idx' => '(`timestamp`)'
+            'maillog_datetime_idx' => array('fields' => '(`date`,`time`)', 'type' => 'KEY'),
+            'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY'),
+            'maillog_clientip_idx' => array('fields' => '(`clientip`(20))', 'type' => 'KEY'),
+            'maillog_from_idx' => array('fields' => '(`from_address`(200))', 'type' => 'KEY'),
+            'maillog_to_idx' => array('fields' => '(`to_address`(200))', 'type' => 'KEY'),
+            'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY'),
+            'from_domain_idx' => array('fields' => '(`from_domain`(50))', 'type' => 'KEY'),
+            'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY'),
+            'maillog_quarantined' => array('fields' => '(`quarantined`)', 'type' => 'KEY'),
+            'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY'),
+            'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT'),
         )
     );
 
     foreach ($indexes as $table => $indexlist) {
         $existingIndexes = getTableIndexes($table);
-        foreach ($indexlist as $indexname => $value) {
+        foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
                 echo pad(' - Adding missing index `' . $indexname . '` on table `' . $table . '`');
-                $sql = 'ALTER TABLE `' . $table . '` ADD KEY `' . $indexname . '` ' . $value . ';';
+                $sql = 'ALTER TABLE `' . $table .
+                    '` ADD ' . $indexValue['type'] . ' `' . $indexname . '` ' .
+                    $indexValue['fields'] .
+                    ';';
                 executeQuery($sql);
             }
         }

@@ -149,6 +149,7 @@ define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 define('QUARANTINE_USE_FLAG', true);
 define('QUARANTINE_DAYS_TO_KEEP', 30);
 define('QUARANTINE_MAIL_HOST', '127.0.0.1');
+define('QUARANTINE_MAIL_PORT', '25');
 define('QUARANTINE_FROM_ADDR', 'postmaster');
 define('QUARANTINE_REPORT_FROM_NAME', 'MailWatch for MailScanner');
 define('QUARANTINE_REPORT_SUBJECT', 'Message Quarantine Report');
