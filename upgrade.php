@@ -169,7 +169,7 @@ if ($link) {
                     ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
                 executeQuery($sql);
             } else {
-                echo " SKIPPING\n";
+                echo " ALREADY CONVERTED\n";
             }
         }
     }
