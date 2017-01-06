@@ -1862,7 +1862,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $display[$f] = false;
                     break;
                 case 'sascore':
-                    if (get_conf_truefalse('UseSpamAssassin')) {
+                    if (true === get_conf_truefalse('UseSpamAssassin')) {
                         $fieldname[$f] = __('sascore03');
                         $align[$f] = 'right';
                     } else {

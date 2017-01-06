@@ -428,7 +428,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
                 (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message') &&
-                (strtoupper(get_conf_var('UseSpamAssassin')) === 'YES')
+                (strtoupper(get_conf_var('UseSpamAssassin')) !== 'NO')
             ) {
                 echo '   <td align="center"><input type="checkbox" name="learn[]" value="' . $item['id'] . '"><select name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
