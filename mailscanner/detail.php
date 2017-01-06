@@ -310,7 +310,7 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
 }
 
 $sth1 = dbquery($sql1);
-if ($sth1->num_rows > 0) {
+if (false !== $sth1 && $sth1->num_rows > 0) {
     // Display the relay table entries
     echo ' <tr><td class="heading-w175">Relay Information:</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
