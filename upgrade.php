@@ -484,5 +484,6 @@ if (is_array($errors)) {
     echo "*** ERROR/WARNING SUMMARY ***\n";
     foreach ($errors as $error) {
         echo $error . "\n";
+        echo "\n";
     }
 }
