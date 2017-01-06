@@ -90,7 +90,7 @@ if ($_SESSION['user_type'] === 'A') {
     <li><a href="http://mailwatch.org">MailWatch for MailScanner</a>
     <li><a href="http://www.mailscanner.info">MailScanner</a>';
 
-    if (get_conf_truefalse('UseSpamAssassin')) {
+    if (true === get_conf_truefalse('UseSpamAssassin')) {
         echo '<li><a href="http://spamassassin.apache.org/">SpamAssassin</a>';
     }
 
