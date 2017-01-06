@@ -4,6 +4,10 @@ ALTER TABLE `audit_log` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 REPAIR TABLE `audit_log`;
 OPTIMIZE TABLE `audit_log`;
 
+ALTER TABLE `autorelease` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+REPAIR TABLE `autorelease`;
+OPTIMIZE TABLE `autorelease`;
+
 ALTER TABLE `blacklist` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 REPAIR TABLE `blacklist`;
 OPTIMIZE TABLE `blacklist`;
