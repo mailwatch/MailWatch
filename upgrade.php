@@ -31,16 +31,28 @@
  */
 
 header("Content-type: text/plain\n\n");
-require("/var/www/html/mailscanner/functions.php");
+//require '/var/www/html/mailscanner/functions.php';
+require __DIR__ . '/mailscanner/functions.php';
 
 $link = dbconn();
+
+$mysql_utf8_variant = array(
+    'utf8' => array('charset' => 'utf8', 'collation' => 'utf8_unicode_ci'),
+    'utf8mb4' => array('charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci')
+);
+
+/**
+ * @param string $input
+ * @return string
+ */
 function pad($input)
 {
-    $input = str_pad($input, 70, ".", STR_PAD_RIGHT);
-
-    return $input;
+    return str_pad($input, 70, '.', STR_PAD_RIGHT);
 }
 
+/**
+ * @param string $sql
+ */
 function executeQuery($sql)
 {
     global $link;
@@ -48,11 +60,28 @@ function executeQuery($sql)
         echo " OK\n";
     } else {
         echo " ERROR\n";
-        die("Database error: " . $link->error);
+        die('Database error: ' . $link->error . " - SQL = '$sql'\n");
     }
 }
 
-function check_utf8_table($db, $table)
+/**
+ * @param string $table
+ * @return bool|mysqli_result
+ */
+function check_table_exists($table)
+{
+    global $link;
+
+    return $link->query('SELECT 1 FROM `' . $table . '` LIMIT 1');
+}
+
+/**
+ * @param string $db
+ * @param string $table
+ * @param string $utf8variant
+ * @return bool
+ */
+function check_utf8_table($db, $table, $utf8variant = 'utf8')
 {
     global $link;
     $sql = 'SELECT c.character_set_name
@@ -62,15 +91,13 @@ function check_utf8_table($db, $table)
             AND t.table_name = "' . $link->real_escape_string($table) . '"';
     $result = $link->query($sql);
 
-    if (strtolower(database::mysqli_result($result, 0)) === 'utf8') {
-        //mysqli_free_result($result);
-
-        return true;
-    }
-
-    return false;
+    return strtolower(database::mysqli_result($result, 0)) === $utf8variant;
 }
 
+/**
+ * @param string $table
+ * @return array
+ */
 function getTableIndexes($table)
 {
     global $link;
@@ -92,7 +119,7 @@ function getTableIndexes($table)
 $errors = false;
 
 // Test connectivity to the database
-echo pad("Testing connectivity to the database ");
+echo pad('Testing connectivity to the database ');
 if ($link) {
     echo " OK\n";
     // Update schema at this point
@@ -102,63 +129,78 @@ if ($link) {
     ** Updates to the schema for 1.2.0
     */
 
-    echo pad(" - Convert database to UTF-8");
-    $sql = "ALTER DATABASE `" . DB_NAME . "` CHARACTER SET = utf8 COLLATE = utf8_unicode_ci";
+    $server_utf8_variant = 'utf8';
+    if ($link->server_version >= 50503) {
+        $server_utf8_variant = 'utf8mb4';
+    }
+
+    echo pad(' - Convert database to UTF-8');
+    $sql = 'ALTER DATABASE `' . DB_NAME .
+        '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+        ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
     executeQuery($sql);
 
     $utf8_tables = array(
-        "audit_log",
-        "blacklist",
-        "inq",
-        "maillog",
-        "mcp_rules",
-        "mtalog",
-        "outq",
-        "sa_rules",
-        "saved_filters",
-        "spamscores",
-        "user_filters",
-        "users",
-        "whitelist",
+        'audit_log',
+        'autorelease',
+        'blacklist',
+        'inq',
+        'maillog',
+        'mtalog_ids',
+        'mcp_rules',
+        'mtalog',
+        'outq',
+        'sa_rules',
+        'saved_filters',
+        'spamscores',
+        'user_filters',
+        'users',
+        'whitelist',
     );
 
     foreach ($utf8_tables as $table) {
-        echo pad(" - Convert table `" . $table . "` to UTF-8");
-        if (check_utf8_table(DB_NAME, $table) === false) {
-            $sql = "ALTER TABLE `" . $table . "` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci";
-            executeQuery($sql);
+        echo pad(' - Convert table `' . $table . '` to UTF-8');
+        if (false === check_table_exists($table)) {
+            echo " DO NOT EXISTS\n";
         } else {
-            echo " SKIPPING\n";
+            if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
+                $sql = 'ALTER TABLE `' . $table .
+                    '` CONVERT TO CHARACTER SET ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+                    ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+                executeQuery($sql);
+            } else {
+                echo " SKIPPING\n";
+            }
         }
     }
 
-    echo pad(" - Enlarge username field in `audit_log` table");
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    echo pad(' - Enlarge username field in `audit_log` table');
+    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(" - Enlarge password field in `users` table");
-    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    echo pad(' - Enlarge password field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(" - Enlarge username field in `users` table");
-    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    echo pad(' - Enlarge username field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(" - Enlarge fullname field in `users` table");
-    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    echo pad(' - Enlarge fullname field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(" - Enlarge username field in `user_filters` table");
-    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    echo pad(' - Enlarge username field in `user_filters` table');
+    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(" - Enlarge user field in `spamscores` table");
-    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''";
+    echo pad(' - Enlarge user field in `spamscores` table');
+    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(" - Drop `geoip_country` table");
+    echo pad(' - Drop `geoip_country` table');
 
-    $sql = "DROP TABLE IF EXISTS `geoip_country`";
+    $sql = 'DROP TABLE IF EXISTS `geoip_country`';
     executeQuery($sql);
 
     // check for missing indexes
@@ -180,7 +222,7 @@ if ($link) {
     foreach ($indexes as $table => $indexlist) {
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $value) {
-            if (!in_array($indexname, $existingIndexes)) {
+            if (!in_array($indexname, $existingIndexes, true)) {
                 echo pad(' - Adding missing index `' . $indexname . '` on table `' . $table . '`');
                 $sql = 'ALTER TABLE `' . $table . '` ADD KEY `' . $indexname . '` ' . $value . ';';
                 executeQuery($sql);
@@ -407,7 +449,7 @@ if ($link) {
     dbclose();
 } else {
     echo " FAILED\n";
-    $errors[] = "Database connection failed: " . $link->error;
+    $errors[] = 'Database connection failed: ' . $link->error;
 }
 
 echo "\n";
@@ -429,7 +471,7 @@ foreach ($check_settings as $setting => $value) {
         echo " OK\n";
     } else {
         echo " WARNING\n";
-        $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ")";
+        $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
     }
 }
 echo "\n";

@@ -1,6 +1,6 @@
 #Migration to UTF8 MySQL Database
 
-When you created MailWatch database was your MySQL instance configured to use `utf8` charset and `utf8_general_ci` collation?
+When you created MailWatch database was your MySQL instance configured to use `utf8` charset and `utf8_unicode_ci` collation?
 Then you can skip this whole readme and tool directory, this procedure is not for you.
 
 To upgrade a not utf8 existing install to the new utf8 enabled MailWatch 1.2 you need to run an upgrade query on your database:

@@ -49,10 +49,10 @@
  * Create the following table in the mailscanner database:
  * CREATE TABLE IF NOT EXISTS `autorelease` (
  * `id` bigint(20) NOT NULL AUTO_INCREMENT,
- * `msg_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
- * `uid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+ * `msg_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+ * `uid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
  * PRIMARY KEY (`id`)
- * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1 ;
+ * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1 ;
  *
  * Update cron.daily/quarantine_report.php with the modified file
  * Update cron.daily/quarantine_maint.php with the modified file
