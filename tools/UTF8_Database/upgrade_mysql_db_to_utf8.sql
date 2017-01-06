@@ -28,6 +28,10 @@ ALTER TABLE `mtalog` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 REPAIR TABLE `mtalog`;
 OPTIMIZE TABLE `mtalog`;
 
+ALTER TABLE `mtalog_ids` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+REPAIR TABLE `mtalog_ids`;
+OPTIMIZE TABLE `mtalog_ids`;
+
 ALTER TABLE `outq` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 REPAIR TABLE `outq`;
 OPTIMIZE TABLE `outq`;
