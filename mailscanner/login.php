@@ -132,7 +132,7 @@ require_once __DIR__ . '/functions.php';
             display: block;
             margin: 0 auto;
             padding: 4px 0;
-            width: 100px;
+            width: 200px;
             -webkit-border-radius: 3px;
             -moz-border-radius: 3px;
             border-radius: 3px;
@@ -141,6 +141,25 @@ require_once __DIR__ . '/functions.php';
 
         .login fieldset input[type="submit"]:hover {
             background-color: #deb531;
+        }
+
+        .pwdresetButton {
+            text-align: center;
+            margin-bottom:10px;
+        }
+        .pwdresetButton button {
+            padding: 10px;
+            background-color:#f7ce4a;
+
+        }
+
+        .pwdresetButton button:hover {
+            background-color: #deb531;
+        }
+        .pwdresetButton a{
+            color:#000;
+            font-size:14px;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -181,6 +200,19 @@ require_once __DIR__ . '/functions.php';
 
                 <p><input type="submit" name="Submit" value="<?php echo __('login01'); ?>"></p>
             </fieldset>
+            <?php
+            if(defined('PWD_RESET') && PWD_RESET === true)
+            {
+                ?>
+                <div class="pwdresetButton">
+                    <button class="pwdresetButton">
+                        <a href="password_reset.php?stage=1">Forgotten Password?</a>
+                    </button>
+                </div>
+            <?php
+            }
+            ?>
+
         </form>
     <?php
 

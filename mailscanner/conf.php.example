@@ -247,3 +247,10 @@ define('HIDE_UNKNOWN', false);
 //Quarantine Auto Release
 //Set true to allow auto release of quarantined items from quarantine report - note, requires DB modification, see auto-release.php
 define('AUTO_RELEASE', false);
+
+//Password Reset - You need to run password-reset-sql.php prior to using this
+define('PWD_RESET', false);
+define('RESET_LINK_EXPIRE',1); //number of hours link is valid for
+//Set the following 2 variables (and uncomment) if you wish to define an alternative sender name & address for password resets - NOTE - both must be set, otherwise it will use the default settings
+#define('PWD_RESET_FROM_NAME', 'Some other name'); //set if you wish reset email sent from alternative name
+#define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); //set is you wish reset email sent from alternative address
