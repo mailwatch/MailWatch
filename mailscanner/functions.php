@@ -180,7 +180,7 @@ if (!defined('VIRUS_REGEX')) {
         // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
         // break;
     }
-} else {
+} elseif (defined('VIRUS_REGEX' && DISTRIBUTED_SETUP === true)) {
     // Have to set manually as running in DISTRIBUTED_MODE
     die('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
 }
