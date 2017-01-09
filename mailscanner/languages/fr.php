@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.1 */
+/* v0.3.2 */
 
 return array(
     // 01-login.php
@@ -152,6 +152,14 @@ return array(
     'releasemessage03' => 'Libérer : message libéré vers',
     'releaseerrorcode03' => 'Libérer : erreur de code',
     'returnedfrom03' => 'retour en provenance du Sendmail :',
+    'salearn03' => 'Apprentissage SA',
+    'salearnerror03' => 'Apprentissage SA : code d\'erreur',
+    'salearnreturn03' => 'retourné par sa-learn :',
+    'badcontent03' => 'Bad Content',
+    'otherinfected03' => 'Autre',
+    'and03' => 'et',
+    'ldapresultset03' => 'LDAP : Le jeu de résultats renvoyé contient plus d\'une personne. Nous ne pouvons donc pas être sûrs que l\'utilisateur',
+    'ldapisunique03' => 'est unique',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
