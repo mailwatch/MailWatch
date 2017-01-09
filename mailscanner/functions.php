@@ -2688,7 +2688,7 @@ function ldap_authenticate($user, $password)
 function ldap_print_error($ds)
 {
     return sprintf(
-        __('ldapnobind03')
+        __('ldapnobind03'),
         LDAP_HOST,
         ldap_errno($ds),
         ldap_error($ds)
