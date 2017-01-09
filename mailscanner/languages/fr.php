@@ -163,7 +163,6 @@ return array(
     'ldapresults03' => 'dans les résultats LDAP',
     'ldano03' => 'aucun',
     'ldapnobind03' => 'Impossible de ce lier au serveur %s. L\'erreur retournée est : [%s] %s',
-    'ldapnobind03' => 'Impossible de lier le serveur %s. L\'erreur retournée est : [%s] %s',
     'ldapnoresult03' => 'LDAP : le serveur n\'a renvoyé aucun résultat pour l\'utilisateur',
     'ldapresultnodata03' => 'LDAP : le résultat renvoyé ne contient aucune donnée pour l\'utilisateur',
 

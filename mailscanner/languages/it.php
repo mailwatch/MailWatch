@@ -163,7 +163,6 @@ return array(
     'ldapresults03' => 'in LDAP results',
     'ldano03' => 'no',
     'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
-    'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
     'ldapnoresult03' => 'LDAP: The server returned no result-set for user',
     'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
 
