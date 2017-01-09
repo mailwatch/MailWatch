@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.1 */
+/* v0.3.2 */
 
 return array(
     // 01-login.php
@@ -152,6 +152,14 @@ return array(
     'releasemessage03' => 'Freigabe: Nachricht freigegeben nach',
     'releaseerrorcode03' => 'Freigabe: Fehlercode',
     'returnedfrom03' => 'Rückgabe von Sendmail:',
+    'salearn03' => 'SA Learn',
+    'salearnerror03' => 'SA Learn: error code',
+    'salearnreturn03' => 'returned from sa-learn:',
+    'badcontent03' => 'Bad Content',
+    'otherinfected03' => 'Other',
+    'and03' => 'and',
+    'ldapresultset03' => 'LDAP: The returned result-set contains more than one person. So we can not be sure that the user',
+    'ldapisunique03' => 'is unique',
 
     // 04-details.php
     'receivedon04' => 'Empfangen um:',

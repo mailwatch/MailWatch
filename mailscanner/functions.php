@@ -284,7 +284,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="MailWatch for MailScanner"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
@@ -382,7 +382,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
                 } else {
-                    echo '    <tr><td colspan="3">Please verify read permissions on ' . $incomingdir . ' and ' . $outgoingdir . '</td></tr>' . "\n";
+                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
                 // else use mailq which is for sendmail and exim
             } elseif (MAILQ) {
@@ -2062,13 +2062,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'nameinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = 'Bad Content';
+                            $status_array[] = __('badcontent03');
                         }
                         break;
                     case 'otherinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = 'Other';
+                            $status_array[] = __('otherinfected03');
                         }
                         break;
                     case 'size':
@@ -2077,13 +2077,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'spamwhitelisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $whitelisted = true;
-                            $status_array[] = 'W/L';
+                            $status_array[] = __('whitelisted03');
                         }
                         break;
                     case 'spamblacklisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $blacklisted = true;
-                            $status_array[] = 'B/L';
+                            $status_array[] = __('blacklisted03');
                         }
                         break;
                     case 'clienthost':
@@ -2098,7 +2098,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // NOTE: this should always be the last row for it to be displayed correctly
                         // Work out status
                         if (count($status_array) === 0) {
-                            $status = 'Clean';
+                            $status = __('clean03');
                         } else {
                             $status = implode('<br>', $status_array);
                         }
@@ -2621,7 +2621,7 @@ function ldap_authenticate($user, $password)
             return null;
         }
         if (ldap_count_entries($ds, $ldap_search_results) > 1) {
-            @trigger_error('LDAP: The returned result-set contains more than one person. So we can not be sure that the user "' . $user . '" is unique');
+            @trigger_error(__('ldapresultset03') . ' "' . $user . '" ' . __('ldapisunique03'));
             return null;
         }
 
@@ -3386,10 +3386,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         debug("Learner - running SQL: $sql");
                         dbquery($sql);
                     }
-                    $status[] = 'SA Learn: ' . implode(', ', $output_array);
+                    $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
                     audit_log('SpamAssassin was trained on message ' . $list[$val]['msgid'] . ' as ' . $learn_type);
                 } else {
-                    $status[] = 'SA Learn: error code ' . $retval . " returned from sa-learn:\n" . implode(
+                    $status[] = __('salearnerror03') . ' ' . $retval . " " . __('salearnreturn03') . "\n" . implode(
                             "\n",
                             $output_array
                         );
