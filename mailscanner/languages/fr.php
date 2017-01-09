@@ -61,7 +61,7 @@ return array(
     'message03' => 'Message',
     'tries03' => 'Essais',
     'last03' => 'Dernier',
-    'loadaverage03' => 'Charge Moyenne :',
+    'loadaverage03' => 'Charge moyenne :',
     'mailqueue03' => 'Files d\'attente de courrier',
     'inbound03' => 'En entrée :',
     'outbound03' => 'En partance :',
