@@ -161,8 +161,10 @@ return array(
     'ldapresultset03' => 'LDAP: The returned result-set contains more than one person. So we can not be sure that the user',
     'ldapisunique03' => 'is unique',
     'ldapresults03' => 'in LDAP results',
-    'ldano03' => 'no',
+    'ldapno03' => 'no',
     'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
+    'ldapnoresult03' => 'LDAP: The server returned no result-set for user',
+    'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
 
     // 04-details.php
     'receivedon04' => 'Empfangen um:',

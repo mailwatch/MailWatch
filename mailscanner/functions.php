@@ -2642,7 +2642,7 @@ function ldap_authenticate($user, $password)
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
-                    @trigger_error(__('ldano03') . ' "' . LDAP_EMAIL_FIELD . '" ' . __('ldapresults03'));
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_EMAIL_FIELD . '" ' . __('ldapresults03'));
                     return null;
                 }
 
