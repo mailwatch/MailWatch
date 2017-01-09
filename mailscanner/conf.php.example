@@ -245,3 +245,6 @@ define('HIDE_UNKNOWN', false);
 //Quarantine Auto Release
 //Set true to allow auto release of quarantined items from quarantine report - require autorelease db table
 define('AUTO_RELEASE', false);
+
+//Give Domain Admins ability to release dangerous content, like viruses
+define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
