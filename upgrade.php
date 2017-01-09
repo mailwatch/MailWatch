@@ -31,8 +31,8 @@
  */
 
 header("Content-type: text/plain\n\n");
-//require '/var/www/html/mailscanner/functions.php';
-require __DIR__ . '/mailscanner/functions.php';
+require '/var/www/html/mailscanner/functions.php';
+//require __DIR__ . '/mailscanner/functions.php';
 
 $link = dbconn();
 
@@ -485,4 +485,5 @@ if (is_array($errors)) {
     foreach ($errors as $error) {
         echo $error . "\n";
     }
+    echo "\n";
 }
