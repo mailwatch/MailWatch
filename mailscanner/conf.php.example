@@ -37,7 +37,6 @@
 define('DEBUG', false);
 
 // Define language (de, en, fr, it, nl, pt_br);
-// See http://www.lingoes.net/en/translator/langcode.htm
 define('LANG', 'en');
 
 // Database settings
@@ -54,7 +53,7 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', 'mailscanner');
 define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . '/' . DB_NAME);
 
-// LDAP settings
+// LDAP settings for authentication
 define('USE_LDAP', false);
 define('LDAP_SSL', false); // set to true if using LDAP with SSL encryption
 define('LDAP_HOST', 'server.example.com');
@@ -72,8 +71,11 @@ define('LDAP_MS_AD_COMPATIBILITY', false);
 // Set Time Zone
 // See http://php.net/manual/en/timezones.php for a list of usable timezones
 define('TIME_ZONE', 'America/New_York');
+// Date/Time settings
+define('DATE_FORMAT', '%d/%m/%y');
+define('TIME_FORMAT', '%H:%i:%s');
 
-// Proxy Settings
+// HTTP Proxy Settings
 define('USE_PROXY', false);
 define('PROXY_SERVER', '127.0.0.1');
 define('PROXY_PORT', '8080');
@@ -121,10 +123,6 @@ define('RESOLVE_IP_ON_DISPLAY', false);
 define('FROMTO_MAXLEN', 50);
 define('SUBJECT_MAXLEN', 0);
 
-// Date/Time settings
-define('DATE_FORMAT', '%d/%m/%y');
-define('TIME_FORMAT', '%H:%i:%s');
-
 // Define how many days of emails to keep
 define('RECORD_DAYS_TO_KEEP', 60);
 
@@ -134,7 +132,7 @@ define('AUDIT_DAYS_TO_KEEP', 60);
 // Show Software Version tab (only Admins can see it)
 define('SHOW_SFVERSION', true);
 
-// Show Documentation tab
+// Show Documentation tab (deprecated feature, should always be false, use at your own risk)
 define('SHOW_DOC', false);
 
 // Show supplemental Postfix info in report
@@ -142,8 +140,8 @@ define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 
 /* Quarantine settings */
 
-// The quarantine flag is only available on MailScanner >=4.43
-// it will dramtically improved the speed of quarantine operations
+// The quarantine flag is available from MailScanner 4.43
+// it will drammatically improved the speed of quarantine operations
 // but requires that you use the quarantine_maint.php in place of
 // the clean.quarantine script provided with MailScanner.
 define('QUARANTINE_USE_FLAG', true);
@@ -168,7 +166,7 @@ define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 
 // This turns virus names into links that can be used to get more information
 // about a given virus or virus alias.  Comment out or set to false to disable.
-define('VIRUS_INFO', "http://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1");
+define('VIRUS_INFO', 'http://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1');
 
 // When filtering data - only use the envelope 'To' address or 'To' domain.
 // This greatly increases perfomance as MySQL will not use indexes when
@@ -182,7 +180,7 @@ define('DISTRIBUTED_SETUP', false);
 // PHP memory limit when viewing details and attachments of messages
 // "128M" should be fine in most cases, but you may need to increase it if
 // you're having problems viewing the details of large messages
-define('MEMORY_LIMIT', "128M");
+define('MEMORY_LIMIT', '128M');
 
 // Relative path to RPC server
 define('RPC_RELATIVE_PATH', '/mailscanner');
@@ -228,7 +226,7 @@ define('ALLOWED_TAGS', '<a><br><b><body><div><font><h1><h2><h3><h4><head><html><
 // Initially disabled as other config needs to be done to use it
 define('MSRE', false);
 define('MSRE_RELOAD_INTERVAL', 5);
-define('MSRE_RULESET_DIR', "/etc/MailScanner/rules");
+define('MSRE_RULESET_DIR', '/etc/MailScanner/rules');
 
 // Spamassassin sa-learn max message size (Spamassassin Version >= 3.4.0)
 // Size is in bytes
@@ -245,5 +243,5 @@ define('HIDE_NON_SPAM', false);
 define('HIDE_UNKNOWN', false);
 
 //Quarantine Auto Release
-//Set true to allow auto release of quarantined items from quarantine report - note, requires DB modification, see auto-release.php
+//Set true to allow auto release of quarantined items from quarantine report - require autorelease db table
 define('AUTO_RELEASE', false);
