@@ -2612,12 +2612,12 @@ function ldap_authenticate($user, $password)
         }
 
         if (false === $ldap_search_results) {
-            @trigger_error('LDAP: The server returned no result-set for user "' . $user . '"');
+            @trigger_error(__('ldapnoresult03') . ' "' . $user . '"');
             return null;
         }
         if (1 > ldap_count_entries($ds, $ldap_search_results)) {
             //
-            @trigger_error('LDAP: The returned result set contains no data for user "' . $user . '"');
+            @trigger_error(__('ldapresultnodata03') . ' "' . $user . '"');
             return null;
         }
         if (ldap_count_entries($ds, $ldap_search_results) > 1) {
@@ -2642,7 +2642,7 @@ function ldap_authenticate($user, $password)
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
-                    @trigger_error('no "' . LDAP_EMAIL_FIELD . '" in LDAP results');
+                    @trigger_error(__('ldano03') . ' "' . LDAP_EMAIL_FIELD . '" ' . __('ldapresults03'));
                     return null;
                 }
 
@@ -2688,7 +2688,7 @@ function ldap_authenticate($user, $password)
 function ldap_print_error($ds)
 {
     return sprintf(
-        'Could not bind to server %s. Returned Error was: [%s] %s',
+        __('ldapnobind03')
         LDAP_HOST,
         ldap_errno($ds),
         ldap_error($ds)

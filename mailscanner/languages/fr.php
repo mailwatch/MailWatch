@@ -160,6 +160,12 @@ return array(
     'and03' => 'et',
     'ldapresultset03' => 'LDAP : Le jeu de résultats renvoyé contient plus d\'une personne. Nous ne pouvons donc pas être sûrs que l\'utilisateur',
     'ldapisunique03' => 'est unique',
+    'ldapresults03' => 'dans les résultats LDAP',
+    'ldano03' => 'aucun',
+    'ldapnobind03' => 'Impossible de ce lier au serveur %s. L\'erreur retournée est : [%s] %s',
+    'ldapnobind03' => 'Impossible de lier le serveur %s. L\'erreur retournée est : [%s] %s',
+    'ldapnoresult03' => 'LDAP : le serveur n\'a renvoyé aucun résultat pour l\'utilisateur',
+    'ldapresultnodata03' => 'LDAP : le résultat renvoyé ne contient aucune donnée pour l\'utilisateur',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
