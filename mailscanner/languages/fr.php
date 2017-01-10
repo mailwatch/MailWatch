@@ -155,7 +155,7 @@ return array(
     'salearn03' => 'Apprentissage SA',
     'salearnerror03' => 'Apprentissage SA : code d\'erreur',
     'salearnreturn03' => 'retourné par sa-learn :',
-    'badcontent03' => 'Bad Content',
+    'badcontent03' => 'Contenu nocif',
     'otherinfected03' => 'Autre',
     'and03' => 'et',
     'ldapresultset03' => 'LDAP : Le jeu de résultats renvoyé contient plus d\'une personne. Nous ne pouvons donc pas être sûrs que l\'utilisateur',
