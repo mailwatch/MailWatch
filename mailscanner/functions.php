@@ -2862,7 +2862,7 @@ function ldap_get_conf_truefalse($entry)
 function translate_etoi($name)
 {
     $name = strtolower($name);
-    $file = MS_LIB_DIR . 'MailScanner/ConfigDefs.pl';
+    $file = MS_SHARE_DIR . 'perl/MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'rb')
     or die(__('dietranslateetoi03') . " $file\n");
     while (!feof($fh)) {

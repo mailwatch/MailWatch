@@ -176,7 +176,7 @@ function rpc_quarantine_delete($msg)
 
 function rpc_sophos_status()
 {
-    $output = shell_exec(MS_LIB_DIR . 'sophos-wrapper /usr/local/Sophos -v');
+    $output = shell_exec(MS_LIB_DIR . 'wrapper/sophos-wrapper /usr/local/Sophos -v');
     return new xmlrpcresp(new xmlrpcval($output, 'string'));
 }
 

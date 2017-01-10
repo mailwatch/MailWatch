@@ -88,14 +88,15 @@ define('PROXY_PASS', '');
 // Paths
 define('MAILWATCH_HOME', '/var/www/html/mailscanner');
 define('MS_CONFIG_DIR', '/etc/MailScanner/');
-define('MS_LIB_DIR', '/usr/share/MailScanner/');
+define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // path for ConfigDefs.pl file
+define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // path for sophos-wrapper file
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
 define('IMAGES_DIR', './images/'); // trailing slash needed
 define('CACHE_DIR', './images/cache/'); // JpGraph cache
 define('TTF_DIR', './lib/jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR', '/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
-define('SA_PREFS', MS_CONFIG_DIR . 'spam.assassin.prefs.conf');
+define('SA_PREFS', MS_CONFIG_DIR . 'spamassassin.conf'); // spam.assassin.prefs.conf in V4, spamassassin.conf in V5
 define('TEMP_DIR', '/tmp/');
 
 // Define MailWatch logo name
@@ -135,7 +136,7 @@ define('SHOW_SFVERSION', true);
 // Show Documentation tab (deprecated feature, should always be false, use at your own risk)
 define('SHOW_DOC', false);
 
-// Show supplemental Postfix info in report
+// Show supplemental Postfix info in report, enable when using Postix_relay tool
 define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 
 /* Quarantine settings */
