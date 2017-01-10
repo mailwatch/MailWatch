@@ -442,11 +442,12 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo '  <td>' . $item['file'] . '</td>' . "\n";
             echo '  <td>' . $item['type'] . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
+            // Domain admins can view the file only if enabled
             if (
                 (
                     $item['dangerous'] === 'N' ||
                     $_SESSION['user_type'] === 'A' ||
-                    (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
+                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
