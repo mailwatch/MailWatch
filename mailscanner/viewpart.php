@@ -133,7 +133,7 @@ function decode_structure($structure)
  </html>' . "\n";
             break;
         case 'text/html':
-            echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
+            echo '<!DOCTYPE html>' . "\n";
             if (
                 isset($structure->ctype_parameters['charset']) &&
                 strtolower($structure->ctype_parameters['charset']) !== 'utf-8'
