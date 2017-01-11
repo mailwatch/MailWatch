@@ -2,6 +2,8 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
+ATTENTION: with Debian, you will be need to change the name of the cron files as Debian don't like filename with a dot (.) in name.
+
 -------------------------------------------
 Database cleanup of maillog records
 -------------------------------------------
@@ -17,8 +19,10 @@ Quarantine Maintenance
 --------------------------------------------
 
 quarantine_maint.php
+quarantine_maint.sh
 
-Add it to /etc/cron.daily/
+Add quarantine_maint.sh to /etc/cron.daily/
+Add quarantine_maint.php to /usr/local/bin/
 
 Delete the clean.quarantine cron (MailScanner v4).
 
@@ -47,3 +51,4 @@ msre_reload.crond
 See the instructions in tools/MailScanner_rule_editor/INSTALL
 
 Add it to /etc/cron.d when you have properly configured and installed msre_reload.sh.
+
