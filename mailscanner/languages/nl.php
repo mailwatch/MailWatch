@@ -380,7 +380,7 @@ return array(
     'domainadmin12' => 'Domein Administrator',
     'admin12' => 'Administrator',
     'quarrep12' => 'Quarantaine Rapport:',
-    'senddaily12' => 'Stuur Dagelijks Rapport?:',
+    'senddaily12' => 'Stuur Dagelijks Rapport?',
     'quarreprec12' => 'Quarantaine Rapport Ontvanger:',
     'overrec12' => 'Andere quarantaine rapport ontvanger?<BR>(gebruiker email wanneer geen invoer)',
     'scanforspam12' => 'Zoek naar Spam:',

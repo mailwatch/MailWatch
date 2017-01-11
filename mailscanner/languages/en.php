@@ -380,7 +380,7 @@ return array(
     'domainadmin12' => 'Domain Administrator',
     'admin12' => 'Administrator',
     'quarrep12' => 'Quarantine Report:',
-    'senddaily12' => 'Send Daily Report?:',
+    'senddaily12' => 'Send Daily Report?',
     'quarreprec12' => 'Quarantine Report Recipient:',
     'overrec12' => 'Override quarantine report recipient?<BR>(uses your username if blank)',
     'scanforspam12' => 'Scan for Spam:',

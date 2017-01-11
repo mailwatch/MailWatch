@@ -380,7 +380,7 @@ return array(
     'domainadmin12' => 'Domänen Administrator',
     'admin12' => 'Administrator',
     'quarrep12' => 'Quarantäne Bericht:',
-    'senddaily12' => 'Täglichen Bericht senden?:',
+    'senddaily12' => 'Täglichen Bericht senden?',
     'quarreprec12' => 'Empfänger des Quarantäne Berichts:',
     'overrec12' => 'Empfangadresse für Quarantäne Bericht überschreiben?<BR>(falls leer, wird der Benutzername verwendet)',
     'scanforspam12' => 'Auf Spam prüfen:',
