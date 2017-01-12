@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.3.1 */
+/* v0.3.2 */
 
 return array(
     // 01-login.php
@@ -152,6 +152,19 @@ return array(
     'releasemessage03' => 'Release: message released to',
     'releaseerrorcode03' => 'Release: error code',
     'returnedfrom03' => 'returned from Sendmail:',
+    'salearn03' => 'SA Learn',
+    'salearnerror03' => 'SA Learn: error code',
+    'salearnreturn03' => 'returned from sa-learn:',
+    'badcontent03' => 'Bad Content',
+    'otherinfected03' => 'Other',
+    'and03' => 'and',
+    'ldapresultset03' => 'LDAP: The returned result-set contains more than one person. So we can not be sure that the user',
+    'ldapisunique03' => 'is unique',
+    'ldapresults03' => 'in LDAP results',
+    'ldapno03' => 'no',
+    'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
+    'ldapnoresult03' => 'LDAP: The server returned no result-set for user',
+    'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',

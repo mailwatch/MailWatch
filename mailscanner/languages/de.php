@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.1 */
+/* v0.3.2 */
 
 return array(
     // 01-login.php
@@ -152,6 +152,19 @@ return array(
     'releasemessage03' => 'Freigabe: Nachricht freigegeben nach',
     'releaseerrorcode03' => 'Freigabe: Fehlercode',
     'returnedfrom03' => 'Rückgabe von Sendmail:',
+    'salearn03' => 'SA Learn',
+    'salearnerror03' => 'SA Learn: Fehlercode',
+    'salearnreturn03' => 'von sa-learn zurückgegeben:',
+    'badcontent03' => 'Schlechter Inhalt',
+    'otherinfected03' => 'Weitere',
+    'and03' => 'und',
+    'ldapresultset03' => 'LDAP: Der zurückgegebene Ergebnis-Satz enthält mehr als eine Person. Daher können wir nicht sicher sein, dass der Benutzer',
+    'ldapisunique03' => 'einzigartig ist',
+    'ldapresults03' => 'im LDAP Ergebnis',
+    'ldapno03' => 'Keine',
+    'ldapnobind03' => 'Verbindung zu Server %s fehlgeschlagen. Zurückgegebener Fehler ist: [%s] %s',
+    'ldapnoresult03' => 'LDAP: Die Antwort des Servers enthielt kein Ergebnis-Satz für den Benutzer',
+    'ldapresultnodata03' => 'LDAP: Der zurückgegebene Ergebnis-Satz enthält keine Daten für den Benutzer',
 
     // 04-details.php
     'receivedon04' => 'Empfangen um:',
@@ -469,8 +482,8 @@ return array(
     'oldesttoken18' => 'Ältester Token:',
     'newesttoken18' => 'Neuester Token:',
     'lastjournalsync18' => 'Letzte Protokoll-Synchronisierung:',
-    'lastexpiry18' => 'Letzter Verfall:',
-    'lastexpirycount18' => 'Lezter Verfalls-Reduktions-Zähler:',//what is this?
+    'lastexpiry18' => 'Letzter Ablauftermin:',
+    'lastexpirycount18' => 'Abnahme-Zähler für letzten Ablauftermin:',
     'tokens18' => 'Token',
     
     // 19-clamav_status.php

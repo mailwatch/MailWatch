@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -175,7 +175,11 @@ foreach ($header_fields as $field) {
     }
 }
 
-if (($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) || $_SESSION['user_type'] === 'A') {
+if (
+        ($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) ||
+        $_SESSION['user_type'] === 'A' ||
+        (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
+) {
     lazy(
         __('actions06'),
         "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . '</a>',
@@ -218,7 +222,11 @@ foreach ($mime_struct as $key => $part) {
             } else {
                 echo 'Attachment without name';
             }
-            if (($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) || $_SESSION['user_type'] === 'A') {
+            if (
+                ($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) ||
+                $_SESSION['user_type'] === 'A' ||
+                (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
+            ) {
                 echo ' <a href="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }
             echo '  </td>';

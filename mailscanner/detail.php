@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -418,7 +418,12 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
             // Currently this only applies to messages that contain viruses.
-            if ($_SESSION['user_type'] === 'A' || $item['dangerous'] !== 'Y') {
+            // visible only to Administrators and Domain Admin only if DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS is enabled
+            if (
+                $_SESSION['user_type'] === 'A' ||
+                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D') ||
+                $item['dangerous'] !== 'Y'
+            ) {
                 echo '  <td align="center"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
                 echo '<td>&nbsp;&nbsp;</td>' . "\n";
@@ -437,8 +442,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo '  <td>' . $item['file'] . '</td>' . "\n";
             echo '  <td>' . $item['type'] . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
-            if (($item['dangerous'] === 'N' || $_SESSION['user_type'] === 'A') &&
-                preg_match('!message/rfc822!', $item['type'])
+            // Domain admins can view the file only if enabled
+            if (
+                (
+                    $item['dangerous'] === 'N' ||
+                    $_SESSION['user_type'] === 'A' ||
+                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
+                ) && preg_match('!message/rfc822!', $item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
                     substr($item['path'], strlen($quarantinedir) + 1) .
@@ -456,10 +466,15 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr>' . "\n";
-        if ($is_dangerous > 0 && $_SESSION['user_type'] !== 'A') {
-            echo '  <td colspan="6">&nbsp;</td>' . "\n";
-        } else {
+        if ($is_dangerous > 0 &&
+            (
+                $_SESSION['user_type'] === 'A' ||
+                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
+            )
+        ) {
             echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . __('colon99') . '&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
+        } else {
+            echo '  <td colspan="6">&nbsp;</td>' . "\n";
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";

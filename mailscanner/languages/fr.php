@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.1 */
+/* v0.3.2 */
 
 return array(
     // 01-login.php
@@ -61,7 +61,7 @@ return array(
     'message03' => 'Message',
     'tries03' => 'Essais',
     'last03' => 'Dernier',
-    'loadaverage03' => 'Charge Moyenne :',
+    'loadaverage03' => 'Charge moyenne :',
     'mailqueue03' => 'Files d\'attente de courrier',
     'inbound03' => 'En entrée :',
     'outbound03' => 'En partance :',
@@ -152,6 +152,19 @@ return array(
     'releasemessage03' => 'Libérer : message libéré vers',
     'releaseerrorcode03' => 'Libérer : erreur de code',
     'returnedfrom03' => 'retour en provenance du Sendmail :',
+    'salearn03' => 'Apprentissage SA',
+    'salearnerror03' => 'Apprentissage SA : code d\'erreur',
+    'salearnreturn03' => 'retourné par sa-learn :',
+    'badcontent03' => 'Contenu nocif',
+    'otherinfected03' => 'Autre',
+    'and03' => 'et',
+    'ldapresultset03' => 'LDAP : Le jeu de résultats renvoyé contient plus d\'une personne. Nous ne pouvons donc pas être sûrs que l\'utilisateur',
+    'ldapisunique03' => 'est unique',
+    'ldapresults03' => 'dans les résultats LDAP',
+    'ldapno03' => 'aucun',
+    'ldapnobind03' => 'Impossible de ce lier au serveur %s. L\'erreur retournée est : [%s] %s',
+    'ldapnoresult03' => 'LDAP : le serveur n\'a renvoyé aucun résultat pour l\'utilisateur',
+    'ldapresultnodata03' => 'LDAP : le résultat renvoyé ne contient aucune donnée pour l\'utilisateur',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
