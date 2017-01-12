@@ -810,7 +810,7 @@ function dbquery($sql)
         }
     }
 
-    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>" . __('sql0303') . "</B><BR><PRE>$sql</PRE>");
 
     return $result;
 }
