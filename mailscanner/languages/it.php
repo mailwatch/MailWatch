@@ -30,7 +30,7 @@
  */
 
 /* languages/it.php */
-/* v0.3.2 */
+/* v0.3.3 */
 
 return array(
     // 01-login.php
@@ -165,8 +165,10 @@ return array(
     'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
     'ldapnoresult03' => 'LDAP: The server returned no result-set for user',
     'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
+    'virus03' => 'Virus',
+    'sql03' => 'SQL:',
 
-    // 04-details.php
+    // 04-detail.php
     'receivedon04' => 'Ricevuto il:',
     'receivedby04' => 'Ricevuto su:',
     'receivedfrom04' => 'Ricevuto da:',

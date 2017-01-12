@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.3.2 */
+/* v0.3.3 */
 
 return array(
     // 01-login.php
@@ -165,6 +165,8 @@ return array(
     'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
     'ldapnoresult03' => 'LDAP: The server returned no result-set for user',
     'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
+    'virus03' => 'Virus',
+    'sql03' => 'SQL:',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -379,7 +381,7 @@ return array(
     'domainadmin12' => 'Domain Administrator',
     'admin12' => 'Administrator',
     'quarrep12' => 'Quarantine Report:',
-    'senddaily12' => 'Send Daily Report?:',
+    'senddaily12' => 'Send Daily Report?',
     'quarreprec12' => 'Quarantine Report Recipient:',
     'overrec12' => 'Override quarantine report recipient?<BR>(uses your username if blank)',
     'scanforspam12' => 'Scan for Spam:',

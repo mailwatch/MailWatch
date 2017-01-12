@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.2 */
+/* v0.3.3 */
 
 return array(
     // 01-login.php
@@ -40,7 +40,7 @@ return array(
     'mwlogin01' => 'Connexion&nbsp;à&nbsp;MailWatch',
     'badup01' => 'Mauvais Utilisateur ou Mot de Passe',
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
-    'errorund01' => 'Une rreur inconnue c\'est produite',
+    'errorund01' => 'Une erreur inconnue c\'est produite',
     'login01' => 'Connexion',
 
     // 03-functions.php
@@ -165,6 +165,8 @@ return array(
     'ldapnobind03' => 'Impossible de ce lier au serveur %s. L\'erreur retournée est : [%s] %s',
     'ldapnoresult03' => 'LDAP : le serveur n\'a renvoyé aucun résultat pour l\'utilisateur',
     'ldapresultnodata03' => 'LDAP : le résultat renvoyé ne contient aucune donnée pour l\'utilisateur',
+    'virus03' => 'Virus',
+    'sql03' => 'SQL :',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
