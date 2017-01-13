@@ -654,7 +654,7 @@ return array(
     'nodata48' => 'Zu wenig Daten zum Generieren des Graphen.',
     'virus48' => 'Virus',
     'count48' => 'Anzahl',
-    'dienorow48' => 'Error: keine Einträge von der Datenbank erhalten...',
+    'dienorow48' => 'Error: Keine Einträge von der Datenbank erhalten',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Anzahl Mails pro Tag',
@@ -772,7 +772,7 @@ return array(
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ' :',
-    'diemysql99' => 'Fehler: keine Daten von der Datenbank erhalten',
+    'diemysql99' => 'Fehler: Keine Daten von der Datenbank erhalten.',
     'message199' => 'Datei ist nicht lesbar. Bitte stellen Sie sicher, dass',
     'message299' => 'von MailWatch gelesen und beschrieben werden kann',
     'mwlogo99' => 'MailWatch Logo',

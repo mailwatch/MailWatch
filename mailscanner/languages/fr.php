@@ -654,7 +654,7 @@ return array(
     'nodata48' => 'Pas assez de données pour générer le graphique.',
     'virus48' => 'Virus',
     'count48' => 'Nombre',
-    'dienorow48' => 'Erreur : aucun enregistrement trouvé dans la base de données...',
+    'dienorow48' => 'Erreur : aucun enregistrement trouvé dans la base de données',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total des messages par date',
@@ -772,7 +772,7 @@ return array(
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ' :',
-    'diemysql99' => 'Erreur : aucun enregistrement trouvé dans la base de données',
+    'diemysql99' => 'Erreur : aucun enregistrement trouvé dans la base de données.',
     'message199' => 'Le fichier n\'est pas lisible. Vérifiez que',
     'message299' => 'soit lisible et puissent être écrit part MailWatch',
     'mwlogo99' => 'Logo MailWatch',

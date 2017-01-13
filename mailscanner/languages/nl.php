@@ -654,7 +654,7 @@ return array(
     'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
     'count48' => 'Count',
-    'dienorow48' => 'Error: no rows retrieved from database...',
+    'dienorow48' => 'Error: No rows retrieved from database',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
@@ -772,7 +772,7 @@ return array(
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ' :',
-    'diemysql99' => 'Error: no rows retrieved from database',
+    'diemysql99' => 'Error: No rows retrieved from database.',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
     'mwlogo99' => 'MailWatch Logo',
