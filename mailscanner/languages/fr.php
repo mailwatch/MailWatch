@@ -654,7 +654,7 @@ return array(
     'nodata48' => 'Pas assez de données pour générer le graphique.',
     'virus48' => 'Virus',
     'count48' => 'Nombre',
-    'dienorow48' => 'Erreur : aucun enregistrement trouvé dans la base de données',
+    'dienorow48' => 'Erreur : aucun enregistrement trouvé dans la base de données.',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total des messages par date',

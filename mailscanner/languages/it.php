@@ -653,7 +653,7 @@ return array(
     'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
     'count48' => 'Count',
-    'dienorow48' => 'Error: No rows retrieved from database',
+    'dienorow48' => 'Error: No rows retrieved from database.',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
