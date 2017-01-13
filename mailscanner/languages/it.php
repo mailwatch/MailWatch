@@ -30,7 +30,7 @@
  */
 
 /* languages/it.php */
-/* v0.3.2 */
+/* v0.3.3 */
 
 return array(
     // 01-login.php
@@ -165,8 +165,10 @@ return array(
     'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
     'ldapnoresult03' => 'LDAP: The server returned no result-set for user',
     'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
+    'virus03' => 'Virus',
+    'sql03' => 'SQL:',
 
-    // 04-details.php
+    // 04-detail.php
     'receivedon04' => 'Ricevuto il:',
     'receivedby04' => 'Ricevuto su:',
     'receivedfrom04' => 'Ricevuto da:',
@@ -651,7 +653,7 @@ return array(
     'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
     'count48' => 'Count',
-    'dienorow48' => 'Error: no rows retrieved from database...',
+    'dienorow48' => 'Error: No rows retrieved from database',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
@@ -768,7 +770,7 @@ return array(
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ' :',
-    'diemysql99' => 'Error: no rows retrieved from database',
+    'diemysql99' => 'Error: No rows retrieved from database.',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
     'mwlogo99' => 'MailWatch Logo',

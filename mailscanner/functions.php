@@ -810,7 +810,7 @@ function dbquery($sql)
         }
     }
 
-    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>" . __('sql03') . "</B><BR><PRE>$sql</PRE>");
 
     return $result;
 }
@@ -2023,7 +2023,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'isspam':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $spam = true;
-                            $status_array[] = 'Spam';
+                            $status_array[] = __('spam103');
                         }
                         break;
                     case 'ishighspam':
@@ -2034,7 +2034,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'ismcp':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $mcp = true;
-                            $status_array[] = 'MCP';
+                            $status_array[] = __('mcp03');
                         }
                         break;
                     case 'ishighmcp':
@@ -2045,7 +2045,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'virusinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = 'Virus';
+                            $status_array[] = __('virus03');
                         }
                         break;
                     case 'report':

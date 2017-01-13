@@ -66,7 +66,7 @@ if (is_writable(CACHE_DIR)) {
     // Must be one or more rows
     $result = dbquery($sql);
     if ($result->num_rows <= 0) {
-        die(__('dienorow48') . $result->num_rows . "\n");
+        die(__('dienorow48') . " (" . $result->num_rows . ")." . "\n");
     }
 
     $virus_array = array();
