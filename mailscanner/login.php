@@ -150,7 +150,7 @@ require_once __DIR__ . '/functions.php';
     <h1><?php echo __('mwlogin01'); ?></h1>
     <?php if (file_exists('conf.php')) {
     ?>
-        <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
+        <form name="loginform" class="loginform" method="post" action="checklogin.php">
             <fieldset>
                 <?php if (isset($_GET['error'])) {
         ?>

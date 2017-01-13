@@ -372,7 +372,7 @@ if ($_SESSION['user_type'] === 'A') {
         echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>'."\n";
         echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" value="' . __('update12') . '"></td></tr>'."\n";
-        echo '</table></form><br>'."\n";
+        echo '</table></form><script>$(\'form\').attr(\'autocomplete\',\'off\');</script><br>'."\n";
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
     } else {
