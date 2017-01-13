@@ -167,6 +167,7 @@ return array(
     'ldapresultnodata03' => 'LDAP : le résultat renvoyé ne contient aucune donnée pour l\'utilisateur',
     'virus03' => 'Virus',
     'sql03' => 'SQL :',
+    'norowfound03' => 'Aucune ligne récupérée !',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',

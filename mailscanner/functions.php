@@ -2369,7 +2369,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
         echo '</table>' . "\n";
     } else {
-        echo "No rows retrieved!\n";
+        echo __('norowfound03') . "\n";
     }
     echo '<br>' . "\n";
     if ($pager) {

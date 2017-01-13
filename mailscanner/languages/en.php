@@ -167,6 +167,7 @@ return array(
     'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
     'virus03' => 'Virus',
     'sql03' => 'SQL:',
+    'norowfound03' => 'No rows retrieved!',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
