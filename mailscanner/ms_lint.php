@@ -42,7 +42,8 @@ echo ' </tr>' . "\n";
 
 if (!defined('MS_EXECUTABLE_PATH')) {
     echo '<tr>
-    <td colspan="2">Please set MS_EXECUTABLE_PATH in conf.php to enable this feature</td>
+    <td colspan="2">';
+    echo __('message28') . '</td>
     </tr>';
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {

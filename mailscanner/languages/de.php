@@ -522,6 +522,7 @@ return array(
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Kann pipe nicht öffnen',
+    'message28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
