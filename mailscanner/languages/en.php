@@ -386,7 +386,7 @@ return array(
     'quarreprec12' => 'Quarantine Report Recipient:',
     'overrec12' => 'Override quarantine report recipient?<BR>(uses your username if blank)',
     'scanforspam12' => 'Scan for Spam:',
-    'scanforspam212' => 'Scan E-Mail for Spam',
+    'scanforspam212' => 'Scan e-mail for Spam',
     'pontspam12' => 'Spam Score:',
     'hpontspam12' => 'High Spam Score:',
     'usedefault12' => 'Use Default',
@@ -611,14 +611,14 @@ return array(
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Recipients by Quantity',
     'top10recipqt42' => 'Top 10 Recipients by Quantity',
-    'email42' => 'E-Mail Address',
+    'email42' => 'E-mail Address',
     'count42' => 'Count',
     'size42' => 'Size',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
     'top10recipvol43' => 'Top 10 Recipients by Volume',
-    'email43' => 'E-Mail Address',
+    'email43' => 'E-mail Address',
     'count43' => 'Count',
     'size43' => 'Size',
 
@@ -639,14 +639,14 @@ return array(
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
-    'email46' => 'E-Mail Address',
+    'email46' => 'E-mail Address',
     'count46' => 'Count',
     'size46' => 'Size',
 
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
-    'email47' => 'E-Mail Address',
+    'email47' => 'E-mail Address',
     'count47' => 'Count',
     'size47' => 'Size',
 
@@ -757,7 +757,7 @@ return array(
     'title61' => 'Message Quarantine Report',
     'message61' => 'The variable %s is empty, please set a value in conf.php.',
     'text611' => 'Quarantine Report for %s',
-    'text612' => 'In the last %s day(s) you have received %s E-Mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.',
+    'text612' => 'In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.',
     'release61' => 'Release',
     'virus61' => 'Virus',
     'badcontent61' => 'Bad Content',
