@@ -333,7 +333,7 @@ return array(
     'nameinfected09' => 'contient un attachement nocif (>0 = VRAI)',
     'otherinfected09' => 'contient un autre type d\'infection (>0 = VRAI)',
     'report09' => 'Rapport de Virus',
-    'hostname09' => 'Nom de Serveur MailScanner',
+    'hostname09' => 'Nom du Serveur MailScanner',
     'remove09' => 'Supprimer',
     'reports09' => 'Rapports',
 
