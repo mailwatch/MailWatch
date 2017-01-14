@@ -691,7 +691,7 @@ return array(
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Impossible d\'ouvrir le conduit',
-    'finish51' => 'Terminé - Temp Total',
+    'finish51' => 'Terminé - Temps Total',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'Information sur les versions des logiciels',
