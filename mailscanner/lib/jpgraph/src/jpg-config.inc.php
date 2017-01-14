@@ -135,7 +135,8 @@ define('DEFAULT_THEME_CLASS', 'UniversalTheme');
 define('SUPERSAMPLING', true);
 define('SUPERSAMPLING_SCALE', 1);
 define('ANTIALIASING', false);
- 
+
+// Patch for PHP 5.6+
 if(!ANTIALIASING){
     function imageantialias($image, $enabled){
         return true;
