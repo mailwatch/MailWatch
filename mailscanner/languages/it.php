@@ -30,7 +30,7 @@
  */
 
 /* languages/it.php */
-/* v0.3.3 */
+/* v0.3.4 */
 
 return array(
     // 01-login.php
@@ -562,6 +562,7 @@ return array(
     
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'MRTG Style Mail Report',
+    'die36' => 'Error: Needs 2 or more rows of data to be retrieved from database',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
