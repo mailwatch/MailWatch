@@ -686,6 +686,7 @@ return array(
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Cannot open pipe',
+    'finish51' => 'Finish - Total Time',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch and MailScanner Version information',
