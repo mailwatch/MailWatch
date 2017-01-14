@@ -656,7 +656,6 @@ return array(
     'nodata48' => 'Zu wenig Daten zum Generieren des Graphen.',
     'virus48' => 'Virus',
     'count48' => 'Anzahl',
-    'dienorow48' => 'Error: Keine Einträge von der Datenbank erhalten.',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Anzahl Mails pro Tag',
