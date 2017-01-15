@@ -46,8 +46,8 @@ echo '  <th colspan="1">' . __('messageid21') . '</th>' . "\n";
 echo '  <th colspan="1">' . __('result21') . '</th>' . "\n";
 echo '  <th colspan="1">' . __('message21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
-echo ' <tr>' . "\n";
-echo '  <td colspan="3">' . "\n";
+//echo ' <tr>' . "\n";
+//echo '  <td colspan="3">' . "\n";
 
 // Iterate through the POST variables
 unset($_POST['SUBMIT']);
@@ -122,13 +122,13 @@ if (isset($_POST) && !empty($_POST)) {
 } else {
     echo '<tr><td colspan="3">' . __('diemnf21') . '</td></tr>' . "\n";
 }
-echo '</table>' . "\n";
+//echo '</table>' . "\n";
 
-echo '  </td>' . "\n";
-echo ' </tr>' . "\n";
+//echo '  </td>' . "\n";
+//echo ' </tr>' . "\n";
 echo ' </table>' . "\n";
 
-echo '<p><a href="javascript:history.back(1)">' . __('back21') . '</a>' . "\n";
+echo '<p><center><a href="javascript:history.back(1)">' . __('back21') . '</a></center><br>' . "\n";
 
 //Add footer
 html_end();
