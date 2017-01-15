@@ -312,7 +312,7 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
 $sth1 = dbquery($sql1);
 if (false !== $sth1 && $sth1->num_rows > 0) {
     // Display the relay table entries
-    echo ' <tr><td class="heading-w175">' .  __('relayinfo04')' . '</td><td class="detail">' . "\n";
+    echo ' <tr><td class="heading-w175">' .  __('relayinfo04') . '</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
     for ($f = 0; $f < $sth1->field_count; $f++) {

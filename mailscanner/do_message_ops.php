@@ -100,7 +100,7 @@ if (isset($_POST) && !empty($_POST)) {
                         );
                     } else {
                         echo $quarantined;
-                    }diemnf21
+                    }
                 } else {
                     echo quarantine_learn(
                         $items,
