@@ -37,7 +37,7 @@ require __DIR__ . '/login.function.php';
 html_start(__('mysqlstatus31'), 0, false, true);
 
 if ($_SESSION['user_type'] !== 'A') {
-    echo 'Not Authorized';
+    echo __('notauthorized31') . '\n';
 } else {
     audit_log('Viewed MySQL Status');
     dbtable('SHOW TABLE STATUS');

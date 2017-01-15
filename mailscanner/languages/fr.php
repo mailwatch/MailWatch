@@ -532,6 +532,7 @@ return array(
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'Statut MySQL',
+    'notauthorized31' => 'Non autorisé',
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Visualisateur de file d\'attente de courrier',

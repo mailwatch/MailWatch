@@ -532,6 +532,7 @@ return array(
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
+    'notauthorized31' => 'Not Authorized',
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Mail Queue Viewer',
