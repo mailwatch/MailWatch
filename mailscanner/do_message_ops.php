@@ -37,12 +37,17 @@ require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));
 
-echo '<table border="0" width="100%" class="maildetail">' . "\n";
+echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
 echo ' <tr>' . "\n";
 echo '  <th colspan="3">' . __('spamlearnresult21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 echo ' <tr>' . "\n";
-echo '  <td colspan="3" class="detail">' . "\n";
+echo '  <th colspan="1">' . __('messageid21') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('result21') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('message21') . '</th>' . "\n";
+echo ' </tr>' . "\n";
+echo ' <tr>' . "\n";
+echo '  <td colspan="3">' . "\n";
 
 // Iterate through the POST variables
 unset($_POST['SUBMIT']);

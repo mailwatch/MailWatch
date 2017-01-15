@@ -504,6 +504,9 @@ return array(
     'spamlearnresult21' => 'Résultats de Spam',
     'diemnf21' => 'Message non trouvé en quarantaine.',
     'back21' => 'Revenir',
+    'messageid21' => 'ID du message',
+    'result21' => 'Opération',
+    'message21' => 'Message',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'Statut F-Prot',

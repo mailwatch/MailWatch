@@ -504,6 +504,9 @@ return array(
     'spamlearnresult21' => 'Spam Learn Results',
     'diemnf21' => 'Message not found in quarantine.',
     'back21' => 'Back',
+    'messageid21' => 'Message ID',
+    'result21' => 'Operation',
+    'message21' => 'Message',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'F-Prot Status',
