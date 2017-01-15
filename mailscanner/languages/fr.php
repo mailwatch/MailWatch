@@ -501,7 +501,7 @@ return array(
 
     // 21-do_message_ops.php
     'opresult21' => 'Résultat des opérations',
-    'spamlearnresult21' => 'Résultats de Spam',
+    'spamlearnresult21' => 'Résultats de l\'apprentissage de Spam',
     'diemnf21' => 'Message non trouvé en quarantaine.',
     'back21' => 'Revenir',
     'messageid21' => 'ID du message',
