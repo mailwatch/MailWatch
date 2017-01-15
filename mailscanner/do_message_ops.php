@@ -39,7 +39,7 @@ $refresh = html_start(__('opresult21'));
 
 echo '<table border="0" width="100%" class="maildetail">' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="3">Spam Learn Results</th>' . "\n";
+echo '  <th colspan="3">' . __('spamlearnresult21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 echo ' <tr>' . "\n";
 echo '  <td colspan="3" class="detail">' . "\n";
@@ -80,7 +80,7 @@ if (isset($_POST) && !empty($_POST)) {
         echo '<td><a href="detail.php?id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
         if (empty($items)) {
-            echo '<td style="color: #ff0000;">' . __('diemnf57') . '</td>' . "\n";
+            echo '<td style="color: #ff0000;">' . __('diemnf21') . '</td>' . "\n";
         } elseif (is_string($items)) {
             echo '<td style="color: #ff0000;">' . $items . '</td>' . "\n";
         } else {
@@ -100,7 +100,7 @@ if (isset($_POST) && !empty($_POST)) {
                         );
                     } else {
                         echo $quarantined;
-                    }
+                    }diemnf21
                 } else {
                     echo quarantine_learn(
                         $items,
@@ -115,7 +115,7 @@ if (isset($_POST) && !empty($_POST)) {
         echo '</tr>' . "\n";
     }
 } else {
-    echo '<tr><td colspan="3">' . __('diemnf57') . '</td></tr>' . "\n";
+    echo '<tr><td colspan="3">' . __('diemnf21') . '</td></tr>' . "\n";
 }
 echo '</table>' . "\n";
 
@@ -123,7 +123,7 @@ echo '  </td>' . "\n";
 echo ' </tr>' . "\n";
 echo ' </table>' . "\n";
 
-echo '<p><a href="javascript:history.back(1)">Back</a>' . "\n";
+echo '<p><a href="javascript:history.back(1)">' . __('back21') . '</a>' . "\n";
 
 //Add footer
 html_end();

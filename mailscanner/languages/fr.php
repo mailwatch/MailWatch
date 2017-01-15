@@ -230,6 +230,9 @@ return array(
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',
+    'relayinfo04' => 'Information du relais :',
+    'errormess04' => 'Message d\'erreur :',
+    'error04' => 'Erreur :',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
@@ -498,6 +501,9 @@ return array(
 
     // 21-do_message_ops.php
     'opresult21' => 'Résultat des opérations',
+    'spamlearnresult21' => 'Résultats de Spam',
+    'diemnf21' => 'Message non trouvé en quarantaine.',
+    'back21' => 'Revenir',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'Statut F-Prot',

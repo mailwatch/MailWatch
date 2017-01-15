@@ -230,6 +230,9 @@ return array(
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',
+    'relayinfo04' => 'Relay Information:',
+    'errormess04' => 'Error Messages:',
+    'error04' => 'Error:',
 
     // 05-status.php
     'recentmsg05' => 'Mensagens Recentes',
@@ -498,6 +501,9 @@ return array(
     
     // 21-do_message_ops.php
     'opresult21' => 'Operation Results',
+    'spamlearnresult21' => 'Spam Learn Results',
+    'diemnf21' => 'Message not found in quarantine.',
+    'back21' => 'Back',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'F-Prot Status',
