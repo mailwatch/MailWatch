@@ -119,7 +119,7 @@ if (isset($_POST) && !empty($_POST)) {
     echo '<tr><td colspan="3">' . __('diemnf21') . '</td></tr>' . "\n";
 }
 echo ' </table>' . "\n";
-echo '<p style="text-align:center"><a href="javascript:history.back(1)">' . __('back21') . '</a><br>' . "\n";
+echo '<p style="text-align:center"><a href="javascript:history.back(1)">' . __('back21') . '</a><br></p>' . "\n";
 
 //Add footer
 html_end();
