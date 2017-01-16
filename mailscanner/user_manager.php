@@ -148,7 +148,7 @@ if ($_SESSION['user_type'] === 'A') {
                                 $n_typedesc = 'user';
                                 break;
                         }
-                        audit_log(__('auditlog0112')' ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212'));
+                        audit_log(__('auditlog0112') . ' ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212'));
                     }
                 }
                 break;

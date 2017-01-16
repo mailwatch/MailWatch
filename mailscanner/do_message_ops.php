@@ -46,8 +46,6 @@ echo '  <th colspan="1">' . __('messageid21') . '</th>' . "\n";
 echo '  <th colspan="1">' . __('result21') . '</th>' . "\n";
 echo '  <th colspan="1">' . __('message21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
-//echo ' <tr>' . "\n";
-//echo '  <td colspan="3">' . "\n";
 
 // Iterate through the POST variables
 unset($_POST['SUBMIT']);
@@ -79,8 +77,6 @@ if (isset($_POST) && !empty($_POST)) {
                 continue 2; //continue with next foreach loop
         }
         $items = quarantine_list_items($id, RPC_ONLY);
-        // Commenting out the below line since it shouldn't make a table for every message
-        // echo "<TABLE WIDTH=\"100%\">\n";
         echo '<tr>' . "\n";
         echo '<td><a href="detail.php?id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
@@ -122,12 +118,7 @@ if (isset($_POST) && !empty($_POST)) {
 } else {
     echo '<tr><td colspan="3">' . __('diemnf21') . '</td></tr>' . "\n";
 }
-//echo '</table>' . "\n";
-
-//echo '  </td>' . "\n";
-//echo ' </tr>' . "\n";
 echo ' </table>' . "\n";
-
 echo '<p style="text-align:center"><a href="javascript:history.back(1)">' . __('back21') . '</a><br>' . "\n";
 
 //Add footer
