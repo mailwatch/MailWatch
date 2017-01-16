@@ -176,7 +176,7 @@ return array(
     'spamassassin03' => 'SpamAssassin:',
     'auditlogdelqua03' => 'Deleted file from quarantine:',
     'auditlogdelerror03' => 'Delete: error deleting file',
-    'auditlogupdatepassword03' => 'Updated password field length from %s to 255',
+    'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
     'auditlogupdateuser03' => 'Updated password for user',
 
     // 04-detail.php

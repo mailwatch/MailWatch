@@ -176,7 +176,7 @@ return array(
     'spamassassin03' => 'SpamAssassin :',
     'auditlogdelqua03' => 'Fichier effacé de la quarantaine :',
     'auditlogdelerror03' => 'Effacement : erreur lors de l\'effacement du fichier',
-    'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 255',
+    'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
 
     // 04-detail.php
