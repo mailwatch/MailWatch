@@ -693,7 +693,7 @@ return array(
     'size46' => 'Taille',
 
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top ders expéditeurs par volume',
+    'topsendersvol47' => 'Top des expéditeurs par volume',
     'top10sendersvol47' => 'Top 10 des expéditeurs par volume',
     'email47' => 'Adresse E-Mail',
     'count47' => 'Nombre',
