@@ -259,7 +259,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             // Use existing filters
             $filter = $_SESSION['filter'];
         }
-        audit_log('Ran report ' . $title);
+        audit_log(__('auditlogreport03') . ' ' . $title);
     } else {
         echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
@@ -2369,7 +2369,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
         echo '</table>' . "\n";
     } else {
-        echo "No rows retrieved!\n";
+        echo __('norowfound03') . "\n";
     }
     echo '<br>' . "\n";
     if ($pager) {
@@ -3205,7 +3205,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $error = true;
             } else {
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
+                audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
             }
 
             return $status;
@@ -3219,7 +3219,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                     if ($retval === 0) {
                         $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                        audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
+                        audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
                     } else {
                         $status = __('releaseerrorcode03') . ' ' . $retval . " " . __('returnedfrom03') . "\n" . implode(
                                 "\n",
@@ -3347,7 +3347,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         debug("Learner - running SQL: $sql");
                         dbquery($sql);
                     }
-                    $status[] = 'SpamAssassin: ' . implode(', ', $output_array);
+                    $status[] = __('spamassassin03') . ' ' . implode(', ', $output_array);
                     switch ($learn_type) {
                         case '-r':
                             $learn_type = 'spam';
@@ -3357,10 +3357,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                             break;
                     }
                     audit_log(
-                        'SpamAssassin was trained and reported on message ' . $list[$val]['msgid'] . ' as ' . $learn_type
+                        sprintf(__('auditlogquareleased03') . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                     );
                 } else {
-                    $status[] = 'SpamAssassin: error code ' . $retval . " returned from SpamAssassin:\n" . implode(
+                    $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
                             "\n",
                             $output_array
                         );
@@ -3387,7 +3387,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         dbquery($sql);
                     }
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
-                    audit_log('SpamAssassin was trained on message ' . $list[$val]['msgid'] . ' as ' . $learn_type);
+                    audit_log(sprintf(__('auditlogspamtrained03'), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
                     $status[] = __('salearnerror03') . ' ' . $retval . " " . __('salearnreturn03') . "\n" . implode(
                             "\n",
@@ -3451,9 +3451,9 @@ function quarantine_delete($list, $num, $rpc_only = false)
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                 dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                audit_log('Deleted file from quarantine: ' . $list[$val]['path']);
+                audit_log(__('auditlogdelqua03') . ' ' . $list[$val]['path']);
             } else {
-                $status[] = 'Delete: error deleting file ' . $list[$val]['path'];
+                $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
                 global $error;
                 $error = true;
             }
@@ -3756,10 +3756,10 @@ function updateUserPasswordHash($user, $hash)
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
         dbquery($sqlUpdateFieldLength);
-        audit_log('Updated password field length from ' . $passwordFiledLength . ' to 255');
+        audit_log(sprintf(__('auditlogquareleased03') . ' ', $passwordFiledLength));
     }
 
     $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
     dbquery($sqlUpdateHash);
-    audit_log('Updated password for user ' . $user);
+    audit_log(__('auditlogupdateuser03') . ' ' . $user);
 }

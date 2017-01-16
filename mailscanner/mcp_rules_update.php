@@ -44,17 +44,16 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<table class="boxtable" width="100%">' . "\n";
     echo ' <tr>' . "\n";
     echo '  <td>' . "\n";
-    echo '   This utility is used to update the SQL database with up-to-date descriptions of the MCP rules which are displayed on the Message Detail screen.<br>
-   <br>
-   This utility should generally be run after an update to your MCP rules, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).<br>
+    echo '   ' . __('message0126') . '<br>
+   <br>' . __('message0226') . '<br>
   </td>
  </tr>
  <tr>' . "\n";
-    echo '  <td align="center"><br><input type="submit" value="Run Now"><br><br></td>' . "\n";
+    echo '  <td align="center"><br><input type="submit" value="' . __('input26') . '"><br><br></td>' . "\n";
     echo ' </tr>' . "\n";
 
     if (isset($_POST['run'])) {
-        echo '<tr><td align="CENTER"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>Rule</th><th>Description</th></tr>' . "\n";
+        echo '<tr><td align="CENTER"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule26') . '</th><th>' . __('description26') . '</th></tr>' . "\n";
         $mcp_prefs_file = get_conf_var('MCPSpamAssassinPrefsFile');
         $mcp_local_rules_dir = get_conf_var('MCPSpamAssassinLocalRulesDir');
         $mcp_default_rules_dir = get_conf_var('MCPSpamAssassinDefaultRulesDir');
@@ -67,7 +66,7 @@ if ($_SESSION['user_type'] !== 'A') {
             $fh = popen("ls $mcp_prefs_file $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
         }
 
-        audit_log('Ran MCP Rules Description Update');
+        audit_log(__('auditlog26'));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             debug('line: ' . $line . "\n");

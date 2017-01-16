@@ -39,12 +39,12 @@ html_start(__('salint51'), 0, false, true);
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
     die(__('diepipe51'));
 } else {
-    audit_log('Run SpamAssassin lint');
+    audit_log(__('auditlog51'));
 }
 
 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\" WIDTH=\"100%\">\n";
 echo " <TR>\n";
-echo "  <TH COLSPAN=\"2\">SpamAssassin Lint</TH>\n";
+echo "  <TH COLSPAN=\"2\">" . __('salint51') . "</TH>\n";
 echo " </TR>\n";
 // Start timer
 $start = get_microtime();
@@ -83,7 +83,7 @@ while ($line = fgets($fp, 2096)) {
 }
 pclose($fp);
 echo "   <TR>\n";
-echo "    <TD><B>Finish - Total Time</B></TD>\n";
+echo "    <TD><B>" . __('finish51') . "</B></TD>\n";
 echo "    <TD ALIGN=\"RIGHT\"><B>" . round(get_microtime() - $start, 5) . "</B></TD>\n";
 echo "   </TR>\n";
 echo "</TABLE>\n";

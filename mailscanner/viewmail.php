@@ -59,7 +59,7 @@ if (!isset($_GET['id'])) {
     if (empty($message)) {
         die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
     } else {
-        audit_log('Quarantined message (' . $message_id . ') body viewed');
+        audit_log(sprintf(__('auditlog06'), $message_id));
     }
     $using_rpc = false;
     if (RPC_ONLY || !is_local($message->hostname)) {
@@ -214,13 +214,13 @@ foreach ($mime_struct as $key => $part) {
                 if (isset($part->d_parameters['filename'])) {
                     echo $part->d_parameters['filename'];
                 } else {
-                    echo 'Attachment without name';
+                    echo __('nonameattachment06');
                 }
                 if (isset($part->d_parameters['size'])) {
                     echo '&nbsp;(size ' . formatSize($part->d_parameters['size']) . ')';
                 }
             } else {
-                echo 'Attachment without name';
+                echo __('nonameattachment06');
             }
             if (
                 ($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) ||
