@@ -168,6 +168,16 @@ return array(
     'virus03' => 'Virus',
     'sql03' => 'SQL :',
     'norowfound03' => 'Aucune ligne récupérée !',
+    'auditlogreport03' => 'Exécution du rapport',
+    'auditlogquareleased03' => 'Message en Quarantaine (%s) libéré vers',
+    'auditlogspamtrained03' => 'SpamAssassin a appris et signalé le message %s comme',
+    'spamerrorcode0103' => 'SpamAssassin : code d\'erreur',
+    'spamerrorcode0203' => 'retourné par SpamAssassin :',
+    'spamassassin03' => 'SpamAssassin :',
+    'auditlogdelqua03' => 'Fichier effacé de la quarantaine :',
+    'auditlogdelerror03' => 'Effacement : erreur lors de l\'effacement du fichier',
+    'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 255',
+    'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -233,6 +243,7 @@ return array(
     'relayinfo04' => 'Information du relais :',
     'errormess04' => 'Message d\'erreur :',
     'error04' => 'Erreur :',
+    'auditlog04' => 'Visionnage de la vue détaillée du message',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
@@ -256,6 +267,8 @@ return array(
     'error06' => 'Erreur :',
     'errornfd06' => 'Erreur : fichier non trouvé',
     'mymetype06' => 'Type MIME :',
+    'auditlog06' => 'Visualisation du corps d\'un messsage de Quarantaine (%s)',
+    'nonameattachment06' => 'Pièce jointe sans nom',
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
@@ -273,6 +286,10 @@ return array(
     'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
     'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
     'noentries07' => 'Aucune entrée trouvée.',
+    'auditlogadded07' => 'Ajouté',
+    'auditlogto07' => 'vers',
+    'auditlogfor07' => 'pour',
+    'auditlogremoved07' => 'L\'entrée %s a été effacée de la',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
@@ -413,6 +430,13 @@ return array(
     'unknowtype12' => 'Type Inconnu',
     'yesshort12' => 'O',
     'noshort12' => 'N',
+    'auditlog0112' => 'Nouveau',
+    'auditlog0212' => 'créé',
+    'auditlog0312' => 'Le type d\'Utilisateur a été changé pour Utilisateur',
+    'auditlogfrom12' => 'de',
+    'auditlogto12' => 'vers',
+    'auditlog0412' => 'L\'Utilisateur %s a été effacé',
+    'auditlog0512' => 'L\'Utilisateur [%s] a mis à jour son propre compte',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -422,6 +446,7 @@ return array(
     'saruldesupdate13' => 'Mise à jour des descriptions des règles SpamAssassin',
     'rule13' => 'Règle',
     'description13' => 'Description',
+    'auditlog13' => 'Exécution de la Mise à jour des descriptions des règles SpamAssassin',
 
     // 14-reports.php
     'messlisting14' => 'Listing des messages',
@@ -464,13 +489,14 @@ return array(
     'extractok15' => 'extraction réussie',
     'message515' => 'Impossible d\'extraire le fichier de données GeoIP.',
     'message615' => 'Activez le module PHP Zlib dans votre configuration PHP ou installez le binaire gunzip.',
-    'processok' => 'Processus terminé !',
+    'processok15' => 'Processus terminé !',
     'norread15' => 'Impossible de lire ou d\'écrire sur le',
     'message715' => 'Les fichiers existent toujours pour une raison inconnue.',
     'message815' => 'Effacez-les à la main à partir de',
     'directory15' => 'répertoire',
     'geoipupdate15' => 'Mise à jour des bases GeoIP',
     'dieproxy15' => 'Le type de proxy doit être en "HTTP" ou en "SOCKS5". Vérifiez votre fichier de configuration.',
+    'auditlog15' => 'Exécution de la mise à jour GeoIP',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Listing des messages',
@@ -491,9 +517,11 @@ return array(
     'lastexpiry18' => 'Dernière échéance :',
     'lastexpirycount18' => 'Dernier comptage lors de la réduction d\'échéance :',
     'tokens18' => 'jetons',
+    'auditlog18' => 'Visionnage de la page d\'information sur la base SpamAssassin Bayes',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'Statut ClamAV',
+    'auditlog19' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de Statut ClamAV',
 
     // 20-docs.php
     'doc20' => 'Documentation',
@@ -523,18 +551,28 @@ return array(
 
     // 26-mcp_rules_update.php
     'mcpruledesc26' => 'Mise à jour des descriptions des règles MCP',
+    'auditlog26' => 'Exécution de la mise à jour des règles MCP',
+    'message0126' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles MCP qui sont affichés sur l\'écran Message Détail mise à jour.',
+    'message0226' => 'Cet utilitaire doit généralement être exécuté après une mise à jour des règles MCP, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
+    'input26' => 'Démarrer',
+    'rule26' => 'Règle',
+    'description26' => 'Description',
 
     // 27-msconfig.php
     'config27' => 'Configuration',
     'msconfig27' => 'Configuration de MailScanner',
+    'auditlog27' => 'Visionnage de la Configuration de MailScanner',
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Impossible d\'ouvrir le conduit',
     'message28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
+    'auditlog28' => 'Exécution de MailScanner lint',
+    'finish28' => 'Terminé - Temps Total',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
+    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
     // 30-msrule.php
     'rules30' => 'Règles',
@@ -542,6 +580,7 @@ return array(
     // 31-mysql_status.php
     'mysqlstatus31' => 'Statut MySQL',
     'notauthorized31' => 'Non autorisé',
+    'auditlog31' => 'Visionnage du Statut MySQL',
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Visualisateur de file d\'attente de courrier',
@@ -701,9 +740,11 @@ return array(
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Impossible d\'ouvrir le conduit',
     'finish51' => 'Terminé - Temps Total',
+    'auditlog51' => 'Execution de SpamAssassin lint',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'Information sur les versions des logiciels',
+    'auditlog52' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -713,6 +754,7 @@ return array(
 
     // 55-msre_edit.php
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
+    'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
     // 56-postfix_relay.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',

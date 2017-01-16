@@ -128,7 +128,7 @@ if (isset($_POST) && !empty($_POST)) {
 //echo ' </tr>' . "\n";
 echo ' </table>' . "\n";
 
-echo '<p><center><a href="javascript:history.back(1)">' . __('back21') . '</a></center><br>' . "\n";
+echo '<p style="text-align:center"><a href="javascript:history.back(1)">' . __('back21') . '</a><br>' . "\n";
 
 //Add footer
 html_end();

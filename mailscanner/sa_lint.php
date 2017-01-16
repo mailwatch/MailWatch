@@ -39,7 +39,7 @@ html_start(__('salint51'), 0, false, true);
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
     die(__('diepipe51'));
 } else {
-    audit_log('Run SpamAssassin lint');
+    audit_log(__('auditlog51'));
 }
 
 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\" WIDTH=\"100%\">\n";

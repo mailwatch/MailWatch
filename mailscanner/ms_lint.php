@@ -48,7 +48,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {
         die(__('diepipe28'));
     } else {
-        audit_log('Run MailScanner lint');
+        audit_log(__('auditlog28'));
     }
 
     // Start timer
@@ -84,7 +84,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     }
     pclose($fp);
     echo '   <tr>' . "\n";
-    echo '    <td><b>Finish - Total Time</b></td>' . "\n";
+    echo '    <td><b>' . __('finish28') . '</b></td>' . "\n";
     echo '    <td align="right"><b>' . round(get_microtime() - $start, 5) . '</b></td>' . "\n";
     echo '   </tr>' . "\n";
 }

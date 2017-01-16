@@ -192,10 +192,10 @@ if (!isset($_POST['run'])) {
                 die($error_message);
             }
 
-            echo __('processok') . "\n";
+            echo __('processok15') . "\n";
             ob_flush();
             flush();
-            audit_log('Ran GeoIP update');
+            audit_log(__('auditlog15'));
         } else {
             // unable to read or write to the directory
             die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");
