@@ -567,7 +567,7 @@ return array(
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Kann Pipe nicht öffnen',
     'message28' => 'Die Variable MS_EXECUTABLE_PATH ist leer. Bitte setzen Sie den Wert in conf.php.',
-    'auditlog28' => 'Führe MailScanner lint aus',
+    'auditlog28' => 'MailScanner lint wurde ausgeführt',
     'finish28' => 'Abgeschlossen - Gesamtzeit',
     'message28' => 'Nachricht',
     'time28' => 'Zeit',
