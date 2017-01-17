@@ -568,7 +568,7 @@ return array(
     'diepipe28' => 'Impossible d\'ouvrir le conduit',
     'message28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
     'auditlog28' => 'Exécution de MailScanner lint',
-    'finish28' => 'Terminé - Temps Total',
+    'finish28' => 'Terminé - Durée Totale',
     'message28' => 'Message',
     'time28' => 'Durée',
 
@@ -741,7 +741,7 @@ return array(
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Impossible d\'ouvrir le conduit',
-    'finish51' => 'Terminé - Temps Total',
+    'finish51' => 'Terminé - Durée Totale',
     'auditlog51' => 'Execution de SpamAssassin lint',
     'message51' => 'Message',
     'time51' => 'Durée',
