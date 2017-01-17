@@ -30,12 +30,12 @@
  */
 
 /* languages/de.php */
-/* v0.3.5 */
+/* v0.3.6 */
 
 return array(
     // 01-login.php
-    'username' => 'Benutzername',
-    'password' => 'Passwort',
+    'username' => 'Benutzername:',
+    'password' => 'Passwort:',
     'mwloginpage01' => 'MailWatch Login Seite',
     'mwlogin01' => 'MailWatch Login',
     'badup01' => 'Ungültiger Benutzername oder Passwort',
@@ -750,6 +750,7 @@ return array(
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch und MailScanner Versions Informationen',
     'auditlog52' => 'Non-admin user attemped to view Software Version Page',
+    'downloaddate52' => 'download date',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -830,7 +831,7 @@ return array(
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
-    'colon99' => ' :',
+    'colon99' => ':',
     'diemysql99' => 'Fehler: Keine Daten von der Datenbank erhalten.',
     'message199' => 'Datei ist nicht lesbar. Bitte stellen Sie sicher, dass',
     'message299' => 'von MailWatch gelesen und beschrieben werden kann',

@@ -30,12 +30,12 @@
  */
 
 /* languages/nl.php */
-/* v0.3.5 */
+/* v0.3.6 */
 
 return array(
     // 01-login.php
-    'username' => 'Gebruiker',
-    'password' => 'Wachtwoord',
+    'username' => 'Gebruiker:',
+    'password' => 'Wachtwoord:',
     'mwloginpage01' => 'MailWatch Login Page',
     'mwlogin01' => 'MailWatch Login',
     'badup01' => 'Bad Username or Password',
@@ -749,6 +749,7 @@ return array(
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch and MailScanner Version information',
     'auditlog52' => 'Non-admin user attemped to view Software Version Page',
+    'downloaddate52' => 'download date',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -829,7 +830,7 @@ return array(
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
-    'colon99' => ' :',
+    'colon99' => ':',
     'diemysql99' => 'Error: No rows retrieved from database.',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
