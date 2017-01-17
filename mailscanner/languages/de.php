@@ -238,12 +238,12 @@ return array(
     'geoipfailed04' => '(GeoIP Lookup fehlgeschlagen)',
     'reversefailed04' => '(Reverse Lookup fehlgeschlagen)',
     'hostname04' => 'Hostname',
-    'yes04' => 'Y',
+    'yes04' => 'J',
     'no04' => 'N',
-    'relayinfo04' => 'Relay Information:',
-    'errormess04' => 'Error Messages:',
-    'error04' => 'Error:',
-    'auditlog04' => 'Viewed message detail',
+    'relayinfo04' => 'Weiterleitung Information:',
+    'errormess04' => 'Fehler-Nachricht:',
+    'error04' => 'Fehler:',
+    'auditlog04' => 'Nachrichtendetails angezeigt',
 
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',
@@ -264,11 +264,11 @@ return array(
     'nomessid06' => 'Keine Nachrichten-ID übertragen',
     'mess06' => 'Nachricht',
     'notfound06' => 'nicht gefunden',
-    'error06' => 'Error:',
-    'errornfd06' => 'Error: Datei nicht gefunden',
-    'mymetype06' => 'MIME Type:',
-    'auditlog06' => 'Quarantined message (%s) body viewed',
-    'nonameattachment06' => 'Attachment without name',
+    'error06' => 'Fehler:',
+    'errornfd06' => 'Fehler: Datei nicht gefunden',
+    'mymetype06' => 'MIME Typ:',
+    'auditlog06' => 'Inhalte der Quarantäne-Nachricht (%s) angezeigt',
+    'nonameattachment06' => 'Anhang ohne Name',
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',
@@ -286,10 +286,10 @@ return array(
     'error071' => 'Sie müssen eine Liste wählen, um einen Eintrag zu erstellen.',
     'error072' => 'Sie müssen einen Absender angeben (user@domain, FQDN oder IP).',
     'noentries07' => 'Keine Einträge gefunden.',
-    'auditlogadded07' => 'Added',
-    'auditlogto07' => 'to',
-    'auditlogfor07' => 'for',
-    'auditlogremoved07' => 'Removed entry %s from the',
+    'auditlogadded07' => 'Hinzugefügt',
+    'auditlogto07' => 'zu',
+    'auditlogfor07' => 'für',
+    'auditlogremoved07' => 'Eintrag %s wurde entfernt von',
 
     // 08-quarantine.php
     'folder08' => 'Ordner',
@@ -430,13 +430,13 @@ return array(
     'unknowtype12' => 'Unbekannter Typ',
     'yesshort12' => 'J',
     'noshort12' => 'N',
-    'auditlog0112' => 'New',
-    'auditlog0212' => 'created',
-    'auditlog0312' => 'User type changed for user',
-    'auditlogfrom12' => 'from',
-    'auditlogto12' => 'to',
-    'auditlog0412' => 'User %s deleted',
-    'auditlog0512' => 'User [%s] updated their own account',
+    'auditlog0112' => 'Neu',
+    'auditlog0212' => 'erstellt',
+    'auditlog0312' => 'Benutzertyp geändert für Benutzer',
+    'auditlogfrom12' => 'von',
+    'auditlogto12' => 'nach',
+    'auditlog0412' => 'Benutzer %s gelöscht',
+    'auditlog0512' => 'Benutzer [%s] hat sein eigenes Konto aktualisiert',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -446,7 +446,7 @@ return array(
     'saruldesupdate13' => 'Aktualisierung der SpamAssassin Regel-Beschreibungen',
     'rule13' => 'Regel',
     'description13' => 'Beschreibung',
-    'auditlog13' => 'Ran SpamAssassin Rules Description Update',
+    'auditlog13' => 'Aktualisierung der SpamAssassin Regel-Beschreibung wurde ausgeführt',
 
     // 14-reports.php
     'messlisting14' => 'Nachrichten-Übersicht',
@@ -496,7 +496,7 @@ return array(
     'directory15' => 'Verzeichnis',
     'geoipupdate15' => 'GeoIP Datenbank-Aktualisierung',
     'dieproxy15' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
-    'auditlog15' => 'Ran GeoIP update',
+    'auditlog15' => 'GeoIP-Update wurde ausgeführt',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Nachrichtenliste',
@@ -521,7 +521,7 @@ return array(
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
-    'auditlog19' => 'Non-admin user attemped to view ClamAV Status page',
+    'auditlog19' => 'Ein nicht-Admin versuchte die ClamAV-Statusseite anzuzeigen',
 
     // 20-docs.php
     'doc20' => 'Dokumentation',
@@ -529,12 +529,12 @@ return array(
     
     // 21-do_message_ops.php
     'opresult21' => 'Ergebnisse der Aktion',
-    'spamlearnresult21' => 'Spam Learn Results',
-    'diemnf21' => 'Message not found in quarantine.',
-    'back21' => 'Back',
-    'messageid21' => 'Message ID',
+    'spamlearnresult21' => 'Spam-Lern Ergebnisse',
+    'diemnf21' => 'Nachricht wurde nicht in Quarantäne gefunden.',
+    'back21' => 'Zurück',
+    'messageid21' => 'Nachrichten ID',
     'result21' => 'Operation',
-    'message21' => 'Message',
+    'message21' => 'Nachricht',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'F-Prot Status',
@@ -551,38 +551,38 @@ return array(
 
     // 26-mcp_rules_update.php
     'mcpruledesc26' => 'MCP Aktualisierung der Regelbeschreibung',
-    'auditlog26' => 'Ran MCP Rules Description Update',
-    'message0126' => 'This utility is used to update the SQL database with up-to-date descriptions of the MCP rules which are displayed on the Message Detail screen.',
-    'message0226' => 'This utility should generally be run after an update to your MCP rules, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
-    'input26' => 'Run Now',
-    'rule26' => 'Rule',
-    'description26' => 'Description',
+    'auditlog26' => 'MCP Regelbeschreibungen wurden aktualisiert',
+    'message0126' => 'Dieses Programm wird benutzt, um die aktuellen SpamAssassin Regeln, die auf der Nachrichten-Detail-Seite angezeigt werden, in der SQL-Datenbank zu aktualieren.',
+    'message0226' => 'Dieses Programm sollte generell nach einem SpamAssassin-Update ausgeführt werden. Es kann aber auch zu jeder anderen Zeit gestartet werden, da es lediglich aktualisierte Regeln ersetzt und neue Regeln hinzufügt. Dadurch werden Beschreibungen von veralteten oder entfernten Regeln erhalten.',
+     'input26' => 'Jetzt ausführen',
+    'rule26' => 'Regel',
+    'description26' => 'Beschreibung',
 
     // 27-msconfig.php
     'config27' => 'Konfiguration',
     'msconfig27' => 'MailScanner Konfiguration',
-    'auditlog27' => 'Viewed MailScanner configuration',
+    'auditlog27' => 'MailScanner Konfiguration angezeigt',
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
-    'diepipe28' => 'Kann pipe nicht öffnen',
-    'message28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
-    'auditlog28' => 'Run MailScanner lint',
-    'finish28' => 'Finish - Total Time',
-    'message28' => 'Message',
-    'time28' => 'Time',
+    'diepipe28' => 'Kann Pipe nicht öffnen',
+    'message28' => 'Die Variable MS_EXECUTABLE_PATH ist leer. Bitte setzen Sie den Wert in conf.php.',
+    'auditlog28' => 'Führe MailScanner lint aus',
+    'finish28' => 'Abgeschlossen - Gesamtzeit',
+    'message28' => 'Nachricht',
+    'time28' => 'Zeit',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
-    'auditlog29' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
+    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
 
     // 30-msrule.php
     'rules30' => 'Regeln',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
-    'notauthorized31' => 'Not Authorized',
-    'auditlog31' => 'Viewed MySQL Status',
+    'notauthorized31' => 'Nicht authorisiert',
+    'auditlog31' => 'MySQL Status angezeigt',
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Mailqueue-Anzeige',
@@ -600,7 +600,7 @@ return array(
     'rule34' => 'Regel',
     'des34' => 'Beschreibung',
     'total34' => 'Gesamt',
-    'clean34' => 'Clean',
+    'clean34' => 'Sauber',
     'mcp34' => 'MCP',
     
     // 35-rep_mcp_score_dist.php
@@ -612,8 +612,8 @@ return array(
     'count35' => 'Anzahl',
     
     // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'MRTG Style Mail Report',
-    'die36' => 'Error: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
+    'mrtgstyle36' => 'E-Mail-Bericht im MRTG Format',
+    'die36' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
