@@ -30,7 +30,7 @@
  */
 
 /* languages/it.php */
-/* v0.3.4 */
+/* v0.3.5 */
 
 return array(
     // 01-login.php
@@ -569,6 +569,8 @@ return array(
     'message28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
     'auditlog28' => 'Run MailScanner lint',
     'finish28' => 'Finish - Total Time',
+    'message28' => 'Message',
+    'time28' => 'Time',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Ruleset Editor',
@@ -741,6 +743,8 @@ return array(
     'diepipe51' => 'Cannot open pipe',
     'finish51' => 'Finish - Total Time',
     'auditlog51' => 'Ran SpamAssassin lint',
+    'message51' => 'Message',
+    'time51' => 'Time',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch and MailScanner Version information',
