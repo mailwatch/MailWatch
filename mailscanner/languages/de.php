@@ -572,6 +572,7 @@ return array(
     'message28' => 'Nachricht',
     'time28' => 'Zeit',
 
+
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
     'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
