@@ -569,6 +569,8 @@ return array(
     'message28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
     'auditlog28' => 'Exécution de MailScanner lint',
     'finish28' => 'Terminé - Temps Total',
+    'message28' => 'Message',
+    'time28' => 'Durée',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
@@ -741,6 +743,8 @@ return array(
     'diepipe51' => 'Impossible d\'ouvrir le conduit',
     'finish51' => 'Terminé - Temps Total',
     'auditlog51' => 'Execution de SpamAssassin lint',
+    'message51' => 'Message',
+    'time51' => 'Durée',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'Information sur les versions des logiciels',
