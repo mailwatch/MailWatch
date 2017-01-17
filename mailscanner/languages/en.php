@@ -30,12 +30,12 @@
  */
 
 /* languages/en.php */
-/* v0.3.5 */
+/* v0.3.6 */
 
 return array(
     // 01-login.php
-    'username' => 'User',
-    'password' => 'Password',
+    'username' => 'User:',
+    'password' => 'Password:',
     'mwloginpage01' => 'MailWatch Login Page',
     'mwlogin01' => 'MailWatch Login',
     'badup01' => 'Bad Username or Password',
@@ -567,7 +567,7 @@ return array(
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Cannot open pipe',
     'message28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
-    'auditlog28' => 'Run MailScanner lint',
+    'auditlog28' => 'Ran MailScanner lint',
     'finish28' => 'Finish - Total Time',
     'message28' => 'Message',
     'time28' => 'Time',
@@ -749,6 +749,7 @@ return array(
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch and MailScanner Version information',
     'auditlog52' => 'Non-admin user attemped to view Software Version Page',
+    'downloaddate52' => 'download date',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -829,7 +830,7 @@ return array(
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
-    'colon99' => ' :',
+    'colon99' => ':',
     'diemysql99' => 'Error: No rows retrieved from database.',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
