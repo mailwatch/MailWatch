@@ -749,6 +749,7 @@ return array(
     // 52-sf_version.php
     'mwandmsversion52' => 'Information sur les versions des logiciels',
     'auditlog52' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'downloaddate52' => 'date de téléchargement',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',

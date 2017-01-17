@@ -750,6 +750,7 @@ return array(
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch und MailScanner Versions Informationen',
     'auditlog52' => 'Non-admin user attemped to view Software Version Page',
+    'downloaddate52' => 'download date',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
