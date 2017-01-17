@@ -569,8 +569,6 @@ return array(
     'message28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
     'auditlog28' => 'Run MailScanner lint',
     'finish28' => 'Finish - Total Time',
-    'message28' => 'Message',
-    'time28' => 'Time',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
@@ -743,8 +741,6 @@ return array(
     'diepipe51' => 'Kann pipe nicht öffnen',
     'finish51' => 'Finish - Total Time',
     'auditlog51' => 'Ran SpamAssassin lint',
-    'message51' => 'Message',
-    'time51' => 'Time',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch und MailScanner Versions Informationen',
