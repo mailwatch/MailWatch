@@ -46,6 +46,11 @@ echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\" WID
 echo " <TR>\n";
 echo "  <TH COLSPAN=\"2\">" . __('salint51') . "</TH>\n";
 echo " </TR>\n";
+echo ' <tr>' . "\n";
+echo '  <th colspan="1" style="text-align:left">' . __('message51') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('time51') . '</th>' . "\n";
+echo ' </tr>' . "\n";
+
 // Start timer
 $start = get_microtime();
 $last = false;
