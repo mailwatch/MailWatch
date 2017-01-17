@@ -148,7 +148,7 @@ if ($_SESSION['user_type'] === 'A') {
                                 $n_typedesc = 'user';
                                 break;
                         }
-                        audit_log('New ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') created');
+                        audit_log(__('auditlog0112') . ' ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212'));
                     }
                 }
                 break;
@@ -241,7 +241,7 @@ if ($_SESSION['user_type'] === 'A') {
                         $type['R'] = 'user';
                         if ($o_type !== $n_type) {
                             audit_log(
-                                "User type changed for user '" . $n_username . "' (" . $n_fullname . ') from ' . $type[$o_type] . ' to ' . $type[$n_type]
+                                __('auditlog0312') . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12') . ' ' . $type[$o_type] . ' ' . __('auditlogto12') . ' ' . $type[$n_type]
                             );
                         }
                     }
@@ -252,7 +252,7 @@ if ($_SESSION['user_type'] === 'A') {
                     $id = sanitizeInput($_GET['id']);
                     $sql = "DELETE FROM users WHERE username='" . safe_value($id) . "'";
                     dbquery($sql);
-                    audit_log("User '" . $_GET['id'] . "' deleted");
+                    audit_log(sprintf(__('auditlog0412'), $_GET['id']));
                 }
                 break;
             case 'filters':
@@ -408,7 +408,7 @@ if ($_SESSION['user_type'] === 'A') {
             }
 
             // Audit
-            audit_log("User [$username] updated their own account");
+            audit_log(sprintf(__('auditlog0512'), $username));
             echo '<h1 style="text-align: center; color: green;">Update Completed</h1>';
             echo '<META HTTP-EQUIV="refresh" CONTENT="3;user_manager.php">';
         }

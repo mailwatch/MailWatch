@@ -118,8 +118,8 @@ arsort($sa_array);
 
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
 echo "<TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD></TR>";
+echo "<TR><TD ALIGN=\"CENTER\">" . __('sarulehits37') . "<BR></TD></TR>\n";
 echo "<TR><TD ALIGN=\"CENTER\">";
-
 echo "<TABLE CLASS=\"boxtable\" ALIGN=\"CENTER\" BORDER=\"0\">\n";
 echo "
 <TR BGCOLOR=\"#F7CE4A\">

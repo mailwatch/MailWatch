@@ -37,9 +37,9 @@ require __DIR__ . '/login.function.php';
 html_start(__('mysqlstatus31'), 0, false, true);
 
 if ($_SESSION['user_type'] !== 'A') {
-    echo 'Not Authorized';
+    echo __('notauthorized31') . '\n';
 } else {
-    audit_log('Viewed MySQL Status');
+    audit_log(__('auditlog31'));
     dbtable('SHOW TABLE STATUS');
     echo "<BR>\n";
     dbtable('SHOW FULL PROCESSLIST');

@@ -132,7 +132,7 @@ if (is_readable($filename)) {
 echo '</TR>';
 echo '<TR>';
 echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"500\">";
+echo "<TABLE WIDTH=\"850\">";
 echo "<TR BGCOLOR=\"#F7CE4A\">";
 echo '    <TH>' . __('hostname39') . '</TH>';
 echo '    <TH>' . __('ipaddresses39') . '</TH>';

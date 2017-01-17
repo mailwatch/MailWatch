@@ -108,7 +108,7 @@ $result = dbquery($sql);
 if ($result->num_rows === 0) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 } else {
-    audit_log('Viewed message detail (id=' . $url_id . ')');
+    audit_log(__('auditlog04') . ' (id=' . $url_id . ')');
 }
 
 // Check if MCP is enabled
@@ -312,7 +312,7 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
 $sth1 = dbquery($sql1);
 if (false !== $sth1 && $sth1->num_rows > 0) {
     // Display the relay table entries
-    echo ' <tr><td class="heading-w175">Relay Information:</td><td class="detail">' . "\n";
+    echo ' <tr><td class="heading-w175">' .  __('relayinfo04') . '</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
     for ($f = 0; $f < $sth1->field_count; $f++) {
@@ -385,7 +385,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         if (isset($errors)) {
             echo " <tr>\n";
-            echo '  <td class="heading" width="150" align="right" valign="top">Error Messages:</td>' . "\n";
+            echo '  <td class="heading" width="150" align="right" valign="top">' . __('errormess04') . '</td>' . "\n";
             echo '  <td class="detail">' . "\n";
             foreach ($errors as $key => $val) {
                 echo "  $val<br>\n";
@@ -394,7 +394,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo " <tr>\n";
         }
         echo " <tr>\n";
-        echo '  <td class="heading" width="150" align="right" valign="top">Error:</td>' . "\n";
+        echo '  <td class="heading" width="150" align="right" valign="top">' . __('errormess04') . '</td>' . "\n";
         echo '  <td class="detail">' . ($error ? $yes : $no) . '</td>' . "\n";
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
