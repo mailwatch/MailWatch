@@ -1,7 +1,7 @@
-README FOR JPGRAPH 4.0.1
+README FOR JPGRAPH 4.0.2
 =========================
 
-This package contains the JpGraph PHP library version 4.0.1
+This package contains the JpGraph PHP library version 4.0.2
 
 The library is Copyright (C) 2000-2010 Asial Corporatoin and
 released under dual license QPL 1.0 for open source and educational
@@ -11,10 +11,7 @@ Please see full license details at
 http://jpgraph.net/pro/
 http://jpgraph.net/download/
 
-* --------------------------------------------------------------------
-* PHP4 IS NOT SUPPORTED IN 3.x or 4.x SERIES
-* --------------------------------------------------------------------
-			
+
 Requirements:
 -------------
 Miminum:
