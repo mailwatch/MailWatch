@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.5 */
+/* v0.3.6 */
 
 return array(
     // 01-login.php
