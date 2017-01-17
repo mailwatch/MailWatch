@@ -34,8 +34,8 @@
 
 return array(
     // 01-login.php
-    'username' => 'User',
-    'password' => 'Password',
+    'username' => 'User:',
+    'password' => 'Password:',
     'mwloginpage01' => 'MailWatch Login Page',
     'mwlogin01' => 'MailWatch Login',
     'badup01' => 'Bad Username or Password',
@@ -829,7 +829,7 @@ return array(
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
-    'colon99' => ' :',
+    'colon99' => ':',
     'diemysql99' => 'Error: No rows retrieved from database.',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
