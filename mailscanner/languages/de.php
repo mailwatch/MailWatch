@@ -455,12 +455,12 @@ return array(
     'topmailrelay14' => 'Top Mail Relays',
     'topvirus14' => 'Top Viren',
     'virusrepor14' => 'Viren-Bericht',
-    'topsendersqt14' => 'Top Sender nach Anzahl',
-    'topsendersvol14' => 'Top Sender nach Volumen',
+    'topsendersqt14' => 'Top Absender nach Anzahl',
+    'topsendersvol14' => 'Top Absender nach Volumen',
     'toprecipqt14' => 'Top Empfänger nach Anzahl',
     'toprecipvol14' => 'Top Empfänger nach Volumen',
-    'topsendersdomqt14' => 'Top Sender-Domänen nach Anzahl',
-    'topsendersdomvol14' => 'Top SenderDomänen nach Volumen',
+    'topsendersdomqt14' => 'Top Absender-Domänen nach Anzahl',
+    'topsendersdomvol14' => 'Top Absender-Domänen nach Volumen',
     'toprecipdomqt14' => 'Top Empfänger-Domänen nach Anzahl',
     'toprecipdomvol14' => 'Top Empfänger-Domänen nach Volumen',
     'assassinscoredist14' => 'SpamAssassin Score Distribution',
@@ -567,7 +567,7 @@ return array(
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Kann Pipe nicht öffnen',
     'message28' => 'Die Variable MS_EXECUTABLE_PATH ist leer. Bitte setzen Sie den Wert in conf.php.',
-    'auditlog28' => 'Führe MailScanner lint aus',
+    'auditlog28' => 'MailScanner lint wurde ausgeführt',
     'finish28' => 'Abgeschlossen - Gesamtzeit',
     'message28' => 'Nachricht',
     'time28' => 'Zeit',
@@ -675,29 +675,29 @@ return array(
     'size43' => 'Größe',
     
     // 44-rep_top_sender_domains_by_quantity.php
-    'topsenderdomqt44' => 'Top Sender Domains nach Anzahl',
-    'top10senderdomqt44' => 'Top 10 Sender Domains nach Anzahl',
+    'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
+    'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
     'count44' => 'Anzahl',
     'size44' => 'Größe',
     
     // 45-rep_top_sender_domains_by_volume.php
-    'topsenderdomvol45' => 'Top Sender Domänen nach Volumen',
-    'top10senderdomvol45' => 'Top 10 Sender Domänen nach Volumen',
+    'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
+    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
     'domain45' => 'Domäne',
     'count45' => 'Anzahl',
     'size45' => 'Größe',
 
     // 46-rep_top_senders_by_quantity.php
-    'topsendersqt46' => 'Top Sender nach Anzahl',
-    'top10sendersqt46' => 'Top 10 Sender nach Anzahl',
+    'topsendersqt46' => 'Top Absender nach Anzahl',
+    'top10sendersqt46' => 'Top 10 Absender nach Anzahl',
     'email46' => 'E-Mail-Adresse',
     'count46' => 'Anzahl',
     'size46' => 'Größe',
     
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top Sender nach Volumen',
-    'top10sendersvol47' => 'Top 10 Sender nach Volumen',
+    'topsendersvol47' => 'Top Absender nach Volumen',
+    'top10sendersvol47' => 'Top 10 Absender nach Volumen',
     'email47' => 'E-Mail-Adresse',
     'count47' => 'Anzahl',
     'size47' => 'Größe',
@@ -742,28 +742,28 @@ return array(
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Kann pipe nicht öffnen',
-    'finish51' => 'Finish - Total Time',
-    'auditlog51' => 'Ran SpamAssassin lint',
-    'message51' => 'Message',
-    'time51' => 'Time',
+    'finish51' => 'Fertig - Gesamtzeit',
+    'auditlog51' => 'Führe SpamAssassin lint aus',
+    'message51' => 'Nachricht',
+    'time51' => 'Zeit',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch und MailScanner Versions Informationen',
-    'auditlog52' => 'Non-admin user attemped to view Software Version Page',
-    'downloaddate52' => 'download date',
+    'auditlog52' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',
+    'downloaddate52' => 'Download-Datum',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
 
     // 54-mailscanner_relay.php
-    'diepipe54' => 'Kann pipe nicht öffnen',
+    'diepipe54' => 'Kann Pipe nicht öffnen',
 
     // 55-msre_edit.php
     'diefnf55' => 'Datei nicht gefunden:',
-    'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
+    'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
 
     // 56-postfix_relay.php
-    'diepipe56' => 'Kann pipe nicht öffnen',
+    'diepipe56' => 'Kann Pipe nicht öffnen',
 
     // 57-quarantine_action.php
     'dienoid57' => 'Error: Keine Nachrichten-ID',
