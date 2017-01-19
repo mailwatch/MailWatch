@@ -280,7 +280,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
-    echo '<tr>' . "\n";
+    echo '<tr class="noprint">' . "\n";
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
@@ -625,6 +625,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         echo '</table>' . "\n";
     }
+    echo '  </td>' . "\n";
+    echo ' </tr>' . "\n";
 
     // Navigation links - put them into an array to allow them to be switched
     // on or off as necessary and to allow for the table widths to be calculated.
@@ -650,9 +652,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     //$table_width = round(100 / count($nav));
 
     //Navigation table
-    echo '  </td>' . "\n";
-    echo ' </tr>' . "\n";
-    echo '<tr>' . "\n";
+    echo '<tr class="noprint">' . "\n";
     echo '<td colspan="4">' . "\n";
 
     echo '<ul id="menu" class="yellow">' . "\n";
@@ -756,7 +756,7 @@ function html_end($footer = '')
         echo page_creation_timer();
         echo '</i></p>' . "\n";
     }
-    echo '<p class="center" style="font-size:13px">' . "\n";
+    echo '<p class="center noprint" style="font-size:13px">' . "\n";
     echo __('footer03');
     echo mailwatch_version();
     echo ' - &copy; 2006-' . date('Y');
