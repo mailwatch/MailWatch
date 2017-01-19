@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.6 */
+/* v0.3.7 */
 
 return array(
     // 01-login.php
@@ -178,6 +178,7 @@ return array(
     'auditlogdelerror03' => 'Effacement : erreur lors de l\'effacement du fichier',
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
+    'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',

@@ -30,7 +30,7 @@
  */
 
 /* languages/it.php */
-/* v0.3.6 */
+/* v0.3.7 */
 
 return array(
     // 01-login.php
@@ -178,6 +178,7 @@ return array(
     'auditlogdelerror03' => 'Delete: error deleting file',
     'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
     'auditlogupdateuser03' => 'Updated password for user',
+    'verifyperm03' => 'Please verify read permissions on',
 
     // 04-detail.php
     'receivedon04' => 'Ricevuto il:',

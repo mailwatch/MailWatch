@@ -232,7 +232,7 @@ WHERE
                         $sql .= "AND\n $val[0] $val[1]\n";
                     } else {
                         // Allow !<sql_function>
-                        if ($val[2]{0} === '!') {
+                        if ($val[2]!=='' && $val[2]{0} === '!') {
                             $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
                         } else {
                             // Regular string

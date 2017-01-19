@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.6 */
+/* v0.3.7 */
 
 return array(
     // 01-login.php
@@ -178,6 +178,7 @@ return array(
     'auditlogdelerror03' => 'Löschen: Fehler beim Löschen der Datei',
     'auditlogupdatepassword03' => 'Die Länge des Passwort-Feldes wurde von %s auf 191 aktualisiert',
     'auditlogupdateuser03' => 'Passwort für Benutzer aktualisiert',
+    'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',

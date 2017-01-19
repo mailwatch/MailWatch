@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 session_start();
 require __DIR__ . '/login.function.php';
 
-html_start(__('salint51'), 0, false, true);
+html_start(__('salint51'), 0, false, false);
 
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
     die(__('diepipe51'));
