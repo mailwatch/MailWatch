@@ -288,7 +288,7 @@ return array(
     'error072' => 'Sie müssen einen Absender angeben (user@domain, FQDN oder IP).',
     'noentries07' => 'Keine Einträge gefunden.',
     'auditlogadded07' => 'Added entry %s for %s in the %s',
-    'auditlogremoved07' => 'Removed entry %s for %s in the %s',',
+    'auditlogremoved07' => 'Removed entry %s for %s in the %s',
 
     // 08-quarantine.php
     'folder08' => 'Ordner',
