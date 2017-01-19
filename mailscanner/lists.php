@@ -191,9 +191,7 @@ if ($url_submit === 'add') {
             . "'" . safe_value($to_domain) . "',"
             . "'" . safe_value($from) . "')";
         @dbquery($sql);
-        audit_log(__('auditlogadded07') . ' ' . $from . ' ' . __('auditlogto07') . ' ' . $listi18 . ' ' . __('auditlogfor07') . ' ' . $to_address);
-        //unset($from);
-        //unset($url_list);
+        audit_log(sprintf(__('auditlogadded07'), $from, $to_address, $listi18));
     }
 }
 
@@ -214,15 +212,15 @@ if ($url_submit === 'delete') {
     switch ($_SESSION['user_type']) {
         case 'U':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
+            audit_log(sprintf(__('auditlogremoved07'), $id, $to_address, $listi18));
             break;
         case 'D':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
+            audit_log(sprintf(__('auditlogremoved07'), $id, $to_address, $listi18));
             break;
         case 'A':
             $sql = "DELETE FROM $list WHERE id='$id'";
-            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
+            audit_log(sprintf(__('auditlogremoved07'), $id, $to_address, $listi18));
             break;
     }
 

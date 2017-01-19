@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.7 */
+/* v0.3.8 */
 
 return array(
     // 01-login.php
@@ -287,10 +287,8 @@ return array(
     'error071' => 'Sie müssen eine Liste wählen, um einen Eintrag zu erstellen.',
     'error072' => 'Sie müssen einen Absender angeben (user@domain, FQDN oder IP).',
     'noentries07' => 'Keine Einträge gefunden.',
-    'auditlogadded07' => 'Hinzugefügt',
-    'auditlogto07' => 'zu',
-    'auditlogfor07' => 'für',
-    'auditlogremoved07' => 'Eintrag %s wurde entfernt von',
+    'auditlogadded07' => 'Added entry %s for %s from the %s',
+    'auditlogremoved07' => 'Removed entry %s for %s from the %s',
 
     // 08-quarantine.php
     'folder08' => 'Ordner',
@@ -572,7 +570,6 @@ return array(
     'finish28' => 'Abgeschlossen - Gesamtzeit',
     'message28' => 'Nachricht',
     'time28' => 'Zeit',
-
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
