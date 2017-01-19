@@ -370,3 +370,16 @@ td.dashgreybox {
     background-color: white;
     padding: 5px;
 }
+
+/*adjustments for printing a page e.g. hide elements*/
+@media print { 
+    .noprint {
+        display: none;
+    }
+    .TD.heading-w175 {
+        background: transparent;
+    }
+    table.maildetail {
+        border: none;		
+    }
+}
