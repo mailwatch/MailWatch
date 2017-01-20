@@ -209,18 +209,23 @@ if ($url_submit === 'delete') {
             break;
     }
 
+    $sqlfrom = "SELECT from_address FROM $list WHERE id='$id'";
+    $result = dbquery($sqlfrom);
+    $row = $result->fetch_array();
+    $from_address = $row['from_address'];
+
     switch ($_SESSION['user_type']) {
         case 'U':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            audit_log(sprintf(__('auditlogremoved07'), $id, $to_address, $listi18));
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
         case 'D':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            audit_log(sprintf(__('auditlogremoved07'), $id, $to_address, $listi18));
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
         case 'A':
             $sql = "DELETE FROM $list WHERE id='$id'";
-            audit_log(sprintf(__('auditlogremoved07'), $id, $to_address, $listi18));
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
     }
 
