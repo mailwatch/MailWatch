@@ -193,6 +193,10 @@ if ($url_submit === 'add') {
         @dbquery($sql);
         audit_log(sprintf(__('auditlogadded07'), $from, $to_address, $listi18));
     }
+    $to_domain = '';
+    $touser = '';
+    $from = '';
+    $url_list = '';
 }
 
 // Delete
@@ -231,6 +235,10 @@ if ($url_submit === 'delete') {
 
     $id = safe_value($url_id);
     dbquery($sql);
+    $to_domain = '';
+    $touser = '';
+    $from = '';
+    $url_list = '';
 }
 
 function build_table($sql, $list)
