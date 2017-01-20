@@ -438,6 +438,7 @@ return array(
     'auditlogto12' => 'vers',
     'auditlog0412' => 'L\'Utilisateur %s a été effacé',
     'auditlog0512' => 'L\'Utilisateur [%s] a mis à jour son propre compte',
+	'domain12' => 'Domain',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',

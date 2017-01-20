@@ -438,6 +438,8 @@ return array(
     'auditlogto12' => 'nach',
     'auditlog0412' => 'Benutzer %s gelöscht',
     'auditlog0512' => 'Benutzer [%s] hat sein eigenes Konto aktualisiert',
+	'domain12' => 'Domäne',
+	'errordomainforbidden' => 'Fehler: Sie besitzen nicht die Rechte um Nutzer dieser Domäne zu managen',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',

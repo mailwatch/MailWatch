@@ -438,6 +438,7 @@ return array(
     'auditlogto12' => 'to',
     'auditlog0412' => 'User %s deleted',
     'auditlog0512' => 'User [%s] updated their own account',
+	'domain12' => 'Domain',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',

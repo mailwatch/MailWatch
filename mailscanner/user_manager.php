@@ -101,7 +101,12 @@ if ($_SESSION['user_type'] === 'A') {
                     echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"". __('create12') . "\"></TD></TR>\n";
                     echo "</TABLE></FORM><BR>\n";
                 } else {
-                    if ($_GET['password'] !== $_GET['password1']) {
+					$ar = explode('@', $_GET['username']);					
+                    if ($_SESSION['user_type'] === 'D' && ( // if creating user is domain admin check if he tries to edit a user from the same domain
+							count($ar) == 1 && $_SESSION['domain'] != "" || 
+							count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
+						echo __('errordomainforbidden12');
+				    } else if($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12');
                     } else {
                         $n_username = safe_value($_GET['username']);
@@ -152,103 +157,120 @@ if ($_SESSION['user_type'] === 'A') {
                     }
                 }
                 break;
-            case 'edit':
-                if (!isset($_GET['submit'])) {
-                    $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . safe_value(sanitizeInput($_GET['id'])) . "'";
-                    $result = dbquery($sql);
-                    $row = $result->fetch_object();
-                    $quarantine_report = '';
-                    if ((int)$row->quarantine_report === 1) {
-                        $quarantine_report = 'CHECKED';
-                    }
-                    $noscan = '';
-                    if ((int)$row->noscan === 0) {
-                        $noscan = 'checked="checked"';
-                    }
+            case 'edit':				
+				// if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
+				$ar = explode('@', $_GET['id']);						
+				if ($_SESSION['user_type'] === 'D' && ( 
+						count($ar) == 1 && $_SESSION['domain'] != "" || 
+						count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
+					echo __('errordomainforbidden12');
+				} else {
+					if (!isset($_GET['submit'])) {
+						$sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . safe_value(sanitizeInput($_GET['id'])) . "'";
+						$result = dbquery($sql);
+						$row = $result->fetch_object();
+						$quarantine_report = '';
+						if ((int)$row->quarantine_report === 1) {
+							$quarantine_report = 'CHECKED';
+						}
+						$noscan = '';
+						if ((int)$row->noscan === 0) {
+							$noscan = 'checked="checked"';
+						}
 
-                    $s['A'] = '';
-                    $s['D'] = '';
-                    $s['U'] = '';
-                    $s['R'] = '';
+						$s['A'] = '';
+						$s['D'] = '';
+						$s['U'] = '';
+						$s['R'] = '';
 
-                    $s[$row->type] = 'SELECTED';
-                    echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
-                    echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"edit\">\n";
-                    echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
-                    echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
-                    echo "<TABLE CLASS=\"mail\" BORDER=0 CELLPADDING=1 CELLSPACING=1>\n";
-                    echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
-    <TD><SELECT NAME=\"type\">
-         <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
-         <OPTION ' . $s['D'] . " VALUE=\"D\">" . __('domainadmin12') . '</OPTION>
-         <OPTION ' . $s['U'] . " VALUE=\"U\">" . __('user12') . '</OPTION>
-         <OPTION ' . $s['R'] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
-        </SELECT></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('pontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('hpontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-                    echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"" . __('update12') . "\"></TD></TR>\n";
-                    echo "</TABLE></FORM><BR>\n";
-                    $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
-                    $result = dbquery($sql);
-                } else {
-                    // Do update
+						$s[$row->type] = 'SELECTED';
+						echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
+						echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"edit\">\n";
+						echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
+						echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
+						echo "<TABLE CLASS=\"mail\" BORDER=0 CELLPADDING=1 CELLSPACING=1>\n";
+						echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
+		<TD><SELECT NAME=\"type\">
+			 <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
+			 <OPTION ' . $s['D'] . " VALUE=\"D\">" . __('domainadmin12') . '</OPTION>
+			 <OPTION ' . $s['U'] . " VALUE=\"U\">" . __('user12') . '</OPTION>
+			 <OPTION ' . $s['R'] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
+			</SELECT></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('pontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
+						echo " <TR><TD CLASS=\"heading\">" . __('hpontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
+						echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"" . __('update12') . "\"></TD></TR>\n";
+						echo "</TABLE></FORM><BR>\n";
+						$sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
+						$result = dbquery($sql);
+					} else {
+						// Do update
+						$ar = explode('@', $_GET['id']);						
+						if ($_SESSION['user_type'] === 'D' && ( 
+								count($ar) == 1 && $_SESSION['domain'] != "" || 
+								count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
+							echo __('errordomainforbidden12');
+						} else if ($_GET['password'] !== $_GET['password1']) {
+							echo __('errorpass12');
+						} else {
+							$do_pwd = false;
+							$key = safe_value($_GET['key']);
+							$n_username = safe_value($_GET['username']);
+							$n_fullname = safe_value($_GET['fullname']);
+							$n_password = safe_value(password_hash($_GET['password'], PASSWORD_DEFAULT));
+							$n_type = safe_value($_GET['type']);
+							$spamscore = safe_value($_GET['spamscore']);
+							$highspamscore = safe_value($_GET['highspamscore']);
+							$n_quarantine_report = '1';
+							if (!isset($_GET['quarantine_report'])) {
+								$n_quarantine_report = '0';
+							}
+							$noscan = '0';
+							if (!isset($_GET['noscan'])) {
+								$noscan = '1';
+							}
+							$quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
 
-                    if ($_GET['password'] !== $_GET['password1']) {
-                        echo __('errorpass12');
-                    } else {
-                        $do_pwd = false;
-                        $key = safe_value($_GET['key']);
-                        $n_username = safe_value($_GET['username']);
-                        $n_fullname = safe_value($_GET['fullname']);
-                        $n_password = safe_value(password_hash($_GET['password'], PASSWORD_DEFAULT));
-                        $n_type = safe_value($_GET['type']);
-                        $spamscore = safe_value($_GET['spamscore']);
-                        $highspamscore = safe_value($_GET['highspamscore']);
-                        $n_quarantine_report = '1';
-                        if (!isset($_GET['quarantine_report'])) {
-                            $n_quarantine_report = '0';
-                        }
-                        $noscan = '0';
-                        if (!isset($_GET['noscan'])) {
-                            $noscan = '1';
-                        }
-                        $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
+							// Record old user type to audit user type promotion/demotion
+							$o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
 
-                        // Record old user type to audit user type promotion/demotion
-                        $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
+							if ($_GET['password'] !== 'XXXXXXXX') {
+								// Password reset required
+								$sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$key'";
+								dbquery($sql);
+							} else {
+								$sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$key'";
+								dbquery($sql);
+							}
 
-                        if ($_GET['password'] !== 'XXXXXXXX') {
-                            // Password reset required
-                            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$key'";
-                            dbquery($sql);
-                        } else {
-                            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$key'";
-                            dbquery($sql);
-                        }
-
-                        // Audit
-                        $type['A'] = 'administrator';
-                        $type['D'] = 'domain administrator';
-                        $type['U'] = 'user';
-                        $type['R'] = 'user';
-                        if ($o_type !== $n_type) {
-                            audit_log(
-                                __('auditlog0312') . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12') . ' ' . $type[$o_type] . ' ' . __('auditlogto12') . ' ' . $type[$n_type]
-                            );
-                        }
-                    }
-                }
+							// Audit
+							$type['A'] = 'administrator';
+							$type['D'] = 'domain administrator';
+							$type['U'] = 'user';
+							$type['R'] = 'user';
+							if ($o_type !== $n_type) {
+								audit_log(
+									__('auditlog0312') . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12') . ' ' . $type[$o_type] . ' ' . __('auditlogto12') . ' ' . $type[$n_type]
+								);
+							}
+						}
+					}
+				}
                 break;
-            case 'delete':
-                if (isset($_GET['id'])) {
+            case 'delete':		
+				$ar = explode('@', $_GET['id']);					
+				if ($_SESSION['user_type'] === 'D' && ( // if editing user is domain admin check if he tries to edit a user from the same domain
+						count($ar) == 1 && $_SESSION['domain'] != "" || 
+						count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
+					echo __('errordomainforbidden12');
+				} else if (isset($_GET['id'])) {
                     $id = sanitizeInput($_GET['id']);
                     $sql = "DELETE FROM users WHERE username='" . safe_value($id) . "'";
                     dbquery($sql);
@@ -311,7 +333,17 @@ if ($_SESSION['user_type'] === 'A') {
 
     echo '<a href="?action=new">' . __('newuser12') . '</a>'."\n";
     echo '<br>'."\n";
-
+			
+	$domainAdminUserDomainFilter = "";
+	if ($_SESSION['user_type'] === 'D') {
+		if ($_SESSION['domain'] == '' ) { 
+			//if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
+		    $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%"';
+		} else {
+		    $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
+		}
+	}
+	
     $sql = "
         SELECT
           username AS '" . safe_value(__('username12')) . "',
@@ -334,8 +366,8 @@ if ($_SESSION['user_type'] === 'A') {
           highspamscore AS '" . safe_value(__('spamhscore12')) . "',
         CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
         FROM
-          users
-        ORDER BY
+          users " . $domainAdminUserDomainFilter . " 
+		ORDER BY
           username";
     dbtable($sql, __('usermgnt12'));
 } else {
