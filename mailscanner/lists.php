@@ -228,6 +228,11 @@ if ($url_submit === 'delete') {
 
     $id = safe_value($url_id);
     dbquery($sql);
+
+   //empty the variables so that they aren't inserted in the input fields again
+    $to_domain = "";
+    $touser = "";
+    $from = "";
 }
 
 function build_table($sql, $list)
