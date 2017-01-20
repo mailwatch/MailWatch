@@ -287,10 +287,8 @@ return array(
     'error071' => 'Sie müssen eine Liste wählen, um einen Eintrag zu erstellen.',
     'error072' => 'Sie müssen einen Absender angeben (user@domain, FQDN oder IP).',
     'noentries07' => 'Keine Einträge gefunden.',
-    'auditlogadded07' => 'Hinzugefügt',
-    'auditlogto07' => 'zu',
-    'auditlogfor07' => 'für',
-    'auditlogremoved07' => 'Eintrag %s wurde entfernt von',
+    'auditlogadded07' => 'Eintrag %s für %s wurde in die %s hinzugefügt',
+    'auditlogremoved07' => 'Eintrag %s für %s wurde aus der %s entfernt',
 
     // 08-quarantine.php
     'folder08' => 'Ordner',
@@ -581,7 +579,6 @@ return array(
     'finish28' => 'Abgeschlossen - Gesamtzeit',
     'message28' => 'Nachricht',
     'time28' => 'Zeit',
-
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',

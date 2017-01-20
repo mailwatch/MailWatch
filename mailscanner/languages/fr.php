@@ -287,10 +287,8 @@ return array(
     'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
     'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
     'noentries07' => 'Aucune entrée trouvée.',
-    'auditlogadded07' => 'Ajouté',
-    'auditlogto07' => 'vers',
-    'auditlogfor07' => 'pour',
-    'auditlogremoved07' => 'L\'entrée %s a été effacée de la',
+    'auditlogadded07' => 'Ajouté l\'entrée %s pour %s dans la %s',
+    'auditlogremoved07' => 'Supprimé l\'entrée %s pour %s dans la %s',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
