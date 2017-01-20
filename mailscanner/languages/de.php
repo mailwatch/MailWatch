@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.7 */
+/* v0.3.9 */
 
 return array(
     // 01-login.php
@@ -438,8 +438,15 @@ return array(
     'auditlogto12' => 'nach',
     'auditlog0412' => 'Benutzer %s gelöscht',
     'auditlog0512' => 'Benutzer [%s] hat sein eigenes Konto aktualisiert',
-	'domain12' => 'Domäne',
-	'errordomainforbidden' => 'Fehler: Sie besitzen nicht die Rechte um Nutzer dieser Domäne zu managen',
+    'erroreditnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer ohne Domäne zu bearbeiten',
+    'erroreditdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer der Domäne %s zu bearbeiten',
+    'errortonodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um die Domäne von Benutzern zu entfernen',
+    'errortodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer in die Domäne %s zu verschieben',
+    'errortypesetforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Administrator-Rechte zuzuweisen',
+    'errordeletenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne zu löschen',
+    'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
+    'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
+    'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',

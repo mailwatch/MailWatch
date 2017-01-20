@@ -41,7 +41,7 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('usermgnt12'), 0, false, false);
 
-if ($_SESSION['user_type'] === 'A') {
+if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D' ) {
     ?>
     <script type="text/javascript">
         <!--
@@ -101,12 +101,12 @@ if ($_SESSION['user_type'] === 'A') {
                     echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"". __('create12') . "\"></TD></TR>\n";
                     echo "</TABLE></FORM><BR>\n";
                 } else {
-					$ar = explode('@', $_GET['username']);					
-                    if ($_SESSION['user_type'] === 'D' && ( // if creating user is domain admin check if he tries to edit a user from the same domain
-							count($ar) == 1 && $_SESSION['domain'] != "" || 
-							count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
-						echo __('errordomainforbidden12');
-				    } else if($_GET['password'] !== $_GET['password1']) {
+                    $ar = explode('@', $_GET['username']);
+                    if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+                        echo __('errorcreatenodomainforbidden12') . '<br>';
+                    } else if ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
+                        echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
+                    } else if($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12');
                     } else {
                         $n_username = safe_value($_GET['username']);
@@ -157,16 +157,16 @@ if ($_SESSION['user_type'] === 'A') {
                     }
                 }
                 break;
-            case 'edit':				
+            case 'edit':
 				// if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
-				$ar = explode('@', $_GET['id']);						
-				if ($_SESSION['user_type'] === 'D' && ( 
-						count($ar) == 1 && $_SESSION['domain'] != "" || 
-						count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
-					echo __('errordomainforbidden12');
+				$ar = explode('@', $_GET['key']); 
+ 			        if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+				    echo __('erroreditnodomainforbidden12') . '<br>';
+                                } else if ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain'] ) {
+				    echo sprintf (__('erroreditdomainforbidden12'), $ar[1]) . '<br>';
 				} else {
 					if (!isset($_GET['submit'])) {
-						$sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . safe_value(sanitizeInput($_GET['id'])) . "'";
+						$sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . safe_value(sanitizeInput($_GET['key'])) . "'";
 						$result = dbquery($sql);
 						$row = $result->fetch_object();
 						$quarantine_report = '';
@@ -212,11 +212,13 @@ if ($_SESSION['user_type'] === 'A') {
 						$result = dbquery($sql);
 					} else {
 						// Do update
-						$ar = explode('@', $_GET['id']);						
-						if ($_SESSION['user_type'] === 'D' && ( 
-								count($ar) == 1 && $_SESSION['domain'] != "" || 
-								count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
-							echo __('errordomainforbidden12');
+						$ar = explode('@', $_GET['username']);
+					        if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+							echo __('errortonodomainforbidden12') . '<br>';
+						} else if ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain'] ) {
+							echo sprintf(__('errortodomainforbidden12'), $ar[1]) . '<br>';
+                                                } else if ($_SESSION['user_type'] === 'D' && $_GET['type'] == 'A') {
+                                                        echo __('errortypesetforbidden12') . '<br>';
 						} else if ($_GET['password'] !== $_GET['password1']) {
 							echo __('errorpass12');
 						} else {
@@ -264,13 +266,13 @@ if ($_SESSION['user_type'] === 'A') {
 					}
 				}
                 break;
-            case 'delete':		
-				$ar = explode('@', $_GET['id']);					
-				if ($_SESSION['user_type'] === 'D' && ( // if editing user is domain admin check if he tries to edit a user from the same domain
-						count($ar) == 1 && $_SESSION['domain'] != "" || 
-						count($ar) == 2 && $ar[1] != $_SESSION['domain'] )) {
-					echo __('errordomainforbidden12');
-				} else if (isset($_GET['id'])) {
+            case 'delete':
+                $ar = explode('@', $_GET['id']);
+                if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+                    echo __('errordeletenodomainforbidden12') . '<br>';
+                } else if ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain'] ) {
+                    echo sprintf( __('errordeletedomainforbidden12'), $ar[1]) . '<br>';
+                } else if (isset($_GET['id'])) {
                     $id = sanitizeInput($_GET['id']);
                     $sql = "DELETE FROM users WHERE username='" . safe_value($id) . "'";
                     dbquery($sql);
@@ -343,7 +345,7 @@ if ($_SESSION['user_type'] === 'A') {
 		    $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
 		}
 	}
-	
+
     $sql = "
         SELECT
           username AS '" . safe_value(__('username12')) . "',
@@ -364,10 +366,10 @@ if ($_SESSION['user_type'] === 'A') {
         END AS '" . safe_value(__('spamcheck12')) . "',
           spamscore AS '" . safe_value(__('spamscore12')) . "',
           highspamscore AS '" . safe_value(__('spamhscore12')) . "',
-        CONCAT('<a href=\"?action=edit&amp;id=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
+        CONCAT('<a href=\"?action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
         FROM
           users " . $domainAdminUserDomainFilter . " 
-		ORDER BY
+        ORDER BY
           username";
     dbtable($sql, __('usermgnt12'));
 } else {
