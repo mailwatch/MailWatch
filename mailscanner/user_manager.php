@@ -106,7 +106,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
-                    } elseif($_GET['password'] !== $_GET['password1']) {
+                    } elseif ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12');
                     } else {
                         $n_username = safe_value($_GET['username']);
@@ -162,8 +162,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 $ar = explode('@', $_GET['key']);
                 if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
                     echo __('erroreditnodomainforbidden12') . '<br>';
-                } else if ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain'] ) {
-                    echo sprintf (__('erroreditdomainforbidden12'), $ar[1]) . '<br>';
+                } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
+                    echo sprintf(__('erroreditdomainforbidden12'), $ar[1]) . '<br>';
                 } else {
                     if (!isset($_GET['submit'])) {
                         $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . safe_value(sanitizeInput($_GET['key'])) . "'";
@@ -215,11 +215,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $ar = explode('@', $_GET['username']);
                         if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
                             echo __('errortonodomainforbidden12') . '<br>';
-                        } else if ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain'] ) {
+                        } elseif ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
                             echo sprintf(__('errortodomainforbidden12'), $ar[1]) . '<br>';
-                        } else if ($_SESSION['user_type'] === 'D' && $_GET['type'] == 'A') {
+                        } elseif ($_SESSION['user_type'] === 'D' && $_GET['type'] == 'A') {
                             echo __('errortypesetforbidden12') . '<br>';
-                        } else if ($_GET['password'] !== $_GET['password1']) {
+                        } elseif ($_GET['password'] !== $_GET['password1']) {
                             echo __('errorpass12');
                         } else {
                             $do_pwd = false;
@@ -270,8 +270,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
                     echo __('errordeletenodomainforbidden12') . '<br>';
                 } elseif ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
-                    echo sprintf( __('errordeletedomainforbidden12'), $ar[1]) . '<br>';
-                } else if (isset($_GET['id'])) {
+                    echo sprintf(__('errordeletedomainforbidden12'), $ar[1]) . '<br>';
+                } elseif (isset($_GET['id'])) {
                     $id = sanitizeInput($_GET['id']);
                     $sql = "DELETE FROM users WHERE username='" . safe_value($id) . "'";
                     dbquery($sql);
@@ -337,7 +337,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
     $domainAdminUserDomainFilter = "";
     if ($_SESSION['user_type'] === 'D') {
-        if ($_SESSION['domain'] == '' ) { //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
+        if ($_SESSION['domain'] == '') { //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%"';
         } else {
             $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
