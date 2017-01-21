@@ -3769,7 +3769,7 @@ function updateUserPasswordHash($user, $hash)
  * @return true if user exists, else false
  */
 function checkForExistingUser($username) {
-    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'"
-    $row = dbquery($sqlQuery)->fetchObject();
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'";
+    $row = dbquery($sqlQuery)->fetch_object();
     return $row->counter >0;
 }
