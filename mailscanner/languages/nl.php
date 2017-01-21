@@ -30,7 +30,7 @@
  */
 
 /* languages/nl.php */
-/* v0.3.9 */
+/* v0.3.10 */
 
 return array(
     // 01-login.php
@@ -445,6 +445,7 @@ return array(
     'errordeletedomainforbidden12' => 'Error: You don\'t have the permissions, to delete users of domain %s',
     'errorcreatenodomainforbidden12' => 'Error: You don\'t have the permissions, to add users without domain',
     'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
+    'retypepassword12' => 'Confirm Password:',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',

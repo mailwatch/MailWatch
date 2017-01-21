@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.9 */
+/* v0.3.10 */
 
 return array(
     // 01-login.php
@@ -445,6 +445,7 @@ return array(
     'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
     'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
     'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
+    'retypepassword12' => 'Confirm Password:',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
