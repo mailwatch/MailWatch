@@ -201,8 +201,7 @@ require_once __DIR__ . '/functions.php';
                 <p><input type="submit" name="Submit" value="<?php echo __('login01'); ?>"></p>
             </fieldset>
             <?php
-            if(defined('PWD_RESET') && PWD_RESET === true)
-            {
+            if (defined('PWD_RESET') && PWD_RESET === true) {
                 ?>
                 <div class="pwdresetButton">
                     <button class="pwdresetButton">
@@ -210,8 +209,8 @@ require_once __DIR__ . '/functions.php';
                     </button>
                 </div>
             <?php
-            }
-            ?>
+
+            } ?>
 
         </form>
     <?php

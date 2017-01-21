@@ -1,16 +1,33 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alan Urquhart
- * Company: ASU Web Services LTD
- * Web: www.asuweb.co.uk
- * Date: 07/01/2017
- * Time: 10:16
+/*
+ * MailWatch for MailScanner
+ * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+ * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
- * Created for Mailwatch 1.2.0 RC4
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+ * version.
  *
- * Updated 21/01/2017
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+ * those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+ * that use the same license as those files), and distribute linked combinations including the two.
+ * You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+ * PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+ * your version of the program, but you are not obligated to do so.
+ * If you do not wish to do so, delete this exception statement from your version.
+ *
+ * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+ * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+ * JpGraph.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 require_once __DIR__ . '/functions.php';
 if (!QUARANTINE_USE_SENDMAIL) {
     // Load in the required PEAR modules
@@ -30,9 +47,8 @@ function get_random_string($count)
     return bin2hex($bytes);
 }
 
-if(defined('PWD_RESET') && PWD_RESET === true)
-{
-    if(isset($_POST['Submit']) && $_POST['Submit'] == 'Request Password Reset') {
+if (defined('PWD_RESET') && PWD_RESET === true) {
+    if (isset($_POST['Submit']) && $_POST['Submit'] == 'Request Password Reset') {
         //check email add registered user and password reset is allowed
         $email = $link->real_escape_string($_POST['email']);
         $sql = "SELECT * FROM users WHERE username = '$email'";
@@ -50,7 +66,9 @@ if(defined('PWD_RESET') && PWD_RESET === true)
                 $resetexpire = time() + 60*60*RESET_LINK_EXPIRE;
                 $sql = "UPDATE users SET resetid = '$rand', resetexpire = '$resetexpire' WHERE username = '$email'";
                 $result = dbquery($sql);
-                if (!$result) die(__('errordbupdate100'));
+                if (!$result) {
+                    die(__('errordbupdate100'));
+                }
                 $html = '<!DOCTYPE html>
 <html>
 <head>
@@ -72,21 +90,20 @@ if(defined('PWD_RESET') && PWD_RESET === true)
   <td><img src="'. IMAGES_DIR . MW_LOGO .'" alt="'.__('mwlogo99').'"/></td>
   <td align="center" valign="middle">
    <h2>'.__('h2email100').'</h2>
-   <p>'. sprintf(__('p1email100'),$email) . '</p>
+   <p>'. sprintf(__('p1email100'), $email) . '</p>
     <a href="' . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand . '"><button>'.__('button100').'</button></a></p>
   </td>
  </tr>
  </table>
 </body>
 </html>';
-                $text = sprintf(__('01emailplaintxt100'),$email). QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
+                $text = sprintf(__('01emailplaintxt100'), $email). QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
 
                 //Send email
                 $mime = new Mail_mime("\n");
-                if(defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
+                if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
                     $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
-                }
-                else{
+                } else {
                     $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>';
                 }
                 $hdrs = array(
@@ -105,18 +122,12 @@ if(defined('PWD_RESET') && PWD_RESET === true)
                 $mail->send($email, $hdrs, $body);
                 $message = '<p>'.__('01emailsuccess100').'</p>';
                 $showpage = true;
-            }
-
-
-            else
-            {
+            } else {
                 //password reset not allowed
                 die(__('resetnotallowed100'));
             }
         }
-    }
-
-    else if(isset($_POST['Submit']) && $_POST['Submit'] === 'Reset Password') {
+    } elseif (isset($_POST['Submit']) && $_POST['Submit'] === 'Reset Password') {
         //check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
         $email = $link->real_escape_string($_POST['email']);
         $uid = $link->real_escape_string($_POST['uid']);
@@ -125,16 +136,19 @@ if(defined('PWD_RESET') && PWD_RESET === true)
             //first, check form hasn't been modified
             $sql = "SELECT resetid FROM users WHERE username = '$email'";
             $result = dbquery($sql);
-            if(!$result)die("Error: ".$link->error);
+            if (!$result) {
+                die("Error: ".$link->error);
+            }
             $row = $result->fetch_array();
-            if($row['resetid'] == $_POST['uid'])
-            {
+            if ($row['resetid'] == $_POST['uid']) {
                 require_once(MAILWATCH_HOME . '/lib/password.php');
                 $password = $link->real_escape_string(password_hash($_POST['pwd1'], PASSWORD_DEFAULT));
                 $lastreset = time();
                 $sql = "UPDATE users SET password = '$password', resetid = '', resetexpire = '0', lastreset ='$lastreset' WHERE username ='$email'";
                 $result = dbquery($sql);
-                if (!$result) die(__('errorpwdchange100'));
+                if (!$result) {
+                    die(__('errorpwdchange100'));
+                }
 
                 //now send email telling user password has been updated.
                 $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -158,20 +172,19 @@ if(defined('PWD_RESET') && PWD_RESET === true)
   <td><img src="'. IMAGES_DIR . MW_LOGO .'" alt="'.__('mwlogo99').'"/></td>
   <td align="center" valign="middle">
    <h2>'.__('02pwdresetemail100').'</h2>
-   <p>'.sprintf(__('03pwdresetemail100'),$email) . '</p>
+   <p>'.sprintf(__('03pwdresetemail100'), $email) . '</p>
   </td>
  </tr>
  </table>
 </body>
 </html>';
-                $text = sprintf(__('04pwdresetemail100'),$email);
+                $text = sprintf(__('04pwdresetemail100'), $email);
 
                 //Send email
                 $mime = new Mail_mime("\n");
-                if(defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
+                if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
                     $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
-                }
-                else{
+                } else {
                     $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>';
                 }
                 $hdrs = array(
@@ -191,26 +204,19 @@ if(defined('PWD_RESET') && PWD_RESET === true)
                 $message = '<p>' . __('pwdresetsuccess100') . '<br/>
 <a href="login.php"><button>' . __('login01') . '</button></a></p>';
                 $showpage = true;
-            }
-            else
-            {
+            } else {
                 die(__('pwdresetidmismatch'));
             }
-        }
-        else
-        {
+        } else {
             $errors = '<p>' . __('pwdmismatch');
             $fields = "stage2";
             $showpage = true;
         }
-    }
-    else if(isset($_GET['stage']) && $_GET['stage'] == 1)
-    {
+    } elseif (isset($_GET['stage']) && $_GET['stage'] == 1) {
         //first stage, need to get email address
         $fields = 'stage1';
         $showpage = true;
-    }
-    else if(isset($_GET['stage']) && $_GET['stage']==2) {
+    } elseif (isset($_GET['stage']) && $_GET['stage']==2) {
         //need to check if reset allowed, and reset password
         if (isset($_GET['user']) && isset($_GET['uid'])) {
             //check that uid is correct
@@ -219,24 +225,24 @@ if(defined('PWD_RESET') && PWD_RESET === true)
             $uid = $link->real_escape_string($_GET['uid']);
             $sql = "SELECT * FROM users WHERE username = '$email'";
             $result = dbquery($sql);
-            if (!$result) die(__('errordb100') . $link->error);
+            if (!$result) {
+                die(__('errordb100') . $link->error);
+            }
             if ($result->num_rows != '1') {
                 echo __('usernotfound100');
             } else {
                 $row = $result->fetch_array();
                 if ($row['resetid'] === $uid) {
                     //reset id matches - check if link expired
-                    if($row['resetexpire'] < time()) {
+                    if ($row['resetexpire'] < time()) {
                         echo __('resetexpired') . '<a href="password_reset.php?stage=1">'.__('button100') . '</a>';
-                    }
-                    else {
+                    } else {
                         $fields = "stage2";
                         $showpage = true;
                     }
                 } else {
                     echo __('pwdresetidmismatch');
                 }
-
             }
         } else {
             //no matches - deny
@@ -244,8 +250,7 @@ if(defined('PWD_RESET') && PWD_RESET === true)
         }
     }
 
-    if($showpage)
-    {
+    if ($showpage) {
         ?>
         <!doctype html>
         <html>
@@ -359,67 +364,66 @@ if(defined('PWD_RESET') && PWD_RESET === true)
         </head>
         <body>
         <div class="pwdreset">
-            <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99');?>">
+            <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
             <h1><?php echo __('title100'); ?></h1>
             <?php if (file_exists('conf.php')) {
-                if ($fields != '') {
-                    ?>
+            if ($fields != '') {
+                ?>
                     <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                         <fieldset>
                             <?php if (isset($_GET['error']) || $errors != '') {
-                                ?>
+                    ?>
                                 <p class="pwdreseterror">
-                                    <?php echo $errors;?>
+                                    <?php echo $errors; ?>
                                 </p>
                                 <?php
-                            } ?>
+
+                } ?>
                             <?php
                             if ($fields == 'stage1') {
                                 ?>
-                                <p><label><?php echo __('emailaddress100');?></label></p>
+                                <p><label><?php echo __('emailaddress100'); ?></label></p>
                                 <p><input name="email" type="text" id="email" autofocus></p>
-                                <p><input type="submit" name="Submit" value="<?php echo __('requestpwdreset');?>"></p>
+                                <p><input type="submit" name="Submit" value="<?php echo __('requestpwdreset'); ?>"></p>
                                 <?php
+
                             }
-                            if ($fields == 'stage2') {
-                                ?>
+                if ($fields == 'stage2') {
+                    ?>
                                 <input type="hidden" name="email" value="<?php echo $email; ?>">
                                 <input type="hidden" name="uid" value="<?php echo $uid; ?>">
-                                <p><label><?php echo __('01pwd100');?></label></p>
+                                <p><label><?php echo __('01pwd100'); ?></label></p>
                                 <p><input name="pwd1" type="password" id="pwd1" autofocus></p>
-                                <p><label><?php echo __('02pwd100');?></label></p>
+                                <p><label><?php echo __('02pwd100'); ?></label></p>
                                 <p><input name="pwd2" type="password" id="pwd2"></p>
-                                <p><input type="submit" name="Submit" value="<?php echo __('button100');?>"></p>
+                                <p><input type="submit" name="Submit" value="<?php echo __('button100'); ?>"></p>
                                 <?php
-                            }
-                            ?>
+
+                } ?>
 
                         </fieldset>
                     </form>
                     <?php
-                }
-                if($message!='')
-                {
-                    echo $message;
-                }
 
-            } else {
-                ?>
+            }
+            if ($message!='') {
+                echo $message;
+            }
+        } else {
+            ?>
                 <p class="error">
                     <?php echo __('cannot_read_conf'); ?>
                 </p>
                 <?php
 
-            }
-            ?>
+        } ?>
         </div>
 
         </body>
         </html>
         <?php
+
     }
-}
-else
-{
+} else {
     die(__('conferror100'));
 }
