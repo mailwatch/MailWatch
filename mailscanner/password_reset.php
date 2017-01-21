@@ -48,7 +48,7 @@ function get_random_string($count)
 }
 
 if (defined('PWD_RESET') && PWD_RESET === true) {
-    if (isset($_POST['Submit']) && $_POST['Submit'] == 'Request Password Reset') {
+    if (isset($_POST['Submit']) && $_POST['Submit'] == __('requestpwdreset')) {
         //check email add registered user and password reset is allowed
         $email = $link->real_escape_string($_POST['email']);
         $sql = "SELECT * FROM users WHERE username = '$email'";
@@ -127,7 +127,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 die(__('resetnotallowed100'));
             }
         }
-    } elseif (isset($_POST['Submit']) && $_POST['Submit'] === 'Reset Password') {
+    } elseif (isset($_POST['Submit']) && $_POST['Submit'] === __('button100')) {
         //check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
         $email = $link->real_escape_string($_POST['email']);
         $uid = $link->real_escape_string($_POST['uid']);
