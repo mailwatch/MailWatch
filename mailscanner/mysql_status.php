@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -34,12 +34,12 @@ require_once __DIR__ . '/functions.php';
 session_start();
 require __DIR__ . '/login.function.php';
 
-html_start(__('mysqlstatus31'), 0, false, true);
+html_start(__('mysqlstatus31'), 0, false, false);
 
 if ($_SESSION['user_type'] !== 'A') {
-    echo 'Not Authorized';
+    echo __('notauthorized31') . '\n';
 } else {
-    audit_log('Viewed MySQL Status');
+    audit_log(__('auditlog31'));
     dbtable('SHOW TABLE STATUS');
     echo "<BR>\n";
     dbtable('SHOW FULL PROCESSLIST');

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,12 +30,12 @@
  */
 
 /* languages/de.php */
-/* v0.3.1 */
+/* v0.3.7 */
 
 return array(
     // 01-login.php
-    'username' => 'Benutzername',
-    'password' => 'Passwort',
+    'username' => 'Benutzername:',
+    'password' => 'Passwort:',
     'mwloginpage01' => 'MailWatch Login Seite',
     'mwlogin01' => 'MailWatch Login',
     'badup01' => 'Ungültiger Benutzername oder Passwort',
@@ -146,14 +146,41 @@ return array(
     'hostfailed03' => '(Hostname lookup fehlgeschlagen)',
     'clientip03' => 'Client IP',
     'host03' => 'Host',
-    'date03' => 'Date',
-    'time03' => 'Time',
-    'releaseerror03' => 'Release: error',
-    'releasemessage03' => 'Release: message released to',
-    'releaseerrorcode03' => 'Release: error code',
-    'returnedfrom03' => 'returned from Sendmail:',
+    'date03' => 'Datum',
+    'time03' => 'Zeit',
+    'releaseerror03' => 'Freigabe: Fehler',
+    'releasemessage03' => 'Freigabe: Nachricht freigegeben nach',
+    'releaseerrorcode03' => 'Freigabe: Fehlercode',
+    'returnedfrom03' => 'Rückgabe von Sendmail:',
+    'salearn03' => 'SA Learn',
+    'salearnerror03' => 'SA Learn: Fehlercode',
+    'salearnreturn03' => 'von sa-learn zurückgegeben:',
+    'badcontent03' => 'Schlechter Inhalt',
+    'otherinfected03' => 'Weitere',
+    'and03' => 'und',
+    'ldapresultset03' => 'LDAP: Der zurückgegebene Ergebnis-Satz enthält mehr als eine Person. Daher können wir nicht sicher sein, dass der Benutzer',
+    'ldapisunique03' => 'einzigartig ist',
+    'ldapresults03' => 'im LDAP Ergebnis',
+    'ldapno03' => 'Kein',
+    'ldapnobind03' => 'Verbindung zu Server %s fehlgeschlagen. Zurückgegebener Fehler ist: [%s] %s',
+    'ldapnoresult03' => 'LDAP: Die Antwort des Servers enthielt kein Ergebnis-Satz für den Benutzer',
+    'ldapresultnodata03' => 'LDAP: Der zurückgegebene Ergebnis-Satz enthält keine Daten für den Benutzer',
+    'virus03' => 'Virus',
+    'sql03' => 'SQL:',
+    'norowfound03' => 'Keine Ergebnisse gefunden!',
+    'auditlogreport03' => 'Bericht wurde erstellt',
+    'auditlogquareleased03' => 'Nachricht (%s) wurde aus der Quarantäne freigegeben nach',
+    'auditlogspamtrained03' => 'SpamAssassin wurde trainiert und stufte die Nachricht %s ein als',
+    'spamerrorcode0103' => 'SpamAssassin: Fehlercode',
+    'spamerrorcode0203' => 'wurde von SpamAssassin zurückgegeben:',
+    'spamassassin03' => 'SpamAssassin:',
+    'auditlogdelqua03' => 'Datei aus Quarantäne gelöscht:',
+    'auditlogdelerror03' => 'Löschen: Fehler beim Löschen der Datei',
+    'auditlogupdatepassword03' => 'Die Länge des Passwort-Feldes wurde von %s auf 191 aktualisiert',
+    'auditlogupdateuser03' => 'Passwort für Benutzer aktualisiert',
+    'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
 
-    // 04-details.php
+    // 04-detail.php
     'receivedon04' => 'Empfangen um:',
     'receivedby04' => 'Empfangen durch:',
     'receivedfrom04' => 'Empfangen von:',
@@ -212,9 +239,13 @@ return array(
     'geoipfailed04' => '(GeoIP Lookup fehlgeschlagen)',
     'reversefailed04' => '(Reverse Lookup fehlgeschlagen)',
     'hostname04' => 'Hostname',
-    'yes04' => 'Y',
+    'yes04' => 'J',
     'no04' => 'N',
-    
+    'relayinfo04' => 'Weiterleitung Information:',
+    'errormess04' => 'Fehler-Nachricht:',
+    'error04' => 'Fehler:',
+    'auditlog04' => 'Nachrichtendetails angezeigt',
+
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',
     'last05' => 'Letzte',
@@ -234,9 +265,11 @@ return array(
     'nomessid06' => 'Keine Nachrichten-ID übertragen',
     'mess06' => 'Nachricht',
     'notfound06' => 'nicht gefunden',
-    'error06' => 'Error:',
-    'errornfd06' => 'Error: Datei nicht gefunden',
-    'mymetype06' => 'MIME Type:',
+    'error06' => 'Fehler:',
+    'errornfd06' => 'Fehler: Datei nicht gefunden',
+    'mymetype06' => 'MIME Typ:',
+    'auditlog06' => 'Inhalte der Quarantäne-Nachricht (%s) angezeigt',
+    'nonameattachment06' => 'Anhang ohne Name',
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',
@@ -250,10 +283,14 @@ return array(
     'add07' => 'Hinzufügen',
     'delete07' => 'Löschen',
     'wblists07' => 'Whitelist/Blacklist',
-    'errors07' => 'Errors:',
-    'error071' => 'You must select a list to create the entry.',
-    'error072' => 'You must enter a from address (user@domain, domain or IP).',
-    'noentries07' => 'No entries found.',
+    'errors07' => 'Fehler:',
+    'error071' => 'Sie müssen eine Liste wählen, um einen Eintrag zu erstellen.',
+    'error072' => 'Sie müssen einen Absender angeben (user@domain, FQDN oder IP).',
+    'noentries07' => 'Keine Einträge gefunden.',
+    'auditlogadded07' => 'Hinzugefügt',
+    'auditlogto07' => 'zu',
+    'auditlogfor07' => 'für',
+    'auditlogremoved07' => 'Eintrag %s wurde entfernt von',
 
     // 08-quarantine.php
     'folder08' => 'Ordner',
@@ -366,11 +403,11 @@ return array(
     'domainadmin12' => 'Domänen Administrator',
     'admin12' => 'Administrator',
     'quarrep12' => 'Quarantäne Bericht:',
-    'senddaily12' => 'Täglichen Bericht senden?:',
+    'senddaily12' => 'Täglichen Bericht senden',
     'quarreprec12' => 'Empfänger des Quarantäne Berichts:',
     'overrec12' => 'Empfangadresse für Quarantäne Bericht überschreiben?<BR>(falls leer, wird der Benutzername verwendet)',
     'scanforspam12' => 'Auf Spam prüfen:',
-    'scaneforspam12' => 'E-Mail auf Spam prüfen?',
+    'scaneforspam12' => 'E-Mail auf Spam prüfen',
     'pontspam12' => 'Spam Bewertung:',
     'hpontspam12' => 'Hohe Spam Bewertung:',
     'usedefault12' => 'Voreinstellungen benutzen',
@@ -394,6 +431,13 @@ return array(
     'unknowtype12' => 'Unbekannter Typ',
     'yesshort12' => 'J',
     'noshort12' => 'N',
+    'auditlog0112' => 'Neu',
+    'auditlog0212' => 'erstellt',
+    'auditlog0312' => 'Benutzertyp geändert für Benutzer',
+    'auditlogfrom12' => 'von',
+    'auditlogto12' => 'nach',
+    'auditlog0412' => 'Benutzer %s gelöscht',
+    'auditlog0512' => 'Benutzer [%s] hat sein eigenes Konto aktualisiert',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -403,7 +447,8 @@ return array(
     'saruldesupdate13' => 'Aktualisierung der SpamAssassin Regel-Beschreibungen',
     'rule13' => 'Regel',
     'description13' => 'Beschreibung',
-    
+    'auditlog13' => 'Aktualisierung der SpamAssassin Regel-Beschreibung wurde ausgeführt',
+
     // 14-reports.php
     'messlisting14' => 'Nachrichten-Übersicht',
     'messop14' => 'Nachrichten-Aktionen',
@@ -411,12 +456,12 @@ return array(
     'topmailrelay14' => 'Top Mail Relays',
     'topvirus14' => 'Top Viren',
     'virusrepor14' => 'Viren-Bericht',
-    'topsendersqt14' => 'Top Sender nach Anzahl',
-    'topsendersvol14' => 'Top Sender nach Volumen',
+    'topsendersqt14' => 'Top Absender nach Anzahl',
+    'topsendersvol14' => 'Top Absender nach Volumen',
     'toprecipqt14' => 'Top Empfänger nach Anzahl',
     'toprecipvol14' => 'Top Empfänger nach Volumen',
-    'topsendersdomqt14' => 'Top Sender-Domänen nach Anzahl',
-    'topsendersdomvol14' => 'Top SenderDomänen nach Volumen',
+    'topsendersdomqt14' => 'Top Absender-Domänen nach Anzahl',
+    'topsendersdomvol14' => 'Top Absender-Domänen nach Volumen',
     'toprecipdomqt14' => 'Top Empfänger-Domänen nach Anzahl',
     'toprecipdomvol14' => 'Top Empfänger-Domänen nach Volumen',
     'assassinscoredist14' => 'SpamAssassin Score Distribution',
@@ -445,13 +490,14 @@ return array(
     'extractok15' => 'Extrahieren erfolgreich',
     'message515' => 'GeoIP Datendatei konnte nicht extrahiert werden.',
     'message615' => 'Aktivieren Sie Zlib in Ihrer PHP-Installation oder installieren Sie gunzip.',
-    'processok' => 'Vorgang abgeschlossen!',
+    'processok15' => 'Vorgang abgeschlossen!',
     'norread15' => 'Lesen oder Schreiben fehlgeschlagen für',
     'message715' => 'Aus unbekanntem Grund existieren die Dateien noch.',
     'message815' => 'Löschen Sie die Dateien manuell aus',
     'directory15' => 'Verzeichnis',
     'geoipupdate15' => 'GeoIP Datenbank-Aktualisierung',
     'dieproxy15' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
+    'auditlog15' => 'GeoIP-Update wurde ausgeführt',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Nachrichtenliste',
@@ -469,12 +515,14 @@ return array(
     'oldesttoken18' => 'Ältester Token:',
     'newesttoken18' => 'Neuester Token:',
     'lastjournalsync18' => 'Letzte Protokoll-Synchronisierung:',
-    'lastexpiry18' => 'Letzter Verfall:',
-    'lastexpirycount18' => 'Lezter Verfalls-Reduktions-Zähler:',//what is this?
+    'lastexpiry18' => 'Letzter Ablauftermin:',
+    'lastexpirycount18' => 'Abnahme-Zähler für letzten Ablauftermin:',
     'tokens18' => 'Token',
-    
+    'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
+
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
+    'auditlog19' => 'Ein nicht-Admin versuchte die ClamAV-Statusseite anzuzeigen',
 
     // 20-docs.php
     'doc20' => 'Dokumentation',
@@ -482,6 +530,12 @@ return array(
     
     // 21-do_message_ops.php
     'opresult21' => 'Ergebnisse der Aktion',
+    'spamlearnresult21' => 'Spam-Lern Ergebnisse',
+    'diemnf21' => 'Nachricht wurde nicht in Quarantäne gefunden.',
+    'back21' => 'Zurück',
+    'messageid21' => 'Nachrichten ID',
+    'result21' => 'Operation',
+    'message21' => 'Nachricht',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'F-Prot Status',
@@ -498,23 +552,39 @@ return array(
 
     // 26-mcp_rules_update.php
     'mcpruledesc26' => 'MCP Aktualisierung der Regelbeschreibung',
+    'auditlog26' => 'MCP Regelbeschreibungen wurden aktualisiert',
+    'message0126' => 'Dieses Programm wird benutzt, um die aktuellen SpamAssassin Regeln, die auf der Nachrichten-Detail-Seite angezeigt werden, in der SQL-Datenbank zu aktualieren.',
+    'message0226' => 'Dieses Programm sollte generell nach einem SpamAssassin-Update ausgeführt werden. Es kann aber auch zu jeder anderen Zeit gestartet werden, da es lediglich aktualisierte Regeln ersetzt und neue Regeln hinzufügt. Dadurch werden Beschreibungen von veralteten oder entfernten Regeln erhalten.',
+     'input26' => 'Jetzt ausführen',
+    'rule26' => 'Regel',
+    'description26' => 'Beschreibung',
 
     // 27-msconfig.php
     'config27' => 'Konfiguration',
     'msconfig27' => 'MailScanner Konfiguration',
-    
+    'auditlog27' => 'MailScanner Konfiguration angezeigt',
+
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
-    'diepipe28' => 'Kann pipe nicht öffnen',
+    'diepipe28' => 'Kann Pipe nicht öffnen',
+    'message28' => 'Die Variable MS_EXECUTABLE_PATH ist leer. Bitte setzen Sie den Wert in conf.php.',
+    'auditlog28' => 'MailScanner lint wurde ausgeführt',
+    'finish28' => 'Abgeschlossen - Gesamtzeit',
+    'message28' => 'Nachricht',
+    'time28' => 'Zeit',
+
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
+    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
 
     // 30-msrule.php
     'rules30' => 'Regeln',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
+    'notauthorized31' => 'Nicht authorisiert',
+    'auditlog31' => 'MySQL Status angezeigt',
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Mailqueue-Anzeige',
@@ -532,7 +602,7 @@ return array(
     'rule34' => 'Regel',
     'des34' => 'Beschreibung',
     'total34' => 'Gesamt',
-    'clean34' => 'Clean',
+    'clean34' => 'Sauber',
     'mcp34' => 'MCP',
     
     // 35-rep_mcp_score_dist.php
@@ -544,8 +614,8 @@ return array(
     'count35' => 'Anzahl',
     
     // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'MRTG Style Mail Report',
-    'die36' => 'Error: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
+    'mrtgstyle36' => 'E-Mail-Bericht im MRTG Format',
+    'die36' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
@@ -574,8 +644,8 @@ return array(
     'viruses39' => 'Viren',
     'spam39' => 'Spam',
     'volume39' => 'Volumen',
-    'geoipfailed39' => '(GeoIP lookup fehlgeschlagen)',
-    'hostfailed39' => '(Hostname lookup fehlgeschlagen)',
+    'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
+    'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
     
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
@@ -606,29 +676,29 @@ return array(
     'size43' => 'Größe',
     
     // 44-rep_top_sender_domains_by_quantity.php
-    'topsenderdomqt44' => 'Top Sender Domains nach Anzahl',
-    'top10senderdomqt44' => 'Top 10 Sender Domains nach Anzahl',
+    'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
+    'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
     'count44' => 'Anzahl',
     'size44' => 'Größe',
     
     // 45-rep_top_sender_domains_by_volume.php
-    'topsenderdomvol45' => 'Top Sender Domänen nach Volumen',
-    'top10senderdomvol45' => 'Top 10 Sender Domänen nach Volumen',
+    'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
+    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
     'domain45' => 'Domäne',
     'count45' => 'Anzahl',
     'size45' => 'Größe',
 
     // 46-rep_top_senders_by_quantity.php
-    'topsendersqt46' => 'Top Sender nach Anzahl',
-    'top10sendersqt46' => 'Top 10 Sender nach Anzahl',
+    'topsendersqt46' => 'Top Absender nach Anzahl',
+    'top10sendersqt46' => 'Top 10 Absender nach Anzahl',
     'email46' => 'E-Mail-Adresse',
     'count46' => 'Anzahl',
     'size46' => 'Größe',
     
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top Sender nach Volumen',
-    'top10sendersvol47' => 'Top 10 Sender nach Volumen',
+    'topsendersvol47' => 'Top Absender nach Volumen',
+    'top10sendersvol47' => 'Top 10 Absender nach Volumen',
     'email47' => 'E-Mail-Adresse',
     'count47' => 'Anzahl',
     'size47' => 'Größe',
@@ -639,7 +709,6 @@ return array(
     'nodata48' => 'Zu wenig Daten zum Generieren des Graphen.',
     'virus48' => 'Virus',
     'count48' => 'Anzahl',
-    'dienorow48' => 'Error: keine Einträge von der Datenbank erhalten...',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Anzahl Mails pro Tag',
@@ -674,33 +743,40 @@ return array(
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Kann pipe nicht öffnen',
+    'finish51' => 'Fertig - Gesamtzeit',
+    'auditlog51' => 'Führe SpamAssassin lint aus',
+    'message51' => 'Nachricht',
+    'time51' => 'Zeit',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch und MailScanner Versions Informationen',
+    'auditlog52' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',
+    'downloaddate52' => 'Download-Datum',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
 
     // 54-mailscanner_relay.php
-    'diepipe54' => 'Kann pipe nicht öffnen',
+    'diepipe54' => 'Kann Pipe nicht öffnen',
 
     // 55-msre_edit.php
     'diefnf55' => 'Datei nicht gefunden:',
+    'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
 
     // 56-postfix_relay.php
-    'diepipe56' => 'Kann pipe nicht öffnen',
+    'diepipe56' => 'Kann Pipe nicht öffnen',
 
     // 57-quarantine_action.php
     'dienoid57' => 'Error: Keine Nachrichten-ID',
     'dienoaction57' => 'Error: Keine Aktion',
     'diemnf57' => 'Error: Nachricht in Quarantäne nicht gefunden',
     'dieuaction57' => 'Unbekannte Aktion:',
-    'closewindow57' => 'Close Window',
-    'mailwatchtitle57' => 'MailWatch for Mailscanner',
-    'result57' => 'Result',
-    'delete57' => 'Delete: Are you sure?',
-    'yes57' => 'Yes',
-    'no57' => 'No',
+    'closewindow57' => 'Fenster schließen',
+    'mailwatchtitle57' => 'MailWatch für Mailscanner',
+    'result57' => 'Ergebnis',
+    'delete57' => 'Löschen: Sind Sie sicher?',
+    'yes57' => 'Ja',
+    'no57' => 'Nein',
 
     // 58-viewpart.php
     'nomessid58' => 'Keine Nachrichten-ID übertragen',
@@ -730,34 +806,34 @@ return array(
     'client260' => 'ist nicht authorisiert sich zu verbinden.',
 
     // 61-quarantine_report.php
-    'view61' => 'View',
-    'received61' => 'Received',
-    'to61' => 'To',
-    'from61' => 'From',
-    'subject61' => 'Subject',
-    'reason61' => 'Reason',
-    'action61' => 'Action',
-    'title61' => 'Message Quarantine Report',
-    'message61' => 'The variable %s is empty, please set a value in conf.php.',
-    'text611' => 'Quarantine Report for %s',
-    'text612' => 'In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.',
-    'release61' => 'Release',
+    'view61' => 'Anzeige',
+    'received61' => 'Empfangen',
+    'to61' => 'Nach',
+    'from61' => 'Von',
+    'subject61' => 'Betreff',
+    'reason61' => 'Grund',
+    'action61' => 'Aktion',
+    'title61' => 'Nachrichten Quarantäne-Bericht',
+    'message61' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
+    'text611' => 'Quarantäne-Bericht für %s',
+    'text612' => 'In den letzten %s Tagen wurden %s empfangene E-Mails in die Quarantäne verschoben, die unten aufgeführt sind. Alle Nachrichten in der Quarantäne werden automatisch nach %s Tagen nach deren Empfang gelöscht.',
+    'release61' => 'Freigabe',
     'virus61' => 'Virus',
-    'badcontent61' => 'Bad Content',
-    'infected61' => 'Infected',
+    'badcontent61' => 'Schlechter Inhalt',
+    'infected61' => 'Infiziert',
     'spam61' => 'Spam',
     'blacklisted61' => 'Blacklisted',
-    'policy61' => 'Policy',
-    'unknow61' => 'UNKNOWN',
+    'policy61' => 'Richtlinie',
+    'unknow61' => 'UNBEKANNT',
 
     // 62-quarantine_maint.php
-    'message62' => 'The variable %s is empty, please set a value in conf.php.',
-    'errors07' => 'Error:',
+    'message62' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
+    'errors07' => 'Fehler:',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
-    'colon99' => ' :',
-    'diemysql99' => 'Fehler: keine Daten von der Datenbank erhalten',
+    'colon99' => ':',
+    'diemysql99' => 'Fehler: Keine Daten von der Datenbank erhalten.',
     'message199' => 'Datei ist nicht lesbar. Bitte stellen Sie sicher, dass',
     'message299' => 'von MailWatch gelesen und beschrieben werden kann',
     'mwlogo99' => 'MailWatch Logo',

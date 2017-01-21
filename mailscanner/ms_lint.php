@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -37,18 +37,22 @@ require __DIR__ . '/login.function.php';
 html_start(__('mailscannerlint28'), 0, false, false);
 echo '<table class="mail" cellspacing="1" width="100%">' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="2">MailScanner Lint</th>' . "\n";
+echo '  <th colspan="2">' . __('mailscannerlint28') . '</th>' . "\n";
+echo ' </tr>' . "\n";
+echo ' <tr>' . "\n";
+echo '  <th colspan="1" style="text-align:left">' . __('message28') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('time28') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 
 if (!defined('MS_EXECUTABLE_PATH')) {
     echo '<tr>
-    <td colspan="2">Please set MS_EXECUTABLE_PATH in conf.php to enable this feature</td>
+    <td colspan="2">' . __('message28') . '</td>
     </tr>';
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {
         die(__('diepipe28'));
     } else {
-        audit_log('Run MailScanner lint');
+        audit_log(__('auditlog28'));
     }
 
     // Start timer
@@ -84,7 +88,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     }
     pclose($fp);
     echo '   <tr>' . "\n";
-    echo '    <td><b>Finish - Total Time</b></td>' . "\n";
+    echo '    <td><b>' . __('finish28') . '</b></td>' . "\n";
     echo '    <td align="right"><b>' . round(get_microtime() - $start, 5) . '</b></td>' . "\n";
     echo '   </tr>' . "\n";
 }

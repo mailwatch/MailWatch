@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -179,9 +179,11 @@ if ($url_submit === 'add') {
         switch ($url_list) {
             case 'w': // Whitelist
                 $list = 'whitelist';
+                $listi18 = __('wl07');
                 break;
             case 'b': // Blacklist
                 $list = 'blacklist';
+                $listi18 = __('bl07');
                 break;
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
@@ -189,7 +191,7 @@ if ($url_submit === 'add') {
             . "'" . safe_value($to_domain) . "',"
             . "'" . safe_value($from) . "')";
         @dbquery($sql);
-        audit_log('Added ' . $from . ' to ' . $list . ' for ' . $to_address);
+        audit_log(__('auditlogadded07') . ' ' . $from . ' ' . __('auditlogto07') . ' ' . $listi18 . ' ' . __('auditlogfor07') . ' ' . $to_address);
         //unset($from);
         //unset($url_list);
     }
@@ -201,24 +203,26 @@ if ($url_submit === 'delete') {
     switch ($url_list) {
         case 'w':
             $list = 'whitelist';
+            $listi18 = __('wl07');
             break;
         case 'b':
             $list = 'blacklist';
+            $listi18 = __('bl07');
             break;
     }
 
     switch ($_SESSION['user_type']) {
         case 'U':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            audit_log("Removed entry $id from $list");
+            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
             break;
         case 'D':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            audit_log("Removed entry $id from $list");
+            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
             break;
         case 'A':
             $sql = "DELETE FROM $list WHERE id='$id'";
-            audit_log("Removed entry $id from $list");
+            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
             break;
     }
 

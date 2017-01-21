@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -34,18 +34,23 @@ require_once __DIR__ . '/functions.php';
 session_start();
 require __DIR__ . '/login.function.php';
 
-html_start(__('salint51'), 0, false, true);
+html_start(__('salint51'), 0, false, false);
 
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
     die(__('diepipe51'));
 } else {
-    audit_log('Run SpamAssassin lint');
+    audit_log(__('auditlog51'));
 }
 
 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\" WIDTH=\"100%\">\n";
 echo " <TR>\n";
-echo "  <TH COLSPAN=\"2\">SpamAssassin Lint</TH>\n";
+echo "  <TH COLSPAN=\"2\">" . __('salint51') . "</TH>\n";
 echo " </TR>\n";
+echo ' <tr>' . "\n";
+echo '  <th colspan="1" style="text-align:left">' . __('message51') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('time51') . '</th>' . "\n";
+echo ' </tr>' . "\n";
+
 // Start timer
 $start = get_microtime();
 $last = false;
@@ -83,7 +88,7 @@ while ($line = fgets($fp, 2096)) {
 }
 pclose($fp);
 echo "   <TR>\n";
-echo "    <TD><B>Finish - Total Time</B></TD>\n";
+echo "    <TD><B>" . __('finish51') . "</B></TD>\n";
 echo "    <TD ALIGN=\"RIGHT\"><B>" . round(get_microtime() - $start, 5) . "</B></TD>\n";
 echo "   </TR>\n";
 echo "</TABLE>\n";

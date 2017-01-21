@@ -1178,7 +1178,7 @@ class AccBarPlot extends BarPlot {
                         $this->plots[$j]->value->SetMargin(-1);
                     }
                 }
-                $this->plots[$j]->value->Stroke($img,$this->plots[$j]->coords[0][$i],$x,$y);
+                $this->plots[$j]->value->Stroke($img,$this->plots[$j]->coords[0][$i],round($x),round($y));
             }
 
         }

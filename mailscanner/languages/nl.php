@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,12 +30,12 @@
  */
 
 /* languages/nl.php */
-/* v0.3.1 */
+/* v0.3.7 */
 
 return array(
     // 01-login.php
-    'username' => 'Gebruiker',
-    'password' => 'Wachtwoord',
+    'username' => 'Gebruiker:',
+    'password' => 'Wachtwoord:',
     'mwloginpage01' => 'MailWatch Login Page',
     'mwlogin01' => 'MailWatch Login',
     'badup01' => 'Bad Username or Password',
@@ -44,7 +44,7 @@ return array(
     'login01' => 'Login',
 
     // 03-funtions.php
-    'jumpmessage03' => 'Ga naar email:',
+    'jumpmessage03' => 'Ga naar e-mail:',
     'cuser03' => 'Gebruiker',
     'cst03' => 'Systeemtijd',
     'colorcodes03' => 'Kleurcodes',
@@ -77,7 +77,7 @@ return array(
     'spam103' => 'Spam',
     'hscospam03' => 'Hoog Scorende Spam:',
     'hscomcp03' => 'Hoog Scorende MCP:',
-    'recentmessages03' => 'Recente Emails',
+    'recentmessages03' => 'Recente e-mails',
     'lists03' => 'Lijsten',
     'quarantine03' => 'Quarantaine',
     'datetime03' => 'Datum/Tijd',
@@ -152,13 +152,40 @@ return array(
     'releasemessage03' => 'Release: message released to',
     'releaseerrorcode03' => 'Release: error code',
     'returnedfrom03' => 'returned from Sendmail:',
+    'salearn03' => 'SA Learn',
+    'salearnerror03' => 'SA Learn: error code',
+    'salearnreturn03' => 'returned from sa-learn:',
+    'badcontent03' => 'Bad Content',
+    'otherinfected03' => 'Other',
+    'and03' => 'and',
+    'ldapresultset03' => 'LDAP: The returned result-set contains more than one person. So we can not be sure that the user',
+    'ldapisunique03' => 'is unique',
+    'ldapresults03' => 'in LDAP results',
+    'ldapno03' => 'no',
+    'ldapnobind03' => 'Could not bind to server %s. Returned Error was: [%s] %s',
+    'ldapnoresult03' => 'LDAP: The server returned no result-set for user',
+    'ldapresultnodata03' => 'LDAP: The returned result set contains no data for user',
+    'virus03' => 'Virus',
+    'sql03' => 'SQL:',
+    'norowfound03' => 'No rows retrieved!',
+    'auditlogreport03' => 'Ran report',
+    'auditlogquareleased03' => 'Quarantined message (%s) released to',
+    'auditlogspamtrained03' => 'SpamAssassin was trained and reported on message %s as',
+    'spamerrorcode0103' => 'SpamAssassin: error code',
+    'spamerrorcode0203' => 'returned from SpamAssassin:',
+    'spamassassin03' => 'SpamAssassin:',
+    'auditlogdelqua03' => 'Deleted file from quarantine:',
+    'auditlogdelerror03' => 'Delete: error deleting file',
+    'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
+    'auditlogupdateuser03' => 'Updated password for user',
+    'verifyperm03' => 'Please verify read permissions on',
 
     // 04-detail.php
     'receivedon04' => 'Ontvangen op:',
     'receivedby04' => 'Ontvangen door:',
     'receivedfrom04' => 'Ontvangen van:',
     'receivedvia04' => 'Ontvangen Via:',
-    'msgheaders04' => 'Email Preambulen:',
+    'msgheaders04' => 'E-mail Preambulen:',
     'from04' => 'Van:',
     'to04' => 'Naar:',
     'size04' => 'Grootte:',
@@ -173,7 +200,7 @@ return array(
     'saautolearn04' => 'Spamassassin Zelflerend:',
     'sascore04' => 'Spamassassin Score:',
     'spamrep04' => 'Spam Rapport:',
-    'hdrmcp04' => 'Email Inhoud Bescherming (MCP)',
+    'hdrmcp04' => 'E-mail Inhoud Bescherming (MCP)',
     'highscomcp04' => 'Hoog Scorende MCP:',
     'mcpwl04' => 'MCP Vrijgewaard:',
     'mcpbl04' => 'MCP Geblokkeert:',
@@ -195,7 +222,7 @@ return array(
     'submit04' => 'Invoeren',
     'actions04' => 'Actie(s)',
     'quarcmdres04' => 'Quarantaine Instructie Resultaten',
-    'resultmsg04' => 'Resultaat Emails',
+    'resultmsg04' => 'Resultaat e-mails',
     'id04' => 'ID:',
     'virus04' => 'Virus:',
     'spam04' => 'Spam:',
@@ -214,18 +241,22 @@ return array(
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',
+    'relayinfo04' => 'Relay Information:',
+    'errormess04' => 'Error Messages:',
+    'error04' => 'Error:',
+    'auditlog04' => 'Viewed message detail',
 
     // 05-status.php
-    'recentmsg05' => 'Recente Emails',
+    'recentmsg05' => 'Recente e-mails',
     'last05' => 'Laaste',
-    'messages05' => 'Emails',
+    'messages05' => 'E-mails',
     'refevery05' => 'Verversen elke',
     'seconds05' => 'seconden',
 
     // 06-viewmail.php
-    'msgviewer06' => 'Email Beschouwer',
-    'releasemsg06' => 'Laat deze email gaan',
-    'deletemsg06' => 'Verwijder deze email',
+    'msgviewer06' => 'E-mail Beschouwer',
+    'releasemsg06' => 'Laat deze e-mail gaan',
+    'deletemsg06' => 'Verwijder deze e-mail',
     'actions06' => 'Acties:',
     'date06' => 'Datum:',
     'from06' => 'Van:',
@@ -237,6 +268,8 @@ return array(
     'error06' => 'Error:',
     'errornfd06' => 'Error: file not found',
     'mymetype06' => 'MIME Type:',
+    'auditlog06' => 'Quarantined message (%s) body viewed',
+    'nonameattachment06' => 'Attachment without name',
 
     // 07-lists.php
     'addwlbl07' => 'Voeg toe aan Vrijwaring/Blokkering',
@@ -254,6 +287,10 @@ return array(
     'error071' => 'You must select a list to create the entry.',
     'error072' => 'You must enter a from address (user@domain, domain or IP).',
     'noentries07' => 'No entries found.',
+    'auditlogadded07' => 'Added',
+    'auditlogto07' => 'to',
+    'auditlogfor07' => 'for',
+    'auditlogremoved07' => 'Removed entry %s from the',
 
     // 08-quarantine.php
     'folder08' => 'Map',
@@ -357,7 +394,7 @@ return array(
     'delete12' => 'Verwijder',
     'filters12' => 'Filters',
     'newuser12' => 'Nieuwe Gebruiker',
-    'forallusers12' => 'Voor alle gebruikers anders dan Administrator is de gebruikernaam het email adres',
+    'forallusers12' => 'Voor alle gebruikers anders dan Administrator is de gebruikernaam het e-mail adres',
     'username0212' => 'Gebruikernaam:',
     'name12' => 'Naam:',
     'password12' => 'Paswoord:',
@@ -366,11 +403,11 @@ return array(
     'domainadmin12' => 'Domein Administrator',
     'admin12' => 'Administrator',
     'quarrep12' => 'Quarantaine Rapport:',
-    'senddaily12' => 'Stuur Dagelijks Rapport?:',
+    'senddaily12' => 'Stuur Dagelijks Rapport',
     'quarreprec12' => 'Quarantaine Rapport Ontvanger:',
-    'overrec12' => 'Andere quarantaine rapport ontvanger?<BR>(gebruiker email wanneer geen invoer)',
+    'overrec12' => 'Andere quarantaine rapport ontvanger?<BR>(gebruiker e-mail wanneer geen invoer)',
     'scanforspam12' => 'Zoek naar Spam:',
-    'scanforspam212' => 'Zoek in email naar Spam?',
+    'scanforspam212' => 'Zoek in e-mail naar Spam',
     'pontspam12' => 'Spam Score:',
     'hpontspam12' => 'Hoge Spam Score:',
     'usedefault12' => 'Gebruik Standaardwaarden',
@@ -394,6 +431,13 @@ return array(
     'unknowtype12' => 'Unknown Type',
     'yesshort12' => 'Y',
     'noshort12' => 'N',
+    'auditlog0112' => 'New',
+    'auditlog0212' => 'created',
+    'auditlog0312' => 'User type changed for user',
+    'auditlogfrom12' => 'from',
+    'auditlogto12' => 'to',
+    'auditlog0412' => 'User %s deleted',
+    'auditlog0512' => 'User [%s] updated their own account',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -403,6 +447,7 @@ return array(
     'saruldesupdate13' => 'SpamAssassin Rule Description Update',
     'rule13' => 'Rule',
     'description13' => 'Description',
+    'auditlog13' => 'Ran SpamAssassin Rules Description Update',
 
     // 14-reports.php
     'messlisting14' => 'Message Listing',
@@ -445,13 +490,14 @@ return array(
     'extractok15' => 'successfully extracted',
     'message515' => 'Unable to extract GeoIP data file.',
     'message615' => 'Enable Zlib in your PHP installation or install gunzip executable.',
-    'processok' => 'Process completed!',
+    'processok15' => 'Process completed!',
     'norread15' => 'Unable to read or write to the',
     'message715' => 'Files still exist for some reason.',
     'message815' => 'Delete them manually from',
     'directory15' => 'directory',
     'geoipupdate15' => 'GeoIP Database Update',
     'dieproxy15' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
+    'auditlog15' => 'Ran GeoIP update',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Message Listing',
@@ -472,9 +518,11 @@ return array(
     'lastexpiry18' => 'Last Expiry:',
     'lastexpirycount18' => 'Last Expiry Reduction Count:',
     'tokens18' => 'tokens',
+    'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
+    'auditlog19' => 'Non-admin user attemped to view ClamAV Status page',
 
     // 20-docs.php
     'doc20' => 'Documentation',
@@ -482,6 +530,12 @@ return array(
 
     // 21-do_message_ops.php
     'opresult21' => 'Operation Results',
+    'spamlearnresult21' => 'Spam Learn Results',
+    'diemnf21' => 'Message not found in quarantine.',
+    'back21' => 'Back',
+    'messageid21' => 'Message ID',
+    'result21' => 'Operation',
+    'message21' => 'Message',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'F-Prot Status',
@@ -498,23 +552,38 @@ return array(
 
     // 26-mcp_rules_update.php
     'mcpruledesc26' => 'MCP Rule Description Update',
+    'auditlog26' => 'Ran MCP Rules Description Update',
+    'message0126' => 'This utility is used to update the SQL database with up-to-date descriptions of the MCP rules which are displayed on the Message Detail screen.',
+    'message0226' => 'This utility should generally be run after an update to your MCP rules, however it is safe to run at any time as it only replaces the existing values and inserts only new values in the table (therefore preserving descriptions from potentially deprecated or removed rules).',
+    'input26' => 'Run Now',
+    'rule26' => 'Rule',
+    'description26' => 'Description',
 
     // 27-msconfig.php
     'config27' => 'Configuration',
     'msconfig27' => 'MailScanner Configuration',
+    'auditlog27' => 'Viewed MailScanner configuration',
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Cannot open pipe',
+    'message28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
+    'auditlog28' => 'Run MailScanner lint',
+    'finish28' => 'Finish - Total Time',
+    'message28' => 'Message',
+    'time28' => 'Time',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Ruleset Editor',
+    'auditlog29' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
 
     // 30-msrule.php
     'rules30' => 'Rules',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
+    'notauthorized31' => 'Not Authorized',
+    'auditlog31' => 'Viewed MySQL Status',
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Mail Queue Viewer',
@@ -594,14 +663,14 @@ return array(
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Recipients by Quantity',
     'top10recipqt42' => 'Top 10 Recipients by Quantity',
-    'email42' => 'E-Mail Address',
+    'email42' => 'E-mail Address',
     'count42' => 'Count',
     'size42' => 'Size',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
     'top10recipvol43' => 'Top 10 Recipients by Volume',
-    'email43' => 'E-Mail Address',
+    'email43' => 'E-mail Address',
     'count43' => 'Count',
     'size43' => 'Size',
 
@@ -622,14 +691,14 @@ return array(
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
-    'email46' => 'E-Mail Address',
+    'email46' => 'E-mail Address',
     'count46' => 'Count',
     'size46' => 'Size',
 
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
-    'email47' => 'E-Mail Address',
+    'email47' => 'E-mail Address',
     'count47' => 'Count',
     'size47' => 'Size',
 
@@ -639,7 +708,6 @@ return array(
     'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
     'count48' => 'Count',
-    'dienorow48' => 'Error: no rows retrieved from database...',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total Mail by Date',
@@ -674,9 +742,15 @@ return array(
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Cannot open pipe',
+    'finish51' => 'Finish - Total Time',
+    'auditlog51' => 'Ran SpamAssassin lint',
+    'message51' => 'Message',
+    'time51' => 'Time',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'MailWatch and MailScanner Version information',
+    'auditlog52' => 'Non-admin user attemped to view Software Version Page',
+    'downloaddate52' => 'download date',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -686,6 +760,7 @@ return array(
 
     // 55-msre_edit.php
     'diefnf55' => 'File not found:',
+    'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
 
     // 56-postfix_relay.php
     'diepipe56' => 'Cannot open pipe',
@@ -756,8 +831,8 @@ return array(
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
-    'colon99' => ' :',
-    'diemysql99' => 'Error: no rows retrieved from database',
+    'colon99' => ':',
+    'diemysql99' => 'Error: No rows retrieved from database.',
     'message199' => 'File isn\'t readable. Please make sure that',
     'message299' => 'is readable and writable by MailWatch',
     'mwlogo99' => 'MailWatch Logo',

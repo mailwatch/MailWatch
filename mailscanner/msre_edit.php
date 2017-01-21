@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -59,7 +59,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
-    audit_log('Non-admin user attempted to view MailScanner Rule Editor Page');
+    audit_log(__('auditlog55'));
 } else {
     // add the header information such as the logo, search, menu, ....
     $short_filename = basename(sanitizeInput($_GET['file']));
