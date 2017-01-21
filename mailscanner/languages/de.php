@@ -445,7 +445,8 @@ return array(
     'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
     'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
     'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
-    'retypepassword12' => 'Confirm Password:',
+    'retypepassword12' => 'Passwort bestätigen:',
+    'userexists12' => 'Es existiert bereits ein Benutzer mit dem angegebenen Benutzernamen',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',

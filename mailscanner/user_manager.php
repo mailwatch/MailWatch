@@ -221,6 +221,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             echo __('errortypesetforbidden12') . '<br>';
                         } elseif ($_GET['password'] !== $_GET['password1']) {
                             echo __('errorpass12');
+                        } elseif ($_GET['key'] != $_GET['username'] && checkForExistingUser($_GET['username'])) {
+                            echo __('userexists12');
                         } else {
                             $do_pwd = false;
                             $key = safe_value($_GET['key']);

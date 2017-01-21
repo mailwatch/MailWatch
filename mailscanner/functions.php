@@ -3763,3 +3763,13 @@ function updateUserPasswordHash($user, $hash)
     dbquery($sqlUpdateHash);
     audit_log(__('auditlogupdateuser03') . ' ' . $user);
 }
+
+/**
+ * @param $username username that should be checked if it exists
+ * @return true if user exists, else false
+ */
+function checkForExistingUser($username) {
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'"
+    $row = dbquery($sqlQuery)->fetchObject();
+    return $row->counter >0;
+}
