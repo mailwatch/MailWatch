@@ -30,7 +30,7 @@
  */
 
 header("Content-type: text/plain\n\n");
-require("/var/www/html/mailwatch-development/functions.php");
+require("/var/www/html/mailscanner/functions.php");
 
 $link = dbconn();
 echo "Testing DB Connection...";
