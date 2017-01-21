@@ -48,7 +48,7 @@ function get_random_string($count)
 }
 
 if (defined('PWD_RESET') && PWD_RESET === true) {
-    if (isset($_POST['Submit']) && $_POST['Submit'] == __('requestpwdreset')) {
+    if (isset($_POST['Submit']) && $_POST['Submit'] == __('requestpwdreset100')) {
         //check email add registered user and password reset is allowed
         $email = $link->real_escape_string($_POST['email']);
         $sql = "SELECT * FROM users WHERE username = '$email'";
@@ -235,7 +235,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 if ($row['resetid'] === $uid) {
                     //reset id matches - check if link expired
                     if ($row['resetexpire'] < time()) {
-                        echo __('resetexpired') . '<a href="password_reset.php?stage=1">'.__('button100') . '</a>';
+                        echo __('resetexpired100') . '<a href="password_reset.php?stage=1">'.__('button100') . '</a>';
                     } else {
                         $fields = "stage2";
                         $showpage = true;
@@ -257,7 +257,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         <head>
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <title><?php echo __('title100');?></title>
+            <title><?php echo __('title100'); ?></title>
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="shortcut icon" href="images/favicon.png">
             <style type="text/css">
@@ -384,7 +384,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                 ?>
                                 <p><label><?php echo __('emailaddress100'); ?></label></p>
                                 <p><input name="email" type="text" id="email" autofocus></p>
-                                <p><input type="submit" name="Submit" value="<?php echo __('requestpwdreset'); ?>"></p>
+                                <p><input type="submit" name="Submit" value="<?php echo __('requestpwdreset100'); ?>"></p>
                                 <?php
 
                             }

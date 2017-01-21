@@ -865,8 +865,8 @@ return array(
     'emailaddress100' => 'Email Address',
     '01pwd100' => 'Enter Password',
     '02pwd100' => 'Repeat Password',
-    'requestpwdreset' => 'Request Password Reset',
-    'resetexpired' => 'Reset link has expired - please request a new password reset',
+    'requestpwdreset100' => 'Request Password Reset',
+    'resetexpired100' => 'Reset link has expired - please request a new password reset',
     'brokenlink100' => 'Reset link is missing paramaters - try again or contact support',
 
 );
