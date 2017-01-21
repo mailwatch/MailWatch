@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.10 */
+/* v0.3.11 */
 
 return array(
     // 01-login.php
@@ -446,6 +446,7 @@ return array(
     'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
     'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
     'retypepassword12' => 'Confirmez le mot de passe :',
+    'userexists12' => 'User already exists with username %s',
 
 
     // 13-sa_rules_update.php

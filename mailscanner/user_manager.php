@@ -108,6 +108,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12');
+                    } elseif (checkForExistingUser()) {
+                        echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                     } else {
                         $n_username = safe_value($_GET['username']);
                         $n_fullname = safe_value($_GET['fullname']);
@@ -222,7 +224,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         } elseif ($_GET['password'] !== $_GET['password1']) {
                             echo __('errorpass12');
                         } elseif ($_GET['key'] != $_GET['username'] && checkForExistingUser($_GET['username'])) {
-                            echo __('userexists12');
+                            echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                         } else {
                             $do_pwd = false;
                             $key = safe_value($_GET['key']);
