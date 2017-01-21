@@ -8,6 +8,8 @@
  * Time: 10:16
  *
  * Created for Mailwatch 1.2.0 RC4
+ *
+ * Updated 21/01/2017
  */
 require_once __DIR__ . '/functions.php';
 if (!QUARANTINE_USE_SENDMAIL) {
@@ -70,18 +72,18 @@ if(defined('PWD_RESET') && PWD_RESET === true)
   <td><img src="'. IMAGES_DIR . MW_LOGO .'" alt="'.__('mwlogo99').'"/></td>
   <td align="center" valign="middle">
    <h2>'.__('h2email100').'</h2>
-   <p>'. __('p1email100') . $email .__('p2email100').'
+   <p>'. sprintf(__('p1email100'),$email) . '</p>
     <a href="' . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand . '"><button>'.__('button100').'</button></a></p>
   </td>
  </tr>
  </table>
 </body>
 </html>';
-                $text = __('01emailplaintxt100') . $email . __('02emailplaintxt100') . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
+                $text = sprintf(__('01emailplaintxt100'),$email). QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
 
                 //Send email
                 $mime = new Mail_mime("\n");
-                if(defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME != '' && PWD_RESET_FROM_ADDRESS != '') {
+                if(defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
                     $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
                 }
                 else{
@@ -114,7 +116,7 @@ if(defined('PWD_RESET') && PWD_RESET === true)
         }
     }
 
-    else if(isset($_POST['Submit']) && $_POST['Submit'] == 'Reset Password') {
+    else if(isset($_POST['Submit']) && $_POST['Submit'] === 'Reset Password') {
         //check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
         $email = $link->real_escape_string($_POST['email']);
         $uid = $link->real_escape_string($_POST['uid']);
@@ -156,17 +158,17 @@ if(defined('PWD_RESET') && PWD_RESET === true)
   <td><img src="'. IMAGES_DIR . MW_LOGO .'" alt="'.__('mwlogo99').'"/></td>
   <td align="center" valign="middle">
    <h2>'.__('02pwdresetemail100').'</h2>
-   <p>'.__('03pwdresetemail100'). ' ' . $email . ' ' . __('04pwdresetemail100') . '</p>
+   <p>'.sprintf(__('03pwdresetemail100'),$email) . '</p>
   </td>
  </tr>
  </table>
 </body>
 </html>';
-                $text = __('05pwdresetemail100') . ' ' . $email . ' ' . __('06pwdresetemail100');
+                $text = sprintf(__('04pwdresetemail100'),$email);
 
                 //Send email
                 $mime = new Mail_mime("\n");
-                if(defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME != '' && PWD_RESET_FROM_ADDRESS != '') {
+                if(defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
                     $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
                 }
                 else{
