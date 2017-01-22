@@ -47,7 +47,7 @@ html_start(__('usermgnt12'), 0, false, false);
        var pass1 = document.getElementById("password1");
        if(pass0.value != pass1.value) {
            var errorDiv = document.getElementById("formerror");
-           errorDiv.innerHtml = "<?php echo __('errorpass12');?><br>";
+           errorDiv.innerHTML = "<?php echo __('errorpass12');?><br>";
            errorDiv.classList.remove("hidden");
            return false;
        } else {
