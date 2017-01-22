@@ -34,7 +34,6 @@
 @font-face {
   font-family: password;
   src: url("fonts/password.ttf") format('opentype');
-  font-weight: lighter;
 }
 
 body {
