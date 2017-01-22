@@ -29,7 +29,7 @@ use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
 # Trace settings - uncomment this to debug
-# DBI->trace(2,'/root/dbitrace.log');
+# DBI->trace(2,'/var/spool/MailScanner/dbitrace.log');
 
 my ($dbh);
 my ($sth);
