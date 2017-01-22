@@ -31,7 +31,6 @@
 
 /* languages/en.php */
 /* v0.3.11 */
-
 return array(
     // 01-login.php
     'username' => 'User:',
