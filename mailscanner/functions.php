@@ -2363,7 +2363,8 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[$f] . '</td>' . "\n";
+                // Insert a space after comma to ovoid large column
+                echo ' <td style="background-color: ' . $bgcolor . '; white-space: pre-wrap; word-wrap: break-word; ">' . $row[$f] . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }
