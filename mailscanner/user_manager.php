@@ -43,8 +43,8 @@ html_start(__('usermgnt12'), 0, false, false);
 ?>
 <script>
    function checkPasswords() {
-       var pass0 = document.getElementById("password0");
-       var pass1 = document.getElementById("password1");
+       var pass0 = document.getElementById("password");
+       var pass1 = document.getElementById("retypepassword");
        if(pass0.value != pass1.value) {
            var errorDiv = document.getElementById("formerror");
            errorDiv.innerHTML = "<?php echo __('errorpass12');?><br>";
@@ -101,8 +101,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('newuser12') . '  <br> ' . __('forallusers12') . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password0\" NAME=\"password\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password1\" NAME=\"password1\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password\" NAME=\"password\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"retypepassword\" NAME=\"password1\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
          <OPTION VALUE=\"U\">" . __('user12') . "</OPTION>
@@ -211,8 +211,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password0\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password1\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                        echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                        echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"retypepassword\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
 		<TD><SELECT NAME=\"type\">
 			 <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
@@ -416,8 +416,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>'."\n";
         if ($_SESSION['user_ldap'] !== true) {
-            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password0" name="password" value="xxxxxxxx"></td></tr>'."\n";
-            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="password1" name="password1" value="xxxxxxxx"></td></tr>'."\n";
+            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
+            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>'."\n";
         }
 
         echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" '.$quarantine_report.'> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>'."\n";
