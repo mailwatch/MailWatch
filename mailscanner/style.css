@@ -30,6 +30,13 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+@font-face {
+  font-family: password;
+  src: url("fonts/password.ttf") format('opentype');
+  font-weight: lighter;
+}
+
 body {
     margin: 0;
     font-family: verdana, sans-serif;
