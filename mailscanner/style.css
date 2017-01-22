@@ -43,6 +43,8 @@ body {
 
 input.password {
    font-family: password;
+   font-size: 8pt;
+   width: 143px
 }
 
 table.mail TH, table.boxtable TH, table.maildetail TH {
