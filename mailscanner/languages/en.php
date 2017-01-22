@@ -412,7 +412,7 @@ return array(
     'action_0212' => 'Action:',
     'reset12' => 'Reset',
     'areusuredel12' => 'Are you sure you want to delete user',
-    'errorpass12' => 'Passwords do not match',
+    'errorpass12' => 'Password mismatch',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',

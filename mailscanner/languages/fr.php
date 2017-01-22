@@ -412,7 +412,7 @@ return array(
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
-    'errorpass12' => 'Le Mot de Passe de correspond pas.',
+    'errorpass12' => 'Mot de passe erroné',
     'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',
