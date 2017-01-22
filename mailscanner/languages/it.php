@@ -30,7 +30,11 @@
  */
 
 /* languages/it.php */
+<<<<<<< HEAD
 /* v0.3.11 */
+=======
+/* v0.3.8 */
+>>>>>>> upstream/develop
 
 return array(
     // 01-login.php
