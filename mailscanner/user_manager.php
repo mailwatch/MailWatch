@@ -107,7 +107,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_GET['password'] !== $_GET['password1']) {
-                        echo __('errorpass12');
+                        echo __('errorpass12') . '<br>';
                     } elseif (checkForExistingUser()) {
                         echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                     } else {
@@ -222,7 +222,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         } elseif ($_SESSION['user_type'] === 'D' && $_GET['type'] == 'A') {
                             echo __('errortypesetforbidden12') . '<br>';
                         } elseif ($_GET['password'] !== $_GET['password1']) {
-                            echo __('errorpass12');
+                            echo __('errorpass12') . '<br>';
                         } elseif ($_GET['key'] != $_GET['username'] && checkForExistingUser($_GET['username'])) {
                             echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                         } else {
@@ -414,7 +414,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
     } else {
         // Do update
         if (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
-            echo __('errorpass12');
+            echo __('errorpass12')  . '<br>';
         } else {
             $do_pwd = false;
             $username = safe_value($_SESSION['myusername']);
