@@ -2364,7 +2364,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
                 // Insert a space after comma to ovoid large column
-                echo ' <td style="background-color: ' . $bgcolor . '; white-space: pre-wrap; word-wrap: break-word; ">' . $row[$f] . '</td>' . "\n";
+                echo ' <td style="background-color: ' . $bgcolor . '; ">' . str_replace(",", ", ", $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }
