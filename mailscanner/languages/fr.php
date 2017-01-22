@@ -446,7 +446,7 @@ return array(
     'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
     'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
     'retypepassword12' => 'Confirmez le mot de passe :',
-    'userexists12' => 'User already exists with username %s',
+    'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
 
 
     // 13-sa_rules_update.php
