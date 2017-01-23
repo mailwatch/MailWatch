@@ -834,11 +834,7 @@ return array(
     'errordb63' => 'Datenbank-Fehler',
     'title63' => 'Passwort zurücksetzen',
     'h2email63' => 'Anfrage zum Zurücksetzen des Passworts',
-    'p1email63' => 'Eine Anfrage zum Zurücksetzen des Passworts wurde für %s empfangen. 
-Wenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.
-
-Zum Zurücksetzen des Passworts klicken Sie den unten stehenden Link
-',
+    'p1email63' => 'Eine Anfrage zum Zurücksetzen des Passworts wurde für %s empfangen.<br>Wenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.<br>Zum Zurücksetzen des Passworts klicken Sie den unten stehenden Link',
     'button63' => 'Passwort zurücksetzen',
     '01emailplaintxt63' => 'Anfrage zum Zurücksetzen des Passworts\nEine Anfrage zum Zurücksetzen des Passworts wurde für %s empfangen. \nWenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.\nZum Zurücksetzen des Passworts kopieren Sie den unten stehenden Link in Ihren Webbrowser:\n',
     '01emailsubject63' => 'Anfrage zum Zurücksetzen des Passworts',
@@ -847,8 +843,7 @@ Zum Zurücksetzen des Passworts klicken Sie den unten stehenden Link
     'errorpwdchange63' => 'Fehler beim Ändern des Passworts',
     '01pwdresetemail63' => 'Ihr Passwort wurde zurückgesetzt',
     '02pwdresetemail63' => 'Ihr Passwort wurde zurückgesetzt',
-    '03pwdresetemail63' => 'Ihr Passwort für das Konto %s wurde aktualisiert.
-Wenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.',
+    '03pwdresetemail63' => 'Ihr Passwort für das Konto %s wurde aktualisiert.<br>Wenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.',
     '04pwdresetemail63' => 'Ihr Passwort wurde zurückgesetzt\nIhr Passwort für das Konto %s wurde aktualisiert.\nWenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.\n.',
     '02emailsubject63' => 'Zurücksetzen des Passworts erfolgreicht',
     'pwdresetsuccess63' => 'Ihr Passwort wurde erfolgreich aktualisiert',
