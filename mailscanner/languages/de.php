@@ -830,6 +830,40 @@ return array(
     'message62' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
     'errors07' => 'Fehler:',
 
+    // 63-password_reset.php
+    'conferror63' => 'Fehler: Passwort zurücksetzen ist in conf.php nicht aktiviert',
+    'notfound63' => 'Benutzer nicht gefunden',
+    'errordb63' => 'Datenbank-Fehler',
+    'title63' => 'Passwort zurücksetzen',
+    'h2email63' => 'Anfrage zum Zurücksetzen des Passworts',
+    'p1email63' => 'Eine Anfrage zum Zurücksetzen des Passworts wurde für %s empfangen. 
+Wenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.
+
+Zum Zurücksetzen des Passworts klicken Sie den unten stehenden Link
+',
+    'button63' => 'Passwort zurücksetzen',
+    '01emailplaintxt63' => 'Anfrage zum Zurücksetzen des Passworts\nEine Anfrage zum Zurücksetzen des Passworts wurde für %s empfangen. \nWenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.\nZum Zurücksetzen des Passworts kopieren Sie den unten stehenden Link in Ihren Webbrowser:\n',
+    '01emailsubject63' => 'Anfrage zum Zurücksetzen des Passworts',
+    '01emailsuccess63' => 'Die Anfrage zum Zurücksetzen des Passworts war erfolgreich. Bitte prüfen Sie Ihren Posteingang für die nächsten Schritte',
+    'resetnotallowed63' => 'Zurücksetzen des Passworts nicht erlaubt',
+    'errorpwdchange63' => 'Fehler beim Ändern des Passworts',
+    '01pwdresetemail63' => 'Ihr Passwort wurde zurückgesetzt',
+    '02pwdresetemail63' => 'Ihr Passwort wurde zurückgesetzt',
+    '03pwdresetemail63' => 'Ihr Passwort für das Konto %s wurde aktualisiert.
+Wenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.',
+    '04pwdresetemail63' => 'Ihr Passwort wurde zurückgesetzt\nIhr Passwort für das Konto %s wurde aktualisiert.\nWenn Sie die Anfrage nicht gesendet haben kontaktieren Sie bitte unverzüglich Ihren Systemadministrator.\n.',
+    '02emailsubject63' => 'Zurücksetzen des Passworts erfolgreicht',
+    'pwdresetsuccess63' => 'Ihr Passwort wurde erfolgreich aktualisiert',
+    'pwdresetidmismatch' => 'UID stimmt nicht überein - etwas ist schiefgegangen',
+    'pwdmismatch' => 'Passwörter stimmen nicht überein',
+    'usernotfound63' => 'Fehler: Benutzer nicht gefunden',
+    'emailaddress63' => 'E-Mail-Adresse',
+    '01pwd63' => 'Passwort ',
+    '02pwd63' => 'Passwort wiederholen',
+    'requestpwdreset63' => 'Zurücksetzen des Passworts anfordern',
+    'resetexpired63' => 'Der Link zum Zurücksetzen des Passworts ist abgelaufen - bitte stellen Sie die Anfrage erneut',
+    'brokenlink63' => 'Der Link zum Zurücksetzen des Passworts ist unvollständig - bitte versuchen Sie es erneut oder kontaktieren Sie den Administrator',
+
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ':',
