@@ -41,12 +41,23 @@ $fields = '';
 $errors='';
 $message = '';
 $link = dbconn();
+
+/**
+ * @param $count
+ * @return string
+ */
 function get_random_string($count)
 {
     $bytes = openssl_random_pseudo_bytes($count);
     return bin2hex($bytes);
 }
 
+/**
+ * @param $email
+ * @param $html
+ * @param $text
+ * @param $subject
+ */
 function send_email($email,$html,$text, $subject){
     $mime = new Mail_mime("\n");
     if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
@@ -131,32 +142,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 //Send email
                 $subject = __('01emailsubject100');
                 send_email($email,$html,$text,$subject);
-//                $mime = new Mail_mime("\n");
-//                if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
-//                    $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
-//                } else {
-//                    $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>';
-//                }
-//                $hdrs = array(
-//                    'From' => $sender,
-//                    'To' => $email,
-//                    'Subject' => __('01emailsubject100'),
-//                    'Date' => date("r")
-//                );
-//                $mime_params = array(
-//                    'text_encoding' => '7bit',
-//                    'text_charset' => 'UTF-8',
-//                    'html_charset' => 'UTF-8',
-//                    'head_charset' => 'UTF-8'
-//                );
-//                $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
-//                $mime->setTXTBody($text);
-//                $mime->setHTMLBody($html);
-//                $body = $mime->get($mime_params);
-//                $hdrs = $mime->headers($hdrs);
-//                $mail_param = array('host' => QUARANTINE_MAIL_HOST, 'port' => QUARANTINE_MAIL_PORT);
-//                $mail =new Mail_smtp($mail_param);
-//                $mail->send($email, $hdrs, $body);
                 $message = '<p>'.__('01emailsuccess100').'</p>';
                 $showpage = true;
             } else {
@@ -220,26 +205,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 //Send email
                 $subject = __('02emailsubject100');
                 send_email($email,$html,$text,$subject);
-//                $mime = new Mail_mime("\n");
-//                if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
-//                    $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
-//                } else {
-//                    $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>';
-//                }
-//                $hdrs = array(
-//                    'From' => $sender,
-//                    'To' => $email,
-//                    'Subject' => __('02emailsubject100'),
-//                    'Date' => date("r")
-//                );
-//                $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
-//                $mime->setTXTBody($text);
-//                $mime->setHTMLBody($html);
-//                $body = $mime->get();
-//                $hdrs = $mime->headers($hdrs);
-//                $mail_param = array('host' => QUARANTINE_MAIL_HOST);
-//                $mail =& Mail::factory('smtp', $mail_param);
-//                $mail->send($email, $hdrs, $body);
                 $message = '<p>' . __('pwdresetsuccess100') . '<br/>
 <a href="login.php"><button>' . __('login01') . '</button></a></p>';
                 $showpage = true;
@@ -445,8 +410,11 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     <?php
 
             }
-            if ($message!='') {
+            elseif ($message!=='') {
                 echo $message;
+            }
+            elseif ($errors !== ''){
+                echo $errors;
             }
         } else {
             ?>
