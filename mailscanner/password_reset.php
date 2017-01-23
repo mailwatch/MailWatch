@@ -290,6 +290,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     border-top-right-radius:15px;
                     -webkit-border-top-right:15px;
                     -moz-border-radius-topright: 15px;
+                    padding:20px
                 }
 
                 .pwdreset form {
@@ -371,7 +372,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     -webkit-border-radius:15px;
                     -moz-border-radius:15px;
                     border-radius:15px;
-                    padding:15px;
                 }
             </style>
         </head>
