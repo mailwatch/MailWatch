@@ -276,7 +276,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 .pwdreset {
                     margin: 50px auto;
-                    width: 308px;
+                    width: 350px;
                 }
 
                 .pwdreset h1 {
@@ -295,7 +295,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 }
 
                 .pwdreset form {
-                    border: 2px solid #000000;
                     border-top: 0;
                     background-color: #fff;
 
