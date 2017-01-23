@@ -38,7 +38,7 @@ if (!QUARANTINE_USE_SENDMAIL) {
 }
 $showpage = false;
 $fields = '';
-$errors='';
+$errors = '';
 $message = '';
 $link = dbconn();
 
@@ -58,7 +58,8 @@ function get_random_string($count)
  * @param $text
  * @param $subject
  */
-function send_email($email,$html,$text, $subject){
+function send_email($email, $html, $text, $subject)
+{
     $mime = new Mail_mime("\n");
     if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
         $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
@@ -83,7 +84,7 @@ function send_email($email,$html,$text, $subject){
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
     $mail_param = array('host' => QUARANTINE_MAIL_HOST, 'port' => QUARANTINE_MAIL_PORT);
-    $mail =new Mail_smtp($mail_param);
+    $mail = new Mail_smtp($mail_param);
     $mail->send($email, $hdrs, $body);
 }
 
@@ -95,7 +96,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         $result = dbquery($sql);
         if ($result->num_rows !== 1) {
             //user not found
-            $errors = '<p class="pwdreseterror">'.__('notfound63').'</p>';
+            $errors = '<p class="pwdreseterror">' . __('notfound63') . '</p>';
             $showpage = true;
         } else {
             //user found, now check type of user
@@ -103,7 +104,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             if ($row['type'] === 'U') {
                 //user type is user, password reset allowed
                 $rand = get_random_string(10);
-                $resetexpire = time() + 60*60*RESET_LINK_EXPIRE;
+                $resetexpire = time() + 60 * 60 * RESET_LINK_EXPIRE;
                 $sql = "UPDATE users SET resetid = '$rand', resetexpire = '$resetexpire' WHERE username = '$email'";
                 $result = dbquery($sql);
                 if (!$result) {
@@ -112,7 +113,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $html = '<!DOCTYPE html>
 <html>
 <head>
- <title>'.__('title63').'</title>
+ <title>' . __('title63') . '</title>
  <style type="text/css">
  <!--
   body, td, tr {
@@ -127,22 +128,22 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 <!-- Outer table -->
 <table width="100%" border="0">
  <tr>
-  <td><img src="'. IMAGES_DIR . MW_LOGO .'" alt="'.__('mwlogo99').'"/></td>
+  <td><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
   <td align="center" valign="middle">
-   <h2>'.__('h2email63').'</h2>
-   <p>'. sprintf(__('p1email63'), $email) . '</p>
-    <a href="' . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand . '"><button>'.__('button63').'</button></a></p>
+   <h2>' . __('h2email63') . '</h2>
+   <p>' . sprintf(__('p1email63'), $email) . '</p>
+    <a href="' . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand . '"><button>' . __('button63') . '</button></a></p>
   </td>
  </tr>
  </table>
 </body>
 </html>';
-                $text = sprintf(__('01emailplaintxt63'), $email). QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
+                $text = sprintf(__('01emailplaintxt63'), $email) . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
 
                 //Send email
                 $subject = __('01emailsubject63');
-                send_email($email,$html,$text,$subject);
-                $message = '<p>'.__('01emailsuccess63').'</p>';
+                send_email($email, $html, $text, $subject);
+                $message = '<p>' . __('01emailsuccess63') . '</p>';
                 $showpage = true;
             } else {
                 //password reset not allowed
@@ -159,7 +160,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $sql = "SELECT resetid FROM users WHERE username = '$email'";
             $result = dbquery($sql);
             if (!$result) {
-                die("Error: ".$link->error);
+                die("Error: " . $link->error);
             }
             $row = $result->fetch_array();
             if ($row['resetid'] === $_POST['uid']) {
@@ -176,7 +177,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
- <title>'.__('01pwdresetemail63').'</title>
+ <title>' . __('01pwdresetemail63') . '</title>
  <style type="text/css">
  <!--
   body, td, tr {
@@ -191,10 +192,10 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 <!-- Outer table -->
 <table width="100%%" border="0">
  <tr>
-  <td><img src="'. IMAGES_DIR . MW_LOGO .'" alt="'.__('mwlogo99').'"/></td>
+  <td><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
   <td align="center" valign="middle">
-   <h2>'.__('02pwdresetemail63').'</h2>
-   <p>'.sprintf(__('03pwdresetemail63'), $email) . '</p>
+   <h2>' . __('02pwdresetemail63') . '</h2>
+   <p>' . sprintf(__('03pwdresetemail63'), $email) . '</p>
   </td>
  </tr>
  </table>
@@ -204,7 +205,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 //Send email
                 $subject = __('02emailsubject63');
-                send_email($email,$html,$text,$subject);
+                send_email($email, $html, $text, $subject);
                 $message = '<p>' . __('pwdresetsuccess63') . '<br/>
 <a href="login.php"><button>' . __('login01') . '</button></a></p>';
                 $showpage = true;
@@ -220,7 +221,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         //first stage, need to get email address
         $fields = 'stage1';
         $showpage = true;
-    } elseif (isset($_GET['stage']) && $_GET['stage']=== '2') {
+    } elseif (isset($_GET['stage']) && $_GET['stage'] === '2') {
         //need to check if reset allowed, and reset password
         if (isset($_GET['user']) && isset($_GET['uid'])) {
             //check that uid is correct
@@ -232,14 +233,14 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             if (!$result) {
                 die(__('errordb63') . $link->error);
             }
-            if ($result->num_rows !== '1') {
+            if ($result->num_rows !== 1) {
                 echo __('usernotfound63');
             } else {
                 $row = $result->fetch_array();
                 if ($row['resetid'] === $uid) {
                     //reset id matches - check if link expired
                     if ($row['resetexpire'] < time()) {
-                        echo __('resetexpired63') . '<a href="password_reset.php?stage=1">'.__('button63') . '</a>';
+                        echo __('resetexpired63') . '<a href="password_reset.php?stage=1">' . __('button63') . '</a>';
                     } else {
                         $fields = "stage2";
                         $showpage = true;
@@ -285,12 +286,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     margin: 0;
                     text-align: center;
                     border-top-left-radius: 15px;
-                    -webkit-border-top-left:15px;
+                    -webkit-border-top-left: 15px;
                     -moz-border-radius-topleft: 15px;
-                    border-top-right-radius:15px;
-                    -webkit-border-top-right:15px;
+                    border-top-right-radius: 15px;
+                    -webkit-border-top-right: 15px;
                     -moz-border-radius-topright: 15px;
-                    padding:20px
+                    padding: 20px
                 }
 
                 .pwdreset form {
@@ -326,7 +327,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     color: #A94442;
                     padding: 10px;
                     text-align: center;
-                    margin:10px;
+                    margin: 10px;
 
                     -webkit-border-radius: 3px;
                     -moz-border-radius: 3px;
@@ -368,14 +369,14 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 }
 
                 .pwdreset .border-rounded {
-                    border:solid 2px #000;
-                    -webkit-border-radius:15px;
-                    -moz-border-radius:15px;
-                    border-radius:15px;
+                    border: solid 2px #000;
+                    -webkit-border-radius: 15px;
+                    -moz-border-radius: 15px;
+                    border-radius: 15px;
                 }
 
                 .pwdreset p {
-                    padding:10px;
+                    padding: 10px;
                     text-align: center;
                 }
 
@@ -385,62 +386,62 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         <div class="pwdreset">
             <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
             <div class="border-rounded">
-            <h1><?php echo __('title63'); ?></h1>
-            <?php if (file_exists('conf.php')) {
-            if ($fields !== '') {
-                ?>
-                    <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                        <fieldset>
-                            <?php if (isset($_GET['error']) || $errors !== '') {
+                <h1><?php echo __('title63'); ?></h1>
+                <?php if (file_exists('conf.php')) {
+                    if ($fields !== '') {
+                        ?>
+                        <form name="pwdresetform" class="pwdresetform" method="post"
+                              action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                            <fieldset>
+                                <?php if (isset($_GET['error']) || $errors !== '') {
+                                    ?>
+                                    <p class="pwdreseterror">
+                                        <?php echo $errors; ?>
+                                    </p>
+                                    <?php
+
+                                } ?>
+                                <?php
+                                if ($fields === 'stage1') {
+                                    ?>
+                                    <p><label><?php echo __('emailaddress63'); ?></label></p>
+                                    <p><input name="email" type="text" id="email" autofocus></p>
+                                    <p><input type="submit" name="Submit"
+                                              value="<?php echo __('requestpwdreset63'); ?>"></p>
+                                    <?php
+
+                                }
+                                if ($fields === 'stage2') {
+                                    ?>
+                                    <input type="hidden" name="email" value="<?php echo $email; ?>">
+                                    <input type="hidden" name="uid" value="<?php echo $uid; ?>">
+                                    <p><label><?php echo __('01pwd63'); ?></label></p>
+                                    <p><input name="pwd1" type="password" id="pwd1" autofocus></p>
+                                    <p><label><?php echo __('02pwd63'); ?></label></p>
+                                    <p><input name="pwd2" type="password" id="pwd2"></p>
+                                    <p><input type="submit" name="Submit" value="<?php echo __('button63'); ?>"></p>
+                                    <?php
+
+                                } ?>
+
+                            </fieldset>
+                        </form>
+                        <?php
+
+                    } elseif ($message !== '') {
+                        echo $message;
+                    } elseif ($errors !== '') {
+                        echo $errors;
+                    }
+                } else {
                     ?>
-                                <p class="pwdreseterror">
-                                    <?php echo $errors; ?>
-                                </p>
-                                <?php
-
-                } ?>
-                            <?php
-                            if ($fields === 'stage1') {
-                                ?>
-                                <p><label><?php echo __('emailaddress63'); ?></label></p>
-                                <p><input name="email" type="text" id="email" autofocus></p>
-                                <p><input type="submit" name="Submit" value="<?php echo __('requestpwdreset63'); ?>"></p>
-                                <?php
-
-                            }
-                if ($fields === 'stage2') {
-                    ?>
-                                <input type="hidden" name="email" value="<?php echo $email; ?>">
-                                <input type="hidden" name="uid" value="<?php echo $uid; ?>">
-                                <p><label><?php echo __('01pwd63'); ?></label></p>
-                                <p><input name="pwd1" type="password" id="pwd1" autofocus></p>
-                                <p><label><?php echo __('02pwd63'); ?></label></p>
-                                <p><input name="pwd2" type="password" id="pwd2"></p>
-                                <p><input type="submit" name="Submit" value="<?php echo __('button63'); ?>"></p>
-                                <?php
-
-                } ?>
-
-                        </fieldset>
-                    </form>
+                    <p class="error">
+                        <?php echo __('cannot_read_conf'); ?>
+                    </p>
                     <?php
 
-            }
-            elseif ($message!=='') {
-                echo $message;
-            }
-            elseif ($errors !== ''){
-                echo $errors;
-            }
-        } else {
-            ?>
-                <p class="error">
-                    <?php echo __('cannot_read_conf'); ?>
-                </p>
-                <?php
-
-        } ?>
-        </div>
+                } ?>
+            </div>
         </div>
 
         </body>
