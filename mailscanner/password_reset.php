@@ -313,7 +313,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 .pwdreset fieldset p {
                     color: #222;
                     margin: 0;
-                    margin-bottom: 8px;
                 }
 
                 .pwdreset fieldset p:last-child {
@@ -375,7 +374,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 }
 
                 .pwdreset p {
-                    padding: 10px;
+                    padding: 0 10px;
                     text-align: center;
                 }
 
