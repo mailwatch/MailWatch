@@ -95,7 +95,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         $result = dbquery($sql);
         if ($result->num_rows !== 1) {
             //user not found
-            $errors = '<p class="error">'.__('notfound63').'</p>';
+            $errors = '<p class="pwdreseterror">'.__('notfound63').'</p>';
             $showpage = true;
         } else {
             //user found, now check type of user
@@ -212,7 +212,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 die(__('pwdresetidmismatch'));
             }
         } else {
-            $errors = '<p>' . __('pwdmismatch');
+            $errors = '<p class="pwdreseterror">' . __('pwdmismatch');
             $fields = "stage2";
             $showpage = true;
         }
@@ -280,16 +280,10 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 .pwdreset h1 {
                     background-color: #f7ce4a;
-                    -webkit-border-radius: 15px 15px 0 0;
-                    -moz-border-radius: 15px 15px 0 0;
-                    border-radius: 15px 15px 0 0;
                     color: #222;
                     font-size: 28px;
-                    padding: 15px 15px;
                     margin: 0;
                     text-align: center;
-                    border: 2px solid #000000;
-                    border-bottom: 0;
                 }
 
                 .pwdreset form {
@@ -364,11 +358,20 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 .pwdreset fieldset input[type="submit"]:hover {
                     background-color: #deb531;
                 }
+
+                .pwdreset .border-rounded {
+                    border:solid 2px #000;
+                    -webkit-border-radius:15px;
+                    -moz-border-radius:15px;
+                    border-radius:15px;
+                    padding:15px;
+                }
             </style>
         </head>
         <body>
         <div class="pwdreset">
             <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+            <div class="border-rounded">
             <h1><?php echo __('title63'); ?></h1>
             <?php if (file_exists('conf.php')) {
             if ($fields !== '') {
@@ -424,6 +427,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 <?php
 
         } ?>
+        </div>
         </div>
 
         </body>
