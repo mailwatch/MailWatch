@@ -36,7 +36,7 @@ return array(
     // 01-login.php
     'username' => 'Utilisateur :',
     'password' => 'Mot de Passe :',
-    'mwloginpage01' => 'MailWatch Login Page',
+    'mwloginpage01' => 'Page de connexion MailWatch',
     'mwlogin01' => 'Connexion&nbsp;à&nbsp;MailWatch',
     'badup01' => 'Mauvais Utilisateur ou Mot de Passe',
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
