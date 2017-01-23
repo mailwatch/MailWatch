@@ -216,11 +216,11 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $fields = "stage2";
             $showpage = true;
         }
-    } elseif (isset($_GET['stage']) && $_GET['stage'] === 1) {
+    } elseif (isset($_GET['stage']) && $_GET['stage'] === '1') {
         //first stage, need to get email address
         $fields = 'stage1';
         $showpage = true;
-    } elseif (isset($_GET['stage']) && $_GET['stage']=== 2) {
+    } elseif (isset($_GET['stage']) && $_GET['stage']=== '2') {
         //need to check if reset allowed, and reset password
         if (isset($_GET['user']) && isset($_GET['uid'])) {
             //check that uid is correct
@@ -373,6 +373,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     -moz-border-radius:15px;
                     border-radius:15px;
                 }
+
+                .pwdreset p {
+                    padding:10px;
+                    text-align: center;
+                }
+
             </style>
         </head>
         <body>
