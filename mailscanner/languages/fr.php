@@ -42,7 +42,7 @@ return array(
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
     'errorund01' => 'Une erreur inconnue c\'est produite',
     'login01' => 'Connexion',
-    'forgottenpwd01' => 'Forgotten Password?',
+    'forgottenpwd01' => 'Mot de passe perdu ?',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
