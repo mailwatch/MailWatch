@@ -76,6 +76,21 @@ function check_table_exists($table)
 }
 
 /**
+ * @param $table
+ * @param $column
+ * @return bool
+ */
+function check_column_exists($table,$column)
+{
+    global $link;
+
+    $result =  $link->query('SELECT * FROM `' . $table . '` LIMIT 1');
+    $row = $result->fetch_assoc();
+    return array_key_exists($column,$row);
+
+}
+
+/**
  * @param string $db
  * @param string $table
  * @param string $utf8variant
@@ -199,9 +214,21 @@ if ($link) {
     executeQuery($sql);
 
     echo pad(' - Drop `geoip_country` table');
-
     $sql = 'DROP TABLE IF EXISTS `geoip_country`';
     executeQuery($sql);
+
+    echo pad(' - Updating users table for password-reset');
+    if (check_column_exists('users','resetid') === false) {
+        $sql = 'ALTER TABLE `users` ADD COLUMN (
+            `resetid` varchar(255),
+            `resetexpire` bigint(20),
+            `lastreset` bigint(20)
+            );';
+        executeQuery($sql);
+    }
+    else {
+        echo "ALREADY EXISTS\n";
+    }
 
     // check for missing indexes
     $indexes = array(
