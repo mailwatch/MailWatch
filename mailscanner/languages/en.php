@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.3.8 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -593,6 +593,11 @@ return array(
     'user33' => 'User',
     'ipaddress33' => 'IP Address',
     'action33' => 'Action',
+    'filter33' => 'Filter',
+    'applyfilter33' => 'apply',
+    'startdate33' => 'Start date',
+    'enddate33' => 'End date',
+
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
