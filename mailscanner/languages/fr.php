@@ -287,8 +287,8 @@ return array(
     'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
     'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
     'noentries07' => 'Aucune entrée trouvée.',
-    'auditlogadded07' => 'Ajouté l\'entrée %s pour %s dans la %s',
-    'auditlogremoved07' => 'Supprimé l\'entrée %s pour %s dans la %s',
+    'auditlogadded07' => 'Ajouté l\'entrée [%s] pour %s dans la %s',
+    'auditlogremoved07' => 'Supprimé l\'entrée [%s] pour %s dans la %s',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
@@ -593,10 +593,10 @@ return array(
     'user33' => 'Utilisateur',
     'ipaddress33' => 'Adresse IP',
     'action33' => 'Action',
-    'filter33' => 'Filter',
-    'applyfilter33' => 'apply',
-    'startdate33' => 'Start date',
-    'enddate33' => 'End date',
+    'filter33' => 'Filtre',
+    'applyfilter33' => 'appliquer',
+    'startdate33' => 'Date de départ',
+    'enddate33' => 'Date de fin',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',
