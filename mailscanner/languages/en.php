@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.3.7 */
+/* v0.3.8 */
 
 return array(
     // 01-login.php
@@ -288,10 +288,8 @@ return array(
     'error071' => 'You must select a list to create the entry.',
     'error072' => 'You must enter a from address (user@domain, domain or IP).',
     'noentries07' => 'No entries found.',
-    'auditlogadded07' => 'Added',
-    'auditlogto07' => 'to',
-    'auditlogfor07' => 'for',
-    'auditlogremoved07' => 'Removed entry %s from the',
+    'auditlogadded07' => 'Added entry %s for %s in the %s',
+    'auditlogremoved07' => 'Removed entry %s for %s in the %s',
 
     // 08-quarantine.php
     'folder08' => 'Folder:',
