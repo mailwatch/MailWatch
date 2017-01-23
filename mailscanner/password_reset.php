@@ -88,19 +88,19 @@ function send_email($email,$html,$text, $subject){
 }
 
 if (defined('PWD_RESET') && PWD_RESET === true) {
-    if (isset($_POST['Submit']) && $_POST['Submit'] == __('requestpwdreset63')) {
+    if (isset($_POST['Submit']) && $_POST['Submit'] === __('requestpwdreset63')) {
         //check email add registered user and password reset is allowed
         $email = $link->real_escape_string($_POST['email']);
         $sql = "SELECT * FROM users WHERE username = '$email'";
         $result = dbquery($sql);
-        if ($result->num_rows != 1) {
+        if ($result->num_rows !== 1) {
             //user not found
             $errors = '<p class="error">'.__('notfound63').'</p>';
             $showpage = true;
         } else {
             //user found, now check type of user
             $row = $result->fetch_assoc();
-            if ($row['type'] == 'U') {
+            if ($row['type'] === 'U') {
                 //user type is user, password reset allowed
                 $rand = get_random_string(10);
                 $resetexpire = time() + 60*60*RESET_LINK_EXPIRE;
@@ -162,7 +162,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 die("Error: ".$link->error);
             }
             $row = $result->fetch_array();
-            if ($row['resetid'] == $_POST['uid']) {
+            if ($row['resetid'] === $_POST['uid']) {
                 require_once(MAILWATCH_HOME . '/lib/password.php');
                 $password = $link->real_escape_string(password_hash($_POST['pwd1'], PASSWORD_DEFAULT));
                 $lastreset = time();
@@ -216,11 +216,11 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $fields = "stage2";
             $showpage = true;
         }
-    } elseif (isset($_GET['stage']) && $_GET['stage'] == 1) {
+    } elseif (isset($_GET['stage']) && $_GET['stage'] === 1) {
         //first stage, need to get email address
         $fields = 'stage1';
         $showpage = true;
-    } elseif (isset($_GET['stage']) && $_GET['stage']==2) {
+    } elseif (isset($_GET['stage']) && $_GET['stage']=== 2) {
         //need to check if reset allowed, and reset password
         if (isset($_GET['user']) && isset($_GET['uid'])) {
             //check that uid is correct
@@ -232,7 +232,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             if (!$result) {
                 die(__('errordb63') . $link->error);
             }
-            if ($result->num_rows != '1') {
+            if ($result->num_rows !== '1') {
                 echo __('usernotfound63');
             } else {
                 $row = $result->fetch_array();
@@ -371,11 +371,11 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
             <h1><?php echo __('title63'); ?></h1>
             <?php if (file_exists('conf.php')) {
-            if ($fields != '') {
+            if ($fields !== '') {
                 ?>
                     <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                         <fieldset>
-                            <?php if (isset($_GET['error']) || $errors != '') {
+                            <?php if (isset($_GET['error']) || $errors !== '') {
                     ?>
                                 <p class="pwdreseterror">
                                     <?php echo $errors; ?>
@@ -384,7 +384,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 } ?>
                             <?php
-                            if ($fields == 'stage1') {
+                            if ($fields === 'stage1') {
                                 ?>
                                 <p><label><?php echo __('emailaddress63'); ?></label></p>
                                 <p><input name="email" type="text" id="email" autofocus></p>
@@ -392,7 +392,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                 <?php
 
                             }
-                if ($fields == 'stage2') {
+                if ($fields === 'stage2') {
                     ?>
                                 <input type="hidden" name="email" value="<?php echo $email; ?>">
                                 <input type="hidden" name="uid" value="<?php echo $uid; ?>">
