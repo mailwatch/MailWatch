@@ -284,6 +284,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     font-size: 28px;
                     margin: 0;
                     text-align: center;
+                    border-top-left-radius: 15px;
+                    -webkit-border-top-left:15px;
+                    -moz-border-radius-topleft: 15px;
+                    border-top-right-radius:15px;
+                    -webkit-border-top-right:15px;
+                    -moz-border-radius-topright: 15px;
                 }
 
                 .pwdreset form {
@@ -319,6 +325,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     color: #A94442;
                     padding: 10px;
                     text-align: center;
+                    margin:10px;
 
                     -webkit-border-radius: 3px;
                     -moz-border-radius: 3px;
