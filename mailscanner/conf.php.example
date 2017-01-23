@@ -124,10 +124,6 @@ define('RESOLVE_IP_ON_DISPLAY', false);
 define('FROMTO_MAXLEN', 50);
 define('SUBJECT_MAXLEN', 0);
 
-// Date/Time settings
-define('DATE_FORMAT', '%d/%m/%y');
-define('TIME_FORMAT', '%H:%i:%s');
-
 // Define how many days of emails to keep
 define('RECORD_DAYS_TO_KEEP', 60);
 
