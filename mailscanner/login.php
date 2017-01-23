@@ -205,7 +205,7 @@ require_once __DIR__ . '/functions.php';
                 ?>
                 <div class="pwdresetButton">
                     <button class="pwdresetButton">
-                        <a href="password_reset.php?stage=1">Forgotten Password?</a>
+                        <a href="password_reset.php?stage=1"><?php echo __('forgottenpwd01'); ?></a>
                     </button>
                 </div>
             <?php
