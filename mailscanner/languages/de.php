@@ -42,6 +42,7 @@ return array(
     'emptypassword01' => 'Password darf nicht leer sein',
     'errorund01' => 'Ein unbekannter Fehler ist aufgetreten',
     'login01' => 'Login',
+    'forgottenpwd01' => 'Passwort vergessen?',
 
     // 03-funtions.php
     'jumpmessage03' => 'Zu Nachricht gehen:',
