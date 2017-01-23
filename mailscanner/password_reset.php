@@ -210,10 +210,10 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 <a href="login.php"><button>' . __('login01') . '</button></a></p>';
                 $showpage = true;
             } else {
-                die(__('pwdresetidmismatch'));
+                die(__('pwdresetidmismatch63'));
             }
         } else {
-            $errors = '<p class="pwdreseterror">' . __('pwdmismatch');
+            $errors = '<p class="pwdreseterror">' . __('pwdmismatch63');
             $fields = "stage2";
             $showpage = true;
         }
@@ -246,7 +246,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                         $showpage = true;
                     }
                 } else {
-                    echo __('pwdresetidmismatch');
+                    echo __('pwdresetidmismatch63');
                 }
             }
         } else {
