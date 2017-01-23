@@ -80,13 +80,14 @@ function check_table_exists($table)
  * @param $column
  * @return bool
  */
-function check_column_exists($table, $column)
+function check_column_exists($table,$column)
 {
     global $link;
 
     $result =  $link->query('SELECT * FROM `' . $table . '` LIMIT 1');
     $row = $result->fetch_assoc();
-    return array_key_exists($column, $row);
+    return array_key_exists($column,$row);
+
 }
 
 /**
@@ -217,14 +218,15 @@ if ($link) {
     executeQuery($sql);
 
     echo pad(' - Updating users table for password-reset');
-    if (check_column_exists('users', 'resetid') === false) {
+    if (check_column_exists('users','resetid') === false) {
         $sql = 'ALTER TABLE `users` ADD COLUMN (
             `resetid` varchar(255),
             `resetexpire` bigint(20),
             `lastreset` bigint(20)
             );';
         executeQuery($sql);
-    } else {
+    }
+    else {
         echo "ALREADY EXISTS\n";
     }
 
