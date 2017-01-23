@@ -58,7 +58,8 @@ function get_random_string($count)
  * @param $text
  * @param $subject
  */
-function send_email($email,$html,$text, $subject){
+function send_email($email, $html, $text, $subject)
+{
     $mime = new Mail_mime("\n");
     if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
         $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
@@ -141,7 +142,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 //Send email
                 $subject = __('01emailsubject63');
-                send_email($email,$html,$text,$subject);
+                send_email($email, $html, $text, $subject);
                 $message = '<p>'.__('01emailsuccess63').'</p>';
                 $showpage = true;
             } else {
@@ -204,7 +205,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 //Send email
                 $subject = __('02emailsubject63');
-                send_email($email,$html,$text,$subject);
+                send_email($email, $html, $text, $subject);
                 $message = '<p>' . __('pwdresetsuccess63') . '<br/>
 <a href="login.php"><button>' . __('login01') . '</button></a></p>';
                 $showpage = true;
@@ -409,11 +410,9 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     </form>
                     <?php
 
-            }
-            elseif ($message!=='') {
+            } elseif ($message!=='') {
                 echo $message;
-            }
-            elseif ($errors !== ''){
+            } elseif ($errors !== '') {
                 echo $errors;
             }
         } else {
