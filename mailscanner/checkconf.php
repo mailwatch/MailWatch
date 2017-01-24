@@ -39,7 +39,7 @@ header("Content-type: text/plain\n\n");
 //load the config file to be able to see the defined values
 require($mailscannerRoot . "conf.php");
 
-echo "Will check your conf.php if it contains all necessary constants";
+echo "Will check your conf.php if it contains all necessary constants" . PHP_EOL;
 
 //read the example config for constants that are missing in conf.php
 $missingConfig = '';
@@ -48,11 +48,10 @@ while ($line = fgets($fh)) {
     $tl = trim($line);
     if (substr($tl, 0, 8) == "define('") {
         $arr = explode("'", $tl);
-        if (count($arr) <= 3) {
+        if (count($arr) < 3) {
             continue;
         }
         $key = $arr[1];
-        $val = $arr[3];
         //this can show php warnings if the constant does not exist (can be ignored)
         if (constant($key) === null) {
             //constant does not exist yet
