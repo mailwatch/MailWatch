@@ -124,7 +124,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12') . '<br>';
-                    } elseif (checkForExistingUser()) {
+                    } elseif (checkForExistingUser($_GET['username'])) {
                         echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                     } else {
                         $n_username = safe_value($_GET['username']);
