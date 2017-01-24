@@ -131,7 +131,9 @@ if ($_SESSION['user_type'] == 'A') {
     echo '  </div>';
     if (isset($_POST['clear'])) {
         if (!is_file(SA_DIR . 'sa-learn')) {
-            die('Cannot find ' . SA_DIR . 'sa-learn');
+            echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
+            echo '<br>Error: Cannot find ' . SA_DIR . 'sa-learn';
+            echo '</div>';
         } else {
             // Using --force-expire instead of --clear for testing purpose
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire', $return);
@@ -141,7 +143,7 @@ if ($_SESSION['user_type'] == 'A') {
                 Requests::register_autoloader();
             } else {
                 echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
-                echo '<br>Error: ' . $return . "/n";
+                echo '<br>Error: ' . $return;
                 echo '</div>';
             }
         }
