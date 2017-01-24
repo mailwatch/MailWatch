@@ -129,7 +129,7 @@ if ($_SESSION['user_type'] == 'A') {
     echo '           <br><br>';
     echo '  </div></div></form></div>';
     if (isset($_POST['delete'])) {
-      // Open the spamassassin file
+        // Open the spamassassin file
       if (!is_file(SA_DIR . 'sa-learn')) {
           die('Cannot find ' . SA_DIR . 'sa-learn');
       } else {
