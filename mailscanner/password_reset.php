@@ -354,7 +354,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     color: #222;
                     display: block;
                     margin: 0 auto;
-                    padding: 4px;
+                    padding: 5px 15px;
                     -webkit-border-radius: 3px;
                     -moz-border-radius: 3px;
                     border-radius: 3px;
