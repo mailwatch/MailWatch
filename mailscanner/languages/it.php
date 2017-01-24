@@ -519,7 +519,7 @@ return array(
     'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
     'cannotfind18' => 'Error: Cannot find',
     'cleardbbayes18' => 'Clear Bayes Database',
-    'auditlogwipe18' => 'Wipe out existing SpamAssassin Bayes Database',
+    'auditlogwipe18' => 'Wiped out existing SpamAssassin Bayes Database',
     'error18' => 'Error:',
 
     // 19-clamav_status.php
