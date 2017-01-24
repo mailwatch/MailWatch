@@ -137,7 +137,7 @@ if ($_SESSION['user_type'] == 'A') {
             if ($return == 0) {
                 audit_log("Wipe out existing SpamAssassin Bayes Database");
             } else {
-               die('Error: ' . $return . "/n");
+                die('Error: ' . $return . "/n");
             }
         }
     }
