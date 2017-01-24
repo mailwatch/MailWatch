@@ -129,7 +129,6 @@ if ($_SESSION['user_type'] == 'A') {
     echo '     </form>';
     echo '  </div>';
     if (isset($_POST['clear'])) {
-        // Open the spamassassin file
       if (!is_file(SA_DIR . 'sa-learn')) {
           die('Cannot find ' . SA_DIR . 'sa-learn');
       } else {
