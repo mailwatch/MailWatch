@@ -39,7 +39,7 @@ require_once __DIR__ . '/functions.php';
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><?php echo __('mwloginpage01')?></title>
+    <title><?php echo __('mwloginpage01') ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
     <style type="text/css">
@@ -71,14 +71,8 @@ require_once __DIR__ . '/functions.php';
         }
 
         .login form {
-            border: 2px solid #000000;
             border-top: 0;
             background-color: #fff;
-
-            -webkit-border-radius: 0 0 15px 15px;
-            -moz-border-radius: 0 0 15px 15px;
-            border-radius: 0 0 15px 15px;
-
         }
 
         .login fieldset {
@@ -145,61 +139,83 @@ require_once __DIR__ . '/functions.php';
 
         .pwdresetButton {
             text-align: center;
-            margin-bottom:10px;
+            margin-bottom: 10px;
         }
+
         .pwdresetButton button {
             padding: 10px;
-            background-color:#f7ce4a;
+            background-color: #f7ce4a;
+            color: #222222;
+            display: block;
+            margin: 0 auto;
+            min-width: 200px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            border: 0;
 
         }
 
         .pwdresetButton button:hover {
             background-color: #deb531;
         }
-        .pwdresetButton a{
-            color:#000;
-            font-size:14px;
+
+        .pwdresetButton a {
+            color: #000;
+            font-size: 14px;
             text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .wrap1 {
+            border: solid 2px #000;
+            border-radius: 15px;
+            border-top: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
         }
     </style>
 </head>
 <body>
 <div class="login">
-    <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>"></div>
+    <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+    </div>
     <h1><?php echo __('mwlogin01'); ?></h1>
-    <?php if (file_exists('conf.php')) {
-    ?>
-        <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
-            <fieldset>
-                <?php if (isset($_GET['error'])) {
-        ?>
-                    <p class="loginerror">
+    <div class="wrap1">
+        <?php if (file_exists('conf.php')) {
+            ?>
+            <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
+                <fieldset>
+                    <?php if (isset($_GET['error'])) {
+                        ?>
+                        <p class="loginerror">
+                            <?php
+                            switch ($_GET['error']) {
+                                case 'baduser':
+                                    echo __('badup01');
+                                    break;
+                                case 'emptypassword':
+                                    echo __('emptypassword01');
+                                    break;
+                                default:
+                                    echo __('errorund01');
+                            } ?>
+                        </p>
                         <?php
-                        switch ($_GET['error']) {
-                            case 'baduser':
-                                echo __('badup01');
-                                break;
-                            case 'emptypassword':
-                                echo __('emptypassword01');
-                                break;
-                            default:
-                                echo __('errorund01');
-                        } ?>
-                    </p>
-                <?php
 
-    } ?>
+                    } ?>
 
-                <p><label for="myusername"><?php echo __('username'); ?></label></p>
+                    <p><label for="myusername"><?php echo __('username'); ?></label></p>
 
-                <p><input name="myusername" type="text" id="myusername" autofocus></p>
+                    <p><input name="myusername" type="text" id="myusername" autofocus></p>
 
-                <p><label for="mypassword"><?php echo __('password'); ?></label></p>
+                    <p><label for="mypassword"><?php echo __('password'); ?></label></p>
 
-                <p><input name="mypassword" type="password" id="mypassword"></p>
+                    <p><input name="mypassword" type="password" id="mypassword"></p>
 
-                <p><input type="submit" name="Submit" value="<?php echo __('login01'); ?>"></p>
-            </fieldset>
+                    <p><input type="submit" name="Submit" value="<?php echo __('login01'); ?>"></p>
+                </fieldset>
+            </form>
             <?php
             if (defined('PWD_RESET') && PWD_RESET === true) {
                 ?>
@@ -208,22 +224,21 @@ require_once __DIR__ . '/functions.php';
                         <a href="password_reset.php?stage=1"><?php echo __('forgottenpwd01'); ?></a>
                     </button>
                 </div>
-            <?php
-
+                <?php
             } ?>
 
-        </form>
-    <?php
+            <?php
 
-} else {
-    ?>
-        <p class="error">
-            <?php echo __('cannot_read_conf'); ?>
-        </p>
-    <?php
+        } else {
+            ?>
+            <p class="error">
+                <?php echo __('cannot_read_conf'); ?>
+            </p>
+            <?php
 
-}
-    ?>
+        }
+        ?>
+    </div>
 </div>
 
 </body>
