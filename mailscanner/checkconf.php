@@ -43,6 +43,7 @@ echo "Will check your conf.php if it contains all necessary constants" . PHP_EOL
 
 //read the example config for constants that are missing in conf.php
 $missingConfig = '';
+$missingKeys = '';
 $fh = fopen($mailscannerRoot . 'conf.php.example', 'r');
 while ($line = fgets($fh)) {
     $tl = trim($line);
@@ -52,10 +53,10 @@ while ($line = fgets($fh)) {
             continue;
         }
         $key = $arr[1];
-        //this can show php warnings if the constant does not exist (can be ignored)
-        if (constant($key) === null) {
+        if (!defined($key)) {
             //constant does not exist yet
             $missingConfig .= PHP_EOL . $line;
+            $missingKeys .= $key . ', ';
         }
     }
 }
@@ -64,8 +65,8 @@ fclose($fh);
 //append the missing constants to the config file
 file_put_contents($mailscannerRoot . "conf.php", $missingConfig, FILE_APPEND);
 if ($missingConfig != '') {
-    echo "The in the warnings above mentioned constants were missing in conf.php and were added." . PHP_EOL;
-    echo "Please review the values and adjust them to you needs" . PHP_EOL;
+    echo "The constants $missingKeys were missing in conf.php and were added." . PHP_EOL;
+    echo "Please review the values and adjust them to your needs" . PHP_EOL;
 } else {
     echo "All necessary constants were found" . PHP_EOL;
 }
