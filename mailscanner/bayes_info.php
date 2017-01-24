@@ -124,11 +124,11 @@ if ($_SESSION['user_type'] == 'A') {
     echo '     <form method="post" action="bayes_info.php">';
     echo '        <div style="margin: 5px">';
     echo '           <br>';
-    echo '           <input type="submit" value="Delete Bayes Database">';
-    echo '           <input type="hidden" name="delete" value="true">';
+    echo '           <input type="submit" value="Clear Bayes Database">';
+    echo '           <input type="hidden" name="clear" value="true">';
     echo '           <br><br>';
     echo '  </div></div></form></div>';
-    if (isset($_POST['delete'])) {
+    if (isset($_POST['clear'])) {
         // Open the spamassassin file
       if (!is_file(SA_DIR . 'sa-learn')) {
           die('Cannot find ' . SA_DIR . 'sa-learn');
