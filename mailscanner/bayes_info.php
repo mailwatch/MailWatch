@@ -122,7 +122,7 @@ echo '</table>';
 if ($_SESSION['user_type'] == 'A') {
     $return = 0;
     echo '  <div style="text-align: center; ">';
-    echo '     <form method="post" action="bayes_info.php" onsubmit="return confirm(\'Are you sure you want to clear?\');" >';
+    echo '     <form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >';
     echo '           <br>';
     echo '           <input type="submit" value="' . __('cleardbbayes18') . '">';
     echo '           <input type="hidden" name="clear" value="true">';

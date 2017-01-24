@@ -521,6 +521,7 @@ return array(
     'cleardbbayes18' => 'Effacer la base Bayes',
     'auditlogwipe18' => 'La base de données Bayes de SpamAssassin a été effacée.',
     'error18' => 'Erreur :',
+    'clearmessage18' => 'Etes-vous sur de vouloir effacer la base Bayes?',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'Statut ClamAV',
