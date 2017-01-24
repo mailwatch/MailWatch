@@ -29,13 +29,12 @@
  */
 
 require_once __DIR__ . '/functions.php';
-if (!QUARANTINE_USE_SENDMAIL) {
-    // Load in the required PEAR modules
-    require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
-    require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
-    require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
-    date_default_timezone_set(TIME_ZONE);
-}
+// Load in the required PEAR modules
+require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
+require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
+require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
+date_default_timezone_set(TIME_ZONE);
+
 $showpage = false;
 $fields = '';
 $errors = '';
