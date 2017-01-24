@@ -136,6 +136,8 @@ if ($_SESSION['user_type'] == 'A') {
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire', $return);
             if ($return == 0) {
                 audit_log("Wipe out existing SpamAssassin Bayes Database");
+                require_once __DIR__ . '/lib/request/Requests.php';
+                Requests::register_autoloader();
             } else {
                 die('Error: ' . $return . "/n");
             }
