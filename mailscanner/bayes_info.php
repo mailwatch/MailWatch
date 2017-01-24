@@ -120,15 +120,15 @@ pclose($fh);
 echo '</table>';
 
 if ($_SESSION['user_type'] == 'A') {
-   echo '  <div align="center">';
-   echo '     <form method="post" action="bayes_info.php">';
-   echo '        <div style="margin: 5px">';
-   echo '           <br>';
-   echo '           <input type="submit" value="Delete Bayes Database">';
-   echo '           <input type="hidden" name="delete" value="true">';
-   echo '           <br><br>';
-   echo '  </div></div></form></div>';
-   if (isset($_POST['delete'])) {
+    echo '  <div align="center">';
+    echo '     <form method="post" action="bayes_info.php">';
+    echo '        <div style="margin: 5px">';
+    echo '           <br>';
+    echo '           <input type="submit" value="Delete Bayes Database">';
+    echo '           <input type="hidden" name="delete" value="true">';
+    echo '           <br><br>';
+    echo '  </div></div></form></div>';
+    if (isset($_POST['delete'])) {
       // Open the spamassassin file
       if (!is_file(SA_DIR . 'sa-learn')) {
           die('Cannot find ' . SA_DIR . 'sa-learn');
@@ -137,7 +137,7 @@ if ($_SESSION['user_type'] == 'A') {
           passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire');
           audit_log("Wipe out existing SpamAssassin Bayes Database");
       }
-   }
+    }
 }
 
 // Add footer
