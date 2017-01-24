@@ -3178,7 +3178,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             $crlf = "\r\n";
-            $hdrs = array('From' => QUARANTINE_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
+            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
             $mime = new Mail_mime($crlf);
             $mime->setTXTBody(QUARANTINE_MSG_BODY);
             // Loop through each selected file and attach them to the mail
@@ -3191,7 +3191,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                 }
             }
-            $mail_param = array('host' => QUARANTINE_MAIL_HOST);
+            $mail_param = array('host' => MAILWATCH_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
             $mail = new Mail;
@@ -3212,7 +3212,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         } else {
             // Use sendmail to release message
             // We can only release message/rfc822 files in this way.
-            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . QUARANTINE_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
             foreach ($num as $key => $val) {
                 if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                     debug($cmd . $list[$val]['path']);

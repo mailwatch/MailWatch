@@ -37,13 +37,13 @@ require_once $mailwatch_dir . 'functions.php';
 
 $required_constant = array(
     'QUARANTINE_REPORT_DAYS',
-    'QUARANTINE_REPORT_HOSTURL',
+    'MAILWATCH_HOSTURL',
     'QUARANTINE_DAYS_TO_KEEP',
     'QUARANTINE_REPORT_FROM_NAME',
-    'QUARANTINE_FROM_ADDR',
+    'MAILWATCH_FROM_ADDR',
     'QUARANTINE_REPORT_SUBJECT',
     'MAILWATCH_HOME',
-    'QUARANTINE_MAIL_HOST',
+    'MAILWATCH_MAIL_HOST',
     'FROMTO_MAXLEN',
     'SUBJECT_MAXLEN',
     'TIME_ZONE',
@@ -424,7 +424,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     // Build the quarantine list for this recipient
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
-        $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('view61').'</a>';
+        $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('view61').'</a>';
         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
             //Check if email already has an autorelease entry
             $exists = check_auto_release($qitem);
@@ -437,7 +437,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             }
             if ($auto_release) {
                 // add auto release link if enabled
-                $links .= '  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('release61') . '</a>';
+                $links .= '  <a href="' . MAILWATCH_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('release61') . '</a>';
             }
         }
 
@@ -479,7 +479,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     // Send e-mail
     $mime = new Mail_mime("\n");
     $hdrs = array(
-        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>',
+        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>',
         'To' => $email,
         'Subject' => QUARANTINE_REPORT_SUBJECT,
         'Date' => date('r')
@@ -495,7 +495,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     $mime->setHTMLBody($html_report);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => QUARANTINE_MAIL_HOST, 'port' => QUARANTINE_MAIL_PORT);
+    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     $mail = new Mail_smtp($mail_param);
     $mail->send($email, $hdrs, $body);
     dbg(" ==== Sent e-mail to $email");

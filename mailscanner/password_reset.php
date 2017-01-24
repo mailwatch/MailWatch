@@ -64,7 +64,7 @@ function send_email($email, $html, $text, $subject)
     if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
         $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
     } else {
-        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>';
+        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
     }
     $hdrs = array(
         'From' => $sender,
@@ -83,7 +83,7 @@ function send_email($email, $html, $text, $subject)
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => QUARANTINE_MAIL_HOST, 'port' => QUARANTINE_MAIL_PORT);
+    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     $mail = new Mail_smtp($mail_param);
     $mail->send($email, $hdrs, $body);
 }
@@ -132,13 +132,13 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
   <td align="center" valign="middle">
    <h2>' . __('h2email63') . '</h2>
    <p>' . sprintf(__('p1email63'), $email) . '</p>
-    <a href="' . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand . '"><button>' . __('button63') . '</button></a></p>
+    <a href="' . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand . '"><button>' . __('button63') . '</button></a></p>
   </td>
  </tr>
  </table>
 </body>
 </html>';
-                $text = sprintf(__('01emailplaintxt63'), $email) . QUARANTINE_REPORT_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
+                $text = sprintf(__('01emailplaintxt63'), $email) . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
 
                 //Send email
                 $subject = __('01emailsubject63');
