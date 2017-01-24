@@ -48,6 +48,36 @@ echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadd
 // Add a Header to the table
 echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>';
 
+// Clear Bayes database
+if ($_SESSION['user_type'] == 'A') {
+    $return = 0;
+    echo '  <div style="text-align: center; ">';
+    echo '     <form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >';
+    echo '           <input type="submit" value="' . __('cleardbbayes18') . '">';
+    echo '           <input type="hidden" name="clear" value="true">';
+    echo '           <br>';
+    echo '     </form>';
+    echo '  </div>';
+    if (isset($_POST['clear'])) {
+        if (!is_file(SA_DIR . 'sa-learn')) {
+            echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
+            echo '<br>' . __('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
+            echo '</div>';
+        } else {
+            // Using --force-expire instead of --clear for testing purpose - TO REMOVE BEFORE PUBLISHING IT
+            passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire', $return);
+            if ($return === 0) {
+                audit_log(__('auditlogwipe18'));
+            } else {
+                echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
+                echo '<br>' . __('error18') . ' ' . $return;
+                echo '</div>';
+            }
+        }
+    }
+    echo '<br>';
+}
+
 // Open the spamassassin file
 if (!is_file(SA_DIR . 'sa-learn')) {
     die(__('cannotfind18') . ' ' . SA_DIR . 'sa-learn');
@@ -118,38 +148,6 @@ pclose($fh);
 
 // End the table html tag
 echo '</table>';
-
-if ($_SESSION['user_type'] == 'A') {
-    $return = 0;
-    echo '  <div style="text-align: center; ">';
-    echo '     <form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >';
-    echo '           <br>';
-    echo '           <input type="submit" value="' . __('cleardbbayes18') . '">';
-    echo '           <input type="hidden" name="clear" value="true">';
-    echo '           <br>';
-    echo '     </form>';
-    echo '  </div>';
-    if (isset($_POST['clear'])) {
-        if (!is_file(SA_DIR . 'sa-learn')) {
-            echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
-            echo '<br>' . __('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
-            echo '</div>';
-        } else {
-            // Using --force-expire instead of --clear for testing purpose - TO REMOVE BEFORE PUBLISHING IT
-            passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire', $return);
-            if ($return === 0) {
-                audit_log(__('auditlogwipe18'));
-                require_once __DIR__ . '/lib/request/Requests.php';
-                Requests::register_autoloader();
-            } else {
-                echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
-                echo '<br>' . __('error18') . ' ' . $return;
-                echo '</div>';
-            }
-        }
-    }
-    echo '<br>';
-}
 
 // Add footer
 html_end();

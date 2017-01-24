@@ -521,7 +521,7 @@ return array(
     'cleardbbayes18' => 'Clear Bayes Database',
     'auditlogwipe18' => 'Wiped out existing SpamAssassin Bayes Database',
     'error18' => 'Error:',
-    'clearmessage18' => 'Are you sure you want to clear?',
+    'clearmessage18' => 'Are you sure you want to clear the Bayes database?',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
