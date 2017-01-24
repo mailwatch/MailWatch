@@ -30,7 +30,7 @@
  */
 
 /* languages/nl.php */
-/* v0.3.8 */
+/* v0.3.9 */
 
 return array(
     // 01-login.php
@@ -517,6 +517,10 @@ return array(
     'lastexpirycount18' => 'Last Expiry Reduction Count:',
     'tokens18' => 'tokens',
     'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
+    'cannotfind18' => 'Error: Cannot find',
+    'cleardbbayes18' => 'Clear Bayes Database',
+    'auditlogwipe18' => 'Wipe out existing SpamAssassin Bayes Database',
+    'error18' => 'Error:',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',

@@ -50,7 +50,7 @@ echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>';
 
 // Open the spamassassin file
 if (!is_file(SA_DIR . 'sa-learn')) {
-    die('Cannot find ' . SA_DIR . 'sa-learn');
+    die(__('cannotfind18') . ' ' . SA_DIR . 'sa-learn');
 }
 $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 
@@ -124,7 +124,7 @@ if ($_SESSION['user_type'] == 'A') {
     echo '  <div style="text-align: center; ">';
     echo '     <form method="post" action="bayes_info.php">';
     echo '           <br>';
-    echo '           <input type="submit" value="Clear Bayes Database">';
+    echo '           <input type="submit" value="' . __('cleardbbayes18') . '">';
     echo '           <input type="hidden" name="clear" value="true">';
     echo '           <br>';
     echo '     </form>';
@@ -132,18 +132,18 @@ if ($_SESSION['user_type'] == 'A') {
     if (isset($_POST['clear'])) {
         if (!is_file(SA_DIR . 'sa-learn')) {
             echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
-            echo '<br>Error: Cannot find ' . SA_DIR . 'sa-learn';
+            echo '<br>' . __('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
             echo '</div>';
         } else {
             // Using --force-expire instead of --clear for testing purpose
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire', $return);
             if ($return == 0) {
-                audit_log("Wipe out existing SpamAssassin Bayes Database");
+                audit_log(__('auditlogwipe18'));
                 require_once __DIR__ . '/lib/request/Requests.php';
                 Requests::register_autoloader();
             } else {
                 echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
-                echo '<br>Error: ' . $return;
+                echo '<br>' . __('error18') . ' ' . $return;
                 echo '</div>';
             }
         }
