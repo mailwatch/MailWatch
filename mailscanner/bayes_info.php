@@ -134,7 +134,11 @@ if ($_SESSION['user_type'] == 'A') {
         } else {
             // Using --force-expire instead of --clear for testing purpose
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire');
-            audit_log("Wipe out existing SpamAssassin Bayes Database");
+            if ($return == 0) {
+                audit_log("Wipe out existing SpamAssassin Bayes Database");
+            } else {
+               die('Error: ' . $return . "/n");
+            }
         }
     }
 }
