@@ -121,7 +121,7 @@ echo '</table>';
 
 if ($_SESSION['user_type'] == 'A') {
     $return = 0;
-    echo '  <div align="center">';
+    echo '  <div style="text-align: center; ">';
     echo '     <form method="post" action="bayes_info.php">';
     echo '           <br>';
     echo '           <input type="submit" value="Clear Bayes Database">';
