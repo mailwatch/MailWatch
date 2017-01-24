@@ -122,12 +122,12 @@ echo '</table>';
 if ($_SESSION['user_type'] == 'A') {
     echo '  <div align="center">';
     echo '     <form method="post" action="bayes_info.php">';
-    echo '        <div style="margin: 5px">';
     echo '           <br>';
     echo '           <input type="submit" value="Clear Bayes Database">';
     echo '           <input type="hidden" name="clear" value="true">';
     echo '           <br><br>';
-    echo '  </div></div></form></div>';
+    echo '     </form>';
+    echo '  </div>';
     if (isset($_POST['clear'])) {
         // Open the spamassassin file
       if (!is_file(SA_DIR . 'sa-learn')) {
