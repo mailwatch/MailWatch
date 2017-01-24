@@ -517,10 +517,10 @@ return array(
     'lastexpirycount18' => 'Abnahme-Zähler für letzten Ablauftermin:',
     'tokens18' => 'Token',
     'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
-    'cannotfind18' => 'Error: Cannot find',
-    'cleardbbayes18' => 'Clear Bayes Database',
-    'auditlogwipe18' => 'Wiped out existing SpamAssassin Bayes Database',
-    'error18' => 'Error:',
+    'cannotfind18' => 'Fehler: Konnte Datei nicht finden',
+    'cleardbbayes18' => 'Bayes-Datenbank leeren',
+    'auditlogwipe18' => 'Die vorhandene SpamAssassin Bayes-Datenbank wurde geleert',
+    'error18' => 'Fehler:',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
