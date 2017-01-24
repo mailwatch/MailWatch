@@ -133,7 +133,7 @@ if ($_SESSION['user_type'] == 'A') {
             die('Cannot find ' . SA_DIR . 'sa-learn');
         } else {
             // Using --force-expire instead of --clear for testing purpose
-            passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire');
+            passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire', $return);
             if ($return == 0) {
                 audit_log("Wipe out existing SpamAssassin Bayes Database");
             } else {
