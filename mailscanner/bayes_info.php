@@ -126,7 +126,7 @@ if ($_SESSION['user_type'] == 'A') {
     echo '           <br>';
     echo '           <input type="submit" value="Clear Bayes Database">';
     echo '           <input type="hidden" name="clear" value="true">';
-    echo '           <br><br>';
+    echo '           <br>';
     echo '     </form>';
     echo '  </div>';
     if (isset($_POST['clear'])) {
@@ -140,10 +140,13 @@ if ($_SESSION['user_type'] == 'A') {
                 require_once __DIR__ . '/lib/request/Requests.php';
                 Requests::register_autoloader();
             } else {
-                die('Error: ' . $return . "/n");
+                echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">';
+                echo '<br>Error: ' . $return . "/n";
+                echo '</div>';
             }
         }
     }
+    echo '<br>';
 }
 
 // Add footer
