@@ -30,7 +30,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 $mailscannerRoot = "/var/www/mailscanner/";
-if(count($argv) > 1) {
+if (count($argv) > 1) {
     $mailscannerRoot = $argv[1];
 }
 
@@ -43,16 +43,18 @@ echo "Will check your conf.php if it contains all necessary constants";
 
 //read the example config for constants that are missing in conf.php
 $missingConfig = '';
-$fh = fopen($mailscannerRoot . 'conf.php.example','r');
+$fh = fopen($mailscannerRoot . 'conf.php.example', 'r');
 while ($line = fgets($fh)) {
     $tl = trim($line);
-    if(substr($tl, 0, 8) == "define('") {
-        $arr = explode("'",$tl);
-        if(count($arr) <= 3) continue;
+    if (substr($tl, 0, 8) == "define('") {
+        $arr = explode("'", $tl);
+        if (count($arr) <= 3) {
+            continue;
+        }
         $key = $arr[1];
         $val = $arr[3];
-        //this can show php warnings if the constant does not exist (can be ignored).
-        if(constant($key) === NULL) {
+        //this can show php warnings if the constant does not exist (can be ignored)
+        if (constant($key) === null) {
             //constant does not exist yet
             $missingConfig .= PHP_EOL . $line;
         }
