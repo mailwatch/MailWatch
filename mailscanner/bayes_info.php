@@ -129,13 +129,13 @@ if ($_SESSION['user_type'] == 'A') {
     echo '     </form>';
     echo '  </div>';
     if (isset($_POST['clear'])) {
-      if (!is_file(SA_DIR . 'sa-learn')) {
-          die('Cannot find ' . SA_DIR . 'sa-learn');
-      } else {
-          // Using --force-expire instead of --clear for testing purpose
-          passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire');
-          audit_log("Wipe out existing SpamAssassin Bayes Database");
-      }
+        if (!is_file(SA_DIR . 'sa-learn')) {
+            die('Cannot find ' . SA_DIR . 'sa-learn');
+        } else {
+            // Using --force-expire instead of --clear for testing purpose
+            passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire');
+            audit_log("Wipe out existing SpamAssassin Bayes Database");
+        }
     }
 }
 
