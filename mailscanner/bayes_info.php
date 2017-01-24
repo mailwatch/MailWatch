@@ -137,7 +137,7 @@ if ($_SESSION['user_type'] == 'A') {
         } else {
             // Using --force-expire instead of --clear for testing purpose - TO REMOVE BEFORE PUBLISHING IT
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --force-expire', $return);
-            if ($return == 0) {
+            if ($return === 0) {
                 audit_log(__('auditlogwipe18'));
                 require_once __DIR__ . '/lib/request/Requests.php';
                 Requests::register_autoloader();
