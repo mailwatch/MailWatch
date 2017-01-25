@@ -174,14 +174,7 @@ if ($link) {
         }
     }
 
-    echo pad(' - Enlarge username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge password field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
+    // Table users
     echo pad(' - Enlarge username field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
@@ -190,14 +183,40 @@ if ($link) {
     $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    echo pad(' - Enlarge fullname field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
+    executeQuery($sql);
+    
+    // Table audit_log
+    echo pad(' - Enlarge username field in `audit_log` table');
+    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Table autorelease
+    echo pad(' - Enlarge username field in `autorelease` table');
+    $sql = "ALTER TABLE `autorelease` CHANGE `msg_id` `msg_id` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    echo pad(' - Enlarge username field in `autorelease` table');
+    $sql = "ALTER TABLE `autorelease` CHANGE `uid` `uid` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Tbale mcp_rules
+    echo pad(' - Enlarge username field in `mcp_rules` table');
+    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Table user_filters
     echo pad(' - Enlarge username field in `user_filters` table');
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    // Table spamscores
     echo pad(' - Enlarge user field in `spamscores` table');
     $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    // geoip
     echo pad(' - Drop `geoip_country` table');
 
     $sql = 'DROP TABLE IF EXISTS `geoip_country`';
