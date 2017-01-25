@@ -146,10 +146,10 @@ echo '</table>' . "\n";
 if ($_SESSION['user_type'] == 'A') {
     echo '<br>' . "\n";
     echo '<div style="text-align: center; ">' . "\n";
-    echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >'  . "\n";
-    echo '<input type="submit" value="' . __('cleardbbayes18') . '">'  . "\n";
-    echo '<input type="hidden" name="clear" value="true">'  . "\n";
-    echo '</form>'  . "\n";
+    echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >' . "\n";
+    echo '<input type="submit" value="' . __('cleardbbayes18') . '">' . "\n";
+    echo '<input type="hidden" name="clear" value="true">' . "\n";
+    echo '</form>' . "\n";
     echo '</div>' . "\n";
     echo '<br><br>' . "\n";
 }
