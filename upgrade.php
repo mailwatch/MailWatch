@@ -181,25 +181,6 @@ if ($link) {
     echo pad(' - Fix structure for username field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
-    
-    // Table audit_log
-    echo pad(' - Fix structure for username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    // Table autorelease
-    echo pad(' - Fix structure for username field in `autorelease` table');
-    $sql = "ALTER TABLE `autorelease` CHANGE `msg_id` `msg_id` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Fix structure for username field in `autorelease` table');
-    $sql = "ALTER TABLE `autorelease` CHANGE `uid` `uid` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    // Table mcp_rules
-    echo pad(' - Fix structure for username field in `mcp_rules` table');
-    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
 
     // Table user_filters
     echo pad(' - Fix structure for username field in `user_filters` table');
