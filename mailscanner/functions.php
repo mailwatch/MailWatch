@@ -3722,3 +3722,42 @@ function updateUserPasswordHash($user, $hash)
     dbquery($sqlUpdateHash);
     audit_log(__('auditlogupdateuser03') . ' ' . $user);
 }
+
+function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1) {
+    // HTML to display the graph
+    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
+    echo ' <tr>';
+    echo '  <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
+    echo ' </tr>';
+    echo ' <tr>';
+
+    //  Check Permissions to see if the file has been written and that apache to read it.
+    if (is_readable($filename)) {
+        echo '  <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
+    } else {
+        echo '  <td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+    }
+
+    echo ' </tr>' . "\n";
+    echo ' <tr>' . "\n";
+    echo '  <td align="center">' . "\n";
+    echo '   <table style="width: 500px">' . "\n";
+    echo '    <tr style="background-color: #F7CE4A">' . "\n";
+    echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
+    echo '     <th>' . __('count42') . '</th>' . "\n";
+    echo '     <th>' . __('size42') . '</th>' . "\n";
+    echo '    </tr>' . "\n";
+
+    for ($i = 0; $i < $count($data); $i++) {
+        echo '    <tr style="background-color: #EBEBEB">' . "\n";
+        echo '     <td>' . $data_names[$i] . '</td>' . "\n";
+        echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
+        echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scale) . '</td>' . "\n";
+        echo '    </tr>' . "\n";
+    }
+
+    echo '   </table>' . "\n";
+    echo '  </td>' . "\n";
+    echo ' </tr>' . "\n";
+    echo '</table>' . "\n";
+}
