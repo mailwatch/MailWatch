@@ -2483,19 +2483,13 @@ function debug($text)
  */
 function count_files_in_dir($dir)
 {
-    //TODO: Refactor
-    $file_list_array = array();
-    if (!$drh = @opendir($dir)) {
+    $file_list_array = @scandir($dir);
+    if ($file_list_array === false) {
         return false;
     } else {
-        while (false !== ($file = readdir($drh))) {
-            if ($file !== '.' && $file !== '..') {
-                $file_list_array[] = $file;
-            }
-        }
+        //there is always . and .. so reduce the count
+        return count($file_list_array) - 2;
     }
-
-    return count($file_list_array);
 }
 
 /**
@@ -2782,7 +2776,7 @@ function ldap_get_conf_var($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
+    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
     or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
@@ -2823,7 +2817,7 @@ function ldap_get_conf_truefalse($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
+    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
     or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
