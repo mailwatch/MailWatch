@@ -77,6 +77,20 @@ function check_table_exists($table)
 
 /**
  * @param string $db
+ * @return bool
+ */
+function check_utf8_database($db)
+{
+    global $link;
+    $sql = 'SELECT default_character_set_name FROM information_schema.schemata WHERE schema_name = "' . $link->real_escape_string($db) . '"';
+            FROM information_schema.tables AS t, information_schema.collation_character_set_applicability AS c
+    $result = $link->query($sql);
+
+    return strtolower(database::mysqli_result($result, 0));
+}
+
+/**
+ * @param string $db
  * @param string $table
  * @param string $utf8variant
  * @return bool
@@ -129,6 +143,7 @@ if ($link) {
     ** Updates to the schema for 1.2.0
     */
 
+    // Convert database to UTF-8
     $server_utf8_variant = 'utf8';
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
@@ -174,30 +189,24 @@ if ($link) {
         }
     }
 
-    echo pad(' - Enlarge username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY
 
-    echo pad(' - Enlarge password field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge username field in `users` table');
+    // Table users
+    echo pad(' - Fix structure for username field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(' - Enlarge fullname field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge username field in `user_filters` table');
-    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge user field in `spamscores` table');
+    // Table spamscores
+    echo pad(' - Fix structure for user field in `spamscores` table');
     $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    // Drop geoip
+    echo pad(' - Drop `geoip_country` table');
+    $sql = 'DROP TABLE IF EXISTS `geoip_country`';
+    executeQuery($sql);
+
+    // Drop geoip table
     echo pad(' - Drop `geoip_country` table');
 
     $sql = 'DROP TABLE IF EXISTS `geoip_country`';
@@ -480,6 +489,7 @@ foreach ($check_settings as $setting => $value) {
 }
 echo "\n";
 
+// Error messages
 if (is_array($errors)) {
     echo "*** ERROR/WARNING SUMMARY ***\n";
     foreach ($errors as $error) {
