@@ -3744,8 +3744,8 @@ function printGraphTable($filename, $dataColumnTitle, array $data, array $data_n
     echo '   <table style="width: 500px">' . "\n";
     echo '    <tr style="background-color: #F7CE4A">' . "\n";
     echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
-    echo '     <th>' . __('count42') . '</th>' . "\n";
-    echo '     <th>' . __('size42') . '</th>' . "\n";
+    echo '     <th>' . __('count03') . '</th>' . "\n";
+    echo '     <th>' . __('size03') . '</th>' . "\n";
     echo '    </tr>' . "\n";
 
     for ($i = 0; $i < $count($data); $i++) {

@@ -648,57 +648,41 @@ return array(
     'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
     'top10recipdomqt40' => 'Top 10 Empfänger Domänen by Volume',
     'domain40' => 'Domäne',
-    'count40' => 'Anzahl',
-    'size40' => 'Größe',
     
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Empfänger Domänen nach Volume',
    'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Volume',
     'domain41' => 'Domäne',
-    'count41' => 'Anzahl',
-    'size41' => 'Größe',
     
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Empfänger nach Anzahl',
     'top10recipqt42' => 'Top 10 Empfänger nach Anzahl',
     'email42' => 'E-Mail-Adresse',
-    'count42' => 'Anzahl',
-    'size42' => 'Größe',
     
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Empfänger nach Volumen',
     'top10recipvol43' => 'Top 10 Empfänger nach Volumen',
     'email43' => 'E-Mail-Adresse',
-    'count43' => 'Anzahl',
-    'size43' => 'Größe',
     
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
-    'count44' => 'Anzahl',
-    'size44' => 'Größe',
     
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
     'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
     'domain45' => 'Domäne',
-    'count45' => 'Anzahl',
-    'size45' => 'Größe',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Absender nach Anzahl',
     'top10sendersqt46' => 'Top 10 Absender nach Anzahl',
     'email46' => 'E-Mail-Adresse',
-    'count46' => 'Anzahl',
-    'size46' => 'Größe',
     
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Absender nach Volumen',
     'top10sendersvol47' => 'Top 10 Absender nach Volumen',
     'email47' => 'E-Mail-Adresse',
-    'count47' => 'Anzahl',
-    'size47' => 'Größe',
     
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viren',

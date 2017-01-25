@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.8 */
+/* v0.3.9 */
 
 return array(
     // 01-login.php
@@ -179,6 +179,7 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
+    'count40' => 'Nombre',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -648,57 +649,40 @@ return array(
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
     'top10recipdomqt40' => 'Top 10 des domaines de destination par quantité',
     'domain40' => 'Domaine',
-    'count40' => 'Nombre',
-    'size40' => 'Taille',
 
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
     'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
     'domain41' => 'Domaine',
-    'count41' => 'Nombre',
-    'size41' => 'Taille',
-
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top des destinataires par quantité',
     'top10recipqt42' => 'Top 10 des destinataires par quantité',
     'email42' => 'Adresse E-Mail',
-    'count42' => 'Nombre',
-    'size42' => 'Taille',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top des destinataires par volume',
     'top10recipvol43' => 'Top 10 des destinataires par volume',
     'email43' => 'Adresse E-Mail',
-    'count43' => 'Nombre',
-    'size43' => 'Taille',
 
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
     'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
     'domain44' => 'Domaine',
-    'count44' => 'Nombre',
-    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
     'top10senderdomvol45' => 'Top 10 des domaines d\'expédition par volume',
     'domain45' => 'Domaine',
-    'count45' => 'Nombre',
-    'size45' => 'Taille',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top des expéditeurs par quantité',
     'top10sendersqt46' => 'Top 10 des expéditeurs par quantité',
     'email46' => 'Adresse E-Mail',
-    'count46' => 'Nombre',
-    'size46' => 'Taille',
 
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top des expéditeurs par volume',
     'top10sendersvol47' => 'Top 10 des expéditeurs par volume',
     'email47' => 'Adresse E-Mail',
-    'count47' => 'Nombre',
-    'size47' => 'Taille',
 
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top des Virus',
