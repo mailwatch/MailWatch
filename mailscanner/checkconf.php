@@ -29,7 +29,7 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-$mailscannerRoot = "/var/www/mailscanner/";
+$mailscannerRoot = "/var/www/html/mailscanner/";
 if (count($argv) > 1) {
     $mailscannerRoot = $argv[1];
 }
