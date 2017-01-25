@@ -151,7 +151,7 @@ if ($_SESSION['user_type'] == 'A') {
     echo '<input type="hidden" name="clear" value="true">' . "\n";
     echo '</form>' . "\n";
     echo '</div>' . "\n";
-    echo '<br><br>' . "\n";
+    echo '<br>' . "\n";
 }
 
 // Add footer
