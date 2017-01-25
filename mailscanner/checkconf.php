@@ -1,4 +1,5 @@
-#!/user/bin/php -q
+#!/usr/bin/php -q
+
 <?php
 
 /*
