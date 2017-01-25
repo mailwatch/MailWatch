@@ -218,7 +218,6 @@ if ($link) {
 
     // geoip
     echo pad(' - Drop `geoip_country` table');
-
     $sql = 'DROP TABLE IF EXISTS `geoip_country`';
     executeQuery($sql);
 
@@ -499,6 +498,7 @@ foreach ($check_settings as $setting => $value) {
 }
 echo "\n";
 
+// Error messages
 if (is_array($errors)) {
     echo "*** ERROR/WARNING SUMMARY ***\n";
     foreach ($errors as $error) {
