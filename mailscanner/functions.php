@@ -1620,6 +1620,55 @@ function subtract_multi_get_vars($preserve)
 }
 
 /**
+ * @param $sql the sql query for which the page will be created 
+ */
+function generatePager($sql) {
+    require_once __DIR__ . '/lib/pear/Pager.php';
+    if (isset($_GET['offset'])) {
+        $from = (int)$_GET['offset'];
+    } else {
+        $from = 0;
+    }
+
+    // Remove any ORDER BY clauses as this will slow the count considerably
+    if ($pos = strpos($sql, 'ORDER BY')) {
+        $sqlcount = substr($sql, 0, $pos);
+    }
+
+    // Count the number of rows that would be returned by the query
+    $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
+    $results = dbquery($sqlcount);
+    $rows = database::mysqli_result($results, 0);
+
+    // Build the pager data
+    $pager_options = array(
+        'mode' => 'Sliding',
+        'perPage' => MAX_RESULTS,
+        'delta' => 2,
+        'totalItems' => $rows,
+    );
+    $pager = Pager::factory($pager_options);
+
+    //then we fetch the relevant records for the current page
+    list($from, $to) = $pager->getOffsetByPageId();
+
+    echo '<table cellspacing="1" class="mail" >
+<tr>
+<th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
+</tr>
+<tr>
+<td align="center">' . "\n";
+    //show the links
+    echo $pager->links;
+    echo '</td>
+            </tr>
+      </table>
+</tr>
+<tr>
+<td colspan="4">';
+}
+
+/**
  * @param $sql
  * @param bool|string $table_heading
  * @param bool $pager
@@ -1656,50 +1705,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
-        if (isset($_GET['offset'])) {
-            $from = (int)$_GET['offset'];
-        } else {
-            $from = 0;
-        }
-
-        // Remove any ORDER BY clauses as this will slow the count considerably
-        if ($pos = strpos($sql, 'ORDER BY')) {
-            $sqlcount = substr($sql, 0, $pos);
-        }
-
-        // Count the number of rows that would be returned by the query
-        $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-        $results = dbquery($sqlcount);
-        $rows = database::mysqli_result($results, 0);
-
-        // Build the pager data
-        $pager_options = array(
-            'mode' => 'Sliding',
-            'perPage' => MAX_RESULTS,
-            'delta' => 2,
-            'totalItems' => $rows,
-        );
-        $pager = Pager::factory($pager_options);
-
-        //then we fetch the relevant records for the current page
-        list($from, $to) = $pager->getOffsetByPageId();
-
-        echo '<table cellspacing="1" class="mail" >
-    <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
-  </tr>
-  <tr>
-  <td align="center">' . "\n";
-        //show the links
-        echo $pager->links;
-        echo '</td>
-                </tr>
-          </table>
-</tr>
-<tr>
- <td colspan="4">';
-
+        $sql = generatePager($sql);
 
         // Re-run the original query and limit the rows
         $limit = $from - 1;
@@ -2206,48 +2212,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '<br>' . "\n";
         if ($pager) {
-            require_once __DIR__ . '/lib/pear/Pager.php';
-            $from = 0;
-            if (isset($_GET['offset'])) {
-                $from = (int)$_GET['offset'];
-            }
-
-            // Remove any ORDER BY clauses as this will slow the count considerably
-            if ($pos = strpos($sql, 'ORDER BY')) {
-                $sqlcount = substr($sql, 0, $pos);
-            }
-
-            // Count the number of rows that would be returned by the query
-            $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-            $results = dbquery($sqlcount);
-            $rows = database::mysqli_result($results, 0);
-
-            // Build the pager data
-            $pager_options = array(
-                'mode' => 'Sliding',
-                'perPage' => MAX_RESULTS,
-                'delta' => 2,
-                'totalItems' => $rows,
-            );
-            $pager = Pager::factory($pager_options);
-
-            //then we fetch the relevant records for the current page
-            list($from, $to) = $pager->getOffsetByPageId();
-
-            echo '<table cellspacing="1" class="mail" >
-    <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
-  </tr>
-  <tr>
-  <td align="center">' . "\n";
-            //show the links
-            echo $pager->links;
-            echo '</td>
-                </tr>
-          </table>
-</tr>
-<tr>
- <td colspan="4">';
+            generatePager($sql);
         }
     }
 }
