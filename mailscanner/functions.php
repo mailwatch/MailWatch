@@ -2342,7 +2342,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     }
 
     if ($rows > 0) {
-        echo '<table style="table-layout: fixed; " cellspacing="1" width="100%" class="mail">' . "\n";
+        echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         if ($title) {
             echo '<tr><th colspan=' . $fields . '>' . $title . '</TH></tr>' . "\n";
         }
@@ -2353,7 +2353,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
 
         foreach ($sth->fetch_fields() as $field) {
-            echo '  <th style="word-wrap:break-word; ">' .$field->name . '</th>' . "\n";
+            echo '  <th>' .$field->name . '</th>' . "\n";
         }
         echo ' </tr>' . "\n";
         // Rows
@@ -2363,7 +2363,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; word-wrap: break-word; ">' . preg_replace("/,([^\s])/", ", $1", $row[$f]) . '</td>' . "\n";
+                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ", $1", $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }
