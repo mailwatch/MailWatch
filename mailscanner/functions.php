@@ -2363,7 +2363,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[$f] . '</td>' . "\n";
+                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ", $1", $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }

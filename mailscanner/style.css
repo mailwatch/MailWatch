@@ -383,3 +383,12 @@ td.dashgreybox {
         border: none;		
     }
 }
+
+.tableWithLineBreaksWrapper>table {
+    table-layout: fixed;
+}
+
+.tableWithLineBreaksWrapper>table>tr>th, 
+.tableWithLineBreaksWrapper>table>tr>td {
+    word-wrap: break-word;
+}
