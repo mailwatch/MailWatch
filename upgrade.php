@@ -195,18 +195,6 @@ if ($link) {
     $sql = 'DROP TABLE IF EXISTS `geoip_country`';
     executeQuery($sql);
 
-    // Convert database to UTF-8mb4
-    if ($link->server_version >= 50503) {
-        $server_utf8_variant = 'utf8mb4';
-
-        echo pad(' - Convert database to UTF-8mb4 (MySQL version > 5.5.3)');
-       
-        $sql = 'ALTER DATABASE `' . DB_NAME .
-            '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
-            ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
-        executeQuery($sql);
-    }
-
     // check for missing indexes
     $indexes = array(
         'maillog' => array(
