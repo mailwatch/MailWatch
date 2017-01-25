@@ -83,7 +83,6 @@ function check_utf8_database($db)
 {
     global $link;
     $sql = 'SELECT default_character_set_name FROM information_schema.schemata WHERE schema_name = "' . $link->real_escape_string($db) . '"';
-    
     $result = $link->query($sql);
 
     return strtolower(database::mysqli_result($result, 0));
