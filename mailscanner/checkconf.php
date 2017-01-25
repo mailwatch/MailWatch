@@ -39,7 +39,7 @@ header("Content-type: text/plain\n\n");
 //load the config file to be able to see the defined values
 require($mailscannerRoot . "conf.php");
 
-echo "Will check your conf.php if it contains all necessary constants" . PHP_EOL;
+echo "Checking your conf.php if it contains all necessary constants" . PHP_EOL;
 
 //read the example config for constants that are missing in conf.php
 $missingConfig = '';
