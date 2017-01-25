@@ -149,6 +149,8 @@ pclose($fh);
 // End the table html tag
 echo '</table>'. "\n";
 
+echo '<br>'. "\n";
+
 // Add footer
 html_end();
 
