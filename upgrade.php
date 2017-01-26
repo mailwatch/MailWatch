@@ -171,16 +171,16 @@ if ($link) {
     executeQuery($sql);
 
     // Table mcp_rules
-    echo pad(' - Fix structure for username field in `user_filters` table');
+    echo pad(' - Fix structure for rule_desc field in `mcp_rules` table');
     $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table autorelease
-    echo pad(' - Fix structure for username field in `user_filters` table');
+    echo pad(' - Fix structure for msg_id field in `autorelease` table');
     $sql = "ALTER TABLE `autorelease` CHANGE `msg_id` `msg_id` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(' - Fix structure for username field in `user_filters` table');
+    echo pad(' - Fix structure for uid field in `autorelease` table');
     $sql = "ALTER TABLE `autorelease` CHANGE `uid` `uid` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
