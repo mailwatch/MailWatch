@@ -42,16 +42,6 @@ $message = '';
 $link = dbconn();
 
 /**
- * @param $count
- * @return string
- */
-function get_random_string($count)
-{
-    $bytes = openssl_random_pseudo_bytes($count);
-    return bin2hex($bytes);
-}
-
-/**
  * @param $email
  * @param $html
  * @param $text
@@ -102,7 +92,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $row = $result->fetch_assoc();
             if ($row['type'] === 'U') {
                 //user type is user, password reset allowed
-                $rand = get_random_string(10);
+                $rand = get_random_string(16);
                 $resetexpire = time() + 60 * 60 * RESET_LINK_EXPIRE;
                 $sql = "UPDATE users SET resetid = '$rand', resetexpire = '$resetexpire' WHERE username = '$email'";
                 $result = dbquery($sql);

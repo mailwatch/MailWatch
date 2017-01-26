@@ -219,7 +219,7 @@ if ($link) {
     echo pad(' - Updating users table for password-reset');
     if (check_column_exists('users', 'resetid') === false) {
         $sql = 'ALTER TABLE `users` ADD COLUMN (
-            `resetid` varchar(255),
+            `resetid` varchar(32),
             `resetexpire` bigint(20),
             `lastreset` bigint(20)
             );';

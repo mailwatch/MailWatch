@@ -3763,3 +3763,13 @@ function updateUserPasswordHash($user, $hash)
     dbquery($sqlUpdateHash);
     audit_log(__('auditlogupdateuser03') . ' ' . $user);
 }
+
+/**
+ * @param $count
+ * @return string
+ */
+function get_random_string($count)
+{
+    $bytes = openssl_random_pseudo_bytes($count);
+    return bin2hex($bytes);
+}
