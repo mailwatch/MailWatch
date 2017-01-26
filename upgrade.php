@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 
 /*
@@ -136,7 +135,7 @@ if ($link) {
         '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
         ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
     executeQuery($sql);
-    
+
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
 
     // Table users
@@ -150,7 +149,7 @@ if ($link) {
     executeQuery($sql);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
-    
+
     // Table audit_log
     echo pad(' - Fix schema for username field in `audit_log` table');
     $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
@@ -185,7 +184,7 @@ if ($link) {
     executeQuery($sql);
 
     // Convert database to UTF-8mb4;
-    if ($link->server_version >= 50503) {
+    if ($link->server_version >= 650503) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
         $sql = 'ALTER DATABASE `' . DB_NAME .
@@ -200,15 +199,15 @@ if ($link) {
         'blacklist',
         'inq',
         'maillog',
-        'mtalog_ids',
         'mcp_rules',
         'mtalog',
+        'mtalog_ids',
         'outq',
-        'sa_rules',
         'saved_filters',
+        'sa_rules',
         'spamscores',
-        'user_filters',
         'users',
+        'user_filters',
         'whitelist',
     );
 
