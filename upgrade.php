@@ -140,47 +140,47 @@ if ($link) {
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
 
     // Table users
-    echo pad(' - Fix structure for username field in `users` table');
+    echo pad(' - Fix schema for username field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table spamscores
-    echo pad(' - Fix structure for user field in `spamscores` table');
+    echo pad(' - Fix schema for user field in `spamscores` table');
     $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
     
     // Table audit_log
-    echo pad(' - Fix structure for username field in `audit_log` table');
+    echo pad(' - Fix schema for username field in `audit_log` table');
     $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table users
-    echo pad(' - Fix structure for password field in `users` table');
+    echo pad(' - Fix schema for password field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(' - Fix structure for fullname field in `users` table');
+    echo pad(' - Fix schema for fullname field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table user_filters
-    echo pad(' - Fix structure for username field in `user_filters` table');
+    echo pad(' - Fix schema for username field in `user_filters` table');
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table mcp_rules
-    echo pad(' - Fix structure for rule_desc field in `mcp_rules` table');
+    echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
     $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table autorelease
-    echo pad(' - Fix structure for msg_id field in `autorelease` table');
+    echo pad(' - Fix schema for msg_id field in `autorelease` table');
     $sql = "ALTER TABLE `autorelease` CHANGE `msg_id` `msg_id` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    echo pad(' - Fix structure for uid field in `autorelease` table');
+    echo pad(' - Fix schema for uid field in `autorelease` table');
     $sql = "ALTER TABLE `autorelease` CHANGE `uid` `uid` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
