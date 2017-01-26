@@ -184,7 +184,7 @@ if ($link) {
     $sql = "ALTER TABLE `autorelease` CHANGE `uid` `uid` VARCHAR( 255 ) NOT NULL";
     executeQuery($sql);
 
-    // Convert database to UTF-8mb4;
+    // Convert database to UTF-8mb4 if MySQL ≥ 5.5.3
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
