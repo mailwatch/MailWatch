@@ -184,11 +184,10 @@ if ($link) {
     $sql = "ALTER TABLE `autorelease` CHANGE `uid` `uid` VARCHAR( 255 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    // Convert database to UTF-8mb4
-    $server_utf8_variant = 'utf8';
+    // Convert database to UTF-8mb4;
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
-        echo pad(' - Convert database to UTF-8');
+        echo pad(' - Convert database to ' . $server_utf8_variant . '');
         $sql = 'ALTER DATABASE `' . DB_NAME .
             '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
             ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
@@ -214,7 +213,7 @@ if ($link) {
     );
 
     foreach ($utf8_tables as $table) {
-        echo pad(' - Convert table `' . $table . '` to UTF-8');
+        echo pad(' - Convert table `' . $table . '` to ' . $server_utf8_variant . '');
         if (false === check_table_exists($table)) {
             echo " DO NOT EXISTS\n";
         } else {
