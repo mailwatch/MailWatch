@@ -220,9 +220,9 @@ require_once __DIR__ . '/functions.php';
             if (defined('PWD_RESET') && PWD_RESET === true) {
                 ?>
                 <div class="pwdresetButton">
-                    <button class="pwdresetButton">
-                        <a href="password_reset.php?stage=1"><?php echo __('forgottenpwd01'); ?></a>
-                    </button>
+                    <a href="password_reset.php?stage=1">
+                        <button class="pwdresetButton"><?php echo __('forgottenpwd01'); ?></button>
+                    </a>
                 </div>
                 <?php
 
