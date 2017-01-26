@@ -234,8 +234,8 @@ if ($link) {
     if (false === check_table_exists($geoip)) {
         echo " ALREADY DROPPED\n";
     } else {
-	    $sql = 'DROP TABLE IF EXISTS `geoip_country`';
-	    executeQuery($sql);
+	   $sql = 'DROP TABLE IF EXISTS `geoip_country`';
+	   executeQuery($sql);
     }
 
     // check for missing indexes
