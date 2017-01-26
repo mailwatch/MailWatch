@@ -44,7 +44,6 @@ require_once __DIR__ . '/functions.php';
     <link rel="shortcut icon" href="images/favicon.png">
     <style type="text/css">
         body {
-            background-color: #ffffff;
             color: #000;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 16px;
@@ -72,7 +71,6 @@ require_once __DIR__ . '/functions.php';
 
         .login form {
             border-top: 0;
-            background-color: #fff;
         }
 
         .login fieldset {
