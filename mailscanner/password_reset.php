@@ -117,7 +117,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 <!-- Outer table -->
 <table width="100%" border="0">
  <tr>
-  <td><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
+  <td><img src="' . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
   <td align="center" valign="middle">
    <h2>' . __('h2email63') . '</h2>
    <p>' . sprintf(__('p1email63'), $email) . '</p>
@@ -181,7 +181,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 <!-- Outer table -->
 <table width="100%%" border="0">
  <tr>
-  <td><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
+  <td><img src="' . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
   <td align="center" valign="middle">
    <h2>' . __('02pwdresetemail63') . '</h2>
    <p>' . sprintf(__('03pwdresetemail63'), $email) . '</p>
@@ -371,35 +371,35 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         </head>
         <body>
         <div class="pwdreset">
-            <img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+            <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
             <div class="border-rounded">
                 <h1><?php echo __('title63'); ?></h1>
                 <?php if (file_exists('conf.php')) {
-                    if ($fields !== '') {
-                        ?>
+            if ($fields !== '') {
+                ?>
                         <form name="pwdresetform" class="pwdresetform" method="post"
                               action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <fieldset>
                                 <?php if (isset($_GET['error']) || $errors !== '') {
-                                    ?>
+                    ?>
                                     <p class="pwdreseterror">
                                         <?php echo $errors; ?>
                                     </p>
                                     <?php
 
-                                }
+                }
 
-                                if ($fields === 'stage1') {
-                                    ?>
+                if ($fields === 'stage1') {
+                    ?>
                                     <p><label><?php echo __('emailaddress63'); ?></label></p>
                                     <p><input name="email" type="text" id="email" autofocus></p>
                                     <p><input type="submit" name="Submit"
                                               value="<?php echo __('requestpwdreset63'); ?>"></p>
                                     <?php
 
-                                }
-                                if ($fields === 'stage2') {
-                                    ?>
+                }
+                if ($fields === 'stage2') {
+                    ?>
                                     <input type="hidden" name="email" value="<?php echo $email; ?>">
                                     <input type="hidden" name="uid" value="<?php echo $uid; ?>">
                                     <p><label><?php echo __('01pwd63'); ?></label></p>
@@ -409,25 +409,25 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <p><input type="submit" name="Submit" value="<?php echo __('button63'); ?>"></p>
                                     <?php
 
-                                } ?>
+                } ?>
 
                             </fieldset>
                         </form>
                         <?php
 
-                    } elseif ($message !== '') {
-                        echo $message;
-                    } elseif ($errors !== '') {
-                        echo $errors;
-                    }
-                } else {
-                    ?>
+            } elseif ($message !== '') {
+                echo $message;
+            } elseif ($errors !== '') {
+                echo $errors;
+            }
+        } else {
+            ?>
                     <p class="error">
                         <?php echo __('cannot_read_conf'); ?>
                     </p>
                     <?php
 
-                } ?>
+        } ?>
             </div>
         </div>
 
