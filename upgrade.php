@@ -229,10 +229,14 @@ if ($link) {
     }
 
     // Drop geoip table
+    $geoip = 'geoip_country';
     echo pad(' - Drop `geoip_country` table');
-
-    $sql = 'DROP TABLE IF EXISTS `geoip_country`';
-    executeQuery($sql);
+    if (false === check_table_exists($geoip)) {
+        echo " ALREADY DROPPED\n";
+    } else {
+	    $sql = 'DROP TABLE IF EXISTS `geoip_country`';
+	    executeQuery($sql);
+    }
 
     // check for missing indexes
     $indexes = array(
