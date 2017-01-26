@@ -185,7 +185,7 @@ if ($link) {
     executeQuery($sql);
 
     // Convert database to UTF-8mb4;
-    if ($link->server_version >= 650503) {
+    if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
         $sql = 'ALTER DATABASE `' . DB_NAME .
