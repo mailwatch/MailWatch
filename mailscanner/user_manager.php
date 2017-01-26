@@ -338,6 +338,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"id\" VALUE=\"" . $id . "\">\n";
                 echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"filters\">\n";
+                echo "<INPUT TYPE=\"hidden\" NAME=\"new\" VALUE=\"true\">\n";
                 echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
                 echo ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . $id . "</TH></TR>\n";
                 echo ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . "</TH></TR>\n";
@@ -346,7 +347,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD><TD>' . $row->actions . "</TD></TR>\n";
                     }
                 }
-                echo " <TR><TD><INPUT TYPE=\"text\" NAME=\"filter\"></TD><TD><SELECT NAME=\"active\"><OPTION VALUE=\"Y\">" . __('yes12') . "<OPTION VALUE=\"N\">" . __('no12') . "</SELECT></TD><TD><INPUT TYPE=\"hidden\" NAME=\"new\" VALUE=\"true\"><INPUT TYPE=\"submit\" VALUE=\"" . __('add12') . "\"></TD></TR>\n";
+                echo " <TR><TD><INPUT TYPE=\"text\" NAME=\"filter\"></TD><TD><SELECT NAME=\"active\"><OPTION VALUE=\"Y\">" . __('yes12') . "<OPTION VALUE=\"N\">" . __('no12') . "</SELECT></TD><TD><INPUT TYPE=\"submit\" VALUE=\"" . __('add12') . "\"></TD></TR>\n";
                 echo "</TABLE><BR>\n";
                 echo "</FORM>\n";
                 break;
@@ -354,7 +355,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
     }
 
     echo '<a href="?action=new">' . __('newuser12') . '</a>'."\n";
-    echo '<br>'."\n";
+    echo '<br><br>'."\n";
 
     $domainAdminUserDomainFilter = "";
     if ($_SESSION['user_type'] === 'D') {
