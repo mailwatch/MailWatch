@@ -131,7 +131,7 @@ if ($link) {
 
     $server_utf8_variant = 'utf8';
 
-    echo pad(' - Convert database to UTF-8');
+    echo pad(' - Convert database to utf8');
     $sql = 'ALTER DATABASE `' . DB_NAME .
         '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
         ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
