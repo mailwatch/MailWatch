@@ -31,23 +31,23 @@
  
 require_once __DIR__ . '/syslog_parser.inc.php';
 
-class MtaLogProcessor {
-    $mtaprocess;
-    $delayField;
-    $statusField;
+abstract class MtaLogProcessor {
+    private $mtaprocess;
+    private $delayField;
+    private $statusField;
     
-    $raw;
-    $id;
-    $entry;
-    $entries;
+    private $raw;
+    private $id;
+    private $entry;
+    private $entries;
 
     abstract function extractKeyValuePairs($match);
     
-    function getRejectReasons() {
+    private function getRejectReasons() {
         return array();
     }
     
-    function getRulesets() {
+    private function getRulesets() {
         return array();
     }
     
@@ -60,7 +60,8 @@ class MtaLogProcessor {
         dbconn();
 
         $lines = 1;
-        while ($line = fgets($fp, 2096)) {        
+        while ($line = fgets($fp, 2096)) {
+            echo "r";
             // Reset variables
             unset($parsed, $mta_parser, $_timestamp, $_host, $_type, $_msg_id, $_status);
             
@@ -80,7 +81,7 @@ class MtaLogProcessor {
                 $_msg_id = safe_value($this->id);
                 
                 //apply rulesets if they exist
-                $rulesets = getRulesets();
+                $rulesets = $this->getRulesets();
                 if(isset($rulesets['type'])) {
                     $_type = $rulesets['type'];
                 }
@@ -109,7 +110,7 @@ class MtaLogProcessor {
                 }
                 
                 //apply reject reasons if they exist
-                $rejectReasons = getRejectReasons();
+                $rejectReasons = $this->getRejectReasons();
                 if(isset($rejectReasons['type'])) {
                     $_type = $rejectReasons['type'];
                 }

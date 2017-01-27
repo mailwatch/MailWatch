@@ -75,10 +75,10 @@ class PostfixLogProcessor extends MtaLogProcessor
 
 $logprocessor = new PostfixLogProcessor();
 if ($_SERVER['argv'][1] === '--refresh') {
-    doit('cat ' . MAIL_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first
-    doit('cat ' . MAIL_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
     // Start watching the maillog
-    doit('tail -F -n0 ' . MAIL_LOG);
+    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
 }
