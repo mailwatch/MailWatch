@@ -39,20 +39,22 @@ ini_set('implicit_flush', 'false');
 $mailwatchHome = '/var/www/html/mailscanner/';
 
 require $mailwatchHome . 'functions.php';
-require_once $mailwatchHome . 'syslog_parser.inc.php';
+require_once $mailwatchHome . '/mtalogprocessor.inc.php';
 
 // Set-up environment
 set_time_limit(0);
 
 class SendmailLogProcessor extends MtaLogProcessor
-{ 
-    function __construct() {
+{
+    public function __construct() 
+    {
         $this->mtaprocess = 'sendmail';
         $this->delayField = 'xdelay';
         $this->statusField = 'stat';
     }
     
-    function getRulesets() {
+    public function getRulesets() 
+    {
         if (isset($this->entries['ruleset'])) {
             if ($this->entries['ruleset'] === 'check_relay') {
                 // Listed in RBL(s)
@@ -68,7 +70,8 @@ class SendmailLogProcessor extends MtaLogProcessor
         }
     }
     
-    function extractKeyValuePairs($match) {
+    public function extractKeyValuePairs($match) 
+    {
         $items = explode(', ', $match[2]);
         $entries = array();
         foreach ($items as $item) {
