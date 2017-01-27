@@ -35,7 +35,7 @@ ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
 require __DIR__ . '/functions.php';
-require_once __DIR__ . '/syslog_parser.inc.php';
+require_once __DIR__ . '/mtalogprocessor.inc.php';
 
 // Set-up environment
 set_time_limit(0);
