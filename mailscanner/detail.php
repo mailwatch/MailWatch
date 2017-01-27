@@ -492,10 +492,11 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr>' . "\n";
-        if ($is_dangerous > 0 &&
-            (
-                $_SESSION['user_type'] === 'A' ||
-                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
+        if ($_SESSION['user_type'] === 'A' ||
+            ($_SESSION['user_type'] === 'D' &&
+                ($is_dangerous === 0 ||
+                ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
+                )
             )
         ) {
             echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . __('colon99') . '&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
