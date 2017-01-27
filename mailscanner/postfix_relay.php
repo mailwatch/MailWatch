@@ -42,13 +42,15 @@ set_time_limit(0);
 
 class PostfixLogProcessor extends MtaLogProcessor
 {
-    function __construct() {
+    public function __construct() 
+    {
         $this->mtaprocess = 'postfix/smtp';
         $this->delayField = 'delay';
         $this->statusField = 'status';
     }
     
-    function getRejectReasons() {
+    public function getRejectReasons() 
+    {
         // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
         // example
         $rejectReasons = array();
@@ -62,7 +64,8 @@ class PostfixLogProcessor extends MtaLogProcessor
         }
     }
     
-    function extractKeyValuePairs($match) {
+    public function extractKeyValuePairs($match) 
+    {
         $entries = array();
         $pattern = "/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/";
         preg_match($pattern, $match[2], $entries);

@@ -1620,9 +1620,10 @@ function subtract_multi_get_vars($preserve)
 }
 
 /**
- * @param $sql the sql query for which the page will be created 
+ * @param $sql the sql query for which the page will be created
  */
-function generatePager($sql) {
+function generatePager($sql) 
+{
     require_once __DIR__ . '/lib/pear/Pager.php';
     if (isset($_GET['offset'])) {
         $from = (int)$_GET['offset'];
@@ -3723,7 +3724,8 @@ function updateUserPasswordHash($user, $hash)
     audit_log(__('auditlogupdateuser03') . ' ' . $user);
 }
 
-function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1) {
+function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1) 
+{
     // HTML to display the graph
     echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
     echo ' <tr>';
