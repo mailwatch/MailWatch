@@ -31,6 +31,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/* Should be the first style */
 @font-face {
    font-family: password;
    src: url("fonts/password.ttf") format('opentype');
@@ -39,12 +40,6 @@
 body {
     margin: 0;
     font-family: verdana, sans-serif;
-}
-
-input.password {
-   font-family: password;
-   font-size: 8pt;
-   width: 143px
 }
 
 table.mail TH, table.boxtable TH, table.maildetail TH {
@@ -394,4 +389,10 @@ td.dashgreybox {
     table.maildetail {
         border: none;		
     }
+}
+
+input.password {
+   font-family: password;
+   font-size: 8pt;
+   width: 143px
 }
