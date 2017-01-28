@@ -180,7 +180,7 @@ return array(
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
     'saspam03' => 'spam',
-    'sanotspam03' => 'not spam',
+    'sanotspam03' => 'N\'est pas un spam',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
