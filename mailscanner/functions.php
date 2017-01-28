@@ -3770,7 +3770,7 @@ function updateUserPasswordHash($user, $hash)
  */
 function privateNetwork($host)
 {
-    if (true === cidr_match($host, '10.0.0.0/8') || true === cidr_match($host, '172.16.0.0/12') || true === cidr_match('192.168.0.0/16')) {
+    if (true === cidr_match($host, '10.0.0.0/8') || true === cidr_match($host, '172.16.0.0/12') || true === cidr_match($host, '192.168.0.0/16')) {
         return true;
     } else {
         return false;
