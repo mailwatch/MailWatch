@@ -31,7 +31,8 @@
  */
 
 header("Content-type: text/plain\n\n");
-require '/var/www/html/mailscanner/functions.php';
+$mailscannerRoot = '/var/www/html/mailscanner/';
+require $mailscannerRoot . 'functions.php';
 //require __DIR__ . '/mailscanner/functions.php';
 
 $link = dbconn();
@@ -487,3 +488,6 @@ if (is_array($errors)) {
     }
     echo "\n";
 }
+
+
+require $mailscannerRoot . 'checkconf.php';

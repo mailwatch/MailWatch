@@ -29,15 +29,23 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-$mailscannerRoot = "/var/www/html/mailscanner/";
+if(!isset($mailscannerRoot)) {
+    //adjust this path to the directory containing the conf.php
+    $mailscannerRoot = "/var/www/html/mailscanner/";
+}
+//this script also accepts a command line argument to set the mailscanner root folder
 if (count($argv) > 1) {
     $mailscannerRoot = $argv[1];
 }
 
-header("Content-type: text/plain\n\n");
+
+if(!headers_sent()) {
+    header("Content-type: text/plain\n\n");
+}
+
 
 //load the config file to be able to see the defined values
-require($mailscannerRoot . "conf.php");
+require_once ($mailscannerRoot . "conf.php");
 
 echo "Checking your conf.php if it contains all necessary constants" . PHP_EOL;
 
