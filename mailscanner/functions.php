@@ -928,9 +928,9 @@ function sa_autolearn($spamreport)
 {
     switch (true) {
         case(preg_match('/autolearn=spam/', $spamreport)):
-            return 'spam';
+            return __('saspam03');
         case(preg_match('/autolearn=not spam/', $spamreport)):
-            return 'not spam';
+            return __('sanotspam03');
         default:
             return false;
     }
@@ -3770,12 +3770,11 @@ function updateUserPasswordHash($user, $hash)
  */
 function privateNetwork($host)
 {
-   if (true === cidr_match($host, '10.0.0.0/8') || true === cidr_match($host, '172.16.0.0/12') || true === cidr_match('192.168.0.0/16')) {
-       return true;
-   }
-   else {
-       return false;
-   }
+    if (true === cidr_match($host, '10.0.0.0/8') || true === cidr_match($host, '172.16.0.0/12') || true === cidr_match('192.168.0.0/16')) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -3786,7 +3785,7 @@ function privateNetwork($host)
 function cidr_match($ip, $cidr)
 {
     list($subnet, $mask) = explode('/', $cidr);
-    if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1) ) === ip2long($subnet)) {
+    if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1)) === ip2long($subnet)) {
         return true;
     } else {
         return false;

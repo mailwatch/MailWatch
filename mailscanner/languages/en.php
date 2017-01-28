@@ -179,6 +179,8 @@ return array(
     'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
+    'saspam03' => 'spam',
+    'sanotspam03' => 'not spam',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',

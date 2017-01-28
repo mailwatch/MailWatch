@@ -179,6 +179,8 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
+    'saspam03' => 'spam',
+    'sanotspam03' => 'not spam',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -238,7 +240,7 @@ return array(
     'spamrevoke04' => 'Comme Légitime+Retirez',
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
-    'privatenetwork04' => '(Private Network)',
+    'privatenetwork04' => '(Réseau privé)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',
