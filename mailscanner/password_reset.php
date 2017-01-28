@@ -85,7 +85,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         $result = dbquery($sql);
         if ($result->num_rows !== 1) {
             //user not found
-            $errors = '<p class="pwdreseterror">' . __('notfound63') . '</p>';
+            $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '</p>';
             $showpage = true;
         } else {
             //user found, now check type of user
@@ -119,7 +119,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
  <tr>
   <td><img src="' . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
   <td align="center" valign="middle">
-   <h2>' . __('h2email63') . '</h2>
+   <h2>' . __('passwdresetrequest63') . '</h2>
    <p>' . sprintf(__('p1email63'), $email) . '</p>
     <a href="' . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand . '"><button>' . __('button63') . '</button></a></p>
   </td>
@@ -130,7 +130,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $text = sprintf(__('01emailplaintxt63'), $email) . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&user=' . $email . '&uid=' . $rand;
 
                 //Send email
-                $subject = __('01emailsubject63');
+                $subject = __('passwdresetrequest63');
                 send_email($email, $html, $text, $subject);
                 $message = '<p>' . __('01emailsuccess63') . '</p>';
                 $showpage = true;
@@ -166,7 +166,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
- <title>' . __('01pwdresetemail63') . '</title>
+ <title>' . __('pwdresetsuccess63') . '</title>
  <style type="text/css">
  <!--
   body, td, tr {
@@ -183,7 +183,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
  <tr>
   <td><img src="' . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
   <td align="center" valign="middle">
-   <h2>' . __('02pwdresetemail63') . '</h2>
+   <h2>' . __('pwdresetsuccess63') . '</h2>
    <p>' . sprintf(__('03pwdresetemail63'), $email) . '</p>
   </td>
  </tr>
@@ -193,7 +193,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $text = sprintf(__('04pwdresetemail63'), $email);
 
                 //Send email
-                $subject = __('02emailsubject63');
+                $subject = __('pwdresetsuccess63');
                 send_email($email, $html, $text, $subject);
                 $message = '<p>' . __('pwdresetsuccess63') . '<br/>
 <a href="login.php"><button>' . __('login01') . '</button></a></p>';
