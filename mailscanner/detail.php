@@ -163,7 +163,7 @@ while ($row = $result->fetch_array()) {
                     } elseif ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
-                        $output .= ' <td>(' . __('geoipfailed04') . ')</td>' . "\n";
+                        $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
                     }
                     // Link to RBL Lookup
                     $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
