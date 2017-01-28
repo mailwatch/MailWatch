@@ -238,6 +238,7 @@ return array(
     'spamrevoke04' => 'Comme Légitime+Retirez',
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
+    'privatenetwork04' => '(Private Network)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',

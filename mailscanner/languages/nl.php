@@ -238,6 +238,7 @@ return array(
     'spamrevoke04' => 'As Ham+Revoke',
     'geoipfailed04' => '(GeoIP lookup failed)',
     'reversefailed04' => '(Reverse Lookup Failed)',
+    'privatenetwork04' => '(Private Network)',
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',

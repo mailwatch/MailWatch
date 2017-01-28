@@ -146,14 +146,22 @@ while ($row = $result->fetch_array()) {
                     $output .= ' <td>' . $relay . '</td>' . "\n";
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                     $relay = stripPortFromIp($relay);
+                    //check if address is in private IP space
+                    $private_network = privateNetwork($relay);
+                    if (true === $private_network) {
+                        $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
+                    }
                     // Reverse lookup on address. Possibly need to remove it.
-                    if (($host = gethostbyaddr($relay)) !== $relay) {
+                    elseif (($host = gethostbyaddr($relay)) !== $relay) {
                         $output .= " <td>$host</td>\n";
                     } else {
                         $output .= ' <td>' . __('reversefailed04') . "</td>\n";
                     }
                     // Do GeoIP lookup on address
-                    if ($geoip_country = return_geoip_country($relay)) {
+                    if (true === $private_network) {
+                        $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
+                    }
+                    elseif ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
                         $output .= ' <td>(' . __('geoipfailed04') . ')</td>' . "\n";
