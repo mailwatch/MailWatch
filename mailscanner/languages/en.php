@@ -63,7 +63,7 @@ return array(
     'loadaverage03' => 'Load Average:',
     'mailqueue03' => 'Mail Queues',
     'inbound03' => 'Inbound:',
-    'outbound03' => 'Oubound:',
+    'outbound03' => 'Outbound:',
     'clean03' => 'Clean',
     'topvirus03' => 'Top Virus:',
     'freedspace03' => 'Free Disk Space',
