@@ -160,8 +160,7 @@ while ($row = $result->fetch_array()) {
                     // Do GeoIP lookup on address
                     if (true === $private_network) {
                         $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
-                    }
-                    elseif ($geoip_country = return_geoip_country($relay)) {
+                    } elseif ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
                         $output .= ' <td>(' . __('geoipfailed04') . ')</td>' . "\n";
