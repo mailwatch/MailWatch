@@ -230,12 +230,12 @@ while ($row = $result->fetch_array()) {
                 $row[$f] = $no;
             }
         }
-        if ($fieldn === 'Spam:' && !DISTRIBUTED_SETUP) {
+        if ($fieldn === __('spam04') && !DISTRIBUTED_SETUP) {
             // Display actions if spam/not-spam
             if ($row[$f] === $yes) {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;Action(s): ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
+                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ': ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
             } else {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;Action(s): ' . str_replace(
+                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ': ' . str_replace(
                         ' ',
                         ', ',
                         get_conf_var('NonSpamActions')

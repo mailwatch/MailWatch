@@ -179,8 +179,8 @@ return array(
     'auditlogupdatepassword03' => 'Die Länge des Passwort-Feldes wurde von %s auf 191 aktualisiert',
     'auditlogupdateuser03' => 'Passwort für Benutzer aktualisiert',
     'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
-    'saspam03' => 'spam',
-    'sanotspam03' => 'not spam',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'Kein Spam',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
