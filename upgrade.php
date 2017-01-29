@@ -149,6 +149,11 @@ if ($link) {
     $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    // Table user_filters
+    echo pad(' - Fix schema for username field in `user_filters` table');
+    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+    
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
     // Table audit_log
@@ -163,11 +168,6 @@ if ($link) {
 
     echo pad(' - Fix schema for fullname field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    // Table user_filters
-    echo pad(' - Fix schema for username field in `user_filters` table');
-    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 255 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table mcp_rules
