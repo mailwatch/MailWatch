@@ -1,8 +1,7 @@
 #
-#   MailWatch for MailScanner
-#   Copyright (C) 2003  Steve Freegard (smf@f2s.com)
+#   MailWatch for MailScanner Custom Module MailWatch
 #
-#   $Id: MailWatch.pm,v 1.0
+#   Copyright (C) 2003  Steve Freegard (smf@f2s.com)
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -31,7 +30,7 @@ use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
 # Trace settings - uncomment this to debug
-# DBI->trace(2,'/var/spool/MailScanner/dbitrace.log');
+# DBI->trace(2,'/tmp/dbitrace.log');
 
 my ($dbh);
 my ($sth);
