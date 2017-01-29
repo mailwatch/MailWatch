@@ -1,6 +1,5 @@
 #
-#   MailScanner - SMTP E-Mail Virus Scanner
-#   Copyright (C) 2002  Julian Field
+#   MailWatch for MailScanner Custom Module SQLBlackWhiteList
 #
 #   $Id: SQLBlackWhiteList.pm,v 1.4 2011/12/14 18:21:28 lorodoes Exp $
 #
