@@ -80,19 +80,19 @@ sub CheckSQLVersion {
 sub InitSQLSpamScores
 {
     my ($entries) = CreateScoreList('spamscore', \%LowSpamScores);
-    MailScanner::Log::InfoLog("MailWatch: Read %d Spam entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d Spam entries", $entries);
 }
 
 sub InitSQLHighSpamScores
 {
     my $entries = CreateScoreList('highspamscore', \%HighSpamScores);
-    MailScanner::Log::InfoLog("MailWatch: Read %d high Spam entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d high Spam entries", $entries);
 }
 
 sub InitSQLNoScan
 {
     my $entries = CreateNoScanList('noscan', \%ScanList);
-    MailScanner::Log::InfoLog("MailWatch: Read %d No Spam Scan entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d No Spam Scan entries", $entries);
 }
 
 #
@@ -125,17 +125,17 @@ sub SQLNoScan
 #
 sub EndSQLSpamScores
 {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL Spam Scores");
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL Spam Scores");
 }
 
 sub EndSQLHighSpamScores
 {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL High Spam Scores");
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL High Spam Scores");
 }
 
 sub EndSQLNoScan
 {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL No Scan");
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL No Scan");
 }
 
 # Read the list of users that have defined their own Spam Score value. Also
