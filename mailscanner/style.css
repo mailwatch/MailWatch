@@ -430,3 +430,11 @@ div.table>.caption>input {
     float: left;
 }
 
+.tableWithLineBreaksWrapper>table {
+    table-layout: fixed;
+}
+
+.tableWithLineBreaksWrapper>table>tr>th, 
+.tableWithLineBreaksWrapper>table>tr>td {
+    word-wrap: break-word;
+}

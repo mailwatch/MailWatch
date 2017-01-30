@@ -30,7 +30,7 @@
  */
 
 /* languages/pt_br.php */
-/* v0.3.12 */
+/* v0.3.10 */
 
 return array(
     // 01-login.php
@@ -179,6 +179,9 @@ return array(
     'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
+    '1minute03' => '1 min.:',
+    '5minutes03' => '5 min.:',
+    '15minutes03' => '15 min.:',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
