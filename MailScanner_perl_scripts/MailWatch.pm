@@ -52,7 +52,7 @@ my ($SQLversion);
 my ($db_name) = 'mailscanner';
 my ($db_host) = 'localhost';
 my ($db_user) = 'mailwatch';
-my ($db_pass) = 'k7b45d4';
+my ($db_pass) = 'mailwatch';
 
 sub InitMailWatchLogging {
     my $pid = fork();
