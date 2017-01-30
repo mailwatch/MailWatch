@@ -1,31 +1,24 @@
 #
-#   MailWatch for MailScanner Custom Module SQLBlackWhiteList
+#   MailWatch for MailScanner
+#   Custom Module SQLBlackWhiteList
 #
-#   $Id: SQLBlackWhiteList.pm,v 1.4 2011/12/14 18:21:28 lorodoes Exp $
+#   Version 1.5
 #
-#   This program is free software; you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation; either version 2 of the License, or
-#   (at your option) any later version.
+# Copyright (C) 2003-2017  Steve Freegard (smf@f2s.com)
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#   The author, Julian Field, can be contacted by email at
-#      Jules@JulianField.net
-#   or by paper mail at
-#      Julian Field
-#      Dept of Electronics & Computer Science
-#      University of Southampton
-#      Southampton
-#      SO17 1BJ
-#      United Kingdom
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
 package MailScanner::CustomConfig;
@@ -37,13 +30,21 @@ no  strict 'subs'; # Allow bare words for parameter %'s
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.4 $, 10;
+$VERSION = substr q$Revision: 1.5 $, 10;
 
 use DBI;
 my (%Whitelist, %Blacklist);
 my ($wtime, $btime);
 my ($refresh_time) = 15;        # Time in minutes before lists are refreshed
+my ($dbh);
+my ($sth);
 my ($SQLversion);
+
+# Modify this as necessary for your configuration
+my ($db_name) = 'mailscanner';
+my ($db_host) = 'localhost';
+my ($db_user) = 'mailwatch';
+my ($db_pass) = 'mailwatch';
 
 # Check MySQL version
 sub CheckMySQLVersion {
@@ -112,11 +113,7 @@ sub EndSQLBlacklist {
 
 sub CreateList {
     my ($type, $BlackWhite) = @_;
-    my ($dbh, $sth, $sql, $to_address, $from_address, $count, $filter);
-    my ($db_name) = 'mailscanner';
-    my ($db_host) = 'localhost';
-    my ($db_user) = 'mailwatch';
-    my ($db_pass) = 'mailwatch';
+    my ($sql, $to_address, $from_address, $count, $filter);
 
     # Check if MySQL is >= 5.3.3
     if (CheckMySQLVersion() >= 50503 ) {
@@ -124,19 +121,19 @@ sub CreateList {
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
         );
-        $dbh->do('SET NAMES utf8mb4');
         if (!$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
         }
+        $dbh->do('SET NAMES utf8mb4');
     } else {
         $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
         );
-        $dbh->do('SET NAMES utf8');
         if (!$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
         }
+        $dbh->do('SET NAMES utf8');
     }
 
     $sql = "SELECT to_address, from_address FROM $type";
