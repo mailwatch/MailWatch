@@ -125,6 +125,7 @@ sub CreateList {
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
         );
+        $dbh->do('SET NAMES utf8mb4');
         if (!$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
         }
@@ -133,6 +134,7 @@ sub CreateList {
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
         );
+        $dbh->do('SET NAMES utf8');
         if (!$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
         }
