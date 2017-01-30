@@ -99,7 +99,6 @@ sub SQLBlacklist {
     return LookupList($message, \%Blacklist);
 }
 
-
 #
 # Close down the SQL whitelist and blacklist
 #
