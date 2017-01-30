@@ -147,7 +147,7 @@ sub CreateScoreList
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
         }
     }
-    
+
     # Connect to the database
     $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
         $db_user, $db_pass,
