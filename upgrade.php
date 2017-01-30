@@ -175,15 +175,6 @@ if ($link) {
     $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 100 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    // Table autorelease
-    echo pad(' - Fix schema for msg_id field in `autorelease` table');
-    $sql = "ALTER TABLE `autorelease` CHANGE `msg_id` `msg_id` VARCHAR( 255 ) NOT NULL";
-    executeQuery($sql);
-
-    echo pad(' - Fix schema for uid field in `autorelease` table');
-    $sql = "ALTER TABLE `autorelease` CHANGE `uid` `uid` VARCHAR( 255 ) NOT NULL";
-    executeQuery($sql);
-
     // Convert database to UTF-8mb4 if MySQL ≥ 5.5.3
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
@@ -229,9 +220,8 @@ if ($link) {
     }
 
     // Drop geoip table
-    $geoip = 'geoip_country';
     echo pad(' - Drop `geoip_country` table');
-    if (false === check_table_exists($geoip)) {
+    if (false === check_table_exists('geoip_country')) {
         echo " ALREADY DROPPED\n";
     } else {
         $sql = 'DROP TABLE IF EXISTS `geoip_country`';
