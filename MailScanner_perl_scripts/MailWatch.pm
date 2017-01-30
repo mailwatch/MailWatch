@@ -67,6 +67,7 @@ sub InitMailWatchLogging {
     }
 }
 
+# Check MySQL version
 sub CheckMySQLVersion {
     $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
         $db_user, $db_pass,
