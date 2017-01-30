@@ -6,7 +6,7 @@
 #
 #   Custom Module MailWatch
 #
-#   Version 1.2
+#   Version 1.5
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -45,7 +45,7 @@ use Encoding::FixLatin qw(fix_latin);
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.2 $, 10;
+$VERSION = substr q$Revision: 1.5 $, 10;
 
 # Trace settings - uncomment this to debug
 # DBI->trace(2,'/tmp/dbitrace.log');
