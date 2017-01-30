@@ -48,14 +48,17 @@ use vars qw($VERSION);
 $VERSION = substr q$Revision: 1.5 $, 10;
 
 use DBI;
+my ($dbh);
+my ($sth);
+my ($SQLversion);
+
+# Modify this as necessary for your configuration
 my (%LowSpamScores, %HighSpamScores);
 my (%ScanList);
 my ($db_name) = 'mailscanner';
 my ($db_host) = 'localhost';
 my ($db_user) = 'mailwatch';
 my ($db_pass) = 'mailwatch';
-
-my ($SQLversion);
 
 # Check MySQL version
 sub CheckMySQLVersion {
@@ -140,7 +143,7 @@ sub EndSQLNoScan
 sub CreateScoreList
 {
     my ($type, $UserList) = @_;
-    my ($dbh, $sth, $sql, $username, $count);
+    my ($sql, $username, $count);
 
     # Check if MySQL is >= 5.3.3
     if (CheckMySQLVersion() >= 50503 ) {
