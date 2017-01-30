@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.11 */
+/* v0.3.10 */
 
 return array(
     // 01-login.php
@@ -179,6 +179,9 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
+    '1minute03' => '1 min.:',
+    '5minutes03' => '5 min.:',
+    '15minutes03' => '15 min.:',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
