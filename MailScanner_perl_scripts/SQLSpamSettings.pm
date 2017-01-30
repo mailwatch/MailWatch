@@ -40,6 +40,21 @@ my ($db_name) = 'mailscanner';
 my ($db_host) = 'localhost';
 my ($db_user) = 'mailwatch';
 my ($db_pass) = 'mailwatch';
+my ($SQLversion);
+
+# Check MySQL version
+sub CheckMySQLVersion {
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        $db_user, $db_pass,
+        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+    );
+    if (!$dbh) {
+        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+    }
+    $SQLversion = $dbh->{mysql_serverversion};
+    $dbh->disconnect;
+    return $SQLversion
+}
 
 #
 # Initialise the arrays with the users Spam settings
@@ -110,23 +125,32 @@ sub EndSQLNoScan
 sub CreateScoreList
 {
     my ($type, $UserList) = @_;
-
     my ($dbh, $sth, $sql, $username, $count);
 
+    # Check if MySQL is >= 5.3.3
+    if (CheckMySQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+    }
+    
     # Connect to the database
     $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
         $db_user, $db_pass,
         { PrintError => 0, RaiseError => 1, mysql_enable_utf8 => 1 }
     );
-
-    # Check if connection was successfull - if it isn't
-    # then generate a warning and return to MailScanner so it can continue processing.
-    if (!$dbh)
-    {
-        MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings::CreateList Unable to initialise database connection: %s",
-            $DBI::errstr);
-        return;
-    }
 
     $sql = "SELECT username, $type FROM users WHERE $type > 0";
     $sth = $dbh->prepare($sql);

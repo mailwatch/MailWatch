@@ -43,6 +43,21 @@ use DBI;
 my (%Whitelist, %Blacklist);
 my ($wtime, $btime);
 my ($refresh_time) = 15;        # Time in minutes before lists are refreshed
+my ($SQLversion);
+
+# Check MySQL version
+sub CheckMySQLVersion {
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        $db_user, $db_pass,
+        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+    );
+    if (!$dbh) {
+        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+    }
+    $SQLversion = $dbh->{mysql_serverversion};
+    $dbh->disconnect;
+    return $SQLversion
+}
 
 #
 # Initialise SQL spam whitelist and blacklist
@@ -104,16 +119,23 @@ sub CreateList {
     my ($db_user) = 'mailwatch';
     my ($db_pass) = 'mailwatch';
 
-    # Connect to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, RaiseError => 1, mysql_enable_utf8 => 1 });
-
-    # Check if connection was successfull - if it isn't
-    # then generate a warning and continue processing.
-    if (!$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
-        return;
+    # Check if MySQL is >= 5.3.3
+    if (CheckMySQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
     }
 
     $sql = "SELECT to_address, from_address FROM $type";
@@ -134,7 +156,6 @@ sub CreateList {
         $BlackWhite->{lc($filter)}{lc($from_address)} = 1; # Store entry
         $count++;
     }
-
 
     # Close connections
     $sth->finish();
