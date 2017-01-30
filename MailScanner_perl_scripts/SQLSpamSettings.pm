@@ -44,6 +44,7 @@ my ($db_name) = 'mailscanner';
 my ($db_host) = 'localhost';
 my ($db_user) = 'mailwatch';
 my ($db_pass) = 'mailwatch';
+
 my ($SQLversion);
 
 # Check MySQL version
