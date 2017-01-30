@@ -49,7 +49,7 @@ echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadd
 echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>' . "\n";
 
 // Clear Bayes database
-if ($_SESSION['user_type'] == 'A') {
+if ($_SESSION['user_type'] === 'A') {
     $return = 0;
     if (isset($_POST['clear'])) {
         if (!is_file(SA_DIR . 'sa-learn')) {
@@ -143,7 +143,7 @@ pclose($fh);
 echo '</table>' . "\n";
 
 // Clear button
-if ($_SESSION['user_type'] == 'A') {
+if ($_SESSION['user_type'] === 'A') {
     echo '<br>' . "\n";
     echo '<div style="text-align: center; ">' . "\n";
     echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >' . "\n";
