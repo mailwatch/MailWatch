@@ -57,13 +57,13 @@ my ($db_user) = 'mailwatch';
 my ($db_pass) = 'mailwatch';
 
 # Check MySQL version
-sub CheckMySQLVersion {
+sub CheckSQLVersion {
     $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
         $db_user, $db_pass,
         { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
     );
     if (!$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList:: Unable to initialise database connection: %s", $DBI::errstr);
     }
     $SQLversion = $dbh->{mysql_serverversion};
     $dbh->disconnect;
@@ -126,13 +126,13 @@ sub CreateList {
     my ($sql, $to_address, $from_address, $count, $filter);
 
     # Check if MySQL is >= 5.3.3
-    if (CheckMySQLVersion() >= 50503 ) {
+    if (CheckSQLVersion() >= 50503 ) {
         $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
         );
         if (!$dbh) {
-            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList::CreateList::: Unable to initialise database connection: %s", $DBI::errstr);
         }
         $dbh->do('SET NAMES utf8mb4');
     } else {
@@ -141,7 +141,7 @@ sub CreateList {
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
         );
         if (!$dbh) {
-            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList::CreateList::: Unable to initialise database connection: %s", $DBI::errstr);
         }
         $dbh->do('SET NAMES utf8');
     }
@@ -151,6 +151,7 @@ sub CreateList {
     $sth->execute;
     $sth->bind_columns(undef, \$to_address, \$from_address);
     $count = 0;
+    
     while($sth->fetch()) {
         $BlackWhite->{lc($to_address)}{lc($from_address)} = 1; # Store entry
         $count++;

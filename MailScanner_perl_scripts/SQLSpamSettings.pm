@@ -61,13 +61,13 @@ my ($db_user) = 'mailwatch';
 my ($db_pass) = 'mailwatch';
 
 # Check MySQL version
-sub CheckMySQLVersion {
+sub CheckSQLVersion {
     $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
         $db_user, $db_pass,
         { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
     );
     if (!$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: Unable to initialise database connection: %s", $DBI::errstr);
     }
     $SQLversion = $dbh->{mysql_serverversion};
     $dbh->disconnect;
@@ -146,13 +146,13 @@ sub CreateScoreList
     my ($sql, $username, $count);
 
     # Check if MySQL is >= 5.3.3
-    if (CheckMySQLVersion() >= 50503 ) {
+    if (CheckSQLVersion() >= 50503 ) {
         $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
         );
         if (!$dbh) {
-            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: CreateScoreList::: Unable to initialise database connection: %s", $DBI::errstr);
         }
         $dbh->do('SET NAMES utf8mb4');
     } else {
@@ -161,22 +161,17 @@ sub CreateScoreList
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
         );
         if (!$dbh) {
-            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateScoreList::: Unable to initialise database connection: %s", $DBI::errstr);
         }
         $dbh->do('SET NAMES utf8');
     }
-
-    # Connect to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, RaiseError => 1, mysql_enable_utf8 => 1 }
-    );
 
     $sql = "SELECT username, $type FROM users WHERE $type > 0";
     $sth = $dbh->prepare($sql);
     $sth->execute;
     $sth->bind_columns(undef, \$username, \$type);
     $count = 0;
+    
     while($sth->fetch())
     {
         $UserList->{lc($username)} = $type; # Store entry
@@ -194,19 +189,27 @@ sub CreateScoreList
 sub CreateNoScanList
 {
     my ($type, $NoScanList) = @_;
+    my ($sql, $username, $count);
 
-    my ($dbh, $sth, $sql, $username, $count);
-
-    # Connect to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, { PrintError => 0 });
-
-    # Check if connection was successfull - if it isn't
-    # then generate a warning and return to MailScanner so it can continue processing.
-    if (!$dbh)
-    {
-        MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings::CreateNoScanList Unable to initialise database connection: %s",
-            $DBI::errstr);
-        return;
+    # Check if MySQL is >= 5.3.3
+    if (CheckSQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateNoScanList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8mb4');
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateNoScanList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8');
     }
 
     $sql = "SELECT username, $type FROM users WHERE $type > 0";
