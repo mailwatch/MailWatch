@@ -1,21 +1,25 @@
 #
-#   MailWatch for MailScanner Custom Module SQLSpamSettings
+#   MailWatch for MailScanner
+#   Custom Module SQLSpamSettings
 #
-#   $Id: SQLSpamSettings.pm,v 1.4 2011/12/14 18:21:28 lorodoes Exp $
+#   Version 1.5
 #
-#   This program is free software; you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation; either version 2 of the License, or
-#   (at your option) any later version.
+# Copyright (C) 2003-2017  Steve Freegard (smf@f2s.com)
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
 
 #
 # This module uses entries in the user table to determine the Spam Settings
@@ -31,7 +35,7 @@ no  strict 'subs'; # Allow bare words for parameter %'s
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.4 $, 10;
+$VERSION = substr q$Revision: 1.5 $, 10;
 
 use DBI;
 my (%LowSpamScores, %HighSpamScores);
@@ -133,19 +137,19 @@ sub CreateScoreList
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
         );
-        $dbh->do('SET NAMES utf8mb4');
         if (!$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
         }
+        $dbh->do('SET NAMES utf8mb4');
     } else {
         $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
         );
-        $dbh->do('SET NAMES utf8');
         if (!$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
         }
+        $dbh->do('SET NAMES utf8');
     }
 
     # Connect to the database
