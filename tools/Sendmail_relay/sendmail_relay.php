@@ -46,14 +46,14 @@ set_time_limit(0);
 
 class SendmailLogProcessor extends MtaLogProcessor
 {
-    public function __construct() 
+    public function __construct()
     {
         $this->mtaprocess = 'sendmail';
         $this->delayField = 'xdelay';
         $this->statusField = 'stat';
     }
     
-    public function getRulesets() 
+    public function getRulesets()
     {
         if (isset($this->entries['ruleset'])) {
             if ($this->entries['ruleset'] === 'check_relay') {
@@ -70,7 +70,7 @@ class SendmailLogProcessor extends MtaLogProcessor
         }
     }
     
-    public function extractKeyValuePairs($match) 
+    public function extractKeyValuePairs($match)
     {
         $items = explode(', ', $match[2]);
         $entries = array();
