@@ -76,6 +76,19 @@ function check_table_exists($table)
 }
 
 /**
+ * @param string $table
+ * @param string $field
+ * @return bool|mysqli_result
+ */
+function check_field_exists($table, $field)
+{
+    global $link;
+
+    return $link->query('SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()
+                         AND COLUMN_NAME = ' . $field . ' AND TABLE_NAME = ' . $table . '');
+}
+
+/**
  * @param string $db
  * @param string $table
  * @param string $utf8variant
@@ -153,7 +166,7 @@ if ($link) {
     echo pad(' - Fix schema for username field in `user_filters` table');
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
-    
+
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
     // Table audit_log
