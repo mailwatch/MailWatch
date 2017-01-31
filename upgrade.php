@@ -84,8 +84,8 @@ function check_field_exists($table, $field)
 {
     global $link;
 
-    return $link->query('SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE()
-                         AND COLUMN_NAME = "' . $field . '" AND TABLE_NAME = "' . $table . '"');
+    return $link->query('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = "' . DB_NAME . '"
+                         AND COLUMN_NAME = "' . $field . '" AND TABLE_NAME = "' . $table . '" LIMIT 1');
 }
 
 /**
