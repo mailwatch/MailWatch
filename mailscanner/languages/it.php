@@ -30,7 +30,7 @@
  */
 
 /* languages/it.php */
-/* v0.3.9 */
+/* v0.3.10 */
 
 return array(
     // 01-login.php
@@ -291,8 +291,8 @@ return array(
     'error071' => 'You must select a list to create the entry.',
     'error072' => 'You must enter a from address (user@domain, domain or IP).',
     'noentries07' => 'No entries found.',
-    'auditlogadded07' => 'Added entry %s for %s in the %s',
-    'auditlogremoved07' => 'Removed entry %s for %s in the %s',
+    'auditlogadded07' => 'Added entry [%s] for %s in the %s',
+    'auditlogremoved07' => 'Removed entry [%s] for %s in the %s',
 
     // 08-quarantine.php
     'folder08' => 'Cartella',
@@ -359,7 +359,7 @@ return array(
     'hostname09' => 'MailScanner Hostname',
     'remove09' => 'Remove',
     'reports09' => 'Reports',
-    
+
     // 10-other.php
     'tools10' => 'Strumenti',
     'toolslinks10' => 'Tools and Links',
@@ -529,7 +529,7 @@ return array(
     // 20-docs.php
     'doc20' => 'Documentation',
     'message20' => 'This page does require authentication, so you can put links to your site documentation here and allow your users to access it if you wish.',
-    
+
     // 21-do_message_ops.php
     'opresult21' => 'Operation Results',
     'spamlearnresult21' => 'Spam Learn Results',
@@ -597,6 +597,10 @@ return array(
     'user33' => 'User',
     'ipaddress33' => 'IP Address',
     'action33' => 'Action',
+    'filter33' => 'Filter',
+    'applyfilter33' => 'apply',
+    'startdate33' => 'Start date',
+    'enddate33' => 'End date',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
@@ -613,7 +617,7 @@ return array(
     'nbmessages35' => 'No. of messages',
     'score35' => 'Score',
     'count35' => 'Count',
-    
+
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'MRTG Style Mail Report',
     'die36' => 'Error: Needs 2 or more rows of data to be retrieved from database',
@@ -626,7 +630,7 @@ return array(
     'total37' => 'Total',
     'ham37' => 'Ham',
     'spam37' => 'Spam',
-    
+
     // 38-rep_sa_score_dist.php
     'sascoredist38' => 'SpamAssassin Score Distribution',
     'scorerounded38' => 'Score (rounded)',
@@ -647,12 +651,12 @@ return array(
     'volume39' => 'Volume',
     'geoipfailed39' => '(GeoIP lookup failed)',
     'hostfailed39' => '(Hostname lookup failed)',
-    
+
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
     'top10recipdomqt40' => 'Top 10 Recipients Domains by Volume',
     'domain40' => 'Domain',
-    
+  
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Recipients Domains by Volume',
     'top10recipdomvol41' => 'Top 10 Recipient Domains by Volume',
@@ -662,32 +666,32 @@ return array(
     'toprecipqt42' => 'Top Recipients by Quantity',
     'top10recipqt42' => 'Top 10 Recipients by Quantity',
     'email42' => 'E-mail Address',
-    
+  
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
     'top10recipvol43' => 'Top 10 Recipients by Volume',
     'email43' => 'E-mail Address',
-    
+  
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Sender Domains by Quantity',
     'top10senderdomqt44' => 'Top 10 Sender Domains by Quantity',
     'domain44' => 'Domain',
-    
+  
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Sender Domains by Volume',
     'top10senderdomvol45' => 'Top 10 Sender Domains by Volume',
     'domain45' => 'Domain',
-    
+  
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
     'email46' => 'E-mail Address',
-    
+  
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
     'email47' => 'E-mail Address',
-    
+  
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',
@@ -717,14 +721,14 @@ return array(
     'resolve49' => 'Can\'t<br>Resolve',
     'rbl49' => 'RBL',
     'totals49' => 'Totals',
-    
+
     // 50-rep_viruses.php
     'virusreport50' => 'Virus Report',
     'virus50' => 'Virus',
     'scanner50' => 'Scanner',
     'firstseen50' => 'First Seen',
     'count50' => 'Count',
-    
+
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Cannot open pipe',
