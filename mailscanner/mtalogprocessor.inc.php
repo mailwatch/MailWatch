@@ -31,7 +31,8 @@
  
 require_once __DIR__ . '/syslog_parser.inc.php';
 
-abstract class MtaLogProcessor {
+abstract class MtaLogProcessor
+{
     private $mtaprocess;
     private $delayField;
     private $statusField;
@@ -41,17 +42,19 @@ abstract class MtaLogProcessor {
     private $entry;
     private $entries;
 
-    abstract function extractKeyValuePairs($match);
+    abstract public function extractKeyValuePairs($match);
     
-    private function getRejectReasons() {
+    private function getRejectReasons()
+    {
         return array();
     }
     
-    private function getRulesets() {
+    private function getRulesets()
+    {
         return array();
     }
     
-    function doit($input)
+    public function doit($input)
     {
         global $fp;//@todo do we need this?
         if (!$fp = popen($input, 'r')) {
@@ -82,13 +85,13 @@ abstract class MtaLogProcessor {
                 
                 //apply rulesets if they exist
                 $rulesets = $this->getRulesets();
-                if(isset($rulesets['type'])) {
+                if (isset($rulesets['type'])) {
                     $_type = $rulesets['type'];
                 }
-                if(isset($rulesets['relay'])) {
+                if (isset($rulesets['relay'])) {
                     $_relay = $rulesets['relay'];
                 }
-                if(isset($rulesets['status'])) {
+                if (isset($rulesets['status'])) {
                     $_status = $rulesets['status'];
                 }
 
@@ -111,10 +114,10 @@ abstract class MtaLogProcessor {
                 
                 //apply reject reasons if they exist
                 $rejectReasons = $this->getRejectReasons();
-                if(isset($rejectReasons['type'])) {
+                if (isset($rejectReasons['type'])) {
                     $_type = $rejectReasons['type'];
                 }
-                if(isset($rejectReasons['status'])) {
+                if (isset($rejectReasons['status'])) {
                     $_status = $rejectReasons['status'];
                 }
 
@@ -185,12 +188,12 @@ abstract class MtaLogProcessor {
                 return false;
             }
         }
-    } 
+    }
     
     /**
      * @return string
      */
-    function getIp()
+    public function getIp()
     {
         if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $this->entries['relay'], $match)) {
             return $match[1];
@@ -202,7 +205,7 @@ abstract class MtaLogProcessor {
     /**
      * @return string
      */
-    function getEmail()
+    public function getEmail()
     {
         if (preg_match('/<(\S+)>/', $this->entries['to'], $match)) {
             return $match[1];
