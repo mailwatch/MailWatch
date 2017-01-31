@@ -179,7 +179,7 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
-    'saspam03' => 'spam',
+    'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
 
     // 04-detail.php

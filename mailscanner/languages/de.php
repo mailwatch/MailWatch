@@ -240,7 +240,7 @@ return array(
     'spamrevoke04' => 'Als Ham+Revoke',
     'geoipfailed04' => '(GeoIP Lookup fehlgeschlagen)',
     'reversefailed04' => '(Reverse Lookup fehlgeschlagen)',
-    'privatenetwork04' => '(Private Network)',
+    'privatenetwork04' => '(Privates Netzwerk)',
     'hostname04' => 'Hostname',
     'yes04' => 'J',
     'no04' => 'N',
