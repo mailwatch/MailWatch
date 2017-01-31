@@ -244,6 +244,7 @@ return array(
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
     'privatenetwork04' => '(Réseau privé)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',

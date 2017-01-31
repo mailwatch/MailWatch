@@ -43,6 +43,21 @@ $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
 $url_id = trim($url_id, ' ');
 
+//Initialise local IP's
+require __DIR__ . '/lib/IPSet.php';
+$privateIPSet = new IPSet( array(
+    '10.0.0.0/8',
+    '172.16.0.0/12',
+    '192.168.0.0/16',
+    'fc00::/7',
+    'fd00::/8',
+    'fe80::/10',
+    ) );
+$localIPSet = new IPSet( array(
+    '127.0.0.1',
+    '::1',
+) );
+
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
 
@@ -147,9 +162,13 @@ while ($row = $result->fetch_array()) {
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                     $relay = stripPortFromIp($relay);
                     //check if address is in private IP space
-                    $private_network = privateNetwork($relay);
-                    if (true === $private_network) {
+                    $isPrivateNetwork = $privateIPSet->match($relay);
+                    $isLocalNetwork = $localIPSet->match($relay);
+                    if ( $isPrivateNetwork === true) {
                         $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
+                    }
+                    elseif( $isLocalNetwork === true) {
+                        $output .= ' <td>' . __('localhost04') . "</td>\n";
                     }
                     // Reverse lookup on address. Possibly need to remove it.
                     elseif (($host = gethostbyaddr($relay)) !== $relay) {
@@ -158,8 +177,10 @@ while ($row = $result->fetch_array()) {
                         $output .= ' <td>' . __('reversefailed04') . "</td>\n";
                     }
                     // Do GeoIP lookup on address
-                    if (true === $private_network) {
+                    if (true === $isPrivateNetwork) {
                         $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
+                    } elseif ($isLocalNetwork === true) {
+                        $output .= ' <td>' . __('localhost04') . "</td>\n";
                     } elseif ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {

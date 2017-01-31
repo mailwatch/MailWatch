@@ -244,6 +244,7 @@ return array(
     'geoipfailed04' => '(GeoIP lookup failed)',
     'reversefailed04' => '(Reverse Lookup Failed)',
     'privatenetwork04' => '(Private Network)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',
