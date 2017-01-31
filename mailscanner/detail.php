@@ -45,18 +45,18 @@ $url_id = trim($url_id, ' ');
 
 //Initialise local IP's
 require __DIR__ . '/lib/IPSet.php';
-$privateIPSet = new IPSet( array(
+$privateIPSet = new IPSet(array(
     '10.0.0.0/8',
     '172.16.0.0/12',
     '192.168.0.0/16',
     'fc00::/7',
     'fd00::/8',
     'fe80::/10',
-    ) );
-$localIPSet = new IPSet( array(
+    ));
+$localIPSet = new IPSet(array(
     '127.0.0.1',
     '::1',
-) );
+));
 
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
@@ -164,10 +164,9 @@ while ($row = $result->fetch_array()) {
                     //check if address is in private IP space
                     $isPrivateNetwork = $privateIPSet->match($relay);
                     $isLocalNetwork = $localIPSet->match($relay);
-                    if ( $isPrivateNetwork === true) {
+                    if ($isPrivateNetwork === true) {
                         $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
-                    }
-                    elseif( $isLocalNetwork === true) {
+                    } elseif ($isLocalNetwork === true) {
                         $output .= ' <td>' . __('localhost04') . "</td>\n";
                     }
                     // Reverse lookup on address. Possibly need to remove it.
