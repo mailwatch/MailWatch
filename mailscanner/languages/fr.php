@@ -179,7 +179,10 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
-    'count40' => 'Nombre',
+    'count03' => 'Nombre',
+    '1minute03' => '1 min.:',
+    '5minutes03' => '5 min.:',
+    '15minutes03' => '15 min.:',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -744,7 +747,7 @@ return array(
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
     'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',
 
     // 57-quarantine_action.php

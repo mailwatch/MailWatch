@@ -179,7 +179,10 @@ return array(
     'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
-    'count47' => 'Count',
+    'count03' => 'Count',
+    '1minute03' => '1 min.:',
+    '5minutes03' => '5 min.:',
+    '15minutes03' => '15 min.:',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -747,7 +750,7 @@ return array(
     'diefnf55' => 'File not found:',
     'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Cannot open pipe',
 
     // 57-quarantine_action.php

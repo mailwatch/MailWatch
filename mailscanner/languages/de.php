@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.8 */
+/* v0.3.9 */
 
 return array(
     // 01-login.php
@@ -179,6 +179,10 @@ return array(
     'auditlogupdatepassword03' => 'Die Länge des Passwort-Feldes wurde von %s auf 191 aktualisiert',
     'auditlogupdateuser03' => 'Passwort für Benutzer aktualisiert',
     'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
+    'count03' => 'Anzahl',
+    '1minute03' => '1 Min.:',
+    '5minutes03' => '5 Min.:',
+    '15minutes03' => '15 Min.:',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -744,7 +748,7 @@ return array(
     'diefnf55' => 'Datei nicht gefunden:',
     'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',
 
     // 57-quarantine_action.php

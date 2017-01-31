@@ -53,9 +53,9 @@ abstract class MtaLogProcessor {
     
     function doit($input)
     {
-        global $fp;//TODO do we need this?
+        global $fp;//@todo do we need this?
         if (!$fp = popen($input, 'r')) {
-            die(__('diepipe56')); //TODO remember to change the mapping of ...56 to this file
+            die(__('diepipe56'));
         }
         dbconn();
 
