@@ -77,15 +77,19 @@ function check_table_exists($table)
 
 /**
  * @param string $table
- * @param string $field
+ * @param string $column
  * @return bool|mysqli_result
  */
-function check_field_exists($table, $field)
+function check_column_exists($table, $column)
 {
     global $link;
+    $sql = 'SELECT 1 FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = "' . DB_NAME . '"
+            AND COLUMN_NAME = "' . $column . '"
+            AND TABLE_NAME = "' . $table . '" 
+            LIMIT';
 
-    return $link->query('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = "' . DB_NAME . '"
-                         AND COLUMN_NAME = "' . $field . '" AND TABLE_NAME = "' . $table . '" LIMIT 1');
+    return $link->query($sql);
 }
 
 /**
