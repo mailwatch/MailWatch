@@ -87,7 +87,7 @@ function check_column_exists($table, $column)
             AND COLUMN_NAME = "' . $column . '"
             AND TABLE_NAME = "' . $table . '" 
             LIMIT 1';
-    return $link->query($sql);
+    return $link->query($sql)->fetch_row();
 }
 
 /**
@@ -184,6 +184,15 @@ if ($link) {
     echo pad(' - Fix schema for fullname field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
+
+    // Add new column and index to maillog table
+    echo pad(' - Add maillog_id field and primary key to `maillog` table');
+    if (check_column_exists('maillog', 'maillog_id') > 0 ) {
+        echo " ALREADY DONE\n";
+    } else {
+        $sql = "ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)";
+        executeQuery($sql);
+    }
 
     // Table mcp_rules
     echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
