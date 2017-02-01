@@ -77,7 +77,7 @@ function check_table_exists($table)
 /**
  * @param string $table
  * @param string $column
- * @return int|mysqli_result
+ * @return bool|mysqli_result
  */
 function check_column_exists($table, $column)
 {
@@ -87,7 +87,7 @@ function check_column_exists($table, $column)
             AND COLUMN_NAME = "' . $column . '"
             AND TABLE_NAME = "' . $table . '" 
             LIMIT 1';
-    return $link->query($sql)->fetch_row();
+    return ($link->query($sql)->num_rows > 0);
 }
 
 /**
@@ -187,7 +187,7 @@ if ($link) {
 
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
-    if (check_column_exists('maillog', 'maillog_id') > 0) {
+    if (true === check_column_exists('maillog', 'maillog_id')) {
         echo " ALREADY DONE\n";
     } else {
         $sql = "ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)";
