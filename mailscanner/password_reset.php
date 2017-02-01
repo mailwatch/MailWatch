@@ -131,7 +131,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 //Send email
                 $subject = __('passwdresetrequest63');
-                $isSent = send_email($email, $html, $text, $subject);
+                $isSent = send_email($email, $html, $text, $subject, true);
                 if ($isSent !== true) {
                     die ("Error Sending email: ".$isSent);
                 } else {
@@ -198,7 +198,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 //Send email
                 $subject = __('pwdresetsuccess63');
-                send_email($email, $html, $text, $subject);
+                send_email($email, $html, $text, $subject, true);
                 $message = '<p>' . __('pwdresetsuccess63') . '<br/>
 <a href="login.php"><button>' . __('login01') . '</button></a></p>';
                 $showpage = true;
