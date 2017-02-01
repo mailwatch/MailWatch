@@ -45,15 +45,14 @@ $url_id = trim($url_id, ' ');
 
 //Initialise local IP's
 require __DIR__ . '/lib/IPSet.php';
-$privateIPSet = new IPSet( array(
+$privateIPSet = new \IPSet\IPSet( array(
     '10.0.0.0/8',
     '172.16.0.0/12',
     '192.168.0.0/16',
     'fc00::/7',
-    'fd00::/8',
     'fe80::/10',
     ) );
-$localIPSet = new IPSet( array(
+$localIPSet = new \IPSet\IPSet( array(
     '127.0.0.1',
     '::1',
 ) );

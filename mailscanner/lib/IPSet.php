@@ -20,7 +20,7 @@
  * @file
  * @author Brandon Black <blblack@gmail.com>
  */
-#namespace IPSet;
+namespace IPSet;
 
 /**
  * Matches IP addresses against a set of CIDR specifications
