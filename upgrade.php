@@ -85,9 +85,25 @@ function check_column_exists($table, $column)
     $sql = 'SELECT 1 FROM information_schema.COLUMNS
             WHERE TABLE_SCHEMA = "' . DB_NAME . '"
             AND COLUMN_NAME = "' . $column . '"
-            AND TABLE_NAME = "' . $table . '" 
+            AND TABLE_NAME = "' . $table . '"
             LIMIT 1';
     return ($link->query($sql)->num_rows > 0);
+}
+
+/**
+ * @param string $db
+ * @param string $utf8variant
+ * @return bool
+ */
+function check_utf8_database($db, $utf8variant = 'utf8')
+{
+    global $link;
+    $sql = 'SELECT c.character_set_name
+            FROM information_schema.tables AS t, information_schema.collation_character_set_applicability AS c
+            WHERE c.collation_name = t.table_collation
+            AND t.table_schema = "' . $link->real_escape_string($db) . '"';
+    $result = $link->query($sql);
+    return strtolower(database::mysqli_result($result, 0)) === $utf8variant;
 }
 
 /**
@@ -105,7 +121,6 @@ function check_utf8_table($db, $table, $utf8variant = 'utf8')
             AND t.table_schema = "' . $link->real_escape_string($db) . '"
             AND t.table_name = "' . $link->real_escape_string($table) . '"';
     $result = $link->query($sql);
-
     return strtolower(database::mysqli_result($result, 0)) === $utf8variant;
 }
 
@@ -146,11 +161,16 @@ if ($link) {
 
     $server_utf8_variant = 'utf8';
 
-    echo pad(' - Convert database to utf8');
-    $sql = 'ALTER DATABASE `' . DB_NAME .
-        '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
-        ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
-    executeQuery($sql);
+    // Convert database to utf8 if not already utf8mb4
+    echo pad(' - Convert database to ' . $server_utf8_variant . '');
+    if (true === check_utf8_database(DB_NAME, $server_utf8_variant)) {
+        echo " ALREADY DONE\n";
+    } else {
+        $sql = 'ALTER DATABASE `' . DB_NAME .
+            '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+            ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+        executeQuery($sql);
+    }
 
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
 
@@ -199,7 +219,7 @@ if ($link) {
     $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 100 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    // Convert database to UTF-8mb4 if MySQL ≥ 5.5.3
+    // Convert database to utf8mb4 if MySQL ≥ 5.5.3
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
@@ -287,11 +307,11 @@ if ($link) {
     ** Updates to the schema for 1.0.3
     *
 
-    echo pad(" - Adding hostname column to inq table ");
+    echo pad(" - Adding hostname field to inq table ");
     $sql = "ALTER TABLE inq ADD COLUMN (hostname TEXT)";
     executeQuery($sql);
 
-    echo pad(" - Adding hostname column to outq table ");
+    echo pad(" - Adding hostname field to outq table ");
     $sql = "ALTER TABLE outq ADD COLUMN (hostname TEXT)";
     executeQuery($sql);
 
@@ -312,7 +332,7 @@ if ($link) {
 ) ENGINE=MyISAM";
     executeQuery($sql);
 
-    echo pad(" - Adding columns to the users table ");
+    echo pad(" - Adding field to the users table ");
     $sql = "ALTER TABLE users ADD COLUMN (
   spamscore TINYINT(4) DEFAULT '0',
   highspamscore TINYINT(4) DEFAULT '0',
@@ -346,7 +366,7 @@ if ($link) {
 
     // Alter the database structure
 
-    echo pad(" - Adding new columns to maillog table ");
+    echo pad(" - Adding new field to maillog table ");
     $sql = "ALTER TABLE maillog ADD COLUMN (
     quarantined TINYINT(1) DEFAULT '0',
     mcpsascore DECIMAL(7,2) DEFAULT '0.00',
@@ -362,7 +382,7 @@ if ($link) {
     issamcp TINYINT(1) DEFAULT '0')";
     executeQuery($sql);
 
-    echo pad(" - Populating from_domain and to_domain column ");
+    echo pad(" - Populating from_domain and to_domain field ");
     $sql = "UPDATE maillog SET timestamp=timestamp, from_domain=SUBSTRING_INDEX(from_address,'@',-1), to_domain=SUBSTRING_INDEX(to_address,'@',-1)";
     executeQuery($sql);
 
