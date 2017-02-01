@@ -77,7 +77,7 @@ function check_table_exists($table)
 /**
  * @param string $table
  * @param string $column
- * @return bool|mysqli_result
+ * @return int|mysqli_result
  */
 function check_column_exists($table, $column)
 {
