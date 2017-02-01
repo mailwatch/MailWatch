@@ -88,9 +88,7 @@ function check_column_exists($table, $column)
 }
 
 /**
- * @param string $db
- * @param string $utf8variant
- * @return bool
+ * @return string
  */
 function check_database_charset()
 {
@@ -161,7 +159,7 @@ if ($link) {
     if (false === check_database_charset()) {
         echo " ALREADY DONE\n";
     } else {
-    	$server_utf8_variant = 'utf8';
+        $server_utf8_variant = 'utf8';
         $sql = 'ALTER DATABASE `' . DB_NAME .
             '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
             ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
