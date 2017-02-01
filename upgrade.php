@@ -93,10 +93,13 @@ function check_column_exists($table, $column)
 function check_database_charset()
 {
     global $link;
-    $sql = 'SELECT default_character_name
-            FROM information_schema.SCHEMATA
+    $sql = 'SELECT default_character_set_name
+            FROM information_schema.schemata
             WHERE schema_name = "' . DB_NAME . '"';
-    return $link->query($sql);
+    $result = $link->query($sql);
+    $row = $result->fetch_array();
+    $charset = $row[0];
+    return $charset;
 }
 
 /**
@@ -156,7 +159,7 @@ if ($link) {
 
     // Convert database to utf8 if not already utf8mb4 or if other charset
     echo pad(' - Convert database to ' . $server_utf8_variant . '');
-    if (false === check_database_charset()) {
+    if (check_database_charset() === 'utf8mb4') {
         echo " ALREADY DONE\n";
     } else {
         $server_utf8_variant = 'utf8';
