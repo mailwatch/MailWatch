@@ -220,10 +220,14 @@ if ($link) {
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
-        $sql = 'ALTER DATABASE `' . DB_NAME .
-            '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
-            ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
-        executeQuery($sql);
+        if (check_database_charset() === 'utf8mb4') {
+            echo " ALREADY DONE\n";
+        } else {
+            $sql = 'ALTER DATABASE `' . DB_NAME .
+                   '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+                   ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+            executeQuery($sql);
+        }
     }
 
     $utf8_tables = array(
