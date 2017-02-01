@@ -187,7 +187,7 @@ if ($link) {
 
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
-    if (check_column_exists('maillog', 'maillog_id') > 0 ) {
+    if (check_column_exists('maillog', 'maillog_id') > 0) {
         echo " ALREADY DONE\n";
     } else {
         $sql = "ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)";
