@@ -71,7 +71,8 @@ function executeQuery($sql)
 function check_table_exists($table)
 {
     global $link;
-    return $link->query('SELECT 1 FROM `' . $table . '` LIMIT 1');
+    $sql = 'SHOW TABLES LIKE "' . $table . '"';
+    return ($link->query($sql)->num_rows > 0);
 }
 
 /**
@@ -82,11 +83,7 @@ function check_table_exists($table)
 function check_column_exists($table, $column)
 {
     global $link;
-    $sql = 'SELECT 1 FROM information_schema.COLUMNS
-            WHERE TABLE_SCHEMA = "' . DB_NAME . '"
-            AND COLUMN_NAME = "' . $column . '"
-            AND TABLE_NAME = "' . $table . '"
-            LIMIT 1';
+    $sql = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $column . '"';
     return ($link->query($sql)->num_rows > 0);
 }
 
@@ -95,13 +92,13 @@ function check_column_exists($table, $column)
  * @param string $utf8variant
  * @return bool
  */
-function check_utf8_database()
+function check_database_charset()
 {
     global $link;
     $sql = 'SELECT default_character_name
             FROM information_schema.SCHEMATA
             WHERE schema_name = "' . DB_NAME . '"';
-    $result = $link->query($sql);
+    return $link->query($sql);
 }
 
 /**
@@ -159,11 +156,12 @@ if ($link) {
 
     $server_utf8_variant = 'utf8';
 
-    // Convert database to utf8 if not already utf8mb4
+    // Convert database to utf8 if not already utf8mb4 or if other charset
     echo pad(' - Convert database to ' . $server_utf8_variant . '');
-    if (true === check_utf8_database(DB_NAME, $server_utf8_variant)) {
+    if (false === check_database_charset()) {
         echo " ALREADY DONE\n";
     } else {
+    	$server_utf8_variant = 'utf8';
         $sql = 'ALTER DATABASE `' . DB_NAME .
             '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
             ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
@@ -203,7 +201,12 @@ if ($link) {
     $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    // Add new column and index to maillog table
+    // Table mcp_rules
+    echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
+    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 100 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+   // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo " ALREADY DONE\n";
@@ -211,11 +214,6 @@ if ($link) {
         $sql = "ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)";
         executeQuery($sql);
     }
-
-    // Table mcp_rules
-    echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
-    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 100 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
 
     // Convert database to utf8mb4 if MySQL ≥ 5.5.3
     if ($link->server_version >= 50503) {
