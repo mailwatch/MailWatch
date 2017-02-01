@@ -133,7 +133,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $subject = __('passwdresetrequest63');
                 $isSent = send_email($email, $html, $text, $subject, true);
                 if ($isSent !== true) {
-                    die ("Error Sending email: ".$isSent);
+                    die("Error Sending email: ".$isSent);
                 } else {
                     $message = '<p>' . __('01emailsuccess63') . '</p>';
                     $showpage = true;

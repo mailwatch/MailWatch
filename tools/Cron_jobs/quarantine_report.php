@@ -467,7 +467,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     }
 
     // Send e-mail
-    $isSent = send_email($email,$html_report,$text_report,QUARANTINE_REPORT_SUBJECT);
+    $isSent = send_email($email, $html_report, $text_report, QUARANTINE_REPORT_SUBJECT);
     if ($isSent === true) {
         dbg(" ==== Sent e-mail to $email");
     } else {
