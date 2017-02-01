@@ -55,7 +55,7 @@ $privateIPSet = new \IPSet\IPSet( array(
 $localIPSet = new \IPSet\IPSet( array(
     '127.0.0.1',
     '::1',
-) );
+));
 
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
@@ -163,10 +163,9 @@ while ($row = $result->fetch_array()) {
                     //check if address is in private IP space
                     $isPrivateNetwork = $privateIPSet->match($relay);
                     $isLocalNetwork = $localIPSet->match($relay);
-                    if ( $isPrivateNetwork === true) {
+                    if ($isPrivateNetwork === true) {
                         $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
-                    }
-                    elseif( $isLocalNetwork === true) {
+                    } elseif ($isLocalNetwork === true) {
                         $output .= ' <td>' . __('localhost04') . "</td>\n";
                     }
                     // Reverse lookup on address. Possibly need to remove it.
