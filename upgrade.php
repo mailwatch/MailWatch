@@ -95,15 +95,13 @@ function check_column_exists($table, $column)
  * @param string $utf8variant
  * @return bool
  */
-function check_utf8_database($db, $utf8variant = 'utf8')
+function check_utf8_database()
 {
     global $link;
-    $sql = 'SELECT c.character_set_name
-            FROM information_schema.tables AS t, information_schema.collation_character_set_applicability AS c
-            WHERE c.collation_name = t.table_collation
-            AND t.table_schema = "' . $link->real_escape_string($db) . '"';
+    $sql = 'SELECT default_collation_name
+            FROM information_schema.SCHEMATA
+            WHERE schema_name = "' . DB_NAME . '"';
     $result = $link->query($sql);
-    return strtolower(database::mysqli_result($result, 0)) === $utf8variant;
 }
 
 /**
