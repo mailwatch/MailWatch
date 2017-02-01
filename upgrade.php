@@ -98,7 +98,7 @@ function check_column_exists($table, $column)
 function check_utf8_database()
 {
     global $link;
-    $sql = 'SELECT default_collation_name
+    $sql = 'SELECT default_character_name
             FROM information_schema.SCHEMATA
             WHERE schema_name = "' . DB_NAME . '"';
     $result = $link->query($sql);
