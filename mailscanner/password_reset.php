@@ -47,35 +47,35 @@ $link = dbconn();
  * @param $text
  * @param $subject
  */
-function send_email($email, $html, $text, $subject)
-{
-    $mime = new Mail_mime("\n");
-    if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
-        $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
-    } else {
-        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
-    }
-    $hdrs = array(
-        'From' => $sender,
-        'To' => $email,
-        'Subject' => $subject,
-        'Date' => date("r")
-    );
-    $mime_params = array(
-        'text_encoding' => '7bit',
-        'text_charset' => 'UTF-8',
-        'html_charset' => 'UTF-8',
-        'head_charset' => 'UTF-8'
-    );
-    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
-    $mime->setTXTBody($text);
-    $mime->setHTMLBody($html);
-    $body = $mime->get($mime_params);
-    $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
-    $mail = new Mail_smtp($mail_param);
-    $mail->send($email, $hdrs, $body);
-}
+//function send_email($email, $html, $text, $subject)
+//{
+//    $mime = new Mail_mime("\n");
+//    if (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '') {
+//        $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
+//    } else {
+//        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
+//    }
+//    $hdrs = array(
+//        'From' => $sender,
+//        'To' => $email,
+//        'Subject' => $subject,
+//        'Date' => date("r")
+//    );
+//    $mime_params = array(
+//        'text_encoding' => '7bit',
+//        'text_charset' => 'UTF-8',
+//        'html_charset' => 'UTF-8',
+//        'head_charset' => 'UTF-8'
+//    );
+//    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+//    $mime->setTXTBody($text);
+//    $mime->setHTMLBody($html);
+//    $body = $mime->get($mime_params);
+//    $hdrs = $mime->headers($hdrs);
+//    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+//    $mail = new Mail_smtp($mail_param);
+//    $mail->send($email, $hdrs, $body);
+//}
 
 if (defined('PWD_RESET') && PWD_RESET === true) {
     if (isset($_POST['Submit']) && $_POST['Submit'] === __('requestpwdreset63')) {
@@ -131,9 +131,13 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 //Send email
                 $subject = __('passwdresetrequest63');
-                send_email($email, $html, $text, $subject);
-                $message = '<p>' . __('01emailsuccess63') . '</p>';
-                $showpage = true;
+                $isSent = send_email($email, $html, $text, $subject);
+                if ($isSent !== true) {
+                    die ("Error Sending email: ".$isSent);
+                } else {
+                    $message = '<p>' . __('01emailsuccess63') . '</p>';
+                    $showpage = true;
+                }
             } else {
                 //password reset not allowed
                 die(__('resetnotallowed63'));
@@ -214,7 +218,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         //need to check if reset allowed, and reset password
         if (isset($_GET['user']) && isset($_GET['uid'])) {
             //check that uid is correct
-            //dbconn();
             $email = $link->real_escape_string($_GET['user']);
             $uid = $link->real_escape_string($_GET['uid']);
             $sql = "SELECT * FROM users WHERE username = '$email'";

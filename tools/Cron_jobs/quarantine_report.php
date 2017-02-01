@@ -357,16 +357,6 @@ function return_quarantine_list_array($to_address, $to_domain)
 }
 
 /**
- * @param integer $count
- * @return string
- */
-function get_random_string($count)
-{
-    $bytes = openssl_random_pseudo_bytes($count);
-    return bin2hex($bytes);
-}
-
-/**
  * @param array $qitem
  * @return bool
  */
@@ -477,26 +467,32 @@ function send_quarantine_email($email, $filter, $quarantined)
     }
 
     // Send e-mail
-    $mime = new Mail_mime("\n");
-    $hdrs = array(
-        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>',
-        'To' => $email,
-        'Subject' => QUARANTINE_REPORT_SUBJECT,
-        'Date' => date('r')
-    );
-    $mime_params = array(
-        'text_encoding' => '7bit',
-        'text_charset' => 'UTF-8',
-        'html_charset' => 'UTF-8',
-        'head_charset' => 'UTF-8'
-    );
-    $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
-    $mime->setTXTBody($text_report);
-    $mime->setHTMLBody($html_report);
-    $body = $mime->get($mime_params);
-    $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
-    $mail = new Mail_smtp($mail_param);
-    $mail->send($email, $hdrs, $body);
-    dbg(" ==== Sent e-mail to $email");
+    $isSent = send_email($email,$html_report,$text_report,QUARANTINE_REPORT_SUBJECT);
+    if ($isSent === true) {
+        dbg(" ==== Sent e-mail to $email");
+    } else {
+        dbg(" ==== ERROR sending e-mail to $email ". $isSent);
+    }
+//    $mime = new Mail_mime("\n");
+//    $hdrs = array(
+//        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>',
+//        'To' => $email,
+//        'Subject' => QUARANTINE_REPORT_SUBJECT,
+//        'Date' => date('r')
+//    );
+//    $mime_params = array(
+//        'text_encoding' => '7bit',
+//        'text_charset' => 'UTF-8',
+//        'html_charset' => 'UTF-8',
+//        'head_charset' => 'UTF-8'
+//    );
+//    $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
+//    $mime->setTXTBody($text_report);
+//    $mime->setHTMLBody($html_report);
+//    $body = $mime->get($mime_params);
+//    $hdrs = $mime->headers($hdrs);
+//    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+//    $mail = new Mail_smtp($mail_param);
+//    $mail->send($email, $hdrs, $body);
+//    dbg(" ==== Sent e-mail to $email");
 }
