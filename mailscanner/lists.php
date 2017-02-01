@@ -64,7 +64,7 @@ $url_domain = (isset($_GET['domain']) ? sanitizeInput($_GET['domain']) : '');
 $url_domain = htmlentities($url_domain);
 $url_domain = safe_value($url_domain);
 
-$url_id = (isset($_GET['id']) ? sanitizeInput($_GET['id']) : '');
+$url_id = (isset($_GET['listid']) ? sanitizeInput($_GET['listid']) : '');
 $url_id = htmlentities($url_id);
 $url_id = safe_value($url_id);
 
@@ -191,10 +191,12 @@ if ($url_submit === 'add') {
             . "'" . safe_value($to_domain) . "',"
             . "'" . safe_value($from) . "')";
         @dbquery($sql);
-        audit_log(__('auditlogadded07') . ' ' . $from . ' ' . __('auditlogto07') . ' ' . $listi18 . ' ' . __('auditlogfor07') . ' ' . $to_address);
-        //unset($from);
-        //unset($url_list);
+        audit_log(sprintf(__('auditlogadded07'), $from, $to_address, $listi18));
     }
+    $to_domain = '';
+    $touser = '';
+    $from = '';
+    $url_list = '';
 }
 
 // Delete
@@ -211,23 +213,32 @@ if ($url_submit === 'delete') {
             break;
     }
 
+    $sqlfrom = "SELECT from_address FROM $list WHERE id='$id'";
+    $result = dbquery($sqlfrom);
+    $row = $result->fetch_array();
+    $from_address = $row['from_address'];
+
     switch ($_SESSION['user_type']) {
         case 'U':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
         case 'D':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
         case 'A':
             $sql = "DELETE FROM $list WHERE id='$id'";
-            audit_log(sprintf(__('auditlogremoved07'), $id) . ' ' . $listi18);
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
     }
 
     $id = safe_value($url_id);
     dbquery($sql);
+    $to_domain = '';
+    $touser = '';
+    $from = '';
+    $url_list = '';
 }
 
 function build_table($sql, $list)
@@ -249,7 +260,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
