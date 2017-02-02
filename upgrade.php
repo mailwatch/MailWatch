@@ -71,8 +71,35 @@ function executeQuery($sql)
 function check_table_exists($table)
 {
     global $link;
+    $sql = 'SHOW TABLES LIKE "' . $table . '"';
+    return ($link->query($sql)->num_rows > 0);
+}
 
-    return $link->query('SELECT 1 FROM `' . $table . '` LIMIT 1');
+/**
+ * @param string $table
+ * @param string $column
+ * @return bool|mysqli_result
+ */
+function check_column_exists($table, $column)
+{
+    global $link;
+    $sql = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $column . '"';
+    return ($link->query($sql)->num_rows > 0);
+}
+
+/**
+ * @return string
+ */
+function check_database_charset()
+{
+    global $link;
+    $sql = 'SELECT default_character_set_name
+            FROM information_schema.schemata
+            WHERE schema_name = "' . DB_NAME . '"';
+    $result = $link->query($sql);
+    $row = $result->fetch_array();
+    $charset = $row[0];
+    return $charset;
 }
 
 /**
@@ -90,7 +117,6 @@ function check_utf8_table($db, $table, $utf8variant = 'utf8')
             AND t.table_schema = "' . $link->real_escape_string($db) . '"
             AND t.table_name = "' . $link->real_escape_string($table) . '"';
     $result = $link->query($sql);
-
     return strtolower(database::mysqli_result($result, 0)) === $utf8variant;
 }
 
@@ -130,15 +156,93 @@ if ($link) {
     */
 
     $server_utf8_variant = 'utf8';
-    if ($link->server_version >= 50503) {
-        $server_utf8_variant = 'utf8mb4';
+
+    // Convert database to utf8 if not already utf8mb4 or if other charset
+    echo pad(' - Convert database to ' . $server_utf8_variant . '');
+    if (check_database_charset() === 'utf8mb4') {
+        echo " ALREADY DONE\n";
+    } else {
+        $server_utf8_variant = 'utf8';
+        $sql = 'ALTER DATABASE `' . DB_NAME .
+            '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+            ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+        executeQuery($sql);
     }
 
-    echo pad(' - Convert database to UTF-8');
-    $sql = 'ALTER DATABASE `' . DB_NAME .
-        '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
-        ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+   // Add autorelease table if not exist (1.2RC2)
+    echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
+    if (true === check_table_exists('autorelease')) {
+        echo " ALREADY EXIST\n";
+    } else {
+        $sql = "CREATE TABLE IF NOT EXISTS `autorelease` (
+            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+            `msg_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+            `uid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+            PRIMARY KEY (`id`)
+            ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+        executeQuery($sql);
+    }
+
+    // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
+
+    // Table users
+    echo pad(' - Fix schema for username field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
+
+    // Table spamscores
+    echo pad(' - Fix schema for user field in `spamscores` table');
+    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Table user_filters
+    echo pad(' - Fix schema for username field in `user_filters` table');
+    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Revert back some tables to the right values due to previous errors in upgrade.php
+
+    // Table audit_log
+    echo pad(' - Fix schema for username field in `audit_log` table');
+    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Table users
+    echo pad(' - Fix schema for password field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL";
+    executeQuery($sql);
+
+    echo pad(' - Fix schema for fullname field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Table mcp_rules
+    echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
+    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 100 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+   // Add new column and index to maillog table
+    echo pad(' - Add maillog_id field and primary key to `maillog` table');
+    if (true === check_column_exists('maillog', 'maillog_id')) {
+        echo " ALREADY DONE\n";
+    } else {
+        $sql = "ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)";
+        executeQuery($sql);
+    }
+
+    // Convert database to utf8mb4 if MySQL ≥ 5.5.3
+    if ($link->server_version >= 50503) {
+        $server_utf8_variant = 'utf8mb4';
+        echo pad(' - Convert database to ' . $server_utf8_variant . '');
+        if (check_database_charset() === 'utf8mb4') {
+            echo " ALREADY DONE\n";
+        } else {
+            $sql = 'ALTER DATABASE `' . DB_NAME .
+                   '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+                   ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+            executeQuery($sql);
+        }
+    }
 
     $utf8_tables = array(
         'audit_log',
@@ -146,20 +250,20 @@ if ($link) {
         'blacklist',
         'inq',
         'maillog',
-        'mtalog_ids',
         'mcp_rules',
         'mtalog',
+        'mtalog_ids',
         'outq',
-        'sa_rules',
         'saved_filters',
+        'sa_rules',
         'spamscores',
-        'user_filters',
         'users',
+        'user_filters',
         'whitelist',
     );
 
     foreach ($utf8_tables as $table) {
-        echo pad(' - Convert table `' . $table . '` to UTF-8');
+        echo pad(' - Convert table `' . $table . '` to ' . $server_utf8_variant . '');
         if (false === check_table_exists($table)) {
             echo " DO NOT EXISTS\n";
         } else {
@@ -174,34 +278,14 @@ if ($link) {
         }
     }
 
-    echo pad(' - Enlarge username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge password field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge username field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge fullname field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge username field in `user_filters` table');
-    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Enlarge user field in `spamscores` table');
-    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) CHARACTER SET " . $mysql_utf8_variant[$server_utf8_variant]['charset'] . " COLLATE " . $mysql_utf8_variant[$server_utf8_variant]['collation'] . " NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
+    // Drop geoip table
     echo pad(' - Drop `geoip_country` table');
-
-    $sql = 'DROP TABLE IF EXISTS `geoip_country`';
-    executeQuery($sql);
+    if (false === check_table_exists('geoip_country')) {
+        echo " ALREADY DROPPED\n";
+    } else {
+        $sql = 'DROP TABLE IF EXISTS `geoip_country`';
+        executeQuery($sql);
+    }
 
     // check for missing indexes
     $indexes = array(
@@ -233,223 +317,6 @@ if ($link) {
             }
         }
     }
-
-    /*
-    ** Updates to the schema for 1.0.3
-    *
-
-    echo pad(" - Adding hostname column to inq table ");
-    $sql = "ALTER TABLE inq ADD COLUMN (hostname TEXT)";
-    executeQuery($sql);
-
-    echo pad(" - Adding hostname column to outq table ");
-    $sql = "ALTER TABLE outq ADD COLUMN (hostname TEXT)";
-    executeQuery($sql);
-
-    echo pad(" - Adding index to inq table ");
-    $sql = "ALTER TABLE inq ADD INDEX inq_hostname (hostname(50))";
-    executeQuery($sql);
-
-    echo pad(" - Adding index to outq table ");
-    $sql = "ALTER TABLE outq ADD INDEX outq_hostname (hostname(50))";
-    executeQuery($sql);
-
-    echo pad(" - Creating table spamscores ");
-    $sql = "CREATE TABLE spamscores (
-  user VARCHAR(40) NOT NULL DEFAULT '',
-  lowspamscore DECIMAL(10,0) NOT NULL DEFAULT '0',
-  highspamscore DECIMAL(10,0) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (user)
-) ENGINE=MyISAM";
-    executeQuery($sql);
-
-    echo pad(" - Adding columns to the users table ");
-    $sql = "ALTER TABLE users ADD COLUMN (
-  spamscore TINYINT(4) DEFAULT '0',
-  highspamscore TINYINT(4) DEFAULT '0',
-  noscan TINYINT(1) DEFAULT '0',
-  quarantine_rcpt VARCHAR(60) DEFAULT NULL
-)";
-    executeQuery($sql);
-
-    /*
-    **  Updates to the schema for 1.0
-    **
-
-    // Create backup of maillog
-    echo pad(" - Creating backup of maillog table to maillog_pre");
-    $sql = "DROP TABLE maillog_pre";
-    @mysql_query($sql); // Don't care if this succeeds or not
-    $sql = "CREATE TABLE maillog_pre AS SELECT * FROM maillog";
-    executeQuery($sql);
-
-    // Drop the indexes
-    echo pad(" - Dropping indexes on maillog table");
-    $sql = "SHOW INDEX FROM maillog";
-    $result = dbquery($sql);
-    while ($row = mysql_fetch_object($result)) {
-        // Use key name as array key to remove dups...
-        $indexes[$row->Key_name] = true;
-    }
-    $drop_index = join(', DROP INDEX ', array_keys($indexes));
-    $sql = "ALTER TABLE maillog DROP INDEX $drop_index";
-    executeQuery($sql);
-
-    // Alter the database structure
-
-    echo pad(" - Adding new columns to maillog table ");
-    $sql = "ALTER TABLE maillog ADD COLUMN (
-    quarantined TINYINT(1) DEFAULT '0',
-    mcpsascore DECIMAL(7,2) DEFAULT '0.00',
-    isfp TINYINT(1) DEFAULT '0',
-    ismcp TINYINT(1) DEFAULT '0',
-    mcpwhitelisted TINYINT(1) DEFAULT '0',
-    ishighmcp TINYINT(1) DEFAULT '0',
-    mcpblacklisted TINYINT(1) DEFAULT '0',
-    from_domain TEXT,
-    mcpreport TEXT,
-    to_domain TEXT,
-    isfn TINYINT(1) DEFAULT '0',
-    issamcp TINYINT(1) DEFAULT '0')";
-    executeQuery($sql);
-
-    echo pad(" - Populating from_domain and to_domain column ");
-    $sql = "UPDATE maillog SET timestamp=timestamp, from_domain=SUBSTRING_INDEX(from_address,'@',-1), to_domain=SUBSTRING_INDEX(to_address,'@',-1)";
-    executeQuery($sql);
-
-    echo pad(" - Creating indexes ");
-    $sql = "
-   ALTER TABLE maillog
-    ADD INDEX maillog_datetime_idx (date,time),
-    ADD INDEX maillog_id_idx (id(20)),
-    ADD INDEX maillog_clientip_idx (clientip(20)),
-    ADD INDEX maillog_from_idx (from_address(200)),
-    ADD INDEX maillog_to_idx (to_address(200)),
-    ADD INDEX maillog_host_idx (hostname(30)),
-    ADD INDEX maillog_from_domain_idx (from_domain(50)),
-    ADD INDEX maillog_to_domain_idx (to_domain(50)),
-    ADD INDEX maillog_quarantined_idx (quarantined)
-   ";
-    executeQuery($sql);
-
-    echo pad(" - Dropping 'relay' table ");
-    $sql = "DROP TABLE relay";
-    executeQuery($sql);
-
-    echo pad(" - Altering 'user_filters' table ");
-    $sql = "ALTER TABLE user_filters CHANGE COLUMN username username VARCHAR(60) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(" - Altering 'users' table (1) ");
-    $sql = "ALTER TABLE users CHANGE COLUMN username username VARCHAR(60) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(" - Altering 'users' table (2) ");
-    $sql = "ALTER TABLE users CHANGE COLUMN type type ENUM('A','D','U','R','H') DEFAULT 'U'";
-    executeQuery($sql);
-
-    echo pad(" - Altering 'users' table (3) ");
-    $sql = "ALTER TABLE users ADD COLUMN quarantine_report TINYINT(1) DEFAULT '0'";
-    executeQuery($sql);
-
-    echo pad(" - Creating table 'audit_log' ");
-    $sql = "
-   CREATE TABLE audit_log (
-     timestamp TIMESTAMP NOT NULL,
-     user VARCHAR(20) NOT NULL DEFAULT '',
-     ip_address VARCHAR(15) NOT NULL DEFAULT '',
-     action TEXT NOT NULL
-   ) ENGINE=MyISAM
-   ";
-    executeQuery($sql);
-
-    echo pad(" - Creating table 'blacklist' ");
-    $sql = "
-   CREATE TABLE blacklist (
-     id INT(11) NOT NULL AUTO_INCREMENT,
-     to_address TEXT,
-     to_domain TEXT,
-     from_address TEXT,
-     PRIMARY KEY  (id),
-     UNIQUE KEY blacklist_uniq (to_address(100),from_address(100))
-   ) ENGINE=MyISAM
-   ";
-    executeQuery($sql);
-
-    echo pad(" - Creating table 'geoip_country' ");
-    $sql = "
-   CREATE TABLE geoip_country (
-     begin_ip VARCHAR(15) DEFAULT NULL,
-     end_ip VARCHAR(15) DEFAULT NULL,
-     begin_num BIGINT(20) DEFAULT NULL,
-     end_num BIGINT(20) DEFAULT NULL,
-     iso_country_code CHAR(2) DEFAULT NULL,
-     country TEXT,
-     KEY geoip_country_begin (begin_num),
-     KEY geoip_country_end (end_num)
-   ) ENGINE=MyISAM
-   ";
-    executeQuery($sql);
-
-    echo pad(" - Creating table 'mcp_rules' ");
-    $sql = "
-   CREATE TABLE mcp_rules (
-     rule CHAR(100) NOT NULL DEFAULT '',
-     rule_desc CHAR(200) NOT NULL DEFAULT '',
-     PRIMARY KEY  (rule)
-   ) ENGINE=MyISAM
-   ";
-    executeQuery($sql);
-
-    echo pad(" - Creating table 'mtalog' ");
-    $sql = "
-   CREATE TABLE mtalog (
-     timestamp DATETIME DEFAULT NULL,
-     host TEXT,
-     type TEXT,
-     msg_id VARCHAR(20) DEFAULT NULL,
-     relay TEXT,
-     dsn TEXT,
-     status TEXT,
-     delay TIME DEFAULT NULL,
-     UNIQUE KEY mtalog_uniq (timestamp,host(10),type(10),msg_id,relay(20)),
-     KEY mtalog_timestamp (timestamp),
-     KEY mtalog_type (type(10))
-   ) ENGINE=MyISAM
-   ";
-    executeQuery($sql);
-
-    echo pad(" - Creating table 'saved_filters' ");
-    $sql = "
-   CREATE TABLE saved_filters (
-     name TEXT NOT NULL,
-     col TEXT NOT NULL,
-     operator TEXT NOT NULL,
-     value TEXT NOT NULL,
-     username TEXT NOT NULL,
-     UNIQUE KEY unique_filters (name(20),col(20),operator(20),value(20),username(20))
-   ) ENGINE=MyISAM
-   ";
-    executeQuery($sql);
-
-    echo pad(" - Creating table 'whitelist' ");
-    $sql = "
-   CREATE TABLE whitelist (
-     id INT(11) NOT NULL AUTO_INCREMENT,
-     to_address TEXT,
-     to_domain TEXT,
-     from_address TEXT,
-     PRIMARY KEY  (id),
-     UNIQUE KEY whitelist_uniq (to_address(100),from_address(100))
-   ) ENGINE=MyISAM
-   ";
-    executeQuery($sql);
-
-    *
-    ** Finished
-    */
-
-    // Phew! - finished
     dbclose();
 } else {
     echo " FAILED\n";
@@ -469,6 +336,7 @@ $check_settings = array(
     'HighScoringSpamActions' => 'store',
     'AlwaysLookedUpLast' => '&MailWatchLogging'
 );
+
 foreach ($check_settings as $setting => $value) {
     echo pad(" - $setting ");
     if (preg_match('/' . $value . '/', get_conf_var($setting))) {
@@ -478,8 +346,10 @@ foreach ($check_settings as $setting => $value) {
         $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
     }
 }
+
 echo "\n";
 
+// Error messages
 if (is_array($errors)) {
     echo "*** ERROR/WARNING SUMMARY ***\n";
     foreach ($errors as $error) {
