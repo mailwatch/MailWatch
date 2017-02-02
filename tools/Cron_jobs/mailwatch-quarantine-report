@@ -1,0 +1,7 @@
+# check if script is available
+test -x /usr/local/bin/quarantine_report.php || exit 0
+
+# run script
+/usr/local/bin/quarantine_report.php >/dev/null 2>&1
+
+exit 0

@@ -1,0 +1,7 @@
+# check if script is available
+test -x /usr/local/bin/quarantine_maint.php || exit 0
+
+# run script
+/usr/local/bin/quarantine_maint.php --clean
+
+exit 0
