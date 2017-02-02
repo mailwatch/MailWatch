@@ -190,7 +190,7 @@ if ($url_submit === 'add') {
             . "('" . safe_value($to_address) . "',"
             . "'" . safe_value($to_domain) . "',"
             . "'" . safe_value($from) . "')";
-        @dbquery($sql);
+        dbquery($sql);
         audit_log(sprintf(__('auditlogadded07'), $from, $to_address, $listi18));
     }
     $to_domain = '';

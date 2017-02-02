@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /*
  * MailWatch for MailScanner
@@ -28,57 +28,62 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-ini_set('error_log', 'syslog');
-ini_set('html_errors', 'off');
-ini_set('display_errors', 'on');
-ini_set('implicit_flush', 'false');
-
-require __DIR__ . '/functions.php';
-require_once __DIR__ . '/mtalogprocessor.inc.php';
-
-// Set-up environment
-set_time_limit(0);
-
-class PostfixLogProcessor extends MtaLogProcessor
+ 
+class SyslogParser
 {
-    public function __construct()
+    public $raw;
+    public $timestamp;
+    public $date;
+    public $time;
+    public $rfctime;
+    public $host;
+    public $process;
+    public $pid;
+    public $entry;
+    public $months = array(
+        'Jan' => '1',
+        'Feb' => '2',
+        'Mar' => '3',
+        'Apr' => '4',
+        'May' => '5',
+        'Jun' => '6',
+        'Jul' => '7',
+        'Aug' => '8',
+        'Sep' => '9',
+        'Oct' => '10',
+        'Nov' => '11',
+        'Dec' => '12'
+    );
+
+    /**
+     * @param string $line
+     */
+    public function __construct($line)
     {
-        $this->mtaprocess = 'postfix/smtp';
-        $this->delayField = 'delay';
-        $this->statusField = 'status';
-    }
-    
-    public function getRejectReasons()
-    {
-        // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
-        // example
-        $rejectReasons = array();
-        if (preg_match('/NOQUEUE/i', $this->entry)) {
-            if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
-                $rejectReasons['type'] = safe_value('unknown_hostname');
-            } else {
-                $rejectReasons['type'] = safe_value('NOQUEUE');
-            }
-            $rejectReasons['status'] = safe_value($this->raw);
+
+        // Parse the date, time, host, process pid and log entry
+        if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
+            // Store raw line
+            $this->raw = $explode[0];
+
+            // Decode the syslog time/date
+            $month = $this->months[$explode[1]];
+            $thismonth = date('n');
+            $thisyear = date('Y');
+            // Work out the year
+            $year = $month <= $thismonth ? $thisyear : $thisyear - 1;
+            $this->date = $explode[2] . ' ' . $explode[1] . ' ' . $year;
+            $this->time = $explode[3] . ':' . $explode[4] . ':' . $explode[5];
+            $datetime = $this->date . ' ' . $this->time;
+            $this->timestamp = strtotime($datetime);
+            $this->rfctime = date('r', $this->timestamp);
+
+            $this->host = $explode[6];
+            $this->process = $explode[7];
+            $this->pid = $explode[8];
+            $this->entry = $explode[9];
+        } else {
+            return false;
         }
     }
-    
-    public function extractKeyValuePairs($match)
-    {
-        $entries = array();
-        $pattern = "/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/";
-        preg_match($pattern, $match[2], $entries);
-        return $entries;
-    }
-}
-
-$logprocessor = new PostfixLogProcessor();
-if ($_SERVER['argv'][1] === '--refresh') {
-    $logprocessor->doit('cat ' . MAIL_LOG);
-} else {
-    // Refresh first
-    $logprocessor->doit('cat ' . MAIL_LOG);
-    // Start watching the maillog
-    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
 }
