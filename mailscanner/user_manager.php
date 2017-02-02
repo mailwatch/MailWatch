@@ -85,8 +85,8 @@ if ($_SESSION['user_type'] === 'A') {
                     echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('newuser12') . '  <br> ' . __('forallusers12') . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT class=\"password\" TYPE=\"TEXT\" NAME=\"password\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT class=\"password\" TYPE=\"TEXT\" NAME=\"password1\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
          <OPTION VALUE=\"U\">" . __('user12') . "</OPTION>
@@ -180,8 +180,8 @@ if ($_SESSION['user_type'] === 'A') {
                     echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT class=\"password\" TYPE=\"TEXT\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT class=\"password\" TYPE=\"TEXT\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
          <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
@@ -310,7 +310,7 @@ if ($_SESSION['user_type'] === 'A') {
     }
 
     echo '<a href="?action=new">' . __('newuser12') . '</a>'."\n";
-    echo '<br>'."\n";
+    echo '<br><br>'."\n";
 
     $sql = "
         SELECT
