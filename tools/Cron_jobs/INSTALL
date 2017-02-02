@@ -2,7 +2,13 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
-Put the file mailwatch file into /etc/cron.daily/
+Put the file 'mailwatch' file into /etc/cron.daily/
+
+Put in /usr/local/bin the following files:
+
+mailwatch_db_clean.php
+quarantine_maint.php
+quarantine_report.php
 
 -------------------------------------------
 Database cleanup of maillog records
