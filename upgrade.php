@@ -169,6 +169,20 @@ if ($link) {
         executeQuery($sql);
     }
 
+   // Add autorelease table if not exist (1.2RC2)
+    echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
+    if (true === check_table_exists('autorelease')) {
+        echo " ALREADY EXIST\n";
+    } else {
+         $sql = "CREATE TABLE IF NOT EXISTS `autorelease` (
+            `id` bigint(20) NOT NULL AUTO_INCREMENT,
+            `msg_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+            `uid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+            PRIMARY KEY (`id`)
+            ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+       executeQuery($sql);
+    }
+
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
 
     // Table users
