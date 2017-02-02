@@ -2,46 +2,26 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
+Put the file mailwatch file into /etc/cron.daily/
+
 -------------------------------------------
 Database cleanup of maillog records
 -------------------------------------------
 
-Put the file mailwatch-db-clean into /etc/cron.daily/
-
 You need to edit conf.php and change the RECORD_DAYS_TO_KEEP definition.
-
-You may need to edit the mailwatch-db-clean to reflect the location of the functions.php file.
 
 --------------------------------------------
 Quarantine Maintenance
 --------------------------------------------
 
-Put the file quarantine_maint.php into /usr/local/bin/
-
-Put the file mailwatch-quarantine-maintenance into /etc/cron.daily/
-
 You need to edit in conf.php the QUARANTINE_DAYS_TO_KEEP variable.
-
-You may need to edit the quarantine_maint.php to reflect the location of the functions.php file.
 
 For MailScanner v4: Delete the clean.quarantine cron file.
 
 For MailScanner v5: Change the variable for Quarantine Retention to "q_days=0" in /etc/MailScanner/defaults.
 
-You may need to edit the quarantine_maint.php to reflect the location of the functions.php file.
-
 --------------------------------------------
-Quarantine Report
---------------------------------------------
-
-Put the file quarantine_report.php into /usr/local/bin/
-
-Put the file mailwatch-quarantine-report into /etc/cron.daily/
-
-You may need to edit the quarantine_maint.php to reflect the location of the functions.php file.
-
---------------------------------------------
-MailScanner Rule Editor
+MailScanner Rule Editor (optionnal)
 --------------------------------------------
 
 Configure the file msre_reload to fit your need.

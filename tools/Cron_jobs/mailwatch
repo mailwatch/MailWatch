@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# MailWatch for MailScanner
+# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+
+# Quarantine Maintenance
+test -x /var/www/html/mailscanner/quarantine_maint.php || exit 0
+/var/www/html/mailscanner/quarantine_maint.php --clean
+
+# Quarantine report
+test -x /var/www/html/mailscanner/quarantine_report.php || exit 0
+/var/www/html/mailscanner/quarantine_report.php >/dev/null 2>&1
+
+# Clean MailWatch DB
+test -x /var/www/html/mailscanner/mailwatch_db_clean.php || exit 0
+/var/www/html/mailscanner/mailwatch_db_clean.php >/dev/null 2>&1
+
+exit 0
