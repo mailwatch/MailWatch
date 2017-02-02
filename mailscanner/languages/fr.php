@@ -36,7 +36,7 @@ return array(
     // 01-login.php
     'username' => 'Utilisateur :',
     'password' => 'Mot de Passe :',
-    'mwloginpage01' => 'MailWatch Login Page',
+    'mwloginpage01' => 'Page de connexion MailWatch',
     'mwlogin01' => 'Connexion&nbsp;à&nbsp;MailWatch',
     'badup01' => 'Mauvais Utilisateur ou Mot de Passe',
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
@@ -182,6 +182,8 @@ return array(
     '1minute03' => '1 min.:',
     '5minutes03' => '5 min.:',
     '15minutes03' => '15 min.:',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'N\'est pas un Spam',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -241,6 +243,8 @@ return array(
     'spamrevoke04' => 'Comme Légitime+Retirez',
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
+    'privatenetwork04' => '(Réseau privé)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',
@@ -290,8 +294,8 @@ return array(
     'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
     'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
     'noentries07' => 'Aucune entrée trouvée.',
-    'auditlogadded07' => 'Ajouté l\'entrée %s pour %s dans la %s',
-    'auditlogremoved07' => 'Supprimé l\'entrée %s pour %s dans la %s',
+    'auditlogadded07' => 'Ajouté l\'entrée [%s] pour %s dans la %s',
+    'auditlogremoved07' => 'Supprimé l\'entrée [%s] pour %s dans la %s',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
@@ -608,6 +612,10 @@ return array(
     'user33' => 'Utilisateur',
     'ipaddress33' => 'Adresse IP',
     'action33' => 'Action',
+    'filter33' => 'Filtre',
+    'applyfilter33' => 'appliquer',
+    'startdate33' => 'Date de départ',
+    'enddate33' => 'Date de fin',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',

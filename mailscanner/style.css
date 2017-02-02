@@ -388,6 +388,52 @@ td.dashgreybox {
     }
 }
 
+div.table input {
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+div.table {
+    display: table;
+    font-size: 10pt;
+    font-weight: 700;
+    background-color: #EBEBEB;
+    border: 0;
+}
+div.table>.row {
+    display: table-row;
+}
+div.table .cell {
+    display: table-cell;
+}
+div.table .cell:not(:last-child) {
+    border-right: 0.3em solid transparent;
+}
+div.table .cell:first-child {
+    border-left: 0.3em solid transparent;
+}
+div.table .head {
+    background-color: #F7CE4A;
+}
+div.table .data {
+    background-color: #EBEBEB;
+}
+div.table>.caption {
+    display:table-caption;
+    text-align:center ;
+}
+div.table>.caption>input {
+    width:auto !important;
+}
+.center {
+    text-align: center;
+}
+.floatleft {
+    float: left;
+}
+
 .tableWithLineBreaksWrapper>table {
     table-layout: fixed;
 }

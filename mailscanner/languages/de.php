@@ -182,6 +182,8 @@ return array(
     '1minute03' => '1 Min.:',
     '5minutes03' => '5 Min.:',
     '15minutes03' => '15 Min.:',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'Kein Spam',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -241,6 +243,8 @@ return array(
     'spamrevoke04' => 'Als Ham+Revoke',
     'geoipfailed04' => '(GeoIP Lookup fehlgeschlagen)',
     'reversefailed04' => '(Reverse Lookup fehlgeschlagen)',
+    'privatenetwork04' => '(Privates Netzwerk)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Hostname',
     'yes04' => 'J',
     'no04' => 'N',
@@ -290,8 +294,8 @@ return array(
     'error071' => 'Sie müssen eine Liste wählen, um einen Eintrag zu erstellen.',
     'error072' => 'Sie müssen einen Absender angeben (user@domain, FQDN oder IP).',
     'noentries07' => 'Keine Einträge gefunden.',
-    'auditlogadded07' => 'Eintrag %s für %s wurde in die %s hinzugefügt',
-    'auditlogremoved07' => 'Eintrag %s für %s wurde aus der %s entfernt',
+    'auditlogadded07' => 'Eintrag [%s] für %s wurde in die %s hinzugefügt',
+    'auditlogremoved07' => 'Eintrag [%s] für %s wurde aus der %s entfernt',
 
     // 08-quarantine.php
     'folder08' => 'Ordner',
@@ -358,7 +362,7 @@ return array(
     'hostname09' => 'MailScanner Hostname',
     'remove09' => 'Löschen',
     'reports09' => 'Bericht',
-    
+
     // 10-other.php
     'tools10' => 'Werkzeuge',
     'toolslinks10' => 'Tools and Links',
@@ -539,7 +543,7 @@ return array(
     // 20-docs.php
     'doc20' => 'Dokumentation',
     'message20' => 'Diese Seite erfordert eine authentifizierung, sodass Sie hier Links zu Ihrer Dokumentations-Seite einstellen können und Ihren Nutzern Zugriff auf diese gewähren.',
-    
+
     // 21-do_message_ops.php
     'opresult21' => 'Ergebnisse der Aktion',
     'spamlearnresult21' => 'Spam-Lern Ergebnisse',
@@ -607,7 +611,11 @@ return array(
     'user33' => 'Benutzer',
     'ipaddress33' => 'IP-Adresse',
     'action33' => 'Aktion',
-    
+    'filter33' => 'Filter',
+    'applyfilter33' => 'anwenden',
+    'startdate33' => 'Startzeit',
+    'enddate33' => 'Endzeit',
+
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
     'rule34' => 'Regel',
@@ -615,7 +623,7 @@ return array(
     'total34' => 'Gesamt',
     'clean34' => 'Sauber',
     'mcp34' => 'MCP',
-    
+
     // 35-rep_mcp_score_dist.php
     'mcpscoredist35' => 'MCP Bewertungs-Verteilung',
     'die35' => 'Error: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
@@ -623,7 +631,7 @@ return array(
     'nbmessages35' => 'Anz. Nachrichten',
     'score35' => 'Bewertung',
     'count35' => 'Anzahl',
-    
+
     // 36-rep_mrtg_style.php
     'mrtgstyle36' => 'E-Mail-Bericht im MRTG Format',
     'die36' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
@@ -636,7 +644,7 @@ return array(
     'total37' => 'Gesamt',
     'ham37' => 'Ham',
     'spam37' => 'Spam',
-    
+
     // 38-rep_sa_score_dist.php
     'sascoredist38' => 'SpamAssassin Bewertungs-Verteilung',
     'scorerounded38' => 'Bewertung (gerundet)',
@@ -657,42 +665,42 @@ return array(
     'volume39' => 'Volumen',
     'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
     'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
-    
+
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
     'top10recipdomqt40' => 'Top 10 Empfänger Domänen by Volume',
     'domain40' => 'Domäne',
     'count40' => 'Anzahl',
     'size40' => 'Größe',
-    
+
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Empfänger Domänen nach Volume',
    'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Volume',
     'domain41' => 'Domäne',
     'count41' => 'Anzahl',
     'size41' => 'Größe',
-    
+
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Empfänger nach Anzahl',
     'top10recipqt42' => 'Top 10 Empfänger nach Anzahl',
     'email42' => 'E-Mail-Adresse',
     'count42' => 'Anzahl',
     'size42' => 'Größe',
-    
+
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Empfänger nach Volumen',
     'top10recipvol43' => 'Top 10 Empfänger nach Volumen',
     'email43' => 'E-Mail-Adresse',
     'count43' => 'Anzahl',
     'size43' => 'Größe',
-    
+
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
     'count44' => 'Anzahl',
     'size44' => 'Größe',
-    
+
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
     'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
@@ -706,14 +714,14 @@ return array(
     'email46' => 'E-Mail-Adresse',
     'count46' => 'Anzahl',
     'size46' => 'Größe',
-    
+
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Absender nach Volumen',
     'top10sendersvol47' => 'Top 10 Absender nach Volumen',
     'email47' => 'E-Mail-Adresse',
     'count47' => 'Anzahl',
     'size47' => 'Größe',
-    
+
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viren',
     'top10virus48' => 'Top 10 Viren',
@@ -743,14 +751,14 @@ return array(
     'resolve49' => 'Kann nicht<br>auflösen',
     'rbl49' => 'RBL',
     'totals49' => 'Gesamt',
-    
+
     // 50-rep_viruses.php
     'virusreport50' => 'Viren-Bericht',
     'virus50' => 'Virus',
     'scanner50' => 'Scanner',
     'firstseen50' => 'Erste Erkennung',
     'count50' => 'Anzahl',
-    
+
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Kann pipe nicht öffnen',

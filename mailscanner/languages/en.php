@@ -63,7 +63,7 @@ return array(
     'loadaverage03' => 'Load Average:',
     'mailqueue03' => 'Mail Queues',
     'inbound03' => 'Inbound:',
-    'outbound03' => 'Oubound:',
+    'outbound03' => 'Outbound:',
     'clean03' => 'Clean',
     'topvirus03' => 'Top Virus:',
     'freedspace03' => 'Free Disk Space',
@@ -182,6 +182,8 @@ return array(
     '1minute03' => '1 min.:',
     '5minutes03' => '5 min.:',
     '15minutes03' => '15 min.:',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'Not spam',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -241,6 +243,8 @@ return array(
     'spamrevoke04' => 'As Ham+Revoke',
     'geoipfailed04' => '(GeoIP lookup failed)',
     'reversefailed04' => '(Reverse Lookup Failed)',
+    'privatenetwork04' => '(Private Network)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',
@@ -290,8 +294,8 @@ return array(
     'error071' => 'You must select a list to create the entry.',
     'error072' => 'You must enter a from address (user@domain, domain or IP).',
     'noentries07' => 'No entries found.',
-    'auditlogadded07' => 'Added entry %s for %s in the %s',
-    'auditlogremoved07' => 'Removed entry %s for %s in the %s',
+    'auditlogadded07' => 'Added entry [%s] for %s in the %s',
+    'auditlogremoved07' => 'Removed entry [%s] for %s in the %s',
 
     // 08-quarantine.php
     'folder08' => 'Folder:',
@@ -607,6 +611,11 @@ return array(
     'user33' => 'User',
     'ipaddress33' => 'IP Address',
     'action33' => 'Action',
+    'filter33' => 'Filter',
+    'applyfilter33' => 'apply',
+    'startdate33' => 'Start date',
+    'enddate33' => 'End date',
+
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
