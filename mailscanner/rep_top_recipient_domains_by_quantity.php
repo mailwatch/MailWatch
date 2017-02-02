@@ -98,41 +98,7 @@ if (is_writable(CACHE_DIR)) {
     $graph->Stroke($filename);
 }
 
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo '<TR>';
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo '</TR>';
-echo '<TR>';
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
-} else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo '</TR>';
-echo '<TR>';
-echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"500\">";
-echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo '<TH>' . __('domain40') . '</TH>';
-echo '<TH>' . __('count40') . '</TH>';
-echo '<TH>' . __('size40') . '</TH>';
-echo '</TR>';
-
-for ($i = 0, $count_data = count($data); $i < $count_data; $i++) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">
- <TD>$data_names[$i]</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
- <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i]) . "</TD>
-</TR>\n";
-}
-
-echo '</TABLE>
- </TD>
-</TR>
-</TABLE>';
+printGraphTable($filename, __('domain40'), $data, $data_names, $data_size);
 
 // Add footer
 html_end();
