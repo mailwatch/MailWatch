@@ -3733,7 +3733,8 @@ function checkForExistingUser($username)
     $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'";
     $row = dbquery($sqlQuery)->fetch_object();
     return $row->counter >0;
-  
+}
+
 function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1)
 {
     // HTML to display the graph
