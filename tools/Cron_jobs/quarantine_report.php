@@ -131,20 +131,16 @@ if ($required_constant_missing_count === 0) {
     ** Text Template
     */
 
-    $text = 'Quarantine Report for %s
+    $text = __('text611') . "\n\n"
+        . __('text612') . "\n\n"
+        . '%s';
 
-In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
-
-%s';
-
-    $text_content = 'Received: %s
-From: %s
-Subject: %s
-Reason: %s
-Action:
-%s
-
-';
+    $text_content = __('received61') . __('colon99') . " %s \n"
+        . __('to61') . __('colon99') . " %s \n"
+        . __('from61') . __('colon99') . " %s \n";
+        . __('subject61') . __('colon99') . " %s \n"
+        . __('reason61') . __('colon99') . " %s \n"
+        . __('action61') . __('colon99') . "%s \n\n";
 
     /*
     ** SQL Templates
