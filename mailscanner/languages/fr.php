@@ -182,6 +182,8 @@ return array(
     '1minute03' => '1 min.:',
     '5minutes03' => '5 min.:',
     '15minutes03' => '15 min.:',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'N\'est pas un Spam',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -241,6 +243,8 @@ return array(
     'spamrevoke04' => 'Comme Légitime+Retirez',
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
+    'privatenetwork04' => '(Réseau privé)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',

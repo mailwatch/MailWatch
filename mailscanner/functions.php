@@ -928,9 +928,9 @@ function sa_autolearn($spamreport)
 {
     switch (true) {
         case(preg_match('/autolearn=spam/', $spamreport)):
-            return 'spam';
+            return __('saspam03');
         case(preg_match('/autolearn=not spam/', $spamreport)):
-            return 'not spam';
+            return __('sanotspam03');
         default:
             return false;
     }

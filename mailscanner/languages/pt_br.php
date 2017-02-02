@@ -182,6 +182,8 @@ return array(
     '1minute03' => '1 min.:',
     '5minutes03' => '5 min.:',
     '15minutes03' => '15 min.:',
+    'saspam03' => 'spam',
+    'sanotspam03' => 'not spam',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
@@ -241,6 +243,8 @@ return array(
     'spamrevoke04' => 'As Ham+Revoke',
     'geoipfailed04' => '(GeoIP lookup failed)',
     'reversefailed04' => '(Reverse Lookup Failed)',
+    'privatenetwork04' => '(Private Network)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',
