@@ -137,7 +137,7 @@ if ($required_constant_missing_count === 0) {
 
     $text_content = __('received61') . __('colon99') . " %s \n"
         . __('to61') . __('colon99') . " %s \n"
-        . __('from61') . __('colon99') . " %s \n";
+        . __('from61') . __('colon99') . " %s \n"
         . __('subject61') . __('colon99') . " %s \n"
         . __('reason61') . __('colon99') . " %s \n"
         . __('action61') . __('colon99') . "%s \n\n";
@@ -421,6 +421,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
         $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('view61').'</a>';
+        $txt_links = ' ' . __('view61') . __('colon99'). ' ' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'];
         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
             //Check if email already has an autorelease entry
             $exists = check_auto_release($qitem);
@@ -434,6 +435,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             if ($auto_release) {
                 // add auto release link if enabled
                 $links .= '  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('release61') . '</a>';
+                $txt_links .= "\n       " . __('release61') . __('colon99') . ' ' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'];
             }
         }
 
@@ -455,7 +457,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             $qitem['from'],
             $qitem['subject'],
             $qitem['reason'],
-            $links
+            $txt_links
         );
     }
 
