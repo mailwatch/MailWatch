@@ -44,7 +44,9 @@ if ($_SESSION['user_type'] !== 'A') {
     echo "<BR>\n";
     dbtable('SHOW FULL PROCESSLIST');
     echo "<BR>\n";
+    echo '<div class="tableWithLineBreaksWrapper">' . "\n";
     dbtable('SHOW VARIABLES');
+    echo '</div>' . "\n";
 
     // Add footer
     html_end();
