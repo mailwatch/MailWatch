@@ -30,13 +30,13 @@
  */
 
 /* languages/fr.php */
-/* v0.3.8 */
+/* v0.3.10 */
 
 return array(
     // 01-login.php
     'username' => 'Utilisateur :',
     'password' => 'Mot de Passe :',
-    'mwloginpage01' => 'MailWatch Login Page',
+    'mwloginpage01' => 'Page de connexion MailWatch',
     'mwlogin01' => 'Connexion&nbsp;à&nbsp;MailWatch',
     'badup01' => 'Mauvais Utilisateur ou Mot de Passe',
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
@@ -179,6 +179,12 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
+    'count03' => 'Nombre',
+    '1minute03' => '1 min.:',
+    '5minutes03' => '5 min.:',
+    '15minutes03' => '15 min.:',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'N\'est pas un Spam',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -238,6 +244,8 @@ return array(
     'spamrevoke04' => 'Comme Légitime+Retirez',
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
+    'privatenetwork04' => '(Réseau privé)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',
@@ -287,8 +295,8 @@ return array(
     'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
     'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
     'noentries07' => 'Aucune entrée trouvée.',
-    'auditlogadded07' => 'Ajouté l\'entrée %s pour %s dans la %s',
-    'auditlogremoved07' => 'Supprimé l\'entrée %s pour %s dans la %s',
+    'auditlogadded07' => 'Ajouté l\'entrée [%s] pour %s dans la %s',
+    'auditlogremoved07' => 'Supprimé l\'entrée [%s] pour %s dans la %s',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
@@ -593,6 +601,10 @@ return array(
     'user33' => 'Utilisateur',
     'ipaddress33' => 'Adresse IP',
     'action33' => 'Action',
+    'filter33' => 'Filtre',
+    'applyfilter33' => 'appliquer',
+    'startdate33' => 'Date de départ',
+    'enddate33' => 'Date de fin',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',
@@ -648,57 +660,40 @@ return array(
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
     'top10recipdomqt40' => 'Top 10 des domaines de destination par quantité',
     'domain40' => 'Domaine',
-    'count40' => 'Nombre',
-    'size40' => 'Taille',
 
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
     'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
     'domain41' => 'Domaine',
-    'count41' => 'Nombre',
-    'size41' => 'Taille',
-
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top des destinataires par quantité',
     'top10recipqt42' => 'Top 10 des destinataires par quantité',
     'email42' => 'Adresse E-Mail',
-    'count42' => 'Nombre',
-    'size42' => 'Taille',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top des destinataires par volume',
     'top10recipvol43' => 'Top 10 des destinataires par volume',
     'email43' => 'Adresse E-Mail',
-    'count43' => 'Nombre',
-    'size43' => 'Taille',
 
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
     'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
     'domain44' => 'Domaine',
-    'count44' => 'Nombre',
-    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
     'top10senderdomvol45' => 'Top 10 des domaines d\'expédition par volume',
     'domain45' => 'Domaine',
-    'count45' => 'Nombre',
-    'size45' => 'Taille',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top des expéditeurs par quantité',
     'top10sendersqt46' => 'Top 10 des expéditeurs par quantité',
     'email46' => 'Adresse E-Mail',
-    'count46' => 'Nombre',
-    'size46' => 'Taille',
 
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top des expéditeurs par volume',
     'top10sendersvol47' => 'Top 10 des expéditeurs par volume',
     'email47' => 'Adresse E-Mail',
-    'count47' => 'Nombre',
-    'size47' => 'Taille',
 
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top des Virus',
@@ -760,7 +755,7 @@ return array(
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
     'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',
 
     // 57-quarantine_action.php

@@ -35,244 +35,66 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-// Edit this to reflect the full path to functions.php
-require '/var/www/html/mailscanner/functions.php';
+// Edit this to reflect the full path to mailscanner dir containing functions.php, always end with "/"
+$mailwatchHome = '/var/www/html/mailscanner/';
+
+require $mailwatchHome . 'functions.php';
+require_once $mailwatchHome . 'mtalogprocessor.inc.php';
 
 // Set-up environment
 set_time_limit(0);
 
-class syslog_parser
+class SendmailLogProcessor extends MtaLogProcessor
 {
-    public $raw;
-    public $timestamp;
-    public $date;
-    public $time;
-    public $rfctime;
-    public $host;
-    public $process;
-    public $pid;
-    public $entry;
-    public $months = array(
-        'Jan' => '1',
-        'Feb' => '2',
-        'Mar' => '3',
-        'Apr' => '4',
-        'May' => '5',
-        'Jun' => '6',
-        'Jul' => '7',
-        'Aug' => '8',
-        'Sep' => '9',
-        'Oct' => '10',
-        'Nov' => '11',
-        'Dec' => '12'
-    );
-
-    /**
-     * @param string $line
-     */
-    public function __construct($line)
+    public function __construct()
     {
-
-        // Parse the date, time, host, process pid and log entry
-        if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
-            // Store raw line
-            $this->raw = $explode[0];
-
-            // Decode the syslog time/date
-            $month = $this->months[$explode[1]];
-            $thismonth = date('n');
-            $thisyear = date('Y');
-            // Work out the year
-            $year = $month <= $thismonth ? $thisyear : $thisyear - 1;
-            $this->date = $explode[2] . ' ' . $explode[1] . ' ' . $year;
-            $this->time = $explode[3] . ':' . $explode[4] . ':' . $explode[5];
-            $datetime = $this->date . ' ' . $this->time;
-            $this->timestamp = strtotime($datetime);
-            $this->rfctime = date('r', $this->timestamp);
-
-            $this->host = $explode[6];
-            $this->process = $explode[7];
-            $this->pid = $explode[8];
-            $this->entry = $explode[9];
-        } else {
-            return false;
+        $this->mtaprocess = 'sendmail';
+        $this->delayField = 'xdelay';
+        $this->statusField = 'stat';
+    }
+    
+    public function getRulesets()
+    {
+        if (isset($this->entries['ruleset'])) {
+            if ($this->entries['ruleset'] === 'check_relay') {
+                // Listed in RBL(s)
+                $_type = safe_value('rbl');
+                $_relay = safe_value($this->entries['arg2']);
+                $_status = safe_value($this->entries['reject']);
+            }
+            if ($this->entries['ruleset'] === 'check_mail') {
+                // Domain does not resolve
+                $_type = safe_value('unresolveable');
+                $_status = safe_value(get_email($this->entries['reject']));
+            }
         }
     }
-}
-
-class sendmail_parser
-{
-    public $raw;
-    public $id;
-    public $entry;
-    public $entries;
-
-    /**
-     * @param string $line
-     */
-    public function __construct($line)
+    
+    public function extractKeyValuePairs($match)
     {
-        $this->raw = $line;
-        if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {
-            $this->id = $match[1];
-
-            // Milter
-            if (preg_match('/(\S+):\sMilter:\s(.+)$/', $line, $milter)) {
-                $match = $milter;
-            }
-
-            // Extract any key=value pairs
-            if (strstr($match[2], '=')) {
-                $items = explode(', ', $match[2]);
-                $entries = array();
-                foreach ($items as $item) {
-                    $entry = explode('=', $item);
-                    if (isset($entry[1])) {
-                        $entries[$entry[0]] = $entry[1];
-                        // fix for the id= issue 09.12.2011
-                        if (isset($entry[2])) {
-                            $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                        } else {
-                            $entries[$entry[0]] = $entry[1];
-                        }
-                    }
-                }
-                $this->entries = $entries;
-            } else {
-                $this->entry = $match[2];
-            }
-        } else {
-            // No message ID found
-            // Extract any key=value pairs
-            if (strstr($this->raw, '=')) {
-                $items = explode(', ', $this->raw);
-                $entries = array();
-                foreach ($items as $item) {
-                    $entry = explode('=', $item);
+        $items = explode(', ', $match[2]);
+        $entries = array();
+        foreach ($items as $item) {
+            $entry = explode('=', $item);
+            if (isset($entry[1])) {
+                $entries[$entry[0]] = $entry[1];
+                // fix for the id= issue 09.12.2011
+                if (isset($entry[2])) {
+                    $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
+                } else {
                     $entries[$entry[0]] = $entry[1];
-                    // fix for the id= issue 09.12.2011
-                    if (isset($entry[2])) {
-                        $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                    } else {
-                        $entries[$entry[0]] = $entry[1];
-                    }
                 }
-                $this->entries = $entries;
-            } else {
-                return false;
             }
         }
     }
 }
 
-/**
- * @return string
- */
-function get_ip($line)
-{
-    if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $line, $match)) {
-        return $match[1];
-    } else {
-        return $line;
-    }
-}
-
-/**
- * @return string
- */
-function get_email($line)
-{
-    if (preg_match('/<(\S+)>/', $line, $match)) {
-        return $match[1];
-    } else {
-        return $line;
-    }
-}
-
-function doit($input)
-{
-    global $fp;
-    if (!$fp = popen($input, 'r')) {
-        die('Cannot open pipe');
-    }
-
-    $lines = 1;
-    while ($line = fgets($fp, 2096)) {
-        $parsed = new syslog_parser($line);
-        $_timestamp = safe_value($parsed->timestamp);
-        $_host = safe_value($parsed->host);
-        $_dsn = '';
-        $_delay = '';
-        $_relay = '';
-
-        // Sendmail
-        if ($parsed->process === 'sendmail' && class_exists('sendmail_parser')) {
-            $sendmail = new sendmail_parser($parsed->entry);
-            if (true === DEBUG) {
-                print_r($sendmail);
-            }
-
-            $_msg_id = safe_value($sendmail->id);
-
-            // Rulesets
-            if (isset($sendmail->entries['ruleset'])) {
-                if ($sendmail->entries['ruleset'] === 'check_relay') {
-                    // Listed in RBL(s)
-                    $_type = safe_value('rbl');
-                    $_relay = safe_value($sendmail->entries['arg2']);
-                    $_status = safe_value($sendmail->entries['reject']);
-                }
-                if ($sendmail->entries['ruleset'] === 'check_mail') {
-                    // Domain does not resolve
-                    $_type = safe_value('unresolveable');
-                    $_status = safe_value(get_email($sendmail->entries['reject']));
-                }
-            }
-
-            // Milter-ahead rejections
-            if (preg_match('/Milter: /i', $sendmail->raw) && preg_match(
-                    '/(rejected recipient|user unknown)/i',
-                    $sendmail->entries['reject']
-                )
-            ) {
-                $_type = safe_value('unknown_user');
-                $_status = safe_value(get_email($sendmail->entries['to']));
-            }
-
-            // Unknown users
-            if (preg_match('/user unknown/i', $sendmail->entry)) {
-                // Unknown users
-                $_type = safe_value('unknown_user');
-                $_status = safe_value($sendmail->raw);
-            }
-
-            // Relay lines
-            if (isset($sendmail->entries['relay'], $sendmail->entries['stat'])) {
-                $_type = safe_value('relay');
-                $_delay = safe_value($sendmail->entries['xdelay']);
-                $_relay = safe_value(get_ip($sendmail->entries['relay']));
-                $_dsn = safe_value($sendmail->entries['dsn']);
-                $_status = safe_value($sendmail->entries['stat']);
-            }
-        }
-        if (isset($_type)) {
-            dbquery(
-                "REPLACE INTO mtalog VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status','$_delay')"
-            );
-        }
-        $lines++;
-
-        // Reset variables
-        unset($line, $parsed, $sendmail, $_timestamp, $_host, $_type, $_msg_id, $_relay, $_dsn, $_status, $_delay);
-    }
-    pclose($fp);
-}
-
+$logprocessor = new SendmailLogProcessor();
 if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
-    doit('cat ' . MAIL_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first
-    doit('cat ' . MAIL_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
     // Start watching the maillog
-    doit('tail -F -n0 ' . MAIL_LOG);
+    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
 }
