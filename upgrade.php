@@ -287,7 +287,8 @@ if ($link) {
         executeQuery($sql);
     }
 
-    echo pad(' - Updating users table for password-reset');
+    // Update users table schema for password-reset feature
+    echo pad(' - Updating users table for password-reset feature');
     if (check_column_exists('users', 'resetid') === false) {
         $sql = 'ALTER TABLE `users` ADD COLUMN (
             `resetid` varchar(32),
@@ -296,7 +297,7 @@ if ($link) {
             );';
         executeQuery($sql);
     } else {
-        echo "ALREADY EXISTS\n";
+        echo "ALREADY DONE\n";
     }
 
     // check for missing indexes
