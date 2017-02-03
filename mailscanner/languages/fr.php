@@ -847,6 +847,7 @@ return array(
     'requestpwdreset63' => 'Demande de réinitialisation de mot de passe.',
     'resetexpired63' => 'Le lien de réinitialisation a expiré - Veuillez faire une nouvelle demande de changement de mot de passe.',
     'brokenlink63' => 'Le lien de réinitialisation manque des paramètres - Essayez de nouveau ou contactez le support.',
+    'pwdresetldap63' => 'Password reset function cannot be used with LDAP',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

@@ -847,6 +847,7 @@ return array(
     'requestpwdreset63' => 'Zurücksetzen des Passworts anfordern',
     'resetexpired63' => 'Der Link zum Zurücksetzen des Passworts ist abgelaufen - bitte stellen Sie die Anfrage erneut',
     'brokenlink63' => 'Der Link zum Zurücksetzen des Passworts ist unvollständig - bitte versuchen Sie es erneut oder kontaktieren Sie den Administrator',
+    'pwdresetldap63' => 'Password reset function cannot be used with LDAP',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
