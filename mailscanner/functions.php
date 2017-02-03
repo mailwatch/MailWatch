@@ -928,9 +928,9 @@ function sa_autolearn($spamreport)
 {
     switch (true) {
         case(preg_match('/autolearn=spam/', $spamreport)):
-            return 'spam';
+            return __('saspam03');
         case(preg_match('/autolearn=not spam/', $spamreport)):
-            return 'not spam';
+            return __('sanotspam03');
         default:
             return false;
     }
@@ -1620,6 +1620,56 @@ function subtract_multi_get_vars($preserve)
 }
 
 /**
+ * @param $sql the sql query for which the page will be created
+ */
+function generatePager($sql)
+{
+    require_once __DIR__ . '/lib/pear/Pager.php';
+    if (isset($_GET['offset'])) {
+        $from = (int)$_GET['offset'];
+    } else {
+        $from = 0;
+    }
+
+    // Remove any ORDER BY clauses as this will slow the count considerably
+    if ($pos = strpos($sql, 'ORDER BY')) {
+        $sqlcount = substr($sql, 0, $pos);
+    }
+
+    // Count the number of rows that would be returned by the query
+    $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
+    $results = dbquery($sqlcount);
+    $rows = database::mysqli_result($results, 0);
+
+    // Build the pager data
+    $pager_options = array(
+        'mode' => 'Sliding',
+        'perPage' => MAX_RESULTS,
+        'delta' => 2,
+        'totalItems' => $rows,
+    );
+    $pager = Pager::factory($pager_options);
+
+    //then we fetch the relevant records for the current page
+    list($from, $to) = $pager->getOffsetByPageId();
+
+    echo '<table cellspacing="1" class="mail" >
+<tr>
+<th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
+</tr>
+<tr>
+<td align="center">' . "\n";
+    //show the links
+    echo $pager->links;
+    echo '</td>
+            </tr>
+      </table>
+</tr>
+<tr>
+<td colspan="4">';
+}
+
+/**
  * @param $sql
  * @param bool|string $table_heading
  * @param bool $pager
@@ -1656,50 +1706,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
-        if (isset($_GET['offset'])) {
-            $from = (int)$_GET['offset'];
-        } else {
-            $from = 0;
-        }
-
-        // Remove any ORDER BY clauses as this will slow the count considerably
-        if ($pos = strpos($sql, 'ORDER BY')) {
-            $sqlcount = substr($sql, 0, $pos);
-        }
-
-        // Count the number of rows that would be returned by the query
-        $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-        $results = dbquery($sqlcount);
-        $rows = database::mysqli_result($results, 0);
-
-        // Build the pager data
-        $pager_options = array(
-            'mode' => 'Sliding',
-            'perPage' => MAX_RESULTS,
-            'delta' => 2,
-            'totalItems' => $rows,
-        );
-        $pager = Pager::factory($pager_options);
-
-        //then we fetch the relevant records for the current page
-        list($from, $to) = $pager->getOffsetByPageId();
-
-        echo '<table cellspacing="1" class="mail" >
-    <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
-  </tr>
-  <tr>
-  <td align="center">' . "\n";
-        //show the links
-        echo $pager->links;
-        echo '</td>
-                </tr>
-          </table>
-</tr>
-<tr>
- <td colspan="4">';
-
+        $sql = generatePager($sql);
 
         // Re-run the original query and limit the rows
         $limit = $from - 1;
@@ -2206,48 +2213,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '<br>' . "\n";
         if ($pager) {
-            require_once __DIR__ . '/lib/pear/Pager.php';
-            $from = 0;
-            if (isset($_GET['offset'])) {
-                $from = (int)$_GET['offset'];
-            }
-
-            // Remove any ORDER BY clauses as this will slow the count considerably
-            if ($pos = strpos($sql, 'ORDER BY')) {
-                $sqlcount = substr($sql, 0, $pos);
-            }
-
-            // Count the number of rows that would be returned by the query
-            $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-            $results = dbquery($sqlcount);
-            $rows = database::mysqli_result($results, 0);
-
-            // Build the pager data
-            $pager_options = array(
-                'mode' => 'Sliding',
-                'perPage' => MAX_RESULTS,
-                'delta' => 2,
-                'totalItems' => $rows,
-            );
-            $pager = Pager::factory($pager_options);
-
-            //then we fetch the relevant records for the current page
-            list($from, $to) = $pager->getOffsetByPageId();
-
-            echo '<table cellspacing="1" class="mail" >
-    <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
-  </tr>
-  <tr>
-  <td align="center">' . "\n";
-            //show the links
-            echo $pager->links;
-            echo '</td>
-                </tr>
-          </table>
-</tr>
-<tr>
- <td colspan="4">';
+            generatePager($sql);
         }
     }
 }
@@ -2483,19 +2449,13 @@ function debug($text)
  */
 function count_files_in_dir($dir)
 {
-    //TODO: Refactor
-    $file_list_array = array();
-    if (!$drh = @opendir($dir)) {
+    $file_list_array = @scandir($dir);
+    if ($file_list_array === false) {
         return false;
     } else {
-        while (false !== ($file = readdir($drh))) {
-            if ($file !== '.' && $file !== '..') {
-                $file_list_array[] = $file;
-            }
-        }
+        //there is always . and .. so reduce the count
+        return count($file_list_array) - 2;
     }
-
-    return count($file_list_array);
 }
 
 /**
@@ -2782,7 +2742,7 @@ function ldap_get_conf_var($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
+    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
     or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
@@ -2823,7 +2783,7 @@ function ldap_get_conf_truefalse($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
+    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
     or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
@@ -3762,6 +3722,46 @@ function updateUserPasswordHash($user, $hash)
     $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
     dbquery($sqlUpdateHash);
     audit_log(__('auditlogupdateuser03') . ' ' . $user);
+}
+
+function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1)
+{
+    // HTML to display the graph
+    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
+    echo ' <tr>';
+    echo '  <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
+    echo ' </tr>';
+    echo ' <tr>';
+
+    //  Check Permissions to see if the file has been written and that apache to read it.
+    if (is_readable($filename)) {
+        echo '  <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
+    } else {
+        echo '  <td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+    }
+
+    echo ' </tr>' . "\n";
+    echo ' <tr>' . "\n";
+    echo '  <td align="center">' . "\n";
+    echo '   <table style="width: 500px">' . "\n";
+    echo '    <tr style="background-color: #F7CE4A">' . "\n";
+    echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
+    echo '     <th>' . __('count03') . '</th>' . "\n";
+    echo '     <th>' . __('size03') . '</th>' . "\n";
+    echo '    </tr>' . "\n";
+
+    for ($i = 0; $i < $count($data); $i++) {
+        echo '    <tr style="background-color: #EBEBEB">' . "\n";
+        echo '     <td>' . $data_names[$i] . '</td>' . "\n";
+        echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
+        echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scale) . '</td>' . "\n";
+        echo '    </tr>' . "\n";
+    }
+
+    echo '   </table>' . "\n";
+    echo '  </td>' . "\n";
+    echo ' </tr>' . "\n";
+    echo '</table>' . "\n";
 }
 
 /**

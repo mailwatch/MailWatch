@@ -54,7 +54,7 @@ if ($_SESSION['user_type'] !== 'A') {
         echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
         echo '<tr><td class="heading">File: ' . $FilePath . '</td></tr>' . "\n";
         echo '<tr><td><pre>' . "\n";
-        if ($fh = @@fopen($FilePath, 'rb')) {
+        if ($fh = @fopen($FilePath, 'rb')) {
             while (!feof($fh)) {
                 $line = rtrim(fgets($fh, 4096));
                 if (isset($_GET['strip_comments']) && $_GET['strip_comments']) {

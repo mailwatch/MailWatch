@@ -180,9 +180,12 @@ return array(
     'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
+    'count03' => 'Count',
     '1minute03' => '1 min.:',
     '5minutes03' => '5 min.:',
     '15minutes03' => '15 min.:',
+    'saspam03' => 'spam',
+    'sanotspam03' => 'not spam',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
@@ -242,6 +245,8 @@ return array(
     'spamrevoke04' => 'As Ham+Revoke',
     'geoipfailed04' => '(GeoIP lookup failed)',
     'reversefailed04' => '(Reverse Lookup Failed)',
+    'privatenetwork04' => '(Private Network)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',
@@ -656,58 +661,42 @@ return array(
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
     'top10recipdomqt40' => 'Top 10 Recipients Domains by Volume',
     'domain40' => 'Domain',
-    'count40' => 'Count',
-    'size40' => 'Size',
-
+  
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Recipients Domains by Volume',
     'top10recipdomvol41' => 'Top 10 Recipient Domains by Volume',
     'domain41' => 'Domain',
-    'count41' => 'Count',
-    'size41' => 'Size',
-
+  
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Recipients by Quantity',
     'top10recipqt42' => 'Top 10 Recipients by Quantity',
     'email42' => 'E-mail Address',
-    'count42' => 'Count',
-    'size42' => 'Size',
-
+  
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
     'top10recipvol43' => 'Top 10 Recipients by Volume',
     'email43' => 'E-mail Address',
-    'count43' => 'Count',
-    'size43' => 'Size',
-
+  
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Sender Domains by Quantity',
     'top10senderdomqt44' => 'Top 10 Sender Domains by Quantity',
     'domain44' => 'Domain',
-    'count44' => 'Count',
-    'size44' => 'Size',
-
+  
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Sender Domains by Volume',
     'top10senderdomvol45' => 'Top 10 Sender Domains by Volume',
     'domain45' => 'Domain',
-    'count45' => 'Count',
-    'size45' => 'Size',
-
+  
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
     'email46' => 'E-mail Address',
-    'count46' => 'Count',
-    'size46' => 'Size',
-
+  
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
     'email47' => 'E-mail Address',
-    'count47' => 'Count',
-    'size47' => 'Size',
-
+  
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',
@@ -768,7 +757,7 @@ return array(
     'diefnf55' => 'File not found:',
     'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Cannot open pipe',
 
     // 57-quarantine_action.php
