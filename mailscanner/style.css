@@ -30,6 +30,13 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+/* Should be the first style */
+@font-face {
+   font-family: password;
+   src: url("fonts/password.ttf") format('opentype');
+}
+
 body {
     margin: 0;
     font-family: verdana, sans-serif;
@@ -384,6 +391,12 @@ td.dashgreybox {
     }
 }
 
+input.password {
+   font-family: password;
+   font-size: 8pt;
+   width: 143px;
+}
+
 div.table input {
     width: 100%;
     box-sizing: border-box;
@@ -437,4 +450,5 @@ div.table>.caption>input {
 .tableWithLineBreaksWrapper>table>tr>th, 
 .tableWithLineBreaksWrapper>table>tr>td {
     word-wrap: break-word;
+
 }
