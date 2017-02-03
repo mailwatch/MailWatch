@@ -30,12 +30,15 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
 if (php_sapi_name() !== 'cli') {
     header('Content-type: text/plain');
 }
 
+$mailscannerRoot = '/var/www/html/mailscanner/';
+
 //$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+$pathToFunctions = $mailscannerRoot . 'functions.php';
 
 if (!is_file($pathToFunctions)) {
     die('Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
@@ -367,3 +370,6 @@ if (is_array($errors)) {
     }
     echo PHP_EOL;
 }
+
+
+require $mailscannerRoot . 'checkconf.php';
