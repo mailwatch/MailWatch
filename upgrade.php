@@ -163,7 +163,7 @@ $errors = false;
 // Test connectivity to the database
 
 echo PHP_EOL;
-echo 'MailWatch for MailScanner Upgrade' .  PHP_EOL;
+echo 'MailWatch for MailScanner Upgrade to 1.2 (RC5-dev)' .  PHP_EOL;
 
 echo PHP_EOL;
 echo pad('Testing connectivity to the database ');
@@ -214,7 +214,7 @@ if ($link) {
             `msg_id` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
             `uid` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
             PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1';
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
         executeQuery($sql);
     }
 
@@ -222,9 +222,14 @@ if ($link) {
 
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
 
-    // Table users
-    echo pad(' - Fix schema for username field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+    // Table audit_log
+    echo pad(' - Fix schema for username field in `audit_log` table');
+    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Table blacklist
+    echo pad(' - Fix schema for id field in `blacklist` table');
+    $sql = "ALTER TABLE `blacklist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT";
     executeQuery($sql);
 
     // Table spamscores
@@ -232,17 +237,22 @@ if ($link) {
     $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    // Table users
+    echo pad(' - Fix schema for username field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
     // Table user_filters
     echo pad(' - Fix schema for username field in `user_filters` table');
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    // Revert back some tables to the right values due to previous errors in upgrade.php
-
-    // Table audit_log
-    echo pad(' - Fix schema for username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+    // Table whitelist
+    echo pad(' - Fix schema for username field in `whitelist` table');
+    $sql = "ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT";
     executeQuery($sql);
+
+    // Revert back some tables to the right values due to previous errors in upgrade.php
 
     // Table users
     echo pad(' - Fix schema for password field in `users` table');
@@ -260,12 +270,75 @@ if ($link) {
 
     echo PHP_EOL;
 
+    // Add new column and index to audit_log table
+    echo pad(' - Add maillog_id field and primary key to `audit_log` table');
+    if (true === check_column_exists('audit_log', 'id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `audit_log` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to inq table
+    echo pad(' - Add inq_id field and primary key to `inq` table');
+    if (true === check_column_exists('inq', 'inq_id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `inq` ADD `inq_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`inq_id`)';
+        executeQuery($sql);
+    }
+
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)';
+        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to mtalog table
+    echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
+    if (true === check_column_exists('mtalog', 'mtalog_id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `mtalog` ADD `mtalog_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`mtalog_id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to outq table
+    echo pad(' - Add mtalog_id field and primary key to `outq` table');
+    if (true === check_column_exists('outq', 'outq_id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `outq` ADD `outq_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`outq_id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to saved_filters table
+    echo pad(' - Add id field and primary key to `saved_filters` table');
+    if (true === check_column_exists('saved_filters', 'id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `saved_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to user_filters table
+    echo pad(' - Add mtalog_id field and primary key to `user_filters` table');
+    if (true === check_column_exists('user_filters', 'id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `user_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to user_filters table
+    echo pad(' - Add mtalog_id field and primary key to `user_filters` table');
+    if (true === check_column_exists('user_filters', 'id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `user_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
     }
 
@@ -357,6 +430,9 @@ if ($link) {
     );
 
     foreach ($indexes as $table => $indexlist) {
+        echo PHP_EOL;
+        echo pad(' - Search for missing indexes');
+        echo PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
