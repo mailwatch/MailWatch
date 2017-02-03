@@ -231,11 +231,6 @@ if ($link) {
     $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    // Table mcp_rules
-    echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
-    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 100 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
