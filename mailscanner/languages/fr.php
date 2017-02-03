@@ -420,7 +420,7 @@ return array(
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
-    'errorpass12' => 'Le Mot de Passe de correspond pas.',
+    'errorpass12' => 'Mot de passe erroné',
     'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',
@@ -444,6 +444,18 @@ return array(
     'auditlogto12' => 'vers',
     'auditlog0412' => 'L\'Utilisateur %s a été effacé',
     'auditlog0512' => 'L\'Utilisateur [%s] a mis à jour son propre compte',
+    'erroreditnodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs sans domaine',
+    'erroreditdomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs du domaine %s',
+    'errortonodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer le domaine des utilisateurs',
+    'errortodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour assigner des utilisateurs au domaine %s',
+    'errortypesetforbidden12' => 'Erreur : vous ne disposez pas des autorisations nécessaires pour attribuer des droits d\'administrateur aux utilisateurs',
+    'errordeletenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer des utilisateurs sans domaine',
+    'errordeletedomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour supprimer les utilisateurs du domaine %s',
+    'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
+    'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
+    'retypepassword12' => 'Confirmez le mot de passe :',
+    'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
+
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',

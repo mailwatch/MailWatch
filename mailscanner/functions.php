@@ -3750,6 +3750,17 @@ function updateUserPasswordHash($user, $hash)
     audit_log(__('auditlogupdateuser03') . ' ' . $user);
 }
 
+/**
+ * @param $username username that should be checked if it exists
+ * @return true if user exists, else false
+ */
+function checkForExistingUser($username)
+{
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'";
+    $row = dbquery($sqlQuery)->fetch_object();
+    return $row->counter >0;
+}
+
 function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1)
 {
     // HTML to display the graph
