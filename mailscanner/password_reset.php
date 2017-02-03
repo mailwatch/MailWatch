@@ -32,7 +32,7 @@ require_once __DIR__ . '/functions.php';
 
 //Check if LDAP is enabled, if so, prevent usage
 if (USE_LDAP === true) {
-    die (__('pwdresetldap63'));
+    die(__('pwdresetldap63'));
 }
 
 // Load in the required PEAR modules
