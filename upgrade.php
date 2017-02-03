@@ -215,6 +215,19 @@ if ($link) {
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    // Update users table schema for password-reset feature
+    echo pad(' - Updating users table for password-reset feature');
+    if (check_column_exists('users', 'resetid') === false) {
+        $sql = 'ALTER TABLE `users` ADD COLUMN (
+            `resetid` varchar(32),
+            `resetexpire` bigint(20),
+            `lastreset` bigint(20)
+            );';
+        executeQuery($sql);
+    } else {
+        echo 'ALREADY DONE' . PHP_EOL;
+    }
+
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
     // Table audit_log
@@ -295,19 +308,6 @@ if ($link) {
     } else {
         $sql = 'DROP TABLE IF EXISTS `geoip_country`';
         executeQuery($sql);
-    }
-
-    // Update users table schema for password-reset feature
-    echo pad(' - Updating users table for password-reset feature');
-    if (check_column_exists('users', 'resetid') === false) {
-        $sql = 'ALTER TABLE `users` ADD COLUMN (
-            `resetid` varchar(32),
-            `resetexpire` bigint(20),
-            `lastreset` bigint(20)
-            );';
-        executeQuery($sql);
-    } else {
-        echo "ALREADY DONE\n";
     }
 
     // check for missing indexes
