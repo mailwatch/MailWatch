@@ -294,20 +294,20 @@ if ($link) {
         }
     }
 
-	// Convert tables to innoDB using $utf8_tables array
-	foreach ($utf8_tables as $table) {
-	    echo pad(' - Convert table `' . $table . '` to innoDB');
-	    if (false === check_table_exists($table)) {
-	        echo ' DO NOT EXISTS' . PHP_EOL;
-	    } else {
-	        if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
-	            $sql = 'ALTER TABLE `' . $table . '` ENGINE = INNODB';
-	            executeQuery($sql);
-	        } else {
-	            echo ' ALREADY CONVERTED' . PHP_EOL;
-	        }
-	    }
-	}
+    // Convert tables to innoDB using $utf8_tables array
+    foreach ($utf8_tables as $table) {
+        echo pad(' - Convert table `' . $table . '` to innoDB');
+        if (false === check_table_exists($table)) {
+            echo ' DO NOT EXISTS' . PHP_EOL;
+        } else {
+            if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
+                $sql = 'ALTER TABLE `' . $table . '` ENGINE = INNODB';
+                executeQuery($sql);
+            } else {
+                echo ' ALREADY CONVERTED' . PHP_EOL;
+            }
+        }
+    }
 
     // Drop geoip table
     echo pad(' - Drop `geoip_country` table');
