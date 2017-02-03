@@ -832,7 +832,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
-    'errors07' => 'Fehler:',
+    'errors62' => 'Fehler:',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -845,4 +845,5 @@ return array(
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
 
+    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die your conf.php mit conf.php.example',
 );
