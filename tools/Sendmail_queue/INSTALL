@@ -2,12 +2,15 @@
 INSTALLATION INSTRUCTIONS
 -----------------------------
 
------------ Setting up MailWatch to see the sendmail queue
+mailq.php process the MTA queue to store messages in database and to see the in MailWatch GUI.
 
-Edit mailq.php first to change the require line to point to the location of functions.php, then:
+Put the mailq.php file in /usr/local/bin
 
-# cp tools/Sendmail_queue/mailq.php /usr/local/bin
+Edit CRONTAB:
+
 # crontab -e
+
+# Run mailq.php each minute
 0-59 * * * * 	/usr/local/bin/mailq.php
 
 Note: mailq.php re-creates all entries on each run, so for busy sites you will probably want to change this to run every 5 minutes or greater.
