@@ -431,7 +431,7 @@ if ($link) {
 
     foreach ($indexes as $table => $indexlist) {
         echo PHP_EOL;
-        echo pad(' - Search for missing indexes');
+        echo ' - Search for missing indexes......................................... OK';
         echo PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
