@@ -72,6 +72,7 @@ function check_table_exists($table)
 {
     global $link;
     $sql = 'SHOW TABLES LIKE "' . $table . '"';
+
     return ($link->query($sql)->num_rows > 0);
 }
 
@@ -84,11 +85,12 @@ function check_column_exists($table, $column)
 {
     global $link;
     $sql = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $column . '"';
+
     return ($link->query($sql)->num_rows > 0);
 }
 
 /**
- * @return string
+ * @return string|bool
  */
 function check_database_charset()
 {
@@ -98,8 +100,11 @@ function check_database_charset()
             WHERE schema_name = "' . DB_NAME . '"';
     $result = $link->query($sql);
     $row = $result->fetch_array();
-    $charset = $row[0];
-    return $charset;
+    if (null !== $row && isset($row[0])) {
+        return $row[0];
+    }
+
+    return false;
 }
 
 /**
@@ -117,6 +122,7 @@ function check_utf8_table($db, $table, $utf8variant = 'utf8')
             AND t.table_schema = "' . $link->real_escape_string($db) . '"
             AND t.table_name = "' . $link->real_escape_string($table) . '"';
     $result = $link->query($sql);
+
     return strtolower(database::mysqli_result($result, 0)) === $utf8variant;
 }
 
@@ -169,17 +175,17 @@ if ($link) {
         executeQuery($sql);
     }
 
-   // Add autorelease table if not exist (1.2RC2)
+    // Add autorelease table if not exist (1.2RC2)
     echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
     if (true === check_table_exists('autorelease')) {
         echo " ALREADY EXIST\n";
     } else {
-        $sql = "CREATE TABLE IF NOT EXISTS `autorelease` (
-            `id` bigint(20) NOT NULL AUTO_INCREMENT,
-            `msg_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-            `uid` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+        $sql = 'CREATE TABLE IF NOT EXISTS `autorelease` (
+            `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+            `msg_id` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+            `uid` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
             PRIMARY KEY (`id`)
-            ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1';
         executeQuery($sql);
     }
 
@@ -221,12 +227,12 @@ if ($link) {
     $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 100 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-   // Add new column and index to maillog table
+    // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo " ALREADY DONE\n";
     } else {
-        $sql = "ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)";
+        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
     }
 
@@ -238,8 +244,8 @@ if ($link) {
             echo " ALREADY DONE\n";
         } else {
             $sql = 'ALTER DATABASE `' . DB_NAME .
-                   '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
-                   ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+                '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+                ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
             executeQuery($sql);
         }
     }
