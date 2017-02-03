@@ -48,7 +48,7 @@ class PostfixLogProcessor extends MtaLogProcessor
         $this->delayField = 'delay';
         $this->statusField = 'status';
     }
-    
+
     public function getRejectReasons()
     {
         // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
@@ -62,13 +62,16 @@ class PostfixLogProcessor extends MtaLogProcessor
             }
             $rejectReasons['status'] = safe_value($this->raw);
         }
+
+        return $rejectReasons;
     }
-    
+
     public function extractKeyValuePairs($match)
     {
         $entries = array();
-        $pattern = "/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/";
+        $pattern = '/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/';
         preg_match($pattern, $match[2], $entries);
+
         return $entries;
     }
 }

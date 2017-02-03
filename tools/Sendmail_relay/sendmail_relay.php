@@ -35,11 +35,11 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-// Edit this to reflect the full path to mailscanner dir containing functions.php
+// Edit this to reflect the full path to mailscanner dir containing functions.php, always end with "/"
 $mailwatchHome = '/var/www/html/mailscanner/';
 
 require $mailwatchHome . 'functions.php';
-require_once $mailwatchHome . '/mtalogprocessor.inc.php';
+require_once $mailwatchHome . 'mtalogprocessor.inc.php';
 
 // Set-up environment
 set_time_limit(0);
