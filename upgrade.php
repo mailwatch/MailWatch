@@ -30,9 +30,18 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-header("Content-type: text/plain\n\n");
-require '/var/www/html/mailscanner/functions.php';
-//require __DIR__ . '/mailscanner/functions.php';
+if (php_sapi_name() !== 'cli') {
+    header('Content-type: text/plain');
+}
+
+//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+
+if (!is_file($pathToFunctions)) {
+    die('Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+
+require_once $pathToFunctions;
 
 $link = dbconn();
 
@@ -57,10 +66,10 @@ function executeQuery($sql)
 {
     global $link;
     if ($link->query($sql)) {
-        echo " OK\n";
+        echo ' OK' . PHP_EOL;
     } else {
-        echo " ERROR\n";
-        die('Database error: ' . $link->error . " - SQL = '$sql'\n");
+        echo ' ERROR' . PHP_EOL;
+        die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
     }
 }
 
@@ -153,9 +162,9 @@ $errors = false;
 // Test connectivity to the database
 echo pad('Testing connectivity to the database ');
 if ($link) {
-    echo " OK\n";
+    echo ' OK' . PHP_EOL;
     // Update schema at this point
-    echo "Updating database schema: \n";
+    echo 'Updating database schema: ' . PHP_EOL;
 
     /*
     ** Updates to the schema for 1.2.0
@@ -166,7 +175,7 @@ if ($link) {
     // Convert database to utf8 if not already utf8mb4 or if other charset
     echo pad(' - Convert database to ' . $server_utf8_variant . '');
     if (check_database_charset() === 'utf8mb4') {
-        echo " ALREADY DONE\n";
+        echo ' ALREADY DONE' . PHP_EOL;
     } else {
         $server_utf8_variant = 'utf8';
         $sql = 'ALTER DATABASE `' . DB_NAME .
@@ -178,7 +187,7 @@ if ($link) {
     // Add autorelease table if not exist (1.2RC2)
     echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
     if (true === check_table_exists('autorelease')) {
-        echo " ALREADY EXIST\n";
+        echo ' ALREADY EXIST' . PHP_EOL;
     } else {
         $sql = 'CREATE TABLE IF NOT EXISTS `autorelease` (
             `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -215,7 +224,7 @@ if ($link) {
 
     // Table users
     echo pad(' - Fix schema for password field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL";
+    $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
     executeQuery($sql);
 
     echo pad(' - Fix schema for fullname field in `users` table');
@@ -230,7 +239,7 @@ if ($link) {
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
-        echo " ALREADY DONE\n";
+        echo ' ALREADY DONE' . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
@@ -241,7 +250,7 @@ if ($link) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
         if (check_database_charset() === 'utf8mb4') {
-            echo " ALREADY DONE\n";
+            echo ' ALREADY DONE' . PHP_EOL;
         } else {
             $sql = 'ALTER DATABASE `' . DB_NAME .
                 '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
@@ -271,7 +280,7 @@ if ($link) {
     foreach ($utf8_tables as $table) {
         echo pad(' - Convert table `' . $table . '` to ' . $server_utf8_variant . '');
         if (false === check_table_exists($table)) {
-            echo " DO NOT EXISTS\n";
+            echo ' DO NOT EXISTS' . PHP_EOL;
         } else {
             if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
                 $sql = 'ALTER TABLE `' . $table .
@@ -279,7 +288,7 @@ if ($link) {
                     ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
                 executeQuery($sql);
             } else {
-                echo " ALREADY CONVERTED\n";
+                echo ' ALREADY CONVERTED' . PHP_EOL;
             }
         }
     }
@@ -287,7 +296,7 @@ if ($link) {
     // Drop geoip table
     echo pad(' - Drop `geoip_country` table');
     if (false === check_table_exists('geoip_country')) {
-        echo " ALREADY DROPPED\n";
+        echo ' ALREADY DROPPED' . PHP_EOL;
     } else {
         $sql = 'DROP TABLE IF EXISTS `geoip_country`';
         executeQuery($sql);
@@ -325,14 +334,14 @@ if ($link) {
     }
     dbclose();
 } else {
-    echo " FAILED\n";
+    echo ' FAILED' . PHP_EOL;
     $errors[] = 'Database connection failed: ' . $link->error;
 }
 
-echo "\n";
+echo PHP_EOL;
 
 // Check MailScanner settings
-echo "Checking MailScanner.conf settings: \n";
+echo 'Checking MailScanner.conf settings: ' . PHP_EOL;
 $check_settings = array(
     'QuarantineWholeMessage' => 'yes',
     'QuarantineWholeMessagesAsQueueFiles' => 'no',
@@ -346,20 +355,20 @@ $check_settings = array(
 foreach ($check_settings as $setting => $value) {
     echo pad(" - $setting ");
     if (preg_match('/' . $value . '/', get_conf_var($setting))) {
-        echo " OK\n";
+        echo ' OK' . PHP_EOL;
     } else {
-        echo " WARNING\n";
+        echo ' WARNING' . PHP_EOL;
         $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
     }
 }
 
-echo "\n";
+echo PHP_EOL;
 
 // Error messages
 if (is_array($errors)) {
-    echo "*** ERROR/WARNING SUMMARY ***\n";
+    echo '*** ERROR/WARNING SUMMARY ***' . PHP_EOL;
     foreach ($errors as $error) {
-        echo $error . "\n";
+        echo $error . PHP_EOL;
     }
-    echo "\n";
+    echo PHP_EOL;
 }
