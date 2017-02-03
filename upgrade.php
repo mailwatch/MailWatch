@@ -159,12 +159,21 @@ function getTableIndexes($table)
 
 $errors = false;
 
+// Upgrade
 // Test connectivity to the database
+
+echo PHP_EOL;
+echo 'MailWatch for MailScanner Upgrade' .  PHP_EOL;
+
+echo PHP_EOL;
 echo pad('Testing connectivity to the database ');
+
 if ($link) {
     echo ' OK' . PHP_EOL;
     // Update schema at this point
+    echo PHP_EOL;
     echo 'Updating database schema: ' . PHP_EOL;
+    echo PHP_EOL;
 
     /*
     ** Updates to the schema for 1.2.0
@@ -184,6 +193,17 @@ if ($link) {
         executeQuery($sql);
     }
 
+    echo PHP_EOL;
+
+    // Drop geoip table
+    echo pad(' - Drop `geoip_country` table');
+    if (false === check_table_exists('geoip_country')) {
+        echo ' ALREADY DROPPED' . PHP_EOL;
+    } else {
+        $sql = 'DROP TABLE IF EXISTS `geoip_country`';
+        executeQuery($sql);
+    }
+
     // Add autorelease table if not exist (1.2RC2)
     echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
     if (true === check_table_exists('autorelease')) {
@@ -197,6 +217,8 @@ if ($link) {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1';
         executeQuery($sql);
     }
+
+    echo PHP_EOL;
 
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
 
@@ -236,6 +258,8 @@ if ($link) {
     $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    echo PHP_EOL;
+
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
@@ -244,6 +268,8 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
     }
+
+    echo PHP_EOL;
 
     // Convert database to utf8mb4 if MySQL ≥ 5.5.3
     if ($link->server_version >= 50503) {
@@ -258,6 +284,8 @@ if ($link) {
             executeQuery($sql);
         }
     }
+
+    echo PHP_EOL;
 
     $utf8_tables = array(
         'audit_log',
@@ -294,6 +322,8 @@ if ($link) {
         }
     }
 
+    echo PHP_EOL;
+
     // Convert tables to innoDB using $utf8_tables array
     foreach ($utf8_tables as $table) {
         echo pad(' - Convert table `' . $table . '` to innoDB');
@@ -307,15 +337,6 @@ if ($link) {
                 echo ' ALREADY CONVERTED' . PHP_EOL;
             }
         }
-    }
-
-    // Drop geoip table
-    echo pad(' - Drop `geoip_country` table');
-    if (false === check_table_exists('geoip_country')) {
-        echo ' ALREADY DROPPED' . PHP_EOL;
-    } else {
-        $sql = 'DROP TABLE IF EXISTS `geoip_country`';
-        executeQuery($sql);
     }
 
     // check for missing indexes
@@ -358,6 +379,7 @@ echo PHP_EOL;
 
 // Check MailScanner settings
 echo 'Checking MailScanner.conf settings: ' . PHP_EOL;
+echo PHP_EOL;
 $check_settings = array(
     'QuarantineWholeMessage' => 'yes',
     'QuarantineWholeMessagesAsQueueFiles' => 'no',
