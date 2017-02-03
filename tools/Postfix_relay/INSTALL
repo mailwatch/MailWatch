@@ -6,8 +6,5 @@ Optional files for Postfix MTA
 
 ----- Adding Postfix relay information
 
-- Edit the parser (mailwatch_relay.sh) and add it as an hourly cron job.
+Put the 'mailwatch_relay' file into /etc/cron.hourly/.
 
-- Edit the parser for location of MailWatch webpages.
-
-- Edit mailscanner_relay.php in the mailscanner folder.
