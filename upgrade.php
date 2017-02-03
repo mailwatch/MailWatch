@@ -363,7 +363,6 @@ if ($link) {
         }
     }
     dbclose();
-
 } else {
     echo ' FAILED' . PHP_EOL;
     $errors[] = 'Database connection failed: ' . $link->error;
