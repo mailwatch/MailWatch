@@ -832,7 +832,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
-    'errors07' => 'Erreur :',
+    'errors62' => 'Erreur :',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -845,4 +845,5 @@ return array(
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
 
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
 );
