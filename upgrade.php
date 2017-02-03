@@ -315,7 +315,7 @@ if ($link) {
             echo ' DO NOT EXISTS' . PHP_EOL;
         } else {
             if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
-                $sql = 'ALTER TABLE `' . $table . '` ENGINE = INNODB;
+                $sql = 'ALTER TABLE `' . $table . '` ENGINE = INNODB';
                 executeQuery($sql);
             } else {
                 echo ' ALREADY CONVERTED' . PHP_EOL;
