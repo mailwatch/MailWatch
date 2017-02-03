@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /*
  * MailWatch for MailScanner
@@ -28,32 +28,42 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 require_once __DIR__ . '/syslog_parser.inc.php';
 
 abstract class MtaLogProcessor
 {
-    private $mtaprocess;
-    private $delayField;
-    private $statusField;
-    
-    private $raw;
-    private $id;
-    private $entry;
-    private $entries;
+    protected $mtaprocess;
+    protected $delayField;
+    protected $statusField;
 
+    protected $raw;
+    protected $id;
+    protected $entry;
+    protected $entries;
+
+    /**
+     * @param array $match
+     * @return array
+     */
     abstract public function extractKeyValuePairs($match);
-    
-    private function getRejectReasons()
+
+    /**
+     * @return array
+     */
+    public function getRejectReasons()
     {
         return array();
     }
-    
-    private function getRulesets()
+
+    /**
+     * @return array
+     */
+    public function getRulesets()
     {
         return array();
     }
-    
+
     public function doit($input)
     {
         global $fp;//@todo do we need this?
@@ -64,10 +74,10 @@ abstract class MtaLogProcessor
 
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
-            echo "r";
+            echo 'r';
             // Reset variables
             unset($parsed, $mta_parser, $_timestamp, $_host, $_type, $_msg_id, $_status);
-            
+
             $parsed = new SyslogParser($line);
             $_timestamp = safe_value($parsed->timestamp);
             $_host = safe_value($parsed->host);
@@ -82,7 +92,7 @@ abstract class MtaLogProcessor
                 }
 
                 $_msg_id = safe_value($this->id);
-                
+
                 //apply rulesets if they exist
                 $rulesets = $this->getRulesets();
                 if (isset($rulesets['type'])) {
@@ -111,7 +121,7 @@ abstract class MtaLogProcessor
                     $_type = safe_value('unknown_user');
                     $_status = safe_value($this->raw);
                 }
-                
+
                 //apply reject reasons if they exist
                 $rejectReasons = $this->getRejectReasons();
                 if (isset($rejectReasons['type'])) {
@@ -122,7 +132,7 @@ abstract class MtaLogProcessor
                 }
 
                 // Relay lines
-                if (isset($this->entries['relay'], $this->entries[$statusField])) {
+                if (isset($this->entries['relay'], $this->entries[$this->statusField])) {
                     $_type = safe_value('relay');
                     $_delay = safe_value($this->entries[$this->delayField]);
                     $_relay = safe_value($this->getIp());
@@ -143,6 +153,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param string $line
+     * @return bool
      */
     public function parse($line)
     {
@@ -151,7 +162,7 @@ abstract class MtaLogProcessor
         $this->entry = null;
         $this->entries = null;
         $this->raw = $line;
-        
+
         //do the parse
         if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {
             $this->id = $match[1];
@@ -162,16 +173,18 @@ abstract class MtaLogProcessor
             }
 
             // Extract any key=value pairs
-            if (strstr($match[2], '=')) {
+            if (false !== strpos($match[2], '=')) {
                 //calls the function passed as argument
                 $this->entries = $this->extractKeyValuePairs($match);
             } else {
                 $this->entry = $match[2];
             }
+
+            return true;
         } else {
             // No message ID found
             // Extract any key=value pairs
-            if (strstr($this->raw, '=')) {
+            if (false !== strpos($this->raw, '=')) {
                 $items = explode(', ', $this->raw);
                 $entries = array();
                 foreach ($items as $item) {
@@ -184,12 +197,14 @@ abstract class MtaLogProcessor
                     }
                 }
                 $this->entries = $entries;
+
+                return true;
             } else {
                 return false;
             }
         }
     }
-    
+
     /**
      * @return string
      */

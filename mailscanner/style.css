@@ -378,6 +378,10 @@ td.dashgreybox {
     padding: 5px;
 }
 
+.hidden {
+    display: none;
+}
+
 /*adjustments for printing a page e.g. hide elements*/
 @media print { 
     .noprint {

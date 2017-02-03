@@ -420,7 +420,7 @@ return array(
     'action_0212' => 'Action:',
     'reset12' => 'Reset',
     'areusuredel12' => 'Are you sure you want to delete user',
-    'errorpass12' => 'Passwords do not match',
+    'errorpass12' => 'Password mismatch',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',
@@ -444,6 +444,17 @@ return array(
     'auditlogto12' => 'to',
     'auditlog0412' => 'User %s deleted',
     'auditlog0512' => 'User [%s] updated their own account',
+    'erroreditnodomainforbidden12' => 'Error: You don\'t have the permissions, to edit users without domain',
+    'erroreditdomainforbidden12' => 'Error: You don\'t have the permissions, to edit users of domain %s',
+    'errortonodomainforbidden12' => 'Error: You don\'t have the permissions, to remove the domain of users',
+    'errortodomainforbidden12' => 'Error: You don\'t have the permissions, to assign users to domain %s',
+    'errortypesetforbidden12' => 'Error: You don\'t have the permissions, to assign admin rights to users',
+    'errordeletenodomainforbidden12' => 'Error: You don\'t have the permissions, to delete users without domain',
+    'errordeletedomainforbidden12' => 'Error: You don\'t have the permissions, to delete users of domain %s',
+    'errorcreatenodomainforbidden12' => 'Error: You don\'t have the permissions, to add users without domain',
+    'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
+    'retypepassword12' => 'Confirm Password:',
+    'userexists12' => 'User already exists with username %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -824,7 +835,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'The variable %s is empty, please set a value in conf.php.',
-    'errors07' => 'Error:',
+    'error62' => 'Error:',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -836,5 +847,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
-
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
 );
