@@ -34,8 +34,8 @@ if (php_sapi_name() !== 'cli') {
     header('Content-type: text/plain');
 }
 
-//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+//$pathToFunctions = '/var/www/html/mailscanner/functions.php';
 
 if (!is_file($pathToFunctions)) {
     die('Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
@@ -354,6 +354,29 @@ foreach ($check_settings as $setting => $value) {
     } else {
         echo ' WARNING' . PHP_EOL;
         $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
+    }
+}
+
+echo PHP_EOL;
+
+// Check configuration for missing entries
+echo 'Checking conf.php configuration entry: ' . PHP_EOL;
+$missingConfigEntries = checkConfVariables();
+if ($missingConfigEntries['needed']['count'] === 0) {
+    echo ' - All needed entries are OK' . PHP_EOL;
+} else {
+    foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
+        echo pad(" - $missingConfigEntry ") . ' WARNING' . PHP_EOL;
+        $errors[] = 'conf.php: missing configuration entry "' . $missingConfigEntry . '"';
+    }
+}
+
+if ($missingConfigEntries['obsolete']['count'] === 0) {
+    echo ' - All obsolete entries are already removed' . PHP_EOL;
+} else {
+    foreach ($missingConfigEntries['obsolete']['list'] as $missingConfigEntry) {
+        echo pad(" - $missingConfigEntry ") . ' WARNING' . PHP_EOL;
+        $errors[] = 'conf.php: obsolete configuration entry "' . $missingConfigEntry . '" still present';
     }
 }
 
