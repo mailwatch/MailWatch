@@ -34,224 +34,54 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-require '/var/www/html/mailscanner/functions.php';
+require __DIR__ . '/functions.php';
+require_once __DIR__ . '/mtalogprocessor.inc.php';
 
 // Set-up environment
 set_time_limit(0);
 
-class syslog_parser
+class PostfixLogProcessor extends MtaLogProcessor
 {
-    public $raw;
-    public $timestamp;
-    public $date;
-    public $time;
-    public $rfctime;
-    public $host;
-    public $process;
-    public $pid;
-    public $entry;
-    public $months = array(
-        'Jan' => '1',
-        'Feb' => '2',
-        'Mar' => '3',
-        'Apr' => '4',
-        'May' => '5',
-        'Jun' => '6',
-        'Jul' => '7',
-        'Aug' => '8',
-        'Sep' => '9',
-        'Oct' => '10',
-        'Nov' => '11',
-        'Dec' => '12'
-    );
-
-    /**
-     * syslog_parser constructor.
-     * @param string $line
-     */
-    public function __construct($line)
+    public function __construct()
     {
-        // Parse the date, time, host, process pid and log entry 04CF7F970F
-        if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
-            // Store raw line
-            $this->raw = $explode[0];
-
-            // Decode the syslog time/date
-            $month = $this->months[$explode[1]];
-            $thismonth = date('n');
-            $thisyear = date('Y');
-            // Work out the year
-            $year = $month <= $thismonth ? $thisyear : $thisyear - 1;
-            $this->date = $explode[2] . ' ' . $explode[1] . ' ' . $year;
-            $this->time = $explode[3] . ':' . $explode[4] . ':' . $explode[5];
-            $datetime = $this->date . ' ' . $this->time;
-            $this->timestamp = strtotime($datetime);
-            $this->rfctime = date('r', $this->timestamp);
-
-            $this->host = $explode[6];
-            $this->process = $explode[7];
-            $this->pid = $explode[8];
-            $this->entry = $explode[9];
-        } else {
-            return false;
-        }
+        $this->mtaprocess = 'postfix/smtp';
+        $this->delayField = 'delay';
+        $this->statusField = 'status';
     }
-}
 
-class postfix_parser
-{
-    public $raw;
-    public $id;
-    public $entry;
-    public $entries;
-
-    public function __construct($line)
+    public function getRejectReasons()
     {
-        $this->raw = $line;
-        if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {
-            $this->id = $match[1];
-
-            // Milter
-            if (preg_match('/(\S+):\sMilter:\s(.+)$/', $line, $milter)) {
-                $match = $milter;
-            }
-
-            // Extract any key=value pairs
-            if (strstr($match[2], '=')) {
-                $pattern = "/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/";
-                preg_match($pattern, $match[2], $entries);
-                $this->entries = $entries;
+        // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
+        // example
+        $rejectReasons = array();
+        if (preg_match('/NOQUEUE/i', $this->entry)) {
+            if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
+                $rejectReasons['type'] = safe_value('unknown_hostname');
             } else {
-                $this->entry = $match[2];
+                $rejectReasons['type'] = safe_value('NOQUEUE');
             }
-        } else {
-            // No message ID found
-            // Extract any key=value pairs
-            if (strstr($this->raw, '=')) {
-                $items = explode(', ', $this->raw);
-                $entries = array();
-                foreach ($items as $item) {
-                    $entry = explode('=', $item);
-                    // fix for the id= issue 09.12.2011
-                    if (isset($entry[2])) {
-                        $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                    } else {
-                        $entries[$entry[0]] = $entry[1];
-                    }
-                }
-                $this->entries = $entries;
-            } else {
-                return false;
-            }
+            $rejectReasons['status'] = safe_value($this->raw);
         }
+
+        return $rejectReasons;
+    }
+
+    public function extractKeyValuePairs($match)
+    {
+        $entries = array();
+        $pattern = '/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/';
+        preg_match($pattern, $match[2], $entries);
+
+        return $entries;
     }
 }
 
-/**
- * @param string $line
- * @return string
- */
-function get_ip($line)
-{
-    if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $line, $match)) {
-        return $match[1];
-    } else {
-        return $line;
-    }
-}
-
-/**
- * @param string $line
- * @return string
- */
-function get_email($line)
-{
-    if (preg_match('/<(\S+)>/', $line, $match)) {
-        return $match[1];
-    } else {
-        return $line;
-    }
-}
-
-function doit($input)
-{
-    global $fp;
-    if (!$fp = popen($input, 'r')) {
-        die(__('diepipe56'));
-    }
-
-    dbconn();
-
-    $lines = 1;
-    while ($line = fgets($fp, 2096)) {
-        // Reset variables
-        unset($parsed, $postfix, $_timestamp, $_host, $_type, $_msg_id, $_relay, $_dsn, $_status, $_delay);
-
-        $parsed = new syslog_parser($line);
-        $_timestamp = safe_value($parsed->timestamp);
-        $_host = safe_value($parsed->host);
-
-        // Postfix
-        if ($parsed->process === 'postfix/smtp' && class_exists('postfix_parser')) {
-            $postfix = new postfix_parser($parsed->entry);
-            if (true === DEBUG) {
-                print_r($postfix);
-            }
-            $_msg_id = safe_value($postfix->id);
-
-            // Milter-ahead rejections
-            if (preg_match('/Milter: /i', $postfix->raw) && preg_match(
-                    '/(rejected recipient|user unknown)/i',
-                    $postfix->entries['reject']
-                )
-            ) {
-                $_type = safe_value('unknown_user');
-                $_status = safe_value(get_email($postfix->entries['to']));
-            }
-
-            // Unknown users
-            if (preg_match('/user unknown/i', $postfix->entry)) {
-                // Unknown users
-                $_type = safe_value('unknown_user');
-                $_status = safe_value($postfix->raw);
-            }
-
-            // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
-            // example
-            if (preg_match('/NOQUEUE/i', $postfix->entry)) {
-                if (preg_match('/Client host rejected: cannot find your hostname/i', $postfix->entry)) {
-                    $_type = safe_value('unknown_hostname');
-                } else {
-                    $_type = safe_value('NOQUEUE');
-                }
-                $_status = safe_value($postfix->raw);
-            }
-            // Relay lines
-            if (isset($postfix->entries['relay'], $postfix->entries['status'])) {
-                $_type = safe_value('relay');
-                $_delay = safe_value($postfix->entries['delay']);
-                $_relay = safe_value(get_ip($postfix->entries['relay']));
-                $_dsn = safe_value($postfix->entries['dsn']);
-                $_status = safe_value($postfix->entries['status']);
-            }
-        }
-        if (isset($_type)) {
-            dbquery(
-                "REPLACE INTO mtalog VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status','$_delay')"
-            );
-        }
-        $lines++;
-    }
-
-    dbclose();
-    pclose($fp);
-}
-
+$logprocessor = new PostfixLogProcessor();
 if ($_SERVER['argv'][1] === '--refresh') {
-    doit('cat ' . MAIL_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first
-    doit('cat ' . MAIL_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
     // Start watching the maillog
-    doit('tail -F -n0 ' . MAIL_LOG);
+    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
 }
