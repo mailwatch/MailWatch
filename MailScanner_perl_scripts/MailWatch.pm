@@ -138,7 +138,6 @@ sub InitConnection {
 sub ExitLogging {
     # Server exit - commit changes, close socket, and exit gracefully.
     close(SERVER);
-    #$dbh->commit or die $dbh->errstr;
     $dbh->disconnect;
     exit;
 }
