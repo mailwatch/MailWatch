@@ -3762,88 +3762,109 @@ function checkForExistingUser($username)
 }
 
 /**
- *
+ * @param $count number of hex rgb colors that should be generated
+ * @return array that contains rgb colors as hex strings usable for html
  */
+function getHexColors($count) {
+//limited to 16 colors atm  which can be distinguished by humans
+    $colors = array(
+        "#00ffff",
+        "#000000",
+        "#0000ff",
+        "#ff00ff",
+        "#808080",
+        "#008000",
+        "#00ff00",
+        "#800000",
+        "#000080",
+        "#808000",
+        "#800080",
+        "#ff0000",
+        "#c0c0c0",
+        "#008080",
+        "#ffffff",
+        "#ffff00"
+    );
+    for ($i=0; $i< $count; $i++) {
+        $htmlColors[] = $colors[$i % count($colors)];
+    }
+    return $htmlColors;
+}
+
+
 function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitle, $scale = false)
 {
-    // Check permissions to see if apache can actually create the file
-    if (is_writable(CACHE_DIR)) {
-        // JPGraph
-        include_once './lib/jpgraph/src/jpgraph.php';
-        include_once './lib/jpgraph/src/jpgraph_pie.php';
-        include_once './lib/jpgraph/src/jpgraph_pie3d.php';
-
-        $result = dbquery($sqlDataQuery);
-        if (!$result->num_rows > 0) {
-            die(__('diemysql99') . "\n");
-        }
-
-        while ($row = $result->fetch_object()) {
-            $data[] = $row->count;
-            $data_names[] = $row->name;
-            $data_size[] = $row->size;
-        }
-
-        // Work out best size
-        format_report_volume($data_size, $size_info);
-
-        $graph = new PieGraph(800, 385, 0, false);
-        $graph->SetShadow();
-        $graph->img->SetAntiAliasing();
-        $graph->title->Set($reportTitle);
-
-        $p1 = new PiePlot3d($data);
-        $p1->SetTheme('sand');
-        $p1->SetLegends($data_names);
-
-        $p1->SetCenter(0.70, 0.4);
-        $graph->legend->SetLayout(LEGEND_VERT);
-        $graph->legend->Pos(0.25, 0.20, 'center');
-
-        $graph->Add($p1);
-        $graph->Stroke($filename);
-        
-        $scaleFactor = 1;
-        if($scale) {
-            $scaleFactor = $size_info['formula'];
-        }
-        
-        // HTML to display the graph
-        echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
-        echo ' <tr>';
-
-        //  Check Permissions to see if the file has been written and that apache to read it.
-        if (is_readable($filename)) {
-            echo '  <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
-        } else {
-            echo '  <td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-        }
-
-        echo ' </tr>' . "\n";
-        echo ' <tr>' . "\n";
-        echo '  <td align="center">' . "\n";
-        echo '   <table style="width: 500px">' . "\n";
-        echo '    <tr style="background-color: #F7CE4A">' . "\n";
-        echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
-        echo '     <th>' . __('count03') . '</th>' . "\n";
-        echo '     <th>' . __('size03') . '</th>' . "\n";
-        echo '    </tr>' . "\n";
-
-        for ($i = 0; $i < count($data); $i++) {
-            echo '    <tr style="background-color: #EBEBEB">' . "\n";
-            echo '     <td>' . $data_names[$i] . '</td>' . "\n";
-            echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
-            echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scaleFactor) . '</td>' . "\n";
-            echo '    </tr>' . "\n";
-        }
-
-        echo '   </table>' . "\n";
-        echo '  </td>' . "\n";
-        echo ' </tr>' . "\n";
-        echo '</table>' . "\n";
-    } else {
-        echo sprintf(__('errorcachedirnotwritable03'), CACHE_DIR); //TODO localization
+    $result = dbquery($sqlDataQuery);
+    if (!$result->num_rows > 0) {
+        die(__('diemysql99') . "\n");
     }
+
+    while ($row = $result->fetch_object()) {
+        $data[] = $row->count;
+        $data_names[] = $row->name;
+        $data_size[] = $row->size;
+    }
+
+    // Work out best size
+    format_report_volume($data_size, $size_info);
+
+    $scaleFactor = 1;
+    if($scale) {
+        $scaleFactor = $size_info['formula'];
+    }
+
+  //create canvas graph
+    echo '<canvas id="reportChart" class="reportGraph"></canvas>
+  <script src="js/Chart.js/Chart.min.js"></script>
+  <script>
+    var ctx = document.getElementById("reportChart");
+    var myChart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: ["' . implode('", "', $data_names) . '"],
+        datasets: [{
+          label: "' . $dataColumnTitle . '",
+          data: [' . implode(', ', $data) . '],
+          backgroundColor: ["' . implode('", "', getHexColors(count($data))) . '"]
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: "' . $reportTitle . '"
+        },
+        legend: {
+          display: true,
+          position: "top"
+        },
+        responsive: false
+      }
+    });
+  </script>';
+ 
+    // HTML to display the data
+    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
+    echo ' <tr>' . "\n";
+    echo '  <td align="center">' . "\n";
+    echo '   <table style="width: 500px">' . "\n";
+    echo '    <tr style="background-color: #F7CE4A">' . "\n";
+    echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
+    echo '     <th>' . __('count03') . '</th>' . "\n";
+    echo '     <th>' . __('size03') . '</th>' . "\n";
+    echo '    </tr>' . "\n";
+
+    for ($i = 0; $i < count($data); $i++) {
+        echo '    <tr style="background-color: #EBEBEB">' . "\n";
+        echo '     <td>' . $data_names[$i] . '</td>' . "\n";
+        echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
+        echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scaleFactor) . '</td>' . "\n";
+        echo '    </tr>' . "\n";
+    }
+
+    echo '   </table>' . "\n";
+    echo '  </td>' . "\n";
+    echo ' </tr>' . "\n";
+    echo '</table>' . "\n";
 }
 
 

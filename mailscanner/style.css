@@ -442,3 +442,11 @@ div.table>.caption>input {
 .tableWithLineBreaksWrapper>table>tr>td {
     word-wrap: break-word;
 }
+
+.reportGraph {
+    text-align: center;
+    height: 600px;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
