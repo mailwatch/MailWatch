@@ -5,10 +5,10 @@
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
 # Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
-test -x /var/www/html/mailscanner/postfix_relay.php || exit 0
-/usr/bin/php -q /var/www/html/mailscanner/postfix_relay.php --refresh
+test -x /usr/local/bin/postfix_relay.php || exit 0
+/usr/bin/php -q /usr/local/bin/postfix_relay.php --refresh
 
-test -x /var/www/html/mailscanner/mailscanner_relay.php || exit 0
-/usr/bin/php -q /var/www/html/mailscanner/mailscanner_relay.php --refresh
+test -x /usr/local/bin/mailscanner_relay.php || exit 0
+/usr/bin/php -q /usr/local/bin/mailscanner_relay.php --refresh
 
 exit 0

@@ -8,3 +8,10 @@ Optional files for Postfix MTA
 
 Put the 'mailwatch_relay' file into /etc/cron.hourly/.
 
+Put in /usr/local/bin the following files:
+
+postfix_relay.php
+mailscanner_relay.php
+
+
+

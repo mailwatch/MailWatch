@@ -34,7 +34,7 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-require __DIR__ . '/functions.php';
+require '/var/www/html/mailscanner/functions.php';
 
 // Set-up environment
 set_time_limit(0);
