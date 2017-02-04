@@ -45,7 +45,7 @@ $filename = CACHE_DIR . '/top_recipients_by_volume.png.' . time();
 
 $sql = "
  SELECT
-  to_address,
+  to_address as name,
   COUNT(*) as count,
   SUM(size) as size
  FROM
@@ -62,46 +62,7 @@ $sql = "
  LIMIT 10
 ';
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
-
-    // JPGraph
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_pie.php';
-    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
-
-    $result = dbquery($sql);
-    if (!$result->num_rows > 0) {
-        die(__('diemysql99') . "\n");
-    }
-
-    while ($row = $result->fetch_object()) {
-        $data[] = $row->count;
-        $data_names[] = $row->to_address;
-        $data_size[] = $row->size;
-    }
-
-    // Work out best display value
-    format_report_volume($data_size, $size_info);
-
-    $graph = new PieGraph(800, 385, 0, false);
-    $graph->SetShadow();
-    $graph->img->SetAntiAliasing();
-    $graph->title->Set(__('top10recipvol43'));
-
-    $p1 = new PiePlot3d($data);
-    $p1->SetTheme('sand');
-    $p1->SetLegends($data_names);
-
-    $p1->SetCenter(0.70, 0.4);
-    $graph->legend->SetLayout(LEGEND_VERT);
-    $graph->legend->Pos(0.25, 0.20, 'center');
-
-    $graph->Add($p1);
-    $graph->Stroke($filename);
-}
-
-printGraphTable($filename, __('email43'), $data, $data_names, $data_size, $size_info['formula']);
+printGraphTable($sql, $filename, __('top10recipvol43'), __('email43'), true);
 
 // Add footer
 html_end();

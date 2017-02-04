@@ -3761,44 +3761,92 @@ function checkForExistingUser($username)
     return $row->counter >0;
 }
 
-function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1)
+/**
+ *
+ */
+function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitle, $scale = false)
 {
-    // HTML to display the graph
-    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
-    echo ' <tr>';
-    echo '  <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
-    echo ' </tr>';
-    echo ' <tr>';
+    // Check permissions to see if apache can actually create the file
+    if (is_writable(CACHE_DIR)) {
+        // JPGraph
+        include_once './lib/jpgraph/src/jpgraph.php';
+        include_once './lib/jpgraph/src/jpgraph_pie.php';
+        include_once './lib/jpgraph/src/jpgraph_pie3d.php';
 
-    //  Check Permissions to see if the file has been written and that apache to read it.
-    if (is_readable($filename)) {
-        echo '  <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
-    } else {
-        echo '  <td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-    }
+        $result = dbquery($sqlDataQuery);
+        if (!$result->num_rows > 0) {
+            die(__('diemysql99') . "\n");
+        }
 
-    echo ' </tr>' . "\n";
-    echo ' <tr>' . "\n";
-    echo '  <td align="center">' . "\n";
-    echo '   <table style="width: 500px">' . "\n";
-    echo '    <tr style="background-color: #F7CE4A">' . "\n";
-    echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
-    echo '     <th>' . __('count03') . '</th>' . "\n";
-    echo '     <th>' . __('size03') . '</th>' . "\n";
-    echo '    </tr>' . "\n";
+        while ($row = $result->fetch_object()) {
+            $data[] = $row->count;
+            $data_names[] = $row->name;
+            $data_size[] = $row->size;
+        }
 
-    for ($i = 0; $i < $count($data); $i++) {
-        echo '    <tr style="background-color: #EBEBEB">' . "\n";
-        echo '     <td>' . $data_names[$i] . '</td>' . "\n";
-        echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
-        echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scale) . '</td>' . "\n";
+        // Work out best size
+        format_report_volume($data_size, $size_info);
+
+        $graph = new PieGraph(800, 385, 0, false);
+        $graph->SetShadow();
+        $graph->img->SetAntiAliasing();
+        $graph->title->Set($reportTitle);
+
+        $p1 = new PiePlot3d($data);
+        $p1->SetTheme('sand');
+        $p1->SetLegends($data_names);
+
+        $p1->SetCenter(0.70, 0.4);
+        $graph->legend->SetLayout(LEGEND_VERT);
+        $graph->legend->Pos(0.25, 0.20, 'center');
+
+        $graph->Add($p1);
+        $graph->Stroke($filename);
+        
+        $scaleFactor = 1;
+        if($scale) {
+            $scaleFactor = $size_info['formula'];
+        }
+        
+        // HTML to display the graph
+        echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
+        echo ' <tr>';
+        echo '  <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
+        echo ' </tr>';
+        echo ' <tr>';
+
+        //  Check Permissions to see if the file has been written and that apache to read it.
+        if (is_readable($filename)) {
+            echo '  <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
+        } else {
+            echo '  <td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+        }
+
+        echo ' </tr>' . "\n";
+        echo ' <tr>' . "\n";
+        echo '  <td align="center">' . "\n";
+        echo '   <table style="width: 500px">' . "\n";
+        echo '    <tr style="background-color: #F7CE4A">' . "\n";
+        echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
+        echo '     <th>' . __('count03') . '</th>' . "\n";
+        echo '     <th>' . __('size03') . '</th>' . "\n";
         echo '    </tr>' . "\n";
-    }
 
-    echo '   </table>' . "\n";
-    echo '  </td>' . "\n";
-    echo ' </tr>' . "\n";
-    echo '</table>' . "\n";
+        for ($i = 0; $i < count($data); $i++) {
+            echo '    <tr style="background-color: #EBEBEB">' . "\n";
+            echo '     <td>' . $data_names[$i] . '</td>' . "\n";
+            echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
+            echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scaleFactor) . '</td>' . "\n";
+            echo '    </tr>' . "\n";
+        }
+
+        echo '   </table>' . "\n";
+        echo '  </td>' . "\n";
+        echo ' </tr>' . "\n";
+        echo '</table>' . "\n";
+    } else {
+        echo 'Error: cache directory not writable'; //TODO localization
+    }
 }
 
 
