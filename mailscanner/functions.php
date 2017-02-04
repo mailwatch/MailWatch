@@ -1156,9 +1156,9 @@ AND
     arsort($virus_array);
     reset($virus_array);
     // Get the topmost entry from the array
-    if(!defined('VIRUS_REGEX')) {
+    if (!defined('VIRUS_REGEX')) {
         return __('unknownvirusscanner03');
-    } else if ((list($key, $val) = each($virus_array)) !== '') {
+    } elseif ((list($key, $val) = each($virus_array)) !== '') {
         // Check and make sure there first placed isn't tied!
         $saved_key = $key;
         $saved_val = $val;
