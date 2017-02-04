@@ -250,3 +250,6 @@ define('AUTO_RELEASE', false);
 //Give Domain Admins ability to release dangerous content, like viruses
 define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
 define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
+
+//Use antialiasing to render images (default if absent is false). This requires imageantialias() in php-gd module (currently not included in debian packages).
+define('USE_ANTIALIASING', false);
