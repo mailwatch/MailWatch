@@ -333,15 +333,6 @@ if ($link) {
         executeQuery($sql);
     }
 
-    // Add new column and index to user_filters table
-    echo pad(' - Add mtalog_id field and primary key to `user_filters` table');
-    if (true === check_column_exists('user_filters', 'id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
-    } else {
-        $sql = 'ALTER TABLE `user_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
-        executeQuery($sql);
-    }
-
     echo PHP_EOL;
 
     // Convert database to utf8mb4 if MySQL ≥ 5.5.3
