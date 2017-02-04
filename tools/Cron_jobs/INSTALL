@@ -2,7 +2,7 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
-Put the file 'mailwatch' file into /etc/cron.daily/
+Put the file 'mailwatch' into /etc/cron.daily/
 
 Put in /usr/local/bin the following files:
 
