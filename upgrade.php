@@ -164,6 +164,7 @@ $errors = false;
 
 echo PHP_EOL;
 echo 'MailWatch for MailScanner Database Upgrade to 1.2 (RC5-dev)' .  PHP_EOL;
+// echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() .  PHP_EOL;
 
 echo PHP_EOL;
 echo pad('Testing connectivity to the database ');
