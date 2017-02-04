@@ -8,17 +8,17 @@ procedure.
 
 You are also stongly advised to read the CHANGELOG first!
 
-UPGRADING FROM 1.0.3 TO 1.2
+UPGRADING FROM 1.0.3 TO 1.2.0
 
-- Run upgrade.php to update schema
+- Stop MailScanner and the MTA (Postfix or Exim).
 
 - Move /var/www/html/mailscanner to /var/www/html/mailscanner.old and move the
   mailscanner directory from the tarball to /var/www/html/.
 
 - Copy conf.php.example to conf.php and edit the file to suit your configuration.
 
-- Replace MailWatch.pm with new version and set database connection settings,
-  restart MailScanner for this to take effect.
+- Replace MailWatch.pm, SQLBlackWhiteList.pm and SQLSpamSettings.pm with new version 
+  from MailScanner_perl_scripts and set database connection settings.
 
 - Install files in tools/Cron_jobs following INSTALL doc.
 
@@ -26,6 +26,10 @@ UPGRADING FROM 1.0.3 TO 1.2
   following INSTALL doc.
 
 - Install file in tools/Sendmail_queue following INSTALL doc.
+
+- Run upgrade.php to update database schema. Look for errors and correct them if needed.
+
+- Start MailScanner and your MTA. Check the log in /var/log/syslog.
 
 UPGRADING FROM 1.0.x TO 1.0.3
 
