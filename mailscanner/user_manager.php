@@ -102,7 +102,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT class=\"password\" TYPE=\"TEXT\" NAME=\"password\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT class=\"password\" TYPE=\"TEXT\" NAME=\"password1\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT class=\"password\" TYPE=\"TEXT\" ID=\"retypepassword\" NAME=\"password1\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
          <OPTION VALUE=\"U\">" . __('user12') . "</OPTION>
