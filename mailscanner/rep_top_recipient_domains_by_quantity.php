@@ -61,6 +61,7 @@ $sql = "
   count DESC
  LIMIT 10
 ';
+
 $columnTitles = [
     __('domain40'),
     __('count03'),

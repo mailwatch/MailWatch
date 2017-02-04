@@ -3792,6 +3792,13 @@ function getHexColors($count)
     return $htmlColors;
 }
 
+/**
+ * @param $sqlDataQuery sql query that will be used to get the data that should be displayed
+ * @param $reportTitle title that will be displayed on top of the graph
+ * @param $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
+ * @param $columnTitles array that contains the titles of the table columns
+ * @param $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
+ */
 function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
 {
     $result = dbquery($sqlDataQuery);
@@ -3799,6 +3806,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
     if ($numResult <= 0) {
         die(__('diemysql99') . "\n");
     }
+    //store data in format $data[columnname][rowid]
     while($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
             $data[$columnName][] = $row[$columnName];
@@ -3811,11 +3819,11 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
             // Work out best size
             $data[$column . 'conv'] = $data[$column];
             format_report_volume($data[$column . 'conv'], $size_info);
-	    $scale = $size_info['formula'];
-
+	        $scale = $size_info['formula'];
             foreach ($data[$column . 'conv'] as $key => $val) {
                 $data[$column . 'conv'][$key] = formatSize($val * $scale);
             }
+            
         } elseif ($conversion === 'number') {
             $data[$column . 'conv'] = array_map(
                 function($val) { return number_format($val); },
@@ -3824,7 +3832,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
         }
     }
 
-  //create canvas graph
+    //create canvas graph
     $bgcolors = getHexColors(count($data[$graphColumn['dataColumn']]));
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
   <script src="js/Chart.js/Chart.min.js"></script>
@@ -3854,7 +3862,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
     });
   </script>';
 
-    // HTML to display the data
+    // HTML to display the table
     echo '<table class="reportTable">';
     echo '    <tr style="background-color: #F7CE4A">' . "\n";
     foreach ($columnTitles as $columnTitle) {
