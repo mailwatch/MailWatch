@@ -3811,9 +3811,6 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
         // HTML to display the graph
         echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
         echo ' <tr>';
-        echo '  <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
-        echo ' </tr>';
-        echo ' <tr>';
 
         //  Check Permissions to see if the file has been written and that apache to read it.
         if (is_readable($filename)) {
