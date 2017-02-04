@@ -471,6 +471,29 @@ foreach ($check_settings as $setting => $value) {
 
 echo PHP_EOL;
 
+// Check configuration for missing entries
+echo 'Checking conf.php configuration entry: ' . PHP_EOL;
+$missingConfigEntries = checkConfVariables();
+if ($missingConfigEntries['needed']['count'] === 0) {
+    echo ' - All needed entries are OK' . PHP_EOL;
+} else {
+    foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
+        echo pad(" - $missingConfigEntry ") . ' WARNING' . PHP_EOL;
+        $errors[] = 'conf.php: missing configuration entry "' . $missingConfigEntry . '"';
+    }
+}
+
+if ($missingConfigEntries['obsolete']['count'] === 0) {
+    echo ' - All obsolete entries are already removed' . PHP_EOL;
+} else {
+    foreach ($missingConfigEntries['obsolete']['list'] as $missingConfigEntry) {
+        echo pad(" - $missingConfigEntry ") . ' WARNING' . PHP_EOL;
+        $errors[] = 'conf.php: obsolete configuration entry "' . $missingConfigEntry . '" still present';
+    }
+}
+
+echo PHP_EOL;
+
 // Error messages
 if (is_array($errors)) {
     echo '*** ERROR/WARNING SUMMARY ***' . PHP_EOL;
