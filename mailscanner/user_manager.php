@@ -417,10 +417,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>'."\n";
         if ($_SESSION['user_ldap'] !== true) {
-            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
-            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>'."\n";
+            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input class=\"password\" TYPE=\"TEXT\" id="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
+            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input class=\"password\" TYPE=\"TEXT\" id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>'."\n";
         }
-
         echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" '.$quarantine_report.'> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>'."\n";
         echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" '.$noscan.'> <span style="font-size:90%">' . __('scanforspam212') . '</span></td></tr>'."\n";
