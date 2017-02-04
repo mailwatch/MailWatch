@@ -3804,7 +3804,7 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
         $graph->Stroke($filename);
         
         $scaleFactor = 1;
-        if($scale) {
+        if ($scale) {
             $scaleFactor = $size_info['formula'];
         }
         
