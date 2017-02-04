@@ -34,7 +34,7 @@ if (php_sapi_name() !== 'cli') {
     header('Content-type: text/plain');
 }
 
-//$pathToFunctions = __DIR__ . '/functions.php';
+// Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 
 if (!is_file($pathToFunctions)) {
@@ -164,7 +164,7 @@ $errors = false;
 // Test connectivity to the database
 
 echo PHP_EOL;
-echo 'MailWatch for MailScanner Database Upgrade to 1.2 (RC5-dev)' .  PHP_EOL;
+echo 'MailWatch for MailScanner Database Upgrade to 1.2.0 (RC5-dev)' .  PHP_EOL;
 // echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() .  PHP_EOL;
 
 echo PHP_EOL;
