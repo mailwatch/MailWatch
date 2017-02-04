@@ -3793,17 +3793,19 @@ function getHexColors($count)
 }
 
 
-function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitle, $scale = false)
+function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitle, $graphColumn, $scale = false)
 {
     $result = dbquery($sqlDataQuery);
     if (!$result->num_rows > 0) {
         die(__('diemysql99') . "\n");
     }
 
-    while ($row = $result->fetch_object()) {
-        $data[] = $row->count;
-        $data_names[] = $row->name;
-        $data_size[] = $row->size;
+    while ($row = $result->fetch_array()) {
+        $tableData[] = $row[$graphColumn];
+        $data_count[] = $row['count'];
+        $data_names[] = $row['name'];
+        $data_size[] = $row['size'];
+        
     }
 
     // Work out best size
@@ -3857,7 +3859,7 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
     for ($i = 0; $i < count($data); $i++) {
         echo '    <tr style="background-color: #EBEBEB">' . "\n";
         echo '     <td>' . $data_names[$i] . '</td>' . "\n";
-        echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
+        echo '     <td style="text-align: center">' . number_format($data_count[$i]) . '</td>' . "\n";
         echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scaleFactor) . '</td>' . "\n";
         echo '    </tr>' . "\n";
     }

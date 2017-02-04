@@ -62,7 +62,7 @@ $sql = "
  LIMIT 10
 ';
 
-printGraphTable($sql, $filename, __('top10recipdomvol41'), __('domain41'), false);
+printGraphTable($sql, $filename, __('top10recipdomvol41'), __('domain41'), 'size', false);
 
 // Add footer
 html_end();
