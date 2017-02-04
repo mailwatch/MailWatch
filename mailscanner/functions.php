@@ -3792,31 +3792,40 @@ function getHexColors($count)
     return $htmlColors;
 }
 
-
-function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitle, $graphColumn, $scale = false)
+function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
 {
     $result = dbquery($sqlDataQuery);
-    if (!$result->num_rows > 0) {
+    $numResult = $result->num_rows;
+    if ($numResult <= 0) {
         die(__('diemysql99') . "\n");
     }
-
-    while ($row = $result->fetch_array()) {
-        $tableData[] = $row[$graphColumn];
-        $data_count[] = $row['count'];
-        $data_names[] = $row['name'];
-        $data_size[] = $row['size'];
-        
+    while($row = $result->fetch_assoc()) {
+        foreach ($sqlColumns as $columnName) {
+            $data[$columnName][] = $row[$columnName];
+        }
     }
 
-    // Work out best size
-    format_report_volume($data_size, $size_info);
+    //do conversion if given
+    foreach ($valueConversions as $column => $conversion) {
+        if($conversion === 'scale') {
+            // Work out best size
+            $data[$column . 'conv'] = $data[$column];
+            format_report_volume($data[$column . 'conv'], $size_info);
+	    $scale = $size_info['formula'];
 
-    $scaleFactor = 1;
-    if ($scale) {
-        $scaleFactor = $size_info['formula'];
+            foreach ($data[$column . 'conv'] as $key => $val) {
+                $data[$column . 'conv'][$key] = formatSize($val * $scale);
+            }
+        } elseif ($conversion === 'number') {
+            $data[$column . 'conv'] = array_map(
+                function($val) { return number_format($val); },
+                $data[$column]
+            );
+        }
     }
 
   //create canvas graph
+    $bgcolors = getHexColors(count($data[$graphColumn['dataColumn']]));
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
   <script src="js/Chart.js/Chart.min.js"></script>
   <script>
@@ -3824,11 +3833,11 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
     var myChart = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: ["' . implode('", "', $data_names) . '"],
+        labels: ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"],
         datasets: [{
-          label: "' . $dataColumnTitle . '",
-          data: [' . implode(', ', $data) . '],
-          backgroundColor: ["' . implode('", "', getHexColors(count($data))) . '"]
+          label: "' . $reportTitle . '",
+          data: [' . implode(', ', $data[$graphColumn['dataColumn']]) . '],
+          backgroundColor: ["' . implode('", "', $bgcolors) . '"]
         }]
       },
       options: {
@@ -3844,30 +3853,28 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
       }
     });
   </script>';
- 
+
     // HTML to display the data
-    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
-    echo ' <tr>' . "\n";
-    echo '  <td align="center">' . "\n";
-    echo '   <table style="width: 500px">' . "\n";
+    echo '<table class="reportTable">';
     echo '    <tr style="background-color: #F7CE4A">' . "\n";
-    echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
-    echo '     <th>' . __('count03') . '</th>' . "\n";
-    echo '     <th>' . __('size03') . '</th>' . "\n";
+    foreach ($columnTitles as $columnTitle) {
+        echo '     <th>' . $columnTitle . '</th>' . "\n";
+    }
     echo '    </tr>' . "\n";
 
-    for ($i = 0; $i < count($data); $i++) {
+    for ($i = 0; $i < $numResult; $i++) {
         echo '    <tr style="background-color: #EBEBEB">' . "\n";
-        echo '     <td>' . $data_names[$i] . '</td>' . "\n";
-        echo '     <td style="text-align: center">' . number_format($data_count[$i]) . '</td>' . "\n";
-        echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scaleFactor) . '</td>' . "\n";
+        foreach($sqlColumns as $sqlColumn) {
+            if(isset($valueConversions[$sqlColumn])) {
+                echo '     <td>' . $data[$sqlColumn . 'conv'][$i] . '</td>' . "\n";
+            } else {
+                echo '     <td>' . $data[$sqlColumn][$i] . '</td>' . "\n";
+            }
+        }
         echo '    </tr>' . "\n";
     }
 
     echo '   </table>' . "\n";
-    echo '  </td>' . "\n";
-    echo ' </tr>' . "\n";
-    echo '</table>' . "\n";
 }
 
 

@@ -62,7 +62,7 @@ $sql = "
  LIMIT 10
 ';
 
-printGraphTable($sql, $filename, __('top10sendersqt46'), __('email46'), 'count', true);
+printGraphTable($sql, $filename, __('top10sendersqt46'), __('email46'), 'count');
 
 // Add footer
 html_end();
