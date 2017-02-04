@@ -8,6 +8,25 @@ procedure.
 
 You are also stongly advised to read the CHANGELOG first!
 
+UPGRADING FROM 1.0.3 TO 1.2
+
+- Run upgrade.php to update schema
+
+- Move /var/www/html/mailscanner to /var/www/html/mailscanner.old and move the
+  mailscanner directory from the tarball to /var/www/html/.
+
+- Copy conf.php.example to conf.php and edit the file to suit your configuration.
+
+- Replace MailWatch.pm with new version and set database connection settings,
+  restart MailScanner for this to take effect.
+
+- Install files in tools/Cron_jobs following INSTALL doc.
+
+- Install optional files in tools to suit your MTA (Postfix_relay or Sendmail_relay) 
+  following INSTALL doc.
+
+- Install file in tools/Sendmail_queue following INSTALL doc.
+
 UPGRADING FROM 1.0.x TO 1.0.3
 
 - Add grant for GeoIP updates
