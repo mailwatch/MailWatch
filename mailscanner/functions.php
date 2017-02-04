@@ -3845,7 +3845,7 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
     } else {
-        echo 'Error: cache directory not writable'; //TODO localization
+        echo sprintf(__('errorcachedirnotwritable03'), CACHE_DIR); //TODO localization
     }
 }
 

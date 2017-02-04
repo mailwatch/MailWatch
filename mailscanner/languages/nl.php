@@ -185,6 +185,7 @@ return array(
     '15minutes03' => '15 min.:',
     'saspam03' => 'spam',
     'sanotspam03' => 'not spam',
+    'errorcachedirnotwritable03' => 'Error: cache directory %s not writable',
 
     // 04-detail.php
     'receivedon04' => 'Ontvangen op:',
