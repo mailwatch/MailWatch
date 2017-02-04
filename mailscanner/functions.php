@@ -3799,13 +3799,11 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
     if (!$result->num_rows > 0) {
         die(__('diemysql99') . "\n");
     }
-
     while ($row = $result->fetch_array()) {
         $tableData[] = $row[$graphColumn];
         $data_count[] = $row['count'];
         $data_names[] = $row['name'];
         $data_size[] = $row['size'];
-        
     }
 
     // Work out best size
@@ -3827,8 +3825,8 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
         labels: ["' . implode('", "', $data_names) . '"],
         datasets: [{
           label: "' . $dataColumnTitle . '",
-          data: [' . implode(', ', $data) . '],
-          backgroundColor: ["' . implode('", "', getHexColors(count($data))) . '"]
+          data: [' . implode(', ', $tableData) . '],
+          backgroundColor: ["' . implode('", "', getHexColors(count($tableData))) . '"]
         }]
       },
       options: {
@@ -3856,7 +3854,7 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
     echo '     <th>' . __('size03') . '</th>' . "\n";
     echo '    </tr>' . "\n";
 
-    for ($i = 0; $i < count($data); $i++) {
+    for ($i = 0; $i < count($data_names); $i++) {
         echo '    <tr style="background-color: #EBEBEB">' . "\n";
         echo '     <td>' . $data_names[$i] . '</td>' . "\n";
         echo '     <td style="text-align: center">' . number_format($data_count[$i]) . '</td>' . "\n";
