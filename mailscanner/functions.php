@@ -3807,7 +3807,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
         die(__('diemysql99') . "\n");
     }
     //store data in format $data[columnname][rowid]
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
             $data[$columnName][] = $row[$columnName];
         }
@@ -3815,18 +3815,19 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
 
     //do conversion if given
     foreach ($valueConversions as $column => $conversion) {
-        if($conversion === 'scale') {
+        if ($conversion === 'scale') {
             // Work out best size
             $data[$column . 'conv'] = $data[$column];
             format_report_volume($data[$column . 'conv'], $size_info);
-	        $scale = $size_info['formula'];
+            $scale = $size_info['formula'];
             foreach ($data[$column . 'conv'] as $key => $val) {
                 $data[$column . 'conv'][$key] = formatSize($val * $scale);
             }
-            
         } elseif ($conversion === 'number') {
             $data[$column . 'conv'] = array_map(
-                function($val) { return number_format($val); },
+                function ($val) {
+                    return number_format($val);
+                },
                 $data[$column]
             );
         }
@@ -3872,8 +3873,8 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
 
     for ($i = 0; $i < $numResult; $i++) {
         echo '    <tr style="background-color: #EBEBEB">' . "\n";
-        foreach($sqlColumns as $sqlColumn) {
-            if(isset($valueConversions[$sqlColumn])) {
+        foreach ($sqlColumns as $sqlColumn) {
+            if (isset($valueConversions[$sqlColumn])) {
                 echo '     <td>' . $data[$sqlColumn . 'conv'][$i] . '</td>' . "\n";
             } else {
                 echo '     <td>' . $data[$sqlColumn][$i] . '</td>' . "\n";
