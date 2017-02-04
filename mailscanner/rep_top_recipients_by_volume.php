@@ -62,7 +62,25 @@ $sql = "
  LIMIT 10
 ';
 
-printGraphTable($sql, $filename, __('top10recipvol43'), __('email43'), 'size', true);
+$columnTitles = [
+    __('email43'),
+    __('count03'),
+    __('size03')
+];
+$sqlColumns = [
+    'name',
+    'count',
+    'size'
+];
+$valueConversion = [
+    'size' => 'scale',
+    'count' => 'number'
+];
+$graphColumns = [
+    'labelColumn' => 'name',
+    'dataColumn' => 'size'
+];
+printGraphTable($sql, __('top10recipvol43'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

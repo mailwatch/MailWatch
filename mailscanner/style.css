@@ -450,3 +450,18 @@ div.table>.caption>input {
     margin-left: auto;
     margin-right: auto;
 }
+
+.reportTable {
+   width: 500px; 
+   padding: 10px;   
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.reportTable>tbody>tr>td {
+   text-align: center;
+}
+
+.reportTable>tbody>tr>td:first-child {
+   text-align: left;
+}
