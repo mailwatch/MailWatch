@@ -3765,8 +3765,9 @@ function checkForExistingUser($username)
  * @param $count number of hex rgb colors that should be generated
  * @return array that contains rgb colors as hex strings usable for html
  */
-function getHexColors($count) {
-//limited to 16 colors atm  which can be distinguished by humans
+function getHexColors($count)
+{
+    //limited to 16 colors atm  which can be distinguished by humans
     $colors = array(
         "#00ffff",
         "#000000",
@@ -3809,7 +3810,7 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
     format_report_volume($data_size, $size_info);
 
     $scaleFactor = 1;
-    if($scale) {
+    if ($scale) {
         $scaleFactor = $size_info['formula'];
     }
 
