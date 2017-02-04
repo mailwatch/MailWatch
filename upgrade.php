@@ -34,7 +34,7 @@ if (php_sapi_name() !== 'cli') {
     header('Content-type: text/plain');
 }
 
-//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+//$pathToFunctions = __DIR__ . '/functions.php';
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 
 if (!is_file($pathToFunctions)) {
@@ -158,6 +158,7 @@ function getTableIndexes($table)
 }
 
 $errors = false;
+
 
 // Upgrade mailwatch database
 // Test connectivity to the database
