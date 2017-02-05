@@ -1686,6 +1686,7 @@ function generatePager($sql)
 </tr>
 <tr>
 <td colspan="4">';
+    return $from;
 }
 
 /**
@@ -1725,7 +1726,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        $sql = generatePager($sql);
+        $from = generatePager($sql);
 
         // Re-run the original query and limit the rows
         $limit = $from - 1;
