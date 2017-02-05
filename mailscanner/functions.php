@@ -3768,7 +3768,7 @@ function checkForExistingUser($username)
 function getHexColors($count)
 {
     // colors from jpgraph UniversalTheme
-    $colors = array (
+    $colors = array(
         '#61a9f3',#blue
         '#f381b9',#red
         '#61E3A9',#green
