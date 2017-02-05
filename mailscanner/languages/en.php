@@ -30,7 +30,7 @@
  */
 
 /* languages/en.php */
-/* v0.3.8 */
+/* v0.3.10 */
 
 return array(
     // 01-login.php
@@ -63,7 +63,7 @@ return array(
     'loadaverage03' => 'Load Average:',
     'mailqueue03' => 'Mail Queues',
     'inbound03' => 'Inbound:',
-    'outbound03' => 'Oubound:',
+    'outbound03' => 'Outbound:',
     'clean03' => 'Clean',
     'topvirus03' => 'Top Virus:',
     'freedspace03' => 'Free Disk Space',
@@ -179,6 +179,12 @@ return array(
     'auditlogupdatepassword03' => 'Updated password field length from %s to 191',
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
+    'count03' => 'Count',
+    '1minute03' => '1 min.:',
+    '5minutes03' => '5 min.:',
+    '15minutes03' => '15 min.:',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'Not spam',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -238,6 +244,8 @@ return array(
     'spamrevoke04' => 'As Ham+Revoke',
     'geoipfailed04' => '(GeoIP lookup failed)',
     'reversefailed04' => '(Reverse Lookup Failed)',
+    'privatenetwork04' => '(Private Network)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Hostname',
     'yes04' => 'Y',
     'no04' => 'N',
@@ -287,8 +295,8 @@ return array(
     'error071' => 'You must select a list to create the entry.',
     'error072' => 'You must enter a from address (user@domain, domain or IP).',
     'noentries07' => 'No entries found.',
-    'auditlogadded07' => 'Added entry %s for %s in the %s',
-    'auditlogremoved07' => 'Removed entry %s for %s in the %s',
+    'auditlogadded07' => 'Added entry [%s] for %s in the %s',
+    'auditlogremoved07' => 'Removed entry [%s] for %s in the %s',
 
     // 08-quarantine.php
     'folder08' => 'Folder:',
@@ -412,7 +420,7 @@ return array(
     'action_0212' => 'Action:',
     'reset12' => 'Reset',
     'areusuredel12' => 'Are you sure you want to delete user',
-    'errorpass12' => 'Passwords do not match',
+    'errorpass12' => 'Password mismatch',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',
@@ -436,6 +444,17 @@ return array(
     'auditlogto12' => 'to',
     'auditlog0412' => 'User %s deleted',
     'auditlog0512' => 'User [%s] updated their own account',
+    'erroreditnodomainforbidden12' => 'Error: You don\'t have the permissions, to edit users without domain',
+    'erroreditdomainforbidden12' => 'Error: You don\'t have the permissions, to edit users of domain %s',
+    'errortonodomainforbidden12' => 'Error: You don\'t have the permissions, to remove the domain of users',
+    'errortodomainforbidden12' => 'Error: You don\'t have the permissions, to assign users to domain %s',
+    'errortypesetforbidden12' => 'Error: You don\'t have the permissions, to assign admin rights to users',
+    'errordeletenodomainforbidden12' => 'Error: You don\'t have the permissions, to delete users without domain',
+    'errordeletedomainforbidden12' => 'Error: You don\'t have the permissions, to delete users of domain %s',
+    'errorcreatenodomainforbidden12' => 'Error: You don\'t have the permissions, to add users without domain',
+    'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
+    'retypepassword12' => 'Confirm Password:',
+    'userexists12' => 'User already exists with username %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -593,6 +612,11 @@ return array(
     'user33' => 'User',
     'ipaddress33' => 'IP Address',
     'action33' => 'Action',
+    'filter33' => 'Filter',
+    'applyfilter33' => 'apply',
+    'startdate33' => 'Start date',
+    'enddate33' => 'End date',
+
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
@@ -648,29 +672,21 @@ return array(
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
     'top10recipdomqt40' => 'Top 10 Recipients Domains by Volume',
     'domain40' => 'Domain',
-    'count40' => 'Count',
-    'size40' => 'Size',
 
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Recipients Domains by Volume',
     'top10recipdomvol41' => 'Top 10 Recipient Domains by Volume',
     'domain41' => 'Domain',
-    'count41' => 'Count',
-    'size41' => 'Size',
 
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Recipients by Quantity',
     'top10recipqt42' => 'Top 10 Recipients by Quantity',
     'email42' => 'E-mail Address',
-    'count42' => 'Count',
-    'size42' => 'Size',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
     'top10recipvol43' => 'Top 10 Recipients by Volume',
     'email43' => 'E-mail Address',
-    'count43' => 'Count',
-    'size43' => 'Size',
 
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Sender Domains by Quantity',
@@ -683,23 +699,17 @@ return array(
     'topsenderdomvol45' => 'Top Sender Domains by Volume',
     'top10senderdomvol45' => 'Top 10 Sender Domains by Volume',
     'domain45' => 'Domain',
-    'count45' => 'Count',
-    'size45' => 'Size',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
     'email46' => 'E-mail Address',
-    'count46' => 'Count',
-    'size46' => 'Size',
 
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
     'email47' => 'E-mail Address',
-    'count47' => 'Count',
-    'size47' => 'Size',
-
+    
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',
@@ -760,7 +770,7 @@ return array(
     'diefnf55' => 'File not found:',
     'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Cannot open pipe',
 
     // 57-quarantine_action.php
@@ -825,7 +835,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'The variable %s is empty, please set a value in conf.php.',
-    'errors07' => 'Error:',
+    'error62' => 'Error:',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -837,5 +847,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
-
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
 );

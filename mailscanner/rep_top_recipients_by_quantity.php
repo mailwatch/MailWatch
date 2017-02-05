@@ -100,43 +100,8 @@ if (is_writable(CACHE_DIR)) {
     $graph->Stroke($filename);
 }
 
-// HTML to display the graph
-echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
-echo '<tr>';
-echo '    <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
-echo '</tr>';
-echo '<tr>';
+printGraphTable($filename, __('email42'), $data, $data_names, $data_size, $size_info['formula']);
 
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo ' <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
-} else {
-    echo '<td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo '</tr>';
-echo '<tr>';
-echo ' <td align="center">';
-echo '  <table style="width: 500px">';
-echo '   <tr style="background-color: #F7CE4A">';
-echo '    <th>' . __('email42') . '</th>';
-echo '    <th>' . __('count42') . '</th>';
-echo '    <th>' . __('size42') . '</th>';
-echo '   </tr>';
-
-$dataCount = count($data);
-for ($i = 0; $i < $dataCount; $i++) {
-    echo '<tr style="background-color: #EBEBEB">
- <td>' . $data_names[$i] . '</td>
- <td style="text-align: center">' . number_format($data[$i]) . '</td>
- <td style="text-align: center">' . formatSize($data_size[$i] * $size_info['formula']) . '</td>
-</tr>' . "\n";
-}
-
-echo '  </table>
- </td>
-</tr>
-</table>';
 
 // Add footer
 html_end();

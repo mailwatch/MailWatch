@@ -64,7 +64,7 @@ $url_domain = (isset($_GET['domain']) ? sanitizeInput($_GET['domain']) : '');
 $url_domain = htmlentities($url_domain);
 $url_domain = safe_value($url_domain);
 
-$url_id = (isset($_GET['id']) ? sanitizeInput($_GET['id']) : '');
+$url_id = (isset($_GET['listid']) ? sanitizeInput($_GET['listid']) : '');
 $url_id = htmlentities($url_id);
 $url_id = safe_value($url_id);
 
@@ -190,7 +190,7 @@ if ($url_submit === 'add') {
             . "('" . safe_value($to_address) . "',"
             . "'" . safe_value($to_domain) . "',"
             . "'" . safe_value($from) . "')";
-        @dbquery($sql);
+        dbquery($sql);
         audit_log(sprintf(__('auditlogadded07'), $from, $to_address, $listi18));
     }
     $to_domain = '';
@@ -260,7 +260,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";

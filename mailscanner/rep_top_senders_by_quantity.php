@@ -103,45 +103,7 @@ if (is_writable(CACHE_DIR)) {
     $graph->Stroke($filename);
 }
 
-
-// Table to Display data
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo '<TR>';
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo '</TR>';
-echo '<TR>';
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
-} else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo '</TR>';
-echo '<TR>';
-echo " <TD ALIGN=\"CENTER\">";
-echo '  <TABLE WIDTH=500>';
-echo "   <TR BGCOLOR=\"#F7CE4A\">";
-echo '    <TH>' . __('email46') . '</TH>';
-echo '    <TH>' . __('count46') . '</TH>';
-echo '    <TH>' . __('size46') . '</TH>';
-echo '   </TR>';
-
-// Parsing out the data
-for ($i = 0, $count_data = count($data); $i < $count_data; $i++) {
-    echo "
-   <TR BGCOLOR=\"#EBEBEB\">
-    <TD>$data_names[$i]</TD>
-    <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
-    <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i] * $size_info['formula']) . "</TD>
-   </TR>\n";
-}
-
-echo '  </TABLE>';
-echo ' </TD>';
-echo '</TR>';
-echo '</TABLE>';
+printGraphTable($filename, __('email46'), $data, $data_names, $data_size, $size_info['formula']);
 
 // Add footer
 html_end();
