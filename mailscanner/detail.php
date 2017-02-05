@@ -43,6 +43,20 @@ $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
 $url_id = trim($url_id, ' ');
 
+//Initialise local IP's
+require __DIR__ . '/lib/IPSet.php';
+$privateIPSet = new \IPSet\IPSet(array(
+    '10.0.0.0/8',
+    '172.16.0.0/12',
+    '192.168.0.0/16',
+    'fc00::/7',
+    'fe80::/10',
+    ));
+$localIPSet = new \IPSet\IPSet(array(
+    '127.0.0.1',
+    '::1',
+));
+
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
 
@@ -146,17 +160,29 @@ while ($row = $result->fetch_array()) {
                     $output .= ' <td>' . $relay . '</td>' . "\n";
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                     $relay = stripPortFromIp($relay);
+                    //check if address is in private IP space
+                    $isPrivateNetwork = $privateIPSet->match($relay);
+                    $isLocalNetwork = $localIPSet->match($relay);
+                    if ($isPrivateNetwork === true) {
+                        $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
+                    } elseif ($isLocalNetwork === true) {
+                        $output .= ' <td>' . __('localhost04') . "</td>\n";
+                    }
                     // Reverse lookup on address. Possibly need to remove it.
-                    if (($host = gethostbyaddr($relay)) !== $relay) {
+                    elseif (($host = gethostbyaddr($relay)) !== $relay) {
                         $output .= " <td>$host</td>\n";
                     } else {
                         $output .= ' <td>' . __('reversefailed04') . "</td>\n";
                     }
                     // Do GeoIP lookup on address
-                    if ($geoip_country = return_geoip_country($relay)) {
+                    if (true === $isPrivateNetwork) {
+                        $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
+                    } elseif ($isLocalNetwork === true) {
+                        $output .= ' <td>' . __('localhost04') . "</td>\n";
+                    } elseif ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
-                        $output .= ' <td>(' . __('geoipfailed04') . ')</td>' . "\n";
+                        $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
                     }
                     // Link to RBL Lookup
                     $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
@@ -223,12 +249,12 @@ while ($row = $result->fetch_array()) {
                 $row[$f] = $no;
             }
         }
-        if ($fieldn === 'Spam:' && !DISTRIBUTED_SETUP) {
+        if ($fieldn === __('spam04') && !DISTRIBUTED_SETUP) {
             // Display actions if spam/not-spam
             if ($row[$f] === $yes) {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;Action(s): ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
+                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ': ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
             } else {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;Action(s): ' . str_replace(
+                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ': ' . str_replace(
                         ' ',
                         ', ',
                         get_conf_var('NonSpamActions')
@@ -466,10 +492,11 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr>' . "\n";
-        if ($is_dangerous > 0 &&
-            (
-                $_SESSION['user_type'] === 'A' ||
-                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
+        if ($_SESSION['user_type'] === 'A' ||
+            ($_SESSION['user_type'] === 'D' &&
+                ($is_dangerous === 0 ||
+                ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
+                )
             )
         ) {
             echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . __('colon99') . '&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
