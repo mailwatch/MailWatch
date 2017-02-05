@@ -281,10 +281,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',
-    'from07' => 'Von',
-    'to07' => 'An',
-    'list07' => 'Liste',
-    'action07' => 'Aktion',
+    'from07' => 'Von:',
+    'to07' => 'An:',
+    'list07' => 'Liste:',
+    'action07' => 'Aktion:',
     'wl07' => 'Weisse Liste',
     'bl07' => 'Schwarze Liste',
     'reset07' => 'Zurücksetzen',

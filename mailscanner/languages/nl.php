@@ -281,10 +281,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Voeg toe aan Vrijwaring/Blokkering',
-    'from07' => 'Van',
-    'to07' => 'Naar',
-    'list07' => 'Lijst',
-    'action07' => 'Actie',
+    'from07' => 'Van:',
+    'to07' => 'Naar:',
+    'list07' => 'Lijst:',
+    'action07' => 'Actie:',
     'wl07' => 'Vrijwaring',
     'bl07' => 'Blokkering',
     'reset07' => 'Herstart',

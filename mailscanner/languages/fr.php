@@ -281,10 +281,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
-    'from07' => 'De',
-    'to07' => 'À',
-    'list07' => 'Liste',
-    'action07' => 'Action',
+    'from07' => 'De :',
+    'to07' => 'À :',
+    'list07' => 'Liste :',
+    'action07' => 'Action :',
     'wl07' => 'Liste Blanche',
     'bl07' => 'Liste Noire',
     'reset07' => 'Réinitialiser',

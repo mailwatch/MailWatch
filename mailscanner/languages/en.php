@@ -281,10 +281,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
-    'from07' => 'From',
-    'to07' => 'To',
-    'list07' => 'List',
-    'action07' => 'Action',
+    'from07' => 'From:',
+    'to07' => 'To:',
+    'list07' => 'List:',
+    'action07' => 'Action:',
     'wl07' => 'Whitelist',
     'bl07' => 'Blacklist',
     'reset07' => 'Reset',
