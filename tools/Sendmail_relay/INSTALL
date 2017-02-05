@@ -1,7 +1,8 @@
+----------------------------------
 INSTALLATION INSTRUCTIONS
--------------------------
+----------------------------------
 
-- Setup the Sendmail Relay Log watcher
+Setup for the Sendmail Relay Log watcher:
 
 You can get MailWatch to watch your sendmail logs and store all message relay information which is then displayed on the 'Message Detail' page which helps debugging and makes it easy for a Helpdesk to actually see where a message was delivered to by the MTA and what the response back was (e.g. the remote queue id etc.).
 
@@ -14,6 +15,6 @@ On Debian/Ubuntu:
 # /etc/init.d/sendmail_relay start
 # update-rc.d sendmail_relay defaults
 
-For others distributiikns, please change according to.
+For others Linux distributions, please change according to.
 
 ATTENTION: By default, sendmail_relay.php run with root user. Change user to your Apache or MTA user and check right of /var/log/mail.log.
