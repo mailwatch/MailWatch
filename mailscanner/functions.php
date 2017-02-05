@@ -3767,24 +3767,23 @@ function checkForExistingUser($username)
  */
 function getHexColors($count)
 {
-    //limited to 16 colors atm  which can be distinguished by humans
-    $colors = array(
-        "#00ffff",
-        "#000000",
-        "#0000ff",
-        "#ff00ff",
-        "#808080",
-        "#008000",
-        "#00ff00",
-        "#800000",
-        "#000080",
-        "#808000",
-        "#800080",
-        "#ff0000",
-        "#c0c0c0",
-        "#008080",
-        "#ffffff",
-        "#ffff00"
+    // colors from jpgraph UniversalTheme
+    $colors = array (
+        '#61a9f3',#blue
+        '#f381b9',#red
+        '#61E3A9',#green
+        #'#D56DE2',
+        '#85eD82',
+        '#F7b7b7',
+        '#CFDF49',
+        '#88d8f2',
+        '#07AF7B',
+        '#B9E3F9',
+        '#FFF3AD',
+        '#EF606A',
+        '#EC8833',
+        '#FFF100',
+        '#87C9A5'
     );
     for ($i=0; $i< $count; $i++) {
         $htmlColors[] = $colors[$i % count($colors)];
