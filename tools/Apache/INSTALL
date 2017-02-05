@@ -4,19 +4,18 @@ INSTALLATION INSTRUCTIONS
 
 MailWatch default Apache configuration
 
-
 - For Apache 2.2:
 
-Copy the file mailwatch.conf to /etc/apache2/conf.d/
+  Copy the file mailwatch.conf to /etc/apache2/conf.d/
 
-Reload Apache '/etc/init.d/apache2 reload'
+  Reload Apache '/etc/init.d/apache2 reload'
 
 - For Apache 2.4:
 
-Copy the file mailwatch.conf to /etc/apache2/conf-available/
+  Copy the file mailwatch.conf to /etc/apache2/conf-available/
 
-Type 'a2enconf mailwatch.conf'
+  Type 'a2enconf mailwatch.conf'
 
-Reload Apache 'service apache 2 reload'
+  Reload Apache 'service apache2 reload'
 
-
+You can also create a dédicated whost for MailWatch but don't forgot to remove the config in Apache conf.d.
