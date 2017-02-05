@@ -9,7 +9,7 @@ MailWatch default Apache configuration
 
 Copy the file mailwatch.conf to /etc/apache2/conf.d/
 
-Reload Apache '/etc/init.d/apache2 reload
+Reload Apache '/etc/init.d/apache2 reload'
 
 - For Apache 2.4:
 
