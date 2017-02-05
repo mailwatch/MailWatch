@@ -4,11 +4,9 @@ INSTALLATION INSTRUCTIONS
 
 Optional files for Postfix MTA
 
------ Adding Postfix relay information
+Copy the 'mailwatch_relay' file into /etc/cron.hourly/
 
-Put the 'mailwatch_relay' file into /etc/cron.hourly/.
-
-Put in /usr/local/bin the following files:
+Copy in /usr/local/bin the following files:
 
 postfix_relay.php
 mailscanner_relay.php

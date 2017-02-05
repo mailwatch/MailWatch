@@ -2,9 +2,9 @@
 INSTALLATION INSTRUCTIONS
 -----------------------------
 
-mailq.php process the MTA queue to store messages in database and to see the in MailWatch GUI.
+mailq.php process the MTA queue to store messages in MailWatch database and see them in the MailWatch GUI.
 
-Put the mailq.php file in /usr/local/bin
+Copy the mailq.php file in /usr/local/bin
 
 Edit CRONTAB:
 

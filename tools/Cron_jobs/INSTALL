@@ -2,9 +2,9 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
-Put the file 'mailwatch' into /etc/cron.daily/
+Copy the file 'mailwatch' into /etc/cron.daily/
 
-Put in /usr/local/bin the following files:
+Copy in /usr/local/bin the following files:
 
 mailwatch_db_clean.php
 quarantine_maint.php
@@ -32,6 +32,6 @@ MailScanner Rule Editor (optionnal)
 
 Configure the file msre_reload to fit your need.
 
-Put the file msre_reload into /etc/cron.d/.
+Copy the file msre_reload into /etc/cron.d/.
 
 See the instructions in tools/MailScanner_rule_editor/INSTALL
