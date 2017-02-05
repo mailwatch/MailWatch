@@ -808,6 +808,7 @@ return array(
     'permdenied60' => 'permission refusée.',
     'client160' => 'Le client',
     'client260' => 'n\'est pas autorisé à ce connecter.',
+    'colon60' => ' :',
 
     // 61-quarantine_report.php
     'view61' => 'Visualiser',
