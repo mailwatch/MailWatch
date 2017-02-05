@@ -3762,43 +3762,13 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param $count number of hex rgb colors that should be generated
- * @return array that contains rgb colors as hex strings usable for html
- */
-function getHexColors($count)
-{
-    // colors from jpgraph UniversalTheme
-    $colors = array(
-        '#61a9f3',#blue
-        '#f381b9',#red
-        '#61E3A9',#green
-        #'#D56DE2',
-        '#85eD82',
-        '#F7b7b7',
-        '#CFDF49',
-        '#88d8f2',
-        '#07AF7B',
-        '#B9E3F9',
-        '#FFF3AD',
-        '#EF606A',
-        '#EC8833',
-        '#FFF100',
-        '#87C9A5'
-    );
-    for ($i=0; $i< $count; $i++) {
-        $htmlColors[] = $colors[$i % count($colors)];
-    }
-    return $htmlColors;
-}
-
-/**
  * @param $sqlDataQuery sql query that will be used to get the data that should be displayed
  * @param $reportTitle title that will be displayed on top of the graph
  * @param $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
  * @param $columnTitles array that contains the titles of the table columns
  * @param $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
-function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
+function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
 {
     $result = dbquery($sqlDataQuery);
     $numResult = $result->num_rows;
@@ -3831,54 +3801,47 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
             );
         }
     }
+ 
+    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
 
     // Check permissions to see if apache can actually create the file
     if (is_writable(CACHE_DIR)) {
+
         // JPGraph
         include_once './lib/jpgraph/src/jpgraph.php';
         include_once './lib/jpgraph/src/jpgraph_pie.php';
         include_once './lib/jpgraph/src/jpgraph_pie3d.php';
-
-        $result = dbquery($sqlDataQuery);
-        if (!$result->num_rows > 0) {
-            die(__('diemysql99') . "\n");
-        }
-
-        while ($row = $result->fetch_object()) {
-            $data[] = $row->count;
-            $data_names[] = $row->name;
-            $data_size[] = $row->size;
-        }
-
-        // Work out best size
-        format_report_volume($data_size, $size_info);
 
         $graph = new PieGraph(800, 385, 0, false);
         $graph->SetShadow();
         $graph->img->SetAntiAliasing();
         $graph->title->Set($reportTitle);
 
-        $p1 = new PiePlot3d($data[$graphColumn['dataColumn']]);
+        $plotData = $data[$graphColumn['dataColumn']];
+        $legendData = $data[$graphColumn['labelColumn']];
+        $p1 = new PiePlot3d($plotData);
         $p1->SetTheme('sand');
-        $p1->SetLegends($data[$graphColumn['labelColumn']]);
+        $p1->SetLegends($legendData);
 
         $p1->SetCenter(0.70, 0.4);
         $graph->legend->SetLayout(LEGEND_VERT);
         $graph->legend->Pos(0.25, 0.20, 'center');
 
         $graph->Add($p1);
-        $graph->Stroke($filename);  
+        $graph->Stroke($filename);
+
         //  Check Permissions to see if the file has been written and that apache to read it.
         if (is_readable($filename)) {
-            echo '<IMG SRC="' . $filename . '" alt="Graph"  class="reportGraph">';
+            echo '<tr><td style="text-align: center"><IMG SRC="' . $filename . '" alt="Graph"></td></tr>';
         } else {
-            echo __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-        }      
+            echo '<tr><td style="text-align: center">' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299') . '</td></tr>';
+        }
     } else {
-        echo sprintf(__('errorcachedirnotwritable03'), CACHE_DIR);
-    } 
-    
-    
+        echo '<tr><td class="center">' . sprintf(__('errorcachedirnotwritable03'), CACHE_DIR) . '</td></tr>';
+    }
+
+    echo '<tr>';
+
     // HTML to display the table
     echo '<table class="reportTable">';
     echo '    <tr style="background-color: #F7CE4A">' . "\n";
@@ -3899,6 +3862,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles
         echo '    </tr>' . "\n";
     }
     echo '   </table>' . "\n";
+    echo '</tr></table>';
 }
 
 

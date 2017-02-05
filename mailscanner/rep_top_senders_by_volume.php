@@ -80,7 +80,7 @@ $graphColumns = [
     'labelColumn' => 'name',
     'dataColumn' => 'size'
 ];
-printGraphTable($sql, __('top10sendersvol47'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($filename, $sql, __('top10sendersvol47'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();
