@@ -62,7 +62,25 @@ $sql = "
  LIMIT 10
 ';
 
-printGraphTable($sql, $filename, __('top10senderdomvol45'), __('domain45'), false);
+$columnTitles = [
+    __('domain45'),
+    __('count03'),
+    __('size03')
+];
+$sqlColumns = [
+    'name',
+    'count',
+    'size'
+];
+$valueConversion = [
+    'size' => 'scale',
+    'count' => 'number'
+];
+$graphColumns = [
+    'labelColumn' => 'name',
+    'dataColumn' => 'size'
+];
+printGraphTable($sql, __('top10senderdomvol45'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

@@ -3762,10 +3762,76 @@ function checkForExistingUser($username)
 }
 
 /**
- *
+ * @param $count number of hex rgb colors that should be generated
+ * @return array that contains rgb colors as hex strings usable for html
  */
-function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitle, $scale = false)
+function getHexColors($count)
 {
+    // colors from jpgraph UniversalTheme
+    $colors = array(
+        '#61a9f3',#blue
+        '#f381b9',#red
+        '#61E3A9',#green
+        #'#D56DE2',
+        '#85eD82',
+        '#F7b7b7',
+        '#CFDF49',
+        '#88d8f2',
+        '#07AF7B',
+        '#B9E3F9',
+        '#FFF3AD',
+        '#EF606A',
+        '#EC8833',
+        '#FFF100',
+        '#87C9A5'
+    );
+    for ($i=0; $i< $count; $i++) {
+        $htmlColors[] = $colors[$i % count($colors)];
+    }
+    return $htmlColors;
+}
+
+/**
+ * @param $sqlDataQuery sql query that will be used to get the data that should be displayed
+ * @param $reportTitle title that will be displayed on top of the graph
+ * @param $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
+ * @param $columnTitles array that contains the titles of the table columns
+ * @param $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
+ */
+function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
+{
+    $result = dbquery($sqlDataQuery);
+    $numResult = $result->num_rows;
+    if ($numResult <= 0) {
+        die(__('diemysql99') . "\n");
+    }
+    //store data in format $data[columnname][rowid]
+    while ($row = $result->fetch_assoc()) {
+        foreach ($sqlColumns as $columnName) {
+            $data[$columnName][] = $row[$columnName];
+        }
+    }
+
+    //do conversion if given
+    foreach ($valueConversions as $column => $conversion) {
+        if ($conversion === 'scale') {
+            // Work out best size
+            $data[$column . 'conv'] = $data[$column];
+            format_report_volume($data[$column . 'conv'], $size_info);
+            $scale = $size_info['formula'];
+            foreach ($data[$column . 'conv'] as $key => $val) {
+                $data[$column . 'conv'][$key] = formatSize($val * $scale);
+            }
+        } elseif ($conversion === 'number') {
+            $data[$column . 'conv'] = array_map(
+                function ($val) {
+                    return number_format($val);
+                },
+                $data[$column]
+            );
+        }
+    }
+
     // Check permissions to see if apache can actually create the file
     if (is_writable(CACHE_DIR)) {
         // JPGraph
@@ -3792,58 +3858,47 @@ function printGraphTable($sqlDataQuery, $filename, $reportTitle, $dataColumnTitl
         $graph->img->SetAntiAliasing();
         $graph->title->Set($reportTitle);
 
-        $p1 = new PiePlot3d($data);
+        $p1 = new PiePlot3d($data[$graphColumn['dataColumn']]);
         $p1->SetTheme('sand');
-        $p1->SetLegends($data_names);
+        $p1->SetLegends($data[$graphColumn['labelColumn']]);
 
         $p1->SetCenter(0.70, 0.4);
         $graph->legend->SetLayout(LEGEND_VERT);
         $graph->legend->Pos(0.25, 0.20, 'center');
 
         $graph->Add($p1);
-        $graph->Stroke($filename);
-        
-        $scaleFactor = 1;
-        if ($scale) {
-            $scaleFactor = $size_info['formula'];
-        }
-        
-        // HTML to display the graph
-        echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
-        echo ' <tr>';
-
+        $graph->Stroke($filename);  
         //  Check Permissions to see if the file has been written and that apache to read it.
         if (is_readable($filename)) {
-            echo '  <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
+            echo '<IMG SRC="' . $filename . '" alt="Graph"  class="reportGraph">';
         } else {
-            echo '  <td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-        }
-
-        echo ' </tr>' . "\n";
-        echo ' <tr>' . "\n";
-        echo '  <td align="center">' . "\n";
-        echo '   <table style="width: 500px">' . "\n";
-        echo '    <tr style="background-color: #F7CE4A">' . "\n";
-        echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
-        echo '     <th>' . __('count03') . '</th>' . "\n";
-        echo '     <th>' . __('size03') . '</th>' . "\n";
-        echo '    </tr>' . "\n";
-
-        for ($i = 0; $i < count($data); $i++) {
-            echo '    <tr style="background-color: #EBEBEB">' . "\n";
-            echo '     <td>' . $data_names[$i] . '</td>' . "\n";
-            echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
-            echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scaleFactor) . '</td>' . "\n";
-            echo '    </tr>' . "\n";
-        }
-
-        echo '   </table>' . "\n";
-        echo '  </td>' . "\n";
-        echo ' </tr>' . "\n";
-        echo '</table>' . "\n";
+            echo __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+        }      
     } else {
-        echo sprintf(__('errorcachedirnotwritable03'), CACHE_DIR); //TODO localization
+        echo sprintf(__('errorcachedirnotwritable03'), CACHE_DIR);
+    } 
+    
+    
+    // HTML to display the table
+    echo '<table class="reportTable">';
+    echo '    <tr style="background-color: #F7CE4A">' . "\n";
+    foreach ($columnTitles as $columnTitle) {
+        echo '     <th>' . $columnTitle . '</th>' . "\n";
     }
+    echo '    </tr>' . "\n";
+
+    for ($i = 0; $i < $numResult; $i++) {
+        echo '    <tr style="background-color: #EBEBEB">' . "\n";
+        foreach ($sqlColumns as $sqlColumn) {
+            if (isset($valueConversions[$sqlColumn])) {
+                echo '     <td>' . $data[$sqlColumn . 'conv'][$i] . '</td>' . "\n";
+            } else {
+                echo '     <td>' . $data[$sqlColumn][$i] . '</td>' . "\n";
+            }
+        }
+        echo '    </tr>' . "\n";
+    }
+    echo '   </table>' . "\n";
 }
 
 
