@@ -180,9 +180,9 @@ return array(
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
     'count03' => 'Nombre',
-    '1minute03' => '1 min.:',
-    '5minutes03' => '5 min.:',
-    '15minutes03' => '15 min.:',
+    '1minute03' => '1 minute :',
+    '5minutes03' => '5 minutes :',
+    '15minutes03' => '15 minutes :',
     'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
 
