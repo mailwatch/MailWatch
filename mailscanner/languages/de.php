@@ -179,6 +179,7 @@ return array(
     'auditlogupdatepassword03' => 'Die Länge des Passwort-Feldes wurde von %s auf 191 aktualisiert',
     'auditlogupdateuser03' => 'Passwort für Benutzer aktualisiert',
     'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
+    'count03' => 'Anzahl',
     '1minute03' => '1 Min.:',
     '5minutes03' => '5 Min.:',
     '15minutes03' => '15 Min.:',
@@ -443,6 +444,17 @@ return array(
     'auditlogto12' => 'nach',
     'auditlog0412' => 'Benutzer %s gelöscht',
     'auditlog0512' => 'Benutzer [%s] hat sein eigenes Konto aktualisiert',
+    'erroreditnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer ohne Domäne zu bearbeiten',
+    'erroreditdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer der Domäne %s zu bearbeiten',
+    'errortonodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um die Domäne von Benutzern zu entfernen',
+    'errortodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer in die Domäne %s zu verschieben',
+    'errortypesetforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Administrator-Rechte zuzuweisen',
+    'errordeletenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne zu löschen',
+    'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
+    'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
+    'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
+    'retypepassword12' => 'Passwort bestätigen:',
+    'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -659,58 +671,42 @@ return array(
     'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
     'top10recipdomqt40' => 'Top 10 Empfänger Domänen by Volume',
     'domain40' => 'Domäne',
-    'count40' => 'Anzahl',
-    'size40' => 'Größe',
-
+  
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Empfänger Domänen nach Volume',
    'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Volume',
     'domain41' => 'Domäne',
-    'count41' => 'Anzahl',
-    'size41' => 'Größe',
-
+  
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Empfänger nach Anzahl',
     'top10recipqt42' => 'Top 10 Empfänger nach Anzahl',
     'email42' => 'E-Mail-Adresse',
-    'count42' => 'Anzahl',
-    'size42' => 'Größe',
-
+  
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Empfänger nach Volumen',
     'top10recipvol43' => 'Top 10 Empfänger nach Volumen',
     'email43' => 'E-Mail-Adresse',
-    'count43' => 'Anzahl',
-    'size43' => 'Größe',
-
+  
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
-    'count44' => 'Anzahl',
-    'size44' => 'Größe',
-
+  
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
     'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
     'domain45' => 'Domäne',
-    'count45' => 'Anzahl',
-    'size45' => 'Größe',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Absender nach Anzahl',
     'top10sendersqt46' => 'Top 10 Absender nach Anzahl',
     'email46' => 'E-Mail-Adresse',
-    'count46' => 'Anzahl',
-    'size46' => 'Größe',
-
+  
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Absender nach Volumen',
     'top10sendersvol47' => 'Top 10 Absender nach Volumen',
     'email47' => 'E-Mail-Adresse',
-    'count47' => 'Anzahl',
-    'size47' => 'Größe',
-
+  
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viren',
     'top10virus48' => 'Top 10 Viren',
@@ -771,7 +767,7 @@ return array(
     'diefnf55' => 'Datei nicht gefunden:',
     'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',
 
     // 57-quarantine_action.php
@@ -836,7 +832,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
-    'errors07' => 'Fehler:',
+    'errors62' => 'Fehler:',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -849,4 +845,5 @@ return array(
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
 
+    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die your conf.php mit conf.php.example',
 );

@@ -179,6 +179,7 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
+    'count03' => 'Nombre',
     '1minute03' => '1 min.:',
     '5minutes03' => '5 min.:',
     '15minutes03' => '15 min.:',
@@ -419,7 +420,7 @@ return array(
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
-    'errorpass12' => 'Le Mot de Passe de correspond pas.',
+    'errorpass12' => 'Mot de passe erroné',
     'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',
@@ -443,6 +444,18 @@ return array(
     'auditlogto12' => 'vers',
     'auditlog0412' => 'L\'Utilisateur %s a été effacé',
     'auditlog0512' => 'L\'Utilisateur [%s] a mis à jour son propre compte',
+    'erroreditnodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs sans domaine',
+    'erroreditdomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs du domaine %s',
+    'errortonodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer le domaine des utilisateurs',
+    'errortodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour assigner des utilisateurs au domaine %s',
+    'errortypesetforbidden12' => 'Erreur : vous ne disposez pas des autorisations nécessaires pour attribuer des droits d\'administrateur aux utilisateurs',
+    'errordeletenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer des utilisateurs sans domaine',
+    'errordeletedomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour supprimer les utilisateurs du domaine %s',
+    'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
+    'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
+    'retypepassword12' => 'Confirmez le mot de passe :',
+    'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
+
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -659,57 +672,40 @@ return array(
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
     'top10recipdomqt40' => 'Top 10 des domaines de destination par quantité',
     'domain40' => 'Domaine',
-    'count40' => 'Nombre',
-    'size40' => 'Taille',
 
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
     'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
     'domain41' => 'Domaine',
-    'count41' => 'Nombre',
-    'size41' => 'Taille',
-
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top des destinataires par quantité',
     'top10recipqt42' => 'Top 10 des destinataires par quantité',
     'email42' => 'Adresse E-Mail',
-    'count42' => 'Nombre',
-    'size42' => 'Taille',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top des destinataires par volume',
     'top10recipvol43' => 'Top 10 des destinataires par volume',
     'email43' => 'Adresse E-Mail',
-    'count43' => 'Nombre',
-    'size43' => 'Taille',
 
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
     'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
     'domain44' => 'Domaine',
-    'count44' => 'Nombre',
-    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
     'top10senderdomvol45' => 'Top 10 des domaines d\'expédition par volume',
     'domain45' => 'Domaine',
-    'count45' => 'Nombre',
-    'size45' => 'Taille',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top des expéditeurs par quantité',
     'top10sendersqt46' => 'Top 10 des expéditeurs par quantité',
     'email46' => 'Adresse E-Mail',
-    'count46' => 'Nombre',
-    'size46' => 'Taille',
 
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top des expéditeurs par volume',
     'top10sendersvol47' => 'Top 10 des expéditeurs par volume',
     'email47' => 'Adresse E-Mail',
-    'count47' => 'Nombre',
-    'size47' => 'Taille',
 
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top des Virus',
@@ -771,7 +767,7 @@ return array(
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
     'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',
 
     // 57-quarantine_action.php
@@ -836,7 +832,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
-    'errors07' => 'Erreur :',
+    'errors62' => 'Erreur :',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -849,4 +845,5 @@ return array(
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
 
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
 );

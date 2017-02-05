@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /*
  * MailWatch for MailScanner
@@ -28,52 +28,62 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+class SyslogParser
+{
+    public $raw;
+    public $timestamp;
+    public $date;
+    public $time;
+    public $rfctime;
+    public $host;
+    public $process;
+    public $pid;
+    public $entry;
+    public $months = array(
+        'Jan' => '1',
+        'Feb' => '2',
+        'Mar' => '3',
+        'Apr' => '4',
+        'May' => '5',
+        'Jun' => '6',
+        'Jul' => '7',
+        'Aug' => '8',
+        'Sep' => '9',
+        'Oct' => '10',
+        'Nov' => '11',
+        'Dec' => '12'
+    );
 
-require_once __DIR__ . '/functions.php';
+    /**
+     * @param string $line
+     */
+    public function __construct($line)
+    {
 
-session_start();
-require __DIR__ . '/login.function.php';
+        // Parse the date, time, host, process pid and log entry
+        if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
+            // Store raw line
+            $this->raw = $explode[0];
 
-if ($_SESSION['user_type'] !== 'A') {
-    header('Location: index.php');
-} else {
-    html_start(__('rules30'));
+            // Decode the syslog time/date
+            $month = $this->months[$explode[1]];
+            $thismonth = date('n');
+            $thisyear = date('Y');
+            // Work out the year
+            $year = $month <= $thismonth ? $thisyear : $thisyear - 1;
+            $this->date = $explode[2] . ' ' . $explode[1] . ' ' . $year;
+            $this->time = $explode[3] . ':' . $explode[4] . ':' . $explode[5];
+            $datetime = $this->date . ' ' . $this->time;
+            $this->timestamp = strtotime($datetime);
+            $this->rfctime = date('r', $this->timestamp);
 
-    // limit accessible files to the ones in MailScanner etc directory
-    $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));
-    if (!isset($_GET['file'])) {
-        $FilePath = false;
-    } else {
-        $FilePath = realpath(sanitizeInput($_GET['file']));
-    }
-
-    if ($FilePath === false || strpos($FilePath, $MailscannerEtcDir) !== 0) {
-        //Directory Traversal
-        echo "Directory traversal attempt blocked.\n";
-    } else {
-        echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-        echo '<tr><td class="heading">File: ' . $FilePath . '</td></tr>' . "\n";
-        echo '<tr><td><pre>' . "\n";
-        if ($fh = @fopen($FilePath, 'rb')) {
-            while (!feof($fh)) {
-                $line = rtrim(fgets($fh, 4096));
-                if (isset($_GET['strip_comments']) && $_GET['strip_comments']) {
-                    if (!preg_match('/^#/', $line) && !preg_match('/^$/', $line)) {
-                        echo $line . "\n";
-                    }
-                } else {
-                    echo $line . "\n";
-                }
-            }
-            fclose($fh);
+            $this->host = $explode[6];
+            $this->process = $explode[7];
+            $this->pid = $explode[8];
+            $this->entry = $explode[9];
         } else {
-            echo "Unable to open file.\n";
+            return false;
         }
-        echo '</pre></td></tr>' . "\n";
-        echo '</table>' . "\n";
     }
-    // Add the footer
-    html_end();
 }
-// close the connection to the Database
-dbclose();
