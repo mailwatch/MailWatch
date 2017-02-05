@@ -181,8 +181,8 @@ return array(
     'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
     'count03' => 'Anzahl',
     '1minute03' => '1 Minute:',
-    '5minutes03' => '5 Minutes:',
-    '15minutes03' => '15 Minutes:',
+    '5minutes03' => '5 Minuten:',
+    '15minutes03' => '15 Minuten:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
 
