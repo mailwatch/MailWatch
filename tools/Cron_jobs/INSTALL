@@ -2,53 +2,36 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
-ATTENTION: with Debian, you will be need to change the name of the cron files as Debian don't like filename with a dot (.) in name.
+Copy the file 'mailwatch' into /etc/cron.daily/
+
+Copy in /usr/local/bin the following files:
+
+mailwatch_db_clean.php
+quarantine_maint.php
+quarantine_report.php
 
 -------------------------------------------
 Database cleanup of maillog records
 -------------------------------------------
 
-Add db_clean.php to /etc/cron.daily/
-
-You need to edit conf.php the RECORD_DAYS_TO_KEEP definition.
-
-You may need to edit the db_clean.php to reflect the location of the functions.php file.
+You need to edit conf.php and change the RECORD_DAYS_TO_KEEP definition.
 
 --------------------------------------------
 Quarantine Maintenance
 --------------------------------------------
 
-quarantine_maint.php
-quarantine_maint.sh
+You need to edit in conf.php the QUARANTINE_DAYS_TO_KEEP variable.
 
-Add quarantine_maint.sh to /etc/cron.daily/
-Add quarantine_maint.php to /usr/local/bin/
+For MailScanner v4: Delete the clean.quarantine cron file.
 
-Delete the clean.quarantine cron (MailScanner v4).
-
-Change the variable for Quarantine Retention to "q_days=0" in /etc/MailScanner/defaults (MailScanner v5).
-
-You will need to edit in conf.php the QUARANTINE_DAYS_TO_KEEP definition.
-
-You may need to edit the quarantine_maint.php to reflect the location of the functions.php file.
+For MailScanner v5: Change the variable for Quarantine Retention to "q_days=0" in /etc/MailScanner/defaults.
 
 --------------------------------------------
-Quarantine Report
+MailScanner Rule Editor (optionnal)
 --------------------------------------------
 
-quarantine_report.php
+Configure the file msre_reload to fit your need.
 
-Add it to /etc/cron.daily
-
-You will need to edit the quarantine_report.php to reflect the location of the functions.php file.
-
---------------------------------------------
-MailScanner Rule Editor
---------------------------------------------
-
-msre_reload.crond
+Copy the file msre_reload into /etc/cron.d/.
 
 See the instructions in tools/MailScanner_rule_editor/INSTALL
-
-Add it to /etc/cron.d when you have properly configured and installed msre_reload.sh.
-
