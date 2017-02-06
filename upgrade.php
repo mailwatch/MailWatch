@@ -259,8 +259,6 @@ if ($link) {
     $sql = "ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT";
     executeQuery($sql);
 
-    // Revert back some tables to the right values due to previous errors in upgrade.php
-
     // Table users
     echo pad(' - Fix schema for password field in `users` table');
     $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
