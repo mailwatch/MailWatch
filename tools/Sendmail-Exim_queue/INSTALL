@@ -1,0 +1,16 @@
+-----------------------------
+INSTALLATION INSTRUCTIONS
+-----------------------------
+
+sendmail_queue.php process the MTA Sendmail or Exim queue to store messages in MailWatch database and see them in the MailWatch GUI.
+
+Copy the sendmail_queue.php file in /usr/local/bin
+
+Edit CRONTAB:
+
+# crontab -e
+
+# Run sendmail_queue.php each minute
+0-59 * * * * 	/usr/local/bin/sendmail_queue.php
+
+Note: sendmail_queue.php re-creates all entries on each run, so for busy sites you will probably want to change this to run every 5 minutes or greater.
