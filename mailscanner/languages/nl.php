@@ -279,6 +279,7 @@ return array(
     'mymetype06' => 'MIME Type:',
     'auditlog06' => 'Quarantined message (%s) body viewed',
     'nonameattachment06' => 'Attachment without name',
+    'colon06' => ':',
 
     // 07-lists.php
     'addwlbl07' => 'Voeg toe aan Vrijwaring/Blokkering',

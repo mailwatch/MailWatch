@@ -279,6 +279,7 @@ return array(
     'mymetype06' => 'Type MIME :',
     'auditlog06' => 'Visualisation du corps d\'un messsage de Quarantaine (%s)',
     'nonameattachment06' => 'Pièce jointe sans nom',
+    'colon06' => ' :',
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',

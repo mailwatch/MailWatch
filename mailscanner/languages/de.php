@@ -279,6 +279,7 @@ return array(
     'mymetype06' => 'MIME Typ:',
     'auditlog06' => 'Inhalte der Quarantäne-Nachricht (%s) angezeigt',
     'nonameattachment06' => 'Anhang ohne Name',
+    'colon06' => ':',
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',
