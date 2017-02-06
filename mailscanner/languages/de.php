@@ -185,6 +185,7 @@ return array(
     '15minutes03' => '15 Minuten:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
+    'unknownvirusscanner03' => 'Virusscanner unbekannt',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',

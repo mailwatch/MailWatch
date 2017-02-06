@@ -1144,7 +1144,7 @@ AND
     $result = dbquery($sql);
     $virus_array = array();
     while ($row = $result->fetch_object()) {
-        if (preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
+        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
             $virus = return_virus_link($virus_reports[2]);
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus] = 1;
@@ -1156,7 +1156,9 @@ AND
     arsort($virus_array);
     reset($virus_array);
     // Get the topmost entry from the array
-    if ((list($key, $val) = each($virus_array)) !== '') {
+    if (!defined('VIRUS_REGEX')) {
+        return __('unknownvirusscanner03');
+    } elseif ((list($key, $val) = each($virus_array)) !== '') {
         // Check and make sure there first placed isn't tied!
         $saved_key = $key;
         $saved_val = $val;
@@ -1559,7 +1561,6 @@ function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(' ', get_conf_var('VirusScanners'));
-
     return $scanners[0];
 }
 
@@ -2078,7 +2079,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (preg_match('/VIRUS_REGEX/', $row[$f], $virus)) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus)) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
