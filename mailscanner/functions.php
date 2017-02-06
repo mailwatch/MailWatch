@@ -811,7 +811,7 @@ function dbquery($sql)
         if ($result) {
             while ($row = $result->fetch_row()) {
                 for ($f = 0; $f < $link->field_count; $f++) {
-                    echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+                    echo $result->fetch_field_direct($f)->name . __('colon99') . ' ' . $row[$f] . "\n";
                 }
             }
 
