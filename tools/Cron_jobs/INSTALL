@@ -27,7 +27,7 @@ For MailScanner v4: Delete the clean.quarantine cron file.
 For MailScanner v5: Change the variable for Quarantine Retention to "q_days=0" in /etc/MailScanner/defaults.
 
 --------------------------------------------
-MailScanner Rule Editor (optionnal)
+MailScanner Rule Editor (optional)
 --------------------------------------------
 
 Configure the file msre_reload to fit your need.
