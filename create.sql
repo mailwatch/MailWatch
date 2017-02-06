@@ -241,19 +241,6 @@ CREATE TABLE IF NOT EXISTS `sa_rules` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `spamscores`
---
-
-CREATE TABLE IF NOT EXISTS `spamscores` (
-  `user` varchar(191) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `lowspamscore` decimal(10,0) NOT NULL DEFAULT '0',
-  `highspamscore` decimal(10,0) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
