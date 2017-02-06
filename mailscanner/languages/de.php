@@ -518,6 +518,7 @@ return array(
     'geoipupdate15' => 'GeoIP Datenbank-Aktualisierung',
     'dieproxy15' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
     'auditlog15' => 'GeoIP-Update wurde ausgeführt',
+    'colon15' => ':',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Nachrichtenliste',
