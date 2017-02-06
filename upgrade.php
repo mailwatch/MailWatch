@@ -34,6 +34,8 @@ if (php_sapi_name() !== 'cli') {
     header('Content-type: text/plain');
 }
 
+//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 
@@ -164,8 +166,7 @@ $errors = false;
 // Test connectivity to the database
 
 echo PHP_EOL;
-echo 'MailWatch for MailScanner Database Upgrade to 1.2.0 (RC5-dev)' .  PHP_EOL;
-// echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() .  PHP_EOL;
+echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() .  PHP_EOL;
 
 echo PHP_EOL;
 echo pad('Testing connectivity to the database ');
@@ -393,9 +394,9 @@ if ($link) {
 
     echo PHP_EOL;
 
-    // Convert tables to innoDB using $utf8_tables array
+    // Convert tables to InnoDB using $utf8_tables array
     foreach ($utf8_tables as $table) {
-        echo pad(' - Convert table `' . $table . '` to innoDB');
+        echo pad(' - Convert table `' . $table . '` to InnoDB');
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
         } else {
@@ -427,8 +428,8 @@ if ($link) {
 
     foreach ($indexes as $table => $indexlist) {
         echo PHP_EOL;
-        echo ' - Search for missing indexes......................................... OK';
-        echo PHP_EOL;
+        echo pad(' - Search for missing indexes');
+        echo ' DONE' . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
