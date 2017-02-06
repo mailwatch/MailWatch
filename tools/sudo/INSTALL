@@ -3,7 +3,7 @@ INSTALLATION INSTRUCTIONS
 ----------------------------------
 
 - Edit `mailwatch` file to match web server user (www-data, apache or other) 
-  and change esecutable path if needed.
+  and change executable path if needed.
   
 - Copy edited `mailwatch` file in /etc/sudoers.d/
 
