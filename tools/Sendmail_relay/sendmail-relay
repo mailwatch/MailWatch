@@ -18,7 +18,9 @@
 #
 ### END INIT INFO
 
-# Author: Stephane, 14/06/2015
+# MailWatch for MailScanner
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+# Author: @stefaweb, 14/06/2015
 
 NAME="sendmail_relay"
 DAEMON="/usr/local/bin/sendmail_relay.php"
