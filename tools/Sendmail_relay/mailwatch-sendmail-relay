@@ -22,7 +22,7 @@
 # Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 # Author: @stefaweb, 14/06/2015
 
-NAME="sendmail-relay"
+NAME="mailwatch-sendmail-relay"
 DAEMON="/usr/local/bin/sendmail_relay.php"
 SETTINGS="/etc/default/$NAME"
 DESC="Sendmail Relay for MailWatch"
@@ -35,7 +35,7 @@ PIDFILE="/var/run/$NAME.pid"
 unset SMUSER VERBOSE
 
 # Default values
-# Can me changed in /etc/default/sendmail-relay
+# Can me changed in /etc/default/mailwatch-sendmail-relay
 SMUSER="root";
 MAILLOG="/var/log/mail.log"
 VERBOSE="yes"
