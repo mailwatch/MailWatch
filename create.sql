@@ -134,7 +134,8 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   KEY `from_domain_idx` (`from_domain`(50)),
   KEY `to_domain_idx` (`to_domain`(50)),
   KEY `maillog_quarantined` (`quarantined`),
-  KEY `timestamp_idx` (`timestamp`)
+  KEY `timestamp_idx` (`timestamp`),
+  FULLTEXT KEY `subject_idx` (`subject`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -288,14 +289,7 @@ CREATE TABLE IF NOT EXISTS `whitelist` (
   UNIQUE KEY `whitelist_uniq` (`to_address`(100),`from_address`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `maillog`
---
-ALTER TABLE `maillog` ADD FULLTEXT KEY `subject_idx` (`subject`);
+-- --------------------------------------------------------
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
