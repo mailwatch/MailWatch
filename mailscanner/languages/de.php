@@ -306,6 +306,7 @@ return array(
     'items08' => 'Einträge',
     'qviewer08' => 'Quarantine Viewer',
     'dienodir08' => 'Kein Quarantäne-Verzeichnis gefunden',
+    'colon08' => ':',
 
     // 09-filter.inc.php
     'activefilters09' => 'Aktive Filter',
