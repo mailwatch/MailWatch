@@ -180,9 +180,9 @@ return array(
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
     'count03' => 'Count',
-    '1minute03' => '1 min.:',
-    '5minutes03' => '5 min.:',
-    '15minutes03' => '15 min.:',
+    '1minute03' => '1 minute:',
+    '5minutes03' => '5 minutes:',
+    '15minutes03' => '15 minutes:',
     'saspam03' => 'spam',
     'sanotspam03' => 'not spam',
 
