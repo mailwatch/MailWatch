@@ -6,12 +6,12 @@
 # Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
 # Quarantine Maintenance
-test -x /usr/local/bin/quarantine_maint.php || exit 0
-/usr/local/bin/quarantine_maint.php --clean
+test -x /usr/local/bin/mailwatch_quarantine_maint.php || exit 0
+/usr/local/bin/mailwatch_quarantine_maint.php --clean
 
 # Quarantine report
-test -x /usr/local/bin/quarantine_report.php || exit 0
-/usr/local/bin/quarantine_report.php >/dev/null 2>&1
+test -x /usr/local/bin/mailwatch_quarantine_report.php || exit 0
+/usr/local/bin/mailwatch_quarantine_report.php >/dev/null 2>&1
 
 # Clean MailWatch DB
 test -x /usr/local/bin/mailwatch_db_clean.php || exit 0
