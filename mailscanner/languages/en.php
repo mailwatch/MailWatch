@@ -515,7 +515,6 @@ return array(
     'geoipupdate15' => 'GeoIP Database Update',
     'dieproxy15' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
     'auditlog15' => 'Ran GeoIP update',
-    'colon15' => ':',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Message Listing',
@@ -812,7 +811,6 @@ return array(
     'permdenied60' => 'permission denied.',
     'client160' => 'Client',
     'client260' => 'is not authorized to connect.',
-    'colon60' => ':',
 
     // 61-quarantine_report.php
     'view61' => 'View',

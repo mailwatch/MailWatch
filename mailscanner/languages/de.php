@@ -808,7 +808,6 @@ return array(
     'permdenied60' => 'Zugriff verweigert.',
     'client160' => 'Client',
     'client260' => 'ist nicht authorisiert sich zu verbinden.',
-    'colon60' => ':',
 
     // 61-quarantine_report.php
     'view61' => 'Anzeige',
