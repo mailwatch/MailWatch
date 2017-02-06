@@ -125,7 +125,7 @@ if (!isset($_POST['run'])) {
                             echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                         }
                     } catch (Requests_Exception $e) {
-                        echo __('downbad15') . ' ' . $file['description'] . __('colon15') . ' ' . $e->getMessage() . "<br>\n";
+                        echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "<br>\n";
                     }
 
                     ob_flush();

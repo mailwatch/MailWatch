@@ -185,7 +185,6 @@ return array(
     '15minutes03' => '15 min.:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
-    'colon03' => ' :',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -279,7 +278,6 @@ return array(
     'mymetype06' => 'Type MIME :',
     'auditlog06' => 'Visualisation du corps d\'un messsage de Quarantaine (%s)',
     'nonameattachment06' => 'Pièce jointe sans nom',
-    'colon06' => ' :',
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
@@ -306,7 +304,6 @@ return array(
     'items08' => 'éléments',
     'qviewer08' => 'Visualisation de la quarantaine',
     'dienodir08' => 'Aucun répertoire de quarantaine trouvé',
-    'colon08' => ' :',
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtre actif',

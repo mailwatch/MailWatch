@@ -185,7 +185,6 @@ return array(
     '15minutes03' => '15 Min.:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
-    'colon03' => ':',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -279,7 +278,6 @@ return array(
     'mymetype06' => 'MIME Typ:',
     'auditlog06' => 'Inhalte der Quarantäne-Nachricht (%s) angezeigt',
     'nonameattachment06' => 'Anhang ohne Name',
-    'colon06' => ':',
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',
@@ -306,7 +304,6 @@ return array(
     'items08' => 'Einträge',
     'qviewer08' => 'Quarantine Viewer',
     'dienodir08' => 'Kein Quarantäne-Verzeichnis gefunden',
-    'colon08' => ':',
 
     // 09-filter.inc.php
     'activefilters09' => 'Aktive Filter',
@@ -518,7 +515,6 @@ return array(
     'geoipupdate15' => 'GeoIP Datenbank-Aktualisierung',
     'dieproxy15' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
     'auditlog15' => 'GeoIP-Update wurde ausgeführt',
-    'colon15' => ':',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Nachrichtenliste',

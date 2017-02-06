@@ -197,7 +197,7 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type
   ORDER BY
    date DESC, time DESC
   ';
-            db_colorised_table($sql, __('folder_0208') . __('colon08') . ' ' . translateQuarantineDate($dir), true, true);
+            db_colorised_table($sql, __('folder_0208') . __('colon99') . ' ' . translateQuarantineDate($dir), true, true);
         } else {
             echo __('dienodir08') . "\n";
         }

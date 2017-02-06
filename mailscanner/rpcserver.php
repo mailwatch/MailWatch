@@ -120,7 +120,7 @@ function rpc_return_quarantined_file($msg)
         case(!is_file($quarantinedir . '/' . $file)):
             return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$" . __('notfile60'));
         case(!is_readable($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file" . __('colon60') . ' ' . __('permdenied60'));
+            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file" . __('colon99') . ' ' . __('permdenied60'));
         default:
             $output = base64_encode(file_get_contents($quarantinedir . '/' . $file));
             break;

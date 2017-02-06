@@ -185,7 +185,6 @@ return array(
     '15minutes03' => '15 min.:',
     'saspam03' => 'spam',
     'sanotspam03' => 'not spam',
-    'colon03' => ':',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
@@ -279,7 +278,6 @@ return array(
     'mymetype06' => 'MIME Type:',
     'auditlog06' => 'Quarantined message (%s) body viewed',
     'nonameattachment06' => 'Attachment without name',
-    'colon06' => ':',
 
     // 07-lists.php
     'addwlbl07' => 'Adicionar à Lista Branca/Lista Negra',
@@ -306,7 +304,6 @@ return array(
     'items08' => 'itens',
     'qviewer08' => 'Quarantine Viewer',
     'dienodir08' => 'No quarantine directories found',
-    'colon08' => ':',
 
     // 09-filter.inc.php
     'activefilters09' => 'Filtros Ativos',
