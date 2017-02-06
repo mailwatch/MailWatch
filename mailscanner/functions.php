@@ -309,7 +309,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
-    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
@@ -329,7 +329,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="250">' . "\n";
         echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
 
         // MailScanner running?
