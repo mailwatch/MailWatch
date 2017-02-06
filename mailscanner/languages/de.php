@@ -185,6 +185,7 @@ return array(
     '15minutes03' => '15 Min.:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
+    'colon03' => ':',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',

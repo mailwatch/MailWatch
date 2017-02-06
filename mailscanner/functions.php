@@ -357,7 +357,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $procs = count($output) . ' proc(s)';
             echo '    <tr><td>' . ucwords(
                     $mta
-                ) . __('colon99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+                ) . __('colon03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
 
         // Load average
@@ -811,7 +811,7 @@ function dbquery($sql)
         if ($result) {
             while ($row = $result->fetch_row()) {
                 for ($f = 0; $f < $link->field_count; $f++) {
-                    echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+                    echo $result->fetch_field_direct($f)->name . __('colon03') . ' ' . $row[$f] . "\n";
                 }
             }
 
