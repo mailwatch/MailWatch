@@ -7,8 +7,8 @@ Copy the file 'mailwatch' into /etc/cron.daily/
 Copy in /usr/local/bin the following files:
 
 mailwatch_db_clean.php
-quarantine_maint.php
-quarantine_report.php
+mailwatch_quarantine_maint.php
+mailwatch_quarantine_report.php
 
 -------------------------------------------
 Database cleanup of maillog records

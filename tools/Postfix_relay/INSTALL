@@ -8,5 +8,5 @@ Copy the 'mailwatch-postfix-relay' file into /etc/cron.hourly/
 
 Copy in /usr/local/bin the following files:
 
-postfix_relay.php
-mailscanner_relay.php
+mailwatch_postfix_relay.php
+mailwatch_mailscanner_relay.php

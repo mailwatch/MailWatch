@@ -8,9 +8,9 @@ You can get MailWatch to watch your sendmail logs and store all message relay in
 
 On Debian/Ubuntu:
 
-# cp tools/Sendmail_relay/sendmail_relay.php /usr/local/bin/.
+# cp tools/Sendmail_relay/mailwatch_sendmail_relay.php /usr/local/bin/.
 # cp tools/Sendmail_relay/mailwatch-sendmail-relay /etc/init.d/.
-# chmod +x /usr/local/bin/sendmail_relay.php
+# chmod +x /usr/local/bin/mailwatch_sendmail_relay.php
 # chmod +x /etc/init.d/mailwatch-sendmail-relay
 # /etc/init.d/mailwatch-sendmail-relay start
 # update-rc.d mailwatch-sendmail-relay defaults
