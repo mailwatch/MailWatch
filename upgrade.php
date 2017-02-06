@@ -369,7 +369,6 @@ if ($link) {
         'outq',
         'saved_filters',
         'sa_rules',
-        'spamscores',
         'users',
         'user_filters',
         'whitelist',
