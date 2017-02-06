@@ -206,6 +206,15 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Drop spamscores table
+    echo pad(' - Drop `spamscores` table');
+    if (false === check_table_exists('spamscores')) {
+        echo ' ALREADY DROPPED' . PHP_EOL;
+    } else {
+        $sql = 'DROP TABLE IF EXISTS `spamscores`';
+        executeQuery($sql);
+    }
+
     // Add autorelease table if not exist (1.2RC2)
     echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
     if (true === check_table_exists('autorelease')) {
@@ -232,11 +241,6 @@ if ($link) {
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
     $sql = "ALTER TABLE `blacklist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT";
-    executeQuery($sql);
-
-    // Table spamscores
-    echo pad(' - Fix schema for user field in `spamscores` table');
-    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table users
@@ -473,6 +477,7 @@ echo PHP_EOL;
 
 // Check configuration for missing entries
 echo 'Checking conf.php configuration entry: ' . PHP_EOL;
+echo PHP_EOL;
 $missingConfigEntries = checkConfVariables();
 if ($missingConfigEntries['needed']['count'] === 0) {
     echo ' - All needed entries are OK' . PHP_EOL;
