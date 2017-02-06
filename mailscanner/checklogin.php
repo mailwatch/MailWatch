@@ -65,7 +65,7 @@ if (
 $sql = "SELECT * FROM users WHERE username='$myusername'";
 $result = dbquery($sql);
 if (!$result) {
-    $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
+    $message = 'Invalid query: ' . database::$link->errno . __('colon99') . ' ' . database::$link->error . "\n";
     $message .= 'Whole query: ' . $sql;
     die($message);
 }
@@ -104,7 +104,7 @@ if ($usercount === 0) {
     $result_userfilter = dbquery($sql_userfilter);
 
     if (!$result_userfilter) {
-        $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
+        $message = 'Invalid query: ' . database::$link->errno . __('colon99') . ' ' . database::$link->error . "\n";
         $message .= 'Whole query: ' . $sql_userfilter;
         die($message);
     }
