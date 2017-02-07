@@ -73,7 +73,7 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
 
-// Replace type="password" with a dot font
+// Replace type="password" with a dot font to handle Autocompletion
 if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM') || !USE_FONT_FOR_PASSWORD_IN_FORM) {
     function fontDotPassword()
     {

@@ -251,6 +251,7 @@ define('AUTO_RELEASE', false);
 define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
 define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
 
-// Use dot Font with field Password in form (usefull if your browser have trouble with autofill feature)
+// Use dot font with field Password in form (usefull if your browser have trouble with Autocompletion feature as Safari OSX and Chrome)
 define('USE_FONT_FOR_PASSWORD_IN_FORM', false);
+
 
