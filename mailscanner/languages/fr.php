@@ -790,6 +790,7 @@ return array(
     'error58' => 'Erreur :',
     'errornfd58' => 'Erreur : fichier non trouvé',
     'part58' => 'Expédié',
+    'title58' => 'Visualisation des E-Mail de Quarantaine',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
