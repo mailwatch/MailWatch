@@ -309,7 +309,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
-    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
@@ -329,7 +329,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="250">' . "\n";
         echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
 
         // MailScanner running?
@@ -811,7 +811,7 @@ function dbquery($sql)
         if ($result) {
             while ($row = $result->fetch_row()) {
                 for ($f = 0; $f < $link->field_count; $f++) {
-                    echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+                    echo $result->fetch_field_direct($f)->name . __('colon99') . ' ' . $row[$f] . "\n";
                 }
             }
 
@@ -1144,7 +1144,7 @@ AND
     $result = dbquery($sql);
     $virus_array = array();
     while ($row = $result->fetch_object()) {
-        if (preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
+        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
             $virus = return_virus_link($virus_reports[2]);
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus] = 1;
@@ -1156,7 +1156,9 @@ AND
     arsort($virus_array);
     reset($virus_array);
     // Get the topmost entry from the array
-    if ((list($key, $val) = each($virus_array)) !== '') {
+    if (!defined('VIRUS_REGEX')) {
+        return __('unknownvirusscanner03');
+    } elseif ((list($key, $val) = each($virus_array)) !== '') {
         // Check and make sure there first placed isn't tied!
         $saved_key = $key;
         $saved_val = $val;
@@ -1559,7 +1561,6 @@ function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(' ', get_conf_var('VirusScanners'));
-
     return $scanners[0];
 }
 
@@ -1686,6 +1687,7 @@ function generatePager($sql)
 </tr>
 <tr>
 <td colspan="4">';
+    return $from;
 }
 
 /**
@@ -1725,7 +1727,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        $sql = generatePager($sql);
+        $from = generatePager($sql);
 
         // Re-run the original query and limit the rows
         $limit = $from - 1;
@@ -2077,7 +2079,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (preg_match('/VIRUS_REGEX/', $row[$f], $virus)) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus)) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
