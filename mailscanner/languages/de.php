@@ -790,7 +790,7 @@ return array(
     'error58' => 'Error:',
     'errornfd58' => 'Error: Datei nicht gefunden',
     'part58' => 'Abschnitt',
-    'title58' => 'Quarantined E-Mail Viewer',
+    'title58' => 'Anzeige von Quarantäne-E-Mails',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Nachricht nicht gefunden. Möglicherweise haben Sie die Nachricht bereits freigegeben oder der Link ist abgelaufen.',
