@@ -99,7 +99,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
                     echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
                     echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('newuser12') . "</TD></TR>\n";
-                    echo " <TR><TD CLASS=\"message\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('forallusers12') . "</TD></TR>\n";          
+                    echo " <TR><TD CLASS=\"message\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('forallusers12') . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT " . fontDotPassword() . " ID=\"password\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
