@@ -243,10 +243,14 @@ define('HIDE_NON_SPAM', false);
 // Hide Unknown Mail from quarantine reports
 define('HIDE_UNKNOWN', false);
 
-//Quarantine Auto Release
+// Quarantine Auto Release
 //Set true to allow auto release of quarantined items from quarantine report - require autorelease db table
 define('AUTO_RELEASE', false);
 
-//Give Domain Admins ability to release dangerous content, like viruses
+// Give Domain Admins ability to release dangerous content, like viruses
 define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
 define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
+
+// Use dot Font with field Password in form (usefull if your browser have trouble with autofill feature)
+define('USE_FONT_FOR_PASSWORD_IN_FORM', false);
+

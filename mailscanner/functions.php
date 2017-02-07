@@ -73,6 +73,19 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
 
+// Replace type="password" with a dot font
+if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM')) {
+    function fontDotPassword()
+    {
+        return "TYPE=\"password\"";
+    }
+} else {
+    function fontDotPassword()
+    {
+        return "class=\"password\" TYPE=\"text\"";
+    }
+}
+
 //security headers
 header('X-XSS-Protection: 1; mode=block');
 header('X-Frame-Options: SAMEORIGIN');
