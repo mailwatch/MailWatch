@@ -367,14 +367,14 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_1m = $loadavg[0];
             $la_5m = $loadavg[1];
             $la_15m = $loadavg[2];
-            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><td align="right">' . __('1minute03') . '</td><td align="center">' . $la_1m . '</td></tr><tr><td align="right">' . __('5minutes03') . '</td><td align="center">' . $la_5m . '</td></tr><tr><td align="right">' . __('15minutes03') . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><td align="right">' . __('1minute03') . '</td><td align="right">' . $la_1m . '</td></tr><tr><td align="right">' . __('5minutes03') . '</td><td align="right">' . $la_5m . '</td></tr><tr><td align="right">' . __('15minutes03') . '</td><td align="right">' . $la_15m . '</td></tr></table></td>' . "\n";
         } elseif (!DISTRIBUTED_SETUP && file_exists('/usr/bin/uptime')) {
             $loadavg = shell_exec('/usr/bin/uptime');
             $loadavg = explode(' ', $loadavg);
             $la_1m = rtrim($loadavg[count($loadavg) - 3], ',');
             $la_5m = rtrim($loadavg[count($loadavg) - 2], ',');
             $la_15m = rtrim($loadavg[count($loadavg) - 1]);
-            echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><td align="right">' . __('1minute03') . '</td><td align="right">' . $la_1m . '</td></tr><tr><td align="right">' . __('5minutes03') . '</td><td align="right">' . $la_5m . '</td></tr><tr><td align="right">' . __('15minutes03') . '</td><td align="right">' . $la_15m . '</td></tr></table></td>' . "\n";
         }
 
         // Mail Queues display
