@@ -30,10 +30,12 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change the following to reflect the location of MailWatch installation, with trailing /
-$mailwatch_dir = '/var/www/html/mailscanner/';
-
-require_once $mailwatch_dir . 'functions.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
 $required_constant = array(
     'QUARANTINE_REPORT_DAYS',

@@ -35,11 +35,21 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-// Edit this to reflect the full path to mailscanner dir containing functions.php, always end with "/"
-$mailwatchHome = '/var/www/html/mailscanner/';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
 
-require $mailwatchHome . 'functions.php';
-require_once $mailwatchHome . 'mtalogprocessor.inc.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+}
+
+require $pathToFunctions;
+
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/mtalogprocessor.inc.php';
+
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+}
 
 // Set-up environment
 set_time_limit(0);

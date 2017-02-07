@@ -34,7 +34,12 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-require __DIR__ . '/functions.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
 // Set-up environment
 set_time_limit(0);
