@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.10 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -457,7 +457,6 @@ return array(
     'retypepassword12' => 'Confirmez le mot de passe :',
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
 
-
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
     'updatesadesc13' => 'Mettre à jour les descriptions des règles SpamAssassin',
@@ -610,14 +609,14 @@ return array(
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Log de l\'Audit',
-    'datetime33' => 'Date/Heure',
-    'user33' => 'Utilisateur',
-    'ipaddress33' => 'Adresse IP',
-    'action33' => 'Action',
+    'datetime33' => 'Date/Heure :',
+    'user33' => 'Utilisateur :',
+    'ipaddress33' => 'Adresse IP :',
+    'action33' => 'Action :',
     'filter33' => 'Filtre',
     'applyfilter33' => 'appliquer',
-    'startdate33' => 'Date de départ',
-    'enddate33' => 'Date de fin',
+    'startdate33' => 'Date de départ :',
+    'enddate33' => 'Date de fin :',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',
@@ -678,6 +677,7 @@ return array(
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
     'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
     'domain41' => 'Domaine',
+    
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top des destinataires par quantité',
     'top10recipqt42' => 'Top 10 des destinataires par quantité',
@@ -692,6 +692,8 @@ return array(
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
     'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
     'domain44' => 'Domaine',
+    'count44' => 'Compte',
+    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
@@ -846,6 +848,5 @@ return array(
     'mslogo99' => 'Logo MailScanner',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
-
-    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
+    'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',
 );
