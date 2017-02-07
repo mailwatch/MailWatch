@@ -74,7 +74,7 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 }
 
 // Replace type="password" with a dot font
-if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM')) {
+if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM') || !USE_FONT_FOR_PASSWORD_IN_FORM) {
     function fontDotPassword()
     {
         return "TYPE=\"password\"";
