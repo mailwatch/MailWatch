@@ -601,7 +601,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
     $sth = dbquery($sql);
     while ($row = $sth->fetch_object()) {
-        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
+        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
         echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
                 $row->processed
