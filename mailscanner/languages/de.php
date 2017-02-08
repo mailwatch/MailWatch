@@ -564,8 +564,8 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail-Queue-Anzeige',
     'diemq24' => 'Keine Queue angegeben',
-    'inq24' => 'Inbound Mail Queue',
-    'outq24' => 'Outbound Mail Queue',
+    'inq24' => 'Eingehende E-Mail-Queue',
+    'outq24' => 'Ausgehende E-Mail-Queue',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'McAfee Status',
