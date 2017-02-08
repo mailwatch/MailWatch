@@ -146,6 +146,11 @@ sub CreateList {
         $dbh->do('SET NAMES utf8');
     }
 
+    # Remove old entries
+    for (keys %$BlackWhite) {
+        delete $BlackWhite->{$_};
+    }
+    
     $sql = "SELECT to_address, from_address FROM $type";
     $sth = $dbh->prepare($sql);
     $sth->execute;
