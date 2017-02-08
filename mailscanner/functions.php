@@ -369,7 +369,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_15m = $loadavg[2];
             echo '
             <tr>
-	            <td align="left" rowspan="3">' . __('loadaverage03') . '</td>
+	            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
 	            <td align="right">' . __('1minute03') . '&nbsp;</td>
 	            <td align="right">' . $la_1m . '</td>
             </tr>
@@ -389,7 +389,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_15m = rtrim($loadavg[count($loadavg) - 1]);
             echo '
             <tr>
-	            <td align="left" rowspan="3">' . __('loadaverage03') . '</td>
+	            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
 	            <td align="right">' . __('1minute03') . '&nbsp;</td>
 	            <td align="right">' . $la_1m . '</td>
             </tr>
