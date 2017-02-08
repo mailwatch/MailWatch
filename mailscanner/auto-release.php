@@ -76,8 +76,7 @@ if (file_exists('conf.php')) {
         }
     } else {
         $output[] = __('notallowed59');
-    }
-?>
+    } ?>
 <!doctype html>
 <html>
 <head>
@@ -96,13 +95,13 @@ if (file_exists('conf.php')) {
         <?php
         foreach ($output as $msg) {
             echo '<p>' . $msg . '</p>';
-        }
-        ?>
+        } ?>
     </div>
 </div>
 </body>
 </html>
 <?php
+
 } else {
     echo __('cannot_read_conf');
 }
