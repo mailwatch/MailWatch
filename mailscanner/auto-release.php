@@ -30,35 +30,53 @@
  */
 
 require_once __DIR__ . '/functions.php';
-if (isset($_GET['mid'], $_GET['r'])) {
-    dbconn();
-    $mid = safe_value($_GET['mid']);
-    $token = safe_value($_GET['r']);
-    $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
-    $result = dbquery($sql);
-    if (!$result) {
-        dbg('Error fetching from database' . database::$link->error);
-        echo __('dberror59');
-    }
-    if ($result->num_rows === 0) {
-        echo '<p>' . __('msgnotfound159') . '</p>';
-        echo '<p>' . __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359') . '</p>';
-    } else {
-        $row = $result->fetch_assoc();
-        if ($row['uid'] === $token) {
-            $list = quarantine_list_items($mid);
-            $result = '';
-            if (count($list) === 1) {
-                $to = $list[0]['to'];
-                $result = quarantine_release($list, array(0), $to);
-            } else {
-                $listCount = count($list);
-                for ($i = 0; $i < $listCount; $i++) {
-                    if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
-                        $result = quarantine_release($list, array($i), $list[$i]['to']);
+if (file_exists('conf.php')) {
+    $output = array();
+    if (isset($_GET['mid'], $_GET['r'])) {
+        dbconn();
+        $mid = safe_value($_GET['mid']);
+        $token = safe_value($_GET['r']);
+        $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
+        $result = dbquery($sql);
+        if (!$result) {
+            dbg('Error fetching from database' . database::$link->error);
+            $output[] = __('dberror59');
+        }
+        if ($result->num_rows === 0) {
+            $output[] = __('msgnotfound159');
+            $output[] = __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359');
+        } else {
+            $row = $result->fetch_assoc();
+            if ($row['uid'] === $token) {
+                $list = quarantine_list_items($mid);
+                $result = '';
+                if (count($list) === 1) {
+                    $to = $list[0]['to'];
+                    $result = quarantine_release($list, array(0), $to);
+                } else {
+                    $listCount = count($list);
+                    for ($i = 0; $i < $listCount; $i++) {
+                        if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
+                            $result = quarantine_release($list, array($i), $list[$i]['to']);
+                        }
                     }
                 }
+                //success
+                $output[] = __('msgreleased59');
+                //cleanup
+                $releaseID = $row['id'];
+                $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
+                $result = dbquery($query);
+                if (!$result) {
+                    dbg('ERROR cleaning up database... ' . database::$link->error);
+                }
+            } else {
+                $output[] = __('tokenmismatch59');
             }
+        }
+    } else {
+        $output[] = __('notallowed59');
+    }
 ?>
 <!doctype html>
 <html>
@@ -76,52 +94,15 @@ if (isset($_GET['mid'], $_GET['r'])) {
     <div class="border-rounded">
         <h1><?php echo __('title63'); ?></h1>
         <?php
-        // Display success
-        echo '<p>' . __('msgreleased59') . '</p>';
-        //cleanup
-        $releaseID = $row['id'];
-        $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
-        $result = dbquery($query);
-        if (!$result) {
-            dbg('ERROR cleaning up database... ' . database::$link->error);
-        }
-        } else {
-            echo __('tokenmismatch59');
-        }
-        }
-        } else {
-            echo __('notallowed59');
+        foreach ($output as $msg) {
+            echo '<p>' . $msg . '</p>';
         }
         ?>
     </div>
 </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-            // Display success
-            echo '<p>' . __('msgreleased59') . '</p>';
-            //cleanup
-            $releaseID = $row['id'];
-            $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
-            $result = dbquery($query);
-            if (!$result) {
-                dbg('ERROR cleaning up database... ' . database::$link->error);
-            }
-        } else {
-            echo __('tokenmismatch59');
-        }
-    }
+<?php
 } else {
-    echo __('notallowed59');
+    echo __('cannot_read_conf');
 }
