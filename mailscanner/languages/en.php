@@ -796,8 +796,8 @@ return array(
 
     // 59-auto-release.php
     'msgnotfound159' => 'Message not found.  You may have already released this message or the link may have expired.',
-    'msgnotfound259' => 'Please contact your Mail Administrator and provide him with this message ID: ',
-    'msgnotfound393' => 'if you need this message released',
+    'msgnotfound259' => 'Please contact your Mail Administrator and provide them with this message ID: ',
+    'msgnotfound359' => 'if you need this message released',
     'msgreleased59' => 'Message released<br>It may take a few minutes to appear in your Inbox.',
     'tokenmismatch59' => 'Error releasing message - token mismatch',
     'notallowed59' => 'You are not allowed to be here!',
