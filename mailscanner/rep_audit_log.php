@@ -95,12 +95,13 @@ if ($_SESSION['user_type'] !== 'A') {
  <tr><td>
   <form action="rep_audit_log.php" method="GET" class="floatleft">
     <div class="mail table" id="auditFilters">
-      <div class="caption head">' . __('filter33') . '<button type="submit">' . __('applyfilter33') . '</button></div>
-      <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" value="' . $startDate . '"/></div></div>
+      <div class="caption head">' . __('filter33') . '</div>
+      <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>
       <div class="row"><div class="cell head">' . __('enddate33') . '</div><div class="cell data"><input name="endDate" type="text" placeholder="YYYY-MM-DD" value="' . $endDate . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('user33') . '</div><div class="cell data"><input name="username" type="text" placeholder="YYYY-MM-DD" value="' . $username . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('user33') . '</div><div class="cell data"><input name="username" type="text" value="' . $username . '"/></div></div>
       <div class="row"><div class="cell head">' . __('ipaddress33') . '</div><div class="cell data"><input name="ipaddress" type="text" value="' . $ipaddress . '"/></div></div>
       <div class="row"><div class="cell head">' . __('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . $actions . '"/></div></div>
+      <div class="row"><div class="cell head"></div><div class="cell head"><button type="submit">' . __('applyfilter33') . '</button></div></div>
     </div>
   </form>
 </td></tr>
