@@ -32,7 +32,7 @@ UPGRADING FROM 1.0.3 TO 1.2.0
 
 - Start MailScanner and your MTA. Check the log in /var/log/syslog.
 
-Notice:
+ATTENTION:
 
 Between 1.0.3 or 1.2.0 RCx version many files used by MailWatch have changed of name 
 and changed of place.
