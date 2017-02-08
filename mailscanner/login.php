@@ -42,6 +42,7 @@ require_once __DIR__ . '/functions.php';
     <title><?php echo __('mwloginpage01')?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css" type="text/css">
 <!--    <style type="text/css">-->
 <!--        body {-->
 <!--            background-color: #ffffff;-->
