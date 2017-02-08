@@ -88,8 +88,8 @@ if (file_exists('conf.php')) {
     <link rel="shortcut icon" href="images/favicon.png">
     <link rel="stylesheet" href="style.css" type="text/css">
 </head>
-<body class="pwdreset">
-<div class="pwdreset">
+<body class="autorelease">
+<div class="autorelease">
     <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
     <div class="border-rounded">
         <h1><?php echo __('title63'); ?></h1>
