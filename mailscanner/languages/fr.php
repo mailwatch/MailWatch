@@ -181,11 +181,12 @@ return array(
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
     'count03' => 'Nombre',
-    '1minute03' => '1 min.:',
-    '5minutes03' => '5 min.:',
-    '15minutes03' => '15 min.:',
+    '1minute03' => '1 minute :',
+    '5minutes03' => '5 minutes :',
+    '15minutes03' => '15 minutes :',
     'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
+    'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -225,9 +226,9 @@ return array(
     'type04' => 'Type',
     'path04' => 'Chemin',
     'dang04' => 'Nocif ',
-    'altrecip04' => 'Destinataire alternatif',
+    'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
-    'actions04' => 'Action(s)',
+    'actions04' => 'Action(s) :',
     'quarcmdres04' => 'Résultat des commandes de quarantaine',
     'resultmsg04' => 'Résultat du message',
     'id04' => 'ID :',
@@ -282,10 +283,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
-    'from07' => 'De',
-    'to07' => 'À',
-    'list07' => 'Liste',
-    'action07' => 'Action',
+    'from07' => 'De :',
+    'to07' => 'À :',
+    'list07' => 'Liste :',
+    'action07' => 'Action :',
     'wl07' => 'Liste Blanche',
     'bl07' => 'Liste Noire',
     'reset07' => 'Réinitialiser',
@@ -421,7 +422,7 @@ return array(
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
-    'errorpass12' => 'Le Mot de Passe de correspond pas.',
+    'errorpass12' => 'Mot de passe erroné',
     'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',
@@ -445,6 +446,18 @@ return array(
     'auditlogto12' => 'vers',
     'auditlog0412' => 'L\'Utilisateur %s a été effacé',
     'auditlog0512' => 'L\'Utilisateur [%s] a mis à jour son propre compte',
+    'erroreditnodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs sans domaine',
+    'erroreditdomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs du domaine %s',
+    'errortonodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer le domaine des utilisateurs',
+    'errortodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour assigner des utilisateurs au domaine %s',
+    'errortypesetforbidden12' => 'Erreur : vous ne disposez pas des autorisations nécessaires pour attribuer des droits d\'administrateur aux utilisateurs',
+    'errordeletenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer des utilisateurs sans domaine',
+    'errordeletedomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour supprimer les utilisateurs du domaine %s',
+    'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
+    'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
+    'retypepassword12' => 'Confirmez le mot de passe :',
+    'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
+
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -821,7 +834,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
-    'errors07' => 'Erreur :',
+    'errors62' => 'Erreur :',
 
     // 63-password_reset.php
     'conferror63' => 'Erreur : le système de remise à zéro du mot de passe n\'est pas activé dans le fichier conf.php.',
@@ -860,4 +873,5 @@ return array(
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
 
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
 );

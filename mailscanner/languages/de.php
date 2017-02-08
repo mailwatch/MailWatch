@@ -181,11 +181,12 @@ return array(
     'auditlogupdateuser03' => 'Passwort für Benutzer aktualisiert',
     'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
     'count03' => 'Anzahl',
-    '1minute03' => '1 Min.:',
-    '5minutes03' => '5 Min.:',
-    '15minutes03' => '15 Min.:',
+    '1minute03' => '1 Minute:',
+    '5minutes03' => '5 Minuten:',
+    '15minutes03' => '15 Minuten:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
+    'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -225,9 +226,9 @@ return array(
     'type04' => 'Typ',
     'path04' => 'Pfad',
     'dang04' => 'Gefährlich',
-    'altrecip04' => 'Alternative(r) Empfänger',
+    'altrecip04' => 'Alternative(r) Empfänger:',
     'submit04' => 'Bestätigen',
-    'actions04' => 'Aktion(en)',
+    'actions04' => 'Aktion(en):',
     'quarcmdres04' => 'Ergebnisse des Quarantänebefehls',
     'resultmsg04' => 'Detailierte Ergebnisse',
     'id04' => 'ID:',
@@ -282,10 +283,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',
-    'from07' => 'Von',
-    'to07' => 'An',
-    'list07' => 'Liste',
-    'action07' => 'Aktion',
+    'from07' => 'Von:',
+    'to07' => 'An:',
+    'list07' => 'Liste:',
+    'action07' => 'Aktion:',
     'wl07' => 'Weisse Liste',
     'bl07' => 'Schwarze Liste',
     'reset07' => 'Zurücksetzen',
@@ -445,6 +446,17 @@ return array(
     'auditlogto12' => 'nach',
     'auditlog0412' => 'Benutzer %s gelöscht',
     'auditlog0512' => 'Benutzer [%s] hat sein eigenes Konto aktualisiert',
+    'erroreditnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer ohne Domäne zu bearbeiten',
+    'erroreditdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer der Domäne %s zu bearbeiten',
+    'errortonodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um die Domäne von Benutzern zu entfernen',
+    'errortodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer in die Domäne %s zu verschieben',
+    'errortypesetforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Administrator-Rechte zuzuweisen',
+    'errordeletenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne zu löschen',
+    'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
+    'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
+    'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
+    'retypepassword12' => 'Passwort bestätigen:',
+    'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -822,7 +834,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
-    'errors07' => 'Fehler:',
+    'errors62' => 'Fehler:',
 
     // 63-password_reset.php
     'conferror63' => 'Fehler: Passwort zurücksetzen ist in conf.php nicht aktiviert',
@@ -860,4 +872,5 @@ return array(
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
 
+    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die your conf.php mit conf.php.example',
 );

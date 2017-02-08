@@ -116,9 +116,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = __('msgviewer06') . ': ' . $message_id . ' on ' . $message->hostname;
+    $title = __('msgviewer06') . __('colon99') . ' ' . $message_id . ' on ' . $message->hostname;
 } else {
-    $title = __('msgviewer06') . ': ' . $message_id;
+    $title = __('msgviewer06') . __('colon99') . ' ' . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";

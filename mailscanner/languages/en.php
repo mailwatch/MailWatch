@@ -181,11 +181,12 @@ return array(
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
     'count03' => 'Count',
-    '1minute03' => '1 min.:',
-    '5minutes03' => '5 min.:',
-    '15minutes03' => '15 min.:',
+    '1minute03' => '1 minute:',
+    '5minutes03' => '5 minutes:',
+    '15minutes03' => '15 minutes:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Not spam',
+    'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -225,9 +226,9 @@ return array(
     'type04' => 'Type',
     'path04' => 'Path',
     'dang04' => 'Dangerous',
-    'altrecip04' => 'Alternate Recipient(s)',
+    'altrecip04' => 'Alternate Recipient(s):',
     'submit04' => 'Submit',
-    'actions04' => 'Action(s)',
+    'actions04' => 'Action(s):',
     'quarcmdres04' => 'Quarantine Command Results',
     'resultmsg04' => 'Result Messages',
     'id04' => 'ID:',
@@ -282,10 +283,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Add to Whitelist/Blacklist',
-    'from07' => 'From',
-    'to07' => 'To',
-    'list07' => 'List',
-    'action07' => 'Action',
+    'from07' => 'From:',
+    'to07' => 'To:',
+    'list07' => 'List:',
+    'action07' => 'Action:',
     'wl07' => 'Whitelist',
     'bl07' => 'Blacklist',
     'reset07' => 'Reset',
@@ -421,7 +422,7 @@ return array(
     'action_0212' => 'Action:',
     'reset12' => 'Reset',
     'areusuredel12' => 'Are you sure you want to delete user',
-    'errorpass12' => 'Passwords do not match',
+    'errorpass12' => 'Password mismatch',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',
@@ -445,6 +446,17 @@ return array(
     'auditlogto12' => 'to',
     'auditlog0412' => 'User %s deleted',
     'auditlog0512' => 'User [%s] updated their own account',
+    'erroreditnodomainforbidden12' => 'Error: You don\'t have the permissions, to edit users without domain',
+    'erroreditdomainforbidden12' => 'Error: You don\'t have the permissions, to edit users of domain %s',
+    'errortonodomainforbidden12' => 'Error: You don\'t have the permissions, to remove the domain of users',
+    'errortodomainforbidden12' => 'Error: You don\'t have the permissions, to assign users to domain %s',
+    'errortypesetforbidden12' => 'Error: You don\'t have the permissions, to assign admin rights to users',
+    'errordeletenodomainforbidden12' => 'Error: You don\'t have the permissions, to delete users without domain',
+    'errordeletedomainforbidden12' => 'Error: You don\'t have the permissions, to delete users of domain %s',
+    'errorcreatenodomainforbidden12' => 'Error: You don\'t have the permissions, to add users without domain',
+    'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
+    'retypepassword12' => 'Confirm Password:',
+    'userexists12' => 'User already exists with username %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -825,7 +837,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'The variable %s is empty, please set a value in conf.php.',
-    'errors07' => 'Error:',
+    'error62' => 'Error:',
 
     // 63-password_reset.php
     'conferror63' => 'Error - Password Reset is not enabled in conf.php',
@@ -862,6 +874,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
-
-
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
 );

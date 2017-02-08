@@ -42,6 +42,16 @@ if (!is_readable(__DIR__ . '/conf.php')) {
     die(__('cannot_read_conf'));
 }
 require_once __DIR__ . '/conf.php';
+
+$missingConfigEntries = checkConfVariables();
+if ($missingConfigEntries['needed']['count'] !== 0) {
+    echo __('missing_conf_entries') . '<br>' . PHP_EOL;
+    foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
+        echo '- ' . $missingConfigEntry . '<br>' . PHP_EOL;
+    }
+    die();
+}
+
 require_once __DIR__ . '/database.php';
 
 // Set PHP path to use local PEAR modules only
@@ -299,7 +309,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
-    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
@@ -319,7 +329,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="250">' . "\n";
         echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
 
         // MailScanner running?
@@ -386,8 +396,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 }
                 // else use mailq which is for sendmail and exim
             } elseif (MAILQ) {
-                $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
-                $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
+                $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
+                    0);
+                $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
+                    0);
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
@@ -799,7 +811,7 @@ function dbquery($sql)
         if ($result) {
             while ($row = $result->fetch_row()) {
                 for ($f = 0; $f < $link->field_count; $f++) {
-                    echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+                    echo $result->fetch_field_direct($f)->name . __('colon99') . ' ' . $row[$f] . "\n";
                 }
             }
 
@@ -956,11 +968,17 @@ function format_spam_report($spamreport)
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
         $notRulesLines = array(
             //english
-            'cached', 'score=', 'required', 'autolearn=',
+            'cached',
+            'score=',
+            'required',
+            'autolearn=',
             //italian
-            'punteggio=', 'necessario',
+            'punteggio=',
+            'necessario',
             //german
-            'benoetigt', 'Wertung=', 'gecached',
+            'benoetigt',
+            'Wertung=',
+            'gecached',
             //french
             'requis'
         );
@@ -981,9 +999,9 @@ function format_spam_report($spamreport)
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                "\n",
-                $output_array
-            ) . '</table>' . "\n";
+                    "\n",
+                    $output_array
+                ) . '</table>' . "\n";
         } else {
             return $spamreport;
         }
@@ -1061,9 +1079,9 @@ function format_mcp_report($mcpreport)
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                "\n",
-                $output_array
-            ) . '</table>' . "\n";
+                    "\n",
+                    $output_array
+                ) . '</table>' . "\n";
         } else {
             return $mcpreport;
         }
@@ -1126,7 +1144,7 @@ AND
     $result = dbquery($sql);
     $virus_array = array();
     while ($row = $result->fetch_object()) {
-        if (preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
+        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
             $virus = return_virus_link($virus_reports[2]);
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus] = 1;
@@ -1138,7 +1156,9 @@ AND
     arsort($virus_array);
     reset($virus_array);
     // Get the topmost entry from the array
-    if ((list($key, $val) = each($virus_array)) !== '') {
+    if (!defined('VIRUS_REGEX')) {
+        return __('unknownvirusscanner03');
+    } elseif ((list($key, $val) = each($virus_array)) !== '') {
         // Check and make sure there first placed isn't tied!
         $saved_key = $key;
         $saved_val = $val;
@@ -1425,6 +1445,7 @@ function get_conf_truefalse($name)
                 default:
                     // if $parameter_value is a ruleset or a function call return true
                     $parameter_value = trim($parameter_value);
+
                     return strlen($parameter_value) > 0;
             }
         }
@@ -1540,7 +1561,6 @@ function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(' ', get_conf_var('VirusScanners'));
-
     return $scanners[0];
 }
 
@@ -1667,6 +1687,7 @@ function generatePager($sql)
 </tr>
 <tr>
 <td colspan="4">';
+    return $from;
 }
 
 /**
@@ -1706,7 +1727,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        $sql = generatePager($sql);
+        $from = generatePager($sql);
 
         // Re-run the original query and limit the rows
         $limit = $from - 1;
@@ -1930,7 +1951,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     echo "  $fieldname[$f] (<a href=\"?orderby=" . $fieldInfo->name
                         . '&amp;orderdir=a' . subtract_multi_get_vars(
                             array('orderby', 'orderdir')
-                        ) . "\">A</a>/<a href=\"?orderby=" .  $fieldInfo->name
+                        ) . "\">A</a>/<a href=\"?orderby=" . $fieldInfo->name
                         . '&amp;orderdir=d' . subtract_multi_get_vars(array('orderby', 'orderdir')) . "\">D</a>)\n";
                     echo "  </th>\n";
                 } else {
@@ -2058,7 +2079,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (preg_match('/VIRUS_REGEX/', $row[$f], $virus)) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus)) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
@@ -2319,7 +2340,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
 
         foreach ($sth->fetch_fields() as $field) {
-            echo '  <th>' .$field->name . '</th>' . "\n";
+            echo '  <th>' . $field->name . '</th>' . "\n";
         }
         echo ' </tr>' . "\n";
         // Rows
@@ -2329,7 +2350,8 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ", $1", $row[$f]) . '</td>' . "\n";
+                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ", $1",
+                        $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }
@@ -2388,28 +2410,28 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
  * @param $sql
 
 function db_vertical_table($sql)
-{
-    $sth = dbquery($sql);
-    $rows = $sth->num_rows;
-    $fields = $sth->field_count;
-
-    if ($rows > 0) {
-        echo '<table border="1" class="mail">' . "\n";
-        while ($row = $sth->fetch_row()) {
-            for ($f = 0; $f < $fields; $f++) {
-                $fieldInfo = $sth->fetch_field_direct($f);
-                echo " <tr>\n";
-                echo "  <td>" . $fieldInfo->name . "</td>\n";
-                echo "  <td>" . $row[$f] . "</td>\n";
-                echo " </tr>\n";
-            }
-        }
-        echo "</table>\n";
-    } else {
-        echo "No rows retrieved\n";
-    }
-}
-*/
+ * {
+ * $sth = dbquery($sql);
+ * $rows = $sth->num_rows;
+ * $fields = $sth->field_count;
+ *
+ * if ($rows > 0) {
+ * echo '<table border="1" class="mail">' . "\n";
+ * while ($row = $sth->fetch_row()) {
+ * for ($f = 0; $f < $fields; $f++) {
+ * $fieldInfo = $sth->fetch_field_direct($f);
+ * echo " <tr>\n";
+ * echo "  <td>" . $fieldInfo->name . "</td>\n";
+ * echo "  <td>" . $row[$f] . "</td>\n";
+ * echo " </tr>\n";
+ * }
+ * }
+ * echo "</table>\n";
+ * } else {
+ * echo "No rows retrieved\n";
+ * }
+ * }
+ */
 
 /**
  * @return double
@@ -2429,6 +2451,7 @@ function page_creation_timer()
     } else {
         $pc_end_time = get_microtime();
         $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
+
         return sprintf(__('pggen03') . ' %f ' . __('seconds03') . "\n", $pc_total_time);
     }
 }
@@ -2565,7 +2588,8 @@ function ldap_authenticate($user, $password)
         if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
             $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
         } elseif (strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
+            $ldap_search_results = ldap_search($ds, LDAP_DN,
+                LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
         } else {
             // Windows LDAP (with legacy NT support)
             $ldap_search_results = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
@@ -2573,15 +2597,18 @@ function ldap_authenticate($user, $password)
 
         if (false === $ldap_search_results) {
             @trigger_error(__('ldapnoresult03') . ' "' . $user . '"');
+
             return null;
         }
         if (1 > ldap_count_entries($ds, $ldap_search_results)) {
             //
             @trigger_error(__('ldapresultnodata03') . ' "' . $user . '"');
+
             return null;
         }
         if (ldap_count_entries($ds, $ldap_search_results) > 1) {
             @trigger_error(__('ldapresultset03') . ' "' . $user . '" ' . __('ldapisunique03'));
+
             return null;
         }
 
@@ -2603,6 +2630,7 @@ function ldap_authenticate($user, $password)
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
                     @trigger_error(__('ldapno03') . ' "' . LDAP_EMAIL_FIELD . '" ' . __('ldapresults03'));
+
                     return null;
                 }
 
@@ -2674,7 +2702,7 @@ if (!function_exists('ldap_escape')) {
     {
         $charMaps = array(
             LDAP_ESCAPE_FILTER => array('\\', '*', '(', ')', "\x00"),
-            LDAP_ESCAPE_DN     => array('\\', ',', '=', '+', '<', '>', ';', '"', '#')
+            LDAP_ESCAPE_DN => array('\\', ',', '=', '+', '<', '>', ';', '"', '#')
         );
 
         // Pre-process the char maps on first call
@@ -3724,6 +3752,25 @@ function updateUserPasswordHash($user, $hash)
     audit_log(__('auditlogupdateuser03') . ' ' . $user);
 }
 
+/**
+ * @param $username username that should be checked if it exists
+ * @return true if user exists, else false
+ */
+function checkForExistingUser($username)
+{
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'";
+    $row = dbquery($sqlQuery)->fetch_object();
+    return $row->counter >0;
+}
+
+/**
+ * @param $filename
+ * @param $dataColumnTitle
+ * @param array $data
+ * @param array $data_names
+ * @param array $data_size
+ * @param int $scale
+ */
 function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1)
 {
     // HTML to display the graph
@@ -3762,6 +3809,140 @@ function printGraphTable($filename, $dataColumnTitle, array $data, array $data_n
     echo '  </td>' . "\n";
     echo ' </tr>' . "\n";
     echo '</table>' . "\n";
+}
+
+/**
+ * @return mixed
+ */
+function checkConfVariables()
+{
+    $needed = array(
+        'ALLOWED_TAGS',
+        'AUDIT',
+        'AUDIT_DAYS_TO_KEEP',
+        'AUTO_RELEASE',
+        'CACHE_DIR',
+        'DATE_FORMAT',
+        'DB_DSN',
+        'DB_HOST',
+        'DB_NAME',
+        'DB_PASS',
+        'DB_TYPE',
+        'DB_USER',
+        'DEBUG',
+        'DISPLAY_IP',
+        'DISTRIBUTED_SETUP',
+        'DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS',
+        'DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS',
+        'FILTER_TO_ONLY',
+        'FROMTO_MAXLEN',
+        'HIDE_HIGH_SPAM',
+        'HIDE_NON_SPAM',
+        'HIDE_UNKNOWN',
+        'IMAGES_DIR',
+        'LANG',
+        'LDAP_DN',
+        'LDAP_EMAIL_FIELD',
+        'LDAP_HOST',
+        'LDAP_MS_AD_COMPATIBILITY',
+        'LDAP_PASS',
+        'LDAP_PORT',
+        'LDAP_PROTOCOL_VERSION',
+        'LDAP_SITE',
+        'LDAP_SSL',
+        'LDAP_USER',
+        'LISTS',
+        'MAIL_LOG',
+        'MAILQ',
+        'MAILWATCH_HOME',
+        'MAX_RESULTS',
+        'MEMORY_LIMIT',
+        'MS_CONFIG_DIR',
+        'MS_EXECUTABLE_PATH',
+        'MS_LIB_DIR',
+        'MS_LOG',
+        'MS_LOGO',
+        'MS_SHARE_DIR',
+        'MSRE',
+        'MSRE_RELOAD_INTERVAL',
+        'MSRE_RULESET_DIR',
+        'MW_LOGO',
+        'PROXY_PASS',
+        'PROXY_PORT',
+        'PROXY_SERVER',
+        'PROXY_TYPE',
+        'PROXY_USER',
+        'QUARANTINE_DAYS_TO_KEEP',
+        'QUARANTINE_FROM_ADDR',
+        'QUARANTINE_MAIL_HOST',
+        'QUARANTINE_MAIL_PORT',
+        'QUARANTINE_MSG_BODY',
+        'QUARANTINE_REPORT_DAYS',
+        'QUARANTINE_REPORT_FROM_NAME',
+        'QUARANTINE_REPORT_HOSTURL',
+        'QUARANTINE_REPORT_SUBJECT',
+        'QUARANTINE_SENDMAIL_PATH',
+        'QUARANTINE_SUBJECT',
+        'QUARANTINE_USE_FLAG',
+        'QUARANTINE_USE_SENDMAIL',
+        'RECORD_DAYS_TO_KEEP',
+        'RESOLVE_IP_ON_DISPLAY',
+        'RPC_ALLOWED_CLIENTS',
+        'RPC_ONLY',
+        'RPC_RELATIVE_PATH',
+        'SA_DIR',
+        'SA_MAXSIZE',
+        'SA_PREFS',
+        'SA_RULES_DIR',
+        'SHOW_DOC',
+        'SHOW_MORE_INFO_ON_REPORT_GRAPH',
+        'SHOW_SFVERSION',
+        'SSL_ONLY',
+        'STATUS_REFRESH',
+        'STRIP_HTML',
+        'SUBJECT_MAXLEN',
+        'TEMP_DIR',
+        'TIME_FORMAT',
+        'TIME_ZONE',
+        'TTF_DIR',
+        'USE_LDAP',
+        'USE_PROXY',
+        'VIRUS_INFO',
+    );
+
+    $obsolete = array();
+
+    /*
+    // TODO: implement optional lists
+    $optional = array(
+        'RPC_PORT',
+        'RPC_SSL',
+        'VIRUS_REGEX',
+
+    );
+    */
+
+    $neededMissing = array();
+    foreach ($needed as $item) {
+        if (!defined($item)) {
+            $neededMissing[] = $item;
+        }
+    }
+
+    $obsoleteStillPresent = array();
+    foreach ($obsolete as $item) {
+        if (defined($item)) {
+            $obsoleteStillPresent[] = $item;
+        }
+    }
+
+    $results['needed']['count'] = count($neededMissing);
+    $results['needed']['list'] = $neededMissing;
+
+    $results['obsolete']['count'] = count($obsoleteStillPresent);
+    $results['obsolete']['list'] = $obsoleteStillPresent;
+
+    return $results;
 }
 
 /**

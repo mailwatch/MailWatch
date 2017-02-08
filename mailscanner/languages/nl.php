@@ -181,11 +181,12 @@ return array(
     'auditlogupdateuser03' => 'Updated password for user',
     'verifyperm03' => 'Please verify read permissions on',
     'count03' => 'Count',
-    '1minute03' => '1 min.:',
-    '5minutes03' => '5 min.:',
-    '15minutes03' => '15 min.:',
+    '1minute03' => '1 minute:',
+    '5minutes03' => '5 minutes:',
+    '15minutes03' => '15 minutes:',
     'saspam03' => 'spam',
     'sanotspam03' => 'not spam',
+    'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
 
     // 04-detail.php
     'receivedon04' => 'Ontvangen op:',
@@ -225,9 +226,9 @@ return array(
     'type04' => 'Type',
     'path04' => 'Pad',
     'dang04' => 'Gevaarlijk',
-    'altrecip04' => 'Andere Ontvanger(s)',
+    'altrecip04' => 'Andere Ontvanger(s):',
     'submit04' => 'Invoeren',
-    'actions04' => 'Actie(s)',
+    'actions04' => 'Actie(s):',
     'quarcmdres04' => 'Quarantaine Instructie Resultaten',
     'resultmsg04' => 'Resultaat e-mails',
     'id04' => 'ID:',
@@ -282,10 +283,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Voeg toe aan Vrijwaring/Blokkering',
-    'from07' => 'Van',
-    'to07' => 'Naar',
-    'list07' => 'Lijst',
-    'action07' => 'Actie',
+    'from07' => 'Van:',
+    'to07' => 'Naar:',
+    'list07' => 'Lijst:',
+    'action07' => 'Actie:',
     'wl07' => 'Vrijwaring',
     'bl07' => 'Blokkering',
     'reset07' => 'Herstart',
@@ -445,6 +446,17 @@ return array(
     'auditlogto12' => 'to',
     'auditlog0412' => 'User %s deleted',
     'auditlog0512' => 'User [%s] updated their own account',
+    'erroreditnodomainforbidden12' => 'Error: You don\'t have the permissions, to edit users without domain',
+    'erroreditdomainforbidden12' => 'Error: You don\'t have the permissions, to edit users of domain %s',
+    'errortonodomainforbidden12' => 'Error: You don\'t have the permissions, to remove the domain of users',
+    'errortodomainforbidden12' => 'Error: You don\'t have the permissions, to assign users to domain %s',
+    'errortypesetforbidden12' => 'Error: You don\'t have the permissions, to assign admin rights to users',
+    'errordeletenodomainforbidden12' => 'Error: You don\'t have the permissions, to delete users without domain',
+    'errordeletedomainforbidden12' => 'Error: You don\'t have the permissions, to delete users of domain %s',
+    'errorcreatenodomainforbidden12' => 'Error: You don\'t have the permissions, to add users without domain',
+    'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
+    'retypepassword12' => 'Confirm Password:',
+    'userexists12' => 'User already exists with username %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -822,7 +834,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'The variable %s is empty, please set a value in conf.php.',
-    'errors07' => 'Error:',
+    'errors62' => 'Error:',
 
     // 63-password_reset.php
     'conferror63' => 'Error - Password Reset is not enabled in conf.php',
@@ -860,4 +872,5 @@ return array(
     'i18_missing' => 'Geen vertaling in het Nederlands',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
 
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
 );
