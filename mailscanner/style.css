@@ -36,6 +36,15 @@ body {
 }
 
 /*login*/
+
+body.login {
+    background-color: #ffffff;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.5em;
+}
+
 .login {
     margin: 50px auto;
     width: 350px;

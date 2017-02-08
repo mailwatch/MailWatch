@@ -145,7 +145,7 @@ require_once __DIR__ . '/functions.php';
 <!--        }-->
 <!--    </style>-->
 </head>
-<body>
+<body class="login">
 <div class="login">
     <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>"></div>
     <h1><?php echo __('mwlogin01'); ?></h1>
