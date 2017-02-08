@@ -692,8 +692,6 @@ return array(
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
     'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
     'domain44' => 'Domaine',
-    'count44' => 'Compte',
-    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',

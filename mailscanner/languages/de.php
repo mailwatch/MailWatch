@@ -692,8 +692,6 @@ return array(
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
-    'count44' => 'Count',
-    'size44' => 'Size',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
