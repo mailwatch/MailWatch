@@ -1,5 +1,6 @@
+----------------------------------
 UPGRADE INSTRUCTIONS
---------------------
+----------------------------------
 
 These are generalised instructions for RH9, if you made localised changes
 to CustomConfig.pm or you installed the application to a path different to
@@ -30,6 +31,13 @@ UPGRADING FROM 1.0.3 TO 1.2.0
 - Run upgrade.php to update database schema. Look for errors and correct them if needed.
 
 - Start MailScanner and your MTA. Check the log in /var/log/syslog.
+
+Notice:
+
+Between 1.0.3 or 1.2.0 RCx version many files used by MailWatch have changed of name 
+and changed of place.
+Particularly the PHP files that are launched in cron and the Init script files.
+Please read the documentation carefully to remove old files during the upgrade.
 
 UPGRADING FROM 1.0.x TO 1.0.3
 
