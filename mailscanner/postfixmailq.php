@@ -36,9 +36,10 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('mqviewer32'));
 
-echo '<b>Combined mail queue (Inbound and Outbound)</b>' . "\n";
+echo '<b>' . __('mqviewer32') . '</b>' . "\n";
 echo '<pre>';
 postfixmailq();
 echo '</pre>';
 html_end();
 dbclose();
+

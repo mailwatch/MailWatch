@@ -565,6 +565,8 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
     'diemq24' => 'Aucune file d\'attente définie',
+    'inq24' => 'File d\'attente de messages entrants',
+    'outq24' => 'File d\'attente de courrier sortant',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'Statut McAfee',
