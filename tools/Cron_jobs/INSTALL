@@ -10,6 +10,8 @@ mailwatch_db_clean.php
 mailwatch_quarantine_maint.php
 mailwatch_quarantine_report.php
 
+Verify if the 3 files are executable. If not, use "chmod +x" to correct tis problem.
+
 -------------------------------------------
 Database cleanup of maillog records
 -------------------------------------------

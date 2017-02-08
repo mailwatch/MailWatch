@@ -200,8 +200,8 @@ define('RPC_ONLY', false);
 // define('RPC_SSL', true);
 
 // Display the inbound/outbound mail queue lengths
-// Note: this only works with Sendmail & Exim
-// You will also need to run mailwatch/mailq.php from cron.
+// Note: this only works with Exim and Sendmail
+// You must also run /usr/local/bin/mailwatch_sendmail_queue.php from cron.
 define('MAILQ', true);
 
 // Do you want an audit trail?
@@ -243,10 +243,10 @@ define('HIDE_NON_SPAM', false);
 // Hide Unknown Mail from quarantine reports
 define('HIDE_UNKNOWN', false);
 
-//Quarantine Auto Release
+// Quarantine Auto Release
 //Set true to allow auto release of quarantined items from quarantine report - require autorelease db table
 define('AUTO_RELEASE', false);
 
-//Give Domain Admins ability to release dangerous content, like viruses
+// Give Domain Admins ability to release dangerous content, like viruses
 define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
 define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);

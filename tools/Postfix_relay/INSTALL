@@ -11,6 +11,7 @@ Copy in /usr/local/bin the following files:
 mailwatch_postfix_relay.php
 mailwatch_mailscanner_relay.php
 
+Verify if the 2 files are executable. If not, use "chmod +x" to correct tis problem.
 
 Note about mailwatch_postfix_relay.php: 
 
