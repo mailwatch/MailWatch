@@ -329,7 +329,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="250">' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
         echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
 
         // MailScanner running?
@@ -367,14 +367,40 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_1m = $loadavg[0];
             $la_5m = $loadavg[1];
             $la_15m = $loadavg[2];
-            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><td align="right">' . __('1minute03') . '</td><td align="right">' . $la_1m . '</td></tr><tr><td align="right">' . __('5minutes03') . '</td><td align="right">' . $la_5m . '</td></tr><tr><td align="right">' . __('15minutes03') . '</td><td align="right">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '
+            <tr>
+	            <td align="left" rowspan="3">' . __('loadaverage03') . '</td>
+	            <td align="right">' . __('1minute03') . '&nbsp;</td>
+	            <td align="right">' . $la_1m . '</td>
+            </tr>
+            </tr>
+	            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_5m . '</td>
+            </tr>
+	            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_15m . '</td>
+            </tr>
+            ' . "\n";
         } elseif (!DISTRIBUTED_SETUP && file_exists('/usr/bin/uptime')) {
             $loadavg = shell_exec('/usr/bin/uptime');
             $loadavg = explode(' ', $loadavg);
             $la_1m = rtrim($loadavg[count($loadavg) - 3], ',');
             $la_5m = rtrim($loadavg[count($loadavg) - 2], ',');
             $la_15m = rtrim($loadavg[count($loadavg) - 1]);
-            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" cellpadding="0" cellspacing="0"><tr><td align="right">' . __('1minute03') . '</td><td align="right">' . $la_1m . '</td></tr><tr><td align="right">' . __('5minutes03') . '</td><td align="right">' . $la_5m . '</td></tr><tr><td align="right">' . __('15minutes03') . '</td><td align="right">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '
+            <tr>
+	            <td align="left" rowspan="3">' . __('loadaverage03') . '</td>
+	            <td align="right">' . __('1minute03') . '&nbsp;</td>
+	            <td align="right">' . $la_1m . '</td>
+            </tr>
+            </tr>
+	            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_5m . '</td>
+            </tr>
+	            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_15m . '</td>
+            </tr>
+            ' . "\n";
         }
 
         // Mail Queues display
