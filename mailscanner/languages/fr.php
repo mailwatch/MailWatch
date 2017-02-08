@@ -801,6 +801,7 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
+    'title59' => 'Quarantine Release',
 
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',

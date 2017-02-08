@@ -801,6 +801,7 @@ return array(
     'dberror59' => 'Etwas ist schief gegangen - Kontaktieren Sie den Administrator',
     'arview059' => 'Anzeigen',
     'arrelease59' => 'Freigeben',
+    'title59' => 'Quarantine Release',
 
      // 60-rpcserver.php
     'paratype160' => 'Parameter-Typ',

@@ -801,6 +801,7 @@ return array(
     'dberror59' => 'Something went wrong - please contact support',
     'arview059' => 'View',
     'arrelease59' => 'Release',
+    'title59' => 'Quarantine Release',
 
      // 60-rpcserver.php
     'paratype160' => 'Parameter type',
