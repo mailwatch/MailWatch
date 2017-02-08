@@ -59,6 +59,55 @@ if (isset($_GET['mid'], $_GET['r'])) {
                     }
                 }
             }
+?>
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><?php echo __('title63'); ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body class="pwdreset">
+<div class="pwdreset">
+    <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+    <div class="border-rounded">
+        <h1><?php echo __('title63'); ?></h1>
+        <?php
+        // Display success
+        echo '<p>' . __('msgreleased59') . '</p>';
+        //cleanup
+        $releaseID = $row['id'];
+        $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
+        $result = dbquery($query);
+        if (!$result) {
+            dbg('ERROR cleaning up database... ' . database::$link->error);
+        }
+        } else {
+            echo __('tokenmismatch59');
+        }
+        }
+        } else {
+            echo __('notallowed59');
+        }
+        ?>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
 
             // Display success
             echo '<p>' . __('msgreleased59') . '</p>';
