@@ -103,7 +103,6 @@ if ($_SESSION['user_type'] !== 'A') {
       <div class="row"><div class="cell head">' . __('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . $actions . '"/></div></div>
     </div>
   </form>
-<div class="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' .  __('mslogo99') . '"></div>
 </td></tr>
 <tr><td>' . "\n";
 
