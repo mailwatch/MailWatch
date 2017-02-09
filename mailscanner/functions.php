@@ -339,10 +339,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             exec('ps ax | grep MailScanner | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
-                $procs = count($output) - 1 . ' children';
+                $procs = count($output) - 1 .  __('children03');
             } else {
                 $running = $no;
-                $procs = count($output) . ' proc(s)';
+                $procs = count($output) . __('procs03');
             }
             echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
