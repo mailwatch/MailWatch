@@ -39,6 +39,8 @@ no  strict 'subs'; # Allow bare words for parameter %'s
 
 use vars qw($VERSION);
 
+use Data::Dumper; #TODO remove this on release
+
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
 $VERSION = substr q$Revision: 1.5 $, 10;
 
@@ -145,7 +147,9 @@ sub CreateList {
         }
         $dbh->do('SET NAMES utf8');
     }
-
+    
+    MailScanner::Log::WarnLog("DEBUG: %s", Dumper($BlackWhite));#TODO remove this on release
+    
     # Remove old entries
     for (keys %$BlackWhite) {
         delete $BlackWhite->{$_};
@@ -170,7 +174,9 @@ sub CreateList {
         $BlackWhite->{lc($filter)}{lc($from_address)} = 1; # Store entry
         $count++;
     }
-
+    
+    MailScanner::Log::WarnLog("DEBUG: %s", Dumper($BlackWhite)); #TODO remove this on release
+    
     # Close connections
     $sth->finish();
     $dbh->disconnect();
