@@ -186,7 +186,7 @@ return array(
     'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
     'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
-    'children03' => 'processus fils',
+    'children03' => 'proc. fils',
     'procs03' => 'processus',
 
     // 04-detail.php
