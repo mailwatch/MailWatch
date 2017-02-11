@@ -1,5 +1,10 @@
 #!/bin/bash
-# Script to apply file permissions and create additional files
+# Script to apply adjustments for exim
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+cp "$DIR/etc/default/exim4" /etc/default/exim4
+cp -R "$DIR"/etc/exim/* /etc/exim4/
+cp "$DIR/etc/MailScanner/conf.d/mailwatch.conf" /etc/MailScanner/conf.d/mailwatch.conf
 
 usermod -a -G Debian-exim clamav
 usermod -a -G mtagroup clamav

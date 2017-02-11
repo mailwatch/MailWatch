@@ -190,12 +190,8 @@ fi
 
 case $WebServer in
     "apache")
-        logprint "Creating config file in /etc/apache2/conf-enabled/mailwatch.conf"
-        sed -i -e "s/WEBFOLDER/$WebFolder/" "$InstallFilesFolder/setup.examples/apache/mailwatch.conf"
-        cp "$InstallFilesFolder/setup.examples/apache/mailwatch.conf" /etc/apache2/conf-enabled/mailwatch.conf
-        logprint "Enable ssl for apache and reload"
-        a2enmod ssl
-        /etc/init.d/apache2 reload
+        logprint "Creating config for apache"
+        cp "$InstallFilesFolder/setup.examples/apache/mailwatch-apache.sh"
         sleep 1
         ;;
     "nginx")
@@ -237,34 +233,14 @@ do
             ;;
         "postfix")
             logprint "Configure MailScanner for use with postfix"
-            echo "header_checks = regexp:/etc/postfix/header_checks" >> /etc/postfix/main.cf
-            echo "/^Received:/ HOLD" >> /etc/postfix/header_checks
-            logprint "Restarting postfix"
-            #restart required to create hold folder
-            /etc/init.d/postfix restart
-            logprint "Setting file permissions for use of postfix"
-            mkdir -p /var/spool/MailScanner/spamassassin/
-            chown -R postfix:mtagroup /var/spool/MailScanner/spamassassin/
-            chown -R postfix:www-data /var/spool/postfix/incoming/
-            chown -R postfix:www-data /var/spool/postfix/hold
-            chmod -R g+r /var/spool/postfix/hold
-            chmod -R g+r /var/spool/postfix/incoming/
-            chown -R postfix.postfix /var/spool/MailScanner/incoming
-            chown -R postfix.postfix /var/spool/MailScanner/quarantine
-
-            logprint "Generating MailWatch config for MailScanner"
-            cp "$InstallFilesFolder/setup.examples/postfix/mailwatch.conf.example" /etc/MailScanner/conf.d/mailwatch.conf 
+            "$InstallFilesFolder/setup.examples/postfix/mailwatch-postfix.sh"
             sleep 1
             break
             ;;
 
         "exim")
             logprint "Configure MailScanner for use with exim"
-            cp "$InstallFilesFolder/setup.examples/exim/exim4-default.example" /etc/default/exim4
-            cp "$InstallFilesFolder"/setup.examples/exim/exim-configs/* /etc/exim4
-            logprint "Generating MailWatch config for MailScanner"
-            cp "$InstallFilesFolder/setup.examples/exim/mailwatch.conf.example" /etc/MailScanner/conf.d/mailwatch.conf
-            "$InstallFilesFolder/setup.examples/exim/apply-exim-permissions.sh"
+            "$InstallFilesFolder/setup.examples/exim/mailwatch-exim.sh"
             sleep 1
             break
             ;;
