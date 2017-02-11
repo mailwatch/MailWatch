@@ -2,8 +2,37 @@
 # Bash Menu Script Example
 InstallFilesFolder=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 MailScannerVersion="5.0.3-7"
+
+if cat /etc/*release | grep ^NAME | grep CentOS; then
+    OS="CentOS"
+    PM="yum"
+    MailScannerDownloadPath="https://s3.amazonaws.com/msv5/release/MailScanner-$MailScannerVersion.rhel.tar.gz"
+elif cat /etc/*release | grep ^NAME | grep Red; then
+    OS="RedHat"
+    PM="yum"
+    MailScannerDownloadPath="https://s3.amazonaws.com/msv5/release/MailScanner-$MailScannerVersion.rhel.tar.gz"
+elif cat /etc/*release | grep ^NAME | grep Fedora; then
+    OS="Fedora"
+    PM="yum"
+    MailScannerDownloadPath="https://s3.amazonaws.com/msv5/release/MailScanner-$MailScannerVersion.rhel.tar.gz"
+elif cat /etc/*release | grep ^NAME | grep Ubuntu; then
+    OS="Ubuntu"
+    PM="apt-get"
+    MailScannerDownloadPath="https://s3.amazonaws.com/msv5/release/MailScanner-$MailScannerVersion.deb.tar.gz"
+elif cat /etc/*release | grep ^NAME | grep Debian ; then
+    OS="Debian"
+    PM="apt-get"
+    MailScannerDownloadPath="https://s3.amazonaws.com/msv5/release/MailScanner-$MailScannerVersion.deb.tar.gz"
+else
+    echo "OS NOT SUPPORTED - Please perform a manual install"
+    exit 1;
+fi
+
+
+
 EndNotice=""
 Webuser="www-data"
+
 
 function logprint {
     echo "$1"
@@ -12,12 +41,13 @@ function logprint {
 logprint "Clearing temp dir"
 rm -rf /tmp/mailwatchinstall/*
 
+
 read -p "Install/upgrade MailScanner version $MailScannerVersion?:(y/n)[y]: " installMailScanner
 if [ -z $installMailScanner ] || "$installMailScanner" == "y"; then
     logprint "Starting MailScanner install"
     mkdir -p /tmp/mailwatchinstall/mailscanner
     logprint "Downloading current MailScanner release $MailScannerVersion:"
-    wget -O /tmp/mailwatchinstall/mailscanner/MailScanner.deb.tar.gz  "https://s3.amazonaws.com/msv5/release/MailScanner-$MailScannerVersion.deb.tar.gz"
+    wget -O /tmp/mailwatchinstall/mailscanner/MailScanner.deb.tar.gz  "$MailScannerDownloadPath"
     logprint "Extracting mailscanner files:"
     tar -xzf /tmp/mailwatchinstall/mailscanner/MailScanner.deb.tar.gz -C /tmp/mailwatchinstall/mailscanner/
     logprint "Starting MailScanner install script"
@@ -56,7 +86,7 @@ if [ -d $WebFolder ]; then
    rm -R $WebFolder
 fi
 
-logprint "Setting up sql"
+logprint "Setting up sql credentials"
 #get sql credentials
 read -p "SQL user for mailwatch[mailwatch]:" SqlUser
 if [ -z $SqlUser ]; then
@@ -76,28 +106,40 @@ if [ -z $SqlHost ]; then
 fi
 logprint "Using sql credentials user: $SqlUser; password: $SqlPwd; db: $SqlDb; host: $SqlHost"
 
-read -p "Do you want to install mariadb as sql server?(y/n)[y]: " response
-if [ -z $response ] || [ $response == "y" ]; then
-    logprint "Start install of mariadb"
-    apt-get install mariadb-server mariadb-client
+if ! type "mysqld" > /dev/null 2>&1; then
+    read -p "No mysql server found. Do you want to install mariadb as sql server?(y/n)[y]: " response
+    if [ -z $response ] || [ $response == "y" ]; then
+        logprint "Start install of mariadb"
+        $PM install mariadb-server mariadb-client
+        mysqlInstalled="1"
+    else
+        mysqlInstalled="0"
+        logprint "Not installing mariadb."
+    fi
+else
+    mysqlInstalled="1"
+    logprint "Found installed mysql server and will use that"
+fi
 
+if [ "$mysqlInstalled" == "1"]; then
     read -p "Root sql user (with rights to create db)[root]:" SqlRoot
     if [ -z $SqlRoot ]; then
         SqlRoot="root"
     fi
-    logprint "Creating sql database. You now need to enter the password of the root sql user"
+    logprint "Creating sql database and setting permission. You now need to enter the password of the root sql user twice"
     mysql -u $SqlRoot -p < "$InstallFilesFolder/create.sql"
-    logprint "Setting sql permissions. You now need to enter the password of the root sql user"
     mysql -u $SqlRoot -p --execute="GRANT ALL ON $SqlDb.* TO $SqlUser@localhost IDENTIFIED BY '$SqlPwd'; GRANT FILE ON *.* TO $SqlUser@localhost IDENTIFIED BY '$SqlPwd'; FLUSH PRIVILEGES"
 
     read -p "Enter an admin user for the MailWatch web interface: " MWAdmin
     read -p "Enter password for the admin: " MWAdminPwd
     logprint "Create MailWatch web gui admin"
     mysql -u $SqlUser -p$SqlPwd $SqlDb --execute="REPLACE INTO users SET username = '$MWAdmin', password = MD5('$MWAdminPwd'), fullname = 'Admin', type = 'A';"
-else
-    logprint "Not installing mariadb. You have to create the database yourself!"
+else 
+    echo "You have to create the database yourself!"
+    EndNotice="$EndNotice \n * create the database, a sql user with access to the db and following properties user: $SqlUser; password: $SqlPwd; db: $SqlDb; host: $SqlHost"
+    EndNotice="$EndNotice \n * create an admin account for the web gui"
 fi
-
+    
 #copy web files
 logprint "Moving MailWatch web files to new folder and setting permissions"
 mv "$InstallFilesFolder/mailscanner/" $WebFolder
@@ -108,42 +150,76 @@ chmod ug+rwx $WebFolder/images/cache
 chown root:mtagroup $WebFolder/temp
 chmod g+rw $WebFolder/temp
 
-PS3='Which web server should be used?: '
-options=("Apache" "Nginx" "Skip")
-select opt in "${options[@]}"
-do
-    logprint "Selected web server $opt"
-    case $opt in
-        "Apache")
-            logprint "Installing apache2 php5 php5-gd and php5-mysqlnd"
-            apt-get install apache2 php5 php5-gd php5-mysqlnd
-            logprint "Creating config file in /etc/apache2/conf-enabled/mailwatch.conf"
-            cat > /etc/apache2/conf-enabled/mailwatch.conf << EOF
+#test existing webserver
+if [[ type "httpd" > /dev/null 2>&1 || type "apache2" > /dev/null 2>&1 ]]; then
+    WebServer="apache"
+    logprint "Detected installed web server apache. We will use it for MailWatch"
+elif type "nginx" > /dev/null 2>&1; then
+    WebServer="nginx"
+    logprint "Detected installed web server nginx. We will use it for MailWatch"
+else
+    echo "We're unable to find your webserver.  We support Apache and Nginx";echo;
+    echo "Do you wish me to install a webserver?"
+    echo "1 - Apache"
+    echo "2 - Nginx"
+    echo "n - do not install or configure"
+    echo;
+    read -r -p "Select Webserver: " response
+    if [[ $response =~ ^([nN][oO])$ ]]; then
+        #do not install or configure webserver
+        WebServer="skip"
+    elif [ $response == 1 ]; then
+        #Apache
+        logprint "Installing apache"
+        $PM install apache2
+        WebServer="apache"
+    elif [ $response == 2 ]; then
+        #Nginx
+        logprint "Installing nginx"
+        $PM install nginx
+        WebServer="nginx"
+    else 
+        WebServer="skip"
+    fi
+fi
+
+read -p "MailWatch requires the following php packages. Do you want to install them if missing?(y/n)[y]: " installPhp
+if [ -z $installPhp ] || [ "$installPhp" == "y" ]; then
+    logprint "Installing required php packages"
+    $PM install php5 php5-gd and php5-mysqlnd
+else
+    logprint "Not installing php packages. You have to check it manually."
+    EndNotice= "$EndNotice \n * check for installed php5 php5-gd and php5-mysqlnd"
+fi
+
+case $WebServer in
+    "apache")
+        logprint "Creating config file in /etc/apache2/conf-enabled/mailwatch.conf"
+        cat > /etc/apache2/conf-enabled/mailwatch.conf << EOF
 Alias /mailwatch/ "$WebFolder/"
 <Directory "$WebFolder/">
   Require all granted
 </Directory>
 EOF
-            logprint "Enable ssl for apache and reload"
-            a2enmod ssl
-            /etc/init.d/apache2 reload
-            sleep 1
-            break
-            ;;
-        "Nginx")
-           #TODO
-            logprint "not available yet"
-            sleep 1
-            break
-            ;;
-        "Skip")
-            logprint "Skipping web server install"
-            sleep 1
-            break
-            ;;
-        *) echo invalid option;;
-    esac
-done
+        logprint "Enable ssl for apache and reload"
+        a2enmod ssl
+        /etc/init.d/apache2 reload
+        sleep 1
+        break
+        ;;
+    "nginx")
+       #TODO
+        logprint "not available yet"
+        sleep 1
+        break
+        ;;
+    "skip")
+        logprint "Skipping web server install"
+        EndNotice="$EndNotice \n * you need to configure your webserver for directory $WebFolder."
+        sleep 1
+        break
+        ;;
+esac
 
 #todo install web server, sql db(set the above)
 #todo create/modify group mtagroup to include mta user, web server user, av user, mailscanner user
@@ -195,7 +271,6 @@ MTA = postfix
 Incoming Work User = postfix
 Incoming Work Group = mtagroup
 Incoming Work Permissions = 0660
-Always Looked Up Last = &MailWatchLogging
 Detailed Spam Report = yes
 Quarantine Whole Message = yes
 Quarantine Whole Messages As Queue Files = no
@@ -203,19 +278,51 @@ Include Scores In SpamAssassin Report = yes
 Quarantine User = postfix
 Quarantine Group = mtagroup
 Quarantine Permissions = 0664
-Spam Actions = store header "X-Spam-Status: Yes"
-SpamAssassin User State Dir = /var/spool/MailScanner/spamassassin
-Quarantine Whole Message = no
+Always Looked Up Last = &MailWatchLogging
 Is Definitely Not Spam = &SQLWhitelist
 Is Definitely Spam = &SQLBlacklist
 Incoming Queue Dir = /var/spool/postfix/hold
 Outgoing Queue Dir = /var/spool/postfix/incoming
+SpamAssassin User State Dir = /var/spool/MailScanner/spamassassin
 EOF
             sleep 1
             break
             ;;
+            
         "exim")
-            logprint "Not yet supported"
+            logprint "Configure MailScanner for use with exim"
+# TODO exim config modifications that differ from default config            
+            logprint "Generating MailWatch config for MailScanner"
+            cat > /etc/MailScanner/conf.d/mailwatch.conf << EOF
+Run As User = Debian-exim
+Run As Group = Debian-exim
+MTA = exim
+Incoming Work User = Debian-exim
+Incoming Work Group = mtagroup
+Incoming Work Permissions = 0660
+Quarantine Whole Message = yes
+Quarantine Whole Messages As Queue Files = no
+Include Scores In SpamAssassin Report = yes
+Quarantine User = Debian-exim
+Quarantine Group = mtagroup
+Quarantine Permissions = 0644
+Always Looked Up Last = &MailWatchLogging
+Is Definitely Not Spam = &SQLWhitelist
+Is Definitely Spam = &SQLBlacklist
+Incoming Queue Dir = /var/spool/exim4/input
+Outgoing Queue Dir = /var/spool/exim4_outgoing/input
+
+Queue Scan Interval = 6
+Restart Every = 3600
+Sendmail = /usr/sbin/exim4
+Sendmail2 = /usr/sbin/exim4 -DOUTGOING
+Max Unscanned Messages Per Scan = 50
+Max Unsafe Messages Per Scan = 50
+Max Normal Queue Size = 2000
+Deliver Unparsable TNEF = yes
+Find UU-Encoded Files = yes
+Max Children = 10
+EOF
 #TODO
             sleep 1
             break
