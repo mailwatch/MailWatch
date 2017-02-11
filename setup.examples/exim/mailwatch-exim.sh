@@ -39,8 +39,6 @@ chown Debian-exim:Debian-exim /var/spool/exim4/input
 chmod 750 /var/spool/exim4/input
 chown Debian-exim:Debian-exim /var/spool/exim4/msglog
 chmod 750 /var/spool/exim4/msglog
-chown Debian-exim:Debian-exim /var/spool/exim4/exim-process.info
-chmod 640 /var/spool/exim4/exim-process.info
 
 chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/db
 chmod 750 /var/spool/exim4_outgoing/db
@@ -48,22 +46,6 @@ chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/input
 chmod 750 /var/spool/exim4_outgoing/input
 chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/msglog
 chmod 750 /var/spool/exim4_outgoing/msglog
-chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/exim-process.info
-chmod 640 /var/spool/exim4_outgoing/exim-process.info
-
-chown Debian-exim:Debian-exim /var/log/exim4/db/callout
-chmod 640 /var/spool/exim4/db/callout
-chown Debian-exim:Debian-exim /var/log/exim4/db/callout.lockfile
-chmod 640 /var/spool/exim4/db/callout.lockfile
-
-chown root:root /var/spool/exim4_outgoing/db/retry
-chmod 640 /var/spool/exim4_outgoing/db/retry
-chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/db/retry.lockfile
-chmod 640 /var/spool/exim4_outgoing/db/retry.lockfile
-chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/db/wait-remote_smtp
-chmod 640 /var/spool/exim4_outgoing/db/wait-remote_smtp
-chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/db/wait-remote_smtp.lockfile
-chmod 640 /var/spool/exim4_outgoing/db/wait-remote_smtp.lockfile
 
 # save currrent crontabs
 crontab -l > /tmp/crontab.current

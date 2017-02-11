@@ -1,29 +1,3 @@
 # WhiteList
 # List of envelope senders whose messages will be accepted despite the address being also listed
 # in /etc/exim4/local_sender_blacklist, overriding a blacklisting.
-ratp.fr
-free.fr
-online.fr
-paris.fr
-developpement-durable.gouv.fr
-gmail.com
-deweyleboeuf.com
-liste.darkexplo.org
-liste.cyberkata.org
-liste.actionweb.fr
-orange.fr
-seznam.cz
-kbmcorp.co.kr
-google.com
-account.microsoft.com
-laposte.net
-emc.com
-arrowecs.fr
-arrowecs.eu
-arrow.com
-watchguard.com
-t-online.de
-bms.com
-ossiam.com
-efisens.fr
-trias.fr
