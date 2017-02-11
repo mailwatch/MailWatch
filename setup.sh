@@ -191,12 +191,8 @@ fi
 case $WebServer in
     "apache")
         logprint "Creating config file in /etc/apache2/conf-enabled/mailwatch.conf"
-        cat > /etc/apache2/conf-enabled/mailwatch.conf << EOF
-Alias /mailwatch/ "$WebFolder/"
-<Directory "$WebFolder/">
-  Require all granted
-</Directory>
-EOF
+        sed -i -e "s/WEBFOLDER/$WebFolder/" "$InstallFilesFolder/setup.examples/apache/mailwatch.conf"
+        cp "$InstallFilesFolder/setup.examples/apache/mailwatch.conf" /etc/apache2/conf-enabled/mailwatch.conf
         logprint "Enable ssl for apache and reload"
         a2enmod ssl
         /etc/init.d/apache2 reload
@@ -257,27 +253,7 @@ do
             chown -R postfix.postfix /var/spool/MailScanner/quarantine
 
             logprint "Generating MailWatch config for MailScanner"
-            cat > /etc/MailScanner/conf.d/mailwatch.conf << EOF
-Run As User = postfix
-Run As User = mtagroup
-MTA = postfix
-Incoming Work User = postfix
-Incoming Work Group = mtagroup
-Incoming Work Permissions = 0660
-Detailed Spam Report = yes
-Quarantine Whole Message = yes
-Quarantine Whole Messages As Queue Files = no
-Include Scores In SpamAssassin Report = yes
-Quarantine User = postfix
-Quarantine Group = mtagroup
-Quarantine Permissions = 0664
-Always Looked Up Last = &MailWatchLogging
-Is Definitely Not Spam = &SQLWhitelist
-Is Definitely Spam = &SQLBlacklist
-Incoming Queue Dir = /var/spool/postfix/hold
-Outgoing Queue Dir = /var/spool/postfix/incoming
-SpamAssassin User State Dir = /var/spool/MailScanner/spamassassin
-EOF
+            cp "$InstallFilesFolder/setup.examples/postfix/mailwatch.conf.example" /etc/MailScanner/conf.d/mailwatch.conf 
             sleep 1
             break
             ;;
@@ -286,37 +262,7 @@ EOF
             logprint "Configure MailScanner for use with exim"
 # TODO exim config modifications that differ from default config
             logprint "Generating MailWatch config for MailScanner"
-            cat > /etc/MailScanner/conf.d/mailwatch.conf << EOF
-Run As User = Debian-exim
-Run As Group = Debian-exim
-MTA = exim
-Incoming Work User = Debian-exim
-Incoming Work Group = mtagroup
-Incoming Work Permissions = 0660
-Quarantine Whole Message = yes
-Quarantine Whole Messages As Queue Files = no
-Include Scores In SpamAssassin Report = yes
-Quarantine User = Debian-exim
-Quarantine Group = mtagroup
-Quarantine Permissions = 0644
-Always Looked Up Last = &MailWatchLogging
-Is Definitely Not Spam = &SQLWhitelist
-Is Definitely Spam = &SQLBlacklist
-Incoming Queue Dir = /var/spool/exim4/input
-Outgoing Queue Dir = /var/spool/exim4_outgoing/input
-
-Queue Scan Interval = 6
-Restart Every = 3600
-Sendmail = /usr/sbin/exim4
-Sendmail2 = /usr/sbin/exim4 -DOUTGOING
-Max Unscanned Messages Per Scan = 50
-Max Unsafe Messages Per Scan = 50
-Max Normal Queue Size = 2000
-Deliver Unparsable TNEF = yes
-Find UU-Encoded Files = yes
-Max Children = 10
-EOF
-#TODO
+            cp "$InstallFilesFolder/setup.examples/exim/mailwatch.conf.example" /etc/MailScanner/conf.d/mailwatch.conf
             sleep 1
             break
             ;;

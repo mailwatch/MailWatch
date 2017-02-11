@@ -1,0 +1,5 @@
+# Example config for apache /etc/apache2/conf-enabled/mailwatch.conf
+Alias /mailwatch/ "WEBFOLDER/"
+<Directory "WEBFOLDER/">
+  Require all granted
+</Directory>

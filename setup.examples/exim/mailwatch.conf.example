@@ -1,0 +1,29 @@
+# Example config for exim  /etc/MailScanner/conf.d/mailwatch.conf
+Run As User = Debian-exim
+Run As Group = Debian-exim
+MTA = exim
+Incoming Work User = Debian-exim
+Incoming Work Group = mtagroup
+Incoming Work Permissions = 0660
+Quarantine Whole Message = yes
+Quarantine Whole Messages As Queue Files = no
+Include Scores In SpamAssassin Report = yes
+Quarantine User = Debian-exim
+Quarantine Group = mtagroup
+Quarantine Permissions = 0644
+Always Looked Up Last = &MailWatchLogging
+Is Definitely Not Spam = &SQLWhitelist
+Is Definitely Spam = &SQLBlacklist
+Incoming Queue Dir = /var/spool/exim4/input
+Outgoing Queue Dir = /var/spool/exim4_outgoing/input
+
+Queue Scan Interval = 6
+Restart Every = 3600
+Sendmail = /usr/sbin/exim4
+Sendmail2 = /usr/sbin/exim4 -DOUTGOING
+Max Unscanned Messages Per Scan = 50
+Max Unsafe Messages Per Scan = 50
+Max Normal Queue Size = 2000
+Deliver Unparsable TNEF = yes
+Find UU-Encoded Files = yes
+Max Children = 10

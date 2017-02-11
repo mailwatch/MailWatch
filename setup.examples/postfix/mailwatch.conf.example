@@ -1,0 +1,20 @@
+# Example config for postfix /etc/MailScanner/conf.d/mailwatch.conf
+Run As User = postfix
+Run As User = mtagroup
+MTA = postfix
+Incoming Work User = postfix
+Incoming Work Group = mtagroup
+Incoming Work Permissions = 0660
+Detailed Spam Report = yes
+Quarantine Whole Message = yes
+Quarantine Whole Messages As Queue Files = no
+Include Scores In SpamAssassin Report = yes
+Quarantine User = postfix
+Quarantine Group = mtagroup
+Quarantine Permissions = 0664
+Always Looked Up Last = &MailWatchLogging
+Is Definitely Not Spam = &SQLWhitelist
+Is Definitely Spam = &SQLBlacklist
+Incoming Queue Dir = /var/spool/postfix/hold
+Outgoing Queue Dir = /var/spool/postfix/incoming
+SpamAssassin User State Dir = /var/spool/MailScanner/spamassassin
