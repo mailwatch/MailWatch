@@ -2,7 +2,7 @@
 # Script to apply adjustments for exim
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-cp "$DIR/etc/default/exim4" /etc/default/exim4
+cp -f "$DIR/etc/default/exim4" /etc/default/exim4
 cp -R "$DIR"/etc/exim/* /etc/exim4/
 cp "$DIR/etc/MailScanner/conf.d/mailwatch.conf" /etc/MailScanner/conf.d/mailwatch.conf
 
@@ -21,8 +21,6 @@ chmod 640 /etc/exim4/exim.key
 chown root:Debian-exim /etc/exim4/passwd.client
 chmod 640 /etc/exim4/passwd.client
 
-mkdir -p /var/log/exim4/
-mkdir -p /var/log/exim4_outgoing/
 chown Debian-exim:adm /var/log/exim4/
 chmod 750 /var/log/exim4/
 chown Debian-exim:adm /var/log/exim4_outgoing/
@@ -30,6 +28,7 @@ chmod 750 /var/log/exim4_outgoing/
 
 chown Debian-exim:Debian-exim /var/spool/exim4/
 chmod 750 /var/spool/exim4/
+mkdir /var/spool/exim4_outgoing/
 chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/
 chmod 750 /var/spool/exim4_outgoing/
 
@@ -40,10 +39,13 @@ chmod 750 /var/spool/exim4/input
 chown Debian-exim:Debian-exim /var/spool/exim4/msglog
 chmod 750 /var/spool/exim4/msglog
 
+mkdir /var/spool/exim4_outgoing/db
 chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/db
 chmod 750 /var/spool/exim4_outgoing/db
+mkdir /var/spool/exim4_outgoing/input
 chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/input
 chmod 750 /var/spool/exim4_outgoing/input
+mkdir /var/spool/exim4_outgoing/msglog
 chown Debian-exim:Debian-exim /var/spool/exim4_outgoing/msglog
 chmod 750 /var/spool/exim4_outgoing/msglog
 
@@ -60,3 +62,27 @@ EOF
 # import the update cron
 crontab /tmp/crontab.current
 rm /tmp/crontab.current
+
+if [ -z $(grep -r "mailer-daemon: postmaster" /etc/aliases) ]; then
+    echo "mail-daemon: postmaster" >> /etc/aliases
+fi
+if [ -z $(grep -r "postmaster: root" /etc/aliases) ]; then
+    echo "postmaster: root" >> /etc/aliases
+fi
+if [ -z $(grep -r "hostmaster: root" /etc/aliases) ]; then
+    echo "hostmaster: root" >> /etc/aliases
+fi
+if [ -z $(grep -r "webmaster: root" /etc/aliases) ]; then
+    echo "webmaster: root" >> /etc/aliases
+fi
+if [ -z $(grep -r "www: root" /etc/aliases) ]; then
+    echo "www: root" >> /etc/aliases
+fi
+if [ -z $(grep -r "clamav: root" /etc/aliases) ]; then
+    echo "clamav: root" >> /etc/aliases
+fi
+if [ -z $(grep -r "root: $rootAddress" /etc/aliases) ]; then
+    read -p "To which mail address shall mails for root user relayed to?: " rootMail
+    echo "root: $rootMail" >> /etc/aliases
+fi
+
