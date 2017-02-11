@@ -28,8 +28,6 @@ else
     exit 1;
 fi
 
-
-
 EndNotice=""
 Webuser="www-data"
 
@@ -43,7 +41,7 @@ rm -rf /tmp/mailwatchinstall/*
 
 
 read -p "Install/upgrade MailScanner version $MailScannerVersion?:(y/n)[y]: " installMailScanner
-if [ -z $installMailScanner ] || "$installMailScanner" == "y"; then
+if [ -z $installMailScanner ] || [ "$installMailScanner" == "y" ]; then
     logprint "Starting MailScanner install"
     mkdir -p /tmp/mailwatchinstall/mailscanner
     logprint "Downloading current MailScanner release $MailScannerVersion:"
@@ -53,10 +51,8 @@ if [ -z $installMailScanner ] || "$installMailScanner" == "y"; then
     logprint "Starting MailScanner install script"
     /tmp/mailwatchinstall/mailscanner/MailScanner-$MailScannerVersion/install.sh
     logprint "MailScanner install finished."
-    $EndNotice="$EndNotice \n * Adjust /etc/MailScanner.conf to your needs \n * Set run_mailscanner=1 in /etc/MailScanner/defaults"
+    EndNotice="$EndNotice \n * Adjust /etc/MailScanner.conf to your needs \n * Set run_mailscanner=1 in /etc/MailScanner/defaults"
     sleep 1
-    break
-    ;;
 else
    logprint "Not installing MailScanner"
 fi
@@ -106,7 +102,7 @@ if [ -z $SqlHost ]; then
 fi
 logprint "Using sql credentials user: $SqlUser; password: $SqlPwd; db: $SqlDb; host: $SqlHost"
 
-if ! type "mysqld" > /dev/null 2>&1; then
+if ! ( type "mysqld" > /dev/null 2>&1 ) ; then
     read -p "No mysql server found. Do you want to install mariadb as sql server?(y/n)[y]: " response
     if [ -z $response ] || [ $response == "y" ]; then
         logprint "Start install of mariadb"
@@ -121,7 +117,7 @@ else
     logprint "Found installed mysql server and will use that"
 fi
 
-if [ "$mysqlInstalled" == "1"]; then
+if [ "$mysqlInstalled" == "1" ]; then
     read -p "Root sql user (with rights to create db)[root]:" SqlRoot
     if [ -z $SqlRoot ]; then
         SqlRoot="root"
@@ -134,12 +130,12 @@ if [ "$mysqlInstalled" == "1"]; then
     read -p "Enter password for the admin: " MWAdminPwd
     logprint "Create MailWatch web gui admin"
     mysql -u $SqlUser -p$SqlPwd $SqlDb --execute="REPLACE INTO users SET username = '$MWAdmin', password = MD5('$MWAdminPwd'), fullname = 'Admin', type = 'A';"
-else 
+else
     echo "You have to create the database yourself!"
     EndNotice="$EndNotice \n * create the database, a sql user with access to the db and following properties user: $SqlUser; password: $SqlPwd; db: $SqlDb; host: $SqlHost"
     EndNotice="$EndNotice \n * create an admin account for the web gui"
 fi
-    
+
 #copy web files
 logprint "Moving MailWatch web files to new folder and setting permissions"
 mv "$InstallFilesFolder/mailscanner/" $WebFolder
@@ -151,10 +147,10 @@ chown root:mtagroup $WebFolder/temp
 chmod g+rw $WebFolder/temp
 
 #test existing webserver
-if [[ type "httpd" > /dev/null 2>&1 || type "apache2" > /dev/null 2>&1 ]]; then
+if ( type "httpd" > /dev/null 2>&1 ) || ( type "apache2" > /dev/null 2>&1 ); then
     WebServer="apache"
     logprint "Detected installed web server apache. We will use it for MailWatch"
-elif type "nginx" > /dev/null 2>&1; then
+elif ( type "nginx" > /dev/null 2>&1 ); then
     WebServer="nginx"
     logprint "Detected installed web server nginx. We will use it for MailWatch"
 else
@@ -183,12 +179,12 @@ else
     fi
 fi
 
-read -p "MailWatch requires the following php packages. Do you want to install them if missing?(y/n)[y]: " installPhp
+read -p "MailWatch requires the php packages php5 php5-gd and php5-mysqlnd. Do you want to install them if missing?(y/n)[y]: " installPhp
 if [ -z $installPhp ] || [ "$installPhp" == "y" ]; then
     logprint "Installing required php packages"
-    $PM install php5 php5-gd and php5-mysqlnd
+    $PM install php5 php5-gd php5-mysqlnd
 else
-    logprint "Not installing php packages. You have to check it manually."
+    logprint "Not installing php packages. You have to check them manually."
     EndNotice= "$EndNotice \n * check for installed php5 php5-gd and php5-mysqlnd"
 fi
 
@@ -205,19 +201,16 @@ EOF
         a2enmod ssl
         /etc/init.d/apache2 reload
         sleep 1
-        break
         ;;
     "nginx")
        #TODO
         logprint "not available yet"
         sleep 1
-        break
         ;;
     "skip")
         logprint "Skipping web server install"
         EndNotice="$EndNotice \n * you need to configure your webserver for directory $WebFolder."
         sleep 1
-        break
         ;;
 esac
 
@@ -225,7 +218,7 @@ esac
 #todo create/modify group mtagroup to include mta user, web server user, av user, mailscanner user
 
 #apply general MailWatch settings
-logprint "Adjust MailWatch conf.php"
+logprint "Apply MailWatch settings to conf.php"
 cp "$WebFolder/conf.php.example" "$WebFolder/conf.php"
 sed -i -e "s~^define('MAILWATCH_HOME', '.*')~define('MAILWATCH_HOME', '$WebFolder')~" $WebFolder/conf.php
 sed -i -e "s/^define('DB_USER', '.*')/define('DB_USER', '$SqlUser')/" $WebFolder/conf.php
@@ -288,10 +281,10 @@ EOF
             sleep 1
             break
             ;;
-            
+
         "exim")
             logprint "Configure MailScanner for use with exim"
-# TODO exim config modifications that differ from default config            
+# TODO exim config modifications that differ from default config
             logprint "Generating MailWatch config for MailScanner"
             cat > /etc/MailScanner/conf.d/mailwatch.conf << EOF
 Run As User = Debian-exim
@@ -327,7 +320,8 @@ EOF
             sleep 1
             break
             ;;
-        "skip")
+        *)
+            logprint "Not configuring mta"
             sleep 1
             break
             ;;
