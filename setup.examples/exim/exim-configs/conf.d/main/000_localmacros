@@ -1,0 +1,86 @@
+# General config for MailScanner Gateway
+# conf.d/main/000_localmacros
+
+# Use specific "local" routine:
+# conf.d/main/000_localmacros
+# conf.d/main/01_mailscanner_config
+# conf.d/acl/30_exim4-config_check_callback_relay
+
+# Exim deamon listening port
+daemon_smtp_ports = 25 : 587
+
+# Activate TLS/SSL configuration for exim as an SMTP server 
+#MAIN_TLS_ENABLE = Yes
+
+# Do a reverse DNS lookup on all incoming IP calls
+MAIN_HOST_LOOKUP = Yes
+
+# Access list of domains to relay
+# Domains to route are in /etc/exim4/hubbed_hosts 
+MAIN_RELAY_TO_DOMAINS = /etc/exim4/relay_domains
+
+# To activate sender callback on remote host (mailhub)
+CHECK_RCPT_LOCAL_ACL_FILE = CONFDIR/acl_check_recipient_relay
+#RECIPIENT_VERIFY_CALLBACK_RELAY = true
+
+# Various Debian's ACL CHECK
+CHECK_MAIL_HELO_ISSUED = true
+CHECK_RCPT_VERIFY_SENDER = true
+CHECK_RCPT_LOCAL_LOCALPARTS = true
+CHECK_RCPT_REMOTE_LOCALPARTS = true
+#CHECK_RCPT_VERIFY_SENDER = true
+#CHECK_MAIL_HELO_ISSUED = true
+#CHECK_DATA_VERIFY_HEADER_SYNTAX = true
+#CHECK_DATA_VERIFY_HEADER_SENDER = true
+#CHECK_RCPT_REVERSE_DNS = true
+#CHECK_DATA_VERIFY_HEADER_SYNTAX = true
+#CHECK_DATA_VERIFY_HEADER_SENDER = true
+
+# Various Debian's variables
+MAIN_TIMEOUT_FROZEN_AFTER = 2d
+MAIN_FREEZE_TELL =
+MESSAGE_SIZE_LIMIT = 50M
+MAIN_IGNORE_BOUNCE_ERRORS_AFTER = 3h
+
+# Various Exim variables
+rfc1413_hosts = *
+rfc1413_query_timeout = 0s
+#acl_smtp_vrfy = check_vrfy
+#smtp_load_reserve = 10
+#smtp_accept_max = 100
+#smtp_accept_reserve = 15
+#queue_run_max = 6
+#deliver_queue_load_max
+smtp_banner = $smtp_active_hostname ESMTP $tod_full
+dns_again_means_nonexist = *
+#helo_verify_hosts      = !*
+#helo_try_verify_hosts  = !*
+#helo_accept_junk_hosts = !*
+#helo_allow_chars = _
+
+# To activate logging
+MAIN_LOG_SELECTOR = +address_rewrite \
++all_parents \
+-arguments \
++connection_reject \
++delay_delivery \
++delivery_size \
++dnslist_defer \
++incoming_interface \
++incoming_port \
++lost_incoming_connection \
++queue_run \
++received_sender \
++received_recipients \
+-retry_defer \
++sender_on_delivery \
++size_reject \
+-skip_delivery \
++smtp_confirmation \
++smtp_connection \
++smtp_protocol_error \
++subject \
++tls_cipher \
++tls_peerdn \
++queue_time \
++queue_time_overall

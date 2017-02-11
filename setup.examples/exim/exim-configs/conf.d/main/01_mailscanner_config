@@ -1,0 +1,16 @@
+# Config for MailScanner Gateway
+# conf.d/main/01_mailscanner_config
+
+.ifdef OUTGOING
+
+# outgoing queue where MailScanner places scanned messages for exim to
+# deliver
+    SPOOLDIR = /var/spool/exim4_outgoing
+    log_file_path = /var/log/exim4_outgoing/%slog
+.else
+
+# incoming queue where exim places message for MailScanner to scan
+    queue_only = true
+    queue_only_override = false
+    SPOOLDIR = /var/spool/exim4
+.endif

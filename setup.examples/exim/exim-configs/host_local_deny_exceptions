@@ -1,0 +1,3 @@
+# WhiteList
+# List of IP addresses, networks and host names whose messages will be accepted despite the address is also listed in
+# /etc/exim4/local_host_blacklist, overriding a blacklisting.

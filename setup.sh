@@ -260,9 +260,11 @@ do
 
         "exim")
             logprint "Configure MailScanner for use with exim"
-# TODO exim config modifications that differ from default config
+            cp "$InstallFilesFolder/setup.examples/exim/exim4-default.example" /etc/default/exim4
+            cp "$InstallFilesFolder"/setup.examples/exim/exim-configs/* /etc/exim4
             logprint "Generating MailWatch config for MailScanner"
             cp "$InstallFilesFolder/setup.examples/exim/mailwatch.conf.example" /etc/MailScanner/conf.d/mailwatch.conf
+            "$InstallFilesFolder/setup.examples/exim/apply-exim-permissions.sh"
             sleep 1
             break
             ;;
