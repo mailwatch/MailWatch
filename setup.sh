@@ -191,7 +191,7 @@ fi
 case $WebServer in
     "apache")
         logprint "Creating config for apache"
-        cp "$InstallFilesFolder/setup.examples/apache/mailwatch-apache.sh"
+        "$InstallFilesFolder/setup.examples/apache/mailwatch-apache.sh"
         sleep 1
         ;;
     "nginx")
