@@ -63,9 +63,9 @@ logprint "Installing Encoding::FixLatin"
 cpan -i Encoding::FixLatin
 
 ##ask directory for web files
-read -p "In what location should MailWatch be installed?[/var/www/mailscanner/]:" WebFolder
+read -p "In what location should MailWatch be installed?[/var/www/html/mailscanner/]:" WebFolder
 if [ -z $WebFolder ]; then
-    WebFolder="/var/www/mailscanner/"
+    WebFolder="/var/www/html/mailscanner/"
 fi
 logprint "Using web directory $WebFolder"
 
