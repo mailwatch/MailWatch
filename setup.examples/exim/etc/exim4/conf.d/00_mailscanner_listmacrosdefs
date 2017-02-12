@@ -4,12 +4,13 @@
 # Use specific "local" routine:
 # conf.d/main/000_localmacros
 # conf.d/main/01_mailscanner_config
-# conf.d/acl/30_exim4-config_check_callback_relay
+# acl_check_recipient_replay
 
 # Exim deamon listening port
 daemon_smtp_ports = 25 : 587
 
 # Activate TLS/SSL configuration for exim as an SMTP server 
+# exim.crt and exim.key files needed before activating the feature.
 #MAIN_TLS_ENABLE = Yes
 
 # Do a reverse DNS lookup on all incoming IP calls
@@ -28,7 +29,6 @@ CHECK_MAIL_HELO_ISSUED = true
 CHECK_RCPT_VERIFY_SENDER = true
 CHECK_RCPT_LOCAL_LOCALPARTS = true
 CHECK_RCPT_REMOTE_LOCALPARTS = true
-#CHECK_RCPT_VERIFY_SENDER = true
 #CHECK_MAIL_HELO_ISSUED = true
 #CHECK_DATA_VERIFY_HEADER_SYNTAX = true
 #CHECK_DATA_VERIFY_HEADER_SENDER = true
@@ -38,7 +38,7 @@ CHECK_RCPT_REMOTE_LOCALPARTS = true
 
 # Various Debian's variables
 MAIN_TIMEOUT_FROZEN_AFTER = 2d
-MAIN_FREEZE_TELL =
+MAIN_FREEZE_TELL = postmaster
 MESSAGE_SIZE_LIMIT = 50M
 MAIN_IGNORE_BOUNCE_ERRORS_AFTER = 3h
 
@@ -46,11 +46,11 @@ MAIN_IGNORE_BOUNCE_ERRORS_AFTER = 3h
 rfc1413_hosts = *
 rfc1413_query_timeout = 0s
 #acl_smtp_vrfy = check_vrfy
-#smtp_load_reserve = 10
+#smtp_load_reserve = 5
 #smtp_accept_max = 100
 #smtp_accept_reserve = 15
 #queue_run_max = 6
-#deliver_queue_load_max
+#deliver_queue_load_max = 10
 smtp_banner = $smtp_active_hostname ESMTP $tod_full
 dns_again_means_nonexist = *
 

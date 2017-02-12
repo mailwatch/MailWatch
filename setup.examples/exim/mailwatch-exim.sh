@@ -6,7 +6,7 @@ Webuser="$1"
 /etc/init.d/exim4 stop
 
 cp -f "$DIR/etc/default/exim4" /etc/default/exim4
-cp -R "$DIR"/etc/exim/* /etc/exim4/
+cp -R "$DIR"/etc/exim4/* /etc/exim4/
 cp "$DIR/etc/MailScanner/conf.d/mailwatch.conf" /etc/MailScanner/conf.d/mailwatch.conf
 
 usermod -a -G Debian-exim clamav
@@ -83,4 +83,4 @@ if [ -z $(grep -r "clamav: root" /etc/aliases) ]; then
     echo "clamav: root" >> /etc/aliases
 fi
 
-/etc/init.d/exim4 stop
+/etc/init.d/exim4 start
