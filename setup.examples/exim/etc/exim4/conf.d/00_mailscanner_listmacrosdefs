@@ -1,16 +1,15 @@
-# General config for MailScanner Gateway
-# conf.d/main/000_localmacros
+# General Exim config for MailScanner Gateway
+# conf.d/main/00_mailscanner_listmacrosdefs
 
-# Use specific "local" routine:
-# conf.d/main/000_localmacros
+# Use these specific config files:
 # conf.d/main/01_mailscanner_config
-# acl_check_recipient_replay
+# mailscanner_acldefs
 
 # Exim deamon listening port
 daemon_smtp_ports = 25 : 587
 
-# Activate TLS/SSL configuration for exim as an SMTP server 
-# exim.crt and exim.key files needed before activating the feature.
+# Activate TLS/SSL configuration for Exim 
+# exim.crt and exim.key files needed before activating the feature
 #MAIN_TLS_ENABLE = Yes
 
 # Do a reverse DNS lookup on all incoming IP calls
@@ -20,21 +19,21 @@ MAIN_HOST_LOOKUP = Yes
 # Domains to route are in /etc/exim4/hubbed_hosts 
 MAIN_RELAY_TO_DOMAINS = /etc/exim4/relay_domains
 
+# Link to specific ACLs
+CHECK_RCPT_LOCAL_ACL_FILE = CONFDIR/mailscanner_acldefs
+
 # To activate sender callback on remote host (mailhub)
-CHECK_RCPT_LOCAL_ACL_FILE = CONFDIR/acl_check_recipient_relay
+# Useful to avoid bad bounce (do verify at SMTP time)
 #RECIPIENT_VERIFY_CALLBACK_RELAY = true
 
-# Various Debian's ACL CHECK
+# Deny if the sender host does not have valid reverse DNS.
+#CHECK_RCPT_REVERSE_DNS_DENY = true
+
+# Various Debian's ACL check
 CHECK_MAIL_HELO_ISSUED = true
 CHECK_RCPT_VERIFY_SENDER = true
 CHECK_RCPT_LOCAL_LOCALPARTS = true
 CHECK_RCPT_REMOTE_LOCALPARTS = true
-#CHECK_MAIL_HELO_ISSUED = true
-#CHECK_DATA_VERIFY_HEADER_SYNTAX = true
-#CHECK_DATA_VERIFY_HEADER_SENDER = true
-#CHECK_RCPT_REVERSE_DNS = true
-#CHECK_DATA_VERIFY_HEADER_SYNTAX = true
-#CHECK_DATA_VERIFY_HEADER_SENDER = true
 
 # Various Debian's variables
 MAIN_TIMEOUT_FROZEN_AFTER = 2d
@@ -45,14 +44,7 @@ MAIN_IGNORE_BOUNCE_ERRORS_AFTER = 3h
 # Various Exim variables
 rfc1413_hosts = *
 rfc1413_query_timeout = 0s
-#acl_smtp_vrfy = check_vrfy
-#smtp_load_reserve = 5
-#smtp_accept_max = 100
-#smtp_accept_reserve = 15
-#queue_run_max = 6
-#deliver_queue_load_max = 10
 smtp_banner = $smtp_active_hostname ESMTP $tod_full
-dns_again_means_nonexist = *
 
 # To activate logging
 MAIN_LOG_SELECTOR = +address_rewrite \
@@ -77,6 +69,4 @@ MAIN_LOG_SELECTOR = +address_rewrite \
 +smtp_protocol_error \
 +subject \
 +tls_cipher \
-+tls_peerdn \
-+queue_time \
-+queue_time_overall
++tls_peerdn

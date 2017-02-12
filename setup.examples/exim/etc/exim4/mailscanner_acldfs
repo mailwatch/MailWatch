@@ -1,0 +1,28 @@
+# Config for MailScanner Gateway
+# /etc/exim4/mailscanner_acldefs
+# Use with CHECK_RCPT_LOCAL_ACL_FILE = CONFDIR/mailscanner_acldefs
+
+# To activate sender callback on remote host (mailhub) at SMTP time
+# Useful to avoid bad bounce (do verify at SMTP time)
+.ifdef RECIPIENT_VERIFY_CALLBACK_RELAY
+# Recipient verification for relay domains with callback
+deny    !acl           = acl_local_deny_exceptions
+        log_message    = 550 Unknown user ${local_part}@${domain} (Recipient relay callback verification failed)
+        message        = 550 Unknown user
+      ! verify         = recipient/defer_ok/callout=10s,defer_ok
+.endif
+
+# Deny if the sender host does not have valid reverse DNS.
+#
+# If your system can do DNS lookups without delay or cost, you might want
+# to enable this.
+# If sender_host_address is defined, it's a remote call.  If
+# sender_host_name is not defined, then reverse lookup failed.  Use
+# this instead of !verify = reverse_host_lookup to catch deferrals
+# as well as outright failures.
+.ifdef CHECK_RCPT_REVERSE_DNS_DENY
+deny
+  condition = ${if and{{def:sender_host_address}{!def:sender_host_name}}\
+                    {yes}{no}}
+  add_header = X-Host-Lookup-Failed: Reverse DNS lookup failed for $sender_host_address (${if eq{$host_lookup_failed}{1}{failed}{deferred}})
+.endif
