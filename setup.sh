@@ -29,7 +29,6 @@ else
 fi
 
 EndNotice=""
-Webuser="www-data"
 
 
 function logprint {
@@ -39,6 +38,9 @@ function logprint {
 logprint "Clearing temp dir"
 rm -rf /tmp/mailwatchinstall/*
 
+if ! ( type "wget" > /dev/null 2>&1 ) ; then
+    $PM install wget
+fi
 
 read -p "Install/upgrade MailScanner version $MailScannerVersion?:(y/n)[y]: " installMailScanner
 if [ -z $installMailScanner ] || [ "$installMailScanner" == "y" ]; then
@@ -167,14 +169,26 @@ else
     elif [ $response == 1 ]; then
         #Apache
         logprint "Installing apache"
-        $PM install apache2
+        if [ $PM == "yum" ];
+            $PM install httpd
+            Webuser="apache"
+        else
+            $PM install apache2
+            Webuser="www-data"
+        fi
         WebServer="apache"
     elif [ $response == 2 ]; then
         #Nginx
         logprint "Installing nginx"
-        $PM install nginx
+        if [ $PM == "yum" ];
+            $PM install nginx
+            Webuser="nginx"
+        else
+            $PM install nginx
+            Webuser="www-data"
+        fi
         WebServer="nginx"
-    else 
+    else
         WebServer="skip"
     fi
 fi
@@ -191,12 +205,12 @@ fi
 case $WebServer in
     "apache")
         logprint "Creating config for apache"
-        "$InstallFilesFolder/setup.examples/apache/mailwatch-apache.sh"
+        "$InstallFilesFolder/setup.examples/apache/mailwatch-apache.sh" "$WebFolder"
         sleep 1
         ;;
     "nginx")
        #TODO
-        logprint "not available yet"
+        logprint "not available yet" 
         sleep 1
         ;;
     "skip")
@@ -233,14 +247,14 @@ do
             ;;
         "postfix")
             logprint "Configure MailScanner for use with postfix"
-            "$InstallFilesFolder/setup.examples/postfix/mailwatch-postfix.sh"
+            "$InstallFilesFolder/setup.examples/postfix/mailwatch-postfix.sh" "$Webuser"
             sleep 1
             break
             ;;
 
         "exim")
             logprint "Configure MailScanner for use with exim"
-            "$InstallFilesFolder/setup.examples/exim/mailwatch-exim.sh"
+            "$InstallFilesFolder/setup.examples/exim/mailwatch-exim.sh" "$Webuser"
             sleep 1
             break
             ;;

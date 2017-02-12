@@ -53,10 +53,6 @@ rfc1413_query_timeout = 0s
 #deliver_queue_load_max
 smtp_banner = $smtp_active_hostname ESMTP $tod_full
 dns_again_means_nonexist = *
-#helo_verify_hosts      = !*
-#helo_try_verify_hosts  = !*
-#helo_accept_junk_hosts = !*
-#helo_allow_chars = _
 
 # To activate logging
 MAIN_LOG_SELECTOR = +address_rewrite \

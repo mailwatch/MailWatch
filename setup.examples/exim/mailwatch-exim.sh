@@ -1,6 +1,9 @@
 #!/bin/bash
 # Script to apply adjustments for exim
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+Webuser="$1"
+
+/etc/init.d/exim4 stop
 
 cp -f "$DIR/etc/default/exim4" /etc/default/exim4
 cp -R "$DIR"/etc/exim/* /etc/exim4/
@@ -9,15 +12,13 @@ cp "$DIR/etc/MailScanner/conf.d/mailwatch.conf" /etc/MailScanner/conf.d/mailwatc
 usermod -a -G Debian-exim clamav
 usermod -a -G mtagroup clamav
 usermod -a -G mtagroup Debian-exim
-usermod -a -G mtagroup mail 
-usermod -a -G mtagroup www-data
+usermod -a -G mtagroup mail
+usermod -a -G mtagroup "$Webuser"
 
 chown -R root:root /etc/exim4
 chmod -R 644 /etc/exim4
 chmod 755 /etc/exim4/conf.d/
 chmod 755 /etc/exim4/eximconfig/
-chown root:Debian-exim /etc/exim4/exim.key
-chmod 640 /etc/exim4/exim.key
 chown root:Debian-exim /etc/exim4/passwd.client
 chmod 640 /etc/exim4/passwd.client
 
@@ -81,8 +82,5 @@ fi
 if [ -z $(grep -r "clamav: root" /etc/aliases) ]; then
     echo "clamav: root" >> /etc/aliases
 fi
-if [ -z $(grep -r "root: $rootAddress" /etc/aliases) ]; then
-    read -p "To which mail address shall mails for root user relayed to?: " rootMail
-    echo "root: $rootMail" >> /etc/aliases
-fi
 
+/etc/init.d/exim4 stop
