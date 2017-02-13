@@ -60,9 +60,9 @@ foreach ($required_constant as $constant) {
     }
 }
 if ($required_constant_missing_count === 0) {
-    require_once $mailwatch_dir . 'lib/pear/Mail.php';
-    require_once $mailwatch_dir . 'lib/pear/Mail/smtp.php';
-    require_once $mailwatch_dir . 'lib/pear/Mail/mime.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('html_errors', 'off');
@@ -94,7 +94,7 @@ if ($required_constant_missing_count === 0) {
 <!-- Outer table -->
 <table width="100%%" border="0">
  <tr>
-  <td><img src="mailwatch-logo.png"/></td>
+  <td><img src="' . MW_LOGO . '"/></td>
   <td align="center" valign="middle">
    <h2>' . __('text611') . '</h2>
    ' . __('text612') . '

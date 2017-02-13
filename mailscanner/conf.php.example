@@ -91,7 +91,7 @@ define('MS_CONFIG_DIR', '/etc/MailScanner/');
 define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // path for ConfigDefs.pl file
 define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // path for sophos-wrapper file
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
-define('IMAGES_DIR', './images/'); // trailing slash needed
+define('IMAGES_DIR', '/images/'); // trailing slash needed
 define('CACHE_DIR', './images/cache/'); // JpGraph cache
 define('TTF_DIR', './lib/jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR', '/usr/bin/');
