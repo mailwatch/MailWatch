@@ -50,11 +50,11 @@ require_once __DIR__ . '/functions.php';
     </div>
     <h1><?php echo __('mwlogin01'); ?></h1>
     <?php if (file_exists('conf.php')) {
-        ?>
+    ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
             <fieldset>
                 <?php if (isset($_GET['error'])) {
-                    ?>
+        ?>
                     <p class="loginerror">
                         <?php
                         switch ($_GET['error']) {
@@ -70,7 +70,7 @@ require_once __DIR__ . '/functions.php';
                     </p>
                     <?php
 
-                } ?>
+    } ?>
                 <p><label for="myusername"><?php echo __('username'); ?></label></p>
                 <p><input name="myusername" type="text" id="myusername" autofocus></p>
 
@@ -82,14 +82,14 @@ require_once __DIR__ . '/functions.php';
         </form>
         <?php
 
-    } else {
-        ?>
+} else {
+    ?>
         <p class="error">
             <?php echo __('cannot_read_conf'); ?>
         </p>
         <?php
 
-    }
+}
     ?>
 </div>
 
