@@ -47,7 +47,6 @@ $lockFile = '/var/run/mailq.lock';
 $fl = @fopen($lockFile, 'w+b');
 // Attempt to create an exclusive lock - continue if successful
 if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
-
     require $pathToFunctions;
     date_default_timezone_set(TIME_ZONE);
 
