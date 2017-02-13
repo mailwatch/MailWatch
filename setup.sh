@@ -38,10 +38,6 @@ function logprint {
 logprint "Clearing temp dir"
 rm -rf /tmp/mailwatchinstall/*
 
-if [[ -z $(grep mtagroup /etc/group) ]]; then
-    groupadd mtagroup
-fi
-
 if ! ( type "wget" > /dev/null 2>&1 ) ; then
     $PM install wget
 fi
@@ -61,6 +57,10 @@ if [ -z $installMailScanner ] || [ "$installMailScanner" == "y" ]; then
     sleep 1
 else
    logprint "Not installing MailScanner"
+fi
+
+if [[ -z $(grep mtagroup /etc/group) ]]; then
+    groupadd mtagroup
 fi
 
 logprint "Installing Encoding::FixLatin"

@@ -7,7 +7,6 @@ if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
     EximUser="Debian-exim"
     EximGroup="Debian-exim"
     Service="exim4"
-    SpoolDir="/var/spool/exim"
 else
     if [ "$OS" == "RedHat" ]; then
         sed -i -e "s/Debian-exim/exim/" "$DIR/etc/MailScanner/conf.d/mailwatch.conf"
@@ -16,7 +15,6 @@ else
     EximUser="exim"
     EximGroup="exim"
     Service="exim"
-    SpoolDir="/var/spool/exim4/"
 fi
 
 service "$Service" stop
@@ -47,18 +45,18 @@ chmod 750 /var/log/exim4/
 chown "$EximUser":adm /var/log/exim4_outgoing/
 chmod 750 /var/log/exim4_outgoing/
 
-chown "$EximUser":"$EximGroup" "$SpoolDir"
+chown "$EximUser":"$EximGroup" /var/spool/exim4/
 chmod 750 /var/spool/exim4/
 mkdir /var/spool/exim4_outgoing/
 chown "$EximUser":"$EximGroup" /var/spool/exim4_outgoing/
 chmod 750 /var/spool/exim4_outgoing/
 
-chown "$EximUser":"$EximGroup" "$SpoolDir//db"
-chmod 750 "$SpoolDir/db"
-chown "$EximUser":"$EximGroup" "$SpoolDir/input"
-chmod 750 "$SpoolDir/input"
-chown "$EximUser":"$EximGroup" "$SpoolDir/msglog"
-chmod 750 "$SpoolDir/msglog"
+chown "$EximUser":"$EximGroup" /var/spool/exim4/db
+chmod 750 /var/spool/exim4/db
+chown "$EximUser":"$EximGroup" /var/spool/exim4/input
+chmod 750 /var/spool/exim4/input
+chown "$EximUser":"$EximGroup" /var/spool/exim4/msglog
+chmod 750 /var/spool/exim4/msglog
 
 mkdir /var/spool/exim4_outgoing/db
 chown "$EximUser":"$EximGroup" /var/spool/exim4_outgoing/db
