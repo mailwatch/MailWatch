@@ -44,14 +44,15 @@ if (!is_readable(__DIR__ . '/conf.php')) {
 require_once __DIR__ . '/conf.php';
 require_once __DIR__ . '/database.php';
 
+if (!USE_SYSTEM_PEAR) {
 // Set PHP path to use local PEAR modules only
-set_include_path(
-    get_include_path() . PATH_SEPARATOR .
-    '.' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/xmlrpc'
-);
-
+    set_include_path(
+        get_include_path() . PATH_SEPARATOR .
+        '.' . PATH_SEPARATOR .
+        MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
+        MAILWATCH_HOME . '/lib/xmlrpc'
+    );
+}
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
 if (!defined('LANG')) {
@@ -1611,7 +1612,11 @@ function subtract_multi_get_vars($preserve)
  */
 function db_colorised_table($sql, $table_heading = false, $pager = false, $order = false, $operations = false)
 {
-    require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
+    if (!USE_SYSTEM_PEAR) {
+        require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
+    } else {
+        require_once 'Mail/mimeDecode.php';
+    }
 
     // Ordering
     $orderby = null;
@@ -1639,7 +1644,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
+
+        if(!USE_SYSTEM_PEAR) {
+            require_once __DIR__ . '/lib/pear/Pager.php';
+        } else {
+            require_once 'Pager.php';
+        }
         if (isset($_GET['offset'])) {
             $from = (int)$_GET['offset'];
         } else {
@@ -2189,7 +2199,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '<br>' . "\n";
         if ($pager) {
-            require_once __DIR__ . '/lib/pear/Pager.php';
+            if (!USE_SYSTEM_PEAR) {
+                require_once __DIR__ . '/lib/pear/Pager.php';
+            } else {
+                require_once 'Pager.php';
+            }
             $from = 0;
             if (isset($_GET['offset'])) {
                 $from = (int)$_GET['offset'];
@@ -2260,7 +2274,11 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
     // Turn on paging of for the database
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
+        if (!USE_SYSTEM_PEAR) {
+            require_once __DIR__ . '/lib/pear/Pager.php';
+        } else {
+            require_once 'Pager.php';
+        }
         $from = 0;
         if (isset($_GET['offset'])) {
             $from = (int)$_GET['offset'];
@@ -2356,7 +2374,11 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
     }
     echo '<br>' . "\n";
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
+        if (!USE_SYSTEM_PEAR) {
+            require_once __DIR__ . '/lib/pear/Pager.php';
+        } else {
+            require_once 'Pager.php';
+        }
         $from = 0;
         if (isset($_GET['offset'])) {
             $from = (int)$_GET['offset'];
@@ -3156,10 +3178,15 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         if (!QUARANTINE_USE_SENDMAIL) {
-            // Load in the required PEAR modules
-            require_once __DIR__ . '/lib/pear/PEAR.php';
-            require_once __DIR__ . '/lib/pear/Mail.php';
-            require_once __DIR__ . '/lib/pear/Mail/mime.php';
+            if (!USE_SYSTEM_PEAR) {
+                // Load in the required PEAR modules
+                require_once __DIR__ . '/lib/pear/PEAR.php';
+                require_once __DIR__ . '/lib/pear/Mail.php';
+                require_once __DIR__ . '/lib/pear/Mail/mime.php';
+            } else {
+                require_once 'Mail.php';
+                require_once 'Mail/mime.php';
+            }
             $crlf = "\r\n";
             $hdrs = array('From' => QUARANTINE_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
             $mime = new Mail_mime($crlf);

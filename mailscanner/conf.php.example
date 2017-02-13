@@ -96,6 +96,10 @@ define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spam.assassin.prefs.conf');
 define('TEMP_DIR', '/tmp/');
 
+//Use System PEAR - Set to true to use system installed PEAR packages rather than those supplied with MailWatch.
+//Set this to true ONLY if you are experiencing PEAR conflicts.  Most likely you will not need to change this.
+define('USE_SYSTEM_PEAR', 'false');
+
 // Define MailWatch logo name
 define('MW_LOGO', 'mailwatch-logo.png');
 

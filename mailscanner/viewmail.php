@@ -30,7 +30,11 @@
  */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
+if (!USE_SYSTEM_PEAR) {
+    require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
+} else {
+    require_once 'Mail/mimeDecode.php';
+}
 ini_set('memory_limit', MEMORY_LIMIT);
 
 session_start();
