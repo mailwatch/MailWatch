@@ -3,10 +3,14 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 Webuser="$1"
 
-/etc/init.d/exim4 stop
+service exim4 stop
 
 cp -f "$DIR/etc/default/exim4" /etc/default/exim4
-cp -R "$DIR"/etc/exim4/* /etc/exim4/
+cp  -f "$DIR"/etc/exim4/mailscanner_acldefs /etc/exim4/.
+cp  -f "$DIR"/etc/exim4/hubbed_hosts /etc/exim4/.
+cp  -f "$DIR"/etc/exim4/relay_domains /etc/exim4/.
+cp  -f "$DIR"/etc/exim4/conf.d/main/00_mailscanner_listmacrosdefs /etc/exim4/conf.d/main/.
+cp  -f "$DIR"/etc/exim4/conf.d/main/01_mailscanner_config /etc/exim4/conf.d/main/.
 cp "$DIR/etc/MailScanner/conf.d/mailwatch.conf" /etc/MailScanner/conf.d/mailwatch.conf
 
 usermod -a -G Debian-exim clamav
@@ -18,7 +22,6 @@ usermod -a -G mtagroup "$Webuser"
 chown -R root:root /etc/exim4
 chmod -R 644 /etc/exim4
 chmod 755 /etc/exim4/conf.d/
-chmod 755 /etc/exim4/eximconfig/
 chown root:Debian-exim /etc/exim4/passwd.client
 chmod 640 /etc/exim4/passwd.client
 
@@ -83,4 +86,4 @@ if [ -z $(grep -r "clamav: root" /etc/aliases) ]; then
     echo "clamav: root" >> /etc/aliases
 fi
 
-/etc/init.d/exim4 start
+service exim4 start

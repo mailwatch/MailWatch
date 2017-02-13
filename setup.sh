@@ -69,7 +69,7 @@ if [ -z $WebFolder ]; then
 fi
 logprint "Using web directory $WebFolder"
 
-/etc/init.d/mailscanner stop
+service mailscanner stop
 
 if [ -d $WebFolder ]; then
    read -p "Folder $WebFolder already exists. Content will get deleted. Do you want to continue?(y/n)[n]: " response
@@ -284,7 +284,7 @@ logprint "Copying perl files to MailScanner"
 cp "$InstallFilesFolder"/MailScanner_perl_scripts/* /etc/MailScanner/custom/
 
 logprint "Restart mailscanner service"
-/etc/init.d/mailscanner restart
+service mailscanner restart
 #todo relay files
 logprint "Install finished!"
 logprint "Next steps you have to do are:"

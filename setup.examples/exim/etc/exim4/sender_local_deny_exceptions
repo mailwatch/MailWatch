@@ -1,3 +1,0 @@
-# WhiteList
-# List of envelope senders whose messages will be accepted despite the address being also listed
-# in /etc/exim4/local_sender_blacklist, overriding a blacklisting.
