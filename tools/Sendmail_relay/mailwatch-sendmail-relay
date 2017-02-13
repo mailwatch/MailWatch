@@ -18,12 +18,14 @@
 #
 ### END INIT INFO
 
-# Author: Stephane, 14/06/2015
+# MailWatch for MailScanner
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+# Author: @stefaweb, 14/06/2015
 
-NAME="sendmail_relay"
+NAME="mailwatch-sendmail-relay"
 DAEMON="/usr/local/bin/sendmail_relay.php"
 SETTINGS="/etc/default/$NAME"
-DESC="Sendmail Relay"
+DESC="Sendmail Relay for MailWatch"
 PIDFILE="/var/run/$NAME.pid"
 
 # Do NOT "set -e"
@@ -33,12 +35,12 @@ PIDFILE="/var/run/$NAME.pid"
 unset SMUSER VERBOSE
 
 # Default values
-# Can me changed in /etc/default/sendmail_relay
+# Can me changed in /etc/default/mailwatch-sendmail-relay
 SMUSER="root";
 MAILLOG="/var/log/mail.log"
 VERBOSE="yes"
 
-# Exit if sendmail_relay not installed
+# Exit if sendmail_relay.php not installed
 if [ ! -x "$DAEMON" ]; then
         log_action_msg "$DESC: Could not find $DAEMON executable. Exiting"
         exit 2
@@ -47,7 +49,7 @@ fi
 # Read configuration variables
 [ -e "/etc/default/$NAME" ] && . /etc/default/$NAME
 
-# Function to verify if sendmail_relay is already running
+# Function to verify if sendmail_relay.php is already running
 run_check() {
         if [ -e $PIDFILE ]; then
                status_of_proc -p $PIDFILE $DAEMON $NAME > /dev/null && RETVAL=0 || RETVAL="$?"

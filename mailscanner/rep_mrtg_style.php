@@ -158,7 +158,6 @@ if (is_writable(CACHE_DIR)) {
 }
 
 echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') ."\"></TD>";
 echo " <TR>\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
