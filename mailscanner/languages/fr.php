@@ -185,6 +185,7 @@ return array(
     '15minutes03' => '15 minutes :',
     'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
+    'errorcachedirnotwritable03' => 'Erreur : impossible d\'écrire dans le répertoire de cache %s',
     'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
 
     // 04-detail.php

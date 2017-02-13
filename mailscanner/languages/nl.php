@@ -185,6 +185,7 @@ return array(
     '15minutes03' => '15 minutes:',
     'saspam03' => 'spam',
     'sanotspam03' => 'not spam',
+    'errorcachedirnotwritable03' => 'Error: cache directory %s not writable',
     'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
 
     // 04-detail.php
@@ -670,7 +671,7 @@ return array(
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
-    'top10recipdomqt40' => 'Top 10 Recipients Domains by Volume',
+    'top10recipdomqt40' => 'Top 10 Recipients Domains by Quantity',
     'domain40' => 'Domain',
 
     // 41-rep_top_recipient_domains_by_volume.php

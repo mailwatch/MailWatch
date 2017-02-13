@@ -3763,44 +3763,108 @@ function checkForExistingUser($username)
     return $row->counter >0;
 }
 
-function printGraphTable($filename, $dataColumnTitle, array $data, array $data_names, array $data_size, $scale = 1)
+/**
+ * @param $sqlDataQuery sql query that will be used to get the data that should be displayed
+ * @param $reportTitle title that will be displayed on top of the graph
+ * @param $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
+ * @param $columnTitles array that contains the titles of the table columns
+ * @param $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
+ */
+function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
 {
-    // HTML to display the graph
-    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
-    echo ' <tr>';
-    echo '  <td style="text-align: center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td>';
-    echo ' </tr>';
-    echo ' <tr>';
-
-    //  Check Permissions to see if the file has been written and that apache to read it.
-    if (is_readable($filename)) {
-        echo '  <td align="center"><IMG SRC="' . $filename . '" alt="Graph"></td>';
-    } else {
-        echo '  <td align="center"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+    $result = dbquery($sqlDataQuery);
+    $numResult = $result->num_rows;
+    if ($numResult <= 0) {
+        die(__('diemysql99') . "\n");
+    }
+    //store data in format $data[columnname][rowid]
+    while ($row = $result->fetch_assoc()) {
+        foreach ($sqlColumns as $columnName) {
+            $data[$columnName][] = $row[$columnName];
+        }
     }
 
-    echo ' </tr>' . "\n";
-    echo ' <tr>' . "\n";
-    echo '  <td align="center">' . "\n";
-    echo '   <table style="width: 500px">' . "\n";
+    //do conversion if given
+    foreach ($valueConversions as $column => $conversion) {
+        if ($conversion === 'scale') {
+            // Work out best size
+            $data[$column . 'conv'] = $data[$column];
+            format_report_volume($data[$column . 'conv'], $size_info);
+            $scale = $size_info['formula'];
+            foreach ($data[$column . 'conv'] as $key => $val) {
+                $data[$column . 'conv'][$key] = formatSize($val * $scale);
+            }
+        } elseif ($conversion === 'number') {
+            $data[$column . 'conv'] = array_map(
+                function ($val) {
+                    return number_format($val);
+                },
+                $data[$column]
+            );
+        }
+    }
+ 
+    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
+
+    // Check permissions to see if apache can actually create the file
+    if (is_writable(CACHE_DIR)) {
+
+        // JPGraph
+        include_once './lib/jpgraph/src/jpgraph.php';
+        include_once './lib/jpgraph/src/jpgraph_pie.php';
+        include_once './lib/jpgraph/src/jpgraph_pie3d.php';
+
+        $graph = new PieGraph(800, 385, 0, false);
+        $graph->SetShadow();
+        $graph->img->SetAntiAliasing();
+        $graph->title->Set($reportTitle);
+
+        $plotData = $data[$graphColumn['dataColumn']];
+        $legendData = $data[$graphColumn['labelColumn']];
+        $p1 = new PiePlot3d($plotData);
+        $p1->SetTheme('sand');
+        $p1->SetLegends($legendData);
+
+        $p1->SetCenter(0.70, 0.4);
+        $graph->legend->SetLayout(LEGEND_VERT);
+        $graph->legend->Pos(0.25, 0.20, 'center');
+
+        $graph->Add($p1);
+        $graph->Stroke($filename);
+
+        //  Check Permissions to see if the file has been written and that apache to read it.
+        if (is_readable($filename)) {
+            echo '<tr><td style="text-align: center"><IMG SRC="' . $filename . '" alt="Graph"></td></tr>';
+        } else {
+            echo '<tr><td style="text-align: center">' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299') . '</td></tr>';
+        }
+    } else {
+        echo '<tr><td class="center">' . sprintf(__('errorcachedirnotwritable03'), CACHE_DIR) . '</td></tr>';
+    }
+
+    echo '<tr>';
+
+    // HTML to display the table
+    echo '<table class="reportTable">';
     echo '    <tr style="background-color: #F7CE4A">' . "\n";
-    echo '     <th>' . $dataColumnTitle . '</th>' . "\n";
-    echo '     <th>' . __('count03') . '</th>' . "\n";
-    echo '     <th>' . __('size03') . '</th>' . "\n";
+    foreach ($columnTitles as $columnTitle) {
+        echo '     <th>' . $columnTitle . '</th>' . "\n";
+    }
     echo '    </tr>' . "\n";
 
-    for ($i = 0; $i < $count($data); $i++) {
+    for ($i = 0; $i < $numResult; $i++) {
         echo '    <tr style="background-color: #EBEBEB">' . "\n";
-        echo '     <td>' . $data_names[$i] . '</td>' . "\n";
-        echo '     <td style="text-align: center">' . number_format($data[$i]) . '</td>' . "\n";
-        echo '     <td style="text-align: center">' . formatSize($data_size[$i] * $scale) . '</td>' . "\n";
+        foreach ($sqlColumns as $sqlColumn) {
+            if (isset($valueConversions[$sqlColumn])) {
+                echo '     <td>' . $data[$sqlColumn . 'conv'][$i] . '</td>' . "\n";
+            } else {
+                echo '     <td>' . $data[$sqlColumn][$i] . '</td>' . "\n";
+            }
+        }
         echo '    </tr>' . "\n";
     }
-
     echo '   </table>' . "\n";
-    echo '  </td>' . "\n";
-    echo ' </tr>' . "\n";
-    echo '</table>' . "\n";
+    echo '</tr></table>';
 }
 
 
