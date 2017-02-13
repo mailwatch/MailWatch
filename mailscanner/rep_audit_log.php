@@ -53,12 +53,12 @@ if ($_SESSION['user_type'] !== 'A') {
     if ($startDate === null || $startDate == '') {
         $startDate = '';
     } else {
-        $auditFilter .= ' AND a.timestamp >= "' . safe_value($startDate) . '"';
+        $auditFilter .= ' AND a.timestamp >= "' . safe_value($startDate) . ' 00:00:00"';
     }
     if ($endDate === null || $endDate == '') {
         $endDate = '';
     } else {
-        $auditFilter .= ' AND a.timestamp <= "' . safe_value($endDate) . '"';
+        $auditFilter .= ' AND a.timestamp <= "' . safe_value($endDate) . ' 23:59:59"';
     }
     if ($username === null || $username == '') {
         $username = '';
@@ -95,15 +95,15 @@ if ($_SESSION['user_type'] !== 'A') {
  <tr><td>
   <form action="rep_audit_log.php" method="GET" class="floatleft">
     <div class="mail table" id="auditFilters">
-      <div class="caption head">' . __('filter33') . '<button type="submit">' . __('applyfilter33') . '</button></div>
-      <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="datetime-local" value="' . $startDate . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('enddate33') . '</div><div class="cell data"><input name="endDate" type="datetime-local" value="' . $endDate . '"/></div></div>
+      <div class="caption head">' . __('filter33') . '</div>
+      <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('enddate33') . '</div><div class="cell data"><input name="endDate" type="text" placeholder="YYYY-MM-DD" value="' . $endDate . '"/></div></div>
       <div class="row"><div class="cell head">' . __('user33') . '</div><div class="cell data"><input name="username" type="text" value="' . $username . '"/></div></div>
       <div class="row"><div class="cell head">' . __('ipaddress33') . '</div><div class="cell data"><input name="ipaddress" type="text" value="' . $ipaddress . '"/></div></div>
       <div class="row"><div class="cell head">' . __('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . $actions . '"/></div></div>
+      <div class="row"><div class="cell head"></div><div class="cell head"><button type="submit">' . __('applyfilter33') . '</button></div></div>
     </div>
   </form>
-<div class="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' .  __('mslogo99') . '"></div>
 </td></tr>
 <tr><td>' . "\n";
 
