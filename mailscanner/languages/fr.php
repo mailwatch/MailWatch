@@ -186,6 +186,9 @@ return array(
     '15minutes03' => '15 minutes :',
     'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
+    'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
+    'children03' => 'proc. fils',
+    'procs03' => 'processus',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -804,6 +807,7 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
+    'title59' => 'Quarantine Release',
 
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',

@@ -504,15 +504,17 @@ td.dashgreybox {
 }
 
 /*adjustments for printing a page e.g. hide elements*/
-@media print { 
+@media print {
     .noprint {
         display: none;
     }
+
     .TD.heading-w175 {
         background: transparent;
     }
+
     table.maildetail {
-        border: none;		
+        border: none;
     }
 }
 
@@ -530,45 +532,96 @@ div.table {
     background-color: #EBEBEB;
     border: 0;
 }
-div.table>.row {
+
+div.table > .row {
     display: table-row;
 }
+
 div.table .cell {
     display: table-cell;
 }
+
 div.table .cell:not(:last-child) {
     border-right: 0.3em solid transparent;
 }
+
 div.table .cell:first-child {
     border-left: 0.3em solid transparent;
 }
+
 div.table .head {
     background-color: #F7CE4A;
 }
+
 div.table .data {
     background-color: #EBEBEB;
 }
-div.table>.caption {
-    display:table-caption;
-    text-align:center ;
+
+div.table > .caption {
+    display: table-caption;
+    text-align: center;
 }
-div.table>.caption>input {
-    width:auto !important;
+
+div.table > .caption > input {
+    width: auto !important;
 }
+
 .center {
     text-align: center;
 }
+
 .floatleft {
     float: left;
 }
 
-.tableWithLineBreaksWrapper>table {
+.tableWithLineBreaksWrapper > table {
     table-layout: fixed;
 }
 
-.tableWithLineBreaksWrapper>table>tr>th, 
-.tableWithLineBreaksWrapper>table>tr>td {
+.tableWithLineBreaksWrapper > table > tr > th,
+.tableWithLineBreaksWrapper > table > tr > td {
     word-wrap: break-word;
+}
+
+/*auto-release*/
+.autorelease body {
+    background-color: #ffffff;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.5em;
+}
+
+.autorelease {
+    margin: 50px auto;
+    width: 350px;
+}
+
+.autorelease h1 {
+    background-color: #f7ce4a;
+    color: #222;
+    font-size: 28px;
+    margin: 0;
+    text-align: center;
+    border-top-left-radius: 15px;
+    -webkit-border-top-left: 15px;
+    -moz-border-radius-topleft: 15px;
+    border-top-right-radius: 15px;
+    -webkit-border-top-right: 15px;
+    -moz-border-radius-topright: 15px;
+    padding: 20px
+}
+
+.autorelease .border-rounded {
+    border: solid 2px #000;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+.autorelease p {
+    padding: 0 10px;
+    text-align: center;
 }
 
 .reportGraph {
@@ -580,18 +633,18 @@ div.table>.caption>input {
 }
 
 .reportTable {
-   width: 500px;
-   padding: 10px;
-   margin-left: auto;
-   margin-right: auto;
+    width: 500px;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.reportTable>tbody>tr>td {
-   text-align: center;
+.reportTable > tbody > tr > td {
+    text-align: center;
 }
 
-.reportTable>tbody>tr>td:first-child {
-   text-align: left;
+.reportTable > tbody > tr > td:first-child {
+    text-align: left;
 }
 
 /*Password-reset*/

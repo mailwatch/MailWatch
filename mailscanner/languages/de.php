@@ -186,6 +186,9 @@ return array(
     '15minutes03' => '15 Minuten:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
+    'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
+    'children03' => 'children',
+    'procs03' => 'Prozess(e)',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -313,7 +316,7 @@ return array(
     'tosetdate09' => 'Für das Datum muss das Format JJJJ-mm-tt verwendet werden',
     'oldrecord09' => 'Ältester Eintrag:',
     'newrecord09' => 'Neuester Eintrag:',
-    'messagecount09' => 'Nachricthen Anzahl:',
+    'messagecount09' => 'Nachrichten Anzahl:',
     'stats09' => 'Statistiken (Gefiltert)',
     'add09' => 'Hinzufügen',
     'load09' => 'Laden',
@@ -797,13 +800,14 @@ return array(
     // 59-auto-release.php
     'msgnotfound159' => 'Nachricht nicht gefunden. Möglicherweise haben Sie die Nachricht bereits freigegeben oder der Link ist abgelaufen.',
     'msgnotfound259' => 'Bitte kontaktieren Sie Ihren Mail-Administrator und teilen Sie ihm diese Nachrichten-ID mit: ',
-    'msgnotfound393' => 'wenn diese Nachricht freigegeben werden soll.',
+    'msgnotfound359' => 'wenn diese Nachricht freigegeben werden soll.',
     'msgreleased59' => 'Nachricht freigegeben<br>Möglicherweise dauert es wenige Minuten, bis diese in Ihrem Posteingang eintrifft.',
     'tokenmismatch59' => 'Fehler beim freigeben der Nachricht - Token stimmen nicht überein',
     'notallowed59' => 'Sie haben keine Berechtigung zum Zugriff auf diese Seite!',
     'dberror59' => 'Etwas ist schief gegangen - Kontaktieren Sie den Administrator',
     'arview059' => 'Anzeigen',
     'arrelease59' => 'Freigeben',
+    'title59' => 'Quarantine Release',
 
      // 60-rpcserver.php
     'paratype160' => 'Parameter-Typ',
