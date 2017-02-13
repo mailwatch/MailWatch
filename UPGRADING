@@ -1,12 +1,43 @@
+----------------------------------
 UPGRADE INSTRUCTIONS
---------------------
+----------------------------------
 
 These are generalised instructions for RH9, if you made localised changes
 to CustomConfig.pm or you installed the application to a path different to
 that specified in the INSTALL document - you may need to make changes to this
 procedure.
 
-You are also stongly advised to read the CHANGELOG first!
+You are also strongly advised to read the CHANGELOG first!
+
+UPGRADING FROM 1.0.3 TO 1.2.0
+
+- Stop MailScanner and the MTA (Postfix, Exim or Sendmail).
+
+- Move /var/www/html/mailscanner to /var/www/html/mailscanner-old and move the
+  mailscanner directory from the tarball to /var/www/html/.
+
+- Copy conf.php.example to conf.php and edit the file to suit your configuration.
+
+- Replace MailWatch.pm, SQLBlackWhiteList.pm and SQLSpamSettings.pm with new version 
+  from MailScanner_perl_scripts and set database connection settings.
+
+- Install the files in tools/Cron_jobs following INSTALL doc.
+
+- Install the file in tools/MailWatch_queue following INSTALL doc.
+
+- Install optional files in tools to suit your MTA (Postfix_relay or Sendmail_relay) 
+  following INSTALL doc.
+
+- Run upgrade.php to update database schema. Look for errors and correct them if needed.
+
+- Start MailScanner and your MTA. Check the log in /var/log/syslog.
+
+ATTENTION:
+
+Between 1.0.3 or 1.2.0 RCx version many files used by MailWatch have changed of name 
+and changed of place.
+Particularly the PHP files that are launched in cron and the Init script files.
+Please read the documentation carefully to remove old files during the upgrade.
 
 UPGRADING FROM 1.0.x TO 1.0.3
 

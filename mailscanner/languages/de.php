@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.10 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -185,7 +185,6 @@ return array(
     '15minutes03' => '15 Minuten:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
-    'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -313,7 +312,7 @@ return array(
     'tosetdate09' => 'Für das Datum muss das Format JJJJ-mm-tt verwendet werden',
     'oldrecord09' => 'Ältester Eintrag:',
     'newrecord09' => 'Neuester Eintrag:',
-    'messagecount09' => 'Nachricthen Anzahl:',
+    'messagecount09' => 'Nachrichten Anzahl:',
     'stats09' => 'Statistiken (Gefiltert)',
     'add09' => 'Hinzufügen',
     'load09' => 'Laden',
@@ -564,6 +563,8 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail-Queue-Anzeige',
     'diemq24' => 'Keine Queue angegeben',
+    'inq24' => 'Eingehende E-Mail-Queue',
+    'outq24' => 'Ausgehende E-Mail-Queue',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'McAfee Status',
@@ -610,13 +611,13 @@ return array(
     // 33-rep_audit_log.php
     'auditlog33' => 'Kontrollbericht',
     'datetime33' => 'Datum/Zeit',
-    'user33' => 'Benutzer',
-    'ipaddress33' => 'IP-Adresse',
-    'action33' => 'Aktion',
+    'user33' => 'Benutzer:',
+    'ipaddress33' => 'IP-Adresse:',
+    'action33' => 'Aktion:',
     'filter33' => 'Filter',
     'applyfilter33' => 'anwenden',
-    'startdate33' => 'Startzeit',
-    'enddate33' => 'Endzeit',
+    'startdate33' => 'Startzeit:',
+    'enddate33' => 'Endzeit:',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
@@ -664,18 +665,18 @@ return array(
     'messages39' => 'Nachricht',
     'viruses39' => 'Viren',
     'spam39' => 'Spam',
-    'volume39' => 'Volumen',
+    'volume39' => 'Größe',
     'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
     'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
-    'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
-    'top10recipdomqt40' => 'Top 10 Empfänger Domänen by Volume',
+    'toprecipdomqt40' => 'Top Empfänger Domänen nach Anzahl',
+    'top10recipdomqt40' => 'Top 10 Empfänger Domänen nach Anzahl',
     'domain40' => 'Domäne',
   
     // 41-rep_top_recipient_domains_by_volume.php
-    'toprecipdomvol41' => 'Top Empfänger Domänen nach Volume',
-   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Volume',
+    'toprecipdomvol41' => 'Top Empfänger Domänen nach Größe',
+   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
     'domain41' => 'Domäne',
   
     // 42-rep_top_recipients_by_quantity.php
@@ -684,18 +685,18 @@ return array(
     'email42' => 'E-Mail-Adresse',
   
     // 43-rep_top_recipients_by_volume.php
-    'toprecipvol43' => 'Top Empfänger nach Volumen',
-    'top10recipvol43' => 'Top 10 Empfänger nach Volumen',
+    'toprecipvol43' => 'Top Empfänger nach Größe',
+    'top10recipvol43' => 'Top 10 Empfänger nach Größe',
     'email43' => 'E-Mail-Adresse',
   
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
-  
+
     // 45-rep_top_sender_domains_by_volume.php
-    'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
-    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
+    'topsenderdomvol45' => 'Top Absender-Domänen nach Größe',
+    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Größe',
     'domain45' => 'Domäne',
 
     // 46-rep_top_senders_by_quantity.php
@@ -704,8 +705,8 @@ return array(
     'email46' => 'E-Mail-Adresse',
   
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top Absender nach Volumen',
-    'top10sendersvol47' => 'Top 10 Absender nach Volumen',
+    'topsendersvol47' => 'Top Absender nach Größe',
+    'top10sendersvol47' => 'Top 10 Absender nach Größe',
     'email47' => 'E-Mail-Adresse',
   
     // 48-rep_top_viruses.php
@@ -790,6 +791,7 @@ return array(
     'error58' => 'Error:',
     'errornfd58' => 'Error: Datei nicht gefunden',
     'part58' => 'Abschnitt',
+    'title58' => 'Anzeige von Quarantäne-E-Mails',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Nachricht nicht gefunden. Möglicherweise haben Sie die Nachricht bereits freigegeben oder der Link ist abgelaufen.',
@@ -846,6 +848,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
-
-    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die your conf.php mit conf.php.example',
+    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die conf.php mit conf.php.example',
 );
