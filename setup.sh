@@ -38,6 +38,10 @@ function logprint {
 logprint "Clearing temp dir"
 rm -rf /tmp/mailwatchinstall/*
 
+if [[ -z $(grep mtagroup /etc/group) ]]; then
+    groupadd mtagroup
+fi
+
 if ! ( type "wget" > /dev/null 2>&1 ) ; then
     $PM install wget
 fi
@@ -196,7 +200,11 @@ fi
 read -p "MailWatch requires the php packages php5 php5-gd and php5-mysqlnd. Do you want to install them if missing?(y/n)[y]: " installPhp
 if [ -z $installPhp ] || [ "$installPhp" == "y" ]; then
     logprint "Installing required php packages"
-    $PM install php5 php5-gd php5-mysqlnd
+    if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
+        $PM install php5 php5-gd php5-mysqlnd
+    else
+        $PM install php php-gd php-mysqlnd
+    fi
 else
     logprint "Not installing php packages. You have to check them manually."
     EndNotice= "$EndNotice \n * check for installed php5 php5-gd and php5-mysqlnd"
