@@ -90,8 +90,8 @@ require_once __DIR__ . '/functions.php';
                 </a>
             </div>
             <?php
-        }
 
+        }
 } else {
     ?>
         <p class="error">
@@ -99,7 +99,7 @@ require_once __DIR__ . '/functions.php';
         </p>
         <?php
 
-    }
+}
     ?>
 </div>
 </div>
