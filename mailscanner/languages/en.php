@@ -185,6 +185,9 @@ return array(
     '15minutes03' => '15 minutes:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Not spam',
+    'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
+    'children03' => 'children',
+    'procs03' => 'proc(s)',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
