@@ -125,7 +125,7 @@ function decode_structure($structure)
  <head>
  <meta charset="utf-8">
  <link rel="shortcut icon" href="images/favicon.png">
- <title>Quarantined E-Mail Viewer</title>
+ <title>' . __('title58') . '</title>
  </head>
  <body>
  <pre>' . htmlentities(wordwrap($structure->body)) . '</pre>
