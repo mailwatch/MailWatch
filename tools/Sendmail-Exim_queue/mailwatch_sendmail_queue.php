@@ -30,8 +30,12 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change this path to the right one containing functions.php
-$MailWatchHome = '/var/www/html/mailscanner/';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require_once $pathToFunctions;
 
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');

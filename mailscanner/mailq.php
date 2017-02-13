@@ -39,11 +39,11 @@ html_start(__('mqviewer24'), 0, false, false);
 switch ($_GET['queue']) {
     case 'inq':
         $queue = 'inq';
-        $display = 'Inbound Mail Queue';
+        $display = __('inq24');
         break;
     case 'outq':
         $queue = 'outq';
-        $display = 'Outbound Mail Queue';
+        $display = __('outq24');
         break;
     default:
         die(__('diemq24') . "\n");
