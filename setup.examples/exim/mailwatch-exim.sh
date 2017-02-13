@@ -7,7 +7,7 @@ if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
     EximUser="Debian-exim"
     EximGroup="Debian-exim"
     Service="exim4"
-    SpoolDir="/var/spool/exim"
+    SpoolDir="/var/spool/exim4"
 else
     if [ "$OS" == "RedHat" ]; then
         sed -i -e "s/Debian-exim/exim/" "$DIR/etc/MailScanner/conf.d/mailwatch.conf"
@@ -16,7 +16,7 @@ else
     EximUser="exim"
     EximGroup="exim"
     Service="exim"
-    SpoolDir="/var/spool/exim4/"
+    SpoolDir="/var/spool/exim"
 fi
 
 service "$Service" stop
