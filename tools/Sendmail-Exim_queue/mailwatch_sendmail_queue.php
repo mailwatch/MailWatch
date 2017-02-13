@@ -35,7 +35,6 @@ $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
-require $pathToFunctions;
 
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');
@@ -48,6 +47,7 @@ $lockFile = '/var/run/mailq.lock';
 $fl = @fopen($lockFile, 'w+b');
 // Attempt to create an exclusive lock - continue if successful
 if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
+
     require $pathToFunctions;
     date_default_timezone_set(TIME_ZONE);
 
