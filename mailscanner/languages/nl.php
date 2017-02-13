@@ -30,7 +30,7 @@
  */
 
 /* languages/nl.php */
-/* v0.3.10 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -612,13 +612,13 @@ return array(
     // 33-rep_audit_log.php
     'auditlog33' => 'Audit Log',
     'datetime33' => 'Date/Time',
-    'user33' => 'User',
-    'ipaddress33' => 'IP Address',
-    'action33' => 'Action',
+    'user33' => 'User:',
+    'ipaddress33' => 'IP Address:',
+    'action33' => 'Action:',
     'filter33' => 'Filter',
     'applyfilter33' => 'apply',
-    'startdate33' => 'Start date',
-    'enddate33' => 'End date',
+    'startdate33' => 'Start date:',
+    'enddate33' => 'End date:',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
@@ -792,6 +792,7 @@ return array(
     'error58' => 'Error:',
     'errornfd58' => 'Error: file not found',
     'part58' => 'Part',
+    'title58' => 'Quarantined E-Mail Viewer',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Message not found.  You may have already released this message or the link may have expired.',
@@ -847,6 +848,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Geen vertaling in het Nederlands',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
-
-    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
+    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example.',
 );

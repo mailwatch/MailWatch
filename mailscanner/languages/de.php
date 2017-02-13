@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.10 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -612,13 +612,13 @@ return array(
     // 33-rep_audit_log.php
     'auditlog33' => 'Kontrollbericht',
     'datetime33' => 'Datum/Zeit',
-    'user33' => 'Benutzer',
-    'ipaddress33' => 'IP-Adresse',
-    'action33' => 'Aktion',
+    'user33' => 'Benutzer:',
+    'ipaddress33' => 'IP-Adresse:',
+    'action33' => 'Aktion:',
     'filter33' => 'Filter',
     'applyfilter33' => 'anwenden',
-    'startdate33' => 'Startzeit',
-    'enddate33' => 'Endzeit',
+    'startdate33' => 'Startzeit:',
+    'enddate33' => 'Endzeit:',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
@@ -694,7 +694,7 @@ return array(
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
-  
+
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
     'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
@@ -792,6 +792,7 @@ return array(
     'error58' => 'Error:',
     'errornfd58' => 'Error: Datei nicht gefunden',
     'part58' => 'Abschnitt',
+    'title58' => 'Anzeige von Quarantäne-E-Mails',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Nachricht nicht gefunden. Möglicherweise haben Sie die Nachricht bereits freigegeben oder der Link ist abgelaufen.',
@@ -847,6 +848,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
-
-    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die your conf.php mit conf.php.example',
+    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die conf.php mit conf.php.example',
 );

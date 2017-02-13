@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.10 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -48,7 +48,7 @@ return array(
     'cuser03' => 'Utilisateur',
     'cst03' => 'Heure Système',
     'colorcodes03' => 'Codes couleur',
-    'badcontentinfected03' => 'Contenu nocif/infecté',
+    'badcontentinfected03' => 'Contenu dangereux/infecté',
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
     'notverified03' => 'Non vérifié',
@@ -63,8 +63,8 @@ return array(
     'last03' => 'Dernier',
     'loadaverage03' => 'Charge moyenne :',
     'mailqueue03' => 'Files d\'attente de courrier',
-    'inbound03' => 'En entrée :',
-    'outbound03' => 'En partance :',
+    'inbound03' => 'Messages entrants :',
+    'outbound03' => 'Messages sortants :',
     'topvirus03' => 'Top Virus :',
     'freedspace03' => 'Espace disque libre',
     'todaystotals03' => 'Total aujourd\'hui',
@@ -155,7 +155,7 @@ return array(
     'salearn03' => 'Apprentissage SA',
     'salearnerror03' => 'Apprentissage SA : code d\'erreur',
     'salearnreturn03' => 'retourné par sa-learn :',
-    'badcontent03' => 'Contenu nocif',
+    'badcontent03' => 'Contenu dangereux',
     'otherinfected03' => 'Autre',
     'and03' => 'et',
     'ldapresultset03' => 'LDAP : Le jeu de résultats renvoyé contient plus d\'une personne. Nous ne pouvons donc pas être sûrs que l\'utilisateur',
@@ -199,7 +199,7 @@ return array(
     'to04' => 'À :',
     'size04' => 'Taille :',
     'subject04' => 'Sujet :',
-    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers nocif',
+    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangereux',
     'blkfile04' => 'Fichier bloqué :',
     'otherinfec04' => 'Autre infection :',
     'hscospam04' => 'Spam à haut score :',
@@ -226,7 +226,7 @@ return array(
     'file04' => 'Fichier',
     'type04' => 'Type',
     'path04' => 'Chemin',
-    'dang04' => 'Nocif ',
+    'dang04' => 'Dangereux ',
     'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
     'actions04' => 'Action(s) :',
@@ -360,7 +360,7 @@ return array(
     'mcpscore09' => 'Score MCP',
     'mcpreport09' => 'Rapport MCP',
     'virusinfected09' => 'contient un Virus (>0 = VRAI)',
-    'nameinfected09' => 'contient un attachement nocif (>0 = VRAI)',
+    'nameinfected09' => 'contient un attachement dangereux (>0 = VRAI)',
     'otherinfected09' => 'contient un autre type d\'infection (>0 = VRAI)',
     'report09' => 'Rapport de Virus',
     'hostname09' => 'Nom du Serveur MailScanner',
@@ -458,7 +458,6 @@ return array(
     'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
     'retypepassword12' => 'Confirmez le mot de passe :',
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
-
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -612,14 +611,14 @@ return array(
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Log de l\'Audit',
-    'datetime33' => 'Date/Heure',
-    'user33' => 'Utilisateur',
-    'ipaddress33' => 'Adresse IP',
-    'action33' => 'Action',
+    'datetime33' => 'Date/Heure :',
+    'user33' => 'Utilisateur :',
+    'ipaddress33' => 'Adresse IP :',
+    'action33' => 'Action :',
     'filter33' => 'Filtre',
     'applyfilter33' => 'appliquer',
-    'startdate33' => 'Date de départ',
-    'enddate33' => 'Date de fin',
+    'startdate33' => 'Date de départ :',
+    'enddate33' => 'Date de fin :',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',
@@ -680,6 +679,7 @@ return array(
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
     'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
     'domain41' => 'Domaine',
+    
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top des destinataires par quantité',
     'top10recipqt42' => 'Top 10 des destinataires par quantité',
@@ -792,6 +792,7 @@ return array(
     'error58' => 'Erreur :',
     'errornfd58' => 'Erreur : fichier non trouvé',
     'part58' => 'Expédié',
+    'title58' => 'Visualisation des E-Mail de Quarantaine',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
@@ -826,7 +827,7 @@ return array(
     'text612' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine et dont vous retrouverez la liste ci-dessous. Les messages en Quarantaine sont automatiquement effacés %s jours après la date à laquelle ils ont été reçus.',
     'release61' => 'Libérer',
     'virus61' => 'Virus',
-    'badcontent61' => 'Contenu nocif',
+    'badcontent61' => 'Contenu dangereux',
     'infected61' => 'Infecté',
     'spam61' => 'Spam',
     'blacklisted61' => 'Liste Noire',
@@ -847,6 +848,5 @@ return array(
     'mslogo99' => 'Logo MailScanner',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
-
-    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example',
+    'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',
 );
