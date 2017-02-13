@@ -34,11 +34,13 @@ if (php_sapi_name() !== 'cli') {
     header('Content-type: text/plain');
 }
 
-$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
-//$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
 
-if (!is_file($pathToFunctions)) {
-    die('Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 
 require_once $pathToFunctions;
@@ -159,12 +161,22 @@ function getTableIndexes($table)
 
 $errors = false;
 
+
+// Upgrade mailwatch database
 // Test connectivity to the database
+
+echo PHP_EOL;
+echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() .  PHP_EOL;
+
+echo PHP_EOL;
 echo pad('Testing connectivity to the database ');
+
 if ($link) {
     echo ' OK' . PHP_EOL;
     // Update schema at this point
+    echo PHP_EOL;
     echo 'Updating database schema: ' . PHP_EOL;
+    echo PHP_EOL;
 
     /*
     ** Updates to the schema for 1.2.0
@@ -184,6 +196,26 @@ if ($link) {
         executeQuery($sql);
     }
 
+    echo PHP_EOL;
+
+    // Drop geoip table
+    echo pad(' - Drop `geoip_country` table');
+    if (false === check_table_exists('geoip_country')) {
+        echo ' ALREADY DROPPED' . PHP_EOL;
+    } else {
+        $sql = 'DROP TABLE IF EXISTS `geoip_country`';
+        executeQuery($sql);
+    }
+
+    // Drop spamscores table
+    echo pad(' - Drop `spamscores` table');
+    if (false === check_table_exists('spamscores')) {
+        echo ' ALREADY DROPPED' . PHP_EOL;
+    } else {
+        $sql = 'DROP TABLE IF EXISTS `spamscores`';
+        executeQuery($sql);
+    }
+
     // Add autorelease table if not exist (1.2RC2)
     echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
     if (true === check_table_exists('autorelease')) {
@@ -194,26 +226,37 @@ if ($link) {
             `msg_id` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
             `uid` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
             PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1';
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
         executeQuery($sql);
     }
 
+    echo PHP_EOL;
+
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
+
+    // Table audit_log
+    echo pad(' - Fix schema for username field in `audit_log` table');
+    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    // Table blacklist
+    echo pad(' - Fix schema for id field in `blacklist` table');
+    $sql = "ALTER TABLE `blacklist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT";
+    executeQuery($sql);
 
     // Table users
     echo pad(' - Fix schema for username field in `users` table');
     $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
-    // Table spamscores
-    echo pad(' - Fix schema for user field in `spamscores` table');
-    $sql = "ALTER TABLE `spamscores` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
     // Table user_filters
     echo pad(' - Fix schema for username field in `user_filters` table');
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
+
+    // Table whitelist
+    echo pad(' - Fix schema for username field in `whitelist` table');
+    $sql = "ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT";
 
     // Update users table schema for password-reset feature
     echo pad(' - Updating users table for password-reset feature');
@@ -244,14 +287,77 @@ if ($link) {
     $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    // Table mcp_rules
+    echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
+    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
+    executeQuery($sql);
+
+    echo PHP_EOL;
+
+    // Add new column and index to audit_log table
+    echo pad(' - Add maillog_id field and primary key to `audit_log` table');
+    if (true === check_column_exists('audit_log', 'id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `audit_log` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to inq table
+    echo pad(' - Add inq_id field and primary key to `inq` table');
+    if (true === check_column_exists('inq', 'inq_id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `inq` ADD `inq_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`inq_id`)';
+        executeQuery($sql);
+    }
+
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`maillog_id`)';
+        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
     }
+
+    // Add new column and index to mtalog table
+    echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
+    if (true === check_column_exists('mtalog', 'mtalog_id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `mtalog` ADD `mtalog_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`mtalog_id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to outq table
+    echo pad(' - Add mtalog_id field and primary key to `outq` table');
+    if (true === check_column_exists('outq', 'outq_id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `outq` ADD `outq_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`outq_id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to saved_filters table
+    echo pad(' - Add id field and primary key to `saved_filters` table');
+    if (true === check_column_exists('saved_filters', 'id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `saved_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column and index to user_filters table
+    echo pad(' - Add mtalog_id field and primary key to `user_filters` table');
+    if (true === check_column_exists('user_filters', 'id')) {
+        echo ' ALREADY DONE' . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `user_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        executeQuery($sql);
+    }
+
+    echo PHP_EOL;
 
     // Convert database to utf8mb4 if MySQL ≥ 5.5.3
     if ($link->server_version >= 50503) {
@@ -267,6 +373,8 @@ if ($link) {
         }
     }
 
+    echo PHP_EOL;
+
     $utf8_tables = array(
         'audit_log',
         'autorelease',
@@ -279,12 +387,12 @@ if ($link) {
         'outq',
         'saved_filters',
         'sa_rules',
-        'spamscores',
         'users',
         'user_filters',
         'whitelist',
     );
 
+    // Convert tables to utf8 using $utf8_tables array
     foreach ($utf8_tables as $table) {
         echo pad(' - Convert table `' . $table . '` to ' . $server_utf8_variant . '');
         if (false === check_table_exists($table)) {
@@ -301,13 +409,21 @@ if ($link) {
         }
     }
 
-    // Drop geoip table
-    echo pad(' - Drop `geoip_country` table');
-    if (false === check_table_exists('geoip_country')) {
-        echo ' ALREADY DROPPED' . PHP_EOL;
-    } else {
-        $sql = 'DROP TABLE IF EXISTS `geoip_country`';
-        executeQuery($sql);
+    echo PHP_EOL;
+
+    // Convert tables to InnoDB using $utf8_tables array
+    foreach ($utf8_tables as $table) {
+        echo pad(' - Convert table `' . $table . '` to InnoDB');
+        if (false === check_table_exists($table)) {
+            echo ' DO NOT EXISTS' . PHP_EOL;
+        } else {
+            if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
+                $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
+                executeQuery($sql);
+            } else {
+                echo ' ALREADY CONVERTED' . PHP_EOL;
+            }
+        }
     }
 
     // check for missing indexes
@@ -328,6 +444,9 @@ if ($link) {
     );
 
     foreach ($indexes as $table => $indexlist) {
+        echo PHP_EOL;
+        echo pad(' - Search for missing indexes');
+        echo ' DONE' . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
@@ -350,6 +469,7 @@ echo PHP_EOL;
 
 // Check MailScanner settings
 echo 'Checking MailScanner.conf settings: ' . PHP_EOL;
+echo PHP_EOL;
 $check_settings = array(
     'QuarantineWholeMessage' => 'yes',
     'QuarantineWholeMessagesAsQueueFiles' => 'no',
@@ -374,6 +494,7 @@ echo PHP_EOL;
 
 // Check configuration for missing entries
 echo 'Checking conf.php configuration entry: ' . PHP_EOL;
+echo PHP_EOL;
 $missingConfigEntries = checkConfVariables();
 if ($missingConfigEntries['needed']['count'] === 0) {
     echo ' - All needed entries are OK' . PHP_EOL;

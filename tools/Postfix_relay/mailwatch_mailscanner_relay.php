@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 
 /*
@@ -35,66 +34,40 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-// Edit this to reflect the full path to mailscanner dir containing functions.php, always end with "/"
-$mailwatchHome = '/var/www/html/mailscanner/';
-
-require $mailwatchHome . 'functions.php';
-require_once $mailwatchHome . 'mtalogprocessor.inc.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
 // Set-up environment
 set_time_limit(0);
 
-class SendmailLogProcessor extends MtaLogProcessor
+function doit($input)
 {
-    public function __construct()
-    {
-        $this->mtaprocess = 'sendmail';
-        $this->delayField = 'xdelay';
-        $this->statusField = 'stat';
+    global $fp;
+    if (!$fp = popen($input, 'r')) {
+        die(__('diepipe54'));
     }
-    
-    public function getRulesets()
-    {
-        if (isset($this->entries['ruleset'])) {
-            if ($this->entries['ruleset'] === 'check_relay') {
-                // Listed in RBL(s)
-                $_type = safe_value('rbl');
-                $_relay = safe_value($this->entries['arg2']);
-                $_status = safe_value($this->entries['reject']);
-            }
-            if ($this->entries['ruleset'] === 'check_mail') {
-                // Domain does not resolve
-                $_type = safe_value('unresolveable');
-                $_status = safe_value(get_email($this->entries['reject']));
-            }
+
+    $lines = 1;
+    while ($line = fgets($fp, 2096)) {
+        if (preg_match('/^.*MailScanner.*: Requeue: (\S+\.\S+) to (\S+)\s$/', $line, $explode)) {
+            $smtpd_id = $explode[1];
+            $smtp_id = $explode[2];
+            dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
         }
+        $lines++;
     }
-    
-    public function extractKeyValuePairs($match)
-    {
-        $items = explode(', ', $match[2]);
-        $entries = array();
-        foreach ($items as $item) {
-            $entry = explode('=', $item);
-            if (isset($entry[1])) {
-                $entries[$entry[0]] = $entry[1];
-                // fix for the id= issue 09.12.2011
-                if (isset($entry[2])) {
-                    $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                } else {
-                    $entries[$entry[0]] = $entry[1];
-                }
-            }
-        }
-    }
+    pclose($fp);
 }
 
-$logprocessor = new SendmailLogProcessor();
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
-    $logprocessor->doit('cat ' . MAIL_LOG);
+if ($_SERVER['argv'][1] === '--refresh') {
+    doit('cat ' . MS_LOG);
 } else {
     // Refresh first
-    $logprocessor->doit('cat ' . MAIL_LOG);
+    doit('cat ' . MS_LOG);
     // Start watching the maillog
-    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
+    doit('tail -F -n0 ' . MS_LOG);
 }
