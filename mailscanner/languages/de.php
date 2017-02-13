@@ -312,7 +312,7 @@ return array(
     'tosetdate09' => 'Für das Datum muss das Format JJJJ-mm-tt verwendet werden',
     'oldrecord09' => 'Ältester Eintrag:',
     'newrecord09' => 'Neuester Eintrag:',
-    'messagecount09' => 'Nachricthen Anzahl:',
+    'messagecount09' => 'Nachrichten Anzahl:',
     'stats09' => 'Statistiken (Gefiltert)',
     'add09' => 'Hinzufügen',
     'load09' => 'Laden',
