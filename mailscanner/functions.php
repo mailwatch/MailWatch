@@ -72,7 +72,7 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 } else {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
-if (!defined('USE_ANTIALIASING') || !USE_ANTIALIASING) {
+if (!function_exists('imageantialias')) {
     function imageantialias($image, $enabled)
     {
         return true;
