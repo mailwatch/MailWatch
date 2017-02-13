@@ -185,7 +185,6 @@ return array(
     '15minutes03' => '15 Minuten:',
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
-    'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -664,18 +663,18 @@ return array(
     'messages39' => 'Nachricht',
     'viruses39' => 'Viren',
     'spam39' => 'Spam',
-    'volume39' => 'Volumen',
+    'volume39' => 'Größe',
     'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
     'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
-    'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
-    'top10recipdomqt40' => 'Top 10 Empfänger Domänen by Volume',
+    'toprecipdomqt40' => 'Top Empfänger Domänen nach Anzahl',
+    'top10recipdomqt40' => 'Top 10 Empfänger Domänen nach Anzahl',
     'domain40' => 'Domäne',
   
     // 41-rep_top_recipient_domains_by_volume.php
-    'toprecipdomvol41' => 'Top Empfänger Domänen nach Volume',
-   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Volume',
+    'toprecipdomvol41' => 'Top Empfänger Domänen nach Größe',
+   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
     'domain41' => 'Domäne',
   
     // 42-rep_top_recipients_by_quantity.php
@@ -684,8 +683,8 @@ return array(
     'email42' => 'E-Mail-Adresse',
   
     // 43-rep_top_recipients_by_volume.php
-    'toprecipvol43' => 'Top Empfänger nach Volumen',
-    'top10recipvol43' => 'Top 10 Empfänger nach Volumen',
+    'toprecipvol43' => 'Top Empfänger nach Größe',
+    'top10recipvol43' => 'Top 10 Empfänger nach Größe',
     'email43' => 'E-Mail-Adresse',
   
     // 44-rep_top_sender_domains_by_quantity.php
@@ -694,8 +693,8 @@ return array(
     'domain44' => 'Domäne',
 
     // 45-rep_top_sender_domains_by_volume.php
-    'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
-    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
+    'topsenderdomvol45' => 'Top Absender-Domänen nach Größe',
+    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Größe',
     'domain45' => 'Domäne',
 
     // 46-rep_top_senders_by_quantity.php
@@ -704,8 +703,8 @@ return array(
     'email46' => 'E-Mail-Adresse',
   
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top Absender nach Volumen',
-    'top10sendersvol47' => 'Top 10 Absender nach Volumen',
+    'topsendersvol47' => 'Top Absender nach Größe',
+    'top10sendersvol47' => 'Top 10 Absender nach Größe',
     'email47' => 'E-Mail-Adresse',
   
     // 48-rep_top_viruses.php
