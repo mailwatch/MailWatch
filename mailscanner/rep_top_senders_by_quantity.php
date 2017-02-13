@@ -40,14 +40,12 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsendersqt46'), 0, false, true);
 
-// Set Date format
-$date_format = "'" . DATE_FORMAT . "'";
-
+// File name
 $filename = CACHE_DIR . '/top_senders_by_quantity.png' . time();
 
 $sql = "
  SELECT
-  from_address,
+  from_address as name,
   COUNT(*) as count,
   SUM(size) as size
  FROM
@@ -64,46 +62,25 @@ $sql = "
  LIMIT 10
 ';
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
-
-    // JPGraph
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_pie.php';
-    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
-
-    $result = dbquery($sql);
-    if (!$result->num_rows > 0) {
-        die(__('diemysql99') . "\n");
-    }
-
-    while ($row = $result->fetch_object()) {
-        $data[] = $row->count;
-        $data_names[] = $row->from_address;
-        $data_size[] = $row->size;
-    }
-
-    format_report_volume($data_size, $size_info);
-
-    // Creating the Graph
-    $graph = new PieGraph(800, 385, 0, false);
-    $graph->SetShadow();
-    $graph->img->SetAntiAliasing();
-    $graph->title->Set(__('top10sendersqt46'));
-
-    $p1 = new PiePlot3d($data);
-    $p1->SetTheme('sand');
-    $p1->SetLegends($data_names);
-
-    $p1->SetCenter(0.70, 0.4);
-    $graph->legend->SetLayout(LEGEND_VERT);
-    $graph->legend->Pos(0.25, 0.20, 'center');
-
-    $graph->Add($p1);
-    $graph->Stroke($filename);
-}
-
-printGraphTable($filename, __('email46'), $data, $data_names, $data_size, $size_info['formula']);
+$columnTitles = [
+    __('email46'),
+    __('count03'),
+    __('size03')
+];
+$sqlColumns = [
+    'name',
+    'count',
+    'size'
+];
+$valueConversion = [
+    'size' => 'scale',
+    'count' => 'number'
+];
+$graphColumns = [
+    'labelColumn' => 'name',
+    'dataColumn' => 'count'
+];
+printGraphTable($filename, $sql, __('top10sendersqt46'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();
