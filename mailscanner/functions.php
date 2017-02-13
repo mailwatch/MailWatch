@@ -72,7 +72,12 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 } else {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
-
+if (!function_exists('imageantialias')) {
+    function imageantialias($image, $enabled)
+    {
+        return true;
+    }
+}
 //security headers
 header('X-XSS-Protection: 1; mode=block');
 header('X-Frame-Options: SAMEORIGIN');
