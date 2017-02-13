@@ -49,6 +49,7 @@ require_once __DIR__ . '/functions.php';
     <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
     </div>
     <h1><?php echo __('mwlogin01'); ?></h1>
+    <div class="inner-container">
     <?php if (file_exists('conf.php')) {
         ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
@@ -69,27 +70,6 @@ require_once __DIR__ . '/functions.php';
                         } ?>
                     </p>
                     <?php
-    <div class="wrap1">
-        <?php if (file_exists('conf.php')) {
-    ?>
-            <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
-                <fieldset>
-                    <?php if (isset($_GET['error'])) {
-        ?>
-                        <p class="loginerror">
-                            <?php
-                            switch ($_GET['error']) {
-                                case 'baduser':
-                                    echo __('badup01');
-                                    break;
-                                case 'emptypassword':
-                                    echo __('emptypassword01');
-                                    break;
-                                default:
-                                    echo __('errorund01');
-                            } ?>
-                        </p>
-                        <?php
 
                 } ?>
                 <p><label for="myusername"><?php echo __('username'); ?></label></p>
@@ -102,6 +82,15 @@ require_once __DIR__ . '/functions.php';
             </fieldset>
         </form>
         <?php
+        if (defined('PWD_RESET') && PWD_RESET === true) {
+            ?>
+            <div class="pwdresetButton">
+                <a href="password_reset.php?stage=1">
+                    <button class="pwdresetButton"><?php echo __('forgottenpwd01'); ?></button>
+                </a>
+            </div>
+            <?php
+        }
 
     } else {
         ?>
@@ -109,12 +98,9 @@ require_once __DIR__ . '/functions.php';
             <?php echo __('cannot_read_conf'); ?>
         </p>
         <?php
-
     }
-}
-        ?>
-    </div>
+    ?>
 </div>
-
+</div>
 </body>
 </html>
