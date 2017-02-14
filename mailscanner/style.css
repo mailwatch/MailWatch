@@ -577,8 +577,6 @@ div.table > .caption > input {
     word-wrap: break-word;
 }
 
-<<<<<<< HEAD
-=======
 /*auto-release*/
 .autorelease body {
     background-color: #ffffff;
@@ -642,4 +640,4 @@ div.table > .caption > input {
 .reportTable > tbody > tr > td:first-child {
     text-align: left;
 }
->>>>>>> develop
+

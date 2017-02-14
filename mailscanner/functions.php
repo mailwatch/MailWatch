@@ -72,7 +72,6 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 } else {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
-<<<<<<< HEAD
 
 // Replace type="password" with a dot font to handle Autocompletion
 if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM') || !USE_FONT_FOR_PASSWORD_IN_FORM) {
@@ -87,14 +86,15 @@ if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM') || !USE_FONT_FOR_PASSWORD_IN_FORM)
     }
 }
 
-=======
+// Fix for jpGraph in debian
+>>>>>>> origin/password
 if (!function_exists('imageantialias')) {
     function imageantialias($image, $enabled)
     {
         return true;
     }
 }
->>>>>>> develop
+
 //security headers
 header('X-XSS-Protection: 1; mode=block');
 header('X-Frame-Options: SAMEORIGIN');
