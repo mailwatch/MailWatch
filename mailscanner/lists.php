@@ -190,7 +190,7 @@ if ($url_submit === 'add') {
             . "('" . safe_value($to_address) . "',"
             . "'" . safe_value($to_domain) . "',"
             . "'" . safe_value($from) . "')";
-        @dbquery($sql);
+        dbquery($sql);
         audit_log(sprintf(__('auditlogadded07'), $from, $to_address, $listi18));
     }
     $to_domain = '';
@@ -276,11 +276,11 @@ echo '
   <th colspan=2>' . __('addwlbl07') . '</th>
  </tr>
  <tr>
-  <td class="heading">' . __('from07') . __('colon99') . '</td>
+  <td class="heading">' . __('from07') . '</td>
   <td><input type="text" name="from" size=50 value="' . $from . '"></td>
  </tr>
  <tr>
-  <td class="heading">' . __('to07') . __('colon99') . '</td>';
+  <td class="heading">' . __('to07') . '</td>';
 
 switch ($_SESSION['user_type']) {
     case 'A':
@@ -320,7 +320,7 @@ switch ($_SESSION['user_type']) {
 echo '
  </tr>
  <tr>
-  <td class="heading">' . __('list07') . __('colon99') . '</td>
+  <td class="heading">' . __('list07') . '</td>
   <td>';
 
 $w = '';
@@ -339,7 +339,7 @@ echo '   <input type="radio" value="b" name="list" ' . $b . '>' . __('bl07') . '
 echo '  </td>
  </tr>
  <tr>
-  <td class="heading">' . __('action07') . __('colon99') . '</td>
+  <td class="heading">' . __('action07') . '</td>
   <td><button type="reset" value="reset">' . __('reset07') . '</button>&nbsp;&nbsp;<button type="submit" name="submit" value="add">' . __('add07') . '</button></td>
  </tr>';
 if (isset($errors)) {

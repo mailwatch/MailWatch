@@ -34,35 +34,69 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-require __DIR__ . '/functions.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+}
+
+require $pathToFunctions;
+
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/mtalogprocessor.inc.php';
+
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+}
+
+require_once $pathToFunctions;
 
 // Set-up environment
 set_time_limit(0);
 
-function doit($input)
+class PostfixLogProcessor extends MtaLogProcessor
 {
-    global $fp;
-    if (!$fp = popen($input, 'r')) {
-        die(__('diepipe54'));
+    public function __construct()
+    {
+        $this->mtaprocess = 'postfix/smtp';
+        $this->delayField = 'delay';
+        $this->statusField = 'status';
     }
 
-    $lines = 1;
-    while ($line = fgets($fp, 2096)) {
-        if (preg_match('/^.*MailScanner.*: Requeue: (\S+\.\S+) to (\S+)\s$/', $line, $explode)) {
-            $smtpd_id = $explode[1];
-            $smtp_id = $explode[2];
-            dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+    public function getRejectReasons()
+    {
+        // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
+        // example
+        $rejectReasons = array();
+        if (preg_match('/NOQUEUE/i', $this->entry)) {
+            if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
+                $rejectReasons['type'] = safe_value('unknown_hostname');
+            } else {
+                $rejectReasons['type'] = safe_value('NOQUEUE');
+            }
+            $rejectReasons['status'] = safe_value($this->raw);
         }
-        $lines++;
+
+        return $rejectReasons;
     }
-    pclose($fp);
+
+    public function extractKeyValuePairs($match)
+    {
+        $entries = array();
+        $pattern = '/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/';
+        preg_match($pattern, $match[2], $entries);
+
+        return $entries;
+    }
 }
 
+$logprocessor = new PostfixLogProcessor();
 if ($_SERVER['argv'][1] === '--refresh') {
-    doit('cat ' . MS_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first
-    doit('cat ' . MS_LOG);
+    $logprocessor->doit('cat ' . MAIL_LOG);
     // Start watching the maillog
-    doit('tail -F -n0 ' . MS_LOG);
+    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
 }

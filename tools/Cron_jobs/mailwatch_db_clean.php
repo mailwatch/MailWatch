@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 
 /*
@@ -29,60 +30,46 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Include of necessary functions
-require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/filter.inc.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
-// Authentication checking
-session_start();
-require __DIR__ . '/login.function.php';
+ini_set('error_log', 'syslog');
+ini_set('html_errors', 'off');
+ini_set('display_errors', 'on');
+ini_set('implicit_flush', 'false');
 
-// add the header information such as the logo, search, menu, ....
-$filter = html_start(__('toprecipdomqt40'), 0, false, true);
+if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
+    die('The variable RECORD_DAYS_TO_KEEP is empty, please set a value in conf.php.');
+} elseif (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
+    die('The variable AUDIT_DAYS_TO_KEEP is empty, please set a value in conf.php.');
+} else {
+    // Cleaning the maillog table
+    dbquery('DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
 
-// File name
-$filename = CACHE_DIR . '/rep_top_recipient_domains_by_quantity.png.' . time();
+    // Cleaning the mta_log and optionally the mta_log_id table
+    $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
+    $tablecheck = dbquery($sqlcheck);
+    $mta = get_conf_var('mta');
+    $optimize_mtalog_id = '';
+    if ($mta === 'postfix' && $tablecheck->num_rows > 0) {
+        //version for postfix with mtalog_ids enabled
+        dbquery(
+            'DELETE i.*, m.* FROM mtalog AS m
+             LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id
+             WHERE m.timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)'
+        );
+        $optimize_mtalog_id = ', mtalog_ids';
+    } else {
+        dbquery('DELETE FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
+    }
 
-$sql = "
- SELECT
-  SUBSTRING_INDEX(to_address, '@', -1) AS name,
-  COUNT(*) as count,
-  SUM(size) as size
- FROM
-  maillog
- WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
- AND
-  from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
- GROUP BY
-  to_domain
- ORDER BY
-  count DESC
- LIMIT 10
-';
+    // Clean the audit log
+    dbquery('DELETE FROM audit_log WHERE timestamp < (NOW() - INTERVAL ' . AUDIT_DAYS_TO_KEEP . ' DAY)');
 
-$columnTitles = [
-    __('domain40'),
-    __('count03'),
-    __('size03')
-];
-$sqlColumns = [
-    'name',
-    'count',
-    'size'
-];
-$valueConversion = [
-    'size' => 'scale',
-    'count' => 'number'
-];
-$graphColumns = [
-    'labelColumn' => 'name',
-    'dataColumn' => 'count'
-];
-printGraphTable($filename, $sql, __('top10recipdomqt40'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
-
-// Add footer
-html_end();
-// Close any open db connections
-dbclose();
+    // Optimize all of tables
+    dbquery('OPTIMIZE TABLE maillog, mtalog, audit_log' . $optimize_mtalog_id);
+}

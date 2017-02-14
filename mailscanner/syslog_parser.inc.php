@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /*
  * MailWatch for MailScanner
@@ -28,61 +28,62 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+class SyslogParser
+{
+    public $raw;
+    public $timestamp;
+    public $date;
+    public $time;
+    public $rfctime;
+    public $host;
+    public $process;
+    public $pid;
+    public $entry;
+    public $months = array(
+        'Jan' => '1',
+        'Feb' => '2',
+        'Mar' => '3',
+        'Apr' => '4',
+        'May' => '5',
+        'Jun' => '6',
+        'Jul' => '7',
+        'Aug' => '8',
+        'Sep' => '9',
+        'Oct' => '10',
+        'Nov' => '11',
+        'Dec' => '12'
+    );
 
-// Include of necessary functions
-require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/filter.inc.php';
+    /**
+     * @param string $line
+     */
+    public function __construct($line)
+    {
 
-// Authentication checking
-session_start();
-require __DIR__ . '/login.function.php';
+        // Parse the date, time, host, process pid and log entry
+        if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
+            // Store raw line
+            $this->raw = $explode[0];
 
-// add the header information such as the logo, search, menu, ....
-$filter = html_start(__('toprecipdomqt40'), 0, false, true);
+            // Decode the syslog time/date
+            $month = $this->months[$explode[1]];
+            $thismonth = date('n');
+            $thisyear = date('Y');
+            // Work out the year
+            $year = $month <= $thismonth ? $thisyear : $thisyear - 1;
+            $this->date = $explode[2] . ' ' . $explode[1] . ' ' . $year;
+            $this->time = $explode[3] . ':' . $explode[4] . ':' . $explode[5];
+            $datetime = $this->date . ' ' . $this->time;
+            $this->timestamp = strtotime($datetime);
+            $this->rfctime = date('r', $this->timestamp);
 
-// File name
-$filename = CACHE_DIR . '/rep_top_recipient_domains_by_quantity.png.' . time();
-
-$sql = "
- SELECT
-  SUBSTRING_INDEX(to_address, '@', -1) AS name,
-  COUNT(*) as count,
-  SUM(size) as size
- FROM
-  maillog
- WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
- AND
-  from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
- GROUP BY
-  to_domain
- ORDER BY
-  count DESC
- LIMIT 10
-';
-
-$columnTitles = [
-    __('domain40'),
-    __('count03'),
-    __('size03')
-];
-$sqlColumns = [
-    'name',
-    'count',
-    'size'
-];
-$valueConversion = [
-    'size' => 'scale',
-    'count' => 'number'
-];
-$graphColumns = [
-    'labelColumn' => 'name',
-    'dataColumn' => 'count'
-];
-printGraphTable($filename, $sql, __('top10recipdomqt40'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
-
-// Add footer
-html_end();
-// Close any open db connections
-dbclose();
+            $this->host = $explode[6];
+            $this->process = $explode[7];
+            $this->pid = $explode[8];
+            $this->entry = $explode[9];
+        } else {
+            return false;
+        }
+    }
+}

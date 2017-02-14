@@ -4,8 +4,9 @@ INSTALLATION INSTRUCTIONS
 
 If you're using the RPM-based MailScanner install:
 
-  cp msre_reload.sh /usr/local/bin
-  chmod +x /usr/local/bin/msre_reload.sh
+# cp msre_reload.sh /usr/local/bin
+
+# chmod +x /usr/local/bin/msre_reload.sh
 
 It is used by the MSRE cron job to restart MailScanner after a rule has been edited.
 

@@ -30,7 +30,7 @@
  */
 
 /* languages/fr.php */
-/* v0.3.10 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -48,7 +48,7 @@ return array(
     'cuser03' => 'Utilisateur',
     'cst03' => 'Heure Système',
     'colorcodes03' => 'Codes couleur',
-    'badcontentinfected03' => 'Contenu nocif/infecté',
+    'badcontentinfected03' => 'Contenu dangereux/infecté',
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
     'notverified03' => 'Non vérifié',
@@ -63,8 +63,8 @@ return array(
     'last03' => 'Dernier',
     'loadaverage03' => 'Charge moyenne :',
     'mailqueue03' => 'Files d\'attente de courrier',
-    'inbound03' => 'En entrée :',
-    'outbound03' => 'En partance :',
+    'inbound03' => 'Messages entrants :',
+    'outbound03' => 'Messages sortants :',
     'topvirus03' => 'Top Virus :',
     'freedspace03' => 'Espace disque libre',
     'todaystotals03' => 'Total aujourd\'hui',
@@ -155,7 +155,7 @@ return array(
     'salearn03' => 'Apprentissage SA',
     'salearnerror03' => 'Apprentissage SA : code d\'erreur',
     'salearnreturn03' => 'retourné par sa-learn :',
-    'badcontent03' => 'Contenu nocif',
+    'badcontent03' => 'Contenu dangereux',
     'otherinfected03' => 'Autre',
     'and03' => 'et',
     'ldapresultset03' => 'LDAP : Le jeu de résultats renvoyé contient plus d\'une personne. Nous ne pouvons donc pas être sûrs que l\'utilisateur',
@@ -179,9 +179,15 @@ return array(
     'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
     'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
     'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
-    '1minute03' => '1 min.:',
-    '5minutes03' => '5 min.:',
-    '15minutes03' => '15 min.:',
+    'count03' => 'Nombre',
+    '1minute03' => '1 minute :',
+    '5minutes03' => '5 minutes :',
+    '15minutes03' => '15 minutes :',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'N\'est pas un Spam',
+    'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
+    'children03' => 'proc. fils',
+    'procs03' => 'processus',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -193,7 +199,7 @@ return array(
     'to04' => 'À :',
     'size04' => 'Taille :',
     'subject04' => 'Sujet :',
-    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers nocif',
+    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangereux',
     'blkfile04' => 'Fichier bloqué :',
     'otherinfec04' => 'Autre infection :',
     'hscospam04' => 'Spam à haut score :',
@@ -220,10 +226,10 @@ return array(
     'file04' => 'Fichier',
     'type04' => 'Type',
     'path04' => 'Chemin',
-    'dang04' => 'Nocif ',
-    'altrecip04' => 'Destinataire alternatif',
+    'dang04' => 'Dangereux ',
+    'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
-    'actions04' => 'Action(s)',
+    'actions04' => 'Action(s) :',
     'quarcmdres04' => 'Résultat des commandes de quarantaine',
     'resultmsg04' => 'Résultat du message',
     'id04' => 'ID :',
@@ -241,6 +247,8 @@ return array(
     'spamrevoke04' => 'Comme Légitime+Retirez',
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
+    'privatenetwork04' => '(Réseau privé)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',
@@ -276,10 +284,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
-    'from07' => 'De',
-    'to07' => 'À',
-    'list07' => 'Liste',
-    'action07' => 'Action',
+    'from07' => 'De :',
+    'to07' => 'À :',
+    'list07' => 'Liste :',
+    'action07' => 'Action :',
     'wl07' => 'Liste Blanche',
     'bl07' => 'Liste Noire',
     'reset07' => 'Réinitialiser',
@@ -352,7 +360,7 @@ return array(
     'mcpscore09' => 'Score MCP',
     'mcpreport09' => 'Rapport MCP',
     'virusinfected09' => 'contient un Virus (>0 = VRAI)',
-    'nameinfected09' => 'contient un attachement nocif (>0 = VRAI)',
+    'nameinfected09' => 'contient un attachement dangereux (>0 = VRAI)',
     'otherinfected09' => 'contient un autre type d\'infection (>0 = VRAI)',
     'report09' => 'Rapport de Virus',
     'hostname09' => 'Nom du Serveur MailScanner',
@@ -415,7 +423,7 @@ return array(
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
-    'errorpass12' => 'Le Mot de Passe de correspond pas.',
+    'errorpass12' => 'Mot de passe erroné',
     'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',
@@ -439,6 +447,17 @@ return array(
     'auditlogto12' => 'vers',
     'auditlog0412' => 'L\'Utilisateur %s a été effacé',
     'auditlog0512' => 'L\'Utilisateur [%s] a mis à jour son propre compte',
+    'erroreditnodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs sans domaine',
+    'erroreditdomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs du domaine %s',
+    'errortonodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer le domaine des utilisateurs',
+    'errortodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour assigner des utilisateurs au domaine %s',
+    'errortypesetforbidden12' => 'Erreur : vous ne disposez pas des autorisations nécessaires pour attribuer des droits d\'administrateur aux utilisateurs',
+    'errordeletenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer des utilisateurs sans domaine',
+    'errordeletedomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour supprimer les utilisateurs du domaine %s',
+    'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
+    'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
+    'retypepassword12' => 'Confirmez le mot de passe :',
+    'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -552,6 +571,8 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
     'diemq24' => 'Aucune file d\'attente définie',
+    'inq24' => 'File d\'attente de messages entrants',
+    'outq24' => 'File d\'attente de courrier sortant',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'Statut McAfee',
@@ -597,14 +618,14 @@ return array(
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Log de l\'Audit',
-    'datetime33' => 'Date/Heure',
-    'user33' => 'Utilisateur',
-    'ipaddress33' => 'Adresse IP',
-    'action33' => 'Action',
+    'datetime33' => 'Date/Heure :',
+    'user33' => 'Utilisateur :',
+    'ipaddress33' => 'Adresse IP :',
+    'action33' => 'Action :',
     'filter33' => 'Filtre',
     'applyfilter33' => 'appliquer',
-    'startdate33' => 'Date de départ',
-    'enddate33' => 'Date de fin',
+    'startdate33' => 'Date de départ :',
+    'enddate33' => 'Date de fin :',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',
@@ -660,57 +681,41 @@ return array(
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
     'top10recipdomqt40' => 'Top 10 des domaines de destination par quantité',
     'domain40' => 'Domaine',
-    'count40' => 'Nombre',
-    'size40' => 'Taille',
 
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
     'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
     'domain41' => 'Domaine',
-    'count41' => 'Nombre',
-    'size41' => 'Taille',
-
+    
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top des destinataires par quantité',
     'top10recipqt42' => 'Top 10 des destinataires par quantité',
     'email42' => 'Adresse E-Mail',
-    'count42' => 'Nombre',
-    'size42' => 'Taille',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top des destinataires par volume',
     'top10recipvol43' => 'Top 10 des destinataires par volume',
     'email43' => 'Adresse E-Mail',
-    'count43' => 'Nombre',
-    'size43' => 'Taille',
 
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
     'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
     'domain44' => 'Domaine',
-    'count44' => 'Nombre',
-    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
     'top10senderdomvol45' => 'Top 10 des domaines d\'expédition par volume',
     'domain45' => 'Domaine',
-    'count45' => 'Nombre',
-    'size45' => 'Taille',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top des expéditeurs par quantité',
     'top10sendersqt46' => 'Top 10 des expéditeurs par quantité',
     'email46' => 'Adresse E-Mail',
-    'count46' => 'Nombre',
-    'size46' => 'Taille',
 
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top des expéditeurs par volume',
     'top10sendersvol47' => 'Top 10 des expéditeurs par volume',
     'email47' => 'Adresse E-Mail',
-    'count47' => 'Nombre',
-    'size47' => 'Taille',
 
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top des Virus',
@@ -772,7 +777,7 @@ return array(
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
     'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',
 
     // 57-quarantine_action.php
@@ -794,6 +799,7 @@ return array(
     'error58' => 'Erreur :',
     'errornfd58' => 'Erreur : fichier non trouvé',
     'part58' => 'Expédié',
+    'title58' => 'Visualisation des E-Mail de Quarantaine',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
@@ -805,6 +811,7 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
+    'title59' => 'Quarantine Release',
 
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',
@@ -828,7 +835,7 @@ return array(
     'text612' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine et dont vous retrouverez la liste ci-dessous. Les messages en Quarantaine sont automatiquement effacés %s jours après la date à laquelle ils ont été reçus.',
     'release61' => 'Libérer',
     'virus61' => 'Virus',
-    'badcontent61' => 'Contenu nocif',
+    'badcontent61' => 'Contenu dangereux',
     'infected61' => 'Infecté',
     'spam61' => 'Spam',
     'blacklisted61' => 'Liste Noire',
@@ -837,7 +844,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
-    'errors07' => 'Erreur :',
+    'errors62' => 'Erreur :',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -849,5 +856,5 @@ return array(
     'mslogo99' => 'Logo MailScanner',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
-
+    'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',
 );

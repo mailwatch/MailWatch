@@ -30,7 +30,7 @@
  */
 
 /* languages/de.php */
-/* v0.3.10 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
@@ -179,9 +179,15 @@ return array(
     'auditlogupdatepassword03' => 'Die Länge des Passwort-Feldes wurde von %s auf 191 aktualisiert',
     'auditlogupdateuser03' => 'Passwort für Benutzer aktualisiert',
     'verifyperm03' => 'Bitte überprüfen Sie die Leseberechtigung für',
-    '1minute03' => '1 Min.:',
-    '5minutes03' => '5 Min.:',
-    '15minutes03' => '15 Min.:',
+    'count03' => 'Anzahl',
+    '1minute03' => '1 Minute:',
+    '5minutes03' => '5 Minuten:',
+    '15minutes03' => '15 Minuten:',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'Kein Spam',
+    'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
+    'children03' => 'children',
+    'procs03' => 'Prozess(e)',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -221,9 +227,9 @@ return array(
     'type04' => 'Typ',
     'path04' => 'Pfad',
     'dang04' => 'Gefährlich',
-    'altrecip04' => 'Alternative(r) Empfänger',
+    'altrecip04' => 'Alternative(r) Empfänger:',
     'submit04' => 'Bestätigen',
-    'actions04' => 'Aktion(en)',
+    'actions04' => 'Aktion(en):',
     'quarcmdres04' => 'Ergebnisse des Quarantänebefehls',
     'resultmsg04' => 'Detailierte Ergebnisse',
     'id04' => 'ID:',
@@ -241,6 +247,8 @@ return array(
     'spamrevoke04' => 'Als Ham+Revoke',
     'geoipfailed04' => '(GeoIP Lookup fehlgeschlagen)',
     'reversefailed04' => '(Reverse Lookup fehlgeschlagen)',
+    'privatenetwork04' => '(Privates Netzwerk)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Hostname',
     'yes04' => 'J',
     'no04' => 'N',
@@ -276,10 +284,10 @@ return array(
 
     // 07-lists.php
     'addwlbl07' => 'Zu Weisser/Schwarzer Liste hinzufügen',
-    'from07' => 'Von',
-    'to07' => 'An',
-    'list07' => 'Liste',
-    'action07' => 'Aktion',
+    'from07' => 'Von:',
+    'to07' => 'An:',
+    'list07' => 'Liste:',
+    'action07' => 'Aktion:',
     'wl07' => 'Weisse Liste',
     'bl07' => 'Schwarze Liste',
     'reset07' => 'Zurücksetzen',
@@ -307,7 +315,7 @@ return array(
     'tosetdate09' => 'Für das Datum muss das Format JJJJ-mm-tt verwendet werden',
     'oldrecord09' => 'Ältester Eintrag:',
     'newrecord09' => 'Neuester Eintrag:',
-    'messagecount09' => 'Nachricthen Anzahl:',
+    'messagecount09' => 'Nachrichten Anzahl:',
     'stats09' => 'Statistiken (Gefiltert)',
     'add09' => 'Hinzufügen',
     'load09' => 'Laden',
@@ -439,6 +447,17 @@ return array(
     'auditlogto12' => 'nach',
     'auditlog0412' => 'Benutzer %s gelöscht',
     'auditlog0512' => 'Benutzer [%s] hat sein eigenes Konto aktualisiert',
+    'erroreditnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer ohne Domäne zu bearbeiten',
+    'erroreditdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer der Domäne %s zu bearbeiten',
+    'errortonodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um die Domäne von Benutzern zu entfernen',
+    'errortodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer in die Domäne %s zu verschieben',
+    'errortypesetforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Administrator-Rechte zuzuweisen',
+    'errordeletenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne zu löschen',
+    'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
+    'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
+    'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
+    'retypepassword12' => 'Passwort bestätigen:',
+    'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -552,6 +571,8 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail-Queue-Anzeige',
     'diemq24' => 'Keine Queue angegeben',
+    'inq24' => 'Eingehende E-Mail-Queue',
+    'outq24' => 'Ausgehende E-Mail-Queue',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'McAfee Status',
@@ -598,13 +619,13 @@ return array(
     // 33-rep_audit_log.php
     'auditlog33' => 'Kontrollbericht',
     'datetime33' => 'Datum/Zeit',
-    'user33' => 'Benutzer',
-    'ipaddress33' => 'IP-Adresse',
-    'action33' => 'Aktion',
+    'user33' => 'Benutzer:',
+    'ipaddress33' => 'IP-Adresse:',
+    'action33' => 'Aktion:',
     'filter33' => 'Filter',
     'applyfilter33' => 'anwenden',
-    'startdate33' => 'Startzeit',
-    'enddate33' => 'Endzeit',
+    'startdate33' => 'Startzeit:',
+    'enddate33' => 'Endzeit:',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
@@ -652,66 +673,50 @@ return array(
     'messages39' => 'Nachricht',
     'viruses39' => 'Viren',
     'spam39' => 'Spam',
-    'volume39' => 'Volumen',
+    'volume39' => 'Größe',
     'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
     'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
-    'toprecipdomqt40' => 'Top Empfänger Domänen by Quantity',
-    'top10recipdomqt40' => 'Top 10 Empfänger Domänen by Volume',
+    'toprecipdomqt40' => 'Top Empfänger Domänen nach Anzahl',
+    'top10recipdomqt40' => 'Top 10 Empfänger Domänen nach Anzahl',
     'domain40' => 'Domäne',
-    'count40' => 'Anzahl',
-    'size40' => 'Größe',
-
+  
     // 41-rep_top_recipient_domains_by_volume.php
-    'toprecipdomvol41' => 'Top Empfänger Domänen nach Volume',
-   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Volume',
+    'toprecipdomvol41' => 'Top Empfänger Domänen nach Größe',
+   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
     'domain41' => 'Domäne',
-    'count41' => 'Anzahl',
-    'size41' => 'Größe',
-
+  
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Empfänger nach Anzahl',
     'top10recipqt42' => 'Top 10 Empfänger nach Anzahl',
     'email42' => 'E-Mail-Adresse',
-    'count42' => 'Anzahl',
-    'size42' => 'Größe',
-
+  
     // 43-rep_top_recipients_by_volume.php
-    'toprecipvol43' => 'Top Empfänger nach Volumen',
-    'top10recipvol43' => 'Top 10 Empfänger nach Volumen',
+    'toprecipvol43' => 'Top Empfänger nach Größe',
+    'top10recipvol43' => 'Top 10 Empfänger nach Größe',
     'email43' => 'E-Mail-Adresse',
-    'count43' => 'Anzahl',
-    'size43' => 'Größe',
-
+  
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
     'domain44' => 'Domäne',
-    'count44' => 'Anzahl',
-    'size44' => 'Größe',
 
     // 45-rep_top_sender_domains_by_volume.php
-    'topsenderdomvol45' => 'Top Absender-Domänen nach Volumen',
-    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Volumen',
+    'topsenderdomvol45' => 'Top Absender-Domänen nach Größe',
+    'top10senderdomvol45' => 'Top 10 Absender-Domänen nach Größe',
     'domain45' => 'Domäne',
-    'count45' => 'Anzahl',
-    'size45' => 'Größe',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Absender nach Anzahl',
     'top10sendersqt46' => 'Top 10 Absender nach Anzahl',
     'email46' => 'E-Mail-Adresse',
-    'count46' => 'Anzahl',
-    'size46' => 'Größe',
-
+  
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top Absender nach Volumen',
-    'top10sendersvol47' => 'Top 10 Absender nach Volumen',
+    'topsendersvol47' => 'Top Absender nach Größe',
+    'top10sendersvol47' => 'Top 10 Absender nach Größe',
     'email47' => 'E-Mail-Adresse',
-    'count47' => 'Anzahl',
-    'size47' => 'Größe',
-
+  
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viren',
     'top10virus48' => 'Top 10 Viren',
@@ -772,7 +777,7 @@ return array(
     'diefnf55' => 'Datei nicht gefunden:',
     'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',
 
     // 57-quarantine_action.php
@@ -794,17 +799,19 @@ return array(
     'error58' => 'Error:',
     'errornfd58' => 'Error: Datei nicht gefunden',
     'part58' => 'Abschnitt',
+    'title58' => 'Anzeige von Quarantäne-E-Mails',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Nachricht nicht gefunden. Möglicherweise haben Sie die Nachricht bereits freigegeben oder der Link ist abgelaufen.',
     'msgnotfound259' => 'Bitte kontaktieren Sie Ihren Mail-Administrator und teilen Sie ihm diese Nachrichten-ID mit: ',
-    'msgnotfound393' => 'wenn diese Nachricht freigegeben werden soll.',
+    'msgnotfound359' => 'wenn diese Nachricht freigegeben werden soll.',
     'msgreleased59' => 'Nachricht freigegeben<br>Möglicherweise dauert es wenige Minuten, bis diese in Ihrem Posteingang eintrifft.',
     'tokenmismatch59' => 'Fehler beim freigeben der Nachricht - Token stimmen nicht überein',
     'notallowed59' => 'Sie haben keine Berechtigung zum Zugriff auf diese Seite!',
     'dberror59' => 'Etwas ist schief gegangen - Kontaktieren Sie den Administrator',
     'arview059' => 'Anzeigen',
     'arrelease59' => 'Freigeben',
+    'title59' => 'Quarantine Release',
 
      // 60-rpcserver.php
     'paratype160' => 'Parameter-Typ',
@@ -837,7 +844,7 @@ return array(
 
     // 62-quarantine_maint.php
     'message62' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
-    'errors07' => 'Fehler:',
+    'errors62' => 'Fehler:',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
@@ -849,5 +856,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
-
+    'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die conf.php mit conf.php.example',
 );

@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 
 /*
@@ -30,42 +29,45 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change the following to reflect the location of functions.php
-require '/var/www/html/mailscanner/functions.php';
-
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
-    die('The variable RECORD_DAYS_TO_KEEP is empty, please set a value in conf.php.');
-} elseif (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
-    die('The variable AUDIT_DAYS_TO_KEEP is empty, please set a value in conf.php.');
-} else {
-    // Cleaning the maillog table
-    dbquery('DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
-    // Cleaning the mta_log and optionally the mta_log_id table
-    $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
-    $tablecheck = dbquery($sqlcheck);
-    $mta = get_conf_var('mta');
-    $optimize_mtalog_id = '';
-    if ($mta === 'postfix' && $tablecheck->num_rows > 0) {
-        //version for postfix with mtalog_ids enabled
-        dbquery(
-            'DELETE i.*, m.* FROM mtalog AS m
-             LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id
-             WHERE m.timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)'
-        );
-        $optimize_mtalog_id = ', mtalog_ids';
-    } else {
-        dbquery('DELETE FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
+// Set-up environment
+set_time_limit(0);
+
+function doit($input)
+{
+    global $fp;
+    if (!$fp = popen($input, 'r')) {
+        die(__('diepipe54'));
     }
 
-    // Clean the audit log
-    dbquery('DELETE FROM audit_log WHERE timestamp < (NOW() - INTERVAL ' . AUDIT_DAYS_TO_KEEP . ' DAY)');
+    $lines = 1;
+    while ($line = fgets($fp, 2096)) {
+        if (preg_match('/^.*MailScanner.*: Requeue: (\S+\.\S+) to (\S+)\s$/', $line, $explode)) {
+            $smtpd_id = $explode[1];
+            $smtp_id = $explode[2];
+            dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+        }
+        $lines++;
+    }
+    pclose($fp);
+}
 
-    // Optimize all of tables
-    dbquery('OPTIMIZE TABLE maillog, mtalog, audit_log' . $optimize_mtalog_id);
+if ($_SERVER['argv'][1] === '--refresh') {
+    doit('cat ' . MS_LOG);
+} else {
+    // Refresh first
+    doit('cat ' . MS_LOG);
+    // Start watching the maillog
+    doit('tail -F -n0 ' . MS_LOG);
 }

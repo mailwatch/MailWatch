@@ -45,7 +45,7 @@ $filename = CACHE_DIR . '/top_sender_by_volume.png.' . time();
 
 $sql = "
  SELECT
-  SUBSTRING_INDEX(from_address, '@', -1) AS from_domain,
+  SUBSTRING_INDEX(from_address, '@', -1) AS name,
   COUNT(*) as count,
   SUM(size) as size
  FROM
@@ -62,79 +62,25 @@ $sql = "
  LIMIT 10
 ';
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
-
-    // JPGraph
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_pie.php';
-    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
-
-    $result = dbquery($sql);
-    if (!$result->num_rows > 0) {
-        die(__('diemysql99') . "\n");
-    }
-
-    while ($row = $result->fetch_object()) {
-        $data[] = $row->count;
-        $data_names[] = $row->from_domain;
-        $data_size[] = round($row->size);
-    }
-
-    $graph = new PieGraph(800, 385, 0, false);
-    $graph->SetShadow();
-    $graph->img->SetAntiAliasing();
-    $graph->title->Set(__('top10senderdomvol45'));
-
-    $p1 = new PiePlot3d($data);
-    $p1->SetTheme('sand');
-    $p1->SetLegends($data_names);
-
-    $p1->SetCenter(0.70, 0.4);
-    $graph->legend->SetLayout(LEGEND_VERT);
-    $graph->legend->Pos(0.25, 0.20, 'center');
-
-    $graph->Add($p1);
-    $graph->Stroke($filename);
-}
-
-// HTML code to display the graph
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo '<TR>';
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo '</TR>';
-echo '<TR>';
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
-} else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo '</TR>';
-echo '<TR>';
-echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"500\">";
-echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo '<TH>' . __('domain45') . '</TH>';
-echo '<TH>' . __('count45') . '</TH>';
-echo '<TH>' . __('size45') . '</TH>';
-echo '</TR>';
-
-for ($i = 0, $count_data = count($data); $i < $count_data; $i++) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">
- <TD>$data_names[$i]</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
- <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i]) . "</TD>
-</TR>\n";
-}
-
-echo '
-  </TABLE>
- </TD>
-</TR>
-</TABLE>';
+$columnTitles = [
+    __('domain45'),
+    __('count03'),
+    __('size03')
+];
+$sqlColumns = [
+    'name',
+    'count',
+    'size'
+];
+$valueConversion = [
+    'size' => 'scale',
+    'count' => 'number'
+];
+$graphColumns = [
+    'labelColumn' => 'name',
+    'dataColumn' => 'size'
+];
+printGraphTable($filename, $sql, __('top10senderdomvol45'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

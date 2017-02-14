@@ -1,8 +1,12 @@
+----------------------------------
 INSTALLATION INSTRUCTIONS
--------------------------
+----------------------------------
 
-- edit `mailwatch` file to match web server user (www-data, apache or other) and esecutable path
-- copy edited `mailwatch` file in /etc/sudoers.d/
-- set permission to 0440 (`chmod 440 /etc/sudoers.d/mailwatch`)
+- Edit `mailwatch` file to match web server user (www-data, apache or other) 
+  and change executable path if needed.
+  
+- Copy edited `mailwatch` file in /etc/sudoers.d/
 
-This instruction should work in Debian 6 and 7, Ubuntu 12.04 and newer, RHEL 5 and 6 and CentOS 5 and 6
+- Set permission to 0440 (`chmod 440 /etc/sudoers.d/mailwatch`)
+
+This instruction should work in Debian 6 and 7, Ubuntu 12.04 and newer, RHEL 5 and 6 and CentOS 5 and 6.
