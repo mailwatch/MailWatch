@@ -86,8 +86,7 @@ if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM') || !USE_FONT_FOR_PASSWORD_IN_FORM)
     }
 }
 
-// Fix for jpGraph in debian
->>>>>>> origin/password
+// Fix for jpGraph with Debian
 if (!function_exists('imageantialias')) {
     function imageantialias($image, $enabled)
     {
