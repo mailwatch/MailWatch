@@ -186,6 +186,8 @@ return array(
     'saspam03' => 'spam',
     'sanotspam03' => 'not spam',
     'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
+    'children03' => 'children',
+    'procs03' => 'proc(s)',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
@@ -564,6 +566,8 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
     'diemq24' => 'No queue specified',
+    'inq24' => 'Inbound Mail Queue',
+    'outq24' => 'Outbound Mail Queue',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'McAfee Status',
@@ -670,7 +674,7 @@ return array(
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
-    'top10recipdomqt40' => 'Top 10 Recipients Domains by Volume',
+    'top10recipdomqt40' => 'Top 10 Recipients Domains by Quantity',
     'domain40' => 'Domain',
   
     // 41-rep_top_recipient_domains_by_volume.php
@@ -795,13 +799,14 @@ return array(
     // 59-auto-release.php
     'msgnotfound159' => 'Message not found.  You may have already released this message or the link may have expired.',
     'msgnotfound259' => 'Please contact your Mail Administrator and provide him with this message ID: ',
-    'msgnotfound393' => 'if you need this message released',
+    'msgnotfound359' => 'if you need this message released',
     'msgreleased59' => 'Message released<br>It may take a few minutes to appear in your Inbox.',
     'tokenmismatch59' => 'Error releasing message - token mismatch',
     'notallowed59' => 'You are not allowed to be here!',
     'dberror59' => 'Something went wrong - please contact support',
     'arview059' => 'View',
     'arrelease59' => 'Release',
+    'title59' => 'Quarantine Release',
 
      // 60-rpcserver.php
     'paratype160' => 'Parameter type',

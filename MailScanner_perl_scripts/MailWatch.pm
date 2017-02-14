@@ -1,20 +1,34 @@
 #
 # MailWatch for MailScanner
-# Copyright (C) 2003  Steve Freegard (smf@f2s.com)
+# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+#   Custom Module MailWatch
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#   Version 1.5
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#
+# In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+# those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+# that use the same license as those files), and distribute linked combinations including the two.
+# You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+# PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+# your version of the program, but you are not obligated to do so.
+# If you do not wish to do so, delete this exception statement from your version.
+#
+# As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+# as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+# JpGraph.
+#
+# You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
 package MailScanner::CustomConfig;
@@ -28,8 +42,13 @@ use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
+use vars qw($VERSION);
+
+### The package version, both in 1.23 style *and* usable by MakeMaker:
+$VERSION = substr q$Revision: 1.5 $, 10;
+
 # Trace settings - uncomment this to debug
-# DBI->trace(2,'/root/dbitrace.log');
+# DBI->trace(2,'/tmp/dbitrace.log');
 
 my ($dbh);
 my ($sth);
@@ -37,7 +56,7 @@ my ($hostname) = hostname;
 my $loop = inet_aton("127.0.0.1");
 my $server_port = 11553;
 my $timeout = 3600;
-
+my ($SQLversion);
 
 # Modify this as necessary for your configuration
 my ($db_name) = 'mailscanner';
@@ -66,6 +85,19 @@ sub InitMailWatchLogging {
     }
 }
 
+sub CheckSQLVersion {
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        $db_user, $db_pass,
+        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+    );
+    if (!$dbh) {
+        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+    }
+    $SQLversion = $dbh->{mysql_serverversion};
+    $dbh->disconnect;
+    return $SQLversion
+}
+
 sub InitConnection {
     # Set up TCP/IP socket.  We will start one server per MailScanner
     # child, but only one child will actually be able to get the socket.
@@ -79,12 +111,24 @@ sub InitConnection {
     listen(SERVER, SOMAXCONN) or exit;
 
     # Our reason for existence - the persistent connection to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-    );
-    if (!$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+    if (CheckSQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8mb4');
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8');
     }
 
     $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
@@ -94,7 +138,6 @@ sub InitConnection {
 sub ExitLogging {
     # Server exit - commit changes, close socket, and exit gracefully.
     close(SERVER);
-    #$dbh->commit or die $dbh->errstr;
     $dbh->disconnect;
     exit;
 }
@@ -335,3 +378,4 @@ sub MailWatchLogging {
 }
 
 1;
+

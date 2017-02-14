@@ -186,6 +186,8 @@ return array(
     'saspam03' => 'Spam',
     'sanotspam03' => 'N\'est pas un Spam',
     'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
+    'children03' => 'proc. fils',
+    'procs03' => 'processus',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -564,6 +566,8 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
     'diemq24' => 'Aucune file d\'attente définie',
+    'inq24' => 'File d\'attente de messages entrants',
+    'outq24' => 'File d\'attente de courrier sortant',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'Statut McAfee',
@@ -802,6 +806,7 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
+    'title59' => 'Quarantine Release',
 
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',

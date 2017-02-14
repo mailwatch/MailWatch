@@ -44,9 +44,6 @@ function simple_html_start()
 <head>
 <title>' . __('mailwatchtitle57') . '</title>
 <link rel="shortcut icon" href="images/favicon.png">
-<style type="text/css">
-
-</style>
 <body>';
 }
 
