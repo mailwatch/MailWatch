@@ -3946,7 +3946,6 @@ function checkConfVariables()
         'MS_EXECUTABLE_PATH',
         'MS_LIB_DIR',
         'MS_LOG',
-        'MS_LOGO',
         'MS_SHARE_DIR',
         'MSRE',
         'MSRE_RELOAD_INTERVAL',

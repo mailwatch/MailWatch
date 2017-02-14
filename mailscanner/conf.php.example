@@ -102,9 +102,6 @@ define('TEMP_DIR', '/tmp/');
 // Define MailWatch logo name
 define('MW_LOGO', 'mailwatch-logo.png');
 
-// Define MailScanner logo name
-define('MS_LOGO', 'mailscannerlogo.gif');
-
 // Log file location
 define('MS_LOG', '/var/log/mail.log');
 define('MAIL_LOG', '/var/log/mail.log');
