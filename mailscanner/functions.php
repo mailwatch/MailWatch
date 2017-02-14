@@ -1274,6 +1274,9 @@ function formatSize($size, $precision = 2)
     if (null === $size) {
         return 'n/a';
     }
+    if ($size === '0') {
+        return '0';
+    }
     $base = log($size) / log(1024);
     $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
 
