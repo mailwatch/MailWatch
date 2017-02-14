@@ -4002,6 +4002,7 @@ function checkConfVariables()
         'STATUS_REFRESH',
         'STRIP_HTML',
         'SUBJECT_MAXLEN',
+        'USE_FONT_FOR_PASSWORD_IN_FORM',
         'TEMP_DIR',
         'TIME_FORMAT',
         'TIME_ZONE',
