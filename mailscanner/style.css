@@ -621,3 +621,9 @@ div.table > .caption > input {
 .reportTable > tbody > tr > td:first-child {
     text-align: left;
 }
+
+td.message {
+    background-color: #F7CE4A;
+    font-size: 10pt;
+    text-align: center;
+}
