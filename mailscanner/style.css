@@ -621,3 +621,8 @@ div.table > .caption > input {
 .reportTable > tbody > tr > td:first-child {
     text-align: left;
 }
+
+.reportTable > tbody > tr > td:last-child {
+    text-align: right;
+}
+
