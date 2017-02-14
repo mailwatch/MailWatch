@@ -173,7 +173,7 @@ else
     elif [ $response == 1 ]; then
         #Apache
         logprint "Installing apache"
-        if [ $PM == "yum" ];
+        if [ $PM == "yum" ]; then
             $PM install httpd
             Webuser="apache"
         else
@@ -184,7 +184,7 @@ else
     elif [ $response == 2 ]; then
         #Nginx
         logprint "Installing nginx"
-        if [ $PM == "yum" ];
+        if [ $PM == "yum" ]; then
             $PM install nginx
             Webuser="nginx"
         else
