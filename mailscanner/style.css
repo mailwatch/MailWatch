@@ -506,12 +506,6 @@ input.password {
    width: 143px;
 }
 
-td.message {
-    background-color: #F7CE4A;
-    font-size: 10pt;
-    text-align: center;
-}
-
 div.table input {
     width: 100%;
     box-sizing: border-box;
