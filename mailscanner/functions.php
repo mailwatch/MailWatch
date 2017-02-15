@@ -3848,7 +3848,7 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
         $graph = new PieGraph(800, 385, 0, false);
         $graph->SetShadow();
         $graph->img->SetAntiAliasing();
-        $graph->title->SetFont(FF_DV_SANSSERIF,FS_BOLD,14);
+        $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
         $graph->title->Set($reportTitle);
 
         $plotData = $data[$graphColumn['dataColumn']];
