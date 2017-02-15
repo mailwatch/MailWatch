@@ -3848,6 +3848,7 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
         $graph = new PieGraph(800, 385, 0, false);
         $graph->SetShadow();
         $graph->img->SetAntiAliasing();
+        $graph->title->SetFont(FF_DV_SANSSERIF,FS_BOLD,14);
         $graph->title->Set($reportTitle);
 
         $plotData = $data[$graphColumn['dataColumn']];
@@ -3856,9 +3857,9 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
         $p1->SetTheme('sand');
         $p1->SetLegends($legendData);
 
-        $p1->SetCenter(0.70, 0.4);
+        $p1->SetCenter(0.67, 0.45);
         $graph->legend->SetLayout(LEGEND_VERT);
-        $graph->legend->Pos(0.25, 0.20, 'center');
+        $graph->legend->Pos(0.20, 0.25, 'center');
 
         $graph->Add($p1);
         $graph->Stroke($filename);
