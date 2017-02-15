@@ -465,7 +465,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
             // Audit
             audit_log(sprintf(__('auditlog0512'), $username));
-            echo '<h1 style="text-align: center; color: green;">Update Completed</h1>';
+            echo '<h1 style="text-align: center; color: green;">' . __('savedsettings12')  . '</h1>';
             echo '<META HTTP-EQUIV="refresh" CONTENT="3;user_manager.php">';
         }
     }
