@@ -93,6 +93,7 @@ if (is_writable(CACHE_DIR)) {
     $graph->SetShadow();
     $graph->SetScale('textlin');
     $graph->img->SetMargin(60, 60, 30, 70);
+    $graph->title->SetFont(FF_DV_SANSSERIF,FS_BOLD,14);
     $graph->title->Set(__('sascoredist38'));
     $graph->xaxis->title->Set(__('scorerounded38'));
     $graph->xaxis->SetTextLabelInterval($labelinterval);
