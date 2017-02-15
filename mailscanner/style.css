@@ -621,3 +621,9 @@ div.table > .caption > input {
 .reportTable > tbody > tr > td:first-child {
     text-align: left;
 }
+
+td.titleReport {
+    font-size: 12pt;
+    font-weight: bold;
+    text-align: center;
+}
