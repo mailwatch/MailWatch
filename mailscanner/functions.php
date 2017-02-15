@@ -3846,10 +3846,10 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
         include_once './lib/jpgraph/src/jpgraph_pie3d.php';
 
         $graph = new PieGraph(700, 385, 0, false);
-        $graph->img->SetMargin(40,30,20,40);
+        $graph->img->SetMargin(40, 30, 20, 40);
         $graph->SetShadow();
         $graph->img->SetAntiAliasing();
-        $graph->title->SetFont(FF_DV_SANSSERIF,FS_BOLD,14);
+        $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
         $graph->title->Set($reportTitle);
 
         $plotData = $data[$graphColumn['dataColumn']];
