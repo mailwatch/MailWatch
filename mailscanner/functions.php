@@ -3848,9 +3848,11 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
         include_once './lib/jpgraph/src/jpgraph_pie.php';
         include_once './lib/jpgraph/src/jpgraph_pie3d.php';
 
-        $graph = new PieGraph(800, 385, 0, false);
+        $graph = new PieGraph(730, 385, 0, false);
+        $graph->img->SetMargin(40, 30, 20, 40);
         $graph->SetShadow();
         $graph->img->SetAntiAliasing();
+        $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
         $graph->title->Set($reportTitle);
 
         $plotData = $data[$graphColumn['dataColumn']];
@@ -3859,9 +3861,9 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
         $p1->SetTheme('sand');
         $p1->SetLegends($legendData);
 
-        $p1->SetCenter(0.70, 0.4);
+        $p1->SetCenter(0.7, 0.5);
         $graph->legend->SetLayout(LEGEND_VERT);
-        $graph->legend->Pos(0.25, 0.20, 'center');
+        $graph->legend->Pos(0.0, 0.25, 'left');
 
         $graph->Add($p1);
         $graph->Stroke($filename);
