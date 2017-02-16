@@ -154,13 +154,13 @@ body {
 .pwdresetButton button:hover {
     background-color: #deb531;
 }
+
 .pwdresetButton a {
     color: #000;
     font-size: 14px;
     text-decoration: none;
     font-family: Arial, Helvetica, sans-serif;
 }
-
 
 /* mail table */
 table.mail TH, table.boxtable TH, table.maildetail TH {
