@@ -828,9 +828,10 @@ function dbclose()
 
 /**
  * @param string $sql
- * @return mysqli_result|bool
+ * @param bool $printError
+ * @return mysqli_result
  */
-function dbquery($sql)
+function dbquery($sql, $printError = true)
 {
     $link = dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
@@ -853,7 +854,14 @@ function dbquery($sql)
         }
     }
 
-    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>" . __('sql03') . "</B><BR><PRE>$sql</PRE>");
+    $result = $link->query($sql);
+
+    if (true === $printError && false === $result) {
+        // stop on query error
+        $message = '<strong>Invalid query</strong>: ' . database::$link->errno . ': ' . database::$link->error . "<br>\n";
+        $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
+        die($message);
+    }
 
     return $result;
 }
