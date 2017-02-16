@@ -650,6 +650,8 @@ div.table > .caption > input {
 td.titleReport {
     font-size: 12pt;
     font-weight: bold;
+    text-align: center;
+}
 
 .reportTable > tbody > tr > td:last-child {
     text-align: right;

@@ -97,6 +97,8 @@ if (is_writable(CACHE_DIR)) {
     // Graphing code
     $graph = new PieGraph(850, 385, 0, false);
     $graph->SetShadow();
+    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
+    $graph->img->SetMargin(40, 30, 20, 40);
     $graph->img->SetAntiAliasing();
     $graph->title->Set(__('top10virus48'));
 
