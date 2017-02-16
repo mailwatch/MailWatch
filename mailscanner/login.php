@@ -49,6 +49,7 @@ require_once __DIR__ . '/functions.php';
     <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
     </div>
     <h1><?php echo __('mwlogin01'); ?></h1>
+    <div class="inner-container">
     <?php if (file_exists('conf.php')) {
     ?>
         <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
@@ -81,7 +82,16 @@ require_once __DIR__ . '/functions.php';
             </fieldset>
         </form>
         <?php
+        if (defined('PWD_RESET') && PWD_RESET === true) {
+            ?>
+            <div class="pwdresetButton">
+                <a href="password_reset.php?stage=1">
+                    <button class="pwdresetButton"><?php echo __('forgottenpwd01'); ?></button>
+                </a>
+            </div>
+            <?php
 
+        }
 } else {
     ?>
         <p class="error">
@@ -92,6 +102,6 @@ require_once __DIR__ . '/functions.php';
 }
     ?>
 </div>
-
+</div>
 </body>
 </html>

@@ -42,6 +42,7 @@ return array(
     'emptypassword01' => 'Password cannot be empty',
     'errorund01' => 'An undefined error occurred',
     'login01' => 'Login',
+    'forgottenpwd01' => 'Forgotten Password?',
 
     // 03-funtions.php
     'jumpmessage03' => 'Ga naar e-mail:',
@@ -841,6 +842,31 @@ return array(
     // 62-quarantine_maint.php
     'message62' => 'The variable %s is empty, please set a value in conf.php.',
     'errors62' => 'Error:',
+
+    // 63-password_reset.php
+    'conferror63' => 'Error - Password Reset is not enabled in conf.php',
+    'usernotfound63' => 'User Not Found',
+    'errordb63' => 'Database Error',
+    'title63' => 'Password Reset',
+    'passwdresetrequest63' => 'Password Reset Request',
+    'p1email63' => 'A password reset request has been received for %s <br>If you did not make this request, please contact your system administrator immediately.<p>To reset you password, please click the link below<br>',
+    'button63' => 'Reset Password',
+    '01emailplaintxt63' => 'Password Reset Request\nA password reset request has been received for %s \nIf you did not make this request, please contact your system administrator immediately.\nTo reset your password, please copy and paste the link below into your browser:\n',
+    '01emailsuccess63' => 'Your password reset request has been successful.  Please check your email inbox for the next step',
+    'resetnotallowed63' => 'Password reset not allowed',
+    'errorpwdchange63' => 'Error changing password',
+    'pwdresetsuccess63' => 'Password Reset Successful',
+    '03pwdresetemail63' => 'Your password for your account %s has been updated.<br />If you did not make this request, please contact your system administrator immediately.',
+    '04pwdresetemail63' => 'Your password has been reset\nYour password for your account %s has been updated.\nIf you did not make this request, please contact your system administrator immediately.',
+    'pwdresetidmismatch63' => 'UID mismatch - something went wrong',
+    'pwdmismatch63' => 'Passwords do not match',
+    'emailaddress63' => 'Email Address',
+    '01pwd63' => 'Enter Password',
+    '02pwd63' => 'Repeat Password',
+    'requestpwdreset63' => 'Request Password Reset',
+    'resetexpired63' => 'Reset link has expired - please request a new password reset',
+    'brokenlink63' => 'Reset link is missing paramaters - try again or contact support',
+    'pwdresetldap63' => 'Password reset function cannot be used with LDAP',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
