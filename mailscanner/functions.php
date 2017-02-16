@@ -3940,6 +3940,10 @@ function checkConfVariables()
         'MAIL_LOG',
         'MAILQ',
         'MAILWATCH_HOME',
+        'MAILWATCH_MAIL_HOST',
+        'MAILWATCH_MAIL_PORT',
+        'MAILWATCH_FROM_ADDR',
+        'MAILWATCH_HOSTURL',
         'MAX_RESULTS',
         'MEMORY_LIMIT',
         'MS_CONFIG_DIR',
@@ -3958,13 +3962,9 @@ function checkConfVariables()
         'PROXY_TYPE',
         'PROXY_USER',
         'QUARANTINE_DAYS_TO_KEEP',
-        'QUARANTINE_FROM_ADDR',
-        'QUARANTINE_MAIL_HOST',
-        'QUARANTINE_MAIL_PORT',
         'QUARANTINE_MSG_BODY',
         'QUARANTINE_REPORT_DAYS',
         'QUARANTINE_REPORT_FROM_NAME',
-        'QUARANTINE_REPORT_HOSTURL',
         'QUARANTINE_REPORT_SUBJECT',
         'QUARANTINE_SENDMAIL_PATH',
         'QUARANTINE_SUBJECT',
@@ -3995,7 +3995,12 @@ function checkConfVariables()
         'VIRUS_INFO',
     );
 
-    $obsolete = array();
+    $obsolete = array(
+        'QUARANTINE_MAIL_HOST',
+        'QUARANTINE_MAIL_PORT',
+        'QUARANTINE_FROM_ADDR',
+        'QUARANTINE_REPORT_HOSTURL',
+    );
 
     /*
     // TODO: implement optional lists

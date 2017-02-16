@@ -651,6 +651,11 @@ div.table > .caption > input {
     text-align: right;
 }
 
+td.message {
+    background-color: #F7CE4A;
+    font-size: 10pt;
+}
+
 /*Password-reset*/
 .pwdreset body {
     color: #000;
