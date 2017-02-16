@@ -459,6 +459,7 @@ return array(
     'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
+    'savedsettings12' => 'Einstellungen gespeichert',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
