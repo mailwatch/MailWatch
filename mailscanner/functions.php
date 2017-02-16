@@ -3994,7 +3994,9 @@ function checkConfVariables()
         'VIRUS_INFO',
     );
 
-    $obsolete = array();
+    $obsolete = array(
+        'MS_LOGO',
+    );
 
     /*
     // TODO: implement optional lists
@@ -4002,7 +4004,6 @@ function checkConfVariables()
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
-
     );
     */
 
