@@ -64,11 +64,6 @@ if (
 
 $sql = "SELECT * FROM users WHERE username='$myusername'";
 $result = dbquery($sql);
-if (!$result) {
-    $message = 'Invalid query: ' . database::$link->errno . __('colon99') . ' ' . database::$link->error . "\n";
-    $message .= 'Whole query: ' . $sql;
-    die($message);
-}
 
 // mysql_num_row is counting table row
 $usercount = $result->num_rows;
@@ -102,12 +97,6 @@ if ($usercount === 0) {
 
     $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
     $result_userfilter = dbquery($sql_userfilter);
-
-    if (!$result_userfilter) {
-        $message = 'Invalid query: ' . database::$link->errno . __('colon99') . ' ' . database::$link->error . "\n";
-        $message .= 'Whole query: ' . $sql_userfilter;
-        die($message);
-    }
 
     $filter[] = $myusername;
     while ($row = $result_userfilter->fetch_array()) {

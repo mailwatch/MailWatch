@@ -37,7 +37,7 @@ if (file_exists('conf.php')) {
         $mid = safe_value($_GET['mid']);
         $token = safe_value($_GET['r']);
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
-        $result = dbquery($sql);
+        $result = dbquery($sql, false);
         if (!$result) {
             dbg('Error fetching from database' . database::$link->error);
             $output[] = __('dberror59');
@@ -66,7 +66,7 @@ if (file_exists('conf.php')) {
                 //cleanup
                 $releaseID = $row['id'];
                 $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
-                $result = dbquery($query);
+                $result = dbquery($query, false);
                 if (!$result) {
                     dbg('ERROR cleaning up database... ' . database::$link->error);
                 }

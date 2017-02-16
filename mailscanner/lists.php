@@ -100,11 +100,6 @@ switch ($_SESSION['user_type']) {
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result1 = dbquery($sql1);
 
-        if (!$result1) {
-            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-            $message .= 'Whole query: ' . $sql1;
-            die($message);
-        }
         $filter = array();
         while ($row = $result1->fetch_assoc()) {
             $filter[] = $row['filter'];
@@ -132,11 +127,6 @@ switch ($_SESSION['user_type']) {
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result1 = dbquery($sql1);
 
-        if (!$result1) {
-            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-            $message .= 'Whole query: ' . $sql1;
-            die($message);
-        }
         while ($row = $result1->fetch_assoc()) {
             $to_domain_filter[] = $row['filter'];
         }
