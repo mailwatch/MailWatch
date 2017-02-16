@@ -257,6 +257,25 @@ if ($link) {
     // Table whitelist
     echo pad(' - Fix schema for username field in `whitelist` table');
     $sql = "ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT";
+
+    // Update users table schema for password-reset feature
+    echo pad(' - Updating users table for password-reset feature');
+    if (check_column_exists('users', 'resetid') === false) {
+        $sql = 'ALTER TABLE `users` ADD COLUMN (
+            `resetid` varchar(32),
+            `resetexpire` bigint(20),
+            `lastreset` bigint(20)
+            );';
+        executeQuery($sql);
+    } else {
+        echo 'ALREADY DONE' . PHP_EOL;
+    }
+
+    // Revert back some tables to the right values due to previous errors in upgrade.php
+
+    // Table audit_log
+    echo pad(' - Fix schema for username field in `audit_log` table');
+    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
     // Table users

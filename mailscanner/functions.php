@@ -3197,7 +3197,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             $crlf = "\r\n";
-            $hdrs = array('From' => QUARANTINE_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
+            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
             $mime = new Mail_mime($crlf);
             $mime->setTXTBody(QUARANTINE_MSG_BODY);
             // Loop through each selected file and attach them to the mail
@@ -3210,7 +3210,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                 }
             }
-            $mail_param = array('host' => QUARANTINE_MAIL_HOST);
+            $mail_param = array('host' => MAILWATCH_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
             $mail = new Mail;
@@ -3231,7 +3231,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         } else {
             // Use sendmail to release message
             // We can only release message/rfc822 files in this way.
-            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . QUARANTINE_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
             foreach ($num as $key => $val) {
                 if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                     debug($cmd . $list[$val]['path']);
@@ -3834,7 +3834,7 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
             );
         }
     }
- 
+
     echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
 
     // Check permissions to see if apache can actually create the file
@@ -4028,4 +4028,52 @@ function checkConfVariables()
     $results['obsolete']['list'] = $obsoleteStillPresent;
 
     return $results;
+}
+
+/**
+ * @param $count
+ * @return string
+ */
+function get_random_string($count)
+{
+    $bytes = openssl_random_pseudo_bytes($count);
+    return bin2hex($bytes);
+}
+
+/**
+ * @param $email
+ * @param $html
+ * @param $text
+ * @param $subject
+ * @param bool $pwdreset
+ * @return mixed
+ */
+function send_email($email, $html, $text, $subject, $pwdreset = false)
+{
+    $mime = new Mail_mime("\n");
+    if ($pwdreset === true && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
+        $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
+    } else {
+        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
+    }
+    $hdrs = array(
+        'From' => $sender,
+        'To' => $email,
+        'Subject' => $subject,
+        'Date' => date("r")
+    );
+    $mime_params = array(
+        'text_encoding' => '7bit',
+        'text_charset' => 'UTF-8',
+        'html_charset' => 'UTF-8',
+        'head_charset' => 'UTF-8'
+    );
+    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->setTXTBody($text);
+    $mime->setHTMLBody($html);
+    $body = $mime->get($mime_params);
+    $hdrs = $mime->headers($hdrs);
+    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    $mail = new Mail_smtp($mail_param);
+    return $mail->send($email, $hdrs, $body);
 }

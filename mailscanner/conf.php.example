@@ -91,9 +91,9 @@ define('MS_CONFIG_DIR', '/etc/MailScanner/');
 define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // path for ConfigDefs.pl file
 define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // path for sophos-wrapper file
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
-define('IMAGES_DIR', './images/'); // trailing slash needed
-define('CACHE_DIR', './images/cache/'); // JpGraph cache
-define('TTF_DIR', './lib/jpgraph/src/fonts/'); // JpGraph fonts
+define('IMAGES_DIR', '/images/'); // trailing slash needed
+define('CACHE_DIR', '/images/cache/'); // JpGraph cache
+define('TTF_DIR', '/lib/jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR', '/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spamassassin.conf'); // spam.assassin.prefs.conf in V4, spamassassin.conf in V5
@@ -139,6 +139,12 @@ define('SHOW_DOC', false);
 // Show supplemental Postfix info in report, enable when using Postix_relay tool
 define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 
+/* Mailwatch Interface Settings */
+define('MAILWATCH_MAIL_HOST', '127.0.0.1');
+define('MAILWATCH_MAIL_PORT', '25');
+define('MAILWATCH_FROM_ADDR', 'postmaster');
+define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
+
 /* Quarantine settings */
 
 // The quarantine flag is available from MailScanner 4.43
@@ -147,9 +153,9 @@ define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 // the clean.quarantine script provided with MailScanner.
 define('QUARANTINE_USE_FLAG', true);
 define('QUARANTINE_DAYS_TO_KEEP', 30);
-define('QUARANTINE_MAIL_HOST', '127.0.0.1');
-define('QUARANTINE_MAIL_PORT', '25');
-define('QUARANTINE_FROM_ADDR', 'postmaster');
+#define('QUARANTINE_MAIL_HOST', '127.0.0.1');TODO:remove
+#define('QUARANTINE_MAIL_PORT', '25');TODO:remove
+#define('QUARANTINE_FROM_ADDR', 'postmaster');TODO:remove
 define('QUARANTINE_REPORT_FROM_NAME', 'MailWatch for MailScanner');
 define('QUARANTINE_REPORT_SUBJECT', 'Message Quarantine Report');
 define('QUARANTINE_SUBJECT', 'Message released from quarantine');
@@ -157,7 +163,7 @@ define('QUARANTINE_MSG_BODY', 'Please find the original message that was quarant
 
 Regards,
 Postmaster');
-define('QUARANTINE_REPORT_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
+#define('QUARANTINE_REPORT_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');TODO:remove
 define('QUARANTINE_REPORT_DAYS', 7);
 
 // set QUARANTINE_USE_SENDMAIL to true to send released email as original email using sendmail,
@@ -250,3 +256,10 @@ define('AUTO_RELEASE', false);
 // Give Domain Admins ability to release dangerous content, like viruses
 define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
 define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
+
+//Password Reset - Give users the ability to reset a forgotten password
+define('PWD_RESET', false);
+define('RESET_LINK_EXPIRE',1); //number of hours link is valid for
+//Set the following 2 variables (and uncomment) if you wish to define an alternative sender name & address for password resets - NOTE - both must be set, otherwise it will use the default settings
+#define('PWD_RESET_FROM_NAME', 'Some other name'); //set if you wish reset email sent from alternative name
+#define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); //set is you wish reset email sent from alternative address
