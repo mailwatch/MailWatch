@@ -3953,7 +3953,6 @@ function checkConfVariables()
         'MS_EXECUTABLE_PATH',
         'MS_LIB_DIR',
         'MS_LOG',
-        'MS_LOGO',
         'MS_SHARE_DIR',
         'MSRE',
         'MSRE_RELOAD_INTERVAL',
@@ -3999,6 +3998,7 @@ function checkConfVariables()
     );
 
     $obsolete = array(
+        'MS_LOGO',
         'QUARANTINE_MAIL_HOST',
         'QUARANTINE_MAIL_PORT',
         'QUARANTINE_FROM_ADDR',
@@ -4006,12 +4006,11 @@ function checkConfVariables()
     );
 
     /*
-    // TODO: implement optional lists
+    // TODO: Implement optional lists
     $optional = array(
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
-
     );
     */
 
