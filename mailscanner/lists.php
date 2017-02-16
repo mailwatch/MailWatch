@@ -106,7 +106,7 @@ switch ($_SESSION['user_type']) {
             die($message);
         }
         $filter = array();
-        while ($row = $result1->fetch_row()) {
+        while ($row = $result1->fetch_assoc()) {
             $filter[] = $row['filter'];
         }
         $user_filter = array();
@@ -137,7 +137,7 @@ switch ($_SESSION['user_type']) {
             $message .= 'Whole query: ' . $sql1;
             die($message);
         }
-        while ($row = $result1->fetch_row()) {
+        while ($row = $result1->fetch_assoc()) {
             $to_domain_filter[] = $row['filter'];
         }
         if (strpos($_SESSION['myusername'], '@')) {
@@ -333,7 +333,7 @@ switch ($url_list) {
         $b = 'CHECKED';
         break;
 }
-echo '   <input type="radio" value="w" name="list" ' . $w . '>'. __('wl07') . '&nbsp;&nbsp;' . "\n";
+echo '   <input type="radio" value="w" name="list" ' . $w . '>' . __('wl07') . '&nbsp;&nbsp;' . "\n";
 echo '   <input type="radio" value="b" name="list" ' . $b . '>' . __('bl07') . '' . "\n";
 
 echo '  </td>
