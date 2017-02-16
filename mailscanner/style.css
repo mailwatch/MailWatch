@@ -37,11 +37,12 @@ body {
 
 .inner-container {
     border: solid 2px #000;
-    border-radius: 15px;
     border-top: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    -webkit-border-radius: 0 0 15px 15px;
+    -moz-border-radius: 0 0 15px 15px;
+    border-radius: 0 0 15px 15px;
 }
+
 /*login*/
 
 .loginbody {
@@ -139,6 +140,7 @@ body {
     text-align: center;
     margin-bottom: 10px;
 }
+
 .pwdresetButton button {
     padding: 10px;
     background-color: #f7ce4a;
@@ -151,6 +153,7 @@ body {
     border-radius: 3px;
     border: 0;
 }
+
 .pwdresetButton button:hover {
     background-color: #deb531;
 }
@@ -436,7 +439,6 @@ p.center {
 }
 
 /* MSRE */
-
 table.mailwatch TH {
     font-size: 10pt;
     font-weight: bold;
@@ -520,9 +522,9 @@ td.dashgreybox {
 
 div.table input {
     width: 100%;
-    box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 div.table {
@@ -603,12 +605,12 @@ div.table > .caption > input {
     font-size: 28px;
     margin: 0;
     text-align: center;
-    border-top-left-radius: 15px;
-    -webkit-border-top-left: 15px;
+    -webkit-border-top-left-radius: 15px;
     -moz-border-radius-topleft: 15px;
-    border-top-right-radius: 15px;
-    -webkit-border-top-right: 15px;
+    border-top-left-radius: 15px;
+    -webkit-border-top-right-radius: 15px;
     -moz-border-radius-topright: 15px;
+    border-top-right-radius: 15px;
     padding: 20px
 }
 
@@ -681,9 +683,9 @@ td.message {
     font-size: 28px;
     margin: 0;
     text-align: center;
-    border-top-left-radius: 15px;
-    -webkit-border-top-left: 15px;
+    -webkit-border-top-left-radius: 15px;
     -moz-border-radius-topleft: 15px;
+    border-top-left-radius: 15px;
     padding: 20px
 }
 
