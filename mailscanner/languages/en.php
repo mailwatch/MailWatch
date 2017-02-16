@@ -459,6 +459,7 @@ return array(
     'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
     'retypepassword12' => 'Confirm Password:',
     'userexists12' => 'User already exists with username %s',
+    'savedsettings12' => 'Settings saved',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
