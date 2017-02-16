@@ -650,12 +650,16 @@ div.table > .caption > input {
 td.titleReport {
     font-size: 12pt;
     font-weight: bold;
+
+.reportTable > tbody > tr > td:last-child {
+    text-align: right;
 }
 
 td.message {
     background-color: #F7CE4A;
     font-size: 10pt;
-  
+}
+
 /*Password-reset*/
 .pwdreset body {
     color: #000;
@@ -678,20 +682,15 @@ td.message {
     border-top-left-radius: 15px;
     -webkit-border-top-left: 15px;
     -moz-border-radius-topleft: 15px;
-    border-top-right-radius: 15px;
-    -webkit-border-top-right: 15px;
-    -moz-border-radius-topright: 15px;
     padding: 20px
 }
 
 .pwdreset form {
     border-top: 0;
     background-color: #fff;
-
     -webkit-border-radius: 0 0 15px 15px;
     -moz-border-radius: 0 0 15px 15px;
     border-radius: 0 0 15px 15px;
-
 }
 
 .pwdreset fieldset {
@@ -716,7 +715,6 @@ td.message {
     padding: 10px;
     text-align: center;
     margin: 10px;
-
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
