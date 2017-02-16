@@ -122,9 +122,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             //first, check form hasn't been modified
             $sql = "SELECT resetid FROM users WHERE username = '$email'";
             $result = dbquery($sql);
-            if (!$result) {
-                die("Error: " . $link->error);
-            }
             $row = $result->fetch_array();
             if ($row['resetid'] === $_POST['uid']) {
                 require_once(MAILWATCH_HOME . '/lib/password.php');
@@ -132,9 +129,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $lastreset = time();
                 $sql = "UPDATE users SET password = '$password', resetid = '', resetexpire = '0', lastreset ='$lastreset' WHERE username ='$email'";
                 $result = dbquery($sql);
-                if (!$result) {
-                    die(__('errorpwdchange63'));
-                }
 
                 //now send email telling user password has been updated.
                 $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -192,9 +186,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $uid = $link->real_escape_string($_GET['uid']);
             $sql = "SELECT * FROM users WHERE username = '$email'";
             $result = dbquery($sql);
-            if (!$result) {
-                die(__('errordb63') . $link->error);
-            }
             if ($result->num_rows !== 1) {
                 echo __('usernotfound63');
             } else {
