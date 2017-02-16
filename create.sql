@@ -255,6 +255,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `highspamscore` tinyint(4) DEFAULT '0',
   `noscan` tinyint(1) DEFAULT '0',
   `quarantine_rcpt` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resetid` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `resetexpire` bigint(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lastreset` bigint(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
