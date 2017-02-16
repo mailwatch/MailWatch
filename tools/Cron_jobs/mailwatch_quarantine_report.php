@@ -366,7 +366,7 @@ function store_auto_release($qitem)
 {
     $id = $qitem['id'];
     $rand = $qitem['rand'];
-    $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')");
+    $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')", false);
     if (!$result) {
         dbg(' ==== Error generating auto_release....skipping...');
         return false;
@@ -383,7 +383,7 @@ function check_auto_release($qitem)
 {
     //function checks if message already has an autorelease entry
     $id = $qitem['id'];
-    $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'");
+    $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'", false);
     if (!$result) {
         dbg(' === Error checking if msg_id already exists.....skipping....');
     } else {
