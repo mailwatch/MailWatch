@@ -269,7 +269,7 @@ if ($link) {
 
     // Table whitelist
     echo pad(' - Fix schema for username field in `whitelist` table');
-    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT';
+    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT';
     executeQuery($sql);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
