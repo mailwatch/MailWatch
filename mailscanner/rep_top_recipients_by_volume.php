@@ -45,7 +45,7 @@ $filename = CACHE_DIR . '/top_recipients_by_volume.png.' . time();
 
 $sql = '
  SELECT
-  to_address as name,
+  REPLACE(to_address,",",",\n") as name,
   COUNT(*) as count,
   SUM(size) as size
  FROM
