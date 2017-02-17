@@ -231,7 +231,7 @@ if ($link) {
     }
 
     // Update users table schema for password-reset feature
-    echo pad(' - Add resetid, resetexpire and lastreset in `users` table');
+    echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
     if (check_column_exists('users', 'resetid') === false) {
         $sql = 'ALTER TABLE `users` ADD COLUMN (
             `resetid` varchar(32),
