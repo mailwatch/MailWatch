@@ -428,7 +428,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 }
                 // Else use mailq which is for Sendmail and Exim
             } elseif (MAILQ) {
-                // If Exim use dedicated command,else use database
+                // If Exim, use dedicated command, else use database
                if ($mta === 'exim') {
                    $inq = exec('sudo /usr/sbin/exim -bpc 2>&1');
                    $outq = exec('sudo /usr/sbin/exim -bpc -DOUTGOING 2>&1');
