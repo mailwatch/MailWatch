@@ -4091,7 +4091,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
         'html_charset' => 'UTF-8',
         'head_charset' => 'UTF-8'
     );
-    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_WEBDIR . MW_LOGO, 'image/png', MW_LOGO, true);
     $mime->setTXTBody($text);
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
