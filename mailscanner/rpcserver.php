@@ -198,7 +198,7 @@ function rpc_dump_mailscanner_conf()
         $line = rtrim(fgets($fh, 4096));
         if (preg_match('/^([^#].+) = ([^#].*)/', $line, $regs)) {
             # Strip trailing comments
-            $regs[2] = preg_replace("/#.*$/", '', $regs[2]);
+            $regs[2] = preg_replace('/#.*$/', '', $regs[2]);
             # store %var% variables
             if (preg_match('/%.+%/', $regs[1])) {
                 $var[$regs[1]] = $regs[2];

@@ -36,13 +36,13 @@ include __DIR__ . '/login.function.php';
 
 html_start(__('sophos53'), 0, false, false);
 
-echo "<TABLE CLASS=\"boxtable\" WIDTH=\"100%\">";
-echo '<TR>';
-echo "<TD ALIGN=\"CENTER\">";
+echo '<table class="boxtable" width="100%">';
+echo '<tr>';
+echo '<td align="center">';
 passthru(get_virus_conf('sophos') . ' -v | awk -f ' . __DIR__ . '/sophos.awk');
-echo '</TD>';
-echo '</TR>';
-echo '</TABLE>';
+echo '</td>';
+echo '</tr>';
+echo '</table>';
 
 // Add footer
 html_end();

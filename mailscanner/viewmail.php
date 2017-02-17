@@ -189,8 +189,8 @@ if (
 
 foreach ($mime_struct as $key => $part) {
     $type = $part->ctype_primary . '/' . $part->ctype_secondary;
-    echo " <tr>\n";
-    echo "  <td colspan=2 class=\"heading\">" . __('mymetype06') . " $type</td>\n";
+    echo ' <tr>' . "\n";
+    echo '  <td colspan=2 class="heading">' . __('mymetype06') . ' ' . $type . '</td>' . "\n";
 
     switch ($type) {
         case 'text/plain':
@@ -208,8 +208,8 @@ foreach ($mime_struct as $key => $part) {
         case 'multipart/alternative':
             break;
         default:
-            echo " <tr>\n";
-            echo "  <td colspan=2 class=\"detail\">";
+            echo ' <tr>' . "\n";
+            echo '  <td colspan=2 class="detail">';
             if (property_exists($part, 'd_parameters')) {
                 if (isset($part->d_parameters['filename'])) {
                     echo $part->d_parameters['filename'];
@@ -231,12 +231,12 @@ foreach ($mime_struct as $key => $part) {
             }
             echo '  </td>';
 
-            echo " </tr>\n";
+            echo ' </tr>' . "\n";
             break;
     }
 }
 
-echo "</table>\n";
+echo '</table>' . "\n";
 
 // Add footer
 html_end();

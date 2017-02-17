@@ -42,6 +42,7 @@ return array(
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
     'errorund01' => 'Une erreur inconnue c\'est produite',
     'login01' => 'Connexion',
+    'forgottenpwd01' => 'Mot de passe perdu ?',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
@@ -458,6 +459,7 @@ return array(
     'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
     'retypepassword12' => 'Confirmez le mot de passe :',
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
+    'savedsettings12' => 'Règlages enregistrés',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -589,7 +591,7 @@ return array(
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Impossible d\'ouvrir le conduit',
-    'message28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
+    'errormessage28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
     'auditlog28' => 'Exécution de MailScanner lint',
     'finish28' => 'Terminé - Durée Totale',
     'message28' => 'Message',
@@ -840,6 +842,32 @@ return array(
     // 62-quarantine_maint.php
     'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
     'errors62' => 'Erreur :',
+
+    // 63-password_reset.php
+    'conferror63' => 'Erreur : le système de remise à zéro du mot de passe n\'est pas activé dans le fichier conf.php.',
+    'usernotfound63' => 'Utilisateur non trouvé.',
+    'errordb63' => 'Erreur de base de données.',
+    'title63' => 'Réinitialiser le mot de passe.',
+    'passwdresetrequest63' => 'Demande de réinitialisation de mot de passe.',
+    'p1email63' => 'Une demande de réinitialisation de mot de passe a été reçu pour %s .<br>Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.<p>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous<br>',
+    'button63' => 'Réinitialiser le mot de passe',
+    '01emailplaintxt63' => 'Demande de réinitialisation de mot de passe\nUne demande de réinitialisation de mot de passe a été reçue pour %s \nSi vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement\nPour réinitialiser votre mot de passe, veuillez copier et coller le lien ci-dessous dans votre navigateur :\n',
+    '01emailsubject63' => 'Demande de réinitialisation de mot de passe.',
+    '01emailsuccess63' => 'Votre demande de réinitialisation de mot de passe a réussi. Veuillez consulter votre boîte de courriel pour la prochaine étape.',
+    'resetnotallowed63' => 'Réinitialisation de mot de passe non autorisée.',
+    'errorpwdchange63' => 'Erreur lors du changement du mot de passe.',
+    'pwdresetsuccess63' => 'Votre demande de réinitialisation de mot de passe a réussi.',
+    '03pwdresetemail63' => 'Le mot de passe de votre compte %s a été mis à jour.<br />Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.',
+    '04pwdresetemail63' => 'Votre mot de passe a été réinitialisé.\nLe mot de passe de votre compte %s a été mis à jour.\nSi vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.',
+    'pwdresetidmismatch63' => 'Incompatibilité UID - Quelque chose a mal tourné.',
+    'pwdmismatch63' => 'Les mots de passe ne correspondent pas.',
+    'emailaddress63' => 'Addresse E-Mail',
+    '01pwd63' => 'Entrer le mot de passe',
+    '02pwd63' => 'Saisir à nouveau le mot de passe',
+    'requestpwdreset63' => 'Demande de réinitialisation de mot de passe.',
+    'resetexpired63' => 'Le lien de réinitialisation a expiré - Veuillez faire une nouvelle demande de changement de mot de passe.',
+    'brokenlink63' => 'Le lien de réinitialisation manque des paramètres - Essayez de nouveau ou contactez le support.',
+    'pwdresetldap63' => 'La fonction de réinitialisation du mot de passe n\'est pas disponible avec LDAP.',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

@@ -56,7 +56,6 @@ require_once __DIR__ . '/database.php';
 
 // Set PHP path to use local PEAR modules only
 set_include_path(
-    get_include_path() . PATH_SEPARATOR .
     '.' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/xmlrpc'
@@ -72,12 +71,7 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 } else {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
-if (!function_exists('imageantialias')) {
-    function imageantialias($image, $enabled)
-    {
-        return true;
-    }
-}
+
 //security headers
 header('X-XSS-Protection: 1; mode=block');
 header('X-Frame-Options: SAMEORIGIN');
@@ -212,6 +206,13 @@ function mailwatch_version()
     return '1.2.0 - RC4';
 }
 
+if (!function_exists('imageantialias')) {
+    function imageantialias($image, $enabled)
+    {
+        return true;
+    }
+}
+
 /**
  * @param $number
  * @return string
@@ -252,7 +253,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
 
     echo page_creation_timer();
-    echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
+    echo '<!DOCTYPE HTML>' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
     echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
@@ -828,9 +829,10 @@ function dbclose()
 
 /**
  * @param string $sql
- * @return mysqli_result|bool
+ * @param bool $printError
+ * @return mysqli_result
  */
-function dbquery($sql)
+function dbquery($sql, $printError = true)
 {
     $link = dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
@@ -853,7 +855,14 @@ function dbquery($sql)
         }
     }
 
-    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>" . __('sql03') . "</B><BR><PRE>$sql</PRE>");
+    $result = $link->query($sql);
+
+    if (true === $printError && false === $result) {
+        // stop on query error
+        $message = '<strong>Invalid query</strong>: ' . database::$link->errno . ': ' . database::$link->error . "<br>\n";
+        $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
+        die($message);
+    }
 
     return $result;
 }
@@ -1273,6 +1282,9 @@ function formatSize($size, $precision = 2)
 {
     if (null === $size) {
         return 'n/a';
+    }
+    if ($size === '0') {
+        return '0';
     }
     $base = log($size) / log(1024);
     $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
@@ -3197,7 +3209,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             $crlf = "\r\n";
-            $hdrs = array('From' => QUARANTINE_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
+            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
             $mime = new Mail_mime($crlf);
             $mime->setTXTBody(QUARANTINE_MSG_BODY);
             // Loop through each selected file and attach them to the mail
@@ -3210,7 +3222,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                 }
             }
-            $mail_param = array('host' => QUARANTINE_MAIL_HOST);
+            $mail_param = array('host' => MAILWATCH_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
             $mail = new Mail;
@@ -3231,7 +3243,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         } else {
             // Use sendmail to release message
             // We can only release message/rfc822 files in this way.
-            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . QUARANTINE_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
             foreach ($num as $key => $val) {
                 if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                     debug($cmd . $list[$val]['path']);
@@ -3784,8 +3796,8 @@ function updateUserPasswordHash($user, $hash)
 }
 
 /**
- * @param $username username that should be checked if it exists
- * @return true if user exists, else false
+ * @param string $username username that should be checked if it exists
+ * @return boolean true if user exists, else false
  */
 function checkForExistingUser($username)
 {
@@ -3795,11 +3807,13 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param $sqlDataQuery sql query that will be used to get the data that should be displayed
- * @param $reportTitle title that will be displayed on top of the graph
- * @param $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
- * @param $columnTitles array that contains the titles of the table columns
- * @param $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
+ * @param string $filename name of the image file
+ * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
+ * @param string $reportTitle title that will be displayed on top of the graph
+ * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
+ * @param array $columnTitles array that contains the titles of the table columns
+ * @param $graphColumn
+ * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
 function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
 {
@@ -3834,20 +3848,22 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
             );
         }
     }
- 
+
     echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
 
     // Check permissions to see if apache can actually create the file
     if (is_writable(CACHE_DIR)) {
 
         // JPGraph
-        include_once './lib/jpgraph/src/jpgraph.php';
-        include_once './lib/jpgraph/src/jpgraph_pie.php';
-        include_once './lib/jpgraph/src/jpgraph_pie3d.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
 
-        $graph = new PieGraph(800, 385, 0, false);
+        $graph = new PieGraph(730, 385, 0, false);
+        $graph->img->SetMargin(40, 30, 20, 40);
         $graph->SetShadow();
         $graph->img->SetAntiAliasing();
+        $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
         $graph->title->Set($reportTitle);
 
         $plotData = $data[$graphColumn['dataColumn']];
@@ -3856,9 +3872,9 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
         $p1->SetTheme('sand');
         $p1->SetLegends($legendData);
 
-        $p1->SetCenter(0.70, 0.4);
+        $p1->SetCenter(0.7, 0.5);
         $graph->legend->SetLayout(LEGEND_VERT);
-        $graph->legend->Pos(0.25, 0.20, 'center');
+        $graph->legend->Pos(0.0, 0.25, 'left');
 
         $graph->Add($p1);
         $graph->Stroke($filename);
@@ -3899,6 +3915,9 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
     echo '</tr></table>';
 }
 
+/**
+ * @return array
+ */
 function checkConfVariables()
 {
     $needed = array(
@@ -3940,13 +3959,16 @@ function checkConfVariables()
         'MAIL_LOG',
         'MAILQ',
         'MAILWATCH_HOME',
+        'MAILWATCH_MAIL_HOST',
+        'MAILWATCH_MAIL_PORT',
+        'MAILWATCH_FROM_ADDR',
+        'MAILWATCH_HOSTURL',
         'MAX_RESULTS',
         'MEMORY_LIMIT',
         'MS_CONFIG_DIR',
         'MS_EXECUTABLE_PATH',
         'MS_LIB_DIR',
         'MS_LOG',
-        'MS_LOGO',
         'MS_SHARE_DIR',
         'MSRE',
         'MSRE_RELOAD_INTERVAL',
@@ -3958,13 +3980,9 @@ function checkConfVariables()
         'PROXY_TYPE',
         'PROXY_USER',
         'QUARANTINE_DAYS_TO_KEEP',
-        'QUARANTINE_FROM_ADDR',
-        'QUARANTINE_MAIL_HOST',
-        'QUARANTINE_MAIL_PORT',
         'QUARANTINE_MSG_BODY',
         'QUARANTINE_REPORT_DAYS',
         'QUARANTINE_REPORT_FROM_NAME',
-        'QUARANTINE_REPORT_HOSTURL',
         'QUARANTINE_REPORT_SUBJECT',
         'QUARANTINE_SENDMAIL_PATH',
         'QUARANTINE_SUBJECT',
@@ -3995,15 +4013,20 @@ function checkConfVariables()
         'VIRUS_INFO',
     );
 
-    $obsolete = array();
+    $obsolete = array(
+        'MS_LOGO',
+        'QUARANTINE_MAIL_HOST',
+        'QUARANTINE_MAIL_PORT',
+        'QUARANTINE_FROM_ADDR',
+        'QUARANTINE_REPORT_HOSTURL',
+    );
 
     /*
-    // TODO: implement optional lists
+    // TODO: Implement optional lists
     $optional = array(
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
-
     );
     */
 
@@ -4028,4 +4051,52 @@ function checkConfVariables()
     $results['obsolete']['list'] = $obsoleteStillPresent;
 
     return $results;
+}
+
+/**
+ * @param integer $count
+ * @return string
+ */
+function get_random_string($count)
+{
+    $bytes = openssl_random_pseudo_bytes($count);
+    return bin2hex($bytes);
+}
+
+/**
+ * @param string $email
+ * @param string $html
+ * @param string $text
+ * @param string $subject
+ * @param bool $pwdreset
+ * @return mixed
+ */
+function send_email($email, $html, $text, $subject, $pwdreset = false)
+{
+    $mime = new Mail_mime("\n");
+    if ($pwdreset === true && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
+        $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
+    } else {
+        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
+    }
+    $hdrs = array(
+        'From' => $sender,
+        'To' => $email,
+        'Subject' => $subject,
+        'Date' => date('r')
+    );
+    $mime_params = array(
+        'text_encoding' => '7bit',
+        'text_charset' => 'UTF-8',
+        'html_charset' => 'UTF-8',
+        'head_charset' => 'UTF-8'
+    );
+    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->setTXTBody($text);
+    $mime->setHTMLBody($html);
+    $body = $mime->get($mime_params);
+    $hdrs = $mime->headers($hdrs);
+    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    $mail = new Mail_smtp($mail_param);
+    return $mail->send($email, $hdrs, $body);
 }

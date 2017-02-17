@@ -65,9 +65,9 @@ LIMIT 10';
 if (is_writable(CACHE_DIR)) {
 
     // JpGraph functions
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_pie.php';
-    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
 
     $result = dbquery($sql);
     if (!$result->num_rows > 0) {
@@ -96,19 +96,19 @@ if (is_writable(CACHE_DIR)) {
     }
 
     $graph = new PieGraph(800, 385, 0, false);
+    $graph->img->SetMargin(40, 30, 20, 40);
     $graph->SetShadow();
+    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
     $graph->img->SetAntiAliasing();
     $graph->title->Set(__('top10mailrelays39'));
-    //$graph->legend->SetLayout(LEGEND_HOR);
-    $graph->legend->Pos(0.52, 0.87, 'center');
 
     $p1 = new PiePlot3d($data);
     $p1->SetTheme('sand');
     $p1->SetLegends($data_names);
 
-    $p1->SetCenter(0.70, 0.4);
+    $p1->SetCenter(0.7, 0.5);
     $graph->legend->SetLayout(LEGEND_VERT);
-    $graph->legend->Pos(0.25, 0.20, 'center');
+    $graph->legend->Pos(0.0, 0.25, 'left');
 
     $graph->Add($p1);
     $graph->Stroke($filename);
@@ -116,21 +116,21 @@ if (is_writable(CACHE_DIR)) {
 
 
 // HTML code to display the graph
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
 echo '<TR>';
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
 echo '</TR>';
 echo '<TR>';
-echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"850\">";
-echo "<TR BGCOLOR=\"#F7CE4A\">";
+echo '<TD ALIGN="CENTER">';
+echo '<TABLE WIDTH="850">';
+echo '<TR BGCOLOR="#F7CE4A">';
 echo '    <TH>' . __('hostname39') . '</TH>';
 echo '    <TH>' . __('ipaddresses39') . '</TH>';
 echo '    <TH>' . __('country39') . '</TH>';
@@ -140,15 +140,15 @@ echo '    <TH>' . __('spam39') . '</TH>';
 echo '    <TH>' . __('volume39') . '</TH>';
 echo '   </TR>';
 for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; $i++) {
-    echo "
-   <TR BGCOLOR=\"#EBEBEB\">
-    <TD>$data_names[$i]</TD>
-    <TD>$data_ip[$i]</TD>
-    <TD>$data_geoip[$i]</TD>
-    <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>\n
-    <TD ALIGN=\"RIGHT\">" . number_format($data_virus[$i]) . "</TD>\n
-    <TD ALIGN=\"RIGHT\">" . number_format($data_spam[$i]) . "</TD>\n
-    <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i]) . "</TD></TR>\n";
+    echo '
+   <TR BGCOLOR="#EBEBEB">
+    <TD>' . $data_names[$i] . '</TD>
+    <TD>' . $data_ip[$i] . '</TD>
+    <TD>' . $data_geoip[$i] . '</TD>
+    <TD ALIGN="RIGHT">' . number_format($data[$i]) . '</TD>' . "\n" .
+        '<TD ALIGN="RIGHT">' . number_format($data_virus[$i]) . '</TD>' . "\n" .
+        '<TD ALIGN="RIGHT">' . number_format($data_spam[$i]) . '</TD>' . "\n" .
+        '<TD ALIGN="RIGHT">' . formatSize($data_size[$i]) . '</TD></TR>' . "\n";
 }
 echo '
   </TABLE>
