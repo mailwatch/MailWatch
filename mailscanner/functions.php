@@ -72,12 +72,28 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 } else {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
+
+// Replace type="password" with a dot font to handle Autocompletion
+if (!defined('USE_FONT_FOR_PASSWORD_IN_FORM') || !USE_FONT_FOR_PASSWORD_IN_FORM) {
+    function fontDotPassword()
+    {
+        return "TYPE=\"password\"";
+    }
+} else {
+    function fontDotPassword()
+    {
+        return "class=\"password\" TYPE=\"text\"";
+    }
+}
+
+// Fix for jpGraph with Debian
 if (!function_exists('imageantialias')) {
     function imageantialias($image, $enabled)
     {
         return true;
     }
 }
+
 //security headers
 header('X-XSS-Protection: 1; mode=block');
 header('X-Frame-Options: SAMEORIGIN');
@@ -3998,6 +4014,7 @@ function checkConfVariables()
         'STATUS_REFRESH',
         'STRIP_HTML',
         'SUBJECT_MAXLEN',
+        'USE_FONT_FOR_PASSWORD_IN_FORM',
         'TEMP_DIR',
         'TIME_FORMAT',
         'TIME_ZONE',

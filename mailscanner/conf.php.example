@@ -254,9 +254,14 @@ define('AUTO_RELEASE', false);
 define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
 define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
 
-//Password Reset - Give users the ability to reset a forgotten password
+// Use dot font with field Password in form (usefull if your browser have trouble with Autocompletion feature as Safari OSX and Chrome)
+define('USE_FONT_FOR_PASSWORD_IN_FORM', false);
+
+// Password Reset - Give users the ability to reset a forgotten password
 define('PWD_RESET', false);
-define('RESET_LINK_EXPIRE',1); //number of hours link is valid for
-//Set the following 2 variables (and uncomment) if you wish to define an alternative sender name & address for password resets - NOTE - both must be set, otherwise it will use the default settings
-#define('PWD_RESET_FROM_NAME', 'Some other name'); //set if you wish reset email sent from alternative name
-#define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); //set is you wish reset email sent from alternative address
+define('RESET_LINK_EXPIRE',1);  // Number of hours link is valid for
+// Set the following 2 variables (and uncomment) if you wish to define an alternative sender name & address for password resets
+// NOTE - both must be set, otherwise it will use the default settings
+#define('PWD_RESET_FROM_NAME', 'Some other name');  // Set if you wish reset email sent from alternative name
+#define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com');  // Set is you wish reset email sent from alternative address
+

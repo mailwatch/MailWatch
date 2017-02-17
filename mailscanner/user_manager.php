@@ -102,8 +102,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo " <TR><TD CLASS=\"message\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('forallusers12') . "</TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('username0212') . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password\" NAME=\"password\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"retypepassword\" NAME=\"password1\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT " . fontDotPassword() . " ID=\"password\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                    echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT " . fontDotPassword() . " ID=\"retypepassword\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
                     echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
     <TD><SELECT NAME=\"type\">
          <OPTION VALUE=\"U\">" . __('user12') . "</OPTION>
@@ -212,15 +212,15 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"retypepassword\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
+                        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input ' . fontDotPassword() . ' id="password" name="password" value="xxxxxxxx"></td></tr>' . "\n";
+                        echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input ' . fontDotPassword() . ' id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>' . "\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
-		<TD><SELECT NAME=\"type\">
-			 <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
-			 <OPTION ' . $s['D'] . " VALUE=\"D\">" . __('domainadmin12') . '</OPTION>
-			 <OPTION ' . $s['U'] . " VALUE=\"U\">" . __('user12') . '</OPTION>
-			 <OPTION ' . $s['R'] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
-			</SELECT></TD></TR>\n";
+        <TD><SELECT NAME=\"type\">
+             <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
+             <OPTION ' . $s['D'] . " VALUE=\"D\">" . __('domainadmin12') . '</OPTION>
+             <OPTION ' . $s['U'] . " VALUE=\"U\">" . __('user12') . '</OPTION>
+             <OPTION ' . $s['R'] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
+            </SELECT></TD></TR>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
                         echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
@@ -389,7 +389,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
           highspamscore AS '" . safe_value(__('spamhscore12')) . "',
         CONCAT('<a href=\"?action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
         FROM
-          users " . $domainAdminUserDomainFilter . " 
+          users " . $domainAdminUserDomainFilter . "
         ORDER BY
           username";
     dbtable($sql, __('usermgnt12'));
@@ -418,10 +418,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>'."\n";
         if ($_SESSION['user_ldap'] !== true) {
-            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
-            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>'."\n";
+            echo " <tr><td class=\"heading\">" . __('password12') . "</td><td><input " . fontDotPassword() . " id=\"password\" name=\"password\" value=\"xxxxxxxx\"></td></tr>" . "\n";
+            echo " <tr><td class=\"heading\">" . __('retypepassword12') . "</td><td><input " . fontDotPassword() . " id=\"retypepassword\" name=\"password1\" value=\"xxxxxxxx\"></td></tr>" . "\n";
         }
-
         echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" '.$quarantine_report.'> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>'."\n";
         echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>'."\n";
         echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" '.$noscan.'> <span style="font-size:90%">' . __('scanforspam212') . '</span></td></tr>'."\n";
