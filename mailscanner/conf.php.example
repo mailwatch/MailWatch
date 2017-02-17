@@ -55,21 +55,21 @@ define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . '/'
 
 // LDAP settings for authentication
 define('USE_LDAP', false);
-define('LDAP_SSL', false); // set to true if using LDAP with SSL encryption
+define('LDAP_SSL', false); // Set to true if using LDAP with SSL encryption.
 define('LDAP_HOST', 'server.example.com');
 define('LDAP_PORT', '389');
 define('LDAP_PROTOCOL_VERSION', 3);
 define('LDAP_DN', 'DC=example,DC=com');
-define('LDAP_USER', 'LDAPProxy@example.com'); // if no email set: cn=admin,dc=example,dc=com
+define('LDAP_USER', 'LDAPProxy@example.com'); // If no email set: cn=admin,dc=example,dc=com
 define('LDAP_PASS', 'secret');
 define('LDAP_SITE', 'default');
-// can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
+// Can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword.
 define('LDAP_EMAIL_FIELD', 'proxyaddresses');
-// Microsoft Active Directory compatibility support for searches from Domain Base DN
+// Microsoft Active Directory compatibility support for searches from Domain Base DN.
 define('LDAP_MS_AD_COMPATIBILITY', false);
 
 // Set Time Zone
-// See http://php.net/manual/en/timezones.php for a list of usable timezones
+// See http://php.net/manual/en/timezones.php for a list of usable timezones.
 define('TIME_ZONE', 'America/New_York');
 // Date/Time settings
 define('DATE_FORMAT', '%d/%m/%y');
@@ -81,17 +81,17 @@ define('PROXY_SERVER', '127.0.0.1');
 define('PROXY_PORT', '8080');
 // Can be set to HTTP or SOCKS5
 define('PROXY_TYPE', 'HTTP');
-// If left blank no authenication will be used
+// If left blank no authenication will be used.
 define('PROXY_USER', '');
 define('PROXY_PASS', '');
 
 // Paths
 define('MAILWATCH_HOME', '/var/www/html/mailscanner');
 define('MS_CONFIG_DIR', '/etc/MailScanner/');
-define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // path for ConfigDefs.pl file
-define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // path for sophos-wrapper file
+define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // Path for ConfigDefs.pl file
+define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // Path for sophos-wrapper file
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
-define('IMAGES_DIR', './images/'); // trailing slash needed
+define('IMAGES_DIR', './images/'); // Trailing slash needed
 define('CACHE_DIR', './images/cache/'); // JpGraph cache
 define('TTF_DIR', './lib/jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR', '/usr/bin/');
@@ -106,14 +106,14 @@ define('MW_LOGO', 'mailwatch-logo.png');
 define('MS_LOG', '/var/log/mail.log');
 define('MAIL_LOG', '/var/log/mail.log');
 
-// Default number of results on Recent Messages and Message Listing Report
+// Default number of results on Recent Messages and Message Listing Report.
 define('MAX_RESULTS', 50);
-// Default refresh rate in seconds for the Recent Messages screen
+// Default refresh rate in seconds for the Recent Messages screen.
 define('STATUS_REFRESH', 30);
 
 // Display Client IP Address on message listing
 define('DISPLAY_IP', false);
-// Set to true if you want to DNS resolve the IP address displayed (will slow page load)
+// Set to true if you want to DNS resolve the IP address displayed (will slow page load).
 define('RESOLVE_IP_ON_DISPLAY', false);
 
 // Set the following to a value greater than zero to limit the length of the
@@ -121,19 +121,19 @@ define('RESOLVE_IP_ON_DISPLAY', false);
 define('FROMTO_MAXLEN', 50);
 define('SUBJECT_MAXLEN', 0);
 
-// Define how many days of emails to keep
+// Define how many days of emails to keep.
 define('RECORD_DAYS_TO_KEEP', 60);
 
-// Define how many days to audit logs to keep
+// Define how many days to audit logs to keep.
 define('AUDIT_DAYS_TO_KEEP', 60);
 
-// Show Software Version tab (only Admins can see it)
+// Show Software Version tab (only Admins can see it).
 define('SHOW_SFVERSION', true);
 
-// Show Documentation tab (deprecated feature, should always be false, use at your own risk)
+// Show Documentation tab (deprecated feature, should always be false, use at your own risk).
 define('SHOW_DOC', false);
 
-// Show supplemental Postfix info in report, enable when using Postix_relay tool
+// Show supplemental Postfix info in report, enable when using Postix_relay tool.
 define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 
 /* Mailwatch Interface Settings */
@@ -143,16 +143,12 @@ define('MAILWATCH_FROM_ADDR', 'postmaster');
 define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
 
 /* Quarantine settings */
-
-// The quarantine flag is available from MailScanner 4.43
-// it will drammatically improved the speed of quarantine operations
+// The quarantine flag is available from MailScanner 4.43.
+// It will drammatically improved the speed of quarantine operations
 // but requires that you use the quarantine_maint.php in place of
 // the clean.quarantine script provided with MailScanner.
 define('QUARANTINE_USE_FLAG', true);
 define('QUARANTINE_DAYS_TO_KEEP', 30);
-#define('QUARANTINE_MAIL_HOST', '127.0.0.1');TODO:remove
-#define('QUARANTINE_MAIL_PORT', '25');TODO:remove
-#define('QUARANTINE_FROM_ADDR', 'postmaster');TODO:remove
 define('QUARANTINE_REPORT_FROM_NAME', 'MailWatch for MailScanner');
 define('QUARANTINE_REPORT_SUBJECT', 'Message Quarantine Report');
 define('QUARANTINE_SUBJECT', 'Message released from quarantine');
@@ -160,13 +156,12 @@ define('QUARANTINE_MSG_BODY', 'Please find the original message that was quarant
 
 Regards,
 Postmaster');
-#define('QUARANTINE_REPORT_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');TODO:remove
 define('QUARANTINE_REPORT_DAYS', 7);
-
-// set QUARANTINE_USE_SENDMAIL to true to send released email as original email using sendmail,
-//                                false to send it as an attachment to a release message
+// Set QUARANTINE_USE_SENDMAIL to true to send released email as original email using sendmail,
+// false to send it as an attachment to a release message.
 define('QUARANTINE_USE_SENDMAIL', false);
 define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
+/* End Quarantine settings */
 
 // This turns virus names into links that can be used to get more information
 // about a given virus or virus alias.  Comment out or set to false to disable.
@@ -183,7 +178,7 @@ define('DISTRIBUTED_SETUP', false);
 
 // PHP memory limit when viewing details and attachments of messages
 // "128M" should be fine in most cases, but you may need to increase it if
-// you're having problems viewing the details of large messages
+// you're having problems viewing the details of large messages.
 define('MEMORY_LIMIT', '128M');
 
 // Relative path to RPC server
@@ -195,22 +190,22 @@ define('RPC_RELATIVE_PATH', '/mailscanner');
 // hostname of the machine and changing the last octet to '0' and specifying
 // it as a /24.  No connections are allowed by default.
 define('RPC_ALLOWED_CLIENTS', '');
-// RPC-only mode - used primarily for testing (you shouldn't need to enable this)
+// RPC-only mode - used primarily for testing (you shouldn't need to enable this).
 define('RPC_ONLY', false);
-// RPC port (defaults to 80 if not supplied)
+// RPC port (defaults to 80 if not supplied).
 // define('RPC_PORT', 80);
-// RPC over SSL?? (defaults to port 443 unless RPC_PORT is supplied
+// RPC over SSL? (defaults to port 443 unless RPC_PORT is supplied).
 // define('RPC_SSL', true);
 
-// Display the inbound/outbound mail queue lengths
-// Note: this only works with Exim and Sendmail
-// You must also run /usr/local/bin/mailwatch_sendmail_queue.php from cron.
+// Display the inbound/outbound mail queue lengths.
+// Note: this only works with Exim and Sendmail.
+// You must also run /usr/local/bin/mailwatch_sendmail_queue.php from CRON.
 define('MAILQ', true);
 
 // Do you want an audit trail?
 define('AUDIT', false);
 
-// Do you want the whitelist/blacklist functionality enabled??
+// Do you want the whitelist/blacklist functionality enabled?
 // You'll need to configure MailScanner to use it accordingly.
 define('LISTS', true);
 
@@ -218,26 +213,26 @@ define('LISTS', true);
 define('SSL_ONLY', false);
 
 // Strip HTML from messages in the quarantine when viewed?
-// This is probably a good idea...
+// This is probably a good idea.
 define('STRIP_HTML', true);
-// List of allowed tags - set as blank to strip everything
+// List of allowed tags - set as blank to strip everything.
 define('ALLOWED_TAGS', '<a><br><b><body><div><font><h1><h2><h3><h4><head><html><i><li><ol><p><small><span><strong><table><title><tr><td><th><u><ul>');
 
 // Override VIRUS_REGEX??
 // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/'); // SophosSAVI
 
 // Enable MailScanner Rule Editor
-// Initially disabled as other config needs to be done to use it
+// Initially disabled as other config needs to be done to use it.
 define('MSRE', false);
 define('MSRE_RELOAD_INTERVAL', 5);
 define('MSRE_RULESET_DIR', '/etc/MailScanner/rules');
 
-// Spamassassin sa-learn max message size (Spamassassin Version >= 3.4.0)
+// Spamassassin sa-learn max message size (Spamassassin Version >= 3.4.0).
 // Size is in bytes
 define('SA_MAXSIZE', 0);
 
-// Hide High Spam and high mcp from regular users
-// Prevent regular users from seeing high spam and high mcp
+// Hide High Spam and high mcp from regular users.
+// Prevent regular users from seeing high spam and high mcp.
 define('HIDE_HIGH_SPAM', false);
 
 // Hide Non Spam from quarantine reports
@@ -247,16 +242,21 @@ define('HIDE_NON_SPAM', false);
 define('HIDE_UNKNOWN', false);
 
 // Quarantine Auto Release
-//Set true to allow auto release of quarantined items from quarantine report - require autorelease db table
+// Set true to allow auto release of quarantined items from quarantine report.
 define('AUTO_RELEASE', false);
 
 // Give Domain Admins ability to release dangerous content, like viruses
 define('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS', false);
 define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
 
-//Password Reset - Give users the ability to reset a forgotten password
+/* Password Reset */
+// Give users the ability to reset a forgotten password.
 define('PWD_RESET', false);
-define('RESET_LINK_EXPIRE',1); //number of hours link is valid for
-//Set the following 2 variables (and uncomment) if you wish to define an alternative sender name & address for password resets - NOTE - both must be set, otherwise it will use the default settings
-#define('PWD_RESET_FROM_NAME', 'Some other name'); //set if you wish reset email sent from alternative name
-#define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); //set is you wish reset email sent from alternative address
+// Number of hours link is valid for.
+define('RESET_LINK_EXPIRE',1);
+// Set the following 2 variables (and uncomment) if you wish to define 
+// an alternative sender name and address for password resets.
+// NOTE: Both must be set, otherwise it will use the default settings.
+//define('PWD_RESET_FROM_NAME', 'Some other name'); // Set if you wish reset email sent from alternative name.
+//define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
+/* End Password Reset */
