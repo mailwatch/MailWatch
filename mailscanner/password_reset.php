@@ -131,7 +131,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $result = dbquery($sql);
 
                 //now send email telling user password has been updated.
-                $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+                $html = '<!DOCTYPE html>
 <html>
 <head>
  <title>' . __('pwdresetsuccess63') . '</title>

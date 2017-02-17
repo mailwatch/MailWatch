@@ -253,7 +253,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
 
     echo page_creation_timer();
-    echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
+    echo '<!DOCTYPE HTML>' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
     echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
