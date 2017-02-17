@@ -4027,6 +4027,8 @@ function checkConfVariables()
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
+        'LDAP_USERNAME_FIELD',
+        'LDAP_FILTER',
     );
     */
 
