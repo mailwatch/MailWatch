@@ -591,7 +591,7 @@ return array(
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Impossible d\'ouvrir le conduit',
-    'message28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
+    'errormessage28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
     'auditlog28' => 'Exécution de MailScanner lint',
     'finish28' => 'Terminé - Durée Totale',
     'message28' => 'Message',
