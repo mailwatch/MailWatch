@@ -94,34 +94,34 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             case 'new':
                 if (!isset($_GET['submit'])) {
                     echo '<div id="formerror" class="hidden"></div>';
-                    echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\" ONSUBMIT=\"return checkPasswords();\">\n";
-                    echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"new\">\n";
-                    echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
-                    echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-                    echo " <TR><TD CLASS=\"heading\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('newuser12') . "</TD></TR>\n";
-                    echo " <TR><TD CLASS=\"message\" COLSPAN=\"2\" ALIGN=\"CENTER\">" . __('forallusers12') . "</TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('username0212') . " <BR></TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password\" NAME=\"password\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"retypepassword\" NAME=\"password1\"></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
-    <TD><SELECT NAME=\"type\">
-         <OPTION VALUE=\"U\">" . __('user12') . "</OPTION>
-         <OPTION VALUE=\"D\">" . __('domainadmin12') . "</OPTION>
-         <OPTION VALUE=\"A\">" . __('admin12') . "</OPTION>
+                    echo '<FORM METHOD="GET" ACTION="user_manager.php" ONSUBMIT="return checkPasswords();">' . "\n";
+                    echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="new">' . "\n";
+                    echo '<INPUT TYPE="HIDDEN" NAME="submit" VALUE="true">' . "\n";
+                    echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
+                    echo ' <TR><TD CLASS="heading" COLSPAN="2" ALIGN="CENTER">' . __('newuser12') . '</TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="message" COLSPAN="2" ALIGN="CENTER">' . __('forallusers12') . '</TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('username0212') . ' <BR></TD><TD><INPUT TYPE="TEXT" NAME="username"></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('name12') . '</TD><TD><INPUT TYPE="TEXT" NAME="fullname"></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('password12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="password" NAME="password"></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('retypepassword12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="retypepassword" NAME="password1"></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('usertype12') . '</TD>
+    <TD><SELECT NAME="type">
+         <OPTION VALUE="U">' . __('user12') . '</OPTION>
+         <OPTION VALUE="D">' . __('domainadmin12') . '</OPTION>
+         <OPTION VALUE="A">' . __('admin12') . "</OPTION>
         </SELECT></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\"> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</td><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" CHECKED> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('pontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-                    echo " <TR><TD CLASS=\"heading\">" . __('hpontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"0\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-                    echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"". __('create12') . "\"></TD></TR>\n";
-                    echo "</TABLE></FORM><BR>\n";
+                    echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report"> <span style="font-size: 70%; ">' . __('senddaily12') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</td><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt"><br><span style="font-size: 70%; ">' . __('overrec12') . '</span></TD>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" CHECKED> <span style="font-size: 70%; ">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="0" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="0" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                    echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('create12') . '"></TD></TR>' . "\n";
+                    echo '</TABLE></FORM><BR>' . "\n";
                 } else {
                     $ar = explode('@', $_GET['username']);
-                    if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+                    if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
-                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12') . '<br>';
@@ -179,9 +179,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             case 'edit':
                 // if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
                 $ar = explode('@', $_GET['key']);
-                if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                     echo __('erroreditnodomainforbidden12') . '<br>';
-                } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
+                } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                     echo sprintf(__('erroreditdomainforbidden12'), $ar[1]) . '<br>';
                 } else {
                     if (!isset($_GET['submit'])) {
@@ -204,44 +204,44 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
                         $s[$row->type] = 'SELECTED';
                         echo '<div id="formerror" class="hidden"></div>';
-                        echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\" ONSUBMIT=\"return checkPasswords();\">\n";
-                        echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"edit\">\n";
-                        echo "<INPUT TYPE=\"HIDDEN\" NAME=\"key\" VALUE=\"" . $row->username . "\">\n";
-                        echo "<INPUT TYPE=\"HIDDEN\" NAME=\"submit\" VALUE=\"true\">\n";
-                        echo "<TABLE CLASS=\"mail\" BORDER=0 CELLPADDING=1 CELLSPACING=1>\n";
-                        echo " <TR><TD CLASS=\"heading\" COLSPAN=2 ALIGN=\"CENTER\">" . __('edituser12') . ' ' . $row->username . "</TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('username0212') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"username\" VALUE=\"" . $row->username . "\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('name12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fullname\" VALUE=\"" . $row->fullname . "\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('password12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"password\" NAME=\"password\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('retypepassword12') . "</TD><TD><INPUT TYPE=\"PASSWORD\" ID=\"retypepassword\" NAME=\"password1\" VALUE=\"XXXXXXXX\"></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('usertype12') . "</TD>
-		<TD><SELECT NAME=\"type\">
-			 <OPTION " . $s['A'] . " VALUE=\"A\">" . __('admin12') . '</OPTION>
-			 <OPTION ' . $s['D'] . " VALUE=\"D\">" . __('domainadmin12') . '</OPTION>
-			 <OPTION ' . $s['U'] . " VALUE=\"U\">" . __('user12') . '</OPTION>
-			 <OPTION ' . $s['R'] . " VALUE=\"R\">" . __('userregex12') . "</OPTION>
+                        echo '<FORM METHOD="GET" ACTION="user_manager.php" ONSUBMIT="return checkPasswords();">' . "\n";
+                        echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="edit">' . "\n";
+                        echo '<INPUT TYPE="HIDDEN" NAME="key" VALUE="' . $row->username . '">' . "\n";
+                        echo '<INPUT TYPE="HIDDEN" NAME="submit" VALUE="true">' . "\n";
+                        echo '<TABLE CLASS="mail" BORDER=0 CELLPADDING=1 CELLSPACING=1>' . "\n";
+                        echo ' <TR><TD CLASS="heading" COLSPAN=2 ALIGN="CENTER">' . __('edituser12') . ' ' . $row->username . '</TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('username0212') . '</TD><TD><INPUT TYPE="TEXT" NAME="username" VALUE="' . $row->username . '"></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('name12') . '</TD><TD><INPUT TYPE="TEXT" NAME="fullname" VALUE="' . $row->fullname . '"></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('password12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="password" NAME="password" VALUE="XXXXXXXX"></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('retypepassword12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="retypepassword" NAME="password1" VALUE="XXXXXXXX"></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('usertype12') . '</TD>
+		<TD><SELECT NAME="type">
+			 <OPTION ' . $s['A'] . ' VALUE="A">' . __('admin12') . '</OPTION>
+			 <OPTION ' . $s['D'] . ' VALUE="D">' . __('domainadmin12') . '</OPTION>
+			 <OPTION ' . $s['U'] . ' VALUE="U">' . __('user12') . '</OPTION>
+			 <OPTION ' . $s['R'] . ' VALUE="R">' . __('userregex12') . "</OPTION>
 			</SELECT></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('quarrep12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"quarantine_report\" $quarantine_report> <font size=-2>" . __('senddaily12') . "</font></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('quarreprec12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"quarantine_rcpt\" VALUE=\"" . $row->quarantine_rcpt . "\"><br><font size=\"-2\">" . __('overrec12') . "</font></TD>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('scanforspam12') . "</TD><TD><INPUT TYPE=\"CHECKBOX\" NAME=\"noscan\" $noscan> <font size=\"-2\">" . __('scanforspam212') . "</font></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('pontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"spamscore\" VALUE=\"" . $row->spamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-                        echo " <TR><TD CLASS=\"heading\">" . __('hpontspam12') . "</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"highspamscore\" VALUE=\"" . $row->highspamscore . "\" size=\"4\"> <font size=\"-2\">0=" . __('usedefault12') . "</font></TD></TR>\n";
-                        echo "<TR><TD CLASS=\"heading\">" . __('action_0212') . "</TD><TD><INPUT TYPE=\"RESET\" VALUE=\"" . __('reset12') . "\">&nbsp;&nbsp;<INPUT TYPE=\"SUBMIT\" VALUE=\"" . __('update12') . "\"></TD></TR>\n";
+                        echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span style="font-size: 70%; ">' . __('senddaily12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</TD><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt" VALUE="' . $row->quarantine_rcpt . '"><br><span style="font-size: 70%; ">' . __('overrec12') . '</span></TD>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span style="font-size: 70%; ">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $row->spamscore . '" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="' . $row->highspamscore . '" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                        echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('update12') . '"></TD></TR>' . "\n";
                         echo "</TABLE></FORM><BR>\n";
                         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
                         $result = dbquery($sql);
                     } else {
                         // Do update
                         $ar = explode('@', $_GET['username']);
-                        if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+                        if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                             echo __('errortonodomainforbidden12') . '<br>';
-                        } elseif ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
+                        } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                             echo sprintf(__('errortodomainforbidden12'), $ar[1]) . '<br>';
-                        } elseif ($_SESSION['user_type'] === 'D' && $_GET['type'] == 'A') {
+                        } elseif ($_SESSION['user_type'] === 'D' && $_GET['type'] === 'A') {
                             echo __('errortypesetforbidden12') . '<br>';
                         } elseif ($_GET['password'] !== $_GET['password1']) {
                             echo __('errorpass12') . '<br>';
-                        } elseif ($_GET['key'] != $_GET['username'] && checkForExistingUser($_GET['username'])) {
+                        } elseif ($_GET['key'] !== $_GET['username'] && checkForExistingUser($_GET['username'])) {
                             echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                         } else {
                             $do_pwd = false;
@@ -289,9 +289,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 break;
             case 'delete':
                 $ar = explode('@', $_GET['id']);
-                if ($_SESSION['user_type'] === 'D' && count($ar) == 1 && $_SESSION['domain'] != "") {
+                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                     echo __('errordeletenodomainforbidden12') . '<br>';
-                } elseif ($_SESSION['user_type'] === 'D' && count($ar) == 2 && $ar[1] != $_SESSION['domain']) {
+                } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                     echo sprintf(__('errordeletedomainforbidden12'), $ar[1]) . '<br>';
                 } elseif (isset($_GET['id'])) {
                     $id = sanitizeInput($_GET['id']);
@@ -336,21 +336,21 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
                 $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value($id) . "'";
                 $result = dbquery($sql);
-                echo "<FORM METHOD=\"GET\" ACTION=\"user_manager.php\">\n";
-                echo "<INPUT TYPE=\"HIDDEN\" NAME=\"id\" VALUE=\"" . $id . "\">\n";
-                echo "<INPUT TYPE=\"HIDDEN\" NAME=\"action\" VALUE=\"filters\">\n";
-                echo "<INPUT TYPE=\"hidden\" NAME=\"new\" VALUE=\"true\">\n";
-                echo "<TABLE CLASS=\"mail\" BORDER=\"0\" CELLPADDING=\"1\" CELLSPACING=\"1\">\n";
-                echo ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . $id . "</TH></TR>\n";
-                echo ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . "</TH></TR>\n";
+                echo '<FORM METHOD="GET" ACTION="user_manager.php">' . "\n";
+                echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $id . '">' . "\n";
+                echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
+                echo '<INPUT TYPE="hidden" NAME="new" VALUE="true">' . "\n";
+                echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
+                echo ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . $id . '</TH></TR>' . "\n";
+                echo ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . '</TH></TR>' . "\n";
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_object()) {
-                        echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD><TD>' . $row->actions . "</TD></TR>\n";
+                        echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD><TD>' . $row->actions . '</TD></TR>' . "\n";
                     }
                 }
-                echo " <TR><TD><INPUT TYPE=\"text\" NAME=\"filter\"></TD><TD><SELECT NAME=\"active\"><OPTION VALUE=\"Y\">" . __('yes12') . "<OPTION VALUE=\"N\">" . __('no12') . "</SELECT></TD><TD><INPUT TYPE=\"submit\" VALUE=\"" . __('add12') . "\"></TD></TR>\n";
-                echo "</TABLE><BR>\n";
-                echo "</FORM>\n";
+                echo ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . __('add12') . '"></TD></TR>' . "\n";
+                echo '</TABLE><BR>' . "\n";
+                echo '</FORM>' . "\n";
                 break;
         }
     }
@@ -360,7 +360,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
     $domainAdminUserDomainFilter = "";
     if ($_SESSION['user_type'] === 'D') {
-        if ($_SESSION['domain'] == '') { //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
+        if ($_SESSION['domain'] === '') {
+            //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%"';
         } else {
             $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
@@ -409,26 +410,25 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         }
         $s[$row->type] = 'selected';
         echo '<div id="formerror" class="hidden"></div>';
-        echo '<form method="post" action="user_manager.php" onsubmit="return checkPasswords();">'."\n";
-        echo '<input type="hidden" name="action" value="edit">'."\n";
-        echo '<input type="hidden" name="key" value="' . $row->username . '">'."\n";
-        echo '<input type="hidden" name="submit" value="true">'."\n";
-        echo '<table class="mail" border="0" cellpadding="1" cellspacing="1">'."\n";
-        echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>'."\n";
-        echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>'."\n";
-        echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>'."\n";
+        echo '<form method="post" action="user_manager.php" onsubmit="return checkPasswords();">' . "\n";
+        echo '<input type="hidden" name="action" value="edit">' . "\n";
+        echo '<input type="hidden" name="key" value="' . $row->username . '">' . "\n";
+        echo '<input type="hidden" name="submit" value="true">' . "\n";
+        echo '<table class="mail" border="0" cellpadding="1" cellspacing="1">' . "\n";
+        echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . "\n";
         if ($_SESSION['user_ldap'] !== true) {
-            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx"></td></tr>'."\n";
-            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>'."\n";
+            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx"></td></tr>' . "\n";
+            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>' . "\n";
         }
-
-        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" '.$quarantine_report.'> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>'."\n";
-        echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>'."\n";
-        echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" '.$noscan.'> <span style="font-size:90%">' . __('scanforspam212') . '</span></td></tr>'."\n";
-        echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>'."\n";
-        echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>'."\n";
-        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" value="' . __('update12') . '"></td></tr>'."\n";
-        echo '</table></form><br>'."\n";
+        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>' . "\n";
+        echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" ' . $noscan . '> <span style="font-size:90%">' . __('scanforspam212') . '</span></td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>' . "\n";
+        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" value="' . __('update12') . '"></td></tr>' . "\n";
+        echo '</table></form><br>' . "\n";
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
     } else {

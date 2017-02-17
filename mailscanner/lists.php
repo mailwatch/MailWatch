@@ -106,7 +106,7 @@ switch ($_SESSION['user_type']) {
         }
         $user_filter = array();
         foreach ($filter as $user_filter_check) {
-            if (preg_match("/^[^@]{1,64}@[^@]{1,255}$/", $user_filter_check)) {
+            if (preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $user_filter_check)) {
                 $user_filter[] = $user_filter_check;
             }
         }

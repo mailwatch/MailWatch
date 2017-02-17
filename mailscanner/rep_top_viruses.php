@@ -59,9 +59,9 @@ AND
 if (is_writable(CACHE_DIR)) {
 
     // JpGraph functions
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_pie.php';
-    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
 
     // Must be one or more rows
     $result = dbquery($sql);
@@ -120,7 +120,7 @@ if (is_writable(CACHE_DIR)) {
 }
 
 // HTML to display the graph
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
 echo '<TR>';
 
 //  Check Permissions to see if the file has been written and that apache to read it.
@@ -129,7 +129,7 @@ if ($graphok === true) {
     if (is_readable($filename)) {
         echo '<IMG SRC="' . $filename . '" ALT="Graph">';
     } else {
-        echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+        echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
     }
 } else {
     echo __('nodata48');
@@ -137,9 +137,9 @@ if ($graphok === true) {
 echo '</TD>';
 echo '</TR>';
 echo '<TR>';
-echo " <TD ALIGN=\"CENTER\">";
-echo "  <TABLE WIDTH=\"500\">";
-echo "   <TR style=\"background-color: #f7ce4a\">";
+echo ' <TD ALIGN="CENTER">';
+echo '  <TABLE WIDTH="500">';
+echo '   <TR style="background-color: #f7ce4a">';
 echo '    <TH>' . __('virus48') . '</TH>';
 echo '    <TH>' . __('count48') . '</TH>';
 echo '   </TR>';

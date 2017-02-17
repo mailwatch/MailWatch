@@ -60,7 +60,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         if ($dh = @opendir($queuedir)) {
             while (false !== ($file = readdir($dh))) {
                 if ($MTA === 'exim') {
-                    if (preg_match("/-H$/", $file)) {
+                    if (preg_match('/-H$/', $file)) {
                         // Get rid of the '-H' from the end of the filename to get the msgid
                         $msgid = substr($file, 0, strlen($file) - 2);
                         if ($fh = @fopen($queuedir . $file, 'rb')) {

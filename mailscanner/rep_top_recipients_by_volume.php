@@ -43,7 +43,7 @@ $filter = html_start(__('toprecipvol43'), 0, false, true);
 // File name
 $filename = CACHE_DIR . '/top_recipients_by_volume.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
   to_address as name,
   COUNT(*) as count,
@@ -51,10 +51,10 @@ $sql = "
  FROM
   maillog
  WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
+  from_address <> "" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  GROUP BY
   to_address
  ORDER BY

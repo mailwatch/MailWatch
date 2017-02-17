@@ -38,7 +38,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     html_start(__('saruldesupdate13'), 0, false, false);
-    echo "<table class=\"boxtable\" width=\"100%\">";
+    echo '<table class="boxtable" width="100%">';
     echo '<tr><th>' . __('updatesadesc13') . '</th></tr>';
     echo '<tr>';
     echo '  <td>';
@@ -51,17 +51,17 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '  <td align="center">
     <form method="post" action="sa_rules_update.php">
     <div style="margin: 5px">' . "\n";
-    echo "<input type=\"submit\" value=\"" . __('input13') . "\"><br><br>";
-    echo "<input type=\"hidden\" name=\"run\" value=\"true\">
+    echo '<input type="submit" value="' . __('input13') . '"><br><br>';
+    echo '<input type="hidden" name="run" value="true">
     </div>
     </form>
-    </td>";
+    </td>';
     echo '</tr>';
     echo "</table>\n";
 
     if (isset($_POST['run'])) {
-        echo "<table width=\"100%\">";
-        echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>" . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
+        echo '<table width="100%">';
+        echo '<tr><td align="center"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
         $fh = popen(
             "grep -hr '^\s*describe' " . SA_RULES_DIR . ' /usr/share/spamassassin /usr/local/share/spamassassin ' . SA_PREFS . ' /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq',
             'r'

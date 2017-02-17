@@ -103,7 +103,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $subject = __('passwdresetrequest63');
                 $isSent = send_email($email, $html, $text, $subject, true);
                 if ($isSent !== true) {
-                    die("Error Sending email: ".$isSent);
+                    die('Error Sending email: ' .$isSent);
                 } else {
                     $message = '<p>' . __('01emailsuccess63') . '</p>';
                     $showpage = true;
@@ -124,7 +124,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $result = dbquery($sql);
             $row = $result->fetch_array();
             if ($row['resetid'] === $_POST['uid']) {
-                require_once(MAILWATCH_HOME . '/lib/password.php');
+                require_once MAILWATCH_HOME . '/lib/password.php';
                 $password = $link->real_escape_string(password_hash($_POST['pwd1'], PASSWORD_DEFAULT));
                 $lastreset = time();
                 $sql = "UPDATE users SET password = '$password', resetid = '', resetexpire = '0', lastreset ='$lastreset' WHERE username ='$email'";
@@ -171,7 +171,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             }
         } else {
             $errors = '<p class="pwdreseterror">' . __('pwdmismatch63');
-            $fields = "stage2";
+            $fields = 'stage2';
             $showpage = true;
         }
     } elseif (isset($_GET['stage']) && $_GET['stage'] === '1') {
@@ -195,7 +195,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     if ($row['resetexpire'] < time()) {
                         echo __('resetexpired63') . '<a href="password_reset.php?stage=1">' . __('button63') . '</a>';
                     } else {
-                        $fields = "stage2";
+                        $fields = 'stage2';
                         $showpage = true;
                     }
                 } else {

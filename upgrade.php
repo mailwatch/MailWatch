@@ -241,7 +241,7 @@ if ($link) {
 
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
-    $sql = "ALTER TABLE `blacklist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT";
+    $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT';
     executeQuery($sql);
 
     // Table users
@@ -256,7 +256,7 @@ if ($link) {
 
     // Table whitelist
     echo pad(' - Fix schema for username field in `whitelist` table');
-    $sql = "ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT";
+    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT';
 
     // Update users table schema for password-reset feature
     echo pad(' - Updating users table for password-reset feature');

@@ -3796,8 +3796,8 @@ function updateUserPasswordHash($user, $hash)
 }
 
 /**
- * @param $username username that should be checked if it exists
- * @return true if user exists, else false
+ * @param string $username username that should be checked if it exists
+ * @return boolean true if user exists, else false
  */
 function checkForExistingUser($username)
 {
@@ -3807,11 +3807,13 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param $sqlDataQuery sql query that will be used to get the data that should be displayed
- * @param $reportTitle title that will be displayed on top of the graph
- * @param $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
- * @param $columnTitles array that contains the titles of the table columns
- * @param $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
+ * @param string $filename name of the image file
+ * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
+ * @param string $reportTitle title that will be displayed on top of the graph
+ * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
+ * @param array $columnTitles array that contains the titles of the table columns
+ * @param $graphColumn
+ * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
 function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
 {
@@ -3853,9 +3855,9 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
     if (is_writable(CACHE_DIR)) {
 
         // JPGraph
-        include_once './lib/jpgraph/src/jpgraph.php';
-        include_once './lib/jpgraph/src/jpgraph_pie.php';
-        include_once './lib/jpgraph/src/jpgraph_pie3d.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
 
         $graph = new PieGraph(730, 385, 0, false);
         $graph->img->SetMargin(40, 30, 20, 40);
@@ -3913,6 +3915,9 @@ function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $c
     echo '</tr></table>';
 }
 
+/**
+ * @return array
+ */
 function checkConfVariables()
 {
     $needed = array(
@@ -4049,7 +4054,7 @@ function checkConfVariables()
 }
 
 /**
- * @param $count
+ * @param integer $count
  * @return string
  */
 function get_random_string($count)
@@ -4059,10 +4064,10 @@ function get_random_string($count)
 }
 
 /**
- * @param $email
- * @param $html
- * @param $text
- * @param $subject
+ * @param string $email
+ * @param string $html
+ * @param string $text
+ * @param string $subject
  * @param bool $pwdreset
  * @return mixed
  */
@@ -4078,7 +4083,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
         'From' => $sender,
         'To' => $email,
         'Subject' => $subject,
-        'Date' => date("r")
+        'Date' => date('r')
     );
     $mime_params = array(
         'text_encoding' => '7bit',

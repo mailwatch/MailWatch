@@ -60,7 +60,6 @@ class SyslogParser
      */
     public function __construct($line)
     {
-
         // Parse the date, time, host, process pid and log entry
         if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
             // Store raw line
