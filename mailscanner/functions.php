@@ -56,7 +56,6 @@ require_once __DIR__ . '/database.php';
 
 // Set PHP path to use local PEAR modules only
 set_include_path(
-    get_include_path() . PATH_SEPARATOR .
     '.' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/xmlrpc'
