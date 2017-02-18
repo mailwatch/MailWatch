@@ -428,13 +428,17 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 }
                 // Else use mailq which is for Sendmail and Exim
             } elseif (MAILQ) {
-                // If Exim, use dedicated command, else use database
                if ($mta === 'exim') {
                    $inq = exec('sudo /usr/sbin/exim -bpc 2>&1');
                    $outq = exec('sudo /usr/sbin/exim -bpc -DOUTGOING 2>&1');
                } else {
-                   //$inq = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');  // To test and need to add a regex to catch result
-                   //$outq = exec('sudo /usr/sbin/sendmail -bp 2>&1');  // To test and need to add a regex to catch result
+                   // Not activated because this need to be tested.
+                   //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                   //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
+                   //$inq = $output_array[2];
+                   //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                   //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
+                   //$outq = $output_array[2];
                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
                }
@@ -443,7 +447,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
-            // drive display
+            // Drive display
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
