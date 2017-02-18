@@ -2662,11 +2662,12 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                if (LDAP_USERNAME_FIELD === 'cn') {
-                    // build DN for user, when LDAP server is not an AD
-                    $user = 'cn=' . $result[0]['cn'][0] . ',' . LDAP_DN;
-                } else {
-                    $user = $result[0][LDAP_USERNAME_FIELD][0];
+                $user = $result[0][LDAP_USERNAME_FIELD][0];
+                if (defined("LDAP_BIND_PREFIX")) {
+                    $user = LDAP_BIND_PREFIX . $user;
+                }
+                if (defined("LDAP_BIND_SUFFIX")) {
+                    $user .= LDAP_BIND_SUFFIX;
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
@@ -2675,7 +2676,7 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                $bindResult = @ldap_bind($ds, $userlogin, $password);
+                $bindResult = @ldap_bind($ds, $user, $password);
                 if (false !== $bindResult) {
                     foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
                         if (0 === strpos($email, 'SMTP')) {
@@ -4025,6 +4026,8 @@ function checkConfVariables()
         'RPC_SSL',
         'VIRUS_REGEX',
         'LDAP_USERNAME_FIELD',
+        'LDAP_BIND_PREFIX',
+        'LDAP_BIND_SUFFIX',
         'LDAP_FILTER',
     );
     */

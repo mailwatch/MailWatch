@@ -67,9 +67,11 @@ define('LDAP_FILTER',      'mail=%s'); //%s will be replaced by username eg. 'ma
 define('LDAP_PROTOCOL_VERSION', 3);
 // can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
 define('LDAP_EMAIL_FIELD', 'mail');
-// used to login to the ldap server to check the credentials. When it is 'cn' the username will be extended to "cn=%LDAP_RESULT_CN%,LDAP_DN"
-// (%LDAP_RESULT_CN% is the cn field of the user on the ldap server).
+// Ldap field that is used to bind to the ldap server to check the credentials. 
+// The value of the LDAP_USERNAME_FIELD will be extended by LDAP_BIND_PREFIX and LDAP_BIND_SUFFIX to created the binding username.
 define('LDAP_USERNAME_FIELD', 'cn');
+define('LDAP_BIND_PREFIX', 'cn=');
+define('LDAP_BIND_SUFFIX', ',' . LDAP_DN);
 // Microsoft Active Directory compatibility support for searches from Domain Base DN
 define('LDAP_MS_AD_COMPATIBILITY', true);
 
