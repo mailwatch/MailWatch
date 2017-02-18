@@ -3,5 +3,7 @@ User_Alias MAILSCANNER = www-data
 Cmnd_Alias MAILSCANLINT = /usr/sbin/MailScanner
 Cmnd_Alias SPAMASSASSINLINT = /usr/bin/spamassassin
 Cmnd_Alias EXIMQUEUE_IN = /usr/sbin/exim -bpc
-Cmnd_Alias EXIMQUEUE_OUT =/usr/sbin/exim -bpc -DOUTGOING
-MAILSCANNER ALL= NOPASSWD: MAILSCANLINT, SPAMASSASSINLINT, EXIMQUEUE_IN, EXIMQUEUE_OUT
+Cmnd_Alias EXIMQUEUE_OUT = /usr/sbin/exim -bpc -DOUTGOING
+Cmnd_Alias SENDMAILQUEUE_IN = /usr/sbin/sendmail -bp
+Cmnd_Alias SENDMAILQUEUE_OUT = /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in
+MAILSCANNER ALL= NOPASSWD: MAILSCANLINT, SPAMASSASSINLINT, EXIMQUEUE_IN, EXIMQUEUE_OUT, SENDMAILQUEUE_IN, SENDMAILQUEUE_OUT
