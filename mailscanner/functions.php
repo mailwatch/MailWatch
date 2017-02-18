@@ -433,8 +433,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                    $inq = exec('sudo /usr/sbin/exim -bpc 2>&1');
                    $outq = exec('sudo /usr/sbin/exim -bpc -DOUTGOING 2>&1');
                } else {
-                   //$inq = exec('sudo /usr/sbin/sendmail -bp 2>&1');  // To test and need to add a regex
-                   //$outq = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');  // To test and need to add a regex
+               	   //$inq = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');  // To test and need to add a regex to catch result
+                   //$outq = exec('sudo /usr/sbin/sendmail -bp 2>&1');  // To test and need to add a regex to catch result
                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
                }
