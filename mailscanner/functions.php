@@ -428,20 +428,20 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 }
                 // Else use mailq which is for Sendmail and Exim
             } elseif (MAILQ) {
-               if ($mta === 'exim') {
-                   $inq = exec('sudo /usr/sbin/exim -bpc 2>&1');
-                   $outq = exec('sudo /usr/sbin/exim -bpc -DOUTGOING 2>&1');
-               } else {
-                   // Not activated because this need to be tested.
-                   //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-                   //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
-                   //$inq = $output_array[2];
-                   //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-                   //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
-                   //$outq = $output_array[2];
-                   $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
-                   $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
-               }
+                if ($mta === 'exim') {
+                    $inq = exec('sudo /usr/sbin/exim -bpc 2>&1');
+                    $outq = exec('sudo /usr/sbin/exim -bpc -DOUTGOING 2>&1');
+                } else {
+                    // Not activated because this need to be tested.
+                    //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
+                    //$inq = $output_array[2];
+                    //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
+                    //$outq = $output_array[2];
+                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
+                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
+                }
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
