@@ -426,7 +426,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 } else {
                     echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
-                // Else use mailq which is for Sendmail and Exim
+                // Else use mailq which is for Sendmail or Exim
             } elseif (MAILQ) {
                 if ($mta === 'exim') {
                     $inq = exec('sudo /usr/sbin/exim -bpc 2>&1');
