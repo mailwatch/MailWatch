@@ -429,8 +429,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 // Else use MAILQ from conf.php which is for Sendmail or Exim
             } elseif (MAILQ) {
                 if ($mta === 'exim') {
-                    $inq = exec('sudo EXIM_QUEUE_IN 2>&1');
-                    $outq = exec('sudo EXIM_QUEUE_OUT 2>&1');
+                    $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
+                    $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
                 } else {
                     // Not activated because this need to be tested.
                     //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
