@@ -426,18 +426,18 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 } else {
                     echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
-                // Else use mailq which is for Sendmail or Exim
+                // Else use MAILQ from conf.php which is for Sendmail or Exim
             } elseif (MAILQ) {
                 if ($mta === 'exim') {
-                    $inq = exec('sudo /usr/sbin/exim -bpc 2>&1');
-                    $outq = exec('sudo /usr/sbin/exim -bpc -DOUTGOING 2>&1');
+                    $inq = exec('sudo EXIM_QUEUE_IN 2>&1');
+                    $outq = exec('sudo EXIM_QUEUE_OUT 2>&1');
                 } else {
                     // Not activated because this need to be tested.
-                    //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-                    //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
                     //$inq = $output_array[2];
-                    //$input_lines = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-                    //preg_match"/(Total requests: )(.*)/", $input_lines, $output_array);
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
                     //$outq = $output_array[2];
                     $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
                     $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
@@ -4021,6 +4021,8 @@ function checkConfVariables()
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
+        'EXIM_QUEUE_IN',
+        'EXIM_QUEUE_OUT',
     );
 
     $obsolete = array(

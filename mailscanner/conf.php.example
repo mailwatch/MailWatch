@@ -201,6 +201,11 @@ define('RPC_ONLY', false);
 // Note: this only works with Exim and Sendmail.
 // You must also run /usr/local/bin/mailwatch_sendmail_queue.php from CRON.
 define('MAILQ', true);
+// If you change the lines below, you need to change /etc/sudoers.d/mailwatch according.
+// Command to read Exim inbound Mail Queue
+define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
+// Command to read Exim outbound Mail Queue
+define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
 
 // Do you want an audit trail?
 define('AUDIT', false);
