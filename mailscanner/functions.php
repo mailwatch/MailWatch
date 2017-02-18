@@ -3945,6 +3945,7 @@ function checkConfVariables()
         'LANG',
         'LDAP_DN',
         'LDAP_EMAIL_FIELD',
+        'LDAP_FILTER',
         'LDAP_HOST',
         'LDAP_MS_AD_COMPATIBILITY',
         'LDAP_PASS',
@@ -3953,6 +3954,7 @@ function checkConfVariables()
         'LDAP_SITE',
         'LDAP_SSL',
         'LDAP_USER',
+        'LDAP_USERNAME_FIELD',
         'LISTS',
         'MAIL_LOG',
         'MAILQ',
@@ -4025,10 +4027,8 @@ function checkConfVariables()
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
-        'LDAP_USERNAME_FIELD',
         'LDAP_BIND_PREFIX',
         'LDAP_BIND_SUFFIX',
-        'LDAP_FILTER',
     );
     */
 
