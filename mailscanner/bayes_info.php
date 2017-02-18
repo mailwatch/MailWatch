@@ -57,7 +57,7 @@ if ($_SESSION['user_type'] === 'A') {
             echo '<br>' . __('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
             echo '</div>' . "\n";
         } else {
-            // You an use --force-expire insteaf of --clear to test the routine
+            // You can use --force-expire instead of --clear to test the routine
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --clear', $return);
             if ($return === 0) {
                 audit_log(__('auditlogwipe18'));
