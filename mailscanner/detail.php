@@ -203,6 +203,7 @@ while ($row = $result->fetch_array()) {
         }
         if ($fieldn === 'Report:') {
             $fieldn = __('report04');
+            $row[$f] = preg_replace('/[\x00-\x1F\x7F]/u', '', $row[$f]);
             $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
         }
