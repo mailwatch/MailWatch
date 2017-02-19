@@ -258,6 +258,8 @@ return array(
     'error04' => 'Error:',
     'auditlog04' => 'Viewed message detail',
     'report04' => 'Report:',
+    'spamassassin04' => 'SpamAssassin',
+    'spamassassinmcp04' => 'SpamAssassin MCP:',
 
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
