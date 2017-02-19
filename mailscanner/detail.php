@@ -204,7 +204,7 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === 'Report:') {
             $fieldn = __('report04');
             $row[$f] = preg_replace('/[^[:print:]]/', '', $row[$f]);
-            $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
+            $row[$f] = nl2br(preg_replace("/[,]?MailScanner:/", "<br>MailScanner:", htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
         }
         if ($fieldn === __('from04')) {
