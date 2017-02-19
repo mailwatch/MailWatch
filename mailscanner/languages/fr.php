@@ -257,6 +257,7 @@ return array(
     'errormess04' => 'Message d\'erreur :',
     'error04' => 'Erreur :',
     'auditlog04' => 'Visionnage de la vue détaillée du message',
+    'report04' => 'Report :',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',

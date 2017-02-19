@@ -257,6 +257,7 @@ return array(
     'errormess04' => 'Fehler-Nachricht:',
     'error04' => 'Fehler:',
     'auditlog04' => 'Nachrichtendetails angezeigt',
+    'report04' => 'Report:',
 
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',

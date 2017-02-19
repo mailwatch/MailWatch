@@ -201,7 +201,8 @@ while ($row = $result->fetch_array()) {
                 $row[$f] = '127.0.0.1'; // Must be local mailer (Exim)
             }
         }
-        if ($fieldn === __('report04')) {
+        if ($fieldn === 'Report:') {
+            $fieldn = __('report04');
             $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
         }
