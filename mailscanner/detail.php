@@ -88,8 +88,8 @@ $sql = "
   CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('virus04') . "',
   CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('blkfile04') . "',
   CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('otherinfec04') . "',
-  report AS 'Report:',
-  'SpamAssassin' AS 'HEADER',
+  report AS '" . __('report04') . "',
+  '" . __('spamassassin04') . "' AS 'HEADER',
   CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spam04') . "',
   CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . __('hscospam04') . "',
   CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spamassassinspam04') . "',
@@ -102,7 +102,7 @@ $sql = "
   '" . __('hdrmcp04') . "' AS 'HEADER',
   CASE WHEN ismcp>0 THEN '$yes' ELSE '$no' END AS 'MCP:',
   CASE WHEN ishighmcp>0 THEN '$yes' ELSE '$no' END AS '" . __('highscomcp04') . "',
-  CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin MCP:',
+  CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS '" . __('spamassassinmcp04') . "',
   CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpwl04') . "',
   CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpbl04') . "',
   mcpsascore AS '" . __('mcpscore04') . "',
@@ -201,10 +201,12 @@ while ($row = $result->fetch_array()) {
                 $row[$f] = '127.0.0.1'; // Must be local mailer (Exim)
             }
         }
-        if ($fieldn === 'Report:') {
-            $fieldn = __('report04');
-            $row[$f] = preg_replace('/[^[:print:]]/', '', $row[$f]);
-            $row[$f] = preg_replace("/(.)[[:space:]]?[,]?MailScanner:/", "\${1}<br>MailScanner:", $row[$f]);
+        if ($fieldn === __('report04')) {
+            //$fieldn = __('report04';
+            //$row[$f] = preg_replace('/[^[:print:]]/', '', $row[$f]);
+            //$row[$f] = preg_replace("/(.)[[:space:]]?[,]?MailScanner:/", "\${1}<br>MailScanner:", $row[$f]);
+            $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
+            $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
         }
         if ($fieldn === __('from04')) {
             $row[$f] = htmlentities($row[$f]);
