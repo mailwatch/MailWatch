@@ -259,7 +259,7 @@ return array(
     'auditlog04' => 'Nachrichtendetails angezeigt',
     'report04' => 'Report:',
     'spamassassin04' => 'SpamAssassin',
-    'spamassassinmcp04' => 'SpamAssassin MCP:',
+    'spamassassinmcp04' => 'SpamAssassin MCP',
 
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',
