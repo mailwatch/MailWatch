@@ -4032,6 +4032,7 @@ function checkConfVariables()
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
+        'USE_SYSTEM_PEAR',
     );
 
     $obsolete = array(
