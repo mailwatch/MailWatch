@@ -147,7 +147,7 @@ while ($row = $result->fetch_array()) {
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                     $relay = stripPortFromIp($relay);
                     //check if address is in private IP space
-                    $isPrivateNetwork = ip_in_range($relay, false,'private');
+                    $isPrivateNetwork = ip_in_range($relay, false, 'private');
                     $isLocalNetwork = ip_in_range($relay, false, 'local');
                     if ($isPrivateNetwork === true) {
                         $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
