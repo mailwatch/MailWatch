@@ -254,13 +254,15 @@ sub MailWatchLogging {
 
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
-    $spamreport =~ s/\n/ /g;
-    $spamreport =~ s/\t//g;
+    $spamreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+    $spamreport =~ s/\t//g;  # and no TAB characters
+    $spamreport =~ s/\r/ /g;  # and no CR characters
 
     # Get rid of control chars and tidy-up SpamAssassin MCP report
     my $mcpreport = $message->{mcpreport};
-    $mcpreport =~ s/\n/ /g;
-    $mcpreport =~ s/\t//g;
+    $mcpreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+    $mcpreport =~ s/\t//g;  # and no TAB characters
+    $mcpreport =~ s/\r/ /g;  # and no CR characters
 
     # Workaround tiny bug in original MCP code
     my ($mcpsascore);
@@ -296,12 +298,12 @@ sub MailWatchLogging {
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
-        $text =~ s/\n/ /;  # Make sure text report only contains 1 line
-        $text =~ s/\t/ /;  # and no tab characters
-        $text =~ s/\R/ /g;  # and no CR characters (need Perl 5.1+)
+        $text =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+        $text =~ s/\t/ /g;  # and no TAB characters
+        $text =~ s/\r/ /g;  # and no CR characters
 
         # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-        MailScanner::Log::WarnLog("MailWatch: Debug: Message TEXT: %s", Dumper($text));
+        MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
 
         push (@report_array, $text);
     }
@@ -311,7 +313,7 @@ sub MailWatchLogging {
     # my @unique_report_array = do { my %seen; grep { !$seen{$_}++ } @report_array };
     my $reports = join(",", @report_array);
     # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    MailScanner::Log::WarnLog("MailWatch: Debug: Message Reports: %s", Dumper($reports));
+    MailScanner::Log::WarnLog("MailWatch: Debug: VAR reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
