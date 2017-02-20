@@ -43,7 +43,7 @@ use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
 # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-#use Data::Dumper;
+use Data::Dumper;
 
 use vars qw($VERSION);
 
@@ -296,12 +296,12 @@ sub MailWatchLogging {
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
-        #$text =~ s/[^[:print:]]+//g;  # Remove all non printable characters
         $text =~ s/\n/ /;  # Make sure text report only contains 1 line
         $text =~ s/\t/ /;  # and no tab characters
+        $text =~ s/\R/ /g;  # and no CR characters (need Perl 5.1+)
 
         # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-        #MailScanner::Log::WarnLog("MailWatch: Debug: Message TEXT: %s", Dumper($text));
+        MailScanner::Log::WarnLog("MailWatch: Debug: Message TEXT: %s", Dumper($text));
 
         push (@report_array, $text);
     }
@@ -311,7 +311,7 @@ sub MailWatchLogging {
     # my @unique_report_array = do { my %seen; grep { !$seen{$_}++ } @report_array };
     my $reports = join(",", @report_array);
     # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    #MailScanner::Log::WarnLog("MailWatch: Debug: Message Reports: %s", Dumper($reports));
+    MailScanner::Log::WarnLog("MailWatch: Debug: Message Reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
