@@ -43,20 +43,6 @@ $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
 $url_id = trim($url_id, ' ');
 
-//Initialise local IP's
-require __DIR__ . '/lib/IPSet.php';
-$privateIPSet = new \IPSet\IPSet(array(
-    '10.0.0.0/8',
-    '172.16.0.0/12',
-    '192.168.0.0/16',
-    'fc00::/7',
-    'fe80::/10',
-    ));
-$localIPSet = new \IPSet\IPSet(array(
-    '127.0.0.1',
-    '::1',
-));
-
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
 
@@ -161,8 +147,8 @@ while ($row = $result->fetch_array()) {
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                     $relay = stripPortFromIp($relay);
                     //check if address is in private IP space
-                    $isPrivateNetwork = $privateIPSet->match($relay);
-                    $isLocalNetwork = $localIPSet->match($relay);
+                    $isPrivateNetwork = ip_in_range($relay, false,'private');
+                    $isLocalNetwork = ip_in_range($relay, false, 'local');
                     if ($isPrivateNetwork === true) {
                         $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
                     } elseif ($isLocalNetwork === true) {
