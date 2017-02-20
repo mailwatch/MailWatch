@@ -43,7 +43,7 @@ use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
 # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-use Data::Dumper;
+#use Data::Dumper;
 
 use vars qw($VERSION);
 
