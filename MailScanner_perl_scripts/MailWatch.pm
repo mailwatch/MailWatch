@@ -255,13 +255,13 @@ sub MailWatchLogging {
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
     $spamreport =~ s/[[:print:]]+//g;  # Remove all non printable characters
-    $spamreport =~ s/\n//g;  # Make sure text report only contains 1 line
+    $spamreport =~ s/\n/ /g;  # Make sure text report only contains 1 line
     $spamreport =~ s/\t//g;  # and no tab characters
 
     # Get rid of control chars and tidy-up SpamAssassin MCP report
     my $mcpreport = $message->{mcpreport};
     $mcpreport =~ s/[[:print:]]+//g;  # Remove all non printable characters
-    $mcpreport =~ s/\n//g;  # Make sure text report only contains 1 line
+    $mcpreport =~ s/\n/ /g;  # Make sure text report only contains 1 line
     $mcpreport =~ s/\t//g;  # and no tab characters
 
     # Workaround tiny bug in original MCP code
@@ -299,8 +299,8 @@ sub MailWatchLogging {
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
         $text =~ s/[[:print:]]+//g;  # Remove all non printable characters
-        $text =~ s/\n//;  # Make sure text report only contains 1 line
-        $text =~ s/\t//;  # and no tab characters
+        $text =~ s/\n/ /;  # Make sure text report only contains 1 line
+        $text =~ s/\t/ /;  # and no tab characters
 
         # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
         #MailScanner::Log::WarnLog("MailWatch: Debug: Message TEXT: %s", Dumper($text));
