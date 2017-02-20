@@ -298,9 +298,9 @@ sub MailWatchLogging {
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
-        $text =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
-        $text =~ s/\t/ /g;  # and no TAB characters
-        $text =~ s/\r/ /g;  # and no CR characters
+        $text =~ s/\n//g;  # Make sure text report only contains 1 line (LF)
+        $text =~ s/\t//g;  # and no TAB characters
+        $text =~ s/\r//g;  # and no CR characters
 
         # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
         MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
