@@ -55,7 +55,7 @@ if ($missingConfigEntries['needed']['count'] !== 0) {
 require_once __DIR__ . '/database.php';
 
 if (!USE_SYSTEM_PEAR) {
-// Set PHP path to use local PEAR modules only
+    // Set PHP path to use local PEAR modules only
     set_include_path(
         '.' . PATH_SEPARATOR .
         MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
