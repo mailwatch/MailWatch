@@ -227,7 +227,7 @@ return array(
     'file04' => 'Fichier',
     'type04' => 'Type',
     'path04' => 'Chemin',
-    'dang04' => 'Dangereux ',
+    'dang04' => 'Dangereux',
     'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
     'actions04' => 'Action(s) :',

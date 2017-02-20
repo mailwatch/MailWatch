@@ -42,6 +42,9 @@ use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
+# Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+use Data::Dumper;
+
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
@@ -149,7 +152,7 @@ sub ListenForMessages {
         my ($port, $packed_ip) = sockaddr_in($cli);
         my $dotted_quad = inet_ntoa($packed_ip);
 
-        # reset emergency timeout - if we haven"t heard anything in $timeout
+        # Reset emergency timeout - if we haven"t heard anything in $timeout
         # seconds, there is probably something wrong, so we should clean up
         # and let another process try.
         alarm $timeout;
@@ -214,7 +217,7 @@ sub ListenForMessages {
             $$message{headers},
             $$message{quarantined});
 
-        # this doesn't work in the event we have no connection by now ?
+        # This doesn't work in the event we have no connection by now ?
         if (!$sth) {
             MailScanner::Log::WarnLog("MailWatch: $$message{id}: MailWatch SQL Cannot insert row: %s", $sth->errstr);
         } else {
@@ -251,13 +254,15 @@ sub MailWatchLogging {
 
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
-    $spamreport =~ s/\n/ /g;
-    $spamreport =~ s/\t//g;
+    $spamreport =~ s/[[:print:]]+//g;  # Remove all non printable characters
+    $spamreport =~ s/\n//g;  # Make sure text report only contains 1 line
+    $spamreport =~ s/\t//g;  # and no tab characters
 
-    # Same with MCP report
+    # Get rid of control chars and tidy-up SpamAssassin MCP report
     my $mcpreport = $message->{mcpreport};
-    $mcpreport =~ s/\n/ /g;
-    $mcpreport =~ s/\t//g;
+    $mcpreport =~ s/[[:print:]]+//g;  # Remove all non printable characters
+    $mcpreport =~ s/\n//g;  # Make sure text report only contains 1 line
+    $mcpreport =~ s/\t//g;  # and no tab characters
 
     # Workaround tiny bug in original MCP code
     my ($mcpsascore);
@@ -267,7 +272,7 @@ sub MailWatchLogging {
         $mcpsascore = $message->{mcpscore};
     }
 
-    # Set quarantine flag - this only works on 4.43.7 or later
+    # Set quarantine flag - This only works on MailScanner 4.43.7 or later
     my ($quarantined);
     $quarantined = 0;
     if ((scalar(@{$message->{quarantineplaces}}))
@@ -293,13 +298,21 @@ sub MailWatchLogging {
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
-        $text =~ s/\n/ /;  # Make sure text report only contains 1 line
-        $text =~ s/\t/ /; # and no tab characters
+        $text =~ s/[[:print:]]+//g;  # Remove all non printable characters
+        $text =~ s/\n//;  # Make sure text report only contains 1 line
+        $text =~ s/\t//;  # and no tab characters
+
+        # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+        #MailScanner::Log::WarnLog("MailWatch: Debug: Message TEXT: %s", Dumper($text));
+
         push (@report_array, $text);
     }
 
     # Sanitize reports
+    # my @uniq_report_array = uniq(@report_array);
     my $reports = join(",", @report_array);
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: Debug: Message Reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
@@ -378,4 +391,3 @@ sub MailWatchLogging {
 }
 
 1;
-

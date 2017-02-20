@@ -439,7 +439,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo '  <th>' . __('file04') . '</th>' . "\n";
         echo '  <th>' . __('type04') . '</th>' . "\n";
         echo '  <th>' . __('path04') . '</th>' . "\n";
-        echo '  <th>' . __('dang04') . '?</th>' . "\n";
+        echo '  <th>' . __('dang04') . '</th>' . "\n";
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
