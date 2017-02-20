@@ -309,7 +309,8 @@ sub MailWatchLogging {
     }
 
     # Sanitize reports
-    # my @uniq_report_array = uniq(@report_array);
+    # To test if double
+    # my @unique_report_array = do { my %seen; grep { !$seen{$_}++ } @report_array };
     my $reports = join(",", @report_array);
     # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
     #MailScanner::Log::WarnLog("MailWatch: Debug: Message Reports: %s", Dumper($reports));
