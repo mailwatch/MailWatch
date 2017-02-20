@@ -254,15 +254,13 @@ sub MailWatchLogging {
 
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
-    $spamreport =~ s/[[:print:]]+//g;  # Remove all non printable characters
-    $spamreport =~ s/\n/ /g;  # Make sure text report only contains 1 line
-    $spamreport =~ s/\t//g;  # and no tab characters
+    $spamreport =~ s/\n/ /g;
+    $spamreport =~ s/\t//g;
 
     # Get rid of control chars and tidy-up SpamAssassin MCP report
     my $mcpreport = $message->{mcpreport};
-    $mcpreport =~ s/[[:print:]]+//g;  # Remove all non printable characters
-    $mcpreport =~ s/\n/ /g;  # Make sure text report only contains 1 line
-    $mcpreport =~ s/\t//g;  # and no tab characters
+    $mcpreport =~ s/\n/ /g;
+    $mcpreport =~ s/\t//g;
 
     # Workaround tiny bug in original MCP code
     my ($mcpsascore);
@@ -298,7 +296,7 @@ sub MailWatchLogging {
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
-        $text =~ s/[[:print:]]+//g;  # Remove all non printable characters
+        #$text =~ s/[^[:print:]]+//g;  # Remove all non printable characters
         $text =~ s/\n/ /;  # Make sure text report only contains 1 line
         $text =~ s/\t/ /;  # and no tab characters
 
