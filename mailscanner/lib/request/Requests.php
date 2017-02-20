@@ -7,6 +7,9 @@
  * Based on concepts from SimplePie_File, RequestCore and WP_Http.
  *
  * @package Requests
+ *
+ * Patched version for MailWatch.  
+ * v1.6.1-MailWatch
  */
 
 /**

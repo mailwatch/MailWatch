@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -144,10 +144,10 @@ ORDER BY
 if (is_writable(CACHE_DIR)) {
 
     // Includes for JPgraph
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_log.php';
-    include_once './lib/jpgraph/src/jpgraph_bar.php';
-    include_once './lib/jpgraph/src/jpgraph_line.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_log.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_bar.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_line.php';
 
     // Must be one or more row
     $result = dbquery($sql);
@@ -214,7 +214,7 @@ if (is_writable(CACHE_DIR)) {
     $graph->img->SetMargin(60, 60, 30, 70);
     $graph->title->Set(__('totalmailprocdate49'));
     $graph->y2axis->title->Set(__('volume49') . ' (' . $size_info['longdesc'] . ')');
-    $graph->y2axis->title->SetMargin(0);
+    $graph->y2axis->title->SetMargin(10);
     $graph->y2axis->SetTitleMargin(40);
     $graph->yaxis->title->Set(__('nomessages49'));
     $graph->yaxis->title->SetMargin(20);
@@ -265,40 +265,41 @@ if (is_writable(CACHE_DIR)) {
 }
 
 // HTML Code to display the graph
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD></TR>";
-echo " <TR>\n";
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">' . "\n";
+echo ' <TR>' . "\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
-echo " </TR>\n";
-echo " <TR>\n";
-echo "  <TD ALIGN=\"CENTER\">\n";
-echo "<TABLE BORDER=0 cellspacing=1 cellpadding=2>\n";
-echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo "  <TH rowspan='2'>" . __('date49') . "</TH>\n";
-echo "  <TH rowspan='2' align='right'>" . __('total49') . "</TH>\n";
-echo "  <TH colspan='2'>" . __('clean49') . "</TH>\n";
-echo "  <TH nowrap colspan='2'>" . __('lowespam49') . "</TH>\n";
-echo "  <TH nowrap colspan='2'>" . __('highspam49') . "</TH>\n";
-echo "  <TH nowrap colspan='2'>" . __('blocked49') . "</TH>\n";
-echo "  <TH colspan='2'>" . __('virus49') . "</TH>\n";
+echo ' </TR>' . "\n";
+echo ' <TR>' . "\n";
+echo '  <TD ALIGN="CENTER">' . "\n";
+echo '<TABLE BORDER=0 cellspacing=1 cellpadding=2>' . "\n";
+echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
+echo "  <TH rowspan='2'>" . __('date49') . '</TH>' . "\n";
+echo "  <TH rowspan='2' align='right'>" . __('total49') . '</TH>' . "\n";
+echo "  <TH colspan='2'>" . __('clean49') . '</TH>' . "\n";
+echo "  <TH nowrap colspan='2'>" . __('lowespam49') . '</TH>' . "\n";
+echo "  <TH nowrap colspan='2'>" . __('highspam49') . '</TH>' . "\n";
+echo "  <TH nowrap colspan='2'>" . __('blocked49') . '</TH>' . "\n";
+echo "  <TH colspan='2'>" . __('virus49') . '</TH>' . "\n";
 if ($is_MCP_enabled === true) {
-    echo "  <TH colspan='2'>" . __('mcp49') . "</TH>\n";
+    echo "  <TH colspan='2'>" . __('mcp49') . '</TH>' . "\n";
 }
-echo "  <TH rowspan='2'>" . __('volume49') . "</TH>\n";
+echo "  <TH rowspan='2'>" . __('volume49') . '</TH>' . "\n";
 echo "  <TH bgcolor='#ffffff' rowspan='2'>&nbsp;</TH>\n";
-echo "  <TH rowspan='2'>" . __('unknoweusers49') . "</TH>\n";
-echo "  <TH rowspan='2'>" . __('resolve49') . "</TH>\n";
-echo "  <TH rowspan='2'>" . __('rbl49') . "</TH>\n";
+if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo "  <TH rowspan='2'>" . __('unknoweusers49') . '</TH>' . "\n";
+    echo "  <TH rowspan='2'>" . __('resolve49') . '</TH>' . "\n";
+    echo "  <TH rowspan='2'>" . __('rbl49') . '</TH>' . "\n";
+}
 echo " </TR>\n";
 
-echo "<tr BGCOLOR='#F7CE4A'>\n";
+echo "<tr bgcolor='#F7CE4A'>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
@@ -311,59 +312,63 @@ echo "</tr>\n";
 for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; $i++) {
     echo "<TR BGCOLOR=\"#EBEBEB\">\n";
     echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
-    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_mail[$i]) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_clean[$i]) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_clean[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
-    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_lowspam[$i]) . "</TD>\n";
-    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_lowspam[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_highspam[$i]) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_total_highspam[$i] / $data_total_mail[$i] * 100, 1) . "</TD>\n";
-    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_blocked[$i])) . "</TD>\n";
-    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_blocked[$i] / $data_total_mail[$i] * 100, 1)) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_virii[$i])) . "</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_virii[$i] / $data_total_mail[$i] * 100, 1)) . "</TD>\n";
+    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_mail[$i]) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . number_format($data_total_clean[$i]) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . number_format($data_total_clean[$i] / $data_total_mail[$i] * 100, 1) . '</TD>' . "\n";
+    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_lowspam[$i]) . '</TD>' . "\n";
+    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_lowspam[$i] / $data_total_mail[$i] * 100, 1) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . number_format($data_total_highspam[$i]) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . number_format($data_total_highspam[$i] / $data_total_mail[$i] * 100, 1) . '</TD>' . "\n";
+    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_blocked[$i])) . '</TD>' . "\n";
+    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_blocked[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . suppress_zeros(number_format($data_total_virii[$i])) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . suppress_zeros(number_format($data_total_virii[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     if ($is_MCP_enabled === true) {
-        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i])) . "</TD>\n";
-        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . "</TD>\n";
+        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i])) . '</TD>' . "\n";
+        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     }
-    echo " <TD ALIGN=\"RIGHT\">" . formatSize($data_total_size[$i] * $size_info['formula']) . "</TD>\n";
+    echo ' <TD ALIGN="RIGHT">' . formatSize($data_total_size[$i] * $size_info['formula']) . '</TD>' . "\n";
     echo " <TD bgcolor='#ffffff'><BR></TD>\n";
-    echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . "</TD>\n";
-    echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . "</TD>\n";
-    echo " <TD ALIGN=\"CENTER\">" . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . "</TD>\n";
-    echo "</TR>\n";
+    if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
+    }
+    echo '</TR>' . "\n";
 }
 
-echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo " <TH ALIGN=\"RIGHT\">" . __('totals49') . "</TH>\n";
-echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mail)) . "</TH>\n";
+echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
+echo ' <TH ALIGN="RIGHT">' . __('totals49') . '</TH>' . "\n";
+echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mail)) . '</TH>' . "\n";
 
-echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_clean)) . "</TH>\n";
-echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_clean) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
+echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_clean)) . '</TH>' . "\n";
+echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_clean) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 
-echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_lowspam)) . "</TH>\n";
-echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_lowspam) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
+echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_lowspam)) . '</TH>' . "\n";
+echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_lowspam) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 
-echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_highspam)) . "</TH>\n";
-echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_highspam) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
+echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_highspam)) . '</TH>' . "\n";
+echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_highspam) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 
-echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_blocked)) . "</TH>\n";
-echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_blocked) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
+echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_blocked)) . '</TH>' . "\n";
+echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_blocked) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 
-echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_virii)) . "</TH>\n";
-echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_virii) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
+echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_virii)) . '</TH>' . "\n";
+echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_virii) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 if ($is_MCP_enabled === true) {
-    echo " <TH ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp)) . "</TH>\n";
-    echo " <TH nowrap ALIGN=\"RIGHT\">" . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
+    echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp)) . '</TH>' . "\n";
+    echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }
-echo " <TH ALIGN=\"RIGHT\">" . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . "</TH>\n";
-echo " <TD bgcolor='#ffffff'><BR></TD>\n";
-echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unknown_users)) . "</TH>\n";
-echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_unresolveable)) . "</TH>\n";
-echo " <TH ALIGN=\"CENTER\">" . number_format(mailwatch_array_sum($data_total_rbl)) . "</TH>\n";
-echo "</TR>\n";
-echo "</TABLE>\n";
-echo "</TABLE>\n";
+echo ' <TH ALIGN="RIGHT">' . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . '</TH>' . "\n";
+echo ' <TD bgcolor="#ffffff"><BR></TD>' . "\n";
+if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unknown_users)) . '</TH>' . "\n";
+    echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unresolveable)) . '</TH>' . "\n";
+    echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_rbl)) . '</TH>' . "\n";
+}
+echo '</TR>' . "\n";
+echo '</TABLE>' . "\n";
+echo '</TABLE>' . "\n";
 
 // Add footer
 html_end();

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -59,14 +59,14 @@ AND
 if (is_writable(CACHE_DIR)) {
 
     // JpGraph functions
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_pie.php';
-    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
 
     // Must be one or more rows
     $result = dbquery($sql);
     if ($result->num_rows <= 0) {
-        die(__('dienorow48') . $result->num_rows . "\n");
+        die(__('diemysql99') . "\n");
     }
 
     $virus_array = array();
@@ -97,6 +97,8 @@ if (is_writable(CACHE_DIR)) {
     // Graphing code
     $graph = new PieGraph(850, 385, 0, false);
     $graph->SetShadow();
+    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
+    $graph->img->SetMargin(40, 30, 20, 40);
     $graph->img->SetAntiAliasing();
     $graph->title->Set(__('top10virus48'));
 
@@ -118,10 +120,7 @@ if (is_writable(CACHE_DIR)) {
 }
 
 // HTML to display the graph
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo '<TR>';
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo '</TR>';
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
 echo '<TR>';
 
 //  Check Permissions to see if the file has been written and that apache to read it.
@@ -130,7 +129,7 @@ if ($graphok === true) {
     if (is_readable($filename)) {
         echo '<IMG SRC="' . $filename . '" ALT="Graph">';
     } else {
-        echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+        echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
     }
 } else {
     echo __('nodata48');
@@ -138,9 +137,9 @@ if ($graphok === true) {
 echo '</TD>';
 echo '</TR>';
 echo '<TR>';
-echo " <TD ALIGN=\"CENTER\">";
-echo "  <TABLE WIDTH=\"500\">";
-echo "   <TR style=\"background-color: #f7ce4a\">";
+echo ' <TD ALIGN="CENTER">';
+echo '  <TABLE WIDTH="500">';
+echo '   <TR style="background-color: #f7ce4a">';
 echo '    <TH>' . __('virus48') . '</TH>';
 echo '    <TH>' . __('count48') . '</TH>';
 echo '   </TR>';

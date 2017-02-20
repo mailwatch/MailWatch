@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -42,6 +42,20 @@ $url_id = sanitizeInput($_GET['id']);
 $url_id = safe_value($url_id);
 $url_id = htmlentities($url_id);
 $url_id = trim($url_id, ' ');
+
+//Initialise local IP's
+require __DIR__ . '/lib/IPSet.php';
+$privateIPSet = new \IPSet\IPSet(array(
+    '10.0.0.0/8',
+    '172.16.0.0/12',
+    '192.168.0.0/16',
+    'fc00::/7',
+    'fe80::/10',
+    ));
+$localIPSet = new \IPSet\IPSet(array(
+    '127.0.0.1',
+    '::1',
+));
 
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
@@ -108,7 +122,7 @@ $result = dbquery($sql);
 if ($result->num_rows === 0) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 } else {
-    audit_log('Viewed message detail (id=' . $url_id . ')');
+    audit_log(__('auditlog04') . ' (id=' . $url_id . ')');
 }
 
 // Check if MCP is enabled
@@ -146,17 +160,29 @@ while ($row = $result->fetch_array()) {
                     $output .= ' <td>' . $relay . '</td>' . "\n";
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                     $relay = stripPortFromIp($relay);
+                    //check if address is in private IP space
+                    $isPrivateNetwork = $privateIPSet->match($relay);
+                    $isLocalNetwork = $localIPSet->match($relay);
+                    if ($isPrivateNetwork === true) {
+                        $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
+                    } elseif ($isLocalNetwork === true) {
+                        $output .= ' <td>' . __('localhost04') . "</td>\n";
+                    }
                     // Reverse lookup on address. Possibly need to remove it.
-                    if (($host = gethostbyaddr($relay)) !== $relay) {
+                    elseif (($host = gethostbyaddr($relay)) !== $relay) {
                         $output .= " <td>$host</td>\n";
                     } else {
                         $output .= ' <td>' . __('reversefailed04') . "</td>\n";
                     }
                     // Do GeoIP lookup on address
-                    if ($geoip_country = return_geoip_country($relay)) {
+                    if (true === $isPrivateNetwork) {
+                        $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
+                    } elseif ($isLocalNetwork === true) {
+                        $output .= ' <td>' . __('localhost04') . "</td>\n";
+                    } elseif ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
-                        $output .= ' <td>(' . __('geoipfailed04') . ')</td>' . "\n";
+                        $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
                     }
                     // Link to RBL Lookup
                     $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
@@ -223,12 +249,12 @@ while ($row = $result->fetch_array()) {
                 $row[$f] = $no;
             }
         }
-        if ($fieldn === 'Spam:' && !DISTRIBUTED_SETUP) {
+        if ($fieldn === __('spam04') && !DISTRIBUTED_SETUP) {
             // Display actions if spam/not-spam
             if ($row[$f] === $yes) {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;Action(s): ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
+                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
             } else {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;Action(s): ' . str_replace(
+                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
                         ' ',
                         ', ',
                         get_conf_var('NonSpamActions')
@@ -237,7 +263,7 @@ while ($row = $result->fetch_array()) {
         }
         if ($row[$f] === $yes && $fieldn === __('hscospam04')) {
             // Display actions if high-scoring
-            $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ': ' . str_replace(
+            $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
                     ' ',
                     ', ',
                     get_conf_var('HighScoringSpamActions')
@@ -310,9 +336,9 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
 }
 
 $sth1 = dbquery($sql1);
-if ($sth1->num_rows > 0) {
+if (false !== $sth1 && $sth1->num_rows > 0) {
     // Display the relay table entries
-    echo ' <tr><td class="heading-w175">Relay Information:</td><td class="detail">' . "\n";
+    echo ' <tr><td class="heading-w175">' .  __('relayinfo04') . '</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
     for ($f = 0; $f < $sth1->field_count; $f++) {
@@ -385,7 +411,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         if (isset($errors)) {
             echo " <tr>\n";
-            echo '  <td class="heading" width="150" align="right" valign="top">Error Messages:</td>' . "\n";
+            echo '  <td class="heading" width="150" align="right" valign="top">' . __('errormess04') . '</td>' . "\n";
             echo '  <td class="detail">' . "\n";
             foreach ($errors as $key => $val) {
                 echo "  $val<br>\n";
@@ -394,7 +420,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo " <tr>\n";
         }
         echo " <tr>\n";
-        echo '  <td class="heading" width="150" align="right" valign="top">Error:</td>' . "\n";
+        echo '  <td class="heading" width="150" align="right" valign="top">' . __('errormess04') . '</td>' . "\n";
         echo '  <td class="detail">' . ($error ? $yes : $no) . '</td>' . "\n";
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
@@ -418,7 +444,12 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
             // Currently this only applies to messages that contain viruses.
-            if ($_SESSION['user_type'] === 'A' || $item['dangerous'] !== 'Y') {
+            // visible only to Administrators and Domain Admin only if DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS is enabled
+            if (
+                $_SESSION['user_type'] === 'A' ||
+                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D') ||
+                $item['dangerous'] !== 'Y'
+            ) {
                 echo '  <td align="center"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
                 echo '<td>&nbsp;&nbsp;</td>' . "\n";
@@ -428,7 +459,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
                 (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message') &&
-                (strtoupper(get_conf_var('UseSpamAssassin')) === 'YES')
+                (strtoupper(get_conf_var('UseSpamAssassin')) !== 'NO')
             ) {
                 echo '   <td align="center"><input type="checkbox" name="learn[]" value="' . $item['id'] . '"><select name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
@@ -437,8 +468,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo '  <td>' . $item['file'] . '</td>' . "\n";
             echo '  <td>' . $item['type'] . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
-            if (($item['dangerous'] === 'N' || $_SESSION['user_type'] === 'A') &&
-                preg_match('!message/rfc822!', $item['type'])
+            // Domain admins can view the file only if enabled
+            if (
+                (
+                    $item['dangerous'] === 'N' ||
+                    $_SESSION['user_type'] === 'A' ||
+                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
+                ) && preg_match('!message/rfc822!', $item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
                     substr($item['path'], strlen($quarantinedir) + 1) .
@@ -456,10 +492,16 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr>' . "\n";
-        if ($is_dangerous > 0 && $_SESSION['user_type'] !== 'A') {
-            echo '  <td colspan="6">&nbsp;</td>' . "\n";
+        if ($_SESSION['user_type'] === 'A' ||
+            ($_SESSION['user_type'] === 'D' &&
+                ($is_dangerous === 0 ||
+                ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
+                )
+            )
+        ) {
+            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . '&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
         } else {
-            echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . __('colon99') . '&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
+            echo '  <td colspan="6">&nbsp;</td>' . "\n";
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";

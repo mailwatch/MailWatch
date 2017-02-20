@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -40,7 +40,7 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('sarulehits37'), 0, false, true);
 
-$sql = "
+$sql = '
  SELECT
   spamreport,
   isspam
@@ -48,8 +48,8 @@ $sql = "
   maillog
  WHERE
   spamreport IS NOT NULL
- AND spamreport != \"\"
-" . $filter->CreateSQL();
+ AND spamreport != ""
+' . $filter->CreateSQL();
 
 $result = dbquery($sql);
 if (!$result->num_rows > 0) {
@@ -116,37 +116,36 @@ while ($row = $result->fetch_object()) {
 reset($sa_array);
 arsort($sa_array);
 
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo "<TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD></TR>";
-echo "<TR><TD ALIGN=\"CENTER\">";
-
-echo "<TABLE CLASS=\"boxtable\" ALIGN=\"CENTER\" BORDER=\"0\">\n";
-echo "
-<TR BGCOLOR=\"#F7CE4A\">
- <TH>" . __('rule37') . '</TH>
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
+echo '<TR><TD CLASS="titleReport">' . __('sarulehits37') . '<BR></TD></TR>' . "\n";
+echo '<TR><TD ALIGN="CENTER">';
+echo '<TABLE CLASS="boxtable" ALIGN="CENTER" BORDER="0">' . "\n";
+echo '
+<TR BGCOLOR="#F7CE4A">
+ <TH>' . __('rule37') . '</TH>
  <TH>' . __('desc37') . '</TH>
  <TH>' . __('score37') . '</TH>
  <TH>' . __('total37') . '</TH>
  <TH>' . __('ham37') . '</TH>
  <TH>%</TH>
- <TH>' . __('spam37') . "</TH>
+ <TH>' . __('spam37') . '</TH>
  <TH>%</TH>
-</TR>\n";
+</TR>' . "\n";
 
 while (list($key, $val) = each($sa_array)) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
- <TD>" . return_sa_rule_desc(strtoupper($key)) . "</TD>
- <TD ALIGN=\"RIGHT\">" . sprintf('%0.2f', $val['score']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['total']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['not-spam']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . round(($val['not-spam'] / $val['total']) * 100, 1) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['spam']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . round(($val['spam'] / $val['total']) * 100, 1) .
+ <TD>" . return_sa_rule_desc(strtoupper($key)) . '</TD>
+ <TD ALIGN="RIGHT">' . sprintf('%0.2f', $val['score']) . '</TD>
+ <TD ALIGN="RIGHT">' . number_format($val['total']) . '</TD>
+ <TD ALIGN="RIGHT">' . number_format($val['not-spam']) . '</TD>
+ <TD ALIGN="RIGHT">' . round(($val['not-spam'] / $val['total']) * 100, 1) . '</TD>
+ <TD ALIGN="RIGHT">' . number_format($val['spam']) . '</TD>
+ <TD ALIGN="RIGHT">' . round(($val['spam'] / $val['total']) * 100, 1) .
         '</TD></TR>';
 }
-echo "</TABLE>\n";
+echo '</TABLE>' . "\n";
 
 echo '
   </TABLE>

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,25 +30,26 @@
  */
 
 /* languages/fr.php */
-/* v0.3.0 */
+/* v0.3.12 */
 
 return array(
     // 01-login.php
     'username' => 'Utilisateur :',
     'password' => 'Mot de Passe :',
-    'mwloginpage01' => 'MailWatch Login Page',
+    'mwloginpage01' => 'Page de connexion MailWatch',
     'mwlogin01' => 'Connexion&nbsp;à&nbsp;MailWatch',
     'badup01' => 'Mauvais Utilisateur ou Mot de Passe',
     'emptypassword01' => 'Le Mot de Passe ne peut pas être vide',
-    'errorund01' => 'Une rreur inconnue c\'est produite',
+    'errorund01' => 'Une erreur inconnue c\'est produite',
     'login01' => 'Connexion',
+    'forgottenpwd01' => 'Mot de passe perdu ?',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',
     'cst03' => 'Heure Système',
     'colorcodes03' => 'Codes couleur',
-    'badcontentinfected03' => 'Contenu nocif/infecté',
+    'badcontentinfected03' => 'Contenu dangereux/infecté',
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
     'notverified03' => 'Non vérifié',
@@ -61,10 +62,10 @@ return array(
     'message03' => 'Message',
     'tries03' => 'Essais',
     'last03' => 'Dernier',
-    'loadaverage03' => 'Charge Moyenne :',
+    'loadaverage03' => 'Charge moyenne :',
     'mailqueue03' => 'Files d\'attente de courrier',
-    'inbound03' => 'En entrée :',
-    'outbound03' => 'En partance :',
+    'inbound03' => 'Messages entrants :',
+    'outbound03' => 'Messages sortants :',
     'topvirus03' => 'Top Virus :',
     'freedspace03' => 'Espace disque libre',
     'todaystotals03' => 'Total aujourd\'hui',
@@ -148,6 +149,46 @@ return array(
     'host03' => 'Hôte',
     'date03' => 'Date',
     'time03' => 'Heure',
+    'releaseerror03' => 'Libérer : erreur',
+    'releasemessage03' => 'Libérer : message libéré vers',
+    'releaseerrorcode03' => 'Libérer : erreur de code',
+    'returnedfrom03' => 'retour en provenance du Sendmail :',
+    'salearn03' => 'Apprentissage SA',
+    'salearnerror03' => 'Apprentissage SA : code d\'erreur',
+    'salearnreturn03' => 'retourné par sa-learn :',
+    'badcontent03' => 'Contenu dangereux',
+    'otherinfected03' => 'Autre',
+    'and03' => 'et',
+    'ldapresultset03' => 'LDAP : Le jeu de résultats renvoyé contient plus d\'une personne. Nous ne pouvons donc pas être sûrs que l\'utilisateur',
+    'ldapisunique03' => 'est unique',
+    'ldapresults03' => 'dans les résultats LDAP',
+    'ldapno03' => 'aucun',
+    'ldapnobind03' => 'Impossible de ce lier au serveur %s. L\'erreur retournée est : [%s] %s',
+    'ldapnoresult03' => 'LDAP : le serveur n\'a renvoyé aucun résultat pour l\'utilisateur',
+    'ldapresultnodata03' => 'LDAP : le résultat renvoyé ne contient aucune donnée pour l\'utilisateur',
+    'virus03' => 'Virus',
+    'sql03' => 'SQL :',
+    'norowfound03' => 'Aucune ligne récupérée !',
+    'auditlogreport03' => 'Exécution du rapport',
+    'auditlogquareleased03' => 'Message en Quarantaine (%s) libéré vers',
+    'auditlogspamtrained03' => 'SpamAssassin a appris et signalé le message %s comme',
+    'spamerrorcode0103' => 'SpamAssassin : code d\'erreur',
+    'spamerrorcode0203' => 'retourné par SpamAssassin :',
+    'spamassassin03' => 'SpamAssassin :',
+    'auditlogdelqua03' => 'Fichier effacé de la quarantaine :',
+    'auditlogdelerror03' => 'Effacement : erreur lors de l\'effacement du fichier',
+    'auditlogupdatepassword03' => 'Longueur de champ de mot de passe mise à jour de %s à 191',
+    'auditlogupdateuser03' => 'Mot de passe mis à jour pour l\'utilisateur',
+    'verifyperm03' => 'Veuillez vérifier les autorisations de lecture de',
+    'count03' => 'Nombre',
+    '1minute03' => '1 minute :',
+    '5minutes03' => '5 minutes :',
+    '15minutes03' => '15 minutes :',
+    'saspam03' => 'Spam',
+    'sanotspam03' => 'N\'est pas un Spam',
+    'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
+    'children03' => 'proc. fils',
+    'procs03' => 'processus',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -159,7 +200,7 @@ return array(
     'to04' => 'À :',
     'size04' => 'Taille :',
     'subject04' => 'Sujet :',
-    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers nocif',
+    'hdrantivirus04' => 'Anti-Virus/Protection contre les fichiers dangereux',
     'blkfile04' => 'Fichier bloqué :',
     'otherinfec04' => 'Autre infection :',
     'hscospam04' => 'Spam à haut score :',
@@ -186,10 +227,10 @@ return array(
     'file04' => 'Fichier',
     'type04' => 'Type',
     'path04' => 'Chemin',
-    'dang04' => 'Nocif ',
-    'altrecip04' => 'Destinataire alternatif',
+    'dang04' => 'Dangereux ',
+    'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
-    'actions04' => 'Action(s)',
+    'actions04' => 'Action(s) :',
     'quarcmdres04' => 'Résultat des commandes de quarantaine',
     'resultmsg04' => 'Résultat du message',
     'id04' => 'ID :',
@@ -207,9 +248,15 @@ return array(
     'spamrevoke04' => 'Comme Légitime+Retirez',
     'geoipfailed04' => '(Pas de réponse de GeoIP)',
     'reversefailed04' => '(Nom d\'hôte inverse indéfini)',
+    'privatenetwork04' => '(Réseau privé)',
+    'localhost04' => '(Localhost)',
     'hostname04' => 'Nom d\'hôte',
     'yes04' => 'O',
     'no04' => 'N',
+    'relayinfo04' => 'Information du relais :',
+    'errormess04' => 'Message d\'erreur :',
+    'error04' => 'Erreur :',
+    'auditlog04' => 'Visionnage de la vue détaillée du message',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
@@ -233,13 +280,15 @@ return array(
     'error06' => 'Erreur :',
     'errornfd06' => 'Erreur : fichier non trouvé',
     'mymetype06' => 'Type MIME :',
+    'auditlog06' => 'Visualisation du corps d\'un messsage de Quarantaine (%s)',
+    'nonameattachment06' => 'Pièce jointe sans nom',
 
     // 07-lists.php
     'addwlbl07' => 'Ajouter à la Liste Noire/Blanche',
-    'from07' => 'De',
-    'to07' => 'À',
-    'list07' => 'Liste',
-    'action07' => 'Action',
+    'from07' => 'De :',
+    'to07' => 'À :',
+    'list07' => 'Liste :',
+    'action07' => 'Action :',
     'wl07' => 'Liste Blanche',
     'bl07' => 'Liste Noire',
     'reset07' => 'Réinitialiser',
@@ -250,6 +299,8 @@ return array(
     'error071' => 'Vous devez sélectionner une liste pour créer une entrée.',
     'error072' => 'Vous devez saisir une adresse de messagerie d\'Expéditeur (nom@domaine, domaine ou IP).',
     'noentries07' => 'Aucune entrée trouvée.',
+    'auditlogadded07' => 'Ajouté l\'entrée [%s] pour %s dans la %s',
+    'auditlogremoved07' => 'Supprimé l\'entrée [%s] pour %s dans la %s',
 
     // 08-quarantine.php
     'folder08' => 'Dossier de quarantaine :',
@@ -310,10 +361,10 @@ return array(
     'mcpscore09' => 'Score MCP',
     'mcpreport09' => 'Rapport MCP',
     'virusinfected09' => 'contient un Virus (>0 = VRAI)',
-    'nameinfected09' => 'contient un attachement nocif (>0 = VRAI)',
+    'nameinfected09' => 'contient un attachement dangereux (>0 = VRAI)',
     'otherinfected09' => 'contient un autre type d\'infection (>0 = VRAI)',
     'report09' => 'Rapport de Virus',
-    'hostname09' => 'Nom de Serveur MailScanner',
+    'hostname09' => 'Nom du Serveur MailScanner',
     'remove09' => 'Supprimer',
     'reports09' => 'Rapports',
 
@@ -362,18 +413,18 @@ return array(
     'domainadmin12' => 'Administrateur de Domaine',
     'admin12' => 'Administrateur',
     'quarrep12' => 'Rapport de Quarantaine :',
-    'senddaily12' => 'Envoyer un Rapport de Spam ?',
+    'senddaily12' => 'Envoyer le Rapport de Spam',
     'quarreprec12' => 'Destinataire du Rapport de Spam :',
     'overrec12' => 'Remplacer le destinataire par défaut <BR>(Utilise le nom d\'utilisateur par défaut si vide)',
     'scanforspam12' => 'Scan des Spam :',
-    'scanforspam212' => 'Scan des E-Mail pour les Spam ?',
+    'scanforspam212' => 'Scan des E-Mail pour les Spam',
     'pontspam12' => 'Points de Spam :',
     'hpontspam12' => 'Points de Spam Haut :',
     'usedefault12' => 'Utiliser les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
-    'errorpass12' => 'Le Mot de Passe de correspond pas.',
+    'errorpass12' => 'Mot de passe erroné',
     'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',
@@ -390,6 +441,25 @@ return array(
     'unknowtype12' => 'Type Inconnu',
     'yesshort12' => 'O',
     'noshort12' => 'N',
+    'auditlog0112' => 'Nouveau',
+    'auditlog0212' => 'créé',
+    'auditlog0312' => 'Le type d\'Utilisateur a été changé pour Utilisateur',
+    'auditlogfrom12' => 'de',
+    'auditlogto12' => 'vers',
+    'auditlog0412' => 'L\'Utilisateur %s a été effacé',
+    'auditlog0512' => 'L\'Utilisateur [%s] a mis à jour son propre compte',
+    'erroreditnodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs sans domaine',
+    'erroreditdomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour modifier les utilisateurs du domaine %s',
+    'errortonodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer le domaine des utilisateurs',
+    'errortodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour assigner des utilisateurs au domaine %s',
+    'errortypesetforbidden12' => 'Erreur : vous ne disposez pas des autorisations nécessaires pour attribuer des droits d\'administrateur aux utilisateurs',
+    'errordeletenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour supprimer des utilisateurs sans domaine',
+    'errordeletedomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour supprimer les utilisateurs du domaine %s',
+    'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
+    'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
+    'retypepassword12' => 'Confirmez le mot de passe :',
+    'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
+    'savedsettings12' => 'Règlages enregistrés',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -399,6 +469,7 @@ return array(
     'saruldesupdate13' => 'Mise à jour des descriptions des règles SpamAssassin',
     'rule13' => 'Règle',
     'description13' => 'Description',
+    'auditlog13' => 'Exécution de la Mise à jour des descriptions des règles SpamAssassin',
 
     // 14-reports.php
     'messlisting14' => 'Listing des messages',
@@ -441,13 +512,14 @@ return array(
     'extractok15' => 'extraction réussie',
     'message515' => 'Impossible d\'extraire le fichier de données GeoIP.',
     'message615' => 'Activez le module PHP Zlib dans votre configuration PHP ou installez le binaire gunzip.',
-    'processok' => 'Processus terminé !',
+    'processok15' => 'Processus terminé !',
     'norread15' => 'Impossible de lire ou d\'écrire sur le',
     'message715' => 'Les fichiers existent toujours pour une raison inconnue.',
     'message815' => 'Effacez-les à la main à partir de',
     'directory15' => 'répertoire',
     'geoipupdate15' => 'Mise à jour des bases GeoIP',
     'dieproxy15' => 'Le type de proxy doit être en "HTTP" ou en "SOCKS5". Vérifiez votre fichier de configuration.',
+    'auditlog15' => 'Exécution de la mise à jour GeoIP',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Listing des messages',
@@ -468,9 +540,11 @@ return array(
     'lastexpiry18' => 'Dernière échéance :',
     'lastexpirycount18' => 'Dernier comptage lors de la réduction d\'échéance :',
     'tokens18' => 'jetons',
+    'auditlog18' => 'Visionnage de la page d\'information sur la base SpamAssassin Bayes',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'Statut ClamAV',
+    'auditlog19' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de Statut ClamAV',
 
     // 20-docs.php
     'doc20' => 'Documentation',
@@ -478,6 +552,12 @@ return array(
 
     // 21-do_message_ops.php
     'opresult21' => 'Résultat des opérations',
+    'spamlearnresult21' => 'Résultats de l\'apprentissage de Spam',
+    'diemnf21' => 'Message non trouvé en quarantaine.',
+    'back21' => 'Revenir',
+    'messageid21' => 'ID du message',
+    'result21' => 'Opération',
+    'message21' => 'Message',
 
     // 22-f-prot_status.php
     'fprotstatus22' => 'Statut F-Prot',
@@ -488,29 +568,46 @@ return array(
     // 24-mailq.php
     'mqviewer24' => 'Mail Queue Viewer',
     'diemq24' => 'Aucune file d\'attente définie',
+    'inq24' => 'File d\'attente de messages entrants',
+    'outq24' => 'File d\'attente de courrier sortant',
 
     // 25-mcafee_status.php
     'mcafeestatus25' => 'Statut McAfee',
 
     // 26-mcp_rules_update.php
     'mcpruledesc26' => 'Mise à jour des descriptions des règles MCP',
+    'auditlog26' => 'Exécution de la mise à jour des règles MCP',
+    'message0126' => 'Cet utilitaire est utilisé pour mettre à jour la base de données SQL avec une description des règles MCP qui sont affichés sur l\'écran Message Détail mise à jour.',
+    'message0226' => 'Cet utilitaire doit généralement être exécuté après une mise à jour des règles MCP, mais il est possible de le lancer à tout moment car il ne remplace que les valeurs existantes et insère seulement de nouvelles valeurs dans le tableau (donc en préservant les descriptions de règles potentiellement obsolètes ou supprimés).',
+    'input26' => 'Démarrer',
+    'rule26' => 'Règle',
+    'description26' => 'Description',
 
     // 27-msconfig.php
     'config27' => 'Configuration',
     'msconfig27' => 'Configuration de MailScanner',
+    'auditlog27' => 'Visionnage de la Configuration de MailScanner',
 
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Impossible d\'ouvrir le conduit',
+    'errormessage28' => 'La variable MS_EXECUTABLE_PATH est vide. Veuillez définir cette variable dans conf.php.',
+    'auditlog28' => 'Exécution de MailScanner lint',
+    'finish28' => 'Terminé - Durée Totale',
+    'message28' => 'Message',
+    'time28' => 'Durée',
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
+    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
     // 30-msrule.php
     'rules30' => 'Règles',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'Statut MySQL',
+    'notauthorized31' => 'Non autorisé',
+    'auditlog31' => 'Visionnage du Statut MySQL',
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Visualisateur de file d\'attente de courrier',
@@ -518,10 +615,14 @@ return array(
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Log de l\'Audit',
-    'datetime33' => 'Date/Heure',
-    'user33' => 'Utilisateur',
-    'ipaddress33' => 'Adresse IP',
-    'action33' => 'Action',
+    'datetime33' => 'Date/Heure :',
+    'user33' => 'Utilisateur :',
+    'ipaddress33' => 'Adresse IP :',
+    'action33' => 'Action :',
+    'filter33' => 'Filtre',
+    'applyfilter33' => 'appliquer',
+    'startdate33' => 'Date de départ :',
+    'enddate33' => 'Date de fin :',
 
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'Score MCP par point',
@@ -577,57 +678,41 @@ return array(
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
     'top10recipdomqt40' => 'Top 10 des domaines de destination par quantité',
     'domain40' => 'Domaine',
-    'count40' => 'Nombre',
-    'size40' => 'Taille',
 
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top des domaines de destination par volume',
     'top10recipdomvol41' => 'Top 10 des domaines de destination par volume',
     'domain41' => 'Domaine',
-    'count41' => 'Nombre',
-    'size41' => 'Taille',
-
+    
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top des destinataires par quantité',
     'top10recipqt42' => 'Top 10 des destinataires par quantité',
     'email42' => 'Adresse E-Mail',
-    'count42' => 'Nombre',
-    'size42' => 'Taille',
 
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top des destinataires par volume',
     'top10recipvol43' => 'Top 10 des destinataires par volume',
     'email43' => 'Adresse E-Mail',
-    'count43' => 'Nombre',
-    'size43' => 'Taille',
 
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top des domaines d\'expédition par quantité',
     'top10senderdomqt44' => 'Top 10 des domaines d\'expédition par quantité',
     'domain44' => 'Domaine',
-    'count44' => 'Nombre',
-    'size44' => 'Taille',
 
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Top des domaines d\'expédition par volume',
     'top10senderdomvol45' => 'Top 10 des domaines d\'expédition par volume',
     'domain45' => 'Domaine',
-    'count45' => 'Nombre',
-    'size45' => 'Taille',
 
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top des expéditeurs par quantité',
     'top10sendersqt46' => 'Top 10 des expéditeurs par quantité',
     'email46' => 'Adresse E-Mail',
-    'count46' => 'Nombre',
-    'size46' => 'Taille',
 
     // 47-rep_top_senders_by_volume.php
-    'topsendersvol47' => 'Top ders expéditeurs par volume',
+    'topsendersvol47' => 'Top des expéditeurs par volume',
     'top10sendersvol47' => 'Top 10 des expéditeurs par volume',
     'email47' => 'Adresse E-Mail',
-    'count47' => 'Nombre',
-    'size47' => 'Taille',
 
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top des Virus',
@@ -635,7 +720,6 @@ return array(
     'nodata48' => 'Pas assez de données pour générer le graphique.',
     'virus48' => 'Virus',
     'count48' => 'Nombre',
-    'dienorow48' => 'Erreur : aucun enregistrement trouvé dans la base de données...',
 
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total des messages par date',
@@ -670,9 +754,15 @@ return array(
     // 51-sa_lint.php
     'salint51' => 'SpamAssassin Lint',
     'diepipe51' => 'Impossible d\'ouvrir le conduit',
+    'finish51' => 'Terminé - Durée Totale',
+    'auditlog51' => 'Execution de SpamAssassin lint',
+    'message51' => 'Message',
+    'time51' => 'Durée',
 
     // 52-sf_version.php
     'mwandmsversion52' => 'Information sur les versions des logiciels',
+    'auditlog52' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'downloaddate52' => 'date de téléchargement',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -682,8 +772,9 @@ return array(
 
     // 55-msre_edit.php
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
+    'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
 
-    // 56-postfix_relay.php
+    // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',
 
     // 57-quarantine_action.php
@@ -691,6 +782,12 @@ return array(
     'dienoaction57' => 'Erreur : aucune action',
     'diemnf57' => 'Erreur : aucun message trouvé en quarantaine',
     'dieuaction57' => 'Action inconnue :',
+    'closewindow57' => 'Fermer la fenêtre',
+    'mailwatchtitle57' => 'MailWatch pour Mailscanner',
+    'result57' => 'Résultat',
+    'delete57' => 'Effacer : êtes-vous sur ?',
+    'yes57' => 'Oui',
+    'no57' => 'Non',
 
     // 58-viewpart.php
     'nomessid58' => 'Aucun ID de message saisie',
@@ -698,7 +795,8 @@ return array(
     'notfound58' => 'non trouvé',
     'error58' => 'Erreur :',
     'errornfd58' => 'Erreur : fichier non trouvé',
-    'part58' => 'Partie',
+    'part58' => 'Expédié',
+    'title58' => 'Visualisation des E-Mail de Quarantaine',
 
     // 59-auto-release.php
     'msgnotfound159' => 'Message non trouvé. Vous avez déjà du libérer ce message ou le lien n\'est peut être plus bon.',
@@ -710,6 +808,7 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
+    'title59' => 'Quarantine Release',
 
     // 60-rpcserver.php
     'paratype160' => 'Parameter type',
@@ -719,15 +818,66 @@ return array(
     'client160' => 'Le client',
     'client260' => 'n\'est pas autorisé à ce connecter.',
 
+    // 61-quarantine_report.php
+    'view61' => 'Visualiser',
+    'received61' => 'Reçu',
+    'to61' => 'Á',
+    'from61' => 'De',
+    'subject61' => 'Sujet',
+    'reason61' => 'Raison',
+    'action61' => 'Action',
+    'title61' => 'Rapport de message en Quarantaine',
+    'message61' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
+    'text611' => 'Rapport de Quarantaine pour %s',
+    'text612' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine et dont vous retrouverez la liste ci-dessous. Les messages en Quarantaine sont automatiquement effacés %s jours après la date à laquelle ils ont été reçus.',
+    'release61' => 'Libérer',
+    'virus61' => 'Virus',
+    'badcontent61' => 'Contenu dangereux',
+    'infected61' => 'Infecté',
+    'spam61' => 'Spam',
+    'blacklisted61' => 'Liste Noire',
+    'policy61' => 'Politique',
+    'unknow61' => 'INCONNU',
+
+    // 62-quarantine_maint.php
+    'message62' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
+    'errors62' => 'Erreur :',
+
+    // 63-password_reset.php
+    'conferror63' => 'Erreur : le système de remise à zéro du mot de passe n\'est pas activé dans le fichier conf.php.',
+    'usernotfound63' => 'Utilisateur non trouvé.',
+    'errordb63' => 'Erreur de base de données.',
+    'title63' => 'Réinitialiser le mot de passe.',
+    'passwdresetrequest63' => 'Demande de réinitialisation de mot de passe.',
+    'p1email63' => 'Une demande de réinitialisation de mot de passe a été reçu pour %s .<br>Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.<p>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous<br>',
+    'button63' => 'Réinitialiser le mot de passe',
+    '01emailplaintxt63' => 'Demande de réinitialisation de mot de passe\nUne demande de réinitialisation de mot de passe a été reçue pour %s \nSi vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement\nPour réinitialiser votre mot de passe, veuillez copier et coller le lien ci-dessous dans votre navigateur :\n',
+    '01emailsubject63' => 'Demande de réinitialisation de mot de passe.',
+    '01emailsuccess63' => 'Votre demande de réinitialisation de mot de passe a réussi. Veuillez consulter votre boîte de courriel pour la prochaine étape.',
+    'resetnotallowed63' => 'Réinitialisation de mot de passe non autorisée.',
+    'errorpwdchange63' => 'Erreur lors du changement du mot de passe.',
+    'pwdresetsuccess63' => 'Votre demande de réinitialisation de mot de passe a réussi.',
+    '03pwdresetemail63' => 'Le mot de passe de votre compte %s a été mis à jour.<br />Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.',
+    '04pwdresetemail63' => 'Votre mot de passe a été réinitialisé.\nLe mot de passe de votre compte %s a été mis à jour.\nSi vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.',
+    'pwdresetidmismatch63' => 'Incompatibilité UID - Quelque chose a mal tourné.',
+    'pwdmismatch63' => 'Les mots de passe ne correspondent pas.',
+    'emailaddress63' => 'Addresse E-Mail',
+    '01pwd63' => 'Entrer le mot de passe',
+    '02pwd63' => 'Saisir à nouveau le mot de passe',
+    'requestpwdreset63' => 'Demande de réinitialisation de mot de passe.',
+    'resetexpired63' => 'Le lien de réinitialisation a expiré - Veuillez faire une nouvelle demande de changement de mot de passe.',
+    'brokenlink63' => 'Le lien de réinitialisation manque des paramètres - Essayez de nouveau ou contactez le support.',
+    'pwdresetldap63' => 'La fonction de réinitialisation du mot de passe n\'est pas disponible avec LDAP.',
+
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ' :',
-    'diemysql99' => 'Erreur : aucun enregistrement trouvé dans la base de données',
+    'diemysql99' => 'Erreur : aucun enregistrement trouvé dans la base de données.',
     'message199' => 'Le fichier n\'est pas lisible. Vérifiez que',
     'message299' => 'soit lisible et puissent être écrit part MailWatch',
     'mwlogo99' => 'Logo MailWatch',
     'mslogo99' => 'Logo MailScanner',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
-
+    'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',
 );

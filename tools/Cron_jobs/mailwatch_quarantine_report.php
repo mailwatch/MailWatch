@@ -5,7 +5,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,18 +30,22 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change the following to reflect the location of functions.php
-require_once '/var/www/html/mailscanner/functions.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
 $required_constant = array(
     'QUARANTINE_REPORT_DAYS',
-    'QUARANTINE_REPORT_HOSTURL',
+    'MAILWATCH_HOSTURL',
     'QUARANTINE_DAYS_TO_KEEP',
     'QUARANTINE_REPORT_FROM_NAME',
-    'QUARANTINE_FROM_ADDR',
+    'MAILWATCH_FROM_ADDR',
     'QUARANTINE_REPORT_SUBJECT',
     'MAILWATCH_HOME',
-    'QUARANTINE_MAIL_HOST',
+    'MAILWATCH_MAIL_HOST',
     'FROMTO_MAXLEN',
     'SUBJECT_MAXLEN',
     'TIME_ZONE',
@@ -51,13 +55,14 @@ $required_constant = array(
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
-        echo "The variable $constant is empty, please set a value in conf.php.\n";
+        echo sprintf(__('message61'), $constant) . "\n";
         $required_constant_missing_count++;
     }
 }
 if ($required_constant_missing_count === 0) {
-    require_once 'Mail.php';
-    require_once 'Mail/mime.php';
+    require_once $mailwatch_dir . 'lib/pear/Mail.php';
+    require_once $mailwatch_dir . 'lib/pear/Mail/smtp.php';
+    require_once $mailwatch_dir . 'lib/pear/Mail/mime.php';
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('html_errors', 'off');
@@ -71,10 +76,10 @@ if ($required_constant_missing_count === 0) {
     ** HTML Template
     */
 
-    $html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    $html = '<!DOCTYPE html>
 <html>
 <head>
- <title>Message Quarantine Report</title>
+ <title>' . __('title61') . '</title>
  <style type="text/css">
  <!--
   body, td, tr {
@@ -91,8 +96,8 @@ if ($required_constant_missing_count === 0) {
  <tr>
   <td><img src="mailwatch-logo.png"/></td>
   <td align="center" valign="middle">
-   <h2>Quarantine Report for %s</h2>
-   In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
+   <h2>' . __('text611') . '</h2>
+   ' . __('text612') . '
   </td>
  </tr>
  <tr>
@@ -104,12 +109,12 @@ if ($required_constant_missing_count === 0) {
 
     $html_table = '<table width="100%%" border="0">
  <tr>
-  <td style="background-color: #F7CE4A"><b>Received</b></td>
-  <td style="background-color: #F7CE4A"><b>To</b></td>
-  <td style="background-color: #F7CE4A"><b>From</b></td>
-  <td style="background-color: #F7CE4A"><b>Subject</b></td>
-  <td style="background-color: #F7CE4A"><b>Reason</b></td>
-  <td style="background-color: #F7CE4A"><b>Action</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('received61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('to61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('from61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('subject61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('reason61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . __('action61') . '</b></td>
  </tr>
 %s
 </table>';
@@ -177,20 +182,20 @@ a.to_address AS to_address,
 a.from_address AS from_address,
 a.subject AS subject,
 CASE
- WHEN a.virusinfected>0 THEN 'Virus'
- WHEN a.nameinfected>0 THEN 'Bad Content'
- WHEN a.otherinfected>0 THEN 'Infected'
- WHEN a.ishighspam>0 THEN 'Spam'
- WHEN a.issaspam>0 THEN 'Spam'
- WHEN a.isrblspam>0 THEN 'Spam'
- WHEN a.spamblacklisted>0 THEN 'Blacklisted'
- WHEN a.isspam THEN 'Spam'
- WHEN a.ismcp>0 THEN 'Policy'
- WHEN a.ishighmcp>0 THEN 'Policy'
- WHEN a.issamcp>0 THEN 'Policy'
- WHEN a.mcpblacklisted>0 THEN 'Policy'
- WHEN a.isspam>0 THEN 'Spam'
- ELSE 'UNKNOWN'
+ WHEN a.virusinfected>0 THEN '" . __('virus61') . "'
+ WHEN a.nameinfected>0 THEN '" . __('badcontent61') . "'
+ WHEN a.otherinfected>0 THEN '" . __('infected61') . "'
+ WHEN a.ishighspam>0 THEN '" . __('spam61') . "'
+ WHEN a.issaspam>0 THEN '" . __('spam61') . "'
+ WHEN a.isrblspam>0 THEN '" . __('spam61') . "'
+ WHEN a.spamblacklisted>0 THEN '" . __('blacklisted61') . "'
+ WHEN a.isspam THEN '" . __('spam61') . "'
+ WHEN a.ismcp>0 THEN '" . __('policy61') . "'
+ WHEN a.ishighmcp>0 THEN '" . __('policy61') . "'
+ WHEN a.issamcp>0 THEN '" . __('policy61') . "'
+ WHEN a.mcpblacklisted>0 THEN '" . __('policy61') . "'
+ WHEN a.isspam>0 THEN '" . __('spam61') . "'
+ ELSE '" . __('unknow61') . "'
 END AS reason
 FROM
  maillog a
@@ -354,16 +359,6 @@ function return_quarantine_list_array($to_address, $to_domain)
 }
 
 /**
- * @param integer $count
- * @return string
- */
-function get_random_string($count)
-{
-    $bytes = openssl_random_pseudo_bytes($count);
-    return bin2hex($bytes);
-}
-
-/**
  * @param array $qitem
  * @return bool
  */
@@ -371,7 +366,7 @@ function store_auto_release($qitem)
 {
     $id = $qitem['id'];
     $rand = $qitem['rand'];
-    $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')");
+    $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')", false);
     if (!$result) {
         dbg(' ==== Error generating auto_release....skipping...');
         return false;
@@ -388,7 +383,7 @@ function check_auto_release($qitem)
 {
     //function checks if message already has an autorelease entry
     $id = $qitem['id'];
-    $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'");
+    $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'", false);
     if (!$result) {
         dbg(' === Error checking if msg_id already exists.....skipping....');
     } else {
@@ -421,7 +416,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     // Build the quarantine list for this recipient
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
-        $links = '<a href="' . QUARANTINE_REPORT_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('arview01').'</a>';
+        $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('view61').'</a>';
         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
             //Check if email already has an autorelease entry
             $exists = check_auto_release($qitem);
@@ -434,7 +429,7 @@ function send_quarantine_email($email, $filter, $quarantined)
             }
             if ($auto_release) {
                 // add auto release link if enabled
-                $links .= '  <a href="' . QUARANTINE_REPORT_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">'.__('arrelease01').'</a>';
+                $links .= '  <a href="' . MAILWATCH_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('release61') . '</a>';
             }
         }
 
@@ -474,20 +469,32 @@ function send_quarantine_email($email, $filter, $quarantined)
     }
 
     // Send e-mail
-    $mime = new Mail_mime("\n");
-    $hdrs = array(
-        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . QUARANTINE_FROM_ADDR . '>',
-        'To' => $email,
-        'Subject' => QUARANTINE_REPORT_SUBJECT,
-        'Date' => date('r')
-    );
-    $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
-    $mime->setTXTBody($text_report);
-    $mime->setHTMLBody($html_report);
-    $body = $mime->get();
-    $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => QUARANTINE_MAIL_HOST);
-    $mail =& Mail::factory('smtp', $mail_param);
-    $mail->send($email, $hdrs, $body);
-    dbg(" ==== Sent e-mail to $email");
+    $isSent = send_email($email, $html_report, $text_report, QUARANTINE_REPORT_SUBJECT);
+    if ($isSent === true) {
+        dbg(" ==== Sent e-mail to $email");
+    } else {
+        dbg(" ==== ERROR sending e-mail to $email ". $isSent);
+    }
+//    $mime = new Mail_mime("\n");
+//    $hdrs = array(
+//        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>',
+//        'To' => $email,
+//        'Subject' => QUARANTINE_REPORT_SUBJECT,
+//        'Date' => date('r')
+//    );
+//    $mime_params = array(
+//        'text_encoding' => '7bit',
+//        'text_charset' => 'UTF-8',
+//        'html_charset' => 'UTF-8',
+//        'head_charset' => 'UTF-8'
+//    );
+//    $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
+//    $mime->setTXTBody($text_report);
+//    $mime->setHTMLBody($html_report);
+//    $body = $mime->get($mime_params);
+//    $hdrs = $mime->headers($hdrs);
+//    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+//    $mail = new Mail_smtp($mail_param);
+//    $mail->send($email, $hdrs, $body);
+//    dbg(" ==== Sent e-mail to $email");
 }

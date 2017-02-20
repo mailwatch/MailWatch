@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -43,18 +43,18 @@ $filter = html_start(__('toprecipvol43'), 0, false, true);
 // File name
 $filename = CACHE_DIR . '/top_recipients_by_volume.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
-  to_address,
+  REPLACE(to_address,",",",\n") as name,
   COUNT(*) as count,
   SUM(size) as size
  FROM
   maillog
  WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
+  from_address <> "" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  GROUP BY
   to_address
  ORDER BY
@@ -62,82 +62,25 @@ $sql = "
  LIMIT 10
 ';
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
-
-    // JPGraph
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_pie.php';
-    include_once './lib/jpgraph/src/jpgraph_pie3d.php';
-
-    $result = dbquery($sql);
-    if (!$result->num_rows > 0) {
-        die(__('diemysql99') . "\n");
-    }
-
-    while ($row = $result->fetch_object()) {
-        $data[] = $row->count;
-        $data_names[] = $row->to_address;
-        $data_size[] = $row->size;
-    }
-
-    // Work out best display value
-    format_report_volume($data_size, $size_info);
-
-    $graph = new PieGraph(800, 385, 0, false);
-    $graph->SetShadow();
-    $graph->img->SetAntiAliasing();
-    $graph->title->Set(__('top10recipvol43'));
-
-    $p1 = new PiePlot3d($data);
-    $p1->SetTheme('sand');
-    $p1->SetLegends($data_names);
-
-    $p1->SetCenter(0.70, 0.4);
-    $graph->legend->SetLayout(LEGEND_VERT);
-    $graph->legend->Pos(0.25, 0.20, 'center');
-
-    $graph->Add($p1);
-    $graph->Stroke($filename);
-}
-
-// HTML code to display the graph
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo '<TR>';
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo '</TR>';
-echo '<TR>';
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
-} else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo '</TR>';
-echo '<TR>';
-echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"500\">";
-echo "<TR BGCOLOR=\"#F7CE4A\">";
-echo '<TH>' . __('email43') . '</TH>';
-echo '<TH>' . __('count43') . '</TH>';
-echo '<TH>' . __('size43') . '</TH>';
-echo '</TR>';
-
-for ($i = 0, $count_data = count($data); $i < $count_data; $i++) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">
- <TD>$data_names[$i]</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
- <TD ALIGN=\"RIGHT\">" . formatSize($data_size[$i] * $size_info['formula']) . "</TD>
-</TR>\n";
-}
-
-echo '
-  </TABLE>
- </TD>
-</TR>
-</TABLE>';
+$columnTitles = [
+    __('email43'),
+    __('count03'),
+    __('size03')
+];
+$sqlColumns = [
+    'name',
+    'count',
+    'size'
+];
+$valueConversion = [
+    'size' => 'scale',
+    'count' => 'number'
+];
+$graphColumns = [
+    'labelColumn' => 'name',
+    'dataColumn' => 'size'
+];
+printGraphTable($filename, $sql, __('top10recipvol43'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

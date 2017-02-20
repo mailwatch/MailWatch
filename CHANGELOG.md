@@ -5,7 +5,7 @@
  - Use utf8mb4 on capable systems (MySQL >= 5.5.3)
  - Fix geoip function dereclaration
  - Warn on missing sa-learn binary
- - Add SA_PREFS to list of SpamAssassin rules direcotory
+ - Add SA_PREFS to list of SpamAssassin rules directory
  - Improve session cookie security
  - Upgrade pear packages
  - Filter LDAP username and password before passing them to LDAP server

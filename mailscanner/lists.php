@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -64,7 +64,7 @@ $url_domain = (isset($_GET['domain']) ? sanitizeInput($_GET['domain']) : '');
 $url_domain = htmlentities($url_domain);
 $url_domain = safe_value($url_domain);
 
-$url_id = (isset($_GET['id']) ? sanitizeInput($_GET['id']) : '');
+$url_id = (isset($_GET['listid']) ? sanitizeInput($_GET['listid']) : '');
 $url_id = htmlentities($url_id);
 $url_id = safe_value($url_id);
 
@@ -100,18 +100,13 @@ switch ($_SESSION['user_type']) {
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result1 = dbquery($sql1);
 
-        if (!$result1) {
-            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-            $message .= 'Whole query: ' . $sql1;
-            die($message);
-        }
         $filter = array();
-        while ($row = $result1->fetch_row()) {
+        while ($row = $result1->fetch_assoc()) {
             $filter[] = $row['filter'];
         }
         $user_filter = array();
         foreach ($filter as $user_filter_check) {
-            if (preg_match("/^[^@]{1,64}@[^@]{1,255}$/", $user_filter_check)) {
+            if (preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $user_filter_check)) {
                 $user_filter[] = $user_filter_check;
             }
         }
@@ -132,12 +127,7 @@ switch ($_SESSION['user_type']) {
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result1 = dbquery($sql1);
 
-        if (!$result1) {
-            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-            $message .= 'Whole query: ' . $sql1;
-            die($message);
-        }
-        while ($row = $result1->fetch_row()) {
+        while ($row = $result1->fetch_assoc()) {
             $to_domain_filter[] = $row['filter'];
         }
         if (strpos($_SESSION['myusername'], '@')) {
@@ -179,20 +169,24 @@ if ($url_submit === 'add') {
         switch ($url_list) {
             case 'w': // Whitelist
                 $list = 'whitelist';
+                $listi18 = __('wl07');
                 break;
             case 'b': // Blacklist
                 $list = 'blacklist';
+                $listi18 = __('bl07');
                 break;
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
             . "('" . safe_value($to_address) . "',"
             . "'" . safe_value($to_domain) . "',"
             . "'" . safe_value($from) . "')";
-        @dbquery($sql);
-        audit_log('Added ' . $from . ' to ' . $list . ' for ' . $to_address);
-        //unset($from);
-        //unset($url_list);
+        dbquery($sql);
+        audit_log(sprintf(__('auditlogadded07'), $from, $to_address, $listi18));
     }
+    $to_domain = '';
+    $touser = '';
+    $from = '';
+    $url_list = '';
 }
 
 // Delete
@@ -201,29 +195,40 @@ if ($url_submit === 'delete') {
     switch ($url_list) {
         case 'w':
             $list = 'whitelist';
+            $listi18 = __('wl07');
             break;
         case 'b':
             $list = 'blacklist';
+            $listi18 = __('bl07');
             break;
     }
+
+    $sqlfrom = "SELECT from_address FROM $list WHERE id='$id'";
+    $result = dbquery($sqlfrom);
+    $row = $result->fetch_array();
+    $from_address = $row['from_address'];
 
     switch ($_SESSION['user_type']) {
         case 'U':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            audit_log("Removed entry $id from $list");
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
         case 'D':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            audit_log("Removed entry $id from $list");
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
         case 'A':
             $sql = "DELETE FROM $list WHERE id='$id'";
-            audit_log("Removed entry $id from $list");
+            audit_log(sprintf(__('auditlogremoved07'), $from_address, $to_address, $listi18));
             break;
     }
 
     $id = safe_value($url_id);
     dbquery($sql);
+    $to_domain = '';
+    $touser = '';
+    $from = '';
+    $url_list = '';
 }
 
 function build_table($sql, $list)
@@ -245,12 +250,12 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;id=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
     } else {
-        echo "No entries found.\n";
+        echo __('noentries07') . "\n";
     }
 }
 
@@ -261,11 +266,11 @@ echo '
   <th colspan=2>' . __('addwlbl07') . '</th>
  </tr>
  <tr>
-  <td class="heading">' . __('from07') . __('colon99') . '</td>
+  <td class="heading">' . __('from07') . '</td>
   <td><input type="text" name="from" size=50 value="' . $from . '"></td>
  </tr>
  <tr>
-  <td class="heading">' . __('to07') . __('colon99') . '</td>';
+  <td class="heading">' . __('to07') . '</td>';
 
 switch ($_SESSION['user_type']) {
     case 'A':
@@ -305,7 +310,7 @@ switch ($_SESSION['user_type']) {
 echo '
  </tr>
  <tr>
-  <td class="heading">' . __('list07') . __('colon99') . '</td>
+  <td class="heading">' . __('list07') . '</td>
   <td>';
 
 $w = '';
@@ -318,13 +323,13 @@ switch ($url_list) {
         $b = 'CHECKED';
         break;
 }
-echo '   <input type="radio" value="w" name="list" ' . $w . '>'. __('wl07') . '&nbsp;&nbsp;' . "\n";
+echo '   <input type="radio" value="w" name="list" ' . $w . '>' . __('wl07') . '&nbsp;&nbsp;' . "\n";
 echo '   <input type="radio" value="b" name="list" ' . $b . '>' . __('bl07') . '' . "\n";
 
 echo '  </td>
  </tr>
  <tr>
-  <td class="heading">' . __('action07') . __('colon99') . '</td>
+  <td class="heading">' . __('action07') . '</td>
   <td><button type="reset" value="reset">' . __('reset07') . '</button>&nbsp;&nbsp;<button type="submit" name="submit" value="add">' . __('add07') . '</button></td>
  </tr>';
 if (isset($errors)) {

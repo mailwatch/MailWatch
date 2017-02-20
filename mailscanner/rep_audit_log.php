@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -42,7 +42,39 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     // add the header information such as the logo, search, menu, ....
-    $filter = html_start(__('auditlog33'), 0, false, true);
+    html_start(__('auditlog33'), 0, false, false);
+
+    $auditFilter = '';
+    $startDate=filter_input(INPUT_GET, 'startDate');
+    $endDate=filter_input(INPUT_GET, 'endDate');
+    $username=filter_input(INPUT_GET, 'username');
+    $ipaddress=filter_input(INPUT_GET, 'ipaddress', FILTER_VALIDATE_IP);
+    $actions=filter_input(INPUT_GET, 'actions');
+    if ($startDate === null || $startDate == '') {
+        $startDate = '';
+    } else {
+        $auditFilter .= ' AND a.timestamp >= "' . safe_value($startDate) . ' 00:00:00"';
+    }
+    if ($endDate === null || $endDate == '') {
+        $endDate = '';
+    } else {
+        $auditFilter .= ' AND a.timestamp <= "' . safe_value($endDate) . ' 23:59:59"';
+    }
+    if ($username === null || $username == '') {
+        $username = '';
+    } else {
+        $auditFilter .= ' AND b.username = "' . safe_value($username) . '"';
+    }
+    if ($ipaddress === null || $ipaddress == '') {
+        $ipaddress = '';
+    } else {
+        $auditFilter .= ' AND a.ip_address = "' . safe_value($ipaddress) . '"';
+    }
+    if ($actions === null || $actions == '') {
+        $actions = '';
+    } else {
+        $auditFilter .= ' AND a.action like "%' . safe_value($actions) . '%"';
+    }
 
     // SQL query for the audit log
     $sql = "
@@ -56,13 +88,24 @@ if ($_SESSION['user_type'] !== 'A') {
   users b
  WHERE
   a.user=b.username
- AND
-  1=1
-" . $filter->CreateMtalogSQL() . '
+" . $auditFilter . '
  ORDER BY timestamp DESC';
+
     echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' .  __('mslogo99') . '"></td></tr>
- <tr><td>' . "\n";
+ <tr><td>
+  <form action="rep_audit_log.php" method="GET" class="floatleft">
+    <div class="mail table" id="auditFilters">
+      <div class="caption head">' . __('filter33') . '</div>
+      <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('enddate33') . '</div><div class="cell data"><input name="endDate" type="text" placeholder="YYYY-MM-DD" value="' . $endDate . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('user33') . '</div><div class="cell data"><input name="username" type="text" value="' . $username . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('ipaddress33') . '</div><div class="cell data"><input name="ipaddress" type="text" value="' . $ipaddress . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . $actions . '"/></div></div>
+      <div class="row"><div class="cell head"></div><div class="cell head"><button type="submit">' . __('applyfilter33') . '</button></div></div>
+    </div>
+  </form>
+</td></tr>
+<tr><td>' . "\n";
 
     // Function to to query and display the data
     dbtable($sql, __('auditlog33'), true);

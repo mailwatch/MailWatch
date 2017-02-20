@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -62,10 +62,10 @@ $sql = '
 if (is_writable(CACHE_DIR)) {
 
     // JPGraph
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_log.php';
-    include_once './lib/jpgraph/src/jpgraph_bar.php';
-    include_once './lib/jpgraph/src/jpgraph_line.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_log.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_bar.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_line.php';
 
     // ##### AJOS1 NOTE #####
     // ### AjosNote - Must be 2 or more rows...
@@ -93,6 +93,7 @@ if (is_writable(CACHE_DIR)) {
     $graph->SetShadow();
     $graph->SetScale('textlin');
     $graph->img->SetMargin(60, 60, 30, 70);
+    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
     $graph->title->Set(__('sascoredist38'));
     $graph->xaxis->title->Set(__('scorerounded38'));
     $graph->xaxis->SetTextLabelInterval($labelinterval);
@@ -111,35 +112,34 @@ if (is_writable(CACHE_DIR)) {
     $graph->Stroke($filename);
 }
 
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD></TR>";
-echo " <TR>\n";
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">' . "\n";
+echo ' <TR>' . "\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
-echo " </TR>\n";
-echo " <TR>\n";
-echo "  <TD ALIGN=\"CENTER\">\n";
-echo "<TABLE BORDER=\"0\" WIDTH=\"500\">\n";
-echo " <TR BGCOLOR=\"#F7CE4A\">\n";
-echo '  <TH>' . __('score38') . "</TH>\n";
-echo '  <TH>' . __('count38') . "</TH>\n";
-echo " </TR>\n";
+echo ' </TR>' . "\n";
+echo ' <TR>' . "\n";
+echo '  <TD ALIGN="CENTER">' . "\n";
+echo '<TABLE BORDER="0" WIDTH="500">' . "\n";
+echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
+echo '  <TH>' . __('score38') . '</TH>' . "\n";
+echo '  <TH>' . __('count38') . '</TH>' . "\n";
+echo ' </TR>' . "\n";
 
 for ($i = 0, $data_count_num = count($data_count); $i < $data_count_num; $i++) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">\n";
-    echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_count[$i]) . "</TD>\n";
-    echo "</TR>\n";
+    echo '<TR BGCOLOR="#EBEBEB">' . "\n";
+    echo ' <TD ALIGN="CENTER">' .$data_labels[$i]. '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . number_format($data_count[$i]) . '</TD>' . "\n";
+    echo '</TR>' . "\n";
 }
-echo "</TABLE>\n";
-echo "</TR>\n";
-echo "</TABLE>\n";
+echo '</TABLE>' . "\n";
+echo '</TR>' . "\n";
+echo '</TABLE>' . "\n";
 
 // Add footer
 html_end();

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -38,7 +38,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     html_start(__('saruldesupdate13'), 0, false, false);
-    echo "<table class=\"boxtable\" width=\"100%\">";
+    echo '<table class="boxtable" width="100%">';
     echo '<tr><th>' . __('updatesadesc13') . '</th></tr>';
     echo '<tr>';
     echo '  <td>';
@@ -51,22 +51,22 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '  <td align="center">
     <form method="post" action="sa_rules_update.php">
     <div style="margin: 5px">' . "\n";
-    echo "<input type=\"submit\" value=\"" . __('input13') . "\"><br><br>";
-    echo "<input type=\"hidden\" name=\"run\" value=\"true\">
+    echo '<input type="submit" value="' . __('input13') . '"><br><br>';
+    echo '<input type="hidden" name="run" value="true">
     </div>
     </form>
-    </td>";
+    </td>';
     echo '</tr>';
     echo "</table>\n";
 
     if (isset($_POST['run'])) {
-        echo "<table width=\"100%\">";
-        echo "<tr><td align=\"center\"><table class=\"mail\" border=\"0\" cellpadding=\"1\" cellspacing=\"1\"><tr><th>" . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
+        echo '<table width="100%">';
+        echo '<tr><td align="center"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
         $fh = popen(
             "grep -hr '^\s*describe' " . SA_RULES_DIR . ' /usr/share/spamassassin /usr/local/share/spamassassin ' . SA_PREFS . ' /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq',
             'r'
         );
-        audit_log('Ran SpamAssassin Rules Description Update');
+        audit_log(__('auditlog13'));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             // debug("line: ".$line."\n");

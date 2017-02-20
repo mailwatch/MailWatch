@@ -2,49 +2,45 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
+Copy the file 'mailwatch' into /etc/cron.daily/
+
+Copy in /usr/local/bin the following files:
+
+mailwatch_db_clean.php
+mailwatch_quarantine_maint.php
+mailwatch_quarantine_report.php
+
+Verify if the 3 files are executable. If not, use "chmod +x" to correct tis problem.
+
 -------------------------------------------
 Database cleanup of maillog records
 -------------------------------------------
 
-db_clean.php
-
-add to /etc/cron.daily/
-
-You need to edit conf.php the RECORD_DAYS_TO_KEEP definition.
-
-You need to edit the db_clean.php to reflect the location of the functions.php file
+You need to edit conf.php and change the RECORD_DAYS_TO_KEEP definition.
 
 --------------------------------------------
 Quarantine Maintenance
 --------------------------------------------
 
-Remove the clean.quarantine
+You need to edit in conf.php the QUARANTINE_DAYS_TO_KEEP variable.
 
-quarantine_maint.php
+For MailScanner v4: Delete the clean.quarantine cron file.
 
-add to /etc/cron.daily/
-
-You need to edit conf.php the QUARANTINE_DAYS_TO_KEEP definition.
-
-You need to edit the quarantine_maint.php to reflect the location of the functions.php file
+For MailScanner v5: Change the variable for Quarantine Retention to "q_days=0" in /etc/MailScanner/defaults.
 
 --------------------------------------------
-Quarantine Report
+MailScanner Rule Editor (optional)
 --------------------------------------------
 
-quarantine_report.php
+Configure the file msre_reload to fit your need.
 
-add to /etc/cron.daily
-
-You will need to edit the quarantine_report.php to reflect the location of the functions.php file
-
---------------------------------------------
-MailScanner Rule Editor
---------------------------------------------
-
-msre_reload.crond
+Copy the file msre_reload into /etc/cron.d/.
 
 See the instructions in tools/MailScanner_rule_editor/INSTALL
 
-Add to /etc/cron.d when you have properly configured and installed msre_reload.sh
+ATTENTION:
 
+Between 1.0.3 or 1.2.0 RCx version many files used by MailWatch have changed of name 
+and changed of place.
+Particularly the PHP files that are launched in cron and the Init script files.
+Please read the documentation carefully to remove old files during the upgrade.
