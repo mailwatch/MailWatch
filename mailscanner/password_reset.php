@@ -36,9 +36,15 @@ if (USE_LDAP === true) {
 }
 
 // Load in the required PEAR modules
-require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
-require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
-require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
+if (!USE_SYSTEM_PEAR) {
+    require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
+} else {
+    require_once 'Mail.php';
+    require_once 'Mail/smtp.php';
+    require_once 'Mail/mime.php';
+}
 date_default_timezone_set(TIME_ZONE);
 
 $showpage = false;

@@ -60,9 +60,15 @@ foreach ($required_constant as $constant) {
     }
 }
 if ($required_constant_missing_count === 0) {
-    require_once $mailwatch_dir . 'lib/pear/Mail.php';
-    require_once $mailwatch_dir . 'lib/pear/Mail/smtp.php';
-    require_once $mailwatch_dir . 'lib/pear/Mail/mime.php';
+    if (!USE_SYSTEM_PEAR) {
+        require_once $mailwatch_dir . 'lib/pear/Mail.php';
+        require_once $mailwatch_dir . 'lib/pear/Mail/smtp.php';
+        require_once $mailwatch_dir . 'lib/pear/Mail/mime.php';
+    } else {
+        require_once 'Mail.php';
+        require_once 'Mail/smtp.php';
+        require_once 'Mail/mime.php';
+    }
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('html_errors', 'off');
