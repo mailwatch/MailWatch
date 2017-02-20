@@ -4074,7 +4074,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
 function ip_in_range($ip, $net=false, $privateLocal=false)
 {
     require __DIR__ . '/lib/IPSet.php';
-    if($privateLocal === 'private') {
+    if ($privateLocal === 'private') {
         $privateIPSet = new \IPSet\IPSet(array(
             '10.0.0.0/8',
             '172.16.0.0/12',
