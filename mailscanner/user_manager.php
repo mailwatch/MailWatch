@@ -49,11 +49,14 @@ html_start(__('usermgnt12'), 0, false, false);
            var errorDiv = document.getElementById("formerror");
            errorDiv.innerHTML = "<?php echo __('errorpass12');?><br>";
            errorDiv.classList.remove("hidden");
+           pass0.classList.add("inputerror");
+           pass1.classList.add("inputerror");
            return false;
        } else {
            return true;
        }
    }
+
 </script>
 <?php
 if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
