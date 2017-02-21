@@ -204,6 +204,7 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('report04')) {
             $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+            $row[$f] = preg_replace("/ <br>/", "<br>", $row[$f]);
         }
         if ($fieldn === __('from04')) {
             $row[$f] = htmlentities($row[$f]);
