@@ -42,7 +42,7 @@ use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
-# Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+# Uncommet the folloging line when debugging MailWatch.pm
 use Data::Dumper;
 
 use vars qw($VERSION);
@@ -51,7 +51,7 @@ use vars qw($VERSION);
 $VERSION = substr q$Revision: 1.5 $, 10;
 
 # Trace settings - uncomment this to debug
-# DBI->trace(2,'/tmp/dbitrace.log');
+#DBI->trace(2,'/tmp/dbitrace.log');
 
 my ($dbh);
 my ($sth);
@@ -255,13 +255,13 @@ sub MailWatchLogging {
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
     $spamreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
-    $spamreport =~ s/\t//g;  # and no TAB characters
+    $spamreport =~ s/\t//g;   # and no TAB characters
     $spamreport =~ s/\r/ /g;  # and no CR characters
 
     # Get rid of control chars and tidy-up SpamAssassin MCP report
     my $mcpreport = $message->{mcpreport};
     $mcpreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
-    $mcpreport =~ s/\t//g;  # and no TAB characters
+    $mcpreport =~ s/\t//g;   # and no TAB characters
     $mcpreport =~ s/\r/ /g;  # and no CR characters
 
     # Workaround tiny bug in original MCP code
@@ -301,18 +301,19 @@ sub MailWatchLogging {
         $text =~ s/\n//g;  # Make sure text report only contains 1 line (LF)
         $text =~ s/\t//g;  # and no TAB characters
         $text =~ s/\r//g;  # and no CR characters
-
-        # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+        
+        # Uncommet the folloging line when debugging MailWatch.pm
         MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
 
         push (@report_array, $text);
     }
 
     # Sanitize reports
-    # To test if double
+    # To test if double in $reports
     # my @unique_report_array = do { my %seen; grep { !$seen{$_}++ } @report_array };
     my $reports = join(",", @report_array);
-    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    
+    # Uncommet the folloging line when debugging MailWatch.pm
     MailScanner::Log::WarnLog("MailWatch: Debug: VAR reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
