@@ -425,6 +425,8 @@ return array(
     'reset12' => 'Herstel',
     'areusuredel12' => 'Weet U zeker dat de gebruiker wordt verwijderd?',
     'errorpass12' => 'Niet hetzelfde paswoord',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',

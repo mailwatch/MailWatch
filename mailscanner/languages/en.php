@@ -425,6 +425,8 @@ return array(
     'reset12' => 'Reset',
     'areusuredel12' => 'Are you sure you want to delete user',
     'errorpass12' => 'Password mismatch',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',

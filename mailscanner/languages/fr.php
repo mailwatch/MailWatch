@@ -425,6 +425,8 @@ return array(
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
     'errorpass12' => 'Mot de passe erroné',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Editer l\'utilisateur',
     'create12' => 'Créer',
     'userregex12' => 'Utilisateur (Regexp)',

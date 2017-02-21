@@ -425,6 +425,8 @@ return array(
     'reset12' => 'Resetta',
     'areusuredel12' => 'Sei sicuro di voler cancellare l\'utente',
     'errorpass12' => 'Le Password non corrispondono',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',
