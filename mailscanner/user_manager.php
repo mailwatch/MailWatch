@@ -169,8 +169,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
+                    } elseif ($_GET['password'] === "") {
+                        echo __('errorpwdreq12') . '<br>';
                     } elseif ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12') . '<br>';
+                    } elseif ($_GET['username'] === "") {
+                        echo __('erroruserreq12') . '<br>';
                     } elseif (checkForExistingUser($_GET['username'])) {
                         echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                     } else {
