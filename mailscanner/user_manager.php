@@ -45,6 +45,8 @@ html_start(__('usermgnt12'), 0, false, false);
    function checkPasswords() {
        var pass0 = document.getElementById("password");
        var pass1 = document.getElementById("retypepassword");
+       pass0.classList.remove("inputerror");
+       pass1.classList.remove("inputerror");
        if(pass0.value != pass1.value) {
            var errorDiv = document.getElementById("formerror");
            var errormsg = errorDiv.innerHTML;
@@ -63,6 +65,8 @@ html_start(__('usermgnt12'), 0, false, false);
        var error = "";
        var username = document.getElementById("username");
        var pass0 = document.getElementById("password");
+       username.classList.remove("inputerror");
+       pass0.classList.remove("inputerror");
        if(username.value === "") {
            error = error+"<?php echo __('erroruserreq12');?><br>";
            username.classList.add("inputerror");
