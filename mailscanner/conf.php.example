@@ -167,6 +167,12 @@ define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 // about a given virus or virus alias.  Comment out or set to false to disable.
 define('VIRUS_INFO', 'http://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1');
 
+// Display Virus on message listing
+define('DISPLAY_VIRUS', true);
+
+// Override VIRUS_REGEX??
+// define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/'); // SophosSAVI
+
 // When filtering data - only use the envelope 'To' address or 'To' domain.
 // This greatly increases perfomance as MySQL will not use indexes when
 // two different fields are OR'd together.
@@ -217,9 +223,6 @@ define('SSL_ONLY', false);
 define('STRIP_HTML', true);
 // List of allowed tags - set as blank to strip everything.
 define('ALLOWED_TAGS', '<a><br><b><body><div><font><h1><h2><h3><h4><head><html><i><li><ol><p><small><span><strong><table><title><tr><td><th><u><ul>');
-
-// Override VIRUS_REGEX??
-// define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/'); // SophosSAVI
 
 // Enable MailScanner Rule Editor
 // Initially disabled as other config needs to be done to use it.
