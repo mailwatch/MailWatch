@@ -2123,13 +2123,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
                         if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus)) {
-                        	if (DISPLAY_VIRUS === true) {
-	                            foreach ($status_array as $k => $v) {
-	                                if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
-	                                    $status_array[$k] = $v;
-	                                }
-	                            }
-	                        }
+                            if (DISPLAY_VIRUS === true) {
+                                foreach ($status_array as $k => $v) {
+                                    if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
+                                        $status_array[$k] = $v;
+                                    }
+                                }
+                            }
                         }
                         break;
                     case 'nameinfected':
