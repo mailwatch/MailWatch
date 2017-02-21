@@ -262,6 +262,18 @@ if ($link) {
     $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    echo pad(' - Fix schema for spamscore field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` float DEFAULT NULL ''";
+    executeQuery($sql);
+
+    echo pad(' - Fix schema for highspamscore field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` float DEFAULT NULL ''";
+    executeQuery($sql);
+
+    echo pad(' - Fix schema for noscan field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `noscan` `noscan` float DEFAULT NULL ''";
+    executeQuery($sql);
+
     // Table user_filters
     echo pad(' - Fix schema for username field in `user_filters` table');
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
