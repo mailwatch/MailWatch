@@ -257,7 +257,7 @@ return array(
     'errormess04' => 'Fehler-Nachricht:',
     'error04' => 'Fehler:',
     'auditlog04' => 'Nachrichtendetails angezeigt',
-    'report04' => 'Report:',
+    'report04' => 'Bericht:',
     'spamassassin04' => 'SpamAssassin',
     'spamassassinmcp04' => 'SpamAssassin MCP',
 
