@@ -63,10 +63,10 @@ use File::Basename;
 my $dirname = dirname(__FILE__);
 require $dirname.'/MailWatch-DB.pm';
 
-my ($db_name) = get_db_name();
-my ($db_host) = get_db_host();
-my ($db_user) = get_db_user();
-my ($db_pass) = get_db_password();
+my ($db_name) = mailwatch_get_db_name();
+my ($db_host) = mailwatch_get_db_host();
+my ($db_user) = mailwatch_get_db_user();
+my ($db_pass) = mailwatch_get_db_password();
 
 sub InitMailWatchLogging {
     my $pid = fork();
