@@ -2,7 +2,7 @@
 INSTALLATION INSTRUCTIONS
 -----------------------------
 
-sendmail_queue.php process the MTA Exim or Sendmail queue to store messages in MailWatch database and see them in the MailWatch GUI.
+sendmail_queue.php process the MTA Sendmail queue to store messages in MailWatch database and see them in the MailWatch GUI.
 
 Copy the mailwatch_sendmail_queue.php file in /usr/local/bin
 
