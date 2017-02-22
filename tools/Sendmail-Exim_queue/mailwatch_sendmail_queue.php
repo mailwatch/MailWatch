@@ -266,7 +266,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     safe_value($msginfo['ctime']) . "','" .
                     safe_value($msginfo['sender']) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value($msginfo['subject']) . "','" .
+                    safe_value( isset($msginfo['subject']) ? $msginfo['subject'] : "" ) . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
                     safe_value($msginfo['priority']) . "','" .
