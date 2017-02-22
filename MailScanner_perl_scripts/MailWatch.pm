@@ -252,6 +252,15 @@ sub MailWatchLogging {
     map { $rcpts{$_} = 1; } @{$message->{to}};
     @{$message->{to}} = keys %rcpts;
 
+    # Get rid of control chars and fix chars set in Subject
+    my $subject = fix_latin($message->{utf8subject});
+    $subject =~ s/\n/ /g;  # Make sure text subject only contains 1 line (LF)
+    $subject =~ s/\t/ /g;  # and no TAB characters
+    $subject =~ s/\r/ /g;  # and no CR characters
+
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    MailScanner::Log::WarnLog("MailWatch: Debug: var subject: %s", Dumper($subject));
+
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
     $spamreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
@@ -343,7 +352,7 @@ sub MailWatchLogging {
     $msg{from_domain} = $message->{fromdomain};
     $msg{to} = join(",", @{$message->{to}});
     $msg{to_domain} = $todomain;
-    $msg{subject} = fix_latin($message->{utf8subject});
+    $msg{subject} = $subject;
     $msg{clientip} = $clientip;
     $msg{archiveplaces} = join(",", @{$message->{archiveplaces}});
     $msg{isspam} = $message->{isspam};
