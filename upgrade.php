@@ -36,8 +36,12 @@ if (php_sapi_name() !== 'cli') {
 
 //$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
 
-// Edit if you changed webapp directory from default
+// Edit if you changed webapp directory from default and not using command line arguemnt to define it
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (isset($argv) && count($argv) > 1) { //get path from command line argument if set
+    $pathToFunctions = $argv[1];
+}
+
 
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
