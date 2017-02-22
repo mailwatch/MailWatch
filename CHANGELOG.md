@@ -1,3 +1,32 @@
+1.2.0 - RC5
+-----------
+ - Refactoring to reduce code duplication and code smells
+ - Many changes in database shema
+ - Deleted spamscores table (no longer used)
+ - New version of upgrade.php (more checks for schema and conf.php)
+ - Move page style blocks to style.css
+ - Use MySQL utf8mb4_unicode_ci instead of utf8_unicode_ci for utf8mb4
+ - Use of InnoDB storage engine instead of myISAM
+ - Improve LDAP compatibility with server other than Active Directory
+ - Upgrade of JpGraph to v4.0.2
+ - Added IPv6 and private network support (use IPSet.php)
+ - Added the ability for domain admins to create/edit/delete User of the same Domain
+ - Upgrade of HTMLPurifier to v4.8.0
+ - Enhancement for MailScanner V5 compatibility
+ - Reorganisation of Tools directory with new INSTALL and filenames
+ - Added filtering options for audit log
+ - Fixes to avoid conflict with system installed PEAR packages
+ - Fixes for JpGraph imageantialias() and Debian/Ubuntu
+ - Optimize css style
+ - Fixes for MailWatch.pm, SQLBlackWhiteList.pm and SQLSpamSettings.pm with utf8mb4
+ - Fixes for MailWatch.pm for SpamAssassin reports, headers and subject
+ - Provides required field validation for User Manager page
+ - Added 'Clear' button in Bayes Info page
+ - Added Password reset functionality for Users
+ - Added many constants in conf.php.example
+ - Layout changes and fixes in Reports
+ - Updated translations in many parts (Up to date for French and German)
+
 1.2.0 - RC4
 -----------
  - Move to MySQLi PHP extension
