@@ -43,7 +43,7 @@ use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
 # Uncommet the folloging line when debugging MailWatch.pm
-use Data::Dumper;
+#use Data::Dumper;
 
 use vars qw($VERSION);
 
@@ -259,7 +259,7 @@ sub MailWatchLogging {
     $subject =~ s/\r/ /g;  # and no CR characters
 
     # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    MailScanner::Log::WarnLog("MailWatch: Debug: var subject: %s", Dumper($subject));
+    #MailScanner::Log::WarnLog("MailWatch: Debug: var subject: %s", Dumper($subject));
 
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
@@ -312,7 +312,7 @@ sub MailWatchLogging {
         $text =~ s/\r/ /g;  # and no CR characters
 
         # Uncommet the folloging line when debugging MailWatch.pm
-        MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
+        #MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
 
         push (@report_array, $text);
     }
@@ -323,7 +323,7 @@ sub MailWatchLogging {
     my $reports = join(",", @report_array);
 
     # Uncommet the folloging line when debugging MailWatch.pm
-    MailScanner::Log::WarnLog("MailWatch: Debug: VAR reports: %s", Dumper($reports));
+    #MailScanner::Log::WarnLog("MailWatch: Debug: VAR reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
@@ -377,7 +377,7 @@ sub MailWatchLogging {
     $msg{hostname} = $hostname;
     $msg{date} = $date;
     $msg{"time"} = $time;
-    $msg{headers} = join("\n", @{$message->{headers}});
+    $msg{headers} = join("\n", map { fix_latin($_)} @{$message->{headers}});
     $msg{quarantined} = $quarantined;
 
     # Prepare data for transmission
