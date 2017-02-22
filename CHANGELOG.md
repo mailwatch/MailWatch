@@ -1,23 +1,24 @@
 1.2.0 - RC5
 -----------
- - Added 'Clear' button in Bayes Info page
  - Added filtering options for audit log
  - Added IPv6 and private network support (use IPSet.php)
  - Added many constants in conf.php.example
  - Added Password reset functionality for Users
  - Added the ability for domain admins to create/edit/delete User of the same Domain
+ - Added the possibility to 'Clear' Bayes database in Bayes Info page
  - Deleted spamscores table (no longer used)
  - Enhancement for MailScanner V5 compatibility
- - Fixes for JpGraph imageantialias() and Debian/Ubuntu
- - Fixes for MailWatch.pm for SpamAssassin reports, headers and subject
+ - Fixes for JpGraph imageantialias() missing in Debian/Ubuntu
  - Fixes for MailWatch.pm, SQLBlackWhiteList.pm and SQLSpamSettings.pm with utf8mb4
  - Fixes to avoid conflict with system installed PEAR packages
+ - Fixes wrong characters in MailWatch.pm for SpamAssassin reports, headers and subject
  - Improve LDAP compatibility with server other than Active Directory
  - Layout changes and fixes in Reports
  - Many changes in database shema
- - Move page style blocks to style.css
+ - Moved MailWatch perl file DB settings to separate file 
+ - Moved page style blocks to style.css
  - New version of upgrade.php (more checks for schema and conf.php)
- - Optimize css style
+ - Optimized css style
  - Provides required field validation for User Manager page
  - Refactoring to reduce code duplication and code smells
  - Reorganisation of Tools directory with new INSTALL and filenames
