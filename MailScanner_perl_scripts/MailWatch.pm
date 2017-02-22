@@ -58,11 +58,15 @@ my $server_port = 11553;
 my $timeout = 3600;
 my ($SQLversion);
 
-# Modify this as necessary for your configuration
-my ($db_name) = 'mailscanner';
-my ($db_host) = 'localhost';
-my ($db_user) = 'mailwatch';
-my ($db_pass) = 'mailwatch';
+# Get database information from MailWatch-DB.pm
+use File::Basename;
+my $dirname = dirname(__FILE__);
+require $dirname.'/MailWatch-DB.pm';
+
+my ($db_name) = get_db_name();
+my ($db_host) = get_db_host();
+my ($db_user) = get_db_user();
+my ($db_pass) = get_db_password();
 
 sub InitMailWatchLogging {
     my $pid = fork();
