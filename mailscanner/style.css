@@ -787,3 +787,9 @@ td.message {
     border-radius: 3px;
     max-width: 560px;
 }
+
+/*general styles*/
+
+.font-1em {
+    font-size:1em;
+}
