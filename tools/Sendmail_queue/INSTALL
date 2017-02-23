@@ -21,7 +21,7 @@ so for busy sites you will probably want to change this to run every 5 minutes o
 
 ATTENTION:
 
-Since MailWatch 1.0.2, you no longer need to use mailwatch_sendmail_queue.php
+Since MailWatch 1.2.0, you no longer need to use mailwatch_sendmail_queue.php
 with Exim MTA. Call to Exim queue is now managed by direct call using 'exim -bpc'. 
 
 Several files have changed their name and location in MailWatch 1.2.0.
