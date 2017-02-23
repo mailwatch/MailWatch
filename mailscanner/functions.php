@@ -426,18 +426,28 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 } else {
                     echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
-                // else use mailq which is for sendmail and exim
+                // Else use MAILQ from conf.php which is for Sendmail or Exim
             } elseif (MAILQ) {
-                $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
-                    0);
-                $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
-                    0);
+                if ($mta === 'exim') {
+                    $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
+                    $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
+                } else {
+                    // Not activated because this need to be tested.
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$inq = $output_array[2];
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$outq = $output_array[2];
+                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
+                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
+                }
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
-            // drive display
+            // Drive display
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
@@ -2058,11 +2068,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'clientip':
                         $clientip = $row[$f];
                         if (defined('RESOLVE_IP_ON_DISPLAY') && RESOLVE_IP_ON_DISPLAY === true) {
-                            if (
-                                net_match('10.0.0.0/8', $clientip) ||
-                                net_match('172.16.0.0/12', $clientip) ||
-                                net_match('192.168.0.0/16', $clientip)
-                            ) {
+                            if (ip_in_range($clientip)) {
                                 $host = 'Internal Network';
                             } elseif (($host = gethostbyaddr($clientip)) === $clientip) {
                                 $host = 'Unknown';
@@ -2122,7 +2128,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus)) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus) && DISPLAY_VIRUS_REPORT === true) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
@@ -2628,15 +2634,7 @@ function ldap_authenticate($user, $password)
         }
 
         //search for $user in LDAP directory
-        if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
-        } elseif (strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN,
-                LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
-        } else {
-            // Windows LDAP (with legacy NT support)
-            $ldap_search_results = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
-        }
+        $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $user)) or die(__('ldpaauth203'));
 
         if (false === $ldap_search_results) {
             @trigger_error(__('ldapnoresult03') . ' "' . $user . '"');
@@ -2664,11 +2662,18 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                if (isset($result[0]['userprincipalname'][0])) {
-                    $user = $result[0]['userprincipalname'][0];
-                } else {
-                    // build DN for user, when LDAP server is not an AD
-                    $user = 'cn=' . $result[0]['cn'][0] . ',' . LDAP_DN;
+                if (!isset($result[0][LDAP_USERNAME_FIELD]) ||
+                      !isset($result[0][LDAP_USERNAME_FIELD][0])) {
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+                    return null;
+                }
+
+                $user = $result[0][LDAP_USERNAME_FIELD][0];
+                if (defined("LDAP_BIND_PREFIX")) {
+                    $user = LDAP_BIND_PREFIX . $user;
+                }
+                if (defined("LDAP_BIND_SUFFIX")) {
+                    $user .= LDAP_BIND_SUFFIX;
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
@@ -2696,7 +2701,6 @@ function ldap_authenticate($user, $password)
                         );
                         dbquery($sql);
                     }
-
                     return $email;
                 } else {
                     if (ldap_errno($ds) === 49) {
@@ -3643,34 +3647,6 @@ function return_virus_link($virus)
 }
 
 /**
- * @param $network
- * @param $ip
- * @return bool
- */
-function net_match($network, $ip)
-{
-    // Skip invalid entries
-    if (long2ip(ip2long($ip)) === false) {
-        return false;
-    }
-    // From PHP website
-    // determines if a network in the form of 192.168.17.1/16 or
-    // 127.0.0.1/255.255.255.255 or 10.0.0.1 matches a given ip
-    $ip_arr = explode('/', $network);
-    // Skip invalid entries
-    if (long2ip(ip2long($ip_arr[0])) === false) {
-        return false;
-    }
-    $network_long = ip2long($ip_arr[0]);
-
-    $x = ip2long($ip_arr[1]);
-    $mask = long2ip($x) === $ip_arr[1] ? $x : 0xffffffff << (32 - $ip_arr[1]);
-    $ip_long = ip2long($ip);
-
-    return ($ip_long & $mask) === ($network_long & $mask);
-}
-
-/**
  * @return bool
  */
 function is_rpc_client_allowed()
@@ -3685,11 +3661,7 @@ function is_rpc_client_allowed()
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ($client === 'allprivate' &&
-                (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) ||
-                    net_match('172.16.0.0/12', $_SERVER['SERVER_ADDR']) ||
-                    net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
-            ) {
+            if ($client === 'allprivate' && ip_in_range($_SERVER['SERVER_ADDR'], false, 'private')) {
                 return true;
             }
             if ($client === 'local24') {
@@ -3699,17 +3671,17 @@ function is_rpc_client_allowed()
                 $ipsplit = explode('.', $ip);
                 $ipsplit[3] = '0';
                 $ip = implode('.', $ipsplit);
-                if (net_match("{$ip}/24", $_SERVER['SERVER_ADDR'])) {
+                if (ip_in_range($_SERVER['SERVER_ADDR'], "{$ip}/24")) {
                     return true;
                 }
             }
             // All any others
-            if (net_match($client, $_SERVER['SERVER_ADDR'])) {
+            if (ip_in_range($_SERVER['SERVER_ADDR'], $client)) {
                 return true;
             }
             // Try hostname
             $iplookup = gethostbyname($client);
-            if ($client !== $iplookup && net_match($iplookup, $_SERVER['SERVER_ADDR'])) {
+            if ($client !== $iplookup && ip_in_range($_SERVER['SERVER_ADDR'], $iplookup)) {
                 return true;
             }
         }
@@ -3947,6 +3919,7 @@ function checkConfVariables()
         'LANG',
         'LDAP_DN',
         'LDAP_EMAIL_FIELD',
+        'LDAP_FILTER',
         'LDAP_HOST',
         'LDAP_MS_AD_COMPATIBILITY',
         'LDAP_PASS',
@@ -3955,6 +3928,7 @@ function checkConfVariables()
         'LDAP_SITE',
         'LDAP_SSL',
         'LDAP_USER',
+        'LDAP_USERNAME_FIELD',
         'LISTS',
         'MAIL_LOG',
         'MAILQ',
@@ -4011,6 +3985,9 @@ function checkConfVariables()
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
+        'DISPLAY_VIRUS_REPORT',
+        'EXIM_QUEUE_IN',
+        'EXIM_QUEUE_OUT',
     );
 
     $obsolete = array(
@@ -4027,6 +4004,8 @@ function checkConfVariables()
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
+        'LDAP_BIND_PREFIX',
+        'LDAP_BIND_SUFFIX',
     );
     */
 
@@ -4091,7 +4070,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
         'html_charset' => 'UTF-8',
         'head_charset' => 'UTF-8'
     );
-    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
     $mime->setTXTBody($text);
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
@@ -4099,4 +4078,39 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     $mail = new Mail_smtp($mail_param);
     return $mail->send($email, $hdrs, $body);
+}
+
+/**
+ * @param $ip
+ * @param bool|string $net
+ * @param bool|string $privateLocal
+ * @return bool
+ */
+function ip_in_range($ip, $net=false, $privateLocal=false)
+{
+    require __DIR__ . '/lib/IPSet.php';
+    if ($privateLocal === 'private') {
+        $privateIPSet = new \IPSet\IPSet(array(
+            '10.0.0.0/8',
+            '172.16.0.0/12',
+            '192.168.0.0/16',
+            'fc00::/7',
+            'fe80::/10',
+        ));
+        return $privateIPSet->match($ip);
+    } elseif ($privateLocal === 'local') {
+        $localIPSet = new \IPSet\IPSet(array(
+            '127.0.0.1',
+            '::1',
+        ));
+        return $localIPSet->match($ip);
+    } elseif ($privateLocal === false && $net !== false) {
+        $network = new \IPSet\IPSet(array(
+            $net
+        ));
+        return $network->match($ip);
+    } else {
+        //return false to fail gracefully
+        return false;
+    }
 }
