@@ -32,7 +32,7 @@
 class database
 {
     /** @var mysqli $link */
-    public static $link = null;
+    public static $link;
 
     private function __construct()
     {
