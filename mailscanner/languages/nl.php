@@ -888,5 +888,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Geen vertaling in het Nederlands',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
-    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example.',
+    'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',
 );
