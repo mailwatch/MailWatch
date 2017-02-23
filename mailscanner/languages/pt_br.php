@@ -425,6 +425,8 @@ return array(
     'reset12' => 'Limpar',
     'areusuredel12' => 'Tem certeza de que quer excluir o usuário ',
     'errorpass12' => 'As senhas não são iguais',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',

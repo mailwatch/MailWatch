@@ -45,15 +45,61 @@ html_start(__('usermgnt12'), 0, false, false);
    function checkPasswords() {
        var pass0 = document.getElementById("password");
        var pass1 = document.getElementById("retypepassword");
+       pass0.classList.remove("inputerror");
+       pass1.classList.remove("inputerror");
        if(pass0.value != pass1.value) {
            var errorDiv = document.getElementById("formerror");
-           errorDiv.innerHTML = "<?php echo __('errorpass12');?><br>";
+           var errormsg = errorDiv.innerHTML;
+           errorDiv.innerHTML = errormsg+"<?php echo __('errorpass12');?><br>";
            errorDiv.classList.remove("hidden");
+           pass0.classList.add("inputerror");
+           pass1.classList.add("inputerror");
            return false;
        } else {
            return true;
        }
    }
+
+   function requiredFields() {
+       var valid = true;
+       var error = "";
+       var username = document.getElementById("username");
+       var pass0 = document.getElementById("password");
+       username.classList.remove("inputerror");
+       pass0.classList.remove("inputerror");
+       if(username.value === "") {
+           error = error+"<?php echo __('erroruserreq12');?><br>";
+           username.classList.add("inputerror");
+           valid = false;
+       }
+       if (pass0.value === "") {
+           error = error+"<?php echo __('errorpwdreq12');?><br>";
+           pass0.classList.add("inputerror");
+           valid = false;
+       }
+       if (valid === false) {
+           var errorDiv = document.getElementById("formerror");
+           var errormsg = errorDiv.innerHTML;
+           errorDiv.innerHTML = errormsg + error;
+           errorDiv.classList.remove("hidden");
+       }
+       return valid;
+   }
+
+
+   function validateForm() {
+       var errorDiv = document.getElementById("formerror");
+       errorDiv.innerHTML = "";
+       errorDiv.classList.add("hidden");
+       var required = requiredFields();
+       var checkpwd = checkPasswords();
+       if(checkpwd == false || required == false) {
+           return false;
+       } else {
+           return true;
+       }
+   }
+
 </script>
 <?php
 if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
@@ -94,13 +140,13 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             case 'new':
                 if (!isset($_GET['submit'])) {
                     echo '<div id="formerror" class="hidden"></div>';
-                    echo '<FORM METHOD="GET" ACTION="user_manager.php" ONSUBMIT="return checkPasswords();">' . "\n";
+                    echo '<FORM METHOD="GET" ACTION="user_manager.php" ONSUBMIT="return validateForm();">' . "\n";
                     echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="new">' . "\n";
                     echo '<INPUT TYPE="HIDDEN" NAME="submit" VALUE="true">' . "\n";
                     echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
                     echo ' <TR><TD CLASS="heading" COLSPAN="2" ALIGN="CENTER">' . __('newuser12') . '</TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="message" COLSPAN="2" ALIGN="CENTER">' . __('forallusers12') . '</TD></TR>' . "\n";
-                    echo ' <TR><TD CLASS="heading">' . __('username0212') . ' <BR></TD><TD><INPUT TYPE="TEXT" NAME="username"></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('username0212') . ' <BR></TD><TD><INPUT TYPE="TEXT" ID="username" NAME="username"></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('name12') . '</TD><TD><INPUT TYPE="TEXT" NAME="fullname"></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('password12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="password" NAME="password"></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('retypepassword12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="retypepassword" NAME="password1"></TD></TR>' . "\n";
@@ -123,8 +169,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
+                    } elseif ($_GET['password'] === "") {
+                        echo __('errorpwdreq12') . '<br>';
                     } elseif ($_GET['password'] !== $_GET['password1']) {
                         echo __('errorpass12') . '<br>';
+                    } elseif ($_GET['username'] === "") {
+                        echo __('erroruserreq12') . '<br>';
                     } elseif (checkForExistingUser($_GET['username'])) {
                         echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
                     } else {
