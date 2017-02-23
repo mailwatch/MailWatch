@@ -45,9 +45,13 @@ require_once __DIR__ . '/conf.php';
 
 $missingConfigEntries = checkConfVariables();
 if ($missingConfigEntries['needed']['count'] !== 0) {
-    echo __('missing_conf_entries') . '<br>' . PHP_EOL;
+    $br = '';
+    if (PHP_SAPI !== 'cli') {
+        $br = '<br>';
+    }
+    echo __('missing_conf_entries') . $br . PHP_EOL;
     foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
-        echo '- ' . $missingConfigEntry . '<br>' . PHP_EOL;
+        echo '- ' . $missingConfigEntry . $br . PHP_EOL;
     }
     die();
 }
@@ -4007,8 +4011,6 @@ function checkConfVariables()
         'USE_PROXY',
         'VIRUS_INFO',
         'DISPLAY_VIRUS_REPORT',
-        'EXIM_QUEUE_IN',
-        'EXIM_QUEUE_OUT',
         'USE_SYSTEM_PEAR',
     );
 
@@ -4020,16 +4022,17 @@ function checkConfVariables()
         'QUARANTINE_REPORT_HOSTURL',
     );
 
-    /*
-    // TODO: Implement optional lists
     $optional = array(
-        'RPC_PORT',
-        'RPC_SSL',
-        'VIRUS_REGEX',
-        'LDAP_BIND_PREFIX',
-        'LDAP_BIND_SUFFIX',
+        'RPC_PORT' => array('description' => 'needed if RPC_ONLY mode is enabled'),
+        'RPC_SSL' => array('description' => 'needed if RPC_ONLY mode is enabled'),
+        'VIRUS_REGEX' => array('description' => 'needed in distributed setup'),
+        'LDAP_BIND_PREFIX' => array('description' => 'needed when using LDAP authentication'),
+        'LDAP_BIND_SUFFIX' => array('description' => 'needed when using LDAP authentication'),
+        'EXIM_QUEUE_IN' => array('description' => 'needed only if using Exim as MTA'),
+        'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
+        'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
+        'PWD_RESET_FROM_ADDRESS'  => array('description' => 'needed if Password Reset feature is enabled'),
     );
-    */
 
     $neededMissing = array();
     foreach ($needed as $item) {
@@ -4037,6 +4040,8 @@ function checkConfVariables()
             $neededMissing[] = $item;
         }
     }
+    $results['needed']['count'] = count($neededMissing);
+    $results['needed']['list'] = $neededMissing;
 
     $obsoleteStillPresent = array();
     foreach ($obsolete as $item) {
@@ -4044,12 +4049,17 @@ function checkConfVariables()
             $obsoleteStillPresent[] = $item;
         }
     }
-
-    $results['needed']['count'] = count($neededMissing);
-    $results['needed']['list'] = $neededMissing;
-
     $results['obsolete']['count'] = count($obsoleteStillPresent);
     $results['obsolete']['list'] = $obsoleteStillPresent;
+
+    $optionalMissing = array();
+    foreach ($optional as $key => $item) {
+        if (!defined($key)) {
+            $optionalMissing[$key] = $item;
+        }
+    }
+    $results['optional']['count'] = count($optionalMissing);
+    $results['optional']['list'] = $optionalMissing;
 
     return $results;
 }
@@ -4110,7 +4120,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
  */
 function ip_in_range($ip, $net=false, $privateLocal=false)
 {
-    require __DIR__ . '/lib/IPSet.php';
+    require_once __DIR__ . '/lib/IPSet.php';
     if ($privateLocal === 'private') {
         $privateIPSet = new \IPSet\IPSet(array(
             '10.0.0.0/8',

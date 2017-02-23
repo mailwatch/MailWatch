@@ -267,11 +267,11 @@ if ($link) {
     executeQuery($sql);
 
     echo pad(' - Fix schema for spamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` float DEFAULT NULL";
+    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` float DEFAULT '0'";
     executeQuery($sql);
 
     echo pad(' - Fix schema for highspamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` float DEFAULT NULL";
+    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` float DEFAULT '0'";
     executeQuery($sql);
 
     // Table user_filters
@@ -508,22 +508,31 @@ echo PHP_EOL;
 // Check configuration for missing entries
 echo 'Checking conf.php configuration entry: ' . PHP_EOL;
 echo PHP_EOL;
-$missingConfigEntries = checkConfVariables();
-if ($missingConfigEntries['needed']['count'] === 0) {
-    echo ' - All needed entries are OK' . PHP_EOL;
+$checkConfigEntries = checkConfVariables();
+if ($checkConfigEntries['needed']['count'] === 0) {
+    echo pad(' - All mandatory entries are present') . ' OK' . PHP_EOL;
 } else {
-    foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
+    foreach ($checkConfigEntries['needed']['list'] as $missingConfigEntry) {
         echo pad(" - $missingConfigEntry ") . ' WARNING' . PHP_EOL;
         $errors[] = 'conf.php: missing configuration entry "' . $missingConfigEntry . '"';
     }
 }
 
-if ($missingConfigEntries['obsolete']['count'] === 0) {
-    echo ' - All obsolete entries are already removed' . PHP_EOL;
+if ($checkConfigEntries['obsolete']['count'] === 0) {
+    echo pad(' - All obsolete entries are already removed') . ' OK' . PHP_EOL;
 } else {
-    foreach ($missingConfigEntries['obsolete']['list'] as $missingConfigEntry) {
-        echo pad(" - $missingConfigEntry ") . ' WARNING' . PHP_EOL;
-        $errors[] = 'conf.php: obsolete configuration entry "' . $missingConfigEntry . '" still present';
+    foreach ($checkConfigEntries['obsolete']['list'] as $obsoleteConfigEntry) {
+        echo pad(" - $obsoleteConfigEntry ") . ' WARNING' . PHP_EOL;
+        $errors[] = 'conf.php: obsolete configuration entry "' . $obsoleteConfigEntry . '" still present';
+    }
+}
+
+if ($checkConfigEntries['optional']['count'] === 0) {
+    echo pad(' - All optional entries are already present') . ' OK' . PHP_EOL;
+} else {
+    foreach ($checkConfigEntries['optional']['list'] as $optionalConfigEntry => $detail) {
+        echo pad(" - optional $optionalConfigEntry ") . ' WARNING' . PHP_EOL;
+        $errors[] = 'conf.php: optional configuration entry "' . $optionalConfigEntry . '" is missing, ' . $detail['description'];
     }
 }
 

@@ -257,6 +257,9 @@ return array(
     'errormess04' => 'Error Messages:',
     'error04' => 'Error:',
     'auditlog04' => 'Viewed message detail',
+    'report04' => 'Report:',
+    'spamassassin04' => 'SpamAssassin',
+    'spamassassinmcp04' => 'SpamAssassin MCP',
 
     // 05-status.php
     'recentmsg05' => 'Messaggi Recenti',
@@ -885,5 +888,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'Non tradotto in Italiano',
     'cannot_read_conf' => 'Impossibile leggere il file conf.php - per favore crealo copiando il file conf.php.example e modifica i parametri necessari',
-    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example.',
+    'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',
 );
