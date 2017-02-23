@@ -145,7 +145,7 @@ define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 /* Mailwatch Interface Settings */
 define('MAILWATCH_MAIL_HOST', '127.0.0.1');
 define('MAILWATCH_MAIL_PORT', '25');
-// Change for your own email address
+// Change with a fully qualified email address
 define('MAILWATCH_FROM_ADDR', 'postmaster@domain.tld');
 define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
 
