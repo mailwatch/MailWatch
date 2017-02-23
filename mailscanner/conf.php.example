@@ -254,7 +254,7 @@ define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
 define('PWD_RESET', false);
 // Number of hours link is valid for.
 define('RESET_LINK_EXPIRE',1);
-// Set the following 2 variables (and uncomment) if you wish to define 
+// Set the following 2 variables (and uncomment) if you wish to define
 // an alternative sender name and address for password resets.
 // NOTE: Both must be set, otherwise it will use the default settings.
 //define('PWD_RESET_FROM_NAME', 'Some other name'); // Set if you wish reset email sent from alternative name.
