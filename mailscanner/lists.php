@@ -100,18 +100,13 @@ switch ($_SESSION['user_type']) {
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result1 = dbquery($sql1);
 
-        if (!$result1) {
-            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-            $message .= 'Whole query: ' . $sql1;
-            die($message);
-        }
         $filter = array();
-        while ($row = $result1->fetch_row()) {
+        while ($row = $result1->fetch_assoc()) {
             $filter[] = $row['filter'];
         }
         $user_filter = array();
         foreach ($filter as $user_filter_check) {
-            if (preg_match("/^[^@]{1,64}@[^@]{1,255}$/", $user_filter_check)) {
+            if (preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $user_filter_check)) {
                 $user_filter[] = $user_filter_check;
             }
         }
@@ -132,12 +127,7 @@ switch ($_SESSION['user_type']) {
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result1 = dbquery($sql1);
 
-        if (!$result1) {
-            $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-            $message .= 'Whole query: ' . $sql1;
-            die($message);
-        }
-        while ($row = $result1->fetch_row()) {
+        while ($row = $result1->fetch_assoc()) {
             $to_domain_filter[] = $row['filter'];
         }
         if (strpos($_SESSION['myusername'], '@')) {
@@ -333,7 +323,7 @@ switch ($url_list) {
         $b = 'CHECKED';
         break;
 }
-echo '   <input type="radio" value="w" name="list" ' . $w . '>'. __('wl07') . '&nbsp;&nbsp;' . "\n";
+echo '   <input type="radio" value="w" name="list" ' . $w . '>' . __('wl07') . '&nbsp;&nbsp;' . "\n";
 echo '   <input type="radio" value="b" name="list" ' . $b . '>' . __('bl07') . '' . "\n";
 
 echo '  </td>

@@ -42,6 +42,7 @@ return array(
     'emptypassword01' => 'Password cannot be empty',
     'errorund01' => 'An undefined error occurred',
     'login01' => 'Login',
+    'forgottenpwd01' => 'Forgotten Password?',
 
     // 03-funtions.php
     'jumpmessage03' => 'Carregar a mensagem:',
@@ -458,6 +459,7 @@ return array(
     'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
     'retypepassword12' => 'Confirm Password:',
     'userexists12' => 'User already exists with username %s',
+    'savedsettings12' => 'Settings saved',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -539,6 +541,11 @@ return array(
     'lastexpirycount18' => 'Last Expiry Reduction Count:',
     'tokens18' => 'tokens',
     'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
+    'cannotfind18' => 'Error: Cannot find',
+    'cleardbbayes18' => 'Clear Bayes Database',
+    'auditlogwipe18' => 'Wiped out existing SpamAssassin Bayes Database',
+    'error18' => 'Error:',
+    'clearmessage18' => 'Are you sure you want to clear the Bayes database?',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
@@ -589,7 +596,7 @@ return array(
     // 28-ms_lint.php
     'mailscannerlint28' => 'MailScanner Lint',
     'diepipe28' => 'Cannot open pipe',
-    'message28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
+    'errormessage28' => 'The variable MS_EXECUTABLE_PATH is empty. Please set a value in conf.php.',
     'auditlog28' => 'Run MailScanner lint',
     'finish28' => 'Finish - Total Time',
     'message28' => 'Message',
@@ -840,6 +847,31 @@ return array(
     // 62-quarantine_maint.php
     'message62' => 'The variable %s is empty, please set a value in conf.php.',
     'errors62' => 'Error:',
+
+    // 63-password_reset.php
+    'conferror63' => 'Error - Password Reset is not enabled in conf.php',
+    'usernotfound63' => 'User Not Found',
+    'errordb63' => 'Database Error',
+    'title63' => 'Password Reset',
+    'passwdresetrequest63' => 'Password Reset Request',
+    'p1email63' => 'A password reset request has been received for %s <br>If you did not make this request, please contact your system administrator immediately.<p>To reset you password, please click the link below<br>',
+    'button63' => 'Reset Password',
+    '01emailplaintxt63' => 'Password Reset Request\nA password reset request has been received for %s \nIf you did not make this request, please contact your system administrator immediately.\nTo reset your password, please copy and paste the link below into your browser:\n',
+    '01emailsuccess63' => 'Your password reset request has been successful.  Please check your email inbox for the next step',
+    'resetnotallowed63' => 'Password reset not allowed',
+    'errorpwdchange63' => 'Error changing password',
+    'pwdresetsuccess63' => 'Password Reset Successful',
+    '03pwdresetemail63' => 'Your password for your account %s has been updated.<br />If you did not make this request, please contact your system administrator immediately.',
+    '04pwdresetemail63' => 'Your password has been reset\nYour password for your account %s has been updated.\nIf you did not make this request, please contact your system administrator immediately.',
+    'pwdresetidmismatch63' => 'UID mismatch - something went wrong',
+    'pwdmismatch63' => 'Passwords do not match',
+    'emailaddress63' => 'Email Address',
+    '01pwd63' => 'Enter Password',
+    '02pwd63' => 'Repeat Password',
+    'requestpwdreset63' => 'Request Password Reset',
+    'resetexpired63' => 'Reset link has expired - please request a new password reset',
+    'brokenlink63' => 'Reset link is missing paramaters - try again or contact support',
+    'pwdresetldap63' => 'Password reset function cannot be used with LDAP',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

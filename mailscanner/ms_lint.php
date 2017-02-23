@@ -46,7 +46,7 @@ echo ' </tr>' . "\n";
 
 if (!defined('MS_EXECUTABLE_PATH')) {
     echo '<tr>
-    <td colspan="2">' . __('message28') . '</td>
+    <td colspan="2">' . __('errormessage28') . '</td>
     </tr>';
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {

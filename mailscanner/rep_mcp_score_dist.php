@@ -62,10 +62,10 @@ $sql = '
 if (is_writable(CACHE_DIR)) {
 
 // JPGraph
-    include_once './lib/jpgraph/src/jpgraph.php';
-    include_once './lib/jpgraph/src/jpgraph_log.php';
-    include_once './lib/jpgraph/src/jpgraph_bar.php';
-    include_once './lib/jpgraph/src/jpgraph_line.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_log.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_bar.php';
+    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_line.php';
 
 ///////AJOS1 NOTE////////
 // AjosNote - Must be 2 or more rows...
@@ -115,9 +115,9 @@ echo " <TR>\n";
 
 //  Check Permissions to see if the file has been written and that apache to read it.
 if (is_readable($filename)) {
-    echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . $filename . "\" ALT=\"Graph\"></TD>";
+    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
 } else {
-    echo "<TD ALIGN=\"CENTER\"> " . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
 }
 
 // Create the table
@@ -132,10 +132,10 @@ echo " </TR>\n";
 
 // Displaying data
 for ($i = 0, $data_count_num = count($data_count); $i < $data_count_num; $i++) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">\n";
-    echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
-    echo " <TD ALIGN=\"RIGHT\">" . number_format($data_count[$i]) . "</TD>\n";
-    echo "</TR>\n";
+    echo '<TR BGCOLOR=\"#EBEBEB\">' . "\n";
+    echo ' <TD ALIGN=\"CENTER\">' . $data_labels[$i] . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . number_format($data_count[$i]) . '</TD>' . "\n";
+    echo '</TR>' . "\n";
 }
 echo '
   </TABLE>

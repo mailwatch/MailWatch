@@ -69,7 +69,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // ############################
     // ### Includes and whatnot ###
     // ############################
-    include 'msre_table_functions.php';
+    include __DIR__ . '/msre_table_functions.php';
 
     // ###############################################################
     // ### Config Vars (eventually these will be in a config file) ###
@@ -139,7 +139,7 @@ function Show_Form($status_msg)
     // 		displays the form
     //
 
-    include 'msre_function_global_vars.php';
+    include __DIR__ . '/msre_function_global_vars.php';
 
     // display top of page stuff
     echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
@@ -153,13 +153,13 @@ function Show_Form($status_msg)
     }
     // show page header
     if ($my_header) {
-        TR_Single($my_header, "colspan=\"" . MSRE_COLUMNS . "\" class=\"header\"");
+        TR_Single($my_header, 'colspan="' . MSRE_COLUMNS . '" class="header"');
     }
 
     // write out the table header(s)
-    TRH_Single("Current contents of <b>$short_filename</b>:", "colspan=\"" . MSRE_COLUMNS . "\"");
+    TRH_Single("Current contents of <b>$short_filename</b>:", 'colspan="' . MSRE_COLUMNS . '"');
     // display the file contents
-    TR_Single("<pre>$file_contents</pre>", "colspan=\"" . MSRE_COLUMNS . "\"");
+    TR_Single("<pre>$file_contents</pre>", 'colspan="' . MSRE_COLUMNS . '"');
 
     // now grab any lines in the file that aren't comments.
     $ruleset = array();
@@ -177,10 +177,9 @@ function Show_Form($status_msg)
             || preg_match('/^#DISABLED#/', $line)
         ) {
             // check for a description on the previous line
+            $desc = '';
             if (substr($previous_line, 0, 1) === '#') {
                 $desc = $previous_line;
-            } else {
-                $desc = '';
             }
             $ruleset[] = array($desc, $line);
         }
@@ -188,7 +187,7 @@ function Show_Form($status_msg)
     }
 
     // okay, now display it again, but in a format that the user can edit
-    TRH_Single('Edit Ruleset:', "colspan=\"" . MSRE_COLUMNS . "\"");
+    TRH_Single('Edit Ruleset:', 'colspan="' . MSRE_COLUMNS . '"');
     $colorpicker = 0;
     $rule_count = 0;
     foreach ($ruleset as $ruleanddesc) {
@@ -297,8 +296,8 @@ function Show_Form($status_msg)
             $rule_action_select_options = "<option value=\"Enable\">Enable</option>\n";
             $disable_desc_text = ' disabled ';
             $desc_field = 'rule' . $rule_count . '_description_disabled';
-            $hidden_field_code = "<input type=\"hidden\" name=\"" .
-                preg_replace("/_disabled$/", '', $desc_field) . "\" value=\"$desc_value\">";
+            $hidden_field_code = '<input type="hidden" name="' .
+                preg_replace('/_disabled$/', '', $desc_field) . "\" value=\"$desc_value\">";
         } else {
             $rule_disabled = 0;
             $rule_action_select_options = "<option value=\"Disable\">Disable</option>\n";
@@ -322,11 +321,11 @@ function Show_Form($status_msg)
             "  <option value=\"Delete\">Delete</option>\n" .
             $rule_action_select_options . "</select>\n";
         $desc_text = array(
-            $rule_action_select_html => "rowspan=\"3\"",
-            "<b>Description:</b>&nbsp;&nbsp;<input type=\"text\" " .
-            "name=\"$desc_field\" size=\"95\" value=\"" . $desc_value . "\"" .
+            $rule_action_select_html => 'rowspan="3"',
+            '<b>Description:</b>&nbsp;&nbsp;<input type="text" ' .
+            "name=\"$desc_field\" size=\"95\" value=\"" . $desc_value . '"' .
             $disable_desc_text . '>' . $hidden_field_code
-            => "colspan=\"" . (MSRE_COLUMNS - 1) . "\""
+            => 'colspan="' . (MSRE_COLUMNS - 1) . '"'
         );
 
         foreach ($rule_part as $key => $value) {
@@ -342,7 +341,7 @@ function Show_Form($status_msg)
                     }
                     $checkbox_html = "<input type=\"checkbox\" name=\"$field_name\" value=\"";
                     $checkbox_html .= 'and';
-                    $checkbox_html .= "\"";
+                    $checkbox_html .= '"';
                     if ($value) {
                         $checkbox_html .= ' checked';
                     }
@@ -371,7 +370,7 @@ function Show_Form($status_msg)
                         $select_html .= ' disabled ';
                     }
                     $select_html .= ">\n" .
-                        "<option value=\"\"></option>";
+                        '<option value=""></option>';
                     foreach ($CONF_ruleset_keyword as $current_kw) {
                         $select_html .= "<option value=\"$current_kw\"";
                         $match = strtolower(preg_replace('/#DISABLED#/', '', $value));
@@ -408,7 +407,7 @@ function Show_Form($status_msg)
                         $field_name .= '_disabled';
                     }
                     if (strtolower($key) === '99action') {
-                        $temp_text = "</td></tr><tr><td colspan=\"" . (MSRE_COLUMNS - 1) . "\"><b>Action:</b>&nbsp;&nbsp;<input type=\"text\" name=\"$field_name\" value=\"$value\" size=\"100\"";
+                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . "\"><b>Action:</b>&nbsp;&nbsp;<input type=\"text\" name=\"$field_name\" value=\"$value\" size=\"100\"";
                     } else {
                         $temp_text = "<input type=\"text\" name=\"$field_name\" value=\"$value\"";
                     }
@@ -425,7 +424,7 @@ function Show_Form($status_msg)
         }
         if ($colorpicker) {
             //echo "colorpicker 1<br>\n";
-            $tr_param = " class=\"alt\"";
+            $tr_param = ' class="alt"';
             $colorpicker = 0;
             $boxclass = 'dashblackbox';
         } else {
@@ -460,55 +459,54 @@ function Show_Form($status_msg)
     $add_prefix = 'rule' . $rule_count . '_';
     // description
     $desc_text = array(
-        '' => "rowspan=\"3\"",
-        "<b>Description:</b>&nbsp;&nbsp;<input type=\"text\" name=\"" .
-        $add_prefix . "description\" value=\"\" size=\"95\">" =>
-            "colspan=\"" . (MSRE_COLUMNS - 1) . "\""
+        '' => 'rowspan="3"',
+        '<b>Description:</b>&nbsp;&nbsp;<input type="text" name="' .
+        $add_prefix . 'description" value="" size="95">' =>
+            'colspan="' . (MSRE_COLUMNS - 1) . '"'
     );
     // direction
-    $temp_html = "<b>Condition:</b>&nbsp;&nbsp;<select name=\"" . $add_prefix .
-        "direction\"><option value=\"\"></option>";
+    $temp_html = '<b>Condition:</b>&nbsp;&nbsp;<select name="' . $add_prefix .
+        'direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
         $temp_html .= "<option value=\"$kw\">$kw</option>";
     }
     $temp_html .= "</select>\n";
     $add_rule_text[] = $temp_html;
     // target
-    $add_rule_text[] = "<input type=\"text\" name=\"" . $add_prefix .
-        "target\" value=\"\">";
+    $add_rule_text[] = '<input type="text" name="' . $add_prefix .
+        'target" value="">';
     // and
-    $add_rule_text[] = "<input type=\"checkbox\" name=\"" . $add_prefix .
-        "and\" value=\"and\">and";
+    $add_rule_text[] = '<input type="checkbox" name="' . $add_prefix .
+        'and" value="and">and';
     // and direction
-    $temp_html = "<select name=\"" . $add_prefix .
-        "and_direction\"><option value=\"\"></option>";
+    $temp_html = '<select name="' . $add_prefix .
+        'and_direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
         $temp_html .= "<option value=\"$kw\">$kw</option>";
     }
     $temp_html .= "</select>\n";
     $add_rule_text[] = $temp_html;
     // and target
-    $add_rule_text[] = "<input type=\"text\" name=\"" . $add_prefix .
-        "and_target\" value=\"\">";
+    $add_rule_text[] = '<input type="text" name="' . $add_prefix .
+        'and_target" value="">';
     // action
-    $add_rule_text[] = "</td></tr><tr><td colspan=\"" . (MSRE_COLUMNS - 1) . "\"><b>Action:</b>&nbsp;&nbsp;<input type=\"text\" name=\"" .
-        $add_prefix . "action\" value=\"\" size=\"100\">";
+    $add_rule_text[] = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>Action:</b>&nbsp;&nbsp;<input type="text" name="' .
+        $add_prefix . 'action" value="" size="100">';
 
     // now write it
-    TRH_Single('Add New Rule:', "colspan=\"" . MSRE_COLUMNS . "\"");
+    TRH_Single('Add New Rule:', 'colspan="' . MSRE_COLUMNS . '"');
     TR_Extended($desc_text, '');
     TR($add_rule_text);
 
     // need to put a submit button on the bottom
-    TRH_Single("<input type=\"submit\" name=\"submit\" value=\"Save Changes\">", "colspan=\"" . MSRE_COLUMNS . "\"");
+    TRH_Single('<input type="submit" name="submit" value="Save Changes">', 'colspan="' . MSRE_COLUMNS . '"');
 
     // finally, display page footer
     TR_Single(
         "<a href=\"msre_index.php\">Back to MSRE ruleset index</a><br>\n<a href=\"/mailscanner/other.php\">Back to MailWatch</a><br>\n",
-        "colspan=\"" . MSRE_COLUMNS . "\" class=\"footer\""
+        'colspan="' . MSRE_COLUMNS . '" class="footer"'
     );
     // that's it
-    return;
 }
 
 
@@ -750,7 +748,7 @@ function Process_Form()
 function Read_File($filename, $size)
 {
     // reads $filename up to $size bytes, and returns what it contains
-    include 'msre_function_global_vars.php';
+    include __DIR__ . '/msre_function_global_vars.php';
 
     // read contents of file
     $fh = fopen($filename, 'rb');

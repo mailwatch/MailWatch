@@ -43,7 +43,7 @@ $filter = html_start(__('mcprulehits34'), 0, false, true);
 // File name
 $filename = CACHE_DIR . '/rep_mcp_rule_hits.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
   mcpreport,
   ismcp
@@ -51,8 +51,8 @@ $sql = "
   maillog
  WHERE
   mcpreport IS NOT NULL
- AND mcpreport != \"\"
-" . $filter->CreateSQL();
+ AND mcpreport != ""
+' . $filter->CreateSQL();
 
 $result = dbquery($sql);
 if (!$result->num_rows > 0) {
