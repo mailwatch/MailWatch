@@ -294,15 +294,6 @@ CREATE TABLE IF NOT EXISTS `whitelist` (
 
 -- --------------------------------------------------------
 
---
--- Insert default administrator `admin` (password `admin`) in table `users`
---
-
-INSERT INTO `users` (`username`, `password`, `fullname`, `type`, `quarantine_report`, `spamscore`, `highspamscore`, `noscan`, `quarantine_rcpt`, `resetid`, `resetexpire`, `lastreset`) VALUES
-('admin', '$2y$10$PqnDvFFM/Pq2H5FM0nnI4OxBHDTWEGczoD6Qf.LS3Aqe7aLafNbLK', 'admin', 'A', 0, 5, 15, 0, '', NULL, NULL, NULL);
-
--- --------------------------------------------------------
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
