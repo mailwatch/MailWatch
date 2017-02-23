@@ -2638,15 +2638,7 @@ function ldap_authenticate($user, $password)
         }
 
         //search for $user in LDAP directory
-        if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
-        } elseif (strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN,
-                LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
-        } else {
-            // Windows LDAP (with legacy NT support)
-            $ldap_search_results = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
-        }
+        $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $user)) or die(__('ldpaauth203'));
 
         if (false === $ldap_search_results) {
             @trigger_error(__('ldapnoresult03') . ' "' . $user . '"');
@@ -2674,11 +2666,18 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                if (isset($result[0]['userprincipalname'][0])) {
-                    $user = $result[0]['userprincipalname'][0];
-                } else {
-                    // build DN for user, when LDAP server is not an AD
-                    $user = 'cn=' . $result[0]['cn'][0] . ',' . LDAP_DN;
+                if (!isset($result[0][LDAP_USERNAME_FIELD]) ||
+                      !isset($result[0][LDAP_USERNAME_FIELD][0])) {
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+                    return null;
+                }
+
+                $user = $result[0][LDAP_USERNAME_FIELD][0];
+                if (defined("LDAP_BIND_PREFIX")) {
+                    $user = LDAP_BIND_PREFIX . $user;
+                }
+                if (defined("LDAP_BIND_SUFFIX")) {
+                    $user .= LDAP_BIND_SUFFIX;
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
@@ -2706,7 +2705,6 @@ function ldap_authenticate($user, $password)
                         );
                         dbquery($sql);
                     }
-
                     return $email;
                 } else {
                     if (ldap_errno($ds) === 49) {
@@ -3957,6 +3955,7 @@ function checkConfVariables()
         'LANG',
         'LDAP_DN',
         'LDAP_EMAIL_FIELD',
+        'LDAP_FILTER',
         'LDAP_HOST',
         'LDAP_MS_AD_COMPATIBILITY',
         'LDAP_PASS',
@@ -3965,6 +3964,7 @@ function checkConfVariables()
         'LDAP_SITE',
         'LDAP_SSL',
         'LDAP_USER',
+        'LDAP_USERNAME_FIELD',
         'LISTS',
         'MAIL_LOG',
         'MAILQ',
@@ -4039,6 +4039,8 @@ function checkConfVariables()
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
+        'LDAP_BIND_PREFIX',
+        'LDAP_BIND_SUFFIX',
     );
     */
 

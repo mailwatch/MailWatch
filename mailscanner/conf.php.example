@@ -63,10 +63,17 @@ define('LDAP_DN', 'DC=example,DC=com');
 define('LDAP_USER', 'LDAPProxy@example.com'); // If no email set: cn=admin,dc=example,dc=com
 define('LDAP_PASS', 'secret');
 define('LDAP_SITE', 'default');
-// Can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword.
-define('LDAP_EMAIL_FIELD', 'proxyaddresses');
-// Microsoft Active Directory compatibility support for searches from Domain Base DN.
-define('LDAP_MS_AD_COMPATIBILITY', false);
+define('LDAP_FILTER',      'mail=%s'); //%s will be replaced by username eg. 'mail=%', 'mail=SMTP:%s', 'sAMAccountName=%s'
+define('LDAP_PROTOCOL_VERSION', 3);
+// can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
+define('LDAP_EMAIL_FIELD', 'mail');
+// Ldap field that is used to bind to the ldap server to check the credentials. 
+// The value of the LDAP_USERNAME_FIELD will be extended by LDAP_BIND_PREFIX and LDAP_BIND_SUFFIX to created the binding username.
+define('LDAP_USERNAME_FIELD', 'cn');
+define('LDAP_BIND_PREFIX', 'cn=');
+define('LDAP_BIND_SUFFIX', ',' . LDAP_DN);
+// Microsoft Active Directory compatibility support for searches from Domain Base DN
+define('LDAP_MS_AD_COMPATIBILITY', true);
 
 // Set Time Zone
 // See http://php.net/manual/en/timezones.php for a list of usable timezones.
