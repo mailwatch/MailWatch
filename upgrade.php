@@ -230,6 +230,19 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Update users table schema for password-reset feature
+    echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
+    if (check_column_exists('users', 'resetid') === false) {
+        $sql = 'ALTER TABLE `users` ADD COLUMN (
+            `resetid` varchar(32),
+            `resetexpire` bigint(20),
+            `lastreset` bigint(20)
+            );';
+        executeQuery($sql);
+    } else {
+        echo ' ALREADY EXIST' . PHP_EOL;
+    }
+
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
@@ -249,6 +262,18 @@ if ($link) {
     $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
     executeQuery($sql);
 
+    echo pad(' - Fix schema for spamscore field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` float DEFAULT NULL";
+    executeQuery($sql);
+
+    echo pad(' - Fix schema for highspamscore field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` float DEFAULT NULL";
+    executeQuery($sql);
+
+    echo pad(' - Fix schema for noscan field in `users` table');
+    $sql = "ALTER TABLE `users` CHANGE `noscan` `noscan` float DEFAULT NULL";
+    executeQuery($sql);
+
     // Table user_filters
     echo pad(' - Fix schema for username field in `user_filters` table');
     $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
@@ -256,20 +281,8 @@ if ($link) {
 
     // Table whitelist
     echo pad(' - Fix schema for username field in `whitelist` table');
-    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT';
-
-    // Update users table schema for password-reset feature
-    echo pad(' - Updating users table for password-reset feature');
-    if (check_column_exists('users', 'resetid') === false) {
-        $sql = 'ALTER TABLE `users` ADD COLUMN (
-            `resetid` varchar(32),
-            `resetexpire` bigint(20),
-            `lastreset` bigint(20)
-            );';
-        executeQuery($sql);
-    } else {
-        echo 'ALREADY DONE' . PHP_EOL;
-    }
+    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+    executeQuery($sql);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
