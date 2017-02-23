@@ -425,6 +425,8 @@ return array(
     'reset12' => 'Zurücksetzen',
     'areusuredel12' => 'Soll der Benutzer tatsächlich gelöscht werden',
     'errorpass12' => 'Passwörter stimmen nicht überein',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Benutzer bearbeiten',
     'create12' => 'Erstellen',
     'userregex12' => 'Benutzer (Regexp)',
