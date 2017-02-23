@@ -267,11 +267,11 @@ if ($link) {
     executeQuery($sql);
 
     echo pad(' - Fix schema for spamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` float DEFAULT NULL";
+    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` float DEFAULT '0'";
     executeQuery($sql);
 
     echo pad(' - Fix schema for highspamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` float DEFAULT NULL";
+    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` float DEFAULT '0'";
     executeQuery($sql);
 
     // Table user_filters
