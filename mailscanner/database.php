@@ -47,7 +47,7 @@ class database
      */
     public static function connect($host = '', $username = '', $password = '', $database = '')
     {
-        if (self::$link instanceof mysqli) {
+        if (!self::$link instanceof mysqli) {
             self::$link = new mysqli($host, $username, $password, $database);
             if (self::$link->connect_error) {
                 die(__('diedbconn103') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
