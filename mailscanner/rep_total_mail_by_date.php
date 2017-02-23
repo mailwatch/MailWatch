@@ -209,6 +209,7 @@ if (is_writable(CACHE_DIR)) {
 
     $graph = new Graph(850, 350, 0, false);
     $graph->SetShadow();
+    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
     $graph->SetScale('textlin');
     $graph->SetY2Scale('lin');
     $graph->img->SetMargin(60, 60, 30, 70);
