@@ -55,10 +55,16 @@ my ($SQLversion);
 # Modify this as necessary for your configuration
 my (%LowSpamScores, %HighSpamScores);
 my (%ScanList);
-my ($db_name) = 'mailscanner';
-my ($db_host) = 'localhost';
-my ($db_user) = 'mailwatch';
-my ($db_pass) = 'mailwatch';
+
+# Get database information from MailWatch-DB.pm
+use File::Basename;
+my $dirname = dirname(__FILE__);
+require $dirname.'/MailWatch-DB.pm';
+
+my ($db_name) = mailwatch_get_db_name();
+my ($db_host) = mailwatch_get_db_host();
+my ($db_user) = mailwatch_get_db_user();
+my ($db_pass) = mailwatch_get_db_password();
 
 # Check MySQL version
 sub CheckSQLVersion {

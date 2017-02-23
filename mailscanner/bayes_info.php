@@ -44,13 +44,36 @@ html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 audit_log(__('auditlog18'));
 
 // Create the table
-echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="690">';
+echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="690">' . "\n";
 // Add a Header to the table
-echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>';
+echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>' . "\n";
+
+// Clear Bayes database
+if ($_SESSION['user_type'] === 'A') {
+    $return = 0;
+    if (isset($_POST['clear'])) {
+        if (!is_file(SA_DIR . 'sa-learn')) {
+            echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">' . "\n";
+            echo '<br>' . __('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
+            echo '</div>' . "\n";
+        } else {
+            // You can use --force-expire instead of --clear to test the routine
+            passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --clear', $return);
+            if ($return === 0) {
+                audit_log(__('auditlogwipe18'));
+            } else {
+                echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">' . "\n";
+                echo '<br>' . __('error18') . ' ' . $return;
+                echo '</div>' . "\n";
+            }
+        }
+    }
+    echo '<br>' . "\n";
+}
 
 // Open the spamassassin file
 if (!is_file(SA_DIR . 'sa-learn')) {
-    die('Cannot find ' . SA_DIR . 'sa-learn');
+    die(__('cannotfind18') . ' ' . SA_DIR . 'sa-learn');
 }
 $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 
@@ -64,50 +87,50 @@ while (!feof($fh)) {
             case 'nspam':
                 echo '<tr><td class="heading">' . __('nbrspammessage18') . '</td><td align="right">' . number_format(
                         $regs[3]
-                    ) . '</td></tr>';
+                    ) . '</td></tr>' . "\n";
                 break;
 
             case 'nham':
                 echo '<tr><td class="heading">' . __('nbrhammessage18') . '</td><td align="right">' . number_format(
                         $regs[3]
-                    ) . '</td></tr>';
+                    ) . '</td></tr>' . "\n";
                 break;
 
             case 'ntokens':
                 echo '<tr><td class="heading">' . __('nbrtoken18') . '</td><td align="right">' . number_format(
                         $regs[3]
-                    ) . '</td></tr>';
+                    ) . '</td></tr>' . "\n";
                 break;
 
             case 'oldest atime':
                 echo '<tr><td class="heading">' . __('oldesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
-                    ) . '</td></tr>';
+                    ) . '</td></tr>' . "\n";
                 break;
 
             case 'newest atime':
                 echo '<tr><td class="heading">' . __('newesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
-                    ) . '</td></tr>';
+                    ) . '</td></tr>' . "\n";
                 break;
 
             case 'last journal sync atime':
                 echo '<tr><td class="heading">' . __('lastjournalsync18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
-                    ) . '</td></tr>';
+                    ) . '</td></tr>' . "\n";
                 break;
 
             case 'last expiry atime':
-                echo '<tr><td class="heading">' . __('lastexpiry18') . '</td><td align="right">' . date('r', $regs[3]) . '</td></tr>';
+                echo '<tr><td class="heading">' . __('lastexpiry18') . '</td><td align="right">' . date('r', $regs[3]) . '</td></tr>' . "\n";
                 break;
 
             case 'last expire reduction count':
                 echo '<tr><td class="heading">' . __('lastexpirycount18') . '</td><td align="right">' . number_format(
                         $regs[3]
-                    ) . ' ' . __('tokens18') .'</td></tr>';
+                    ) . ' ' . __('tokens18') .'</td></tr>' . "\n";
                 break;
         }
     }
@@ -117,7 +140,19 @@ while (!feof($fh)) {
 pclose($fh);
 
 // End the table html tag
-echo '</table>';
+echo '</table>' . "\n";
+
+// Clear button
+if ($_SESSION['user_type'] === 'A') {
+    echo '<br>' . "\n";
+    echo '<div style="text-align: center; ">' . "\n";
+    echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >' . "\n";
+    echo '<input type="submit" value="' . __('cleardbbayes18') . '">' . "\n";
+    echo '<input type="hidden" name="clear" value="true">' . "\n";
+    echo '</form>' . "\n";
+    echo '</div>' . "\n";
+    echo '<br>' . "\n";
+}
 
 // Add footer
 html_end();

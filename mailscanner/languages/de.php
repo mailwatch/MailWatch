@@ -428,6 +428,8 @@ return array(
     'reset12' => 'Zurücksetzen',
     'areusuredel12' => 'Soll der Benutzer tatsächlich gelöscht werden',
     'errorpass12' => 'Passwörter stimmen nicht überein',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Benutzer bearbeiten',
     'create12' => 'Erstellen',
     'userregex12' => 'Benutzer (Regexp)',
@@ -544,6 +546,11 @@ return array(
     'lastexpirycount18' => 'Abnahme-Zähler für letzten Ablauftermin:',
     'tokens18' => 'Token',
     'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
+    'cannotfind18' => 'Fehler: Konnte Datei nicht finden',
+    'cleardbbayes18' => 'Bayes-Datenbank leeren',
+    'auditlogwipe18' => 'Die vorhandene SpamAssassin Bayes-Datenbank wurde geleert',
+    'error18' => 'Fehler:',
+    'clearmessage18' => 'Sind sie sicher, dass die Bayes-Datenbank geleert werden soll?',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',

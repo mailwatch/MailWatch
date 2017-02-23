@@ -428,6 +428,8 @@ return array(
     'reset12' => 'Resetta',
     'areusuredel12' => 'Sei sicuro di voler cancellare l\'utente',
     'errorpass12' => 'Le Password non corrispondono',
+    'erroruserreq12' => 'Username Required',
+    'errorpwdreq12' => 'Password Required',
     'edituser12' => 'Edit User',
     'create12' => 'Create',
     'userregex12' => 'User (Regexp)',
@@ -544,6 +546,11 @@ return array(
     'lastexpirycount18' => 'Last Expiry Reduction Count:',
     'tokens18' => 'tokens',
     'auditlog18' => 'Viewed SpamAssassin Bayes Database Info',
+    'cannotfind18' => 'Error: Cannot find',
+    'cleardbbayes18' => 'Clear Bayes Database',
+    'auditlogwipe18' => 'Wiped out existing SpamAssassin Bayes Database',
+    'error18' => 'Error:',
+    'clearmessage18' => 'Are you sure you want to clear the Bayes database?',
 
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
