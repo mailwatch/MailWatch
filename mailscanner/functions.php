@@ -426,18 +426,28 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 } else {
                     echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
-                // else use mailq which is for sendmail and exim
+                // Else use MAILQ from conf.php which is for Sendmail or Exim
             } elseif (MAILQ) {
-                $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
-                    0);
-                $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
-                    0);
+                if ($mta === 'exim') {
+                    $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
+                    $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
+                } else {
+                    // Not activated because this need to be tested.
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$inq = $output_array[2];
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$outq = $output_array[2];
+                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
+                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
+                }
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
-            // drive display
+            // Drive display
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
@@ -2628,15 +2638,7 @@ function ldap_authenticate($user, $password)
         }
 
         //search for $user in LDAP directory
-        if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
-        } elseif (strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN,
-                LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
-        } else {
-            // Windows LDAP (with legacy NT support)
-            $ldap_search_results = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
-        }
+        $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $user)) or die(__('ldpaauth203'));
 
         if (false === $ldap_search_results) {
             @trigger_error(__('ldapnoresult03') . ' "' . $user . '"');
@@ -2664,11 +2666,18 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                if (isset($result[0]['userprincipalname'][0])) {
-                    $user = $result[0]['userprincipalname'][0];
-                } else {
-                    // build DN for user, when LDAP server is not an AD
-                    $user = 'cn=' . $result[0]['cn'][0] . ',' . LDAP_DN;
+                if (!isset($result[0][LDAP_USERNAME_FIELD]) ||
+                      !isset($result[0][LDAP_USERNAME_FIELD][0])) {
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+                    return null;
+                }
+
+                $user = $result[0][LDAP_USERNAME_FIELD][0];
+                if (defined("LDAP_BIND_PREFIX")) {
+                    $user = LDAP_BIND_PREFIX . $user;
+                }
+                if (defined("LDAP_BIND_SUFFIX")) {
+                    $user .= LDAP_BIND_SUFFIX;
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
@@ -2696,7 +2705,6 @@ function ldap_authenticate($user, $password)
                         );
                         dbquery($sql);
                     }
-
                     return $email;
                 } else {
                     if (ldap_errno($ds) === 49) {
@@ -3947,6 +3955,7 @@ function checkConfVariables()
         'LANG',
         'LDAP_DN',
         'LDAP_EMAIL_FIELD',
+        'LDAP_FILTER',
         'LDAP_HOST',
         'LDAP_MS_AD_COMPATIBILITY',
         'LDAP_PASS',
@@ -3955,6 +3964,7 @@ function checkConfVariables()
         'LDAP_SITE',
         'LDAP_SSL',
         'LDAP_USER',
+        'LDAP_USERNAME_FIELD',
         'LISTS',
         'MAIL_LOG',
         'MAILQ',
@@ -4012,6 +4022,8 @@ function checkConfVariables()
         'USE_PROXY',
         'VIRUS_INFO',
         'DISPLAY_VIRUS',
+        'EXIM_QUEUE_IN',
+        'EXIM_QUEUE_OUT',
     );
 
     $obsolete = array(
@@ -4028,6 +4040,8 @@ function checkConfVariables()
         'RPC_PORT',
         'RPC_SSL',
         'VIRUS_REGEX',
+        'LDAP_BIND_PREFIX',
+        'LDAP_BIND_SUFFIX',
     );
     */
 
@@ -4092,7 +4106,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
         'html_charset' => 'UTF-8',
         'head_charset' => 'UTF-8'
     );
-    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
     $mime->setTXTBody($text);
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
