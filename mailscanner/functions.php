@@ -2068,11 +2068,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'clientip':
                         $clientip = $row[$f];
                         if (defined('RESOLVE_IP_ON_DISPLAY') && RESOLVE_IP_ON_DISPLAY === true) {
-                            if (
-                                net_match('10.0.0.0/8', $clientip) ||
-                                net_match('172.16.0.0/12', $clientip) ||
-                                net_match('192.168.0.0/16', $clientip)
-                            ) {
+                            if (ip_in_range($clientip)) {
                                 $host = 'Internal Network';
                             } elseif (($host = gethostbyaddr($clientip)) === $clientip) {
                                 $host = 'Unknown';
@@ -3651,34 +3647,6 @@ function return_virus_link($virus)
 }
 
 /**
- * @param $network
- * @param $ip
- * @return bool
- */
-function net_match($network, $ip)
-{
-    // Skip invalid entries
-    if (long2ip(ip2long($ip)) === false) {
-        return false;
-    }
-    // From PHP website
-    // determines if a network in the form of 192.168.17.1/16 or
-    // 127.0.0.1/255.255.255.255 or 10.0.0.1 matches a given ip
-    $ip_arr = explode('/', $network);
-    // Skip invalid entries
-    if (long2ip(ip2long($ip_arr[0])) === false) {
-        return false;
-    }
-    $network_long = ip2long($ip_arr[0]);
-
-    $x = ip2long($ip_arr[1]);
-    $mask = long2ip($x) === $ip_arr[1] ? $x : 0xffffffff << (32 - $ip_arr[1]);
-    $ip_long = ip2long($ip);
-
-    return ($ip_long & $mask) === ($network_long & $mask);
-}
-
-/**
  * @return bool
  */
 function is_rpc_client_allowed()
@@ -3693,11 +3661,7 @@ function is_rpc_client_allowed()
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ($client === 'allprivate' &&
-                (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) ||
-                    net_match('172.16.0.0/12', $_SERVER['SERVER_ADDR']) ||
-                    net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
-            ) {
+            if ($client === 'allprivate' && ip_in_range($_SERVER['SERVER_ADDR'], false, 'private')) {
                 return true;
             }
             if ($client === 'local24') {
@@ -3707,17 +3671,17 @@ function is_rpc_client_allowed()
                 $ipsplit = explode('.', $ip);
                 $ipsplit[3] = '0';
                 $ip = implode('.', $ipsplit);
-                if (net_match("{$ip}/24", $_SERVER['SERVER_ADDR'])) {
+                if (ip_in_range($_SERVER['SERVER_ADDR'], "{$ip}/24")) {
                     return true;
                 }
             }
             // All any others
-            if (net_match($client, $_SERVER['SERVER_ADDR'])) {
+            if (ip_in_range($_SERVER['SERVER_ADDR'], $client)) {
                 return true;
             }
             // Try hostname
             $iplookup = gethostbyname($client);
-            if ($client !== $iplookup && net_match($iplookup, $_SERVER['SERVER_ADDR'])) {
+            if ($client !== $iplookup && ip_in_range($_SERVER['SERVER_ADDR'], $iplookup)) {
                 return true;
             }
         }
@@ -4113,4 +4077,39 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     $mail = new Mail_smtp($mail_param);
     return $mail->send($email, $hdrs, $body);
+}
+
+/**
+ * @param $ip
+ * @param bool|string $net
+ * @param bool|string $privateLocal
+ * @return bool
+ */
+function ip_in_range($ip, $net=false, $privateLocal=false)
+{
+    require __DIR__ . '/lib/IPSet.php';
+    if ($privateLocal === 'private') {
+        $privateIPSet = new \IPSet\IPSet(array(
+            '10.0.0.0/8',
+            '172.16.0.0/12',
+            '192.168.0.0/16',
+            'fc00::/7',
+            'fe80::/10',
+        ));
+        return $privateIPSet->match($ip);
+    } elseif ($privateLocal === 'local') {
+        $localIPSet = new \IPSet\IPSet(array(
+            '127.0.0.1',
+            '::1',
+        ));
+        return $localIPSet->match($ip);
+    } elseif ($privateLocal === false && $net !== false) {
+        $network = new \IPSet\IPSet(array(
+            $net
+        ));
+        return $network->match($ip);
+    } else {
+        //return false to fail gracefully
+        return false;
+    }
 }
