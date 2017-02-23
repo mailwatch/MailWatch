@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `quarantine_report` tinyint(1) DEFAULT '0',
   `spamscore` float DEFAULT NULL,
   `highspamscore` float DEFAULT NULL,
-  `noscan` float DEFAULT NULL,
+  `noscan` tinyint(1) DEFAULT '0',
   `quarantine_rcpt` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,
   `resetid` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `resetexpire` bigint(20) COLLATE utf8_unicode_ci DEFAULT NULL,
