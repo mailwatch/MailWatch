@@ -175,7 +175,7 @@ define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 define('VIRUS_INFO', 'http://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1');
 
 // Display Virus on message listing
-define('DISPLAY_VIRUS', true);
+define('DISPLAY_VIRUS_REPORT', true);
 
 // Override VIRUS_REGEX??
 // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/'); // SophosSAVI

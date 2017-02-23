@@ -2132,7 +2132,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus) && DISPLAY_VIRUS === true) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus) && DISPLAY_VIRUS_REPORT === true) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
@@ -4021,7 +4021,7 @@ function checkConfVariables()
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
-        'DISPLAY_VIRUS',
+        'DISPLAY_VIRUS_REPORT',
         'EXIM_QUEUE_IN',
         'EXIM_QUEUE_OUT',
     );
