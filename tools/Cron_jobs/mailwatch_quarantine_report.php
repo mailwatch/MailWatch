@@ -60,9 +60,9 @@ foreach ($required_constant as $constant) {
     }
 }
 if ($required_constant_missing_count === 0) {
-    require_once $mailwatch_dir . 'lib/pear/Mail.php';
-    require_once $mailwatch_dir . 'lib/pear/Mail/smtp.php';
-    require_once $mailwatch_dir . 'lib/pear/Mail/mime.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
+    require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('html_errors', 'off');
@@ -94,7 +94,7 @@ if ($required_constant_missing_count === 0) {
 <!-- Outer table -->
 <table width="100%%" border="0">
  <tr>
-  <td><img src="mailwatch-logo.png"/></td>
+  <td><img src="' . MW_LOGO . '"/></td>
   <td align="center" valign="middle">
    <h2>' . __('text611') . '</h2>
    ' . __('text612') . '
@@ -475,26 +475,4 @@ function send_quarantine_email($email, $filter, $quarantined)
     } else {
         dbg(" ==== ERROR sending e-mail to $email ". $isSent);
     }
-//    $mime = new Mail_mime("\n");
-//    $hdrs = array(
-//        'From' => QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>',
-//        'To' => $email,
-//        'Subject' => QUARANTINE_REPORT_SUBJECT,
-//        'Date' => date('r')
-//    );
-//    $mime_params = array(
-//        'text_encoding' => '7bit',
-//        'text_charset' => 'UTF-8',
-//        'html_charset' => 'UTF-8',
-//        'head_charset' => 'UTF-8'
-//    );
-//    $mime->addHTMLImage(MAILWATCH_HOME . '/images/mailwatch-logo.png', 'image/png', 'mailwatch-logo.png', true);
-//    $mime->setTXTBody($text_report);
-//    $mime->setHTMLBody($html_report);
-//    $body = $mime->get($mime_params);
-//    $hdrs = $mime->headers($hdrs);
-//    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
-//    $mail = new Mail_smtp($mail_param);
-//    $mail->send($email, $hdrs, $body);
-//    dbg(" ==== Sent e-mail to $email");
 }
