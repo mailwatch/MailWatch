@@ -68,7 +68,7 @@ class database
     public static function close()
     {
         $result = $true;
-        if(self::$link != null) {
+        if (self::$link != null) {
             $result = self::$link->close();
             self::$link = null;
         }
