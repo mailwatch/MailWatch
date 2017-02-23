@@ -32,7 +32,7 @@
 class database
 {
     /** @var mysqli $link */
-    public static $link;
+    public static $link = null;
 
     private function __construct()
     {
@@ -47,7 +47,7 @@ class database
      */
     public static function connect($host = '', $username = '', $password = '', $database = '')
     {
-        if (!self::$link) {
+        if (self::$link == null || !self::$link) {
             self::$link = new mysqli($host, $username, $password, $database);
             if (self::$link->connect_error) {
                 die(__('diedbconn103') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
@@ -67,7 +67,12 @@ class database
      */
     public static function close()
     {
-        return self::$link->close();
+        $result = $true;
+        if(self::$link != null) {
+            $result = self::$link->close();
+            self::$link = null;
+        }
+        return $result;
     }
 
     /**
