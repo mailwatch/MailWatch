@@ -227,7 +227,7 @@ return array(
     'file04' => 'Fichier',
     'type04' => 'Type',
     'path04' => 'Chemin',
-    'dang04' => 'Dangereux ',
+    'dang04' => 'Dangereux',
     'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
     'actions04' => 'Action(s) :',
@@ -257,6 +257,9 @@ return array(
     'errormess04' => 'Message d\'erreur :',
     'error04' => 'Erreur :',
     'auditlog04' => 'Visionnage de la vue détaillée du message',
+    'report04' => 'Report :',
+    'spamassassin04' => 'SpamAssassin',
+    'spamassassinmcp04' => 'SpamAssassin MCP',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',
