@@ -1,15 +1,16 @@
 1.2.0 - RC5
 -----------
+ - Added a system of 'optional' constants in conf.php
  - Added CSS class to hide elements for printing
  - Added direct call to Exim queue with exim -bpc (need 'mailwatch'sudo file) 
  - Added filtering options and details for Audit Log
  - Added fix_latin() to headers in MailWatch.pm
  - Added IPv6 and private network support (use IPSet.php)
- - Added many constants in conf.php.example
  - Added Password reset functionality for Users in Login page
  - Added SQL query error check in dbquery() function
  - Added the ability for domain admins to create/edit/delete User of the same Domain
  - Added the possibility to 'Clear' Bayes database in Bayes Info page
+ - Databse call now compatible with PHP 7 (mysqli)
  - Deleted spamscores table no longer used
  - Enhancement for MailScanner V5 compatibility
  - Fix for auto/unknown Virus scanner
@@ -19,7 +20,7 @@
  - Fixes unwanted characters in MailWatch.pm for SpamAssassin reports and subject
  - Improve LDAP compatibility with server other than Active Directory
  - Layout changes and fixes in Reports
- - More details for "Load Average" in GUI
+ - More details for 'Load Average' in GUI
  - Moved MailWatch PERL file DB settings to separate file (MailWatch-DB.pm)
  - Moved page style blocks to style.css and optimized some CSS style
  - New version of upgrade.php (more checks for DB schema and conf.php)
