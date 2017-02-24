@@ -877,6 +877,9 @@ return array(
     'resetexpired63' => 'Reset link has expired - please request a new password reset',
     'brokenlink63' => 'Reset link is missing paramaters - try again or contact support',
     'pwdresetldap63' => 'Password reset function cannot be used with LDAP',
+    'auditlogunf63' => 'Password reset attempt - user not found: %s',
+    'auditlogreserreqested63' => 'User %s requested a password reset - reset email sent',
+    'auditlogresetdenied63' => 'User denied password reset - %s',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

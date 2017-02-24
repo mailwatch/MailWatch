@@ -56,6 +56,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         if ($result->num_rows !== 1) {
             //user not found
             $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '</p>';
+            audit_log(sprintf(__('auditlogunf63'), $email));
             $showpage = true;
         } else {
             //user found, now check type of user
@@ -107,10 +108,14 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 } else {
                     $message = '<p>' . __('01emailsuccess63') . '</p>';
                     $showpage = true;
+                    audit_log(sprintf(__('auditlogreserreqested63'), $email));
                 }
             } else {
                 //password reset not allowed
-                die(__('resetnotallowed63'));
+                audit_log(sprintf(__('auditlogresetdenied63'), $email));
+                $errors = '<p class="pwdreseterror">' . __('resetnotallowed63') . '</p>';
+                $showpage = true;
+               // die(__('resetnotallowed63'));
             }
         }
     } elseif (isset($_POST['Submit']) && $_POST['Submit'] === __('button63')) {
