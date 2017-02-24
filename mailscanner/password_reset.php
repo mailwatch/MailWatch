@@ -111,7 +111,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     <div class="pwdresetButton"><a href="login.php"><button class="pwdresetButton">' . __('login01') . '</button></a></div>';
                     audit_log(sprintf(__('auditlogreserreqested63'), $email));
                     $showpage = true;
-
                 }
             } else {
                 //password reset not allowed
@@ -180,7 +179,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $errors = '<p class="pwdreseterror">' . __('pwdresetidmismatch63') . '</p>
                     <div class="pwdresetButton"><a href="login.php"><button class="pwdresetButton">' . __('login01') . '</button></a></div>';
                 $showpage = true;
-
             }
         } else {
             $errors = '<p class="pwdreseterror">' . __('pwdmismatch63');
