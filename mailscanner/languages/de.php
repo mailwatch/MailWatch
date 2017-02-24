@@ -877,6 +877,13 @@ return array(
     'resetexpired63' => 'Der Link zum Zurücksetzen des Passworts ist abgelaufen - bitte stellen Sie die Anfrage erneut',
     'brokenlink63' => 'Der Link zum Zurücksetzen des Passworts ist unvollständig - bitte versuchen Sie es erneut oder kontaktieren Sie den Administrator',
     'pwdresetldap63' => 'Die Funktion zum Zurücksetzen des Passwortes kann nicht zusammen mit LDAP verwendet werden',
+    'auditlogunf63' => 'Password reset attempt - user not found: %s',
+    'auditlogreserreqested63' => 'User %s requested a password reset - reset email sent',
+    'auditlogresetdenied63' => 'User denied password reset - %s',
+    'auditlogresetsuccess63' => 'Successful password reset for user - %s',
+    'auditlogidmismatch63' => 'Password reset failed for user: %s - reset ID mismatch',
+    'auditlogexpired63' => 'Password reset failed for user: %s - reset link expired',
+    'auditloglinkerror63' => 'Reset Email link error',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
