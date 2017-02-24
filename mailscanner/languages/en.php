@@ -207,8 +207,8 @@ return array(
     'listedrbl04' => 'Listed in RBL:',
     'spamwl04' => 'SPAM Whitelisted:',
     'spambl04' => 'SPAM Blacklisted:',
-    'saautolearn04' => 'Spamassassin Autolearn:',
-    'sascore04' => 'Spamassassin Score:',
+    'saautolearn04' => 'SpamAssassin Autolearn:',
+    'sascore04' => 'SpamAssassin Score:',
     'spamrep04' => 'Spam Report:',
     'hdrmcp04' => 'Message Content Protection (MCP)',
     'highscomcp04' => 'High Scoring MCP:',
@@ -257,6 +257,9 @@ return array(
     'errormess04' => 'Error Messages:',
     'error04' => 'Error:',
     'auditlog04' => 'Viewed message detail',
+    'report04' => 'Report:',
+    'spamassassin04' => 'SpamAssassin',
+    'spamassassinmcp04' => 'SpamAssassin MCP',
 
     // 05-status.php
     'recentmsg05' => 'Recent Messages',
@@ -885,5 +888,5 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
-    'missing_conf_entries' => 'The following conf.php entries are missing, check compare your conf.php with conf.php.example.',
+    'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',
 );
