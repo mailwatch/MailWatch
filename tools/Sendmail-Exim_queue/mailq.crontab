@@ -4,4 +4,4 @@
 # Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
 # Run each minute
-0-59 * * * * 	/usr/local/bin/mailwatch_sendmail_queue.php
+0-59 * * * * 	/usr/local/bin/mailwatch_sendmail_queue.php >/dev/null 2>&1
