@@ -674,7 +674,7 @@ td.message {
 
 .pwdreset {
     margin: 50px auto;
-    width: 350px;
+    width: 500px;
 }
 
 .pwdreset h1 {
@@ -686,6 +686,9 @@ td.message {
     -webkit-border-top-left-radius: 15px;
     -moz-border-radius-topleft: 15px;
     border-top-left-radius: 15px;
+    -webkit-border-top-right-radius: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-right-radius: 15px;
     padding: 20px
 }
 
@@ -786,4 +789,8 @@ td.message {
     -moz-border-radius: 3px;
     border-radius: 3px;
     max-width: 560px;
+}
+
+.mw-logo {
+    text-align:center;
 }

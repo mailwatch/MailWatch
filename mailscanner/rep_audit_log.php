@@ -84,10 +84,9 @@ if ($_SESSION['user_type'] !== 'A') {
   a.ip_address AS '" . __('ipaddress33') . "',
   a.action AS '" . __('action33') . "'
  FROM
-  audit_log a,
-  users b
- WHERE
-  a.user=b.username
+  audit_log AS a
+ LEFT JOIN
+  users AS b ON a.user=b.username
 " . $auditFilter . '
  ORDER BY timestamp DESC';
 
