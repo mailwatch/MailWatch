@@ -878,13 +878,13 @@ return array(
     'resetexpired63' => 'Le lien de réinitialisation a expiré - Veuillez faire une nouvelle demande de changement de mot de passe.',
     'brokenlink63' => 'Le lien de réinitialisation manque des paramètres - Essayez de nouveau ou contactez le support.',
     'pwdresetldap63' => 'La fonction de réinitialisation du mot de passe n\'est pas disponible avec LDAP.',
-    'auditlogunf63' => 'Password reset attempt - user not found: %s',
-    'auditlogreserreqested63' => 'User %s requested a password reset - reset email sent',
-    'auditlogresetdenied63' => 'User denied password reset - %s',
-    'auditlogresetsuccess63' => 'Successful password reset for user - %s',
-    'auditlogidmismatch63' => 'Password reset failed for user: %s - reset ID mismatch',
-    'auditlogexpired63' => 'Password reset failed for user: %s - reset link expired',
-    'auditloglinkerror63' => 'Reset Email link error',
+    'auditlogunf63' => 'Demande de réinitialisation de mot de passe - L\'utilisateur %s n\'existe pas.',
+    'auditlogreserreqested63' => 'L\'utilisateur %s a demander de réinitialiser son mot de passe. E-Mail de réinitialisation envoyé.',
+    'auditlogresetdenied63' => 'L\'utilisateur %s a refusé la réinitialisation de son mot de passe.',
+    'auditlogresetsuccess63' => 'La réinitialisation du mot de passe a réussi pour l\'utilisateur %s.',
+    'auditlogidmismatch63' => 'La réinitialisation du mot de passe pour l\'utilisateur %s a échouée. L\'ID de réinitialisation ne correspond pas.',
+    'auditlogexpired63' => 'La réinitialisation du mot de passe pour l\'utilisateur %s a échouée. L\'ID de réinitialisation a expiré.',
+    'auditloglinkerror63' => 'Erreur sur le lien de réinitialisation de l\'E-Mail.',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
