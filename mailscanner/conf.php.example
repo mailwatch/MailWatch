@@ -68,9 +68,9 @@ define('LDAP_PROTOCOL_VERSION', 3);
 define('LDAP_EMAIL_FIELD', 'mail');
 // Ldap field that is used to bind to the ldap server to check the credentials. 
 // The value of the LDAP_USERNAME_FIELD will be extended by LDAP_BIND_PREFIX and LDAP_BIND_SUFFIX to created the binding username.
-define('LDAP_USERNAME_FIELD', 'cn');
-define('LDAP_BIND_PREFIX', 'cn=');
-define('LDAP_BIND_SUFFIX', ',' . LDAP_DN);
+// define('LDAP_USERNAME_FIELD', 'cn');
+// define('LDAP_BIND_PREFIX', 'cn=');
+// define('LDAP_BIND_SUFFIX', ',' . LDAP_DN);
 // Microsoft Active Directory compatibility support for searches from Domain Base DN
 define('LDAP_MS_AD_COMPATIBILITY', true);
 
@@ -216,9 +216,9 @@ define('RPC_ONLY', false);
 define('MAILQ', true);
 // If you change the lines below, you need to change /etc/sudoers.d/mailwatch according.
 // Command to read Exim inbound Mail Queue
-define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
+// define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
 // Command to read Exim outbound Mail Queue
-define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
+// define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
 
 // Do you want an audit trail?
 define('AUDIT', false);
@@ -272,6 +272,6 @@ define('RESET_LINK_EXPIRE',1);
 // Set the following 2 variables (and uncomment) if you wish to define
 // an alternative sender name and address for password resets.
 // NOTE: Both must be set, otherwise it will use the default settings.
-//define('PWD_RESET_FROM_NAME', 'Some other name'); // Set if you wish reset email sent from alternative name.
-//define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
+// define('PWD_RESET_FROM_NAME', 'Some other name'); // Set if you wish reset email sent from alternative name.
+// define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
 /* End Password Reset */
