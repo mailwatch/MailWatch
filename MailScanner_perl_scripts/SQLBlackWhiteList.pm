@@ -48,7 +48,6 @@ $VERSION = substr q$Revision: 1.5 $, 10;
 use DBI;
 my (%Whitelist, %Blacklist);
 my ($wtime, $btime);
-my ($refresh_time) = 15;        # Time in minutes before lists are refreshed
 my ($dbh);
 my ($sth);
 my ($SQLversion);
@@ -62,6 +61,9 @@ my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
 my ($db_user) = mailwatch_get_db_user();
 my ($db_pass) = mailwatch_get_db_password();
+
+# Get refresh time from from MailWatch-DB.pm
+my ($refresh_time) =  mailwatch_get_refresh_time();
 
 # Check MySQL version
 sub CheckSQLVersion {
