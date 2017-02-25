@@ -39,7 +39,7 @@ no  strict 'subs'; # Allow bare words for parameter %'s
 
 use vars qw($VERSION);
 
-# uncommet the folloging line when debugging SQLBlackWhiteList.pm
+# Uncommet the folloging line when debugging SQLBlackWhiteList.pm
 #use Data::Dumper;
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
@@ -155,8 +155,8 @@ sub CreateList {
         $dbh->do('SET NAMES utf8');
     }
 
-    # uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    #MailScanner::Log::WarnLog("DEBUG MailWatch: SQLBlackWhiteList::CreateList: %s", Dumper($BlackWhite));
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: Debug SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
     
     # Remove old entries
     for (keys %$BlackWhite) {
@@ -183,8 +183,8 @@ sub CreateList {
         $count++;
     }
 
-    # uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    #MailScanner::Log::WarnLog("DEBUG MailWatch: SQLBlackWhiteList::CreateList: %s", Dumper($BlackWhite));
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: Debug SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
     
     # Close connections
     $sth->finish();
@@ -206,7 +206,7 @@ sub LookupList {
     my ($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip1c, $ip2, $ip2c, $ip3, $ip3c, $subdom, $i, @keys, @subdomains);
     $from = $message->{from};
     $fromdomain = $message->{fromdomain};
-    # create a array of subdomains for subdomain wildcard matching
+    # Create a array of subdomains for subdomain wildcard matching
     #   e.g. me@this.that.example.com generates subdomain list of ('that.example.com', 'example.com')
     #   wildcards of *.com, *.uk, *.gov, etc will never be matched for safety's sake (though *.gov.uk could be)
     $subdom = $fromdomain;
@@ -220,7 +220,8 @@ sub LookupList {
     @to = @{$message->{to}};
     $to = $to[0];
     $ip = $message->{clientip};
-    # match on leading 3, 2, or 1 octets
+    
+    # Match on leading 3, 2, or 1 octets
     $ip =~ /(\d{1,3}\.)(\d{1,3}\.)(\d{1,3}\.)/;  # get 1st three octets of IP
     $ip3 = "$1$2$3";
     $ip3c = substr($ip3, 0, - 1);
