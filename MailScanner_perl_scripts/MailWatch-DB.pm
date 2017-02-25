@@ -8,7 +8,7 @@ my ($db_user) = 'mailwatch';
 my ($db_pass) = 'mailwatch';
 
 # Change the value below for SQLBlackWhiteList.pm (default = 15)
-my ($refresh_time) = 15;      # Time in minutes before lists are refreshed
+my ($bwl_refresh_time) = 15;      # Time in minutes before lists are refreshed
 
 ###############################
 # don't touch below this line #
@@ -18,5 +18,5 @@ sub mailwatch_get_db_name { return $db_name };
 sub mailwatch_get_db_host { return $db_host };
 sub mailwatch_get_db_user { return $db_user };
 sub mailwatch_get_db_password { return $db_pass };
-sub mailwatch_get_refresh_time { return $refresh_time };
+sub mailwatch_get_BWL_refresh_time { return $bwl_refresh_time };
 1;

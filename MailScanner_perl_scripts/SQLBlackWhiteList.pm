@@ -63,7 +63,7 @@ my ($db_user) = mailwatch_get_db_user();
 my ($db_pass) = mailwatch_get_db_password();
 
 # Get refresh time from from MailWatch-DB.pm
-my ($refresh_time) =  mailwatch_get_refresh_time();
+my ($bwl_refresh_time) =  mailwatch_get_BWL_refresh_time();
 
 # Check MySQL version
 sub CheckSQLVersion {
@@ -101,7 +101,7 @@ sub InitSQLBlacklist {
 #
 sub SQLWhitelist {
     # Do we need to refresh the data?
-    if ((time() - $wtime) >= ($refresh_time * 60)) {
+    if ((time() - $wtime) >= ($bwl_refresh_time * 60)) {
         MailScanner::Log::InfoLog("MailWatch: Whitelist refresh time reached");
         InitSQLWhitelist();
     }
@@ -111,7 +111,7 @@ sub SQLWhitelist {
 
 sub SQLBlacklist {
     # Do we need to refresh the data?
-    if ((time() - $btime) >= ($refresh_time * 60)) {
+    if ((time() - $btime) >= ($bwl_refresh_time * 60)) {
         MailScanner::Log::InfoLog("MailWatch: Blacklist refresh time reached");
         InitSQLBlacklist();
     }
