@@ -8,7 +8,11 @@ my ($db_user) = 'mailwatch';
 my ($db_pass) = 'mailwatch';
 
 # Change the value below for SQLSpamSettings.pm
-my ($ss_refresh_time) = 15;      # Time in minutes before lists are refreshed
+my ($ss_refresh_time) = 15;       # Time in minutes before lists are refreshed
+
+# Change the value below for SQLBlackWhiteList.pm (default = 15)
+my ($bwl_refresh_time) = 15;      # Time in minutes before lists are refreshed
+
 
 ###############################
 # don't touch below this line #
