@@ -10,7 +10,7 @@ mailwatch_db_clean.php
 mailwatch_quarantine_maint.php
 mailwatch_quarantine_report.php
 
-Verify if the 3 files are executable. If not, use "chmod +x" to correct tis problem.
+Verify if the 3 files are executable. If not, use "chmod +x" to correct this problem.
 
 -------------------------------------------
 Database cleanup of maillog records
@@ -40,7 +40,6 @@ See the instructions in tools/MailScanner_rule_editor/INSTALL
 
 ATTENTION:
 
-Between 1.0.3 or 1.2.0 RCx version many files used by MailWatch have changed of name 
-and changed of place.
-Particularly the PHP files that are launched in cron and the Init script files.
+Several files have changed their name and location in MailWatch 1.2.0, 
+particularly the PHP files that are launched in cron and the Init script files.
 Please read the documentation carefully to remove old files during the upgrade.
