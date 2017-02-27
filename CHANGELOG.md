@@ -21,19 +21,20 @@
  - Improve LDAP compatibility with server other than Active Directory
  - Layout changes and fixes in Reports
  - More details for 'Load Average' in GUI
- - Moved MailWatch PERL file DB settings to separate file (MailWatch-DB.pm)
+ - Moved $refresh_time from SQLBlackWhiteList.pm in MailWatch-DB.pm
+ - Moved MailWatch .pm files database settings to separate file MailWatch-DB.pm
  - Moved page style blocks to style.css and optimized some CSS style
  - New version of upgrade.php (more checks for DB schema and conf.php)
  - Optimized database schema for utf8mb4 and InnoDB
  - Provides required field validation for User Manager page
  - Refactoring to reduce code duplication and code smells
  - Reorganisation of Tools directory with new INSTALL and script filenames
- - Updated disclaimer in all files.
+ - Updated disclaimer in all files
  - Updated translations in many parts (Up to date for French and German)
  - Upgrade of HTMLPurifier to v4.8.0
  - Upgrade of JpGraph to v4.0.2
  - Use of InnoDB storage engine instead of myISAM
- - Use utf8mb4_unicode_ci instead of utf8_unicode_ci as characters set
+ - Use utf8mb4_unicode_ci characters set instead of utf8_unicode_ci
 
 1.2.0 - RC4
 -----------
