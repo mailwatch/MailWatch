@@ -21,9 +21,9 @@ so for busy sites you will probably want to change this to run every 5 minutes o
 
 ATTENTION:
 
-Since MailWatch 1.2.0, you no longer need to use mailwatch_sendmail_queue.php
-with Exim MTA. Call to Exim queue is now managed by direct call using 'exim -bpc'. 
-
-Several files have changed their name and location in MailWatch 1.2.0.
-Particularly the PHP files that are launched in cron and the Init script files.
+Several files have changed their name and location in MailWatch 1.2.0, 
+particularly the PHP files that are launched in cron and the Init script files.
 Please read the documentation carefully to remove old files during the upgrade.
+
+Since MailWatch 1.2.0, you no longer need to use mailwatch_sendmail_queue.php
+with Exim MTA. Call to Exim queue is now managed by direct call using 'exim -bpc'.
