@@ -156,7 +156,7 @@ sub CreateList {
     }
 
     # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    #MailScanner::Log::WarnLog("MailWatch: Debug SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
     
     # Remove old entries
     for (keys %$BlackWhite) {
@@ -184,7 +184,7 @@ sub CreateList {
     }
 
     # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    #MailScanner::Log::WarnLog("MailWatch: Debug SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
     
     # Close connections
     $sth->finish();
