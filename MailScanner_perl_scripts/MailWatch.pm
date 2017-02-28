@@ -322,13 +322,10 @@ sub MailWatchLogging {
     }
 
     # Sanitize reports
-    # To test if double in $reports
-    # my @unique_report_array = do { my %seen; grep { !$seen{$_}++ } @report_array };
-    # my $reports = join(",", @unique_report_array);
     my $reports = join(",", @report_array);
 
     # Uncommet the folloging line when debugging MailWatch.pm
-    #MailScanner::Log::WarnLog("MailWatch: Debug: VAR reports: %s", Dumper($reports));
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG: VAR reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
