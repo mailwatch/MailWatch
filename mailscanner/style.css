@@ -791,6 +791,12 @@ td.message {
     max-width: 560px;
 }
 
+/*general styles*/
+
+.font-1em {
+    font-size:1em;
+}
+
 .mw-logo {
     text-align:center;
 }

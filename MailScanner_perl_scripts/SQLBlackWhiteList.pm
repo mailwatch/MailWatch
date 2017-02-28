@@ -39,7 +39,7 @@ no  strict 'subs'; # Allow bare words for parameter %'s
 
 use vars qw($VERSION);
 
-# uncommet the folloging line when debugging SQLBlackWhiteList.pm
+# Uncommet the folloging line when debugging SQLBlackWhiteList.pm
 #use Data::Dumper;
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
@@ -48,7 +48,6 @@ $VERSION = substr q$Revision: 1.5 $, 10;
 use DBI;
 my (%Whitelist, %Blacklist);
 my ($wtime, $btime);
-my ($refresh_time) = 15;        # Time in minutes before lists are refreshed
 my ($dbh);
 my ($sth);
 my ($SQLversion);
@@ -62,6 +61,9 @@ my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
 my ($db_user) = mailwatch_get_db_user();
 my ($db_pass) = mailwatch_get_db_password();
+
+# Get refresh time from from MailWatch-DB.pm
+my ($bwl_refresh_time) =  mailwatch_get_BWL_refresh_time();
 
 # Check MySQL version
 sub CheckSQLVersion {
@@ -99,7 +101,7 @@ sub InitSQLBlacklist {
 #
 sub SQLWhitelist {
     # Do we need to refresh the data?
-    if ((time() - $wtime) >= ($refresh_time * 60)) {
+    if ((time() - $wtime) >= ($bwl_refresh_time * 60)) {
         MailScanner::Log::InfoLog("MailWatch: Whitelist refresh time reached");
         InitSQLWhitelist();
     }
@@ -109,7 +111,7 @@ sub SQLWhitelist {
 
 sub SQLBlacklist {
     # Do we need to refresh the data?
-    if ((time() - $btime) >= ($refresh_time * 60)) {
+    if ((time() - $btime) >= ($bwl_refresh_time * 60)) {
         MailScanner::Log::InfoLog("MailWatch: Blacklist refresh time reached");
         InitSQLBlacklist();
     }
@@ -153,8 +155,8 @@ sub CreateList {
         $dbh->do('SET NAMES utf8');
     }
 
-    # uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    #MailScanner::Log::WarnLog("DEBUG MailWatch: SQLBlackWhiteList::CreateList: %s", Dumper($BlackWhite));
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
     
     # Remove old entries
     for (keys %$BlackWhite) {
@@ -181,8 +183,8 @@ sub CreateList {
         $count++;
     }
 
-    # uncommet the folloging line when debugging SQLBlackWhiteList.pm
-    #MailScanner::Log::WarnLog("DEBUG MailWatch: SQLBlackWhiteList::CreateList: %s", Dumper($BlackWhite));
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
     
     # Close connections
     $sth->finish();
@@ -204,7 +206,7 @@ sub LookupList {
     my ($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip1c, $ip2, $ip2c, $ip3, $ip3c, $subdom, $i, @keys, @subdomains);
     $from = $message->{from};
     $fromdomain = $message->{fromdomain};
-    # create a array of subdomains for subdomain wildcard matching
+    # Create a array of subdomains for subdomain wildcard matching
     #   e.g. me@this.that.example.com generates subdomain list of ('that.example.com', 'example.com')
     #   wildcards of *.com, *.uk, *.gov, etc will never be matched for safety's sake (though *.gov.uk could be)
     $subdom = $fromdomain;
@@ -218,7 +220,8 @@ sub LookupList {
     @to = @{$message->{to}};
     $to = $to[0];
     $ip = $message->{clientip};
-    # match on leading 3, 2, or 1 octets
+    
+    # Match on leading 3, 2, or 1 octets
     $ip =~ /(\d{1,3}\.)(\d{1,3}\.)(\d{1,3}\.)/;  # get 1st three octets of IP
     $ip3 = "$1$2$3";
     $ip3c = substr($ip3, 0, - 1);
