@@ -325,7 +325,7 @@ sub MailWatchLogging {
     my $reports = join(",", @report_array);
 
     # Uncommet the folloging line when debugging MailWatch.pm
-    #MailScanner::Log::WarnLog("MailWatch: DEBUG: VAR reports: %s", Dumper($reports));
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG: var reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
