@@ -879,7 +879,7 @@ return array(
     'brokenlink63' => 'Le lien de réinitialisation manque des paramètres - Essayez de nouveau ou contactez le support.',
     'pwdresetldap63' => 'La fonction de réinitialisation du mot de passe n\'est pas disponible avec LDAP.',
     'auditlogunf63' => 'Demande de réinitialisation de mot de passe - L\'utilisateur %s n\'existe pas.',
-    'auditlogreserreqested63' => 'L\'utilisateur %s a demander de réinitialiser son mot de passe. E-Mail de réinitialisation envoyé.',
+    'auditlogreserreqested63' => 'L\'utilisateur %s a demandé de réinitialiser son mot de passe. E-Mail de réinitialisation envoyé.',
     'auditlogresetdenied63' => 'L\'utilisateur %s a refusé la réinitialisation de son mot de passe.',
     'auditlogresetsuccess63' => 'La réinitialisation du mot de passe a réussi pour l\'utilisateur %s.',
     'auditlogidmismatch63' => 'La réinitialisation du mot de passe pour l\'utilisateur %s a échouée. L\'ID de réinitialisation ne correspond pas.',
