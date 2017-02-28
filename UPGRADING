@@ -19,10 +19,10 @@ UPGRADING FROM 1.0.3 TO 1.2.0
 - Copy conf.php.example to conf.php and edit the file to suit your configuration.
 
 - Replace MailWatch.pm, SQLBlackWhiteList.pm and SQLSpamSettings.pm with new version 
-  from MailScanner_perl_scripts and set database connection settings in MailWatch-DB.pm 
+  from MailScanner_perl_scripts and set database connection settings in 00-mailwatch-conf.pm 
   if not already done.
 
-- Copy the MailWatch-DB.pm from MailScanner_perl_scripts in /etc/MailScanner/custom
+- Copy the 00-mailwatch-conf.pm from MailScanner_perl_scripts in /etc/MailScanner/custom
   and set database connection settings.
 
 - Install the files in tools/Cron_jobs following INSTALL doc.

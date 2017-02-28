@@ -52,17 +52,17 @@ my ($dbh);
 my ($sth);
 my ($SQLversion);
 
-# Get database information from MailWatch-DB.pm
+# Get database information from 00-mailwatch-conf.pm
 use File::Basename;
 my $dirname = dirname(__FILE__);
-require $dirname.'/MailWatch-DB.pm';
+require $dirname.'/00-mailwatch-conf.pm';
 
 my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
 my ($db_user) = mailwatch_get_db_user();
 my ($db_pass) = mailwatch_get_db_password();
 
-# Get refresh time from from MailWatch-DB.pm
+# Get refresh time from from 00-mailwatch-conf.pm
 my ($bwl_refresh_time) =  mailwatch_get_BWL_refresh_time();
 
 # Check MySQL version

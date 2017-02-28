@@ -7,6 +7,6 @@ Copy the following files in /etc/MailScanner/custom:
 MailWatch.pm
 SQLBlackWhiteList.pm
 SQLSpamSettings.pm
-MailWatch-DB.pm
+00-mailwatch-conf.pm
 
-Set database connection settings in MailWatch-DB.pm.
+Set database connection settings in 00-mailwatch-conf.pm.
