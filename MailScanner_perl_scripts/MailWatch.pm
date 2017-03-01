@@ -61,10 +61,10 @@ my $server_port = 11553;
 my $timeout = 3600;
 my ($SQLversion);
 
-# Get database information from 00-mailwatch-conf.pm
+# Get database information from 00-MailWatch-conf.pm
 use File::Basename;
 my $dirname = dirname(__FILE__);
-require $dirname.'/00-mailwatch-conf.pm';
+require $dirname.'/00-MailWatch-conf.pm';
 
 my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
