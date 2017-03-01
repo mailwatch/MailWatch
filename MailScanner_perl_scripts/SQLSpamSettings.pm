@@ -55,17 +55,17 @@ my (%LowSpamScores, %HighSpamScores);
 my (%ScanList);
 my ($sstime, $hstime, $nstime);
 
-# Get database information from 00-mailwatch-conf.pm
+# Get database information from 00-MailWatch-conf.pm
 use File::Basename;
 my $dirname = dirname(__FILE__);
-require $dirname.'/00-mailwatch-conf.pm';
+require $dirname.'/00-MailWatch-conf.pm';
 
 my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
 my ($db_user) = mailwatch_get_db_user();
 my ($db_pass) = mailwatch_get_db_password();
 
-# Get refresh time from from 00-mailwatch-conf.pm
+# Get refresh time from from 00-MailWatch-conf.pm
 my ($ss_refresh_time) =  mailwatch_get_SS_refresh_time();
 
 # Check MySQL version
