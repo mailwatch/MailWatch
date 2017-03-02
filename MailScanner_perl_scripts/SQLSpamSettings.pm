@@ -56,10 +56,10 @@ my ($SQLversion);
 my (%LowSpamScores, %HighSpamScores);
 my (%ScanList);
 
-# Get database information from MailWatch-DB.pm
+# Get database information from 00-MailWatch-conf.pm
 use File::Basename;
 my $dirname = dirname(__FILE__);
-require $dirname.'/MailWatch-DB.pm';
+require $dirname.'/00-MailWatch-conf.pm';
 
 my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
