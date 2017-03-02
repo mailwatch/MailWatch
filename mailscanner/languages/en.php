@@ -857,7 +857,7 @@ return array(
     'conferror63' => 'Error : Password reset is not enabled in conf.php',
     'usernotfound63' => 'User not found',
     'errordb63' => 'Database error',
-    'title63' => 'Password reset',
+    'title63' => 'Password Reset',
     'passwdresetrequest63' => 'Password reset request',
     'p1email63' => 'A password reset request has been received for %s.<br>If you did not make this request, please contact your system administrator immediately.<p>To reset you password, please click the link below.<br>',
     'button63' => 'Reset Password',
