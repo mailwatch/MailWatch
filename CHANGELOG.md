@@ -22,7 +22,7 @@
  - Layout changes and fixes in Reports
  - More details for 'Load Average' in GUI
  - Moved $refresh_time from SQLBlackWhiteList.pm in MailWatch-DB.pm
- - Moved MailWatch .pm files database settings to separate file MailWatch-DB.pm
+ - Moved MailWatch .pm files database settings to separate file 00-MailWatch-conf.pm
  - Moved page style blocks to style.css and optimized some CSS style
  - New version of upgrade.php (more checks for DB schema and conf.php)
  - Optimized database schema for utf8mb4 and InnoDB
