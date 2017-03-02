@@ -165,6 +165,15 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.pwdresetButton a:hover {
+    background-color: blue;
+    color: #FFF;
+    padding: 5px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+}
+
 /* mail table */
 table.mail TH, table.boxtable TH, table.maildetail TH {
     font-size: 10pt;
@@ -674,7 +683,7 @@ td.message {
 
 .pwdreset {
     margin: 50px auto;
-    width: 350px;
+    width: 500px;
 }
 
 .pwdreset h1 {
@@ -686,6 +695,9 @@ td.message {
     -webkit-border-top-left-radius: 15px;
     -moz-border-radius-topleft: 15px;
     border-top-left-radius: 15px;
+    -webkit-border-top-right-radius: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-right-radius: 15px;
     padding: 20px
 }
 
@@ -792,4 +804,8 @@ td.message {
 
 .font-1em {
     font-size:1em;
+}
+
+.mw-logo {
+    text-align:center;
 }

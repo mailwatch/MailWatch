@@ -30,7 +30,7 @@
  */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-if (version_compare(phpversion(), '5.3.0', '<')) {
+if (version_compare(PHP_VERSION, '5.3.0', '<')) {
     error_reporting(E_ALL);
 } else {
     // E_DEPRECATED added in PHP 5.3
@@ -1581,7 +1581,7 @@ function parse_conf_file($name)
         if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
 
             // Strip trailing comments
-            $regs['value'] = preg_replace("/#.*$/", '', $regs['value']);
+            $regs['value'] = preg_replace('/#.*$/', '', $regs['value']);
 
             // store %var% variables
             if (preg_match('/%.+%/', $regs['name'])) {
@@ -1697,7 +1697,8 @@ function subtract_multi_get_vars($preserve)
 }
 
 /**
- * @param $sql the sql query for which the page will be created
+ * @param string $sql the sql query for which the page will be created
+ * @return int
  */
 function generatePager($sql)
 {
@@ -2008,7 +2009,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     echo "  $fieldname[$f] (<a href=\"?orderby=" . $fieldInfo->name
                         . '&amp;orderdir=a' . subtract_multi_get_vars(
                             array('orderby', 'orderdir')
-                        ) . "\">A</a>/<a href=\"?orderby=" . $fieldInfo->name
+                        ) . '">A</a>/<a href="?orderby=' . $fieldInfo->name
                         . '&amp;orderdir=d' . subtract_multi_get_vars(array('orderby', 'orderdir')) . "\">D</a>)\n";
                     echo "  </th>\n";
                 } else {
@@ -2403,7 +2404,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ", $1",
+                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ', $1',
                         $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
@@ -2666,17 +2667,16 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                if (!isset($result[0][LDAP_USERNAME_FIELD]) ||
-                      !isset($result[0][LDAP_USERNAME_FIELD][0])) {
+                if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
                     @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
                     return null;
                 }
 
                 $user = $result[0][LDAP_USERNAME_FIELD][0];
-                if (defined("LDAP_BIND_PREFIX")) {
+                if (defined('LDAP_BIND_PREFIX')) {
                     $user = LDAP_BIND_PREFIX . $user;
                 }
-                if (defined("LDAP_BIND_SUFFIX")) {
+                if (defined('LDAP_BIND_SUFFIX')) {
                     $user .= LDAP_BIND_SUFFIX;
                 }
 
@@ -3233,8 +3233,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $mail_param = array('host' => MAILWATCH_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
-            $mail = new Mail;
-            $mail = $mail->factory('smtp', $mail_param);
+            $mail = new Mail_smtp($mail_param);
 
             $m_result = $mail->send($to, $hdrs, $body);
             if (is_a($m_result, 'PEAR_Error')) {
@@ -3260,7 +3259,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                         $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                         audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
                     } else {
-                        $status = __('releaseerrorcode03') . ' ' . $retval . " " . __('returnedfrom03') . "\n" . implode(
+                        $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -3428,7 +3427,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
                     audit_log(sprintf(__('auditlogspamtrained03'), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
-                    $status[] = __('salearnerror03') . ' ' . $retval . " " . __('salearnreturn03') . "\n" . implode(
+                    $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
                             "\n",
                             $output_array
                         );
@@ -3551,7 +3550,11 @@ function audit_log($action)
 {
     $link = dbconn();
     if (AUDIT) {
-        $user = $link->real_escape_string($_SESSION['myusername']);
+        if (isset($_SESSION['myusername'])) {
+            $user = $link->real_escape_string($_SESSION['myusername']);
+        } else {
+            $user = 'unknown';
+        }
         $action = safe_value($action);
         $ip = safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
@@ -3644,7 +3647,7 @@ function return_virus_link($virus)
     if (defined('VIRUS_INFO') && VIRUS_INFO !== false) {
         $link = sprintf(VIRUS_INFO, $virus);
 
-        return sprintf("<a href=\"%s\">%s</a>", $link, $virus);
+        return sprintf('<a href="%s">%s</a>', $link, $virus);
     } else {
         return $virus;
     }
