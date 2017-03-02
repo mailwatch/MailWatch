@@ -74,8 +74,8 @@ $sql = "
   CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('virus04') . "',
   CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('blkfile04') . "',
   CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('otherinfec04') . "',
-  report AS 'Report:',
-  'SpamAssassin' AS 'HEADER',
+  report AS '" . __('report04') . "',
+  '" . __('spamassassin04') . "' AS 'HEADER',
   CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spam04') . "',
   CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . __('hscospam04') . "',
   CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spamassassinspam04') . "',
@@ -88,7 +88,7 @@ $sql = "
   '" . __('hdrmcp04') . "' AS 'HEADER',
   CASE WHEN ismcp>0 THEN '$yes' ELSE '$no' END AS 'MCP:',
   CASE WHEN ishighmcp>0 THEN '$yes' ELSE '$no' END AS '" . __('highscomcp04') . "',
-  CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin MCP:',
+  CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS '" . __('spamassassinmcp04') . "',
   CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpwl04') . "',
   CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpbl04') . "',
   mcpsascore AS '" . __('mcpscore04') . "',
@@ -190,6 +190,7 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('report04')) {
             $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+            $row[$f] = preg_replace("/ <br>/", "<br>", $row[$f]);
         }
         if ($fieldn === __('from04')) {
             $row[$f] = htmlentities($row[$f]);
@@ -214,7 +215,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = formatSize($row[$f]);
         }
         if ($fieldn === __('msgheaders04')) {
-            if (version_compare(phpversion(), '5.4', '>=')) {
+            if (version_compare(PHP_VERSION, '5.4', '>=')) {
                 $row[$f] = nl2br(
                     str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
                 );
@@ -423,7 +424,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo '  <th>' . __('file04') . '</th>' . "\n";
         echo '  <th>' . __('type04') . '</th>' . "\n";
         echo '  <th>' . __('path04') . '</th>' . "\n";
-        echo '  <th>' . __('dang04') . '?</th>' . "\n";
+        echo '  <th>' . __('dang04') . '</th>' . "\n";
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
