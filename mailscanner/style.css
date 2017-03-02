@@ -165,7 +165,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.pwdresetButton a:hover {
+.loginbody .pwdresetButton a:hover {
     background-color: blue;
     color: #FFF;
     padding: 5px;
