@@ -1,21 +1,35 @@
 #
-#   MailWatch for MailScanner Custom Module SQLSpamSettings
+# MailWatch for MailScanner
+# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
-#   $Id: SQLSpamSettings.pm,v 1.4 2011/12/14 18:21:28 lorodoes Exp $
+#   Custom Module SQLSpamSettings
 #
-#   This program is free software; you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation; either version 2 of the License, or
-#   (at your option) any later version.
+#   Version 1.5
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
+# This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+# version.
 #
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#
+# In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+# those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+# that use the same license as those files), and distribute linked combinations including the two.
+# You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+# PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+# your version of the program, but you are not obligated to do so.
+# If you do not wish to do so, delete this exception statement from your version.
+#
+# As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+# as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+# JpGraph.
+#
+# You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
 
 #
 # This module uses entries in the user table to determine the Spam Settings
@@ -31,15 +45,42 @@ no  strict 'subs'; # Allow bare words for parameter %'s
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.4 $, 10;
+$VERSION = substr q$Revision: 1.5 $, 10;
 
 use DBI;
+my ($dbh);
+my ($sth);
+my ($SQLversion);
 my (%LowSpamScores, %HighSpamScores);
 my (%ScanList);
-my ($db_name) = 'mailscanner';
-my ($db_host) = 'localhost';
-my ($db_user) = 'mailwatch';
-my ($db_pass) = 'mailwatch';
+my ($sstime, $hstime, $nstime);
+
+# Get database information from 00-MailWatch-conf.pm
+use File::Basename;
+my $dirname = dirname(__FILE__);
+require $dirname.'/00-MailWatch-conf.pm';
+
+my ($db_name) = mailwatch_get_db_name();
+my ($db_host) = mailwatch_get_db_host();
+my ($db_user) = mailwatch_get_db_user();
+my ($db_pass) = mailwatch_get_db_password();
+
+# Get refresh time from from 00-MailWatch-conf.pm
+my ($ss_refresh_time) =  mailwatch_get_SS_refresh_time();
+
+# Check MySQL version
+sub CheckSQLVersion {
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        $db_user, $db_pass,
+        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+    );
+    if (!$dbh) {
+        MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: Unable to initialise database connection: %s", $DBI::errstr);
+    }
+    $SQLversion = $dbh->{mysql_serverversion};
+    $dbh->disconnect;
+    return $SQLversion
+}
 
 #
 # Initialise the arrays with the users Spam settings
@@ -47,19 +88,22 @@ my ($db_pass) = 'mailwatch';
 sub InitSQLSpamScores
 {
     my ($entries) = CreateScoreList('spamscore', \%LowSpamScores);
-    MailScanner::Log::InfoLog("MailWatch: Read %d Spam entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d Spam entries", $entries);
+    $sstime = time();
 }
 
 sub InitSQLHighSpamScores
 {
     my $entries = CreateScoreList('highspamscore', \%HighSpamScores);
-    MailScanner::Log::InfoLog("MailWatch: Read %d high Spam entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d high Spam entries", $entries);
+    $hstime = time();
 }
 
 sub InitSQLNoScan
 {
     my $entries = CreateNoScanList('noscan', \%ScanList);
-    MailScanner::Log::InfoLog("MailWatch: Read %d No Spam Scan entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d No Spam Scan entries", $entries);
+    $nstime = time();
 }
 
 #
@@ -67,6 +111,11 @@ sub InitSQLNoScan
 #
 sub SQLSpamScores
 {
+    # Do we need to refresh the data?
+    if ((time() - $sstime) >= ($ss_refresh_time * 60)) {
+        MailScanner::Log::InfoLog("MailWatch: SQLSpamScores refresh time reached");
+        InitSQLSpamScores();
+    }
     my ($message) = @_;
     my ($score) = LookupScoreList($message, \%LowSpamScores);
     return $score;
@@ -74,6 +123,11 @@ sub SQLSpamScores
 
 sub SQLHighSpamScores
 {
+    # Do we need to refresh the data?
+    if ((time() - $hstime) >= ($ss_refresh_time * 60)) {
+        MailScanner::Log::InfoLog("MailWatch: SQLHighSpamScores refresh time reached");
+        InitSQLHighSpamScores();
+    }
     my ($message) = @_;
     my ($score) = LookupScoreList($message, \%HighSpamScores);
     return $score;
@@ -81,9 +135,13 @@ sub SQLHighSpamScores
 
 sub SQLNoScan
 {
+    # Do we need to refresh the data?
+    if ((time() - $nstime) >= ($ss_refresh_time * 60)) {
+        MailScanner::Log::InfoLog("MailWatch: SQLNoScan refresh time reached");
+        InitSQLNoScan();
+    }
     my ($message) = @_;
     my ($noscan) = LookupNoScanList($message, \%ScanList);
-    # MailScanner::Log::InfoLog("Returning %d from SQLNoScan", $noscan);
     return $noscan;
 }
 
@@ -92,17 +150,17 @@ sub SQLNoScan
 #
 sub EndSQLSpamScores
 {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL Spam Scores");
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL Spam Scores");
 }
 
 sub EndSQLHighSpamScores
 {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL High Spam Scores");
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL High Spam Scores");
 }
 
 sub EndSQLNoScan
 {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL No Scan");
+    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL No Scan");
 }
 
 # Read the list of users that have defined their own Spam Score value. Also
@@ -110,22 +168,27 @@ sub EndSQLNoScan
 sub CreateScoreList
 {
     my ($type, $UserList) = @_;
+    my ($sql, $username, $count);
 
-    my ($dbh, $sth, $sql, $username, $count);
-
-    # Connect to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, RaiseError => 1, mysql_enable_utf8 => 1 }
-    );
-
-    # Check if connection was successfull - if it isn't
-    # then generate a warning and return to MailScanner so it can continue processing.
-    if (!$dbh)
-    {
-        MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings::CreateList Unable to initialise database connection: %s",
-            $DBI::errstr);
-        return;
+    # Check if MySQL is >= 5.3.3
+    if (CheckSQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: CreateScoreList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8mb4');
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateScoreList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8');
     }
 
     $sql = "SELECT username, $type FROM users WHERE $type > 0";
@@ -133,6 +196,7 @@ sub CreateScoreList
     $sth->execute;
     $sth->bind_columns(undef, \$username, \$type);
     $count = 0;
+    
     while($sth->fetch())
     {
         $UserList->{lc($username)} = $type; # Store entry
@@ -150,19 +214,27 @@ sub CreateScoreList
 sub CreateNoScanList
 {
     my ($type, $NoScanList) = @_;
+    my ($sql, $username, $count);
 
-    my ($dbh, $sth, $sql, $username, $count);
-
-    # Connect to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host", $db_user, $db_pass, { PrintError => 0 });
-
-    # Check if connection was successfull - if it isn't
-    # then generate a warning and return to MailScanner so it can continue processing.
-    if (!$dbh)
-    {
-        MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings::CreateNoScanList Unable to initialise database connection: %s",
-            $DBI::errstr);
-        return;
+    # Check if MySQL is >= 5.3.3
+    if (CheckSQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateNoScanList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8mb4');
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateNoScanList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8');
     }
 
     $sql = "SELECT username, $type FROM users WHERE $type > 0";

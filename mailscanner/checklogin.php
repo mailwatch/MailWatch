@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -64,11 +64,6 @@ if (
 
 $sql = "SELECT * FROM users WHERE username='$myusername'";
 $result = dbquery($sql);
-if (!$result) {
-    $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-    $message .= 'Whole query: ' . $sql;
-    die($message);
-}
 
 // mysql_num_row is counting table row
 $usercount = $result->num_rows;
@@ -102,12 +97,6 @@ if ($usercount === 0) {
 
     $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
     $result_userfilter = dbquery($sql_userfilter);
-
-    if (!$result_userfilter) {
-        $message = 'Invalid query: ' . database::$link->errno . ': ' . database::$link->error . "\n";
-        $message .= 'Whole query: ' . $sql_userfilter;
-        die($message);
-    }
 
     $filter[] = $myusername;
     while ($row = $result_userfilter->fetch_array()) {

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -39,11 +39,11 @@ html_start(__('mqviewer24'), 0, false, false);
 switch ($_GET['queue']) {
     case 'inq':
         $queue = 'inq';
-        $display = 'Inbound Mail Queue';
+        $display = __('inq24');
         break;
     case 'outq':
         $queue = 'outq';
-        $display = 'Outbound Mail Queue';
+        $display = __('outq24');
         break;
     default:
         die(__('diemq24') . "\n");

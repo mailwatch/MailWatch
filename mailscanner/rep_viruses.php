@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -116,7 +116,7 @@ foreach ($scanners as $vscanner) {
 
 $sql = "
 SELECT
- DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') as timestamp,
+ DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . '\') as timestamp,
  report
 FROM
  maillog
@@ -124,7 +124,7 @@ WHERE
  virusinfected = 1
 AND
  report IS NOT NULL
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
 ORDER BY
  date ASC, time ASC';
 
@@ -169,14 +169,12 @@ while (list($key, $val) = each($virus_array)) {
 }
 
 // HTML Code
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
+echo '<TR><TD CLASS="titleReport">' . __('virusreport50') . "<BR></TD></TR>";
 echo '<TR>';
-echo " <TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"" . __('mslogo99') . "\"></TD>";
-echo '</TR>';
-echo '<TR>';
-echo "<TD ALIGN=\"CENTER\">";
-echo "<TABLE WIDTH=\"840\">";
-echo "<TR BGCOLOR=\"#F7CE4A\">";
+echo '<TD ALIGN="CENTER">';
+echo '<TABLE WIDTH="840">';
+echo '<TR BGCOLOR="#F7CE4A">';
 echo '<TH>' . __('virus50') . '</TH>';
 echo '<TH>' . __('scanner50') . '</TH>';
 echo '<TH>' . __('firstseen50') . '</TH>';

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -232,7 +232,7 @@ WHERE
                         $sql .= "AND\n $val[0] $val[1]\n";
                     } else {
                         // Allow !<sql_function>
-                        if ($val[2]{0} === '!') {
+                        if ($val[2]!=='' && $val[2]{0} === '!') {
                             $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
                         } else {
                             // Regular string
@@ -334,6 +334,12 @@ WHERE
      */
     public function AddReport($url, $description)
     {
+        //test if url exists if it is remove the old one. This fixes double shown urls for the reports
+        foreach ($this->reports as $key => $val) {
+            if ($val === $url) {
+                unset($this->reports[$key]);
+            }
+        }
         $this->reports[$description] = $url;
     }
 

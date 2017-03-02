@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,7 +30,7 @@
  */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-if (version_compare(phpversion(), '5.3.0', '<')) {
+if (version_compare(PHP_VERSION, '5.3.0', '<')) {
     error_reporting(E_ALL);
 } else {
     // E_DEPRECATED added in PHP 5.3
@@ -42,11 +42,24 @@ if (!is_readable(__DIR__ . '/conf.php')) {
     die(__('cannot_read_conf'));
 }
 require_once __DIR__ . '/conf.php';
+
+$missingConfigEntries = checkConfVariables();
+if ($missingConfigEntries['needed']['count'] !== 0) {
+    $br = '';
+    if (PHP_SAPI !== 'cli') {
+        $br = '<br>';
+    }
+    echo __('missing_conf_entries') . $br . PHP_EOL;
+    foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
+        echo '- ' . $missingConfigEntry . $br . PHP_EOL;
+    }
+    die();
+}
+
 require_once __DIR__ . '/database.php';
 
 // Set PHP path to use local PEAR modules only
 set_include_path(
-    get_include_path() . PATH_SEPARATOR .
     '.' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/xmlrpc'
@@ -180,7 +193,7 @@ if (!defined('VIRUS_REGEX')) {
         // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
         // break;
     }
-} else {
+} elseif (defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
     // Have to set manually as running in DISTRIBUTED_MODE
     die('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
 }
@@ -194,7 +207,14 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.0 - RC4';
+    return '1.2.0 - RC5';
+}
+
+if (!function_exists('imageantialias')) {
+    function imageantialias($image, $enabled)
+    {
+        return true;
+    }
 }
 
 /**
@@ -237,7 +257,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
 
     echo page_creation_timer();
-    echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
+    echo '<!DOCTYPE HTML>' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
     echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
@@ -259,7 +279,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             // Use existing filters
             $filter = $_SESSION['filter'];
         }
-        audit_log('Ran report ' . $title);
+        audit_log(__('auditlogreport03') . ' ' . $title);
     } else {
         echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
         echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
@@ -280,11 +300,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
-    echo '<tr>' . "\n";
+    echo '<tr class="noprint">' . "\n";
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="MailWatch for MailScanner"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
@@ -299,7 +319,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
-    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
     echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
@@ -319,7 +339,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
         echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
 
         // MailScanner running?
@@ -329,10 +349,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             exec('ps ax | grep MailScanner | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
-                $procs = count($output) - 1 . ' children';
+                $procs = count($output) - 1 .  ' ' . __('children03');
             } else {
                 $running = $no;
-                $procs = count($output) . ' proc(s)';
+                $procs = count($output) . ' ' .  __('procs03');
             }
             echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
@@ -344,7 +364,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             } else {
                 $running = $no;
             }
-            $procs = count($output) . ' proc(s)';
+            $procs = count($output) . ' ' .  __('procs03');
             echo '    <tr><td>' . ucwords(
                     $mta
                 ) . __('colon99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
@@ -357,14 +377,40 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $la_1m = $loadavg[0];
             $la_5m = $loadavg[1];
             $la_15m = $loadavg[2];
-            echo '    <tr><td>' . __('loadaverage03') . '</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '
+            <tr>
+	            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
+	            <td align="right">' . __('1minute03') . '&nbsp;</td>
+	            <td align="right">' . $la_1m . '</td>
+            </tr>
+            </tr>
+	            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_5m . '</td>
+            </tr>
+	            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_15m . '</td>
+            </tr>
+            ' . "\n";
         } elseif (!DISTRIBUTED_SETUP && file_exists('/usr/bin/uptime')) {
             $loadavg = shell_exec('/usr/bin/uptime');
             $loadavg = explode(' ', $loadavg);
             $la_1m = rtrim($loadavg[count($loadavg) - 3], ',');
             $la_5m = rtrim($loadavg[count($loadavg) - 2], ',');
             $la_15m = rtrim($loadavg[count($loadavg) - 1]);
-            echo '    <tr><td>Load Average:</td><td align="right" colspan="2"><table width="100%" class="mail" cellpadding="0" cellspacing="0"><tr><td align="center">' . $la_1m . '</td><td align="center">' . $la_5m . '</td><td align="center">' . $la_15m . '</td></tr></table></td>' . "\n";
+            echo '
+            <tr>
+	            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
+	            <td align="right">' . __('1minute03') . '&nbsp;</td>
+	            <td align="right">' . $la_1m . '</td>
+            </tr>
+            </tr>
+	            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_5m . '</td>
+            </tr>
+	            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+	            <td align="right">' . $la_15m . '</td>
+            </tr>
+            ' . "\n";
         }
 
         // Mail Queues display
@@ -382,18 +428,30 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
                 } else {
-                    echo '    <tr><td colspan="3">Please verify read permissions on ' . $incomingdir . ' and ' . $outgoingdir . '</td></tr>' . "\n";
+                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
-                // else use mailq which is for sendmail and exim
+                // Else use MAILQ from conf.php which is for Sendmail or Exim
             } elseif (MAILQ) {
-                $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
-                $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
+                if ($mta === 'exim') {
+                    $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
+                    $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
+                } else {
+                    // Not activated because this need to be tested.
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$inq = $output_array[2];
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$outq = $output_array[2];
+                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
+                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
+                }
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
-            // drive display
+            // Drive display
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
@@ -589,7 +647,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
     $sth = dbquery($sql);
     while ($row = $sth->fetch_object()) {
-        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="200">' . "\n";
+        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
         echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
                 $row->processed
@@ -625,6 +683,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         echo '</table>' . "\n";
     }
+    echo '  </td>' . "\n";
+    echo ' </tr>' . "\n";
 
     // Navigation links - put them into an array to allow them to be switched
     // on or off as necessary and to allow for the table widths to be calculated.
@@ -650,9 +710,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     //$table_width = round(100 / count($nav));
 
     //Navigation table
-    echo '  </td>' . "\n";
-    echo ' </tr>' . "\n";
-    echo '<tr>' . "\n";
+    echo '<tr class="noprint">' . "\n";
     echo '<td colspan="4">' . "\n";
 
     echo '<ul id="menu" class="yellow">' . "\n";
@@ -756,7 +814,7 @@ function html_end($footer = '')
         echo page_creation_timer();
         echo '</i></p>' . "\n";
     }
-    echo '<p class="center" style="font-size:13px">' . "\n";
+    echo '<p class="center noprint" style="font-size:13px">' . "\n";
     echo __('footer03');
     echo mailwatch_version();
     echo ' - &copy; 2006-' . date('Y');
@@ -785,9 +843,10 @@ function dbclose()
 
 /**
  * @param string $sql
- * @return mysqli_result|bool
+ * @param bool $printError
+ * @return mysqli_result
  */
-function dbquery($sql)
+function dbquery($sql, $printError = true)
 {
     $link = dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
@@ -799,7 +858,7 @@ function dbquery($sql)
         if ($result) {
             while ($row = $result->fetch_row()) {
                 for ($f = 0; $f < $link->field_count; $f++) {
-                    echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+                    echo $result->fetch_field_direct($f)->name . __('colon99') . ' ' . $row[$f] . "\n";
                 }
             }
 
@@ -810,7 +869,14 @@ function dbquery($sql)
         }
     }
 
-    $result = $link->query($sql); //|| die("<B>" . __('diedbquery03') . " </B><BR><BR>" . $link->connect_errno . ": " . $link->connect_error . "<BR><BR><B>SQL:</B><BR><PRE>$sql</PRE>");
+    $result = $link->query($sql);
+
+    if (true === $printError && false === $result) {
+        // stop on query error
+        $message = '<strong>Invalid query</strong>: ' . database::$link->errno . ': ' . database::$link->error . "<br>\n";
+        $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
+        die($message);
+    }
 
     return $result;
 }
@@ -928,9 +994,9 @@ function sa_autolearn($spamreport)
 {
     switch (true) {
         case(preg_match('/autolearn=spam/', $spamreport)):
-            return 'spam';
+            return __('saspam03');
         case(preg_match('/autolearn=not spam/', $spamreport)):
-            return 'not spam';
+            return __('sanotspam03');
         default:
             return false;
     }
@@ -952,22 +1018,44 @@ function format_spam_report($spamreport)
         if ($sa_rules[0] === 'Message larger than max testing size' || $sa_rules[0] === 'timed out') {
             return $sa_rules[0];
         }
+
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
-        foreach (array('cached', 'score=', 'required', 'autolearn=') as $val) {
-            if (preg_match("/$val/", $sa_rules[0])) {
-                array_shift($sa_rules);
-            }
-        }
+        $notRulesLines = array(
+            //english
+            'cached',
+            'score=',
+            'required',
+            'autolearn=',
+            //italian
+            'punteggio=',
+            'necessario',
+            //german
+            'benoetigt',
+            'Wertung=',
+            'gecached',
+            //french
+            'requis'
+        );
+        array_walk($notRulesLines, function ($value) {
+            return preg_quote($value, '/');
+        });
+        $notRulesLinesRegex = '(' . implode('|', $notRulesLines) . ')';
+
+        $sa_rules = array_filter($sa_rules, function ($val) use ($notRulesLinesRegex) {
+            return preg_match("/$notRulesLinesRegex/i", $val) === 0;
+        });
+
         $output_array = array();
-        while (list($key, $val) = each($sa_rules)) {
-            $output_array[] = get_sa_rule_desc($val);
+        foreach ($sa_rules as $sa_rule) {
+            $output_array[] = get_sa_rule_desc($sa_rule);
         }
+
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                "\n",
-                $output_array
-            ) . '</table>' . "\n";
+                    "\n",
+                    $output_array
+                ) . '</table>' . "\n";
         } else {
             return $spamreport;
         }
@@ -978,7 +1066,7 @@ function format_spam_report($spamreport)
 }
 
 /**
- * @param $rule
+ * @param string $rule
  * @return string
  */
 function get_sa_rule_desc($rule)
@@ -986,19 +1074,20 @@ function get_sa_rule_desc($rule)
     // Check if SA scoring is enabled
     $rule_score = '';
     if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
-        list($rule, $rule_score) = $regs;
+        $rule = $regs[1];
+        $rule_score = $regs[2];
     }
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     } else {
-        return "<tr><td>$rule_score<td>$rule</td><td>&nbsp;</td></tr>";
+        return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
     }
 }
 
 /**
- * @param $rule
+ * @param string $rule
  * @return string|false
  */
 function return_sa_rule_desc($rule)
@@ -1013,7 +1102,7 @@ function return_sa_rule_desc($rule)
 }
 
 /**
- * @param $mcpreport
+ * @param string $mcpreport
  * @return mixed|string
  */
 function format_mcp_report($mcpreport)
@@ -1044,9 +1133,9 @@ function format_mcp_report($mcpreport)
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                "\n",
-                $output_array
-            ) . '</table>' . "\n";
+                    "\n",
+                    $output_array
+                ) . '</table>' . "\n";
         } else {
             return $mcpreport;
         }
@@ -1109,7 +1198,7 @@ AND
     $result = dbquery($sql);
     $virus_array = array();
     while ($row = $result->fetch_object()) {
-        if (preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
+        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
             $virus = return_virus_link($virus_reports[2]);
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus] = 1;
@@ -1121,7 +1210,9 @@ AND
     arsort($virus_array);
     reset($virus_array);
     // Get the topmost entry from the array
-    if ((list($key, $val) = each($virus_array)) !== '') {
+    if (!defined('VIRUS_REGEX')) {
+        return __('unknownvirusscanner03');
+    } elseif ((list($key, $val) = each($virus_array)) !== '') {
         // Check and make sure there first placed isn't tied!
         $saved_key = $key;
         $saved_val = $val;
@@ -1205,6 +1296,9 @@ function formatSize($size, $precision = 2)
 {
     if (null === $size) {
         return 'n/a';
+    }
+    if ($size === '0') {
+        return '0';
     }
     $base = log($size) / log(1024);
     $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
@@ -1408,6 +1502,7 @@ function get_conf_truefalse($name)
                 default:
                     // if $parameter_value is a ruleset or a function call return true
                     $parameter_value = trim($parameter_value);
+
                     return strlen($parameter_value) > 0;
             }
         }
@@ -1486,7 +1581,7 @@ function parse_conf_file($name)
         if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
 
             // Strip trailing comments
-            $regs['value'] = preg_replace("/#.*$/", '', $regs['value']);
+            $regs['value'] = preg_replace('/#.*$/', '', $regs['value']);
 
             // store %var% variables
             if (preg_match('/%.+%/', $regs['name'])) {
@@ -1523,7 +1618,6 @@ function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(' ', get_conf_var('VirusScanners'));
-
     return $scanners[0];
 }
 
@@ -1603,6 +1697,58 @@ function subtract_multi_get_vars($preserve)
 }
 
 /**
+ * @param string $sql the sql query for which the page will be created
+ * @return int
+ */
+function generatePager($sql)
+{
+    require_once __DIR__ . '/lib/pear/Pager.php';
+    if (isset($_GET['offset'])) {
+        $from = (int)$_GET['offset'];
+    } else {
+        $from = 0;
+    }
+
+    // Remove any ORDER BY clauses as this will slow the count considerably
+    if ($pos = strpos($sql, 'ORDER BY')) {
+        $sqlcount = substr($sql, 0, $pos);
+    }
+
+    // Count the number of rows that would be returned by the query
+    $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
+    $results = dbquery($sqlcount);
+    $rows = database::mysqli_result($results, 0);
+
+    // Build the pager data
+    $pager_options = array(
+        'mode' => 'Sliding',
+        'perPage' => MAX_RESULTS,
+        'delta' => 2,
+        'totalItems' => $rows,
+    );
+    $pager = Pager::factory($pager_options);
+
+    //then we fetch the relevant records for the current page
+    list($from, $to) = $pager->getOffsetByPageId();
+
+    echo '<table cellspacing="1" class="mail" >
+<tr>
+<th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
+</tr>
+<tr>
+<td align="center">' . "\n";
+    //show the links
+    echo $pager->links;
+    echo '</td>
+            </tr>
+      </table>
+</tr>
+<tr>
+<td colspan="4">';
+    return $from;
+}
+
+/**
  * @param $sql
  * @param bool|string $table_heading
  * @param bool $pager
@@ -1639,50 +1785,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     }
 
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
-        if (isset($_GET['offset'])) {
-            $from = (int)$_GET['offset'];
-        } else {
-            $from = 0;
-        }
-
-        // Remove any ORDER BY clauses as this will slow the count considerably
-        if ($pos = strpos($sql, 'ORDER BY')) {
-            $sqlcount = substr($sql, 0, $pos);
-        }
-
-        // Count the number of rows that would be returned by the query
-        $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-        $results = dbquery($sqlcount);
-        $rows = database::mysqli_result($results, 0);
-
-        // Build the pager data
-        $pager_options = array(
-            'mode' => 'Sliding',
-            'perPage' => MAX_RESULTS,
-            'delta' => 2,
-            'totalItems' => $rows,
-        );
-        $pager = Pager::factory($pager_options);
-
-        //then we fetch the relevant records for the current page
-        list($from, $to) = $pager->getOffsetByPageId();
-
-        echo '<table cellspacing="1" class="mail" >
-    <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
-  </tr>
-  <tr>
-  <td align="center">' . "\n";
-        //show the links
-        echo $pager->links;
-        echo '</td>
-                </tr>
-          </table>
-</tr>
-<tr>
- <td colspan="4">';
-
+        $from = generatePager($sql);
 
         // Re-run the original query and limit the rows
         $limit = $from - 1;
@@ -1845,7 +1948,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $display[$f] = false;
                     break;
                 case 'sascore':
-                    if (get_conf_truefalse('UseSpamAssassin')) {
+                    if (true === get_conf_truefalse('UseSpamAssassin')) {
                         $fieldname[$f] = __('sascore03');
                         $align[$f] = 'right';
                     } else {
@@ -1906,7 +2009,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     echo "  $fieldname[$f] (<a href=\"?orderby=" . $fieldInfo->name
                         . '&amp;orderdir=a' . subtract_multi_get_vars(
                             array('orderby', 'orderdir')
-                        ) . "\">A</a>/<a href=\"?orderby=" .  $fieldInfo->name
+                        ) . '">A</a>/<a href="?orderby=' . $fieldInfo->name
                         . '&amp;orderdir=d' . subtract_multi_get_vars(array('orderby', 'orderdir')) . "\">D</a>)\n";
                     echo "  </th>\n";
                 } else {
@@ -1970,11 +2073,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'clientip':
                         $clientip = $row[$f];
                         if (defined('RESOLVE_IP_ON_DISPLAY') && RESOLVE_IP_ON_DISPLAY === true) {
-                            if (
-                                net_match('10.0.0.0/8', $clientip) ||
-                                net_match('172.16.0.0/12', $clientip) ||
-                                net_match('192.168.0.0/16', $clientip)
-                            ) {
+                            if (ip_in_range($clientip)) {
                                 $host = 'Internal Network';
                             } elseif (($host = gethostbyaddr($clientip)) === $clientip) {
                                 $host = 'Unknown';
@@ -2006,7 +2105,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'isspam':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $spam = true;
-                            $status_array[] = 'Spam';
+                            $status_array[] = __('spam103');
                         }
                         break;
                     case 'ishighspam':
@@ -2017,7 +2116,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'ismcp':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $mcp = true;
-                            $status_array[] = 'MCP';
+                            $status_array[] = __('mcp03');
                         }
                         break;
                     case 'ishighmcp':
@@ -2028,13 +2127,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'virusinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = 'Virus';
+                            $status_array[] = __('virus03');
                         }
                         break;
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (preg_match('/VIRUS_REGEX/', $row[$f], $virus)) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus) && DISPLAY_VIRUS_REPORT === true) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
@@ -2045,13 +2144,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'nameinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = 'Bad Content';
+                            $status_array[] = __('badcontent03');
                         }
                         break;
                     case 'otherinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = 'Other';
+                            $status_array[] = __('otherinfected03');
                         }
                         break;
                     case 'size':
@@ -2060,13 +2159,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'spamwhitelisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $whitelisted = true;
-                            $status_array[] = 'W/L';
+                            $status_array[] = __('whitelisted03');
                         }
                         break;
                     case 'spamblacklisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $blacklisted = true;
-                            $status_array[] = 'B/L';
+                            $status_array[] = __('blacklisted03');
                         }
                         break;
                     case 'clienthost':
@@ -2081,7 +2180,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // NOTE: this should always be the last row for it to be displayed correctly
                         // Work out status
                         if (count($status_array) === 0) {
-                            $status = 'Clean';
+                            $status = __('clean03');
                         } else {
                             $status = implode('<br>', $status_array);
                         }
@@ -2189,48 +2288,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '<br>' . "\n";
         if ($pager) {
-            require_once __DIR__ . '/lib/pear/Pager.php';
-            $from = 0;
-            if (isset($_GET['offset'])) {
-                $from = (int)$_GET['offset'];
-            }
-
-            // Remove any ORDER BY clauses as this will slow the count considerably
-            if ($pos = strpos($sql, 'ORDER BY')) {
-                $sqlcount = substr($sql, 0, $pos);
-            }
-
-            // Count the number of rows that would be returned by the query
-            $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-            $results = dbquery($sqlcount);
-            $rows = database::mysqli_result($results, 0);
-
-            // Build the pager data
-            $pager_options = array(
-                'mode' => 'Sliding',
-                'perPage' => MAX_RESULTS,
-                'delta' => 2,
-                'totalItems' => $rows,
-            );
-            $pager = Pager::factory($pager_options);
-
-            //then we fetch the relevant records for the current page
-            list($from, $to) = $pager->getOffsetByPageId();
-
-            echo '<table cellspacing="1" class="mail" >
-    <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
-  </tr>
-  <tr>
-  <td align="center">' . "\n";
-            //show the links
-            echo $pager->links;
-            echo '</td>
-                </tr>
-          </table>
-</tr>
-<tr>
- <td colspan="4">';
+            generatePager($sql);
         }
     }
 }
@@ -2336,7 +2394,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         }
 
         foreach ($sth->fetch_fields() as $field) {
-            echo '  <th>' .$field->name . '</th>' . "\n";
+            echo '  <th>' . $field->name . '</th>' . "\n";
         }
         echo ' </tr>' . "\n";
         // Rows
@@ -2346,13 +2404,14 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
             $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[$f] . '</td>' . "\n";
+                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ', $1',
+                        $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
     } else {
-        echo "No rows retrieved!\n";
+        echo __('norowfound03') . "\n";
     }
     echo '<br>' . "\n";
     if ($pager) {
@@ -2405,28 +2464,28 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
  * @param $sql
 
 function db_vertical_table($sql)
-{
-    $sth = dbquery($sql);
-    $rows = $sth->num_rows;
-    $fields = $sth->field_count;
-
-    if ($rows > 0) {
-        echo '<table border="1" class="mail">' . "\n";
-        while ($row = $sth->fetch_row()) {
-            for ($f = 0; $f < $fields; $f++) {
-                $fieldInfo = $sth->fetch_field_direct($f);
-                echo " <tr>\n";
-                echo "  <td>" . $fieldInfo->name . "</td>\n";
-                echo "  <td>" . $row[$f] . "</td>\n";
-                echo " </tr>\n";
-            }
-        }
-        echo "</table>\n";
-    } else {
-        echo "No rows retrieved\n";
-    }
-}
-*/
+ * {
+ * $sth = dbquery($sql);
+ * $rows = $sth->num_rows;
+ * $fields = $sth->field_count;
+ *
+ * if ($rows > 0) {
+ * echo '<table border="1" class="mail">' . "\n";
+ * while ($row = $sth->fetch_row()) {
+ * for ($f = 0; $f < $fields; $f++) {
+ * $fieldInfo = $sth->fetch_field_direct($f);
+ * echo " <tr>\n";
+ * echo "  <td>" . $fieldInfo->name . "</td>\n";
+ * echo "  <td>" . $row[$f] . "</td>\n";
+ * echo " </tr>\n";
+ * }
+ * }
+ * echo "</table>\n";
+ * } else {
+ * echo "No rows retrieved\n";
+ * }
+ * }
+ */
 
 /**
  * @return double
@@ -2446,6 +2505,7 @@ function page_creation_timer()
     } else {
         $pc_end_time = get_microtime();
         $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
+
         return sprintf(__('pggen03') . ' %f ' . __('seconds03') . "\n", $pc_total_time);
     }
 }
@@ -2466,19 +2526,13 @@ function debug($text)
  */
 function count_files_in_dir($dir)
 {
-    //TODO: Refactor
-    $file_list_array = array();
-    if (!$drh = @opendir($dir)) {
+    $file_list_array = @scandir($dir);
+    if ($file_list_array === false) {
         return false;
     } else {
-        while (false !== ($file = readdir($drh))) {
-            if ($file !== '.' && $file !== '..') {
-                $file_list_array[] = $file;
-            }
-        }
+        //there is always . and .. so reduce the count
+        return count($file_list_array) - 2;
     }
-
-    return count($file_list_array);
 }
 
 /**
@@ -2585,26 +2639,22 @@ function ldap_authenticate($user, $password)
         }
 
         //search for $user in LDAP directory
-        if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
-        } elseif (strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
-        } else {
-            // Windows LDAP (with legacy NT support)
-            $ldap_search_results = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
-        }
+        $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $user)) or die(__('ldpaauth203'));
 
         if (false === $ldap_search_results) {
-            @trigger_error('LDAP: The server returned no result-set for user "' . $user . '"');
+            @trigger_error(__('ldapnoresult03') . ' "' . $user . '"');
+
             return null;
         }
         if (1 > ldap_count_entries($ds, $ldap_search_results)) {
             //
-            @trigger_error('LDAP: The returned result set contains no data for user "' . $user . '"');
+            @trigger_error(__('ldapresultnodata03') . ' "' . $user . '"');
+
             return null;
         }
         if (ldap_count_entries($ds, $ldap_search_results) > 1) {
-            @trigger_error('LDAP: The returned result-set contains more than one person. So we can not be sure that the user "' . $user . '" is unique');
+            @trigger_error(__('ldapresultset03') . ' "' . $user . '" ' . __('ldapisunique03'));
+
             return null;
         }
 
@@ -2617,15 +2667,22 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                if (isset($result[0]['userprincipalname'][0])) {
-                    $user = $result[0]['userprincipalname'][0];
-                } else {
-                    // build DN for user, when LDAP server is not an AD
-                    $user = 'cn=' . $result[0]['cn'][0] . ',' . LDAP_DN;
+                if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+                    return null;
+                }
+
+                $user = $result[0][LDAP_USERNAME_FIELD][0];
+                if (defined('LDAP_BIND_PREFIX')) {
+                    $user = LDAP_BIND_PREFIX . $user;
+                }
+                if (defined('LDAP_BIND_SUFFIX')) {
+                    $user .= LDAP_BIND_SUFFIX;
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
-                    @trigger_error('no "' . LDAP_EMAIL_FIELD . '" in LDAP results');
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_EMAIL_FIELD . '" ' . __('ldapresults03'));
+
                     return null;
                 }
 
@@ -2648,7 +2705,6 @@ function ldap_authenticate($user, $password)
                         );
                         dbquery($sql);
                     }
-
                     return $email;
                 } else {
                     if (ldap_errno($ds) === 49) {
@@ -2671,7 +2727,7 @@ function ldap_authenticate($user, $password)
 function ldap_print_error($ds)
 {
     return sprintf(
-        'Could not bind to server %s. Returned Error was: [%s] %s',
+        __('ldapnobind03'),
         LDAP_HOST,
         ldap_errno($ds),
         ldap_error($ds)
@@ -2697,7 +2753,7 @@ if (!function_exists('ldap_escape')) {
     {
         $charMaps = array(
             LDAP_ESCAPE_FILTER => array('\\', '*', '(', ')', "\x00"),
-            LDAP_ESCAPE_DN     => array('\\', ',', '=', '+', '<', '>', ';', '"', '#')
+            LDAP_ESCAPE_DN => array('\\', ',', '=', '+', '<', '>', ';', '"', '#')
         );
 
         // Pre-process the char maps on first call
@@ -2765,7 +2821,7 @@ function ldap_get_conf_var($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
+    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
     or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
@@ -2806,7 +2862,7 @@ function ldap_get_conf_truefalse($entry)
     // Translate MailScanner.conf vars to internal
     $entry = translate_etoi($entry);
 
-    $lh = @ldap_connect(LDAP_HOST, LDAP_PORT)
+    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
     or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
     @ldap_bind($lh)
@@ -2845,7 +2901,7 @@ function ldap_get_conf_truefalse($entry)
 function translate_etoi($name)
 {
     $name = strtolower($name);
-    $file = MS_LIB_DIR . 'MailScanner/ConfigDefs.pl';
+    $file = MS_SHARE_DIR . 'perl/MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'rb')
     or die(__('dietranslateetoi03') . " $file\n");
     while (!feof($fh)) {
@@ -3161,7 +3217,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             $crlf = "\r\n";
-            $hdrs = array('From' => QUARANTINE_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
+            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
             $mime = new Mail_mime($crlf);
             $mime->setTXTBody(QUARANTINE_MSG_BODY);
             // Loop through each selected file and attach them to the mail
@@ -3174,37 +3230,36 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                 }
             }
-            $mail_param = array('host' => QUARANTINE_MAIL_HOST);
+            $mail_param = array('host' => MAILWATCH_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
-            $mail = new Mail;
-            $mail = $mail->factory('smtp', $mail_param);
+            $mail = new Mail_smtp($mail_param);
 
             $m_result = $mail->send($to, $hdrs, $body);
             if (is_a($m_result, 'PEAR_Error')) {
                 // Error
-                $status = 'Release: error (' . $m_result->getMessage() . ')';
+                $status = __('releaseerror03') . ' (' . $m_result->getMessage() . ')';
                 global $error;
                 $error = true;
             } else {
-                $status = 'Release: message released to ' . str_replace(',', ', ', $to);
-                audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
+                $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
             }
 
             return $status;
         } else {
             // Use sendmail to release message
             // We can only release message/rfc822 files in this way.
-            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . QUARANTINE_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
             foreach ($num as $key => $val) {
                 if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                     debug($cmd . $list[$val]['path']);
                     exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                     if ($retval === 0) {
-                        $status = 'Release: message released to ' . str_replace(',', ', ', $to);
-                        audit_log('Quarantined message (' . $list[$val]['msgid'] . ') released to ' . $to);
+                        $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                        audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
                     } else {
-                        $status = 'Release: error code ' . $retval . " returned from Sendmail:\n" . implode(
+                        $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -3330,7 +3385,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         debug("Learner - running SQL: $sql");
                         dbquery($sql);
                     }
-                    $status[] = 'SpamAssassin: ' . implode(', ', $output_array);
+                    $status[] = __('spamassassin03') . ' ' . implode(', ', $output_array);
                     switch ($learn_type) {
                         case '-r':
                             $learn_type = 'spam';
@@ -3340,10 +3395,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                             break;
                     }
                     audit_log(
-                        'SpamAssassin was trained and reported on message ' . $list[$val]['msgid'] . ' as ' . $learn_type
+                        sprintf(__('auditlogquareleased03') . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                     );
                 } else {
-                    $status[] = 'SpamAssassin: error code ' . $retval . " returned from SpamAssassin:\n" . implode(
+                    $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
                             "\n",
                             $output_array
                         );
@@ -3369,10 +3424,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         debug("Learner - running SQL: $sql");
                         dbquery($sql);
                     }
-                    $status[] = 'SA Learn: ' . implode(', ', $output_array);
-                    audit_log('SpamAssassin was trained on message ' . $list[$val]['msgid'] . ' as ' . $learn_type);
+                    $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
+                    audit_log(sprintf(__('auditlogspamtrained03'), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
-                    $status[] = 'SA Learn: error code ' . $retval . " returned from sa-learn:\n" . implode(
+                    $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
                             "\n",
                             $output_array
                         );
@@ -3434,9 +3489,9 @@ function quarantine_delete($list, $num, $rpc_only = false)
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                 dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                audit_log('Deleted file from quarantine: ' . $list[$val]['path']);
+                audit_log(__('auditlogdelqua03') . ' ' . $list[$val]['path']);
             } else {
-                $status[] = 'Delete: error deleting file ' . $list[$val]['path'];
+                $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
                 global $error;
                 $error = true;
             }
@@ -3495,7 +3550,11 @@ function audit_log($action)
 {
     $link = dbconn();
     if (AUDIT) {
-        $user = $link->real_escape_string($_SESSION['myusername']);
+        if (isset($_SESSION['myusername'])) {
+            $user = $link->real_escape_string($_SESSION['myusername']);
+        } else {
+            $user = 'unknown';
+        }
         $action = safe_value($action);
         $ip = safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
@@ -3588,38 +3647,10 @@ function return_virus_link($virus)
     if (defined('VIRUS_INFO') && VIRUS_INFO !== false) {
         $link = sprintf(VIRUS_INFO, $virus);
 
-        return sprintf("<a href=\"%s\">%s</a>", $link, $virus);
+        return sprintf('<a href="%s">%s</a>', $link, $virus);
     } else {
         return $virus;
     }
-}
-
-/**
- * @param $network
- * @param $ip
- * @return bool
- */
-function net_match($network, $ip)
-{
-    // Skip invalid entries
-    if (long2ip(ip2long($ip)) === false) {
-        return false;
-    }
-    // From PHP website
-    // determines if a network in the form of 192.168.17.1/16 or
-    // 127.0.0.1/255.255.255.255 or 10.0.0.1 matches a given ip
-    $ip_arr = explode('/', $network);
-    // Skip invalid entries
-    if (long2ip(ip2long($ip_arr[0])) === false) {
-        return false;
-    }
-    $network_long = ip2long($ip_arr[0]);
-
-    $x = ip2long($ip_arr[1]);
-    $mask = long2ip($x) === $ip_arr[1] ? $x : 0xffffffff << (32 - $ip_arr[1]);
-    $ip_long = ip2long($ip);
-
-    return ($ip_long & $mask) === ($network_long & $mask);
 }
 
 /**
@@ -3637,11 +3668,7 @@ function is_rpc_client_allowed()
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ($client === 'allprivate' &&
-                (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) ||
-                    net_match('172.16.0.0/12', $_SERVER['SERVER_ADDR']) ||
-                    net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
-            ) {
+            if ($client === 'allprivate' && ip_in_range($_SERVER['SERVER_ADDR'], false, 'private')) {
                 return true;
             }
             if ($client === 'local24') {
@@ -3651,17 +3678,17 @@ function is_rpc_client_allowed()
                 $ipsplit = explode('.', $ip);
                 $ipsplit[3] = '0';
                 $ip = implode('.', $ipsplit);
-                if (net_match("{$ip}/24", $_SERVER['SERVER_ADDR'])) {
+                if (ip_in_range($_SERVER['SERVER_ADDR'], "{$ip}/24")) {
                     return true;
                 }
             }
             // All any others
-            if (net_match($client, $_SERVER['SERVER_ADDR'])) {
+            if (ip_in_range($_SERVER['SERVER_ADDR'], $client)) {
                 return true;
             }
             // Try hostname
             $iplookup = gethostbyname($client);
-            if ($client !== $iplookup && net_match($iplookup, $_SERVER['SERVER_ADDR'])) {
+            if ($client !== $iplookup && ip_in_range($_SERVER['SERVER_ADDR'], $iplookup)) {
                 return true;
             }
         }
@@ -3737,12 +3764,366 @@ function updateUserPasswordHash($user, $hash)
     $passwordFiledLength = (int)database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
 
     if ($passwordFiledLength < 255) {
-        $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL';
+        $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
         dbquery($sqlUpdateFieldLength);
-        audit_log('Updated password field length from ' . $passwordFiledLength . ' to 255');
+        audit_log(sprintf(__('auditlogquareleased03') . ' ', $passwordFiledLength));
     }
 
     $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
     dbquery($sqlUpdateHash);
-    audit_log('Updated password for user ' . $user);
+    audit_log(__('auditlogupdateuser03') . ' ' . $user);
+}
+
+/**
+ * @param string $username username that should be checked if it exists
+ * @return boolean true if user exists, else false
+ */
+function checkForExistingUser($username)
+{
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'";
+    $row = dbquery($sqlQuery)->fetch_object();
+    return $row->counter >0;
+}
+
+/**
+ * @param string $filename name of the image file
+ * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
+ * @param string $reportTitle title that will be displayed on top of the graph
+ * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
+ * @param array $columnTitles array that contains the titles of the table columns
+ * @param $graphColumn
+ * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
+ */
+function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
+{
+    $result = dbquery($sqlDataQuery);
+    $numResult = $result->num_rows;
+    if ($numResult <= 0) {
+        die(__('diemysql99') . "\n");
+    }
+    //store data in format $data[columnname][rowid]
+    while ($row = $result->fetch_assoc()) {
+        foreach ($sqlColumns as $columnName) {
+            $data[$columnName][] = $row[$columnName];
+        }
+    }
+
+    //do conversion if given
+    foreach ($valueConversions as $column => $conversion) {
+        if ($conversion === 'scale') {
+            // Work out best size
+            $data[$column . 'conv'] = $data[$column];
+            format_report_volume($data[$column . 'conv'], $size_info);
+            $scale = $size_info['formula'];
+            foreach ($data[$column . 'conv'] as $key => $val) {
+                $data[$column . 'conv'][$key] = formatSize($val * $scale);
+            }
+        } elseif ($conversion === 'number') {
+            $data[$column . 'conv'] = array_map(
+                function ($val) {
+                    return number_format($val);
+                },
+                $data[$column]
+            );
+        }
+    }
+
+    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
+
+    // Check permissions to see if apache can actually create the file
+    if (is_writable(CACHE_DIR)) {
+
+        // JPGraph
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
+        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
+
+        $graph = new PieGraph(730, 385, 0, false);
+        $graph->img->SetMargin(40, 30, 20, 40);
+        $graph->SetShadow();
+        $graph->img->SetAntiAliasing();
+        $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
+        $graph->title->Set($reportTitle);
+
+        $plotData = $data[$graphColumn['dataColumn']];
+        $legendData = $data[$graphColumn['labelColumn']];
+        $p1 = new PiePlot3d($plotData);
+        $p1->SetTheme('sand');
+        $p1->SetLegends($legendData);
+
+        $p1->SetCenter(0.7, 0.5);
+        $graph->legend->SetLayout(LEGEND_VERT);
+        $graph->legend->Pos(0.0, 0.25, 'left');
+
+        $graph->Add($p1);
+        $graph->Stroke($filename);
+
+        //  Check Permissions to see if the file has been written and that apache to read it.
+        if (is_readable($filename)) {
+            echo '<tr><td style="text-align: center"><IMG SRC="' . $filename . '" alt="Graph"></td></tr>';
+        } else {
+            echo '<tr><td style="text-align: center">' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299') . '</td></tr>';
+        }
+    } else {
+        echo '<tr><td class="center">' . sprintf(__('errorcachedirnotwritable03'), CACHE_DIR) . '</td></tr>';
+    }
+
+    echo '<tr>';
+
+    // HTML to display the table
+    echo '<table class="reportTable">';
+    echo '    <tr style="background-color: #F7CE4A">' . "\n";
+    foreach ($columnTitles as $columnTitle) {
+        echo '     <th>' . $columnTitle . '</th>' . "\n";
+    }
+    echo '    </tr>' . "\n";
+
+    for ($i = 0; $i < $numResult; $i++) {
+        echo '    <tr style="background-color: #EBEBEB">' . "\n";
+        foreach ($sqlColumns as $sqlColumn) {
+            if (isset($valueConversions[$sqlColumn])) {
+                echo '     <td>' . $data[$sqlColumn . 'conv'][$i] . '</td>' . "\n";
+            } else {
+                echo '     <td>' . $data[$sqlColumn][$i] . '</td>' . "\n";
+            }
+        }
+        echo '    </tr>' . "\n";
+    }
+
+    echo '   </table>' . "\n";
+    echo '</tr></table>';
+}
+
+/**
+ * @return array
+ */
+function checkConfVariables()
+{
+    $needed = array(
+        'ALLOWED_TAGS',
+        'AUDIT',
+        'AUDIT_DAYS_TO_KEEP',
+        'AUTO_RELEASE',
+        'CACHE_DIR',
+        'DATE_FORMAT',
+        'DB_DSN',
+        'DB_HOST',
+        'DB_NAME',
+        'DB_PASS',
+        'DB_TYPE',
+        'DB_USER',
+        'DEBUG',
+        'DISPLAY_IP',
+        'DISTRIBUTED_SETUP',
+        'DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS',
+        'DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS',
+        'FILTER_TO_ONLY',
+        'FROMTO_MAXLEN',
+        'HIDE_HIGH_SPAM',
+        'HIDE_NON_SPAM',
+        'HIDE_UNKNOWN',
+        'IMAGES_DIR',
+        'LANG',
+        'LDAP_DN',
+        'LDAP_EMAIL_FIELD',
+        'LDAP_FILTER',
+        'LDAP_HOST',
+        'LDAP_MS_AD_COMPATIBILITY',
+        'LDAP_PASS',
+        'LDAP_PORT',
+        'LDAP_PROTOCOL_VERSION',
+        'LDAP_SITE',
+        'LDAP_SSL',
+        'LDAP_USER',
+        'LDAP_USERNAME_FIELD',
+        'LISTS',
+        'MAIL_LOG',
+        'MAILQ',
+        'MAILWATCH_HOME',
+        'MAILWATCH_MAIL_HOST',
+        'MAILWATCH_MAIL_PORT',
+        'MAILWATCH_FROM_ADDR',
+        'MAILWATCH_HOSTURL',
+        'MAX_RESULTS',
+        'MEMORY_LIMIT',
+        'MS_CONFIG_DIR',
+        'MS_EXECUTABLE_PATH',
+        'MS_LIB_DIR',
+        'MS_LOG',
+        'MS_SHARE_DIR',
+        'MSRE',
+        'MSRE_RELOAD_INTERVAL',
+        'MSRE_RULESET_DIR',
+        'MW_LOGO',
+        'PROXY_PASS',
+        'PROXY_PORT',
+        'PROXY_SERVER',
+        'PROXY_TYPE',
+        'PROXY_USER',
+        'QUARANTINE_DAYS_TO_KEEP',
+        'QUARANTINE_MSG_BODY',
+        'QUARANTINE_REPORT_DAYS',
+        'QUARANTINE_REPORT_FROM_NAME',
+        'QUARANTINE_REPORT_SUBJECT',
+        'QUARANTINE_SENDMAIL_PATH',
+        'QUARANTINE_SUBJECT',
+        'QUARANTINE_USE_FLAG',
+        'QUARANTINE_USE_SENDMAIL',
+        'RECORD_DAYS_TO_KEEP',
+        'RESOLVE_IP_ON_DISPLAY',
+        'RPC_ALLOWED_CLIENTS',
+        'RPC_ONLY',
+        'RPC_RELATIVE_PATH',
+        'SA_DIR',
+        'SA_MAXSIZE',
+        'SA_PREFS',
+        'SA_RULES_DIR',
+        'SHOW_DOC',
+        'SHOW_MORE_INFO_ON_REPORT_GRAPH',
+        'SHOW_SFVERSION',
+        'SSL_ONLY',
+        'STATUS_REFRESH',
+        'STRIP_HTML',
+        'SUBJECT_MAXLEN',
+        'TEMP_DIR',
+        'TIME_FORMAT',
+        'TIME_ZONE',
+        'TTF_DIR',
+        'USE_LDAP',
+        'USE_PROXY',
+        'VIRUS_INFO',
+        'DISPLAY_VIRUS_REPORT',
+    );
+
+    $obsolete = array(
+        'MS_LOGO',
+        'QUARANTINE_MAIL_HOST',
+        'QUARANTINE_MAIL_PORT',
+        'QUARANTINE_FROM_ADDR',
+        'QUARANTINE_REPORT_HOSTURL',
+    );
+
+    $optional = array(
+        'RPC_PORT' => array('description' => 'needed if RPC_ONLY mode is enabled'),
+        'RPC_SSL' => array('description' => 'needed if RPC_ONLY mode is enabled'),
+        'VIRUS_REGEX' => array('description' => 'needed in distributed setup'),
+        'LDAP_BIND_PREFIX' => array('description' => 'needed when using LDAP authentication'),
+        'LDAP_BIND_SUFFIX' => array('description' => 'needed when using LDAP authentication'),
+        'EXIM_QUEUE_IN' => array('description' => 'needed only if using Exim as MTA'),
+        'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
+        'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
+        'PWD_RESET_FROM_ADDRESS'  => array('description' => 'needed if Password Reset feature is enabled'),
+    );
+
+    $neededMissing = array();
+    foreach ($needed as $item) {
+        if (!defined($item)) {
+            $neededMissing[] = $item;
+        }
+    }
+    $results['needed']['count'] = count($neededMissing);
+    $results['needed']['list'] = $neededMissing;
+
+    $obsoleteStillPresent = array();
+    foreach ($obsolete as $item) {
+        if (defined($item)) {
+            $obsoleteStillPresent[] = $item;
+        }
+    }
+    $results['obsolete']['count'] = count($obsoleteStillPresent);
+    $results['obsolete']['list'] = $obsoleteStillPresent;
+
+    $optionalMissing = array();
+    foreach ($optional as $key => $item) {
+        if (!defined($key)) {
+            $optionalMissing[$key] = $item;
+        }
+    }
+    $results['optional']['count'] = count($optionalMissing);
+    $results['optional']['list'] = $optionalMissing;
+
+    return $results;
+}
+
+/**
+ * @param integer $count
+ * @return string
+ */
+function get_random_string($count)
+{
+    $bytes = openssl_random_pseudo_bytes($count);
+    return bin2hex($bytes);
+}
+
+/**
+ * @param string $email
+ * @param string $html
+ * @param string $text
+ * @param string $subject
+ * @param bool $pwdreset
+ * @return mixed
+ */
+function send_email($email, $html, $text, $subject, $pwdreset = false)
+{
+    $mime = new Mail_mime("\n");
+    if ($pwdreset === true && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
+        $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
+    } else {
+        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
+    }
+    $hdrs = array(
+        'From' => $sender,
+        'To' => $email,
+        'Subject' => $subject,
+        'Date' => date('r')
+    );
+    $mime_params = array(
+        'text_encoding' => '7bit',
+        'text_charset' => 'UTF-8',
+        'html_charset' => 'UTF-8',
+        'head_charset' => 'UTF-8'
+    );
+    $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->setTXTBody($text);
+    $mime->setHTMLBody($html);
+    $body = $mime->get($mime_params);
+    $hdrs = $mime->headers($hdrs);
+    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    $mail = new Mail_smtp($mail_param);
+    return $mail->send($email, $hdrs, $body);
+}
+
+/**
+ * @param $ip
+ * @param bool|string $net
+ * @param bool|string $privateLocal
+ * @return bool
+ */
+function ip_in_range($ip, $net=false, $privateLocal=false)
+{
+    require_once __DIR__ . '/lib/IPSet.php';
+    if ($privateLocal === 'private') {
+        $privateIPSet = new \IPSet\IPSet(array(
+            '10.0.0.0/8',
+            '172.16.0.0/12',
+            '192.168.0.0/16',
+            'fc00::/7',
+            'fe80::/10',
+        ));
+        return $privateIPSet->match($ip);
+    } elseif ($privateLocal === 'local') {
+        $localIPSet = new \IPSet\IPSet(array(
+            '127.0.0.1',
+            '::1',
+        ));
+        return $localIPSet->match($ip);
+    } elseif ($privateLocal === false && $net !== false) {
+        $network = new \IPSet\IPSet(array(
+            $net
+        ));
+        return $network->match($ip);
+    } else {
+        //return false to fail gracefully
+        return false;
+    }
 }

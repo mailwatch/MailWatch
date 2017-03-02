@@ -1,20 +1,34 @@
 #
 # MailWatch for MailScanner
-# Copyright (C) 2003  Steve Freegard (smf@f2s.com)
+# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+#   Custom Module MailWatch
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#   Version 1.5
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#
+# In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+# those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+# that use the same license as those files), and distribute linked combinations including the two.
+# You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+# PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+# your version of the program, but you are not obligated to do so.
+# If you do not wish to do so, delete this exception statement from your version.
+#
+# As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+# as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+# JpGraph.
+#
+# You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
 package MailScanner::CustomConfig;
@@ -28,8 +42,16 @@ use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
+# Uncommet the folloging line when debugging MailWatch.pm
+#use Data::Dumper;
+
+use vars qw($VERSION);
+
+### The package version, both in 1.23 style *and* usable by MakeMaker:
+$VERSION = substr q$Revision: 1.5 $, 10;
+
 # Trace settings - uncomment this to debug
-# DBI->trace(2,'/root/dbitrace.log');
+#DBI->trace(2,'/tmp/dbitrace.log');
 
 my ($dbh);
 my ($sth);
@@ -37,13 +59,17 @@ my ($hostname) = hostname;
 my $loop = inet_aton("127.0.0.1");
 my $server_port = 11553;
 my $timeout = 3600;
+my ($SQLversion);
 
+# Get database information from 00-MailWatch-conf.pm
+use File::Basename;
+my $dirname = dirname(__FILE__);
+require $dirname.'/00-MailWatch-conf.pm';
 
-# Modify this as necessary for your configuration
-my ($db_name) = 'mailscanner';
-my ($db_host) = 'localhost';
-my ($db_user) = 'mailwatch';
-my ($db_pass) = 'mailwatch';
+my ($db_name) = mailwatch_get_db_name();
+my ($db_host) = mailwatch_get_db_host();
+my ($db_user) = mailwatch_get_db_user();
+my ($db_pass) = mailwatch_get_db_password();
 
 sub InitMailWatchLogging {
     my $pid = fork();
@@ -66,6 +92,19 @@ sub InitMailWatchLogging {
     }
 }
 
+sub CheckSQLVersion {
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        $db_user, $db_pass,
+        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+    );
+    if (!$dbh) {
+        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+    }
+    $SQLversion = $dbh->{mysql_serverversion};
+    $dbh->disconnect;
+    return $SQLversion
+}
+
 sub InitConnection {
     # Set up TCP/IP socket.  We will start one server per MailScanner
     # child, but only one child will actually be able to get the socket.
@@ -79,12 +118,24 @@ sub InitConnection {
     listen(SERVER, SOMAXCONN) or exit;
 
     # Our reason for existence - the persistent connection to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-    );
-    if (!$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+    if (CheckSQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8mb4');
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8');
     }
 
     $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
@@ -94,7 +145,6 @@ sub InitConnection {
 sub ExitLogging {
     # Server exit - commit changes, close socket, and exit gracefully.
     close(SERVER);
-    #$dbh->commit or die $dbh->errstr;
     $dbh->disconnect;
     exit;
 }
@@ -106,7 +156,7 @@ sub ListenForMessages {
         my ($port, $packed_ip) = sockaddr_in($cli);
         my $dotted_quad = inet_ntoa($packed_ip);
 
-        # reset emergency timeout - if we haven"t heard anything in $timeout
+        # Reset emergency timeout - if we haven"t heard anything in $timeout
         # seconds, there is probably something wrong, so we should clean up
         # and let another process try.
         alarm $timeout;
@@ -171,7 +221,7 @@ sub ListenForMessages {
             $$message{headers},
             $$message{quarantined});
 
-        # this doesn't work in the event we have no connection by now ?
+        # This doesn't work in the event we have no connection by now ?
         if (!$sth) {
             MailScanner::Log::WarnLog("MailWatch: $$message{id}: MailWatch SQL Cannot insert row: %s", $sth->errstr);
         } else {
@@ -206,15 +256,26 @@ sub MailWatchLogging {
     map { $rcpts{$_} = 1; } @{$message->{to}};
     @{$message->{to}} = keys %rcpts;
 
+    # Get rid of control chars and fix chars set in Subject
+    my $subject = fix_latin($message->{utf8subject});
+    $subject =~ s/\n/ /g;  # Make sure text subject only contains 1 line (LF)
+    $subject =~ s/\t/ /g;  # and no TAB characters
+    $subject =~ s/\r/ /g;  # and no CR characters
+
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: Debug: var subject: %s", Dumper($subject));
+
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
-    $spamreport =~ s/\n/ /g;
-    $spamreport =~ s/\t//g;
+    $spamreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+    $spamreport =~ s/\t//g;   # and no TAB characters
+    $spamreport =~ s/\r/ /g;  # and no CR characters
 
-    # Same with MCP report
+    # Get rid of control chars and tidy-up SpamAssassin MCP report
     my $mcpreport = $message->{mcpreport};
-    $mcpreport =~ s/\n/ /g;
-    $mcpreport =~ s/\t//g;
+    $mcpreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+    $mcpreport =~ s/\t//g;   # and no TAB characters
+    $mcpreport =~ s/\r/ /g;  # and no CR characters
 
     # Workaround tiny bug in original MCP code
     my ($mcpsascore);
@@ -224,7 +285,7 @@ sub MailWatchLogging {
         $mcpsascore = $message->{mcpscore};
     }
 
-    # Set quarantine flag - this only works on 4.43.7 or later
+    # Set quarantine flag - This only works on MailScanner 4.43.7 or later
     my ($quarantined);
     $quarantined = 0;
     if ((scalar(@{$message->{quarantineplaces}}))
@@ -250,13 +311,21 @@ sub MailWatchLogging {
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
-        $text =~ s/\n/ /;  # Make sure text report only contains 1 line
-        $text =~ s/\t/ /; # and no tab characters
+        $text =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+        $text =~ s/\t/ /g;  # and no TAB characters
+        $text =~ s/\r/ /g;  # and no CR characters
+
+        # Uncommet the folloging line when debugging MailWatch.pm
+        #MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
+
         push (@report_array, $text);
     }
 
     # Sanitize reports
     my $reports = join(",", @report_array);
+
+    # Uncommet the folloging line when debugging MailWatch.pm
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG: var reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
@@ -285,7 +354,7 @@ sub MailWatchLogging {
     $msg{from_domain} = $message->{fromdomain};
     $msg{to} = join(",", @{$message->{to}});
     $msg{to_domain} = $todomain;
-    $msg{subject} = fix_latin($message->{utf8subject});
+    $msg{subject} = $subject;
     $msg{clientip} = $clientip;
     $msg{archiveplaces} = join(",", @{$message->{archiveplaces}});
     $msg{isspam} = $message->{isspam};
@@ -310,7 +379,7 @@ sub MailWatchLogging {
     $msg{hostname} = $hostname;
     $msg{date} = $date;
     $msg{"time"} = $time;
-    $msg{headers} = join("\n", @{$message->{headers}});
+    $msg{headers} = join("\n", map { fix_latin($_)} @{$message->{headers}});
     $msg{quarantined} = $quarantined;
 
     # Prepare data for transmission

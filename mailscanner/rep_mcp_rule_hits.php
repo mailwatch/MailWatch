@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -43,7 +43,7 @@ $filter = html_start(__('mcprulehits34'), 0, false, true);
 // File name
 $filename = CACHE_DIR . '/rep_mcp_rule_hits.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
   mcpreport,
   ismcp
@@ -51,8 +51,8 @@ $sql = "
   maillog
  WHERE
   mcpreport IS NOT NULL
- AND mcpreport != \"\"
-" . $filter->CreateSQL();
+ AND mcpreport != ""
+' . $filter->CreateSQL();
 
 $result = dbquery($sql);
 if (!$result->num_rows > 0) {
@@ -99,7 +99,6 @@ reset($sa_array);
 arsort($sa_array);
 
 echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="' . __('mslogo99') . '"></td></tr>
  <tr><td align="center">
  <table class="boxtable" align="center" border="0">
  <tr bgcolor="#F7CE4A">

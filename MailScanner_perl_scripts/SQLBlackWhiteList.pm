@@ -1,32 +1,34 @@
 #
-#   MailScanner - SMTP E-Mail Virus Scanner
-#   Copyright (C) 2002  Julian Field
+# MailWatch for MailScanner
+# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
-#   $Id: SQLBlackWhiteList.pm,v 1.4 2011/12/14 18:21:28 lorodoes Exp $
+#   Custom Module SQLBlackWhiteList
 #
-#   This program is free software; you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation; either version 2 of the License, or
-#   (at your option) any later version.
+#   Version 1.5
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
+# This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+# version.
 #
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
-#   The author, Julian Field, can be contacted by email at
-#      Jules@JulianField.net
-#   or by paper mail at
-#      Julian Field
-#      Dept of Electronics & Computer Science
-#      University of Southampton
-#      Southampton
-#      SO17 1BJ
-#      United Kingdom
+# In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+# those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+# that use the same license as those files), and distribute linked combinations including the two.
+# You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+# PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+# your version of the program, but you are not obligated to do so.
+# If you do not wish to do so, delete this exception statement from your version.
+#
+# As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
+# as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
+# JpGraph.
+#
+# You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
 package MailScanner::CustomConfig;
@@ -37,13 +39,45 @@ no  strict 'subs'; # Allow bare words for parameter %'s
 
 use vars qw($VERSION);
 
+# Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+#use Data::Dumper;
+
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 1.4 $, 10;
+$VERSION = substr q$Revision: 1.5 $, 10;
 
 use DBI;
 my (%Whitelist, %Blacklist);
 my ($wtime, $btime);
-my ($refresh_time) = 15;        # Time in minutes before lists are refreshed
+my ($dbh);
+my ($sth);
+my ($SQLversion);
+
+# Get database information from 00-MailWatch-conf.pm
+use File::Basename;
+my $dirname = dirname(__FILE__);
+require $dirname.'/00-MailWatch-conf.pm';
+
+my ($db_name) = mailwatch_get_db_name();
+my ($db_host) = mailwatch_get_db_host();
+my ($db_user) = mailwatch_get_db_user();
+my ($db_pass) = mailwatch_get_db_password();
+
+# Get refresh time from from 00-MailWatch-conf.pm
+my ($bwl_refresh_time) =  mailwatch_get_BWL_refresh_time();
+
+# Check MySQL version
+sub CheckSQLVersion {
+    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        $db_user, $db_pass,
+        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+    );
+    if (!$dbh) {
+        MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList:: Unable to initialise database connection: %s", $DBI::errstr);
+    }
+    $SQLversion = $dbh->{mysql_serverversion};
+    $dbh->disconnect;
+    return $SQLversion
+}
 
 #
 # Initialise SQL spam whitelist and blacklist
@@ -67,7 +101,7 @@ sub InitSQLBlacklist {
 #
 sub SQLWhitelist {
     # Do we need to refresh the data?
-    if ((time() - $wtime) >= ($refresh_time * 60)) {
+    if ((time() - $wtime) >= ($bwl_refresh_time * 60)) {
         MailScanner::Log::InfoLog("MailWatch: Whitelist refresh time reached");
         InitSQLWhitelist();
     }
@@ -77,14 +111,13 @@ sub SQLWhitelist {
 
 sub SQLBlacklist {
     # Do we need to refresh the data?
-    if ((time() - $btime) >= ($refresh_time * 60)) {
+    if ((time() - $btime) >= ($bwl_refresh_time * 60)) {
         MailScanner::Log::InfoLog("MailWatch: Blacklist refresh time reached");
         InitSQLBlacklist();
     }
     my ($message) = @_;
     return LookupList($message, \%Blacklist);
 }
-
 
 #
 # Close down the SQL whitelist and blacklist
@@ -99,29 +132,43 @@ sub EndSQLBlacklist {
 
 sub CreateList {
     my ($type, $BlackWhite) = @_;
-    my ($dbh, $sth, $sql, $to_address, $from_address, $count, $filter);
-    my ($db_name) = 'mailscanner';
-    my ($db_host) = 'localhost';
-    my ($db_user) = 'mailwatch';
-    my ($db_pass) = 'mailwatch';
+    my ($sql, $to_address, $from_address, $count, $filter);
 
-    # Connect to the database
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, RaiseError => 1, mysql_enable_utf8 => 1 });
-
-    # Check if connection was successfull - if it isn't
-    # then generate a warning and continue processing.
-    if (!$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
-        return;
+    # Check if MySQL is >= 5.3.3
+    if (CheckSQLVersion() >= 50503 ) {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList::CreateList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8mb4');
+    } else {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+        if (!$dbh) {
+            MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList::CreateList::: Unable to initialise database connection: %s", $DBI::errstr);
+        }
+        $dbh->do('SET NAMES utf8');
     }
 
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
+    
+    # Remove old entries
+    for (keys %$BlackWhite) {
+        delete $BlackWhite->{$_};
+    }
+    
     $sql = "SELECT to_address, from_address FROM $type";
     $sth = $dbh->prepare($sql);
     $sth->execute;
     $sth->bind_columns(undef, \$to_address, \$from_address);
     $count = 0;
+    
     while($sth->fetch()) {
         $BlackWhite->{lc($to_address)}{lc($from_address)} = 1; # Store entry
         $count++;
@@ -136,7 +183,9 @@ sub CreateList {
         $count++;
     }
 
-
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG SQLBlackWhiteList: CreateList: %s", Dumper($BlackWhite));
+    
     # Close connections
     $sth->finish();
     $dbh->disconnect();
@@ -157,7 +206,7 @@ sub LookupList {
     my ($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip1c, $ip2, $ip2c, $ip3, $ip3c, $subdom, $i, @keys, @subdomains);
     $from = $message->{from};
     $fromdomain = $message->{fromdomain};
-    # create a array of subdomains for subdomain wildcard matching
+    # Create a array of subdomains for subdomain wildcard matching
     #   e.g. me@this.that.example.com generates subdomain list of ('that.example.com', 'example.com')
     #   wildcards of *.com, *.uk, *.gov, etc will never be matched for safety's sake (though *.gov.uk could be)
     $subdom = $fromdomain;
@@ -171,7 +220,8 @@ sub LookupList {
     @to = @{$message->{to}};
     $to = $to[0];
     $ip = $message->{clientip};
-    # match on leading 3, 2, or 1 octets
+    
+    # Match on leading 3, 2, or 1 octets
     $ip =~ /(\d{1,3}\.)(\d{1,3}\.)(\d{1,3}\.)/;  # get 1st three octets of IP
     $ip3 = "$1$2$3";
     $ip3c = substr($ip3, 0, - 1);

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -29,79 +29,79 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * Mailwatch for Mailscanner Modification
- * Author: Alan Urquhart - ASU Web Services Ltd
- * Version: 1.2
- * Updated: 30-09-2016
- *
- * Requires: Mailwatch 1.2.0
- *
- * Provides the mechanism for one click release of quarantined emails as reported by the quarantine_report.php cron
- *
- * Changelog:
- *
- * V1.2 - 30-09-2016
- * Fixes table definition - GitHub Issue #291 (https://github.com/mailwatch/1.2.0/issues/291)
- *
- * SETUP:
- *
- * Create the following table in the mailscanner database:
- * CREATE TABLE IF NOT EXISTS `autorelease` (
- * `id` bigint(20) NOT NULL AUTO_INCREMENT,
- * `msg_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
- * `uid` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
- * PRIMARY KEY (`id`)
- * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=1 ;
- *
- * Update cron.daily/quarantine_report.php with the modified file
- * Update cron.daily/quarantine_maint.php with the modified file
- *
- */
 require_once __DIR__ . '/functions.php';
-if (isset($_GET['mid'], $_GET['r'])) {
-    dbconn();
-    $mid = safe_value($_GET['mid']);
-    $token = safe_value($_GET['r']);
-    $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
-    $result = dbquery($sql);
-    if (!$result) {
-        dbg('Error fetching from database' . database::$link->error);
-        echo __('dberror59');
-    }
-    if ($result->num_rows === 0) {
-        echo '<p>' . __('msgnotfound159') . '</p>';
-        echo '<p>' . __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359') . '</p>';
-    } else {
-        $row = $result->fetch_assoc();
-        if ($row['uid'] === $token) {
-            $list = quarantine_list_items($mid);
-            $result = '';
-            if (count($list) === 1) {
-                $to = $list[0]['to'];
-                $result = quarantine_release($list, array(0), $to);
-            } else {
-                $listCount = count($list);
-                for ($i = 0; $i < $listCount; $i++) {
-                    if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
-                        $result = quarantine_release($list, array($i), $list[$i]['to']);
+if (file_exists('conf.php')) {
+    $output = array();
+    if (isset($_GET['mid'], $_GET['r'])) {
+        dbconn();
+        $mid = safe_value($_GET['mid']);
+        $token = safe_value($_GET['r']);
+        $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
+        $result = dbquery($sql, false);
+        if (!$result) {
+            dbg('Error fetching from database' . database::$link->error);
+            $output[] = __('dberror59');
+        }
+        if ($result->num_rows === 0) {
+            $output[] = __('msgnotfound159');
+            $output[] = __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359');
+        } else {
+            $row = $result->fetch_assoc();
+            if ($row['uid'] === $token) {
+                $list = quarantine_list_items($mid);
+                $result = '';
+                if (count($list) === 1) {
+                    $to = $list[0]['to'];
+                    $result = quarantine_release($list, array(0), $to);
+                } else {
+                    $listCount = count($list);
+                    for ($i = 0; $i < $listCount; $i++) {
+                        if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
+                            $result = quarantine_release($list, array($i), $list[$i]['to']);
+                        }
                     }
                 }
+                //success
+                $output[] = __('msgreleased59');
+                //cleanup
+                $releaseID = $row['id'];
+                $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
+                $result = dbquery($query, false);
+                if (!$result) {
+                    dbg('ERROR cleaning up database... ' . database::$link->error);
+                }
+            } else {
+                $output[] = __('tokenmismatch59');
             }
-
-            // Display success
-            echo '<p>' . __('msgreleased59') . '</p>';
-            //cleanup
-            $releaseID = $row['id'];
-            $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
-            $result = dbquery($query);
-            if (!$result) {
-                dbg('ERROR cleaning up database... ' . database::$link->error);
-            }
-        } else {
-            echo __('tokenmismatch59');
         }
-    }
+    } else {
+        $output[] = __('notallowed59');
+    } ?>
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><?php echo __('title59'); ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body class="autorelease">
+<div class="autorelease">
+    <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+    <div class="border-rounded">
+        <h1><?php echo __('title63'); ?></h1>
+        <?php
+        foreach ($output as $msg) {
+            echo '<p>' . $msg . '</p>';
+        } ?>
+    </div>
+</div>
+</body>
+</html>
+<?php
+
 } else {
-    echo __('notallowed59');
+    echo __('cannot_read_conf');
 }

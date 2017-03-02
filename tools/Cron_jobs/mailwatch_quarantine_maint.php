@@ -5,7 +5,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,14 +30,18 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change the following to reflect the location of functions.php
-require '/var/www/html/mailscanner/functions.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
 $required_constant = array('TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP');
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
-        echo "The variable $constant is empty, please set a value in conf.php.\n";
+        echo sprintf(__('message62'), $constant) . "\n";
         $required_constant_missing_count++;
     }
 }
@@ -91,7 +95,7 @@ if ($required_constant_missing_count === 0) {
                     dbg('Deleting: ' . escapeshellarg($quarantine . '/' . $f));
                     exec('rm -rf ' . escapeshellarg($quarantine . '/' . $f), $output, $return);
                     if ($return > 0) {
-                        echo "Error: $output\n";
+                        echo __('error62') . " $output\n";
                     }
                 }
             }

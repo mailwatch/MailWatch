@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -176,7 +176,7 @@ function rpc_quarantine_delete($msg)
 
 function rpc_sophos_status()
 {
-    $output = shell_exec(MS_LIB_DIR . 'sophos-wrapper /usr/local/Sophos -v');
+    $output = shell_exec(MS_LIB_DIR . 'wrapper/sophos-wrapper /usr/local/Sophos -v');
     return new xmlrpcresp(new xmlrpcval($output, 'string'));
 }
 
@@ -198,7 +198,7 @@ function rpc_dump_mailscanner_conf()
         $line = rtrim(fgets($fh, 4096));
         if (preg_match('/^([^#].+) = ([^#].*)/', $line, $regs)) {
             # Strip trailing comments
-            $regs[2] = preg_replace("/#.*$/", '', $regs[2]);
+            $regs[2] = preg_replace('/#.*$/', '', $regs[2]);
             # store %var% variables
             if (preg_match('/%.+%/', $regs[1])) {
                 $var[$regs[1]] = $regs[2];

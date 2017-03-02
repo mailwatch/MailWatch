@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -125,7 +125,7 @@ if (!isset($_POST['run'])) {
                             echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                         }
                     } catch (Requests_Exception $e) {
-                        echo __('downbad15') . ' ' . $file['description'] . ': ' . $e->getMessage() . "<br>\n";
+                        echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "<br>\n";
                     }
 
                     ob_flush();
@@ -192,10 +192,10 @@ if (!isset($_POST['run'])) {
                 die($error_message);
             }
 
-            echo __('processok') . "\n";
+            echo __('processok15') . "\n";
             ob_flush();
             flush();
-            audit_log('Ran GeoIP update');
+            audit_log(__('auditlog15'));
         } else {
             // unable to read or write to the directory
             die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");

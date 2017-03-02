@@ -5,7 +5,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,8 +30,11 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Change this path to the right one containing functions.php
-$MailWatchHome = '/var/www/html/mailscanner/';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
 
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');
@@ -44,7 +47,7 @@ $lockFile = '/var/run/mailq.lock';
 $fl = @fopen($lockFile, 'w+b');
 // Attempt to create an exclusive lock - continue if successful
 if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
-    require $MailWatchHome . 'functions.php';
+    require $pathToFunctions;
     date_default_timezone_set(TIME_ZONE);
 
     $queue['inq'] = get_conf_var('IncomingQueueDir') . '/';
@@ -57,7 +60,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         if ($dh = @opendir($queuedir)) {
             while (false !== ($file = readdir($dh))) {
                 if ($MTA === 'exim') {
-                    if (preg_match("/-H$/", $file)) {
+                    if (preg_match('/-H$/', $file)) {
                         // Get rid of the '-H' from the end of the filename to get the msgid
                         $msgid = substr($file, 0, strlen($file) - 2);
                         if ($fh = @fopen($queuedir . $file, 'rb')) {
@@ -263,7 +266,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     safe_value($msginfo['ctime']) . "','" .
                     safe_value($msginfo['sender']) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value($msginfo['subject']) . "','" .
+                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
                     safe_value($msginfo['priority']) . "','" .

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -125,7 +125,7 @@ function decode_structure($structure)
  <head>
  <meta charset="utf-8">
  <link rel="shortcut icon" href="images/favicon.png">
- <title>Quarantined E-Mail Viewer</title>
+ <title>' . __('title58') . '</title>
  </head>
  <body>
  <pre>' . htmlentities(wordwrap($structure->body)) . '</pre>
@@ -133,7 +133,7 @@ function decode_structure($structure)
  </html>' . "\n";
             break;
         case 'text/html':
-            echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n";
+            echo '<!DOCTYPE html>' . "\n";
             if (
                 isset($structure->ctype_parameters['charset']) &&
                 strtolower($structure->ctype_parameters['charset']) !== 'utf-8'
