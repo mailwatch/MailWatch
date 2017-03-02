@@ -3551,7 +3551,11 @@ function audit_log($action)
 {
     $link = dbconn();
     if (AUDIT) {
-        $user = $link->real_escape_string($_SESSION['myusername']);
+        if (isset($_SESSION['myusername'])) {
+            $user = $link->real_escape_string($_SESSION['myusername']);
+        } else {
+            $user = 'unknown';
+        }
         $action = safe_value($action);
         $ip = safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
