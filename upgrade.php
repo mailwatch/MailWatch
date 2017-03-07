@@ -107,10 +107,28 @@ function check_column_exists($table, $column)
 /**
  * @return string|bool
  */
-function check_database_charset()
+function get_database_charset()
 {
     global $link;
     $sql = 'SELECT default_character_set_name
+            FROM information_schema.schemata
+            WHERE schema_name = "' . DB_NAME . '"';
+    $result = $link->query($sql);
+    $row = $result->fetch_array();
+    if (null !== $row && isset($row[0])) {
+        return $row[0];
+    }
+
+    return false;
+}
+
+/**
+ * @return string|bool
+ */
+function get_database_collation()
+{
+    global $link;
+    $sql = 'SELECT default_collation_name
             FROM information_schema.schemata
             WHERE schema_name = "' . DB_NAME . '"';
     $result = $link->query($sql);
@@ -131,14 +149,52 @@ function check_database_charset()
 function check_utf8_table($db, $table, $utf8variant = 'utf8')
 {
     global $link;
-    $sql = 'SELECT c.character_set_name
+    global $mysql_utf8_variant;
+
+    $sql = 'SELECT c.character_set_name, c.collation_name
             FROM information_schema.tables AS t, information_schema.collation_character_set_applicability AS c
             WHERE c.collation_name = t.table_collation
             AND t.table_schema = "' . $link->real_escape_string($db) . '"
             AND t.table_name = "' . $link->real_escape_string($table) . '"';
     $result = $link->query($sql);
 
-    return strtolower(database::mysqli_result($result, 0)) === $utf8variant;
+    $table_charset = database::mysqli_result($result, 0, 0);
+    $table_collation = database::mysqli_result($result, 0, 1);
+
+    return (
+        strtolower($table_charset) === $mysql_utf8_variant[$utf8variant]['charset'] &&
+        strtolower($table_collation) === $mysql_utf8_variant[$utf8variant]['collation']
+    );
+}
+
+/**
+ * @param string $db
+ * @param string $table
+ * @return bool
+ */
+function is_table_type_innodb($db, $table)
+{
+    global $link;
+    $sql = 'SELECT t.engine 
+            FROM information_schema.tables AS t 
+            WHERE t.table_schema = "' . $link->real_escape_string($db) . '" 
+            AND t.table_name = "' . $link->real_escape_string($table) . '"';
+    $result = $link->query($sql);
+
+    return 'innodb' === strtolower(database::mysqli_result($result, 0, 0));
+}
+
+function get_index_size($db, $table, $index)
+{
+    global $link;
+    $sql = 'SHOW INDEX FROM ' . $db . '.' . $table . ' WHERE Key_name = "' . $index . '"';
+    $result = $link->query($sql);
+    $row = $result->fetch_assoc();
+    if (null === $row || null === $row['Sub_part']) {
+        return null;
+    }
+
+    return (int)$row['Sub_part'];
 }
 
 /**
@@ -170,7 +226,7 @@ $errors = false;
 // Test connectivity to the database
 
 echo PHP_EOL;
-echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() .  PHP_EOL;
+echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() . PHP_EOL;
 
 echo PHP_EOL;
 echo pad('Testing connectivity to the database ');
@@ -190,7 +246,7 @@ if ($link) {
 
     // Convert database to utf8 if not already utf8mb4 or if other charset
     echo pad(' - Convert database to ' . $server_utf8_variant . '');
-    if (check_database_charset() === 'utf8mb4') {
+    if (get_database_charset() === $mysql_utf8_variant['utf8mb4']['charset'] && get_database_collation() === $mysql_utf8_variant['utf8mb4']['collation']) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
         $server_utf8_variant = 'utf8';
@@ -238,9 +294,9 @@ if ($link) {
     echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
     if (check_column_exists('users', 'resetid') === false) {
         $sql = 'ALTER TABLE `users` ADD COLUMN (
-            `resetid` varchar(32),
-            `resetexpire` bigint(20),
-            `lastreset` bigint(20)
+            `resetid` VARCHAR(32),
+            `resetexpire` BIGINT(20),
+            `lastreset` BIGINT(20)
             );';
         executeQuery($sql);
     } else {
@@ -249,7 +305,7 @@ if ($link) {
 
     echo PHP_EOL;
 
-    // Truncate needed for VARCHAR field used as PRIMARY or FOREIGN KEY when using UTF-8mb4
+    // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4
 
     // Table audit_log
     echo pad(' - Fix schema for username field in `audit_log` table');
@@ -258,7 +314,7 @@ if ($link) {
 
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
-    $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+    $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
     executeQuery($sql);
 
     // Table users
@@ -267,11 +323,11 @@ if ($link) {
     executeQuery($sql);
 
     echo pad(' - Fix schema for spamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` float DEFAULT '0'";
+    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` FLOAT DEFAULT '0'";
     executeQuery($sql);
 
     echo pad(' - Fix schema for highspamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` float DEFAULT '0'";
+    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` FLOAT DEFAULT '0'";
     executeQuery($sql);
 
     // Table user_filters
@@ -281,7 +337,7 @@ if ($link) {
 
     // Table whitelist
     echo pad(' - Fix schema for username field in `whitelist` table');
-    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
     executeQuery($sql);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
@@ -308,11 +364,11 @@ if ($link) {
     echo PHP_EOL;
 
     // Add new column and index to audit_log table
-    echo pad(' - Add maillog_id field and primary key to `audit_log` table');
+    echo pad(' - Add id field and primary key to `audit_log` table');
     if (true === check_column_exists('audit_log', 'id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `audit_log` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        $sql = 'ALTER TABLE `audit_log` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
     }
 
@@ -321,7 +377,7 @@ if ($link) {
     if (true === check_column_exists('inq', 'inq_id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `inq` ADD `inq_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`inq_id`)';
+        $sql = 'ALTER TABLE `inq` ADD `inq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`inq_id`)';
         executeQuery($sql);
     }
 
@@ -330,7 +386,7 @@ if ($link) {
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
+        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
     }
 
@@ -339,7 +395,7 @@ if ($link) {
     if (true === check_column_exists('mtalog', 'mtalog_id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `mtalog` ADD `mtalog_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`mtalog_id`)';
+        $sql = 'ALTER TABLE `mtalog` ADD `mtalog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`mtalog_id`)';
         executeQuery($sql);
     }
 
@@ -348,7 +404,7 @@ if ($link) {
     if (true === check_column_exists('outq', 'outq_id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `outq` ADD `outq_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`outq_id`)';
+        $sql = 'ALTER TABLE `outq` ADD `outq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`outq_id`)';
         executeQuery($sql);
     }
 
@@ -357,7 +413,7 @@ if ($link) {
     if (true === check_column_exists('saved_filters', 'id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `saved_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        $sql = 'ALTER TABLE `saved_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
     }
 
@@ -366,7 +422,7 @@ if ($link) {
     if (true === check_column_exists('user_filters', 'id')) {
         echo ' ALREADY DONE' . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `user_filters` ADD `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        $sql = 'ALTER TABLE `user_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
     }
 
@@ -376,7 +432,7 @@ if ($link) {
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
-        if (check_database_charset() === 'utf8mb4') {
+        if (get_database_charset() === $mysql_utf8_variant[$server_utf8_variant]['charset'] && get_database_collation() === $mysql_utf8_variant[$server_utf8_variant]['collation']) {
             echo ' ALREADY DONE' . PHP_EOL;
         } else {
             $sql = 'ALTER DATABASE `' . DB_NAME .
@@ -430,12 +486,30 @@ if ($link) {
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
         } else {
-            if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
+            if (is_table_type_innodb(DB_NAME, $table) === false) {
                 $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
                 executeQuery($sql);
             } else {
                 echo ' ALREADY CONVERTED' . PHP_EOL;
             }
+        }
+    }
+
+    echo PHP_EOL;
+
+    // Fix existing index size for utf8mb4 conversion
+    $too_big_indexes = array(
+        'maillog_from_idx',
+        'maillog_to_idx',
+    );
+
+    foreach ($too_big_indexes as $item) {
+        echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
+        if (get_index_size(DB_NAME, 'maillog', $item) > 191) {
+            $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
+            executeQuery($sql);
+        } else {
+            echo ' ALREADY DONE' . PHP_EOL;
         }
     }
 
@@ -445,8 +519,8 @@ if ($link) {
             'maillog_datetime_idx' => array('fields' => '(`date`,`time`)', 'type' => 'KEY'),
             'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY'),
             'maillog_clientip_idx' => array('fields' => '(`clientip`(20))', 'type' => 'KEY'),
-            'maillog_from_idx' => array('fields' => '(`from_address`(200))', 'type' => 'KEY'),
-            'maillog_to_idx' => array('fields' => '(`to_address`(200))', 'type' => 'KEY'),
+            'maillog_from_idx' => array('fields' => '(`from_address`(191))', 'type' => 'KEY'),
+            'maillog_to_idx' => array('fields' => '(`to_address`(191))', 'type' => 'KEY'),
             'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY'),
             'from_domain_idx' => array('fields' => '(`from_domain`(50))', 'type' => 'KEY'),
             'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY'),
