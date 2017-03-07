@@ -30,15 +30,16 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-if (php_sapi_name() !== 'cli') {
+if (PHP_SAPI !== 'cli') {
     header('Content-type: text/plain');
 }
 
-//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
-
 // Edit if you changed webapp directory from default and not using command line argument to define it
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
-if (isset($argv) && count($argv) > 1) { //get path from command line argument if set
+//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+
+if (isset($argv) && count($argv) > 1) {
+    //get path from command line argument if set
     $pathToFunctions = $argv[1];
 }
 
@@ -184,6 +185,12 @@ function is_table_type_innodb($db, $table)
     return 'innodb' === strtolower(database::mysqli_result($result, 0, 0));
 }
 
+/**
+ * @param string $db
+ * @param string $table
+ * @param string $index
+ * @return int|null
+ */
 function get_index_size($db, $table, $index)
 {
     global $link;
@@ -227,6 +234,16 @@ $errors = false;
 
 echo PHP_EOL;
 echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() . PHP_EOL;
+echo PHP_EOL;
+
+echo "Have you done a full backup of your database? Type 'yes' to continue: ";
+$handle = fopen('php://stdin', 'rb');
+$line = fgets($handle);
+if (strtolower(trim($line)) !== 'yes') {
+    echo 'ABORTING!' . PHP_EOL;
+    exit(1);
+}
+fclose($handle);
 
 echo PHP_EOL;
 echo pad('Testing connectivity to the database ');
