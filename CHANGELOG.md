@@ -5,7 +5,7 @@
  - Add filter on audit report
  - Add the possibility to 'Clear' bayes database in Bayes Info page
  - Add password reset
- - Move database setup in separate perl module (00-MailWatch-conf.pm)
+ - Move database setup in separate perl module (00MailWatchConf.pm)
  - Improved upgrade.php script 
  - Improve compatibility with MailScanner V5
  - Improve IPv6 support
