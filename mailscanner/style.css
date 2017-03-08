@@ -810,3 +810,18 @@ td.message {
 .mw-logo {
     text-align:center;
 }
+
+/* dbtable */
+
+.table-background:nth-child(even){
+    background-color: #EBEBEB;
+}
+
+.table-background:nth-child(odd){
+    background-color: #D8D8D8;
+}
+
+.table-background:hover{
+    background-color: #F7CE4A !important;
+}
+

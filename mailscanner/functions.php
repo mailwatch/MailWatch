@@ -102,9 +102,6 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
 
-// Background colours
-$bg_colors = array('#EBEBEB', '#D8D8D8');
-
 // XML-RPC
 require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
 require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
@@ -2309,8 +2306,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
  */
 function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
-    global $bg_colors;
-
     /*
     // Query the data
     $sth = dbquery($sql);
@@ -2406,11 +2401,9 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         // Rows
         $i = 1;
         while ($row = $sth->fetch_row()) {
-            $i = 1 - $i;
-            $bgcolor = $bg_colors[$i];
-            echo ' <tr>' . "\n";
+            echo ' <tr class="table-background">' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ', $1',
+                echo '  <td>' . preg_replace("/,([^\s])/", ', $1',
                         $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
