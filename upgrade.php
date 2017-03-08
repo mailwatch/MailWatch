@@ -80,9 +80,9 @@ function executeQuery($sql)
 {
     global $link;
     if ($link->query($sql)) {
-        echo ' OK' . PHP_EOL;
+        echo color(' OK', 'green') . PHP_EOL;
     } else {
-        echo ' ERROR' . PHP_EOL;
+        echo color(' ERROR', 'red') . PHP_EOL;
         die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
     }
 }
@@ -233,12 +233,35 @@ function getTableIndexes($table)
     return $indexes;
 }
 
+/**
+ * @param string $string
+ * @param string $color
+ * @return string
+ */
+function color($string, $color = '') {
+    $after = "\033[0m";
+    switch ($color){
+        case 'green':
+            $before = "\033[0;32m";
+            break;
+        case 'yellow':
+            $before = "\033[1;33m";
+            break;
+        case 'red':
+            $before = "\033[0;31m";
+            break;
+        default:
+            $before = '';
+            $after = '';
+            break;
+    }
+
+    return $before . $string . $after;
+}
+
 $errors = false;
 
-
 // Upgrade mailwatch database
-// Test connectivity to the database
-
 echo PHP_EOL;
 echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() . PHP_EOL;
 echo PHP_EOL;
@@ -256,10 +279,11 @@ if (!array_key_exists('skip-user-confirm', $cli_options)) {
     echo PHP_EOL;
 }
 
+// Test connectivity to the database
 echo pad('Testing connectivity to the database ');
 
 if ($link) {
-    echo ' OK' . PHP_EOL;
+    echo color(' OK', 'green') . PHP_EOL;
     // Update schema at this point
     echo PHP_EOL;
     echo 'Updating database schema: ' . PHP_EOL;
@@ -274,7 +298,7 @@ if ($link) {
     // Convert database to utf8 if not already utf8mb4 or if other charset
     echo pad(' - Convert database to ' . $server_utf8_variant . '');
     if (get_database_charset() === $mysql_utf8_variant['utf8mb4']['charset'] && get_database_collation() === $mysql_utf8_variant['utf8mb4']['collation']) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $server_utf8_variant = 'utf8';
         $sql = 'ALTER DATABASE `' . DB_NAME .
@@ -288,7 +312,7 @@ if ($link) {
     // Drop geoip table
     echo pad(' - Drop `geoip_country` table');
     if (false === check_table_exists('geoip_country')) {
-        echo ' ALREADY DROPPED' . PHP_EOL;
+        echo color(' ALREADY DROPPED', 'green') . PHP_EOL;
     } else {
         $sql = 'DROP TABLE IF EXISTS `geoip_country`';
         executeQuery($sql);
@@ -297,7 +321,7 @@ if ($link) {
     // Drop spamscores table
     echo pad(' - Drop `spamscores` table');
     if (false === check_table_exists('spamscores')) {
-        echo ' ALREADY DROPPED' . PHP_EOL;
+        echo color(' ALREADY DROPPED', 'green') . PHP_EOL;
     } else {
         $sql = 'DROP TABLE IF EXISTS `spamscores`';
         executeQuery($sql);
@@ -306,7 +330,7 @@ if ($link) {
     // Add autorelease table if not exist (1.2RC2)
     echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
     if (true === check_table_exists('autorelease')) {
-        echo ' ALREADY EXIST' . PHP_EOL;
+        echo color(' ALREADY EXIST', 'green') . PHP_EOL;
     } else {
         $sql = 'CREATE TABLE IF NOT EXISTS `autorelease` (
             `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -327,7 +351,7 @@ if ($link) {
             );';
         executeQuery($sql);
     } else {
-        echo ' ALREADY EXIST' . PHP_EOL;
+        echo color(' ALREADY EXIST', 'green') . PHP_EOL;
     }
 
     echo PHP_EOL;
@@ -393,7 +417,7 @@ if ($link) {
     // Add new column and index to audit_log table
     echo pad(' - Add id field and primary key to `audit_log` table');
     if (true === check_column_exists('audit_log', 'id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `audit_log` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
@@ -402,7 +426,7 @@ if ($link) {
     // Add new column and index to inq table
     echo pad(' - Add inq_id field and primary key to `inq` table');
     if (true === check_column_exists('inq', 'inq_id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `inq` ADD `inq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`inq_id`)';
         executeQuery($sql);
@@ -411,7 +435,7 @@ if ($link) {
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
@@ -420,7 +444,7 @@ if ($link) {
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
     if (true === check_column_exists('mtalog', 'mtalog_id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `mtalog` ADD `mtalog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`mtalog_id`)';
         executeQuery($sql);
@@ -429,7 +453,7 @@ if ($link) {
     // Add new column and index to outq table
     echo pad(' - Add mtalog_id field and primary key to `outq` table');
     if (true === check_column_exists('outq', 'outq_id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `outq` ADD `outq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`outq_id`)';
         executeQuery($sql);
@@ -438,7 +462,7 @@ if ($link) {
     // Add new column and index to saved_filters table
     echo pad(' - Add id field and primary key to `saved_filters` table');
     if (true === check_column_exists('saved_filters', 'id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `saved_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
@@ -447,7 +471,7 @@ if ($link) {
     // Add new column and index to user_filters table
     echo pad(' - Add mtalog_id field and primary key to `user_filters` table');
     if (true === check_column_exists('user_filters', 'id')) {
-        echo ' ALREADY DONE' . PHP_EOL;
+        echo color(' ALREADY DONE', 'green') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `user_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
@@ -460,7 +484,7 @@ if ($link) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
         if (get_database_charset() === $mysql_utf8_variant[$server_utf8_variant]['charset'] && get_database_collation() === $mysql_utf8_variant[$server_utf8_variant]['collation']) {
-            echo ' ALREADY DONE' . PHP_EOL;
+            echo color(' ALREADY DONE', 'green') . PHP_EOL;
         } else {
             $sql = 'ALTER DATABASE `' . DB_NAME .
                 '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
@@ -500,7 +524,7 @@ if ($link) {
                     ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
                 executeQuery($sql);
             } else {
-                echo ' ALREADY CONVERTED' . PHP_EOL;
+                echo color(' ALREADY CONVERTED', 'green') . PHP_EOL;
             }
         }
     }
@@ -517,7 +541,7 @@ if ($link) {
                 $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
                 executeQuery($sql);
             } else {
-                echo ' ALREADY CONVERTED' . PHP_EOL;
+                echo color(' ALREADY CONVERTED', 'green') . PHP_EOL;
             }
         }
     }
@@ -536,7 +560,7 @@ if ($link) {
             $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
             executeQuery($sql);
         } else {
-            echo ' ALREADY DONE' . PHP_EOL;
+            echo color(' ALREADY DONE', 'green') . PHP_EOL;
         }
     }
 
@@ -561,7 +585,7 @@ if ($link) {
     foreach ($indexes as $table => $indexlist) {
         echo PHP_EOL;
         echo pad(' - Search for missing indexes on table `' . $table . '`');
-        echo ' DONE' . PHP_EOL;
+        echo color(' DONE', 'green') . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
@@ -604,7 +628,7 @@ $check_settings = array(
 foreach ($check_settings as $setting => $value) {
     echo pad(" - $setting ");
     if (preg_match('/' . $value . '/', get_conf_var($setting))) {
-        echo ' OK' . PHP_EOL;
+        echo color(' OK', 'green') . PHP_EOL;
     } else {
         echo ' WARNING' . PHP_EOL;
         $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
@@ -618,28 +642,28 @@ echo 'Checking conf.php configuration entry: ' . PHP_EOL;
 echo PHP_EOL;
 $checkConfigEntries = checkConfVariables();
 if ($checkConfigEntries['needed']['count'] === 0) {
-    echo pad(' - All mandatory entries are present') . ' OK' . PHP_EOL;
+    echo pad(' - All mandatory entries are present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['needed']['list'] as $missingConfigEntry) {
-        echo pad(" - $missingConfigEntry ") . ' WARNING' . PHP_EOL;
+        echo pad(" - $missingConfigEntry ") . color(' WARNING', 'yellow') . PHP_EOL;
         $errors[] = 'conf.php: missing configuration entry "' . $missingConfigEntry . '"';
     }
 }
 
 if ($checkConfigEntries['obsolete']['count'] === 0) {
-    echo pad(' - All obsolete entries are already removed') . ' OK' . PHP_EOL;
+    echo pad(' - All obsolete entries are already removed') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['obsolete']['list'] as $obsoleteConfigEntry) {
-        echo pad(" - $obsoleteConfigEntry ") . ' WARNING' . PHP_EOL;
+        echo pad(" - $obsoleteConfigEntry ") . color(' WARNING', 'yellow') . PHP_EOL;
         $errors[] = 'conf.php: obsolete configuration entry "' . $obsoleteConfigEntry . '" still present';
     }
 }
 
 if ($checkConfigEntries['optional']['count'] === 0) {
-    echo pad(' - All optional entries are already present') . ' OK' . PHP_EOL;
+    echo pad(' - All optional entries are already present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['optional']['list'] as $optionalConfigEntry => $detail) {
-        echo pad(" - optional $optionalConfigEntry ") . ' WARNING' . PHP_EOL;
+        echo pad(" - optional $optionalConfigEntry ") . color(' WARNING', 'yellow') . PHP_EOL;
         $errors[] = 'conf.php: optional configuration entry "' . $optionalConfigEntry . '" is missing, ' . $detail['description'];
     }
 }
