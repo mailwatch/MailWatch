@@ -77,9 +77,11 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 }
 
 //security headers
-header('X-XSS-Protection: 1; mode=block');
-header('X-Frame-Options: SAMEORIGIN');
-header('X-Content-Type-Options: nosniff');
+if (PHP_SAPI !== 'cli') {
+    header('X-XSS-Protection: 1; mode=block');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+}
 
 // more secure session cookies
 ini_set('session.use_cookies', 1);
@@ -241,19 +243,23 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
     if (!$cacheable) {
         // Cache control (as per PHP website)
-        header('Expires: Sat, 10 May 2003 00:00:00 GMT');
-        header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', false);
+        if (PHP_SAPI !== 'cli') {
+            header('Expires: Sat, 10 May 2003 00:00:00 GMT');
+            header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Cache-Control: post-check=0, pre-check=0', false);
+        }
     } else {
-        // calc an offset of 24 hours
-        $offset = 3600 * 48;
-        // calc the string in GMT not localtime and add the offset
-        $expire = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
-        //output the HTTP header
-        header($expire);
-        header('Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1');
-        header('Pragma: cache');
+        if (PHP_SAPI !== 'cli') {
+            // calc an offset of 24 hours
+            $offset = 3600 * 48;
+            // calc the string in GMT not localtime and add the offset
+            $expire = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
+            //output the HTTP header
+            header($expire);
+            header('Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1');
+            header('Pragma: cache');
+        }
     }
 
     echo page_creation_timer();
