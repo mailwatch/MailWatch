@@ -38,11 +38,18 @@ if (PHP_SAPI !== 'cli') {
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 //$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
 
-if (isset($argv) && count($argv) > 1) {
-    //get path from command line argument if set
-    $pathToFunctions = $argv[1];
-}
+$cli_options = getopt('', array('skip-user-confirm'));
 
+if (isset($argv) && count($argv) > 1) {
+    if (empty($cli_options)) {
+        $pathToFunctions = $argv[1];
+    } else {
+        $args = array_search('--', $argv, true);
+        $args = array_splice($argv, $args ? ++$args : (count($argv) - count($cli_options)));
+        //get path from command line argument if set
+        $pathToFunctions = $args[0];
+    }
+}
 
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
@@ -236,16 +243,19 @@ echo PHP_EOL;
 echo 'MailWatch for MailScanner Database Upgrade to ' . mailwatch_version() . PHP_EOL;
 echo PHP_EOL;
 
-echo "Have you done a full backup of your database? Type 'yes' to continue: ";
-$handle = fopen('php://stdin', 'rb');
-$line = fgets($handle);
-if (strtolower(trim($line)) !== 'yes') {
-    echo 'ABORTING!' . PHP_EOL;
-    exit(1);
-}
-fclose($handle);
+if (!array_key_exists('skip-user-confirm', $cli_options)) {
+    echo "Have you done a full backup of your database? Type 'yes' to continue: ";
+    $handle = fopen('php://stdin', 'rb');
+    $line = fgets($handle);
+    if (strtolower(trim($line)) !== 'yes') {
+        echo 'ABORTING!' . PHP_EOL;
+        exit(1);
+    }
+    fclose($handle);
 
-echo PHP_EOL;
+    echo PHP_EOL;
+}
+
 echo pad('Testing connectivity to the database ');
 
 if ($link) {
