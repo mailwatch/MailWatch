@@ -543,23 +543,30 @@ if ($link) {
             'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY'),
             'maillog_quarantined' => array('fields' => '(`quarantined`)', 'type' => 'KEY'),
             'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY'),
-            'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT'),
+            // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
+            'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'),
         )
     );
 
     foreach ($indexes as $table => $indexlist) {
         echo PHP_EOL;
-        echo pad(' - Search for missing indexes');
+        echo pad(' - Search for missing indexes on table `' . $table . '`');
         echo ' DONE' . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
                 echo pad(' - Adding missing index `' . $indexname . '` on table `' . $table . '`');
-                $sql = 'ALTER TABLE `' . $table .
-                    '` ADD ' . $indexValue['type'] . ' `' . $indexname . '` ' .
-                    $indexValue['fields'] .
-                    ';';
-                executeQuery($sql);
+                if (isset($indexValue['minMysqlVersion']) && $link->server_version >= $indexValue['minMysqlVersion']) {
+                    $sql = 'ALTER TABLE `' . $table .
+                        '` ADD ' . $indexValue['type'] . ' `' . $indexname . '` ' .
+                        $indexValue['fields'] .
+                        ';';
+                    executeQuery($sql);
+                } else {
+                    echo ' WARNING' . PHP_EOL;
+                    $errors[] = 'Table Index: MySQL version unsupported for index `' . $indexname . '` on table `' . $table . '`, ' .
+                        'upgrade to version >= ' . $indexValue['minMysqlVersion'] . ' (you have version ' . $link->server_version . ')';
+                }
             }
         }
     }
