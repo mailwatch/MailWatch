@@ -2546,7 +2546,7 @@ function get_mail_relays($message_headers)
         $header = preg_replace('/IPv6\:/', '', $header);
         if (preg_match_all('/Received:.+\[(?P<ip>.+)\]/', $header, $regs)) {
             foreach ($regs['ip'] as $relay) {
-                    $relays[] = $relay;
+                $relays[] = $relay;
             }
         }
     }
