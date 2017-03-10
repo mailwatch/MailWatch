@@ -323,6 +323,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                                 dbquery($sql);
                             }
 
+                            // Update user_filters if username was changed
+                            if ($key !== $n_username) {
+                                $sql = "UPDATE user_filters SET username='$n_username' WHERE username = '$key'";
+                                dbquery($sql);
+                            }
                             //Audit
                             $type['A'] = 'administrator';
                             $type['D'] = 'domain administrator';
