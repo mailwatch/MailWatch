@@ -209,6 +209,8 @@ define('RPC_ONLY', false);
 // define('RPC_PORT', 80);
 // RPC over SSL? (defaults to port 443 unless RPC_PORT is supplied).
 // define('RPC_SSL', true);
+// Enter the remote servers as array where rpc call shall be executed at (eg. for postfix queue).
+// define('RPC_REMOTE_SERVER', array('other.example.com','other2.example.com','10.0.0.2'));
 
 // Display the inbound/outbound mail queue lengths.
 // Note: this only works with Exim and Sendmail.

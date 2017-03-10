@@ -427,6 +427,19 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 if (is_readable($incomingdir) && is_readable($outgoingdir)) {
                     $inq = postfixinq();
                     $outq = postfixallq() - $inq;
+                    if (DISTRIBUTED_SETUP && defined(RPC_REMOTE_SERVER) && !is_array(RPC_REMOTE_SERVER)) {                           
+                        for($i=0;$i<count(RPC_REMOTE_SERVER);$i++) {
+                            $msg = new xmlrpcmsg('postfix_queues');
+                            $rsp = xmlrpc_wrapper(RPC_REMOTE_SERVER[$i]); 
+                            if ($rsp->faultCode() === 0) {
+                                $response = php_xmlrpc_decode($rsp->value());                                
+                                $inq += $response['inq'];
+                                $outq += $response['outq'];                                
+                            } else {
+                                $response = 'XML-RPC Error: ' . $rsp->faultString();
+                            }
+                        }
+                    }
                     echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";

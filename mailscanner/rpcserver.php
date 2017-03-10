@@ -251,6 +251,17 @@ function rpc_bayes_info()
     return new xmlrpcresp(new xmlrpcval($output, 'struct'));
 }
 
+function rpc_postfix_queues()
+{
+    $inq = postfixinq();
+    $outq = postfixallq() - $inq;
+    $result = array(
+        'inq' => $inq,
+        'outq' => $outq,
+    );
+    return new xmlrpcresp(new xmlrpcval($result, 'struct'))
+}
+
 $s = new xmlrpc_server(array(
         'get_quarantine' => array(
             'function' => 'rpc_get_quarantine',
@@ -301,7 +312,12 @@ $s = new xmlrpc_server(array(
             'function' => 'rpc_bayes_info',
             'signature' => array(array('struct')),
             'docstring' => 'This service return information about the bayes database.'
-        )
+        ),
+        'postfix_queues' => array(
+            'function' => 'rpc_postfix_queues',
+            'signature' => array(array('struct')),
+            'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.'
+        ),
     ), false);
 
 // Check that the client is authorised to connect
