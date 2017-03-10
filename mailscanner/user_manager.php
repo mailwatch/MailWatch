@@ -345,7 +345,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo sprintf(__('errordeletedomainforbidden12'), $ar[1]) . '<br>';
                 } elseif (isset($_GET['id'])) {
                     $id = sanitizeInput($_GET['id']);
-                    $sql = "DELETE FROM users WHERE username='" . safe_value($id) . "'";
+                    $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value($id) . "'";
                     dbquery($sql);
                     audit_log(sprintf(__('auditlog0412'), $_GET['id']));
                 }
