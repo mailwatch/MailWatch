@@ -238,14 +238,18 @@ function getTableIndexes($table)
  * @param string $color
  * @return string
  */
-function color($string, $color = '') {
+function color($string, $color = '')
+{
     $after = "\033[0m";
-    switch ($color){
+    switch ($color) {
         case 'green':
+            $before = "\033[1;32m";
+            break;
+        case 'lightgreen':
             $before = "\033[0;32m";
             break;
         case 'yellow':
-            $before = "\033[1;33m";
+            $before = "\033[1;33;40m";
             break;
         case 'red':
             $before = "\033[0;31m";
@@ -298,7 +302,7 @@ if ($link) {
     // Convert database to utf8 if not already utf8mb4 or if other charset
     echo pad(' - Convert database to ' . $server_utf8_variant . '');
     if (get_database_charset() === $mysql_utf8_variant['utf8mb4']['charset'] && get_database_collation() === $mysql_utf8_variant['utf8mb4']['collation']) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $server_utf8_variant = 'utf8';
         $sql = 'ALTER DATABASE `' . DB_NAME .
@@ -312,7 +316,7 @@ if ($link) {
     // Drop geoip table
     echo pad(' - Drop `geoip_country` table');
     if (false === check_table_exists('geoip_country')) {
-        echo color(' ALREADY DROPPED', 'green') . PHP_EOL;
+        echo color(' ALREADY DROPPED', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'DROP TABLE IF EXISTS `geoip_country`';
         executeQuery($sql);
@@ -321,7 +325,7 @@ if ($link) {
     // Drop spamscores table
     echo pad(' - Drop `spamscores` table');
     if (false === check_table_exists('spamscores')) {
-        echo color(' ALREADY DROPPED', 'green') . PHP_EOL;
+        echo color(' ALREADY DROPPED', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'DROP TABLE IF EXISTS `spamscores`';
         executeQuery($sql);
@@ -330,7 +334,7 @@ if ($link) {
     // Add autorelease table if not exist (1.2RC2)
     echo pad(' - Add autorelease table to `' . DB_NAME . '` database');
     if (true === check_table_exists('autorelease')) {
-        echo color(' ALREADY EXIST', 'green') . PHP_EOL;
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'CREATE TABLE IF NOT EXISTS `autorelease` (
             `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -351,7 +355,7 @@ if ($link) {
             );';
         executeQuery($sql);
     } else {
-        echo color(' ALREADY EXIST', 'green') . PHP_EOL;
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
 
     echo PHP_EOL;
@@ -417,7 +421,7 @@ if ($link) {
     // Add new column and index to audit_log table
     echo pad(' - Add id field and primary key to `audit_log` table');
     if (true === check_column_exists('audit_log', 'id')) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `audit_log` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
@@ -426,7 +430,7 @@ if ($link) {
     // Add new column and index to inq table
     echo pad(' - Add inq_id field and primary key to `inq` table');
     if (true === check_column_exists('inq', 'inq_id')) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `inq` ADD `inq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`inq_id`)';
         executeQuery($sql);
@@ -435,7 +439,7 @@ if ($link) {
     // Add new column and index to maillog table
     echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
@@ -444,7 +448,7 @@ if ($link) {
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
     if (true === check_column_exists('mtalog', 'mtalog_id')) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `mtalog` ADD `mtalog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`mtalog_id`)';
         executeQuery($sql);
@@ -453,7 +457,7 @@ if ($link) {
     // Add new column and index to outq table
     echo pad(' - Add mtalog_id field and primary key to `outq` table');
     if (true === check_column_exists('outq', 'outq_id')) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `outq` ADD `outq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`outq_id`)';
         executeQuery($sql);
@@ -462,7 +466,7 @@ if ($link) {
     // Add new column and index to saved_filters table
     echo pad(' - Add id field and primary key to `saved_filters` table');
     if (true === check_column_exists('saved_filters', 'id')) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `saved_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
@@ -471,7 +475,7 @@ if ($link) {
     // Add new column and index to user_filters table
     echo pad(' - Add mtalog_id field and primary key to `user_filters` table');
     if (true === check_column_exists('user_filters', 'id')) {
-        echo color(' ALREADY DONE', 'green') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `user_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
@@ -484,7 +488,7 @@ if ($link) {
         $server_utf8_variant = 'utf8mb4';
         echo pad(' - Convert database to ' . $server_utf8_variant . '');
         if (get_database_charset() === $mysql_utf8_variant[$server_utf8_variant]['charset'] && get_database_collation() === $mysql_utf8_variant[$server_utf8_variant]['collation']) {
-            echo color(' ALREADY DONE', 'green') . PHP_EOL;
+            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
         } else {
             $sql = 'ALTER DATABASE `' . DB_NAME .
                 '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
@@ -524,7 +528,7 @@ if ($link) {
                     ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
                 executeQuery($sql);
             } else {
-                echo color(' ALREADY CONVERTED', 'green') . PHP_EOL;
+                echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
             }
         }
     }
@@ -541,7 +545,7 @@ if ($link) {
                 $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
                 executeQuery($sql);
             } else {
-                echo color(' ALREADY CONVERTED', 'green') . PHP_EOL;
+                echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
             }
         }
     }
@@ -560,44 +564,42 @@ if ($link) {
             $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
             executeQuery($sql);
         } else {
-            echo color(' ALREADY DONE', 'green') . PHP_EOL;
+            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
         }
     }
 
     // check for missing indexes
     $indexes = array(
         'maillog' => array(
-            'maillog_datetime_idx' => array('fields' => '(`date`,`time`)', 'type' => 'KEY'),
-            'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY'),
-            'maillog_clientip_idx' => array('fields' => '(`clientip`(20))', 'type' => 'KEY'),
-            'maillog_from_idx' => array('fields' => '(`from_address`(191))', 'type' => 'KEY'),
-            'maillog_to_idx' => array('fields' => '(`to_address`(191))', 'type' => 'KEY'),
-            'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY'),
-            'from_domain_idx' => array('fields' => '(`from_domain`(50))', 'type' => 'KEY'),
-            'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY'),
-            'maillog_quarantined' => array('fields' => '(`quarantined`)', 'type' => 'KEY'),
-            'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY'),
+            'maillog_datetime_idx' => array('fields' => '(`date`,`time`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_clientip_idx' => array('fields' => '(`clientip`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_from_idx' => array('fields' => '(`from_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_to_idx' => array('fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'from_domain_idx' => array('fields' => '(`from_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_quarantined' => array('fields' => '(`quarantined`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
             // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
             'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'),
         )
     );
 
     foreach ($indexes as $table => $indexlist) {
-        echo PHP_EOL;
-        echo pad(' - Search for missing indexes on table `' . $table . '`');
-        echo color(' DONE', 'green') . PHP_EOL;
+        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(' DONE', 'green') . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
                 echo pad(' - Adding missing index `' . $indexname . '` on table `' . $table . '`');
-                if (isset($indexValue['minMysqlVersion']) && $link->server_version >= $indexValue['minMysqlVersion']) {
+                if ($link->server_version >= $indexValue['minMysqlVersion']) {
                     $sql = 'ALTER TABLE `' . $table .
                         '` ADD ' . $indexValue['type'] . ' `' . $indexname . '` ' .
                         $indexValue['fields'] .
                         ';';
                     executeQuery($sql);
                 } else {
-                    echo color(' WARNING', 'yellow') . PHP_EOL;
+                    echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
                     $errors[] = 'Table Index: MySQL version unsupported for index `' . $indexname . '` on table `' . $table . '`, ' .
                         'upgrade to version >= ' . $indexValue['minMysqlVersion'] . ' (you have version ' . $link->server_version . ')';
                 }
@@ -630,7 +632,7 @@ foreach ($check_settings as $setting => $value) {
     if (preg_match('/' . $value . '/', get_conf_var($setting))) {
         echo color(' OK', 'green') . PHP_EOL;
     } else {
-        echo color(' WARNING', 'yellow') . PHP_EOL;
+        echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
         $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
     }
 }
@@ -645,7 +647,7 @@ if ($checkConfigEntries['needed']['count'] === 0) {
     echo pad(' - All mandatory entries are present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['needed']['list'] as $missingConfigEntry) {
-        echo pad(" - $missingConfigEntry ") . color(' WARNING', 'yellow') . PHP_EOL;
+        echo pad(" - $missingConfigEntry ") . ' ' . color('WARNING', 'yellow') . PHP_EOL;
         $errors[] = 'conf.php: missing configuration entry "' . $missingConfigEntry . '"';
     }
 }
@@ -654,7 +656,7 @@ if ($checkConfigEntries['obsolete']['count'] === 0) {
     echo pad(' - All obsolete entries are already removed') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['obsolete']['list'] as $obsoleteConfigEntry) {
-        echo pad(" - $obsoleteConfigEntry ") . color(' WARNING', 'yellow') . PHP_EOL;
+        echo pad(" - $obsoleteConfigEntry ") . ' ' . color('WARNING', 'yellow') . PHP_EOL;
         $errors[] = 'conf.php: obsolete configuration entry "' . $obsoleteConfigEntry . '" still present';
     }
 }
@@ -663,7 +665,7 @@ if ($checkConfigEntries['optional']['count'] === 0) {
     echo pad(' - All optional entries are already present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['optional']['list'] as $optionalConfigEntry => $detail) {
-        echo pad(" - optional $optionalConfigEntry ") . color(' WARNING', 'yellow') . PHP_EOL;
+        echo pad(" - optional $optionalConfigEntry ") . ' ' . color('WARNING', 'yellow') . PHP_EOL;
         $errors[] = 'conf.php: optional configuration entry "' . $optionalConfigEntry . '" is missing, ' . $detail['description'];
     }
 }
