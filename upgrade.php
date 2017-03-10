@@ -597,7 +597,7 @@ if ($link) {
                         ';';
                     executeQuery($sql);
                 } else {
-                    echo ' WARNING' . PHP_EOL;
+                    echo color(' WARNING', 'yellow') . PHP_EOL;
                     $errors[] = 'Table Index: MySQL version unsupported for index `' . $indexname . '` on table `' . $table . '`, ' .
                         'upgrade to version >= ' . $indexValue['minMysqlVersion'] . ' (you have version ' . $link->server_version . ')';
                 }
@@ -606,7 +606,7 @@ if ($link) {
     }
     dbclose();
 } else {
-    echo ' FAILED' . PHP_EOL;
+    echo color(' FAILED', 'red') . PHP_EOL;
     $errors[] = 'Database connection failed: ' . $link->error;
 }
 
@@ -630,7 +630,7 @@ foreach ($check_settings as $setting => $value) {
     if (preg_match('/' . $value . '/', get_conf_var($setting))) {
         echo color(' OK', 'green') . PHP_EOL;
     } else {
-        echo ' WARNING' . PHP_EOL;
+        echo color(' WARNING', 'yellow') . PHP_EOL;
         $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
     }
 }
