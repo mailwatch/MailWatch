@@ -338,7 +338,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
 
-    if ( ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D')) {
+    if (($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D')) {
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
@@ -432,7 +432,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
                     $pqerror = '';
                     $servers=explode(' ', RPC_REMOTE_SERVER);
-                    for($i=0;$i<count($servers);$i++) {
+                    for ($i=0;$i<count($servers);$i++) {
                         $msg = new xmlrpcmsg('postfix_queues', array());
                         $rsp = xmlrpc_wrapper($servers[$i], $msg);
                         if ($rsp->faultCode() === 0) {
@@ -450,7 +450,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 if (isset($inq) || isset($outq)) {
                     echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-                    echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";                    
+                    echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
                 }
 
                 // Else use MAILQ from conf.php which is for Sendmail or Exim
@@ -474,7 +474,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
-            if(!DISTRIBUTED_SETUP) {
+            if (!DISTRIBUTED_SETUP) {
                 // Drive display
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
                 foreach (get_disks() as $disk) {
