@@ -2232,7 +2232,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             for ($f = 0; $f < $fields; $f++) {
                 if ($display[$f]) {
                     if ($align[$f]) {
-                        echo ' <td align="' . $align[$f] . '">' . $row[$f] . '</td>' . "\n";
+                        if ($f === 0) {
+                            echo ' <td align="' . $align[$f] . '" class="link-transparent">' . $row[$f] . '</td>' . "\n";
+                        } else {
+                            echo ' <td align="' . $align[$f] . '">' . $row[$f] . '</td>' . "\n";
+                        }
                     } else {
                         echo ' <td>' . $row[$f] . '</td>' . "\n";
                     }
