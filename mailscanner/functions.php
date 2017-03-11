@@ -423,12 +423,13 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 // Mail Queues display
                 $incomingdir = get_conf_var('incomingqueuedir', true);
                 $outgoingdir = get_conf_var('outgoingqueuedir', true);
-                if ((!is_readable($incomingdir) || !is_readable($outgoingdir)) && !DISTRIBUTED_SETUP) {
-                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
-                } else {
+                if ((is_readable($incomingdir) || is_readable($outgoingdir)) ) {
                     $inq = postfixinq();
                     $outq = postfixallq() - $inq;
+                } elseif (!DISTRIBUTED_SETUP) {
+                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
+                
                 if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
                     $pqerror = '';
                     $servers=explode(' ', RPC_REMOTE_SERVER);
