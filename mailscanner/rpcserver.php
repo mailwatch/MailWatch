@@ -256,10 +256,10 @@ function rpc_postfix_queues()
     $inq = postfixinq();
     $outq = postfixallq() - $inq;
     $result = array(
-        'inq' => $inq,
-        'outq' => $outq,
+        'inq' => new xmlrpcval($inq),
+        'outq' => new xmlrpcval($outq),
     );
-    return new xmlrpcresp(new xmlrpcval($result, 'struct'))
+    return new xmlrpcresp(new xmlrpcval($result, 'struct'));
 }
 
 $s = new xmlrpc_server(array(
@@ -315,7 +315,7 @@ $s = new xmlrpc_server(array(
         ),
         'postfix_queues' => array(
             'function' => 'rpc_postfix_queues',
-            'signature' => array(array('struct')),
+            'signature' => array(array('array')),
             'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.'
         ),
     ), false);

@@ -338,7 +338,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
 
-    if (!DISTRIBUTED_SETUP && ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D')) {
+    if ( ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D')) {
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
@@ -416,38 +416,45 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             ' . "\n";
         }
 
-        // Mail Queues display
-        $incomingdir = get_conf_var('incomingqueuedir');
-        $outgoingdir = get_conf_var('outgoingqueuedir');
-
         // Display the MTA queue
         // Postfix if mta = postfix
         if ($_SESSION['user_type'] === 'A') {
-            if ($mta === 'postfix') {
-                if (is_readable($incomingdir) && is_readable($outgoingdir)) {
+            if (get_conf_var('MTA', true) === 'postfix') {
+                // Mail Queues display
+                $incomingdir = get_conf_var('incomingqueuedir', true);
+                $outgoingdir = get_conf_var('outgoingqueuedir', true);
+                if ((!is_readable($incomingdir) || !is_readable($outgoingdir)) && !DISTRIBUTED_SETUP) {
+                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+                } else {
                     $inq = postfixinq();
                     $outq = postfixallq() - $inq;
-                    if (DISTRIBUTED_SETUP && defined(RPC_REMOTE_SERVER) && !is_array(RPC_REMOTE_SERVER)) {                           
-                        for($i=0;$i<count(RPC_REMOTE_SERVER);$i++) {
-                            $msg = new xmlrpcmsg('postfix_queues');
-                            $rsp = xmlrpc_wrapper(RPC_REMOTE_SERVER[$i]); 
-                            if ($rsp->faultCode() === 0) {
-                                $response = php_xmlrpc_decode($rsp->value());                                
-                                $inq += $response['inq'];
-                                $outq += $response['outq'];                                
-                            } else {
-                                $response = 'XML-RPC Error: ' . $rsp->faultString();
-                            }
+                }
+                if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
+                    $pqerror = '';
+                    $servers=explode(' ', RPC_REMOTE_SERVER);
+                    for($i=0;$i<count($servers);$i++) {
+                        $msg = new xmlrpcmsg('postfix_queues', array());
+                        $rsp = xmlrpc_wrapper($servers[$i], $msg);
+                        if ($rsp->faultCode() === 0) {
+                            $response = php_xmlrpc_decode($rsp->value());
+                            $inq += $response['inq'];
+                            $outq += $response['outq'];
+                        } else {
+                            $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
                         }
                     }
+                    if ($pqerror !== '') {
+                        echo '    <tr><td colspan="3">Warning: An error occured:' . $pqerror . '</td>' . "\n";
+                    }
+                }
+                if (isset($inq) || isset($outq)) {
                     echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-                    echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
-                } else {
-                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+                    echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";                    
                 }
+
                 // Else use MAILQ from conf.php which is for Sendmail or Exim
-            } elseif (MAILQ) {
+            } elseif (MAILQ && !DISTRIBUTED_SETUP) {
                 if ($mta === 'exim') {
                     $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                     $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
@@ -467,20 +474,22 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
-            // Drive display
-            echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
-            foreach (get_disks() as $disk) {
-                $free_space = disk_free_space($disk['mountpoint']);
-                $total_space = disk_total_space($disk['mountpoint']);
-                $percent = '<span>';
-                if (round($free_space / $total_space, 2) <= 0.1) {
-                    $percent = '<span style="color:red">';
+            if(!DISTRIBUTED_SETUP) {
+                // Drive display
+                echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
+                foreach (get_disks() as $disk) {
+                    $free_space = disk_free_space($disk['mountpoint']);
+                    $total_space = disk_total_space($disk['mountpoint']);
+                    $percent = '<span>';
+                    if (round($free_space / $total_space, 2) <= 0.1) {
+                        $percent = '<span style="color:red">';
+                    }
+                    $percent .= ' [';
+                    $percent .= round($free_space / $total_space, 2) * 100;
+                    $percent .= '%] ';
+                    $percent .= '</span>';
+                    echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
                 }
-                $percent .= ' [';
-                $percent .= round($free_space / $total_space, 2) * 100;
-                $percent .= '%] ';
-                $percent .= '</span>';
-                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
             }
         }
         echo '  </table>' . "\n";
@@ -1420,12 +1429,12 @@ function get_default_ruleset_value($file)
  * @param string $name
  * @return bool
  */
-function get_conf_var($name)
+function get_conf_var($name, $force = false)
 {
-    if (DISTRIBUTED_SETUP) {
+    if (DISTRIBUTED_SETUP && !$force) {
         return false;
     }
-    $conf_dir = get_conf_include_folder();
+    $conf_dir = get_conf_include_folder($force);
     $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
     $array_output1 = parse_conf_file($MailScanner_conf_file);
@@ -1482,13 +1491,13 @@ function parse_conf_dir($conf_dir)
  * @param string $name
  * @return bool
  */
-function get_conf_truefalse($name)
+function get_conf_truefalse($name, $force = false)
 {
-    if (DISTRIBUTED_SETUP) {
+    if (DISTRIBUTED_SETUP && !$force) {
         return true;
     }
 
-    $conf_dir = get_conf_include_folder();
+    $conf_dir = get_conf_include_folder($force);
     $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
     $array_output1 = parse_conf_file($MailScanner_conf_file);
@@ -1530,10 +1539,10 @@ function get_conf_truefalse($name)
 /**
  * @return bool|mixed
  */
-function get_conf_include_folder()
+function get_conf_include_folder($force = false)
 {
     $name = 'include';
-    if (DISTRIBUTED_SETUP) {
+    if (DISTRIBUTED_SETUP && !$force) {
         return false;
     }
 
@@ -4018,6 +4027,7 @@ function checkConfVariables()
     $optional = array(
         'RPC_PORT' => array('description' => 'needed if RPC_ONLY mode is enabled'),
         'RPC_SSL' => array('description' => 'needed if RPC_ONLY mode is enabled'),
+        'RPC_REMOTE_SERVER' => array('description' => 'needed to show number of mails in postfix queues on remote server (RPC)'),
         'VIRUS_REGEX' => array('description' => 'needed in distributed setup'),
         'LDAP_BIND_PREFIX' => array('description' => 'needed when using LDAP authentication'),
         'LDAP_BIND_SUFFIX' => array('description' => 'needed when using LDAP authentication'),
