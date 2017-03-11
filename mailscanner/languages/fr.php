@@ -437,7 +437,7 @@ return array(
     'userfilter12' => 'Filtres d\'utilsateur pour',
     'filter12' => 'Filtre',
     'add12' => 'Ajouter',
-    'active12' => 'Etat',
+    'active12' => 'Actif',
     'yes12' => 'Oui',
     'no12' => 'Non',
     'questionmark12' => ' ?',
