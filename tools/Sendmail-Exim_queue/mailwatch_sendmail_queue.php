@@ -109,19 +109,26 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                                     STR_PAD_LEFT
                                                 ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
-                                        case preg_match('/^\d{3}I Message-ID: <(.+)>$/', $line, $match):
-                                            #$output[$msgid]['message'] = $match[1];
-                                            break;
                                         case preg_match('/^<(.+)>$/', $line, $match):
                                             $output[$msgid]['envelopesender'] = $match[1];
                                             break;
                                         case preg_match('/^\d{3}  Subject: (.+)$/', $line, $match):
-                                            $output[$msgid]['subject'] = $match[1];
+                                            //$output[$msgid]['subject'] = $match[1];
                                             break;
                                     }
                                 }
                             }
                             fclose($fh);
+
+                            // Read Subject
+                            if ($header = @file_get_contents($queuedir . $file)) {
+                                switch (true) {
+                                    case preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match):
+                                        $output[$msgid]['subject'] = $match[1] . $match[3];
+                                        break;
+                                }
+                            }
+
                             //  Get the message file
                             $MsgDir = preg_replace('/^(.*)\/input\/$/', '$1/msglog/', $queuedir);
                             if ($fh = @fopen($MsgDir . $msgid, 'rb')) {
@@ -247,8 +254,8 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
                 // Clean content
-                $sender = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['sender'])) ? $msginfo['sender'] : "");
-                $subject = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['subject'])) ? $msginfo['subject'] : "");
+                //$sender = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['sender'])) ? $msginfo['sender'] : "");
+                //$subject = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['subject'])) ? $msginfo['subject'] : "");
                 // Insert each record
                 $sql = 'INSERT INTO ' . $table_name . "
     (id,
@@ -267,9 +274,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value($sender) . "','" .
+                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value($subject) . "','" .
+                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
                     safe_value($msginfo['priority']) . "','" .
