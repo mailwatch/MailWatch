@@ -289,4 +289,3 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     // Lock was not successful - drop out
     echo 'Unable to lock file "' . $lockFile . '" - not running.' . "\n";
 }
-
