@@ -119,9 +119,10 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
 
                             // Read Subject
                             if ($header = @file_get_contents($queuedir . $file)) {
-                                preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match);
-                                $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
-                                $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
+                                if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
+                                    $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
+                                    $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
+                                }
                             }
 
                             //  Get the message file
@@ -268,7 +269,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     safe_value($msginfo['ctime']) . "','" .
                     safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value($msginfo['subject']) . "','" .
+                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
                     safe_value($msginfo['priority']) . "','" .
