@@ -246,9 +246,10 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
+                // Clean content
+                $sender = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['sender']) ? $msginfo['sender'] : "");
+                $subject = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['subject'])) ? $msginfo['subject'] : "");
                 // Insert each record
-                $sender = preg_replace('~[\r\n\t]+~', '', getUTF8String($msginfo['sender']));
-                $subject = preg_replace('~[\r\n\t]+~', '', getUTF8String($msginfo['subject']));
                 $sql = 'INSERT INTO ' . $table_name . "
     (id,
      cdate,
@@ -288,3 +289,4 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     // Lock was not successful - drop out
     echo 'Unable to lock file "' . $lockFile . '" - not running.' . "\n";
 }
+
