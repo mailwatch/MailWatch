@@ -247,7 +247,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
                 // Clean content
-                $sender = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['sender']) ? $msginfo['sender'] : "");
+                $sender = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['sender'])) ? $msginfo['sender'] : "");
                 $subject = preg_replace('~[\r\n\t]+~', '', getUTF8String(isset($msginfo['subject'])) ? $msginfo['subject'] : "");
                 // Insert each record
                 $sql = 'INSERT INTO ' . $table_name . "
