@@ -871,7 +871,7 @@ function dbquery($sql, $printError = true)
             die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
         }
     }
-
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     $result = $link->query($sql);
 
     if (true === $printError && false === $result) {
