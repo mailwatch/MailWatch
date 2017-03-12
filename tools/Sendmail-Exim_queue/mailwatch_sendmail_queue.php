@@ -124,7 +124,8 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 switch (true) {
                                     case preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match):
-                                        $output[$msgid]['subject'] = $match[1] . $match[3];
+                                        $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
+                                        $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
                                         break;
                                 }
                             }
