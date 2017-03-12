@@ -247,6 +247,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
                 // Insert each record
+                $sender = preg_replace('~[\r\n\t]+~', '', getUTF8String($msginfo['sender']));
                 $subject = preg_replace('~[\r\n\t]+~', '', getUTF8String($msginfo['subject']));
                 $sql = 'INSERT INTO ' . $table_name . "
     (id,
@@ -265,7 +266,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
+                    safe_value($sender) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
                     safe_value($subject) . "','" .
                     safe_value($msginfo['message']) . "','" .
