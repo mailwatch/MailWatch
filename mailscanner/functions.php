@@ -3969,6 +3969,7 @@ function checkConfVariables()
         'PROXY_TYPE',
         'PROXY_USER',
         'QUARANTINE_DAYS_TO_KEEP',
+        'QUARANTINE_FILTERS_COMBINED',
         'QUARANTINE_MSG_BODY',
         'QUARANTINE_REPORT_DAYS',
         'QUARANTINE_REPORT_FROM_NAME',

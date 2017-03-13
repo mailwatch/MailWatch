@@ -50,7 +50,8 @@ $required_constant = array(
     'SUBJECT_MAXLEN',
     'TIME_ZONE',
     'DATE_FORMAT',
-    'TIME_FORMAT'
+    'TIME_FORMAT',
+    'QUARANTINE_FILTERS_COMBINED'
 );
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
@@ -201,9 +202,14 @@ FROM
  maillog a
 WHERE 
  a.quarantined = 1
-AND
- ((to_address=%s) OR (to_domain=%s))
-AND 
+AND ";
+    if (QUARANTINE_FILTERS_COMBINED === true) {
+        $sql .= "((to_address IN (%s)) OR (to_domain IN (%s))) ";
+    }
+    else {
+        $sql .= "((to_address =%s) OR (to_domain =%s)) ";
+        }
+$sql .= "AND 
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . ' DAY)';
 
     // Hide high spam/mcp from users if enabled
@@ -289,13 +295,62 @@ ORDER BY a.date DESC, a.time DESC';
                 dbg(" ==== Recipient e-mail address is $email");
                 // Get any additional reports required
                 $filters = array_merge(array($email), return_user_filters($user->username));
-                foreach ($filters as $filter) {
-                    dbg(" ==== Building list for $filter");
-                    $quarantined = return_quarantine_list_array($filter, $to_domain);
-                    dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
-                    //print_r($quarantined);
+                if (false === QUARANTINE_FILTERS_COMBINED) {
+                    foreach ($filters as $filter) {
+                        if ($user->type === 'D') {
+                            if (preg_match('/(\S+)@(\S+)/', $filter, $split)) {
+                                $filter_domain = $split[2];
+                            } else {
+                                $filter_domain = $filter;
+                            }
+                            dbg(" ==== Building list for $filter_domain");
+                            $quarantined = return_quarantine_list_array($filter, $filter_domain);
+                        } else {
+                            dbg(" ==== Building list for $filter");
+                            $quarantined = return_quarantine_list_array($filter, $to_domain);
+                        }
+                        dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
+                        //print_r($quarantined);
+                        if (count($quarantined) > 0) {
+                            if ($user->type === 'D') {
+                                send_quarantine_email($email, $filter_domain, $quarantined);
+                            } else {
+                                send_quarantine_email($email, $filter, $quarantined);
+                            }
+                        }
+                        unset($quarantined);
+                    }
+                } else {
+                    //combined
+                    $quarantine_list = array();
+                    foreach ($filters as $filter) {
+                        if ($user->type === 'D') {
+                            if (preg_match('/(\S+)@(\S+)/', $filter, $split)) {
+                                $filter_domain = $split[2];
+                            } else {
+                                $filter_domain = $filter;
+                            }
+                            $quarantine_list[] = $filter_domain;
+                            dbg(" ==== Building list for $filter_domain");
+                            $tmp_quarantined = return_quarantine_list_array($filter, $filter_domain);
+                        } else {
+                            $quarantine_list[] = $filter;
+                            dbg(" ==== Building list for $filter");
+                            $tmp_quarantined = return_quarantine_list_array($filter, $to_domain);
+                        }
+                        dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
+                        if (isset($quarantined) && is_array($quarantined)) {
+                            $quarantined = array_merge($quarantined,$tmp_quarantined);
+                        } else {
+                            $quarantined = $tmp_quarantined;
+                        }
+                    }
                     if (count($quarantined) > 0) {
-                        send_quarantine_email($email, $filter, $quarantined);
+                        $list = '';
+                        foreach ($quarantine_list as $item) {
+                            $list .= $item . '<br>';
+                        }
+                        send_quarantine_email($email, $list, $quarantined);
                     }
                     unset($quarantined);
                 }
