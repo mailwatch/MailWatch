@@ -293,7 +293,7 @@ ORDER BY a.date DESC, a.time DESC';
             if (!empty($email) && false !== $email) {
                 dbg(" ==== Recipient e-mail address is $email");
                 // Get any additional reports required
-                $filters = array_merge(array($email), return_user_filters($user->username));
+                $filters = array_merge(array($to_address), return_user_filters($user->username));
                 if (false === QUARANTINE_FILTERS_COMBINED) {
                     foreach ($filters as $filter) {
                         if ($user->type === 'D') {
