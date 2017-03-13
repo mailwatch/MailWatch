@@ -532,9 +532,10 @@ function send_quarantine_email($email, $filter, $quarantined)
  * @param $q
  * @return array
  */
-function quarantine_sort($q) {
+function quarantine_sort($q)
+{
     $key = 'timestamp';
-    usort($q, function ($a,$b) use (&$key) {
+    usort($q, function ($a, $b) use (&$key) {
         return strtotime($a[$key]) - strtotime($b[$key]);
     });
     $sorted = array_reverse($q);
