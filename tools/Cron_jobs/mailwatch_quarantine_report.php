@@ -347,7 +347,7 @@ ORDER BY a.date DESC, a.time DESC';
                     if (count($quarantined) > 0) {
                         $list = '';
                         foreach ($quarantine_list as $item) {
-                            $list .= $item . '<br>';
+                            $list .= $item . ', ';
                         }
                         send_quarantine_email($email, $list, $quarantined);
                     }
