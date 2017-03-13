@@ -86,7 +86,13 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^([-\.\w]+@[-\.\w]+)$/', $line, $match):
                                             $output[$msgid]['rcpts'][] = $match[1];
                                             break;
-                                        case preg_match('/^\d{3}F .*: (.+)$/', $line, $match):
+                                        // Match Sender: if one line
+                                        case preg_match('/^\d{3}F .*:(.+)? <?([0-9A-Za-z._-]+\@[0-9A-Za-z._-]+)>?$/', $line, $match):
+                                            $output[$msgid]['sender'] = $match[2];
+                                            $output[$msgid]['sender'] = decode_header($output[$msgid]['sender']);
+                                            break;
+                                        // Match Sender: if multipline
+                                        case preg_match('/^\s{5}<([0-9A-Za-z._-]+\@[0-9A-Za-z._-]+)>$/', $line, $match):
                                             $output[$msgid]['sender'] = $match[1];
                                             $output[$msgid]['sender'] = decode_header($output[$msgid]['sender']);
                                             break;
