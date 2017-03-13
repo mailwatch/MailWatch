@@ -118,7 +118,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             // Read Subject
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
-                                	$output[$msgid]['subject'] = "";
+                                    $output[$msgid]['subject'] = "";
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
                                     $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
                                     $output[$msgid]['subject'] = decode_header($output[$msgid]['subject']);
@@ -237,7 +237,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             // Read Subject
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
-                                	$output[$msgid]['subject'] = "";
+                                    $output[$msgid]['subject'] = "";
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
                                     $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
                                     $output[$msgid]['subject'] = decode_header($output[$msgid]['subject']);
