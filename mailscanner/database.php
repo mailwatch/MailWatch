@@ -51,7 +51,8 @@ class database
             try {
                 $driver = new mysqli_driver();
                 $driver->report_mode = MYSQLI_REPORT_ALL;
-                set_error_handler(function () {});
+                set_error_handler(function () {
+                });
                 self::$link = new mysqli($host, $username, $password, $database);
                 restore_error_handler();
                 $charset = 'utf8';
