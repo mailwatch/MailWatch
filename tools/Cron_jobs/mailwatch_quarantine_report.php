@@ -205,11 +205,10 @@ WHERE
 AND ";
     if (QUARANTINE_FILTERS_COMBINED === true) {
         $sql .= "((to_address IN (%s)) OR (to_domain IN (%s))) ";
-    }
-    else {
+    } else {
         $sql .= "((to_address =%s) OR (to_domain =%s)) ";
-        }
-$sql .= "AND 
+    }
+    $sql .= "AND 
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . ' DAY)';
 
     // Hide high spam/mcp from users if enabled
@@ -340,7 +339,7 @@ ORDER BY a.date DESC, a.time DESC';
                         }
                         dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
                         if (isset($quarantined) && is_array($quarantined)) {
-                            $quarantined = array_merge($quarantined,$tmp_quarantined);
+                            $quarantined = array_merge($quarantined, $tmp_quarantined);
                         } else {
                             $quarantined = $tmp_quarantined;
                         }
