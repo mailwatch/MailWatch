@@ -356,7 +356,7 @@ WHERE
                 ) . "'";
             dbquery($dsql);
             foreach ($this->item as $key => $val) {
-                $sql = "REPLACE INTO `saved_filters` VALUES ('$name',";
+                $sql = "REPLACE INTO `saved_filters` (`name`, `col`, `operator`, `value`, `username`)  VALUES ('$name',";
                 foreach ($val as $value) {
                     $sql .= "'$value',";
                 }
