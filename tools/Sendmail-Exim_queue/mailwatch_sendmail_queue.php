@@ -86,8 +86,8 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^([-\.\w]+@[-\.\w]+)$/', $line, $match):
                                             $output[$msgid]['rcpts'][] = $match[1];
                                             break;
-                                        case preg_match('/^\d{3}F .*: (.+)$/', $line, $match):
-                                            $output[$msgid]['sender'] = $match[1];
+                                        case preg_match('/^\d{3}F .*: (.+)?<(.+)>$/', $line, $match):
+                                            $output[$msgid]['sender'] = $match[2];
                                             break;
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
                                             $ctime = getdate($match[1]);
@@ -109,9 +109,6 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                                     STR_PAD_LEFT
                                                 ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
-                                        case preg_match('/^<(.+)>$/', $line, $match):
-                                            $output[$msgid]['envelopesender'] = $match[1];
-                                            break;
                                     }
                                 }
                             }
@@ -122,6 +119,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
                                     $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
+                                    $output[$msgid]['subject'] = decode_header($output[$msgid]['subject']);
                                 }
                             }
 
@@ -226,9 +224,6 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                             break;
                                         case preg_match('/^K(.+)$/', $line, $match):
                                             $output[$msgid]['lastattempttime'] = $match[1];
-                                            break;
-                                        case preg_match('/^Z(.+)$/', $line, $match):
-                                            $output[$msgid]['envelopesender'] = $match[1];
                                             break;
                                         case preg_match('/Subject: (.+)$/', $line, $match):
                                             $output[$msgid]['subject'] = $match[1];
