@@ -86,8 +86,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^([-\.\w]+@[-\.\w]+)$/', $line, $match):
                                             $output[$msgid]['rcpts'][] = $match[1];
                                             break;
-                                        case preg_match('/^\d{3}F .*: (.+)?<(.+)>$/', $line, $match):
-                                            $output[$msgid]['sender'] = $match[2];
+                                        case preg_match('/^\d{3}F .*: (.+)$/', $line, $match):
+                                            $output[$msgid]['sender'] = $match[1];
+                                            $output[$msgid]['sender'] = decode_header($output[$msgid]['sender']);
                                             break;
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
                                             $ctime = getdate($match[1]);
@@ -117,6 +118,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             // Read Subject
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
+                                	$output[$msgid]['subject'] = "";
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
                                     $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
                                     $output[$msgid]['subject'] = decode_header($output[$msgid]['subject']);
@@ -188,7 +190,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                             $output[$msgid]['rcpts'][] = $match[1];
                                             break;
                                         case preg_match('/^S<(.+)>$/', $line, $match):
+                                            $output[$msgid]['sender'] = "";
                                             $output[$msgid]['sender'] = $match[1];
+                                            $output[$msgid]['sender'] = decode_header($output[$msgid]['sender']);
                                             break;
                                         case preg_match('/^T(.+)$/', $line, $match):
                                             $ctime = getdate($match[1]);
@@ -225,13 +229,20 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^K(.+)$/', $line, $match):
                                             $output[$msgid]['lastattempttime'] = $match[1];
                                             break;
-                                        case preg_match('/Subject: (.+)$/', $line, $match):
-                                            $output[$msgid]['subject'] = $match[1];
-                                            break;
                                     }
                                 }
                             }
                             fclose($fh);
+
+                            // Read Subject
+                            if ($header = @file_get_contents($queuedir . $file)) {
+                                if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
+                                	$output[$msgid]['subject'] = "";
+                                    $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
+                                    $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
+                                    $output[$msgid]['subject'] = decode_header($output[$msgid]['subject']);
+                                }
+                            }
                         }
                     }
                 }
@@ -262,9 +273,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
+                    safe_value($msginfo['sender']) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
+                    safe_value($msginfo['subject']) . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
                     safe_value($msginfo['priority']) . "','" .
