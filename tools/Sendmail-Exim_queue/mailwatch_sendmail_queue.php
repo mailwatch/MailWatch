@@ -89,12 +89,10 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         // Match Sender: if one line
                                         case preg_match('/^\d{3}F .*:(.+)? <?([0-9A-Za-z.+_-]+\@[0-9A-Za-z.+_-]+)>?$/', $line, $match):
                                             $output[$msgid]['sender'] = $match[2];
-                                            $output[$msgid]['sender'] = decode_header($output[$msgid]['sender']);
                                             break;
                                         // Match Sender: if multipline
-                                        case preg_match('/^\s{5}<([0-9A-Za-z.+_-]+\@[0-9A-Za-z.+_-]+)>$/', $line, $match):
-                                            $output[$msgid]['sender'] = $match[1];
-                                            $output[$msgid]['sender'] = decode_header($output[$msgid]['sender']);
+                                        case preg_match('/^\d{3}F From: (.*)(\n\s+<([0-9A-Za-z.+_-]+\@[0-9A-Za-z.+_-]+)>)*/', $line, $match):
+                                            $output[$msgid]['sender'] = $match[3];
                                             break;
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
                                             $ctime = getdate($match[1]);
@@ -198,7 +196,6 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^S<(.+)>$/', $line, $match):
                                             $output[$msgid]['sender'] = "";
                                             $output[$msgid]['sender'] = $match[1];
-                                            $output[$msgid]['sender'] = decode_header($output[$msgid]['sender']);
                                             break;
                                         case preg_match('/^T(.+)$/', $line, $match):
                                             $ctime = getdate($match[1]);
@@ -246,7 +243,6 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     $output[$msgid]['subject'] = "";
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
                                     $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
-                                    $output[$msgid]['subject'] = decode_header($output[$msgid]['subject']);
                                 }
                             }
                         }
