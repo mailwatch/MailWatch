@@ -91,7 +91,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                             $output[$msgid]['sender'] = $match[2];
                                             break;
                                         // Match Sender: if multipline
-                                        case preg_match('/^\d{3}F From: (.*)(\n\s+<([0-9A-Za-z.+_-]+\@[0-9A-Za-z.+_-]+)>)*/', $line, $match):
+                                        case preg_match('/^\s{5}<([0-9A-Za-z.+_-]+\@[0-9A-Za-z.+_-]+)>$/', $line, $match):
                                             $output[$msgid]['sender'] = $match[3];
                                             break;
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
@@ -121,7 +121,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
 
                             // Read Subject
                             if ($header = @file_get_contents($queuedir . $file)) {
-                                if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
+                                if (preg_match('/^\d{3}  Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
                                     $output[$msgid]['subject'] = "";
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
                                     $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
@@ -239,7 +239,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
 
                             // Read Subject
                             if ($header = @file_get_contents($queuedir . $file)) {
-                                if (preg_match('/Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
+                                if (preg_match('/^\d{3}  Subject: (.*)(\n\s+(.*))*/', $header, $match)) {
                                     $output[$msgid]['subject'] = "";
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
                                     $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
