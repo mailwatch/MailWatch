@@ -345,6 +345,7 @@ ORDER BY a.date DESC, a.time DESC';
                         foreach ($quarantine_list as $item) {
                             $list .= $item . ', ';
                         }
+                        $list = substr($list,0,-2);
                         send_quarantine_email($email, $list, quarantine_sort($quarantined));
                     }
                     unset($quarantined);
