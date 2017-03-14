@@ -111,7 +111,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             }
                             fclose($fh);
                             if ($header = @file_get_contents($queuedir . $file)) {
-                            	// Read Subject
+                                // Read Subject
                                 if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
                                     $output[$msgid]['subject'] = "";
                                     $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
