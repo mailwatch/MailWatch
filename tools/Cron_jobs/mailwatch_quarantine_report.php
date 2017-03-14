@@ -341,7 +341,7 @@ ORDER BY a.date DESC, a.time DESC';
                         }
                     }
                     if (count($quarantined) > 0) {
-                        $list = implode(', ',$quarantine_list);
+                        $list = implode(', ', $quarantine_list);
                         send_quarantine_email($email, $list, quarantine_sort($quarantined));
                     }
                     unset($quarantined);
