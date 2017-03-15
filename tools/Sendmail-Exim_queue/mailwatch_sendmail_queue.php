@@ -106,6 +106,12 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                                     STR_PAD_LEFT
                                                 ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
+                                        case preg_match('/^\d{3}I Message-ID: <(.+)>$/', $line, $match):
+                                            $output[$msgid]['messageid'] = $match[1];
+                                            break;
+                                        case preg_match('/^<(.+)>$/', $line, $match):
+                                            $output[$msgid]['envelopesender'] = $match[1];
+                                            break;
                                     }
                                 }
                             }
@@ -245,6 +251,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^K(.+)$/', $line, $match):
                                             $output[$msgid]['lastattempttime'] = $match[1];
                                             break;
+                                        case preg_match('/^Z(.+)$/', $line, $match):
+                                            $output[$msgid]['envelopesender'] = $match[1];
+                                            break;
                                     }
                                 }
                             }
@@ -263,7 +272,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     $output[$msgid]['subject'] = str_replace('_', ' ', $output[$msgid]['subject']);
                                 }
                                 // Read Sender
-                                if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
+                                if (preg_match('/^S(.*)(\n\s+(.*))*/m', $header, $match)) {
                                     $output[$msgid]['sender'] = "";
                                     if (isset($match[1])) {
                                         $output[$msgid]['sender'] = $match[1];
@@ -277,6 +286,10 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match_email);
                                     if (isset($match_email[0])) {
                                         $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match_email[0]);
+                                    } else {
+                                        $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match_email[0]);
+                                        echo "Problem in Header:\n";
+                                        var_dump($header);
                                     }
                                 }
                             }
