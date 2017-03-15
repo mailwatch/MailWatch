@@ -114,16 +114,18 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Read Subject
                                 if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
                                     $output[$msgid]['subject'] = "";
-                                    $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
-                                    $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
+                                    if (isset($match[1])) { $output[$msgid]['subject'] = $match[1]; }
+                                    if (isset($match[3])) { $output[$msgid]['subject'] .= " " . $match[3]; }
+                                    $output[$msgid]['subject'] = mb_decode_mimeheader($output[$msgid]['subject']);
                                 }
                                 // Read Sender
                                 if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
                                     $output[$msgid]['sender'] = "";
-                                    $output[$msgid]['sender'] = isset($match[1]) ? $match[1] : "";
-                                    $output[$msgid]['sender'] .= isset($match[3]) ? $match[3] : "";
-                                    preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match);
-                                    $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match[0]);
+                                    if (isset($match[1])) { $output[$msgid]['sender'] = $match[1]; }
+                                    if (isset($match[2])) { $output[$msgid]['sender'] .= " " . $match[2]; }
+                                    if (isset($match[3])) { $output[$msgid]['sender'] .= " " . $match[3]; }
+                                    preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match_email);
+                                    $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match_email[0]);
                                 }
                             }
 
@@ -234,16 +236,18 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Read Subject
                                 if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
                                     $output[$msgid]['subject'] = "";
-                                    $output[$msgid]['subject'] = isset($match[1]) ? $match[1] : "";
-                                    $output[$msgid]['subject'] .= isset($match[3]) ? $match[3] : "";
+                                    if (isset($match[1])) { $output[$msgid]['subject'] = $match[1]; }
+                                    if (isset($match[3])) { $output[$msgid]['subject'] .= " " . $match[3]; }
+                                    $output[$msgid]['subject'] = mb_decode_mimeheader($output[$msgid]['subject']);
                                 }
                                 // Read Sender
                                 if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
                                     $output[$msgid]['sender'] = "";
-                                    $output[$msgid]['sender'] = isset($match[1]) ? $match[1] : "";
-                                    $output[$msgid]['sender'] .= isset($match[3]) ? $match[3] : "";
-                                    preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match);
-                                    $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match[0]);
+                                    if (isset($match[1])) { $output[$msgid]['sender'] = $match[1]; }
+                                    if (isset($match[2])) { $output[$msgid]['sender'] .= " " . $match[2]; }
+                                    if (isset($match[3])) { $output[$msgid]['sender'] .= " " . $match[3]; }
+                                    preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match_email);
+                                    $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match_email[0]);
                                 }
                             }
                         }
