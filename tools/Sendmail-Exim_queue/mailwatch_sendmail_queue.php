@@ -123,7 +123,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     $output[$msgid]['subject'] = mb_decode_mimeheader($output[$msgid]['subject']);
                                     $output[$msgid]['subject'] = str_replace('_', ' ', $output[$msgid]['subject']);
                                 }
-                                // Read Subject
+                                // Read Sender
                                 if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
                                     $output[$msgid]['sender'] = "";
                                     if (isset($match[1])) {
@@ -262,7 +262,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     $output[$msgid]['subject'] = mb_decode_mimeheader($output[$msgid]['subject']);
                                     $output[$msgid]['subject'] = str_replace('_', ' ', $output[$msgid]['subject']);
                                 }
-                                // Read Subject
+                                // Read Sender
                                 if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
                                     $output[$msgid]['sender'] = "";
                                     if (isset($match[1])) {
