@@ -278,10 +278,6 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match_email);
                                     if (isset($match_email[0])) {
                                         $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match_email[0]);
-                                    } else {
-                                        $output[$msgid]['sender'] = str_replace(array('<', '>'), '', $match_email[0]);
-                                        echo "Problem in Header:\n";
-                                        var_dump($header);
                                     }
                                 }
                             }
