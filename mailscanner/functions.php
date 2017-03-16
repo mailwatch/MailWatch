@@ -853,25 +853,9 @@ function dbquery($sql, $printError = true)
 {
     $link = dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
-        echo "<!--\n\n";
-        $dbg_sql = 'EXPLAIN ' . $sql;
-        echo "SQL:\n\n$sql\n\n";
-        /** @var mysqli_result $result */
-        $result = $link->query($dbg_sql);
-        if ($result) {
-            while ($row = $result->fetch_row()) {
-                for ($f = 0; $f < $link->field_count; $f++) {
-                    echo $result->fetch_field_direct($f)->name . __('colon99') . ' ' . $row[$f] . "\n";
-                }
-            }
-
-            echo "\n-->\n\n";
-            $result->free_result();
-        } else {
-            die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
-        }
+        dbquerydebug($link, $sql);
     }
-
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     $result = $link->query($sql);
 
     if (true === $printError && false === $result) {
@@ -882,6 +866,31 @@ function dbquery($sql, $printError = true)
     }
 
     return $result;
+}
+
+/**
+ * @param mysqli $link
+ * @param string $sql
+ */
+function dbquerydebug($link, $sql)
+{
+    echo "<!--\n\n";
+    $dbg_sql = 'EXPLAIN ' . $sql;
+    echo "SQL:\n\n$sql\n\n";
+    /** @var mysqli_result $result */
+    $result = $link->query($dbg_sql);
+    if ($result) {
+        while ($row = $result->fetch_row()) {
+            for ($f = 0; $f < $link->field_count; $f++) {
+                echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+            }
+        }
+
+        echo "\n-->\n\n";
+        $result->free_result();
+    } else {
+        die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
+    }
 }
 
 /**
@@ -2548,9 +2557,11 @@ function get_mail_relays($message_headers)
     $relays = null;
     foreach ($headers as $header) {
         $header = preg_replace('/IPv6\:/', '', $header);
-        if (preg_match_all('/\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
+        if (preg_match_all('/Received.+\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
             foreach ($regs['ip'] as $relay) {
-                $relays[] = $relay;
+                if (false !== filter_var($relay, FILTER_VALIDATE_IP)) {
+                    $relays[] = $relay;
+                }
             }
         }
     }
@@ -3964,6 +3975,7 @@ function checkConfVariables()
         'PROXY_TYPE',
         'PROXY_USER',
         'QUARANTINE_DAYS_TO_KEEP',
+        'QUARANTINE_FILTERS_COMBINED',
         'QUARANTINE_MSG_BODY',
         'QUARANTINE_REPORT_DAYS',
         'QUARANTINE_REPORT_FROM_NAME',

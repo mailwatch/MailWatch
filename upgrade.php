@@ -121,6 +121,7 @@ function get_database_charset()
     $sql = 'SELECT default_character_set_name
             FROM information_schema.schemata
             WHERE schema_name = "' . DB_NAME . '"';
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     $result = $link->query($sql);
     $row = $result->fetch_array();
     if (null !== $row && isset($row[0])) {
