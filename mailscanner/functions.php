@@ -1025,6 +1025,27 @@ function getFROMheader($header)
 }
 
 /**
+ * @param $header
+ * @return string
+ */
+function getSUBJECTheader($header)
+{
+    $subject = "";
+    if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
+        $subject = "";
+        if (isset($match[1])) {
+            $subject = $match[1];
+        }
+        if (isset($match[3])) {
+            $subject .= " " . $match[3];
+        }
+        $subject = mb_decode_mimeheader($subject);
+        $subject = str_replace('_', ' ', $subject);
+    }
+    return $subject;
+}
+
+/**
  * @param $spamreport
  * @return string|false
  */

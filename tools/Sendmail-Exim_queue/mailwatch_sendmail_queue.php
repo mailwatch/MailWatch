@@ -118,17 +118,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             fclose($fh);
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 // Read Subject
-                                if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
-                                    $output[$msgid]['subject'] = "";
-                                    if (isset($match[1])) {
-                                        $output[$msgid]['subject'] = $match[1];
-                                    }
-                                    if (isset($match[3])) {
-                                        $output[$msgid]['subject'] .= " " . $match[3];
-                                    }
-                                    $output[$msgid]['subject'] = mb_decode_mimeheader($output[$msgid]['subject']);
-                                    $output[$msgid]['subject'] = str_replace('_', ' ', $output[$msgid]['subject']);
-                                }
+                                $output[$msgid]['subject'] = getSUBJECTheader($header);
                                 // Read Sender
                                 $output[$msgid]['sender'] = getFROMheader($header);
                             }
@@ -241,17 +231,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             fclose($fh);
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 // Read Subject
-                                if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
-                                    $output[$msgid]['subject'] = "";
-                                    if (isset($match[1])) {
-                                        $output[$msgid]['subject'] = $match[1];
-                                    }
-                                    if (isset($match[3])) {
-                                        $output[$msgid]['subject'] .= " " . $match[3];
-                                    }
-                                    $output[$msgid]['subject'] = mb_decode_mimeheader($output[$msgid]['subject']);
-                                    $output[$msgid]['subject'] = str_replace('_', ' ', $output[$msgid]['subject']);
-                                }
+                                $output[$msgid]['subject'] = getSUBJECTheader($header);
                                 // Read Sender
                                 $output[$msgid]['sender'] = getFROMheader($header);
                             }
