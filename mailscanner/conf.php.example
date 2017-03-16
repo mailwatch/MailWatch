@@ -217,7 +217,7 @@ define('RPC_ONLY', false);
 define('MAILQ', true);
 // Select if we use envelope-sender or sender (From:) in Mail Queue for Exim or Sendmail
 // Value: 'envelopesender' or 'sender'
-define('QUEUE_SENDER', 'envelopesender');
+// define('QUEUE_SENDER', 'envelopesender');
 // If you change the lines below, you need to change /etc/sudoers.d/mailwatch according.
 // Command to read Exim inbound Mail Queue
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
