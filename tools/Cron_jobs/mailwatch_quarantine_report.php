@@ -50,7 +50,8 @@ $required_constant = array(
     'SUBJECT_MAXLEN',
     'TIME_ZONE',
     'DATE_FORMAT',
-    'TIME_FORMAT'
+    'TIME_FORMAT',
+    'QUARANTINE_FILTERS_COMBINED'
 );
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
@@ -178,6 +179,7 @@ AND
 SELECT DISTINCT
 a.id AS id,
 DATE_FORMAT(timestamp,'" . str_replace('%', '%%', DATE_FORMAT) . ' <br/>' . str_replace('%', '%%', TIME_FORMAT) . "') AS datetime,
+a.timestamp AS timestamp,
 a.to_address AS to_address,
 a.from_address AS from_address,
 a.subject AS subject,
@@ -201,8 +203,7 @@ FROM
  maillog a
 WHERE 
  a.quarantined = 1
-AND
- ((to_address=%s) OR (to_domain=%s))
+AND ((to_address =%s) OR (to_domain =%s)) 
 AND 
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . ' DAY)';
 
@@ -288,14 +289,60 @@ ORDER BY a.date DESC, a.time DESC';
             if (!empty($email) && false !== $email) {
                 dbg(" ==== Recipient e-mail address is $email");
                 // Get any additional reports required
-                $filters = array_merge(array($email), return_user_filters($user->username));
-                foreach ($filters as $filter) {
-                    dbg(" ==== Building list for $filter");
-                    $quarantined = return_quarantine_list_array($filter, $to_domain);
-                    dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
-                    //print_r($quarantined);
+                $filters = array_merge(array($to_address), return_user_filters($user->username));
+                if (false === QUARANTINE_FILTERS_COMBINED) {
+                    foreach ($filters as $filter) {
+                        if ($user->type === 'D') {
+                            if (preg_match('/(\S+)@(\S+)/', $filter, $split)) {
+                                $filter_domain = $split[2];
+                            } else {
+                                $filter_domain = $filter;
+                            }
+                            dbg(" ==== Building list for $filter_domain");
+                            $quarantined = return_quarantine_list_array($filter, $filter_domain);
+                        } else {
+                            dbg(" ==== Building list for $filter");
+                            $quarantined = return_quarantine_list_array($filter, $to_domain);
+                        }
+                        dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
+                        //print_r($quarantined);
+                        if (count($quarantined) > 0) {
+                            if ($user->type === 'D') {
+                                send_quarantine_email($email, $filter_domain, $quarantined);
+                            } else {
+                                send_quarantine_email($email, $filter, $quarantined);
+                            }
+                        }
+                        unset($quarantined);
+                    }
+                } else {
+                    //combined
+                    $quarantine_list = array();
+                    foreach ($filters as $filter) {
+                        if ($user->type === 'D') {
+                            if (preg_match('/(\S+)@(\S+)/', $filter, $split)) {
+                                $filter_domain = $split[2];
+                            } else {
+                                $filter_domain = $filter;
+                            }
+                            $quarantine_list[] = $filter_domain;
+                            dbg(" ==== Building list for $filter_domain");
+                            $tmp_quarantined = return_quarantine_list_array($filter, $filter_domain);
+                        } else {
+                            $quarantine_list[] = $filter;
+                            dbg(" ==== Building list for $filter");
+                            $tmp_quarantined = return_quarantine_list_array($filter, $to_domain);
+                        }
+                        dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
+                        if (isset($quarantined) && is_array($quarantined)) {
+                            $quarantined = array_merge($quarantined, $tmp_quarantined);
+                        } else {
+                            $quarantined = $tmp_quarantined;
+                        }
+                    }
                     if (count($quarantined) > 0) {
-                        send_quarantine_email($email, $filter, $quarantined);
+                        $list = implode(', ', $quarantine_list);
+                        send_quarantine_email($email, $list, quarantine_sort($quarantined));
                     }
                     unset($quarantined);
                 }
@@ -351,7 +398,8 @@ function return_quarantine_list_array($to_address, $to_domain)
                 'to' => trim_output($row->to_address, FROMTO_MAXLEN),
                 'from' => trim_output($row->from_address, FROMTO_MAXLEN),
                 'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
-                'reason' => trim($row->reason)
+                'reason' => trim($row->reason),
+                'timestamp' => trim($row->timestamp)
             );
         }
     }
@@ -475,4 +523,18 @@ function send_quarantine_email($email, $filter, $quarantined)
     } else {
         dbg(" ==== ERROR sending e-mail to $email ". $isSent);
     }
+}
+
+/**
+ * @param $q
+ * @return array
+ */
+function quarantine_sort($q)
+{
+    $key = 'timestamp';
+    usort($q, function ($a, $b) use (&$key) {
+        return strtotime($a[$key]) - strtotime($b[$key]);
+    });
+    $sorted = array_reverse($q);
+    return $sorted;
 }
