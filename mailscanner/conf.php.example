@@ -219,7 +219,7 @@ define('MAILQ', true);
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
 // Command to read Exim outbound Mail Queue
 // define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
-// Select if we use envelope-sender or From: in Mail Queue for Exim or Sendmail
+// Select if we use envelope-sender or sender (From:) in Mail Queue for Exim or Sendmail
 // Value: envelopesender or sender
 // define('QUEUE_SENDER', 'envelopesender');
 
