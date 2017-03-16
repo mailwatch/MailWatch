@@ -1005,7 +1005,7 @@ function getUTF8String($string)
 function getFROMheader($header)
 {
     $sender = "";
-    if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
+    if (preg_match('/^\d{3}F From: (.*)(\r\n\s+(.*))*/im', $header, $match)) {
         if (isset($match[1])) {
             $sender = $match[1];
         }
@@ -1031,7 +1031,7 @@ function getFROMheader($header)
 function getSUBJECTheader($header)
 {
     $subject = "";
-    if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
+    if (preg_match('/Subject: (.*)(\r\n\s+(.*))*/im', $header, $match)) {
         $subject = "";
         if (isset($match[1])) {
             $subject = $match[1];
