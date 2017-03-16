@@ -91,7 +91,7 @@ if (file_exists('conf.php')) {
 <div class="autorelease">
     <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
     <div class="border-rounded">
-        <h1><?php echo __('title63'); ?></h1>
+        <h1><?php echo __('title59'); ?></h1>
         <?php
         foreach ($output as $msg) {
             echo '<p>' . $msg . '</p>';
