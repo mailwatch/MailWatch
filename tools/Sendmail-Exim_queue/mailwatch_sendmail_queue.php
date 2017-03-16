@@ -130,23 +130,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     $output[$msgid]['subject'] = str_replace('_', ' ', $output[$msgid]['subject']);
                                 }
                                 // Read Sender
-                                if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
-                                    $output[$msgid]['sender'] = "";
-                                    if (isset($match[1])) {
-                                        $output[$msgid]['sender'] = $match[1];
-                                    }
-                                    if (isset($match[2])) {
-                                        $output[$msgid]['sender'] .= " " . $match[2];
-                                    }
-                                    if (isset($match[3])) {
-                                        $output[$msgid]['sender'] .= " " . $match[3];
-                                    }
-                                    if (preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match_email)) {
-                                        if (isset($match_email[0])) {
-                                            $output[$msgid]['sender'] = str_replace(array('<', '>', '"'), '', $match_email[0]);
-                                        }
-                                    }
-                                }
+                                $output[$msgid]['sender'] = getFROMheader($header);
                             }
 
                             //  Get the message file
@@ -269,23 +253,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     $output[$msgid]['subject'] = str_replace('_', ' ', $output[$msgid]['subject']);
                                 }
                                 // Read Sender
-                                if (preg_match('/^S(.*)(\n\s+(.*))*/m', $header, $match)) {
-                                    $output[$msgid]['sender'] = "";
-                                    if (isset($match[1])) {
-                                        $output[$msgid]['sender'] = $match[1];
-                                    }
-                                    if (isset($match[2])) {
-                                        $output[$msgid]['sender'] .= " " . $match[2];
-                                    }
-                                    if (isset($match[3])) {
-                                        $output[$msgid]['sender'] .= " " . $match[3];
-                                    }
-                                    if (preg_match('/\S+@\S+/', $output[$msgid]['sender'], $match_email)) {
-                                        if (isset($match_email[0])) {
-                                            $output[$msgid]['sender'] = str_replace(array('<', '>', '"'), '', $match_email[0]);
-                                        }
-                                    }
-                                }
+                                $output[$msgid]['sender'] = getFROMheader($header);
                             }
                         }
                     }

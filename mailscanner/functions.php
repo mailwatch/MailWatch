@@ -999,6 +999,32 @@ function getUTF8String($string)
 }
 
 /**
+ * @param $header
+ * @return string
+ */
+function getFROMheader($header)
+{
+    $sender = "";
+    if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
+        if (isset($match[1])) {
+            $sender = $match[1];
+        }
+        if (isset($match[2])) {
+            $sender .= " " . $match[2];
+        }
+        if (isset($match[3])) {
+            $sender .= " " . $match[3];
+        }
+        if (preg_match('/\S+@\S+/', $sender, $match_email)) {
+            if (isset($match_email[0])) {
+                $sender = str_replace(array('<', '>', '"'), '', $match_email[0]);
+            }
+        }
+    }
+    return $sender;
+}
+
+/**
  * @param $spamreport
  * @return string|false
  */
