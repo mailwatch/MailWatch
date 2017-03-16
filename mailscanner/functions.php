@@ -4047,6 +4047,7 @@ function checkConfVariables()
         'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
         'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
         'PWD_RESET_FROM_ADDRESS'  => array('description' => 'needed if Password Reset feature is enabled'),
+        'QUEUE_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
     );
 
     $neededMissing = array();

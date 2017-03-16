@@ -285,7 +285,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
+                    safe_value(isset($msginfo[QUEUE_SENDER]) ? $msginfo[QUEUE_SENDER] : "") . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
                     safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .
