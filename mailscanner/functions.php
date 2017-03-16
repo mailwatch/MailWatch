@@ -2074,7 +2074,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // Store the id for later use
                         $id = $row[$f];
                         // Create a link to detail.php as [<link>]
-                        $row[$f] = "[<a href=\"detail.php?id=$row[$f]\">#</a>]";
+                        $row[$f] = "<a href=\"detail.php?id=$row[$f]\" ><i class=\"mw-icon mw-info-circle\" aria-hidden=\"true\"></i></a>";
                         break;
                     case 'from_address':
                         $row[$f] = htmlentities($row[$f]);

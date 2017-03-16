@@ -825,36 +825,24 @@ td.message {
     background-color: #F7CE4A !important;
 }
 
-/* Font awesome */
-
-@font-face {
-    font-family: 'FontAwesome';
-    src: url('/lib/fonts/fontawesome-webfont.eot?v=4.7.0');
-    src: url('/lib/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('/lib/fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-.fa {
+.mw-icon {
     display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
-.fa-info-circle:before {
-    content: "\f05a";
+.mw-info-circle {
+    background: url(images/info-circle.png);
+    -webkit-background-size:contain;
+    background-size:contain;
+    height:16px;
+    width:16px;
 }
 
-.mw-fa {
-    font-size:2em;
-    color:#4973f7;
-}
-
-.mw-fa:hover{
-    color: #148e2d;
+.mw-info-circle:hover {
+    background: url(images/info-circle-hover.png);
+    -webkit-background-size:contain;
+    background-size:contain;
+    height:16px;
+    width:16px;
 }
 
 .link-transparent > a:hover{
