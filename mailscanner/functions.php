@@ -1005,7 +1005,7 @@ function getUTF8String($string)
 function getFROMheader($header)
 {
     $sender = "";
-    if (preg_match('/^\d{3}F From: (.*)(\r\n\s+(.*))*/im', $header, $match)) {
+    if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
         if (isset($match[1])) {
             $sender = $match[1];
         }
@@ -1028,19 +1028,29 @@ function getFROMheader($header)
  * @param $header
  * @return string
  */
-function getSUBJECTheader($header)
-{
+function getSUBJECTheader($header){
     $subject = "";
-    if (preg_match('/Subject: (.*)(\r\n\s+(.*))*/im', $header, $match)) {
-        $subject = "";
-        if (isset($match[1])) {
-            $subject = $match[1];
-        }
-        if (isset($match[3])) {
-            $subject .= " " . $match[3];
-        }
-        $subject = mb_decode_mimeheader($subject);
-        $subject = str_replace('_', ' ', $subject);
+    if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
+       $subLines = preg_split('/[\r\n]+/', $match[0]);
+       $subLines = str_ireplace('Subject: ', '', $subLines);
+       for ($i=0; $i < count($subLines); $i++) {
+           $convLine = "";
+           if (function_exists('imap_mime_header_decode')) {
+               $linePartArr = imap_mime_header_decode($subLines[$i]);
+               for ($j=0; $j < count($linePartArr); $j++) {
+                   if ($linePartArr[$j]->charset === 'default') {
+                       if ($linePartArr[$j]->text != " ") {
+                           $convLine .= ($linePartArr[$j]->text);
+                       }
+                   } else {
+                       $convLine .= iconv($linePartArr[$j], 'UTF-8', $linePartArr[$j]->text);
+                   }
+               }
+           } else {
+               $convLine .= str_replace('_', ' ', mb_decode_mimeheader($subLines[$i]));
+           }
+           $subject .= $convLine;
+       }
     }
     return $subject;
 }
