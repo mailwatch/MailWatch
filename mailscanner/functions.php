@@ -1044,7 +1044,7 @@ function getSUBJECTheader($header)
                             $convLine .= ($linePartArr[$j]->text);
                         }
                     } else {
-                        $convLine .= iconv($linePartArr[$j]->charset, 'UTF-8', $linePartArr[$j]->text);
+                        $convLine .= iconv($linePartArr[$j]->charset, 'UTF-8//TRANSLIT', $linePartArr[$j]->text);
                     }
                 }
             } else {
