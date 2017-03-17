@@ -825,3 +825,26 @@ td.message {
     background-color: #F7CE4A !important;
 }
 
+.mw-icon {
+    display: inline-block;
+}
+
+.mw-info-circle {
+    background: url(images/info-circle.png);
+    -webkit-background-size:contain;
+    background-size:contain;
+    height:16px;
+    width:16px;
+}
+
+.mw-info-circle:hover {
+    background: url(images/info-circle-hover.png);
+    -webkit-background-size:contain;
+    background-size:contain;
+    height:16px;
+    width:16px;
+}
+
+.link-transparent > a:hover{
+    background-color: transparent;
+}
