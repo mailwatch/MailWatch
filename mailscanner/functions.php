@@ -1031,26 +1031,26 @@ function getFROMheader($header)
 function getSUBJECTheader($header){
     $subject = "";
     if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
-       $subLines = preg_split('/[\r\n]+/', $match[0]);
-       $subLines = str_ireplace('Subject: ', '', $subLines);
-       for ($i=0; $i < count($subLines); $i++) {
-           $convLine = "";
-           if (function_exists('imap_mime_header_decode')) {
-               $linePartArr = imap_mime_header_decode($subLines[$i]);
-               for ($j=0; $j < count($linePartArr); $j++) {
-                   if ($linePartArr[$j]->charset === 'default') {
-                       if ($linePartArr[$j]->text != " ") {
-                           $convLine .= ($linePartArr[$j]->text);
-                       }
-                   } else {
-                       $convLine .= iconv($linePartArr[$j]->charset, 'UTF-8', $linePartArr[$j]->text);
-                   }
-               }
-           } else {
-               $convLine .= str_replace('_', ' ', mb_decode_mimeheader($subLines[$i]));
-           }
-           $subject .= $convLine;
-       }
+        $subLines = preg_split('/[\r\n]+/', $match[0]);
+        $subLines = str_ireplace('Subject: ', '', $subLines);
+        for ($i=0; $i < count($subLines); $i++) {
+            $convLine = "";
+            if (function_exists('imap_mime_header_decode')) {
+                $linePartArr = imap_mime_header_decode($subLines[$i]);
+                for ($j=0; $j < count($linePartArr); $j++) {
+                    if ($linePartArr[$j]->charset === 'default') {
+                        if ($linePartArr[$j]->text != " ") {
+                            $convLine .= ($linePartArr[$j]->text);
+                        }
+                    } else {
+                        $convLine .= iconv($linePartArr[$j]->charset, 'UTF-8', $linePartArr[$j]->text);
+                    }
+                }
+            } else {
+                $convLine .= str_replace('_', ' ', mb_decode_mimeheader($subLines[$i]));
+            }
+            $subject .= $convLine;
+        }
     }
     return $subject;
 }
