@@ -1028,7 +1028,8 @@ function getFROMheader($header)
  * @param $header
  * @return string
  */
-function getSUBJECTheader($header){
+function getSUBJECTheader($header)
+{
     $subject = "";
     if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
         $subLines = preg_split('/[\r\n]+/', $match[0]);
