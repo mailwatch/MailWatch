@@ -55,107 +55,22 @@ AND
  report IS NOT NULL
 ' . $filter->CreateSQL();
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
-
-    // JpGraph functions
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
-
-    // Must be one or more rows
-    $result = dbquery($sql);
-    if ($result->num_rows <= 0) {
-        die(__('diemysql99') . "\n");
-    }
-
-    $virus_array = array();
-
-    while ($row = $result->fetch_object()) {
-        if (preg_match(VIRUS_REGEX, $row->report, $virus_report)) {
-            $virus = $virus_report[2];
-            if (isset($virus_array[$virus])) {
-                $virus_array[$virus]++;
-            } else {
-                $virus_array[$virus] = 1;
-            }
-        }
-    }
-
-    arsort($virus_array);
-    reset($virus_array);
-
-    $count = 0;
-    $data = array();
-    $data_names = array();
-    while ((list($key, $val) = each($virus_array)) && $count < 10) {
-        $data[] = $val;
-        $data_names[] = "$key";
-        $count++;
-    }
-
-    // Graphing code
-    $graph = new PieGraph(850, 385, 0, false);
-    $graph->SetShadow();
-    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
-    $graph->img->SetMargin(40, 30, 20, 40);
-    $graph->img->SetAntiAliasing();
-    $graph->title->Set(__('top10virus48'));
-
-    $p1 = new PiePlot3d($data);
-    $p1->SetTheme('sand');
-    $p1->SetLegends($data_names);
-
-    $p1->SetCenter(0.75, 0.4);
-    $graph->legend->SetLayout(LEGEND_VERT);
-    $graph->legend->Pos(0.25, 0.20, 'center');
-
-    $graph->Add($p1);
-    try {
-        $graph->Stroke($filename);
-        $graphok = true;
-    } catch (JpGraphException $e) {
-        $graphok = false;
-    }
-}
-
-// HTML to display the graph
-echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
-echo '<TR>';
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-echo '<TD ALIGN="CENTER">';
-if ($graphok === true) {
-    if (is_readable($filename)) {
-        echo '<IMG SRC="' . $filename . '" ALT="Graph">';
-    } else {
-        echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-    }
-} else {
-    echo __('nodata48');
-}
-echo '</TD>';
-echo '</TR>';
-echo '<TR>';
-echo ' <TD ALIGN="CENTER">';
-echo '  <TABLE WIDTH="500">';
-echo '   <TR style="background-color: #f7ce4a">';
-echo '    <TH>' . __('virus48') . '</TH>';
-echo '    <TH>' . __('count48') . '</TH>';
-echo '   </TR>';
-
-// Write the data out
-for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; $i++) {
-    echo "<TR style=\"background-color: #EBEBEB\">
- <TD>$data_names[$i]</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
-</TR>\n";
-}
-
-echo '  </TABLE>';
-echo ' </TD>';
-echo '</TR>';
-echo '</TABLE>';
+$columns = array(
+    'virusname' =>  __('virus48'),
+    'viruscount' =>  __('count48'),
+);
+$sqlColumns = array(
+    'report'
+);
+$valueConversion = array(
+    'report' => 'countviruses',
+    'viruscount' => 'number'
+);
+$graphColumns = array(
+    'labelColumn' => 'virusname',
+    'dataColumn' => 'viruscount'
+);
+printGraphTable($sql, __('top10virus48'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

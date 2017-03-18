@@ -40,9 +40,6 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsendersvol47'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_senders_by_volume.png.' . time();
-
 $sql = '
  SELECT
   from_address as name,
@@ -62,12 +59,12 @@ $sql = '
  LIMIT 10
 ';
 
-$columnTitles = array(
-    __('email47'),
-    __('count03'),
-    __('size03')
+$columns = array (
+    'name' =>__('email47'),
+    'count' => __('count03'),
+    'size' =>__('size03')
 );
-$sqlColumns = array(
+$sqlColumns = array (
     'name',
     'count',
     'size'
@@ -80,7 +77,7 @@ $graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'size'
 );
-printGraphTable($filename, $sql, __('top10sendersvol47'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($sql, __('top10sendersvol47'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

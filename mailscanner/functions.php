@@ -3930,23 +3930,45 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param string $filename name of the image file
+ * @param $count number of hex rgb colors that should be generated
+ * @return array that contains rgb colors as hex strings usable for html
+ */
+function getHexColors($count)
+{
+    // colors from jpgraph UniversalTheme
+    $colors = array(
+        '#61a9f3',#blue
+        '#f381b9',#red
+        '#61E3A9',#green
+        #'#D56DE2',
+        '#85eD82',
+        '#F7b7b7',
+        '#CFDF49',
+        '#88d8f2',
+        '#07AF7B',
+        '#B9E3F9',
+        '#FFF3AD',
+        '#EF606A',
+        '#EC8833',
+        '#FFF100',
+        '#87C9A5'
+    );
+    for ($i=0; $i< $count; $i++) {
+        $htmlColors[] = $colors[$i % count($colors)];
+    }
+    return $htmlColors;
+}
+
+/**
  * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
  * @param string $reportTitle title that will be displayed on top of the graph
  * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
- * @param array $columnTitles array that contains the titles of the table columns
- * @param $graphColumn
+ * @param array $columns associative array that contains the columnname => titles (columnname can be name of a converted column)
+ * @param arrey $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
  * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
-function printGraphTable(
-    $filename,
-    $sqlDataQuery,
-    $reportTitle,
-    $sqlColumns,
-    $columnTitles,
-    $graphColumn,
-    $valueConversions
-) {
+function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions)
+{
     $result = dbquery($sqlDataQuery);
     $numResult = $result->num_rows;
     if ($numResult <= 0) {
@@ -3959,7 +3981,6 @@ function printGraphTable(
             $data[$columnName][] = $row[$columnName];
         }
     }
-
     //do conversion if given
     foreach ($valueConversions as $column => $conversion) {
         if ($conversion === 'scale') {
@@ -3977,73 +3998,93 @@ function printGraphTable(
                 },
                 $data[$column]
             );
+        } elseif ($conversion === 'hostnamegeoip') {
+            $data['hostname'] = array();
+            $data['geoip'] = array();
+            foreach ($data[$column] as $ipval) {
+                $hostname = gethostbyaddr($ipval);
+                if ($hostname === $ipval) {
+                    $data['hostname'][] = __('hostfailed39');
+                } else {
+                    $data['hostname'][] = $hostname;
+                }
+                if ($geoip = return_geoip_country($ipval)) {
+                    $data['geoip'][] = $geoip;
+                } else {
+                    $data['geoip'][] = __('geoipfailed39');
+                }
+            }
+        } elseif ($conversion === 'countviruses') {
+            $viruses = array();
+            foreach ($data[$column] as $report) {
+                if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
+                    $virus = $virus_report[2];
+                    if (isset($virus_array[$virus])) {
+                        $viruses[$virus]++;
+                    } else {
+                        $viruses[$virus] = 1;
+                    }
+                }
+            }
+            arsort($viruses);
+            reset($viruses);
+            $count = 0;
+            $data = array();
+            while ((list($key, $val) = each($viruses)) && $count < 10) {
+                $data['virusname'][] = $key;
+                $data['viruscount'][] = $val;
+                $count++;
+            }
         }
     }
 
-    echo '<table style="border:0; width: 100%; border-spacing: 0; border-collapse: collapse;padding: 10px;">';
-
-    // Check permissions to see if apache can actually create the file
-    if (is_writable(CACHE_DIR)) {
-
-        // JPGraph
-        include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
-        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
-        include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
-
-        $graph = new PieGraph(730, 385, 0, false);
-        $graph->img->SetMargin(40, 30, 20, 40);
-        $graph->SetShadow();
-        $graph->img->SetAntiAliasing();
-        $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
-        $graph->title->Set($reportTitle);
-
-        $plotData = $data[$graphColumn['dataColumn']];
-        $legendData = $data[$graphColumn['labelColumn']];
-        $p1 = new PiePlot3d($plotData);
-        $p1->SetTheme('sand');
-        $p1->SetLegends($legendData);
-
-        $p1->SetCenter(0.7, 0.5);
-        $graph->legend->SetLayout(LEGEND_VERT);
-        $graph->legend->Pos(0.0, 0.25, 'left');
-
-        $graph->Add($p1);
-        $graph->Stroke($filename);
-
-        //  Check Permissions to see if the file has been written and that apache to read it.
-        if (is_readable($filename)) {
-            echo '<tr><td style="text-align: center"><IMG SRC="' . $filename . '" alt="Graph"></td></tr>';
-        } else {
-            echo '<tr><td style="text-align: center">' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299') . '</td></tr>';
-        }
-    } else {
-        echo '<tr><td class="center">' . sprintf(__('errorcachedirnotwritable03'), CACHE_DIR) . '</td></tr>';
-    }
-
-    echo '<tr>';
+    //create canvas graph
+    $bgcolors = getHexColors(count($data[$graphColumn['dataColumn']]));
+    echo '<canvas id="reportChart" class="reportGraph"></canvas>
+  <script src="js/Chart.js/Chart.min.js"></script>
+  <script>
+    var ctx = document.getElementById("reportChart");
+    var myChart = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"],
+        datasets: [{
+          label: "' . $reportTitle . '",
+          data: [' . implode(', ', $data[$graphColumn['dataColumn']]) . '],
+          backgroundColor: ["' . implode('", "', $bgcolors) . '"]
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: "' . $reportTitle . '"
+        },
+        legend: {
+          display: true,
+          position: "top"
+        },
+        responsive: false
+      }
+    });
+  </script>';
 
     // HTML to display the table
     echo '<table class="reportTable">';
     echo '    <tr style="background-color: #F7CE4A">' . "\n";
-    foreach ($columnTitles as $columnTitle) {
+    foreach ($columns as $columnName => $columnTitle) {
         echo '     <th>' . $columnTitle . '</th>' . "\n";
     }
     echo '    </tr>' . "\n";
 
     for ($i = 0; $i < $numResult; $i++) {
         echo '    <tr style="background-color: #EBEBEB">' . "\n";
-        foreach ($sqlColumns as $sqlColumn) {
-            if (isset($valueConversions[$sqlColumn])) {
-                echo '     <td>' . $data[$sqlColumn . 'conv'][$i] . '</td>' . "\n";
-            } else {
-                echo '     <td>' . $data[$sqlColumn][$i] . '</td>' . "\n";
-            }
+        foreach ($columns as $columnName => $columnTitle) {
+            echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
         }
         echo '    </tr>' . "\n";
     }
 
     echo '   </table>' . "\n";
-    echo '</tr></table>';
 }
 
 /**

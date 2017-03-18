@@ -653,18 +653,23 @@ div.table > .caption > input {
 }
 
 .reportTable {
-    width: 500px;
-    padding: 10px;
-    margin-left: auto;
-    margin-right: auto;
+   padding: 10px;   
+   margin-left: auto;
+   margin-right: auto;
 }
 
-.reportTable > tbody > tr > td {
+.reportTable>tbody>tr>th,
+.reportTable>tbody>tr>td {
     text-align: center;
+    padding: 5px;
 }
 
-.reportTable > tbody > tr > td:first-child {
+.reportTable>tbody>tr>td:first-child {
     text-align: left;
+}
+
+.reportTable>tbody>tr>td:last-child {
+    text-align: right;
 }
 
 td.titleReport {

@@ -40,12 +40,9 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('toprecipqt42'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_recipients_by_quantity.png.' . time();
-
 $sql = '
  SELECT
-  REPLACE(to_address,",",",\n") as name,
+  REPLACE(to_address,",",", ") as name,
   COUNT(*) as count,
   SUM(size) as size
  FROM
@@ -62,10 +59,10 @@ $sql = '
  LIMIT 10
 ';
 
-$columnTitles = array(
-    __('email42'),
-    __('count03'),
-    __('size03')
+$columns = array(
+    'name' => __('email42'),
+    'count' => __('count03'),
+    'size' => __('size03')
 );
 $sqlColumns = array(
     'name',
@@ -80,7 +77,7 @@ $graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'count'
 );
-printGraphTable($filename, $sql, __('top10recipqt42'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($sql, __('top10recipqt42'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();
