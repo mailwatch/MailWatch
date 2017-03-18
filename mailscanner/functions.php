@@ -1032,12 +1032,12 @@ function getSUBJECTheader($header)
             if (function_exists('imap_mime_header_decode')) {
                 $linePartArr = imap_mime_header_decode($subLines[$i]);
                 for ($j=0; $j < count($linePartArr); $j++) {
-                    if ($linePartArr[$j]->charset === 'default') {
+                    if (strtolower($linePartArr[$j]->charset) === 'default') {
                         if ($linePartArr[$j]->text != " ") {
                             $convLine .= ($linePartArr[$j]->text);
                         }
                     } else {
-                        $convLine .= iconv($linePartArr[$j]->charset, 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
+                        $convLine .= iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
                     }
                 }
             } else {
