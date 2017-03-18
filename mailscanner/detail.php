@@ -92,7 +92,8 @@ $sql = "
   CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpwl04') . "',
   CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpbl04') . "',
   mcpsascore AS '" . __('mcpscore04') . "',
-  mcpreport AS '" . __('mcprep04') . "'
+  mcpreport AS '" . __('mcprep04') . "',
+  rblspamreport AS rblspamreport
  FROM
   maillog
  WHERE
@@ -269,6 +270,15 @@ while ($row = $result->fetch_array()) {
                 continue;
             }
         }
+
+        if ($row[$f] === $yes && $fieldn === __('listedrbl04')) {
+            $row[$f] = $row[$f] . ' (' . $row['rblspamreport'] . ')';
+        }
+
+        if ($fieldn === 'rblspamreport') {
+            continue;
+        }
+
         // Handle dummy header fields
         if ($fieldn === 'HEADER') {
             // Display header
