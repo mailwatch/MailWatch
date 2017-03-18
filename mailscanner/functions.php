@@ -1005,15 +1005,9 @@ function getUTF8String($string)
 function getFROMheader($header)
 {
     $sender = "";
-    if (preg_match('/^\d{3}F From: (.*)(\n\s+(.*))*/im', $header, $match)) {
+    if (preg_match('/From: (.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
         if (isset($match[1])) {
             $sender = $match[1];
-        }
-        if (isset($match[2])) {
-            $sender .= " " . $match[2];
-        }
-        if (isset($match[3])) {
-            $sender .= " " . $match[3];
         }
         if (preg_match('/\S+@\S+/', $sender, $match_email)) {
             if (isset($match_email[0])) {
@@ -1031,9 +1025,8 @@ function getFROMheader($header)
 function getSUBJECTheader($header)
 {
     $subject = "";
-    if (preg_match('/Subject: (.*)(\n\s+(.*))*/im', $header, $match)) {
-        $subLines = preg_split('/[\r\n]+/', $match[0]);
-        $subLines = str_ireplace('Subject: ', '', $subLines);
+    if (preg_match('/Subject: (.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
+        $subLines = preg_split('/[\r\n]+/', $match[1]);
         for ($i=0; $i < count($subLines); $i++) {
             $convLine = "";
             if (function_exists('imap_mime_header_decode')) {
