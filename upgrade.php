@@ -438,11 +438,11 @@ if ($link) {
     }
 
     // Add new column and index to maillog table
-    echo pad(' - Add maillog_id field and primary key to `maillog` table');
-    if (true === check_column_exists('maillog', 'maillog_id')) {
+    echo pad(' - Add maillog_id field, rblspamreport and primary key to `maillog` table');
+    if (true === check_column_exists('maillog', 'maillog_id', 'rblspamreport')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
+        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`), ADD `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
 
