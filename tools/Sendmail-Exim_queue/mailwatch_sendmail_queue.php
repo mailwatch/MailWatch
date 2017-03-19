@@ -120,17 +120,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Read Subject
                                 $output[$msgid]['subject'] = getSUBJECTheader($header);
                                 // Read Sender
-                                $from = "";
-                                // Use sender if envelopesender is empty
-                                if (QUEUE_SENDER === 'envelopesender') {
-                                    if (isset($msginfo['envelopesender'])) {
-                                        $output[$msgid]['sender'] = $msginfo['envelopesender'];
-                                    } else {
-                                        $output[$msgid]['sender'] = getFROMheader($header);
-                                    }
-                                } else {
-                                    $output[$msgid]['sender'] = getFROMheader($header);
-                                }
+                                $output[$msgid]['sender'] = getFROMheader($header);
                             }
 
                             //  Get the message file
@@ -243,17 +233,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Read Subject
                                 $output[$msgid]['subject'] = getSUBJECTheader($header);
                                 // Read Sender
-                                $from = "";
-                                // Use sender if envelopesender is empty
-                                if (QUEUE_SENDER === 'envelopesender') {
-                                    if (isset($msginfo['envelopesender'])) {
-                                        $output[$msgid]['sender'] = $msginfo['envelopesender'];
-                                    } else {
-                                        $output[$msgid]['sender'] = getFROMheader($header);
-                                    }
-                                } else {
-                                    $output[$msgid]['sender'] = getFROMheader($header);
-                                }
+                                $output[$msgid]['sender'] = getFROMheader($header)
                             }
                         }
                     }
@@ -267,6 +247,16 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
+            	// If envelopesender do not exist, use sender instead (bounce)
+                if (QUEUE_SENDER === 'envelopesender') {
+                    if (isset($msginfo['envelopesender'])) {
+                         $from = $msginfo['envelopesender'];
+                    } else {
+                         $from = $msginfo['sender'];
+                    }
+                } else {
+                    $from = $msginfo['sender'];
+                }
                 // Insert each record
                 $sql = 'INSERT INTO ' . $table_name . "
     (id,
@@ -285,7 +275,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
+                    safe_value($from) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
                     safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .
