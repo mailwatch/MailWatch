@@ -124,9 +124,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Use sender if envelopesender is empty
                                 if (QUEUE_SENDER === 'envelopesender') {
                                     if (isset($msginfo['envelopesender'])) {
-                                         $output[$msgid]['sender'] = $msginfo['envelopesender'];
+                                        $output[$msgid]['sender'] = $msginfo['envelopesender'];
                                     } else {
-                                         $output[$msgid]['sender'] = getFROMheader($header);
+                                        $output[$msgid]['sender'] = getFROMheader($header);
                                     }
                                 } else {
                                     $output[$msgid]['sender'] = getFROMheader($header);
@@ -247,9 +247,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Use sender if envelopesender is empty
                                 if (QUEUE_SENDER === 'envelopesender') {
                                     if (isset($msginfo['envelopesender'])) {
-                                         $output[$msgid]['sender'] = $msginfo['envelopesender'];
+                                        $output[$msgid]['sender'] = $msginfo['envelopesender'];
                                     } else {
-                                         $output[$msgid]['sender'] = getFROMheader($header);
+                                        $output[$msgid]['sender'] = getFROMheader($header);
                                     }
                                 } else {
                                     $output[$msgid]['sender'] = getFROMheader($header);

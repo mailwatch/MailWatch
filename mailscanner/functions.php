@@ -1026,30 +1026,30 @@ function getSUBJECTheader($header)
 {
     $subject = "";
     if (preg_match('/Subject: (.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
-       $subLines = preg_split('/[\r\n]+/', $match[1]);
-       for ($i=0; $i < count($subLines); $i++) {
-           $convLine = "";
-           if (function_exists('imap_mime_header_decode')) {
-               $linePartArr = imap_mime_header_decode($subLines[$i]);
-               for ($j=0; $j < count($linePartArr); $j++) {
-                   if (strtolower($linePartArr[$j]->charset) === 'default') {
-                       if ($linePartArr[$j]->text != " ") {
-                           $convLine .= ($linePartArr[$j]->text);
-                       }
-                   } else {
-                       $textdecoded = iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
-                       if (!$textdecoded) {
-                           $convLine .= $linePartArr[$j]->text;
-                       } else {
-                           $convLine .= $textdecoded;
-                       }
-                   }
-               }
-           } else {
-               $convLine .= str_replace('_', ' ', mb_decode_mimeheader($subLines[$i]));
-           }
-           $subject .= $convLine;
-       }
+        $subLines = preg_split('/[\r\n]+/', $match[1]);
+        for ($i=0; $i < count($subLines); $i++) {
+            $convLine = "";
+            if (function_exists('imap_mime_header_decode')) {
+                $linePartArr = imap_mime_header_decode($subLines[$i]);
+                for ($j=0; $j < count($linePartArr); $j++) {
+                    if (strtolower($linePartArr[$j]->charset) === 'default') {
+                        if ($linePartArr[$j]->text != " ") {
+                            $convLine .= ($linePartArr[$j]->text);
+                        }
+                    } else {
+                        $textdecoded = iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
+                        if (!$textdecoded) {
+                            $convLine .= $linePartArr[$j]->text;
+                        } else {
+                            $convLine .= $textdecoded;
+                        }
+                    }
+                }
+            } else {
+                $convLine .= str_replace('_', ' ', mb_decode_mimeheader($subLines[$i]));
+            }
+            $subject .= $convLine;
+            }
     }
     return $subject;
 }
