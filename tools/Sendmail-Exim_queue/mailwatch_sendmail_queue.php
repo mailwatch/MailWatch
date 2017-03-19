@@ -120,7 +120,17 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Read Subject
                                 $output[$msgid]['subject'] = getSUBJECTheader($header);
                                 // Read Sender
-                                $output[$msgid]['sender'] = getFROMheader($header);
+                                $from = "";
+                                // Use sender if envelopesender is empty
+                                if (QUEUE_SENDER === 'envelopesender') {
+                                    if (isset($msginfo['envelopesender'])) {
+                                         $output[$msgid]['sender'] = $msginfo['envelopesender'];
+                                    } else {
+                                         $output[$msgid]['sender'] = getFROMheader($header);
+                                    }
+                                } else {
+                                    $output[$msgid]['sender'] = getFROMheader($header);
+                                }
                             }
 
                             //  Get the message file
@@ -233,7 +243,17 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Read Subject
                                 $output[$msgid]['subject'] = getSUBJECTheader($header);
                                 // Read Sender
-                                $output[$msgid]['sender'] = getFROMheader($header);
+                                $from = "";
+                                // Use sender if envelopesender is empty
+                                if (QUEUE_SENDER === 'envelopesender') {
+                                    if (isset($msginfo['envelopesender'])) {
+                                         $output[$msgid]['sender'] = $msginfo['envelopesender'];
+                                    } else {
+                                         $output[$msgid]['sender'] = getFROMheader($header);
+                                    }
+                                } else {
+                                    $output[$msgid]['sender'] = getFROMheader($header);
+                                }
                             }
                         }
                     }
@@ -265,7 +285,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value(isset($msginfo[QUEUE_SENDER]) ? $msginfo[QUEUE_SENDER] : "") . "','" .
+                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
                     safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .
