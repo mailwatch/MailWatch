@@ -250,7 +250,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
             foreach ($output as $msgid => $msginfo) {
                 if (QUEUE_SENDER === 'envelopesender') {
                     if (isset($msginfo['envelopesender'])) {
-                          $from = $msginfo['envelopesender'];
+                        $from = $msginfo['envelopesender'];
                     } else {
                         $from = $msginfo['sender'];
                     }
