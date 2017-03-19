@@ -233,7 +233,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                 // Read Subject
                                 $output[$msgid]['subject'] = getSUBJECTheader($header);
                                 // Read Sender
-                                $output[$msgid]['sender'] = getFROMheader($header)
+                                $output[$msgid]['sender'] = getFROMheader($header);
                             }
                         }
                     }
