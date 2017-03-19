@@ -1025,8 +1025,8 @@ function getFROMheader($header)
 function getSUBJECTheader($header)
 {
     $subject = "";
-    if (preg_match('/Subject: (.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
-        $subLines = preg_split('/[\r\n]+/', $match[1]);
+    if (preg_match('/Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
+        $subLines = preg_split('/[\r\n]+/', $match[2]);
         for ($i=0; $i < count($subLines); $i++) {
             $convLine = "";
             if (function_exists('imap_mime_header_decode')) {
