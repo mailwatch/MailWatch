@@ -245,17 +245,17 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         $sys_hostname = rtrim(gethostname());
         // Drop everything from the table first
         dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
+        // If envelopesender do not exist, use sender instead (bounce)
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
-                // If envelopesender do not exist, use sender instead (bounce)
                 if (QUEUE_SENDER === 'envelopesender') {
                     if (isset($msginfo['envelopesender'])) {
-                         $from = $msginfo['envelopesender'];
+                          $from = $msginfo['envelopesender'];
                     } else {
                         $from = $msginfo['sender'];
                     }
                 } else {
-                        $from = $msginfo['sender'];
+                    $from = $msginfo['sender'];
                 }
                 // Insert each record
                 $sql = 'INSERT INTO ' . $table_name . "
