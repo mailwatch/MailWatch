@@ -1049,7 +1049,7 @@ function getSUBJECTheader($header)
                 $convLine .= str_replace('_', ' ', mb_decode_mimeheader($subLines[$i]));
             }
             $subject .= $convLine;
-            }
+        }
     }
     return $subject;
 }
