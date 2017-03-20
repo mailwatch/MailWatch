@@ -455,7 +455,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 }
 
                 // Else use MAILQ from conf.php which is for Sendmail or Exim
-            } elseif (MAILQ && !DISTRIBUTED_SETUP) {
+            } elseif (defined(MAILQ) && !DISTRIBUTED_SETUP) {
                 if ($mta === 'exim') {
                     $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                     $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
@@ -3975,7 +3975,6 @@ function checkConfVariables()
         'LDAP_USERNAME_FIELD',
         'LISTS',
         'MAIL_LOG',
-        'MAILQ',
         'MAILWATCH_HOME',
         'MAILWATCH_MAIL_HOST',
         'MAILWATCH_MAIL_PORT',
@@ -4051,7 +4050,8 @@ function checkConfVariables()
         'EXIM_QUEUE_IN' => array('description' => 'needed only if using Exim as MTA'),
         'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
         'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
-        'PWD_RESET_FROM_ADDRESS'  => array('description' => 'needed if Password Reset feature is enabled'),
+        'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
+        'MAILQ' => array('description' => 'needed to display the inbound/outbound mail queue lengths'),
     );
 
     $neededMissing = array();
