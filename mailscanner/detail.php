@@ -131,7 +131,7 @@ while ($row = $result->fetch_array()) {
         $fieldInfo = $result->fetch_field_direct($f);
         $fieldn = $fieldInfo->name;
         if ($fieldn === __('receivedfrom04')) {
-            $output = "<table class=\"sa_rules_report\" width=\"100%\" cellspacing=0 cellpadding=0><tr><td>" . $row[$f] . '</td>';
+            $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
             if (LISTS) {
                 $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">" . __('addwl04') . "</a>&nbsp;|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">" . __('addbl04') . '</a>]</td>';
             }
@@ -200,7 +200,7 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('report04')) {
             $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
-            $row[$f] = preg_replace("/ <br>/", "<br>", $row[$f]);
+            $row[$f] = preg_replace('/ <br>/', '<br>', $row[$f]);
         }
         if ($fieldn === __('from04')) {
             $row[$f] = htmlentities($row[$f]);

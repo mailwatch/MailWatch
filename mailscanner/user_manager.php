@@ -515,11 +515,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         END AS '" . safe_value(__('spamcheck12')) . "',
           spamscore AS '" . safe_value(__('spamscore12')) . "',
           highspamscore AS '" . safe_value(__('spamhscore12')) . "',
-        CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?token=" . $_SESSION['token'] . "&amp;action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
+        CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
         FROM
-          users " . $domainAdminUserDomainFilter . " 
+          users " . $domainAdminUserDomainFilter . ' 
         ORDER BY
-          username";
+          username';
     dbtable($sql, __('usermgnt12'));
 } else {
     if (!isset($_POST['submit'])) {

@@ -190,9 +190,9 @@ if (
 }
 
 foreach ($mime_struct as $key => $part) {
-    $type = (isset($part->ctype_primary)) ? $part->ctype_primary : "undefined";
+    $type = (isset($part->ctype_primary)) ? $part->ctype_primary : 'undefined';
     $type .= '/';
-    $type .= (isset($part->ctype_secondary)) ? $part->ctype_secondary : "undefined";
+    $type .= (isset($part->ctype_secondary)) ? $part->ctype_secondary : 'undefined';
     
     echo ' <tr>' . "\n";
     echo '  <td colspan=2 class="heading">' . __('mymetype06') . ' ' . $type . '</td>' . "\n";
