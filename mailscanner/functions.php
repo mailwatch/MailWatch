@@ -1025,7 +1025,7 @@ function getFROMheader($header)
 function getSUBJECTheader($header)
 {
     $subject = "";
-    if (preg_match('/Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
+    if (preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match)) {
         $subLines = preg_split('/[\r\n]+/', $match[2]);
         for ($i=0; $i < count($subLines); $i++) {
             $convLine = "";
@@ -1037,7 +1037,7 @@ function getSUBJECTheader($header)
                             $convLine .= ($linePartArr[$j]->text);
                         }
                     } else {
-                        $textdecoded = iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
+                        $textdecoded = @iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
                         if (!$textdecoded) {
                             $convLine .= $linePartArr[$j]->text;
                         } else {
