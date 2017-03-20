@@ -64,7 +64,7 @@ my ($SQLversion);
 # Get database information from 00MailWatchConf.pm
 use File::Basename;
 my $dirname = dirname(__FILE__);
-require $dirname.'/00MailWatchConf.pm';
+require $dirname.'/MailWatchConf.pm';
 
 my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
