@@ -51,7 +51,7 @@ if (!isset($_GET['dir'])) {
             if ($rowcnt > 0) {
                 $rowstr = sprintf('  %02d ' . __('items08'), $rowcnt);
             }
-            echo '<tr><td align="right"><a href="quarantine.php?dir=' . $date . '">' . translateQuarantineDate(
+            echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . translateQuarantineDate(
                     $date,
                     DATE_FORMAT
                 ) .  '</a></td>' . "\n";
@@ -70,7 +70,7 @@ if (!isset($_GET['dir'])) {
                 //To look and see if any of the folders in the quarantine folder are strings and not numbers.
                 if (is_numeric($f)) {
                     // Display the Quarantine folders and create links for them.
-                    echo '<tr><td align="center"><a href="quarantine.php?dir=' . $f . '">' . translateQuarantineDate(
+                    echo '<tr><td align="center"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $f . '">' . translateQuarantineDate(
                             $f,
                             DATE_FORMAT
                         ) . '</a></td></tr>' . "\n";
@@ -85,10 +85,17 @@ if (!isset($_GET['dir'])) {
         }
     }
 } else {
-    $dir = sanitizeInput($_GET['dir']);
+    if (false === checkToken($_GET['token'])) { die(); }
+    $dir = deepSanitizeInput($_GET['dir'], 'url');
+    if (!validateInput($dir, 'quardir')) { die(); }
+
+    if (isset($_GET['pageID'])) {
+        if (!validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) { die(); }
+    }
+    
     if (QUARANTINE_USE_FLAG) {
         dbconn();
-        $date = safe_value(translateQuarantineDate($dir, 'sql'));
+        $date = translateQuarantineDate($dir, 'sql');
         $sql = "
 SELECT
  id AS id2,

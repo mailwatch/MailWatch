@@ -40,12 +40,15 @@ ini_set('memory_limit', MEMORY_LIMIT);
 if (!isset($_GET['id'])) {
     die(__('nomessid58'));
 } else {
-    $message_id = sanitizeInput($_GET['id']);
+    if (false === checkToken($_GET['token'])) { die(); }
+
+    $message_id = deepSanitizeInput($_GET['id'], 'url');
+    if (!validateInput($message_id, 'msgid')) { die(); }
     // See if message is local
     dbconn(); // required db link for mysql_real_escape_string
     $result = dbquery(
         "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
-        safe_value($message_id) . "' AND "
+        $message_id . "' AND "
         . $_SESSION['global_filter']
     );
     $message_data = $result->fetch_object();
@@ -103,9 +106,16 @@ $Mail_mimeDecode = new Mail_mimeDecode($file);
 $structure = $Mail_mimeDecode->decode($params);
 $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
-// Make sure that part being requested actually exists
-if (isset($_GET['part']) && !isset($mime_struct[$_GET['part']])) {
-    die(__('part58') . ' ' . sanitizeInput($_GET['part']) . ' ' . __('notfound58') . "\n");
+if (isset($_GET['part'])) {
+    $part = deepSanitizeInput($_GET['part'], 'num');
+    if (!validateInput($part, 'num')) { die(); }
+
+    // Make sure that part being requested actually exists
+    if (!isset($mime_struct[$part])) {
+       die(__('part58') . ' ' . $part . ' ' . __('notfound58') . "\n");
+    }
+} else {
+    die(__('part58') . __('notfound58') . "\n");
 }
 
 function decode_structure($structure)
@@ -157,7 +167,7 @@ function decode_structure($structure)
     }
 }
 
-decode_structure($mime_struct[$_GET['part']]);
+decode_structure($mime_struct[$part]);
 
 // Close any open db connections
 dbclose();

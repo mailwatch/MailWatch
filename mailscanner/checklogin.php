@@ -34,12 +34,20 @@ require_once __DIR__ . '/lib/password.php';
 require_once __DIR__ . '/lib/hash_equals.php';
 
 session_start();
+if (isset($_POST['token'])) {
+    if (false === checkToken($_POST['token'])) { die(); }
+}
+$_SESSION['token'] = generateToken();
 
 if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = $_SERVER['PHP_AUTH_USER'];
     $mypassword = $_SERVER['PHP_AUTH_PW'];
 } else {
     // Define $myusername and $mypassword
+    if (!isset($_POST['myusername'], $_POST['mypassword'])) {
+        header('Location: login.php?error=baduser');
+        die();
+    }
     $myusername = $_POST['myusername'];
     $mypassword = $_POST['mypassword'];
 }
@@ -78,7 +86,7 @@ if ($usercount === 0) {
         if (!password_verify($mypassword, $passwordInDb)) {
             if (!hash_equals(md5($mypassword), $passwordInDb)) {
                 header('Location: login.php?error=baduser');
-                die(__LINE__);
+                die();
             } else {
                 $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
                 updateUserPasswordHash($myusername, $newPasswordHash);
@@ -136,6 +144,7 @@ if ($usercount === 0) {
 
     // If result matched $myusername and $mypassword, table row must be 1 row
     if ($usercount === 1) {
+        session_regenerate_id(true);
         // Register $myusername, $mypassword and redirect to file "login_success.php"
         $_SESSION['myusername'] = $myusername;
         $_SESSION['fullname'] = $fullname;
@@ -144,6 +153,7 @@ if ($usercount === 0) {
         $_SESSION['global_filter'] = '(' . $global_filter . ')';
         $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
         $_SESSION['global_array'] = $filter;
+        $_SESSION['token'] = generateToken();
         $redirect_url = 'index.php';
         if (isset($_SESSION['REQUEST_URI'])) {
             $redirect_url = sanitizeInput($_SESSION['REQUEST_URI']);

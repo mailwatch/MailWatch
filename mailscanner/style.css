@@ -119,7 +119,9 @@ body {
     margin-bottom: 16px;
 }
 
-.login fieldset input[type="submit"] {
+.login fieldset button[type="submit"],
+.pwdresetform fieldset button[type="submit"] {
+    font-size: 16px;
     background-color: #f7ce4a;
     color: #222;
     display: block;
@@ -131,31 +133,35 @@ body {
     border-radius: 3px;
     border: 0;
 }
-
-.login fieldset input[type="submit"]:hover {
+.pwdresetform fieldset button[type="submit"] {
+    width: auto;
+    min-width: 100px;
+}
+.login fieldset button[type="submit"]:hover,
+.pwdresetform fieldset button[type="submit"]:hover {
     background-color: #deb531;
 }
 
 .pwdresetButton {
     text-align: center;
     margin-bottom: 10px;
+    min-height: 40px;
 }
 
-.pwdresetButton button {
+.pwdresetButton a.loginButton {
     padding: 10px;
     background-color: #f7ce4a;
     color: #222222;
-    display: block;
     margin: 0 auto;
     min-width: 100px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
     border: 0;
-    font-size:16px;
+    font-size: 16px;
 }
 
-.pwdresetButton button:hover {
+.pwdresetButton a.loginButton:hover {
     background-color: #deb531;
 }
 

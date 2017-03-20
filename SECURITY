@@ -1,0 +1,55 @@
+Security fixes for MailWatch
+
+- Use a random token stored in session cookie for login
+- Rehash of token and unique string for each form using a form token single use
+- Use the random token throughout code to prevent XSS/CSRF problems and harden from attack
+- Perform input validation and thorough sanitization on url parameters and post parameters
+- Change method=get to method=post in forms throughout code and use post wherever possible   
+- Set cookie session security
+- Files hardened:
+    - auto_release.php
+        - message id and release token sanitization/validation
+    - checklogin.php
+        - session token, session id regeneration, reject empty fields
+    - detail.php
+        - set memory limit early, session token, parameter sanitization/validation, CSRF token, form post
+    - do_message_ops.php
+        - session token, CSRF token, parameter sanitization/validation 
+    - filter.inc.php
+        - ValidateColumn method, parameter sanitization/validation, CSRF token, reports token handling
+    - functions.php
+        - session cookie security, paramater sanitization/validation, CSRF token, LDAP escape username, fix missing pear module, secure token generation, validation logic, sanitization logic
+    - lists.php
+        - paramater sanitization/validation, session token, CSRF token, form post
+    - login.php
+        - login session token
+    - logout.php
+        - session cookie cleanup
+    - mailq.php
+        - session token, parameter sanitization/validation
+    - msre_edit.php
+        - session token parameter sanitization/validation, CSRF token, form post
+    - msre_index.php
+        - session token
+    - password_reset.php
+        - SSL redirect, session token, paramater sanitization/validation, form post 
+    - quarantine.php
+        - session token, parameter sanitization/validation
+    - quarantine_action.php 
+        - parameter sanitization/validation, session token
+    - rep_audit_log.php
+        - session token, parameter sanitization/validation, CSRF token, form post
+    - rep_message_listing.php
+        - session token, parameter sanitization/validation
+    - rep_message_ops.php
+        - session token, parameter sanitization/validation
+    - reports.php
+        - session token, parameter sanitization/validation, CSRF token
+    - style.css
+        - button CSS
+    - user_manager.php
+        - session token, parameter sanitization/validation, form post, CSRF token
+    - viewmail.php
+        - session token, parameter sanitization/validation
+    - viewpart.php
+        - session token, parameter sanitization/validation

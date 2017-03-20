@@ -36,37 +36,73 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('wblists07'), 0, false, false);
 
-$url_type = (isset($_GET['type']) ? sanitizeInput($_GET['type']) : '');
-$url_type = htmlentities($url_type);
-$url_type = safe_value($url_type);
+if (isset($_GET['type'])) {
+    $url_type = deepSanitizeInput($_GET['type'], 'url');
+    if (!validateInput($url_type, 'urltype')) { $url_type = ''; }
+} else {
+    $url_type = '';
+}
 
-$url_to = (isset($_GET['to']) ? sanitizeInput($_GET['to']) : '');
-$url_to = htmlentities($url_to);
-$url_to = safe_value($url_to);
+if (isset($_POST['to'])) {
+    $url_to = deepSanitizeInput($_POST['to'], 'string');
+    if (!empty($url_to) && !validateInput($url_to, 'user')) { $url_to = ''; }
+} elseif (isset($_GET['to'])) {
+    $url_to = deepSanitizeInput($_GET['to'], 'string');
+    if (!validateInput($url_to, 'user')) { $url_to = ''; }
+} else {
+    $url_to = '';
+}
 
-$url_host = (isset($_GET['host']) ? sanitizeInput($_GET['host']) : '');
-$url_host = htmlentities($url_host);
-$url_host = safe_value($url_host);
+if (isset($_GET['host'])) {
+    $url_host = deepSanitizeInput($_GET['host'], 'url');
+    if (!validateInput($url_host, 'host')) { $url_host = ''; }
+} else {
+    $url_host = '';
+}
 
-$url_from = (isset($_GET['from']) ? sanitizeInput($_GET['from']) : '');
-$url_from = htmlentities($url_from);
-$url_from = safe_value($url_from);
+if (isset($_POST['from'])) {
+    $url_from = deepSanitizeInput($_POST['from'], 'string');
+    if (!validateInput($url_from, 'user')) { $url_from = ''; }
+} elseif (isset($_GET['from'])) {
+    $url_from = deepSanitizeInput($_GET['from'], 'string');
+    if (!validateInput($url_from, 'user')) { $url_from = ''; }
+} else {
+    $url_from = '';
+}
 
-$url_submit = (isset($_GET['submit']) ? sanitizeInput($_GET['submit']) : '');
-$url_submit = htmlentities($url_submit);
-$url_submit = safe_value($url_submit);
+if (isset($_POST['submit'])) {
+    $url_submit = deepSanitizeInput($_POST['submit'], 'url');
+    if (!validateInput($url_submit, 'listsubmit')) { $url_submit = ''; }
+} elseif (isset($_GET['submit'])) {
+    $url_submit = deepSanitizeInput($_GET['submit'], 'url');
+    if (!validateInput($url_submit, 'listsubmit')) { $url_submit = ''; }
+} else {
+    $url_submit = '';
+}
 
-$url_list = (isset($_GET['list']) ? sanitizeInput($_GET['list']) : '');
-$url_list = htmlentities($url_list);
-$url_list = safe_value($url_list);
+if (isset($_POST['list'])) {
+    $url_list = deepSanitizeInput($_POST['list'], 'url');
+    if (!validateInput($url_list, 'list')) { $url_list = ''; }
+} elseif (isset($_GET['list'])) {
+    $url_list = deepSanitizeInput($_GET['list'], 'url');
+    if (!validateInput($url_list, 'list')) { $url_list = ''; }
+} else {
+    $url_list = '';
+}
 
-$url_domain = (isset($_GET['domain']) ? sanitizeInput($_GET['domain']) : '');
-$url_domain = htmlentities($url_domain);
-$url_domain = safe_value($url_domain);
+if (isset($_POST['domain'])) {
+    $url_domain = deepSanitizeInput($_POST['domain'], 'url');
+    if (!empty($url_domain) && !validateInput($url_domain, 'host')) { $url_domain = ''; }
+} else {
+    $url_domain = '';
+}
 
-$url_id = (isset($_GET['listid']) ? sanitizeInput($_GET['listid']) : '');
-$url_id = htmlentities($url_id);
-$url_id = safe_value($url_id);
+if (isset($_GET['listid'])) {
+    $url_id = deepSanitizeInput($_GET['listid'], 'num');
+    if (!validateInput($url_id, 'num')) { $url_id = ''; }
+} else {
+    $url_id = '';
+}
 
 // Split user/domain if necessary (from detail.php)
 $touser = '';
@@ -155,6 +191,9 @@ switch (true) {
 
 // Submitted
 if ($url_submit === 'add') {
+    if (false === checkToken($_POST['token'])) { die(); }
+    if (false === checkFormToken('/lists.php list token', $_POST['formtoken'])) { die(); }
+
     // Check input is valid
     if (empty($url_list)) {
         $errors[] = __('error071');
@@ -191,6 +230,7 @@ if ($url_submit === 'add') {
 
 // Delete
 if ($url_submit === 'delete') {
+    if (false === checkToken($_GET['token'])) { die(); }
     $id = $url_id;
     switch ($url_list) {
         case 'w':
@@ -250,7 +290,7 @@ function build_table($sql, $list)
             echo ' <tr>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
             echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -260,7 +300,7 @@ function build_table($sql, $list)
 }
 
 echo '
-<form action="lists.php" method="get">
+<form action="lists.php" method="post">
 <table cellspacing="1" class="mail">
  <tr>
   <th colspan=2>' . __('addwlbl07') . '</th>
@@ -271,7 +311,8 @@ echo '
  </tr>
  <tr>
   <td class="heading">' . __('to07') . '</td>';
-
+echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token') . '">' . "\n";
 switch ($_SESSION['user_type']) {
     case 'A':
         echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
@@ -369,3 +410,4 @@ echo '</td>
 html_end();
 // close the connection to the Database
 dbclose();
+

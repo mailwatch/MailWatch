@@ -43,13 +43,46 @@ if ($_SESSION['user_type'] !== 'A') {
 } else {
     // add the header information such as the logo, search, menu, ....
     html_start(__('auditlog33'), 0, false, false);
+    if (isset($_POST['token'])) {
+        if (false === checkToken($_POST['token'])) { die(); }
+    } else {
+        if (false === checkToken($_GET['token'])) { die(); }
+    }
+
+    if (isset($_GET['pageID'])) {
+        if (!validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) { die(); }
+    }
 
     $auditFilter = '';
-    $startDate=filter_input(INPUT_GET, 'startDate');
-    $endDate=filter_input(INPUT_GET, 'endDate');
-    $username=filter_input(INPUT_GET, 'username');
-    $ipaddress=filter_input(INPUT_GET, 'ipaddress', FILTER_VALIDATE_IP);
-    $actions=filter_input(INPUT_GET, 'actions');
+    if (isset($_POST['formtoken'])) {
+        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) { die(); }
+        if (isset($_POST['startDate'])) {
+            $startDate=deepSanitizeInput($_POST['startDate'], 'url');
+            if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) { $startDate = ''; }
+        } else {
+            $startDate='';
+        }
+        if (isset($_POST['endDate'])) {
+            $endDate=deepSanitizeInput($_POST['endDate'], 'url');
+            if ($endDate !== '' && $endDate !== null && !validateInput($endDate, 'date')) { $endDate = ''; }
+        } else {
+            $endDate='';
+        }
+        $username=deepSanitizeInput($_POST['username'], 'string');
+        if ($username !== '' && $username !== null && !validateInput($username, 'user')) { $username = ''; }
+        if (isset($_POST['ipaddress'])) {
+            $ipaddress=deepSanitizeInput($_POST['ipaddress'], 'url');
+            if (!validateInput($ipaddress, 'ip')) { $ipaddress = ''; }
+        } else {
+             $ipaddress = '';
+        }
+        if (isset($_POST['actions'])) {
+            $actions=deepSanitizeInput($_POST['actions'], 'url');
+            if ($actions !== '' && $actions !== null && !validateInput($actions, 'alnum')) { $actions = ''; }
+        } else {
+            $actions ='';
+        }
+    }
     if ($startDate === null || $startDate == '') {
         $startDate = '';
     } else {
@@ -92,8 +125,10 @@ if ($_SESSION['user_type'] !== 'A') {
 
     echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  <tr><td>
-  <form action="rep_audit_log.php" method="GET" class="floatleft">
-    <div class="mail table" id="auditFilters">
+  <form action="rep_audit_log.php" method="POST" class="floatleft">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/rep_audit_log.php form token') . '">' . "\n";
+    echo '<div class="mail table" id="auditFilters">
       <div class="caption head">' . __('filter33') . '</div>
       <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>
       <div class="row"><div class="cell head">' . __('enddate33') . '</div><div class="cell data"><input name="endDate" type="text" placeholder="YYYY-MM-DD" value="' . $endDate . '"/></div></div>

@@ -92,7 +92,7 @@ if ($_SESSION['user_type'] !== 'A') {
         // display it in a sorted table with links
         asort($ruleset_file);
         foreach ($ruleset_file as $this_ruleset_file) {
-            TR(array("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>"));
+            TR(array('<a href="msre_edit.php?token=' . $_SESSION['token'] .'&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>'));
         }
         // put a blank header line on the bottom... it just looks nicer that way to me
         TRH(array(''));

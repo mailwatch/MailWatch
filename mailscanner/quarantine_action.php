@@ -85,13 +85,17 @@ if (!isset($_GET['action'])) {
     die(__('dienoaction57'));
 }
 
-$list = quarantine_list_items(sanitizeInput($_GET['id']));
+$id = deepSanitizeInput($_GET['id'], 'url');
+if (!validateInput($id, 'msgid')) { die(); }
+
+$list = quarantine_list_items($id);
 if (count($list) === 0) {
     die(__('diemnf57'));
 }
 
 switch ($_GET['action']) {
     case 'release':
+        if (false === checkToken($_GET['token'])) { die(); }
         $result = '';
         if (count($list) === 1) {
             $to = $list[0]['to'];
@@ -113,6 +117,7 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
+        if (false === checkToken($_GET['token'])) { die(); }
         $status = array();
         if (isset($_GET['html'])) {
             if (!isset($_GET['confirm'])) {
@@ -123,13 +128,13 @@ switch ($_GET['action']) {
                         <td align="center" valign="middle">
                             <table>
                                 <tr>
-                                    <th>' . __('delete57') . '</th>
+                                    <th><?php echo __('delete57') ?></th>
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']); ?>&amp;action=delete&amp;html=true&amp;confirm=true">' . __('yes57') . '</a>
+                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo __('yes57') ?></a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="javascript:window.close()">' . __('no57') . '</a>
+                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo __('no57') ?></a>
                                     </td>
                                 </tr>
                             </table>
@@ -148,6 +153,7 @@ switch ($_GET['action']) {
                 simple_html_end();
             }
         } else {
+            if (false === checkToken($_GET['token'])) { die(); }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 $status[] = quarantine_delete($list, array($i));

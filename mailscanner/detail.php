@@ -37,17 +37,27 @@ session_start();
 // Require the login function code
 require __DIR__ . '/login.function.php';
 
-$url_id = sanitizeInput($_GET['id']);
+// Set the Memory usage
+ini_set('memory_limit', MEMORY_LIMIT);
 
-$url_id = safe_value($url_id);
-$url_id = htmlentities($url_id);
-$url_id = trim($url_id, ' ');
+if (isset($_POST['token'])) {
+    if (false === checkToken($_POST['token'])) { die(); }
+} else {
+    if (false === checkToken($_GET['token'])) { die(); }
+}
+
+if (isset($_POST['id'])) {
+    $url_id = trim(deepSanitizeInput($_POST['id'], 'url'), ' ');
+} else {
+    $url_id = trim(deepSanitizeInput($_GET['id'], 'url'), ' ');
+}
+
+if (!validateInput($url_id, 'msgid')) {
+    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n");
+}
 
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
-
-// Set the Memory usage
-ini_set('memory_limit', MEMORY_LIMIT);
 
 // Setting the yes and no variable
 $yes = '<span class="yes">&nbsp;' . __('yes04') . '&nbsp;</span>';
@@ -116,7 +126,7 @@ $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = $result->fetch_array()) {
-    $listurl = 'lists.php?host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
+    $listurl = 'lists.php?token=' . $_SESSION['token'] .'&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
     for ($f = 0; $f < $result->field_count; $f++) {
         $fieldInfo = $result->fetch_field_direct($f);
         $fieldn = $fieldInfo->name;
@@ -173,11 +183,11 @@ while ($row = $result->fetch_array()) {
                     // Link to RBL Lookup
                     $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Spam Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Virus Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to All Messages Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Close table
                     $output .= ' </tr>' . "\n";
                 }
@@ -358,29 +368,57 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_GET['submit']) && ($_GET['submit'] === __('submit04'))) {
+    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === __('submit04')) {
+        if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) { die(__('error04')); }
         debug('submit branch taken');
         // Reset error status
         $error = 0;
         $status = array();
         // Release
-        if (isset($_GET['release'])) {
+        if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (isset($_GET['alt_recpt_yn']) && ($_GET['alt_recpt_yn'] === 'y')) {
-                $to = sanitizeInput($_GET['alt_recpt']);
-                $to = htmlentities($to);
+            if (deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
+                $to = deepSanitizeInput($_POST['alt_recpt'], 'string');
+                if (!validateInput($to, 'user')) { die(__('error04') . ' ' . $to); }
             } else {
                 $to = $quarantined[0]['to'];
             }
-            $status[] = quarantine_release($quarantined, $_GET['release'], $to, RPC_ONLY);
+            
+            $arrid = $_POST['release'];
+            if (!is_array($arrid)) { die(); }
+            $arrid2 = array();
+            foreach ($arrid as $id) {
+                $id2 = deepSanitizeInput($id, 'num');
+                if (!validateInput($id2, 'num')) { die(); }
+                array_push($arrid2, $id2);
+            }
+            $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY);
         }
         // sa-learn
-        if (isset($_GET['learn'])) {
-            $status[] = quarantine_learn($quarantined, $_GET['learn'], $_GET['learn_type'], RPC_ONLY);
+        if (isset($_POST['learn'])) {
+            $arrid = $_POST['learn'];
+            if (!is_array($arrid)) { die(); }
+            $arrid2 = array();
+            foreach ($arrid as $id) {
+                $id2 = deepSanitizeInput($id, 'num');
+                if (!validateInput($id2, 'num')) { die(); }
+                array_push($arrid2, $id2);
+            }
+            $type = deepSanitizeInput($_POST['learn_type'], 'url');
+            if (!validateInput($type, 'salearnops')) { die(); }
+            $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
         }
         // Delete
-        if (isset($_GET['delete'])) {
-            $status[] = quarantine_delete($quarantined, $_GET['delete'], RPC_ONLY);
+        if (isset($_POST['delete'])) {
+            $arrid = $_POST['delete'];
+            if (!is_array($arrid)) { die(); }
+            $arrid2 = array();
+            foreach ($arrid as $id) {
+                $id2 = deepSanitizeInput($id, 'num');
+                if (!validateInput($id2, 'num')) { die(); }
+                array_push($arrid2, $id2);
+            }
+            $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY);
         }
         echo '<table border="0" cellpadding="1" cellspacing="1" width="100%" class="maildetail">' . "\n";
         echo ' <tr>' . "\n";
@@ -412,7 +450,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
     } else {
-        echo '<form action="detail.php" name="quarantine">' . "\n";
+        echo '<form action="detail.php" method="post" name="quarantine">' . "\n";
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th colspan="7">' . __('quarantine04') . '</th>' . "\n";
@@ -463,7 +501,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                     (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
-                echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
+                echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] .'&amp;id=' . $item['msgid'] . '">' .
                     substr($item['path'], strlen($quarantinedir) + 1) .
                     '</a></td>' . "\n";
             } else {
@@ -492,6 +530,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
+         echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/detail.php ops token') . '">' . "\n";
         echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";

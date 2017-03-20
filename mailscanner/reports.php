@@ -49,10 +49,23 @@ if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {
 html_start(__('reports14'), '0', false, false);
 
 // Add filters and save them
-if (isset($_GET['action'])) {
-    switch (strtolower(sanitizeInput($_GET['action']))) {
+if (isset($_POST['action']) || isset($_GET['action'])) {
+    if (isset($_POST['token'])) {
+        if (false === checkToken($_POST['token'])) { die(); }
+    } else {
+        if (false === checkToken($_GET['token'])) { die(); }
+    }
+
+    if (isset($_POST['action'])) {
+        $action = deepSanitizeInput($_POST['action'], 'url');
+    } else {
+        $action = deepSanitizeInput($_GET['action'], 'url');
+    }
+    
+    switch (strtolower($action)) {
         case 'add':
-            $filter->Add(sanitizeInput($_GET['column']), $_GET['operator'], sanitizeInput($_GET['value']));
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], sanitizeInput($_POST['value']));
             break;
         case 'remove':
             $filter->Remove(sanitizeInput($_GET['column']));
@@ -62,21 +75,24 @@ if (isset($_GET['action'])) {
             echo "Session destroyed\n";
             exit;
         case 'save':
-            if (isset($_GET['save_as'])) {
-                $name = sanitizeInput($_GET['save_as']);
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            if (isset($_POST['save_as'])) {
+                $name = sanitizeInput($_POST['save_as']);
             }
-            if (isset($_GET['filter']) && $_GET['filter'] !== '_none_') {
-                $name = sanitizeInput($_GET['filter']);
+            if (isset($_POST['filter']) && $_POST['filter'] !== '_none_') {
+                $name = sanitizeInput($_POST['filter']);
             }
             if (!empty($name)) {
                 $filter->Save($name);
             }
             break;
         case 'load':
-            $filter->Load(sanitizeInput($_GET['filter']));
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            $filter->Load(sanitizeInput($_POST['filter']));
             break;
         case 'delete':
-            $filter->Delete(sanitizeInput($_GET['filter']));
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            $filter->Delete(sanitizeInput($_POST['filter']));
             break;
     }
 }
@@ -84,8 +100,8 @@ if (isset($_GET['action'])) {
 // add the session filters to the variables
 $_SESSION['filter'] = $filter;
 
-$filter->AddReport('rep_message_listing.php', __('messlisting14'));
-$filter->AddReport('rep_message_ops.php', __('messop14'));
+$filter->AddReport('rep_message_listing.php', __('messlisting14'), true);
+$filter->AddReport('rep_message_ops.php', __('messop14'), true);
 
 $filter->AddReport('rep_total_mail_by_date.php', __('messdate14'));
 $filter->AddReport('rep_top_mail_relays.php', __('topmailrelay14'));
@@ -114,8 +130,8 @@ if (get_conf_truefalse('MCPChecks') === true) {
     $filter->AddReport('rep_mcp_rule_hits.php', __('mcprulehit14'));
 }
 
-$filter->AddReport('rep_audit_log.php', __('auditlog14'));
-$filter->Display();
+$filter->AddReport('rep_audit_log.php', __('auditlog14'), true);
+$filter->Display($_SESSION['token']);
 
 clear_cache_dir();
 

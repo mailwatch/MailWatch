@@ -40,8 +40,8 @@ html_start(__('msgviewer06'), 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
-        function do_action(id, action) {
-            ActionString = "quarantine_action.php?id=" + id + "&action=" + action + "&html=true";
+        function do_action(id, token, action) {
+            ActionString = "quarantine_action.php?token=" + token + "&id=" + id + "&action=" + action + "&html=true";
             DoActionWindow = window.open(ActionString, '', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=no, width=900, height=150');
         }
         -->
@@ -51,8 +51,10 @@ dbconn();
 if (!isset($_GET['id'])) {
     die(__('nomessid06'));
 } else {
-    $message_id = sanitizeInput($_GET['id']);
-    $sql = "SELECT * FROM maillog WHERE id='" . safe_value($message_id) . "' AND " . $_SESSION['global_filter'];
+    if (false === checkToken($_GET['token'])) { die(); }
+    $message_id = deepSanitizeInput($_GET['id'], 'url');
+    if (!validateInput($message_id, 'msgid')) { die(); }
+    $sql = "SELECT * FROM maillog WHERE id='" . $message_id . "' AND " . $_SESSION['global_filter'];
     $result = dbquery($sql);
     $message = $result->fetch_object();
     // See if message is local
@@ -182,7 +184,7 @@ if (
 ) {
     lazy(
         __('actions06'),
-        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . '</a>',
+        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','delete')\">" . __('deletemsg06') . '</a>',
         false
     );
 }
@@ -200,7 +202,7 @@ foreach ($mime_struct as $key => $part) {
         case 'text/html':
             echo ' <tr>' . "\n";
             echo '  <td colspan="2">' . "\n";
-            echo '   <iframe sandbox frameborder=0 width="100%" height=300 src="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
+            echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?token=' . $_SESSION['token'] .'&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
             echo '  </td>' . "\n";
             echo ' </tr>' . "\n";
             break;
@@ -230,7 +232,7 @@ foreach ($mime_struct as $key => $part) {
                 $_SESSION['user_type'] === 'A' ||
                 (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
             ) {
-                echo ' <a href="viewpart.php?id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
+                echo ' <a href="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }
             echo '  </td>';
 

@@ -40,6 +40,20 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('messagelisting17'), 0, false, true);
 
+if (false === checkToken($_GET['token'])) { die(); }
+
+if (isset($_GET['pageID'])) {
+    if (!validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) { die(); }
+}
+
+if (isset($_GET['orderby'])) {
+    if (!validateInput(deepSanitizeInput($_GET['orderby'], 'url'), 'orderby')) { die(); }
+}
+
+if (isset($_GET['orderdir'])) {
+    if (!validateInput(deepSanitizeInput($_GET['orderdir'], 'url'), 'orderdir')) { die(); }
+}
+
 // Checks to see if you are looking for quarantined files only
 if (QUARANTINE_USE_FLAG) {
     $flag_sql = 'quarantined=1';
