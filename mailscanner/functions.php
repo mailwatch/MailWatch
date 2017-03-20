@@ -1005,9 +1005,9 @@ function getUTF8String($string)
 function getFROMheader($header)
 {
     $sender = "";
-    if (preg_match('/From: (.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
-        if (isset($match[1])) {
-            $sender = $match[1];
+    if (preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
+        if (isset($match[2])) {
+            $sender = $match[2];
         }
         if (preg_match('/\S+@\S+/', $sender, $match_email)) {
             if (isset($match_email[0])) {
@@ -4080,7 +4080,7 @@ function checkConfVariables()
         'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
         'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
         'PWD_RESET_FROM_ADDRESS'  => array('description' => 'needed if Password Reset feature is enabled'),
-        'QUEUE_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
+        'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
     );
 
     $neededMissing = array();
