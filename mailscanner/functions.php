@@ -443,7 +443,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
                     $pqerror = '';
                     $servers = explode(' ', RPC_REMOTE_SERVER);
-                    for ($i = 0; $i < count($servers); $i++) {
+
+                    for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
                         $msg = new xmlrpcmsg('postfix_queues', array());
                         $rsp = xmlrpc_wrapper($servers[$i], $msg);
                         if ($rsp->faultCode() === 0) {
@@ -1449,6 +1450,7 @@ function get_default_ruleset_value($file)
 
 /**
  * @param string $name
+ * @param bool $force
  * @return bool
  */
 function get_conf_var($name, $force = false)
@@ -1511,6 +1513,7 @@ function parse_conf_dir($conf_dir)
 
 /**
  * @param string $name
+ * @param bool $force
  * @return bool
  */
 function get_conf_truefalse($name, $force = false)
@@ -1559,6 +1562,7 @@ function get_conf_truefalse($name, $force = false)
 }
 
 /**
+ * @param bool $force
  * @return bool|mixed
  */
 function get_conf_include_folder($force = false)

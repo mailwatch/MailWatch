@@ -535,6 +535,6 @@ function quarantine_sort($q)
     usort($q, function ($a, $b) use (&$key) {
         return strtotime($a[$key]) - strtotime($b[$key]);
     });
-    $sorted = array_reverse($q);
-    return $sorted;
+
+    return array_reverse($q);
 }

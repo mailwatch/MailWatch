@@ -93,11 +93,7 @@ html_start(__('usermgnt12'), 0, false, false);
        errorDiv.classList.add("hidden");
        var required = requiredFields();
        var checkpwd = checkPasswords();
-       if(checkpwd == false || required == false) {
-           return false;
-       } else {
-           return true;
-       }
+       return !(checkpwd == false || required == false);
    }
 
 </script>

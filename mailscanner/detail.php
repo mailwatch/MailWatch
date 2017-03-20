@@ -390,7 +390,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) { die(); }
-                array_push($arrid2, $id2);
+                $arrid2[] = $id2;
             }
             $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY);
         }
@@ -402,7 +402,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
-                array_push($arrid2, $id2);
+                $arrid2[] = $id2;
             }
             $type = deepSanitizeInput($_POST['learn_type'], 'url');
             if (!validateInput($type, 'salearnops')) { die('No! Bad dog no treat for you!'); }
@@ -416,7 +416,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
-                array_push($arrid2, $id2);
+                $arrid2[] = $id2;
             }
             $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY);
         }

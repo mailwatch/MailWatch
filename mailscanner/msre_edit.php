@@ -692,19 +692,17 @@ function Process_Form()
             $_POST[$and_target] = '';
         }
 
-        if (isset($_POST[$direction])) {
-            if ($_POST[$direction]) {
-                //echo "$direction: $_POST[$direction]<br>\n";
-                $new_ruleset[] = array(
-                    'description' => $_POST[$description],
-                    'direction' => $_POST[$direction],
-                    'target' => $_POST[$target],
-                    'and' => $_POST[$and],
-                    'and_direction' => $_POST[$and_direction],
-                    'and_target' => $_POST[$and_target],
-                    'action' => $_POST[$action]
-                );
-            }
+        if (isset($_POST[$direction]) && $_POST[$direction]) {
+            //echo "$direction: $_POST[$direction]<br>\n";
+            $new_ruleset[] = array(
+                'description' => $_POST[$description],
+                'direction' => $_POST[$direction],
+                'target' => $_POST[$target],
+                'and' => $_POST[$and],
+                'and_direction' => $_POST[$and_direction],
+                'and_target' => $_POST[$and_target],
+                'action' => $_POST[$action]
+            );
         }
     }
 

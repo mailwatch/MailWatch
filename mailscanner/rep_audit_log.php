@@ -49,8 +49,8 @@ if ($_SESSION['user_type'] !== 'A') {
         if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
     }
 
-    if (isset($_GET['pageID'])) {
-        if (!validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) { die('No! Bad dog no treat for you!'); }
+    if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+        die('No! Bad dog no treat for you!');
     }
 
     $auditFilter = '';
@@ -83,27 +83,27 @@ if ($_SESSION['user_type'] !== 'A') {
             $actions ='';
         }
     }
-    if ($startDate === null || $startDate == '') {
+    if ($startDate === null || $startDate === '') {
         $startDate = '';
     } else {
         $auditFilter .= ' AND a.timestamp >= "' . safe_value($startDate) . ' 00:00:00"';
     }
-    if ($endDate === null || $endDate == '') {
+    if ($endDate === null || $endDate === '') {
         $endDate = '';
     } else {
         $auditFilter .= ' AND a.timestamp <= "' . safe_value($endDate) . ' 23:59:59"';
     }
-    if ($username === null || $username == '') {
+    if ($username === null || $username === '') {
         $username = '';
     } else {
         $auditFilter .= ' AND b.username = "' . safe_value($username) . '"';
     }
-    if ($ipaddress === null || $ipaddress == '') {
+    if ($ipaddress === null || $ipaddress === '') {
         $ipaddress = '';
     } else {
         $auditFilter .= ' AND a.ip_address = "' . safe_value($ipaddress) . '"';
     }
-    if ($actions === null || $actions == '') {
+    if ($actions === null || $actions === '') {
         $actions = '';
     } else {
         $auditFilter .= ' AND a.action like "%' . safe_value($actions) . '%"';

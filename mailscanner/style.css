@@ -133,10 +133,12 @@ body {
     border-radius: 3px;
     border: 0;
 }
+
 .pwdresetform fieldset button[type="submit"] {
     width: auto;
     min-width: 100px;
 }
+
 .login fieldset button[type="submit"]:hover,
 .pwdresetform fieldset button[type="submit"]:hover {
     background-color: #deb531;
@@ -176,9 +178,9 @@ body {
     background-color: blue;
     color: #FFF;
     padding: 5px;
-    -webkit-border-radius:5px;
-    -moz-border-radius:5px;
-    border-radius:5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 /* mail table */
@@ -810,24 +812,24 @@ td.message {
 /*general styles*/
 
 .font-1em {
-    font-size:1em;
+    font-size: 1em;
 }
 
 .mw-logo {
-    text-align:center;
+    text-align: center;
 }
 
 /* dbtable */
 
-.table-background:nth-child(even){
+.table-background:nth-child(even) {
     background-color: #EBEBEB;
 }
 
-.table-background:nth-child(odd){
+.table-background:nth-child(odd) {
     background-color: #D8D8D8;
 }
 
-.table-background:hover{
+.table-background:hover {
     background-color: #F7CE4A !important;
 }
 
@@ -837,20 +839,20 @@ td.message {
 
 .mw-info-circle {
     background: url(images/info-circle.png);
-    -webkit-background-size:contain;
-    background-size:contain;
-    height:16px;
-    width:16px;
+    -webkit-background-size: contain;
+    background-size: contain;
+    height: 16px;
+    width: 16px;
 }
 
 .mw-info-circle:hover {
     background: url(images/info-circle-hover.png);
-    -webkit-background-size:contain;
-    background-size:contain;
-    height:16px;
-    width:16px;
+    -webkit-background-size: contain;
+    background-size: contain;
+    height: 16px;
+    width: 16px;
 }
 
-.link-transparent > a:hover{
+.link-transparent > a:hover {
     background-color: transparent;
 }

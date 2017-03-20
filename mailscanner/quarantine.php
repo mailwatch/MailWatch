@@ -89,8 +89,8 @@ if (!isset($_GET['dir'])) {
     $dir = deepSanitizeInput($_GET['dir'], 'url');
     if (!validateInput($dir, 'quardir')) { die(); }
 
-    if (isset($_GET['pageID'])) {
-        if (!validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) { die('No! Bad dog no treat for you!'); }
+    if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+        die('No! Bad dog no treat for you!');
     }
     
     if (QUARANTINE_USE_FLAG) {

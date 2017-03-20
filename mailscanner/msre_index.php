@@ -74,16 +74,14 @@ if ($_SESSION['user_type'] !== 'A') {
 
     $ruleset_file = array();
     // open directory and read its contents
-    if (is_dir(MSRE_RULESET_DIR)) {
-        if ($dh = opendir(MSRE_RULESET_DIR)) {
-            while ($file = readdir($dh)) {
-                // if it's a ruleset (*.rules), add it to the array
-                if (preg_match("/.+\.rules$/", $file)) {
-                    $ruleset_file[] = $file;
-                }
+    if (is_dir(MSRE_RULESET_DIR) && $dh = opendir(MSRE_RULESET_DIR)) {
+        while ($file = readdir($dh)) {
+            // if it's a ruleset (*.rules), add it to the array
+            if (preg_match("/.+\.rules$/", $file)) {
+                $ruleset_file[] = $file;
             }
-            closedir($dh);
         }
+        closedir($dh);
     }
 
     if (empty($ruleset_file)) {
