@@ -98,7 +98,7 @@ if (SSL_ONLY === true) {
 //enforce session cookie security
 $params = session_get_cookie_params();
 session_set_cookie_params(0, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-session_set_cookie_params(60*60, $params['path'], $params['domain'], $session_cookie_secure, true);
+session_set_cookie_params(60 * 60, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
@@ -303,7 +303,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
     if (isset($_GET['id'])) {
         $message_id = trim(htmlentities(safe_value(sanitizeInput($_GET['id']))), ' ');
-        if(!validateInput($message_id, 'msgid')) { $message_id = ''; }
+        if (!validateInput($message_id, 'msgid')) {
+            $message_id = '';
+        }
     } else {
         $message_id = '';
     }
@@ -360,10 +362,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             exec('ps ax | grep MailScanner | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
-                $procs = count($output) - 1 .  ' ' . __('children03');
+                $procs = count($output) - 1 . ' ' . __('children03');
             } else {
                 $running = $no;
-                $procs = count($output) . ' ' .  __('procs03');
+                $procs = count($output) . ' ' . __('procs03');
             }
             echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
@@ -375,7 +377,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             } else {
                 $running = $no;
             }
-            $procs = count($output) . ' ' .  __('procs03');
+            $procs = count($output) . ' ' . __('procs03');
             echo '    <tr><td>' . ucwords(
                     $mta
                 ) . __('colon99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
@@ -437,11 +439,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 } elseif (!DISTRIBUTED_SETUP) {
                     echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
-                
+
                 if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
                     $pqerror = '';
-                    $servers=explode(' ', RPC_REMOTE_SERVER);
-                    for ($i=0;$i<count($servers);$i++) {
+                    $servers = explode(' ', RPC_REMOTE_SERVER);
+                    for ($i = 0; $i < count($servers); $i++) {
                         $msg = new xmlrpcmsg('postfix_queues', array());
                         $rsp = xmlrpc_wrapper($servers[$i], $msg);
                         if ($rsp->faultCode() === 0) {
@@ -475,12 +477,14 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                     //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
                     //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
                     //$outq = $output_array[2];
-                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']), 0);
-                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']), 0);
+                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
+                        0);
+                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
+                        0);
                 }
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                 echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-                echo '    <tr><td colspan="2"><a href="mailq.php?token=' .$_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
             if (!DISTRIBUTED_SETUP) {
@@ -1661,6 +1665,7 @@ function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(' ', get_conf_var('VirusScanners'));
+
     return $scanners[0];
 }
 
@@ -1788,6 +1793,7 @@ function generatePager($sql)
 </tr>
 <tr>
 <td colspan="4">';
+
     return $from;
 }
 
@@ -2178,7 +2184,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus) && DISPLAY_VIRUS_REPORT === true) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f],
+                                $virus) && DISPLAY_VIRUS_REPORT === true
+                        ) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
@@ -2716,6 +2724,7 @@ function ldap_authenticate($username, $password)
 
                 if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
                     @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+
                     return null;
                 }
 
@@ -2752,6 +2761,7 @@ function ldap_authenticate($username, $password)
                         );
                         dbquery($sql);
                     }
+
                     return $email;
                 } else {
                     if (ldap_errno($ds) === 49) {
@@ -3828,9 +3838,10 @@ function updateUserPasswordHash($user, $hash)
  */
 function checkForExistingUser($username)
 {
-    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'";
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" . safe_value($username) . "'";
     $row = dbquery($sqlQuery)->fetch_object();
-    return $row->counter >0;
+
+    return $row->counter > 0;
 }
 
 /**
@@ -3842,8 +3853,15 @@ function checkForExistingUser($username)
  * @param $graphColumn
  * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
-function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
-{
+function printGraphTable(
+    $filename,
+    $sqlDataQuery,
+    $reportTitle,
+    $sqlColumns,
+    $columnTitles,
+    $graphColumn,
+    $valueConversions
+) {
     $result = dbquery($sqlDataQuery);
     $numResult = $result->num_rows;
     if ($numResult <= 0) {
@@ -4062,7 +4080,7 @@ function checkConfVariables()
         'EXIM_QUEUE_IN' => array('description' => 'needed only if using Exim as MTA'),
         'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
         'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
-        'PWD_RESET_FROM_ADDRESS'  => array('description' => 'needed if Password Reset feature is enabled'),
+        'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
     );
 
     $neededMissing = array();
@@ -4175,6 +4193,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $hdrs = $mime->headers($hdrs);
     $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     $mail = new Mail_smtp($mail_param);
+
     return $mail->send($email, $hdrs, $body);
 }
 
@@ -4184,7 +4203,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
  * @param bool|string $privateLocal
  * @return bool
  */
-function ip_in_range($ip, $net=false, $privateLocal=false)
+function ip_in_range($ip, $net = false, $privateLocal = false)
 {
     require_once __DIR__ . '/lib/IPSet.php';
     if ($privateLocal === 'private') {
@@ -4195,17 +4214,20 @@ function ip_in_range($ip, $net=false, $privateLocal=false)
             'fc00::/7',
             'fe80::/10',
         ));
+
         return $privateIPSet->match($ip);
     } elseif ($privateLocal === 'local') {
         $localIPSet = new \IPSet\IPSet(array(
             '127.0.0.1',
             '::1',
         ));
+
         return $localIPSet->match($ip);
     } elseif ($privateLocal === false && $net !== false) {
         $network = new \IPSet\IPSet(array(
             $net
         ));
+
         return $network->match($ip);
     } else {
         //return false to fail gracefully
@@ -4218,45 +4240,50 @@ function ip_in_range($ip, $net=false, $privateLocal=false)
  * @param string $type
  * @return mixed
  */
-function deepSanitizeInput($input, $type) 
+function deepSanitizeInput($input, $type)
 {
-   switch($type) {
-       case 'email':
-           $string = filter_var($input,FILTER_SANITIZE_EMAIL);
-           $string = sanitizeInput($string);
-           $string = safe_value($string);
-           return $string;
-           break;
-       case 'url':
-           $string = filter_var($input,FILTER_SANITIZE_URL);
-           $string = sanitizeInput($string);
-           $string = htmlentities($string);
-           $string = safe_value($string);
-           return $string;
-           break;
-       case 'num':
-           $string = filter_var($input,FILTER_SANITIZE_NUMBER_INT);
-           $string = sanitizeInput($string);
-           $string = safe_value($string);
-           return $string;
-           break;
-       case 'float':
-           $string = filter_var($input,FILTER_SANITIZE_NUMBER_FLOAT);
-           $string = sanitizeInput($string);
-           $string = safe_value($string);
-           return $string;
-           break;
-       case 'string':
-           $string = filter_var($input,FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
-           $string = sanitizeInput($string);
-           $string = safe_value($string);
-           return $string;
-           break;
-        default:
-           return false;
-   }
+    switch ($type) {
+        case 'email':
+            $string = filter_var($input, FILTER_SANITIZE_EMAIL);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
 
-   return false;
+            return $string;
+            break;
+        case 'url':
+            $string = filter_var($input, FILTER_SANITIZE_URL);
+            $string = sanitizeInput($string);
+            $string = htmlentities($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        case 'num':
+            $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        case 'float':
+            $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        case 'string':
+            $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        default:
+            return false;
+    }
+
+    return false;
 }
 
 /**
@@ -4313,7 +4340,8 @@ function validateInput($input, $type)
             }
             break;
         case 'msgid':
-            if (preg_match('/^([A-F0-9]{8,12}\.[A-F0-9]{5}$|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{12,24}|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-x]{12})$/', $input)) {
+            if (preg_match('/^([A-F0-9]{8,12}\.[A-F0-9]{5}$|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{12,24}|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-x]{12})$/',
+                $input)) {
                 return true;
             }
             break;
@@ -4400,6 +4428,7 @@ function validateInput($input, $type)
 function generateToken()
 {
     $tokenLenght = 32;
+
     return get_random_string($tokenLenght);
 }
 
@@ -4422,8 +4451,13 @@ function checkToken($token)
  */
 function generateFormToken($formstring)
 {
+    if (!isset($_SESSION['token'])) {
+        die();
+    }
+
     $_SESSION['formtoken'] = generateToken();
-    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']); 
+    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+
     return $calc;
 }
 
@@ -4434,11 +4468,11 @@ function generateFormToken($formstring)
  */
 function checkFormToken($formstring, $formtoken)
 {
-     $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
-     unset($_SESSION['formtoken']);
-     if ($calc === deepSanitizeInput($formtoken, 'url')) {
-         return true;
-     }
+    if (!isset($_SESSION['token'], $_SESSION['formtoken'])) {
+        return false;
+    }
+    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+    unset($_SESSION['formtoken']);
 
-     return false;
+    return $calc === deepSanitizeInput($formtoken, 'url');
 }
