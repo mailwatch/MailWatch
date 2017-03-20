@@ -42,7 +42,7 @@ if (false === checkToken($_GET['token'])) {
 
 $queue = deepSanitizeInput($_GET['queue'], 'url');
 if (!validateInput($queue, 'mailq')) {
-	die();
+    die();
 }
 
 switch ($queue) {
