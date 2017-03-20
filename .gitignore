@@ -1,6 +1,3 @@
-#directories
-/mailscanner/images/cache/*
-
 #files
 /mailscanner/conf.php
 

@@ -43,7 +43,7 @@ if ($_SESSION['user_type'] !== 'A') {
     html_start(__('mwandmsversion52'), '0', false, false);
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
-    $php_version = phpversion();
+    $php_version = PHP_VERSION;
     $mysql_version = database::mysqli_result(dbquery('SELECT VERSION()'), 0);
     $geoipv4_version = false;
     $geoipv6_version = false;
