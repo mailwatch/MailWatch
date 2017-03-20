@@ -62,24 +62,24 @@ $sql = '
  LIMIT 10
 ';
 
-$columnTitles = [
+$columnTitles = array(
     __('email47'),
     __('count03'),
     __('size03')
-];
-$sqlColumns = [
+);
+$sqlColumns = array(
     'name',
     'count',
     'size'
-];
-$valueConversion = [
+);
+$valueConversion = array(
     'size' => 'scale',
     'count' => 'number'
-];
-$graphColumns = [
+);
+$graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'size'
-];
+);
 printGraphTable($filename, $sql, __('top10sendersvol47'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
 
 // Add footer
