@@ -348,7 +348,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
 
-    if (($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D')) {
+    if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
@@ -433,7 +433,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 // Mail Queues display
                 $incomingdir = get_conf_var('incomingqueuedir', true);
                 $outgoingdir = get_conf_var('outgoingqueuedir', true);
-                if ((is_readable($incomingdir) || is_readable($outgoingdir))) {
+                if (is_readable($incomingdir) || is_readable($outgoingdir)) {
                     $inq = postfixinq();
                     $outq = postfixallq() - $inq;
                 } elseif (!DISTRIBUTED_SETUP) {
