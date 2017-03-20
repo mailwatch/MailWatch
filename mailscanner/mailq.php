@@ -36,7 +36,7 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('mqviewer24'), 0, false, false);
 
-if (false === checkToken($_GET['token'])) { die(); }
+if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
 
 $queue = deepSanitizeInput($_GET['queue'], 'url');
 if (!validateInput($queue, 'mailq')) { die(); }

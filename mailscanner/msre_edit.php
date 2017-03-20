@@ -62,9 +62,9 @@ if ($_SESSION['user_type'] !== 'A') {
     audit_log(__('auditlog55'));
 } else {
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) { die(); }
+        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
     } else {
-        if (false === checkToken($_GET['token'])) { die(); }
+        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
     }
 
     // add the header information such as the logo, search, menu, ....
@@ -73,7 +73,7 @@ if ($_SESSION['user_type'] !== 'A') {
     } else {
         $short_filename = deepSanitizeInput($_GET['file'], 'url');
     }
-    if (!validateInput($short_filename, 'file')) { die(); }
+    if (!validateInput($short_filename, 'file')) { die('No! Bad dog no treat for you!'); }
     $short_filename = basename($short_filename);
     $pageheader = 'Edit MailScanner Ruleset ' . $short_filename;
     $filter = html_start($pageheader, 0, false, false);
@@ -118,7 +118,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // check to see if the form was submitted, and if so process it..
     $status_message = '';
     if (isset($_POST['submitted'])) {
-        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) { die(); }
+        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
 
         list($bytes_written, $status_message) = Process_Form();
         // re-read the file after processing
@@ -593,7 +593,7 @@ function Process_Form()
     $default_action = '';
     $default_desc = '';
     $count = deepSanitizeInput($_POST['rule_count'], 'num');
-    if (!validateInput($count, 'num')) { die(); }
+    if (!validateInput($count, 'num')) { die('No! Bad dog no treat for you!'); }
     for ($i = -1; $i <= $count; $i++) {
         $rule_prefix = 'rule' . $i . '_';
         $description = $rule_prefix . 'description';

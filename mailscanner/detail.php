@@ -41,9 +41,9 @@ require __DIR__ . '/login.function.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 
 if (isset($_POST['token'])) {
-    if (false === checkToken($_POST['token'])) { die(); }
+    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
 } else {
-    if (false === checkToken($_GET['token'])) { die(); }
+    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
 }
 
 if (isset($_POST['id'])) {
@@ -401,11 +401,11 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             $arrid2 = array();
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) { die(); }
+                if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
                 array_push($arrid2, $id2);
             }
             $type = deepSanitizeInput($_POST['learn_type'], 'url');
-            if (!validateInput($type, 'salearnops')) { die(); }
+            if (!validateInput($type, 'salearnops')) { die('No! Bad dog no treat for you!'); }
             $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
         }
         // Delete
@@ -415,7 +415,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             $arrid2 = array();
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) { die(); }
+                if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
                 array_push($arrid2, $id2);
             }
             $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY);

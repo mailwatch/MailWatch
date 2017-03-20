@@ -37,8 +37,8 @@ require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));
 
-if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) { die(); }
-if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) { die(); }
+if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) { die('No! Bad dog no treat for you!'); }
+if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
 echo ' <tr>' . "\n";

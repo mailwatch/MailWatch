@@ -144,7 +144,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $email = $link->real_escape_string($_POST['email']);
             if (!validateInput($email, 'email')) { die(); }
             $uid = $link->real_escape_string($_POST['uid']);
-            var_dump($_POST, $email, $uid, validateInput($uid, 'resetid'));
+            //var_dump($_POST, $email, $uid, validateInput($uid, 'resetid'));
             if (!validateInput($uid, 'resetid')) { die(); }
             if ($_POST['pwd1'] === $_POST['pwd2']) {
                 //passwords match, now we need to store them

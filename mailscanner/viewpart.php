@@ -40,10 +40,10 @@ ini_set('memory_limit', MEMORY_LIMIT);
 if (!isset($_GET['id'])) {
     die(__('nomessid58'));
 } else {
-    if (false === checkToken($_GET['token'])) { die(); }
+    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
 
     $message_id = deepSanitizeInput($_GET['id'], 'url');
-    if (!validateInput($message_id, 'msgid')) { die(); }
+    if (!validateInput($message_id, 'msgid')) { die('No! Bad dog no treat for you!'); }
     // See if message is local
     dbconn(); // required db link for mysql_real_escape_string
     $result = dbquery(
@@ -108,7 +108,7 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 if (isset($_GET['part'])) {
     $part = deepSanitizeInput($_GET['part'], 'num');
-    if (!validateInput($part, 'num')) { die(); }
+    if (!validateInput($part, 'num')) { die('No! Bad dog no treat for you!'); }
 
     // Make sure that part being requested actually exists
     if (!isset($mime_struct[$part])) {

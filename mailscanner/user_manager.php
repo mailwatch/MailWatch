@@ -141,13 +141,13 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $action = deepSanitizeInput($_GET['action'], 'url');
     }
     if (isset($action)) {
-        if (!validateInput($action, 'action')) { die(); }
+        if (!validateInput($action, 'action')) { die('No! Bad dog no treat for you!'); }
         switch ($action) {
             case 'new':
                 if (isset($_POST['token'])) {
-                    if (false === checkToken($_POST['token'])) { die(); }
+                    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
                 } else {
-                    if (false === checkToken($_GET['token'])) { die(); }
+                    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
                 }
                 if (!isset($_POST['submit'])) {
                     echo '<div id="formerror" class="hidden"></div>';
@@ -177,7 +177,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('create12') . '"></TD></TR>' . "\n";
                     echo '</TABLE></FORM><BR>' . "\n";
                 } else {
-                    if (false === checkFormToken('/user_manager.php new form token', $_POST['formtoken'])) { die(); }
+                    if (false === checkFormToken('/user_manager.php new form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
                     $username = deepSanitizeInput($_POST['username'], 'string');
                     if (!validateInput($username, 'user')) { $username = ''; }
                     $ar = explode('@', $username);
@@ -249,9 +249,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 break;
             case 'edit':
                 if (isset($_POST['token'])) {
-                    if (false === checkToken($_POST['token'])) { die(); }
+                    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
                 } else {
-                    if (false === checkToken($_GET['token'])) { die(); }
+                    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
                 }
                 // if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
                 // Validate key
@@ -260,7 +260,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 } else {
                     $key = deepSanitizeInput($_GET['key'], 'string');
                 }
-                if (!validateInput($key, 'user')) { die(); }
+                if (!validateInput($key, 'user')) { die('No! Bad dog no treat for you!'); }
                 $ar = explode('@', $key);
                 if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                     echo __('erroreditnodomainforbidden12') . '<br>';
@@ -316,7 +316,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
                         $result = dbquery($sql);
                     } else {
-                        if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) { die(); }
+                        if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
                         // Do update
                         
                         $username = deepSanitizeInput($_POST['username'], 'string');
@@ -336,7 +336,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             $do_pwd = false;
                             // Validate key
                             $key = deepSanitizeInput($_POST['key'], 'string');
-                            if (!validateInput($key, 'user')) { die(); }
+                            if (!validateInput($key, 'user')) { die('No! Bad dog no treat for you!'); }
                             $n_username = deepSanitizeInput($_POST['username'], 'string');
                             if (!validateInput($n_username, 'user')) { $n_username = ''; }
                             $n_fullname = deepSanitizeInput($_POST['fullname'], 'string');
@@ -391,9 +391,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
                 break;
             case 'delete':
-                if (false === checkToken($_GET['token'])) { die(); }
+                if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
                 $id = deepSanitizeInput($_GET['id'], 'string');
-                if (!validateInput($id, 'user')) { die(); }
+                if (!validateInput($id, 'user')) { die('No! Bad dog no treat for you!'); }
                 $ar = explode('@', $id);
                 if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                     echo __('errordeletenodomainforbidden12') . '<br>';
@@ -407,26 +407,26 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 break;
             case 'filters':
                 if (isset($_POST['token'])) {
-                    if (false === checkToken($_POST['token'])) { die(); }
+                    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
                 } else {
-                    if (false === checkToken($_GET['token'])) { die(); }
+                    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
                 }
                 if (isset($_POST['id'])) {
                     $id = deepSanitizeInput($_POST['id'], 'string');
                 } else {
                     $id = deepSanitizeInput($_GET['id'], 'string');
                 }
-                if (!validateInput($id, 'user')) { die(); }
+                if (!validateInput($id, 'user')) { die('No! Bad dog no treat for you!'); }
 
                 if (isset($_POST['filter'])) {
-                    if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) { die(); }
+                    if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
                     $getFilter = deepSanitizeInput($_POST['filter'], 'email');
                     if (!validateInput($getFilter, 'email')) { $getFilter = ''; }
                 }
 
                 if (isset($_POST['new']) && $getFilter !== '') {
                     $getActive = deepSanitizeInput($_POST['active'], 'url');
-                    if (!validateInput($getActive, 'yn')) { die(); }
+                    if (!validateInput($getActive, 'yn')) { die('No! Bad dog no treat for you!'); }
                     $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value($id) . "','" . safe_value($getFilter) . "','" . safe_value($getActive) . "')";
                     dbquery($sql);
                     if (DEBUG === true) {
@@ -436,7 +436,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
                 if (isset($_GET['delete']) && isset($_GET['filter'])) {
                     $getFilter = deepSanitizeInput($_GET['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) { die(); }
+                    if (!validateInput($getFilter, 'email')) { die('No! Bad dog no treat for you!'); }
                     $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     dbquery($sql);
                     if (DEBUG === true) {
@@ -445,7 +445,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
                 if (isset($_GET['change_state']) && isset($_GET['filter'])) {
                     $getFilter = deepSanitizeInput($_GET['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) { die(); }
+                    if (!validateInput($getFilter, 'email')) { die('No! Bad dog no treat for you!'); }
                     $sql = "SELECT active FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     $result = dbquery($sql);
                     $active = $result->fetch_row();
@@ -561,8 +561,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
     } else {
-        if (false === checkToken($_POST['token'])) { die(); }
-        if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) { die(); }
+        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
         // Do update
         if (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
             echo __('errorpass12')  . '<br>';
@@ -585,7 +585,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 $noscan = '1';
             }
             $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
-            if (!validateInput($quarantine_rcpt, 'user')) { die(); }
+            if (!validateInput($quarantine_rcpt, 'user')) { die('No! Bad dog no treat for you!'); }
 
             if (isset($_POST['password']) && $_POST['password'] !== 'XXXXXXXX') {
                 // Password reset required

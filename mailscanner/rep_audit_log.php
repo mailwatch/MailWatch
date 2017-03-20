@@ -44,18 +44,18 @@ if ($_SESSION['user_type'] !== 'A') {
     // add the header information such as the logo, search, menu, ....
     html_start(__('auditlog33'), 0, false, false);
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) { die(); }
+        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
     } else {
-        if (false === checkToken($_GET['token'])) { die(); }
+        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
     }
 
     if (isset($_GET['pageID'])) {
-        if (!validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) { die(); }
+        if (!validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) { die('No! Bad dog no treat for you!'); }
     }
 
     $auditFilter = '';
     if (isset($_POST['formtoken'])) {
-        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) { die(); }
+        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
         if (isset($_POST['startDate'])) {
             $startDate=deepSanitizeInput($_POST['startDate'], 'url');
             if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) { $startDate = ''; }

@@ -95,7 +95,7 @@ if (count($list) === 0) {
 
 switch ($_GET['action']) {
     case 'release':
-        if (false === checkToken($_GET['token'])) { die(); }
+        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
         $result = '';
         if (count($list) === 1) {
             $to = $list[0]['to'];
@@ -117,7 +117,7 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
-        if (false === checkToken($_GET['token'])) { die(); }
+        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
         $status = array();
         if (isset($_GET['html'])) {
             if (!isset($_GET['confirm'])) {
@@ -153,7 +153,7 @@ switch ($_GET['action']) {
                 simple_html_end();
             }
         } else {
-            if (false === checkToken($_GET['token'])) { die(); }
+            if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 $status[] = quarantine_delete($list, array($i));

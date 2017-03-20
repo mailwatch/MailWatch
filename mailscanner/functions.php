@@ -4452,7 +4452,7 @@ function checkToken($token)
 function generateFormToken($formstring)
 {
     if (!isset($_SESSION['token'])) {
-        die();
+        die('No! Bad dog no treat for you!');
     }
 
     $_SESSION['formtoken'] = generateToken();

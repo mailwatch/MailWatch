@@ -51,9 +51,9 @@ html_start(__('reports14'), '0', false, false);
 // Add filters and save them
 if (isset($_POST['action']) || isset($_GET['action'])) {
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) { die(); }
+        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
     } else {
-        if (false === checkToken($_GET['token'])) { die(); }
+        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
     }
 
     if (isset($_POST['action'])) {
@@ -64,7 +64,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     
     switch (strtolower($action)) {
         case 'add':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], sanitizeInput($_POST['value']));
             break;
         case 'remove':
@@ -75,7 +75,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             echo "Session destroyed\n";
             exit;
         case 'save':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
             if (isset($_POST['save_as'])) {
                 $name = sanitizeInput($_POST['save_as']);
             }
@@ -87,11 +87,11 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             }
             break;
         case 'load':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
             $filter->Load(sanitizeInput($_POST['filter']));
             break;
         case 'delete':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die(); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
             $filter->Delete(sanitizeInput($_POST['filter']));
             break;
     }
