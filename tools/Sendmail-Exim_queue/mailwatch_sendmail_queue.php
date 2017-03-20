@@ -250,7 +250,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                 // Use sender if MAIL_SENDER = sender
                 // If envelopesender do not exist, use sender instead (bounce)
                 $from = "";
-                if (defined('MAIL_SENDER') && QUEUE_SENDER === 'sender') {
+                if (defined('MAIL_SENDER') && MAIL_SENDER === 'sender') {
                     $from = $msginfo['sender'];
                 } else {
                     if (!isset($msginfo['envelopesender'])) {
