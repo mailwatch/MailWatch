@@ -1,3 +1,13 @@
+1.2.0
+-----------
+- Multiple vulnerability fixed
+- Fixed invalid mime message parsing
+- Improved upgrade.php script
+- Update filters when user is deleted or renamed
+- Provides administrator the ability to combine quarantine reports into a single report
+- Better support for remote postfix queue count
+- Code refactoring and fixes
+
 1.2.0 - RC5
 -----------
  - Add the ability for domain admins to create/edit/delete users of the same domain

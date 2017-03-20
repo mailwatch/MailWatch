@@ -47,19 +47,19 @@ if [ ! -x "$DAEMON" ]; then
 fi
 
 # Read configuration variables
-[ -e "/etc/default/$NAME" ] && . /etc/default/$NAME
+[ -e "/etc/default/$NAME" ] && . /etc/default/${NAME}
 
 # Function to verify if sendmail_relay.php is already running
 run_check() {
-        if [ -e $PIDFILE ]; then
-               status_of_proc -p $PIDFILE $DAEMON $NAME > /dev/null && RETVAL=0 || RETVAL="$?"
+        if [ -e ${PIDFILE} ]; then
+               status_of_proc -p ${PIDFILE} ${DAEMON} ${NAME} > /dev/null && RETVAL=0 || RETVAL="$?"
         else
                 RETVAL="2"
         fi
 }
 
 end_log() {
-        if [ $RETVAL -eq 0 ]; then
+        if [ ${RETVAL} -eq 0 ]; then
                 log_end_msg 0
                 return 0
         else
@@ -70,13 +70,13 @@ end_log() {
 
 start_script() {
         run_check
-        if [ $RETVAL = 0 ]; then
-                [ "$VERBOSE" = yes ] && log_action_msg "$DESC: Already running with PID $(cat $PIDFILE). Aborting"
+        if [ ${RETVAL} = 0 ]; then
+                [ "$VERBOSE" = yes ] && log_action_msg "$DESC: Already running with PID $(cat ${PIDFILE}). Aborting"
                 exit 2
         else
                 [ "$VERBOSE" = yes ] && log_daemon_msg "Starting the daemon $DESC" "$NAME"
-                start-stop-daemon --start --background --quiet --pidfile $PIDFILE --make-pidfile --chuid $SMUSER \
-                --user $SMUSER --exec $DAEMON
+                start-stop-daemon --start --background --quiet --pidfile ${PIDFILE} --make-pidfile --chuid ${SMUSER} \
+                --user ${SMUSER} --exec ${DAEMON}
                 RETVAL=$?
 		[ "$VERBOSE" = yes ] && end_log
         fi
@@ -84,13 +84,13 @@ start_script() {
 
 stop_script() {
         run_check
-        if [ $RETVAL = 0 ]; then
+        if [ ${RETVAL} = 0 ]; then
                 [ "$VERBOSE" = yes ] && log_daemon_msg "Stopping the daemon $DESC" "$NAME"
                 start-stop-daemon --stop --quiet --chuid "$SMUSER" --pidfile "$PIDFILE"
                 RETVAL=$?
                 [ -e "$PIDFILE" ] && rm -f "$PIDFILE"
-                PID=`ps -ef | grep 'tail -F -n0 '$MAILLOG | grep -v grep | awk '{print $2}'`
-                [ ! -z "$PID" ] && kill $PID
+                PID=`ps -ef | grep 'tail -F -n0 '${MAILLOG} | grep -v grep | awk '{print $2}'`
+                [ ! -z "$PID" ] && kill ${PID}
                 [ "$VERBOSE" = yes ] && end_log
         else
                 [ "$VERBOSE" = yes ] && log_action_msg "$DESC: Not currently running. Aborting"
@@ -100,12 +100,12 @@ stop_script() {
 
 status_script() {
         run_check
-        if [ $RETVAL = 0 ]; then
-                [ "$VERBOSE" = yes ] && log_action_msg "$DESC: Currently running with PID $(cat $PIDFILE)"
+        if [ ${RETVAL} = 0 ]; then
+                [ "$VERBOSE" = yes ] && log_action_msg "$DESC: Currently running with PID $(cat ${PIDFILE})"
         else
                 [ "$VERBOSE" = yes ] && log_action_msg "$DESC: Not currently running"
         fi
-        exit $RETVAL
+        exit ${RETVAL}
 }
 
 case "$1" in

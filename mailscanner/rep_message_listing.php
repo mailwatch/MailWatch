@@ -40,6 +40,20 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('messlisting16'), 0, false, false);
 
+if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+
+if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+    die('No! Bad dog no treat for you!');
+}    
+
+if (isset($_GET['orderby']) && !validateInput(deepSanitizeInput($_GET['orderby'], 'url'), 'orderby')) {
+    die('No! Bad dog no treat for you!');
+}    
+
+if (isset($_GET['orderdir']) && !validateInput(deepSanitizeInput($_GET['orderdir'], 'url'), 'orderdir')) {
+    die('No! Bad dog no treat for you!');
+}    
+
 $sql = "
  SELECT
   id AS id2,
@@ -84,8 +98,8 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type
 
 // Check if we've passed in a relay that we want to check the headers for, this is from detail.php
 $relay_regex = '';
-if (isset($_GET['relay']) && preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $_GET['relay'])) {
-    $relay_regex = '[[:<:]]' . str_replace('.', '\.', $_GET['relay']) . '[[:>:]]';
+if (isset($_GET['relay']) && preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', deepSanitizeInput($_GET['relay'], 'url'))) {
+    $relay_regex = '[[:<:]]' . str_replace('.', '\.', deepSanitizeInput($_GET['relay'], 'url')) . '[[:>:]]';
 }
 if (strlen($relay_regex) > 0) {
     $sql .= " AND headers REGEXP '$relay_regex'";

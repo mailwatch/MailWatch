@@ -107,8 +107,16 @@ class Filter
         if (!$this->ValidateOperator($operator)) {
             return;
         }
+
+        if (!$this->ValidateColumn($column)) {
+            return;
+        }
+
         // Don't show the last column, operator, and value now
         $this->display_last = 0;
+        
+        $value = deepSanitizeInput($value, 'string');
+        if (!validateInput($value, 'general')) { return; }
 
         //  Make sure this is not a duplicate
         if (count($this->item) > 0) {
@@ -135,7 +143,10 @@ class Filter
         unset($this->item[$item]);
     }
 
-    public function Display()
+    /**
+     * @param string $token
+     */
+    public function Display($token)
     {
         echo '<table width="600" border="0" class="boxtable">' . "\n";
         echo ' <tr><th colspan="2">' . __('activefilters09') . '</th></tr>' . "\n";
@@ -145,7 +156,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
@@ -173,8 +184,12 @@ WHERE
         }
         echo '<tr><th colspan="2">' . __('reports09') . '</th></tr>' . "\n";
         echo '<tr><td colspan="2"><ul>' . "\n";
-        foreach ($this->reports as $description => $url) {
-            echo '<li><a href="' . $url . '">' . $description . '</a>' . "\n";
+        foreach ($this->reports as $report) {
+            $url = $report['url'];
+            if ($report['useToken']) {
+                $url .= '?token=' . $token;
+            }
+            echo '<li><a href="' . $url . '">' . $report['description'] . '</a>' . "\n";
         }
         echo '</ul></td></tr>' . "\n";
         echo '</table>' . "\n";
@@ -269,7 +284,7 @@ WHERE
     public function DisplayForm()
     {
         // Form
-        $return = '<form action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
+        $return = '<form method="post" action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
 
         // Table
         $return .= '<table width="100%">' . "\n";
@@ -311,7 +326,7 @@ WHERE
         $return .= '<input type="text" size="50" name="value"';
         if ($this->display_last) {
             //  Use the last value as the default
-            $return .= " value=\"" . htmlentities(stripslashes($this->last_value)) . "\"";
+            $return .= ' value="' . htmlentities(stripslashes($this->last_value)) . '"';
         }
         $return .= ">\n";
         $return .= '</td><td align="right"><button type="submit" name="action" value="add">' . __('add09') . '</button></td></tr>' . "\n";
@@ -322,8 +337,9 @@ WHERE
         $return .= $this->ListSaved();
         $return .= '</td><td style="white-space: nowrap; text-align:right;"><button type="submit" name="action" value="load">' . __('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . __('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . __('delete09') . '</button></td></tr>' . "\n";
         $return .= '</table>' . "\n";
+        $return .= '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
+        $return .= '<input type="hidden" name="formtoken" value="' . generateFormToken('/filter.inc.php form token') . '">' . "\n";
         $return .= '</form>' . "\n";
-
 
         return $return;
     }
@@ -331,16 +347,17 @@ WHERE
     /**
      * @param string $url
      * @param string $description
+     * @param bool $useToken
      */
-    public function AddReport($url, $description)
+    public function AddReport($url, $description, $useToken = false)
     {
         //test if url exists if it is remove the old one. This fixes double shown urls for the reports
-        foreach ($this->reports as $key => $val) {
-            if ($val === $url) {
+        foreach ($this->reports as $key => $report) {
+            if ($report['url'] === $url) {
                 unset($this->reports[$key]);
             }
         }
-        $this->reports[$description] = $url;
+        $this->reports[] = array('url' => $url, 'description' => $description, 'useToken' => $useToken);
     }
 
     /**
@@ -348,6 +365,9 @@ WHERE
      */
     public function Save($name)
     {
+        $name = deepSanitizeInput($name, 'string');
+        if (!validateInput($name, 'general')) { return; }
+
         dbconn();
         if (count($this->item) > 0) {
             // Delete the existing first
@@ -371,6 +391,9 @@ WHERE
      */
     public function Load($name)
     {
+        $name = deepSanitizeInput($name, 'string');
+        if (!validateInput($name, 'general')) { return; }
+        
         dbconn();
         $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='" . safe_value(
                 $name
@@ -386,6 +409,10 @@ WHERE
      */
     public function Delete($name)
     {
+        
+        $name = deepSanitizeInput($name, 'string');
+        if (!validateInput($name, 'general')) { return; }
+        
         dbconn();
         $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . safe_value(
                 $name
@@ -416,5 +443,16 @@ WHERE
         $validKeys = array_keys($this->operators);
 
         return in_array($operator, $validKeys, true);
+    }
+    
+    /**
+     * @param string $column
+     * @return bool
+     */
+    private function ValidateColumn($column)
+    {
+        $validKeys = array_keys($this->columns);
+
+        return in_array($column, $validKeys, true);
     }
 }

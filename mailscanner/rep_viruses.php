@@ -170,7 +170,7 @@ while (list($key, $val) = each($virus_array)) {
 
 // HTML Code
 echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
-echo '<TR><TD CLASS="titleReport">' . __('virusreport50') . "<BR></TD></TR>";
+echo '<TR><TD CLASS="titleReport">' . __('virusreport50') . '<BR></TD></TR>';
 echo '<TR>';
 echo '<TD ALIGN="CENTER">';
 echo '<TABLE WIDTH="840">';
