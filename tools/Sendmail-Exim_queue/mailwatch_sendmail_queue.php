@@ -254,7 +254,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     $from = $msginfo['sender'];
                 } else {
                     if (!isset($msginfo['envelopesender'])) {
-                         $from = $msginfo['sender'];
+                        $from = $msginfo['sender'];
                     } else {
                         $from = $msginfo['envelopesender'];
                     }
