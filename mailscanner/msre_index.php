@@ -74,16 +74,14 @@ if ($_SESSION['user_type'] !== 'A') {
 
     $ruleset_file = array();
     // open directory and read its contents
-    if (is_dir(MSRE_RULESET_DIR)) {
-        if ($dh = opendir(MSRE_RULESET_DIR)) {
-            while ($file = readdir($dh)) {
-                // if it's a ruleset (*.rules), add it to the array
-                if (preg_match("/.+\.rules$/", $file)) {
-                    $ruleset_file[] = $file;
-                }
+    if (is_dir(MSRE_RULESET_DIR) && $dh = opendir(MSRE_RULESET_DIR)) {
+        while ($file = readdir($dh)) {
+            // if it's a ruleset (*.rules), add it to the array
+            if (preg_match("/.+\.rules$/", $file)) {
+                $ruleset_file[] = $file;
             }
-            closedir($dh);
         }
+        closedir($dh);
     }
 
     if (empty($ruleset_file)) {
@@ -92,7 +90,7 @@ if ($_SESSION['user_type'] !== 'A') {
         // display it in a sorted table with links
         asort($ruleset_file);
         foreach ($ruleset_file as $this_ruleset_file) {
-            TR(array("<a href=\"msre_edit.php?file=$this_ruleset_file\">$this_ruleset_file</a>"));
+            TR(array('<a href="msre_edit.php?token=' . $_SESSION['token'] .'&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>'));
         }
         // put a blank header line on the bottom... it just looks nicer that way to me
         TRH(array(''));

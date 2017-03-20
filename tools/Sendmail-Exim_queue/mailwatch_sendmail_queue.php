@@ -62,7 +62,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                 if ($MTA === 'exim') {
                     if (preg_match('/-H$/', $file)) {
                         // Get rid of the '-H' from the end of the filename to get the msgid
-                        $msgid = substr($file, 0, strlen($file) - 2);
+                        $msgid = substr($file, 0, - 2);
                         if ($fh = @fopen($queuedir . $file, 'rb')) {
                             // Work out the total size (df+qf) of the mail
                             $output[$msgid]['size'] = (@filesize($queuedir . $msgid . '-D') + filesize(
@@ -264,7 +264,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value($msginfo['sender']) . "','" .
+                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
                     safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .

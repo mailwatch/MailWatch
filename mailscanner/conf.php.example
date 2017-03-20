@@ -156,6 +156,8 @@ define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
 // the clean.quarantine script provided with MailScanner.
 define('QUARANTINE_USE_FLAG', true);
 define('QUARANTINE_DAYS_TO_KEEP', 30);
+//Set QUARANTINE_FILTERS_COMBINED to true to combine quarantine report into a single report when user filters are present
+define('QUARANTINE_FILTERS_COMBINED', false);
 define('QUARANTINE_REPORT_FROM_NAME', 'MailWatch for MailScanner');
 define('QUARANTINE_REPORT_SUBJECT', 'Message Quarantine Report');
 define('QUARANTINE_SUBJECT', 'Message released from quarantine');
@@ -209,6 +211,8 @@ define('RPC_ONLY', false);
 // define('RPC_PORT', 80);
 // RPC over SSL? (defaults to port 443 unless RPC_PORT is supplied).
 // define('RPC_SSL', true);
+// Enter the remote servers as space separated list where rpc call shall be executed at (eg. for postfix queue).
+// define('RPC_REMOTE_SERVER', 'other.example.com 10.0.0.2');
 
 // Display the inbound/outbound mail queue lengths.
 // Note: this only works with Exim and Sendmail.

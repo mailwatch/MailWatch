@@ -61,8 +61,20 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
     audit_log(__('auditlog55'));
 } else {
+    if (isset($_POST['token'])) {
+        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+    } else {
+        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+    }
+
     // add the header information such as the logo, search, menu, ....
-    $short_filename = basename(sanitizeInput($_GET['file']));
+    if (isset($_POST['file'])) {
+        $short_filename = deepSanitizeInput($_POST['file'], 'url');
+    } else {
+        $short_filename = deepSanitizeInput($_GET['file'], 'url');
+    }
+    if (!validateInput($short_filename, 'file')) { die('No! Bad dog no treat for you!'); }
+    $short_filename = basename($short_filename);
     $pageheader = 'Edit MailScanner Ruleset ' . $short_filename;
     $filter = html_start($pageheader, 0, false, false);
 
@@ -106,6 +118,8 @@ if ($_SESSION['user_type'] !== 'A') {
     // check to see if the form was submitted, and if so process it..
     $status_message = '';
     if (isset($_POST['submitted'])) {
+        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+
         list($bytes_written, $status_message) = Process_Form();
         // re-read the file after processing
         $file_contents = Read_File($full_filename, $bytes_written);
@@ -143,7 +157,12 @@ function Show_Form($status_msg)
 
     // display top of page stuff
     echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
-    echo "<form method=\"post\" name=\"MSRE_edit\" action=\"msre_edit.php?file=$short_filename\">\n";
+    echo '<form method="post" name="MSRE_edit" action="msre_edit.php">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="file" VALUE="' . $short_filename . '">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/msre_edit.php form token') . '">' . "\n";
+        echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
+
     echo "<input type=\"hidden\" name=\"submitted\" value=\"1\">\n";
     // check for status message, and append it to the end of the header
 
@@ -573,7 +592,9 @@ function Process_Form()
     $default_direction = 'FromOrTo:';
     $default_action = '';
     $default_desc = '';
-    for ($i = -1; $i <= $_POST['rule_count']; $i++) {
+    $count = deepSanitizeInput($_POST['rule_count'], 'num');
+    if (!validateInput($count, 'num')) { die('No! Bad dog no treat for you!'); }
+    for ($i = -1; $i <= $count; $i++) {
         $rule_prefix = 'rule' . $i . '_';
         $description = $rule_prefix . 'description';
         $direction = $rule_prefix . 'direction';
@@ -671,19 +692,17 @@ function Process_Form()
             $_POST[$and_target] = '';
         }
 
-        if (isset($_POST[$direction])) {
-            if ($_POST[$direction]) {
-                //echo "$direction: $_POST[$direction]<br>\n";
-                $new_ruleset[] = array(
-                    'description' => $_POST[$description],
-                    'direction' => $_POST[$direction],
-                    'target' => $_POST[$target],
-                    'and' => $_POST[$and],
-                    'and_direction' => $_POST[$and_direction],
-                    'and_target' => $_POST[$and_target],
-                    'action' => $_POST[$action]
-                );
-            }
+        if (isset($_POST[$direction]) && $_POST[$direction]) {
+            //echo "$direction: $_POST[$direction]<br>\n";
+            $new_ruleset[] = array(
+                'description' => $_POST[$description],
+                'direction' => $_POST[$direction],
+                'target' => $_POST[$target],
+                'and' => $_POST[$and],
+                'and_direction' => $_POST[$and_direction],
+                'and_target' => $_POST[$and_target],
+                'action' => $_POST[$action]
+            );
         }
     }
 
@@ -718,7 +737,7 @@ function Process_Form()
     */
 
     // mmmkay, now we should be able to write the new file
-    $getFile = basename(sanitizeInput($_GET['file']));
+    $getFile = basename(sanitizeInput($short_filename));
     $filename = MSRE_RULESET_DIR . '/' . $getFile;
     list($bytes, $status_msg) = Write_File($filename, $new_file);
 

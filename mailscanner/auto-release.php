@@ -34,8 +34,10 @@ if (file_exists('conf.php')) {
     $output = array();
     if (isset($_GET['mid'], $_GET['r'])) {
         dbconn();
-        $mid = safe_value($_GET['mid']);
-        $token = safe_value($_GET['r']);
+        $mid = deepSanitizeInput($_GET['mid'], 'url');
+        if (!validateInput($mid, 'msgid')) { die(); }
+        $token = deepSanitizeInput($_GET['r'], 'url');
+        if (!validateInput($token, 'releasetoken')) { die('No! Bad dog no treat for you!'); }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);
         if (!$result) {
@@ -91,7 +93,7 @@ if (file_exists('conf.php')) {
 <div class="autorelease">
     <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
     <div class="border-rounded">
-        <h1><?php echo __('title63'); ?></h1>
+        <h1><?php echo __('title59'); ?></h1>
         <?php
         foreach ($output as $msg) {
             echo '<p>' . $msg . '</p>';
