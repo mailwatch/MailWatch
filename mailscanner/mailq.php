@@ -36,10 +36,14 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('mqviewer24'), STATUS_REFRESH, false, false);
 
-if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+if (false === checkToken($_GET['token'])) {
+    die('No! Bad dog no treat for you!');
+}
 
 $queue = deepSanitizeInput($_GET['queue'], 'url');
-if (!validateInput($queue, 'mailq')) { die(); }
+if (!validateInput($queue, 'mailq')) {
+	die();
+}
 
 switch ($queue) {
     case 'inq':
