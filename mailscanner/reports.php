@@ -129,8 +129,9 @@ if (get_conf_truefalse('MCPChecks') === true) {
     $filter->AddReport('rep_mcp_score_dist.php', __('mcpscoredist14'));
     $filter->AddReport('rep_mcp_rule_hits.php', __('mcprulehit14'));
 }
-
-$filter->AddReport('rep_audit_log.php', __('auditlog14'), true);
+if ($_SESSION['user_type'] !== 'A') {
+    $filter->AddReport('rep_audit_log.php', __('auditlog14'), true);
+}
 $filter->Display($_SESSION['token']);
 
 clear_cache_dir();
