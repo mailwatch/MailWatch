@@ -4401,7 +4401,7 @@ function validateInput($input, $type)
             }
             break;
         case 'msgid':
-            if (preg_match('/^([A-F0-9]{8,12}\.[A-F0-9]{5}$|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{12,24}|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-x]{12})$/',
+            if (preg_match('/^([A-F0-9]{8,12}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,16}(?=z[A-Za-x]{4,8})|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,14})$/',
                 $input)) {
                 return true;
             }
@@ -4427,7 +4427,7 @@ function validateInput($input, $type)
             }
             break;
         case 'releasetoken':
-            if (preg_match('/^[0-9A-Fa-f]{10}$/', $input)) {
+            if (preg_match('/^[0-9A-Fa-f]{20}$/', $input)) {
                 return true;
             }
             break;
