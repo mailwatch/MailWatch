@@ -4370,7 +4370,7 @@ function validateInput($input, $type)
             }
             break;
         case 'releasetoken':
-            if (preg_match('/^[0-9A-Fa-f]{10}$/', $input)) {
+            if (preg_match('/^[0-9A-Fa-f]{20}$/', $input)) {
                 return true;
             }
             break;
