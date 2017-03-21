@@ -35,7 +35,9 @@ require_once __DIR__ . '/lib/hash_equals.php';
 
 session_start();
 if (isset($_POST['token'])) {
-    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+    if (false === checkToken($_POST['token'])) {
+        die('No! Bad dog no treat for you!');
+    }
 }
 $_SESSION['token'] = generateToken();
 

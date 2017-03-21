@@ -51,9 +51,13 @@ html_start(__('reports14'), '0', false, false);
 // Add filters and save them
 if (isset($_POST['action']) || isset($_GET['action'])) {
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_POST['token'])) {
+            die('No! Bad dog no treat for you!');
+        }
     } else {
-        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_GET['token'])) {
+            die('No! Bad dog no treat for you!');
+        }
     }
 
     if (isset($_POST['action'])) {
@@ -64,7 +68,9 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     
     switch (strtolower($action)) {
         case 'add':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+                die('No! Bad dog no treat for you!');
+            }
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], sanitizeInput($_POST['value']));
             break;
         case 'remove':
@@ -75,7 +81,9 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             echo "Session destroyed\n";
             exit;
         case 'save':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+                die('No! Bad dog no treat for you!');
+            }
             if (isset($_POST['save_as'])) {
                 $name = sanitizeInput($_POST['save_as']);
             }
@@ -87,11 +95,15 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             }
             break;
         case 'load':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+                die('No! Bad dog no treat for you!');
+            }
             $filter->Load(sanitizeInput($_POST['filter']));
             break;
         case 'delete':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+                die('No! Bad dog no treat for you!');
+            }
             $filter->Delete(sanitizeInput($_POST['filter']));
             break;
     }
@@ -129,7 +141,7 @@ if (get_conf_truefalse('MCPChecks') === true) {
     $filter->AddReport('rep_mcp_score_dist.php', __('mcpscoredist14'));
     $filter->AddReport('rep_mcp_rule_hits.php', __('mcprulehit14'));
 }
-if ($_SESSION['user_type'] !== 'A') {
+if ($_SESSION['user_type'] === 'A') {
     $filter->AddReport('rep_audit_log.php', __('auditlog14'), true);
 }
 $filter->Display($_SESSION['token']);

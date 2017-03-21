@@ -41,9 +41,13 @@ require __DIR__ . '/login.function.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 
 if (isset($_POST['token'])) {
-    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+    if (false === checkToken($_POST['token'])) {
+        die('No! Bad dog no treat for you!');
+    }
 } else {
-    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+    if (false === checkToken($_GET['token'])) {
+        die('No! Bad dog no treat for you!');
+    }
 }
 
 if (isset($_POST['id'])) {
@@ -369,7 +373,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
     if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === __('submit04')) {
-        if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) { die(__('error04')); }
+        if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
+            die(__('error04'));
+        }
         debug('submit branch taken');
         // Reset error status
         $error = 0;
@@ -379,17 +385,23 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Send to the original recipient(s) or to an alternate address
             if (deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
                 $to = deepSanitizeInput($_POST['alt_recpt'], 'string');
-                if (!validateInput($to, 'user')) { die(__('error04') . ' ' . $to); }
+                if (!validateInput($to, 'user')) {
+                    die(__('error04') . ' ' . $to);
+                }
             } else {
                 $to = $quarantined[0]['to'];
             }
             
             $arrid = $_POST['release'];
-            if (!is_array($arrid)) { die(); }
+            if (!is_array($arrid)) {
+                die();
+            }
             $arrid2 = array();
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) { die(); }
+                if (!validateInput($id2, 'num')) {
+                    die();
+                }
                 $arrid2[] = $id2;
             }
             $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY);
@@ -397,25 +409,35 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         // sa-learn
         if (isset($_POST['learn'])) {
             $arrid = $_POST['learn'];
-            if (!is_array($arrid)) { die(); }
+            if (!is_array($arrid)) {
+                die();
+            }
             $arrid2 = array();
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
+                if (!validateInput($id2, 'num')) {
+                    die('No! Bad dog no treat for you!');
+                }
                 $arrid2[] = $id2;
             }
             $type = deepSanitizeInput($_POST['learn_type'], 'url');
-            if (!validateInput($type, 'salearnops')) { die('No! Bad dog no treat for you!'); }
+            if (!validateInput($type, 'salearnops')) {
+                die('No! Bad dog no treat for you!');
+            }
             $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
         }
         // Delete
         if (isset($_POST['delete'])) {
             $arrid = $_POST['delete'];
-            if (!is_array($arrid)) { die(); }
+            if (!is_array($arrid)) {
+                die();
+            }
             $arrid2 = array();
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
+                if (!validateInput($id2, 'num')) {
+                    die('No! Bad dog no treat for you!');
+                }
                 $arrid2[] = $id2;
             }
             $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY);
@@ -530,7 +552,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
-         echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
         echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/detail.php ops token') . '">' . "\n";
         echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
         echo '  </td></tr>' . "\n";

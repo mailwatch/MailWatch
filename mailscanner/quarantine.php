@@ -85,9 +85,13 @@ if (!isset($_GET['dir'])) {
         }
     }
 } else {
-    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+    if (false === checkToken($_GET['token'])) {
+        die('No! Bad dog no treat for you!');
+    }
     $dir = deepSanitizeInput($_GET['dir'], 'url');
-    if (!validateInput($dir, 'quardir')) { die(); }
+    if (!validateInput($dir, 'quardir')) {
+        die();
+    }
 
     if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
         die('No! Bad dog no treat for you!');
