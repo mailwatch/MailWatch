@@ -59,12 +59,12 @@ $sql = "
  LIMIT 10
 ';
 
-$columns = array (
+$columns = array(
     'name' => __('domain45'),
     'countconv' => __('count03'),
     'sizeconv' => __('size03')
 );
-$sqlColumns = array (
+$sqlColumns = array(
     'name',
     'count',
     'size'
