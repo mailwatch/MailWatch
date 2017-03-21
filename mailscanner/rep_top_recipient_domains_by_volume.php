@@ -63,7 +63,7 @@ $columns = array(
     'name' => __('domain41'),
     'count' => __('count03'),
     'size' => __('size03')
-];
+);
 $sqlColumns = array(
     'name',
     'count',
