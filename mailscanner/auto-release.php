@@ -40,7 +40,7 @@ if (file_exists('conf.php')) {
         }
         $token = deepSanitizeInput($_GET['r'], 'url');
         if (!validateInput($token, 'releasetoken')) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);

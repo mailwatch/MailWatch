@@ -138,17 +138,17 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
     }
     if (isset($action)) {
         if (!validateInput($action, 'action')) {
-            die('No! Bad dog no treat for you!');
+            die(__('dievalidate99'));
         }
         switch ($action) {
             case 'new':
                 if (isset($_POST['token'])) {
                     if (false === checkToken($_POST['token'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                 } else {
                     if (false === checkToken($_GET['token'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                 }
                 if (!isset($_POST['submit'])) {
@@ -180,7 +180,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo '</TABLE></FORM><BR>' . "\n";
                 } else {
                     if (false === checkFormToken('/user_manager.php new form token', $_POST['formtoken'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                     $username = deepSanitizeInput($_POST['username'], 'string');
                     if (!validateInput($username, 'user')) {
@@ -194,7 +194,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && $n_type === 'A') {
                         echo __('errorcreatedomainforbidden12') . '<br>';
-                    }   elseif ($_POST['password'] === "") {
+                    } elseif ($_POST['password'] === "") {
                         echo __('errorpwdreq12') . '<br>';
                     } elseif ($_POST['password'] !== $_POST['password1']) {
                         echo __('errorpass12') . '<br>';
@@ -268,11 +268,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             case 'edit':
                 if (isset($_POST['token'])) {
                     if (false === checkToken($_POST['token'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                 } else {
                     if (false === checkToken($_GET['token'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                 }
                 // if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
@@ -283,7 +283,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     $key = deepSanitizeInput($_GET['key'], 'string');
                 }
                 if (!validateInput($key, 'user')) {
-                    die('No! Bad dog no treat for you!');
+                    die(__('dievalidate99'));
                 }
                 $ar = explode('@', $key);
                 if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
@@ -341,7 +341,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $result = dbquery($sql);
                     } else {
                         if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
-                            die('No! Bad dog no treat for you!');
+                            die(__('dietoken99'));
                         }
                         // Do update
                         
@@ -365,7 +365,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             // Validate key
                             $key = deepSanitizeInput($_POST['key'], 'string');
                             if (!validateInput($key, 'user')) {
-                                die('No! Bad dog no treat for you!');
+                                die(__('dievalidate99'));
                             }
                             $n_username = deepSanitizeInput($_POST['username'], 'string');
                             if (!validateInput($n_username, 'user')) {
@@ -433,11 +433,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 break;
             case 'delete':
                 if (false === checkToken($_GET['token'])) {
-                    die('No! Bad dog no treat for you!');
+                    die(__('dietoken99'));
                 }
                 $id = deepSanitizeInput($_GET['id'], 'string');
                 if (!validateInput($id, 'user')) {
-                    die('No! Bad dog no treat for you!');
+                    die(__('dievalidate99'));
                 }
                 $ar = explode('@', $id);
                 if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
@@ -455,11 +455,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             case 'filters':
                 if (isset($_POST['token'])) {
                     if (false === checkToken($_POST['token'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                 } else {
                     if (false === checkToken($_GET['token'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                 }
                 if (isset($_POST['id'])) {
@@ -468,13 +468,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     $id = deepSanitizeInput($_GET['id'], 'string');
                 }
                 if (!validateInput($id, 'user')) {
-                    die('No! Bad dog no treat for you!');
+                    die(__('dievalidate99'));
                 }
 
                 if (isset($_POST['filter'])) {
-
                     if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dietoken99'));
                     }
                     $getFilter = deepSanitizeInput($_POST['filter'], 'email');
                     if (!validateInput($getFilter, 'email')) {
@@ -485,7 +484,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 if (isset($_POST['new']) && $getFilter !== '') {
                     $getActive = deepSanitizeInput($_POST['active'], 'url');
                     if (!validateInput($getActive, 'yn')) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dievalidate99'));
                     }
                     $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value($id) . "','" . safe_value($getFilter) . "','" . safe_value($getActive) . "')";
                     dbquery($sql);
@@ -497,7 +496,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 if (isset($_GET['delete']) && isset($_GET['filter'])) {
                     $getFilter = deepSanitizeInput($_GET['filter'], 'email');
                     if (!validateInput($getFilter, 'email')) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dievalidate99'));
                     }
                     $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     dbquery($sql);
@@ -508,7 +507,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 if (isset($_GET['change_state']) && isset($_GET['filter'])) {
                     $getFilter = deepSanitizeInput($_GET['filter'], 'email');
                     if (!validateInput($getFilter, 'email')) {
-                        die('No! Bad dog no treat for you!');
+                        die(__('dievalidate99'));
                     }
                     $sql = "SELECT active FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     $result = dbquery($sql);
@@ -626,10 +625,10 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $result = dbquery($sql);
     } else {
         if (false === checkToken($_POST['token'])) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
         if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
         // Do update
         if (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
@@ -658,7 +657,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             }
             $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
             if (!validateInput($quarantine_rcpt, 'user')) {
-                die('No! Bad dog no treat for you!');
+                die(__('dievalidate99'));
             }
 
             if (isset($_POST['password']) && $_POST['password'] !== 'XXXXXXXX') {

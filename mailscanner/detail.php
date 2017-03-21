@@ -42,11 +42,11 @@ ini_set('memory_limit', MEMORY_LIMIT);
 
 if (isset($_POST['token'])) {
     if (false === checkToken($_POST['token'])) {
-        die('No! Bad dog no treat for you!');
+        die(__('dietoken99'));
     }
 } else {
     if (false === checkToken($_GET['token'])) {
-        die('No! Bad dog no treat for you!');
+        die(__('dietoken99'));
     }
 }
 
@@ -416,13 +416,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
-                    die('No! Bad dog no treat for you!');
+                    die(__('dievalidate99'));
                 }
                 $arrid2[] = $id2;
             }
             $type = deepSanitizeInput($_POST['learn_type'], 'url');
             if (!validateInput($type, 'salearnops')) {
-                die('No! Bad dog no treat for you!');
+                die(__('dievalidate99'));
             }
             $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
         }
@@ -436,7 +436,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
-                    die('No! Bad dog no treat for you!');
+                    die(__('dievalidate99'));
                 }
                 $arrid2[] = $id2;
             }

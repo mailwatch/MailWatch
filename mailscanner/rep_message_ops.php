@@ -41,19 +41,19 @@ require __DIR__ . '/login.function.php';
 $filter = html_start(__('messagelisting17'), 0, false, true);
 
 if (false === checkToken($_GET['token'])) {
-    die('No! Bad dog no treat for you!');
+    die(__('dietoken99'));
 }
 
 if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-    die('No! Bad dog no treat for you!');
+    die(__('dievalidate99'));
 }
 
 if (isset($_GET['orderby']) && !validateInput(deepSanitizeInput($_GET['orderby'], 'url'), 'orderby')) {
-    die('No! Bad dog no treat for you!');
+    die(__('dievalidate99'));
 }
 
 if (isset($_GET['orderdir']) && !validateInput(deepSanitizeInput($_GET['orderdir'], 'url'), 'orderdir')) {
-    die('No! Bad dog no treat for you!');
+    die(__('dievalidate99'));
 }
 
 // Checks to see if you are looking for quarantined files only

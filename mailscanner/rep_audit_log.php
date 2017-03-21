@@ -45,22 +45,22 @@ if ($_SESSION['user_type'] !== 'A') {
     html_start(__('auditlog33'), 0, false, false);
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
     } else {
         if (false === checkToken($_GET['token'])) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
     }
 
     if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-        die('No! Bad dog no treat for you!');
+        die(__('dievalidate99'));
     }
 
     $auditFilter = '';
     if (isset($_POST['formtoken'])) {
         if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
         if (isset($_POST['startDate'])) {
             $startDate=deepSanitizeInput($_POST['startDate'], 'url');

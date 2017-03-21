@@ -41,12 +41,12 @@ if (!isset($_GET['id'])) {
     die(__('nomessid58'));
 } else {
     if (false === checkToken($_GET['token'])) {
-        die('No! Bad dog no treat for you!');
+        die(__('dietoken99'));
     }
 
     $message_id = deepSanitizeInput($_GET['id'], 'url');
     if (!validateInput($message_id, 'msgid')) {
-        die('No! Bad dog no treat for you!');
+        die(__('dievalidate99'));
     }
     // See if message is local
     dbconn(); // required db link for mysql_real_escape_string
@@ -113,7 +113,7 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 if (isset($_GET['part'])) {
     $part = deepSanitizeInput($_GET['part'], 'num');
     if (!validateInput($part, 'num')) {
-        die('No! Bad dog no treat for you!');
+        die(__('dievalidate99'));
     }
 
     // Make sure that part being requested actually exists
