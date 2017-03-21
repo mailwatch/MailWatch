@@ -247,8 +247,8 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
-                // Use sender if MAIL_SENDER = sender
-                // If envelopesender do not exist, use sender instead (bounce)
+                // Use 'From:' if MAIL_SENDER = sender
+                // If 'envelope-from' do not exist, use 'From:' instead (bounce)
                 $from = "";
                 if (defined('MAIL_SENDER') && MAIL_SENDER === 'sender') {
                     $from = $msginfo['sender'];
