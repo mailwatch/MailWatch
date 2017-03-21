@@ -5,6 +5,9 @@ INSTALLATION INSTRUCTIONS
 The mailwatch_sendmail_queue.php script process the MTA Exim or Sendmail queue to store messages 
 in MailWatch database and see them in the MailWatch GUI.
 
+For best result, you need to install the imap PHP package (php5-imap)
+but mailwatch_sendmail_queue.php can work without it.
+
 Copy the mailwatch_sendmail_queue.php file in /usr/local/bin
 
 Verify if the file is executable. If not, use "chmod +x" to correct this problem.
