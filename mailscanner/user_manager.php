@@ -187,11 +187,14 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $username = '';
                     }
                     $ar = explode('@', $username);
+                    $n_type = deepSanitizeInput($_POST['type'], 'url');
                     if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
-                    } elseif ($_POST['password'] === "") {
+                    } elseif ($_SESSION['user_type'] === 'D' && $n_type === 'A') {
+                        echo __('errorcreatedomainforbidden12') . '<br>';
+                    }   elseif ($_POST['password'] === "") {
                         echo __('errorpwdreq12') . '<br>';
                     } elseif ($_POST['password'] !== $_POST['password1']) {
                         echo __('errorpass12') . '<br>';
@@ -206,7 +209,6 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             $n_fullname = '';
                         }
                         $n_password = safe_value(password_hash($_POST['password'], PASSWORD_DEFAULT));
-                        $n_type = deepSanitizeInput($_POST['type'], 'url');
                         if (!validateInput($n_type, 'type')) {
                             $n_type = 'U';
                         }
@@ -375,7 +377,6 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             }
                             $n_password = safe_value(password_hash($_POST['password'], PASSWORD_DEFAULT));
 
-                            $n_type = deepSanitizeInput($_POST['type'], 'url');
                             if (!validateInput($n_type, 'type')) {
                                 $n_type = 'U';
                             }
@@ -443,6 +444,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo __('errordeletenodomainforbidden12') . '<br>';
                 } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                     echo sprintf(__('errordeletedomainforbidden12'), sanitizeInput($ar[1])) . '<br>';
+                } elseif ($_SESSION['myusername'] === $id) {
+                    echo __('errordeleteself12') . '<br>';
                 } else {
                     $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value($id) . "'";
                     dbquery($sql);
