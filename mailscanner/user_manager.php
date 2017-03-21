@@ -416,8 +416,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
                 if (isset($_POST['filter'])) {
                     if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
-                    $getFilter = deepSanitizeInput($_POST['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) { $getFilter = ''; }
+                    $getFilter = deepSanitizeInput($_POST['filter'], 'url');
+                    if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) { $getFilter = ''; }
                 }
 
                 if (isset($_POST['new']) && $getFilter !== '') {
@@ -431,8 +431,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
 
                 if (isset($_GET['delete']) && isset($_GET['filter'])) {
-                    $getFilter = deepSanitizeInput($_GET['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) { die('No! Bad dog no treat for you!'); }
+                    $getFilter = deepSanitizeInput($_GET['filter'], 'url');
+                    if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) { die('No! Bad dog no treat for you!'); }
                     $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     dbquery($sql);
                     if (DEBUG === true) {
@@ -440,8 +440,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     }
                 }
                 if (isset($_GET['change_state']) && isset($_GET['filter'])) {
-                    $getFilter = deepSanitizeInput($_GET['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) { die('No! Bad dog no treat for you!'); }
+                    $getFilter = deepSanitizeInput($_GET['filter'], 'url');
+                    if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) { die('No! Bad dog no treat for you!'); }
                     $sql = "SELECT active FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     $result = dbquery($sql);
                     $active = $result->fetch_row();
