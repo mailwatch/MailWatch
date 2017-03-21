@@ -894,6 +894,8 @@ return array(
     'message299' => 'is readable and writable by MailWatch',
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
+    'dievalidate99' => 'Fout: niet in staat om input te valideren',
+    'dietoken99' => 'Fout: kan geen security token te valideren',
     'i18_missing' => 'Geen vertaling in het Nederlands',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
     'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',

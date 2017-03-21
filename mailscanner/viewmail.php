@@ -51,7 +51,7 @@ dbconn();
 if (!isset($_GET['id'])) {
     die(__('nomessid06'));
 } else {
-    //if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+    //if (false === checkToken($_GET['token'])) { die(__('dietoken99')); }
     $message_id = deepSanitizeInput($_GET['id'], 'url');
     if (!validateInput($message_id, 'msgid')) {
         die();

@@ -894,6 +894,8 @@ return array(
     'message299' => 'is readable and writable by MailWatch',
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
+    'dievalidate99' => 'Erro: não foi possível validar a entrada',
+    'dietoken99' => 'Erro: não é possível verificar o token de segurança',
     'i18_missing' => 'Não traduzido em português',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
     'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',

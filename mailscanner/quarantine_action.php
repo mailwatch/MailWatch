@@ -98,7 +98,7 @@ if (count($list) === 0) {
 switch ($_GET['action']) {
     case 'release':
         if (false === checkToken($_GET['token'])) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
         $result = '';
         if (count($list) === 1) {
@@ -122,7 +122,7 @@ switch ($_GET['action']) {
 
     case 'delete':
         if (false === checkToken($_GET['token'])) {
-            die('No! Bad dog no treat for you!');
+            die(__('dietoken99'));
         }
         $status = array();
         if (isset($_GET['html'])) {
@@ -160,7 +160,7 @@ switch ($_GET['action']) {
             }
         } else {
             if (false === checkToken($_GET['token'])) {
-                die('No! Bad dog no treat for you!');
+                die(__('dietoken99'));
             }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {

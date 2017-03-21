@@ -38,10 +38,10 @@ require __DIR__ . '/login.function.php';
 $refresh = html_start(__('opresult21'));
 
 if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
-    die('No! Bad dog no treat for you!');
+    die(__('dietoken99'));
 }
 if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
-    die('No! Bad dog no treat for you!');
+    die(__('dietoken99'));
 }
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
