@@ -76,13 +76,8 @@ $valueConversion = array(
 $graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'count'
-<<<<<<< HEAD
 );
-printGraphTable($filename, $sql, __('top10senderdomqt44'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
-=======
-];
 printGraphTable($sql, __('top10senderdomqt44'), $sqlColumns, $columns, $graphColumns, $valueConversion);
->>>>>>> apply changes of pr 477
 
 // Add footer
 html_end();

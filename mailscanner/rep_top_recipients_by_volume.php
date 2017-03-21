@@ -59,7 +59,7 @@ $sql = '
  LIMIT 10
 ';
 
-$columns = array (
+$columns = array(
     'name' => __('email43'),
     'count' => __('count03'),
     'size' => __('size03')
