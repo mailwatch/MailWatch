@@ -430,8 +430,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     }
                 }
 
-                if (isset($_GET['delete']) && isset($_GET['filter'])) {
-                    $getFilter = deepSanitizeInput($_GET['filter'], 'email');
+                if (isset($_GET['delete']) && isset($_GET['id'])) {
+                    $getFilter = deepSanitizeInput($_GET['id'], 'email');
                     if (!validateInput($getFilter, 'email')) { die('No! Bad dog no treat for you!'); }
                     $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     dbquery($sql);
