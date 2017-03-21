@@ -469,6 +469,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
 
                 if (isset($_POST['filter'])) {
+
                     if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
                         die('No! Bad dog no treat for you!');
                     }
