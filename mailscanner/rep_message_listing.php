@@ -40,19 +40,21 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('messlisting16'), 0, false, false);
 
-if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+if (false === checkToken($_GET['token'])) {
+    die('No! Bad dog no treat for you!');
+}
 
 if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
     die('No! Bad dog no treat for you!');
-}    
+}
 
 if (isset($_GET['orderby']) && !validateInput(deepSanitizeInput($_GET['orderby'], 'url'), 'orderby')) {
     die('No! Bad dog no treat for you!');
-}    
+}
 
 if (isset($_GET['orderdir']) && !validateInput(deepSanitizeInput($_GET['orderdir'], 'url'), 'orderdir')) {
     die('No! Bad dog no treat for you!');
-}    
+}
 
 $sql = "
  SELECT
