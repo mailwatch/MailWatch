@@ -44,9 +44,13 @@ if ($_SESSION['user_type'] !== 'A') {
     // add the header information such as the logo, search, menu, ....
     html_start(__('auditlog33'), 0, false, false);
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_POST['token'])) {
+            die('No! Bad dog no treat for you!');
+        }
     } else {
-        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_GET['token'])) {
+            die('No! Bad dog no treat for you!');
+        }
     }
 
     if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
@@ -55,30 +59,42 @@ if ($_SESSION['user_type'] !== 'A') {
 
     $auditFilter = '';
     if (isset($_POST['formtoken'])) {
-        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
+            die('No! Bad dog no treat for you!');
+        }
         if (isset($_POST['startDate'])) {
             $startDate=deepSanitizeInput($_POST['startDate'], 'url');
-            if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) { $startDate = ''; }
+            if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) {
+                $startDate = '';
+            }
         } else {
             $startDate='';
         }
         if (isset($_POST['endDate'])) {
             $endDate=deepSanitizeInput($_POST['endDate'], 'url');
-            if ($endDate !== '' && $endDate !== null && !validateInput($endDate, 'date')) { $endDate = ''; }
+            if ($endDate !== '' && $endDate !== null && !validateInput($endDate, 'date')) {
+                $endDate = '';
+            }
         } else {
             $endDate='';
         }
         $username=deepSanitizeInput($_POST['username'], 'string');
-        if ($username !== '' && $username !== null && !validateInput($username, 'user')) { $username = ''; }
+        if ($username !== '' && $username !== null && !validateInput($username, 'user')) {
+            $username = '';
+        }
         if (isset($_POST['ipaddress'])) {
             $ipaddress=deepSanitizeInput($_POST['ipaddress'], 'url');
-            if (!validateInput($ipaddress, 'ip')) { $ipaddress = ''; }
+            if (!validateInput($ipaddress, 'ip')) {
+                $ipaddress = '';
+            }
         } else {
-             $ipaddress = '';
+            $ipaddress = '';
         }
         if (isset($_POST['actions'])) {
             $actions=deepSanitizeInput($_POST['actions'], 'url');
-            if ($actions !== '' && $actions !== null && !validateInput($actions, 'alnum')) { $actions = ''; }
+            if ($actions !== '' && $actions !== null && !validateInput($actions, 'alnum')) {
+                $actions = '';
+            }
         } else {
             $actions ='';
         }

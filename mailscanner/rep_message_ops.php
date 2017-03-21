@@ -40,7 +40,9 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('messagelisting17'), 0, false, true);
 
-if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+if (false === checkToken($_GET['token'])) {
+    die('No! Bad dog no treat for you!');
+}
 
 if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
     die('No! Bad dog no treat for you!');
