@@ -226,7 +226,7 @@ return array(
     'salearn04' => 'Ensinar SA',
     'file04' => 'Arquivo',
     'type04' => 'Tipo',
-    'path04' => 'Path to message',
+    'path04' => 'Caminho',
     'dang04' => 'Perigoso',
     'altrecip04' => 'Destinat&aacute;rio(s) Alternativo(s):',
     'submit04' => 'Enviar',

@@ -226,7 +226,7 @@ return array(
     'salearn04' => 'SA Trainieren',
     'file04' => 'Datei',
     'type04' => 'Typ',
-    'path04' => 'Path to message',
+    'path04' => 'Pfad',
     'dang04' => 'Gefährlich',
     'altrecip04' => 'Alternative(r) Empfänger:',
     'submit04' => 'Bestätigen',
