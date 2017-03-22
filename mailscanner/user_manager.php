@@ -350,6 +350,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             $username = '';
                         }
                         $ar = explode('@', $username);
+                        $n_type = deepSanitizeInput($_POST['type'], 'url');
                         if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                             echo __('errortonodomainforbidden12') . '<br>';
                         } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
