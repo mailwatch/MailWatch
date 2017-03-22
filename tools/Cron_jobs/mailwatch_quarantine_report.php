@@ -183,6 +183,7 @@ a.timestamp AS timestamp,
 a.to_address AS to_address,
 a.from_address AS from_address,
 a.subject AS subject,
+a.token AS token,
 CASE
  WHEN a.virusinfected>0 THEN '" . __('virus61') . "'
  WHEN a.nameinfected>0 THEN '" . __('badcontent61') . "'
@@ -399,7 +400,8 @@ function return_quarantine_list_array($to_address, $to_domain)
                 'from' => trim_output($row->from_address, FROMTO_MAXLEN),
                 'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
                 'reason' => trim($row->reason),
-                'timestamp' => trim($row->timestamp)
+                'timestamp' => trim($row->timestamp),
+                'token' => trim($row->token)
             );
         }
     }
@@ -464,7 +466,7 @@ function send_quarantine_email($email, $filter, $quarantined)
     // Build the quarantine list for this recipient
     foreach ($quarantined as $qitem) {
         //Check if auto-release is enabled
-        $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?id=' . $qitem['id'] . '">'.__('view61').'</a>';
+        $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?token=' . $qitem['token'] .'&amp;id=' . $qitem['id'] . '">'.__('view61').'</a>';
         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
             //Check if email already has an autorelease entry
             $exists = check_auto_release($qitem);

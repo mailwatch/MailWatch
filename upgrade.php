@@ -454,6 +454,15 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
+    
+    // Add new token column to maillog table
+    echo pad(' - Add token field to `maillog` table');
+    if (true === check_column_exists('maillog', 'token')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `maillog` ADD `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
+        executeQuery($sql);
+    }
 
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
