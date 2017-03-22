@@ -4041,7 +4041,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     //create canvas graph
     $bgcolors = getHexColors(count($data[$graphColumn['dataColumn']]));
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
-  <script src="js/Chart.js/Chart.min.js"></script>
+  <script src="lib/Chart.js/Chart.min.js"></script>
   <script>
     var ctx = document.getElementById("reportChart");
     var myChart = new Chart(ctx, {
