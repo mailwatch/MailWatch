@@ -1035,6 +1035,62 @@ function getUTF8String($string)
 }
 
 /**
+ * @param $header
+ * @return string
+ */
+function getFROMheader($header)
+{
+    $sender = "";
+    if (preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
+        if (isset($match[2])) {
+            $sender = $match[2];
+        }
+        if (preg_match('/\S+@\S+/', $sender, $match_email)) {
+            if (isset($match_email[0])) {
+                $sender = str_replace(array('<', '>', '"'), '', $match_email[0]);
+            }
+        }
+    }
+    return $sender;
+}
+
+/**
+ * @param $header
+ * @return string
+ */
+function getSUBJECTheader($header)
+{
+    $subject = "";
+    if (preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match)) {
+        $subLines = preg_split('/[\r\n]+/', $match[2]);
+        for ($i=0; $i < count($subLines); $i++) {
+            $convLine = "";
+            if (function_exists('imap_mime_header_decode')) {
+                $linePartArr = imap_mime_header_decode($subLines[$i]);
+                for ($j=0; $j < count($linePartArr); $j++) {
+                    if (strtolower($linePartArr[$j]->charset) === 'default') {
+                        if ($linePartArr[$j]->text != " ") {
+                            $convLine .= ($linePartArr[$j]->text);
+                        }
+                    } else {
+                        $textdecoded = @iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
+                        if (!$textdecoded) {
+                            $convLine .= $linePartArr[$j]->text;
+                        } else {
+                            $convLine .= $textdecoded;
+                        }
+                    }
+                }
+            } else {
+                $convLine .= str_replace('_', ' ', mb_decode_mimeheader($subLines[$i]));
+            }
+            $subject .= $convLine;
+        }
+    }
+    return $subject;
+}
+
+/**
  * @param $spamreport
  * @return string|false
  */
@@ -4084,7 +4140,11 @@ function checkConfVariables()
         'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
         'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
         'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
+<<<<<<< HEAD
         'MAILQ' => array('description' => 'needed to display the inbound/outbound mail queue lengths'),
+=======
+        'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
+>>>>>>> develop
     );
 
     $neededMissing = array();

@@ -216,8 +216,17 @@ define('RPC_ONLY', false);
 
 // Display the inbound/outbound mail queue lengths.
 // Note: this only works with Exim and Sendmail.
+<<<<<<< HEAD
 // You must also run /usr/local/bin/mailwatch_sendmail_queue.php from CRON.
 // define('MAILQ', true);
+=======
+// You must also run /usr/local/bin/mailwatch_sendmail_queue.php from CRON
+// and uncomment MAIL_SENDER, EXIM_QUEUE_IN and EXIM_QUEUE_OUT
+define('MAILQ', true);
+// Select if we use envelope-sender or sender (From:) in Mail Queue for Exim or Sendmail
+// Value: 'envelopesender' or 'sender'
+// define('MAIL_SENDER', 'envelopesender');
+>>>>>>> develop
 // If you change the lines below, you need to change /etc/sudoers.d/mailwatch according.
 // Command to read Exim inbound Mail Queue
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
