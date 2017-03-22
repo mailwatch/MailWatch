@@ -493,6 +493,24 @@ if ($link) {
 
     echo PHP_EOL;
 
+    // Fix existing index size for utf8mb4 conversion
+    $too_big_indexes = array(
+        'maillog_from_idx',
+        'maillog_to_idx',
+    );
+
+    foreach ($too_big_indexes as $item) {
+        echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
+        if (get_index_size(DB_NAME, 'maillog', $item) > 191) {
+            $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
+            executeQuery($sql);
+        } else {
+            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+        }
+    }
+
+    echo PHP_EOL;
+
     // Convert database to utf8mb4 if MySQL ≥ 5.5.3
     if ($link->server_version >= 50503) {
         $server_utf8_variant = 'utf8mb4';
@@ -557,24 +575,6 @@ if ($link) {
             } else {
                 echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
             }
-        }
-    }
-
-    echo PHP_EOL;
-
-    // Fix existing index size for utf8mb4 conversion
-    $too_big_indexes = array(
-        'maillog_from_idx',
-        'maillog_to_idx',
-    );
-
-    foreach ($too_big_indexes as $item) {
-        echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
-        if (get_index_size(DB_NAME, 'maillog', $item) > 191) {
-            $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
-            executeQuery($sql);
-        } else {
-            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
         }
     }
 
