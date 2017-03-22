@@ -465,6 +465,7 @@ return array(
     'retypepassword12' => 'Confirm Password:',
     'userexists12' => 'User already exists with username %s',
     'savedsettings12' => 'Settings saved',
+    'errordeleteself12' => 'Error: You can\'t delete yourself!',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -893,6 +894,8 @@ return array(
     'message299' => 'is readable and writable by MailWatch',
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
+    'dievalidate99' => 'Errore: impossibile convalidare l\'input',
+    'dietoken99' => 'Errore: impossibile convalidare token di sicurezza',
     'i18_missing' => 'Non tradotto in Italiano',
     'cannot_read_conf' => 'Impossibile leggere il file conf.php - per favore crealo copiando il file conf.php.example e modifica i parametri necessari',
     'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',

@@ -4513,7 +4513,7 @@ function checkToken($token)
 function generateFormToken($formstring)
 {
     if (!isset($_SESSION['token'])) {
-        die('No! Bad dog no treat for you!');
+        die(__('dietoken99'));
     }
 
     $_SESSION['formtoken'] = generateToken();

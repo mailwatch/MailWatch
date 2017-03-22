@@ -57,7 +57,9 @@ $message = '';
 $link = dbconn();
 if (defined('PWD_RESET') && PWD_RESET === true) {
     if (isset($_POST['Submit'])) {
-        if (false === checkToken($_POST['token'])) { die(); }
+        if (false === checkToken($_POST['token'])) {
+            die();
+        }
         $_SESSION['token'] = generateToken();
 
         if ($_POST['Submit'] === 'stage1Submit') {
@@ -67,7 +69,9 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 header('Location: password_reset.php?stage=1');
                 die();
             }
-            if(!validateInput($email, 'email')) { die(); }
+            if (!validateInput($email, 'email')) {
+                die();
+            }
             $sql = "SELECT * FROM users WHERE username = '$email'";
             $result = dbquery($sql);
             if ($result->num_rows !== 1) {
@@ -142,10 +146,14 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         } elseif ($_POST['Submit'] === 'stage2Submit') {
             //check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
             $email = $link->real_escape_string($_POST['email']);
-            if (!validateInput($email, 'email')) { die(); }
+            if (!validateInput($email, 'email')) {
+                die();
+            }
             $uid = $link->real_escape_string($_POST['uid']);
             //var_dump($_POST, $email, $uid, validateInput($uid, 'resetid'));
-            if (!validateInput($uid, 'resetid')) { die(); }
+            if (!validateInput($uid, 'resetid')) {
+                die();
+            }
             if ($_POST['pwd1'] === $_POST['pwd2']) {
                 //passwords match, now we need to store them
                 //first, check form hasn't been modified
@@ -290,27 +298,29 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             <div class="border-rounded">
                 <h1><?php echo __('title63'); ?></h1>
                 <?php if (file_exists('conf.php')) {
-                    if ($fields !== '') {
-                        ?>
+            if ($fields !== '') {
+                ?>
                         <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo sanitizeInput($_SERVER['PHP_SELF']); ?>" autocomplete="off">
                             <fieldset>
                                 <?php if (isset($_GET['error']) || $errors !== '') {
-                                    ?>
+                    ?>
                                     <p class="pwdreseterror">
                                         <?php echo $errors; ?>
                                     </p>
                                     <?php
-                                }
 
-                                if ($fields === 'stage1') {
-                                    ?>
+                }
+
+                if ($fields === 'stage1') {
+                    ?>
                                     <p><label for="email"><?php echo __('emailaddress63'); ?></label></p>
                                     <p><input name="email" type="text" id="email" autofocus></p>
                                     <p><button type="submit" name="Submit" value="stage1Submit"><?php echo __('requestpwdreset63'); ?></button></p>
                                     <?php
-                                }
-                                if ($fields === 'stage2') {
-                                    ?>
+
+                }
+                if ($fields === 'stage2') {
+                    ?>
                                     <input type="hidden" name="email" value="<?php echo $email; ?>">
                                     <input type="hidden" name="uid" value="<?php echo $uid; ?>">
                                     <p><label for="pwd1"><?php echo __('01pwd63'); ?></label></p>
@@ -319,30 +329,34 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <p><input name="pwd2" type="password" id="pwd2" autocomplete="off"></p>
                                     <p><button type="submit" name="Submit" value="stage2Submit"><?php echo __('button63'); ?></button></p>
                                     <?php
-                                } ?>
+
+                } ?>
 
                             </fieldset>
                             <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
                         </form>
                         <?php
-                    } elseif ($message !== '') {
-                        echo $message;
-                    } elseif ($errors !== '') {
-                        echo $errors;
-                    }
-                } else {
-                    ?>
+
+            } elseif ($message !== '') {
+                echo $message;
+            } elseif ($errors !== '') {
+                echo $errors;
+            }
+        } else {
+            ?>
                     <p class="error">
                         <?php echo __('cannot_read_conf'); ?>
                     </p>
                     <?php
-                } ?>
+
+        } ?>
             </div>
         </div>
 
         </body>
         </html>
         <?php
+
     } else {
         die();
     }

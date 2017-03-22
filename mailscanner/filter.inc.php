@@ -116,7 +116,9 @@ class Filter
         $this->display_last = 0;
         
         $value = deepSanitizeInput($value, 'string');
-        if (!validateInput($value, 'general')) { return; }
+        if (!validateInput($value, 'general')) {
+            return;
+        }
 
         //  Make sure this is not a duplicate
         if (count($this->item) > 0) {
@@ -366,7 +368,9 @@ WHERE
     public function Save($name)
     {
         $name = deepSanitizeInput($name, 'string');
-        if (!validateInput($name, 'general')) { return; }
+        if (!validateInput($name, 'general')) {
+            return;
+        }
 
         dbconn();
         if (count($this->item) > 0) {
@@ -392,7 +396,9 @@ WHERE
     public function Load($name)
     {
         $name = deepSanitizeInput($name, 'string');
-        if (!validateInput($name, 'general')) { return; }
+        if (!validateInput($name, 'general')) {
+            return;
+        }
         
         dbconn();
         $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='" . safe_value(
@@ -409,9 +415,10 @@ WHERE
      */
     public function Delete($name)
     {
-        
         $name = deepSanitizeInput($name, 'string');
-        if (!validateInput($name, 'general')) { return; }
+        if (!validateInput($name, 'general')) {
+            return;
+        }
         
         dbconn();
         $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . safe_value(

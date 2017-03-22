@@ -465,6 +465,7 @@ return array(
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
+    'errordeleteself12' => 'Error: You can\'t delete yourself!',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -893,6 +894,8 @@ return array(
     'message299' => 'von MailWatch gelesen und beschrieben werden kann',
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
+    'dievalidate99' => 'Fehler: kann die Eingabe nicht bestätigen',
+    'dietoken99' => 'Fehler: das Sicherheits-Token kann nicht validiert werden',
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
     'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die conf.php mit conf.php.example',
