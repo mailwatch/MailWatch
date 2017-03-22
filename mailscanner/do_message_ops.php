@@ -37,6 +37,9 @@ require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));
 
+if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) { die('No! Bad dog no treat for you!'); }
+if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
 echo ' <tr>' . "\n";
 echo '  <th colspan="3">' . __('spamlearnresult21') . '</th>' . "\n";
@@ -52,15 +55,17 @@ unset($_POST['SUBMIT']);
 if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
-            $id = $Regs[1];
+            $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
+            if (!validateInput($id, 'msgid')) { die(); }
         } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
-            $id = $Regs[1];
+            $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
+            if (!validateInput($id, 'msgid')) { die(); }
         } else {
             continue;
         }
-        switch ($v) {
+        switch (deepSanitizeInput($v, 'url')) {
             case 'S':
                 $type = 'spam';
                 break;
@@ -78,7 +83,7 @@ if (isset($_POST) && !empty($_POST)) {
         }
         $items = quarantine_list_items($id, RPC_ONLY);
         echo '<tr>' . "\n";
-        echo '<td><a href="detail.php?id=' . $id . '">' . $id . '</a></td>';
+        echo '<td><a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
         if (empty($items)) {
             echo '<td style="color: #ff0000;">' . __('diemnf21') . '</td>' . "\n";

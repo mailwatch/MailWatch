@@ -119,7 +119,9 @@ body {
     margin-bottom: 16px;
 }
 
-.login fieldset input[type="submit"] {
+.login fieldset button[type="submit"],
+.pwdresetform fieldset button[type="submit"] {
+    font-size: 16px;
     background-color: #f7ce4a;
     color: #222;
     display: block;
@@ -132,29 +134,36 @@ body {
     border: 0;
 }
 
-.login fieldset input[type="submit"]:hover {
+.pwdresetform fieldset button[type="submit"] {
+    width: auto;
+    min-width: 100px;
+}
+
+.login fieldset button[type="submit"]:hover,
+.pwdresetform fieldset button[type="submit"]:hover {
     background-color: #deb531;
 }
 
 .pwdresetButton {
     text-align: center;
     margin-bottom: 10px;
+    min-height: 40px;
 }
 
-.pwdresetButton button {
+.pwdresetButton a.loginButton {
     padding: 10px;
     background-color: #f7ce4a;
     color: #222222;
-    display: block;
     margin: 0 auto;
-    min-width: 200px;
+    min-width: 100px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
     border: 0;
+    font-size: 16px;
 }
 
-.pwdresetButton button:hover {
+.pwdresetButton a.loginButton:hover {
     background-color: #deb531;
 }
 
@@ -163,6 +172,15 @@ body {
     font-size: 14px;
     text-decoration: none;
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.loginbody .pwdresetButton a:hover {
+    background-color: blue;
+    color: #FFF;
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 /* mail table */
@@ -674,7 +692,7 @@ td.message {
 
 .pwdreset {
     margin: 50px auto;
-    width: 350px;
+    width: 500px;
 }
 
 .pwdreset h1 {
@@ -686,6 +704,9 @@ td.message {
     -webkit-border-top-left-radius: 15px;
     -moz-border-radius-topleft: 15px;
     border-top-left-radius: 15px;
+    -webkit-border-top-right-radius: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-right-radius: 15px;
     padding: 20px
 }
 
@@ -768,4 +789,70 @@ td.message {
 .pwdreset p {
     padding: 0 10px;
     text-align: center;
+}
+
+/* user_manager.php */
+.inputerror {
+    background: rgba(255, 0, 0, 0.57);
+}
+
+#formerror {
+    background-color: #F2DEDE;
+    border-color: #EBCCD1;
+    color: #A94442;
+    padding: 10px;
+    text-align: center;
+    margin: 10px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    max-width: 560px;
+}
+
+/*general styles*/
+
+.font-1em {
+    font-size: 1em;
+}
+
+.mw-logo {
+    text-align: center;
+}
+
+/* dbtable */
+
+.table-background:nth-child(even) {
+    background-color: #EBEBEB;
+}
+
+.table-background:nth-child(odd) {
+    background-color: #D8D8D8;
+}
+
+.table-background:hover {
+    background-color: #F7CE4A !important;
+}
+
+.mw-icon {
+    display: inline-block;
+}
+
+.mw-info-circle {
+    background: url(images/info-circle.png);
+    -webkit-background-size: contain;
+    background-size: contain;
+    height: 16px;
+    width: 16px;
+}
+
+.mw-info-circle:hover {
+    background: url(images/info-circle-hover.png);
+    -webkit-background-size: contain;
+    background-size: contain;
+    height: 16px;
+    width: 16px;
+}
+
+.link-transparent > a:hover {
+    background-color: transparent;
 }

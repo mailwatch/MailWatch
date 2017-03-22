@@ -42,13 +42,16 @@ use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
 
+# Uncommet the folloging line when debugging MailWatch.pm
+#use Data::Dumper;
+
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
 $VERSION = substr q$Revision: 1.5 $, 10;
 
 # Trace settings - uncomment this to debug
-# DBI->trace(2,'/tmp/dbitrace.log');
+#DBI->trace(2,'/tmp/dbitrace.log');
 
 my ($dbh);
 my ($sth);
@@ -58,11 +61,15 @@ my $server_port = 11553;
 my $timeout = 3600;
 my ($SQLversion);
 
-# Modify this as necessary for your configuration
-my ($db_name) = 'mailscanner';
-my ($db_host) = 'localhost';
-my ($db_user) = 'mailwatch';
-my ($db_pass) = 'mailwatch';
+# Get database information from 00MailWatchConf.pm
+use File::Basename;
+my $dirname = dirname(__FILE__);
+require $dirname.'/00MailWatchConf.pm';
+
+my ($db_name) = mailwatch_get_db_name();
+my ($db_host) = mailwatch_get_db_host();
+my ($db_user) = mailwatch_get_db_user();
+my ($db_pass) = mailwatch_get_db_password();
 
 sub InitMailWatchLogging {
     my $pid = fork();
@@ -149,7 +156,7 @@ sub ListenForMessages {
         my ($port, $packed_ip) = sockaddr_in($cli);
         my $dotted_quad = inet_ntoa($packed_ip);
 
-        # reset emergency timeout - if we haven"t heard anything in $timeout
+        # Reset emergency timeout - if we haven"t heard anything in $timeout
         # seconds, there is probably something wrong, so we should clean up
         # and let another process try.
         alarm $timeout;
@@ -214,7 +221,7 @@ sub ListenForMessages {
             $$message{headers},
             $$message{quarantined});
 
-        # this doesn't work in the event we have no connection by now ?
+        # This doesn't work in the event we have no connection by now ?
         if (!$sth) {
             MailScanner::Log::WarnLog("MailWatch: $$message{id}: MailWatch SQL Cannot insert row: %s", $sth->errstr);
         } else {
@@ -249,15 +256,26 @@ sub MailWatchLogging {
     map { $rcpts{$_} = 1; } @{$message->{to}};
     @{$message->{to}} = keys %rcpts;
 
+    # Get rid of control chars and fix chars set in Subject
+    my $subject = fix_latin($message->{utf8subject});
+    $subject =~ s/\n/ /g;  # Make sure text subject only contains 1 line (LF)
+    $subject =~ s/\t/ /g;  # and no TAB characters
+    $subject =~ s/\r/ /g;  # and no CR characters
+
+    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    #MailScanner::Log::WarnLog("MailWatch: Debug: var subject: %s", Dumper($subject));
+
     # Get rid of control chars and tidy-up SpamAssassin report
     my $spamreport = $message->{spamreport};
-    $spamreport =~ s/\n/ /g;
-    $spamreport =~ s/\t//g;
+    $spamreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+    $spamreport =~ s/\t//g;   # and no TAB characters
+    $spamreport =~ s/\r/ /g;  # and no CR characters
 
-    # Same with MCP report
+    # Get rid of control chars and tidy-up SpamAssassin MCP report
     my $mcpreport = $message->{mcpreport};
-    $mcpreport =~ s/\n/ /g;
-    $mcpreport =~ s/\t//g;
+    $mcpreport =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+    $mcpreport =~ s/\t//g;   # and no TAB characters
+    $mcpreport =~ s/\r/ /g;  # and no CR characters
 
     # Workaround tiny bug in original MCP code
     my ($mcpsascore);
@@ -267,7 +285,7 @@ sub MailWatchLogging {
         $mcpsascore = $message->{mcpscore};
     }
 
-    # Set quarantine flag - this only works on 4.43.7 or later
+    # Set quarantine flag - This only works on MailScanner 4.43.7 or later
     my ($quarantined);
     $quarantined = 0;
     if ((scalar(@{$message->{quarantineplaces}}))
@@ -293,13 +311,21 @@ sub MailWatchLogging {
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
         $file = $message->{file2safefile}{$file} or $file;
-        $text =~ s/\n/ /;  # Make sure text report only contains 1 line
-        $text =~ s/\t/ /; # and no tab characters
+        $text =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
+        $text =~ s/\t/ /g;  # and no TAB characters
+        $text =~ s/\r/ /g;  # and no CR characters
+
+        # Uncommet the folloging line when debugging MailWatch.pm
+        #MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
+
         push (@report_array, $text);
     }
 
     # Sanitize reports
     my $reports = join(",", @report_array);
+
+    # Uncommet the folloging line when debugging MailWatch.pm
+    #MailScanner::Log::WarnLog("MailWatch: DEBUG: var reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
     # where $message->{clientip} contains ip.ip.ip.ip.port
@@ -328,7 +354,7 @@ sub MailWatchLogging {
     $msg{from_domain} = $message->{fromdomain};
     $msg{to} = join(",", @{$message->{to}});
     $msg{to_domain} = $todomain;
-    $msg{subject} = fix_latin($message->{utf8subject});
+    $msg{subject} = $subject;
     $msg{clientip} = $clientip;
     $msg{archiveplaces} = join(",", @{$message->{archiveplaces}});
     $msg{isspam} = $message->{isspam};
@@ -353,7 +379,7 @@ sub MailWatchLogging {
     $msg{hostname} = $hostname;
     $msg{date} = $date;
     $msg{"time"} = $time;
-    $msg{headers} = join("\n", @{$message->{headers}});
+    $msg{headers} = join("\n", map { fix_latin($_)} @{$message->{headers}});
     $msg{quarantined} = $quarantined;
 
     # Prepare data for transmission
@@ -378,4 +404,3 @@ sub MailWatchLogging {
 }
 
 1;
-

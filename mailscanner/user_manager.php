@@ -45,15 +45,57 @@ html_start(__('usermgnt12'), 0, false, false);
    function checkPasswords() {
        var pass0 = document.getElementById("password");
        var pass1 = document.getElementById("retypepassword");
+       pass0.classList.remove("inputerror");
+       pass1.classList.remove("inputerror");
        if(pass0.value != pass1.value) {
            var errorDiv = document.getElementById("formerror");
-           errorDiv.innerHTML = "<?php echo __('errorpass12');?><br>";
+           var errormsg = errorDiv.innerHTML;
+           errorDiv.innerHTML = errormsg+"<?php echo __('errorpass12');?><br>";
            errorDiv.classList.remove("hidden");
+           pass0.classList.add("inputerror");
+           pass1.classList.add("inputerror");
            return false;
        } else {
            return true;
        }
    }
+
+   function requiredFields() {
+       var valid = true;
+       var error = "";
+       var username = document.getElementById("username");
+       var pass0 = document.getElementById("password");
+       username.classList.remove("inputerror");
+       pass0.classList.remove("inputerror");
+       if(username.value === "") {
+           error = error+"<?php echo __('erroruserreq12');?><br>";
+           username.classList.add("inputerror");
+           valid = false;
+       }
+       if (pass0.value === "") {
+           error = error+"<?php echo __('errorpwdreq12');?><br>";
+           pass0.classList.add("inputerror");
+           valid = false;
+       }
+       if (valid === false) {
+           var errorDiv = document.getElementById("formerror");
+           var errormsg = errorDiv.innerHTML;
+           errorDiv.innerHTML = errormsg + error;
+           errorDiv.classList.remove("hidden");
+       }
+       return valid;
+   }
+
+
+   function validateForm() {
+       var errorDiv = document.getElementById("formerror");
+       errorDiv.innerHTML = "";
+       errorDiv.classList.add("hidden");
+       var required = requiredFields();
+       var checkpwd = checkPasswords();
+       return !(checkpwd == false || required == false);
+   }
+
 </script>
 <?php
 if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
@@ -63,44 +105,57 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         function delete_user(id) {
             var yesno = confirm("<?php echo ' ' . __('areusuredel12') . ' '; ?>" + id + "<?php echo __('questionmark12'); ?>");
             if (yesno === true) {
-                window.location = "?action=delete&id=" + id;
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=delete&id=" + id;
             } else {
-                return false;
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>";
             }
         }
 
         function delete_filter(id, filter) {
             var yesno = confirm("<?php echo __('sure12'); ?>");
             if (yesno === true) {
-                window.location = "?action=filters&id=" + id + "&filter=" + filter + "&delete=true";
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id + "&filter=" + filter + "&delete=true";
             } else {
-                return false;
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id;
             }
         }
 
         function change_state(id, filter) {
             var yesno = confirm("<?php echo __('sure12'); ?>");
             if (yesno === true) {
-                window.location = "?action=filters&id=" + id + "&filter=" + filter + "&change_state=true";
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id + "&filter=" + filter + "&change_state=true";
             } else {
-                return false;
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id;
             }
         }
         -->
     </script>
     <?php
-    if (isset($_GET['action'])) {
-        switch ($_GET['action']) {
+    if (isset($_POST['action'])) {
+        $action = deepSanitizeInput($_POST['action'], 'url');
+    } elseif (isset($_GET['action'])) {
+        $action = deepSanitizeInput($_GET['action'], 'url');
+    }
+    if (isset($action)) {
+        if (!validateInput($action, 'action')) { die('No! Bad dog no treat for you!'); }
+        switch ($action) {
             case 'new':
-                if (!isset($_GET['submit'])) {
+                if (isset($_POST['token'])) {
+                    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+                } else {
+                    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+                }
+                if (!isset($_POST['submit'])) {
                     echo '<div id="formerror" class="hidden"></div>';
-                    echo '<FORM METHOD="GET" ACTION="user_manager.php" ONSUBMIT="return checkPasswords();">' . "\n";
-                    echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="new">' . "\n";
+                    echo '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . "\n";
                     echo '<INPUT TYPE="HIDDEN" NAME="submit" VALUE="true">' . "\n";
+                    echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="new">' . "\n";
+                    echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+                    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php new form token') . '">' . "\n";
                     echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
                     echo ' <TR><TD CLASS="heading" COLSPAN="2" ALIGN="CENTER">' . __('newuser12') . '</TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="message" COLSPAN="2" ALIGN="CENTER">' . __('forallusers12') . '</TD></TR>' . "\n";
-                    echo ' <TR><TD CLASS="heading">' . __('username0212') . ' <BR></TD><TD><INPUT TYPE="TEXT" NAME="username"></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('username0212') . ' <BR></TD><TD><INPUT TYPE="TEXT" ID="username" NAME="username"></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('name12') . '</TD><TD><INPUT TYPE="TEXT" NAME="fullname"></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('password12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="password" NAME="password"></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('retypepassword12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="retypepassword" NAME="password1"></TD></TR>' . "\n";
@@ -110,41 +165,53 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
          <OPTION VALUE="D">' . __('domainadmin12') . '</OPTION>
          <OPTION VALUE="A">' . __('admin12') . "</OPTION>
         </SELECT></TD></TR>\n";
-                    echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report"> <span style="font-size: 70%; ">' . __('senddaily12') . '</span></TD></TR>' . "\n";
-                    echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</td><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt"><br><span style="font-size: 70%; ">' . __('overrec12') . '</span></TD>' . "\n";
-                    echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" CHECKED> <span style="font-size: 70%; ">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
-                    echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="0" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
-                    echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="0" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report"> <span class="font-1em">' . __('senddaily12') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</td><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt"><br><span class="font-1em">' . __('overrec12') . '</span></TD>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" CHECKED> <span class="font-1em">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="0" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="0" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
                     echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('create12') . '"></TD></TR>' . "\n";
                     echo '</TABLE></FORM><BR>' . "\n";
                 } else {
-                    $ar = explode('@', $_GET['username']);
+                    if (false === checkFormToken('/user_manager.php new form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+                    $username = deepSanitizeInput($_POST['username'], 'string');
+                    if (!validateInput($username, 'user')) { $username = ''; }
+                    $ar = explode('@', $username);
                     if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
-                    } elseif ($_GET['password'] !== $_GET['password1']) {
+                    } elseif ($_POST['password'] === "") {
+                        echo __('errorpwdreq12') . '<br>';
+                    } elseif ($_POST['password'] !== $_POST['password1']) {
                         echo __('errorpass12') . '<br>';
-                    } elseif (checkForExistingUser($_GET['username'])) {
-                        echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
+                    } elseif ($username === '') {
+                        echo __('erroruserreq12') . '<br>';
+                    } elseif (checkForExistingUser($username)) {
+                        echo sprintf(__('userexists12'), sanitizeInput($username)) . '<br>';
                     } else {
-                        $n_username = safe_value($_GET['username']);
-                        $n_fullname = safe_value($_GET['fullname']);
-                        $n_password = safe_value(password_hash($_GET['password'], PASSWORD_DEFAULT));
-                        $n_type = safe_value($_GET['type']);
-                        $spamscore = safe_value($_GET['spamscore']);
-                        $highspamscore = safe_value($_GET['highspamscore']);
-                        if (!isset($_GET['quarantine_report'])) {
+                        $n_username = safe_value($username);
+                        $n_fullname = deepSanitizeInput($_POST['fullname'], 'string');
+                        if (!validateInput($n_fullname, 'general')) { $n_fullname = ''; }
+                        $n_password = safe_value(password_hash($_POST['password'], PASSWORD_DEFAULT));
+                        $n_type = deepSanitizeInput($_POST['type'], 'url');
+                        if (!validateInput($n_type, 'type')) { $n_type = 'U'; }
+                        $spamscore = deepSanitizeInput($_POST['spamscore'], 'float');
+                        if (!validateInput($spamscore, 'float')) { $spamscore = '0'; }
+                        $highspamscore = deepSanitizeInput($_POST['highspamscore'], 'float');
+                        if (!validateInput($highspamscore, 'float')) { $highspamscore = '0'; }
+                        if (!isset($_POST['quarantine_report'])) {
                             $quarantine_report = '0';
                         } else {
                             $quarantine_report = '1';
                         }
                         $noscan = '0';
-                        if (!isset($_GET['noscan'])) {
+                        if (!isset($_POST['noscan'])) {
                             $noscan = '1';
                         }
 
-                        $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
+                        $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
+                        if (!validateInput($quarantine_rcpt, 'user')) { $quarantine_rcpt = ''; } 
                         $sql = 'INSERT INTO users (username, fullname, password, type, quarantine_report, ';
                         if ($spamscore !== '0') {
                             $sql .= 'spamscore, ';
@@ -177,15 +244,27 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
                 break;
             case 'edit':
+                if (isset($_POST['token'])) {
+                    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+                } else {
+                    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+                }
                 // if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
-                $ar = explode('@', $_GET['key']);
+                // Validate key
+                if (isset($_POST['key'])) {
+                    $key = deepSanitizeInput($_POST['key'], 'string');
+                } else {
+                    $key = deepSanitizeInput($_GET['key'], 'string');
+                }
+                if (!validateInput($key, 'user')) { die('No! Bad dog no treat for you!'); }
+                $ar = explode('@', $key);
                 if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                     echo __('erroreditnodomainforbidden12') . '<br>';
                 } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
-                    echo sprintf(__('erroreditdomainforbidden12'), $ar[1]) . '<br>';
+                    echo sprintf(__('erroreditdomainforbidden12'), sanitizeInput($ar[1])) . '<br>';
                 } else {
-                    if (!isset($_GET['submit'])) {
-                        $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . safe_value(sanitizeInput($_GET['key'])) . "'";
+                    if (!isset($_POST['submit'])) {
+                        $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . $key . "'";
                         $result = dbquery($sql);
                         $row = $result->fetch_object();
                         $quarantine_report = '';
@@ -204,10 +283,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
                         $s[$row->type] = 'SELECTED';
                         echo '<div id="formerror" class="hidden"></div>';
-                        echo '<FORM METHOD="GET" ACTION="user_manager.php" ONSUBMIT="return checkPasswords();">' . "\n";
-                        echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="edit">' . "\n";
+                        echo '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return checkPasswords();" AUTOCOMPLETE="off">' . "\n";
                         echo '<INPUT TYPE="HIDDEN" NAME="key" VALUE="' . $row->username . '">' . "\n";
+                        echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="edit">' . "\n";
+                        echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
                         echo '<INPUT TYPE="HIDDEN" NAME="submit" VALUE="true">' . "\n";
+                        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php edit token') . '">' . "\n";
                         echo '<TABLE CLASS="mail" BORDER=0 CELLPADDING=1 CELLSPACING=1>' . "\n";
                         echo ' <TR><TD CLASS="heading" COLSPAN=2 ALIGN="CENTER">' . __('edituser12') . ' ' . $row->username . '</TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('username0212') . '</TD><TD><INPUT TYPE="TEXT" NAME="username" VALUE="' . $row->username . '"></TD></TR>' . "\n";
@@ -221,50 +302,63 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 			 <OPTION ' . $s['U'] . ' VALUE="U">' . __('user12') . '</OPTION>
 			 <OPTION ' . $s['R'] . ' VALUE="R">' . __('userregex12') . "</OPTION>
 			</SELECT></TD></TR>\n";
-                        echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span style="font-size: 70%; ">' . __('senddaily12') . '</span></TD></TR>' . "\n";
-                        echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</TD><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt" VALUE="' . $row->quarantine_rcpt . '"><br><span style="font-size: 70%; ">' . __('overrec12') . '</span></TD>' . "\n";
-                        echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span style="font-size: 70%; ">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
-                        echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $row->spamscore . '" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
-                        echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="' . $row->highspamscore . '" size="4"> <span style="font-size: 70%; ">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</TD><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt" VALUE="' . $row->quarantine_rcpt . '"><br><span class="font-1em">' . __('overrec12') . '</span></TD>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span class="font-1em">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $row->spamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="' . $row->highspamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
                         echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('update12') . '"></TD></TR>' . "\n";
                         echo "</TABLE></FORM><BR>\n";
                         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
                         $result = dbquery($sql);
                     } else {
+                        if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
                         // Do update
-                        $ar = explode('@', $_GET['username']);
+                        
+                        $username = deepSanitizeInput($_POST['username'], 'string');
+                        if (!validateInput($username, 'user')) { $username = ''; }
+                        $ar = explode('@', $username);
                         if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                             echo __('errortonodomainforbidden12') . '<br>';
                         } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
                             echo sprintf(__('errortodomainforbidden12'), $ar[1]) . '<br>';
-                        } elseif ($_SESSION['user_type'] === 'D' && $_GET['type'] === 'A') {
+                        } elseif ($_SESSION['user_type'] === 'D' && $_POST['type'] === 'A') {
                             echo __('errortypesetforbidden12') . '<br>';
-                        } elseif ($_GET['password'] !== $_GET['password1']) {
+                        } elseif ($_POST['password'] !== $_POST['password1']) {
                             echo __('errorpass12') . '<br>';
-                        } elseif ($_GET['key'] !== $_GET['username'] && checkForExistingUser($_GET['username'])) {
-                            echo sprintf(__('userexists12'), $_GET['username']) . '<br>';
+                        } elseif ($key !== $_POST['username'] && checkForExistingUser($_POST['username'])) {
+                            echo sprintf(__('userexists12'), sanitizeInput($_POST['username'])) . '<br>';
                         } else {
                             $do_pwd = false;
-                            $key = safe_value($_GET['key']);
-                            $n_username = safe_value($_GET['username']);
-                            $n_fullname = safe_value($_GET['fullname']);
-                            $n_password = safe_value(password_hash($_GET['password'], PASSWORD_DEFAULT));
-                            $n_type = safe_value($_GET['type']);
-                            $spamscore = safe_value($_GET['spamscore']);
-                            $highspamscore = safe_value($_GET['highspamscore']);
+                            // Validate key
+                            $key = deepSanitizeInput($_POST['key'], 'string');
+                            if (!validateInput($key, 'user')) { die('No! Bad dog no treat for you!'); }
+                            $n_username = deepSanitizeInput($_POST['username'], 'string');
+                            if (!validateInput($n_username, 'user')) { $n_username = ''; }
+                            $n_fullname = deepSanitizeInput($_POST['fullname'], 'string');
+                            if (!validateInput($n_fullname, 'general')) { $n_fullname = ''; }
+                            $n_password = safe_value(password_hash($_POST['password'], PASSWORD_DEFAULT));
+
+                            $n_type = deepSanitizeInput($_POST['type'], 'url');
+                            if (!validateInput($n_type, 'type')) { $n_type = 'U'; }
+                            $spamscore = deepSanitizeInput($_POST['spamscore'], 'float');
+                            if (!validateInput($spamscore, 'float')) { $spamscore = '0'; }
+                            $highspamscore = deepSanitizeInput($_POST['highspamscore'], 'float');
+                            if (!validateInput($highspamscore, 'float')) { $highspamscore = '0'; }
                             $n_quarantine_report = '1';
-                            if (!isset($_GET['quarantine_report'])) {
+                            if (!isset($_POST['quarantine_report'])) {
                                 $n_quarantine_report = '0';
                             }
                             $noscan = '0';
-                            if (!isset($_GET['noscan'])) {
+                            if (!isset($_POST['noscan'])) {
                                 $noscan = '1';
                             }
-                            $quarantine_rcpt = safe_value($_GET['quarantine_rcpt']);
+                            $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
+                            if (!validateInput($quarantine_rcpt, 'user')) { $quarantine_rcpt = ''; }
 
                             // Record old user type to audit user type promotion/demotion
                             $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
-                            if ($_GET['password'] !== 'XXXXXXXX') {
+                            if ($_POST['password'] !== 'XXXXXXXX') {
                                 // Password reset required
                                 $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$key'";
                                 dbquery($sql);
@@ -273,6 +367,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                                 dbquery($sql);
                             }
 
+                            // Update user_filters if username was changed
+                            if ($key !== $n_username) {
+                                $sql = "UPDATE user_filters SET username='$n_username' WHERE username = '$key'";
+                                dbquery($sql);
+                            }
                             //Audit
                             $type['A'] = 'administrator';
                             $type['D'] = 'domain administrator';
@@ -288,40 +387,61 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
                 break;
             case 'delete':
-                $ar = explode('@', $_GET['id']);
-                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
+                if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+                $id = deepSanitizeInput($_GET['id'], 'string');
+                if (!validateInput($id, 'user')) { die('No! Bad dog no treat for you!'); }
+                $ar = explode('@', $id);
+                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                     echo __('errordeletenodomainforbidden12') . '<br>';
                 } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
-                    echo sprintf(__('errordeletedomainforbidden12'), $ar[1]) . '<br>';
-                } elseif (isset($_GET['id'])) {
-                    $id = sanitizeInput($_GET['id']);
-                    $sql = "DELETE FROM users WHERE username='" . safe_value($id) . "'";
+                    echo sprintf(__('errordeletedomainforbidden12'), sanitizeInput($ar[1])) . '<br>';
+                } else {
+                    $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value($id) . "'";
                     dbquery($sql);
-                    audit_log(sprintf(__('auditlog0412'), $_GET['id']));
+                    audit_log(sprintf(__('auditlog0412'), $id));
                 }
                 break;
             case 'filters':
-                $id = sanitizeInput($_GET['id']);
-                if (isset($_GET['filter'])) {
-                    $getFilter = sanitizeInput($_GET['filter']);
+                if (isset($_POST['token'])) {
+                    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+                } else {
+                    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+                }
+                if (isset($_POST['id'])) {
+                    $id = deepSanitizeInput($_POST['id'], 'string');
+                } else {
+                    $id = deepSanitizeInput($_GET['id'], 'string');
+                }
+                if (!validateInput($id, 'user')) { die('No! Bad dog no treat for you!'); }
+
+                if (isset($_POST['filter'])) {
+                    if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+                    $getFilter = deepSanitizeInput($_POST['filter'], 'email');
+                    if (!validateInput($getFilter, 'email')) { $getFilter = ''; }
                 }
 
-                if (isset($_GET['new'])) {
-                    $getActive = sanitizeInput($_GET['active']);
+                if (isset($_POST['new']) && $getFilter !== '') {
+                    $getActive = deepSanitizeInput($_POST['active'], 'url');
+                    if (!validateInput($getActive, 'yn')) { die('No! Bad dog no treat for you!'); }
                     $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value($id) . "','" . safe_value($getFilter) . "','" . safe_value($getActive) . "')";
                     dbquery($sql);
                     if (DEBUG === true) {
                         echo $sql;
                     }
                 }
-                if (isset($_GET['delete'])) {
+
+                if (isset($_GET['delete']) && isset($_GET['filter'])) {
+                    $getFilter = deepSanitizeInput($_GET['filter'], 'email');
+                    if (!validateInput($getFilter, 'email')) { die('No! Bad dog no treat for you!'); }
                     $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     dbquery($sql);
                     if (DEBUG === true) {
                         echo $sql;
                     }
                 }
-                if (isset($_GET['change_state'])) {
+                if (isset($_GET['change_state']) && isset($_GET['filter'])) {
+                    $getFilter = deepSanitizeInput($_GET['filter'], 'email');
+                    if (!validateInput($getFilter, 'email')) { die('No! Bad dog no treat for you!'); }
                     $sql = "SELECT active FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
                     $result = dbquery($sql);
                     $active = $result->fetch_row();
@@ -336,9 +456,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
                 $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value($id) . "'";
                 $result = dbquery($sql);
-                echo '<FORM METHOD="GET" ACTION="user_manager.php">' . "\n";
-                echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $id . '">' . "\n";
-                echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
+                 echo '<FORM METHOD="POST" ACTION="user_manager.php">' . "\n";
+                 echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
+                 echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+                 echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $id . '">' . "\n";
+                 echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php filter token') . '">' . "\n";
+
                 echo '<INPUT TYPE="hidden" NAME="new" VALUE="true">' . "\n";
                 echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
                 echo ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . $id . '</TH></TR>' . "\n";
@@ -355,7 +478,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         }
     }
 
-    echo '<a href="?action=new">' . __('newuser12') . '</a>'."\n";
+    echo '<a href="?token=' . $_SESSION['token'] . '&amp;action=new">' . __('newuser12') . '</a>'."\n";
     echo '<br><br>'."\n";
 
     $domainAdminUserDomainFilter = "";
@@ -388,11 +511,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         END AS '" . safe_value(__('spamcheck12')) . "',
           spamscore AS '" . safe_value(__('spamscore12')) . "',
           highspamscore AS '" . safe_value(__('spamhscore12')) . "',
-        CONCAT('<a href=\"?action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . "</a>&nbsp;&nbsp;<a href=\"?action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
+        CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
         FROM
-          users " . $domainAdminUserDomainFilter . " 
+          users " . $domainAdminUserDomainFilter . ' 
         ORDER BY
-          username";
+          username';
     dbtable($sql, __('usermgnt12'));
 } else {
     if (!isset($_POST['submit'])) {
@@ -411,16 +534,18 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $s[$row->type] = 'selected';
         echo '<div id="formerror" class="hidden"></div>';
         echo '<form method="post" action="user_manager.php" onsubmit="return checkPasswords();">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
         echo '<input type="hidden" name="action" value="edit">' . "\n";
         echo '<input type="hidden" name="key" value="' . $row->username . '">' . "\n";
         echo '<input type="hidden" name="submit" value="true">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token') . '">' . "\n";
         echo '<table class="mail" border="0" cellpadding="1" cellspacing="1">' . "\n";
         echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . "\n";
         if ($_SESSION['user_ldap'] !== true) {
-            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx"></td></tr>' . "\n";
-            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx"></td></tr>' . "\n";
+            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
+            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
         }
         echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>' . "\n";
@@ -432,6 +557,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
     } else {
+        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
         // Do update
         if (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
             echo __('errorpass12')  . '<br>';
@@ -441,8 +568,10 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             if (isset($_POST['password'])) {
                 $n_password = safe_value($_POST['password']);
             }
-            $spamscore = safe_value($_POST['spamscore']);
-            $highspamscore = safe_value($_POST['highspamscore']);
+            $spamscore = deepSanitizeInput($_POST['spamscore'], 'float');
+            if (!validateInput($spamscore, 'float')) { $spamscore = '0'; }
+            $highspamscore = deepSanitizeInput($_POST['highspamscore'], 'float');
+            if (!validateInput($highspamscore, 'float')) { $highspamscore = '0'; }
             $n_quarantine_report = '1';
             if (!isset($_POST['quarantine_report'])) {
                 $n_quarantine_report = '0';
@@ -451,7 +580,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             if (!isset($_POST['noscan'])) {
                 $noscan = '1';
             }
-            $quarantine_rcpt = safe_value($_POST['quarantine_rcpt']);
+            $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
+            if (!validateInput($quarantine_rcpt, 'user')) { die('No! Bad dog no treat for you!'); }
 
             if (isset($_POST['password']) && $_POST['password'] !== 'XXXXXXXX') {
                 // Password reset required

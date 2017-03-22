@@ -37,31 +37,27 @@ session_start();
 // Require the login function code
 require __DIR__ . '/login.function.php';
 
-$url_id = sanitizeInput($_GET['id']);
+// Set the Memory usage
+ini_set('memory_limit', MEMORY_LIMIT);
 
-$url_id = safe_value($url_id);
-$url_id = htmlentities($url_id);
-$url_id = trim($url_id, ' ');
+if (isset($_POST['token'])) {
+    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+} else {
+    if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+}
 
-//Initialise local IP's
-require __DIR__ . '/lib/IPSet.php';
-$privateIPSet = new \IPSet\IPSet(array(
-    '10.0.0.0/8',
-    '172.16.0.0/12',
-    '192.168.0.0/16',
-    'fc00::/7',
-    'fe80::/10',
-    ));
-$localIPSet = new \IPSet\IPSet(array(
-    '127.0.0.1',
-    '::1',
-));
+if (isset($_POST['id'])) {
+    $url_id = trim(deepSanitizeInput($_POST['id'], 'url'), ' ');
+} else {
+    $url_id = trim(deepSanitizeInput($_GET['id'], 'url'), ' ');
+}
+
+if (!validateInput($url_id, 'msgid')) {
+    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n");
+}
 
 // Start the header code and Title
 html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
-
-// Set the Memory usage
-ini_set('memory_limit', MEMORY_LIMIT);
 
 // Setting the yes and no variable
 $yes = '<span class="yes">&nbsp;' . __('yes04') . '&nbsp;</span>';
@@ -88,8 +84,8 @@ $sql = "
   CASE WHEN virusinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('virus04') . "',
   CASE WHEN nameinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('blkfile04') . "',
   CASE WHEN otherinfected>0 THEN '$yes' ELSE '$no' END AS '" . __('otherinfec04') . "',
-  report AS 'Report:',
-  'SpamAssassin' AS 'HEADER',
+  report AS '" . __('report04') . "',
+  '" . __('spamassassin04') . "' AS 'HEADER',
   CASE WHEN isspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spam04') . "',
   CASE WHEN ishighspam>0 THEN '$yes' ELSE '$no' END AS '" . __('hscospam04') . "',
   CASE WHEN issaspam>0 THEN '$yes' ELSE '$no' END AS '" . __('spamassassinspam04') . "',
@@ -102,7 +98,7 @@ $sql = "
   '" . __('hdrmcp04') . "' AS 'HEADER',
   CASE WHEN ismcp>0 THEN '$yes' ELSE '$no' END AS 'MCP:',
   CASE WHEN ishighmcp>0 THEN '$yes' ELSE '$no' END AS '" . __('highscomcp04') . "',
-  CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS 'SpamAssassin MCP:',
+  CASE WHEN issamcp>0 THEN '$yes' ELSE '$no' END AS '" . __('spamassassinmcp04') . "',
   CASE WHEN mcpwhitelisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpwl04') . "',
   CASE WHEN mcpblacklisted>0 THEN '$yes' ELSE '$no' END AS '" . __('mcpbl04') . "',
   mcpsascore AS '" . __('mcpscore04') . "',
@@ -130,12 +126,12 @@ $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = $result->fetch_array()) {
-    $listurl = 'lists.php?host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
+    $listurl = 'lists.php?token=' . $_SESSION['token'] .'&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
     for ($f = 0; $f < $result->field_count; $f++) {
         $fieldInfo = $result->fetch_field_direct($f);
         $fieldn = $fieldInfo->name;
         if ($fieldn === __('receivedfrom04')) {
-            $output = "<table class=\"sa_rules_report\" width=\"100%\" cellspacing=0 cellpadding=0><tr><td>" . $row[$f] . '</td>';
+            $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
             if (LISTS) {
                 $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">" . __('addwl04') . "</a>&nbsp;|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">" . __('addbl04') . '</a>]</td>';
             }
@@ -161,8 +157,8 @@ while ($row = $result->fetch_array()) {
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                     $relay = stripPortFromIp($relay);
                     //check if address is in private IP space
-                    $isPrivateNetwork = $privateIPSet->match($relay);
-                    $isLocalNetwork = $localIPSet->match($relay);
+                    $isPrivateNetwork = ip_in_range($relay, false, 'private');
+                    $isLocalNetwork = ip_in_range($relay, false, 'local');
                     if ($isPrivateNetwork === true) {
                         $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
                     } elseif ($isLocalNetwork === true) {
@@ -187,11 +183,11 @@ while ($row = $result->fetch_array()) {
                     // Link to RBL Lookup
                     $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Spam Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Virus Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to All Messages Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Close table
                     $output .= ' </tr>' . "\n";
                 }
@@ -204,6 +200,7 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('report04')) {
             $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+            $row[$f] = preg_replace('/ <br>/', '<br>', $row[$f]);
         }
         if ($fieldn === __('from04')) {
             $row[$f] = htmlentities($row[$f]);
@@ -228,7 +225,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = formatSize($row[$f]);
         }
         if ($fieldn === __('msgheaders04')) {
-            if (version_compare(phpversion(), '5.4', '>=')) {
+            if (version_compare(PHP_VERSION, '5.4', '>=')) {
                 $row[$f] = nl2br(
                     str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
                 );
@@ -371,29 +368,57 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_GET['submit']) && ($_GET['submit'] === __('submit04'))) {
+    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === __('submit04')) {
+        if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) { die(__('error04')); }
         debug('submit branch taken');
         // Reset error status
         $error = 0;
         $status = array();
         // Release
-        if (isset($_GET['release'])) {
+        if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (isset($_GET['alt_recpt_yn']) && ($_GET['alt_recpt_yn'] === 'y')) {
-                $to = sanitizeInput($_GET['alt_recpt']);
-                $to = htmlentities($to);
+            if (deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
+                $to = deepSanitizeInput($_POST['alt_recpt'], 'string');
+                if (!validateInput($to, 'user')) { die(__('error04') . ' ' . $to); }
             } else {
                 $to = $quarantined[0]['to'];
             }
-            $status[] = quarantine_release($quarantined, $_GET['release'], $to, RPC_ONLY);
+            
+            $arrid = $_POST['release'];
+            if (!is_array($arrid)) { die(); }
+            $arrid2 = array();
+            foreach ($arrid as $id) {
+                $id2 = deepSanitizeInput($id, 'num');
+                if (!validateInput($id2, 'num')) { die(); }
+                $arrid2[] = $id2;
+            }
+            $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY);
         }
         // sa-learn
-        if (isset($_GET['learn'])) {
-            $status[] = quarantine_learn($quarantined, $_GET['learn'], $_GET['learn_type'], RPC_ONLY);
+        if (isset($_POST['learn'])) {
+            $arrid = $_POST['learn'];
+            if (!is_array($arrid)) { die(); }
+            $arrid2 = array();
+            foreach ($arrid as $id) {
+                $id2 = deepSanitizeInput($id, 'num');
+                if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
+                $arrid2[] = $id2;
+            }
+            $type = deepSanitizeInput($_POST['learn_type'], 'url');
+            if (!validateInput($type, 'salearnops')) { die('No! Bad dog no treat for you!'); }
+            $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
         }
         // Delete
-        if (isset($_GET['delete'])) {
-            $status[] = quarantine_delete($quarantined, $_GET['delete'], RPC_ONLY);
+        if (isset($_POST['delete'])) {
+            $arrid = $_POST['delete'];
+            if (!is_array($arrid)) { die(); }
+            $arrid2 = array();
+            foreach ($arrid as $id) {
+                $id2 = deepSanitizeInput($id, 'num');
+                if (!validateInput($id2, 'num')) { die('No! Bad dog no treat for you!'); }
+                $arrid2[] = $id2;
+            }
+            $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY);
         }
         echo '<table border="0" cellpadding="1" cellspacing="1" width="100%" class="maildetail">' . "\n";
         echo ' <tr>' . "\n";
@@ -425,7 +450,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
     } else {
-        echo '<form action="detail.php" name="quarantine">' . "\n";
+        echo '<form action="detail.php" method="post" name="quarantine">' . "\n";
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th colspan="7">' . __('quarantine04') . '</th>' . "\n";
@@ -437,7 +462,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo '  <th>' . __('file04') . '</th>' . "\n";
         echo '  <th>' . __('type04') . '</th>' . "\n";
         echo '  <th>' . __('path04') . '</th>' . "\n";
-        echo '  <th>' . __('dang04') . '?</th>' . "\n";
+        echo '  <th>' . __('dang04') . '</th>' . "\n";
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
@@ -476,7 +501,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                     (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
-                echo '  <td><a href="viewmail.php?id=' . $item['msgid'] . '">' .
+                echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] .'&amp;id=' . $item['msgid'] . '">' .
                     substr($item['path'], strlen($quarantinedir) + 1) .
                     '</a></td>' . "\n";
             } else {
@@ -505,6 +530,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
+         echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/detail.php ops token') . '">' . "\n";
         echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";

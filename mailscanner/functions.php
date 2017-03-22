@@ -30,7 +30,7 @@
  */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-if (version_compare(phpversion(), '5.3.0', '<')) {
+if (version_compare(PHP_VERSION, '5.3.0', '<')) {
     error_reporting(E_ALL);
 } else {
     // E_DEPRECATED added in PHP 5.3
@@ -45,9 +45,13 @@ require_once __DIR__ . '/conf.php';
 
 $missingConfigEntries = checkConfVariables();
 if ($missingConfigEntries['needed']['count'] !== 0) {
-    echo __('missing_conf_entries') . '<br>' . PHP_EOL;
+    $br = '';
+    if (PHP_SAPI !== 'cli') {
+        $br = '<br>';
+    }
+    echo __('missing_conf_entries') . $br . PHP_EOL;
     foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
-        echo '- ' . $missingConfigEntry . '<br>' . PHP_EOL;
+        echo '- ' . $missingConfigEntry . $br . PHP_EOL;
     }
     die();
 }
@@ -73,18 +77,29 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 }
 
 //security headers
-header('X-XSS-Protection: 1; mode=block');
-header('X-Frame-Options: SAMEORIGIN');
-header('X-Content-Type-Options: nosniff');
+if (PHP_SAPI !== 'cli') {
+    header('X-XSS-Protection: 1; mode=block');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+}
 
 // more secure session cookies
 ini_set('session.use_cookies', 1);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', 0);
+
+$session_cookie_secure = false;
 if (SSL_ONLY === true) {
     ini_set('session.cookie_secure', 1);
+    $session_cookie_secure = true;
 }
+
+//enforce session cookie security
+$params = session_get_cookie_params();
+session_set_cookie_params(0, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+session_set_cookie_params(60 * 60, $params['path'], $params['domain'], $session_cookie_secure, true);
+unset($session_cookie_secure);
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] === 'on') {
@@ -95,9 +110,6 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
-
-// Background colours
-$bg_colors = array('#EBEBEB', '#D8D8D8');
 
 // XML-RPC
 require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
@@ -203,7 +215,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.0 - RC4';
+    return '1.2.0';
 }
 
 if (!function_exists('imageantialias')) {
@@ -237,19 +249,23 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
     if (!$cacheable) {
         // Cache control (as per PHP website)
-        header('Expires: Sat, 10 May 2003 00:00:00 GMT');
-        header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', false);
+        if (PHP_SAPI !== 'cli') {
+            header('Expires: Sat, 10 May 2003 00:00:00 GMT');
+            header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            header('Cache-Control: post-check=0, pre-check=0', false);
+        }
     } else {
-        // calc an offset of 24 hours
-        $offset = 3600 * 48;
-        // calc the string in GMT not localtime and add the offset
-        $expire = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
-        //output the HTTP header
-        header($expire);
-        header('Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1');
-        header('Pragma: cache');
+        if (PHP_SAPI !== 'cli') {
+            // calc an offset of 24 hours
+            $offset = 3600 * 48;
+            // calc the string in GMT not localtime and add the offset
+            $expire = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
+            //output the HTTP header
+            header($expire);
+            header('Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1');
+            header('Pragma: cache');
+        }
     }
 
     echo page_creation_timer();
@@ -286,13 +302,13 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
 
     if (isset($_GET['id'])) {
-        $message_id = sanitizeInput($_GET['id']);
+        $message_id = trim(htmlentities(safe_value(sanitizeInput($_GET['id']))), ' ');
+        if (!validateInput($message_id, 'msgid')) {
+            $message_id = '';
+        }
     } else {
-        $message_id = ' ';
+        $message_id = '';
     }
-    $message_id = safe_value($message_id);
-    $message_id = htmlentities($message_id);
-    $message_id = trim($message_id, ' ');
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
@@ -306,6 +322,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
     echo '<form action="./detail.php">' . "\n";
     echo '<p>' . __('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
+    echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
     echo '</form>' . "\n";
     echo '</table>' . "\n";
     echo '<table cellspacing="1" class="mail">' . "\n";
@@ -331,7 +348,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '   </table>' . "\n";
     echo '  </td>' . "\n";
 
-    if (!DISTRIBUTED_SETUP && ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D')) {
+    if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo '  <td align="center" valign="top">' . "\n";
 
         // Status table
@@ -345,10 +362,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             exec('ps ax | grep MailScanner | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
-                $procs = count($output) - 1 .  ' ' . __('children03');
+                $procs = count($output) - 1 . ' ' . __('children03');
             } else {
                 $running = $no;
-                $procs = count($output) . ' ' .  __('procs03');
+                $procs = count($output) . ' ' . __('procs03');
             }
             echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
@@ -360,7 +377,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             } else {
                 $running = $no;
             }
-            $procs = count($output) . ' ' .  __('procs03');
+            $procs = count($output) . ' ' . __('procs03');
             echo '    <tr><td>' . ucwords(
                     $mta
                 ) . __('colon99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
@@ -409,48 +426,84 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             ' . "\n";
         }
 
-        // Mail Queues display
-        $incomingdir = get_conf_var('incomingqueuedir');
-        $outgoingdir = get_conf_var('outgoingqueuedir');
-
         // Display the MTA queue
         // Postfix if mta = postfix
         if ($_SESSION['user_type'] === 'A') {
-            if ($mta === 'postfix') {
-                if (is_readable($incomingdir) && is_readable($outgoingdir)) {
+            if (get_conf_var('MTA', true) === 'postfix') {
+                // Mail Queues display
+                $incomingdir = get_conf_var('incomingqueuedir', true);
+                $outgoingdir = get_conf_var('outgoingqueuedir', true);
+                if (is_readable($incomingdir) || is_readable($outgoingdir)) {
                     $inq = postfixinq();
                     $outq = postfixallq() - $inq;
+                } elseif (!DISTRIBUTED_SETUP) {
+                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+                }
+
+                if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
+                    $pqerror = '';
+                    $servers = explode(' ', RPC_REMOTE_SERVER);
+
+                    for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
+                        $msg = new xmlrpcmsg('postfix_queues', array());
+                        $rsp = xmlrpc_wrapper($servers[$i], $msg);
+                        if ($rsp->faultCode() === 0) {
+                            $response = php_xmlrpc_decode($rsp->value());
+                            $inq += $response['inq'];
+                            $outq += $response['outq'];
+                        } else {
+                            $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                        }
+                    }
+                    if ($pqerror !== '') {
+                        echo '    <tr><td colspan="3">Warning: An error occured:' . $pqerror . '</td>' . "\n";
+                    }
+                }
+                if (isset($inq) || isset($outq)) {
                     echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                     echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
-                } else {
-                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
                 }
-                // else use mailq which is for sendmail and exim
-            } elseif (MAILQ) {
-                $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
-                    0);
-                $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
-                    0);
+
+                // Else use MAILQ from conf.php which is for Sendmail or Exim
+            } elseif (MAILQ && !DISTRIBUTED_SETUP) {
+                if ($mta === 'exim') {
+                    $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
+                    $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
+                } else {
+                    // Not activated because this need to be tested.
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$inq = $output_array[2];
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+                    //$outq = $output_array[2];
+                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
+                        0);
+                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
+                        0);
+                }
                 echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
-                echo '    <tr><td colspan="2"><a href="mailq.php?queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-                echo '    <tr><td colspan="2"><a href="mailq.php?queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
-            // drive display
-            echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
-            foreach (get_disks() as $disk) {
-                $free_space = disk_free_space($disk['mountpoint']);
-                $total_space = disk_total_space($disk['mountpoint']);
-                $percent = '<span>';
-                if (round($free_space / $total_space, 2) <= 0.1) {
-                    $percent = '<span style="color:red">';
+            if (!DISTRIBUTED_SETUP) {
+                // Drive display
+                echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
+                foreach (get_disks() as $disk) {
+                    $free_space = disk_free_space($disk['mountpoint']);
+                    $total_space = disk_total_space($disk['mountpoint']);
+                    $percent = '<span>';
+                    if (round($free_space / $total_space, 2) <= 0.1) {
+                        $percent = '<span style="color:red">';
+                    }
+                    $percent .= ' [';
+                    $percent .= round($free_space / $total_space, 2) * 100;
+                    $percent .= '%] ';
+                    $percent .= '</span>';
+                    echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
                 }
-                $percent .= ' [';
-                $percent .= round($free_space / $total_space, 2) * 100;
-                $percent .= '%] ';
-                $percent .= '</span>';
-                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
             }
         }
         echo '  </table>' . "\n";
@@ -836,25 +889,9 @@ function dbquery($sql, $printError = true)
 {
     $link = dbconn();
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
-        echo "<!--\n\n";
-        $dbg_sql = 'EXPLAIN ' . $sql;
-        echo "SQL:\n\n$sql\n\n";
-        /** @var mysqli_result $result */
-        $result = $link->query($dbg_sql);
-        if ($result) {
-            while ($row = $result->fetch_row()) {
-                for ($f = 0; $f < $link->field_count; $f++) {
-                    echo $result->fetch_field_direct($f)->name . __('colon99') . ' ' . $row[$f] . "\n";
-                }
-            }
-
-            echo "\n-->\n\n";
-            $result->free_result();
-        } else {
-            die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
-        }
+        dbquerydebug($link, $sql);
     }
-
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     $result = $link->query($sql);
 
     if (true === $printError && false === $result) {
@@ -865,6 +902,31 @@ function dbquery($sql, $printError = true)
     }
 
     return $result;
+}
+
+/**
+ * @param mysqli $link
+ * @param string $sql
+ */
+function dbquerydebug($link, $sql)
+{
+    echo "<!--\n\n";
+    $dbg_sql = 'EXPLAIN ' . $sql;
+    echo "SQL:\n\n$sql\n\n";
+    /** @var mysqli_result $result */
+    $result = $link->query($dbg_sql);
+    if ($result) {
+        while ($row = $result->fetch_row()) {
+            for ($f = 0; $f < $link->field_count; $f++) {
+                echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+            }
+        }
+
+        echo "\n-->\n\n";
+        $result->free_result();
+    } else {
+        die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
+    }
 }
 
 /**
@@ -1388,14 +1450,15 @@ function get_default_ruleset_value($file)
 
 /**
  * @param string $name
+ * @param bool $force
  * @return bool
  */
-function get_conf_var($name)
+function get_conf_var($name, $force = false)
 {
-    if (DISTRIBUTED_SETUP) {
+    if (DISTRIBUTED_SETUP && !$force) {
         return false;
     }
-    $conf_dir = get_conf_include_folder();
+    $conf_dir = get_conf_include_folder($force);
     $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
     $array_output1 = parse_conf_file($MailScanner_conf_file);
@@ -1450,15 +1513,16 @@ function parse_conf_dir($conf_dir)
 
 /**
  * @param string $name
+ * @param bool $force
  * @return bool
  */
-function get_conf_truefalse($name)
+function get_conf_truefalse($name, $force = false)
 {
-    if (DISTRIBUTED_SETUP) {
+    if (DISTRIBUTED_SETUP && !$force) {
         return true;
     }
 
-    $conf_dir = get_conf_include_folder();
+    $conf_dir = get_conf_include_folder($force);
     $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
     $array_output1 = parse_conf_file($MailScanner_conf_file);
@@ -1498,12 +1562,13 @@ function get_conf_truefalse($name)
 }
 
 /**
+ * @param bool $force
  * @return bool|mixed
  */
-function get_conf_include_folder()
+function get_conf_include_folder($force = false)
 {
     $name = 'include';
-    if (DISTRIBUTED_SETUP) {
+    if (DISTRIBUTED_SETUP && !$force) {
         return false;
     }
 
@@ -1567,7 +1632,7 @@ function parse_conf_file($name)
         if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
 
             // Strip trailing comments
-            $regs['value'] = preg_replace("/#.*$/", '', $regs['value']);
+            $regs['value'] = preg_replace('/#.*$/', '', $regs['value']);
 
             // store %var% variables
             if (preg_match('/%.+%/', $regs['name'])) {
@@ -1604,6 +1669,7 @@ function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
     $scanners = explode(' ', get_conf_var('VirusScanners'));
+
     return $scanners[0];
 }
 
@@ -1683,7 +1749,8 @@ function subtract_multi_get_vars($preserve)
 }
 
 /**
- * @param $sql the sql query for which the page will be created
+ * @param string $sql the sql query for which the page will be created
+ * @return int
  */
 function generatePager($sql)
 {
@@ -1730,6 +1797,7 @@ function generatePager($sql)
 </tr>
 <tr>
 <td colspan="4">';
+
     return $from;
 }
 
@@ -1796,6 +1864,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         if ($operations !== false) {
             // Start form for operations
             echo '<form name="operations" action="./do_message_ops.php" method="POST">' . "\n";
+            echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
+            echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/do_message_ops.php form token') . '">' . "\n";
         }
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         // Work out which columns to display
@@ -1994,7 +2064,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     echo "  $fieldname[$f] (<a href=\"?orderby=" . $fieldInfo->name
                         . '&amp;orderdir=a' . subtract_multi_get_vars(
                             array('orderby', 'orderdir')
-                        ) . "\">A</a>/<a href=\"?orderby=" . $fieldInfo->name
+                        ) . '">A</a>/<a href="?orderby=' . $fieldInfo->name
                         . '&amp;orderdir=d' . subtract_multi_get_vars(array('orderby', 'orderdir')) . "\">D</a>)\n";
                     echo "  </th>\n";
                 } else {
@@ -2041,13 +2111,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // Store the id for later use
                         $id = $row[$f];
                         // Create a link to detail.php
-                        $row[$f] = '<a href="detail.php?id=' . $row[$f] . '">' . $row[$f] . '</a>' . "\n";
+                        $row[$f] = '<a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $row[$f] . '">' . $row[$f] . '</a>' . "\n";
                         break;
                     case 'id2':
                         // Store the id for later use
                         $id = $row[$f];
                         // Create a link to detail.php as [<link>]
-                        $row[$f] = "[<a href=\"detail.php?id=$row[$f]\">#</a>]";
+                        $row[$f] = '<a href="detail.php?token=' . $_SESSION['token'] . "&amp;id=$row[$f]\" ><i class=\"mw-icon mw-info-circle\" aria-hidden=\"true\"></i></a>";
                         break;
                     case 'from_address':
                         $row[$f] = htmlentities($row[$f]);
@@ -2058,11 +2128,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'clientip':
                         $clientip = $row[$f];
                         if (defined('RESOLVE_IP_ON_DISPLAY') && RESOLVE_IP_ON_DISPLAY === true) {
-                            if (
-                                net_match('10.0.0.0/8', $clientip) ||
-                                net_match('172.16.0.0/12', $clientip) ||
-                                net_match('192.168.0.0/16', $clientip)
-                            ) {
+                            if (ip_in_range($clientip)) {
                                 $host = 'Internal Network';
                             } elseif (($host = gethostbyaddr($clientip)) === $clientip) {
                                 $host = 'Unknown';
@@ -2122,7 +2188,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f], $virus)) {
+                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f],
+                                $virus) && DISPLAY_VIRUS_REPORT === true
+                        ) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
                                     $status_array[$k] = $v;
@@ -2218,7 +2286,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             for ($f = 0; $f < $fields; $f++) {
                 if ($display[$f]) {
                     if ($align[$f]) {
-                        echo ' <td align="' . $align[$f] . '">' . $row[$f] . '</td>' . "\n";
+                        if ($f === 0) {
+                            echo ' <td align="' . $align[$f] . '" class="link-transparent">' . $row[$f] . '</td>' . "\n";
+                        } else {
+                            echo ' <td align="' . $align[$f] . '">' . $row[$f] . '</td>' . "\n";
+                        }
                     } else {
                         echo ' <td>' . $row[$f] . '</td>' . "\n";
                     }
@@ -2292,8 +2364,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
  */
 function dbtable($sql, $title = false, $pager = false, $operations = false)
 {
-    global $bg_colors;
-
     /*
     // Query the data
     $sth = dbquery($sql);
@@ -2389,11 +2459,9 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
         // Rows
         $i = 1;
         while ($row = $sth->fetch_row()) {
-            $i = 1 - $i;
-            $bgcolor = $bg_colors[$i];
-            echo ' <tr>' . "\n";
+            echo ' <tr class="table-background">' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td style="background-color: ' . $bgcolor . '; ">' . preg_replace("/,([^\s])/", ", $1",
+                echo '  <td>' . preg_replace("/,([^\s])/", ', $1',
                         $row[$f]) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
@@ -2534,9 +2602,11 @@ function get_mail_relays($message_headers)
     $relays = null;
     foreach ($headers as $header) {
         $header = preg_replace('/IPv6\:/', '', $header);
-        if (preg_match_all('/\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
+        if (preg_match_all('/Received.+\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
             foreach ($regs['ip'] as $relay) {
-                $relays[] = $relay;
+                if (false !== filter_var($relay, FILTER_VALIDATE_IP)) {
+                    $relays[] = $relay;
+                }
             }
         }
     }
@@ -2601,14 +2671,14 @@ function address_filter_sql($addresses, $type)
 }
 
 /**
- * @param string $user
+ * @param string $username
  * @param string $password
  * @return null|string
  */
-function ldap_authenticate($user, $password)
+function ldap_authenticate($username, $password)
 {
-    $user = strtolower($user);
-    if ($user !== '' && $password !== '') {
+    $username = ldap_escape(strtolower($username), '', LDAP_ESCAPE_DN);
+    if ($username !== '' && $password !== '') {
         $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(__('ldpaauth103') . ' ' . LDAP_HOST);
 
         $ldap_protocol_version = 3;
@@ -2628,29 +2698,21 @@ function ldap_authenticate($user, $password)
         }
 
         //search for $user in LDAP directory
-        if (LDAP_EMAIL_FIELD === 'mail' && strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN, LDAP_EMAIL_FIELD . "=$user") or die(__('ldpaauth203'));
-        } elseif (strpos($user, '@')) {
-            $ldap_search_results = ldap_search($ds, LDAP_DN,
-                LDAP_EMAIL_FIELD . "=SMTP:$user") or die(__('ldpaauth203'));
-        } else {
-            // Windows LDAP (with legacy NT support)
-            $ldap_search_results = ldap_search($ds, LDAP_DN, "sAMAccountName=$user") or die(__('ldpaauth203'));
-        }
+        $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $username)) or die(__('ldpaauth203'));
 
         if (false === $ldap_search_results) {
-            @trigger_error(__('ldapnoresult03') . ' "' . $user . '"');
+            @trigger_error(__('ldapnoresult03') . ' "' . $username . '"');
 
             return null;
         }
         if (1 > ldap_count_entries($ds, $ldap_search_results)) {
             //
-            @trigger_error(__('ldapresultnodata03') . ' "' . $user . '"');
+            @trigger_error(__('ldapresultnodata03') . ' "' . $username . '"');
 
             return null;
         }
         if (ldap_count_entries($ds, $ldap_search_results) > 1) {
-            @trigger_error(__('ldapresultset03') . ' "' . $user . '" ' . __('ldapisunique03'));
+            @trigger_error(__('ldapresultset03') . ' "' . $username . '" ' . __('ldapisunique03'));
 
             return null;
         }
@@ -2664,11 +2726,18 @@ function ldap_authenticate($user, $password)
                     return null;
                 }
 
-                if (isset($result[0]['userprincipalname'][0])) {
-                    $user = $result[0]['userprincipalname'][0];
-                } else {
-                    // build DN for user, when LDAP server is not an AD
-                    $user = 'cn=' . $result[0]['cn'][0] . ',' . LDAP_DN;
+                if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+
+                    return null;
+                }
+
+                $user = $result[0][LDAP_USERNAME_FIELD][0];
+                if (defined('LDAP_BIND_PREFIX')) {
+                    $user = LDAP_BIND_PREFIX . $user;
+                }
+                if (defined('LDAP_BIND_SUFFIX')) {
+                    $user .= LDAP_BIND_SUFFIX;
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
@@ -3208,6 +3277,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/PEAR.php';
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
+            require_once __DIR__ . '/lib/pear/Mail/smtp.php';
             $crlf = "\r\n";
             $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
             $mime = new Mail_mime($crlf);
@@ -3225,8 +3295,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $mail_param = array('host' => MAILWATCH_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
-            $mail = new Mail;
-            $mail = $mail->factory('smtp', $mail_param);
+            $mail = new Mail_smtp($mail_param);
 
             $m_result = $mail->send($to, $hdrs, $body);
             if (is_a($m_result, 'PEAR_Error')) {
@@ -3252,7 +3321,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                         $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                         audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
                     } else {
-                        $status = __('releaseerrorcode03') . ' ' . $retval . " " . __('returnedfrom03') . "\n" . implode(
+                        $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -3420,7 +3489,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
                     audit_log(sprintf(__('auditlogspamtrained03'), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
-                    $status[] = __('salearnerror03') . ' ' . $retval . " " . __('salearnreturn03') . "\n" . implode(
+                    $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
                             "\n",
                             $output_array
                         );
@@ -3543,7 +3612,11 @@ function audit_log($action)
 {
     $link = dbconn();
     if (AUDIT) {
-        $user = $link->real_escape_string($_SESSION['myusername']);
+        if (isset($_SESSION['myusername'])) {
+            $user = $link->real_escape_string($_SESSION['myusername']);
+        } else {
+            $user = 'unknown';
+        }
         $action = safe_value($action);
         $ip = safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
@@ -3636,38 +3709,10 @@ function return_virus_link($virus)
     if (defined('VIRUS_INFO') && VIRUS_INFO !== false) {
         $link = sprintf(VIRUS_INFO, $virus);
 
-        return sprintf("<a href=\"%s\">%s</a>", $link, $virus);
+        return sprintf('<a href="%s">%s</a>', $link, $virus);
     } else {
         return $virus;
     }
-}
-
-/**
- * @param $network
- * @param $ip
- * @return bool
- */
-function net_match($network, $ip)
-{
-    // Skip invalid entries
-    if (long2ip(ip2long($ip)) === false) {
-        return false;
-    }
-    // From PHP website
-    // determines if a network in the form of 192.168.17.1/16 or
-    // 127.0.0.1/255.255.255.255 or 10.0.0.1 matches a given ip
-    $ip_arr = explode('/', $network);
-    // Skip invalid entries
-    if (long2ip(ip2long($ip_arr[0])) === false) {
-        return false;
-    }
-    $network_long = ip2long($ip_arr[0]);
-
-    $x = ip2long($ip_arr[1]);
-    $mask = long2ip($x) === $ip_arr[1] ? $x : 0xffffffff << (32 - $ip_arr[1]);
-    $ip_long = ip2long($ip);
-
-    return ($ip_long & $mask) === ($network_long & $mask);
 }
 
 /**
@@ -3685,11 +3730,7 @@ function is_rpc_client_allowed()
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ($client === 'allprivate' &&
-                (net_match('10.0.0.0/8', $_SERVER['SERVER_ADDR']) ||
-                    net_match('172.16.0.0/12', $_SERVER['SERVER_ADDR']) ||
-                    net_match('192.168.0.0/16', $_SERVER['SERVER_ADDR']))
-            ) {
+            if ($client === 'allprivate' && ip_in_range($_SERVER['SERVER_ADDR'], false, 'private')) {
                 return true;
             }
             if ($client === 'local24') {
@@ -3699,17 +3740,17 @@ function is_rpc_client_allowed()
                 $ipsplit = explode('.', $ip);
                 $ipsplit[3] = '0';
                 $ip = implode('.', $ipsplit);
-                if (net_match("{$ip}/24", $_SERVER['SERVER_ADDR'])) {
+                if (ip_in_range($_SERVER['SERVER_ADDR'], "{$ip}/24")) {
                     return true;
                 }
             }
             // All any others
-            if (net_match($client, $_SERVER['SERVER_ADDR'])) {
+            if (ip_in_range($_SERVER['SERVER_ADDR'], $client)) {
                 return true;
             }
             // Try hostname
             $iplookup = gethostbyname($client);
-            if ($client !== $iplookup && net_match($iplookup, $_SERVER['SERVER_ADDR'])) {
+            if ($client !== $iplookup && ip_in_range($_SERVER['SERVER_ADDR'], $iplookup)) {
                 return true;
             }
         }
@@ -3801,9 +3842,10 @@ function updateUserPasswordHash($user, $hash)
  */
 function checkForExistingUser($username)
 {
-    $sqlQuery = "SELECT COUNT(username) AS counter FROM users where username = '" . safe_value($username) . "'";
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" . safe_value($username) . "'";
     $row = dbquery($sqlQuery)->fetch_object();
-    return $row->counter >0;
+
+    return $row->counter > 0;
 }
 
 /**
@@ -3815,8 +3857,15 @@ function checkForExistingUser($username)
  * @param $graphColumn
  * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
-function printGraphTable($filename, $sqlDataQuery, $reportTitle, $sqlColumns, $columnTitles, $graphColumn, $valueConversions)
-{
+function printGraphTable(
+    $filename,
+    $sqlDataQuery,
+    $reportTitle,
+    $sqlColumns,
+    $columnTitles,
+    $graphColumn,
+    $valueConversions
+) {
     $result = dbquery($sqlDataQuery);
     $numResult = $result->num_rows;
     if ($numResult <= 0) {
@@ -3947,6 +3996,7 @@ function checkConfVariables()
         'LANG',
         'LDAP_DN',
         'LDAP_EMAIL_FIELD',
+        'LDAP_FILTER',
         'LDAP_HOST',
         'LDAP_MS_AD_COMPATIBILITY',
         'LDAP_PASS',
@@ -3955,6 +4005,7 @@ function checkConfVariables()
         'LDAP_SITE',
         'LDAP_SSL',
         'LDAP_USER',
+        'LDAP_USERNAME_FIELD',
         'LISTS',
         'MAIL_LOG',
         'MAILQ',
@@ -3980,6 +4031,7 @@ function checkConfVariables()
         'PROXY_TYPE',
         'PROXY_USER',
         'QUARANTINE_DAYS_TO_KEEP',
+        'QUARANTINE_FILTERS_COMBINED',
         'QUARANTINE_MSG_BODY',
         'QUARANTINE_REPORT_DAYS',
         'QUARANTINE_REPORT_FROM_NAME',
@@ -4011,6 +4063,7 @@ function checkConfVariables()
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
+        'DISPLAY_VIRUS_REPORT',
     );
 
     $obsolete = array(
@@ -4021,14 +4074,18 @@ function checkConfVariables()
         'QUARANTINE_REPORT_HOSTURL',
     );
 
-    /*
-    // TODO: Implement optional lists
     $optional = array(
-        'RPC_PORT',
-        'RPC_SSL',
-        'VIRUS_REGEX',
+        'RPC_PORT' => array('description' => 'needed if RPC_ONLY mode is enabled'),
+        'RPC_SSL' => array('description' => 'needed if RPC_ONLY mode is enabled'),
+        'RPC_REMOTE_SERVER' => array('description' => 'needed to show number of mails in postfix queues on remote server (RPC)'),
+        'VIRUS_REGEX' => array('description' => 'needed in distributed setup'),
+        'LDAP_BIND_PREFIX' => array('description' => 'needed when using LDAP authentication'),
+        'LDAP_BIND_SUFFIX' => array('description' => 'needed when using LDAP authentication'),
+        'EXIM_QUEUE_IN' => array('description' => 'needed only if using Exim as MTA'),
+        'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
+        'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
+        'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
     );
-    */
 
     $neededMissing = array();
     foreach ($needed as $item) {
@@ -4036,6 +4093,8 @@ function checkConfVariables()
             $neededMissing[] = $item;
         }
     }
+    $results['needed']['count'] = count($neededMissing);
+    $results['needed']['list'] = $neededMissing;
 
     $obsoleteStillPresent = array();
     foreach ($obsolete as $item) {
@@ -4043,24 +4102,64 @@ function checkConfVariables()
             $obsoleteStillPresent[] = $item;
         }
     }
-
-    $results['needed']['count'] = count($neededMissing);
-    $results['needed']['list'] = $neededMissing;
-
     $results['obsolete']['count'] = count($obsoleteStillPresent);
     $results['obsolete']['list'] = $obsoleteStillPresent;
+
+    $optionalMissing = array();
+    foreach ($optional as $key => $item) {
+        if (!defined($key)) {
+            $optionalMissing[$key] = $item;
+        }
+    }
+    $results['optional']['count'] = count($optionalMissing);
+    $results['optional']['list'] = $optionalMissing;
 
     return $results;
 }
 
 /**
- * @param integer $count
+ * @param integer $lenght
  * @return string
  */
-function get_random_string($count)
+function get_random_string($lenght)
 {
-    $bytes = openssl_random_pseudo_bytes($count);
-    return bin2hex($bytes);
+    if (function_exists('random_bytes')) {
+        return bin2hex(random_bytes($lenght));
+    }
+
+    if (function_exists('mcrypt_create_iv')) {
+        $random = mcrypt_create_iv($lenght, MCRYPT_DEV_URANDOM);
+        if (false !== $random) {
+            return bin2hex($random);
+        }
+    }
+
+    if (DIRECTORY_SEPARATOR === '/' && @is_readable('/dev/urandom')) {
+        // On unix system and if /dev/urandom is readable
+        $handle = fopen('/dev/urandom', 'rb');
+        $random = fread($handle, $lenght);
+        fclose($handle);
+
+        return bin2hex($random);
+    }
+
+    if (function_exists('openssl_random_pseudo_bytes')) {
+        $random = openssl_random_pseudo_bytes($lenght);
+        if (false !== $random) {
+            return bin2hex($random);
+        }
+    }
+
+    // if none of the above three secure functions are enabled use a pseudorandom string generator
+    // note to sysadmin: check your php installation if the following code is executed and make your system secure!
+    $random = '';
+    $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $max = mb_strlen($keyspace, '8bit') - 1;
+    for ($i = 0; $i < $lenght; ++$i) {
+        $random .= $keyspace[mt_rand(0, $max)];
+    }
+
+    return $random;
 }
 
 /**
@@ -4091,12 +4190,293 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
         'html_charset' => 'UTF-8',
         'head_charset' => 'UTF-8'
     );
-    $mime->addHTMLImage(MAILWATCH_HOME . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
     $mime->setTXTBody($text);
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
     $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     $mail = new Mail_smtp($mail_param);
+
     return $mail->send($email, $hdrs, $body);
+}
+
+/**
+ * @param $ip
+ * @param bool|string $net
+ * @param bool|string $privateLocal
+ * @return bool
+ */
+function ip_in_range($ip, $net = false, $privateLocal = false)
+{
+    require_once __DIR__ . '/lib/IPSet.php';
+    if ($privateLocal === 'private') {
+        $privateIPSet = new \IPSet\IPSet(array(
+            '10.0.0.0/8',
+            '172.16.0.0/12',
+            '192.168.0.0/16',
+            'fc00::/7',
+            'fe80::/10',
+        ));
+
+        return $privateIPSet->match($ip);
+    } elseif ($privateLocal === 'local') {
+        $localIPSet = new \IPSet\IPSet(array(
+            '127.0.0.1',
+            '::1',
+        ));
+
+        return $localIPSet->match($ip);
+    } elseif ($privateLocal === false && $net !== false) {
+        $network = new \IPSet\IPSet(array(
+            $net
+        ));
+
+        return $network->match($ip);
+    } else {
+        //return false to fail gracefully
+        return false;
+    }
+}
+
+/**
+ * @param string $input
+ * @param string $type
+ * @return mixed
+ */
+function deepSanitizeInput($input, $type)
+{
+    switch ($type) {
+        case 'email':
+            $string = filter_var($input, FILTER_SANITIZE_EMAIL);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        case 'url':
+            $string = filter_var($input, FILTER_SANITIZE_URL);
+            $string = sanitizeInput($string);
+            $string = htmlentities($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        case 'num':
+            $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        case 'float':
+            $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        case 'string':
+            $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
+            $string = sanitizeInput($string);
+            $string = safe_value($string);
+
+            return $string;
+            break;
+        default:
+            return false;
+    }
+
+    return false;
+}
+
+/**
+ * @param string $input
+ * @param string $type
+ * @return bool
+ */
+function validateInput($input, $type)
+{
+    switch ($type) {
+        case 'email':
+            if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
+                return true;
+            }
+            break;
+        case 'user':
+            if (preg_match('/^[\p{L}\p{M}\p{N}~!@$%^*=_:.\/-]{1,256}$/u', $input)) {
+                return true;
+            }
+            break;
+        case 'general':
+            if (preg_match('/^[\p{L}\p{M}\p{N}\p{Z}\p{P}\p{S}]{1,256}$/u', $input)) {
+                return true;
+            }
+            break;
+        case 'yn':
+            if (preg_match('/^[YNyn]$/', $input)) {
+                return true;
+            }
+            break;
+        case 'quardir':
+            if (preg_match('/^[0-9]{8}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'num':
+            if (preg_match('/^[0-9]{1,256}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'float':
+            if (is_float(filter_var($input, FILTER_VALIDATE_FLOAT))) {
+                return true;
+            }
+            break;
+        case 'orderby':
+            if (preg_match('/^(datetime|from_address|to_address|subject|size|sascore)$/', $input)) {
+                return true;
+            }
+            break;
+        case 'orderdir':
+            if (preg_match('/^[ad]$/', $input)) {
+                return true;
+            }
+            break;
+        case 'msgid':
+            if (preg_match('/^([A-F0-9]{8,12}\.[A-F0-9]{5}$|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{12,24}|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-x]{12})$/',
+                $input)) {
+                return true;
+            }
+            break;
+        case 'urltype':
+            if (preg_match('/^[hf]$/', $input)) {
+                return true;
+            }
+            break;
+        case 'host':
+            if (preg_match('/^[\p{N}\p{L}\p{M}.:-]{2,256}$/u', $input)) {
+                return true;
+            }
+            break;
+        case 'list':
+            if (preg_match('/^[wb]$/', $input)) {
+                return true;
+            }
+            break;
+        case 'listsubmit':
+            if (preg_match('/^(add|delete)$/', $input)) {
+                return true;
+            }
+            break;
+        case 'releasetoken':
+            if (preg_match('/^[0-9A-Fa-f]{10}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'resetid':
+            if (preg_match('/^[0-9A-Za-z]{32}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'mailq':
+            if (preg_match('/^(inq|outq)$/', $input)) {
+                return true;
+            }
+            break;
+        case 'salearnops':
+            if (preg_match('/^(spam|ham|forget|report|revoke)$/', $input)) {
+                return true;
+            }
+            break;
+        case 'file':
+            if (preg_match('/^[A-Za-z0-9._-]{2,256}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'date':
+            if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'alnum':
+            if (preg_match('/^[0-9A-Za-z]{1,256}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'ip':
+            if (filter_var($input, FILTER_VALIDATE_IP)) {
+                return true;
+            }
+            break;
+        case 'action':
+            if (preg_match('/^(new|edit|delete|filters)$/', $input)) {
+                return true;
+            }
+            break;
+        case 'type':
+            if (preg_match('/^[UDA]$/', $input)) {
+                return true;
+            }
+            break;
+        default:
+            return false;
+    }
+
+    return false;
+}
+
+/**
+ * @return string
+ */
+function generateToken()
+{
+    $tokenLenght = 32;
+
+    return get_random_string($tokenLenght);
+}
+
+/**
+ * @param string $token
+ * @return mixed
+ */
+function checkToken($token)
+{
+    if (!isset($_SESSION['token'])) {
+        return false;
+    }
+
+    return $_SESSION['token'] === deepSanitizeInput($token, 'url');
+}
+
+/**
+ * @param string $formstring
+ * @return string
+ */
+function generateFormToken($formstring)
+{
+    if (!isset($_SESSION['token'])) {
+        die('No! Bad dog no treat for you!');
+    }
+
+    $_SESSION['formtoken'] = generateToken();
+    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+
+    return $calc;
+}
+
+/**
+ * @param string $formstring
+ * @param string $formtoken
+ * @return bool
+ */
+function checkFormToken($formstring, $formtoken)
+{
+    if (!isset($_SESSION['token'], $_SESSION['formtoken'])) {
+        return false;
+    }
+    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+    unset($_SESSION['formtoken']);
+
+    return $calc === deepSanitizeInput($formtoken, 'url');
 }

@@ -47,17 +47,23 @@ class database
      */
     public static function connect($host = '', $username = '', $password = '', $database = '')
     {
-        if (!self::$link) {
-            self::$link = new mysqli($host, $username, $password, $database);
-            if (self::$link->connect_error) {
-                die(__('diedbconn103') . '(' . self::$link->connect_errno . ' ' . self::$link->connect_error . ')');
+        if (!self::$link instanceof mysqli) {
+            try {
+                $driver = new mysqli_driver();
+                $driver->report_mode = MYSQLI_REPORT_ALL;
+                set_error_handler(function () {
+                });
+                self::$link = new mysqli($host, $username, $password, $database);
+                restore_error_handler();
+                $charset = 'utf8';
+                if (self::$link->server_version >= 50503) {
+                    //mysql version supports utf8mb4
+                    $charset = 'utf8mb4';
+                }
+                self::$link->set_charset($charset);
+            } catch (Exception $e) {
+                die(__('diedbconn103') . ' ' . $e->getCode() . ' ' . $e->getMessage() . PHP_EOL);
             }
-            $charset = 'utf8';
-            if (self::$link->server_version >= 50503) {
-                //mysql version supports utf8mb4
-                $charset = 'utf8mb4';
-            }
-            self::$link->set_charset($charset);
         }
         return self::$link;
     }
@@ -67,7 +73,12 @@ class database
      */
     public static function close()
     {
-        return self::$link->close();
+        $result = true;
+        if (self::$link instanceof mysqli) {
+            $result = self::$link->close();
+            self::$link = null;
+        }
+        return $result;
     }
 
     /**

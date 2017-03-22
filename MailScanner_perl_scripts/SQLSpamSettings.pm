@@ -51,14 +51,22 @@ use DBI;
 my ($dbh);
 my ($sth);
 my ($SQLversion);
-
-# Modify this as necessary for your configuration
 my (%LowSpamScores, %HighSpamScores);
 my (%ScanList);
-my ($db_name) = 'mailscanner';
-my ($db_host) = 'localhost';
-my ($db_user) = 'mailwatch';
-my ($db_pass) = 'mailwatch';
+my ($sstime, $hstime, $nstime);
+
+# Get database information from 00MailWatchConf.pm
+use File::Basename;
+my $dirname = dirname(__FILE__);
+require $dirname.'/00MailWatchConf.pm';
+
+my ($db_name) = mailwatch_get_db_name();
+my ($db_host) = mailwatch_get_db_host();
+my ($db_user) = mailwatch_get_db_user();
+my ($db_pass) = mailwatch_get_db_password();
+
+# Get refresh time from from 00MailWatchConf.pm
+my ($ss_refresh_time) =  mailwatch_get_SS_refresh_time();
 
 # Check MySQL version
 sub CheckSQLVersion {
@@ -81,18 +89,21 @@ sub InitSQLSpamScores
 {
     my ($entries) = CreateScoreList('spamscore', \%LowSpamScores);
     MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d Spam entries", $entries);
+    $sstime = time();
 }
 
 sub InitSQLHighSpamScores
 {
     my $entries = CreateScoreList('highspamscore', \%HighSpamScores);
     MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d high Spam entries", $entries);
+    $hstime = time();
 }
 
 sub InitSQLNoScan
 {
     my $entries = CreateNoScanList('noscan', \%ScanList);
     MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d No Spam Scan entries", $entries);
+    $nstime = time();
 }
 
 #
@@ -100,6 +111,11 @@ sub InitSQLNoScan
 #
 sub SQLSpamScores
 {
+    # Do we need to refresh the data?
+    if ((time() - $sstime) >= ($ss_refresh_time * 60)) {
+        MailScanner::Log::InfoLog("MailWatch: SQLSpamScores refresh time reached");
+        InitSQLSpamScores();
+    }
     my ($message) = @_;
     my ($score) = LookupScoreList($message, \%LowSpamScores);
     return $score;
@@ -107,6 +123,11 @@ sub SQLSpamScores
 
 sub SQLHighSpamScores
 {
+    # Do we need to refresh the data?
+    if ((time() - $hstime) >= ($ss_refresh_time * 60)) {
+        MailScanner::Log::InfoLog("MailWatch: SQLHighSpamScores refresh time reached");
+        InitSQLHighSpamScores();
+    }
     my ($message) = @_;
     my ($score) = LookupScoreList($message, \%HighSpamScores);
     return $score;
@@ -114,9 +135,13 @@ sub SQLHighSpamScores
 
 sub SQLNoScan
 {
+    # Do we need to refresh the data?
+    if ((time() - $nstime) >= ($ss_refresh_time * 60)) {
+        MailScanner::Log::InfoLog("MailWatch: SQLNoScan refresh time reached");
+        InitSQLNoScan();
+    }
     my ($message) = @_;
     my ($noscan) = LookupNoScanList($message, \%ScanList);
-    # MailScanner::Log::InfoLog("Returning %d from SQLNoScan", $noscan);
     return $noscan;
 }
 

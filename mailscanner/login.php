@@ -33,6 +33,11 @@
 */
 
 require_once __DIR__ . '/functions.php';
+session_start();
+if (!isset($_SESSION['token'])) {
+    $_SESSION['token'] = generateToken();
+}
+
 ?>
 <!doctype html>
 <html>
@@ -78,7 +83,8 @@ require_once __DIR__ . '/functions.php';
                 <p><label for="mypassword"><?php echo __('password'); ?></label></p>
                 <p><input name="mypassword" type="password" id="mypassword"></p>
 
-                <p><input type="submit" name="Submit" value="<?php echo __('login01'); ?>"></p>
+                <p><button type="submit" name="Submit" value="loginSubmit"><?php echo __('login01'); ?></button></p>
+                <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
             </fieldset>
         </form>
         <?php
@@ -86,7 +92,7 @@ require_once __DIR__ . '/functions.php';
             ?>
             <div class="pwdresetButton">
                 <a href="password_reset.php?stage=1">
-                    <button class="pwdresetButton"><?php echo __('forgottenpwd01'); ?></button>
+                    <?php echo __('forgottenpwd01'); ?>
                 </a>
             </div>
             <?php
