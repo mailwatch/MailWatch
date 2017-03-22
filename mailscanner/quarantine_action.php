@@ -86,7 +86,9 @@ if (!isset($_GET['action'])) {
 }
 
 $id = deepSanitizeInput($_GET['id'], 'url');
-if (!validateInput($id, 'msgid')) { die(); }
+if (!validateInput($id, 'msgid')) {
+    die();
+}
 
 $list = quarantine_list_items($id);
 if (count($list) === 0) {
@@ -95,7 +97,9 @@ if (count($list) === 0) {
 
 switch ($_GET['action']) {
     case 'release':
-        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_GET['token'])) {
+            die(__('dietoken99'));
+        }
         $result = '';
         if (count($list) === 1) {
             $to = $list[0]['to'];
@@ -117,7 +121,9 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
-        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_GET['token'])) {
+            die(__('dietoken99'));
+        }
         $status = array();
         if (isset($_GET['html'])) {
             if (!isset($_GET['confirm'])) {
@@ -153,7 +159,9 @@ switch ($_GET['action']) {
                 simple_html_end();
             }
         } else {
-            if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+            if (false === checkToken($_GET['token'])) {
+                die(__('dietoken99'));
+            }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 $status[] = quarantine_delete($list, array($i));

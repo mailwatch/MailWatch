@@ -44,66 +44,82 @@ if ($_SESSION['user_type'] !== 'A') {
     // add the header information such as the logo, search, menu, ....
     html_start(__('auditlog33'), 0, false, false);
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_POST['token'])) {
+            die(__('dietoken99'));
+        }
     } else {
-        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_GET['token'])) {
+            die(__('dietoken99'));
+        }
     }
 
     if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-        die('No! Bad dog no treat for you!');
+        die(__('dievalidate99'));
     }
 
     $auditFilter = '';
     if (isset($_POST['formtoken'])) {
-        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
+            die(__('dietoken99'));
+        }
         if (isset($_POST['startDate'])) {
             $startDate=deepSanitizeInput($_POST['startDate'], 'url');
-            if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) { $startDate = ''; }
+            if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) {
+                $startDate = '';
+            }
         } else {
             $startDate='';
         }
         if (isset($_POST['endDate'])) {
             $endDate=deepSanitizeInput($_POST['endDate'], 'url');
-            if ($endDate !== '' && $endDate !== null && !validateInput($endDate, 'date')) { $endDate = ''; }
+            if ($endDate !== '' && $endDate !== null && !validateInput($endDate, 'date')) {
+                $endDate = '';
+            }
         } else {
             $endDate='';
         }
         $username=deepSanitizeInput($_POST['username'], 'string');
-        if ($username !== '' && $username !== null && !validateInput($username, 'user')) { $username = ''; }
+        if ($username !== '' && $username !== null && !validateInput($username, 'user')) {
+            $username = '';
+        }
         if (isset($_POST['ipaddress'])) {
             $ipaddress=deepSanitizeInput($_POST['ipaddress'], 'url');
-            if (!validateInput($ipaddress, 'ip')) { $ipaddress = ''; }
+            if (!validateInput($ipaddress, 'ip')) {
+                $ipaddress = '';
+            }
         } else {
-             $ipaddress = '';
+            $ipaddress = '';
         }
         if (isset($_POST['actions'])) {
             $actions=deepSanitizeInput($_POST['actions'], 'url');
-            if ($actions !== '' && $actions !== null && !validateInput($actions, 'alnum')) { $actions = ''; }
+            if ($actions !== '' && $actions !== null && !validateInput($actions, 'alnum')) {
+                $actions = '';
+            }
         } else {
             $actions ='';
         }
     }
-    if ($startDate === null || $startDate === '') {
+    if (!isset($startDate) || $startDate === null || $startDate === '') {
         $startDate = '';
     } else {
         $auditFilter .= ' AND a.timestamp >= "' . safe_value($startDate) . ' 00:00:00"';
     }
-    if ($endDate === null || $endDate === '') {
+    if (!isset($endDate) || $endDate === null || $endDate === '') {
         $endDate = '';
     } else {
         $auditFilter .= ' AND a.timestamp <= "' . safe_value($endDate) . ' 23:59:59"';
     }
-    if ($username === null || $username === '') {
+    if (!isset($username) || $username === null || $username === '') {
         $username = '';
     } else {
         $auditFilter .= ' AND b.username = "' . safe_value($username) . '"';
     }
-    if ($ipaddress === null || $ipaddress === '') {
+    if (!isset($ipaddress) || $ipaddress === null || $ipaddress === '') {
         $ipaddress = '';
     } else {
         $auditFilter .= ' AND a.ip_address = "' . safe_value($ipaddress) . '"';
     }
-    if ($actions === null || $actions === '') {
+    if (!isset($actions) || $actions === null || $actions === '') {
         $actions = '';
     } else {
         $auditFilter .= ' AND a.action like "%' . safe_value($actions) . '%"';

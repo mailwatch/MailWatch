@@ -1,7 +1,13 @@
-#!/usr/bin/perl
+#
+# MailWatch for MailScanner
+#
 
-# Change the values below to match the MailWatch database settings
-# as set in conf.php
+package MailScanner::CustomConfig;
+
+use warnings;
+use strict;
+
+# Change the values below to match the MailWatch database settings as set in conf.php
 my ($db_name) = 'mailscanner';
 my ($db_host) = 'localhost';
 my ($db_user) = 'mailwatch';

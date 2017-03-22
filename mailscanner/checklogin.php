@@ -35,7 +35,9 @@ require_once __DIR__ . '/lib/hash_equals.php';
 
 session_start();
 if (isset($_POST['token'])) {
-    if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+    if (false === checkToken($_POST['token'])) {
+        die(__('dietoken99'));
+    }
 }
 $_SESSION['token'] = generateToken();
 
@@ -54,7 +56,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 
 if (
     (USE_LDAP === true) &&
-    (($result = ldap_authenticate(ldap_escape($myusername, '', LDAP_ESCAPE_DN), $mypassword)) !== null)
+    (($result = ldap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
     $myusername = safe_value($myusername);

@@ -438,11 +438,20 @@ if ($link) {
     }
 
     // Add new column and index to maillog table
-    echo pad(' - Add maillog_id field and primary key to `maillog` table');
+    echo pad(' - Add maillog_id field, rblspamreport and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
+        executeQuery($sql);
+    }
+
+    // Add new column to maillog table
+    echo pad(' - Add rblspamreport field to `maillog` table');
+    if (true === check_column_exists('maillog', 'rblspamreport')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
 
@@ -480,6 +489,24 @@ if ($link) {
     } else {
         $sql = 'ALTER TABLE `user_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
+    }
+
+    echo PHP_EOL;
+
+    // Fix existing index size for utf8mb4 conversion
+    $too_big_indexes = array(
+        'maillog_from_idx',
+        'maillog_to_idx',
+    );
+
+    foreach ($too_big_indexes as $item) {
+        echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
+        if (get_index_size(DB_NAME, 'maillog', $item) > 191) {
+            $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
+            executeQuery($sql);
+        } else {
+            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+        }
     }
 
     echo PHP_EOL;
@@ -548,24 +575,6 @@ if ($link) {
             } else {
                 echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
             }
-        }
-    }
-
-    echo PHP_EOL;
-
-    // Fix existing index size for utf8mb4 conversion
-    $too_big_indexes = array(
-        'maillog_from_idx',
-        'maillog_to_idx',
-    );
-
-    foreach ($too_big_indexes as $item) {
-        echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
-        if (get_index_size(DB_NAME, 'maillog', $item) > 191) {
-            $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
-            executeQuery($sql);
-        } else {
-            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
         }
     }
 

@@ -86,9 +86,6 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^([-\.\w]+@[-\.\w]+)$/', $line, $match):
                                             $output[$msgid]['rcpts'][] = $match[1];
                                             break;
-                                        case preg_match('/^\d{3}F .*: (.+)$/', $line, $match):
-                                            $output[$msgid]['sender'] = $match[1];
-                                            break;
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
                                             $ctime = getdate($match[1]);
                                             $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
@@ -110,18 +107,22 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                                 ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
                                         case preg_match('/^\d{3}I Message-ID: <(.+)>$/', $line, $match):
-                                            #$output[$msgid]['message'] = $match[1];
+                                            $output[$msgid]['messageid'] = $match[1];
                                             break;
                                         case preg_match('/^<(.+)>$/', $line, $match):
                                             $output[$msgid]['envelopesender'] = $match[1];
-                                            break;
-                                        case preg_match('/^\d{3}  Subject: (.+)$/', $line, $match):
-                                            $output[$msgid]['subject'] = $match[1];
                                             break;
                                     }
                                 }
                             }
                             fclose($fh);
+                            if ($header = @file_get_contents($queuedir . $file)) {
+                                // Read Subject
+                                $output[$msgid]['subject'] = getSUBJECTheader($header);
+                                // Read Sender
+                                $output[$msgid]['sender'] = getFROMheader($header);
+                            }
+
                             //  Get the message file
                             $MsgDir = preg_replace('/^(.*)\/input\/$/', '$1/msglog/', $queuedir);
                             if ($fh = @fopen($MsgDir . $msgid, 'rb')) {
@@ -186,9 +187,6 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^R.+<(.+)>$/', $line, $match):
                                             $output[$msgid]['rcpts'][] = $match[1];
                                             break;
-                                        case preg_match('/^S<(.+)>$/', $line, $match):
-                                            $output[$msgid]['sender'] = $match[1];
-                                            break;
                                         case preg_match('/^T(.+)$/', $line, $match):
                                             $ctime = getdate($match[1]);
                                             $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
@@ -227,13 +225,16 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^Z(.+)$/', $line, $match):
                                             $output[$msgid]['envelopesender'] = $match[1];
                                             break;
-                                        case preg_match('/Subject: (.+)$/', $line, $match):
-                                            $output[$msgid]['subject'] = $match[1];
-                                            break;
                                     }
                                 }
                             }
                             fclose($fh);
+                            if ($header = @file_get_contents($queuedir . $file)) {
+                                // Read Subject
+                                $output[$msgid]['subject'] = getSUBJECTheader($header);
+                                // Read Sender
+                                $output[$msgid]['sender'] = getFROMheader($header);
+                            }
                         }
                     }
                 }
@@ -246,6 +247,18 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
+                // Use 'From:' if MAIL_SENDER = sender
+                // If 'envelope-from' do not exist, use 'From:' instead (bounce)
+                $from = "";
+                if (defined('MAIL_SENDER') && MAIL_SENDER === 'sender') {
+                    $from = $msginfo['sender'];
+                } else {
+                    if (!isset($msginfo['envelopesender'])) {
+                        $from = $msginfo['sender'];
+                    } else {
+                        $from = $msginfo['envelopesender'];
+                    }
+                }
                 // Insert each record
                 $sql = 'INSERT INTO ' . $table_name . "
     (id,
@@ -264,7 +277,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     ('" . safe_value($msgid) . "','" .
                     safe_value($msginfo['cdate']) . "','" .
                     safe_value($msginfo['ctime']) . "','" .
-                    safe_value(isset($msginfo['sender']) ? $msginfo['sender'] : "") . "','" .
+                    safe_value($from) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
                     safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
                     safe_value($msginfo['message']) . "','" .
