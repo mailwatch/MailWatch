@@ -4087,7 +4087,22 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
         },
         legend: {
           display: true,
-          position: "right",
+          labels: {
+            generateLabels: function(graph) {
+              var graphData = graph.data.datasets[0].data;
+              var total = 0;
+              for(var i=0; i<graphData.length; i++) {
+                total += graphData[i];
+              };
+              var defaultLabels = Chart.defaults.doughnut.legend.labels.generateLabels(graph);
+              for(var i=0; i<defaultLabels.length; i++) {
+                var label = defaultLabels[i];
+                var percentage = Math.round((graphData[i] / total) * 100);
+                defaultLabels[i].text += " (" + percentage +"%)";
+              }
+              return defaultLabels;
+            }
+          }
         },
         responsive: false,
         tooltips: {
@@ -4102,25 +4117,6 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
               }
               var tooltipPercentage = Math.round((tooltipData / total) * 100);
               return tooltipLabel + ": " + tooltipData + " (" + tooltipPercentage + "%)";
-            }
-          }
-        },
-        legend: {
-          labels: {
-            generateLabels: function(graph) {
-              var graphData = graph.data.datasets[0].data;
-              var total = 0;
-              for(var i=0; i<graphData.length; i++) {
-                total += graphData[i];
-              };
-              var defaultLabels = Chart.defaults.doughnut.legend.labels.generateLabels(graph);
-                console.log(defaultLabels);
-              for(var i=0; i<defaultLabels.length; i++) {
-                var label = defaultLabels[i];
-                var percentage = Math.round((graphData[i] / total) * 100);
-                defaultLabels[i].text += " (" + percentage +"%)";
-              }
-              return defaultLabels;
             }
           }
         },
