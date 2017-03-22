@@ -238,6 +238,14 @@ function suppress_zeros($number)
     }
 }
 
+function disableBrowserCache()
+{
+    header('Expires: Sat, 10 May 2003 00:00:00 GMT');
+    header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Cache-Control: post-check=0, pre-check=0', false);
+}
+
 /**
  * @param $title
  * @param int $refresh
@@ -247,16 +255,11 @@ function suppress_zeros($number)
  */
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
-    if (!$cacheable) {
-        // Cache control (as per PHP website)
-        if (PHP_SAPI !== 'cli') {
-            header('Expires: Sat, 10 May 2003 00:00:00 GMT');
-            header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
-            header('Cache-Control: no-store, no-cache, must-revalidate');
-            header('Cache-Control: post-check=0, pre-check=0', false);
-        }
-    } else {
-        if (PHP_SAPI !== 'cli') {
+    if (PHP_SAPI !== 'cli') {
+        if (!$cacheable) {
+            // Cache control (as per PHP website)
+            disableBrowserCache();
+        } else {
             // calc an offset of 24 hours
             $offset = 3600 * 48;
             // calc the string in GMT not localtime and add the offset

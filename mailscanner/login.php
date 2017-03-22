@@ -33,6 +33,7 @@
 */
 
 require_once __DIR__ . '/functions.php';
+disableBrowserCache();
 session_start();
 if (!isset($_SESSION['token'])) {
     $_SESSION['token'] = generateToken();
@@ -55,59 +56,61 @@ if (!isset($_SESSION['token'])) {
     </div>
     <h1><?php echo __('mwlogin01'); ?></h1>
     <div class="inner-container">
-    <?php if (file_exists('conf.php')) {
-    ?>
-        <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
-            <fieldset>
-                <?php if (isset($_GET['error'])) {
-        ?>
-                    <p class="loginerror">
-                        <?php
-                        switch ($_GET['error']) {
-                            case 'baduser':
-                                echo __('badup01');
-                                break;
-                            case 'emptypassword':
-                                echo __('emptypassword01');
-                                break;
-                            default:
-                                echo __('errorund01');
-                        } ?>
-                    </p>
-                    <?php
-
-    } ?>
-                <p><label for="myusername"><?php echo __('username'); ?></label></p>
-                <p><input name="myusername" type="text" id="myusername" autofocus></p>
-
-                <p><label for="mypassword"><?php echo __('password'); ?></label></p>
-                <p><input name="mypassword" type="password" id="mypassword"></p>
-
-                <p><button type="submit" name="Submit" value="loginSubmit"><?php echo __('login01'); ?></button></p>
-                <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
-            </fieldset>
-        </form>
-        <?php
-        if (defined('PWD_RESET') && PWD_RESET === true) {
+        <?php if (file_exists('conf.php')) {
             ?>
-            <div class="pwdresetButton">
-                <a href="password_reset.php?stage=1">
-                    <?php echo __('forgottenpwd01'); ?>
-                </a>
-            </div>
+            <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
+                <fieldset>
+                    <?php if (isset($_GET['error'])) {
+                        ?>
+                        <p class="loginerror">
+                            <?php
+                            switch ($_GET['error']) {
+                                case 'baduser':
+                                    echo __('badup01');
+                                    break;
+                                case 'emptypassword':
+                                    echo __('emptypassword01');
+                                    break;
+                                default:
+                                    echo __('errorund01');
+                            } ?>
+                        </p>
+                        <?php
+
+                    } ?>
+                    <p><label for="myusername"><?php echo __('username'); ?></label></p>
+                    <p><input name="myusername" type="text" id="myusername" autofocus></p>
+
+                    <p><label for="mypassword"><?php echo __('password'); ?></label></p>
+                    <p><input name="mypassword" type="password" id="mypassword"></p>
+
+                    <p>
+                        <button type="submit" name="Submit" value="loginSubmit"><?php echo __('login01'); ?></button>
+                    </p>
+                    <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
+                </fieldset>
+            </form>
+            <?php
+            if (defined('PWD_RESET') && PWD_RESET === true) {
+                ?>
+                <div class="pwdresetButton">
+                    <a href="password_reset.php?stage=1">
+                        <?php echo __('forgottenpwd01'); ?>
+                    </a>
+                </div>
+                <?php
+
+            }
+        } else {
+            ?>
+            <p class="error">
+                <?php echo __('cannot_read_conf'); ?>
+            </p>
             <?php
 
         }
-} else {
-    ?>
-        <p class="error">
-            <?php echo __('cannot_read_conf'); ?>
-        </p>
-        <?php
-
-}
-    ?>
-</div>
+        ?>
+    </div>
 </div>
 </body>
 </html>
