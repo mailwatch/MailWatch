@@ -476,8 +476,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
                         die(__('dietoken99'));
                     }
-                    $getFilter = deepSanitizeInput($_POST['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) {
+                    $getFilter = deepSanitizeInput($_POST['filter'], 'url');
+                    if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
                         $getFilter = '';
                     }
                 }
@@ -495,8 +495,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
 
                 if (isset($_GET['delete']) && isset($_GET['filter'])) {
-                    $getFilter = deepSanitizeInput($_GET['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) {
+                    $getFilter = deepSanitizeInput($_GET['filter'], 'url');
+                    if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
                         die(__('dievalidate99'));
                     }
                     $sql = "DELETE FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
@@ -506,8 +506,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     }
                 }
                 if (isset($_GET['change_state']) && isset($_GET['filter'])) {
-                    $getFilter = deepSanitizeInput($_GET['filter'], 'email');
-                    if (!validateInput($getFilter, 'email')) {
+                    $getFilter = deepSanitizeInput($_GET['filter'], 'url');
+                    if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
                         die(__('dievalidate99'));
                     }
                     $sql = "SELECT active FROM user_filters WHERE username='" . safe_value($id) . "' AND filter='" . safe_value($getFilter) . "'";
