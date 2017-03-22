@@ -62,9 +62,13 @@ if ($_SESSION['user_type'] !== 'A') {
     audit_log(__('auditlog55'));
 } else {
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_POST['token'])) {
+            die(__('dietoken99'));
+        }
     } else {
-        if (false === checkToken($_GET['token'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkToken($_GET['token'])) {
+            die(__('dietoken99'));
+        }
     }
 
     // add the header information such as the logo, search, menu, ....
@@ -73,7 +77,9 @@ if ($_SESSION['user_type'] !== 'A') {
     } else {
         $short_filename = deepSanitizeInput($_GET['file'], 'url');
     }
-    if (!validateInput($short_filename, 'file')) { die('No! Bad dog no treat for you!'); }
+    if (!validateInput($short_filename, 'file')) {
+        die(__('dievalidate99'));
+    }
     $short_filename = basename($short_filename);
     $pageheader = 'Edit MailScanner Ruleset ' . $short_filename;
     $filter = html_start($pageheader, 0, false, false);
@@ -118,7 +124,9 @@ if ($_SESSION['user_type'] !== 'A') {
     // check to see if the form was submitted, and if so process it..
     $status_message = '';
     if (isset($_POST['submitted'])) {
-        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
+            die(__('dietoken99'));
+        }
 
         list($bytes_written, $status_message) = Process_Form();
         // re-read the file after processing
@@ -160,8 +168,8 @@ function Show_Form($status_msg)
     echo '<form method="post" name="MSRE_edit" action="msre_edit.php">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="file" VALUE="' . $short_filename . '">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/msre_edit.php form token') . '">' . "\n";
-        echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/msre_edit.php form token') . '">' . "\n";
+    echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
 
     echo "<input type=\"hidden\" name=\"submitted\" value=\"1\">\n";
     // check for status message, and append it to the end of the header
@@ -593,7 +601,9 @@ function Process_Form()
     $default_action = '';
     $default_desc = '';
     $count = deepSanitizeInput($_POST['rule_count'], 'num');
-    if (!validateInput($count, 'num')) { die('No! Bad dog no treat for you!'); }
+    if (!validateInput($count, 'num')) {
+        die(__('dievalidate99'));
+    }
     for ($i = -1; $i <= $count; $i++) {
         $rule_prefix = 'rule' . $i . '_';
         $description = $rule_prefix . 'description';

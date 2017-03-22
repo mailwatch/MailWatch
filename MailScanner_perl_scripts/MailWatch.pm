@@ -138,7 +138,7 @@ sub InitConnection {
         $dbh->do('SET NAMES utf8');
     }
 
-    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
+    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
         MailScanner::Log::WarnLog("MailWatch: Error: %s", $DBI::errstr);
 }
 
@@ -219,7 +219,8 @@ sub ListenForMessages {
             $$message{date},
             $$message{"time"},
             $$message{headers},
-            $$message{quarantined});
+            $$message{quarantined},
+            $$message{rblspamreport});
 
         # This doesn't work in the event we have no connection by now ?
         if (!$sth) {
@@ -381,6 +382,7 @@ sub MailWatchLogging {
     $msg{"time"} = $time;
     $msg{headers} = join("\n", map { fix_latin($_)} @{$message->{headers}});
     $msg{quarantined} = $quarantined;
+    $msg{rblspamreport} = $message->{rblspamreport};
 
     # Prepare data for transmission
     my $f = freeze \%msg;

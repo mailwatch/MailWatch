@@ -465,6 +465,7 @@ return array(
     'retypepassword12' => 'Confirmez le mot de passe :',
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
     'savedsettings12' => 'Règlages enregistrés',
+    'errordeleteself12' => 'Error: You can\'t delete yourself!',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -893,6 +894,8 @@ return array(
     'message299' => 'soit lisible et puissent être écrit part MailWatch',
     'mwlogo99' => 'Logo MailWatch',
     'mslogo99' => 'Logo MailScanner',
+    'dievalidate99' => 'Erreur: impossible de valider l\'entrée',
+    'dietoken99' => 'Erreur: impossible de valider le jeton de sécurité',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
     'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',
