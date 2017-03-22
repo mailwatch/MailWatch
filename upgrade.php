@@ -438,7 +438,7 @@ if ($link) {
     }
 
     // Add new column and index to maillog table
-    echo pad(' - Add maillog_id field, rblspamreport and primary key to `maillog` table');
+    echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
