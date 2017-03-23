@@ -1,3 +1,22 @@
+1.2.1-dev
+-----------
+Improvements
+- Show RBL list in Message Detail
+- Better decoding of sender and subject in Mail Queue
+- Disable browser caching to prevent token mismatch
+- Add unique token to logged emails
+- Clean orphaned filter in upgrade.php
+- Add optional skinning of web interface
+
+Fixes
+- Fix regression on some input validation (the Bad Dog Biting Bug™)
+- Rename 00MailWatchConf.pm to MailWatchConf.pm, failing on some perl versions
+- Fix Audit log access
+- Don't permit logged in Admin/Domain admin to delete his/her user
+- Fix MailWatchConf.pm loading on some platforms
+- Remove double ldap_escape on username
+- Fix upgrade.php failing on some MariaDB versions
+
 1.2.0
 -----------
 - Multiple vulnerability fixed
