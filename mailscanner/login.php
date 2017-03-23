@@ -50,8 +50,8 @@ if (!isset($_SESSION['token'])) {
     <link rel="shortcut icon" href="images/favicon.png">
     <link rel="stylesheet" href="style.css" type="text/css">
     <?php if (is_file(__DIR__ . '/skin.css')) {
-        echo '<link rel="stylesheet" href="skin.css" type="text/css">';
-    } ?>
+    echo '<link rel="stylesheet" href="skin.css" type="text/css">';
+} ?>
 </head>
 <body class="loginbody">
 <div class="login">
@@ -60,11 +60,11 @@ if (!isset($_SESSION['token'])) {
     <h1><?php echo __('mwlogin01'); ?></h1>
     <div class="inner-container">
         <?php if (file_exists('conf.php')) {
-            ?>
+    ?>
             <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
                 <fieldset>
                     <?php if (isset($_GET['error'])) {
-                        ?>
+        ?>
                         <p class="loginerror">
                             <?php
                             switch ($_GET['error']) {
@@ -80,7 +80,7 @@ if (!isset($_SESSION['token'])) {
                         </p>
                         <?php
 
-                    } ?>
+    } ?>
                     <p><label for="myusername"><?php echo __('username'); ?></label></p>
                     <p><input name="myusername" type="text" id="myusername" autofocus></p>
 
@@ -104,14 +104,14 @@ if (!isset($_SESSION['token'])) {
                 <?php
 
             }
-        } else {
-            ?>
+} else {
+    ?>
             <p class="error">
                 <?php echo __('cannot_read_conf'); ?>
             </p>
             <?php
 
-        }
+}
         ?>
     </div>
 </div>
