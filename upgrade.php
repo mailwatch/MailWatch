@@ -463,6 +463,27 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
+    
+    // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
+    echo pad(' - Check for missing tokens in `maillog` table');
+    if (defined('QUARANTINE_REPORT_DAYS')) {
+        $report_days=QUARANTINE_REPORT_DAYS;
+    } else {
+        // Missing, but let's keep going...
+        $report_days=7;
+    }
+    $sql = 'SELECT `id`,`token` FROM `maillog` WHERE `date` <= DATE_SUB(CURRENT_DATE(), INTERVAL ' . $report_days . ' DAY)';
+    $result = dbquery($sql);
+    $rows = $result->num_rows;
+    if ($rows > 0) {
+        while ($row = $result->fetch_object()) {
+            if ($row->token === null) {
+                $sql = 'UPDATE `maillog` SET `token`=\'' . generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
+                executeQuery($sql);
+            }
+        }
+    }
+    echo color(' DONE', 'lightgreen') . PHP_EOL;
 
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
