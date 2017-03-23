@@ -76,11 +76,13 @@ function pad($input)
 /**
  * @param string $sql
  */
-function executeQuery($sql)
+function executeQuery($sql, $beSilent = false)
 {
     global $link;
     if ($link->query($sql)) {
-        echo color(' OK', 'green') . PHP_EOL;
+        if (!$beSilent) {
+            echo color(' OK', 'green') . PHP_EOL;
+        }
     } else {
         echo color(' ERROR', 'red') . PHP_EOL;
         die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
@@ -475,15 +477,18 @@ if ($link) {
     $sql = 'SELECT `id`,`token` FROM `maillog` WHERE `date` <= DATE_SUB(CURRENT_DATE(), INTERVAL ' . $report_days . ' DAY)';
     $result = dbquery($sql);
     $rows = $result->num_rows;
+    $countTokenGenerated = 0;
     if ($rows > 0) {
         while ($row = $result->fetch_object()) {
             if ($row->token === null) {
                 $sql = 'UPDATE `maillog` SET `token`=\'' . generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
-                executeQuery($sql);
+                executeQuery($sql, true);
+                $countTokenGenerated++;
             }
         }
     }
     echo color(' DONE', 'lightgreen') . PHP_EOL;
+    echo '   ' . $countTokenGenerated . ' token generated' . PHP_EOL;
 
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
