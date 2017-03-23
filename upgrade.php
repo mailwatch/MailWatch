@@ -425,7 +425,6 @@ if ($link) {
     echo pad(' - Cleanup orphaned user_filters');
     $sql = 'DELETE FROM `user_filters` WHERE `username` NOT IN (SELECT `username` FROM `users`)';
     executeQuery($sql);
-    echo color(' DONE', 'lightgreen') . PHP_EOL;
 
     // Add new column and index to audit_log table
     echo pad(' - Add id field and primary key to `audit_log` table');
