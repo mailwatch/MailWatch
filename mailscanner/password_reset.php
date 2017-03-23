@@ -289,6 +289,9 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="shortcut icon" href="images/favicon.png">
             <link rel="stylesheet" href="style.css" type="text/css">
+            <?php if (is_file(__DIR__ . '/skin.css')) {
+                echo '<link rel="stylesheet" href="skin.css" type="text/css">';
+            } ?>
         </head>
         <body class="pwdreset">
         <div class="pwdreset">

@@ -285,7 +285,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</script>';
     if ($report) {
         echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
-        echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION['filter'])) {
             require_once __DIR__ . '/filter.inc.php';
             $filter = new Filter();
@@ -297,7 +296,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         audit_log(__('auditlogreport03') . ' ' . $title);
     } else {
         echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
-        echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
+    }
+    echo '<link rel="stylesheet" type="text/css" href="./style.css">' . "\n";
+    if (is_file(__DIR__ . '/skin.css')) {
+        echo '<link rel="stylesheet" href="./skin.css" type="text/css">';
     }
 
     if ($refresh > 0) {
