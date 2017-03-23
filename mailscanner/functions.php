@@ -471,7 +471,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 }
 
                 // Else use MAILQ from conf.php which is for Sendmail or Exim
-            } elseif (defined(MAILQ) && MAILQ === true && !DISTRIBUTED_SETUP) {
+            } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
                 if ($mta === 'exim') {
                     $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                     $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
