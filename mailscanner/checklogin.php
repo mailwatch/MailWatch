@@ -158,7 +158,7 @@ if ($usercount === 0) {
         $_SESSION['token'] = generateToken();
         $redirect_url = 'index.php';
         if (isset($_SESSION['REQUEST_URI'])) {
-            $redirect_url = sanitizeInput($_SESSION['REQUEST_URI']);
+            $redirect_url = $_SESSION['REQUEST_URI'];
             unset($_SESSION['REQUEST_URI']);
         }
         header('Location: ' . $redirect_url);

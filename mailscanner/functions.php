@@ -103,7 +103,7 @@ unset($session_cookie_secure);
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] === 'on') {
-        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . sanitizeInput($_SERVER['REQUEST_URI']));
+        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . $_SERVER['REQUEST_URI']);
         exit;
     }
 }
