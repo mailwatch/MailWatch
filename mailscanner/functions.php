@@ -1637,46 +1637,13 @@ function get_conf_include_folder($force = false)
         return $conf_include_folder;
     }
 
-    $name = 'include';
     $msconfig = MS_CONFIG_DIR . 'MailScanner.conf';
-
-    $msconfigContent = array_filter(
-        file($msconfig, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
-        function ($value) {
-            return !($value[0] === '#');
-        }
-    );
-
-    foreach ($msconfigContent as $line) {
-        //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
-        if (preg_match('/^(?P<name>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
-            $regs['name'] = preg_replace('/ */', '', $regs['name']);
-            $regs['name'] = preg_replace('/=/', '', $regs['name']);
-            // Strip trailing comments
-            $regs['value'] = preg_replace("/\*/", '', $regs['value']);
-            // store %var% variables
-            if (preg_match('/%.+%/', $regs['name'])) {
-                $var[$regs['name']] = $regs['value'];
-            }
-            // expand %var% variables
-            if (preg_match('/(%[^%]+%)/', $regs['value'], $matches)) {
-                array_shift($matches);
-                foreach ($matches as $varname) {
-                    $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
-                }
-            }
-            if (strtolower($regs[1]) === strtolower($name)) {
-                if (is_file($regs['value'])) {
-                    $conf_include_folder = read_ruleset_default($regs['value']);
-                } else {
-                    $conf_include_folder = $regs['value'];
-                }
-                unset($msconfigContent);
-                return $conf_include_folder;
-            }
-        }
+    if (preg_match('/^include\s+([^=]*)\*\S*$/im', file_get_contents($msconfig), $match) === 1) {
+        $conf_include_folder = $match[1];
+        return $conf_include_folder;
     }
-    die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $msconfig\n");
+
+    die(__('dienoconfigval103') . ' include ' . __('dienoconfigval203') . ' ' . $msconfig . "\n");
 }
 
 /**
