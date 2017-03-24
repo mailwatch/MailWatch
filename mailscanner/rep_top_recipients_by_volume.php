@@ -64,16 +64,16 @@ $columns = array(
     'countconv' => __('count03'),
     'sizeconv' => __('size03')
 );
-$sqlColumns = array (
+$sqlColumns = array(
     'name',
     'count',
     'size'
 );
-$valueConversion = array (
+$valueConversion = array(
     'size' => 'scale',
     'count' => 'number'
 );
-$graphColumns = array (
+$graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'size'
 );

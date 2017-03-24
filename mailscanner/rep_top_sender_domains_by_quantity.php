@@ -69,11 +69,11 @@ $sqlColumns = array(
     'count',
     'size'
 );
-$valueConversion = array (
+$valueConversion = array(
     'size' => 'scale',
     'count' => 'number'
 );
-$graphColumns = array (
+$graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'count'
 );

@@ -59,21 +59,21 @@ $sql = '
  LIMIT 10
 ';
 
-$columns = array (
+$columns = array(
     'name' => __('email42'),
     'countconv' => __('count03'),
     'sizeconv' => __('size03')
 );
-$sqlColumns = array (
+$sqlColumns = array(
     'name',
     'count',
     'size'
 );
-$valueConversion = array (
+$valueConversion = array(
     'size' => 'scale',
     'count' => 'number'
 );
-$graphColumns = array (
+$graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'count'
 );
