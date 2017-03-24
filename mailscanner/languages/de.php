@@ -226,7 +226,7 @@ return array(
     'salearn04' => 'SA Trainieren',
     'file04' => 'Datei',
     'type04' => 'Typ',
-    'path04' => 'Pfad',
+    'path04' => 'Nachrichten-Pfad',
     'dang04' => 'Gefährlich',
     'altrecip04' => 'Alternative(r) Empfänger:',
     'submit04' => 'Bestätigen',
@@ -465,7 +465,7 @@ return array(
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
-    'errordeleteself12' => 'Error: You can\'t delete yourself!',
+    'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',

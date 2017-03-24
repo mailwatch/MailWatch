@@ -226,7 +226,7 @@ return array(
     'salearn04' => 'SA Learn',
     'file04' => 'File',
     'type04' => 'Type',
-    'path04' => 'Path',
+    'path04' => 'Path to message',
     'dang04' => 'Dangerous',
     'altrecip04' => 'Alternate Recipient(s):',
     'submit04' => 'Submit',
@@ -465,7 +465,7 @@ return array(
     'retypepassword12' => 'Confirm Password:',
     'userexists12' => 'User already exists with username %s',
     'savedsettings12' => 'Settings saved',
-    'errordeleteself12' => 'Error: You can\'t delete yourself!',
+    'errordeleteself12' => 'Error: You can not delete your own account!',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
