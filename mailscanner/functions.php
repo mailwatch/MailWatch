@@ -103,7 +103,7 @@ unset($session_cookie_secure);
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] === 'on') {
-        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . sanitizeInput($_SERVER['REQUEST_URI']));
+        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . $_SERVER['REQUEST_URI']);
         exit;
     }
 }
@@ -238,6 +238,14 @@ function suppress_zeros($number)
     }
 }
 
+function disableBrowserCache()
+{
+    header('Expires: Sat, 10 May 2003 00:00:00 GMT');
+    header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Cache-Control: post-check=0, pre-check=0', false);
+}
+
 /**
  * @param $title
  * @param int $refresh
@@ -247,16 +255,11 @@ function suppress_zeros($number)
  */
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
-    if (!$cacheable) {
-        // Cache control (as per PHP website)
-        if (PHP_SAPI !== 'cli') {
-            header('Expires: Sat, 10 May 2003 00:00:00 GMT');
-            header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
-            header('Cache-Control: no-store, no-cache, must-revalidate');
-            header('Cache-Control: post-check=0, pre-check=0', false);
-        }
-    } else {
-        if (PHP_SAPI !== 'cli') {
+    if (PHP_SAPI !== 'cli') {
+        if (!$cacheable) {
+            // Cache control (as per PHP website)
+            disableBrowserCache();
+        } else {
             // calc an offset of 24 hours
             $offset = 3600 * 48;
             // calc the string in GMT not localtime and add the offset
@@ -282,7 +285,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</script>';
     if ($report) {
         echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
-        echo '<link rel="StyleSheet" type="text/css" href="./style.css">' . "\n";
         if (!isset($_SESSION['filter'])) {
             require_once __DIR__ . '/filter.inc.php';
             $filter = new Filter();
@@ -294,7 +296,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         audit_log(__('auditlogreport03') . ' ' . $title);
     } else {
         echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
-        echo '<link rel="StyleSheet" type="text/css" href="style.css">' . "\n";
+    }
+    echo '<link rel="stylesheet" type="text/css" href="./style.css">' . "\n";
+    if (is_file(__DIR__ . '/skin.css')) {
+        echo '<link rel="stylesheet" href="./skin.css" type="text/css">';
     }
 
     if ($refresh > 0) {
@@ -466,7 +471,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                 }
 
                 // Else use MAILQ from conf.php which is for Sendmail or Exim
-            } elseif (MAILQ && !DISTRIBUTED_SETUP) {
+            } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
                 if ($mta === 'exim') {
                     $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                     $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
@@ -4059,7 +4064,6 @@ function checkConfVariables()
         'LDAP_USERNAME_FIELD',
         'LISTS',
         'MAIL_LOG',
-        'MAILQ',
         'MAILWATCH_HOME',
         'MAILWATCH_MAIL_HOST',
         'MAILWATCH_MAIL_PORT',
@@ -4136,6 +4140,7 @@ function checkConfVariables()
         'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
         'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
         'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
+        'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
     );
 

@@ -76,11 +76,13 @@ function pad($input)
 /**
  * @param string $sql
  */
-function executeQuery($sql)
+function executeQuery($sql, $beSilent = false)
 {
     global $link;
     if ($link->query($sql)) {
-        echo color(' OK', 'green') . PHP_EOL;
+        if (!$beSilent) {
+            echo color(' OK', 'green') . PHP_EOL;
+        }
     } else {
         echo color(' ERROR', 'red') . PHP_EOL;
         die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
@@ -418,6 +420,11 @@ if ($link) {
     executeQuery($sql);
 
     echo PHP_EOL;
+    
+    // Cleanup orphaned user_filters
+    echo pad(' - Cleanup orphaned user_filters');
+    $sql = 'DELETE FROM `user_filters` WHERE `username` NOT IN (SELECT `username` FROM `users`)';
+    executeQuery($sql);
 
     // Add new column and index to audit_log table
     echo pad(' - Add id field and primary key to `audit_log` table');
@@ -438,7 +445,7 @@ if ($link) {
     }
 
     // Add new column and index to maillog table
-    echo pad(' - Add maillog_id field, rblspamreport and primary key to `maillog` table');
+    echo pad(' - Add maillog_id field and primary key to `maillog` table');
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
@@ -454,6 +461,39 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
+    
+    // Add new token column to maillog table
+    echo pad(' - Add token field to `maillog` table');
+    if (true === check_column_exists('maillog', 'token')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `maillog` ADD `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
+        executeQuery($sql);
+    }
+    
+    // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
+    echo pad(' - Check for missing tokens in `maillog` table');
+    if (defined('QUARANTINE_REPORT_DAYS')) {
+        $report_days=QUARANTINE_REPORT_DAYS;
+    } else {
+        // Missing, but let's keep going...
+        $report_days=7;
+    }
+    $sql = 'SELECT `id`,`token` FROM `maillog` WHERE `date` >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . $report_days . ' DAY)';
+    $result = dbquery($sql);
+    $rows = $result->num_rows;
+    $countTokenGenerated = 0;
+    if ($rows > 0) {
+        while ($row = $result->fetch_object()) {
+            if ($row->token === null) {
+                $sql = 'UPDATE `maillog` SET `token`=\'' . generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
+                executeQuery($sql, true);
+                $countTokenGenerated++;
+            }
+        }
+    }
+    echo color(' DONE', 'lightgreen') . PHP_EOL;
+    echo '   ' . $countTokenGenerated . ' token generated' . PHP_EOL;
 
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
