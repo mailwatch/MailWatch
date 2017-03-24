@@ -62,6 +62,7 @@ if ($_SESSION['user_type'] !== 'A') {
     $endDate='';
     $ipaddress = '';
     $actions ='';
+    $username ='';
     if (isset($_POST['formtoken'])) {
         if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
             die(__('dietoken99'));
