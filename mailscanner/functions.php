@@ -4131,14 +4131,14 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
 
     // HTML to display the table
     echo '<table class="reportTable">';
-    echo '    <tr style="background-color: #F7CE4A">' . "\n";
+    echo '    <tr>' . "\n";
     foreach ($columns as $columnName => $columnTitle) {
         echo '     <th>' . $columnTitle . '</th>' . "\n";
     }
     echo '    </tr>' . "\n";
 
     for ($i = 0; $i < $numResult; $i++) {
-        echo '    <tr style="background-color: #EBEBEB">' . "\n";
+        echo '    <tr>' . "\n";
         foreach ($columns as $columnName => $columnTitle) {
             echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
         }

@@ -658,6 +658,14 @@ div.table > .caption > input {
    margin-right: auto;
 }
 
+.reportTable>tbody>tr>th {
+   background-color: #F7CE4A;
+}
+
+.reportTable>tbody>tr>td {
+   background-color: #EBEBEB;
+}
+
 .reportTable>tbody>tr>th,
 .reportTable>tbody>tr>td {
     text-align: center;
