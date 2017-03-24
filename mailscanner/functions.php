@@ -480,7 +480,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
                     //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
                     //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
                     //$inq = $output_array[2];
-                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+                    //$cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
                     //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
                     //$outq = $output_array[2];
                     $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
