@@ -465,7 +465,7 @@ return array(
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
-    'errordeleteself12' => 'Error: You can not delete your own account!',
+    'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
