@@ -465,7 +465,7 @@ return array(
     'retypepassword12' => 'Confirm Password:',
     'userexists12' => 'User already exists with username %s',
     'savedsettings12' => 'Settings saved',
-    'errordeleteself12' => 'Error: You can not delete your own account!',
+    'errordeleteself12' => 'Error: You can\'t delete yourself!',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
