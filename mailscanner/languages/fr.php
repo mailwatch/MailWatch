@@ -226,7 +226,7 @@ return array(
     'salearn04' => 'Apprentissage SA',
     'file04' => 'Fichier',
     'type04' => 'Type',
-    'path04' => 'Chemin',
+    'path04' => 'Chemin d\'accès au message',
     'dang04' => 'Dangereux',
     'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
