@@ -1628,20 +1628,30 @@ function get_conf_truefalse($name, $force = false)
  */
 function get_conf_include_folder($force = false)
 {
-    $name = 'include';
     if (DISTRIBUTED_SETUP && !$force) {
         return false;
     }
 
+    static $conf_include_folder;
+    if (null !== $conf_include_folder) {
+        return $conf_include_folder;
+    }
+
+    $name = 'include';
     $msconfig = MS_CONFIG_DIR . 'MailScanner.conf';
-    $fh = fopen($msconfig, 'rb') or die(__('dienomsconf03'));
-    while (!feof($fh)) {
-        $line = rtrim(fgets($fh, filesize($msconfig)));
+
+    $msconfigContent = array_filter(
+        file($msconfig, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
+        function ($value) {
+            return !($value[0] === '#');
+        }
+    );
+
+    foreach ($msconfigContent as $line) {
         //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
         if (preg_match('/^(?P<name>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
             $regs['name'] = preg_replace('/ */', '', $regs['name']);
             $regs['name'] = preg_replace('/=/', '', $regs['name']);
-            //var_dump($line, $regs);
             // Strip trailing comments
             $regs['value'] = preg_replace("/\*/", '', $regs['value']);
             // store %var% variables
@@ -1656,16 +1666,16 @@ function get_conf_include_folder($force = false)
                 }
             }
             if (strtolower($regs[1]) === strtolower($name)) {
-                fclose($fh) or die($php_errormsg);
                 if (is_file($regs['value'])) {
-                    return read_ruleset_default($regs['value']);
+                    $conf_include_folder = read_ruleset_default($regs['value']);
                 } else {
-                    return $regs['value'];
+                    $conf_include_folder = $regs['value'];
                 }
+                unset($msconfigContent);
+                return $conf_include_folder;
             }
         }
     }
-    fclose($fh);
     die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $msconfig\n");
 }
 
@@ -1677,16 +1687,27 @@ function get_conf_include_folder($force = false)
  */
 function parse_conf_file($name)
 {
+    static $conf_file_cache;
+    if (null !== $conf_file_cache && isset($conf_file_cache[$name])) {
+        return $conf_file_cache[$name];
+    }
+
+    // check if file can be read
+    if (!is_file($name) || !is_readable($name)) {
+        die(__('dienomsconf03'));
+    }
+
     $array_output = array();
     $var = array();
     // open each file and read it
-    //$fh = fopen($name . $file, 'r')
-    $fh = fopen($name, 'rb') or die(__('dienomsconf03'));
-    while (!feof($fh)) {
+    $fileContent = array_filter(
+        file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
+        function ($value) {
+            return !($value[0] === '#');
+        }
+    );
 
-        // read each line to the $line varable
-        $line = rtrim(fgets($fh, 4096));
-
+    foreach ($fileContent as $line) {
         //echo "line: ".$line."\n"; // only use for troubleshooting lines
 
         // find all lines that match
@@ -1717,10 +1738,10 @@ function parse_conf_file($name)
             $array_output[$key] = $string;
         }
     }
-    fclose($fh) or die($php_errormsg);
-    unset($fh);
+    unset($fileContent);
 
-    return $array_output;
+    $conf_file_cache[$name] = $array_output;
+    return $conf_file_cache[$name];
 }
 
 /**
