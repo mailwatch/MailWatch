@@ -1638,8 +1638,13 @@ function get_conf_include_folder($force = false)
     }
 
     $msconfig = MS_CONFIG_DIR . 'MailScanner.conf';
+    if (!is_file($msconfig) || !is_readable($msconfig)) {
+        return false;
+    }
+
     if (preg_match('/^include\s+([^=]*)\*\S*$/im', file_get_contents($msconfig), $match) === 1) {
         $conf_include_folder = $match[1];
+
         return $conf_include_folder;
     }
 
