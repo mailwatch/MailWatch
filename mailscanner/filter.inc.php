@@ -172,7 +172,7 @@ class Filter
 SELECT
  DATE_FORMAT(MIN(date),'" . DATE_FORMAT . "') AS oldest,
  DATE_FORMAT(MAX(date),'" . DATE_FORMAT . "') AS newest,
- COUNT(*) AS messages
+ COUNT(date) AS messages
 FROM
  maillog
 WHERE
