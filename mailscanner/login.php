@@ -33,11 +33,22 @@
 */
 
 require_once __DIR__ . '/functions.php';
-disableBrowserCache();
-session_start();
-if (!isset($_SESSION['token'])) {
-    $_SESSION['token'] = generateToken();
+
+$session_cookie_secure = false;
+if (SSL_ONLY === true) {
+    ini_set('session.cookie_secure', 1);
+    $session_cookie_secure = true;
 }
+
+$params = session_get_cookie_params();
+session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
+unset($session_cookie_secure);
+
+session_start();
+disableBrowserCache();
+session_regenerate_id(true);
+
+$_SESSION['token'] = generateToken();
 
 ?>
 <!doctype html>
