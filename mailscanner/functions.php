@@ -4332,7 +4332,7 @@ function deepSanitizeInput($input, $type)
             return $string;
             break;
         case 'float':
-            $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT);
+            $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $string = sanitizeInput($string);
             $string = safe_value($string);
 
