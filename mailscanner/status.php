@@ -33,7 +33,7 @@ $refresh = html_start(__('recentmsg05'), STATUS_REFRESH, false, false);
 
 $sql = "
 SELECT
- id AS id2,
+ maillog_id AS id2,
  hostname AS host,
  DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
  from_address,";

@@ -52,16 +52,15 @@ if (isset($_GET['orderdir']) && !validateInput(deepSanitizeInput($_GET['orderdir
 }
 
 // Checks to see if you are looking for quarantined files only
+$flag_sql = '1=1';
 if (QUARANTINE_USE_FLAG) {
     $flag_sql = 'quarantined=1';
-} else {
-    $flag_sql = '1=1';
 }
 
 // SQL query
 $sql = "
  SELECT
-  id AS id2,
+  maillog_id AS id2,
   DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
   from_address,";
 if (defined('DISPLAY_IP') && DISPLAY_IP) {

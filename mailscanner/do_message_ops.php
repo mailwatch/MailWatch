@@ -53,21 +53,20 @@ echo ' </tr>' . "\n";
 unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
 if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
-        if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
-            $id = deepSanitizeInput($Regs[1], 'url');
-            $id = fixMessageId($id);
-            if (!validateInput($id, 'msgid')) {
+        if (preg_match('/^OPT-(\d+)$/', $k, $Regs)) {
+            $id = deepSanitizeInput($Regs[1], 'num');
+            if (!validateInput($id, 'num')) {
                 die();
             }
-        } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
-            $id = deepSanitizeInput($Regs[1], 'url');
-            $id = fixMessageId($id);
-            if (!validateInput($id, 'msgid')) {
+        } elseif (preg_match('/^OPTRELEASE-(\d+)$/', $k, $Regs)) {
+            $id = deepSanitizeInput($Regs[1], 'num');
+            if (!validateInput($id, 'num')) {
                 die();
             }
         } else {
             continue;
         }
+        // TODO: check if this deepSanitizeInput can be safely removed
         switch (deepSanitizeInput($v, 'url')) {
             case 'S':
                 $type = 'spam';

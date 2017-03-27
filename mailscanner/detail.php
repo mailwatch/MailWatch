@@ -45,17 +45,17 @@ if (isset($_POST['token'])) {
 }
 
 if (isset($_POST['id'])) {
-    $url_id = trim(deepSanitizeInput($_POST['id'], 'url'), ' ');
+    $maillog_id = trim(deepSanitizeInput($_POST['id'], 'num'), ' ');
 } else {
-    $url_id = trim(deepSanitizeInput($_GET['id'], 'url'), ' ');
+    $maillog_id = trim(deepSanitizeInput($_GET['id'], 'num'), ' ');
 }
 
-if (!validateInput($url_id, 'msgid')) {
-    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n");
+if (!validateInput($maillog_id, 'num')) {
+    die(__('dieid04') . " '" . $maillog_id . "' " . __('dienotfound04') . "\n");
 }
 
 // Start the header code and Title
-html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
+html_start(__('messdetail04') . ' ' . $maillog_id, 0, false, false);
 
 // Setting the yes and no variable
 $yes = '<span class="yes">&nbsp;' . __('yes04') . '&nbsp;</span>';
@@ -107,24 +107,26 @@ $sql = "
  WHERE
   " . $_SESSION['global_filter'] . "
  AND
-  id = '" . $url_id . "'
+  maillog_id = '" . $maillog_id . "'
 ";
 
 // Pull the data back and put it in the the $result variable
 $result = dbquery($sql);
 
 // Check to make sure something was returned
-if ($result->num_rows === 0) {
-    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
+if ($result->num_rows === 0 || $result->num_rows > 1) {
+    die(__('dieid04') . " '" . $maillog_id . "' " . __('dienotfound04') . "\n </TABLE>");
 }
+$row = $result->fetch_array();
 
-audit_log(__('auditlog04', true) . ' (id=' . $url_id . ')');
+$mta_message_id = $row[__('id04')];
+audit_log(__('auditlog04') . ' (maillog_id = ' . $maillog_id . ' id=' . $mta_message_id . ')');
 
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
-while ($row = $result->fetch_array()) {
+
     $listurl = 'lists.php?token=' . $_SESSION['token'] .'&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
     for ($f = 0; $f < $result->field_count; $f++) {
         $fieldInfo = $result->fetch_field_direct($f);
@@ -299,7 +301,7 @@ while ($row = $result->fetch_array()) {
             }
         }
     }
-}
+
 
 // Display the relay information only if there are matching
 // rows in the relay table (maillog.id = relay.msg_id)...
@@ -317,7 +319,7 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
   mtalog AS m
        	LEFT JOIN mtalog_ids AS i ON (i.smtp_id = m.msg_id)
  WHERE
-  i.smtpd_id='" . $url_id . "'
+  i.smtpd_id='" . $mta_message_id . "'
  AND
   m.type='relay'
  ORDER BY
@@ -333,7 +335,7 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
  FROM
   mtalog
  WHERE
-  msg_id='" . $url_id . "'
+  msg_id='" . $mta_message_id . "'
  AND
   type='relay'
  ORDER BY
@@ -372,7 +374,7 @@ echo "</table>\n";
 flush();
 
 $quarantinedir = get_conf_var('QuarantineDir');
-$quarantined = quarantine_list_items($url_id, RPC_ONLY);
+$quarantined = quarantine_list_items($mta_message_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 

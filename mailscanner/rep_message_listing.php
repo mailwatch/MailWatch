@@ -53,7 +53,7 @@ if (isset($_GET['orderdir']) && !validateInput(deepSanitizeInput($_GET['orderdir
 
 $sql = "
  SELECT
-  id AS id2,
+  maillog_id AS id2,
   DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
   from_address,";
 if (defined('DISPLAY_IP') && DISPLAY_IP) {

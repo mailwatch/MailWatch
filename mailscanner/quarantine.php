@@ -97,7 +97,7 @@ if (!isset($_GET['dir'])) {
         $date = translateQuarantineDate($dir, 'sql');
         $sql = "
 SELECT
- id AS id2,
+ maillog_id AS id2,
  DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
  from_address,";
         if (defined('DISPLAY_IP') && DISPLAY_IP) {
@@ -155,7 +155,7 @@ ORDER BY
             $date = safe_value(translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
-   id AS id2,
+   maillog_id AS id2,
    DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
    from_address,";
             if (defined('DISPLAY_IP') && DISPLAY_IP) {

@@ -56,7 +56,7 @@ switch ($queue) {
 db_colorised_table(
     "
     SELECT
-     id AS id2,
+     maillog_id AS id2,
      CONCAT(DATE_FORMAT(cdate, '" . DATE_FORMAT . "'),' ',ctime) AS datetime,
  hostname,
  from_address,

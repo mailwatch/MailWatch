@@ -3332,11 +3332,11 @@ function is_local($host)
 }
 
 /**
- * @param string $msgid
+ * @param int $maillog_id maillog.maillog_id field (BIGINT)
  * @param bool|false $rpc_only
  * @return array|mixed|string
  */
-function quarantine_list_items($msgid, $rpc_only = false)
+function quarantine_list_items($maillog_id, $rpc_only = false)
 {
     $sql = "
 SELECT
@@ -3351,11 +3351,11 @@ SELECT
  FROM
   maillog
  WHERE
-  id = '$msgid'";
+  maillog_id = '$maillog_id'";
     $sth = dbquery($sql);
     $rows = $sth->num_rows;
     if ($rows <= 0) {
-        die(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
+        die(__('diequarantine103') . " $maillog_id " . __('diequarantine203') . "\n");
     }
     $row = $sth->fetch_object();
     if (!$rpc_only && is_local($row->hostname)) {
@@ -3370,11 +3370,13 @@ SELECT
         }
         $quarantined = array();
         $count = 0;
+
         foreach (array($nonspam, $spam, $mcp) as $category) {
             if (file_exists($category) && is_readable($category)) {
                 $quarantined[$count]['id'] = $count;
                 $quarantined[$count]['host'] = $row->hostname;
                 $quarantined[$count]['msgid'] = $row->id;
+                $quarantined[$count]['maillog_id'] = $row->maillog_id;
                 $quarantined[$count]['to'] = $row->to_address;
                 $quarantined[$count]['file'] = 'message';
                 $quarantined[$count]['type'] = 'message/rfc822';
@@ -3393,6 +3395,7 @@ SELECT
                     $quarantined[$count]['id'] = $count;
                     $quarantined[$count]['host'] = $row->hostname;
                     $quarantined[$count]['msgid'] = $row->id;
+                    $quarantined[$count]['maillog_id'] = $row->maillog_id;
                     $quarantined[$count]['to'] = $row->to_address;
                     $quarantined[$count]['file'] = $f;
                     $file = escapeshellarg($quarantine . '/' . $f);
@@ -3416,7 +3419,7 @@ SELECT
     //if(DEBUG) { $client->setDebug(1); }
     //$parameters = array($input);
     //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
-    $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($msgid)));
+    $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($maillog_id)));
     $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
     if ($rsp->faultCode() === 0) {
         $response = php_xmlrpc_decode($rsp->value());
