@@ -211,6 +211,7 @@ define('MEMORY_LIMIT', '128M');
 
 // Relative path to RPC server
 define('RPC_RELATIVE_PATH', '/mailscanner');
+
 // This defines who is allowed to use the RPC service using a space separated list
 // of allowed clients as IP adddresses or in network/cidr (192.168.123.0/24) format.
 // You can also use 'allprivate' to specify all private address ranges or 'local24'
@@ -218,12 +219,16 @@ define('RPC_RELATIVE_PATH', '/mailscanner');
 // hostname of the machine and changing the last octet to '0' and specifying
 // it as a /24.  No connections are allowed by default.
 define('RPC_ALLOWED_CLIENTS', '');
+
 // RPC-only mode - used primarily for testing (you shouldn't need to enable this).
 define('RPC_ONLY', false);
+
 // RPC port (defaults to 80 if not supplied).
 // define('RPC_PORT', 80);
+
 // RPC over SSL? (defaults to port 443 unless RPC_PORT is supplied).
 // define('RPC_SSL', true);
+
 // Enter the remote servers as space separated list where rpc call shall be executed at (eg. for postfix queue).
 // define('RPC_REMOTE_SERVER', 'other.example.com 10.0.0.2');
 
@@ -232,12 +237,15 @@ define('RPC_ONLY', false);
 // You must also run /usr/local/bin/mailwatch_sendmail_queue.php from CRON
 // and uncomment MAIL_SENDER, EXIM_QUEUE_IN and EXIM_QUEUE_OUT.
 // define('MAILQ', true);
+
 // Select if we use envelope-sender or sender (From:) in Mail Queue for Exim or Sendmail
 // Value: 'envelopesender' or 'sender'
 // define('MAIL_SENDER', 'envelopesender');
+
 // If you change the lines below, you need to change /etc/sudoers.d/mailwatch according.
 // Command to read Exim inbound Mail Queue
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
+
 // Command to read Exim outbound Mail Queue
 // define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
 // Command to read Sendmail inbound Mail Queue
