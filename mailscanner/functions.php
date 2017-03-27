@@ -989,14 +989,14 @@ function __($string)
 
     if (isset($lang[$string])) {
         return $lang[$string] . $debug_message;
-    } else {
-        $en_lang = require __DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php';
-        if (isset($en_lang[$string])) {
-            return $pre_string . $en_lang[$string] . $debug_message . $post_string;
-        } else {
-            return $pre_string . $lang['i18_missing'] . $debug_message . $post_string;
-        }
     }
+
+    $en_lang = require __DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php';
+    if (isset($en_lang[$string])) {
+        return $pre_string . $en_lang[$string] . $debug_message . $post_string;
+    }
+
+    return $pre_string . $lang['i18_missing'] . $debug_message . $post_string;
 }
 
 /**
@@ -1021,7 +1021,7 @@ function is_utf8($string)
 }
 
 /**
- * @param $string
+ * @param string $string
  * @return string
  */
 function getUTF8String($string)
@@ -1040,12 +1040,12 @@ function getUTF8String($string)
 }
 
 /**
- * @param $header
+ * @param string $header
  * @return string
  */
 function getFROMheader($header)
 {
-    $sender = "";
+    $sender = '';
     if (preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
         if (isset($match[2])) {
             $sender = $match[2];
@@ -1060,25 +1060,26 @@ function getFROMheader($header)
 }
 
 /**
- * @param $header
+ * @param string $header
  * @return string
  */
 function getSUBJECTheader($header)
 {
-    $subject = "";
+    $subject = '';
     if (preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match)) {
         $subLines = preg_split('/[\r\n]+/', $match[2]);
-        for ($i=0; $i < count($subLines); $i++) {
-            $convLine = "";
+        for ($i = 0, $countSubLines = count($subLines); $i < $countSubLines; $i++) {
+            $convLine = '';
             if (function_exists('imap_mime_header_decode')) {
                 $linePartArr = imap_mime_header_decode($subLines[$i]);
-                for ($j=0; $j < count($linePartArr); $j++) {
+                for ($j = 0, $countLinePartArr = count($linePartArr); $j < $countLinePartArr; $j++) {
                     if (strtolower($linePartArr[$j]->charset) === 'default') {
-                        if ($linePartArr[$j]->text != " ") {
-                            $convLine .= ($linePartArr[$j]->text);
+                        if ($linePartArr[$j]->text != ' ') {
+                            $convLine .= $linePartArr[$j]->text;
                         }
                     } else {
-                        $textdecoded = @iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE', $linePartArr[$j]->text);
+                        $textdecoded = @iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE',
+                            $linePartArr[$j]->text);
                         if (!$textdecoded) {
                             $convLine .= $linePartArr[$j]->text;
                         } else {
@@ -1092,11 +1093,12 @@ function getSUBJECTheader($header)
             $subject .= $convLine;
         }
     }
+
     return $subject;
 }
 
 /**
- * @param $spamreport
+ * @param string $spamreport
  * @return string|false
  */
 function sa_autolearn($spamreport)
@@ -1165,13 +1167,13 @@ function format_spam_report($spamreport)
                     "\n",
                     $output_array
                 ) . '</table>' . "\n";
-        } else {
-            return $spamreport;
         }
-    } else {
-        // Regular expression did not match, return unmodified report instead
+
         return $spamreport;
     }
+
+    // Regular expression did not match, return unmodified report instead
+    return $spamreport;
 }
 
 /**
@@ -1190,9 +1192,9 @@ function get_sa_rule_desc($rule)
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
-    } else {
-        return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
     }
+
+    return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
 }
 
 /**
@@ -1245,13 +1247,13 @@ function format_mcp_report($mcpreport)
                     "\n",
                     $output_array
                 ) . '</table>' . "\n";
-        } else {
-            return $mcpreport;
         }
-    } else {
-        // Regular expression did not match, return unmodified report instead
+
         return $mcpreport;
     }
+
+    // Regular expression did not match, return unmodified report instead
+    return $mcpreport;
 }
 
 /**
@@ -1269,9 +1271,9 @@ function get_mcp_rule_desc($rule)
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200px;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
-    } else {
-        return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";
     }
+
+    return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";
 }
 
 /**
@@ -1321,21 +1323,23 @@ AND
     // Get the topmost entry from the array
     if (!defined('VIRUS_REGEX')) {
         return __('unknownvirusscanner03');
-    } elseif ((list($key, $val) = each($virus_array)) !== '') {
+    }
+
+    if ((list($key, $val) = each($virus_array)) !== '') {
         // Check and make sure there first placed isn't tied!
         $saved_key = $key;
         $saved_val = $val;
         list($key, $val) = each($virus_array);
         if ($val !== $saved_val) {
             return $saved_key;
-        } else {
-            // Tied first place - return none
-            // FIXME: Should return all top viruses
-            return __('none03');
         }
-    } else {
+
+        // Tied first place - return none
+        // FIXME: Should return all top viruses
         return __('none03');
     }
+
+    return __('none03');
 }
 
 /**
@@ -1628,45 +1632,27 @@ function get_conf_truefalse($name, $force = false)
  */
 function get_conf_include_folder($force = false)
 {
-    $name = 'include';
     if (DISTRIBUTED_SETUP && !$force) {
         return false;
     }
 
-    $msconfig = MS_CONFIG_DIR . 'MailScanner.conf';
-    $fh = fopen($msconfig, 'rb') or die(__('dienomsconf03'));
-    while (!feof($fh)) {
-        $line = rtrim(fgets($fh, filesize($msconfig)));
-        //if (preg_match('/^([^#].+)\s([^#].+)/', $line, $regs)) {
-        if (preg_match('/^(?P<name>[^#].+)\s(?P<value>[^#].+)/', $line, $regs)) {
-            $regs['name'] = preg_replace('/ */', '', $regs['name']);
-            $regs['name'] = preg_replace('/=/', '', $regs['name']);
-            //var_dump($line, $regs);
-            // Strip trailing comments
-            $regs['value'] = preg_replace("/\*/", '', $regs['value']);
-            // store %var% variables
-            if (preg_match('/%.+%/', $regs['name'])) {
-                $var[$regs['name']] = $regs['value'];
-            }
-            // expand %var% variables
-            if (preg_match('/(%[^%]+%)/', $regs['value'], $matches)) {
-                array_shift($matches);
-                foreach ($matches as $varname) {
-                    $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
-                }
-            }
-            if (strtolower($regs[1]) === strtolower($name)) {
-                fclose($fh) or die($php_errormsg);
-                if (is_file($regs['value'])) {
-                    return read_ruleset_default($regs['value']);
-                } else {
-                    return $regs['value'];
-                }
-            }
-        }
+    static $conf_include_folder;
+    if (null !== $conf_include_folder) {
+        return $conf_include_folder;
     }
-    fclose($fh);
-    die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $msconfig\n");
+
+    $msconfig = MS_CONFIG_DIR . 'MailScanner.conf';
+    if (!is_file($msconfig) || !is_readable($msconfig)) {
+        return false;
+    }
+
+    if (preg_match('/^include\s+([^=]*)\*\S*$/im', file_get_contents($msconfig), $match) === 1) {
+        $conf_include_folder = $match[1];
+
+        return $conf_include_folder;
+    }
+
+    die(__('dienoconfigval103') . ' include ' . __('dienoconfigval203') . ' ' . $msconfig . "\n");
 }
 
 /**
@@ -1677,16 +1663,27 @@ function get_conf_include_folder($force = false)
  */
 function parse_conf_file($name)
 {
+    static $conf_file_cache;
+    if (null !== $conf_file_cache && isset($conf_file_cache[$name])) {
+        return $conf_file_cache[$name];
+    }
+
+    // check if file can be read
+    if (!is_file($name) || !is_readable($name)) {
+        die(__('dienomsconf03'));
+    }
+
     $array_output = array();
     $var = array();
     // open each file and read it
-    //$fh = fopen($name . $file, 'r')
-    $fh = fopen($name, 'rb') or die(__('dienomsconf03'));
-    while (!feof($fh)) {
+    $fileContent = array_filter(
+        file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
+        function ($value) {
+            return !($value[0] === '#');
+        }
+    );
 
-        // read each line to the $line varable
-        $line = rtrim(fgets($fh, 4096));
-
+    foreach ($fileContent as $line) {
         //echo "line: ".$line."\n"; // only use for troubleshooting lines
 
         // find all lines that match
@@ -1717,10 +1714,10 @@ function parse_conf_file($name)
             $array_output[$key] = $string;
         }
     }
-    fclose($fh) or die($php_errormsg);
-    unset($fh);
+    unset($fileContent);
 
-    return $array_output;
+    $conf_file_cache[$name] = $array_output;
+    return $conf_file_cache[$name];
 }
 
 /**
@@ -1777,12 +1774,12 @@ function subtract_get_vars($preserve)
             $output = implode('&amp;', $output);
 
             return '&amp;' . $output;
-        } else {
-            return false;
         }
-    } else {
+
         return false;
     }
+
+    return false;
 }
 
 /**
@@ -1801,12 +1798,12 @@ function subtract_multi_get_vars($preserve)
             $output = implode('&amp;', $output);
 
             return '&amp;' . $output;
-        } else {
-            return false;
         }
-    } else {
+
         return false;
     }
+
+    return false;
 }
 
 /**
