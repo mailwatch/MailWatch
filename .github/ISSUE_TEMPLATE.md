@@ -25,9 +25,9 @@ Tell us what happens instead
 
 ## Installation
 ### Version and method
- - MailWatch Version: [ 1.2.0 | RC-x | develop ]
+ - MailWatch Version: [ stable 1.2.x | RC-x | master | develop ]
  - Install type: [ GitHub checkout | Zip/tarball install | Installer (beta) ]
- - Updated from an older MailWatch or fresh install: [ Upgrade | fresh install ]
+ - Updated from an older MailWatch or fresh install: [ Fresh install | Upgrade ] (from version [ version ])
 
 ### Server configuration
  - Operation System: [ Debian | Ubuntu | CentOS | Other ] version [ version ]
