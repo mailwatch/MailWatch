@@ -35,22 +35,25 @@ ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+//$pathToMailscannerDir = '/opt/mailwatch/mailscanner/';
+$pathToMailscannerDir = '/var/www/html/mailscanner/';
+
+$pathToFunctions = $pathToMailscannerDir . 'functions.php';
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
-}
-
-require $pathToFunctions;
-
-// Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/mtalogprocessor.inc.php';
-
-if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 5) . "\n");
 }
 
 require_once $pathToFunctions;
+
+// Edit if you changed webapp directory from default
+$pathToMTALogProcessor = $pathToMailscannerDir .'mtalogprocessor.inc.php';
+
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 14) . "\n");
+}
+
+require_once $pathToMTALogProcessor;
 
 // Set-up environment
 set_time_limit(0);
@@ -69,7 +72,7 @@ class PostfixLogProcessor extends MtaLogProcessor
         // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
         // example
         $rejectReasons = array();
-        if (preg_match('/NOQUEUE/i', $this->entry)) {
+        if (false !== stripos($this->entry, 'NOQUEUE')) {
             if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
                 $rejectReasons['type'] = safe_value('unknown_hostname');
             } else {
@@ -92,7 +95,7 @@ class PostfixLogProcessor extends MtaLogProcessor
 }
 
 $logprocessor = new PostfixLogProcessor();
-if ($_SERVER['argv'][1] === '--refresh') {
+if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
     $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first
