@@ -76,6 +76,17 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
     $lang = require __DIR__ . '/languages/' . LANG . '.php';
 }
 
+//HTLMPurifier
+require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
+
+//Enforce SSL if SSL_ONLY=true
+if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
+    if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
+        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . $_SERVER['REQUEST_URI']);
+        exit;
+    }
+}
+
 //security headers
 if (PHP_SAPI !== 'cli') {
     header('X-XSS-Protection: 1; mode=block');
@@ -101,13 +112,6 @@ session_set_cookie_params(0, $params['path'], $params['domain'], $params['secure
 session_set_cookie_params(60 * 60, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
 
-if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
-    if (!$_SERVER['HTTPS'] === 'on') {
-        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . $_SERVER['REQUEST_URI']);
-        exit;
-    }
-}
-
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
 
@@ -115,9 +119,6 @@ date_default_timezone_set(TIME_ZONE);
 require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
 require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
 require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
-
-//HTLMPurifier
-require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 
 include __DIR__ . '/postfix.inc.php';
 
