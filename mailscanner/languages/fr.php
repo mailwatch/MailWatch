@@ -466,7 +466,7 @@ return array(
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
     'savedsettings12' => 'Règlages enregistrés',
     'errordeleteself12' => 'Erreur : vous ne pouvez pas supprimer votre propre compte !',
-    'nofilteraction12' => 'Not Allowed',
+    'nofilteraction12' => 'Action non autorisée',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
