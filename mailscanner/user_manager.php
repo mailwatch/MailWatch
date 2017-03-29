@@ -565,13 +565,14 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     while ($row = $result->fetch_object()) {
                         echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD> ';
                         if ($_SESSION['user_type'] === 'D' && $id === $_SESSION['myusername']) {
-                            echo '</TR>' . "\n";
+                            echo '<TD>' . __('nofilteraction12') . '</TD></TR>' . "\n";
                         } else {
                             echo '<TD>' . $row->actions . '</TD></TR>' . "\n";
                         }
                     }
                 }
-                if ($_SESSION['user_type'] !== 'D' || ($_SESSION['user_type'] === 'D' && $id !== $_SESSION['myusername'])) {
+                // Prevent domain admins from altering their own filters
+                if ($_SESSION['user_type'] === 'A' || ($_SESSION['user_type'] === 'D' && $id !== $_SESSION['myusername'])) {
                     echo ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . __('add12') . '"></TD></TR>' . "\n";
                 }
                 echo '</TABLE><BR>' . "\n";
@@ -595,7 +596,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
                 for ($i=0;$i<$result->num_rows;$i++) {
                     $filter = $result->fetch_row();
-                    $domainAdminUserDomainFilter .= ' OR username LIKE "%@' . $filter[0] . '"';
+                    $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . $filter[0] . '" AND type = "U")';
                 }
             } else {
                 $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
