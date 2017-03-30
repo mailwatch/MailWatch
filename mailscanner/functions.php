@@ -1836,18 +1836,16 @@ function subtract_get_vars($preserve)
 function subtract_multi_get_vars($preserve)
 {
     if (is_array($_GET)) {
+        $output = array();
         foreach ($_GET as $k => $v) {
             if (!in_array($k, $preserve, true)) {
                 $output[] = "$k=$v";
             }
         }
-        if (isset($output) && is_array($output)) {
+        if (count($output) > 0) {
             $output = implode('&amp;', $output);
-
             return '&amp;' . $output;
         }
-
-        return false;
     }
 
     return false;
@@ -1977,6 +1975,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $display = array();
         $orderable = array();
         $fieldname = array();
+        $align = array();
         for ($f = 0; $f < $fields; $f++) {
             if ($f === 0 && $operations !== false) {
                 // Set up display for operations form elements
@@ -2214,6 +2213,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $fieldNumber = $f;
                 }
                 $field = $sth->fetch_field_direct($fieldNumber);
+                $id = '';
                 switch ($field->name) {
                     case 'id':
                         // Store the id for later use
@@ -2862,7 +2862,7 @@ function ldap_authenticate($username, $password)
                         }
                     }
                     
-                    if ($email === null) {
+                    if (!isset($email)) {
                         //user has no mail but it is required for mailwatch
                         return null;
                     }

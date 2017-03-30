@@ -183,7 +183,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         die(__('dietoken99'));
                     }
                     $username = deepSanitizeInput($_POST['username'], 'string');
-                    if (!validateInput($username, 'user')) {
+                    if ($username === false || !validateInput($username, 'user')) {
                         $username = '';
                     }
                     $ar = explode('@', $username);
