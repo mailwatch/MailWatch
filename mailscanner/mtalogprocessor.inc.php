@@ -83,7 +83,9 @@ abstract class MtaLogProcessor
             $_dsn = '';
             $_delay = '';
             $_relay = '';
-
+            $_msg_id = '';
+            $_status = '';
+            
             if ($parsed->process === $this->mtaprocess) {
                 $this->parse($parsed->entry);
                 if (true === DEBUG) {
