@@ -100,6 +100,17 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', 0);
 
+// Session garbage collection 5 minutes based on user activity
+// or STATUS_REFRESH + 60 sec, whichever is greater.
+
+if (defined(STATUS_REFRESH) && STATUS_REFRESH + 60 > 300) {
+    ini_set('session.gc_maxlifetime', STATUS_REFRESH + 60);
+} else {
+    ini_set('session.gc_maxlifetime', 300);
+}
+ini_set('session.gc_divisor', 1);
+ini_set('session.gc_probability', 1);
+
 $session_cookie_secure = false;
 if (SSL_ONLY === true) {
     ini_set('session.cookie_secure', 1);
@@ -108,8 +119,7 @@ if (SSL_ONLY === true) {
 
 //enforce session cookie security
 $params = session_get_cookie_params();
-session_set_cookie_params(0, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-session_set_cookie_params(60 * 60, $params['path'], $params['domain'], $session_cookie_secure, true);
+session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
 
 // set default timezone
