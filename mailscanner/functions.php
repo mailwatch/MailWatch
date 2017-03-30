@@ -3281,47 +3281,20 @@ SELECT
         }
         $quarantined = array();
         $count = 0;
-        // Check for non-spam first
-        if (file_exists($nonspam) && is_readable($nonspam)) {
-            $quarantined[$count]['id'] = $count;
-            $quarantined[$count]['host'] = $row->hostname;
-            $quarantined[$count]['msgid'] = $row->id;
-            $quarantined[$count]['to'] = $row->to_address;
-            $quarantined[$count]['file'] = 'message';
-            $quarantined[$count]['type'] = 'message/rfc822';
-            $quarantined[$count]['path'] = $nonspam;
-            $quarantined[$count]['md5'] = md5($nonspam);
-            $quarantined[$count]['dangerous'] = $infected;
-            $quarantined[$count]['isspam'] = $row->isspam;
-            $count++;
-        }
-        // Check for spam
-        if (file_exists($spam) && is_readable($spam)) {
-            $quarantined[$count]['id'] = $count;
-            $quarantined[$count]['host'] = $row->hostname;
-            $quarantined[$count]['msgid'] = $row->id;
-            $quarantined[$count]['to'] = $row->to_address;
-            $quarantined[$count]['file'] = 'message';
-            $quarantined[$count]['type'] = 'message/rfc822';
-            $quarantined[$count]['path'] = $spam;
-            $quarantined[$count]['md5'] = md5($spam);
-            $quarantined[$count]['dangerous'] = $infected;
-            $quarantined[$count]['isspam'] = $row->isspam;
-            $count++;
-        }
-        // Check for mcp
-        if (file_exists($mcp) && is_readable($mcp)) {
-            $quarantined[$count]['id'] = $count;
-            $quarantined[$count]['host'] = $row->hostname;
-            $quarantined[$count]['msgid'] = $row->id;
-            $quarantined[$count]['to'] = $row->to_address;
-            $quarantined[$count]['file'] = 'message';
-            $quarantined[$count]['type'] = 'message/rfc822';
-            $quarantined[$count]['path'] = $mcp;
-            $quarantined[$count]['md5'] = md5($spam);
-            $quarantined[$count]['dangerous'] = $infected;
-            $quarantined[$count]['isspam'] = $row->isspam;
-            $count++;
+        foreach (array($nonspam, $spam, $mcp) as $category) {
+            if (file_exists($category) && is_readable($category)) {
+                $quarantined[$count]['id'] = $count;
+                $quarantined[$count]['host'] = $row->hostname;
+                $quarantined[$count]['msgid'] = $row->id;
+                $quarantined[$count]['to'] = $row->to_address;
+                $quarantined[$count]['file'] = 'message';
+                $quarantined[$count]['type'] = 'message/rfc822';
+                $quarantined[$count]['path'] = $category;
+                $quarantined[$count]['md5'] = md5($category);
+                $quarantined[$count]['dangerous'] = $infected;
+                $quarantined[$count]['isspam'] = $row->isspam;
+                $count++;
+            }
         }
         // Check the main quarantine
         if (is_dir($quarantine) && is_readable($quarantine)) {
@@ -3497,53 +3470,42 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
             switch ($type) {
                 case 'ham':
                     $learn_type = 'ham';
-                    if ($list[$val]['isspam'] === 'Y') {
-                        // Learning SPAM as HAM - this is a false-positive
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=1, isfn=0 WHERE id='" . safe_value(
-                                $list[$val]['msgid']
-                            ) . "'";
-                    } else {
-                        // Learning HAM as HAM - better reset the flags just in case
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . safe_value(
-                                $list[$val]['msgid']
-                            ) . "'";
-                    }
+                    // Learning SPAM as HAM - this is a false-positive
+                    $isfp = ($list[$val]['isspam'] === 'Y' ? '1' : '0');
+                    $isfn = '0';
                     break;
                 case 'spam':
                     $learn_type = 'spam';
-                    if ($list[$val]['isspam'] === 'N') {
-                        // Learning HAM as SPAM - this is a false-negative
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=1 WHERE id='" . safe_value(
-                                $list[$val]['msgid']
-                            ) . "'";
-                    } else {
-                        // Learning SPAM as SPAM - better reset the flags just in case
-                        $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . safe_value(
-                                $list[$val]['msgid']
-                            ) . "'";
-                    }
+                    // Learning HAM as SPAM - this is a false-negative
+                    $isfp = '0';
+                    $isfn = ($list[$val]['isspam'] === 'N' ? '1' : '0');
                     break;
                 case 'forget':
                     $learn_type = 'forget';
-                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=0 WHERE id='" . safe_value(
-                            $list[$val]['msgid']
-                        ) . "'";
+                    $isfp = '0';
+                    $isfn = '0';
                     break;
                 case 'report':
                     $use_spamassassin = true;
                     $learn_type = '-r';
-                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=0, isfn=1 WHERE id='" . safe_value(
-                            $list[$val]['msgid']
-                        ) . "'";
+                    $isfp = '0';
+                    $isfn = '1';
                     break;
                 case 'revoke':
                     $use_spamassassin = true;
                     $learn_type = '-k';
-                    $sql = "UPDATE maillog SET timestamp=timestamp, isfp=1, isfn=0 WHERE id='" . safe_value(
-                            $list[$val]['msgid']
-                        ) . "'";
+                    $isfp = '1';
+                    $isfn = '0';
                     break;
+                default:
+                    //TODO handle this case
+                    $isfp = null;
             }
+            if ($isfp !== null) {
+                $sql = "UPDATE maillog SET timestamp=timestamp, isfp=" . $isfp . ", isfn=" . $isfn . " WHERE id='" 
+                    . safe_value($list[$val]['msgid']) . "'";
+            }
+            
             if (true === $use_spamassassin) {
                 // Run SpamAssassin to report or revoke spam/ham
                 exec(
@@ -3615,12 +3577,15 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
+        $list_output = array();
         foreach ($list as $list_array) {
+            $list_struct = array();
             foreach ($list_array as $key => $val) {
                 $list_struct[$key] = new xmlrpcval($val);
             }
             $list_output[] = new xmlrpcval($list_struct, 'struct');
         }
+        $num_output = array();
         foreach ($num as $key => $val) {
             $num_output[$key] = new xmlrpcval($val);
         }
