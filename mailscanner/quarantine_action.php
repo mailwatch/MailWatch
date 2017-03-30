@@ -86,7 +86,7 @@ if (!isset($_GET['action'])) {
 }
 
 $id = deepSanitizeInput($_GET['id'], 'url');
-if (!validateInput($id, 'msgid')) {
+if ($id === false || !validateInput($id, 'msgid')) {
     die();
 }
 
