@@ -330,6 +330,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<p>' . __('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
     echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
     echo '</form>' . "\n";
+    echo '</td>';
+    echo '</tr>'; 
     echo '</table>' . "\n";
     echo '<table cellspacing="1" class="mail">' . "\n";
     echo '<tr><td class="heading" align="center">' . __('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
@@ -338,6 +340,48 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
+    printColorCodes();
+    echo '  </td>' . "\n";
+
+    if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
+        echo '  <td align="center" valign="top">' . "\n";
+
+        // Status table
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+        echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
+
+        printServiceStatus();
+        printAverageLoad();
+       
+        if ($_SESSION['user_type'] === 'A') { 
+            printMTAQueue();
+            printFreeDiskSpace();
+        }
+        echo '  </table>' . "\n";
+        echo '  </td>' . "\n";
+    }
+
+    echo '<td align="center" valign="top">' . "\n";    
+    printTodayStatistics();    
+    echo '  </td>' . "\n";
+    
+    echo ' </tr>' . "\n";
+
+    printNavBar();
+ echo '
+ <tr>
+  <td colspan="4">';
+
+    if ($report) {
+        $return_items = $filter;
+    } else {
+        $return_items = $refresh;
+    }
+
+    return $return_items;
+}
+
+function printColorCodes() {
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
@@ -352,172 +396,167 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '        <tr> <td>' . __('notverified03') . '</td> <td class="notscanned"></td> </tr>' . "\n";
     echo '    <tr> <td>' . __('clean03') . '</td> <td></td> </tr>' . "\n";
     echo '   </table>' . "\n";
-    echo '  </td>' . "\n";
+}
 
-    if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
-        echo '  <td align="center" valign="top">' . "\n";
-
-        // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-        echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
-
-        // MailScanner running?
-        if (!DISTRIBUTED_SETUP) {
-            $no = '<span class="yes">&nbsp;' . __('no03') . '&nbsp;</span>' . "\n";
-            $yes = '<span class="no">&nbsp;' . __('yes03') . '&nbsp;</span>' . "\n";
-            exec('ps ax | grep MailScanner | grep -v grep', $output);
-            if (count($output) > 0) {
-                $running = $yes;
-                $procs = count($output) - 1 . ' ' . __('children03');
-            } else {
-                $running = $no;
-                $procs = count($output) . ' ' . __('procs03');
-            }
-            echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
-
-            // is MTA running
-            $mta = get_conf_var('mta');
-            exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
-            if (count($output) > 0) {
-                $running = $yes;
-            } else {
-                $running = $no;
-            }
+function printServiceStatus() {
+    // MailScanner running?
+    if (!DISTRIBUTED_SETUP) {
+        $no = '<span class="yes">&nbsp;' . __('no03') . '&nbsp;</span>' . "\n";
+        $yes = '<span class="no">&nbsp;' . __('yes03') . '&nbsp;</span>' . "\n";
+        exec('ps ax | grep MailScanner | grep -v grep', $output);
+        if (count($output) > 0) {
+            $running = $yes;
+            $procs = count($output) - 1 . ' ' . __('children03');
+        } else {
+            $running = $no;
             $procs = count($output) . ' ' . __('procs03');
-            echo '    <tr><td>' . ucwords(
-                    $mta
-                ) . __('colon99') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
+        echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
-        // Load average
-        if (!DISTRIBUTED_SETUP && file_exists('/proc/loadavg')) {
-            $loadavg = file('/proc/loadavg');
-            $loadavg = explode(' ', $loadavg[0]);
-            $la_1m = $loadavg[0];
-            $la_5m = $loadavg[1];
-            $la_15m = $loadavg[2];
-            echo '
-            <tr>
-	            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
-	            <td align="right">' . __('1minute03') . '&nbsp;</td>
-	            <td align="right">' . $la_1m . '</td>
-            </tr>
-            </tr>
-	            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
-	            <td align="right">' . $la_5m . '</td>
-            </tr>
-	            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
-	            <td align="right">' . $la_15m . '</td>
-            </tr>
-            ' . "\n";
-        } elseif (!DISTRIBUTED_SETUP && file_exists('/usr/bin/uptime')) {
-            $loadavg = shell_exec('/usr/bin/uptime');
-            $loadavg = explode(' ', $loadavg);
-            $la_1m = rtrim($loadavg[count($loadavg) - 3], ',');
-            $la_5m = rtrim($loadavg[count($loadavg) - 2], ',');
-            $la_15m = rtrim($loadavg[count($loadavg) - 1]);
-            echo '
-            <tr>
-	            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
-	            <td align="right">' . __('1minute03') . '&nbsp;</td>
-	            <td align="right">' . $la_1m . '</td>
-            </tr>
-            </tr>
-	            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
-	            <td align="right">' . $la_5m . '</td>
-            </tr>
-	            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
-	            <td align="right">' . $la_15m . '</td>
-            </tr>
-            ' . "\n";
+        // is MTA running
+        $mta = get_conf_var('mta');
+        exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
+        if (count($output) > 0) {
+            $running = $yes;
+        } else {
+            $running = $no;
         }
-
-        // Display the MTA queue
-        // Postfix if mta = postfix
-        if ($_SESSION['user_type'] === 'A') {
-            if (get_conf_var('MTA', true) === 'postfix') {
-                // Mail Queues display
-                $incomingdir = get_conf_var('incomingqueuedir', true);
-                $outgoingdir = get_conf_var('outgoingqueuedir', true);
-                if (is_readable($incomingdir) || is_readable($outgoingdir)) {
-                    $inq = postfixinq();
-                    $outq = postfixallq() - $inq;
-                } elseif (!DISTRIBUTED_SETUP) {
-                    echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
-                }
-
-                if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
-                    $pqerror = '';
-                    $servers = explode(' ', RPC_REMOTE_SERVER);
-
-                    for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
-                        $msg = new xmlrpcmsg('postfix_queues', array());
-                        $rsp = xmlrpc_wrapper($servers[$i], $msg);
-                        if ($rsp->faultCode() === 0) {
-                            $response = php_xmlrpc_decode($rsp->value());
-                            $inq += $response['inq'];
-                            $outq += $response['outq'];
-                        } else {
-                            $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
-                        }
-                    }
-                    if ($pqerror !== '') {
-                        echo '    <tr><td colspan="3">Warning: An error occured:' . $pqerror . '</td>' . "\n";
-                    }
-                }
-                if (isset($inq) || isset($outq)) {
-                    echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
-                    echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-                    echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
-                }
-
-                // Else use MAILQ from conf.php which is for Sendmail or Exim
-            } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
-                if ($mta === 'exim') {
-                    $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
-                    $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
-                } else {
-                    // Not activated because this need to be tested.
-                    //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
-                    //$inq = $output_array[2];
-                    //$cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
-                    //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
-                    //$outq = $output_array[2];
-                    $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
-                        0);
-                    $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
-                        0);
-                }
-                echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
-                echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-                echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
-            }
-
-            if (!DISTRIBUTED_SETUP) {
-                // Drive display
-                echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
-                foreach (get_disks() as $disk) {
-                    $free_space = disk_free_space($disk['mountpoint']);
-                    $total_space = disk_total_space($disk['mountpoint']);
-                    $percent = '<span>';
-                    if (round($free_space / $total_space, 2) <= 0.1) {
-                        $percent = '<span style="color:red">';
-                    }
-                    $percent .= ' [';
-                    $percent .= round($free_space / $total_space, 2) * 100;
-                    $percent .= '%] ';
-                    $percent .= '</span>';
-                    echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
-                }
-            }
-        }
-        echo '  </table>' . "\n";
-        echo '  </td>' . "\n";
+        $procs = count($output) . ' ' . __('procs03');
+        echo '    <tr><td>' . ucwords($mta) . __('colon99') . '</td>'
+            . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
     }
+}
 
-    echo '<td align="center" valign="top">' . "\n";
+function printAverageLoad() {
+    // Load average
+    if (!DISTRIBUTED_SETUP && file_exists('/proc/loadavg')) {
+        $loadavg = file('/proc/loadavg');
+        $loadavg = explode(' ', $loadavg[0]);
+        $la_1m = $loadavg[0];
+        $la_5m = $loadavg[1];
+        $la_15m = $loadavg[2];
+        echo '
+        <tr>
+            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
+            <td align="right">' . __('1minute03') . '&nbsp;</td>
+            <td align="right">' . $la_1m . '</td>
+        </tr>
+        </tr>
+            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_5m . '</td>
+        </tr>
+            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_15m . '</td>
+        </tr>
+        ' . "\n";
+    } elseif (!DISTRIBUTED_SETUP && file_exists('/usr/bin/uptime')) {
+        $loadavg = shell_exec('/usr/bin/uptime');
+        $loadavg = explode(' ', $loadavg);
+        $la_1m = rtrim($loadavg[count($loadavg) - 3], ',');
+        $la_5m = rtrim($loadavg[count($loadavg) - 2], ',');
+        $la_15m = rtrim($loadavg[count($loadavg) - 1]);
+        echo '
+        <tr>
+            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
+            <td align="right">' . __('1minute03') . '&nbsp;</td>
+            <td align="right">' . $la_1m . '</td>
+        </tr>
+        </tr>
+            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_5m . '</td>
+        </tr>
+            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_15m . '</td>
+        </tr>
+        ' . "\n";
+    }
+}
 
+function printMTAQueue() {
+    // Display the MTA queue
+    // Postfix if mta = postfix
+    if (get_conf_var('MTA', true) === 'postfix') {
+        // Mail Queues display
+        $incomingdir = get_conf_var('incomingqueuedir', true);
+        $outgoingdir = get_conf_var('outgoingqueuedir', true);
+        if (is_readable($incomingdir) || is_readable($outgoingdir)) {
+            $inq = postfixinq();
+            $outq = postfixallq() - $inq;
+        } elseif (!DISTRIBUTED_SETUP) {
+            echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+        }
+
+        if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
+            $pqerror = '';
+            $servers = explode(' ', RPC_REMOTE_SERVER);
+
+            for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
+                $msg = new xmlrpcmsg('postfix_queues', array());
+                $rsp = xmlrpc_wrapper($servers[$i], $msg);
+                if ($rsp->faultCode() === 0) {
+                    $response = php_xmlrpc_decode($rsp->value());
+                    $inq += $response['inq'];
+                    $outq += $response['outq'];
+                } else {
+                    $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                }
+            }
+            if ($pqerror !== '') {
+                echo '    <tr><td colspan="3">Warning: An error occured:' . $pqerror . '</td>' . "\n";
+            }
+        }
+        if (isset($inq) || isset($outq)) {
+            echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+        }
+
+        // Else use MAILQ from conf.php which is for Sendmail or Exim
+    } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
+        if ($mta === 'exim') {
+            $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
+            $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
+        } else {
+            // Not activated because this need to be tested.
+            //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+            //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+            //$inq = $output_array[2];
+            //$cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
+            //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+            //$outq = $output_array[2];
+            $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
+                0);
+            $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
+                0);
+        }
+        echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+        echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+        echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+    }
+}
+
+function printFreeDiskSpace() {
+    if (!DISTRIBUTED_SETUP) {
+        // Drive display
+        echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
+        foreach (get_disks() as $disk) {
+            $free_space = disk_free_space($disk['mountpoint']);
+            $total_space = disk_total_space($disk['mountpoint']);
+            $percent = '<span>';
+            if (round($free_space / $total_space, 2) <= 0.1) {
+                $percent = '<span style="color:red">';
+            }
+            $percent .= ' [';
+            $percent .= round($free_space / $total_space, 2) * 100;
+            $percent .= '%] ';
+            $percent .= '</span>';
+            echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
+        }
+    }
+}
+
+function printTodayStatistics() {
+    
     $sql = '
  SELECT
   COUNT(*) AS processed,
@@ -728,9 +767,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         echo '</table>' . "\n";
     }
-    echo '  </td>' . "\n";
-    echo ' </tr>' . "\n";
+}
 
+function printNavBar() {
     // Navigation links - put them into an array to allow them to be switched
     // on or off as necessary and to allow for the table widths to be calculated.
     $nav = array();
@@ -773,17 +812,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '
  </ul>
  </td>
- </tr>
- <tr>
-  <td colspan="4">';
-
-    if ($report) {
-        $return_items = $filter;
-    } else {
-        $return_items = $refresh;
-    }
-
-    return $return_items;
+ </tr>';
 }
 
 function java_time()
