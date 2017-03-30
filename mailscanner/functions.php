@@ -1040,7 +1040,7 @@ function __($string)
 /**
  * Returns true if $string is valid UTF-8 and false otherwise.
  *
- * @param $string
+ * @param string
  * @return integer
  */
 function is_utf8($string)
@@ -3084,7 +3084,7 @@ function translate_etoi($name)
 
 /**
  * @param $input
- * @return mixed
+ * @return string
  */
 function decode_header($input)
 {
@@ -4304,7 +4304,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 /**
  * @param string $input
  * @param string $type
- * @return string|bool
+ * @return string|false
  */
 function deepSanitizeInput($input, $type)
 {
@@ -4348,7 +4348,7 @@ function deepSanitizeInput($input, $type)
 /**
  * @param string|bool $input
  * @param string $type
- * @return bool
+ * @return boolean
  */
 function validateInput($input, $type)
 {
@@ -4477,6 +4477,7 @@ function validateInput($input, $type)
         default:
             return false;
     }
+    return false;
 }
 
 /**
@@ -4491,7 +4492,7 @@ function generateToken()
 
 /**
  * @param string $token
- * @return mixed
+ * @return boolean
  */
 function checkToken($token)
 {
