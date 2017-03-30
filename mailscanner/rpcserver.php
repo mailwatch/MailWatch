@@ -77,7 +77,6 @@ function rpc_get_quarantine($msg)
                     break;
                 case(is_file($quarantinedir . $input)):
                     return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir$input is a file.");
-                    break;
             }
         }
         return new xmlrpcresp(new xmlrpcval($output, 'array'));
@@ -194,12 +193,14 @@ function rpc_get_conf_var($msg)
 function rpc_dump_mailscanner_conf()
 {
     $fh = fopen(MS_CONFIG_DIR . 'MailScanner.conf', 'rb');
+    $output = array();
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, 4096));
         if (preg_match('/^([^#].+) = ([^#].*)/', $line, $regs)) {
             # Strip trailing comments
             $regs[2] = preg_replace('/#.*$/', '', $regs[2]);
             # store %var% variables
+            $var = array();
             if (preg_match('/%.+%/', $regs[1])) {
                 $var[$regs[1]] = $regs[2];
             }
@@ -217,6 +218,7 @@ function rpc_dump_mailscanner_conf()
 function rpc_bayes_info()
 {
     $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
+    $output = array();
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, 4096));
         if (preg_match('/\S+\s+\S+\s+(\S+)\s+\S+\s+non-token data: (.+)/', $line, $regs)) {

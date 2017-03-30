@@ -2453,11 +2453,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
  * Function to display data as a table
  *
  * @param $sql
- * @param bool|false $title
+ * @param string|null $title
  * @param bool|false $pager
  * @param bool|false $operations
  */
-function dbtable($sql, $title = false, $pager = false, $operations = false)
+function dbtable($sql, $title = null, $pager = false, $operations = false)
 {
     /*
     // Query the data
@@ -2538,7 +2538,7 @@ function dbtable($sql, $title = false, $pager = false, $operations = false)
 
     if ($rows > 0) {
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
-        if ($title) {
+        if ($title !== null) {
             echo '<tr><th colspan=' . $fields . '>' . $title . '</TH></tr>' . "\n";
         }
         // Column headings
@@ -3457,35 +3457,31 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     if (!$rpc_only && is_local($list[0]['host'])) {
         foreach ($num as $key => $val) {
             $use_spamassassin = false;
+            $isfn = '0';
+            $isfp = '0';
             switch ($type) {
                 case 'ham':
                     $learn_type = 'ham';
                     // Learning SPAM as HAM - this is a false-positive
                     $isfp = ($list[$val]['isspam'] === 'Y' ? '1' : '0');
-                    $isfn = '0';
                     break;
                 case 'spam':
                     $learn_type = 'spam';
                     // Learning HAM as SPAM - this is a false-negative
-                    $isfp = '0';
                     $isfn = ($list[$val]['isspam'] === 'N' ? '1' : '0');
                     break;
                 case 'forget':
                     $learn_type = 'forget';
-                    $isfp = '0';
-                    $isfn = '0';
                     break;
                 case 'report':
                     $use_spamassassin = true;
                     $learn_type = '-r';
-                    $isfp = '0';
                     $isfn = '1';
                     break;
                 case 'revoke':
                     $use_spamassassin = true;
                     $learn_type = '-k';
                     $isfp = '1';
-                    $isfn = '0';
                     break;
                 default:
                     //TODO handle this case
@@ -4308,7 +4304,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 /**
  * @param string $input
  * @param string $type
- * @return mixed
+ * @return string|bool
  */
 function deepSanitizeInput($input, $type)
 {
@@ -4319,7 +4315,6 @@ function deepSanitizeInput($input, $type)
             $string = safe_value($string);
 
             return $string;
-            break;
         case 'url':
             $string = filter_var($input, FILTER_SANITIZE_URL);
             $string = sanitizeInput($string);
@@ -4327,33 +4322,27 @@ function deepSanitizeInput($input, $type)
             $string = safe_value($string);
 
             return $string;
-            break;
         case 'num':
             $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
             $string = sanitizeInput($string);
             $string = safe_value($string);
 
             return $string;
-            break;
         case 'float':
             $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $string = sanitizeInput($string);
             $string = safe_value($string);
 
             return $string;
-            break;
         case 'string':
             $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
             $string = sanitizeInput($string);
             $string = safe_value($string);
 
             return $string;
-            break;
         default:
             return false;
     }
-
-    return false;
 }
 
 /**
@@ -4488,8 +4477,6 @@ function validateInput($input, $type)
         default:
             return false;
     }
-
-    return false;
 }
 
 /**
