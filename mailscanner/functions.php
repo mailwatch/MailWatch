@@ -331,7 +331,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
     echo '</form>' . "\n";
     echo '</td>';
-    echo '</tr>'; 
+    echo '</tr>';
     echo '</table>' . "\n";
     echo '<table cellspacing="1" class="mail">' . "\n";
     echo '<tr><td class="heading" align="center">' . __('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
@@ -353,7 +353,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         printServiceStatus();
         printAverageLoad();
        
-        if ($_SESSION['user_type'] === 'A') { 
+        if ($_SESSION['user_type'] === 'A') {
             printMTAQueue();
             printFreeDiskSpace();
         }
@@ -361,14 +361,14 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  </td>' . "\n";
     }
 
-    echo '<td align="center" valign="top">' . "\n";    
-    printTodayStatistics();    
+    echo '<td align="center" valign="top">' . "\n";
+    printTodayStatistics();
     echo '  </td>' . "\n";
     
     echo ' </tr>' . "\n";
 
     printNavBar();
- echo '
+    echo '
  <tr>
   <td colspan="4">';
 
@@ -381,7 +381,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     return $return_items;
 }
 
-function printColorCodes() {
+function printColorCodes()
+{
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
     echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
@@ -398,7 +399,8 @@ function printColorCodes() {
     echo '   </table>' . "\n";
 }
 
-function printServiceStatus() {
+function printServiceStatus()
+{
     // MailScanner running?
     if (!DISTRIBUTED_SETUP) {
         $no = '<span class="yes">&nbsp;' . __('no03') . '&nbsp;</span>' . "\n";
@@ -427,7 +429,8 @@ function printServiceStatus() {
     }
 }
 
-function printAverageLoad() {
+function printAverageLoad()
+{
     // Load average
     if (!DISTRIBUTED_SETUP && file_exists('/proc/loadavg')) {
         $loadavg = file('/proc/loadavg');
@@ -472,7 +475,8 @@ function printAverageLoad() {
     }
 }
 
-function printMTAQueue() {
+function printMTAQueue()
+{
     // Display the MTA queue
     // Postfix if mta = postfix
     if (get_conf_var('MTA', true) === 'postfix') {
@@ -537,7 +541,8 @@ function printMTAQueue() {
     }
 }
 
-function printFreeDiskSpace() {
+function printFreeDiskSpace()
+{
     if (!DISTRIBUTED_SETUP) {
         // Drive display
         echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
@@ -557,8 +562,8 @@ function printFreeDiskSpace() {
     }
 }
 
-function printTodayStatistics() {
-    
+function printTodayStatistics()
+{    
     $sql = '
  SELECT
   COUNT(*) AS processed,
@@ -771,7 +776,8 @@ function printTodayStatistics() {
     }
 }
 
-function printNavBar() {
+function printNavBar()
+{
     // Navigation links - put them into an array to allow them to be switched
     // on or off as necessary and to allow for the table widths to be calculated.
     $nav = array();
@@ -2844,7 +2850,7 @@ function ldap_authenticate($username, $password)
                         }
                     }
                     
-                    if($email === null) {
+                    if ($email === null) {
                         //user has no mail but it is required for mailwatch
                         return null;
                     }

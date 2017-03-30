@@ -771,7 +771,7 @@ function Process_Form($file_contents, $short_filename)
 
 
 function Read_File($filename, $size)
-{   
+{
     // read contents of file
     $fh = fopen($filename, 'rb');
     // read contents into string
