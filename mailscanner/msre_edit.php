@@ -161,8 +161,6 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // 		displays the form
     //
 
-    include __DIR__ . '/msre_function_global_vars.php';
-
     // display top of page stuff
     echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
     echo '<form method="post" name="MSRE_edit" action="msre_edit.php">' . "\n";
@@ -544,8 +542,6 @@ function Process_Form($file_contents, $short_filename)
     // returns the number of bytes written and status messages, which it
     // gets from Write_File
     //
-
-    include __DIR__ . '/msre_function_global_vars.php';
 
     $new_file = array();
     $bytes = 0;
