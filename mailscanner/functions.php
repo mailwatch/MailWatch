@@ -1135,13 +1135,12 @@ function getSUBJECTheader($header)
  */
 function sa_autolearn($spamreport)
 {
-    switch (true) {
-        case(preg_match('/autolearn=spam/', $spamreport)):
-            return __('saspam03');
-        case(preg_match('/autolearn=not spam/', $spamreport)):
-            return __('sanotspam03');
-        default:
-            return false;
+    if (preg_match('/autolearn=spam/', $spamreport) === 1) {
+        return __('saspam03');
+    } elseif (preg_match('/autolearn=not spam/', $spamreport)) {
+        return __('sanotspam03');
+    } else {
+        return false;
     }
 }
 
@@ -1439,10 +1438,10 @@ function get_disks()
  */
 function formatSize($size, $precision = 2)
 {
-    if (null === $size) {
+    if ($size === null) {
         return 'n/a';
     }
-    if ($size === '0') {
+    if ($size === 0) {
         return '0';
     }
     $base = log($size) / log(1024);
@@ -2843,6 +2842,11 @@ function ldap_authenticate($username, $password)
                             $email = strtolower(substr($email, 5));
                             break;
                         }
+                    }
+                    
+                    if($email === null) {
+                        //user has no mail but it is required for mailwatch
+                        return null;
                     }
 
                     $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($email));
