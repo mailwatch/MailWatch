@@ -4351,7 +4351,7 @@ function deepSanitizeInput($input, $type)
 }
 
 /**
- * @param string $input
+ * @param string|bool $input
  * @param string $type
  * @return bool
  */
