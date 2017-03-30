@@ -4479,6 +4479,11 @@ function validateInput($input, $type)
                 return true;
             }
             break;
+        case 'mimepart':
+            if (preg_match('/^[0-9.]{1,10}$/', $input)) {
+                return true;
+            }
+            break;
         default:
             return false;
     }
