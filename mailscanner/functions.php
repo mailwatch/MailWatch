@@ -1478,7 +1478,7 @@ function format_report_volume(&$data_in, &$info_out)
 
     // Work out the largest value in the array
     arsort($temp);
-    $largest = array_pop($temp);
+    array_pop($temp);
 
     // Calculate the correct display size for the average value
     if ($average < $kb) {
@@ -1802,14 +1802,14 @@ function translateQuarantineDate($date, $format = 'dmy')
 function subtract_get_vars($preserve)
 {
     if (is_array($_GET)) {
+        $output = array();
         foreach ($_GET as $k => $v) {
             if (strtolower($k) !== strtolower($preserve)) {
                 $output[] = "$k=$v";
             }
         }
-        if (isset($output) && is_array($output)) {
+        if (count($output) > 0) {
             $output = implode('&amp;', $output);
-
             return '&amp;' . $output;
         }
 
@@ -1964,6 +1964,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         // Work out which columns to display
+        $display = array();
+        $orderable = array();
+        $fieldname = array();
         for ($f = 0; $f < $fields; $f++) {
             if ($f === 0 && $operations !== false) {
                 // Set up display for operations form elements
@@ -2552,7 +2555,6 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         }
         echo ' </tr>' . "\n";
         // Rows
-        $i = 1;
         while ($row = $sth->fetch_row()) {
             echo ' <tr class="table-background">' . "\n";
             for ($f = 0; $f < $fields; $f++) {
@@ -3065,6 +3067,7 @@ function translate_etoi($name)
     $file = MS_SHARE_DIR . 'perl/MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'rb')
     or die(__('dietranslateetoi03') . " $file\n");
+    $etoi = array();
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/^([^#].+)\s=\s([^#].+)/i', $line, $regs)) {
@@ -3411,12 +3414,15 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
+        $list_output = array();
         foreach ($list as $list_array) {
+            $list_struct = array();
             foreach ($list_array as $key => $val) {
                 $list_struct[$key] = new xmlrpcval($val);
             }
             $list_output[] = new xmlrpcval($list_struct, 'struct');
         }
+        $num_output = array();
         foreach ($num as $key => $val) {
             $num_output[$key] = new xmlrpcval($val);
         }
@@ -3608,6 +3614,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
     }
 
     if (!$rpc_only && is_local($list[0]['host'])) {
+        $status = array();
         foreach ($num as $key => $val) {
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
@@ -3626,12 +3633,15 @@ function quarantine_delete($list, $num, $rpc_only = false)
         debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
+        $list_output = array();
         foreach ($list as $list_array) {
+            $list_struct = array();
             foreach ($list_array as $key => $val) {
                 $list_struct[$key] = new xmlrpcval($val);
             }
             $list_output[] = new xmlrpcval($list_struct, 'struct');
         }
+        $num_output = array();
         foreach ($num as $key => $val) {
             $num_output[$key] = new xmlrpcval($val);
         }
@@ -3933,6 +3943,7 @@ function printGraphTable(
         die(__('diemysql99') . "\n");
     }
     //store data in format $data[columnname][rowid]
+    $data = array();
     while ($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
             $data[$columnName][] = $row[$columnName];
