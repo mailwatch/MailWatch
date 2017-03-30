@@ -81,8 +81,6 @@ class SyslogParser
             $this->process = $explode[7];
             $this->pid = $explode[8];
             $this->entry = $explode[9];
-        } else {
-            return false;
         }
     }
 }
