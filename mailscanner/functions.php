@@ -479,6 +479,8 @@ function printMTAQueue() {
         // Mail Queues display
         $incomingdir = get_conf_var('incomingqueuedir', true);
         $outgoingdir = get_conf_var('outgoingqueuedir', true);
+        $inq = null;
+        $outq = null;
         if (is_readable($incomingdir) || is_readable($outgoingdir)) {
             $inq = postfixinq();
             $outq = postfixallq() - $inq;
@@ -505,7 +507,7 @@ function printMTAQueue() {
                 echo '    <tr><td colspan="3">Warning: An error occured:' . $pqerror . '</td>' . "\n";
             }
         }
-        if (isset($inq) || isset($outq)) {
+        if ($inq != null && $outq != null) {
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
@@ -513,7 +515,7 @@ function printMTAQueue() {
 
         // Else use MAILQ from conf.php which is for Sendmail or Exim
     } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
-        if ($mta === 'exim') {
+        if (get_conf_var('MTA') === 'exim') {
             $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
             $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
         } else {
