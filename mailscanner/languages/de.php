@@ -189,6 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
     'children03' => 'children',
     'procs03' => 'Prozess(e)',
+    'errorWarning03' => 'Warnung: Es ist ein Fehler aufgetreten: ',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -671,7 +672,7 @@ return array(
     'nbmessage38' => 'Anz. Nachrichten',
     'score38' => 'Bewertung',
     'count38' => 'Anzahl',
-    'die38' => 'Error: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
+    'die38' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',

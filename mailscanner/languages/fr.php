@@ -189,6 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
     'children03' => 'proc. fils',
     'procs03' => 'processus',
+    'errorWarning03' => 'Attention : une erreur s\'est produite : ',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
