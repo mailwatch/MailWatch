@@ -79,7 +79,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             $output[$msgid]['message'] = 'N/A';
                             while (!@feof($fh)) {
                                 if ($line = @fgets($fh, 1024)) {
-                                    switch (true) {
+                                    switch (1) {
                                         case preg_match('/^-ident (.+)$/', $line, $match):
                                             $output[$msgid]['auth'] = $match[1];
                                             break;
@@ -168,7 +168,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             $output[$msgid]['message'] = '';
                             while (!@feof($fh)) {
                                 if ($line = @fgets($fh, 1024)) {
-                                    switch (true) {
+                                    switch (1) {
                                         case preg_match('/^V(.+)$/', $line, $match):
                                             $output[$msgid]['version'] = $match[1];
                                             break;

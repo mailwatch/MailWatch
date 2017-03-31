@@ -74,7 +74,6 @@ abstract class MtaLogProcessor
 
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
-            echo 'r';
             // Reset variables
             unset($parsed, $mta_parser, $_timestamp, $_host, $_type, $_msg_id, $_status);
 
@@ -84,7 +83,9 @@ abstract class MtaLogProcessor
             $_dsn = '';
             $_delay = '';
             $_relay = '';
-
+            $_msg_id = '';
+            $_status = '';
+            
             if ($parsed->process === $this->mtaprocess) {
                 $this->parse($parsed->entry);
                 if (true === DEBUG) {
@@ -181,28 +182,28 @@ abstract class MtaLogProcessor
             }
 
             return true;
-        } else {
-            // No message ID found
-            // Extract any key=value pairs
-            if (false !== strpos($this->raw, '=')) {
-                $items = explode(', ', $this->raw);
-                $entries = array();
-                foreach ($items as $item) {
-                    $entry = explode('=', $item);
-                    // fix for the id= issue 09.12.2011
-                    if (isset($entry[2])) {
-                        $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                    } else {
-                        $entries[$entry[0]] = $entry[1];
-                    }
-                }
-                $this->entries = $entries;
-
-                return true;
-            } else {
-                return false;
-            }
         }
+
+        // No message ID found
+        // Extract any key=value pairs
+        if (false !== strpos($this->raw, '=')) {
+            $items = explode(', ', $this->raw);
+            $entries = array();
+            foreach ($items as $item) {
+                $entry = explode('=', $item);
+                // fix for the id= issue 09.12.2011
+                if (isset($entry[2])) {
+                    $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
+                } else {
+                    $entries[$entry[0]] = $entry[1];
+                }
+            }
+            $this->entries = $entries;
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -212,9 +213,9 @@ abstract class MtaLogProcessor
     {
         if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $this->entries['relay'], $match)) {
             return $match[1];
-        } else {
-            return $this->entries['relay'];
         }
+
+        return $this->entries['relay'];
     }
 
     /**
@@ -224,8 +225,8 @@ abstract class MtaLogProcessor
     {
         if (preg_match('/<(\S+)>/', $this->entries['to'], $match)) {
             return $match[1];
-        } else {
-            return $this->entries['to'];
         }
+
+        return $this->entries['to'];
     }
 }

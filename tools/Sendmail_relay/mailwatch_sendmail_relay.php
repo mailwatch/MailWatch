@@ -68,14 +68,18 @@ class SendmailLogProcessor extends MtaLogProcessor
         if (isset($this->entries['ruleset'])) {
             if ($this->entries['ruleset'] === 'check_relay') {
                 // Listed in RBL(s)
-                $_type = safe_value('rbl');
-                $_relay = safe_value($this->entries['arg2']);
-                $_status = safe_value($this->entries['reject']);
+                return array(
+                    'type' => safe_value('rbl'),
+                    'relay' => safe_value($this->entries['arg2']),
+                    'status' => safe_value($this->entries['reject'])
+                );
             }
             if ($this->entries['ruleset'] === 'check_mail') {
                 // Domain does not resolve
-                $_type = safe_value('unresolveable');
-                $_status = safe_value(get_email($this->entries['reject']));
+                return array(
+                    'type' => safe_value('unresolveable'),
+                    'status' => safe_value(get_email($this->entries['reject']))
+                );
             }
         }
     }
@@ -96,6 +100,7 @@ class SendmailLogProcessor extends MtaLogProcessor
                 }
             }
         }
+        return $entries;
     }
 }
 

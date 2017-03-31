@@ -35,7 +35,7 @@ if (file_exists('conf.php')) {
     if (isset($_GET['mid'], $_GET['r'])) {
         dbconn();
         $mid = deepSanitizeInput($_GET['mid'], 'url');
-        if (!validateInput($mid, 'msgid')) {
+        if ($mid === false || !validateInput($mid, 'msgid')) {
             die();
         }
         $token = deepSanitizeInput($_GET['r'], 'url');

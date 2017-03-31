@@ -33,11 +33,12 @@
 */
 
 require_once __DIR__ . '/functions.php';
-disableBrowserCache();
+
 session_start();
-if (!isset($_SESSION['token'])) {
-    $_SESSION['token'] = generateToken();
-}
+disableBrowserCache();
+session_regenerate_id(true);
+
+$_SESSION['token'] = generateToken();
 
 ?>
 <!doctype html>
@@ -54,6 +55,23 @@ if (!isset($_SESSION['token'])) {
 } ?>
 </head>
 <body class="loginbody">
+<script>
+setInterval(function() {
+    var len1 = document.getElementById('myusername').value.length;
+    var len2 = document.getElementById('mypassword').value.length;
+
+    var prev1 = document.getElementById('myusername_length').value;
+    var prev2 = document.getElementById('mypassword_length').value;
+
+    if (len1 == prev1 && len2 == prev2) {
+        location.reload();
+    } else {
+        document.getElementById('myusername_length').value = len1;
+        document.getElementById('mypassword_length').value = len2;
+    }
+
+}, 60000);
+</script>
 <div class="login">
     <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
     </div>
@@ -83,9 +101,11 @@ if (!isset($_SESSION['token'])) {
     } ?>
                     <p><label for="myusername"><?php echo __('username'); ?></label></p>
                     <p><input name="myusername" type="text" id="myusername" autofocus></p>
+                    <input type="hidden" id="myusername_length" name="myusername_length" />
 
                     <p><label for="mypassword"><?php echo __('password'); ?></label></p>
                     <p><input name="mypassword" type="password" id="mypassword"></p>
+                    <input type="hidden" id="mypassword_length" name="mypassword_length" />
 
                     <p>
                         <button type="submit" name="Submit" value="loginSubmit"><?php echo __('login01'); ?></button>

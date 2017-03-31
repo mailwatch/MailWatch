@@ -183,14 +183,23 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         die(__('dietoken99'));
                     }
                     $username = deepSanitizeInput($_POST['username'], 'string');
-                    if (!validateInput($username, 'user')) {
+                    if ($username === false || !validateInput($username, 'user')) {
                         $username = '';
                     }
                     $ar = explode('@', $username);
                     $n_type = deepSanitizeInput($_POST['type'], 'url');
+                    $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
+                    $result = dbquery($sql);
+                    if ($result->num_rows > 0) {
+                        $filter_domain = array();
+                        for ($i=0;$i<$result->num_rows;$i++) {
+                            $filter = $result->fetch_row();
+                            $filter_domain[] = $filter[0];
+                        }
+                    }
                     if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
-                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && $n_type === 'A') {
                         echo __('errorcreatedomainforbidden12') . '<br>';
@@ -286,9 +295,18 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     die(__('dievalidate99'));
                 }
                 $ar = explode('@', $key);
+                $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
+                $result = dbquery($sql);
+                if ($result->num_rows > 0) {
+                    $filter_domain = array();
+                    for ($i=0;$i<$result->num_rows;$i++) {
+                        $filter = $result->fetch_row();
+                        $filter_domain[] = $filter[0];
+                    }
+                }
                 if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                     echo __('erroreditnodomainforbidden12') . '<br>';
-                } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
+                } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                     echo sprintf(__('erroreditdomainforbidden12'), sanitizeInput($ar[1])) . '<br>';
                 } else {
                     if (!isset($_POST['submit'])) {
@@ -353,7 +371,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $n_type = deepSanitizeInput($_POST['type'], 'url');
                         if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
                             echo __('errortonodomainforbidden12') . '<br>';
-                        } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
+                        } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                             echo sprintf(__('errortodomainforbidden12'), $ar[1]) . '<br>';
                         } elseif ($_SESSION['user_type'] === 'D' && $_POST['type'] === 'A') {
                             echo __('errortypesetforbidden12') . '<br>';
@@ -441,9 +459,18 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     die(__('dievalidate99'));
                 }
                 $ar = explode('@', $id);
+                $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
+                $result = dbquery($sql);
+                if ($result->num_rows > 0) {
+                    $filter_domain = array();
+                    for ($i=0;$i<$result->num_rows;$i++) {
+                        $filter = $result->fetch_row();
+                        $filter_domain[] = $filter[0];
+                    }
+                }
                 if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                     echo __('errordeletenodomainforbidden12') . '<br>';
-                } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && $ar[1] !== $_SESSION['domain']) {
+                } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                     echo sprintf(__('errordeletedomainforbidden12'), sanitizeInput($ar[1])) . '<br>';
                 } elseif ($_SESSION['myusername'] === $id) {
                     echo __('errordeleteself12') . '<br>';
@@ -536,10 +563,18 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 echo ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . '</TH></TR>' . "\n";
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_object()) {
-                        echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD><TD>' . $row->actions . '</TD></TR>' . "\n";
+                        echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD> ';
+                        if ($_SESSION['user_type'] === 'D' && $id === $_SESSION['myusername']) {
+                            echo '<TD>' . __('nofilteraction12') . '</TD></TR>' . "\n";
+                        } else {
+                            echo '<TD>' . $row->actions . '</TD></TR>' . "\n";
+                        }
                     }
                 }
-                echo ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . __('add12') . '"></TD></TR>' . "\n";
+                // Prevent domain admins from altering their own filters
+                if ($_SESSION['user_type'] === 'A' || ($_SESSION['user_type'] === 'D' && $id !== $_SESSION['myusername'])) {
+                    echo ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . __('add12') . '"></TD></TR>' . "\n";
+                }
                 echo '</TABLE><BR>' . "\n";
                 echo '</FORM>' . "\n";
                 break;
@@ -555,7 +590,17 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%"';
         } else {
-            $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
+            $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
+            $result = dbquery($sql);
+            if ($result->num_rows > 0) {
+                $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
+                for ($i=0;$i<$result->num_rows;$i++) {
+                    $filter = $result->fetch_row();
+                    $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . $filter[0] . '" AND type = "U")';
+                }
+            } else {
+                $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
+            }
         }
     }
 

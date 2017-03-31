@@ -7,6 +7,7 @@ Improvements
 - Add unique token to logged emails
 - Clean orphaned filter in upgrade.php
 - Add optional skinning of web interface
+- Moved upgrade doc to online documentation
 
 Fixes
 - Fix regression on some input validation (the Bad Dog Biting Bug™)

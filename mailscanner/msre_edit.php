@@ -128,14 +128,14 @@ if ($_SESSION['user_type'] !== 'A') {
             die(__('dietoken99'));
         }
 
-        list($bytes_written, $status_message) = Process_Form();
+        list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
         // re-read the file after processing
         $file_contents = Read_File($full_filename, $bytes_written);
     }
 
     // the form always gets displayed, even if it was submitted, so
     // display the form now
-    Show_Form($status_message);
+    Show_Form($status_message, $short_filename, $file_contents, $CONF_ruleset_keyword);
     // clear status message
     $status_message = '';
 
@@ -148,7 +148,7 @@ if ($_SESSION['user_type'] !== 'A') {
 // #################
 
 
-function Show_Form($status_msg)
+function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_keyword)
 {
     // displays the form
     //
@@ -160,8 +160,6 @@ function Show_Form($status_msg)
     // ouput:
     // 		displays the form
     //
-
-    include __DIR__ . '/msre_function_global_vars.php';
 
     // display top of page stuff
     echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
@@ -537,15 +535,13 @@ function Show_Form($status_msg)
 }
 
 
-function Process_Form()
+function Process_Form($file_contents, $short_filename)
 {
     // Processes the form, writes the updated file
     //
     // returns the number of bytes written and status messages, which it
     // gets from Write_File
     //
-
-    include __DIR__ . '/msre_function_global_vars.php';
 
     $new_file = array();
     $bytes = 0;
@@ -776,9 +772,6 @@ function Process_Form()
 
 function Read_File($filename, $size)
 {
-    // reads $filename up to $size bytes, and returns what it contains
-    include __DIR__ . '/msre_function_global_vars.php';
-
     // read contents of file
     $fh = fopen($filename, 'rb');
     // read contents into string
@@ -801,9 +794,7 @@ function Write_File($filename, $content)
     // and fills it with $content (array)
     //
     // returns the number of bytes written and status messages
-
-    include __DIR__ . '/msre_function_global_vars.php';
-
+    
     // return the number of bytes written
     $bytes = 0;
     $status_msg = '';

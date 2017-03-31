@@ -172,7 +172,7 @@ class Filter
 SELECT
  DATE_FORMAT(MIN(date),'" . DATE_FORMAT . "') AS oldest,
  DATE_FORMAT(MAX(date),'" . DATE_FORMAT . "') AS newest,
- COUNT(*) AS messages
+ COUNT(date) AS messages
 FROM
  maillog
 WHERE
@@ -211,19 +211,15 @@ WHERE
                     }
                     if (is_numeric($val[2])) {
                         $sql .= "AND\n $val[0] $val[1] $val[2]\n";
-                    } else {
+                    } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
                         // Handle NULL and NOT NULL's
-                        if ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
-                            $sql .= "AND\n $val[0] $val[1]\n";
-                        } else {
-                            // Allow !<sql_function>
-                            if ($val[2]{0} === '!') {
-                                $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
-                            } else {
-                                // Regular string
-                                $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
-                            }
-                        }
+                        $sql .= "AND\n $val[0] $val[1]\n";
+                    } elseif ($val[2]{0} === '!') {
+                        // Allow !<sql_function>
+                        $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
+                    } else {
+                        // Regular string
+                        $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
                     }
                 }
             }
@@ -243,19 +239,15 @@ WHERE
                 }
                 if (is_numeric($val[2])) {
                     $sql .= "AND\n $val[0] $val[1] $val[2]\n";
-                } else {
+                } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
                     // Handle NULL and NOT NULL's
-                    if ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
-                        $sql .= "AND\n $val[0] $val[1]\n";
-                    } else {
-                        // Allow !<sql_function>
-                        if ($val[2]!=='' && $val[2]{0} === '!') {
-                            $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
-                        } else {
-                            // Regular string
-                            $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
-                        }
-                    }
+                    $sql .= "AND\n $val[0] $val[1]\n";
+                } elseif ($val[2]!=='' && $val[2]{0} === '!') {
+                    // Allow !<sql_function>
+                    $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
+                } else {
+                    // Regular string
+                    $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
                 }
             }
 
@@ -296,11 +288,9 @@ WHERE
         $return .= '<select name="column">' . "\n";
         foreach ($this->columns as $key => $val) {
             $return .= ' <option value="' . $key . '"';
-            if ($this->display_last) {
-                //  Use the last value as the default
-                if ($key === $this->last_column) {
-                    $return .= ' SELECTED';
-                }
+            //  Use the last value as the default
+            if ($this->display_last && $key === $this->last_column) {
+                $return .= ' SELECTED';
             }
             $return .= '>' . $val . '</option>' . "\n";
         }
@@ -312,11 +302,9 @@ WHERE
         $return .= '<select name="operator">' . "\n";
         foreach ($this->operators as $key => $val) {
             $return .= ' <option value="' . $key . '"';
-            if ($this->display_last) {
-                //  Use the last value as the default
-                if ($key === $this->last_operator) {
-                    $return .= ' SELECTED';
-                }
+            //  Use the last value as the default
+            if ($this->display_last && $key === $this->last_operator) {
+                $return .= ' SELECTED';
             }
             $return .= '>' . $val . '</option>' . "\n";
         }

@@ -111,8 +111,8 @@ $structure = $Mail_mimeDecode->decode($params);
 $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 if (isset($_GET['part'])) {
-    $part = deepSanitizeInput($_GET['part'], 'num');
-    if (!validateInput($part, 'num')) {
+    $part = deepSanitizeInput($_GET['part'], 'url');
+    if (!validateInput($part, 'mimepart')) {
         die(__('dievalidate99'));
     }
 

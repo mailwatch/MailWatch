@@ -189,6 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
     'children03' => 'proc. fils',
     'procs03' => 'processus',
+    'errorWarning03' => 'Attention : une erreur s\'est produite :',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -466,6 +467,7 @@ return array(
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
     'savedsettings12' => 'Règlages enregistrés',
     'errordeleteself12' => 'Erreur : vous ne pouvez pas supprimer votre propre compte !',
+    'nofilteraction12' => 'Action non autorisée',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',

@@ -189,6 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
     'children03' => 'children',
     'procs03' => 'proc(s)',
+    'errorWarning03' => 'Warning: An error occured:',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
@@ -466,6 +467,7 @@ return array(
     'userexists12' => 'User already exists with username %s',
     'savedsettings12' => 'Settings saved',
     'errordeleteself12' => 'Error: You can not delete your own account!',
+    'nofilteraction12' => 'Not Allowed',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
