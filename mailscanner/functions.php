@@ -514,16 +514,13 @@ function printMTAQueue()
                     $inq += $response['inq'];
                     $outq += $response['outq'];
                 } else {
-<<<<<<< HEAD
                     $cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
                     preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
                     $inq = $output_array[2];
                     $cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
                     preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
                     $outq = $output_array[2];
-=======
                     $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
->>>>>>> develop
                 }
             }
             if ($pqerror !== '') {
