@@ -508,7 +508,7 @@ function printMTAQueue()
                 }
             }
             if ($pqerror !== '') {
-                echo '    <tr><td colspan="3">Warning: An error occured:' . $pqerror . '</td>' . "\n";
+                echo '    <tr><td colspan="3">' . __('errorWarning03') . $pqerror . '</td>' . "\n";
             }
         }
         if ($inq != null && $outq != null) {
@@ -563,7 +563,7 @@ function printFreeDiskSpace()
 }
 
 function printTodayStatistics()
-{    
+{
     $sql = '
  SELECT
   COUNT(*) AS processed,
@@ -3494,7 +3494,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $isfp = null;
             }
             if ($isfp !== null) {
-                $sql = "UPDATE maillog SET timestamp=timestamp, isfp=" . $isfp . ", isfn=" . $isfn . " WHERE id='" 
+                $sql = "UPDATE maillog SET timestamp=timestamp, isfp=" . $isfp . ", isfn=" . $isfn . " WHERE id='"
                     . safe_value($list[$val]['msgid']) . "'";
             }
             
