@@ -189,7 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
     'children03' => 'children',
     'procs03' => 'proc(s)',
-    'errorWarning03' => 'Warning: An error occured: ',
+    'errorWarning03' => 'Warning: An error occured:',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',

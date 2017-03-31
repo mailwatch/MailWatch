@@ -508,7 +508,7 @@ function printMTAQueue()
                 }
             }
             if ($pqerror !== '') {
-                echo '    <tr><td colspan="3">' . __('errorWarning03') . $pqerror . '</td>' . "\n";
+                echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
             }
         }
         if ($inq != null && $outq != null) {
@@ -1040,7 +1040,7 @@ function __($string)
 /**
  * Returns true if $string is valid UTF-8 and false otherwise.
  *
- * @param string
+ * @param  $string
  * @return integer
  */
 function is_utf8($string)
