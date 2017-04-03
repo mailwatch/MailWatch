@@ -216,10 +216,10 @@ switch (true) {
 // Submitted
 if ($url_submit === 'add') {
     if (false === checkToken($_POST['token'])) {
-        die('No! Bad dog no treat for you!');
+        die(__('dietoken99'));
     }
     if (false === checkFormToken('/lists.php list token', $_POST['formtoken'])) {
-        die('No! Bad dog no treat for you!');
+        die(__('dietoken99'));
     }
 
     // Check input is valid
@@ -259,7 +259,7 @@ if ($url_submit === 'add') {
 // Delete
 if ($url_submit === 'delete') {
     if (false === checkToken($_GET['token'])) {
-        die('No! Bad dog no treat for you!');
+        die(__('dietoken99'));
     }
     $id = $url_id;
     switch ($url_list) {

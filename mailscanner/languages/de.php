@@ -189,6 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
     'children03' => 'children',
     'procs03' => 'Prozess(e)',
+    'errorWarning03' => 'Warnung: Es ist ein Fehler aufgetreten:',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -226,7 +227,7 @@ return array(
     'salearn04' => 'SA Trainieren',
     'file04' => 'Datei',
     'type04' => 'Typ',
-    'path04' => 'Pfad',
+    'path04' => 'Nachrichten-Pfad',
     'dang04' => 'Gefährlich',
     'altrecip04' => 'Alternative(r) Empfänger:',
     'submit04' => 'Bestätigen',
@@ -465,6 +466,8 @@ return array(
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
+    'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
+    'nofilteraction12' => 'Not Allowed',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -669,7 +672,7 @@ return array(
     'nbmessage38' => 'Anz. Nachrichten',
     'score38' => 'Bewertung',
     'count38' => 'Anzahl',
-    'die38' => 'Error: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
+    'die38' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',
@@ -893,6 +896,8 @@ return array(
     'message299' => 'von MailWatch gelesen und beschrieben werden kann',
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
+    'dievalidate99' => 'Fehler: kann die Eingabe nicht bestätigen',
+    'dietoken99' => 'Fehler: das Sicherheits-Token kann nicht validiert werden',
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
     'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die conf.php mit conf.php.example',

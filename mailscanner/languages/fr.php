@@ -189,6 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Le scanner de virus défini dans MailScanner.conf est inconnu. Modifiez votre configuration et n\'utilisez pas \'auto\' comme nom d\'antivirus (voir FAQ).',
     'children03' => 'proc. fils',
     'procs03' => 'processus',
+    'errorWarning03' => 'Attention : une erreur s\'est produite :',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -226,7 +227,7 @@ return array(
     'salearn04' => 'Apprentissage SA',
     'file04' => 'Fichier',
     'type04' => 'Type',
-    'path04' => 'Chemin',
+    'path04' => 'Chemin d\'accès au message',
     'dang04' => 'Dangereux',
     'altrecip04' => 'Destinataire alternatif :',
     'submit04' => 'Soumettre',
@@ -465,6 +466,8 @@ return array(
     'retypepassword12' => 'Confirmez le mot de passe :',
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
     'savedsettings12' => 'Règlages enregistrés',
+    'errordeleteself12' => 'Erreur : vous ne pouvez pas supprimer votre propre compte !',
+    'nofilteraction12' => 'Action non autorisée',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -893,6 +896,8 @@ return array(
     'message299' => 'soit lisible et puissent être écrit part MailWatch',
     'mwlogo99' => 'Logo MailWatch',
     'mslogo99' => 'Logo MailScanner',
+    'dievalidate99' => 'Erreur: impossible de valider l\'entrée',
+    'dietoken99' => 'Erreur: impossible de valider le jeton de sécurité',
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
     'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',

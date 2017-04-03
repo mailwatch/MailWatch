@@ -124,6 +124,8 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   `time` time DEFAULT NULL,
   `headers` mediumtext COLLATE utf8_unicode_ci,
   `quarantined` tinyint(1) DEFAULT '0',
+  `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
+  `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`maillog_id`),
   KEY `maillog_datetime_idx` (`date`,`time`),
   KEY `maillog_id_idx` (`id`(20)),

@@ -62,7 +62,7 @@ define('LDAP_DN', 'DC=example,DC=com');
 define('LDAP_USER', 'LDAPProxy@example.com'); // If no email set: cn=admin,dc=example,dc=com
 define('LDAP_PASS', 'secret');
 define('LDAP_SITE', 'default');
-define('LDAP_FILTER',      'mail=%s'); //%s will be replaced by username eg. 'mail=%', 'mail=SMTP:%s', 'sAMAccountName=%s'
+define('LDAP_FILTER', 'mail=%s'); //%s will be replaced by username eg. 'mail=%', 'mail=SMTP:%s', 'sAMAccountName=%s'
 define('LDAP_PROTOCOL_VERSION', 3);
 // can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
 define('LDAP_EMAIL_FIELD', 'mail');
@@ -109,8 +109,8 @@ define('TEMP_DIR', '/tmp/');
 define('MW_LOGO', 'mailwatch-logo.png');
 
 // Log file location
-define('MS_LOG', '/var/log/mail.log');
-define('MAIL_LOG', '/var/log/mail.log');
+define('MS_LOG', '/var/log/mail.log'); // Where is MailScanner logging to?
+define('MAIL_LOG', '/var/log/mail.log'); // MTA log file, it's diferent between distributions and sometimes MTA
 
 // Default number of results on Recent Messages and Message Listing Report.
 define('MAX_RESULTS', 50);
@@ -216,8 +216,12 @@ define('RPC_ONLY', false);
 
 // Display the inbound/outbound mail queue lengths.
 // Note: this only works with Exim and Sendmail.
-// You must also run /usr/local/bin/mailwatch_sendmail_queue.php from CRON.
-define('MAILQ', true);
+// You must also run /usr/local/bin/mailwatch_sendmail_queue.php from CRON
+// and uncomment MAIL_SENDER, EXIM_QUEUE_IN and EXIM_QUEUE_OUT.
+// define('MAILQ', true);
+// Select if we use envelope-sender or sender (From:) in Mail Queue for Exim or Sendmail
+// Value: 'envelopesender' or 'sender'
+// define('MAIL_SENDER', 'envelopesender');
 // If you change the lines below, you need to change /etc/sudoers.d/mailwatch according.
 // Command to read Exim inbound Mail Queue
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
@@ -272,7 +276,7 @@ define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
 // Give users the ability to reset a forgotten password.
 define('PWD_RESET', false);
 // Number of hours link is valid for.
-define('RESET_LINK_EXPIRE',1);
+define('RESET_LINK_EXPIRE', 1);
 // Set the following 2 variables (and uncomment) if you wish to define
 // an alternative sender name and address for password resets.
 // NOTE: Both must be set, otherwise it will use the default settings.

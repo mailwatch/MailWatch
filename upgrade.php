@@ -76,11 +76,13 @@ function pad($input)
 /**
  * @param string $sql
  */
-function executeQuery($sql)
+function executeQuery($sql, $beSilent = false)
 {
     global $link;
     if ($link->query($sql)) {
-        echo color(' OK', 'green') . PHP_EOL;
+        if (!$beSilent) {
+            echo color(' OK', 'green') . PHP_EOL;
+        }
     } else {
         echo color(' ERROR', 'red') . PHP_EOL;
         die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
@@ -418,6 +420,11 @@ if ($link) {
     executeQuery($sql);
 
     echo PHP_EOL;
+    
+    // Cleanup orphaned user_filters
+    echo pad(' - Cleanup orphaned user_filters');
+    $sql = 'DELETE FROM `user_filters` WHERE `username` NOT IN (SELECT `username` FROM `users`)';
+    executeQuery($sql);
 
     // Add new column and index to audit_log table
     echo pad(' - Add id field and primary key to `audit_log` table');
@@ -445,6 +452,48 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
         executeQuery($sql);
     }
+
+    // Add new column to maillog table
+    echo pad(' - Add rblspamreport field to `maillog` table');
+    if (true === check_column_exists('maillog', 'rblspamreport')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL';
+        executeQuery($sql);
+    }
+    
+    // Add new token column to maillog table
+    echo pad(' - Add token field to `maillog` table');
+    if (true === check_column_exists('maillog', 'token')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `maillog` ADD `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
+        executeQuery($sql);
+    }
+    
+    // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
+    echo pad(' - Check for missing tokens in `maillog` table');
+    if (defined('QUARANTINE_REPORT_DAYS')) {
+        $report_days=QUARANTINE_REPORT_DAYS;
+    } else {
+        // Missing, but let's keep going...
+        $report_days=7;
+    }
+    $sql = 'SELECT `id`,`token` FROM `maillog` WHERE `date` >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . $report_days . ' DAY)';
+    $result = dbquery($sql);
+    $rows = $result->num_rows;
+    $countTokenGenerated = 0;
+    if ($rows > 0) {
+        while ($row = $result->fetch_object()) {
+            if ($row->token === null) {
+                $sql = 'UPDATE `maillog` SET `token`=\'' . generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
+                executeQuery($sql, true);
+                $countTokenGenerated++;
+            }
+        }
+    }
+    echo color(' DONE', 'lightgreen') . PHP_EOL;
+    echo '   ' . $countTokenGenerated . ' token generated' . PHP_EOL;
 
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
@@ -480,6 +529,24 @@ if ($link) {
     } else {
         $sql = 'ALTER TABLE `user_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
         executeQuery($sql);
+    }
+
+    echo PHP_EOL;
+
+    // Fix existing index size for utf8mb4 conversion
+    $too_big_indexes = array(
+        'maillog_from_idx',
+        'maillog_to_idx',
+    );
+
+    foreach ($too_big_indexes as $item) {
+        echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
+        if (get_index_size(DB_NAME, 'maillog', $item) > 191) {
+            $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
+            executeQuery($sql);
+        } else {
+            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+        }
     }
 
     echo PHP_EOL;
@@ -548,24 +615,6 @@ if ($link) {
             } else {
                 echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
             }
-        }
-    }
-
-    echo PHP_EOL;
-
-    // Fix existing index size for utf8mb4 conversion
-    $too_big_indexes = array(
-        'maillog_from_idx',
-        'maillog_to_idx',
-    );
-
-    foreach ($too_big_indexes as $item) {
-        echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
-        if (get_index_size(DB_NAME, 'maillog', $item) > 191) {
-            $sql = 'ALTER TABLE `maillog` DROP INDEX `' . $item . '`';
-            executeQuery($sql);
-        } else {
-            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
         }
     }
 

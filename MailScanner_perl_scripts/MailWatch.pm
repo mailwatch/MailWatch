@@ -41,6 +41,7 @@ use Storable(qw[freeze thaw]);
 use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
+use Digest::SHA1;
 
 # Uncommet the folloging line when debugging MailWatch.pm
 #use Data::Dumper;
@@ -64,7 +65,7 @@ my ($SQLversion);
 # Get database information from 00MailWatchConf.pm
 use File::Basename;
 my $dirname = dirname(__FILE__);
-require $dirname.'/00MailWatchConf.pm';
+require $dirname.'/MailWatchConf.pm';
 
 my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
@@ -138,7 +139,7 @@ sub InitConnection {
         $dbh->do('SET NAMES utf8');
     }
 
-    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
+    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
         MailScanner::Log::WarnLog("MailWatch: Error: %s", $DBI::errstr);
 }
 
@@ -219,7 +220,9 @@ sub ListenForMessages {
             $$message{date},
             $$message{"time"},
             $$message{headers},
-            $$message{quarantined});
+            $$message{quarantined},
+            $$message{rblspamreport},
+            $$message{token});
 
         # This doesn't work in the event we have no connection by now ?
         if (!$sth) {
@@ -344,7 +347,13 @@ sub MailWatchLogging {
     my ($todomain, @todomain);
     @todomain = @{$message->{todomain}};
     $todomain = $todomain[0];
-
+    
+    # Generate token for mail viewing
+    my ($token, $sha1);
+    $sha1 = Digest::SHA1->new;
+    $sha1->add($message->{id}, $timestamp, $message->{size}, $message->{headers});
+    $token = $sha1->hexdigest;
+    
     # Place all data into %msg
     my %msg;
     $msg{timestamp} = $timestamp;
@@ -381,6 +390,8 @@ sub MailWatchLogging {
     $msg{"time"} = $time;
     $msg{headers} = join("\n", map { fix_latin($_)} @{$message->{headers}});
     $msg{quarantined} = $quarantined;
+    $msg{rblspamreport} = $message->{rblspamreport};
+    $msg{token} = $token;
 
     # Prepare data for transmission
     my $f = freeze \%msg;

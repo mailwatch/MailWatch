@@ -55,7 +55,7 @@ function postfixallq()
 
 function postfixmailq()
 {
-    $last_line = exec('mailq', $output);
+    exec('mailq', $output);
     while (list(, $row) = each($output)) {
         echo $row . "\n";
     }

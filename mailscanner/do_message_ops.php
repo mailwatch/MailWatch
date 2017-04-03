@@ -37,8 +37,12 @@ require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));
 
-if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) { die('No! Bad dog no treat for you!'); }
-if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) { die('No! Bad dog no treat for you!'); }
+if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
+    die(__('dietoken99'));
+}
+if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
+    die(__('dietoken99'));
+}
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
 echo ' <tr>' . "\n";
@@ -51,17 +55,21 @@ echo '  <th colspan="1">' . __('message21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 
 // Iterate through the POST variables
-unset($_POST['SUBMIT']);
+unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
 if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
-            if (!validateInput($id, 'msgid')) { die(); }
+            if (!validateInput($id, 'msgid')) {
+                die();
+            }
         } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
-            if (!validateInput($id, 'msgid')) { die(); }
+            if (!validateInput($id, 'msgid')) {
+                die();
+            }
         } else {
             continue;
         }

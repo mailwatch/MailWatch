@@ -189,6 +189,7 @@ return array(
     'unknownvirusscanner03' => 'Unknown virus scanner defined in MailScanner.conf. Review your configuration and don\'t use \'auto\' as antivirus name (see FAQ).',
     'children03' => 'children',
     'procs03' => 'proc(s)',
+    'errorWarning03' => 'Warning: An error occured:',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
@@ -226,7 +227,7 @@ return array(
     'salearn04' => 'SA Learn',
     'file04' => 'File',
     'type04' => 'Type',
-    'path04' => 'Path',
+    'path04' => 'Path to message',
     'dang04' => 'Dangerous',
     'altrecip04' => 'Alternate Recipient(s):',
     'submit04' => 'Submit',
@@ -465,6 +466,8 @@ return array(
     'retypepassword12' => 'Confirm Password:',
     'userexists12' => 'User already exists with username %s',
     'savedsettings12' => 'Settings saved',
+    'errordeleteself12' => 'Error: You can not delete your own account!',
+    'nofilteraction12' => 'Not Allowed',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -893,6 +896,8 @@ return array(
     'message299' => 'is readable and writable by MailWatch',
     'mwlogo99' => 'MailWatch Logo',
     'mslogo99' => 'MailScanner Logo',
+    'dievalidate99' => 'Error: unable to validate input',
+    'dietoken99' => 'Error: unable to validate security token',
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
     'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',

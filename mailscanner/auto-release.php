@@ -35,9 +35,13 @@ if (file_exists('conf.php')) {
     if (isset($_GET['mid'], $_GET['r'])) {
         dbconn();
         $mid = deepSanitizeInput($_GET['mid'], 'url');
-        if (!validateInput($mid, 'msgid')) { die(); }
+        if ($mid === false || !validateInput($mid, 'msgid')) {
+            die();
+        }
         $token = deepSanitizeInput($_GET['r'], 'url');
-        if (!validateInput($token, 'releasetoken')) { die('No! Bad dog no treat for you!'); }
+        if (!validateInput($token, 'releasetoken')) {
+            die(__('dietoken99'));
+        }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);
         if (!$result) {
@@ -88,6 +92,9 @@ if (file_exists('conf.php')) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
     <link rel="stylesheet" href="style.css" type="text/css">
+    <?php if (is_file(__DIR__ . '/skin.css')) {
+        echo '<link rel="stylesheet" href="skin.css" type="text/css">';
+    } ?>
 </head>
 <body class="autorelease">
 <div class="autorelease">
