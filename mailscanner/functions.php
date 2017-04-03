@@ -226,7 +226,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.2';
+    return '1.2.3-dev';
 }
 
 if (!function_exists('imageantialias')) {
