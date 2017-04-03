@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /*
  * MailWatch for MailScanner
