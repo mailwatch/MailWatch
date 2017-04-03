@@ -82,90 +82,90 @@ if ($usercount === 0) {
     dbclose();
     header('Location: login.php?error=baduser');
     die();
-} else {
-    if ($_SESSION['user_ldap'] === false) {
-        $passwordInDb = database::mysqli_result($result, 0, 'password');
-        if (!password_verify($mypassword, $passwordInDb)) {
-            if (!hash_equals(md5($mypassword), $passwordInDb)) {
-                header('Location: login.php?error=baduser');
-                die();
-            } else {
-                $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-                updateUserPasswordHash($myusername, $newPasswordHash);
-            }
+}
+
+if ($_SESSION['user_ldap'] === false) {
+    $passwordInDb = database::mysqli_result($result, 0, 'password');
+    if (!password_verify($mypassword, $passwordInDb)) {
+        if (!hash_equals(md5($mypassword), $passwordInDb)) {
+            header('Location: login.php?error=baduser');
+            die();
         } else {
-            // upgraded password is valid, continue as normal
-            if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
-                $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-                updateUserPasswordHash($myusername, $newPasswordHash);
-            }
+            $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
+            updateUserPasswordHash($myusername, $newPasswordHash);
+        }
+    } else {
+        // upgraded password is valid, continue as normal
+        if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
+            $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
+            updateUserPasswordHash($myusername, $newPasswordHash);
         }
     }
+}
 
-    $fullname = database::mysqli_result($result, 0, 'fullname');
-    $usertype = database::mysqli_result($result, 0, 'type');
+$fullname = database::mysqli_result($result, 0, 'fullname');
+$usertype = database::mysqli_result($result, 0, 'type');
 
-    $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-    $result_userfilter = dbquery($sql_userfilter);
+$sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
+$result_userfilter = dbquery($sql_userfilter);
 
-    $filter[] = $myusername;
-    while ($row = $result_userfilter->fetch_array()) {
-        $filter[] = $row['filter'];
-    }
+$filter[] = $myusername;
+while ($row = $result_userfilter->fetch_array()) {
+    $filter[] = $row['filter'];
+}
 
-    $global_filter = address_filter_sql($filter, $usertype);
+$global_filter = address_filter_sql($filter, $usertype);
 
-    switch ($usertype) {
-        case 'A':
-            $global_list = '1=1';
-            break;
-        case 'D':
-            if (strpos($myusername, '@')) {
-                $ar = explode('@', $myusername);
-                $domainname = $ar[1];
-                if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
-                    $global_filter .= " OR to_domain='$domainname'";
-                } else {
-                    $global_filter .= " OR to_domain='$domainname' OR from_domain='$domainname'";
-                }
-                $global_list = "to_domain='$domainname'";
+switch ($usertype) {
+    case 'A':
+        $global_list = '1=1';
+        break;
+    case 'D':
+        if (strpos($myusername, '@')) {
+            $ar = explode('@', $myusername);
+            $domainname = $ar[1];
+            if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
+                $global_filter .= " OR to_domain='$domainname'";
             } else {
-                $global_list = "to_address='$myusername'";
-                foreach ($filter as $to_address) {
-                    $global_list .= " OR to_address='$to_address'";
-                }
+                $global_filter .= " OR to_domain='$domainname' OR from_domain='$domainname'";
             }
-            break;
-        case 'U':
+            $global_list = "to_domain='$domainname'";
+        } else {
             $global_list = "to_address='$myusername'";
             foreach ($filter as $to_address) {
                 $global_list .= " OR to_address='$to_address'";
             }
-            break;
-    }
-
-    // If result matched $myusername and $mypassword, table row must be 1 row
-    if ($usercount === 1) {
-        session_regenerate_id(true);
-        // Register $myusername, $mypassword and redirect to file "login_success.php"
-        $_SESSION['myusername'] = $myusername;
-        $_SESSION['fullname'] = $fullname;
-        $_SESSION['user_type'] = (isset($usertype) ? $usertype : '');
-        $_SESSION['domain'] = (isset($domainname) ? $domainname : '');
-        $_SESSION['global_filter'] = '(' . $global_filter . ')';
-        $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
-        $_SESSION['global_array'] = $filter;
-        $_SESSION['token'] = generateToken();
-        $redirect_url = 'index.php';
-        if (isset($_SESSION['REQUEST_URI'])) {
-            $redirect_url = $_SESSION['REQUEST_URI'];
-            unset($_SESSION['REQUEST_URI']);
         }
-        header('Location: ' . $redirect_url);
-    } else {
-        header('Location: login.php?error=baduser');
-    }
-
-    // close any DB connections
-    dbclose();
+        break;
+    case 'U':
+        $global_list = "to_address='$myusername'";
+        foreach ($filter as $to_address) {
+            $global_list .= " OR to_address='$to_address'";
+        }
+        break;
 }
+
+// If result matched $myusername and $mypassword, table row must be 1 row
+if ($usercount === 1) {
+    session_regenerate_id(true);
+    // Register $myusername, $mypassword and redirect to file "login_success.php"
+    $_SESSION['myusername'] = $myusername;
+    $_SESSION['fullname'] = $fullname;
+    $_SESSION['user_type'] = (isset($usertype) ? $usertype : '');
+    $_SESSION['domain'] = (isset($domainname) ? $domainname : '');
+    $_SESSION['global_filter'] = '(' . $global_filter . ')';
+    $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
+    $_SESSION['global_array'] = $filter;
+    $_SESSION['token'] = generateToken();
+    $redirect_url = 'index.php';
+    if (isset($_SESSION['REQUEST_URI'])) {
+        $redirect_url = $_SESSION['REQUEST_URI'];
+        unset($_SESSION['REQUEST_URI']);
+    }
+    header('Location: ' . sanitizeInput($redirect_url));
+} else {
+    header('Location: login.php?error=baduser');
+}
+
+// close any DB connections
+dbclose();
