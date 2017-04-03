@@ -82,7 +82,7 @@ require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 //Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
-        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . $_SERVER['REQUEST_URI']);
+        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
 }
@@ -226,7 +226,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.1';
+    return '1.2.2';
 }
 
 if (!function_exists('imageantialias')) {
@@ -2352,12 +2352,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = $status;
                         break;
                 }
-            }
-            // Now add the id to the operations form elements
-            if ($operations !== false) {
-                $row[0] = str_replace('REPLACEME', $id, $row[0]);
-                $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
-                $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
+                // Now add the id to the operations form elements
+                if ($operations !== false) {
+                    $row[0] = str_replace('REPLACEME', $id, $row[0]);
+                    $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
+                    $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
+                }
             }
             // Colorise the row
             switch (true) {

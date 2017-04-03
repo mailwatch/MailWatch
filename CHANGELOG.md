@@ -1,4 +1,9 @@
-1.2.1-dev
+1.2.2
+-----------
+Fixes
+- Regression in SA Learning and Releasing not working in detail page
+
+1.2.1
 -----------
 Improvements
 - Show RBL list in Message Detail
