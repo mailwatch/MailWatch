@@ -43,6 +43,7 @@ return array(
     'errorund01' => 'Ein unbekannter Fehler ist aufgetreten',
     'login01' => 'Login',
     'forgottenpwd01' => 'Passwort vergessen?',
+    'sessiontimeout01' => 'Ihre Sitzung ist abgelaufen.',
 
     // 03-funtions.php
     'jumpmessage03' => 'Zu Nachricht gehen:',

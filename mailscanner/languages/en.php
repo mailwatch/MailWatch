@@ -43,6 +43,7 @@ return array(
     'errorund01' => 'An undefined error occurred',
     'login01' => 'Login',
     'forgottenpwd01' => 'Forgotten Password?',
+    'sessiontimeout01' => 'Your session timed out.',
 
     // 03-functions.php
     'jumpmessage03' => 'Go to message:',
