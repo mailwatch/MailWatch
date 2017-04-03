@@ -1094,14 +1094,12 @@ function getUTF8String($string)
 function getFROMheader($header)
 {
     $sender = '';
-    if (preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
+    if (preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match) === 1) {
         if (isset($match[2])) {
             $sender = $match[2];
         }
-        if (preg_match('/\S+@\S+/', $sender, $match_email)) {
-            if (isset($match_email[0])) {
-                $sender = str_replace(array('<', '>', '"'), '', $match_email[0]);
-            }
+        if (preg_match('/\S+@\S+/', $sender, $match_email) === 1 && isset($match_email[0])) {
+            $sender = str_replace(array('<', '>', '"'), '', $match_email[0]);
         }
     }
     return $sender;
@@ -1114,7 +1112,7 @@ function getFROMheader($header)
 function getSUBJECTheader($header)
 {
     $subject = '';
-    if (preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match)) {
+    if (preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match) === 1) {
         $subLines = preg_split('/[\r\n]+/', $match[2]);
         for ($i = 0, $countSubLines = count($subLines); $i < $countSubLines; $i++) {
             $convLine = '';
@@ -3507,7 +3505,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $isfp = null;
             }
             if ($isfp !== null) {
-                $sql = "UPDATE maillog SET timestamp=timestamp, isfp=" . $isfp . ", isfn=" . $isfn . " WHERE id='"
+                $sql = 'UPDATE maillog SET timestamp=timestamp, isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
                     . safe_value($list[$val]['msgid']) . "'";
             }
             

@@ -199,11 +199,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     }
                     if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
-                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && $n_type === 'A') {
                         echo __('errorcreatedomainforbidden12') . '<br>';
-                    } elseif ($_POST['password'] === "") {
+                    } elseif ($_POST['password'] === '') {
                         echo __('errorpwdreq12') . '<br>';
                     } elseif ($_POST['password'] !== $_POST['password1']) {
                         echo __('errorpass12') . '<br>';
@@ -304,7 +304,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $filter_domain[] = $filter[0];
                     }
                 }
-                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
+                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                     echo __('erroreditnodomainforbidden12') . '<br>';
                 } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                     echo sprintf(__('erroreditdomainforbidden12'), sanitizeInput($ar[1])) . '<br>';
@@ -369,7 +369,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         }
                         $ar = explode('@', $username);
                         $n_type = deepSanitizeInput($_POST['type'], 'url');
-                        if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
+                        if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                             echo __('errortonodomainforbidden12') . '<br>';
                         } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                             echo sprintf(__('errortodomainforbidden12'), $ar[1]) . '<br>';
@@ -584,7 +584,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
     echo '<a href="?token=' . $_SESSION['token'] . '&amp;action=new">' . __('newuser12') . '</a>'."\n";
     echo '<br><br>'."\n";
 
-    $domainAdminUserDomainFilter = "";
+    $domainAdminUserDomainFilter = '';
     if ($_SESSION['user_type'] === 'D') {
         if ($_SESSION['domain'] === '') {
             //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
