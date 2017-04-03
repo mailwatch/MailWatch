@@ -420,9 +420,9 @@ function store_auto_release($qitem)
     if (!$result) {
         dbg(' ==== Error generating auto_release....skipping...');
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
 
 /**
@@ -439,14 +439,17 @@ function check_auto_release($qitem)
     } else {
         if ($result->num_rows === 0) {
             return false;//msg_id not found,
-        } elseif ($result->num_rows === 1) {
+        }
+
+        if ($result->num_rows === 1) {
             $row = $result->fetch_array();
 
             return $row['uid']; //return the stored uid
-        } else {
-            dbg('=== Error, msg_id exists more than once....generating new one...');
-            return false;
         }
+
+        dbg('=== Error, msg_id exists more than once....generating new one...');
+
+        return false;
     }
 
     return false;

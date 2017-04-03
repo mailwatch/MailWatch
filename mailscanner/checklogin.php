@@ -90,10 +90,10 @@ if ($_SESSION['user_ldap'] === false) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
             die();
-        } else {
-            $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-            updateUserPasswordHash($myusername, $newPasswordHash);
         }
+
+        $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
+        updateUserPasswordHash($myusername, $newPasswordHash);
     } else {
         // upgraded password is valid, continue as normal
         if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {

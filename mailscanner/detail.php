@@ -122,9 +122,9 @@ $result = dbquery($sql);
 // Check to make sure something was returned
 if ($result->num_rows === 0) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
-} else {
-    audit_log(__('auditlog04') . ' (id=' . $url_id . ')');
 }
+
+audit_log(__('auditlog04') . ' (id=' . $url_id . ')');
 
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');

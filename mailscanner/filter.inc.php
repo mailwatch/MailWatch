@@ -252,9 +252,9 @@ WHERE
             }
 
             return $sql;
-        } else {
-            return 'AND ' . $_SESSION['global_filter'] . "\n";
         }
+
+        return 'AND ' . $_SESSION['global_filter'] . "\n";
     }
 
     /**

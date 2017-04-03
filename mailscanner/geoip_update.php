@@ -181,9 +181,9 @@ if (!isset($_POST['run'])) {
                     exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
                     if ($retval_gunzip > 0) {
                         die(__('extractnotok15') . $file['description'] . "<br>\n");
-                    } else {
-                        echo $file['description'] . ' ' . __('extractok15') . '<br>' . "\n";
                     }
+
+                    echo $file['description'] . ' ' . __('extractok15') . '<br>' . "\n";
                 }
             } else {
                 // unable to extract the file correctly

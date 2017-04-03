@@ -51,9 +51,9 @@ if (!defined('MS_EXECUTABLE_PATH')) {
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {
         die(__('diepipe28'));
-    } else {
-        audit_log(__('auditlog28'));
     }
+
+    audit_log(__('auditlog28'));
 
     // Start timer
     $start = get_microtime();

@@ -244,9 +244,9 @@ function suppress_zeros($number)
 {
     if (abs($number - 0.0) < 0.1) {
         return '.';
-    } else {
-        return $number;
     }
+
+    return $number;
 }
 
 function disableBrowserCache()
@@ -1153,11 +1153,13 @@ function sa_autolearn($spamreport)
 {
     if (preg_match('/autolearn=spam/', $spamreport) === 1) {
         return __('saspam03');
-    } elseif (preg_match('/autolearn=not spam/', $spamreport)) {
-        return __('sanotspam03');
-    } else {
-        return false;
     }
+
+    if (preg_match('/autolearn=not spam/', $spamreport) === 1) {
+        return __('sanotspam03');
+    }
+
+    return false;
 }
 
 /**
@@ -1535,9 +1537,9 @@ function trim_output($input, $maxlen)
 {
     if ($maxlen > 0 && strlen($input) >= $maxlen) {
         return substr($input, 0, $maxlen) . '...';
-    } else {
-        return $input;
     }
+
+    return $input;
 }
 
 /**
@@ -1576,10 +1578,9 @@ function get_conf_var($name, $force = false)
     $array_output1 = parse_conf_file($MailScanner_conf_file);
     $array_output2 = parse_conf_dir($conf_dir);
 
+    $array_output = $array_output1;
     if (is_array($array_output2)) {
         $array_output = array_merge($array_output1, $array_output2);
-    } else {
-        $array_output = $array_output1;
     }
 
     foreach ($array_output as $parameter_name => $parameter_value) {
@@ -1588,9 +1589,9 @@ function get_conf_var($name, $force = false)
         if (strtolower($parameter_name) === strtolower($name)) {
             if (is_file($parameter_value)) {
                 return read_ruleset_default($parameter_value);
-            } else {
-                return $parameter_value;
             }
+
+            return $parameter_value;
         }
     }
 
@@ -2687,16 +2688,18 @@ function debug($text)
 /**
  * @param $dir
  * @return bool|int
+ *
+ * @todo rewrite using SPL
  */
 function count_files_in_dir($dir)
 {
     $file_list_array = @scandir($dir);
     if ($file_list_array === false) {
         return false;
-    } else {
-        //there is always . and .. so reduce the count
-        return count($file_list_array) - 2;
     }
+
+    //there is always . and .. so reduce the count
+    return count($file_list_array) - 2;
 }
 
 /**
@@ -2879,13 +2882,13 @@ function ldap_authenticate($username, $password)
                     }
 
                     return $email;
-                } else {
-                    if (ldap_errno($ds) === 49) {
-                        //LDAP_INVALID_CREDENTIALS
-                        return null;
-                    }
-                    die(ldap_print_error($ds));
                 }
+
+                if (ldap_errno($ds) === 49) {
+                    //LDAP_INVALID_CREDENTIALS
+                    return null;
+                }
+                die(ldap_print_error($ds));
             }
         }
     }
@@ -3011,19 +3014,19 @@ function ldap_get_conf_var($entry)
         if ($info[0]['count'] === 0) {
             // Return single value
             return $info[0][$info[0][0]][0];
-        } else {
-            // Multi-value option, build array and return as space delimited
-            $return = array();
-            for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
-                $return[] = $info[0][$info[0][0]][$n];
-            }
-
-            return implode(' ', $return);
         }
-    } else {
-        // No results
-        die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
+
+        // Multi-value option, build array and return as space delimited
+        $return = array();
+        for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
+            $return[] = $info[0][$info[0][0]][$n];
+        }
+
+        return implode(' ', $return);
     }
+
+    // No results
+    die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
 }
 
 /**
@@ -3090,9 +3093,9 @@ function translate_etoi($name)
     fclose($fh) or die($php_errormsg);
     if (isset($etoi["$name"])) {
         return $etoi["$name"];
-    } else {
-        return $name;
     }
+
+    return $name;
 }
 
 /**
@@ -3322,23 +3325,23 @@ SELECT
         }
 
         return $quarantined;
-    } else {
-        // Host is remote call quarantine_list_items by RPC
-        debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
-        //if(DEBUG) { $client->setDebug(1); }
-        //$parameters = array($input);
-        //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
-        $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($msgid)));
-        $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            $response = 'XML-RPC Error: ' . $rsp->faultString();
-        }
-
-        return $response;
     }
+
+    // Host is remote call quarantine_list_items by RPC
+    debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
+    //if(DEBUG) { $client->setDebug(1); }
+    //$parameters = array($input);
+    //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
+    $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($msgid)));
+    $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        $response = 'XML-RPC Error: ' . $rsp->faultString();
+    }
+
+    return $response;
 }
 
 /**
@@ -3352,10 +3355,10 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
-    } else {
-        $new = quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
     }
+
+    $new = quarantine_list_items($list[0]['msgid']);
+    $list =& $new;
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         if (!QUARANTINE_USE_SENDMAIL) {
@@ -3395,28 +3398,28 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             }
 
             return $status;
-        } else {
-            // Use sendmail to release message
-            // We can only release message/rfc822 files in this way.
-            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
-            foreach ($num as $key => $val) {
-                if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
-                    debug($cmd . $list[$val]['path']);
-                    exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
-                    if ($retval === 0) {
-                        $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                        audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
-                    } else {
-                        $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
-                                "\n",
-                                $output_array
-                            );
-                        global $error;
-                        $error = true;
-                    }
+        }
 
-                    return $status;
+        // Use sendmail to release message
+        // We can only release message/rfc822 files in this way.
+        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+        foreach ($num as $key => $val) {
+            if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
+                debug($cmd . $list[$val]['path']);
+                exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
+                if ($retval === 0) {
+                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                    audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
+                } else {
+                    $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
+                            "\n",
+                            $output_array
+                        );
+                    global $error;
+                    $error = true;
                 }
+
+                return $status;
             }
         }
     } else {
@@ -3465,10 +3468,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     dbconn();
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
-    } else {
-        $new = quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
     }
+
+    $new = quarantine_list_items($list[0]['msgid']);
+    $list =& $new;
     $status = array();
     if (!$rpc_only && is_local($list[0]['host'])) {
         foreach ($num as $key => $val) {
@@ -3574,38 +3577,38 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         }
 
         return implode("\n", $status);
-    } else {
-        // Call by RPC
-        debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-        // Convert input parameters
-        $list_output = array();
-        foreach ($list as $list_array) {
-            $list_struct = array();
-            foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
-            }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
-        }
-        $num_output = array();
-        foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
-        }
-        // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
-        $param3 = new xmlrpcval($type, 'string');
-        $parameters = array($param1, $param2, $param3);
-        $msg = new xmlrpcmsg('quarantine_learn', $parameters);
-        $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            $response = 'XML-RPC Error: ' . $rsp->faultString();
-        }
-
-        return $response . ' (RPC)';
     }
+
+    // Call by RPC
+    debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    // Convert input parameters
+    $list_output = array();
+    foreach ($list as $list_array) {
+        $list_struct = array();
+        foreach ($list_array as $key => $val) {
+            $list_struct[$key] = new xmlrpcval($val);
+        }
+        $list_output[] = new xmlrpcval($list_struct, 'struct');
+    }
+    $num_output = array();
+    foreach ($num as $key => $val) {
+        $num_output[$key] = new xmlrpcval($val);
+    }
+    // Build input parameters
+    $param1 = new xmlrpcval($list_output, 'array');
+    $param2 = new xmlrpcval($num_output, 'array');
+    $param3 = new xmlrpcval($type, 'string');
+    $parameters = array($param1, $param2, $param3);
+    $msg = new xmlrpcmsg('quarantine_learn', $parameters);
+    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        $response = 'XML-RPC Error: ' . $rsp->faultString();
+    }
+
+    return $response . ' (RPC)';
 }
 
 /**
@@ -3618,10 +3621,10 @@ function quarantine_delete($list, $num, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
-    } else {
-        $new = quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
     }
+
+    $new = quarantine_list_items($list[0]['msgid']);
+    $list =& $new;
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         $status = array();
@@ -3638,37 +3641,37 @@ function quarantine_delete($list, $num, $rpc_only = false)
         }
 
         return implode("\n", $status);
-    } else {
-        // Call by RPC
-        debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-        // Convert input parameters
-        $list_output = array();
-        foreach ($list as $list_array) {
-            $list_struct = array();
-            foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
-            }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
-        }
-        $num_output = array();
-        foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
-        }
-        // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
-        $parameters = array($param1, $param2);
-        $msg = new xmlrpcmsg('quarantine_delete', $parameters);
-        $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            $response = 'XML-RPC Error: ' . $rsp->faultString();
-        }
-
-        return $response . ' (RPC)';
     }
+
+    // Call by RPC
+    debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    // Convert input parameters
+    $list_output = array();
+    foreach ($list as $list_array) {
+        $list_struct = array();
+        foreach ($list_array as $key => $val) {
+            $list_struct[$key] = new xmlrpcval($val);
+        }
+        $list_output[] = new xmlrpcval($list_struct, 'struct');
+    }
+    $num_output = array();
+    foreach ($num as $key => $val) {
+        $num_output[$key] = new xmlrpcval($val);
+    }
+    // Build input parameters
+    $param1 = new xmlrpcval($list_output, 'array');
+    $param2 = new xmlrpcval($num_output, 'array');
+    $parameters = array($param1, $param2);
+    $msg = new xmlrpcmsg('quarantine_delete', $parameters);
+    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        $response = 'XML-RPC Error: ' . $rsp->faultString();
+    }
+
+    return $response . ' (RPC)';
 }
 
 /**
@@ -3693,11 +3696,11 @@ function audit_log($action)
 {
     $link = dbconn();
     if (AUDIT) {
+        $user = 'unknown';
         if (isset($_SESSION['myusername'])) {
             $user = $link->real_escape_string($_SESSION['myusername']);
-        } else {
-            $user = 'unknown';
         }
+
         $action = safe_value($action);
         $ip = safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
@@ -3718,9 +3721,9 @@ function mailwatch_array_sum($array)
     if (!is_array($array)) {
         // Not an array
         return array();
-    } else {
-        return array_sum($array);
     }
+
+    return array_sum($array);
 }
 
 /**
@@ -3737,12 +3740,14 @@ function read_ruleset_default($file)
                 // Check that it isn't another ruleset
                 if (is_file($regs[3])) {
                     return read_ruleset_default($regs[3]);
-                } else {
-                    return $regs[3];
                 }
+
+                return $regs[3];
             }
         }
     }
+
+    return '';
 }
 
 /**
@@ -3791,9 +3796,9 @@ function return_virus_link($virus)
         $link = sprintf(VIRUS_INFO, $virus);
 
         return sprintf('<a href="%s">%s</a>', $link, $virus);
-    } else {
-        return $virus;
     }
+
+    return $virus;
 }
 
 /**
@@ -3838,9 +3843,9 @@ function is_rpc_client_allowed()
 
         // If all else fails
         return false;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 /**
@@ -4303,23 +4308,27 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
         ));
 
         return $privateIPSet->match($ip);
-    } elseif ($privateLocal === 'local') {
+    }
+
+    if ($privateLocal === 'local') {
         $localIPSet = new \IPSet\IPSet(array(
             '127.0.0.1',
             '::1',
         ));
 
         return $localIPSet->match($ip);
-    } elseif ($privateLocal === false && $net !== false) {
+    }
+
+    if ($privateLocal === false && $net !== false) {
         $network = new \IPSet\IPSet(array(
             $net
         ));
 
         return $network->match($ip);
-    } else {
-        //return false to fail gracefully
-        return false;
     }
+
+    //return false to fail gracefully
+    return false;
 }
 
 /**
