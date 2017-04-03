@@ -105,8 +105,10 @@ ini_set('session.use_trans_sid', 0);
 
 if (defined(STATUS_REFRESH) && STATUS_REFRESH + 60 > 300) {
     ini_set('session.gc_maxlifetime', STATUS_REFRESH + 60);
+    define('SESSION_TIMEOUT', STATUS_REFRESH + 59);
 } else {
     ini_set('session.gc_maxlifetime', 300);
+    define('SESSION_TIMEOUT', 299);
 }
 ini_set('session.gc_divisor', 1);
 ini_set('session.gc_probability', 1);
@@ -327,6 +329,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
+    echo '<script>setTimeout(function(){ window.location.href="login.php?error=timeout";}, ' . SESSION_TIMEOUT*1000 . ');</script>';
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
     echo '<tr class="noprint">' . "\n";
     echo '<td>' . "\n";
