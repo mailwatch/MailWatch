@@ -1609,7 +1609,7 @@ function parse_conf_dir($conf_dir)
     if ($dh = opendir($conf_dir)) {
         while (($file = readdir($dh)) !== false) {
             // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
-            if (strlen($file) > 0 &&  substr($file, 0, 1) !== '.' && is_file($conf_dir . $file) ) {
+            if (strlen($file) > 0 &&  substr($file, 0, 1) !== '.' && is_file($conf_dir . $file)) {
                 $file_name = $conf_dir . $file;
                 if (!is_array($array_output1)) {
                     $array_output1 = parse_conf_file($file_name);
