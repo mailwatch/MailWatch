@@ -43,7 +43,7 @@ return array(
     'errorund01' => 'Une erreur inconnue c\'est produite',
     'login01' => 'Connexion',
     'forgottenpwd01' => 'Mot de passe perdu ?',
-    'sessiontimeout01' => 'Your session timed out.',
+    'sessiontimeout01' => 'Votre session a expiré.',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
