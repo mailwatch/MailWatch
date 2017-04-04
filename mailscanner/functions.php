@@ -2183,6 +2183,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo ' </tr>' . "\n";
         // Rows
+        $id = '';
         $jsRadioCheck = '';
         $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
@@ -2215,7 +2216,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $fieldNumber = $f;
                 }
                 $field = $sth->fetch_field_direct($fieldNumber);
-                $id = '';
                 switch ($field->name) {
                     case 'id':
                         // Store the id for later use
@@ -2354,12 +2354,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = $status;
                         break;
                 }
-                // Now add the id to the operations form elements
-                if ($operations !== false) {
-                    $row[0] = str_replace('REPLACEME', $id, $row[0]);
-                    $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
-                    $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
-                }
+            }
+            // Now add the id to the operations form elements
+            if ($operations !== false) {
+                $row[0] = str_replace('REPLACEME', $id, $row[0]);
+                $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
+                $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
             }
             // Colorise the row
             switch (true) {
