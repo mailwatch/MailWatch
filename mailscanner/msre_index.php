@@ -54,6 +54,9 @@ require_once __DIR__ . '/functions.php';
 include __DIR__ . '/msre_table_functions.php';
 
 // Authentication checking
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
 session_start();
 require __DIR__ . '/login.function.php';
 // Check to see if the user is an administrator

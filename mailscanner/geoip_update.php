@@ -33,6 +33,9 @@
 require_once __DIR__ . '/functions.php';
 
 // Authentication verification and keep the session alive
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
 session_start();
 require __DIR__ . '/login.function.php';
 

@@ -32,7 +32,9 @@
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
 ini_set('memory_limit', MEMORY_LIMIT);
-
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
 session_start();
 require __DIR__ . '/login.function.php';
 

@@ -52,6 +52,9 @@ Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
 session_start();
 require __DIR__ . '/login.function.php';
 

@@ -121,6 +121,9 @@ if (SSL_ONLY === true) {
 
 //enforce session cookie security
 $params = session_get_cookie_params();
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
 session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
 

@@ -34,6 +34,9 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
 
 // verify login
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
 session_start();
 require __DIR__ . '/login.function.php';
 
