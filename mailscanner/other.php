@@ -33,10 +33,6 @@
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-if (defined('SESSION_NAME')) {
-    session_name(SESSION_NAME);
-}
-session_start();
 require __DIR__ . '/login.function.php';
 
 html_start(__('toolslinks10'), '0', false, false);

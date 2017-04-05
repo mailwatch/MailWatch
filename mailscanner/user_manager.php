@@ -35,10 +35,7 @@
 
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/password.php';
-if (defined('SESSION_NAME')) {
-    session_name(SESSION_NAME);
-}
-session_start();
+
 require __DIR__ . '/login.function.php';
 
 html_start(__('usermgnt12'), 0, false, false);

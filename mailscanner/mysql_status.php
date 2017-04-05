@@ -31,10 +31,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-session_start();
-if (defined('SESSION_NAME')) {
-    session_name(SESSION_NAME);
-}
 require __DIR__ . '/login.function.php';
 
 html_start(__('mysqlstatus31'), 0, false, false);

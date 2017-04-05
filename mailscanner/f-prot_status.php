@@ -32,11 +32,6 @@
 // Include of necessary functions
 require_once __DIR__ . '/functions.php';
 
-// Authentication checking
-if (defined('SESSION_NAME')) {
-    session_name(SESSION_NAME);
-}
-session_start();
 require __DIR__ . '/login.function.php';
 
 if ($_SESSION['user_type'] !== 'A') {

@@ -33,10 +33,7 @@
 */
 
 require_once __DIR__ . '/functions.php';
-if (defined('SESSION_NAME')) {
-    session_name(SESSION_NAME);
-}
-session_start();
+
 disableBrowserCache();
 session_regenerate_id(true);
 

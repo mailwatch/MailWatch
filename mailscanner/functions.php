@@ -126,7 +126,7 @@ if (defined('SESSION_NAME')) {
 }
 session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
-
+session_start();
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
 
