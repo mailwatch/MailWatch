@@ -42,18 +42,18 @@ $filter = html_start(__('toprecipdomvol41'), 0, false, true);
 // File name
 $filename = CACHE_DIR . '/top_recipient_domains_by_volume.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
-  SUBSTRING_INDEX(to_address, '@', -1) AS name,
-  COUNT(*) as count,
-  SUM(size) as size
+  SUBSTRING_INDEX(to_address, \'@\', -1) AS `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
+  from_address <> "" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  GROUP BY
   to_domain
  ORDER BY

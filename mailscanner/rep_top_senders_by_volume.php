@@ -44,9 +44,9 @@ $filename = CACHE_DIR . '/top_senders_by_volume.png.' . time();
 
 $sql = '
  SELECT
-  from_address as name,
-  COUNT(*) as count,
-  SUM(size) as size
+  from_address as `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE

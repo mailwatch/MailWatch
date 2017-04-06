@@ -44,9 +44,9 @@ $filename = CACHE_DIR . '/top_recipients_by_quantity.png.' . time();
 
 $sql = '
  SELECT
-  REPLACE(to_address,",",",\n") as name,
-  COUNT(*) as count,
-  SUM(size) as size
+  REPLACE(to_address,",",",\n") as `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE
