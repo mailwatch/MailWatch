@@ -382,7 +382,7 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === __('submit04')) {
+    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === 'submit') {
         if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
             die(__('error04'));
         }
@@ -564,7 +564,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
         echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
         echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/detail.php ops token') . '">' . "\n";
-        echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
+        echo '<button type="SUBMIT" name="submit" value="submit">' . __('submit04') . '</button>' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";
         echo '</form>' . "\n";
