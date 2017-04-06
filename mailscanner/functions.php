@@ -2296,8 +2296,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f],
-                                $virus) && DISPLAY_VIRUS_REPORT === true
+                        if (defined('VIRUS_REGEX') && defined('DISPLAY_VIRUS_REPORT')
+                            && DISPLAY_VIRUS_REPORT === true && preg_match(VIRUS_REGEX, $row[$f], $virus)
                         ) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
@@ -3791,6 +3791,7 @@ function return_quarantine_dates()
  */
 function return_virus_link($virus)
 {
+    $virus = htmlentities($virus);
     if (defined('VIRUS_INFO') && VIRUS_INFO !== false) {
         $link = sprintf(VIRUS_INFO, $virus);
 
