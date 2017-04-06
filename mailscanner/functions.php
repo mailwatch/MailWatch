@@ -539,10 +539,10 @@ function printMTAQueue()
             $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
             $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
         } else {
-            $cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+            $cmd = exec('sudo ' . SENDMAIL_QUEUE_IN . ' 2>&1');
             preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
             $inq = $output_array[2];
-            $cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
+            $cmd = exec('sudo ' . SENDMAIL_QUEUE_OUT . ' 2>&1');
             preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
             $outq = $output_array[2];
         }
@@ -4174,6 +4174,8 @@ function checkConfVariables()
         'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts')
+        'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
+        'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
     );
 
     $neededMissing = array();

@@ -235,6 +235,10 @@ define('RPC_ONLY', false);
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
 // Command to read Exim outbound Mail Queue
 // define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
+// Command to read Sendmail inbound Mail Queue
+// define('SENDMAIL_QUEUE_IN', '/usr/bin/mailq  -bp -OQueueDirectory=/var/spool/mqueue.in');
+// Command to read Sendmail outbound Mail Queue
+// define('SENDMAIL_QUEUE_OUT', '/usr/bin/mailq -bp');
 
 // Do you want an audit trail?
 define('AUDIT', false);
