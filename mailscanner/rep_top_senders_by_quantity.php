@@ -34,7 +34,6 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
@@ -45,9 +44,9 @@ $filename = CACHE_DIR . '/top_senders_by_quantity.png' . time();
 
 $sql = '
  SELECT
-  from_address as name,
-  COUNT(*) as count,
-  SUM(size) as size
+  from_address as `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE

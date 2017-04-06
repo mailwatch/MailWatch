@@ -35,11 +35,9 @@ if (USE_LDAP === true) {
     die(__('pwdresetldap63'));
 }
 
-session_start();
-
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] === 'on') {
-        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST']) . $_SERVER['REQUEST_URI']);
+        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
 }
@@ -129,12 +127,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $isSent = send_email($email, $html, $text, $subject, true);
                     if ($isSent !== true) {
                         die('Error Sending email: ' . $isSent);
-                    } else {
-                        $message = '<p>' . __('01emailsuccess63') . '</p>
-                        <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
-                        audit_log(sprintf(__('auditlogreserreqested63'), $email));
-                        $showpage = true;
                     }
+
+                    $message = '<p>' . __('01emailsuccess63') . '</p>
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                    audit_log(sprintf(__('auditlogreserreqested63'), $email));
+                    $showpage = true;
                 } else {
                     //password reset not allowed
                     audit_log(sprintf(__('auditlogresetdenied63'), $email));

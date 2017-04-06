@@ -1,4 +1,9 @@
-1.2.1-dev
+1.2.2
+-----------
+Fixes
+- Regression in SA Learning and Releasing not working in detail page
+
+1.2.1
 -----------
 Improvements
 - Show RBL list in Message Detail
@@ -8,15 +13,22 @@ Improvements
 - Clean orphaned filter in upgrade.php
 - Add optional skinning of web interface
 - Moved upgrade doc to online documentation
+- Improved performance
+- Enhanced session expiration
+- Prevents domain admins from editing their own filters
+- Allows domain admins to view,edit,add,delete users in their filter domains
+- Code refactoring to clean up duplication and code smell
 
 Fixes
 - Fix regression on some input validation (the Bad Dog Biting Bug™)
-- Rename 00MailWatchConf.pm to MailWatchConf.pm, failing on some perl versions
+- Rename 00MailWatchConf.pm to MailWatchConf.pm, which is failing on some perl versions
 - Fix Audit log access
 - Don't permit logged in Admin/Domain admin to delete his/her user
 - Fix MailWatchConf.pm loading on some platforms
 - Remove double ldap_escape on username
 - Fix upgrade.php failing on some MariaDB versions
+- Fix MIME part visualization
+- Fix session loop
 
 1.2.0
 -----------

@@ -34,7 +34,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-session_start();
 disableBrowserCache();
 session_regenerate_id(true);
 
@@ -91,6 +90,9 @@ setInterval(function() {
                                     break;
                                 case 'emptypassword':
                                     echo __('emptypassword01');
+                                    break;
+                                case 'timeout':
+                                    echo __('sessiontimeout01');
                                     break;
                                 default:
                                     echo __('errorund01');

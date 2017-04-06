@@ -33,7 +33,6 @@
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 html_start(__('toolslinks10'), '0', false, false);

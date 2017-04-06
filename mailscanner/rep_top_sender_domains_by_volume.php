@@ -34,7 +34,6 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
@@ -43,18 +42,18 @@ $filter = html_start(__('topsenderdomvol45'), 0, false, true);
 // File name
 $filename = CACHE_DIR . '/top_sender_by_volume.png.' . time();
 
-$sql = "
+$sql = '
  SELECT
-  SUBSTRING_INDEX(from_address, '@', -1) AS name,
-  COUNT(*) as count,
-  SUM(size) as size
+  SUBSTRING_INDEX(from_address, \'@\', -1) AS `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
+  from_address <> "" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  GROUP BY
   from_domain
  ORDER BY

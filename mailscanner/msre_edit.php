@@ -52,7 +52,6 @@ Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrator

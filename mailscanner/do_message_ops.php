@@ -32,7 +32,6 @@
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));
