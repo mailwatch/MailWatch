@@ -34,7 +34,6 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // If the user isn't an administrator to send them back to the main page

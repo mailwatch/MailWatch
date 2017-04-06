@@ -32,8 +32,7 @@
 //Require files
 require_once __DIR__ . '/functions.php';
 
-// Authentication verification and keep the session alive
-session_start();
+// Authentication verification
 require __DIR__ . '/login.function.php';
 
 html_start(__('geoipupdate15'), 0, false, false);

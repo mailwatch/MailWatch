@@ -33,7 +33,6 @@
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 if ($_SESSION['user_type'] !== 'A') {

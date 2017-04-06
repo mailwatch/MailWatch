@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/password.php';
 require_once __DIR__ . '/lib/hash_equals.php';
 disableBrowserCache();
-session_start();
+
 if (isset($_POST['token'])) {
     if (false === checkToken($_POST['token'])) {
         die(__('dietoken99'));

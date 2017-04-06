@@ -32,8 +32,6 @@
 // Require the functions page
 require_once __DIR__ . '/functions.php';
 
-// Start the session
-session_start();
 // Require the login function code
 require __DIR__ . '/login.function.php';
 
