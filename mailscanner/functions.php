@@ -540,10 +540,10 @@ function printMTAQueue()
             $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
         } else {
             $cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-            preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+            preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
             $inq = $output_array[2];
             $cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
-            preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+            preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
             $outq = $output_array[2];
         }
         echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
