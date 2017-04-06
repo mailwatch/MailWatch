@@ -514,12 +514,6 @@ function printMTAQueue()
                     $inq += $response['inq'];
                     $outq += $response['outq'];
                 } else {
-                    $cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-                    preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
-                    $inq = $output_array[2];
-                    $cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
-                    preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
-                    $outq = $output_array[2];
                     $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
                 }
             }
@@ -539,17 +533,12 @@ function printMTAQueue()
             $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
             $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
         } else {
-            // Not activated because this need to be tested.
-            //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-            //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
-            //$inq = $output_array[2];
-            //$cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
-            //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
-            //$outq = $output_array[2];
-            $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
-                0);
-            $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
-                0);
+            $cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
+            preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+            $inq = $output_array[2];
+            $cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
+            preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
+            $outq = $output_array[2];
         }
         echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
         echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
