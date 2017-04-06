@@ -80,7 +80,7 @@ if ($_SESSION['user_type'] !== 'A') {
         die(__('dievalidate99'));
     }
     $short_filename = basename($short_filename);
-    $pageheader = 'Edit MailScanner Ruleset ' . $short_filename;
+    $pageheader = __('msreedit55') . ' ' . $short_filename;
     $filter = html_start($pageheader, 0, false, false);
 
     // ############################
@@ -166,7 +166,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<INPUT TYPE="HIDDEN" NAME="file" VALUE="' . $short_filename . '">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/msre_edit.php form token') . '">' . "\n";
-    echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
+    echo '<input type="SUBMIT" name="submit" value="' . __('submit55') . '">' . "\n";
 
     echo "<input type=\"hidden\" name=\"submitted\" value=\"1\">\n";
     // check for status message, and append it to the end of the header
@@ -317,14 +317,14 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         $desc_value = htmlentities($desc, ENT_QUOTES);
         if (preg_match('/#DISABLED#/', $rule_part['0direction'])) {
             $rule_disabled = 1;
-            $rule_action_select_options = "<option value=\"Enable\">Enable</option>\n";
+            $rule_action_select_options = '<option value=\"Enable\">' . __('enable55') . '</option>' . "\n";
             $disable_desc_text = ' disabled ';
             $desc_field = 'rule' . $rule_count . '_description_disabled';
             $hidden_field_code = '<input type="hidden" name="' .
                 preg_replace('/_disabled$/', '', $desc_field) . "\" value=\"$desc_value\">";
         } else {
             $rule_disabled = 0;
-            $rule_action_select_options = "<option value=\"Disable\">Disable</option>\n";
+            $rule_action_select_options = '<option value=\"Disable\">' . __('disable55') .'</option>' . "\n";
             $disable_desc_text = '';
             $desc_field = 'rule' . $rule_count . '_description';
             $hidden_field_code = '';
@@ -346,7 +346,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             $rule_action_select_options . "</select>\n";
         $desc_text = array(
             $rule_action_select_html => 'rowspan="3"',
-            '<b>Description:</b>&nbsp;&nbsp;<input type="text" ' .
+            '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
             "name=\"$desc_field\" size=\"95\" value=\"" . $desc_value . '"' .
             $disable_desc_text . '>' . $hidden_field_code
             => 'colspan="' . (MSRE_COLUMNS - 1) . '"'
@@ -431,7 +431,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                         $field_name .= '_disabled';
                     }
                     if (strtolower($key) === '99action') {
-                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . "\"><b>Action:</b>&nbsp;&nbsp;<input type=\"text\" name=\"$field_name\" value=\"$value\" size=\"100\"";
+                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . "\"><b>' . __('action55') . '</b>&nbsp;&nbsp;<input type=\"text\" name=\"$field_name\" value=\"$value\" size=\"100\"";
                     } else {
                         $temp_text = "<input type=\"text\" name=\"$field_name\" value=\"$value\"";
                     }
@@ -514,7 +514,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'and_target" value="">';
     // action
-    $add_rule_text[] = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>Action:</b>&nbsp;&nbsp;<input type="text" name="' .
+    $add_rule_text[] = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
         $add_prefix . 'action" value="" size="100">';
 
     // now write it
@@ -523,16 +523,15 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     TR($add_rule_text);
 
     // need to put a submit button on the bottom
-    TRH_Single('<input type="submit" name="submit" value="Save Changes">', 'colspan="' . MSRE_COLUMNS . '"');
+    TRH_Single('<input type="submit" name="submit" value="' . __('savevalue55') . '">', 'colspan="' . MSRE_COLUMNS . '"');
 
     // finally, display page footer
     TR_Single(
-        "<a href=\"msre_index.php\">Back to MSRE ruleset index</a><br>\n<a href=\"/mailscanner/other.php\">Back to MailWatch</a><br>\n",
+        "<a href=\"msre_index.php\">' . __('backmsre55') . '</a><br>\n<a href=\"/mailscanner/other.php\">' . __('backmw55') . '</a><br>\n",
         'colspan="' . MSRE_COLUMNS . '" class="footer"'
     );
     // that's it
 }
-
 
 function Process_Form($file_contents, $short_filename)
 {
@@ -751,15 +750,13 @@ function Process_Form($file_contents, $short_filename)
     // startup/reload script, and that could be a bad idea...
     //So instead, I schedule a reload with the msre_reload.cron cron job
     $status_msg .= "<span class=\"status\">\n";
-    $status_msg .= 'Scheduling reload of MailScanner...';
+    $status_msg .= __('schedureloadmw55');
     $fh = fopen('/tmp/msre_reload', 'wb');
     // we don't need to write to the file, just it existing is enough
     if (!$fh) {
-        $status_msg .= "<span class=\"error\">**ERROR** Couldn't schedule a reload of " .
-            'MailScanner!  (You will have to manually do a ' .
-            "|/etc/init.d/MailScanner reload| )</span><br>\n";
+        $status_msg .= '<span class=\"error\">' . __('error0155') . '</span><br>' . "\n";
     } else {
-        $status_msg .= "Ok.<br>\n" .
+        $status_msg .= __('error55') . '<br>' . "\n" .
             'Your changes will take effect in the next ' .
             MSRE_RELOAD_INTERVAL . " minutes, when MailScanner reloads.<br>\n";
     }
@@ -767,7 +764,6 @@ function Process_Form($file_contents, $short_filename)
 
     return array($bytes, $status_msg);
 }
-
 
 function Read_File($filename, $size)
 {
@@ -780,7 +776,6 @@ function Read_File($filename, $size)
 
     return $returnvalue;
 }
-
 
 /**
  * @param string $filename
@@ -801,19 +796,19 @@ function Write_File($filename, $content)
     // we will print some status messages as we're doing it..
     $status_msg .= "<span class=\"status\">\n";
     // make a backup copy of the file first, in case anything goes wrong..
-    $status_msg .= 'Backing up current file...';
+    $status_msg .= __('backupfile55');
     $backup_name = $filename . '.bak';
     if (!copy($filename, $backup_name)) {
         $status_msg .= "<span class=\"error\">**ERROR** Could not make backup!</span><br>\n";
     } else {
-        $status_msg .= "Ok.<br>\n";
+        $status_msg .= "Ok<br>\n";
         // now open the file for writing
         $status_msg .= "Opening $filename for writing...";
         $fh = fopen($filename, 'wb');
         if (!$fh) {
             $status_msg .= "<span class=\"error\">**ERROR** Couldn't open $filename for write!</span><br>\n";
         } else {
-            $status_msg .= "Ok.<br>\n";
+            $status_msg .= "Ok<br>\n";
             // write contents
             $status_msg .= 'Writing new file...';
             foreach ($content as $line) {
@@ -831,7 +826,6 @@ function Write_File($filename, $content)
 
     return array($bytes, $status_msg);
 }
-
 
 function Fix_Quotes($stuff)
 {
