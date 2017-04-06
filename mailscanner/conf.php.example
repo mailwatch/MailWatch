@@ -39,10 +39,9 @@ define('DEBUG', false);
 // Define language (de, en, fr, it, nl, pt_br);
 define('LANG', 'en');
 
-//Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
+// Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
 //define('SESSION_NAME', 'MailWatch');
-
 
 // Database settings
 //
