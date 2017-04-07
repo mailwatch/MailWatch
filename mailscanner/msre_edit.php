@@ -533,7 +533,7 @@ function Process_Form($file_contents, $short_filename)
     // stopping when we have reached a non-comment line
     $previous_line = '';
     $first_line = true;
-    foreach (preg_split('/\n/', $file_contents) as $line) {
+    foreach (preg_split("/\n/", $file_contents) as $line) {
         if ($line === '' || (substr($line, 0, 1) === '#'
                 || !preg_match('/#DISABLED#/', $line))
         ) {
