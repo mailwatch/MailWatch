@@ -129,7 +129,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<table border="0" class="mailwatch" align="center">' . "\n";
     echo '<form method="post" name="msre_edit" action="msre_edit.php">' . "\n";
     echo '<input type="hidden" name="file" value="' . $short_filename . '">' . "\n";
-    echo '<input type="hidden" name="token" value="' . $_session['token'] . '">' . "\n";
+    echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
     echo '<input type="hidden" name="formtoken" value="' . generateformtoken('/msre_edit.php form token') . '">' . "\n";
     echo '<input type="submit" name="submit" value="' . __('submit55') . '">' . "\n";
     echo '<input type="hidden" name="submitted" value="1">' . "\n";
