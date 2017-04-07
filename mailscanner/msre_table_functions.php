@@ -56,7 +56,7 @@ function TR()
     }
     echo '>' . "\n";
     foreach ($row_data as $td_data) {
-        echo "\t" . '<td>' . $td_data' . '</td>' . "\n";
+        echo "\t" . '<td>' . $td_data . '</td>' . "\n";
     }
     echo '</tr>' . "\n";
 }

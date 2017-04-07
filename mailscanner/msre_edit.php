@@ -410,7 +410,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     }
                     $temp_text .= '>';
                     if ($rule_disabled) {
-                        $temp_text .= "\n" . <input type="hidden" name="' . $part_name . '" value="' . $value . '">' . "\n";
+                        $temp_text .= "\n" . '<input type="hidden" name="' . $part_name . '" value="' . $value . '">' . "\n";
                     }
                     $rule_text [] = $temp_text;
                     break;
