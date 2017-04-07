@@ -46,7 +46,7 @@ if ($_SESSION['user_type'] !== 'A') {
 
     // Start a table
     echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
-    TRH(array('__('editrule29')'));
+    TRH(array(__('editrule29')));
 
     $ruleset_file = array();
     // Open directory and read its contents
