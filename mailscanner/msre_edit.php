@@ -137,7 +137,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // Check for status message, and append it to the end of the header
     $my_header = '';
     if ($status_msg) {
-        $my_header .= '<br>\n' . $status_msg;
+        $my_header .= '<br>' . "\n" . $status_msg;
     }
     
     // Show page header

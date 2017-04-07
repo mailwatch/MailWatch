@@ -614,14 +614,14 @@ return array(
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
     'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
-    'editrule29' => 'Choose a ruleset to edit:',
-    'norulefound29' => 'No rules found',
+    'editrule29' => 'Wähle einen Regelsatz zum Bearbeiten:',
+    'norulefound29' => 'Keine Regeln gefunden',
 
     // 30-msrule.php
     'rules30' => 'Regeln',
-    'dirblocked30' => 'Directory traversal attempt blocked.',
-    'unableopenfile30' => 'Unable to open file.',
-    'file30' => 'File:',
+    'dirblocked30' => 'Durchsuchen der Verzeichnisse wurde blockiert.',
+    'unableopenfile30' => 'Datei konnte nicht geöffnet werden.',
+    'file30' => 'Datei:',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
@@ -793,7 +793,7 @@ return array(
     'diefnf55' => 'Datei nicht gefunden:',
     'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
     'msreedit55' => 'Regelsatz für MailScanner bearbeiten',
-    'submit55' => 'Submit',
+    'submit55' => 'Senden',
     'enable55' => 'Aktivieren',
     'disable55' => 'Deaktivieren',
     'description55' => 'Beschreibung:',
@@ -815,7 +815,7 @@ return array(
     'writebytes55' => '%s Bytes geschrieben.',
     'fileclosed55' => 'Datei geschlossen.',
     'donewrite55' => 'Schreiben der Datei abgeschlossen.',
-    'conditions55' => 'Condition:',
+    'conditions55' => 'Bedingungen:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',
