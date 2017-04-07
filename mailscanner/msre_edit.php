@@ -311,9 +311,9 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         
         // Now continue on.
         $rule_action_select_html .= '>\n' .
-            '  <option value="" selected>----</option>\n' .
-            '  <option value=\Delete">Delete</option>\n' .
-            $rule_action_select_options . '</select>\n'";
+            '  <option value="" selected>----</option>' . "\n" .
+            '  <option value=\Delete">Delete</option>' . "\n" .
+            $rule_action_select_options . '</select>' . "\n";
         $desc_text = array(
             $rule_action_select_html => 'rowspan="3"',
             '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
