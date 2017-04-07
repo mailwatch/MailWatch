@@ -334,7 +334,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                         $field_name .= '_disabled';
                     }
                     $checkbox_html = '<input type="checkbox" name="' . $field_name . '" value="';
-                    $checkbox_html .= 'and';
+                    $checkbox_html .= __('and55');
                     $checkbox_html .= '"';
                     if ($value) {
                         $checkbox_html .= ' checked';
@@ -342,11 +342,11 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     if ($rule_disabled) {
                         $checkbox_html .= ' disabled ';
                     }
-                    $checkbox_html .= '>and';
+                    $checkbox_html .= '> ' . __('and55');
                     if ($rule_disabled) {
                         $checkbox_html .= "\n" . '<input type="hidden" name="' . $part_name . '" value="';
                         if ($value) {
-                            $checkbox_html .= 'and';
+                            $checkbox_html .= __('and55');
                         }
                         $checkbox_html .= '">' . "\n";
                     }
