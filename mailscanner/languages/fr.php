@@ -613,10 +613,13 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
-    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
+    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner',
+    'editrule29' => 'Choisissez une règle à édier :',
 
     // 30-msrule.php
     'rules30' => 'Règles',
+    'dirblocked30' => 'La tentative de traversée du répertoire été bloquée.',
+    'unableopenfile30' => 'Impossible d\'ouvrir le fichier.',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'Statut MySQL',
@@ -786,7 +789,7 @@ return array(
 
     // 55-msre_edit.php
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
-    'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner',
+    'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner.',
     'msreedit55' => 'Edition des règles de MailScanner',
     'submit55' => 'Soumettre',
     'enable55' => 'Activer',

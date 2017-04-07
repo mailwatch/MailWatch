@@ -613,10 +613,13 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Ruleset Editor',
-    'auditlog29' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
+    'auditlog29' => 'Non-admin user attempted to view MailScanner Rule Editor Page.',
+    'editrule29' => 'Choose a ruleset to edit:',
 
     // 30-msrule.php
     'rules30' => 'Rules',
+    'dirblocked30' => 'Directory traversal attempt blocked.',
+    'unableopenfile30' => 'Unable to open file.',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
@@ -786,7 +789,7 @@ return array(
 
     // 55-msre_edit.php
     'diefnf55' => 'File not found:',
-    'auditlog55' => 'Non admin user attempted to view MailScanner Rule Editor Page.',
+    'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page.',
     'msreedit55' => 'Edit MailScanner Ruleset',
     'submit55' => 'Submit',
     'enable55' => 'Enable',

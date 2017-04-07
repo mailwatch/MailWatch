@@ -29,33 +29,12 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
-msre = MailScanner Ruleset Editor
-(c) 2004 Kevin Hanser
-Released under the GNU GPL: http://www.gnu.org/copyleft/gpl.html#TOC1
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
 // table_functions.php
-//
 // table functions for MSRE
 
 function TR()
 {
-    // writes a table row using row_data to fill the td's.
+    // Writes a table row using row_data to fill the td's.
     // nothing else is needed, since colors and fonts will be
     // determined by the style sheet.
     //
@@ -84,11 +63,10 @@ function TR()
 
 function TR_Single($td_data, $td_param)
 {
-    // writes a table row with a single <td>.
+    // Writes a table row with a single <td>.
     // accepts td_param as parameters to the td...
     // nothing else is needed, since colors and fonts will be
     // determined by the style sheet.
-
     echo "<tr>\n";
     echo "\t<td";
     if ($td_param) {
@@ -100,8 +78,7 @@ function TR_Single($td_data, $td_param)
 
 function TRH($row_data)
 {
-    // similar to TR, but writes <th>'s instead of <td>'s
-
+    // Similar to TR, but writes <th>'s instead of <td>'s
     echo "<tr>\n";
     foreach ($row_data as $th_data) {
         echo "\t<th>$th_data</th>\n";
@@ -111,12 +88,10 @@ function TRH($row_data)
 
 function TRH_Single($th_data, $th_param)
 {
-    // writes a table header row with a single <th>.
+    // Writes a table header row with a single <th>.
     // accepts td_param as parameters to the td...
     // nothing else is needed, since colors and fonts will be
     // determined by the style sheet.
-    //
-
     echo "<tr>\n";
     echo "\t<th";
     if ($th_param) {
@@ -128,26 +103,25 @@ function TRH_Single($th_data, $th_param)
 
 function TR_Extended($row_data, $tr_param)
 {
-    // writes a table row using row_data to fill the td's
+    // Writes a table row using row_data to fill the td's
     // each element of row_data will become a separate td.
     // row_data is a keyed array (hash) , consisting
     // of a key that contains the data to go into the <td>,
     // and the value containing any parameters to the <td>
     //
-    // example:
+    // Example:
     //	$tablerow = array (
     //		"some text" => "bgcolor=\"#aaaaaa\" align=\"center\"",
     //		"more text" => ""
     //	);
     //	TR ($tablerow, "bgcolor=\"#ffffff\"");
     //
-    // the result would be a table with one cell with a grey background
+    // The result would be a table with one cell with a grey background
     // that says "some text", and one with a white bg that says
     // "more text"  (because the 2nd td didn't specify a bgcolor, and
     // the tr did)
-    //
 
-    // start out by making the initial <tr>
+    // Start out by making the initial <tr>
     $my_tr = '<tr';
     if ($tr_param) {
         //echo "tr param: $tr_param<br>\n";
@@ -156,7 +130,7 @@ function TR_Extended($row_data, $tr_param)
     $my_tr .= ">\n";
     echo $my_tr;
 
-    // now the <td>'s
+    // Now the <td>'s
     $td_param = array();
     foreach ($row_data as $td_text => $td_param) {
         $my_td = "\t<td";
@@ -168,9 +142,6 @@ function TR_Extended($row_data, $tr_param)
         echo $my_td;
     }
 
-    // and close the <tr>
     echo "</tr>\n";
-
-    // return
     return 0;
 }
