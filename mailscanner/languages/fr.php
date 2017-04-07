@@ -614,7 +614,7 @@ return array(
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
     'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner',
-    'editrule29' => 'Choisissez une règle à édier :',
+    'editrule29' => 'Choisissez une règle à éditer :',
     'norulefound29' => 'Aucune règle trouvée',
 
     // 30-msrule.php
@@ -816,6 +816,7 @@ return array(
     'fileclosed55' => 'Fichier fermé.',
     'donewrite55' => 'Opération Write_File terminée.',
     'conditions55' => 'Condition :',
+    'and55' => 'et',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',

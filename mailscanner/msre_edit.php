@@ -473,7 +473,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'target" value="">';
     $add_rule_text[] = '<input type="checkbox" name="' . $add_prefix .
-        'and" value="and">and';
+        'and" value="and"> ' . __('and55');
     $temp_html = '<select name="' . $add_prefix .
         'and_direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
