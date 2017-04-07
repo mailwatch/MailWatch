@@ -146,7 +146,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     }
 
     // Write out the table header(s)
-    TRH_Single(__(sprintf(__('contentsof55'), $short_filename), 'colspan="' . MSRE_COLUMNS . '"');
+    TRH_Single(__(sprintf(__('contentsof55'), $short_filename), 'colspan="' . MSRE_COLUMNS . '"'));
     
     // Display the file contents
     TR_Single("<pre>$file_contents</pre>", 'colspan="' . MSRE_COLUMNS . '"');
