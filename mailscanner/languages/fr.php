@@ -384,7 +384,7 @@ return array(
     'avfprotstatus10' => 'Statut F-Prot',
     'mysqldatabasestatus10' => 'Statut de la base de données MySQL',
     'viewconfms10' => 'Afficher la configuration de MailScanner',
-    'editmsrules10' => 'Editer les filtres MailScanner',
+    'editmsrules10' => 'Editer les règles de filtrage MailScanner',
     'spamassassinbayesdatabaseinfo10' => 'Information sur la base de données Bayes SpamAssassin',
     'updatesadesc10' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'updatemcpdesc10' => 'Mettre à jour les descriptions des règles MCP',
