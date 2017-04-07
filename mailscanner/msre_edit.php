@@ -389,7 +389,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     $select_html .= '</select>';
 
                     if ($rule_disabled) {
-                        $select_html .= '\n<input type="hidden" name="$part_name" value="$value">\n';
+                        $select_html .= "\n" . '<input type="hidden" name="' . $part_name . '" value="' . $value . '> . "\n";
                     }
                     $rule_text[] = $select_html;
                     break;
