@@ -52,13 +52,13 @@ function TR()
 
     echo '<tr';
     if ($tr_param) {
-        echo " $tr_param";
+        echo ' ' . $tr_param;
     }
-    echo ">\n";
+    echo '>' . "\n";
     foreach ($row_data as $td_data) {
-        echo "\t<td>$td_data</td>\n";
+        echo "\t" . '<td>' . $td_data' . '</td>' . "\n";
     }
-    echo "</tr>\n";
+    echo '</tr>' . "\n";
 }
 
 function TR_Single($td_data, $td_param)
@@ -67,23 +67,23 @@ function TR_Single($td_data, $td_param)
     // accepts td_param as parameters to the td...
     // nothing else is needed, since colors and fonts will be
     // determined by the style sheet.
-    echo "<tr>\n";
-    echo "\t<td";
+    echo '<tr>' . "\n";
+    echo "\t" . '<td';
     if ($td_param) {
-        echo " $td_param";
+        echo ' ' . $td_param;
     }
-    echo ">$td_data</td>\n";
-    echo "</tr>\n";
+    echo '>' . $td_data . '</td>' . "\n";
+    echo '</tr>' . "\n";
 }
 
 function TRH($row_data)
 {
     // Similar to TR, but writes <th>'s instead of <td>'s
-    echo "<tr>\n";
+    echo '<tr>' . "\n";
     foreach ($row_data as $th_data) {
-        echo "\t<th>$th_data</th>\n";
+        echo "\t" . '<th>' . $th_data . '</th>' . "\n";
     }
-    echo "</tr>\n";
+    echo '</tr>' . "\n";
 }
 
 function TRH_Single($th_data, $th_param)
@@ -92,13 +92,13 @@ function TRH_Single($th_data, $th_param)
     // accepts td_param as parameters to the td...
     // nothing else is needed, since colors and fonts will be
     // determined by the style sheet.
-    echo "<tr>\n";
-    echo "\t<th";
+    echo '<tr>' . "\n";
+    echo "\t" . '<th';
     if ($th_param) {
-        echo " $th_param";
+        echo ' ' . $th_param;
     }
-    echo ">$th_data</th>\n";
-    echo "</tr>\n";
+    echo '>' . $th_data . '</th>' . "\n";
+    echo '</tr>' . "\n";
 }
 
 function TR_Extended($row_data, $tr_param)
@@ -125,23 +125,23 @@ function TR_Extended($row_data, $tr_param)
     $my_tr = '<tr';
     if ($tr_param) {
         //echo "tr param: $tr_param<br>\n";
-        $my_tr .= " $tr_param";
+        $my_tr .= ' ' . $tr_param;
     }
-    $my_tr .= ">\n";
+    $my_tr .= '>' . "\n";
     echo $my_tr;
 
     // Now the <td>'s
     $td_param = array();
     foreach ($row_data as $td_text => $td_param) {
-        $my_td = "\t<td";
+        $my_td = "\t" . '<td';
         if ($td_param) {
             //echo "td_param: $td_param<br>\n";
-            $my_td .= " $td_param";
+            $my_td .= ' ' . $td_param;
         }
-        $my_td .= ">$td_text</td>\n";
+        $my_td .= '>' . $td_text . '</td>' . "\n";
         echo $my_td;
     }
 
-    echo "</tr>\n";
+    echo '</tr>' . "\n";
     return 0;
 }

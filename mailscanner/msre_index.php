@@ -45,7 +45,7 @@ if ($_SESSION['user_type'] !== 'A') {
     html_start(__('rulesetedit29'), 0, false, false);
 
     // Start a table
-    echo "<table border=\"0\" class=\"mailwatch\" align=\"center\">\n";
+    echo '<table border="0" class="mailwatch" align="center">' . "\n";
     TRH(array(__('editrule29')));
 
     $ruleset_file = array();
@@ -61,7 +61,7 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 
     if (empty($ruleset_file)) {
-        TR(array('No rules found'));
+        TR(array(__('norulefound29')));
     } else {
         // Display it in a sorted table with links
         asort($ruleset_file);
@@ -71,6 +71,6 @@ if ($_SESSION['user_type'] !== 'A') {
         // Put a blank header line on the bottom. It just looks nicer that way to me.
         TRH(array(''));
     }
-    echo "</table><tr><td>\n";
+    echo '</table><tr><td>' . "\n";
     html_end();
 }

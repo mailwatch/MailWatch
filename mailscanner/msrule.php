@@ -51,7 +51,7 @@ if ($_SESSION['user_type'] !== 'A') {
         echo __('dirblocked30') . "\n";
     } else {
         echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-        echo '<tr><td class="heading">File: ' . $FilePath . '</td></tr>' . "\n";
+        echo '<tr><td class="heading">' . __('file30') . ' ' . $FilePath . '</td></tr>' . "\n";
         echo '<tr><td><pre>' . "\n";
         if ($fh = @fopen($FilePath, 'rb')) {
             while (!feof($fh)) {

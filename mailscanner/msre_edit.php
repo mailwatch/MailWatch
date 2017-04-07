@@ -292,7 +292,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                 preg_replace('/_disabled$/', '', $desc_field) . "\" value=\"$desc_value\">";
         } else {
             $rule_disabled = 0;
-            $rule_action_select_options = '<option value=\"Disable\">' . __('disable55') .'</option>' . "\n";
+            $rule_action_select_options = '<option value="Disable">' . __('disable55') .'</option>' . "\n";
             $disable_desc_text = '';
             $desc_field = 'rule' . $rule_count . '_description';
             $hidden_field_code = '';
@@ -312,12 +312,12 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // Now continue on.
         $rule_action_select_html .= '>\n' .
             '  <option value="" selected>----</option>' . "\n" .
-            '  <option value=\Delete">Delete</option>' . "\n" .
+            '  <option value="Delete">' . __('delete55') . '</option>' . "\n" .
             $rule_action_select_options . '</select>' . "\n";
         $desc_text = array(
             $rule_action_select_html => 'rowspan="3"',
             '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
-            'name="$desc_field" size="95" value="' . $desc_value . '"' .
+            'name="' . $desc_field . '" size="95" value="' . $desc_value . '"' .
             $disable_desc_text . '>' . $hidden_field_code
             => 'colspan="' . (MSRE_COLUMNS - 1) . '"'
         );
@@ -333,7 +333,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     if ($rule_disabled) {
                         $field_name .= '_disabled';
                     }
-                    $checkbox_html = '<input type="checkbox" name="$field_name" value="';
+                    $checkbox_html = '<input type="checkbox" name="' . $field_name . '" value="';
                     $checkbox_html .= 'and';
                     $checkbox_html .= '"';
                     if ($value) {
@@ -344,11 +344,11 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     }
                     $checkbox_html .= '>and';
                     if ($rule_disabled) {
-                        $checkbox_html .= '\n<input type="hidden" name="$part_name" value="';
+                        $checkbox_html .= "\n" . '<input type="hidden" name="' . $part_name . '" value="';
                         if ($value) {
                             $checkbox_html .= 'and';
                         }
-                        $checkbox_html .= '">\n';
+                        $checkbox_html .= '">' . "\n";
                     }
                     $rule_text[] = $checkbox_html;
                     break;
@@ -359,14 +359,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     if ($rule_disabled) {
                         $field_name .= '_disabled';
                     }
-                    $select_html = '<select name="$field_name"';
+                    $select_html = '<select name="' . $field_name . '"';
                     if ($rule_disabled) {
                         $select_html .= ' disabled ';
                     }
-                    $select_html .= '>\n' .
-                        '<option value=""></option>';
+                    $select_html .= '>' . "\n" . '<option value=""></option>';
                     foreach ($CONF_ruleset_keyword as $current_kw) {
-                        $select_html .= '<option value="$current_kw"';
+                        $select_html .= '<option value="' . $current_kw . '"';
                         $match = strtolower(preg_replace('/#DISABLED#/', '', $value));
                         $kw = '';
                         // Use MailScanner's direction-matching rules
@@ -384,7 +383,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                         if (strtolower($current_kw) === $kw) {
                             $select_html .= ' selected';
                         }
-                        $select_html .= '>$current_kw</option>';
+                        $select_html .= '>' . $current_kw . '</option>';
                     }
                     // Need to close my select tag..
                     $select_html .= '</select>';
@@ -401,16 +400,17 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                         $field_name .= '_disabled';
                     }
                     if (strtolower($key) === '99action') {
-                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55') . '</b>&nbsp;&nbsp;<input type="text" name="$field_name" value="$value" size="100"';
+                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55') 
+                        . '</b>&nbsp;&nbsp;<input type="text" name="' . $field_name . '" value="' . $value . '" size="100"';
                     } else {
-                        $temp_text = '<input type="text" name="$field_name" value="$value"';
+                        $temp_text = '<input type="text" name="' . $field_name . '" value="' . $value . '"';
                     }
                     if ($rule_disabled || (strtolower($key) === '1target' && strtolower($value) === 'default')) {
                         $temp_text .= ' disabled ';
                     }
                     $temp_text .= '>';
                     if ($rule_disabled) {
-                        $temp_text .= '\n<input type="hidden" name="$part_name" value="$value">' . "\n";
+                        $temp_text .= "\n" . <input type="hidden" name="' . $part_name . '" value="' . $value . '">' . "\n";
                     }
                     $rule_text [] = $temp_text;
                     break;
@@ -431,7 +431,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // around each ruleset, so it's easier to pick them out from
         // each other in the list.
         echo '<tr>' . "\n" .
-            '<td class="$boxclass" colspan="' . MSRE_COLUMNS . '>' . "\n" . '<table border="0">' . "\n";
+            '<td class="' . $boxclass . '" colspan="' . MSRE_COLUMNS . '>' . "\n" . '<table border="0">' . "\n";
         TR_Extended($desc_text, $tr_param);
         TR($rule_text, $tr_param);
         echo '</table>' . "\n" .
@@ -446,7 +446,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
 
     // Write the rule count as a hidden field, so that I have it
     // for submit procesing.
-    echo "<input type=\"hidden\" name=\"rule_count\" value=\"$rule_count\">\n";
+    echo '<input type="hidden" name="rule_count" value="' . $rule_count . '">' . "\n";
 
     // Now put a blank one on the bottom, so the user can add a new one.
     $add_rule_text = array();
@@ -455,18 +455,18 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // Description
     $desc_text = array(
         '' => 'rowspan="3"',
-        '<b>Description:</b>&nbsp;&nbsp;<input type="text" name="' .
+        '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
         $add_prefix . 'description" value="" size="95">' =>
             'colspan="' . (MSRE_COLUMNS - 1) . '"'
     );
     
     // Direction
-    $temp_html = '<b>Condition:</b>&nbsp;&nbsp;<select name="' . $add_prefix .
+    $temp_html = '<b>' . __('conditions55') . '</b>&nbsp;&nbsp;<select name="' . $add_prefix .
         'direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
-        $temp_html .= "<option value=\"$kw\">$kw</option>";
+        $temp_html .= '<option value="' . $kw . '">' . $kw' . </option>";
     }
-    $temp_html .= "</select>\n";
+    $temp_html .= '</select>' . "\n";
     $add_rule_text[] = $temp_html;
     
     // Target
@@ -477,7 +477,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     $temp_html = '<select name="' . $add_prefix .
         'and_direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
-        $temp_html .= '<option value="$kw">$kw</option>';
+        $temp_html .= '<option value="' . $kw . '">' . $kw . '</option>';
     }
     $temp_html .= '</select>' . "\n";
     $add_rule_text[] = $temp_html;
@@ -759,7 +759,7 @@ function Write_File($filename, $content)
     $status_msg = '';
 
     // We will print some status messages as we're doing it.
-    $status_msg .= "<span class=\"status\">\n";
+    $status_msg .= '<span class="status">' . "\n";
     
     // Make a backup copy of the file first, in case anything goes wrong.
     $status_msg .= __('backupfile55');

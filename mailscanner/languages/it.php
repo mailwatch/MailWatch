@@ -615,11 +615,13 @@ return array(
     'rulesetedit29' => 'Ruleset Editor',
     'auditlog29' => 'Non-admin user attempted to view MailScanner Rule Editor Page.',
     'editrule29' => 'Choose a ruleset to edit:',
+    'norulefound29' => 'No rules found',
 
     // 30-msrule.php
     'rules30' => 'Rules',
     'dirblocked30' => 'Directory traversal attempt blocked.',
     'unableopenfile30' => 'Unable to open file.',
+    'file30' => 'File:',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
@@ -813,6 +815,7 @@ return array(
     'writebytes55' => 'wrote %s bytes.',
     'fileclosed55' => 'File closed.',
     'donewrite55' => 'Done with Write_File.',
+    'conditions55' => 'Condition:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Cannot open pipe',
