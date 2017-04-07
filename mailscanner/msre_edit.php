@@ -69,7 +69,7 @@ if ($_SESSION['user_type'] !== 'A') {
 
     // Config Vars (eventually these will be in a config file)
 
-    // Ruleset keywords are the key words that you can use in a ruleset.  
+    // Ruleset keywords are the key words that you can use in a ruleset.
     // This value is used to populate the dropdown boxen.
     $CONF_ruleset_keyword = array(
         'From:',
