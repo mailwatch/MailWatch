@@ -464,7 +464,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     $temp_html = '<b>' . __('conditions55') . '</b>&nbsp;&nbsp;<select name="' . $add_prefix .
         'direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
-        $temp_html .= '<option value="' . $kw . '">' . $kw' . </option>";
+        $temp_html .= '<option value="' . $kw . '">' . $kw . '</option>';
     }
     $temp_html .= '</select>' . "\n";
     $add_rule_text[] = $temp_html;
