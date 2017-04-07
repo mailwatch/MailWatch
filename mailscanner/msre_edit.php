@@ -400,7 +400,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                         $field_name .= '_disabled';
                     }
                     if (strtolower($key) === '99action') {
-                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55') 
+                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55')
                         . '</b>&nbsp;&nbsp;<input type="text" name="' . $field_name . '" value="' . $value . '" size="100"';
                     } else {
                         $temp_text = '<input type="text" name="' . $field_name . '" value="' . $value . '"';
