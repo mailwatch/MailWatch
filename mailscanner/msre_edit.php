@@ -297,7 +297,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             $desc_field = 'rule' . $rule_count . '_description';
             $hidden_field_code = '';
         }
-        $rule_action_select_html = '<select name="$rule_action_select"';
+        $rule_action_select_html = '<select name="' . $rule_action_select . '"';
         
         // If this is the default rule, the select box is disabled,
         // because you can't delete, disable, or enable the default
@@ -310,7 +310,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         }
         
         // Now continue on.
-        $rule_action_select_html .= '>\n' .
+        $rule_action_select_html .= '>' . "\n" .
             '  <option value="" selected>----</option>' . "\n" .
             '  <option value="Delete">' . __('delete55') . '</option>' . "\n" .
             $rule_action_select_options . '</select>' . "\n";
