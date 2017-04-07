@@ -816,7 +816,7 @@ return array(
     'fileclosed55' => 'Datei geschlossen.',
     'donewrite55' => 'Schreiben der Datei abgeschlossen.',
     'conditions55' => 'Bedingungen:',
-    'and55' => 'and',
+    'and55' => 'und',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',
