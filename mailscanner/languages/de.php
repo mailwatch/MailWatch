@@ -800,7 +800,7 @@ return array(
     'action55' => 'Aktion:',
     'savevalue55' => 'Änderungen speichern',
     'backmsre55' => 'Zurück zum Verzeichnis der MSRE Regelsätze',
-    'backmw55' => 'Zurück zu MailWatch:',
+    'backmw55' => 'Zurück zu Tools and Links',
     'schedureloadmw55' => 'Neustart von MailScanner wird geplant ...',
     'error0155' => 'FEHLER: Neustart von MailScanner konnte nicht geplant werden! (Sie müssen MailScanner manuell über die Kommandozeile neu starten)',
     'ok55' => 'Ok',
@@ -808,7 +808,7 @@ return array(
     'backupfile55' => 'Sichern der aktuellen Datei...',
     'error0255' => 'FEHLER: Es konnte keine Sicherung angelegt werden!',
     'error0355' => 'FEHLER: Konnte %s nicht zum Schreiben öffnen !',
-    'contentsof55' => 'Momentaner Inhalt von %s:',
+    'contentsof55' => 'Momentaner Inhalt von <b>%s</b>:',
     'editrules55' => 'Regelsatz bearbeiten:',
     'openwriting55' => 'Öffne %s zum Schreiben...',
     'writefile55' => 'Schreibe neue Datei...',
@@ -817,6 +817,8 @@ return array(
     'donewrite55' => 'Schreiben der Datei abgeschlossen.',
     'conditions55' => 'Bedingungen:',
     'and55' => 'und',
+    'delete55' => 'Löschen',
+    'newrule55' => 'Add New Rule:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',

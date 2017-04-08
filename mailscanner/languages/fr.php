@@ -800,7 +800,7 @@ return array(
     'action55' => 'Action :',
     'savevalue55' => 'Enregistrer les changements',
     'backmsre55' => 'Revenir à l\'index des règles de MailScanner',
-    'backmw55' => 'Revenir à MailWatch :',
+    'backmw55' => 'Revenir à Outils et Liens',
     'schedureloadmw55' => 'Planification du redémarrage de MailScanner...',
     'error0155' => 'ERREUR : impossible de planifier du redémarrage de MailScanner. (Vous devez le faire manuellement via le système Shell)',
     'ok55' => 'Ok',
@@ -808,7 +808,7 @@ return array(
     'backupfile55' => 'Sauvegarde du fichier actuel...',
     'error0255' => 'ERREUR : impossible d\'effectuer une sauvegarde !',
     'error0355' => 'ERREUR : impossible d\'ouvrir le fichier %s en écriture !',
-    'contentsof55' => 'Contenu actuel de %s :',
+    'contentsof55' => 'Contenu actuel de <b>%s</b> :',
     'editrules55' => 'Editer les règles :',
     'openwriting55' => 'Ouverture du fichier %s pour écriture...',
     'writefile55' => 'Enregistrement du nouveau fichier...',
@@ -817,6 +817,8 @@ return array(
     'donewrite55' => 'Opération Write_File terminée.',
     'conditions55' => 'Condition :',
     'and55' => 'et',
+    'delete55' => 'Effacer',
+    'newrule55' => 'Ajouter une nouvelle règle :',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',

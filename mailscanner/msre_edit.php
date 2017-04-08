@@ -431,7 +431,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // around each ruleset, so it's easier to pick them out from
         // each other in the list.
         echo '<tr>' . "\n" .
-            '<td class="' . $boxclass . '" colspan="' . MSRE_COLUMNS . '>' . "\n" . '<table border="0">' . "\n";
+            '<td class="' . $boxclass . '" colspan="' . MSRE_COLUMNS . '">' . "\n" . '<table border="0">' . "\n";
         TR_Extended($desc_text, $tr_param);
         TR($rule_text, $tr_param);
         echo '</table>' . "\n" .
@@ -498,7 +498,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
 
     // Finally, display page footer
     TR_Single(
-        '<a href="msre_index.php">' . __('backmsre55') . '</a><br>' . "\n" . '<a href="/mailscanner/other.php">' . __('backmw55') . '</a><br>' . "\n",
+        '<a href="msre_index.php">' . __('backmsre55') . '</a><br>' . "\n" . '<a href="other.php">' . __('backmw55') . '</a><br>' . "\n",
         'colspan="' . MSRE_COLUMNS . '" class="footer"'
     );
 }

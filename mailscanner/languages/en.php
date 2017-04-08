@@ -800,7 +800,7 @@ return array(
     'action55' => 'Action:',
     'savevalue55' => 'Save changes',
     'backmsre55' => 'Back to MSRE ruleset index',
-    'backmw55' => 'Back to MailWatch:',
+    'backmw55' => 'Back to Tools and Links',
     'schedureloadmw55' => 'Scheduling reload of MailScanner...',
     'error0155' => 'ERROR: Couldn\'t schedule a reload of MailScanner! (You will have to manually do a reload of MailScanner from system Shell)',
     'ok55' => 'Ok',
@@ -808,7 +808,7 @@ return array(
     'backupfile55' => 'Backing up current file...',
     'error0255' => 'ERROR: Could not make backup!',
     'error0355' => 'ERROR: Couldn\'t open %s for write!',
-    'contentsof55' => 'Current contents of %s:',
+    'contentsof55' => 'Current contents of <b>%s</b>:',
     'editrules55' => 'Edit Ruleset:',
     'openwriting55' => 'Opening %s for writing...',
     'writefile55' => 'Writing new file...',
@@ -817,6 +817,8 @@ return array(
     'donewrite55' => 'Done with Write_File.',
     'conditions55' => 'Condition:',
     'and55' => 'and',
+    'delete55' => 'Delete',
+    'newrule55' => 'Add New Rule:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Cannot open pipe',
