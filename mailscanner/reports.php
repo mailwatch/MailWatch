@@ -30,8 +30,8 @@
  */
 
 //Require files
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // verify login
 require __DIR__ . '/login.function.php';
