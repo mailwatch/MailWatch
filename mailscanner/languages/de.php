@@ -799,7 +799,7 @@ return array(
     'action55' => 'Aktion:',
     'savevalue55' => 'Änderungen speichern',
     'backmsre55' => 'Zurück zum Verzeichnis der MSRE Regelsätze',
-    'backmw55' => 'Zurück zu Tools and Links',
+    'backmw55' => 'Zurück zu Werkzeuge/Verknüpfungen',
     'schedureloadmw55' => 'Neustart von MailScanner wird geplant ...',
     'error0155' => 'FEHLER: Neustart von MailScanner konnte nicht geplant werden! (Sie müssen MailScanner manuell über die Kommandozeile neu starten)',
     'ok55' => 'Ok',
