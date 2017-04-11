@@ -793,7 +793,6 @@ return array(
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
     'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner.',
     'msreedit55' => 'Edition des règles de MailScanner',
-    'submit55' => 'Soumettre',
     'enable55' => 'Activer',
     'disable55' => 'Désactiver',
     'description55' => 'Description :',

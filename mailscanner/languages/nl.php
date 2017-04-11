@@ -793,7 +793,6 @@ return array(
     'diefnf55' => 'File not found:',
     'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
     'msreedit55' => 'Edit MailScanner Ruleset',
-    'submit55' => 'Submit',
     'enable55' => 'Enable',
     'disable55' => 'Disable',
     'description55' => 'Description:',

@@ -131,7 +131,6 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<input type="hidden" name="file" value="' . $short_filename . '">' . "\n";
     echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
     echo '<input type="hidden" name="formtoken" value="' . generateformtoken('/msre_edit.php form token') . '">' . "\n";
-    echo '<input type="submit" name="submit" value="' . __('submit55') . '">' . "\n";
     echo '<input type="hidden" name="submitted" value="1">' . "\n";
     
     // Check for status message, and append it to the end of the header

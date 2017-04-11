@@ -793,7 +793,6 @@ return array(
     'diefnf55' => 'Datei nicht gefunden:',
     'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
     'msreedit55' => 'Regelsatz für MailScanner bearbeiten',
-    'submit55' => 'Senden',
     'enable55' => 'Aktivieren',
     'disable55' => 'Deaktivieren',
     'description55' => 'Beschreibung:',
