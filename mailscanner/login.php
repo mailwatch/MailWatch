@@ -84,7 +84,11 @@ setInterval(function() {
         ?>
                         <p class="loginerror">
                             <?php
-                            switch ($_GET['error']) {
+                            $loginerror = deepSanitizeInput($_GET['error'], 'url');
+                            if (false === validateInput($loginerror, "loginerror")) {
+                                header('Location: login.php');
+                            }
+                            switch ($loginerror) {
                                 case 'baduser':
                                     echo __('badup01');
                                     break;
