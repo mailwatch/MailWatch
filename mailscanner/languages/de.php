@@ -817,7 +817,7 @@ return array(
     'conditions55' => 'Bedingungen:',
     'and55' => 'und',
     'delete55' => 'Löschen',
-    'newrule55' => 'Add New Rule:',
+    'newrule55' => 'Neue Regel hinzufügen:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',
