@@ -100,18 +100,14 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', 0);
 
-// Session garbage collection 5 minutes based on user activity
-// or STATUS_REFRESH + 60 sec, whichever is greater.
+// Session timeout 10 minutes based on user activity
+// or STATUS_REFRESH + 300 sec, whichever is greater.
 
-if (defined(STATUS_REFRESH) && STATUS_REFRESH + 60 > 300) {
-    ini_set('session.gc_maxlifetime', STATUS_REFRESH + 60);
-    define('SESSION_TIMEOUT', STATUS_REFRESH + 59);
+if (defined(STATUS_REFRESH) && STATUS_REFRESH + 300 > 600) {
+    define('SESSION_TIMEOUT', STATUS_REFRESH + 300);
 } else {
-    ini_set('session.gc_maxlifetime', 300);
-    define('SESSION_TIMEOUT', 299);
+    define('SESSION_TIMEOUT', 600);
 }
-ini_set('session.gc_divisor', 1);
-ini_set('session.gc_probability', 1);
 
 $session_cookie_secure = false;
 if (SSL_ONLY === true) {
@@ -127,6 +123,7 @@ if (defined('SESSION_NAME')) {
 session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
 session_start();
+
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
 
@@ -287,6 +284,12 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
     }
 
+    if (!isset($_SESSION['last_update']) || $_SESSION['last_update'] + SESSION_TIMEOUT < time()) {
+        header('Location: logout.php?error=timeout');
+    } else {
+        $_SESSION['last_update'] = time();
+    }
+
     echo page_creation_timer();
     echo '<!DOCTYPE HTML>' . "\n";
     echo '<html>' . "\n";
@@ -332,7 +335,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
-    echo '<script>setTimeout(function(){ window.location.href="login.php?error=timeout";}, ' . SESSION_TIMEOUT*1000 . ');</script>';
+    echo '<script>setTimeout(function(){ window.location.href="logout.php?error=timeout";}, ' . SESSION_TIMEOUT*1000 . ');</script>';
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
     echo '<tr class="noprint">' . "\n";
     echo '<td>' . "\n";
@@ -4509,6 +4512,11 @@ function validateInput($input, $type)
             break;
         case 'mimepart':
             if (preg_match('/^[0-9.]{1,10}$/', $input)) {
+                return true;
+            }
+            break;
+        case 'loginerror':
+            if (preg_match('/^(baduser|emptypassword|timeout)$/', $input)) {
                 return true;
             }
             break;
