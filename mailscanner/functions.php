@@ -70,10 +70,21 @@ set_include_path(
 if (!defined('LANG')) {
     define('LANG', 'en');
 }
-if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
+$langCode = LANG;
+// If the user is allowed to select the language for the gui check which language he has choosen or create the cookie with the default lang
+if (defined('USER_SELECTABLE_LANG')) {
+    if (isset($_COOKIE['MW_LANG']) && checkLangCode($_COOKIE['MW_LANG'])) {
+        $langCode = $_COOKIE['MW_LANG'];
+    } else {
+        setcookie('MW_LANG', LANG, 0, $params['path'], $params['domain'], $session_cookie_secure, false);
+    }
+}
+
+// Load the lang file or en if the spicified language is not available
+if (!is_file(__DIR__ . '/languages/' . $langCode . '.php')) {
     $lang = require __DIR__ . '/languages/en.php';
 } else {
-    $lang = require __DIR__ . '/languages/' . LANG . '.php';
+    $lang = require __DIR__ . '/languages/' . $langCode . '.php';
 }
 
 //HTLMPurifier
@@ -833,6 +844,21 @@ function printNavBar()
             echo "<li class=\"active\"><a href=\"$url\">$desc</a></li>\n";
         } else {
             echo "<li><a href=\"$url\">$desc</a></li>\n";
+        }
+    }
+
+    if (defined('USER_SELECTABLE_LANG')) {
+        $langCodes = split(',', USER_SELECTABLE_LANG);
+        if (count($langCodes) > 1) {
+            global $langCode;
+            echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
+            echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
+            for ($i=0; $i < count($langCodes); $i++) {
+                echo '<option value="' . $langCodes[$i] . '"'
+                . ($langCodes[$i] === $langCode ? ' selected' : '')
+                . '>' . __($langCodes[$i]) . '</option>' ."\n";
+            }
+            echo '</select></li>'. "\n";
         }
     }
 
@@ -4181,7 +4207,8 @@ function checkConfVariables()
         'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
         'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
-        'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts')
+        'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
+        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
     );
 
     $neededMissing = array();
@@ -4582,4 +4609,21 @@ function checkFormToken($formstring, $formtoken)
     unset($_SESSION['formtoken']);
 
     return $calc === deepSanitizeInput($formtoken, 'url');
+}
+
+/**
+ * Checks if the passed language code is allowed to be used for the users
+ * @param string $langCode
+ * @return boolean
+ */
+function checkLangCode($langCode)
+{
+    $validLang = split(',', USER_SELECTABLE_LANG);
+    $found = array_search($langCode, $validLang);
+    if ($found === false || $found === null) {
+        audit_log("User tried to use undefined lang in cookie");
+        return false;
+    } else {
+        return true;
+    }
 }
