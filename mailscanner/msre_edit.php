@@ -567,8 +567,9 @@ function Process_Form($file_contents, $short_filename)
     $previous_line = '';
     $first_line = true;
     foreach (preg_split("/\n/", $file_contents) as $line) {
-        if ($line === '' || (substr($line, 0, 1) === '#'
-                || !preg_match('/#DISABLED#/', $line))
+        if ($line === '' ||
+             (substr($line, 0, 1) === '#' && !preg_match('/#DISABLED#/', $line))
+
         ) {
             if (!$first_line) {
                 $new_file[] = $previous_line . "\n";
