@@ -4398,7 +4398,7 @@ function validateInput($input, $type)
             }
             break;
         case 'user':
-            if (preg_match('/^[\p{L}\p{M}\p{N}~!@$%^*=_:.\/-]{1,256}$/u', $input)) {
+            if (preg_match('/^[\p{L}\p{M}\p{N}~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
                 return true;
             }
             break;
