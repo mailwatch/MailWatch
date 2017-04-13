@@ -61,6 +61,12 @@ foreach ($required_constant as $constant) {
     }
 }
 if ($required_constant_missing_count === 0) {
+    $usersForReport = array();
+    if (isset($argv) && count($argv) > 1) {
+        //get path from command line argument if set
+        $usersForReport = split(',',$argv[1]);
+    }
+
     require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
     require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
     require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
@@ -175,7 +181,7 @@ AND
  active='Y'
 ";
 
-    $sql = "
+    $report_sql = "
 SELECT DISTINCT
 a.id AS id,
 DATE_FORMAT(timestamp,'" . str_replace('%', '%%', DATE_FORMAT) . ' <br/>' . str_replace('%', '%%', TIME_FORMAT) . "') AS datetime,
@@ -210,7 +216,7 @@ AND
 
     // Hide high spam/mcp from users if enabled
     if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
-        $sql .= '
+        $report_sql .= '
     AND
      ishighspam=0
     AND
@@ -218,13 +224,13 @@ AND
     }
 
     if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
-        $sql .= '
+        $report_sql .= '
     AND
     isspam>0';
     }
 
     if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
-        $sql .= '
+        $report_sql .= '
     AND
     (
     virusinfected>0
@@ -249,8 +255,16 @@ AND
     )';
     }
 
-    $sql .= '
+    $report_sql .= '
 ORDER BY a.date DESC, a.time DESC';
+
+    if (count($usersForReport) > 0) {
+        $userConditions = array();
+        for($i=0; $i<count($usersForReport); $i++) {
+            $userConditions[] = ' username=' . quote_smart($usersForReport[$i]);
+        }
+        $users_sql .= ' AND ( ' . implode(' OR ', $userConditions) . ' ) ';
+    }
 
     $result = dbquery($users_sql);
     $rows = $result->num_rows;
@@ -387,8 +401,8 @@ function return_user_filters($user)
  */
 function return_quarantine_list_array($to_address, $to_domain)
 {
-    global $sql;
-    $result = dbquery(sprintf($sql, quote_smart($to_address), quote_smart($to_domain)));
+    global $report_sql;
+    $result = dbquery(sprintf($report_sql, quote_smart($to_address), quote_smart($to_domain)));
     $rows = $result->num_rows;
     $array = array();
     if ($rows > 0) {
