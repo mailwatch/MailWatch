@@ -34,7 +34,7 @@ class Quarantine_Report
     /**
      * @return boolean|string true if requirements are met; else missing requirements as string
      */
-    static function check_quarantine_report_requirements()
+    public static function check_quarantine_report_requirements()
     {
         $required_constant = array(
             'QUARANTINE_REPORT_DAYS',
@@ -271,7 +271,7 @@ ORDER BY a.date DESC, a.time DESC';
 
         if (count($usersForReport) > 0) {
             $userConditions = array();
-            for($i=0; $i<count($usersForReport); $i++) {
+            for ($i=0; $i<count($usersForReport); $i++) {
                 $userConditions[] = ' username=' . quote_smart($usersForReport[$i]);
             }
             $this->users_sql .= ' AND ( ' . implode(' OR ', $userConditions) . ' ) ';

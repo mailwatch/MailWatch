@@ -676,10 +676,10 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         }
         if (!isset($_POST['action'])) {
             echo __('formerror12') . '<br>';
-        } elseif($_POST['action'] === 'sendReportNow') {
+        } elseif ($_POST['action'] === 'sendReportNow') {
             include_once __DIR__ . '/quarantine_report.inc.php';
             $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
-            if ($requirementsCheck !== true){
+            if ($requirementsCheck !== true) {
                 echo __('checkReportRequirementsFailed12');
                 error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
             } else {
@@ -741,4 +741,3 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 html_end();
 // Close any open db connections
 dbclose();
-
