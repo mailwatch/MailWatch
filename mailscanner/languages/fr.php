@@ -469,11 +469,11 @@ return array(
     'savedsettings12' => 'Règlages enregistrés',
     'errordeleteself12' => 'Erreur : vous ne pouvez pas supprimer votre propre compte !',
     'nofilteraction12' => 'Action non autorisée',
-    'sendReportNow12' => 'Send quarantine report now',
-    'formerror12' => 'Error submitting the formular. Please try again or contact your administrator.',
-    'quarantineReportFailed12' => 'An error occured while sending the quarantine report.',
-    'quarantineReportSend12' => 'The quarantine report was successfully sent.',
-    'checkReportRequirementsFailed12' => 'Requirements for generating quarantine reports are not met. Please contact your administrator.',
+    'sendReportNow12' => 'Envoyer un rapport de quarantaine maintenant.',
+    'formerror12' => 'Erreur lors de la soumission du formulaire. Réessayez ou contactez votre administrateur.',
+    'quarantineReportFailed12' => 'Une erreur s\'est produite lors de l\'envoi du rapport de quarantaine.',
+    'quarantineReportSend12' => 'Le rapport de quarantaine a été envoyé avec succès.',
+    'checkReportRequirementsFailed12' => 'Les exigences pour générer des rapports de quarantaine ne sont pas respectées. Veuillez contacter votre administrateur.',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
