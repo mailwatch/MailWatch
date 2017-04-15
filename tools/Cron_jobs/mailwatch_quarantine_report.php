@@ -45,4 +45,9 @@ if (isset($argv) && count($argv) > 1) {
     $usersForReport = split(',',$argv[1]);
 }
 $report = new Quarantine_Report();
-$report->send_quarantine_reports($usersForReport);
+$requirements_met = Quarantine_Report::check_quarantine_report_requirements();
+if ($requirements_met === true) {
+    $report->send_quarantine_reports($usersForReport);
+} else {
+    echo $requirements_met;
+}

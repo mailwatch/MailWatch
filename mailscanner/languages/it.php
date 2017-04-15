@@ -469,6 +469,11 @@ return array(
     'savedsettings12' => 'Settings saved',
     'errordeleteself12' => 'Error: You can not delete your own account!',
     'nofilteraction12' => 'Not Allowed',
+    'sendReportNow12' => 'Send quarantine report now',
+    'formerror12' => 'Error submitting the formular. Please try again or contact your administrator.',
+    'quarantineReportFailed12' => 'An error occured while sending the quarantine report.',
+    'quarantineReportSend12' => 'The quarantine report was successfully sent.',
+    'checkReportRequirementsFailed12' => 'Requirements for generating quarantine reports are not met. Please contact your administrator.',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
