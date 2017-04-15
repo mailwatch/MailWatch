@@ -45,4 +45,4 @@ if (isset($argv) && count($argv) > 1) {
     $usersForReport = split(',',$argv[1]);
 }
 $report = new Quarantine_Report();
-$report->send_quarantine_reports($usersForReport);    
+$report->send_quarantine_reports($usersForReport);
