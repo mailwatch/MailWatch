@@ -468,7 +468,7 @@ return array(
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
     'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
-    'nofilteraction12' => 'Not Allowed',
+    'nofilteraction12' => 'Nicht erlaubt',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
