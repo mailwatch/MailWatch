@@ -469,6 +469,7 @@ return array(
     'savedsettings12' => 'Settings saved',
     'errordeleteself12' => 'Error: You can not delete your own account!',
     'nofilteraction12' => 'Not Allowed',
+    'auditundefinedlang12' => 'User tried to use undefined language %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',

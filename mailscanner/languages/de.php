@@ -469,6 +469,7 @@ return array(
     'savedsettings12' => 'Einstellungen gespeichert',
     'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
     'nofilteraction12' => 'Not Allowed',
+    'auditundefinedlang12' => 'Ein Benutzer hat versucht die undefinierte Sprache %s zu benutzen',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',

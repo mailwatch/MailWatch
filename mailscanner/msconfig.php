@@ -37,7 +37,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     html_start(__('config27'));
-    audit_log(__('auditlog27'));
+    audit_log(__('auditlog27', true));
 
     $conf_dir = get_conf_include_folder();
     $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';

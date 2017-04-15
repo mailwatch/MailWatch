@@ -63,7 +63,7 @@ if (empty($message)) {
     die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
 }
 
-audit_log(sprintf(__('auditlog06'), $message_id));
+audit_log(sprintf(__('auditlog06', true), $message_id));
 
 if ($message->token !== deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
     die(__('dietoken99'));

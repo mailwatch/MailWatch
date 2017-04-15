@@ -469,6 +469,7 @@ return array(
     'savedsettings12' => 'Règlages enregistrés',
     'errordeleteself12' => 'Erreur : vous ne pouvez pas supprimer votre propre compte !',
     'nofilteraction12' => 'Action non autorisée',
+    'auditundefinedlang12' => 'User tried to use undefined language %s',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
