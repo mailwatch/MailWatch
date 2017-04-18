@@ -470,6 +470,11 @@ return array(
     'errordeleteself12' => 'Error: You can not delete your own account!',
     'nofilteraction12' => 'Not Allowed',
     'auditundefinedlang12' => 'User tried to use undefined language %s',
+    'sendReportNow12' => 'Send quarantine report now',
+    'formerror12' => 'Error submitting the formular. Please try again or contact your administrator.',
+    'quarantineReportFailed12' => 'An error occured while sending the quarantine report.',
+    'quarantineReportSend12' => 'The quarantine report was successfully sent.',
+    'checkReportRequirementsFailed12' => 'Requirements for generating quarantine reports are not met. Please contact your administrator.',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -614,10 +619,15 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Ruleset Editor',
-    'auditlog29' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
+    'auditlog29' => 'Non-admin user attempted to view MailScanner Rule Editor Page.',
+    'editrule29' => 'Choose a ruleset to edit:',
+    'norulefound29' => 'No rules found',
 
     // 30-msrule.php
     'rules30' => 'Rules',
+    'dirblocked30' => 'Directory traversal attempt blocked.',
+    'unableopenfile30' => 'Unable to open file.',
+    'file30' => 'File:',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
@@ -787,7 +797,33 @@ return array(
 
     // 55-msre_edit.php
     'diefnf55' => 'File not found:',
-    'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page',
+    'auditlog55' => 'Non-admin user attempted to view MailScanner Rule Editor Page.',
+    'msreedit55' => 'Edit MailScanner Ruleset',
+    'enable55' => 'Enable',
+    'disable55' => 'Disable',
+    'description55' => 'Description:',
+    'action55' => 'Action:',
+    'savevalue55' => 'Save changes',
+    'backmsre55' => 'Back to MSRE ruleset index',
+    'backmw55' => 'Back to Tools and Links',
+    'schedureloadmw55' => 'Scheduling reload of MailScanner...',
+    'error0155' => 'ERROR: Couldn\'t schedule a reload of MailScanner! (You will have to manually do a reload of MailScanner from system Shell)',
+    'ok55' => 'Ok',
+    'message55' => 'Your changes will take effect in the next %s minutes, when MailScanner reloads.',
+    'backupfile55' => 'Backing up current file...',
+    'error0255' => 'ERROR: Could not make backup!',
+    'error0355' => 'ERROR: Couldn\'t open %s for write!',
+    'contentsof55' => 'Current contents of <b>%s</b>:',
+    'editrules55' => 'Edit Ruleset:',
+    'openwriting55' => 'Opening %s for writing...',
+    'writefile55' => 'Writing new file...',
+    'writebytes55' => 'wrote %s bytes.',
+    'fileclosed55' => 'File closed.',
+    'donewrite55' => 'Done with Write_File.',
+    'conditions55' => 'Condition:',
+    'and55' => 'and',
+    'delete55' => 'Delete',
+    'newrule55' => 'Add New Rule:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Cannot open pipe',

@@ -491,9 +491,11 @@ if ($link) {
                 $countTokenGenerated++;
             }
         }
+        echo color(' DONE', 'lightgreen') . PHP_EOL;
+        echo '   ' . $countTokenGenerated . ' token generated' . PHP_EOL;
+    } else {
+        echo color(' NOTHING FOUND', 'lightgreen') . PHP_EOL;
     }
-    echo color(' DONE', 'lightgreen') . PHP_EOL;
-    echo '   ' . $countTokenGenerated . ' token generated' . PHP_EOL;
 
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
