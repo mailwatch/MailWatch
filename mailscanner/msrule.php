@@ -38,7 +38,7 @@ if ($_SESSION['user_type'] !== 'A') {
 } else {
     html_start(__('rules30'));
 
-    // limit accessible files to the ones in MailScanner etc directory
+    // Limit accessible files to the ones in MailScanner etc directory
     $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));
     if (!isset($_GET['file'])) {
         $FilePath = false;
@@ -47,11 +47,11 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 
     if ($FilePath === false || strpos($FilePath, $MailscannerEtcDir) !== 0) {
-        //Directory Traversal
-        echo "Directory traversal attempt blocked.\n";
+        // Directory Traversal
+        echo __('dirblocked30') . "\n";
     } else {
         echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-        echo '<tr><td class="heading">File: ' . $FilePath . '</td></tr>' . "\n";
+        echo '<tr><td class="heading">' . __('file30') . ' ' . $FilePath . '</td></tr>' . "\n";
         echo '<tr><td><pre>' . "\n";
         if ($fh = @fopen($FilePath, 'rb')) {
             while (!feof($fh)) {
@@ -66,7 +66,7 @@ if ($_SESSION['user_type'] !== 'A') {
             }
             fclose($fh);
         } else {
-            echo "Unable to open file.\n";
+            echo __('unableopenfile30') . "\n";
         }
         echo '</pre></td></tr>' . "\n";
         echo '</table>' . "\n";
@@ -74,5 +74,5 @@ if ($_SESSION['user_type'] !== 'A') {
     // Add the footer
     html_end();
 }
-// close the connection to the Database
+
 dbclose();

@@ -619,9 +619,14 @@ return array(
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
     'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
+    'editrule29' => 'Wähle einen Regelsatz zum Bearbeiten:',
+    'norulefound29' => 'Keine Regeln gefunden',
 
     // 30-msrule.php
     'rules30' => 'Regeln',
+    'dirblocked30' => 'Durchsuchen der Verzeichnisse wurde blockiert.',
+    'unableopenfile30' => 'Datei konnte nicht geöffnet werden.',
+    'file30' => 'Datei:',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
@@ -792,6 +797,32 @@ return array(
     // 55-msre_edit.php
     'diefnf55' => 'Datei nicht gefunden:',
     'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
+    'msreedit55' => 'Regelsatz für MailScanner bearbeiten',
+    'enable55' => 'Aktivieren',
+    'disable55' => 'Deaktivieren',
+    'description55' => 'Beschreibung:',
+    'action55' => 'Aktion:',
+    'savevalue55' => 'Änderungen speichern',
+    'backmsre55' => 'Zurück zum Verzeichnis der MSRE Regelsätze',
+    'backmw55' => 'Zurück zu Werkzeuge/Verknüpfungen',
+    'schedureloadmw55' => 'Neustart von MailScanner wird geplant ...',
+    'error0155' => 'FEHLER: Neustart von MailScanner konnte nicht geplant werden! (Sie müssen MailScanner manuell über die Kommandozeile neu starten)',
+    'ok55' => 'Ok',
+    'message55' => 'Ihre Änderungen werden in den nächsten %s Minuten angewendet, sobald MailScanner neu gestartet wird.',
+    'backupfile55' => 'Sichern der aktuellen Datei...',
+    'error0255' => 'FEHLER: Es konnte keine Sicherung angelegt werden!',
+    'error0355' => 'FEHLER: Konnte %s nicht zum Schreiben öffnen !',
+    'contentsof55' => 'Momentaner Inhalt von <b>%s</b>:',
+    'editrules55' => 'Regelsatz bearbeiten:',
+    'openwriting55' => 'Öffne %s zum Schreiben...',
+    'writefile55' => 'Schreibe neue Datei...',
+    'writebytes55' => '%s Bytes geschrieben.',
+    'fileclosed55' => 'Datei geschlossen.',
+    'donewrite55' => 'Schreiben der Datei abgeschlossen.',
+    'conditions55' => 'Bedingungen:',
+    'and55' => 'und',
+    'delete55' => 'Löschen',
+    'newrule55' => 'Neue Regel hinzufügen:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',

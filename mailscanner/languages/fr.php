@@ -384,7 +384,7 @@ return array(
     'avfprotstatus10' => 'Statut F-Prot',
     'mysqldatabasestatus10' => 'Statut de la base de données MySQL',
     'viewconfms10' => 'Afficher la configuration de MailScanner',
-    'editmsrules10' => 'Editer les filtres MailScanner',
+    'editmsrules10' => 'Editer les règles de filtrage MailScanner',
     'spamassassinbayesdatabaseinfo10' => 'Information sur la base de données Bayes SpamAssassin',
     'updatesadesc10' => 'Mettre à jour les descriptions des règles SpamAssassin',
     'updatemcpdesc10' => 'Mettre à jour les descriptions des règles MCP',
@@ -618,10 +618,15 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
-    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
+    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner',
+    'editrule29' => 'Choisissez une règle à éditer :',
+    'norulefound29' => 'Aucune règle trouvée',
 
     // 30-msrule.php
     'rules30' => 'Règles',
+    'dirblocked30' => 'La tentative de traversée du répertoire été bloquée.',
+    'unableopenfile30' => 'Impossible d\'ouvrir le fichier.',
+    'file30' => 'Fichier :',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'Statut MySQL',
@@ -791,7 +796,33 @@ return array(
 
     // 55-msre_edit.php
     'diefnf55' => 'Le fichier suivant n\'a pas été trouvé :',
-    'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles MailScanner',
+    'auditlog55' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner.',
+    'msreedit55' => 'Edition des règles de MailScanner',
+    'enable55' => 'Activer',
+    'disable55' => 'Désactiver',
+    'description55' => 'Description :',
+    'action55' => 'Action :',
+    'savevalue55' => 'Enregistrer les changements',
+    'backmsre55' => 'Revenir à l\'index des règles de MailScanner',
+    'backmw55' => 'Revenir à Outils et Liens',
+    'schedureloadmw55' => 'Planification du redémarrage de MailScanner...',
+    'error0155' => 'ERREUR : impossible de planifier le redémarrage de MailScanner (Vous devez le faire manuellement via le système Shell).',
+    'ok55' => 'Ok',
+    'message55' => 'Vos changements seront actif d\'ici quelques minutes quand MailScanner aura redémarré.',
+    'backupfile55' => 'Sauvegarde du fichier actuel...',
+    'error0255' => 'ERREUR : impossible d\'effectuer une sauvegarde !',
+    'error0355' => 'ERREUR : impossible d\'ouvrir le fichier %s en écriture !',
+    'contentsof55' => 'Contenu actuel de <b>%s</b> :',
+    'editrules55' => 'Editer les règles :',
+    'openwriting55' => 'Ouverture du fichier %s pour écriture...',
+    'writefile55' => 'Enregistrement du nouveau fichier...',
+    'writebytes55' => 'écriture de %s bytes.',
+    'fileclosed55' => 'Fichier fermé.',
+    'donewrite55' => 'Opération Write_File terminée.',
+    'conditions55' => 'Condition :',
+    'and55' => 'et',
+    'delete55' => 'Effacer',
+    'newrule55' => 'Ajouter une nouvelle règle :',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',
