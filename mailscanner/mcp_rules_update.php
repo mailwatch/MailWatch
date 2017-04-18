@@ -65,7 +65,7 @@ if ($_SESSION['user_type'] !== 'A') {
             $fh = popen("ls $mcp_prefs_file $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
         }
 
-        audit_log(__('auditlog26'));
+        audit_log(__('auditlog26', true));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             debug('line: ' . $line . "\n");

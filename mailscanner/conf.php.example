@@ -295,3 +295,7 @@ define('RESET_LINK_EXPIRE', 1);
 // define('PWD_RESET_FROM_NAME', 'Some other name'); // Set if you wish reset email sent from alternative name.
 // define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
 /* End Password Reset */
+
+// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
+//  in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
+//define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');

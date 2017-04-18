@@ -194,7 +194,7 @@ if (!isset($_POST['run'])) {
             echo __('processok15') . "\n";
             ob_flush();
             flush();
-            audit_log(__('auditlog15'));
+            audit_log(__('auditlog15', true));
         } else {
             // unable to read or write to the directory
             die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");

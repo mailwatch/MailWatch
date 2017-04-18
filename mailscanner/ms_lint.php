@@ -52,7 +52,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
         die(__('diepipe28'));
     }
 
-    audit_log(__('auditlog28'));
+    audit_log(__('auditlog28', true));
 
     // Start timer
     $start = get_microtime();

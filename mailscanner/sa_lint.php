@@ -38,7 +38,7 @@ if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 
     die(__('diepipe51'));
 }
 
-audit_log(__('auditlog51'));
+audit_log(__('auditlog51', true));
 
 echo '<table class="mail" border="0" cellpadding="1" cellspacing="1" width="100%">' . "\n";
 echo " <tr>\n";

@@ -468,7 +468,13 @@ return array(
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
     'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
-    'nofilteraction12' => 'Not Allowed',
+    'nofilteraction12' => 'Nicht erlaubt',
+    'auditundefinedlang12' => 'Ein Benutzer hat versucht die undefinierte Sprache %s zu benutzen',
+    'sendReportNow12' => 'Quarantäne-Bericht jetzt senden',
+    'formerror12' => 'Fehler beim übertragen des Formulars. Bitte versuchen Sie es erneut oder kontaktieren Sie Ihren Administrator.',
+    'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
+    'quarantineReportSend12' => 'Der Quarantäne-Bericht wurde erfolgreich versendet.',
+    'checkReportRequirementsFailed12' => 'Die Anforderungen für das Senden von Quarantäne-Berichten sind nicht erfüllt. Bitte kontaktieren Sie ihren Administrator.',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -614,9 +620,14 @@ return array(
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
     'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
+    'editrule29' => 'Wähle einen Regelsatz zum Bearbeiten:',
+    'norulefound29' => 'Keine Regeln gefunden',
 
     // 30-msrule.php
     'rules30' => 'Regeln',
+    'dirblocked30' => 'Durchsuchen der Verzeichnisse wurde blockiert.',
+    'unableopenfile30' => 'Datei konnte nicht geöffnet werden.',
+    'file30' => 'Datei:',
 
     // 31-mysql_status.php
     'mysqlstatus31' => 'MySQL Status',
@@ -787,6 +798,32 @@ return array(
     // 55-msre_edit.php
     'diefnf55' => 'Datei nicht gefunden:',
     'auditlog55' => 'Nicht-Admin versuchte die MailScanner-Seite zur Regelbearbeitung anzuzeigen',
+    'msreedit55' => 'Regelsatz für MailScanner bearbeiten',
+    'enable55' => 'Aktivieren',
+    'disable55' => 'Deaktivieren',
+    'description55' => 'Beschreibung:',
+    'action55' => 'Aktion:',
+    'savevalue55' => 'Änderungen speichern',
+    'backmsre55' => 'Zurück zum Verzeichnis der MSRE Regelsätze',
+    'backmw55' => 'Zurück zu Werkzeuge/Verknüpfungen',
+    'schedureloadmw55' => 'Neustart von MailScanner wird geplant ...',
+    'error0155' => 'FEHLER: Neustart von MailScanner konnte nicht geplant werden! (Sie müssen MailScanner manuell über die Kommandozeile neu starten)',
+    'ok55' => 'Ok',
+    'message55' => 'Ihre Änderungen werden in den nächsten %s Minuten angewendet, sobald MailScanner neu gestartet wird.',
+    'backupfile55' => 'Sichern der aktuellen Datei...',
+    'error0255' => 'FEHLER: Es konnte keine Sicherung angelegt werden!',
+    'error0355' => 'FEHLER: Konnte %s nicht zum Schreiben öffnen !',
+    'contentsof55' => 'Momentaner Inhalt von <b>%s</b>:',
+    'editrules55' => 'Regelsatz bearbeiten:',
+    'openwriting55' => 'Öffne %s zum Schreiben...',
+    'writefile55' => 'Schreibe neue Datei...',
+    'writebytes55' => '%s Bytes geschrieben.',
+    'fileclosed55' => 'Datei geschlossen.',
+    'donewrite55' => 'Schreiben der Datei abgeschlossen.',
+    'conditions55' => 'Bedingungen:',
+    'and55' => 'und',
+    'delete55' => 'Löschen',
+    'newrule55' => 'Neue Regel hinzufügen:',
 
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Kann Pipe nicht öffnen',
@@ -902,4 +939,10 @@ return array(
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
     'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die conf.php mit conf.php.example',
+    'de' => 'Deutsch',
+    'en' => 'English',
+    'fr' => 'Français',
+    'it' => 'Italiano',
+    'nl' => 'Nederlands',
+    'pt_br' => 'Português',
 );
