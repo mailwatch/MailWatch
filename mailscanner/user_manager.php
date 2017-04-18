@@ -260,16 +260,16 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         dbquery($sql);
                         switch ($n_type) {
                             case 'A':
-                                $n_typedesc = 'administrator';
+                                $n_typedesc = __('admin12', true);
                                 break;
                             case 'D':
-                                $n_typedesc = 'domain administrator';
+                                $n_typedesc = __('domainadmin12', true);
                                 break;
                             default:
-                                $n_typedesc = 'user';
+                                $n_typedesc = __('user12', true);
                                 break;
                         }
-                        audit_log(__('auditlog0112') . ' ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212'));
+                        audit_log(__('auditlog0112', true) . ' ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212', true));
                     }
                 }
                 break;
@@ -435,13 +435,13 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                                 dbquery($sql);
                             }
                             //Audit
-                            $type['A'] = 'administrator';
-                            $type['D'] = 'domain administrator';
-                            $type['U'] = 'user';
-                            $type['R'] = 'user';
+                            $type['A'] = __('admin12', true);
+                            $type['D'] = __('domainadmin12', true);
+                            $type['U'] = __('user12', true);
+                            $type['R'] = __('user12', true);
                             if ($o_type !== $n_type) {
                                 audit_log(
-                                    __('auditlog0312') . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12') . ' ' . $type[$o_type] . ' ' . __('auditlogto12') . ' ' . $type[$n_type]
+                                    __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12', true) . ' ' . $type[$o_type] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
                                 );
                             }
                         }
@@ -475,7 +475,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 } else {
                     $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value($id) . "'";
                     dbquery($sql);
-                    audit_log(sprintf(__('auditlog0412'), $id));
+                    audit_log(sprintf(__('auditlog0412', true), $id));
                 }
                 break;
             case 'filters':
@@ -731,7 +731,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             }
 
             // Audit
-            audit_log(sprintf(__('auditlog0512'), $username));
+            audit_log(sprintf(__('auditlog0512', true), $username));
             echo '<h1 style="text-align: center; color: green;">' . __('savedsettings12')  . '</h1>';
             echo '<META HTTP-EQUIV="refresh" CONTENT="3;user_manager.php">';
         }

@@ -354,7 +354,7 @@ table.boxtable {
     background: #F7CE4A;
 }
 
-#menu.yellow a {
+#menu.yellow a, #menu.yellow select.lang {
     color: #000;
 }
 
@@ -855,4 +855,23 @@ td.message {
 
 .link-transparent > a:hover {
     background-color: transparent;
+}
+
+li.lang {
+    height: 100%;
+}
+select.lang {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    height: 100%!important;
+    background-color:#F7CE4A;
+}
+#menu.yellow li select.lang:hover {
+    color: #fff;
+    background: #4973f7;
+}
+select.lang > option {
+    background:#F7CE4A;
+    border-top:1px solid #444;
+    color: #000;
 }

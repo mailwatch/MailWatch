@@ -70,12 +70,29 @@ set_include_path(
 if (!defined('LANG')) {
     define('LANG', 'en');
 }
-if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
-    $lang = require __DIR__ . '/languages/en.php';
-} else {
-    $lang = require __DIR__ . '/languages/' . LANG . '.php';
+$langCode = LANG;
+// If the user is allowed to select the language for the gui check which language he has choosen or create the cookie with the default lang
+if (defined('USER_SELECTABLE_LANG')) {
+    if (isset($_COOKIE['MW_LANG']) && checkLangCode($_COOKIE['MW_LANG'])) {
+        $langCode = $_COOKIE['MW_LANG'];
+    } else {
+        setcookie('MW_LANG', LANG, 0, $params['path'], $params['domain'], $session_cookie_secure, false);
+    }
 }
 
+// Load the lang file or en if the spicified language is not available
+if (!is_file(__DIR__ . '/languages/' . $langCode . '.php')) {
+    $lang = require __DIR__ . '/languages/en.php';
+} else {
+    $lang = require __DIR__ . '/languages/' . $langCode . '.php';
+}
+
+// Load the lang file or en if the spicified language is not available
+if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
+    $systemLang = require __DIR__ . '/languages/en.php';
+} else {
+    $systemLang = require __DIR__ . '/languages/' . LANG . '.php';
+}
 //HTLMPurifier
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 
@@ -312,7 +329,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             // Use existing filters
             $filter = $_SESSION['filter'];
         }
-        audit_log(__('auditlogreport03') . ' ' . $title);
+        audit_log(__('auditlogreport03', true) . ' ' . $title);
     } else {
         echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
     }
@@ -836,6 +853,21 @@ function printNavBar()
         }
     }
 
+    if (defined('USER_SELECTABLE_LANG')) {
+        $langCodes = split(',', USER_SELECTABLE_LANG);
+        if (count($langCodes) > 1) {
+            global $langCode;
+            echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
+            echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
+            for ($i=0; $i < count($langCodes); $i++) {
+                echo '<option value="' . $langCodes[$i] . '"'
+                . ($langCodes[$i] === $langCode ? ' selected' : '')
+                . '>' . __($langCodes[$i]) . '</option>' ."\n";
+            }
+            echo '</select></li>'. "\n";
+        }
+    }
+
     echo '
  </ul>
  </td>
@@ -1029,11 +1061,18 @@ function safe_value($value)
 
 /**
  * @param string $string
+ * @param boolean $userSystemLang
  * @return string
  */
-function __($string)
+function __($string, $useSystemLang = false)
 {
-    global $lang;
+    if ($useSystemLang) {
+        global $systemLang;
+        $language = $systemLang;
+    } else {
+        global $lang;
+        $language = $lang;
+    }
 
     $debug_message = '';
     $pre_string = '';
@@ -1044,8 +1083,8 @@ function __($string)
         $post_string = '</span>';
     }
 
-    if (isset($lang[$string])) {
-        return $lang[$string] . $debug_message;
+    if (isset($language[$string])) {
+        return $language[$string] . $debug_message;
     }
 
     $en_lang = require __DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php';
@@ -1053,7 +1092,7 @@ function __($string)
         return $pre_string . $en_lang[$string] . $debug_message . $post_string;
     }
 
-    return $pre_string . $lang['i18_missing'] . $debug_message . $post_string;
+    return $pre_string . $language['i18_missing'] . $debug_message . $post_string;
 }
 
 /**
@@ -3401,7 +3440,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $error = true;
             } else {
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
+                audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
             }
 
             return $status;
@@ -3416,7 +3455,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if ($retval === 0) {
                     $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                    audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
+                    audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
                     $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
                             "\n",
@@ -3541,7 +3580,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                             break;
                     }
                     audit_log(
-                        sprintf(__('auditlogquareleased03') . ' ', $list[$val]['msgid']) . ' ' . $learn_type
+                        sprintf(__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                     );
                 } else {
                     $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
@@ -3571,7 +3610,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         dbquery($sql);
                     }
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
-                    audit_log(sprintf(__('auditlogspamtrained03'), $list[$val]['msgid']) . ' ' . $learn_type);
+                    audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
                     $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
                             "\n",
@@ -3639,7 +3678,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                 dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                audit_log(__('auditlogdelqua03') . ' ' . $list[$val]['path']);
+                audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
             } else {
                 $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
                 global $error;
@@ -3922,12 +3961,12 @@ function updateUserPasswordHash($user, $hash)
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
         dbquery($sqlUpdateFieldLength);
-        audit_log(sprintf(__('auditlogquareleased03') . ' ', $passwordFiledLength));
+        audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
     }
 
     $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
     dbquery($sqlUpdateHash);
-    audit_log(__('auditlogupdateuser03') . ' ' . $user);
+    audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
 }
 
 /**
@@ -4181,7 +4220,8 @@ function checkConfVariables()
         'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
         'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
-        'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts')
+        'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
+        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
     );
 
     $neededMissing = array();
@@ -4582,4 +4622,21 @@ function checkFormToken($formstring, $formtoken)
     unset($_SESSION['formtoken']);
 
     return $calc === deepSanitizeInput($formtoken, 'url');
+}
+
+/**
+ * Checks if the passed language code is allowed to be used for the users
+ * @param string $langCode
+ * @return boolean
+ */
+function checkLangCode($langCode)
+{
+    $validLang = split(',', USER_SELECTABLE_LANG);
+    $found = array_search($langCode, $validLang);
+    if ($found === false || $found === null) {
+        audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
+        return false;
+    } else {
+        return true;
+    }
 }

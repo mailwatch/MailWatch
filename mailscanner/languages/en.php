@@ -469,6 +469,7 @@ return array(
     'savedsettings12' => 'Settings saved',
     'errordeleteself12' => 'Error: You can not delete your own account!',
     'nofilteraction12' => 'Not Allowed',
+    'auditundefinedlang12' => 'User tried to use undefined language %s',
     'sendReportNow12' => 'Send quarantine report now',
     'formerror12' => 'Error submitting the formular. Please try again or contact your administrator.',
     'quarantineReportFailed12' => 'An error occured while sending the quarantine report.',
@@ -938,4 +939,10 @@ return array(
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
     'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',
+    'de' => 'Deutsch',
+    'en' => 'English',
+    'fr' => 'Français',
+    'it' => 'Italiano',
+    'nl' => 'Nederlands',
+    'pt_br' => 'Português',
 );

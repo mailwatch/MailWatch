@@ -37,7 +37,7 @@ require __DIR__ . '/login.function.php';
 
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
-    audit_log(__('auditlog52'));
+    audit_log(__('auditlog52', true));
 } else {
     html_start(__('mwandmsversion52'), '0', false, false);
     $mailwatch_version = mailwatch_version();

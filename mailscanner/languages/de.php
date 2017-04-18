@@ -469,6 +469,7 @@ return array(
     'savedsettings12' => 'Einstellungen gespeichert',
     'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
     'nofilteraction12' => 'Nicht erlaubt',
+    'auditundefinedlang12' => 'Ein Benutzer hat versucht die undefinierte Sprache %s zu benutzen',
     'sendReportNow12' => 'Quarantäne-Bericht jetzt senden',
     'formerror12' => 'Fehler beim übertragen des Formulars. Bitte versuchen Sie es erneut oder kontaktieren Sie Ihren Administrator.',
     'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
@@ -938,4 +939,10 @@ return array(
     'i18_missing' => 'Keine deutsche Übersetzung vorhanden',
     'cannot_read_conf' => 'Kann conf.php nicht lesen - bitte die Datei conf.php.example kopieren und die Parameter entsprechend anpassen.',
     'missing_conf_entries' => 'Die folgenden Einträge der conf.php fehlen. Vergleichen Sie die conf.php mit conf.php.example',
+    'de' => 'Deutsch',
+    'en' => 'English',
+    'fr' => 'Français',
+    'it' => 'Italiano',
+    'nl' => 'Nederlands',
+    'pt_br' => 'Português',
 );

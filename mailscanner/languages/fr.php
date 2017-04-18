@@ -469,6 +469,7 @@ return array(
     'savedsettings12' => 'Règlages enregistrés',
     'errordeleteself12' => 'Erreur : vous ne pouvez pas supprimer votre propre compte !',
     'nofilteraction12' => 'Action non autorisée',
+    'auditundefinedlang12' => 'User tried to use undefined language %s',
     'sendReportNow12' => 'Envoyer un rapport de quarantaine maintenant.',
     'formerror12' => 'Erreur lors de la soumission du formulaire. Réessayez ou contactez votre administrateur.',
     'quarantineReportFailed12' => 'Une erreur s\'est produite lors de l\'envoi du rapport de quarantaine.',
@@ -938,4 +939,10 @@ return array(
     'i18_missing' => 'Non traduit en français',
     'cannot_read_conf' => 'Impossible de lire le fichier conf.php - Créez un fichier de configuration conf.php à partir du fichier conf.php.example, et modifiez les paramètres de configuration comme nécessaire.',
     'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',
+    'de' => 'Deutsch',
+    'en' => 'English',
+    'fr' => 'Français',
+    'it' => 'Italiano',
+    'nl' => 'Nederlands',
+    'pt_br' => 'Português',
 );
