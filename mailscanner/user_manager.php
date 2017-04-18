@@ -136,7 +136,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $action = deepSanitizeInput($_GET['action'], 'url');
     }
     if (isset($action)) {
-        if (!validateInput($action, 'action')) {
+        if (!validateInput($action, 'action') && $action !== 'sendReportNow') {
             die(__('dievalidate99'));
         }
         switch ($action) {
@@ -347,7 +347,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 			 <OPTION ' . $s['U'] . ' VALUE="U">' . __('user12') . '</OPTION>
 			 <OPTION ' . $s['R'] . ' VALUE="R">' . __('userregex12') . "</OPTION>
 			</SELECT></TD></TR>\n";
-                        echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</TD><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt" VALUE="' . $row->quarantine_rcpt . '"><br><span class="font-1em">' . __('overrec12') . '</span></TD>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span class="font-1em">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $row->spamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
@@ -575,6 +575,34 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
                 echo '</TABLE><BR>' . "\n";
                 echo '</FORM>' . "\n";
+                break;
+
+            case 'sendReportNow':
+                include_once __DIR__ . '/quarantine_report.inc.php';
+                $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
+                if ($requirementsCheck !== true) {
+                    echo __('checkReportRequirementsFailed12');
+                    error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
+                } else {
+                    $key = deepSanitizeInput($_POST['key'], 'string');
+                    if (!validateInput($key, 'user')) {
+                        die(__('dievalidate99'));
+                    }
+                    $ar = explode('@', $key);
+                    if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+                        echo __('errorreporttonodomainforbidden12') . '<br>';
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                        echo sprintf(__('errorreporttodomainforbidden12'), $ar[1]) . '<br>';
+                    } else {
+                        $quarantine_report = new Quarantine_Report();
+                        $reportResult = $quarantine_report->send_quarantine_reports(array($key));
+                        if ($reportResult['succ'] >= 0) {
+                            echo __('quarantineReportSend12') . "<br>\n";
+                        } else {
+                            echo __('quarantineReportFailed12') . "<br>\n";
+                        }
+                    }
+                }
                 break;
         }
     }
