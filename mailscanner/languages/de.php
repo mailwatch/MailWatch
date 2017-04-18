@@ -468,7 +468,7 @@ return array(
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
     'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
-    'nofilteraction12' => 'Not Allowed',
+    'nofilteraction12' => 'Nicht erlaubt',
     'sendReportNow12' => 'Quarantäne-Bericht jetzt senden',
     'formerror12' => 'Fehler beim übertragen des Formulars. Bitte versuchen Sie es erneut oder kontaktieren Sie Ihren Administrator.',
     'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
