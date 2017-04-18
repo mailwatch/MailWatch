@@ -469,6 +469,11 @@ return array(
     'savedsettings12' => 'Einstellungen gespeichert',
     'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
     'nofilteraction12' => 'Nicht erlaubt',
+    'sendReportNow12' => 'Quarantäne-Bericht jetzt senden',
+    'formerror12' => 'Fehler beim übertragen des Formulars. Bitte versuchen Sie es erneut oder kontaktieren Sie Ihren Administrator.',
+    'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
+    'quarantineReportSend12' => 'Der Quarantäne-Bericht wurde erfolgreich versendet.',
+    'checkReportRequirementsFailed12' => 'Die Anforderungen für das Senden von Quarantäne-Berichten sind nicht erfüllt. Bitte kontaktieren Sie ihren Administrator.',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',

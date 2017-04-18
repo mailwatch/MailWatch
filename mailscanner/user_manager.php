@@ -361,7 +361,6 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             die(__('dietoken99'));
                         }
                         // Do update
-                        
                         $username = deepSanitizeInput($_POST['username'], 'string');
                         if (!validateInput($username, 'user')) {
                             $username = '';
@@ -659,12 +658,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
             echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
         }
-        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span style="font-size:90%">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>' . "\n";
         echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" ' . $noscan . '> <span style="font-size:90%">' . __('scanforspam212') . '</span></td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>' . "\n";
-        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" value="' . __('update12') . '"></td></tr>' . "\n";
+        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" name="action" value="' . __('update12') . '"></td></tr>' . "\n";
         echo '</table></form><br>' . "\n";
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
@@ -675,8 +674,24 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
             die(__('dietoken99'));
         }
-        // Do update
-        if (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
+        if (!isset($_POST['action'])) {
+            echo __('formerror12') . '<br>';
+        } elseif ($_POST['action'] === 'sendReportNow') {
+            include_once __DIR__ . '/quarantine_report.inc.php';
+            $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
+            if ($requirementsCheck !== true) {
+                echo __('checkReportRequirementsFailed12');
+                error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
+            } else {
+                $quarantine_report = new Quarantine_Report();
+                $reportResult = $quarantine_report->send_quarantine_reports(array($_SESSION['myusername']));
+                if ($reportResult['succ'] === 1) {
+                    echo __('quarantineReportSend12') . "<br>\n";
+                } else {
+                    echo __('quarantineReportFailed12') . "<br>\n";
+                }
+            }
+        } elseif (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
             echo __('errorpass12')  . '<br>';
         } else {
             $do_pwd = false;
