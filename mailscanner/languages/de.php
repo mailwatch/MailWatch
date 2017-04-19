@@ -470,7 +470,7 @@ return array(
     'errordeleteself12' => 'Fehler: Sie können Ihren eigenen Account nicht löschen!',
     'nofilteraction12' => 'Nicht erlaubt',
     'auditundefinedlang12' => 'Ein Benutzer hat versucht die undefinierte Sprache %s zu benutzen',
-    'sendReportNow12' => 'Quarantäne-Bericht jetzt senden',
+    'sendReportNow12' => 'Jetzt senden',
     'formerror12' => 'Fehler beim übertragen des Formulars. Bitte versuchen Sie es erneut oder kontaktieren Sie Ihren Administrator.',
     'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
     'quarantineReportSend12' => 'Der Quarantäne-Bericht wurde erfolgreich versendet.',
