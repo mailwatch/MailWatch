@@ -470,7 +470,7 @@ return array(
     'errordeleteself12' => 'Error: You can not delete your own account!',
     'nofilteraction12' => 'Not Allowed',
     'auditundefinedlang12' => 'User tried to use undefined language %s',
-    'sendReportNow12' => 'Send quarantine report now',
+    'sendReportNow12' => 'Send now',
     'formerror12' => 'Error submitting the formular. Please try again or contact your administrator.',
     'quarantineReportFailed12' => 'An error occured while sending the quarantine report.',
     'quarantineReportSend12' => 'The quarantine report was successfully sent.',
