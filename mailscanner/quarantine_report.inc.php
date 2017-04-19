@@ -138,8 +138,6 @@ Reason: %s
 Action:
 %s
 
-
-%s
 ';
 
     private $users_sql = '
@@ -561,8 +559,7 @@ ORDER BY a.date DESC, a.time DESC';
                 $qitem['to'],
                 $qitem['from'],
                 $qitem['subject'],
-                $qitem['reason'],
-                $links
+                $qitem['reason']
             );
         }
 
