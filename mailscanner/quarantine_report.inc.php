@@ -525,7 +525,7 @@ ORDER BY a.date DESC, a.time DESC';
         // Build the quarantine list for this recipient
         foreach ($quarantined as $qitem) {
             //Check if auto-release is enabled
-            $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?token=' . $qitem['token'] . '&amp;id=' . $qitem['id'] . '">' . __('view61') . '</a>';
+            $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?token=' . $qitem['token'] . '&id=' . $qitem['id'] . '">' . __('view61') . '</a>';
             if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
                 //Check if email already has an autorelease entry
                 $exists = self::check_auto_release($qitem);
