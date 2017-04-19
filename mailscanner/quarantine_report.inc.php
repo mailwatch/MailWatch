@@ -483,7 +483,7 @@ ORDER BY a.date DESC, a.time DESC';
 
     /**
      * @param array $qitem
-     * @return bool
+     * @return string|bool stored uid or false if not found or found too many
      */
     private static function check_auto_release($qitem)
     {
@@ -590,7 +590,7 @@ ORDER BY a.date DESC, a.time DESC';
     }
 
     /**
-     * @param $q
+     * @param array $q
      * @return array
      */
     private static function quarantine_sort($q)
