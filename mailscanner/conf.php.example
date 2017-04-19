@@ -39,6 +39,10 @@ define('DEBUG', false);
 // Define language (de, en, fr, it, nl, pt_br);
 define('LANG', 'en');
 
+// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
+// in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
+//define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');
+
 // Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
 //define('SESSION_NAME', 'MailWatch');
@@ -292,6 +296,3 @@ define('RESET_LINK_EXPIRE', 1);
 // define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
 /* End Password Reset */
 
-// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
-//  in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
-//define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');
