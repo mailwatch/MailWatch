@@ -43,27 +43,34 @@ if (!is_readable(__DIR__ . '/conf.php')) {
 }
 require_once __DIR__ . '/conf.php';
 
-$missingConfigEntries = checkConfVariables();
-if ($missingConfigEntries['needed']['count'] !== 0) {
-    $br = '';
-    if (PHP_SAPI !== 'cli') {
-        $br = '<br>';
-    }
-    echo __('missing_conf_entries') . $br . PHP_EOL;
-    foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
-        echo '- ' . $missingConfigEntry . $br . PHP_EOL;
-    }
-    die();
+
+// more secure session cookies
+ini_set('session.use_cookies', 1);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_trans_sid', 0);
+
+// Session timeout 10 minutes based on user activity
+// or STATUS_REFRESH + 300 sec, whichever is greater.
+
+if (defined(STATUS_REFRESH) && STATUS_REFRESH + 300 > 600) {
+    define('SESSION_TIMEOUT', STATUS_REFRESH + 300);
+} else {
+    define('SESSION_TIMEOUT', 600);
 }
 
-require_once __DIR__ . '/database.php';
+$session_cookie_secure = false;
+if (SSL_ONLY === true) {
+    ini_set('session.cookie_secure', 1);
+    $session_cookie_secure = true;
+}
 
-// Set PHP path to use local PEAR modules only
-set_include_path(
-    '.' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/xmlrpc'
-);
+//enforce session cookie security
+$params = session_get_cookie_params();
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
+session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 
 // Load Language File
 // If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
@@ -93,6 +100,30 @@ if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
 } else {
     $systemLang = require __DIR__ . '/languages/' . LANG . '.php';
 }
+
+$missingConfigEntries = checkConfVariables();
+if ($missingConfigEntries['needed']['count'] !== 0) {
+    $br = '';
+    if (PHP_SAPI !== 'cli') {
+        $br = '<br>';
+    }
+    echo __('missing_conf_entries') . $br . PHP_EOL;
+    foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
+        echo '- ' . $missingConfigEntry . $br . PHP_EOL;
+    }
+    die();
+}
+
+require_once __DIR__ . '/database.php';
+
+// Set PHP path to use local PEAR modules only
+set_include_path(
+    '.' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
+    MAILWATCH_HOME . '/lib/xmlrpc'
+);
+
+
 //HTLMPurifier
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 
@@ -111,33 +142,6 @@ if (PHP_SAPI !== 'cli') {
     header('X-Content-Type-Options: nosniff');
 }
 
-// more secure session cookies
-ini_set('session.use_cookies', 1);
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.use_trans_sid', 0);
-
-// Session timeout 10 minutes based on user activity
-// or STATUS_REFRESH + 300 sec, whichever is greater.
-
-if (defined(STATUS_REFRESH) && STATUS_REFRESH + 300 > 600) {
-    define('SESSION_TIMEOUT', STATUS_REFRESH + 300);
-} else {
-    define('SESSION_TIMEOUT', 600);
-}
-
-$session_cookie_secure = false;
-if (SSL_ONLY === true) {
-    ini_set('session.cookie_secure', 1);
-    $session_cookie_secure = true;
-}
-
-//enforce session cookie security
-$params = session_get_cookie_params();
-if (defined('SESSION_NAME')) {
-    session_name(SESSION_NAME);
-}
-session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
 session_start();
 

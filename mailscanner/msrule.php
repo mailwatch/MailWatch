@@ -38,7 +38,8 @@ if ($_SESSION['user_type'] !== 'A') {
 } else {
     html_start(__('rules30'));
 
-    // Limit accessible files to the ones in MailScanner etc directory
+    // Limit accessible files to the ones in MailScanner etc directory or reports directory
+    $MailscannerRepDir = realpath(get_conf_var('%report-dir%'));
     $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));
     if (!isset($_GET['file'])) {
         $FilePath = false;
@@ -46,7 +47,7 @@ if ($_SESSION['user_type'] !== 'A') {
         $FilePath = realpath(sanitizeInput($_GET['file']));
     }
 
-    if ($FilePath === false || strpos($FilePath, $MailscannerEtcDir) !== 0) {
+    if ($FilePath === false || (strpos($FilePath, $MailscannerEtcDir) !== 0 && strpos($FilePath, $MailscannerRepDir) !== 0)) {
         // Directory Traversal
         echo __('dirblocked30') . "\n";
     } else {

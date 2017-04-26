@@ -470,7 +470,7 @@ return array(
     'errordeleteself12' => 'Erreur : vous ne pouvez pas supprimer votre propre compte !',
     'nofilteraction12' => 'Action non autorisée',
     'auditundefinedlang12' => 'User tried to use undefined language %s',
-    'sendReportNow12' => 'Envoyer un rapport de quarantaine maintenant.',
+    'sendReportNow12' => 'Envoyer maintenant.',
     'formerror12' => 'Erreur lors de la soumission du formulaire. Réessayez ou contactez votre administrateur.',
     'quarantineReportFailed12' => 'Une erreur s\'est produite lors de l\'envoi du rapport de quarantaine.',
     'quarantineReportSend12' => 'Le rapport de quarantaine a été envoyé avec succès.',
