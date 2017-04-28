@@ -653,18 +653,31 @@ div.table > .caption > input {
 }
 
 .reportTable {
-    width: 500px;
-    padding: 10px;
-    margin-left: auto;
-    margin-right: auto;
+   padding: 10px;   
+   margin-left: auto;
+   margin-right: auto;
 }
 
-.reportTable > tbody > tr > td {
+.reportTable>tbody>tr>th {
+   background-color: #F7CE4A;
+}
+
+.reportTable>tbody>tr>td {
+   background-color: #EBEBEB;
+}
+
+.reportTable>tbody>tr>th,
+.reportTable>tbody>tr>td {
     text-align: center;
+    padding: 5px;
 }
 
-.reportTable > tbody > tr > td:first-child {
+.reportTable>tbody>tr>td:first-child {
     text-align: left;
+}
+
+.reportTable>tbody>tr>td:last-child {
+    text-align: right;
 }
 
 td.titleReport {
@@ -860,16 +873,19 @@ td.message {
 li.lang {
     height: 100%;
 }
+
 select.lang {
     font-family: Arial, sans-serif;
     font-weight: 700;
     height: 100%!important;
     background-color:#F7CE4A;
 }
+
 #menu.yellow li select.lang:hover {
     color: #fff;
     background: #4973f7;
 }
+
 select.lang > option {
     background:#F7CE4A;
     border-top:1px solid #444;
