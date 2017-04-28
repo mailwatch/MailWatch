@@ -31,7 +31,7 @@
  */
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+$pathToFunctions = '/opt/mailwatch/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
@@ -176,9 +176,7 @@ if ($required_constant_missing_count === 0) {
         return $array;
     }
 
-    if ($_SERVER['argc'] === 1 || $_SERVER['argc'] > 2) {
-        die('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
-    } else {
+    if ($_SERVER['argc'] !== 1 && $_SERVER['argc'] <= 2) {
         switch ($_SERVER['argv'][1]) {
             case '--clean':
                 quarantine_clean();
@@ -190,5 +188,7 @@ if ($required_constant_missing_count === 0) {
             default:
                 die('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
         }
+    } else {
+        die('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
     }
 }

@@ -80,9 +80,9 @@ function rpc_get_quarantine($msg)
             }
         }
         return new xmlrpcresp(new xmlrpcval($output, 'array'));
-    } else {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
     }
+
+    return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
 }
 
 function rpc_return_quarantined_file($msg)
@@ -185,9 +185,9 @@ function rpc_get_conf_var($msg)
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (is_string($input)) {
         return new xmlrpcresp(new xmlrpcval(get_conf_var($input), 'string'));
-    } else {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
     }
+
+    return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
 }
 
 function rpc_dump_mailscanner_conf()

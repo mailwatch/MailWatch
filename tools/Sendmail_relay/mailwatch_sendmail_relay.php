@@ -36,7 +36,7 @@ ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+$pathToFunctions = '/opt/mailwatch/mailscanner/functions.php';
 
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
@@ -45,7 +45,7 @@ if (!@is_file($pathToFunctions)) {
 require $pathToFunctions;
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/mtalogprocessor.inc.php';
+$pathToFunctions = '/opt/mailwatch/mailscanner/mtalogprocessor.inc.php';
 
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");

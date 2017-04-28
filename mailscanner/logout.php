@@ -29,7 +29,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-session_start();
+require_once __DIR__ . '/functions.php';
+
 // reset session variables
 $_SESSION = array();
 
@@ -50,4 +51,12 @@ if (ini_get('session.use_cookies')) {
 
 session_destroy();
 
-header('Location: index.php');
+if (isset($_GET['error'])) {
+    $loginerror = deepSanitizeInput($_GET['error'], 'url');
+    if (false === validateInput($loginerror, "loginerror")) {
+        header('Location: login.php');
+    }
+    header('Location: login.php?error=' . $loginerror);
+} else {
+    header('Location: index.php');
+}

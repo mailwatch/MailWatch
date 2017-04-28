@@ -31,7 +31,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 html_start(__('qviewer08'), 0, false, false);

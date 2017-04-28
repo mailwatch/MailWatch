@@ -36,7 +36,6 @@
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/password.php';
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 html_start(__('usermgnt12'), 0, false, false);
@@ -137,7 +136,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $action = deepSanitizeInput($_GET['action'], 'url');
     }
     if (isset($action)) {
-        if (!validateInput($action, 'action')) {
+        if (!validateInput($action, 'action') && $action !== 'sendReportNow') {
             die(__('dievalidate99'));
         }
         switch ($action) {
@@ -199,11 +198,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     }
                     if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                         echo __('errorcreatenodomainforbidden12') . '<br>';
-                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
                         echo sprintf(__('errorcreatedomainforbidden12'), $ar[1]). '<br>';
                     } elseif ($_SESSION['user_type'] === 'D' && $n_type === 'A') {
                         echo __('errorcreatedomainforbidden12') . '<br>';
-                    } elseif ($_POST['password'] === "") {
+                    } elseif ($_POST['password'] === '') {
                         echo __('errorpwdreq12') . '<br>';
                     } elseif ($_POST['password'] !== $_POST['password1']) {
                         echo __('errorpass12') . '<br>';
@@ -261,16 +260,16 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         dbquery($sql);
                         switch ($n_type) {
                             case 'A':
-                                $n_typedesc = 'administrator';
+                                $n_typedesc = __('admin12', true);
                                 break;
                             case 'D':
-                                $n_typedesc = 'domain administrator';
+                                $n_typedesc = __('domainadmin12', true);
                                 break;
                             default:
-                                $n_typedesc = 'user';
+                                $n_typedesc = __('user12', true);
                                 break;
                         }
-                        audit_log(__('auditlog0112') . ' ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212'));
+                        audit_log(__('auditlog0112', true) . ' ' . $n_typedesc . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212', true));
                     }
                 }
                 break;
@@ -304,7 +303,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $filter_domain[] = $filter[0];
                     }
                 }
-                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
+                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                     echo __('erroreditnodomainforbidden12') . '<br>';
                 } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                     echo sprintf(__('erroreditdomainforbidden12'), sanitizeInput($ar[1])) . '<br>';
@@ -348,7 +347,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 			 <OPTION ' . $s['U'] . ' VALUE="U">' . __('user12') . '</OPTION>
 			 <OPTION ' . $s['R'] . ' VALUE="R">' . __('userregex12') . "</OPTION>
 			</SELECT></TD></TR>\n";
-                        echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</TD><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt" VALUE="' . $row->quarantine_rcpt . '"><br><span class="font-1em">' . __('overrec12') . '</span></TD>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span class="font-1em">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $row->spamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
@@ -362,14 +361,13 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             die(__('dietoken99'));
                         }
                         // Do update
-                        
                         $username = deepSanitizeInput($_POST['username'], 'string');
                         if (!validateInput($username, 'user')) {
                             $username = '';
                         }
                         $ar = explode('@', $username);
                         $n_type = deepSanitizeInput($_POST['type'], 'url');
-                        if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== "") {
+                        if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                             echo __('errortonodomainforbidden12') . '<br>';
                         } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
                             echo sprintf(__('errortodomainforbidden12'), $ar[1]) . '<br>';
@@ -437,13 +435,13 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                                 dbquery($sql);
                             }
                             //Audit
-                            $type['A'] = 'administrator';
-                            $type['D'] = 'domain administrator';
-                            $type['U'] = 'user';
-                            $type['R'] = 'user';
+                            $type['A'] = __('admin12', true);
+                            $type['D'] = __('domainadmin12', true);
+                            $type['U'] = __('user12', true);
+                            $type['R'] = __('user12', true);
                             if ($o_type !== $n_type) {
                                 audit_log(
-                                    __('auditlog0312') . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12') . ' ' . $type[$o_type] . ' ' . __('auditlogto12') . ' ' . $type[$n_type]
+                                    __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12', true) . ' ' . $type[$o_type] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
                                 );
                             }
                         }
@@ -477,7 +475,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 } else {
                     $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value($id) . "'";
                     dbquery($sql);
-                    audit_log(sprintf(__('auditlog0412'), $id));
+                    audit_log(sprintf(__('auditlog0412', true), $id));
                 }
                 break;
             case 'filters':
@@ -578,13 +576,41 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 echo '</TABLE><BR>' . "\n";
                 echo '</FORM>' . "\n";
                 break;
+
+            case 'sendReportNow':
+                include_once __DIR__ . '/quarantine_report.inc.php';
+                $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
+                if ($requirementsCheck !== true) {
+                    echo __('checkReportRequirementsFailed12');
+                    error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
+                } else {
+                    $key = deepSanitizeInput($_POST['key'], 'string');
+                    if (!validateInput($key, 'user')) {
+                        die(__('dievalidate99'));
+                    }
+                    $ar = explode('@', $key);
+                    if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+                        echo __('errorreporttonodomainforbidden12') . '<br>';
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                        echo sprintf(__('errorreporttodomainforbidden12'), $ar[1]) . '<br>';
+                    } else {
+                        $quarantine_report = new Quarantine_Report();
+                        $reportResult = $quarantine_report->send_quarantine_reports(array($key));
+                        if ($reportResult['succ'] >= 0) {
+                            echo __('quarantineReportSend12') . "<br>\n";
+                        } else {
+                            echo __('quarantineReportFailed12') . "<br>\n";
+                        }
+                    }
+                }
+                break;
         }
     }
 
     echo '<a href="?token=' . $_SESSION['token'] . '&amp;action=new">' . __('newuser12') . '</a>'."\n";
     echo '<br><br>'."\n";
 
-    $domainAdminUserDomainFilter = "";
+    $domainAdminUserDomainFilter = '';
     if ($_SESSION['user_type'] === 'D') {
         if ($_SESSION['domain'] === '') {
             //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
@@ -660,12 +686,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
             echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
         }
-        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span style="font-size:90%">' . __('senddaily12') . '</span></td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span style="font-size:90%">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span style="font-size:90%">' . __('overrec12') . '</span></td>' . "\n";
         echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" ' . $noscan . '> <span style="font-size:90%">' . __('scanforspam212') . '</span></td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span style="font-size:90%">0=' . __('usedefault12') . '</span></td></tr>' . "\n";
-        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" value="' . __('update12') . '"></td></tr>' . "\n";
+        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" name="action" value="' . __('update12') . '"></td></tr>' . "\n";
         echo '</table></form><br>' . "\n";
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = dbquery($sql);
@@ -676,8 +702,24 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
             die(__('dietoken99'));
         }
-        // Do update
-        if (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
+        if (!isset($_POST['action'])) {
+            echo __('formerror12') . '<br>';
+        } elseif ($_POST['action'] === 'sendReportNow') {
+            include_once __DIR__ . '/quarantine_report.inc.php';
+            $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
+            if ($requirementsCheck !== true) {
+                echo __('checkReportRequirementsFailed12');
+                error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
+            } else {
+                $quarantine_report = new Quarantine_Report();
+                $reportResult = $quarantine_report->send_quarantine_reports(array($_SESSION['myusername']));
+                if ($reportResult['succ'] === 1) {
+                    echo __('quarantineReportSend12') . "<br>\n";
+                } else {
+                    echo __('quarantineReportFailed12') . "<br>\n";
+                }
+            }
+        } elseif (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
             echo __('errorpass12')  . '<br>';
         } else {
             $do_pwd = false;
@@ -717,7 +759,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             }
 
             // Audit
-            audit_log(sprintf(__('auditlog0512'), $username));
+            audit_log(sprintf(__('auditlog0512', true), $username));
             echo '<h1 style="text-align: center; color: green;">' . __('savedsettings12')  . '</h1>';
             echo '<META HTTP-EQUIV="refresh" CONTENT="3;user_manager.php">';
         }

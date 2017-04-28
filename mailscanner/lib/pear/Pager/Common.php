@@ -1627,7 +1627,7 @@ abstract class Pager_Common
         $this->_perPage = max($this->_perPage, 1); //avoid possible user errors
 
         if ($this->_useSessions && !isset($_SESSION)) {
-            session_start();
+           // session_start();
         }
         if (!empty($_REQUEST[$this->_sessionVar])) {
             $this->_perPage = max(1, (int)$_REQUEST[$this->_sessionVar]);

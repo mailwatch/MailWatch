@@ -35,8 +35,6 @@ if (USE_LDAP === true) {
     die(__('pwdresetldap63'));
 }
 
-session_start();
-
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!$_SERVER['HTTPS'] === 'on') {
         header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
@@ -78,7 +76,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 //user not found
                 $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '</p>
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
-                audit_log(sprintf(__('auditlogunf63'), $email));
+                audit_log(sprintf(__('auditlogunf63', true), $email));
                 $showpage = true;
             } else {
                 //user found, now check type of user
@@ -129,15 +127,15 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $isSent = send_email($email, $html, $text, $subject, true);
                     if ($isSent !== true) {
                         die('Error Sending email: ' . $isSent);
-                    } else {
-                        $message = '<p>' . __('01emailsuccess63') . '</p>
-                        <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
-                        audit_log(sprintf(__('auditlogreserreqested63'), $email));
-                        $showpage = true;
                     }
+
+                    $message = '<p>' . __('01emailsuccess63') . '</p>
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                    audit_log(sprintf(__('auditlogreserreqested63', true), $email));
+                    $showpage = true;
                 } else {
                     //password reset not allowed
-                    audit_log(sprintf(__('auditlogresetdenied63'), $email));
+                    audit_log(sprintf(__('auditlogresetdenied63', true), $email));
                     $errors = '<p class="pwdreseterror">' . __('resetnotallowed63') . '</p>';
                     $errors .= '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                     $showpage = true;
@@ -202,12 +200,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     //Send email
                     $subject = __('pwdresetsuccess63');
                     send_email($email, $html, $text, $subject, true);
-                    audit_log(sprintf(__('auditlogresetsuccess63'), $email));
+                    audit_log(sprintf(__('auditlogresetsuccess63', true), $email));
                     $message = '<p>' . __('pwdresetsuccess63') . '</p>
                         <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                     $showpage = true;
                 } else {
-                    audit_log(sprintf(__('auditlogidmismatch63'), $email));
+                    audit_log(sprintf(__('auditlogidmismatch63', true), $email));
                     $errors = '<p class="pwdreseterror">' . __('pwdresetidmismatch63') . '</p>
                         <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                     $showpage = true;
@@ -238,7 +236,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $sql = "SELECT * FROM users WHERE resetid = '$uid'";
                 $result = dbquery($sql);
                 if ($result->num_rows !== 1) {
-                    audit_log(sprintf(__('auditlogunf63'), $uid));
+                    audit_log(sprintf(__('auditlogunf63', true), $uid));
                     $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                     $showpage = true;
@@ -248,7 +246,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     if ($row['resetid'] === $uid) {
                         //reset id matches - check if link expired
                         if ($row['resetexpire'] < time()) {
-                            audit_log(sprintf(__('auditlogexpired63'), $row['username']));
+                            audit_log(sprintf(__('auditlogexpired63', true), $row['username']));
                             $errors = '<p class="pwdreseterror">' . __('resetexpired63') . '
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                             $showpage = true;
@@ -257,7 +255,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                             $showpage = true;
                         }
                     } else {
-                        audit_log(sprintf(__('auditlogidmismatch63'), $row['username']));
+                        audit_log(sprintf(__('auditlogidmismatch63', true), $row['username']));
                         $errors = '<p class="pwdreseterror">' . __('pwdresetidmismatch63') . '
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                         $showpage = true;
@@ -265,7 +263,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 }
             } else {
                 //no matches - deny
-                audit_log(__('auditloglinkerror63'));
+                audit_log(__('auditloglinkerror63', true));
                 $errors = __('brokenlink63') . '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                 $showpage = true;
             }

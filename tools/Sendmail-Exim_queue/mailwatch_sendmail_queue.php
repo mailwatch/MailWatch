@@ -31,7 +31,7 @@
  */
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+$pathToFunctions = '/opt/mailwatch/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
@@ -249,7 +249,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
             foreach ($output as $msgid => $msginfo) {
                 // Use 'From:' if MAIL_SENDER = sender
                 // If 'envelope-from' do not exist, use 'From:' instead (bounce)
-                $from = "";
+                $from = '';
                 if (defined('MAIL_SENDER') && MAIL_SENDER === 'sender') {
                     $from = $msginfo['sender'];
                 } else {
@@ -279,7 +279,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     safe_value($msginfo['ctime']) . "','" .
                     safe_value($from) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
+                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : '') . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
                     safe_value($msginfo['priority']) . "','" .

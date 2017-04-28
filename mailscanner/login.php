@@ -34,7 +34,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-session_start();
 disableBrowserCache();
 session_regenerate_id(true);
 
@@ -85,12 +84,19 @@ setInterval(function() {
         ?>
                         <p class="loginerror">
                             <?php
-                            switch ($_GET['error']) {
+                            $loginerror = deepSanitizeInput($_GET['error'], 'url');
+                            if (false === validateInput($loginerror, "loginerror")) {
+                                header('Location: login.php');
+                            }
+                            switch ($loginerror) {
                                 case 'baduser':
                                     echo __('badup01');
                                     break;
                                 case 'emptypassword':
                                     echo __('emptypassword01');
+                                    break;
+                                case 'timeout':
+                                    echo __('sessiontimeout01');
                                     break;
                                 default:
                                     echo __('errorund01');

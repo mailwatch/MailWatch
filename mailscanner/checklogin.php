@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/password.php';
 require_once __DIR__ . '/lib/hash_equals.php';
 disableBrowserCache();
-session_start();
+
 if (isset($_POST['token'])) {
     if (false === checkToken($_POST['token'])) {
         die(__('dietoken99'));
@@ -90,10 +90,10 @@ if ($_SESSION['user_ldap'] === false) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
             die();
-        } else {
-            $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-            updateUserPasswordHash($myusername, $newPasswordHash);
         }
+
+        $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
+        updateUserPasswordHash($myusername, $newPasswordHash);
     } else {
         // upgraded password is valid, continue as normal
         if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
@@ -157,6 +157,7 @@ if ($usercount === 1) {
     $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
     $_SESSION['global_array'] = $filter;
     $_SESSION['token'] = generateToken();
+    $_SESSION['last_update'] = time();
     $redirect_url = 'index.php';
     if (isset($_SESSION['REQUEST_URI'])) {
         $redirect_url = $_SESSION['REQUEST_URI'];

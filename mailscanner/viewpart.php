@@ -32,73 +32,72 @@
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 ini_set('memory_limit', MEMORY_LIMIT);
 
 if (!isset($_GET['id'])) {
     die(__('nomessid58'));
-} else {
-    if (false === checkToken($_GET['token'])) {
-        die(__('dietoken99'));
-    }
+}
 
-    $message_id = deepSanitizeInput($_GET['id'], 'url');
-    if (!validateInput($message_id, 'msgid')) {
-        die(__('dievalidate99'));
-    }
-    // See if message is local
-    dbconn(); // required db link for mysql_real_escape_string
-    $result = dbquery(
-        "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
-        $message_id . "' AND "
-        . $_SESSION['global_filter']
-    );
-    $message_data = $result->fetch_object();
+if (false === checkToken($_GET['token'])) {
+    die(__('dietoken99'));
+}
 
-    if (!$message_data) {
-        die(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
-    }
+$message_id = deepSanitizeInput($_GET['id'], 'url');
+if (!validateInput($message_id, 'msgid')) {
+    die(__('dievalidate99'));
+}
+// See if message is local
+dbconn(); // required db link for mysql_real_escape_string
+$result = dbquery(
+    "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
+    $message_id . "' AND "
+    . $_SESSION['global_filter']
+);
+$message_data = $result->fetch_object();
 
-    if (RPC_ONLY || !is_local($message_data->hostname)) {
-        // Host is remote - use XML-RPC
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php', $host, 80);
-        $input = new xmlrpcval($message_id);
-        $parameters = array($input);
-        $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
-        //$rsp = $client->send($msg);
-        $rsp = xmlrpc_wrapper($message_data->hostname, $msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            die(__('error58') . ' ' . $rsp->faultString());
-        }
-        $file = base64_decode($response);
+if (!$message_data) {
+    die(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
+}
+
+if (RPC_ONLY || !is_local($message_data->hostname)) {
+    // Host is remote - use XML-RPC
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php', $host, 80);
+    $input = new xmlrpcval($message_id);
+    $parameters = array($input);
+    $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
+    //$rsp = $client->send($msg);
+    $rsp = xmlrpc_wrapper($message_data->hostname, $msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
     } else {
-        //build filename path
-        $quarantine_dir = get_conf_var('QuarantineDir');
-        $filename = '';
-        switch (true) {
-            case (file_exists($quarantine_dir . '/' . $message_data->date . '/nonspam/' . $message_id)):
-                $filename = $message_data->date . '/nonspam/' . $message_id;
-                break;
-            case (file_exists($quarantine_dir . '/' . $message_data->date . '/spam/' . $message_id)):
-                $filename = $message_data->date . '/spam/' . $message_id;
-                break;
-            case (file_exists($quarantine_dir . '/' . $message_data->date . '/mcp/' . $message_id)):
-                $filename = $message_data->date . '/mcp/' . $message_id;
-                break;
-            case (file_exists($quarantine_dir . '/' . $message_data->date . '/' . $message_id . '/message')):
-                $filename = $message_data->date . '/' . $message_id . '/message';
-                break;
-        }
-
-        if (!@file_exists($quarantine_dir . '/' . $filename)) {
-            die(__('errornfd58') . "\n");
-        }
-        $file = file_get_contents($quarantine_dir . '/' . $filename);
+        die(__('error58') . ' ' . $rsp->faultString());
     }
+    $file = base64_decode($response);
+} else {
+    //build filename path
+    $quarantine_dir = get_conf_var('QuarantineDir');
+    $filename = '';
+    switch (true) {
+        case (file_exists($quarantine_dir . '/' . $message_data->date . '/nonspam/' . $message_id)):
+            $filename = $message_data->date . '/nonspam/' . $message_id;
+            break;
+        case (file_exists($quarantine_dir . '/' . $message_data->date . '/spam/' . $message_id)):
+            $filename = $message_data->date . '/spam/' . $message_id;
+            break;
+        case (file_exists($quarantine_dir . '/' . $message_data->date . '/mcp/' . $message_id)):
+            $filename = $message_data->date . '/mcp/' . $message_id;
+            break;
+        case (file_exists($quarantine_dir . '/' . $message_data->date . '/' . $message_id . '/message')):
+            $filename = $message_data->date . '/' . $message_id . '/message';
+            break;
+    }
+
+    if (!@file_exists($quarantine_dir . '/' . $filename)) {
+        die(__('errornfd58') . "\n");
+    }
+    $file = file_get_contents($quarantine_dir . '/' . $filename);
 }
 
 $params['include_bodies'] = true;

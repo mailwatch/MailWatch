@@ -43,6 +43,64 @@ if (!is_readable(__DIR__ . '/conf.php')) {
 }
 require_once __DIR__ . '/conf.php';
 
+
+// more secure session cookies
+ini_set('session.use_cookies', 1);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_trans_sid', 0);
+
+// Session timeout 10 minutes based on user activity
+// or STATUS_REFRESH + 300 sec, whichever is greater.
+
+if (defined(STATUS_REFRESH) && STATUS_REFRESH + 300 > 600) {
+    define('SESSION_TIMEOUT', STATUS_REFRESH + 300);
+} else {
+    define('SESSION_TIMEOUT', 600);
+}
+
+$session_cookie_secure = false;
+if (SSL_ONLY === true) {
+    ini_set('session.cookie_secure', 1);
+    $session_cookie_secure = true;
+}
+
+//enforce session cookie security
+$params = session_get_cookie_params();
+if (defined('SESSION_NAME')) {
+    session_name(SESSION_NAME);
+}
+session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
+
+// Load Language File
+// If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
+if (!defined('LANG')) {
+    define('LANG', 'en');
+}
+$langCode = LANG;
+// If the user is allowed to select the language for the gui check which language he has choosen or create the cookie with the default lang
+if (defined('USER_SELECTABLE_LANG')) {
+    if (isset($_COOKIE['MW_LANG']) && checkLangCode($_COOKIE['MW_LANG'])) {
+        $langCode = $_COOKIE['MW_LANG'];
+    } else {
+        setcookie('MW_LANG', LANG, 0, $params['path'], $params['domain'], $session_cookie_secure, false);
+    }
+}
+
+// Load the lang file or en if the spicified language is not available
+if (!is_file(__DIR__ . '/languages/' . $langCode . '.php')) {
+    $lang = require __DIR__ . '/languages/en.php';
+} else {
+    $lang = require __DIR__ . '/languages/' . $langCode . '.php';
+}
+
+// Load the lang file or en if the spicified language is not available
+if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
+    $systemLang = require __DIR__ . '/languages/en.php';
+} else {
+    $systemLang = require __DIR__ . '/languages/' . LANG . '.php';
+}
+
 $missingConfigEntries = checkConfVariables();
 if ($missingConfigEntries['needed']['count'] !== 0) {
     $br = '';
@@ -65,16 +123,6 @@ set_include_path(
     MAILWATCH_HOME . '/lib/xmlrpc'
 );
 
-// Load Language File
-// If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
-if (!defined('LANG')) {
-    define('LANG', 'en');
-}
-if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
-    $lang = require __DIR__ . '/languages/en.php';
-} else {
-    $lang = require __DIR__ . '/languages/' . LANG . '.php';
-}
 
 //HTLMPurifier
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
@@ -94,33 +142,8 @@ if (PHP_SAPI !== 'cli') {
     header('X-Content-Type-Options: nosniff');
 }
 
-// more secure session cookies
-ini_set('session.use_cookies', 1);
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.use_trans_sid', 0);
-
-// Session garbage collection 5 minutes based on user activity
-// or STATUS_REFRESH + 60 sec, whichever is greater.
-
-if (defined(STATUS_REFRESH) && STATUS_REFRESH + 60 > 300) {
-    ini_set('session.gc_maxlifetime', STATUS_REFRESH + 60);
-} else {
-    ini_set('session.gc_maxlifetime', 300);
-}
-ini_set('session.gc_divisor', 1);
-ini_set('session.gc_probability', 1);
-
-$session_cookie_secure = false;
-if (SSL_ONLY === true) {
-    ini_set('session.cookie_secure', 1);
-    $session_cookie_secure = true;
-}
-
-//enforce session cookie security
-$params = session_get_cookie_params();
-session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 unset($session_cookie_secure);
+session_start();
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
@@ -244,9 +267,9 @@ function suppress_zeros($number)
 {
     if (abs($number - 0.0) < 0.1) {
         return '.';
-    } else {
-        return $number;
     }
+
+    return $number;
 }
 
 function disableBrowserCache()
@@ -282,6 +305,12 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
     }
 
+    if (!isset($_SESSION['last_update']) || $_SESSION['last_update'] + SESSION_TIMEOUT < time()) {
+        header('Location: logout.php?error=timeout');
+    } else {
+        $_SESSION['last_update'] = time();
+    }
+
     echo page_creation_timer();
     echo '<!DOCTYPE HTML>' . "\n";
     echo '<html>' . "\n";
@@ -304,7 +333,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             // Use existing filters
             $filter = $_SESSION['filter'];
         }
-        audit_log(__('auditlogreport03') . ' ' . $title);
+        audit_log(__('auditlogreport03', true) . ' ' . $title);
     } else {
         echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
     }
@@ -327,6 +356,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
+    echo '<script>setTimeout(function(){ window.location.href="logout.php?error=timeout";}, ' . SESSION_TIMEOUT*1000 . ');</script>';
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
     echo '<tr class="noprint">' . "\n";
     echo '<td>' . "\n";
@@ -521,7 +551,7 @@ function printMTAQueue()
                 echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
             }
         }
-        if ($inq != null && $outq != null) {
+        if ($inq !== null && $outq !== null) {
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
@@ -827,6 +857,21 @@ function printNavBar()
         }
     }
 
+    if (defined('USER_SELECTABLE_LANG')) {
+        $langCodes = split(',', USER_SELECTABLE_LANG);
+        if (count($langCodes) > 1) {
+            global $langCode;
+            echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
+            echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
+            for ($i=0; $i < count($langCodes); $i++) {
+                echo '<option value="' . $langCodes[$i] . '"'
+                . ($langCodes[$i] === $langCode ? ' selected' : '')
+                . '>' . __($langCodes[$i]) . '</option>' ."\n";
+            }
+            echo '</select></li>'. "\n";
+        }
+    }
+
     echo '
  </ul>
  </td>
@@ -1020,11 +1065,18 @@ function safe_value($value)
 
 /**
  * @param string $string
+ * @param boolean $userSystemLang
  * @return string
  */
-function __($string)
+function __($string, $useSystemLang = false)
 {
-    global $lang;
+    if ($useSystemLang) {
+        global $systemLang;
+        $language = $systemLang;
+    } else {
+        global $lang;
+        $language = $lang;
+    }
 
     $debug_message = '';
     $pre_string = '';
@@ -1035,8 +1087,8 @@ function __($string)
         $post_string = '</span>';
     }
 
-    if (isset($lang[$string])) {
-        return $lang[$string] . $debug_message;
+    if (isset($language[$string])) {
+        return $language[$string] . $debug_message;
     }
 
     $en_lang = require __DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php';
@@ -1044,7 +1096,7 @@ function __($string)
         return $pre_string . $en_lang[$string] . $debug_message . $post_string;
     }
 
-    return $pre_string . $lang['i18_missing'] . $debug_message . $post_string;
+    return $pre_string . $language['i18_missing'] . $debug_message . $post_string;
 }
 
 /**
@@ -1094,14 +1146,12 @@ function getUTF8String($string)
 function getFROMheader($header)
 {
     $sender = '';
-    if (preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
+    if (preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match) === 1) {
         if (isset($match[2])) {
             $sender = $match[2];
         }
-        if (preg_match('/\S+@\S+/', $sender, $match_email)) {
-            if (isset($match_email[0])) {
-                $sender = str_replace(array('<', '>', '"'), '', $match_email[0]);
-            }
+        if (preg_match('/\S+@\S+/', $sender, $match_email) === 1 && isset($match_email[0])) {
+            $sender = str_replace(array('<', '>', '"'), '', $match_email[0]);
         }
     }
     return $sender;
@@ -1114,7 +1164,7 @@ function getFROMheader($header)
 function getSUBJECTheader($header)
 {
     $subject = '';
-    if (preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match)) {
+    if (preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match) === 1) {
         $subLines = preg_split('/[\r\n]+/', $match[2]);
         for ($i = 0, $countSubLines = count($subLines); $i < $countSubLines; $i++) {
             $convLine = '';
@@ -1153,11 +1203,13 @@ function sa_autolearn($spamreport)
 {
     if (preg_match('/autolearn=spam/', $spamreport) === 1) {
         return __('saspam03');
-    } elseif (preg_match('/autolearn=not spam/', $spamreport)) {
-        return __('sanotspam03');
-    } else {
-        return false;
     }
+
+    if (preg_match('/autolearn=not spam/', $spamreport) === 1) {
+        return __('sanotspam03');
+    }
+
+    return false;
 }
 
 /**
@@ -1535,9 +1587,9 @@ function trim_output($input, $maxlen)
 {
     if ($maxlen > 0 && strlen($input) >= $maxlen) {
         return substr($input, 0, $maxlen) . '...';
-    } else {
-        return $input;
     }
+
+    return $input;
 }
 
 /**
@@ -1576,10 +1628,9 @@ function get_conf_var($name, $force = false)
     $array_output1 = parse_conf_file($MailScanner_conf_file);
     $array_output2 = parse_conf_dir($conf_dir);
 
+    $array_output = $array_output1;
     if (is_array($array_output2)) {
         $array_output = array_merge($array_output1, $array_output2);
-    } else {
-        $array_output = $array_output1;
     }
 
     foreach ($array_output as $parameter_name => $parameter_value) {
@@ -1588,9 +1639,9 @@ function get_conf_var($name, $force = false)
         if (strtolower($parameter_name) === strtolower($name)) {
             if (is_file($parameter_value)) {
                 return read_ruleset_default($parameter_value);
-            } else {
-                return $parameter_value;
             }
+
+            return $parameter_value;
         }
     }
 
@@ -1606,8 +1657,8 @@ function parse_conf_dir($conf_dir)
     $array_output1 = array();
     if ($dh = opendir($conf_dir)) {
         while (($file = readdir($dh)) !== false) {
-            // remove the . and .. so that it doesn't throw an error when parsing files
-            if ($file !== '.' && $file !== '..') {
+            // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
+            if (strlen($file) > 0 &&  substr($file, 0, 1) !== '.' && is_file($conf_dir . $file)) {
                 $file_name = $conf_dir . $file;
                 if (!is_array($array_output1)) {
                     $array_output1 = parse_conf_file($file_name);
@@ -2181,6 +2232,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo ' </tr>' . "\n";
         // Rows
+        $id = '';
         $jsRadioCheck = '';
         $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
@@ -2213,7 +2265,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $fieldNumber = $f;
                 }
                 $field = $sth->fetch_field_direct($fieldNumber);
-                $id = '';
                 switch ($field->name) {
                     case 'id':
                         // Store the id for later use
@@ -2296,8 +2347,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row[$f],
-                                $virus) && DISPLAY_VIRUS_REPORT === true
+                        if (defined('VIRUS_REGEX') && defined('DISPLAY_VIRUS_REPORT')
+                            && DISPLAY_VIRUS_REPORT === true && preg_match(VIRUS_REGEX, $row[$f], $virus)
                         ) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
@@ -2352,12 +2403,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = $status;
                         break;
                 }
-                // Now add the id to the operations form elements
-                if ($operations !== false) {
-                    $row[0] = str_replace('REPLACEME', $id, $row[0]);
-                    $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
-                    $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
-                }
+            }
+            // Now add the id to the operations form elements
+            if ($operations !== false) {
+                $row[0] = str_replace('REPLACEME', $id, $row[0]);
+                $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
+                $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
             }
             // Colorise the row
             switch (true) {
@@ -2687,16 +2738,18 @@ function debug($text)
 /**
  * @param $dir
  * @return bool|int
+ *
+ * @todo rewrite using SPL
  */
 function count_files_in_dir($dir)
 {
     $file_list_array = @scandir($dir);
     if ($file_list_array === false) {
         return false;
-    } else {
-        //there is always . and .. so reduce the count
-        return count($file_list_array) - 2;
     }
+
+    //there is always . and .. so reduce the count
+    return count($file_list_array) - 2;
 }
 
 /**
@@ -2879,13 +2932,13 @@ function ldap_authenticate($username, $password)
                     }
 
                     return $email;
-                } else {
-                    if (ldap_errno($ds) === 49) {
-                        //LDAP_INVALID_CREDENTIALS
-                        return null;
-                    }
-                    die(ldap_print_error($ds));
                 }
+
+                if (ldap_errno($ds) === 49) {
+                    //LDAP_INVALID_CREDENTIALS
+                    return null;
+                }
+                die(ldap_print_error($ds));
             }
         }
     }
@@ -3011,19 +3064,19 @@ function ldap_get_conf_var($entry)
         if ($info[0]['count'] === 0) {
             // Return single value
             return $info[0][$info[0][0]][0];
-        } else {
-            // Multi-value option, build array and return as space delimited
-            $return = array();
-            for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
-                $return[] = $info[0][$info[0][0]][$n];
-            }
-
-            return implode(' ', $return);
         }
-    } else {
-        // No results
-        die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
+
+        // Multi-value option, build array and return as space delimited
+        $return = array();
+        for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
+            $return[] = $info[0][$info[0][0]][$n];
+        }
+
+        return implode(' ', $return);
     }
+
+    // No results
+    die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
 }
 
 /**
@@ -3090,9 +3143,9 @@ function translate_etoi($name)
     fclose($fh) or die($php_errormsg);
     if (isset($etoi["$name"])) {
         return $etoi["$name"];
-    } else {
-        return $name;
     }
+
+    return $name;
 }
 
 /**
@@ -3322,23 +3375,23 @@ SELECT
         }
 
         return $quarantined;
-    } else {
-        // Host is remote call quarantine_list_items by RPC
-        debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
-        //if(DEBUG) { $client->setDebug(1); }
-        //$parameters = array($input);
-        //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
-        $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($msgid)));
-        $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            $response = 'XML-RPC Error: ' . $rsp->faultString();
-        }
-
-        return $response;
     }
+
+    // Host is remote call quarantine_list_items by RPC
+    debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
+    //if(DEBUG) { $client->setDebug(1); }
+    //$parameters = array($input);
+    //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
+    $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($msgid)));
+    $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        $response = 'XML-RPC Error: ' . $rsp->faultString();
+    }
+
+    return $response;
 }
 
 /**
@@ -3352,10 +3405,10 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
-    } else {
-        $new = quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
     }
+
+    $new = quarantine_list_items($list[0]['msgid']);
+    $list =& $new;
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         if (!QUARANTINE_USE_SENDMAIL) {
@@ -3391,32 +3444,32 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $error = true;
             } else {
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
+                audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
             }
 
             return $status;
-        } else {
-            // Use sendmail to release message
-            // We can only release message/rfc822 files in this way.
-            $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
-            foreach ($num as $key => $val) {
-                if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
-                    debug($cmd . $list[$val]['path']);
-                    exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
-                    if ($retval === 0) {
-                        $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                        audit_log(sprintf(__('auditlogquareleased03'), $list[$val]['msgid']) . ' ' . $to);
-                    } else {
-                        $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
-                                "\n",
-                                $output_array
-                            );
-                        global $error;
-                        $error = true;
-                    }
+        }
 
-                    return $status;
+        // Use sendmail to release message
+        // We can only release message/rfc822 files in this way.
+        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+        foreach ($num as $key => $val) {
+            if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
+                debug($cmd . $list[$val]['path']);
+                exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
+                if ($retval === 0) {
+                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                    audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
+                } else {
+                    $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
+                            "\n",
+                            $output_array
+                        );
+                    global $error;
+                    $error = true;
                 }
+
+                return $status;
             }
         }
     } else {
@@ -3465,10 +3518,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     dbconn();
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
-    } else {
-        $new = quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
     }
+
+    $new = quarantine_list_items($list[0]['msgid']);
+    $list =& $new;
     $status = array();
     if (!$rpc_only && is_local($list[0]['host'])) {
         foreach ($num as $key => $val) {
@@ -3504,7 +3557,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $isfp = null;
             }
             if ($isfp !== null) {
-                $sql = "UPDATE maillog SET timestamp=timestamp, isfp=" . $isfp . ", isfn=" . $isfn . " WHERE id='"
+                $sql = 'UPDATE maillog SET timestamp=timestamp, isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
                     . safe_value($list[$val]['msgid']) . "'";
             }
             
@@ -3531,7 +3584,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                             break;
                     }
                     audit_log(
-                        sprintf(__('auditlogquareleased03') . ' ', $list[$val]['msgid']) . ' ' . $learn_type
+                        sprintf(__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                     );
                 } else {
                     $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
@@ -3561,7 +3614,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         dbquery($sql);
                     }
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
-                    audit_log(sprintf(__('auditlogspamtrained03'), $list[$val]['msgid']) . ' ' . $learn_type);
+                    audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
                     $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
                             "\n",
@@ -3574,38 +3627,38 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         }
 
         return implode("\n", $status);
-    } else {
-        // Call by RPC
-        debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-        // Convert input parameters
-        $list_output = array();
-        foreach ($list as $list_array) {
-            $list_struct = array();
-            foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
-            }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
-        }
-        $num_output = array();
-        foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
-        }
-        // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
-        $param3 = new xmlrpcval($type, 'string');
-        $parameters = array($param1, $param2, $param3);
-        $msg = new xmlrpcmsg('quarantine_learn', $parameters);
-        $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            $response = 'XML-RPC Error: ' . $rsp->faultString();
-        }
-
-        return $response . ' (RPC)';
     }
+
+    // Call by RPC
+    debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    // Convert input parameters
+    $list_output = array();
+    foreach ($list as $list_array) {
+        $list_struct = array();
+        foreach ($list_array as $key => $val) {
+            $list_struct[$key] = new xmlrpcval($val);
+        }
+        $list_output[] = new xmlrpcval($list_struct, 'struct');
+    }
+    $num_output = array();
+    foreach ($num as $key => $val) {
+        $num_output[$key] = new xmlrpcval($val);
+    }
+    // Build input parameters
+    $param1 = new xmlrpcval($list_output, 'array');
+    $param2 = new xmlrpcval($num_output, 'array');
+    $param3 = new xmlrpcval($type, 'string');
+    $parameters = array($param1, $param2, $param3);
+    $msg = new xmlrpcmsg('quarantine_learn', $parameters);
+    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        $response = 'XML-RPC Error: ' . $rsp->faultString();
+    }
+
+    return $response . ' (RPC)';
 }
 
 /**
@@ -3618,10 +3671,10 @@ function quarantine_delete($list, $num, $rpc_only = false)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
-    } else {
-        $new = quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
     }
+
+    $new = quarantine_list_items($list[0]['msgid']);
+    $list =& $new;
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         $status = array();
@@ -3629,7 +3682,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                 dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                audit_log(__('auditlogdelqua03') . ' ' . $list[$val]['path']);
+                audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
             } else {
                 $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
                 global $error;
@@ -3638,37 +3691,37 @@ function quarantine_delete($list, $num, $rpc_only = false)
         }
 
         return implode("\n", $status);
-    } else {
-        // Call by RPC
-        debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-        // Convert input parameters
-        $list_output = array();
-        foreach ($list as $list_array) {
-            $list_struct = array();
-            foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
-            }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
-        }
-        $num_output = array();
-        foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
-        }
-        // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
-        $parameters = array($param1, $param2);
-        $msg = new xmlrpcmsg('quarantine_delete', $parameters);
-        $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            $response = 'XML-RPC Error: ' . $rsp->faultString();
-        }
-
-        return $response . ' (RPC)';
     }
+
+    // Call by RPC
+    debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    // Convert input parameters
+    $list_output = array();
+    foreach ($list as $list_array) {
+        $list_struct = array();
+        foreach ($list_array as $key => $val) {
+            $list_struct[$key] = new xmlrpcval($val);
+        }
+        $list_output[] = new xmlrpcval($list_struct, 'struct');
+    }
+    $num_output = array();
+    foreach ($num as $key => $val) {
+        $num_output[$key] = new xmlrpcval($val);
+    }
+    // Build input parameters
+    $param1 = new xmlrpcval($list_output, 'array');
+    $param2 = new xmlrpcval($num_output, 'array');
+    $parameters = array($param1, $param2);
+    $msg = new xmlrpcmsg('quarantine_delete', $parameters);
+    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        $response = 'XML-RPC Error: ' . $rsp->faultString();
+    }
+
+    return $response . ' (RPC)';
 }
 
 /**
@@ -3693,11 +3746,11 @@ function audit_log($action)
 {
     $link = dbconn();
     if (AUDIT) {
+        $user = 'unknown';
         if (isset($_SESSION['myusername'])) {
             $user = $link->real_escape_string($_SESSION['myusername']);
-        } else {
-            $user = 'unknown';
         }
+
         $action = safe_value($action);
         $ip = safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
@@ -3718,9 +3771,9 @@ function mailwatch_array_sum($array)
     if (!is_array($array)) {
         // Not an array
         return array();
-    } else {
-        return array_sum($array);
     }
+
+    return array_sum($array);
 }
 
 /**
@@ -3737,12 +3790,14 @@ function read_ruleset_default($file)
                 // Check that it isn't another ruleset
                 if (is_file($regs[3])) {
                     return read_ruleset_default($regs[3]);
-                } else {
-                    return $regs[3];
                 }
+
+                return $regs[3];
             }
         }
     }
+
+    return '';
 }
 
 /**
@@ -3787,13 +3842,14 @@ function return_quarantine_dates()
  */
 function return_virus_link($virus)
 {
+    $virus = htmlentities($virus);
     if (defined('VIRUS_INFO') && VIRUS_INFO !== false) {
         $link = sprintf(VIRUS_INFO, $virus);
 
         return sprintf('<a href="%s">%s</a>', $link, $virus);
-    } else {
-        return $virus;
     }
+
+    return $virus;
 }
 
 /**
@@ -3838,9 +3894,9 @@ function is_rpc_client_allowed()
 
         // If all else fails
         return false;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 /**
@@ -3909,12 +3965,12 @@ function updateUserPasswordHash($user, $hash)
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
         dbquery($sqlUpdateFieldLength);
-        audit_log(sprintf(__('auditlogquareleased03') . ' ', $passwordFiledLength));
+        audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
     }
 
     $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
     dbquery($sqlUpdateHash);
-    audit_log(__('auditlogupdateuser03') . ' ' . $user);
+    audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
 }
 
 /**
@@ -4270,6 +4326,8 @@ function checkConfVariables()
         'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
         'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
+        'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
+        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
     );
 
     $neededMissing = array();
@@ -4405,23 +4463,27 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
         ));
 
         return $privateIPSet->match($ip);
-    } elseif ($privateLocal === 'local') {
+    }
+
+    if ($privateLocal === 'local') {
         $localIPSet = new \IPSet\IPSet(array(
             '127.0.0.1',
             '::1',
         ));
 
         return $localIPSet->match($ip);
-    } elseif ($privateLocal === false && $net !== false) {
+    }
+
+    if ($privateLocal === false && $net !== false) {
         $network = new \IPSet\IPSet(array(
             $net
         ));
 
         return $network->match($ip);
-    } else {
-        //return false to fail gracefully
-        return false;
     }
+
+    //return false to fail gracefully
+    return false;
 }
 
 /**
@@ -4482,7 +4544,7 @@ function validateInput($input, $type)
             }
             break;
         case 'user':
-            if (preg_match('/^[\p{L}\p{M}\p{N}~!@$%^*=_:.\/-]{1,256}$/u', $input)) {
+            if (preg_match('/^[\p{L}\p{M}\p{N}~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
                 return true;
             }
             break;
@@ -4522,7 +4584,7 @@ function validateInput($input, $type)
             }
             break;
         case 'msgid':
-            if (preg_match('/^([A-F0-9]{8,12}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,16}(?=z[A-Za-x]{4,8})|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,14})$/',
+            if (preg_match('/^([A-F0-9]{7,12}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,16}(?=z[A-Za-x]{4,8})|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,14})$/',
                 $input)) {
                 return true;
             }
@@ -4602,6 +4664,11 @@ function validateInput($input, $type)
                 return true;
             }
             break;
+        case 'loginerror':
+            if (preg_match('/^(baduser|emptypassword|timeout)$/', $input)) {
+                return true;
+            }
+            break;
         default:
             return false;
     }
@@ -4661,4 +4728,21 @@ function checkFormToken($formstring, $formtoken)
     unset($_SESSION['formtoken']);
 
     return $calc === deepSanitizeInput($formtoken, 'url');
+}
+
+/**
+ * Checks if the passed language code is allowed to be used for the users
+ * @param string $langCode
+ * @return boolean
+ */
+function checkLangCode($langCode)
+{
+    $validLang = split(',', USER_SELECTABLE_LANG);
+    $found = array_search($langCode, $validLang);
+    if ($found === false || $found === null) {
+        audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
+        return false;
+    } else {
+        return true;
+    }
 }

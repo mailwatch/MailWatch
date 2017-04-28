@@ -29,10 +29,9 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('opresult21'));

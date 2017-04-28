@@ -30,28 +30,27 @@
  */
 
 // Include of necessary functions
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('toprecipdomqt40'), 0, false, true);
 
-$sql = "
+$sql = '
  SELECT
-  SUBSTRING_INDEX(to_address, '@', -1) AS name,
-  COUNT(*) as count,
-  SUM(size) as size
+  SUBSTRING_INDEX(to_address, \'@\', -1) AS `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
+  from_address <> "" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  GROUP BY
   to_domain
  ORDER BY
