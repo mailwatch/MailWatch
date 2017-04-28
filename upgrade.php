@@ -35,7 +35,7 @@ if (PHP_SAPI !== 'cli') {
 }
 
 // Edit if you changed webapp directory from default and not using command line argument to define it
-$pathToFunctions = '/opt/mailwatch/mailscanner/functions.php';
+$pathToFunctions = '/var/www/html/mailscanner/functions.php';
 //$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
 
 $cli_options = getopt('', array('skip-user-confirm'));
