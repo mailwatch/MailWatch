@@ -47,11 +47,14 @@ html_start(__('msgviewer06'), 0, false, false);
     </SCRIPT>
 <?php
 dbconn();
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id']) && !isset($_GET['amp;id'])) {
     die(__('nomessid06'));
 }
-
-$message_id = deepSanitizeInput($_GET['id'], 'url');
+if (isset($_GET['amp;id'])) {
+    $message_id = deepSanitizeInput($_GET['amp;id'], 'url');
+} else {
+    $message_id = deepSanitizeInput($_GET['id'], 'url');
+}
 if (!validateInput($message_id, 'msgid')) {
     die();
 }

@@ -32,13 +32,17 @@
 require_once __DIR__ . '/functions.php';
 if (file_exists('conf.php')) {
     $output = array();
-    if (isset($_GET['mid'], $_GET['r'])) {
+    if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {
         dbconn();
         $mid = deepSanitizeInput($_GET['mid'], 'url');
         if ($mid === false || !validateInput($mid, 'msgid')) {
             die();
         }
-        $token = deepSanitizeInput($_GET['r'], 'url');
+        if (isset($_GET['amp;r'])) {
+            $token = deepSanitizeInput($_GET['amp;r'], 'url');
+        } else {
+            $token = deepSanitizeInput($_GET['r'], 'url');
+        }
         if (!validateInput($token, 'releasetoken')) {
             die(__('dietoken99'));
         }
