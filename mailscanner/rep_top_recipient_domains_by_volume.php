@@ -39,9 +39,6 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('toprecipdomvol41'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_recipient_domains_by_volume.png.' . time();
-
 $sql = '
  SELECT
   SUBSTRING_INDEX(to_address, \'@\', -1) AS `name`,
@@ -61,10 +58,10 @@ $sql = '
  LIMIT 10
 ';
 
-$columnTitles = array(
-    __('domain41'),
-    __('count03'),
-    __('size03')
+$columns = array(
+    'name' => __('domain41'),
+    'countconv' => __('count03'),
+    'sizeconv' => __('size03')
 );
 $sqlColumns = array(
     'name',
@@ -79,7 +76,7 @@ $graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'size'
 );
-printGraphTable($filename, $sql, __('top10recipdomvol41'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($sql, __('top10recipdomvol41'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();
