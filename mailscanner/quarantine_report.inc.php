@@ -394,7 +394,7 @@ ORDER BY a.date DESC, a.time DESC';
                 }
             }
             $quarantined = call_user_func_array('array_merge', $quarantined);
-            if (count($quarantine_list) > 0) {
+            if (count($quarantined) > 0) {
                 $list = implode(', ', $quarantine_list);
                 return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
             }
