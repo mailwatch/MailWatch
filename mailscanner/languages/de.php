@@ -66,7 +66,7 @@ return array(
     'mailqueue03' => 'Mail Queues',
     'inbound03' => 'Eingehend:',
     'outbound03' => 'Ausgehend:',
-    'clean03' => 'Sauber:',
+    'clean03' => 'Sauber',
     'topvirus03' => 'Top Virus:',
     'freedspace03' => 'Freier Plattenplatz',
     'todaystotals03' => 'Heutige Zahlen',
