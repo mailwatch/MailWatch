@@ -745,7 +745,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             }
             $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
             if (!validateInput($quarantine_rcpt, 'user')) {
-                die(__('dievalidate99'));
+                $quarantine_rcpt = '';
             }
 
             if (isset($_POST['password']) && $_POST['password'] !== 'XXXXXXXX') {
