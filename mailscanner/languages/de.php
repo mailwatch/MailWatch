@@ -475,7 +475,10 @@ return array(
     'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
     'quarantineReportSend12' => 'Der Quarantäne-Bericht wurde erfolgreich versendet.',
     'checkReportRequirementsFailed12' => 'Die Anforderungen für das Senden von Quarantäne-Berichten sind nicht erfüllt. Bitte kontaktieren Sie ihren Administrator.',
-
+    'usercreated12' => 'Benutzer %s wurde erstellt',
+    'useredited12' => 'Benutzer %s wurde geändert',
+    'userdeleted12' => 'Benuter %s wurde gelöscht',
+    
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
     'updatesadesc13' => 'SpamAssassin Regel-Beschreibungen aktualieren',
