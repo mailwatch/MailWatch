@@ -191,6 +191,7 @@ return array(
     'children03' => 'proc. fils',
     'procs03' => 'processus',
     'errorWarning03' => 'Attention : une erreur s\'est produite :',
+    'phpxmlnotloaded03 => 'The PHP extension xml is missing',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
