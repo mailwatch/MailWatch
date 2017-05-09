@@ -3778,20 +3778,6 @@ function quarantine_delete($list, $num, $rpc_only = false)
 }
 
 /**
- * @param $id
- * @return mixed
- */
-function fixMessageId($id)
-{
-    $mta = get_conf_var('mta');
-    if ($mta === 'postfix') {
-        $id = str_replace('_', '.', $id);
-    }
-
-    return $id;
-}
-
-/**
  * @param string $action
  * @return bool
  */
