@@ -127,180 +127,180 @@ $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 
-    $listurl = 'lists.php?token=' . $_SESSION['token'] .'&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
-    for ($f = 0; $f < $result->field_count; $f++) {
-        $fieldInfo = $result->fetch_field_direct($f);
-        $fieldn = $fieldInfo->name;
-        if ($fieldn === __('receivedfrom04')) {
-            $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
-            if (LISTS) {
-                $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=h&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=h&amp;list=b">' . __('addbl04') . '</a>]</td>';
-            }
-            $output .= "</tr></table>\n";
-            $row[$f] = $output;
+$listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
+for ($f = 0; $f < $result->field_count; $f++) {
+    $fieldInfo = $result->fetch_field_direct($f);
+    $fieldn = $fieldInfo->name;
+    if ($fieldn === __('receivedfrom04')) {
+        $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
+        if (LISTS) {
+            $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=h&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=h&amp;list=b">' . __('addbl04') . '</a>]</td>';
         }
-        if ($fieldn === __('receivedvia04')) {
-            // Start Table
-            $output = '<table width="100%" class="sa_rules_report">' . "\n";
-            $output .= ' <tr>' . "\n";
-            $output .= ' <th>' . __('ipaddress04') . '</th>' . "\n";
-            $output .= ' <th>' . __('hostname04') . '</th>' . "\n";
-            $output .= ' <th>' . __('country04') . '</th>' . "\n";
-            $output .= ' <th class="noprint">RBL</th>' . "\n";
-            $output .= ' <th class="noprint">Spam</th>' . "\n";
-            $output .= ' <th class="noprint" >Virus</th>' . "\n";
-            $output .= ' <th class="noprint">' . __('all04') . '</th>' . "\n";
-            $output .= ' </tr>' . "\n";
-            if (is_array($relays = get_mail_relays($row[$f]))) {
-                foreach ($relays as $relay) {
-                    $output .= ' <tr>' . "\n";
-                    $output .= ' <td>' . $relay . '</td>' . "\n";
-                    // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-                    $relay = stripPortFromIp($relay);
-                    //check if address is in private IP space
-                    $isPrivateNetwork = ip_in_range($relay, false, 'private');
-                    $isLocalNetwork = ip_in_range($relay, false, 'local');
-                    if ($isPrivateNetwork === true) {
-                        $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
-                    } elseif ($isLocalNetwork === true) {
-                        $output .= ' <td>' . __('localhost04') . "</td>\n";
-                    }
-                    // Reverse lookup on address. Possibly need to remove it.
-                    elseif (($host = gethostbyaddr($relay)) !== $relay) {
-                        $output .= " <td>$host</td>\n";
-                    } else {
-                        $output .= ' <td>' . __('reversefailed04') . "</td>\n";
-                    }
-                    // Do GeoIP lookup on address
-                    if (true === $isPrivateNetwork) {
-                        $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
-                    } elseif ($isLocalNetwork === true) {
-                        $output .= ' <td>' . __('localhost04') . "</td>\n";
-                    } elseif ($geoip_country = return_geoip_country($relay)) {
-                        $output .= ' <td>' . $geoip_country . '</td>' . "\n";
-                    } else {
-                        $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
-                    }
-                    // Link to RBL Lookup
-                    $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Link to Spam Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Link to Virus Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Link to All Messages Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Close table
-                    $output .= ' </tr>' . "\n";
+        $output .= "</tr></table>\n";
+        $row[$f] = $output;
+    }
+    if ($fieldn === __('receivedvia04')) {
+        // Start Table
+        $output = '<table width="100%" class="sa_rules_report">' . "\n";
+        $output .= ' <tr>' . "\n";
+        $output .= ' <th>' . __('ipaddress04') . '</th>' . "\n";
+        $output .= ' <th>' . __('hostname04') . '</th>' . "\n";
+        $output .= ' <th>' . __('country04') . '</th>' . "\n";
+        $output .= ' <th class="noprint">RBL</th>' . "\n";
+        $output .= ' <th class="noprint">Spam</th>' . "\n";
+        $output .= ' <th class="noprint" >Virus</th>' . "\n";
+        $output .= ' <th class="noprint">' . __('all04') . '</th>' . "\n";
+        $output .= ' </tr>' . "\n";
+        if (is_array($relays = get_mail_relays($row[$f]))) {
+            foreach ($relays as $relay) {
+                $output .= ' <tr>' . "\n";
+                $output .= ' <td>' . $relay . '</td>' . "\n";
+                // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+                $relay = stripPortFromIp($relay);
+                //check if address is in private IP space
+                $isPrivateNetwork = ip_in_range($relay, false, 'private');
+                $isLocalNetwork = ip_in_range($relay, false, 'local');
+                if ($isPrivateNetwork === true) {
+                    $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
+                } elseif ($isLocalNetwork === true) {
+                    $output .= ' <td>' . __('localhost04') . "</td>\n";
                 }
-                $output .= '</table>' . "\n";
-                $row[$f] = $output;
-            } else {
-                $row[$f] = '127.0.0.1'; // Must be local mailer (Exim)
+                // Reverse lookup on address. Possibly need to remove it.
+                elseif (($host = gethostbyaddr($relay)) !== $relay) {
+                    $output .= " <td>$host</td>\n";
+                } else {
+                    $output .= ' <td>' . __('reversefailed04') . "</td>\n";
+                }
+                // Do GeoIP lookup on address
+                if (true === $isPrivateNetwork) {
+                    $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
+                } elseif ($isLocalNetwork === true) {
+                    $output .= ' <td>' . __('localhost04') . "</td>\n";
+                } elseif ($geoip_country = return_geoip_country($relay)) {
+                    $output .= ' <td>' . $geoip_country . '</td>' . "\n";
+                } else {
+                    $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
+                }
+                // Link to RBL Lookup
+                $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Link to Spam Report for this relay
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Link to Virus Report for this relay
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Link to All Messages Report for this relay
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Close table
+                $output .= ' </tr>' . "\n";
             }
-        }
-        if ($fieldn === __('report04')) {
-            $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
-            $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
-            $row[$f] = preg_replace('/ <br>/', '<br>', $row[$f]);
-        }
-        if ($fieldn === __('from04')) {
-            $row[$f] = htmlentities($row[$f]);
-            $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
-            if (LISTS) {
-                $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . __('addbl04') . '</a>]</td>' . "\n";
-            }
-            $output .= '</tr></table>' . "\n";
+            $output .= '</table>' . "\n";
             $row[$f] = $output;
+        } else {
+            $row[$f] = '127.0.0.1'; // Must be local mailer (Exim)
         }
-        if ($fieldn === __('to04')) {
-            $row[$f] = htmlspecialchars($row[$f]);
-            $row[$f] = str_replace(',', '<br>', $row[$f]);
+    }
+    if ($fieldn === __('report04')) {
+        $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
+        $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+        $row[$f] = preg_replace('/ <br>/', '<br>', $row[$f]);
+    }
+    if ($fieldn === __('from04')) {
+        $row[$f] = htmlentities($row[$f]);
+        $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
+        if (LISTS) {
+            $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . __('addbl04') . '</a>]</td>' . "\n";
         }
-        if ($fieldn === __('subject04')) {
-            $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
+        $output .= '</tr></table>' . "\n";
+        $row[$f] = $output;
+    }
+    if ($fieldn === __('to04')) {
+        $row[$f] = htmlspecialchars($row[$f]);
+        $row[$f] = str_replace(',', '<br>', $row[$f]);
+    }
+    if ($fieldn === __('subject04')) {
+        $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
+    }
+    if ($fieldn === __('spamrep04')) {
+        $row[$f] = format_spam_report($row[$f]);
+    }
+    if ($fieldn === __('size04')) {
+        $row[$f] = formatSize($row[$f]);
+    }
+    if ($fieldn === __('msgheaders04')) {
+        if (version_compare(PHP_VERSION, '5.4', '>=')) {
+            $row[$f] = nl2br(
+                str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
+            );
+        } else {
+            $row[$f] = nl2br(
+                str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f]))
+            );
         }
-        if ($fieldn === __('spamrep04')) {
-            $row[$f] = format_spam_report($row[$f]);
+        if (function_exists('iconv_mime_decode')) {
+            $row[$f] = iconv_mime_decode(utf8_decode($row[$f]), 2, 'UTF-8');
         }
-        if ($fieldn === __('size04')) {
-            $row[$f] = formatSize($row[$f]);
+        $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+    }
+    if ($fieldn === __('saautolearn04')) {
+        if (($autolearn = sa_autolearn($row[$f])) !== false) {
+            $row[$f] = $yes . " ($autolearn)";
+        } else {
+            $row[$f] = $no;
         }
-        if ($fieldn === __('msgheaders04')) {
-            if (version_compare(PHP_VERSION, '5.4', '>=')) {
-                $row[$f] = nl2br(
-                    str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
-                );
-            } else {
-                $row[$f] = nl2br(
-                    str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f]))
-                );
-            }
-            if (function_exists('iconv_mime_decode')) {
-                $row[$f] = iconv_mime_decode(utf8_decode($row[$f]), 2, 'UTF-8');
-            }
-            $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
-        }
-        if ($fieldn === __('saautolearn04')) {
-            if (($autolearn = sa_autolearn($row[$f])) !== false) {
-                $row[$f] = $yes . " ($autolearn)";
-            } else {
-                $row[$f] = $no;
-            }
-        }
-        if ($fieldn === __('spam04') && !DISTRIBUTED_SETUP) {
-            // Display actions if spam/not-spam
-            if ($row[$f] === $yes) {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
-            } else {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
-                        ' ',
-                        ', ',
-                        get_conf_var('NonSpamActions')
-                    );
-            }
-        }
-        if ($row[$f] === $yes && $fieldn === __('hscospam04')) {
-            // Display actions if high-scoring
+    }
+    if ($fieldn === __('spam04') && !DISTRIBUTED_SETUP) {
+        // Display actions if spam/not-spam
+        if ($row[$f] === $yes) {
+            $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
+        } else {
             $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
                     ' ',
                     ', ',
-                    get_conf_var('HighScoringSpamActions')
+                    get_conf_var('NonSpamActions')
                 );
         }
+    }
+    if ($row[$f] === $yes && $fieldn === __('hscospam04')) {
+        // Display actions if high-scoring
+        $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
+                ' ',
+                ', ',
+                get_conf_var('HighScoringSpamActions')
+            );
+    }
 
-        if ($is_MCP_enabled === true) {
-            if ($fieldn === __('mcprep04')) {
-                $row[$f] = format_mcp_report($row[$f]);
-            }
-        } else {
-            if ($fieldn === 'HEADER' && strpos($row[$f], 'MCP') !== false) {
-                continue;
-            }
-            if (strpos($fieldn, 'MCP') !== false) {
-                continue;
-            }
+    if ($is_MCP_enabled === true) {
+        if ($fieldn === __('mcprep04')) {
+            $row[$f] = format_mcp_report($row[$f]);
         }
-
-        if ($row[$f] === $yes && $fieldn === __('listedrbl04')) {
-            $row[$f] = $row[$f] . ' (' . $row['rblspamreport'] . ')';
-        }
-
-        if ($fieldn === 'rblspamreport') {
+    } else {
+        if ($fieldn === 'HEADER' && strpos($row[$f], 'MCP') !== false) {
             continue;
         }
-
-        // Handle dummy header fields
-        if ($fieldn === 'HEADER') {
-            // Display header
-            echo '<tr><td class="heading" align="center" valign="top" colspan="2">' . $row[$f] . '</td></tr>' . "\n";
-        } else {
-            // Actual data
-            if (!empty($row[$f])) {
-                // Skip empty rows (notably Spam Report when SpamAssassin didn't run)
-                echo '<tr><td class="heading-w175">' . $fieldn . '</td><td class="detail">' . $row[$f] . '</td></tr>' . "\n";
-            }
+        if (strpos($fieldn, 'MCP') !== false) {
+            continue;
         }
     }
+
+    if ($row[$f] === $yes && $fieldn === __('listedrbl04')) {
+        $row[$f] = $row[$f] . ' (' . $row['rblspamreport'] . ')';
+    }
+
+    if ($fieldn === 'rblspamreport') {
+        continue;
+    }
+
+    // Handle dummy header fields
+    if ($fieldn === 'HEADER') {
+        // Display header
+        echo '<tr><td class="heading" align="center" valign="top" colspan="2">' . $row[$f] . '</td></tr>' . "\n";
+    } else {
+        // Actual data
+        if (!empty($row[$f])) {
+            // Skip empty rows (notably Spam Report when SpamAssassin didn't run)
+            echo '<tr><td class="heading-w175">' . $fieldn . '</td><td class="detail">' . $row[$f] . '</td></tr>' . "\n";
+        }
+    }
+}
 
 
 // Display the relay information only if there are matching
@@ -397,7 +397,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             } else {
                 $to = $quarantined[0]['to'];
             }
-            
+
             $arrid = $_POST['release'];
             if (!is_array($arrid)) {
                 die();
@@ -556,7 +556,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         if ($_SESSION['user_type'] === 'A' ||
             ($_SESSION['user_type'] === 'D' &&
                 ($is_dangerous === 0 ||
-                ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
+                    ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
                 )
             )
         ) {
