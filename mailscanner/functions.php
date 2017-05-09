@@ -1106,7 +1106,7 @@ function __($string, $useSystemLang = false)
 /**
  * Returns true if $string is valid UTF-8 and false otherwise.
  *
- * @param  $string
+ * @param  string $string
  * @return integer
  */
 function is_utf8($string)
@@ -3994,7 +3994,7 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param $count number of hex rgb colors that should be generated
+ * @param integer $count number of hex rgb colors that should be generated
  * @return array that contains rgb colors as hex strings usable for html
  */
 function getHexColors($count)
