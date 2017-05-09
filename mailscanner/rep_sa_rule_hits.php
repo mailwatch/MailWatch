@@ -131,7 +131,7 @@ echo '
  <TH>%</TH>
 </TR>' . "\n";
 
-while (list($key, $val) = each($sa_array)) {
+foreach ($sa_array as $key => $val) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
