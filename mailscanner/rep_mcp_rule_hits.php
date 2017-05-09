@@ -110,7 +110,7 @@ echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  <th>%</th>
  </tr>' . "\n";
 foreach ($sa_array as $key => $val) {
-    if($count >= 10) {
+    if ($count >= 10) {
         break;
     }
     echo '
