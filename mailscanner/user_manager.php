@@ -41,7 +41,8 @@ require __DIR__ . '/login.function.php';
 html_start(__('usermgnt12'), 0, false, false);
 
 /**
- * @param array $value
+ * @param string $value
+ * @param string $type
  */
 function getHtmlMessage($value, $type)
 {
@@ -213,19 +214,19 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $filter_domain[] = $filter[0];
                     }
                     if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
-                        getHtmlMessage(__('errorcreatenodomainforbidden12'), 'error');
+                        echo getHtmlMessage(__('errorcreatenodomainforbidden12'), 'error');
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
-                        getHtmlMessage(sprintf(__('errorcreatedomainforbidden12'), $ar[1]), 'error');
+                        echo getHtmlMessage(sprintf(__('errorcreatedomainforbidden12'), $ar[1]), 'error');
                     } elseif ($_SESSION['user_type'] === 'D' && $n_type === 'A') {
-                        getHtmlMessage(__('errorcreatedomainforbidden12'), 'error');
+                        echo getHtmlMessage(__('errorcreatedomainforbidden12'), 'error');
                     } elseif ($_POST['password'] === '') {
-                        getHtmlMessage(__('errorpwdreq12'), 'error');
+                        echo getHtmlMessage(__('errorpwdreq12'), 'error');
                     } elseif ($_POST['password'] !== $_POST['password1']) {
-                        getHtmlMessage(__('errorpass12'), 'error');
+                        echo getHtmlMessage(__('errorpass12'), 'error');
                     } elseif ($username === '') {
-                        getHtmlMessage(__('erroruserreq12'), 'error');
+                        echo getHtmlMessage(__('erroruserreq12'), 'error');
                     } elseif (checkForExistingUser($username)) {
-                        getHtmlMessage(sprintf(__('userexists12'), sanitizeInput($username)), 'error');
+                        echo getHtmlMessage(sprintf(__('userexists12'), sanitizeInput($username)), 'error');
                     } else {
                         $n_username = safe_value($username);
                         $n_fullname = deepSanitizeInput($_POST['fullname'], 'string');
