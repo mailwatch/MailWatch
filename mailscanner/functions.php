@@ -862,11 +862,12 @@ function printNavBar()
 
     if (defined('USER_SELECTABLE_LANG')) {
         $langCodes = split(',', USER_SELECTABLE_LANG);
-        if (count($langCodes) > 1) {
+        $langCount = count($langCodes);
+        if ($langCount > 1) {
             global $langCode;
             echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
             echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
-            for ($i=0; $i < count($langCodes); $i++) {
+            for ($i=0; $i < $langCount; $i++) {
                 echo '<option value="' . $langCodes[$i] . '"'
                 . ($langCodes[$i] === $langCode ? ' selected' : '')
                 . '>' . __($langCodes[$i]) . '</option>' ."\n";
@@ -1068,7 +1069,7 @@ function safe_value($value)
 
 /**
  * @param string $string
- * @param boolean $userSystemLang
+ * @param boolean $useSystemLang
  * @return string
  */
 function __($string, $useSystemLang = false)
@@ -1340,7 +1341,7 @@ function format_mcp_report($mcpreport)
             }
         }
         $output_array = array();
-        while (list($key, $val) = each($sa_rules)) {
+        foreach ($sa_rules as $val) {
             $output_array[] = get_mcp_rule_desc($val);
         }
         // Return the result as an html formatted string
@@ -1921,6 +1922,8 @@ function generatePager($sql)
     // Remove any ORDER BY clauses as this will slow the count considerably
     if ($pos = strpos($sql, 'ORDER BY')) {
         $sqlcount = substr($sql, 0, $pos);
+    } else {
+        $sqlcount = $sql;
     }
 
     // Count the number of rows that would be returned by the query
@@ -2548,6 +2551,8 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         // Remove any ORDER BY clauses as this will slow the count considerably
         if ($pos = strpos($sql, 'ORDER BY')) {
             $sqlcount = substr($sql, 0, $pos);
+        } else {
+            $sqlcount = $sql;
         }
 
         // Count the number of rows that would be returned by the query
@@ -3447,7 +3452,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $error = true;
             } else {
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
+                audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
             }
 
             return $status;
@@ -4012,6 +4017,7 @@ function getHexColors($count)
         '#FFF100',
         '#87C9A5'
     );
+    $htmlColors = array();
     for ($i=0; $i< $count; $i++) {
         $htmlColors[] = $colors[$i % count($colors)];
     }
@@ -4023,7 +4029,7 @@ function getHexColors($count)
  * @param string $reportTitle title that will be displayed on top of the graph
  * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
  * @param array $columns associative array that contains the columnname => titles (columnname can be name of a converted column)
- * @param arrey $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
+ * @param array $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
  * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
 function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions)
@@ -4333,6 +4339,7 @@ function checkConfVariables()
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
     );
 
+    $results = array();
     $neededMissing = array();
     foreach ($needed as $item) {
         if (!defined($item)) {
