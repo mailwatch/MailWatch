@@ -109,7 +109,10 @@ echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  <th>' . __('mcp34') . '</th>
  <th>%</th>
  </tr>' . "\n";
-while ((list($key, $val) = each($sa_array)) && $count < 10) {
+foreach ($sa_array as $key => $val) {
+    if ($count >= 10) {
+        break;
+    }
     echo '
 <tr bgcolor="#ebebeb">
  <td>' . $key . '</td>

@@ -39,9 +39,6 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsenderdomqt44'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_sender_domains_by_quantity.png.' . time();
-
 $sql = '
  SELECT
   SUBSTRING_INDEX(from_address, \'@\', -1) AS `name`,
@@ -61,10 +58,10 @@ $sql = '
  LIMIT 10
 ';
 
-$columnTitles = array(
-    __('domain44'),
-    __('count03'),
-    __('size03')
+$columns = array(
+    'name' => __('domain44'),
+    'countconv' => __('count03'),
+    'sizeconv' => __('size03')
 );
 $sqlColumns = array(
     'name',
@@ -79,7 +76,7 @@ $graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'count'
 );
-printGraphTable($filename, $sql, __('top10senderdomqt44'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($sql, __('top10senderdomqt44'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

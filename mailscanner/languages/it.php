@@ -191,6 +191,7 @@ return array(
     'children03' => 'children',
     'procs03' => 'proc(s)',
     'errorWarning03' => 'Warning: An error occured:',
+    'phpxmlnotloaded03' => 'The PHP extension xml is missing',
 
     // 04-detail.php
     'receivedon04' => 'Ricevuto il:',
@@ -475,6 +476,9 @@ return array(
     'quarantineReportFailed12' => 'An error occured while sending the quarantine report.',
     'quarantineReportSend12' => 'The quarantine report was successfully sent.',
     'checkReportRequirementsFailed12' => 'Requirements for generating quarantine reports are not met. Please contact your administrator.',
+    'usercreated12' => 'User %s has been created',
+    'useredited12' => 'User %s has been edited',
+    'userdeleted12' => 'User %s has been deleted',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',

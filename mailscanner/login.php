@@ -49,43 +49,46 @@ $_SESSION['token'] = generateToken();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
     <link rel="stylesheet" href="style.css" type="text/css">
-    <?php if (is_file(__DIR__ . '/skin.css')) {
-    echo '<link rel="stylesheet" href="skin.css" type="text/css">';
-} ?>
+    <?php
+    if (is_file(__DIR__ . '/skin.css')) {
+        echo '<link rel="stylesheet" href="skin.css" type="text/css">';
+    }
+    ?>
 </head>
 <body class="loginbody">
 <script>
-setInterval(function() {
-    var len1 = document.getElementById('myusername').value.length;
-    var len2 = document.getElementById('mypassword').value.length;
+    setInterval(function () {
+        var len1 = document.getElementById('myusername').value.length;
+        var len2 = document.getElementById('mypassword').value.length;
 
-    var prev1 = document.getElementById('myusername_length').value;
-    var prev2 = document.getElementById('mypassword_length').value;
+        var prev1 = document.getElementById('myusername_length').value;
+        var prev2 = document.getElementById('mypassword_length').value;
 
-    if (len1 == prev1 && len2 == prev2) {
-        location.reload();
-    } else {
-        document.getElementById('myusername_length').value = len1;
-        document.getElementById('mypassword_length').value = len2;
-    }
-
-}, 60000);
+        if (len1 === prev1 && len2 === prev2) {
+            location.reload();
+        } else {
+            document.getElementById('myusername_length').value = len1;
+            document.getElementById('mypassword_length').value = len2;
+        }
+    }, 60000);
 </script>
 <div class="login">
     <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
     </div>
     <h1><?php echo __('mwlogin01'); ?></h1>
     <div class="inner-container">
-        <?php if (file_exists('conf.php')) {
-    ?>
+        <?php
+        if (file_exists('conf.php')) {
+            ?>
             <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
                 <fieldset>
-                    <?php if (isset($_GET['error'])) {
-        ?>
+                    <?php
+                    if (isset($_GET['error'])) {
+                        ?>
                         <p class="loginerror">
                             <?php
                             $loginerror = deepSanitizeInput($_GET['error'], 'url');
-                            if (false === validateInput($loginerror, "loginerror")) {
+                            if (false === validateInput($loginerror, 'loginerror')) {
                                 header('Location: login.php');
                             }
                             switch ($loginerror) {
@@ -103,15 +106,15 @@ setInterval(function() {
                             } ?>
                         </p>
                         <?php
-
-    } ?>
+                    }
+                    ?>
                     <p><label for="myusername"><?php echo __('username'); ?></label></p>
                     <p><input name="myusername" type="text" id="myusername" autofocus></p>
-                    <input type="hidden" id="myusername_length" name="myusername_length" />
+                    <input type="hidden" id="myusername_length" name="myusername_length">
 
                     <p><label for="mypassword"><?php echo __('password'); ?></label></p>
                     <p><input name="mypassword" type="password" id="mypassword"></p>
-                    <input type="hidden" id="mypassword_length" name="mypassword_length" />
+                    <input type="hidden" id="mypassword_length" name="mypassword_length">
 
                     <p>
                         <button type="submit" name="Submit" value="loginSubmit"><?php echo __('login01'); ?></button>
@@ -128,16 +131,14 @@ setInterval(function() {
                     </a>
                 </div>
                 <?php
-
             }
-} else {
-    ?>
+        } else {
+            ?>
             <p class="error">
                 <?php echo __('cannot_read_conf'); ?>
             </p>
             <?php
-
-}
+        }
         ?>
     </div>
 </div>

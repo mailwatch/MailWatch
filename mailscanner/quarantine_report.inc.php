@@ -369,39 +369,39 @@ ORDER BY a.date DESC, a.time DESC';
             }
 
             return $sendResult;
-        }
+        } else {
 
-        //combined
-        $quarantine_list = array();
-        $quarantined = array();
+            //combined
+            $quarantine_list = array();
+            $quarantined = array();
 
-        foreach ($filters as $filter) {
-            if ($type === 'D') {
-                $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
-                $list_for = $filter_domain;
-            } else {
-                $filter_domain = $to_domain;
-                $list_for = $filter;
+            foreach ($filters as $filter) {
+                if ($type === 'D') {
+                    $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
+                    $list_for = $filter_domain;
+                } else {
+                    $filter_domain = $to_domain;
+                    $list_for = $filter;
+                }
+
+                $quarantine_list[] = $list_for;
+                self::dbg(" ==== Building list for $list_for");
+                $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
+
+                self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
+                if (count($tmp_quarantined) > 0) {
+                    $quarantined[] = $tmp_quarantined;
+                }
             }
-
-            $quarantine_list[] = $list_for;
-            self::dbg(" ==== Building list for $list_for");
-            $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
-
-            self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
-            if (count($tmp_quarantined) > 0) {
-                $quarantined[] = $tmp_quarantined;
+            $quarantined = call_user_func_array('array_merge', $quarantined);
+            if (count($quarantined) > 0) {
+                $list = implode(', ', $quarantine_list);
+                return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
             }
-        }
-        $quarantined[] = $quarantine_list;
-        $quarantined = call_user_func_array('array_merge', $quarantined);
-        if (count($quarantine_list) > 0) {
-            $list = implode(', ', $quarantine_list);
-            return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantine_list));
-        }
-        unset($quarantined, $quarantine_list);
+            unset($quarantined, $quarantine_list);
 
-        return false;
+            return false;
+        }
     }
 
     /**

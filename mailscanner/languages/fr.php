@@ -191,6 +191,7 @@ return array(
     'children03' => 'proc. fils',
     'procs03' => 'processus',
     'errorWarning03' => 'Attention : une erreur s\'est produite :',
+    'phpxmlnotloaded03' => 'L\'extension xml pour PHP est manquante.',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -475,6 +476,9 @@ return array(
     'quarantineReportFailed12' => 'Une erreur s\'est produite lors de l\'envoi du rapport de quarantaine.',
     'quarantineReportSend12' => 'Le rapport de quarantaine a été envoyé avec succès.',
     'checkReportRequirementsFailed12' => 'Les exigences pour générer des rapports de quarantaine ne sont pas respectées. Veuillez contacter votre administrateur.',
+    'usercreated12' => 'User %s has been created',
+    'useredited12' => 'User %s has been edited',
+    'userdeleted12' => 'User %s has been deleted',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',

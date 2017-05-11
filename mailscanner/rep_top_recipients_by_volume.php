@@ -39,12 +39,9 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('toprecipvol43'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_recipients_by_volume.png.' . time();
-
 $sql = '
  SELECT
-  REPLACE(to_address,",",",\n") as `name`,
+  REPLACE(to_address,",",", ") as `name`,
   COUNT(*) as `count`,
   SUM(size) as `size`
  FROM
@@ -61,10 +58,10 @@ $sql = '
  LIMIT 10
 ';
 
-$columnTitles = array(
-    __('email43'),
-    __('count03'),
-    __('size03')
+$columns = array(
+    'name' => __('email43'),
+    'countconv' => __('count03'),
+    'sizeconv' => __('size03')
 );
 $sqlColumns = array(
     'name',
@@ -79,7 +76,7 @@ $graphColumns = array(
     'labelColumn' => 'name',
     'dataColumn' => 'size'
 );
-printGraphTable($filename, $sql, __('top10recipvol43'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($sql, __('top10recipvol43'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();
