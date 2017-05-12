@@ -2197,6 +2197,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $fieldname[$f] = __('last03');
                     $align[$f] = 'right';
                     break;
+                case 'released':
+                    $display[$f] = false;
+                    break;
+                case 'salearn':
+                    $display[$f] = false;
+                    break;
             }
         }
         // Table heading
@@ -2260,6 +2266,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $blacklisted = false;
             $mcp = false;
             $highmcp = false;
+            $released = false;
+            $salearnham = false;
+            $salearnspam = false;
             for ($f = 0; $f < $fields; $f++) {
                 if ($operations !== false) {
                     if ($f === 0) {
@@ -2398,13 +2407,44 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             $row[$f] = $hostname;
                         }
                         break;
+                    case 'released':
+                        if ($row[$f] > 0) {
+                            $released = true;
+                            $status_array[] = __('released03');
+                        }
+                        break;
+                    case 'salearn':
+                        switch ($row[$f]) {
+                            case 1:
+                                $salearnham = true;
+                                $status_array[] = __('learnham03');
+                                break;
+                            case 2:
+                                $salearnspam = true;
+                                $status_array[] = __('learnspam03');
+                                break;
+                        }
+                        break;
                     case 'status':
                         // NOTE: this should always be the last row for it to be displayed correctly
                         // Work out status
                         if (count($status_array) === 0) {
                             $status = __('clean03');
                         } else {
-                            $status = implode('<br>', $status_array);
+                            $status = '';
+                            foreach ($status_array as $item) {
+                                if ($item === __('released03')) {
+                                    $class = 'released';
+                                } elseif ($item === __('learnham03')){
+                                    $class = 'salearn-1';
+                                } elseif ($item === __('learnspam03')) {
+                                    $class = 'salearn-2';
+                                } else {
+                                    $class = '';
+                                }
+                                $status .= '<div class="' . $class . '">' . $item . '</div>';
+                            }
+                            #$status = implode('<br>', $status_array);
                         }
                         $row[$f] = $status;
                         break;
@@ -3453,6 +3493,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             } else {
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
+                $sql = "UPDATE `maillog` SET `released` = '1' WHERE id = " . $list[0]['msgid'];
+                dbquery($sql);
             }
 
             return $status;

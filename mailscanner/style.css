@@ -896,3 +896,20 @@ select.lang > option {
     border-top:1px solid #444;
     color: #000;
 }
+
+/* Colors for quarantine actions */
+
+.released {
+    background-color:#008000;
+    color:#fff;
+}
+
+.salearn-1 { /* HAM */
+    background-color:#008000;
+    color:#fff
+}
+
+.salearn-2 { /* SPAM */
+    background-color: #f51111;
+    color:#fff;
+}

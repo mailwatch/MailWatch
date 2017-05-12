@@ -470,7 +470,25 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
-    
+
+    // Add new released column to maillog table
+    echo pad(' - Add released field to `maillog` table');
+    if (true === check_column_exists('maillog', 'released')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = "ALTER TABLE `maillog` ADD `released` tinyint(1) DEFAULT '0'";
+        executeQuery($sql);
+    }
+
+    // Add new salearn column to maillog table
+    echo pad(' - Add salearn field to `maillog` table');
+    if (true === check_column_exists('maillog', 'salearn')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = "ALTER TABLE `maillog` ADD `salearn` tinyint(1) DEFAULT '0'";
+        executeQuery($sql);
+    }
+
     // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
     echo pad(' - Check for missing tokens in `maillog` table');
     if (defined('QUARANTINE_REPORT_DAYS')) {

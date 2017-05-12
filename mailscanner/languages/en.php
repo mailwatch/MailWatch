@@ -192,6 +192,9 @@ return array(
     'procs03' => 'proc(s)',
     'errorWarning03' => 'Warning: An error occured:',
     'phpxmlnotloaded03' => 'The PHP extension xml is missing',
+    'released03' => 'Released',
+    'learnspam03' => 'Learn:Spam',
+    'learnham03' => 'Learn:Ham',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',
