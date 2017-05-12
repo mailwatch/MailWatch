@@ -193,6 +193,8 @@ switch ($_SESSION['user_type']) {
             $ar = explode('@', $_SESSION['myusername']);
             $domainname = $ar[1];
             $to_domain_filter[] = $domainname;
+        } else {
+            $to_domain_filter[] = $_SESSION['myusername'];
         }
         $to_domain_filter = array_unique($to_domain_filter);
         break;
