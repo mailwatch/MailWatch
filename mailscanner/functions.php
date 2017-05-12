@@ -2256,7 +2256,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     '<input name="OPT-REPLACEME" type="RADIO" value="S">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="H">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="F">&nbsp;<input name="OPTRELEASE-REPLACEME" type="checkbox" value="R">'
                 );
             }
-            // Work out field colourings and mofidy the incoming data as necessary
+            // Work out field colourings and modify the incoming data as necessary
             // and populate the generate an overall 'status' for the mail.
             $status_array = array();
             $infected = false;
@@ -3569,7 +3569,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
-
+    $id = $list[0]['msgid'];
     $new = quarantine_list_items($list[0]['msgid']);
     $list =& $new;
     $status = array();
@@ -3636,6 +3636,16 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     audit_log(
                         sprintf(__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                     );
+                    if ($learn_type === 'spam') {
+                        $numeric_type = 2;
+                    }
+                    if ($learn_type === 'ham') {
+                        $numeric_type = 1;
+                    }
+                    if (isset($numeric_type)) {
+                        $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '$id'";
+                        dbquery($sql);
+                    }
                 } else {
                     $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
                             "\n",
