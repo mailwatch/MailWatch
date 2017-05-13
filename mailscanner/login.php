@@ -88,10 +88,10 @@ $_SESSION['token'] = generateToken();
                         <p class="loginerror">
                             <?php
                             $loginerror = deepSanitizeInput($_GET['error'], 'url');
-                            if (false === validateInput($loginerror, 'loginerror')) {
-                                header('Location: login.php');
-                            }
-                            switch ($loginerror) {
+                        if (false === validateInput($loginerror, 'loginerror')) {
+                            header('Location: login.php');
+                        }
+                        switch ($loginerror) {
                                 case 'baduser':
                                     echo __('badup01');
                                     break;
@@ -106,8 +106,8 @@ $_SESSION['token'] = generateToken();
                             } ?>
                         </p>
                         <?php
-                    }
-                    ?>
+
+                    } ?>
                     <p><label for="myusername"><?php echo __('username'); ?></label></p>
                     <p><input name="myusername" type="text" id="myusername" autofocus></p>
                     <input type="hidden" id="myusername_length" name="myusername_length">
@@ -131,6 +131,7 @@ $_SESSION['token'] = generateToken();
                     </a>
                 </div>
                 <?php
+
             }
         } else {
             ?>
@@ -138,6 +139,7 @@ $_SESSION['token'] = generateToken();
                 <?php echo __('cannot_read_conf'); ?>
             </p>
             <?php
+
         }
         ?>
     </div>
