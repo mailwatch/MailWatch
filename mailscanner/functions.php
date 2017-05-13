@@ -3491,10 +3491,10 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 global $error;
                 $error = true;
             } else {
+                $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
+                dbquery($sql);
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
-                $sql = "UPDATE `maillog` SET `released` = '1' WHERE id = " . $list[0]['msgid'];
-                dbquery($sql);
             }
 
             return $status;
@@ -3508,6 +3508,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 debug($cmd . $list[$val]['path']);
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if ($retval === 0) {
+                    $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
+                    dbquery($sql);
                     $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
@@ -3569,7 +3571,6 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
-    $id = $list[0]['msgid'];
     $new = quarantine_list_items($list[0]['msgid']);
     $list =& $new;
     $status = array();
@@ -3636,16 +3637,6 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     audit_log(
                         sprintf(__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                     );
-                    if ($learn_type === 'spam') {
-                        $numeric_type = 2;
-                    }
-                    if ($learn_type === 'ham') {
-                        $numeric_type = 1;
-                    }
-                    if (isset($numeric_type)) {
-                        $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '$id'";
-                        dbquery($sql);
-                    }
                 } else {
                     $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
                             "\n",
@@ -3682,6 +3673,18 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         );
                     global $error;
                     $error = true;
+                }
+            }
+            if (!isset($error)) {
+                if ($learn_type === 'spam') {
+                    $numeric_type = 2;
+                }
+                if ($learn_type === 'ham') {
+                    $numeric_type = 1;
+                }
+                if (isset($numeric_type)) {
+                    $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" . safe_value($list[$val]['msgid']) . "'";
+                    dbquery($sql);
                 }
             }
         }
