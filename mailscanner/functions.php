@@ -2435,7 +2435,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             foreach ($status_array as $item) {
                                 if ($item === __('released03')) {
                                     $class = 'released';
-                                } elseif ($item === __('learnham03')){
+                                } elseif ($item === __('learnham03')) {
                                     $class = 'salearn-1';
                                 } elseif ($item === __('learnspam03')) {
                                     $class = 'salearn-2';
