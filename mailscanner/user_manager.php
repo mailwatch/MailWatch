@@ -175,7 +175,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo '<INPUT TYPE="HIDDEN" NAME="submit" VALUE="true">' . "\n";
                     echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="new">' . "\n";
                     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-                    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php new form token') . '">' . "\n";
+                    $forminstance = generateToken();
+                    echo '<INPUT TYPE="HIDDEN" NAME="forminstance" VALUE="' . $forminstance . '">' . "\n";
+                    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php new form token', $forminstance) . '">' . "\n";
                     echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
                     echo ' <TR><TD CLASS="heading" COLSPAN="2" ALIGN="CENTER">' . __('newuser12') . '</TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="message" COLSPAN="2" ALIGN="CENTER">' . __('forallusers12') . '</TD></TR>' . "\n";
@@ -197,8 +199,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('create12') . '"></TD></TR>' . "\n";
                     echo '</TABLE></FORM><BR>' . "\n";
                 } else {
-                    if (false === checkFormToken('/user_manager.php new form token', $_POST['formtoken'])) {
-                        die(getHtmlMessage(__('dietoken99'), 'error'));
+                    if (false === checkFormToken('/user_manager.php new form token', $_POST['formtoken'], $_POST['forminstance'])) {
+                        die(getHtmlMessage(__('dieformexpired99'), 'error'));
                     }
                     $username = deepSanitizeInput($_POST['username'], 'string');
                     if ($username === false || !validateInput($username, 'user')) {
@@ -349,7 +351,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="edit">' . "\n";
                         echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
                         echo '<INPUT TYPE="HIDDEN" NAME="submit" VALUE="true">' . "\n";
-                        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php edit token') . '">' . "\n";
+                        $forminstance = generateToken();
+                        echo '<INPUT TYPE="HIDDEN" NAME="forminstance" VALUE="' . $forminstance . '">' . "\n";
+                        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php edit token', $forminstance) . '">' . "\n";
                         echo '<TABLE CLASS="mail" BORDER=0 CELLPADDING=1 CELLSPACING=1>' . "\n";
                         echo ' <TR><TD CLASS="heading" COLSPAN=2 ALIGN="CENTER">' . __('edituser12') . ' ' . $row->username . '</TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('username0212') . '</TD><TD><INPUT TYPE="TEXT" NAME="username" VALUE="' . $row->username . '"></TD></TR>' . "\n";
@@ -373,8 +377,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
                         $result = dbquery($sql);
                     } else {
-                        if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
-                            die(getHtmlMessage(__('dietoken99'), 'error'));
+                        if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'], $_POST['forminstance'])) {
+                            die(getHtmlMessage(__('dieformexpired99'), 'error'));
                         }
                         // Do update
                         $username = deepSanitizeInput($_POST['username'], 'string');
@@ -516,8 +520,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 }
 
                 if (isset($_POST['filter'])) {
-                    if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
-                        die(getHtmlMessage(__('dietoken99'), 'error'));
+                    if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'], $_POST['forminstance'])) {
+                        die(getHtmlMessage(__('dieformexpired99'), 'error'));
                     }
                     $getFilter = deepSanitizeInput($_POST['filter'], 'url');
                     if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
@@ -568,10 +572,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value($id) . "'";
                 $result = dbquery($sql);
                 echo '<FORM METHOD="POST" ACTION="user_manager.php">' . "\n";
-                 echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
-                 echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-                 echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $id . '">' . "\n";
-                 echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php filter token') . '">' . "\n";
+                echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
+                echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
+                echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $id . '">' . "\n";
+                $forminstance = generateToken();
+                echo '<INPUT TYPE="HIDDEN" NAME="forminstance" VALUE="' . $forminstance . '">' . "\n";
+                echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php filter token', $forminstance) . '">' . "\n";
 
                 echo '<INPUT TYPE="hidden" NAME="new" VALUE="true">' . "\n";
                 echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
@@ -689,7 +695,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo '<input type="hidden" name="action" value="edit">' . "\n";
         echo '<input type="hidden" name="key" value="' . $row->username . '">' . "\n";
         echo '<input type="hidden" name="submit" value="true">' . "\n";
-        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token') . '">' . "\n";
+        $forminstance = generateToken();
+        echo '<INPUT TYPE="HIDDEN" NAME="forminstance" VALUE="' . $forminstance . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token', $forminstance) . '">' . "\n";
         echo '<table class="mail" border="0" cellpadding="1" cellspacing="1">' . "\n";
         echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>' . "\n";
@@ -711,8 +719,8 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         if (false === checkToken($_POST['token'])) {
             die(getHtmlMessage(__('dietoken99'), 'error'));
         }
-        if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
-            die(getHtmlMessage(__('dietoken99'), 'error'));
+        if (false === checkFormToken('/user_manager.php user token', $_POST['formtoken'], $_POST['forminstance'])) {
+            die(getHtmlMessage(__('dieformexpired99'), 'error'));
         }
         if (!isset($_POST['action'])) {
             echo getHtmlMessage(__('formerror12'), 'error');

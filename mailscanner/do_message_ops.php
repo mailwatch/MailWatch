@@ -39,8 +39,8 @@ $refresh = html_start(__('opresult21'));
 if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
     die(__('dietoken99'));
 }
-if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
-    die(__('dietoken99'));
+if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'], $_POST['forminstance'])) {
+    die(__('dieformexpired99'));
 }
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
@@ -54,7 +54,7 @@ echo '  <th colspan="1">' . __('message21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 
 // Iterate through the POST variables
-unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
+unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken'], $_POST['forminstance']);
 if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {

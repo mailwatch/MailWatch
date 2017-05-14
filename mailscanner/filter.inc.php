@@ -328,7 +328,9 @@ WHERE
         $return .= '</td><td style="white-space: nowrap; text-align:right;"><button type="submit" name="action" value="load">' . __('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . __('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . __('delete09') . '</button></td></tr>' . "\n";
         $return .= '</table>' . "\n";
         $return .= '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
-        $return .= '<input type="hidden" name="formtoken" value="' . generateFormToken('/filter.inc.php form token') . '">' . "\n";
+        $forminstance = generateToken();
+        $return .= '<input type="hidden" name="forminstance" value="' . $forminstance . '">' . "\n";
+        $return .= '<input type="hidden" name="formtoken" value="' . generateFormToken('/filter.inc.php form token', $forminstance) . '">' . "\n";
         $return .= '</form>' . "\n";
 
         return $return;

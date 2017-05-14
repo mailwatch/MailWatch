@@ -46,6 +46,10 @@ define('LANG', 'en');
 // Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
 //define('SESSION_NAME', 'MailWatch');
+// Defines session timeout duration for individual forms.  Default is 3600 seconds (1 hour).
+// Caution: Setting this to 0 disables form timeouts, but incomplete form instances will remain in the active session
+// indefinitely
+//define('FORMTIMEOUT', 3600);
 
 // Database settings
 //

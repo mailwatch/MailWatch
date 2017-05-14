@@ -98,8 +98,8 @@ if ($_SESSION['user_type'] !== 'A') {
     // Check to see if the form was submitted, and if so process it.
     $status_message = '';
     if (isset($_POST['submitted'])) {
-        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
-            die(__('dietoken99'));
+        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'], $_POST['forminstance'])) {
+            die(__('dieformexpired99'));
         }
 
         list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
@@ -130,7 +130,9 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<form method="post" name="msre_edit" action="msre_edit.php">' . "\n";
     echo '<input type="hidden" name="file" value="' . $short_filename . '">' . "\n";
     echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
-    echo '<input type="hidden" name="formtoken" value="' . generateformtoken('/msre_edit.php form token') . '">' . "\n";
+    $forminstance = generateToken();
+    echo '<input type="hidden" name="forminstance" value="' . $forminstance . '">' . "\n";
+    echo '<input type="hidden" name="formtoken" value="' . generateformtoken('/msre_edit.php form token', $forminstance) . '">' . "\n";
     echo '<input type="hidden" name="submitted" value="1">' . "\n";
     
     // Check for status message, and append it to the end of the header

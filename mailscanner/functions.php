@@ -2025,7 +2025,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             // Start form for operations
             echo '<form name="operations" action="./do_message_ops.php" method="POST">' . "\n";
             echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
-            echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/do_message_ops.php form token') . '">' . "\n";
+            $forminstance = generateToken();
+            echo '<INPUT TYPE="HIDDEN" NAME="forminstance" VALUE="' . $forminstance . '">' . "\n";
+            echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/do_message_ops.php form token', $forminstance) . '">' . "\n";
         }
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         // Work out which columns to display
@@ -4337,6 +4339,7 @@ function checkConfVariables()
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
+        'FORMTIMEOUT' => array('description' => 'needed if you want to change the default form instance timeout')
     );
 
     $results = array();
@@ -4710,16 +4713,22 @@ function checkToken($token)
 
 /**
  * @param string $formstring
+ * @param string $instanceID
  * @return string
  */
-function generateFormToken($formstring)
+function generateFormToken($formstring, $instanceID = 'default')
 {
     if (!isset($_SESSION['token'])) {
         die(__('dietoken99'));
     }
 
-    $_SESSION['formtoken'] = generateToken();
-    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+    // Do not regenerate form token if it already exists for an instance
+    if (!isset($_SESSION['formtoken'][$instanceID])) {
+        $_SESSION['formtoken'][$instanceID] = generateToken();
+        // Add a formtoken instance timestamp used to expire old formtoken instances
+        $_SESSION['formtokentimestamp'][$instanceID] = time();
+    }
+    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken'][$instanceID]);
 
     return $calc;
 }
@@ -4727,15 +4736,36 @@ function generateFormToken($formstring)
 /**
  * @param string $formstring
  * @param string $formtoken
+ * @param string $instanceID
  * @return bool
  */
-function checkFormToken($formstring, $formtoken)
+function checkFormToken($formstring, $formtoken, $instanceID = 'default')
 {
-    if (!isset($_SESSION['token'], $_SESSION['formtoken'])) {
+    if (defined('FORMTIMEOUT')) {
+        $EXPIRETIMEOUT = FORMTIMEOUT;
+    } else {
+        $EXPIRETIMEOUT = 3600;
+    }
+
+    // Expire old form tokens
+    if (isset($_SESSION['formtokentimestamp'])) {
+        $formTokenTimeStamps = array();
+        $formTokenTimeStamps = $_SESSION['formtokentimestamp'];
+        foreach ($formTokenTimeStamps as $instance => $timeStamp) {
+            if ($EXPIRETIMEOUT !== 0 && $timeStamp + $EXPIRETIMEOUT < time()) {
+                unset($_SESSION['formtoken'][$instance]);
+                unset($_SESSION['formtokentimestamp'][$instance]);
+            }
+        }
+    }
+
+    if (!isset($_SESSION['token'], $_SESSION['formtoken'][$instanceID])) {
         return false;
     }
-    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
-    unset($_SESSION['formtoken']);
+
+    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken'][$instanceID]);
+    unset($_SESSION['formtoken'][$instanceID]);
+    unset($_SESSION['formtokentimestamp'][$instanceID]);
 
     return $calc === deepSanitizeInput($formtoken, 'url');
 }
