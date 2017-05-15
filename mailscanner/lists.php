@@ -217,8 +217,8 @@ if ($url_submit === 'add') {
     if (false === checkToken($_POST['token'])) {
         die(__('dietoken99'));
     }
-    if (false === checkFormToken('/lists.php list token', $_POST['formtoken'])) {
-        die(__('dietoken99'));
+    if (false === checkFormToken('/lists.php list token', $_POST['formtoken'], $_POST['forminstance'])) {
+        die(__('dieformexpired99'));
     }
 
     // Check input is valid
@@ -341,7 +341,9 @@ echo '
  <tr>
   <td class="heading">' . __('to07') . '</td>';
 echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token') . '">' . "\n";
+$forminstance = generateToken();
+echo '<INPUT TYPE="HIDDEN" NAME="forminstance" VALUE="' . $forminstance . '">' . "\n";
+echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token', $forminstance) . '">' . "\n";
 switch ($_SESSION['user_type']) {
     case 'A':
         echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';

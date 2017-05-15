@@ -63,8 +63,8 @@ if ($_SESSION['user_type'] !== 'A') {
     $actions ='';
     $username ='';
     if (isset($_POST['formtoken'])) {
-        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
-            die(__('dietoken99'));
+        if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'], $_POST['forminstance'])) {
+            die(__('dieformexpired99'));
         }
         if (isset($_POST['startDate'])) {
             $startDate=deepSanitizeInput($_POST['startDate'], 'url');
@@ -132,7 +132,9 @@ if ($_SESSION['user_type'] !== 'A') {
  <tr><td>
   <form action="rep_audit_log.php" method="POST" class="floatleft">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/rep_audit_log.php form token') . '">' . "\n";
+    $forminstance = generateToken();
+    echo '<INPUT TYPE="HIDDEN" NAME="forminstance" VALUE="' . $forminstance . '">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/rep_audit_log.php form token', $forminstance) . '">' . "\n";
     echo '<div class="mail table" id="auditFilters">
       <div class="caption head">' . __('filter33') . '</div>
       <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>

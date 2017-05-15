@@ -940,6 +940,7 @@ return array(
     'mslogo99' => 'MailScanner Logo',
     'dievalidate99' => 'Error: unable to validate input',
     'dietoken99' => 'Error: unable to validate security token',
+    'dieformexpired99' => 'Error: form instance has expired, please refresh',
     'i18_missing' => 'No translation in English',
     'cannot_read_conf' => 'Cannot read conf.php - please create it by copying conf.php.example and modifying the parameters to suit.',
     'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',
