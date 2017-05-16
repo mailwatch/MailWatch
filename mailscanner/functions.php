@@ -4718,7 +4718,6 @@ function generateFormToken($formstring)
         die(__('dietoken99'));
     }
 
-    $_SESSION['formtoken'] = generateToken();
     $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
 
     return $calc;
@@ -4735,7 +4734,6 @@ function checkFormToken($formstring, $formtoken)
         return false;
     }
     $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
-    unset($_SESSION['formtoken']);
 
     return $calc === deepSanitizeInput($formtoken, 'url');
 }
