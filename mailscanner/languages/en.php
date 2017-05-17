@@ -193,8 +193,8 @@ return array(
     'errorWarning03' => 'Warning: An error occured:',
     'phpxmlnotloaded03' => 'The PHP extension xml is missing',
     'released03' => 'Released',
-    'learnspam03' => 'Learn:Spam',
-    'learnham03' => 'Learn:Ham',
+    'learnspam03' => 'Learned as Spam',
+    'learnham03' => 'Learned as Ham',
 
     // 04-detail.php
     'receivedon04' => 'Received on:',

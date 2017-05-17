@@ -192,9 +192,9 @@ return array(
     'procs03' => 'processus',
     'errorWarning03' => 'Attention : une erreur s\'est produite :',
     'phpxmlnotloaded03' => 'L\'extension xml pour PHP est manquante.',
-    'released03' => 'Released',
-    'learnspam03' => 'Learn:Spam',
-    'learnham03' => 'Learn:Ham',
+    'released03' => 'Libérer',
+    'learnspam03' => 'Renseigné comme Spam',
+    'learnham03' => 'Renseigné comme légitime',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',

@@ -2444,7 +2444,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                                 }
                                 $status .= '<div class="' . $class . '">' . $item . '</div>';
                             }
-                            #$status = implode('<br>', $status_array);
                         }
                         $row[$f] = $status;
                         break;
