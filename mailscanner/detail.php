@@ -500,6 +500,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
+            $tdclass='';
+            if ($row['released'] > 0 && $item['file'] === 'message') {
+                $tdclass='released';
+            }
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
             // Currently this only applies to messages that contain viruses.
@@ -509,17 +513,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D') ||
                 $item['dangerous'] !== 'Y'
             ) {
-                if ($row['released'] > 0 && $item['file'] === 'message') {
-                    echo '  <td align="center" class="released"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
-                } else {
-                    echo '  <td align="center"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
-                }
+                echo '  <td align="center" class="' . $tdclass . '"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
-                if ($row['released'] > 0 && $item['file'] === 'message') {
-                    echo '<td class="released">&nbsp;&nbsp;</td>' . "\n";
-                } else {
-                    echo '<td>&nbsp;&nbsp;</td>' . "\n";
-                }
+                    echo '<td class="' . $tdclass . '">&nbsp;&nbsp;</td>' . "\n";
             }
             echo '  <td align="center"><input type="checkbox" name="delete[]" value="' . $item['id'] . '"></td>' . "\n";
             // If the file is an rfc822 message then allow the file to be learnt
