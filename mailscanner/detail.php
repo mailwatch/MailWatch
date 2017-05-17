@@ -515,7 +515,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             ) {
                 echo '  <td align="center" class="' . $tdclass . '"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
-                    echo '<td class="' . $tdclass . '">&nbsp;&nbsp;</td>' . "\n";
+                echo '<td class="' . $tdclass . '">&nbsp;&nbsp;</td>' . "\n";
             }
             echo '  <td align="center"><input type="checkbox" name="delete[]" value="' . $item['id'] . '"></td>' . "\n";
             // If the file is an rfc822 message then allow the file to be learnt
