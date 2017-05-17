@@ -4337,7 +4337,7 @@ function checkConfVariables()
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
-        'MAILWATCH_SMTP_HOSTNAME' => array('needed only if you user a remote SMTP server to send MailWatch emails'),
+        'MAILWATCH_SMTP_HOSTNAME' => array('needed only if you use a remote SMTP server to send MailWatch emails'),
     );
 
     $results = array();
