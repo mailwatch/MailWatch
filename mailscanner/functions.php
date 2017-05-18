@@ -4331,14 +4331,10 @@ function checkConfVariables()
         'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
-<<<<<<< HEAD
         'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
         'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
-        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"')
-=======
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
         'MAILWATCH_SMTP_HOSTNAME' => array('needed only if you use a remote SMTP server to send MailWatch emails'),
->>>>>>> develop
     );
 
     $results = array();
