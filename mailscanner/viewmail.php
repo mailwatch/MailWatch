@@ -185,7 +185,7 @@ foreach ($header_fields as $field) {
 }
 
 if (
-        ($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) ||
+        ($message->virusinfected === '0' && $message->nameinfected === '0' && $message->otherinfected === '0') ||
         $_SESSION['user_type'] === 'A' ||
         (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
 ) {
@@ -235,7 +235,7 @@ foreach ($mime_struct as $key => $part) {
                 echo __('nonameattachment06');
             }
             if (
-                ($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) ||
+                ($message->virusinfected === '0' && $message->nameinfected === '0' && $message->otherinfected === '0') ||
                 $_SESSION['user_type'] === 'A' ||
                 (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
             ) {

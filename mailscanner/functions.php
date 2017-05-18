@@ -4331,9 +4331,14 @@ function checkConfVariables()
         'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
+<<<<<<< HEAD
         'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
         'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"')
+=======
+        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
+        'MAILWATCH_SMTP_HOSTNAME' => array('needed only if you use a remote SMTP server to send MailWatch emails'),
+>>>>>>> develop
     );
 
     $results = array();
@@ -4445,7 +4450,11 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    if (defined(MAILWATCH_SMTP_HOSTNAME)) {
+        $mail_param = array('localhost' => MAILWATCH_SMTP_HOSTNAME, 'host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    } else {
+        $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    }
     $mail = new Mail_smtp($mail_param);
 
     return $mail->send($email, $hdrs, $body);
