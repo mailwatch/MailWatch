@@ -50,15 +50,6 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', 0);
 
-// Session timeout 10 minutes based on user activity
-// or STATUS_REFRESH + 300 sec, whichever is greater.
-
-if (defined(STATUS_REFRESH) && STATUS_REFRESH + 300 > 600) {
-    define('SESSION_TIMEOUT', STATUS_REFRESH + 300);
-} else {
-    define('SESSION_TIMEOUT', 600);
-}
-
 $session_cookie_secure = false;
 if (SSL_ONLY === true) {
     ini_set('session.cookie_secure', 1);
@@ -308,10 +299,20 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
     }
 
-    if (!isset($_SESSION['last_update']) || $_SESSION['last_update'] + SESSION_TIMEOUT < time()) {
+    // Check for a privilege change
+    if (checkPrivilegeChange($_SESSION['myusername']) === true) {
         header('Location: logout.php?error=timeout');
+        die();
+    }
+
+    if (checkLoginExpiry($_SESSION['myusername']) === true) {
+        header('Location: logout.php?error=timeout');
+        die();
     } else {
-        $_SESSION['last_update'] = time();
+        if ($refresh === 0) {
+            // User is moving about on non-refreshing pages, keep session alive
+            updateLoginExpiry($_SESSION['myusername']);
+        }
     }
 
     echo page_creation_timer();
@@ -359,7 +360,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
-    echo '<script>setTimeout(function(){ window.location.href="logout.php?error=timeout";}, ' . SESSION_TIMEOUT*1000 . ');</script>';
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
     echo '<tr class="noprint">' . "\n";
     echo '<td>' . "\n";
@@ -4338,6 +4338,7 @@ function checkConfVariables()
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
+        'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
     );
 
     $results = array();
@@ -4665,7 +4666,7 @@ function validateInput($input, $type)
             }
             break;
         case 'action':
-            if (preg_match('/^(new|edit|delete|filters)$/', $input)) {
+            if (preg_match('/^(new|edit|delete|filters|logout)$/', $input)) {
                 return true;
             }
             break;
@@ -4681,6 +4682,11 @@ function validateInput($input, $type)
             break;
         case 'loginerror':
             if (preg_match('/^(baduser|emptypassword|timeout)$/', $input)) {
+                return true;
+            }
+            break;
+        case 'timeout':
+            if (preg_match('/^[0-9]{1,5}$/', $input)) {
                 return true;
             }
             break;
@@ -4758,4 +4764,102 @@ function checkLangCode($langCode)
     } else {
         return true;
     }
+}
+
+/**
+ * Updates the user login expiry
+ * @param string $myusername
+ * @return boolean
+ */
+function updateLoginExpiry($myusername)
+{
+    $sql = "SELECT login_timeout from users where username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    if ($result->num_rows === 0) {
+        // Something went wrong, or user no longer exists
+        return false;
+    }
+
+    $login_timeout = database::mysqli_result($result, 0, 'login_timeout');
+
+    // Use global if individual value is disabled (-1)
+    if ($login_timeout === '-1') {
+        if (defined('SESSION_TIMEOUT')) {
+            if (SESSION_TIMEOUT > 0 && SESSION_TIMEOUT <= 99999) {
+                $expiry_val = (time() + SESSION_TIMEOUT);
+            } else {
+                $expiry_val = 0;
+            }
+        } else {
+            $expiry_val = (time() + 600);
+        }
+    // If set, use the individual timeout
+    } elseif ($login_timeout === '0') {
+        $expiry_val = 0;
+    } else {
+        $expiry_val = (time() + (int)$login_timeout);
+    }
+    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    return $result;
+}
+
+/**
+ * Checks the user login expiry against the current time, if enabled
+ * Returns true if expired
+ * @param string $myusername
+ * @return boolean
+ */
+function checkLoginExpiry($myusername)
+{
+    $sql = "SELECT login_expiry FROM users WHERE username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    if ($result->num_rows === 0) {
+        // Something went wrong, or user no longer exists
+        return true;
+    }
+
+    $login_expiry = database::mysqli_result($result, 0, 'login_expiry');
+
+    if ($login_expiry === '-1') {
+        // User administratively logged out
+        return true;
+    } elseif ($login_expiry === '0') {
+        // Login never expires, so just return false
+        return false;
+    } elseif ((int)$login_expiry > time()) {
+        // User is active
+        return false;
+    } else {
+        // User has timed out
+        return true;
+    }
+}
+
+/**
+ * Checks for a privilege change, returns true if changed
+ * @param string $myusername
+ * @return boolean
+ */
+function checkPrivilegeChange($myusername)
+{
+    $sql = "SELECT type FROM users WHERE username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    if ($result->num_rows === 0) {
+        // Something went wrong, or user does not exist
+        return true;
+    }
+
+    $user_type = database::mysqli_result($result, 0, 'type');
+
+    if ($_SESSION['user_type'] !== $user_type) {
+        // Privilege change detected
+        return true;
+    }
+
+    return false;
 }

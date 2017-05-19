@@ -479,7 +479,15 @@ return array(
     'usercreated12' => 'Benutzer %s wurde erstellt',
     'useredited12' => 'Benutzer %s wurde geändert',
     'userdeleted12' => 'Benuter %s wurde gelöscht',
-    
+    'userloggedout12' => 'Benutzer %s wurde abgemeldet',
+    'loggedin12' => 'wurde angemeldet',
+    'unkown12' => 'Unbekannt',
+    'usertimeout12' => 'Benutzer-Timeout:',
+    'logout12' => 'Abmelden',
+    'empty12' => 'Leer',
+    'lastlogin12' => 'Letzter Login: ',
+    'never12' => 'Niemals',
+
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
     'updatesadesc13' => 'SpamAssassin Regel-Beschreibungen aktualieren',

@@ -361,6 +361,19 @@ if ($link) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
 
+    // Update users table schema for login_expiry, last_login and individual login_timeout feature
+    echo pad(' - Add login_expiry and login_timeout fields in `users` table');
+    if (check_column_exists('users', 'login_expiry') === false) {
+        $sql = "ALTER TABLE `users` ADD COLUMN (
+            `login_expiry` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+            `last_login` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+            `login_timeout` SMALLINT(5) COLLATE utf8_unicode_ci DEFAULT '-1'
+            );";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    }
+    
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4

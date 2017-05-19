@@ -47,6 +47,11 @@ define('LANG', 'en');
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
 //define('SESSION_NAME', 'MailWatch');
 
+// Session Timeout - Sets the global session timeout value, default is 600 sec (10 minutes) if not defined
+// Range is 0 to 99999 seconds.  Setting to 0 will disable session timeout and active session statuses.
+// This can also be set individually per user in the MailWatch GUI for greater flexibility.
+//define('SESSION_TIMEOUT', 600);
+
 // Database settings
 //
 // As this file might be publically readable. It might be very userful to

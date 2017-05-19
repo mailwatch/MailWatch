@@ -260,6 +260,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `resetid` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `resetexpire` bigint(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lastreset` bigint(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `login_expiry` bigint(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+  `last_login` bigint(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+  `login_timeout` smallint(5) COLLATE utf8_unicode_ci DEFAULT '-1',
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
