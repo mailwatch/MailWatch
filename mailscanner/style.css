@@ -896,3 +896,21 @@ select.lang > option {
     border-top:1px solid #444;
     color: #000;
 }
+
+/*colors for pie graph*/
+:root {
+    --pie-graph-bg1: #61a9f3;
+    --pie-graph-bg2: #f381b9;
+    --pie-graph-bg3: #61E3A9;
+    --pie-graph-bg4: #85eD82;
+    --pie-graph-bg5: #F7b7b7;
+    --pie-graph-bg6: #CFDF49;
+    --pie-graph-bg7: #88d8f2;
+    --pie-graph-bg8: #07AF7B;
+    --pie-graph-bg9: #B9E3F9;
+    --pie-graph-bg10: #FFF3AD;
+    --pie-graph-bg11: #EF606A;
+    --pie-graph-bg12: #EC8833;
+    --pie-graph-bg13: #FFF100;
+    --pie-graph-bg14: #87C9A5;
+};

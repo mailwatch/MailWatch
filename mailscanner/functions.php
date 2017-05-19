@@ -3994,37 +3994,6 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param integer $count number of hex rgb colors that should be generated
- * @return array that contains rgb colors as hex strings usable for html
- */
-function getHexColors($count)
-{
-    // colors from jpgraph UniversalTheme
-    $colors = array(
-        '#61a9f3',#blue
-        '#f381b9',#red
-        '#61E3A9',#green
-        #'#D56DE2',
-        '#85eD82',
-        '#F7b7b7',
-        '#CFDF49',
-        '#88d8f2',
-        '#07AF7B',
-        '#B9E3F9',
-        '#FFF3AD',
-        '#EF606A',
-        '#EC8833',
-        '#FFF100',
-        '#87C9A5'
-    );
-    $htmlColors = array();
-    for ($i=0; $i< $count; $i++) {
-        $htmlColors[] = $colors[$i % count($colors)];
-    }
-    return $htmlColors;
-}
-
-/**
  * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
  * @param string $reportTitle title that will be displayed on top of the graph
  * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
@@ -4104,19 +4073,12 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     }
 
     //create canvas graph
-    $bgcolors = getHexColors(count($data[$graphColumn['dataColumn']]));
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
   <script>
   var chartTitle = "' . $reportTitle . '";
   var chartId = "reportChart";
-  var chartData = {
-    labels: ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"],
-    datasets: [{
-      label: "' . $reportTitle . '",
-      data: [' . implode(', ', $data[$graphColumn['dataColumn']]) . '],
-      backgroundColor: ["' . implode('", "', $bgcolors) . '"]
-    }]
-  };
+  var chartLabels = ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"];
+  var chartData = [' . implode(', ', $data[$graphColumn['dataColumn']]) . '];
   </script>
   <script src="lib/Chart.js/Chart.min.js"></script>
   <script src="lib/chartConfig.js"></script>';

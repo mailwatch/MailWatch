@@ -27,10 +27,33 @@ function drawPersistentPercentValues() {
   });
 }
 
+function getChartBgColors(count) {
+  var styleInfo = getComputedStyle(document.documentElement);
+  var bgColors = [];
+  for (var i=1; bgColors.length < count; i++) {
+    var color = styleInfo.getPropertyValue("--pie-graph-bg"+i).trim();
+    if (color != "" ) {
+      bgColors.push(color);
+    } else {
+      //we don't have enough colors specified so we reuse the ones we have
+      i = 0;
+      continue;
+    }
+  }
+  return bgColors;
+}
+
 var ctx = document.getElementById(chartId);
 var myChart = new Chart(ctx, {
   type: "pie",
-  data: chartData,
+  data: {
+    label: chartTitle,
+    datasets: [{
+      labels: chartLabels,
+      data: chartData,
+      backgroundColor: getChartBgColors(chartData.length)
+    }]
+  },
   options: {
     title: {
       display: true,
