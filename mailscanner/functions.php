@@ -4106,93 +4106,20 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     //create canvas graph
     $bgcolors = getHexColors(count($data[$graphColumn['dataColumn']]));
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
-  <script src="lib/Chart.js/Chart.min.js"></script>
   <script>
-    function drawPersistentPercentValues() {
-      var ctx = this.chart.ctx;
-      ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, "normal", Chart.defaults.global.defaultFontFamily);
-      ctx.fillStyle = this.chart.config.options.defaultFontColor;
-      this.data.datasets.forEach(function (dataset) {
-        var sum =0;
-        for (var i = 0; i < dataset.data.length; i++) {
-          if(dataset.hidden === true || dataset._meta[0].data[i].hidden === true){ continue; }
-          sum += dataset.data[i];
-        }
-        var curr= 0;
-        for (var i = 0; i < dataset.data.length; i++) {
-          if(dataset.hidden === true || dataset._meta[0].data[i].hidden === true){ continue; }
-          var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
-          if(dataset.data[i] !== null) {
-            var part = dataset.data[i]/sum;
-            var radius = model.outerRadius-10; //where to place the text around the center
-            var x = Math.sin((curr+part/2)*2*Math.PI)*radius;
-            var y = Math.cos((curr+part/2)*2*Math.PI)*radius;
-            ctx.fillText((part*100).toFixed(0)+"%",model.x + x - 8 , model.y - y - 5 );
-            curr += part;
-          }
-        }
-      });
-    }
-
-    var ctx = document.getElementById("reportChart");
-    var myChart = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"],
-        datasets: [{
-          label: "' . $reportTitle . '",
-          data: [' . implode(', ', $data[$graphColumn['dataColumn']]) . '],
-          backgroundColor: ["' . implode('", "', $bgcolors) . '"]
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: "' . $reportTitle . '"
-        },
-        legend: {
-          display: true,
-          labels: {
-            generateLabels: function(graph) {
-              var graphData = graph.data.datasets[0].data;
-              var total = 0;
-              for(var i=0; i<graphData.length; i++) {
-                total += graphData[i];
-              };
-              var defaultLabels = Chart.defaults.doughnut.legend.labels.generateLabels(graph);
-              for(var i=0; i<defaultLabels.length; i++) {
-                var label = defaultLabels[i];
-                var percentage = Math.round((graphData[i] / total) * 100);
-                defaultLabels[i].text += " (" + percentage +"%)";
-              }
-              return defaultLabels;
-            }
-          }
-        },
-        responsive: false,
-        tooltips: {
-          callbacks: {
-            label: function(tooltipItem, data) {
-              var allData = data.datasets[tooltipItem.datasetIndex].data;
-              var tooltipLabel = data.labels[tooltipItem.index];
-              var tooltipData = allData[tooltipItem.index];
-              var total = 0;
-              for (var i in allData) {
-                total += allData[i];
-              }
-              var tooltipPercentage = Math.round((tooltipData / total) * 100);
-              return tooltipLabel + ": " + tooltipData + " (" + tooltipPercentage + "%)";
-            }
-          }
-        },
-        animation: {
-          onProgress: drawPersistentPercentValues,
-          onComplete: drawPersistentPercentValues
-        },
-        hover: { animationDuration: 0 }
-      }
-    });
-  </script>';
+  var chartTitle = "' . $reportTitle . '";
+  var chartId = "reportChart";
+  var chartData = {
+    labels: ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"],
+    datasets: [{
+      label: "' . $reportTitle . '",
+      data: [' . implode(', ', $data[$graphColumn['dataColumn']]) . '],
+      backgroundColor: ["' . implode('", "', $bgcolors) . '"]
+    }]
+  };
+  </script>
+  <script src="lib/Chart.js/Chart.min.js"></script>
+  <script src="lib/chartConfig.js"></script>';
 
     // HTML to display the table
     echo '<table class="reportTable">';
