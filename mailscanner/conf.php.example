@@ -154,7 +154,7 @@ define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 define('MAILWATCH_MAIL_HOST', '127.0.0.1');
 define('MAILWATCH_MAIL_PORT', '25');
 // This is required if you use a remote SMTP server to send MailWatch emails (reports etc).
-//define('MAILWATCH_SMTP_HOSTNAME' , gethostname());
+//define('MAILWATCH_SMTP_HOSTNAME', gethostname());
 // Change with a fully qualified email address
 define('MAILWATCH_FROM_ADDR', 'postmaster@domain.tld');
 define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
