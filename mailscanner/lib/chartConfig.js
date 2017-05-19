@@ -14,13 +14,13 @@ function drawPersistentPercentValues() {
     var curr= 0;
     for (var i = 0; i < dataset.data.length; i++) {
       if(dataset.hidden === true || dataset._meta[0].data[i].hidden === true){ continue; }
-      var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
-      if(dataset.data[i] !== null) {
-        var part = dataset.data[i]/sum;
+      var part = dataset.data[i]/sum;
+      if(dataset.data[i] !== null && part*100 > 2) {
+        var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
         var radius = model.outerRadius-10; //where to place the text around the center
         var x = Math.sin((curr+part/2)*2*Math.PI)*radius;
         var y = Math.cos((curr+part/2)*2*Math.PI)*radius;
-        ctx.fillText((part*100).toFixed(0)+"%",model.x + x - 8 , model.y - y - 5 );
+        ctx.fillText((part<0.1?" ":"")+(part*100).toFixed(0)+"%",model.x + x * 0.95 - 15, model.y - y * 0.96 - 8);
         curr += part;
       }
     }
