@@ -1,6 +1,25 @@
 /**
  * This customizes a pie chart for ChartJs. This files requires that the variables chartTitle, chartId and chartData are already set.
  */
+
+var pieBackgroundColors= [
+  '#61a9f3', //blue
+  '#f381b9', //red
+  '#61E3A9', //green
+  //'#D56DE2',
+  '#85eD82',
+  '#F7b7b7',
+  '#CFDF49',
+  '#88d8f2',
+  '#07AF7B',
+  '#B9E3F9',
+  '#FFF3AD',
+  '#EF606A',
+  '#EC8833',
+  '#FFF100',
+  '#87C9A5'
+];
+
 function drawPersistentPercentValues() {
   var ctx = this.chart.ctx;
   ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, "normal", Chart.defaults.global.defaultFontFamily);
@@ -28,17 +47,9 @@ function drawPersistentPercentValues() {
 }
 
 function getChartBgColors(count) {
-  var styleInfo = getComputedStyle(document.documentElement);
   var bgColors = [];
-  for (var i=1; bgColors.length < count; i++) {
-    var color = styleInfo.getPropertyValue("--pie-graph-bg"+i).trim();
-    if (color != "" ) {
-      bgColors.push(color);
-    } else {
-      //we don't have enough colors specified so we reuse the ones we have
-      i = 0;
-      continue;
-    }
+  for (var i=0; bgColors.length < count; i++) {
+    bgColors.push(pieBackgroundColors[i]);
   }
   return bgColors;
 }
