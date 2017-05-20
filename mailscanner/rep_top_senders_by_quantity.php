@@ -74,7 +74,8 @@ $valueConversion = array(
 );
 $graphColumns = array(
     'labelColumn' => 'name',
-    'dataColumn' => 'count'
+    'dataNumericColumn' => 'count',
+    'dataFormattedColumn' => 'countconv'
 );
 printGraphTable($sql, __('top10sendersqt46'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
