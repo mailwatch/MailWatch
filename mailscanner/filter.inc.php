@@ -104,7 +104,7 @@ class Filter
      */
     public function Add($column, $operator, $value)
     {
-         // Don't show the last column, operator, and value now
+        // Don't show the last column, operator, and value now
         $value = deepSanitizeInput($value, 'string');
         if (!$this->ValidateOperator($operator) || !$this->ValidateColumn($column)
             || !validateInput($value, 'general')) {
@@ -194,22 +194,8 @@ WHERE
             if ($val[0] === 'date') {
                 // Change field from timestamp to date format
                 $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
-                // If LIKE selected - place wildcards either side of the query string
-                if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
-                    $val[2] = '%' . $val[2] . '%';
-                }
-                if (is_numeric($val[2])) {
-                    $sql .= "AND\n $val[0] $val[1] $val[2]\n";
-                } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
-                    // Handle NULL and NOT NULL's
-                    $sql .= "AND\n $val[0] $val[1]\n";
-                } elseif ($val[2]{0} === '!') {
-                    // Allow !<sql_function>
-                    $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
-                } else {
-                    // Regular string
-                    $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
-                }
+                
+                $sql .= self::getSqlCondition($val);
             }
         }
 
@@ -220,25 +206,30 @@ WHERE
     {
         $sql = 'AND ' . $_SESSION['global_filter'] . "\n";
         foreach ($this->item as $key => $val) {
-            // If LIKE selected - place wildcards either side of the query string
-            if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
-                $val[2] = '%' . $val[2] . '%';
-            }
-            if (is_numeric($val[2])) {
-                $sql .= "AND\n $val[0] $val[1] $val[2]\n";
-            } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
-                // Handle NULL and NOT NULL's
-                $sql .= "AND\n $val[0] $val[1]\n";
-            } elseif ($val[2]!=='' && $val[2]{0} === '!') {
-                // Allow !<sql_function>
-                $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
-            } else {
-                // Regular string
-                $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
-            }
+            $sql .= self::getSqlCondition($val);
         }
 
         return $sql;
+    }
+    
+    private static function getSqlCondition($val)
+    {
+        // If LIKE selected - place wildcards either side of the query string
+        if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
+            $val[2] = '%' . $val[2] . '%';
+        }
+        if (is_numeric($val[2])) {
+            return "AND\n $val[0] $val[1] $val[2]\n";
+        } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
+            // Handle NULL and NOT NULL's
+            return "AND\n $val[0] $val[1]\n";
+        } elseif ($val[2]!=='' && $val[2]{0} === '!') {
+            // Allow !<sql_function>
+            return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
+        } else {
+            // Regular string
+            return "AND\n $val[0] $val[1] '$val[2]'\n";
+        }
     }
 
     /**
@@ -347,9 +338,7 @@ WHERE
         dbconn();
         if (count($this->item) > 0) {
             // Delete the existing first
-            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . safe_value(
-                    $name
-                ) . "'";
+            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
             dbquery($dsql);
             foreach ($this->item as $key => $val) {
                 $sql = "REPLACE INTO `saved_filters` (`name`, `col`, `operator`, `value`, `username`)  VALUES ('$name',";
@@ -373,9 +362,7 @@ WHERE
         }
         
         dbconn();
-        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='" . safe_value(
-                $name
-            ) . "' AND username='" . $_SESSION['myusername'] . "'";
+        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
         while ($row = $sth->fetch_row()) {
             $this->item[] = $row;
@@ -393,9 +380,7 @@ WHERE
         }
         
         dbconn();
-        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='" . safe_value(
-                $name
-            ) . "'";
+        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
         dbquery($sql);
     }
 
