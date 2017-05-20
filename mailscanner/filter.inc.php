@@ -104,28 +104,18 @@ class Filter
      */
     public function Add($column, $operator, $value)
     {
-        if (!$this->ValidateOperator($operator)) {
-            return;
-        }
-
-        if (!$this->ValidateColumn($column)) {
-            return;
-        }
-
-        // Don't show the last column, operator, and value now
-        $this->display_last = 0;
-        
+         // Don't show the last column, operator, and value now
         $value = deepSanitizeInput($value, 'string');
-        if (!validateInput($value, 'general')) {
+        if (!$this->ValidateOperator($operator) || !$this->ValidateColumn($column)
+            || !validateInput($value, 'general')) {
             return;
         }
+        $this->display_last = 0;
 
         //  Make sure this is not a duplicate
-        if (count($this->item) > 0) {
-            foreach ($this->item as $key => $val) {
-                if (($val[0] === $column) && ($val[1] === $operator) && ($val[2] === $value)) {
-                    return;
-                }
+        foreach ($this->item as $key => $val) {
+            if (($val[0] === $column) && ($val[1] === $operator) && ($val[2] === $value)) {
+                return;
             }
         }
 
@@ -200,27 +190,25 @@ WHERE
     public function CreateMtalogSQL()
     {
         $sql = '';
-        if (count($this->item) > 0) {
-            foreach ($this->item as $key => $val) {
-                if ($val[0] === 'date') {
-                    // Change field from timestamp to date format
-                    $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
-                    // If LIKE selected - place wildcards either side of the query string
-                    if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
-                        $val[2] = '%' . $val[2] . '%';
-                    }
-                    if (is_numeric($val[2])) {
-                        $sql .= "AND\n $val[0] $val[1] $val[2]\n";
-                    } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
-                        // Handle NULL and NOT NULL's
-                        $sql .= "AND\n $val[0] $val[1]\n";
-                    } elseif ($val[2]{0} === '!') {
-                        // Allow !<sql_function>
-                        $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
-                    } else {
-                        // Regular string
-                        $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
-                    }
+        foreach ($this->item as $key => $val) {
+            if ($val[0] === 'date') {
+                // Change field from timestamp to date format
+                $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
+                // If LIKE selected - place wildcards either side of the query string
+                if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
+                    $val[2] = '%' . $val[2] . '%';
+                }
+                if (is_numeric($val[2])) {
+                    $sql .= "AND\n $val[0] $val[1] $val[2]\n";
+                } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
+                    // Handle NULL and NOT NULL's
+                    $sql .= "AND\n $val[0] $val[1]\n";
+                } elseif ($val[2]{0} === '!') {
+                    // Allow !<sql_function>
+                    $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
+                } else {
+                    // Regular string
+                    $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
                 }
             }
         }
@@ -231,30 +219,26 @@ WHERE
     public function CreateSQL()
     {
         $sql = 'AND ' . $_SESSION['global_filter'] . "\n";
-        if (count($this->item) > 0) {
-            foreach ($this->item as $key => $val) {
-                // If LIKE selected - place wildcards either side of the query string
-                if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
-                    $val[2] = '%' . $val[2] . '%';
-                }
-                if (is_numeric($val[2])) {
-                    $sql .= "AND\n $val[0] $val[1] $val[2]\n";
-                } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
-                    // Handle NULL and NOT NULL's
-                    $sql .= "AND\n $val[0] $val[1]\n";
-                } elseif ($val[2]!=='' && $val[2]{0} === '!') {
-                    // Allow !<sql_function>
-                    $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
-                } else {
-                    // Regular string
-                    $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
-                }
+        foreach ($this->item as $key => $val) {
+            // If LIKE selected - place wildcards either side of the query string
+            if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
+                $val[2] = '%' . $val[2] . '%';
             }
-
-            return $sql;
+            if (is_numeric($val[2])) {
+                $sql .= "AND\n $val[0] $val[1] $val[2]\n";
+            } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
+                // Handle NULL and NOT NULL's
+                $sql .= "AND\n $val[0] $val[1]\n";
+            } elseif ($val[2]!=='' && $val[2]{0} === '!') {
+                // Allow !<sql_function>
+                $sql .= "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
+            } else {
+                // Regular string
+                $sql .= "AND\n $val[0] $val[1] '$val[2]'\n";
+            }
         }
 
-        return 'AND ' . $_SESSION['global_filter'] . "\n";
+        return $sql;
     }
 
     /**
