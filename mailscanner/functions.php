@@ -4078,7 +4078,8 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
   var chartTitle = "' . $reportTitle . '";
   var chartId = "reportChart";
   var chartLabels = ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"];
-  var chartData = [' . implode(', ', $data[$graphColumn['dataColumn']]) . '];
+  var chartNumericData = [' . implode(', ', $data[$graphColumn['dataNumericColumn']]) . '];
+  var chartFormattedData = ["' . implode('", "', $data[$graphColumn['dataFormattedColumn']]) . '"];
   </script>
   <script src="lib/Chart.js/Chart.min.js"></script>
   <script src="lib/chartConfig.js"></script>';
