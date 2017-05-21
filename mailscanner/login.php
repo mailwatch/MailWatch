@@ -39,108 +39,94 @@ session_regenerate_id(true);
 
 $_SESSION['token'] = generateToken();
 
-?>
-<!doctype html>
+if (file_exists('conf.php') && isset($_GET['error'])) {
+    $loginerror = deepSanitizeInput($_GET['error'], 'url');
+    if (false === validateInput($loginerror, 'loginerror')) {
+        header('Location: login.php');
+    }
+}
+echo '<!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><?php echo __('mwloginpage01') ?></title>
+    <title>' . __('mwloginpage01') . '</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
-    <link rel="stylesheet" href="style.css" type="text/css">
-    <?php
-    if (is_file(__DIR__ . '/skin.css')) {
-        echo '<link rel="stylesheet" href="skin.css" type="text/css">';
-    }
-    ?>
+    <link rel="stylesheet" href="style.css" type="text/css">';
+if (is_file(__DIR__ . '/skin.css')) {
+    echo '
+    <link rel="stylesheet" href="skin.css" type="text/css">';
+}
+echo '
 </head>
 <body class="loginbody">
 <script>
     setInterval(function () {
-        var len1 = document.getElementById('myusername').value.length;
-        var len2 = document.getElementById('mypassword').value.length;
+        var len1 = document.getElementById("myusername").value.length;
+        var len2 = document.getElementById("mypassword").value.length;
 
-        var prev1 = document.getElementById('myusername_length').value;
-        var prev2 = document.getElementById('mypassword_length').value;
+        var prev1 = document.getElementById("myusername_length").value;
+        var prev2 = document.getElementById("mypassword_length").value;
 
         if (len1 === prev1 && len2 === prev2) {
             location.reload();
         } else {
-            document.getElementById('myusername_length').value = len1;
-            document.getElementById('mypassword_length').value = len2;
+            document.getElementById("myusername_length").value = len1;
+            document.getElementById("mypassword_length").value = len2;
         }
     }, 60000);
 </script>
 <div class="login">
-    <div style="text-align: center"><img src="<?php echo IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
-    </div>
-    <h1><?php echo __('mwlogin01'); ?></h1>
-    <div class="inner-container">
-        <?php
-        if (file_exists('conf.php')) {
-            ?>
-            <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
-                <fieldset>
-                    <?php
-                    if (isset($_GET['error'])) {
-                        ?>
-                        <p class="loginerror">
-                            <?php
-                            $loginerror = deepSanitizeInput($_GET['error'], 'url');
-                            if (false === validateInput($loginerror, 'loginerror')) {
-                                header('Location: login.php');
-                            }
-                            switch ($loginerror) {
-                                case 'baduser':
-                                    echo __('badup01');
-                                    break;
-                                case 'emptypassword':
-                                    echo __('emptypassword01');
-                                    break;
-                                case 'timeout':
-                                    echo __('sessiontimeout01');
-                                    break;
-                                default:
-                                    echo __('errorund01');
-                            } ?>
-                        </p>
-                        <?php
-                    }
-                    ?>
-                    <p><label for="myusername"><?php echo __('username'); ?></label></p>
-                    <p><input name="myusername" type="text" id="myusername" autofocus></p>
-                    <input type="hidden" id="myusername_length" name="myusername_length">
-
-                    <p><label for="mypassword"><?php echo __('password'); ?></label></p>
-                    <p><input name="mypassword" type="password" id="mypassword"></p>
-                    <input type="hidden" id="mypassword_length" name="mypassword_length">
-
-                    <p>
-                        <button type="submit" name="Submit" value="loginSubmit"><?php echo __('login01'); ?></button>
-                    </p>
-                    <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
-                </fieldset>
-            </form>
-            <?php
-            if (defined('PWD_RESET') && PWD_RESET === true) {
-                ?>
-                <div class="pwdresetButton">
-                    <a href="password_reset.php?stage=1">
-                        <?php echo __('forgottenpwd01'); ?>
-                    </a>
-                </div>
-                <?php
-            }
-        } else {
-            ?>
-            <p class="error">
-                <?php echo __('cannot_read_conf'); ?>
-            </p>
-            <?php
+    <div style="text-align: center"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"></div>
+    <h1>' . __('mwlogin01') . '</h1>
+    <div class="inner-container">';
+if (file_exists('conf.php')) {
+    echo '
+        <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
+            <fieldset>';
+    if (isset($_GET['error'])) {
+        $error = __('errorund01');
+        switch ($loginerror) {
+            case 'baduser':
+                $error = __('badup01');
+                break;
+            case 'emptypassword':
+                $error = __('emptypassword01');
+                break;
+            case 'timeout':
+                $error = __('sessiontimeout01');
+                break;
         }
-        ?>
+        echo '
+                <p class="loginerror">' . $error . '</p>';
+    }
+    echo '
+                <p><label for="myusername">' . __('username') . '</label></p>
+                <p><input name="myusername" type="text" id="myusername" autofocus></p>
+                <input type="hidden" id="myusername_length" name="myusername_length">
+
+                <p><label for="mypassword">' . __('password') . '</label></p>
+                <p><input name="mypassword" type="password" id="mypassword"></p>
+                <input type="hidden" id="mypassword_length" name="mypassword_length">
+
+                <p>
+                    <button type="submit" name="Submit" value="loginSubmit">' . __('login01') . '</button>
+                </p>
+                <input type="hidden" name="token" value="' . $_SESSION['token'] . '">
+            </fieldset>
+        </form>';
+    if (defined('PWD_RESET') && PWD_RESET === true) {
+        echo '
+        <div class="pwdresetButton"><a href="password_reset.php?stage=1">' . __('forgottenpwd01') . '</a></div>';
+    }
+} else {
+    echo '
+        <p class="error">' . __('cannot_read_conf') . '</p>';
+}
+echo '
     </div>
 </div>
 </body>
 </html>
+';
