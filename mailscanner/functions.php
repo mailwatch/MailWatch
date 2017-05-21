@@ -4071,6 +4071,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
                 $data['viruscount'][] = $val;
                 $count++;
             }
+            $numResult = $count;
         }
     }
     //create canvas graph
@@ -4093,8 +4094,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     }
     echo '    </tr>' . "\n";
 
-    $rowCount = count($data[$columnName]);
-    for ($i = 0; $i < $rowCount; $i++) {
+    for ($i = 0; $i < $numResult; $i++) {
         echo '    <tr>' . "\n";
         foreach ($columns as $columnName => $columnTitle) {
             echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
