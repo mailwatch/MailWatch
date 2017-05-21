@@ -4010,6 +4010,8 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     }
     //store data in format $data[columnname][rowid]
     $data = array();
+    $data[$graphColumn['dataNumericColumn']] = array();
+    $data[$graphColumn['dataFormattedColumn']] = array();
     while ($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
             $data[$columnName][] = $row[$columnName];
@@ -4053,7 +4055,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
             foreach ($data[$column] as $report) {
                 if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
                     $virus = $virus_report[2];
-                    if (isset($virus_array[$virus])) {
+                    if (isset($viruses[$virus])) {
                         $viruses[$virus]++;
                     } else {
                         $viruses[$virus] = 1;
@@ -4071,7 +4073,6 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
             }
         }
     }
-
     //create canvas graph
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
   <script>
@@ -4092,7 +4093,8 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     }
     echo '    </tr>' . "\n";
 
-    for ($i = 0; $i < $numResult; $i++) {
+    $rowCount = count($data[$columnName]);
+    for ($i = 0; $i < $rowCount; $i++) {
         echo '    <tr>' . "\n";
         foreach ($columns as $columnName => $columnTitle) {
             echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
