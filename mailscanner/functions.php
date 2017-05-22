@@ -3532,6 +3532,8 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     $list =& $new;
     $status = array();
     if (!$rpc_only && is_local($list[0]['host'])) {
+        //prevent sa-learn process blocking complete apache server
+        session_write_close();
         foreach ($num as $key => $val) {
             $use_spamassassin = false;
             $isfn = '0';
