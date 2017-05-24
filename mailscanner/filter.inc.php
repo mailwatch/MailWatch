@@ -35,7 +35,7 @@
 class Filter
 {
     /** @var array */
-    public $item;
+    public $item = array();
     public $operators = array();
     public $columns = array();
     public $reports = array();
