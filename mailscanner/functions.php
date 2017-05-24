@@ -4074,6 +4074,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     //create canvas graph
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
   <script>
+  var COLON = "' . __('colon99') . '";
   var chartTitle = "' . $reportTitle . '";
   var chartId = "reportChart";
   var chartLabels = ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"];

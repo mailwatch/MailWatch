@@ -1,5 +1,5 @@
 /**
- * This customizes a pie chart for ChartJs. This files requires that the variables chartTitle, chartId, chartFormattedData and chartNumericData are already set.
+ * This customizes a pie chart for ChartJs. This files requires that the variables chartTitle, chartId, chartFormattedData and chartNumericData, COLON are already set.
  */
 
 var pieBackgroundColors= [
@@ -68,6 +68,7 @@ var myChart = new Chart(ctx, {
   options: {
     title: {
       display: true,
+      fontSize: 18,
       text: chartTitle
     },
     legend: {
@@ -102,7 +103,12 @@ var myChart = new Chart(ctx, {
             total += allData[i];
           }
           var tooltipPercentage = Math.round((itemData / total) * 100);
-          return tooltipLabel + ": " + chartFormattedData[tooltipItem.index] + " (" + tooltipPercentage + "%)";
+          //COLON specified on main page via php __('colon99')
+          var tooltipOutput = " " + tooltipLabel + COLON + " " + chartFormattedData[tooltipItem.index];
+          if (tooltipPercentage < 3) {
+            tooltipOutput += " (" + tooltipPercentage + "%)";
+          }
+          return tooltipOutput;
         }
       }
     },
