@@ -103,7 +103,8 @@ var myChart = new Chart(ctx, {
             total += allData[i];
           }
           var tooltipPercentage = Math.round((itemData / total) * 100);
-          var tooltipOutput = " "+ tooltipLabel + COLON + chartFormattedData[tooltipItem.index];
+          //COLON specified on main page via php __('colon99')
+          var tooltipOutput = " " + tooltipLabel + COLON + " " + chartFormattedData[tooltipItem.index];
           if (tooltipPercentage < 3) {
             tooltipOutput += " (" + tooltipPercentage + "%)";
           }
