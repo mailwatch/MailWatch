@@ -68,6 +68,7 @@ var myChart = new Chart(ctx, {
   options: {
     title: {
       display: true,
+      fontSize: 18,
       text: chartTitle
     },
     legend: {
@@ -102,7 +103,8 @@ var myChart = new Chart(ctx, {
             total += allData[i];
           }
           var tooltipPercentage = Math.round((itemData / total) * 100);
-          return tooltipLabel + ": " + chartFormattedData[tooltipItem.index] + " (" + tooltipPercentage + "%)";
+          return " "+ tooltipLabel + ": " + chartFormattedData[tooltipItem.index];
+           // + " (" + tooltipPercentage + "%)";
         }
       }
     },
