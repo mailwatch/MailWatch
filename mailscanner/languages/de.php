@@ -192,6 +192,9 @@ return array(
     'procs03' => 'Prozess(e)',
     'errorWarning03' => 'Warnung: Es ist ein Fehler aufgetreten:',
     'phpxmlnotloaded03' => 'Die PHP-Extension xml wurde nicht geladen',
+    'released03' => 'Freigegeben',
+    'learnspam03' => 'Gelernt als Spam',
+    'learnham03' => 'Gelernt als Ham',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',

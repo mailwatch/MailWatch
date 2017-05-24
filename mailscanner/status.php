@@ -61,6 +61,8 @@ $sql .= "
  issamcp,
  ishighmcp,
  mcpsascore,
+ released,
+ salearn,
  '' AS status
 FROM
  maillog

@@ -2192,6 +2192,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $fieldname[$f] = __('last03');
                     $align[$f] = 'right';
                     break;
+                case 'released':
+                    $display[$f] = false;
+                    break;
+                case 'salearn':
+                    $display[$f] = false;
+                    break;
             }
         }
         // Table heading
@@ -2245,7 +2251,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     '<input name="OPT-REPLACEME" type="RADIO" value="S">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="H">&nbsp;<input name="OPT-REPLACEME" type="RADIO" value="F">&nbsp;<input name="OPTRELEASE-REPLACEME" type="checkbox" value="R">'
                 );
             }
-            // Work out field colourings and mofidy the incoming data as necessary
+            // Work out field colourings and modify the incoming data as necessary
             // and populate the generate an overall 'status' for the mail.
             $status_array = array();
             $infected = false;
@@ -2255,6 +2261,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $blacklisted = false;
             $mcp = false;
             $highmcp = false;
+            $released = false;
+            $salearnham = false;
+            $salearnspam = false;
             for ($f = 0; $f < $fields; $f++) {
                 if ($operations !== false) {
                     if ($f === 0) {
@@ -2393,13 +2402,43 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             $row[$f] = $hostname;
                         }
                         break;
+                    case 'released':
+                        if ($row[$f] > 0) {
+                            $released = true;
+                            $status_array[] = __('released03');
+                        }
+                        break;
+                    case 'salearn':
+                        switch ($row[$f]) {
+                            case 1:
+                                $salearnham = true;
+                                $status_array[] = __('learnham03');
+                                break;
+                            case 2:
+                                $salearnspam = true;
+                                $status_array[] = __('learnspam03');
+                                break;
+                        }
+                        break;
                     case 'status':
                         // NOTE: this should always be the last row for it to be displayed correctly
                         // Work out status
                         if (count($status_array) === 0) {
                             $status = __('clean03');
                         } else {
-                            $status = implode('<br>', $status_array);
+                            $status = '';
+                            foreach ($status_array as $item) {
+                                if ($item === __('released03')) {
+                                    $class = 'released';
+                                } elseif ($item === __('learnham03')) {
+                                    $class = 'salearn-1';
+                                } elseif ($item === __('learnspam03')) {
+                                    $class = 'salearn-2';
+                                } else {
+                                    $class = '';
+                                }
+                                $status .= '<div class="' . $class . '">' . $item . '</div>';
+                            }
                         }
                         $row[$f] = $status;
                         break;
@@ -3446,6 +3485,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 global $error;
                 $error = true;
             } else {
+                $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
+                dbquery($sql);
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
             }
@@ -3461,6 +3502,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 debug($cmd . $list[$val]['path']);
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if ($retval === 0) {
+                    $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
+                    dbquery($sql);
                     $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
@@ -3522,7 +3565,6 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
-
     $new = quarantine_list_items($list[0]['msgid']);
     $list =& $new;
     $status = array();
@@ -3627,6 +3669,18 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         );
                     global $error;
                     $error = true;
+                }
+            }
+            if (!isset($error)) {
+                if ($learn_type === 'spam') {
+                    $numeric_type = 2;
+                }
+                if ($learn_type === 'ham') {
+                    $numeric_type = 1;
+                }
+                if (isset($numeric_type)) {
+                    $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" . safe_value($list[$val]['msgid']) . "'";
+                    dbquery($sql);
                 }
             }
         }
