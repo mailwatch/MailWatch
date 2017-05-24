@@ -95,12 +95,14 @@ var myChart = new Chart(ctx, {
     tooltips: {
       callbacks: {
         label: function(tooltipItem, data) {
-          var allData = data.datasets[tooltipItem.datasetIndex].data;
+          var dataset = data.datasets[tooltipItem.datasetIndex];
           var tooltipLabel = data.labels[tooltipItem.index];
-          var itemData = allData[tooltipItem.index];
+          var itemData = dataset.data[tooltipItem.index];
           var total = 0;
-          for (var i in allData) {
-            total += allData[i];
+          for (var i in dataset.data) {
+            if (dataset._meta[0].data[i].hidden === false) { 
+              total += dataset.data[i];
+            }
           }
           var tooltipPercentage = Math.round((itemData / total) * 100);
           //COLON specified on main page via php __('colon99')
