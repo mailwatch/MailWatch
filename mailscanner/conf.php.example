@@ -47,6 +47,11 @@ define('LANG', 'en');
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
 //define('SESSION_NAME', 'MailWatch');
 
+// Session Timeout - Sets the global session timeout value, default is 600 sec (10 minutes) if not defined
+// Range is 0 to 99999 seconds.  Setting to 0 will disable session timeout and active session statuses.
+// This can also be set individually per user in the MailWatch GUI for greater flexibility.
+//define('SESSION_TIMEOUT', 600);
+
 // Database settings
 //
 // As this file might be publically readable. It might be very userful to
@@ -153,6 +158,8 @@ define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 /* Mailwatch Interface Settings */
 define('MAILWATCH_MAIL_HOST', '127.0.0.1');
 define('MAILWATCH_MAIL_PORT', '25');
+// This is required if you use a remote SMTP server to send MailWatch emails (reports etc).
+//define('MAILWATCH_SMTP_HOSTNAME', gethostname());
 // Change with a fully qualified email address
 define('MAILWATCH_FROM_ADDR', 'postmaster@domain.tld');
 define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
@@ -239,6 +246,10 @@ define('RPC_ONLY', false);
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
 // Command to read Exim outbound Mail Queue
 // define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
+// Command to read Sendmail inbound Mail Queue
+// define('SENDMAIL_QUEUE_IN', '/usr/bin/mailq  -bp -OQueueDirectory=/var/spool/mqueue.in');
+// Command to read Sendmail outbound Mail Queue
+// define('SENDMAIL_QUEUE_OUT', '/usr/bin/mailq -bp');
 
 // Do you want an audit trail?
 define('AUDIT', false);

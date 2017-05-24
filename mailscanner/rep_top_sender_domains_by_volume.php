@@ -74,7 +74,8 @@ $valueConversion = array(
 );
 $graphColumns = array(
     'labelColumn' => 'name',
-    'dataColumn' => 'size'
+    'dataNumericColumn' => 'size',
+    'dataFormattedColumn' => 'sizeconv'
 );
 printGraphTable($sql, __('top10senderdomvol45'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 

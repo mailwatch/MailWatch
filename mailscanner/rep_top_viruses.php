@@ -67,7 +67,8 @@ $valueConversion = array(
 );
 $graphColumns = array(
     'labelColumn' => 'virusname',
-    'dataColumn' => 'viruscount'
+    'dataNumericColumn' => 'viruscount',
+    'dataFormattedColumn' => 'viruscount'
 );
 printGraphTable($sql, __('top10virus48'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 

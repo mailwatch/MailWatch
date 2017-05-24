@@ -541,6 +541,13 @@ td.dashgreybox {
     table.maildetail {
         border: none;
     }
+    table.reportTable {
+        border: none;
+        border-collapse: collapse;
+    }
+    table.reportTable>tbody>tr>td {
+        border: 1px solid black;
+    }
 }
 
 div.table input {
@@ -690,7 +697,6 @@ td.titleReport {
     font-weight: bold;
     text-align: center;
 }
-
 .reportTable > tbody > tr > td:last-child {
     text-align: right;
 }

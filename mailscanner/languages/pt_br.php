@@ -482,6 +482,14 @@ return array(
     'usercreated12' => 'User %s has been created',
     'useredited12' => 'User %s has been edited',
     'userdeleted12' => 'User %s has been deleted',
+    'userloggedout12' => 'User %s has been logged out',
+    'loggedin12' => 'Logged In',
+    'unknown12' => 'Unknown',
+    'usertimeout12' => 'User Timeout:',
+    'logout12' => 'Logout',
+    'empty12' => 'Empty',
+    'lastlogin12' => 'Last login:',
+    'never12' => 'Never',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',

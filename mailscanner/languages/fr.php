@@ -482,6 +482,14 @@ return array(
     'usercreated12' => 'User %s has been created',
     'useredited12' => 'User %s has been edited',
     'userdeleted12' => 'User %s has been deleted',
+    'userloggedout12' => 'L\'utilisateur %s a été déconnecté.',
+    'loggedin12' => 'Connecté',
+    'unknown12' => 'Inconnu',
+    'usertimeout12' => 'Délai d\'expiration de l\'utilisateur :',
+    'logout12' => 'Déconnexion',
+    'empty12' => 'Vide',
+    'lastlogin12' => 'Dernière connexion :',
+    'never12' => 'Jamais',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',

@@ -50,15 +50,6 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', 0);
 
-// Session timeout 10 minutes based on user activity
-// or STATUS_REFRESH + 300 sec, whichever is greater.
-
-if (defined(STATUS_REFRESH) && STATUS_REFRESH + 300 > 600) {
-    define('SESSION_TIMEOUT', STATUS_REFRESH + 300);
-} else {
-    define('SESSION_TIMEOUT', 600);
-}
-
 $session_cookie_secure = false;
 if (SSL_ONLY === true) {
     ini_set('session.cookie_secure', 1);
@@ -308,10 +299,20 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
     }
 
-    if (!isset($_SESSION['last_update']) || $_SESSION['last_update'] + SESSION_TIMEOUT < time()) {
+    // Check for a privilege change
+    if (checkPrivilegeChange($_SESSION['myusername']) === true) {
         header('Location: logout.php?error=timeout');
+        die();
+    }
+
+    if (checkLoginExpiry($_SESSION['myusername']) === true) {
+        header('Location: logout.php?error=timeout');
+        die();
     } else {
-        $_SESSION['last_update'] = time();
+        if ($refresh === 0) {
+            // User is moving about on non-refreshing pages, keep session alive
+            updateLoginExpiry($_SESSION['myusername']);
+        }
     }
 
     echo page_creation_timer();
@@ -359,7 +360,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     }
     echo '</head>' . "\n";
     echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
-    echo '<script>setTimeout(function(){ window.location.href="logout.php?error=timeout";}, ' . SESSION_TIMEOUT*1000 . ');</script>';
     echo '<table border="0" cellpadding="5" width="100%">' . "\n";
     echo '<tr class="noprint">' . "\n";
     echo '<td>' . "\n";
@@ -566,17 +566,12 @@ function printMTAQueue()
             $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
             $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
         } else {
-            // Not activated because this need to be tested.
-            //$cmd = exec('sudo /usr/sbin/sendmail -bp -OQueueDirectory=/var/spool/mqueue.in 2>&1');
-            //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
-            //$inq = $output_array[2];
-            //$cmd = exec('sudo /usr/sbin/sendmail -bp 2>&1');
-            //preg_match"/(Total requests: )(.*)/", $cmd, $output_array);
-            //$outq = $output_array[2];
-            $inq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM inq WHERE ' . $_SESSION['global_filter']),
-                0);
-            $outq = database::mysqli_result(dbquery('SELECT COUNT(*) FROM outq WHERE ' . $_SESSION['global_filter']),
-                0);
+            $cmd = exec('sudo ' . SENDMAIL_QUEUE_IN . ' 2>&1');
+            preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
+            $inq = $output_array[2];
+            $cmd = exec('sudo ' . SENDMAIL_QUEUE_OUT . ' 2>&1');
+            preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
+            $outq = $output_array[2];
         }
         echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
         echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
@@ -3574,6 +3569,8 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     $list =& $new;
     $status = array();
     if (!$rpc_only && is_local($list[0]['host'])) {
+        //prevent sa-learn process blocking complete apache server
+        session_write_close();
         foreach ($num as $key => $val) {
             $use_spamassassin = false;
             $isfn = '0';
@@ -4048,37 +4045,6 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param integer $count number of hex rgb colors that should be generated
- * @return array that contains rgb colors as hex strings usable for html
- */
-function getHexColors($count)
-{
-    // colors from jpgraph UniversalTheme
-    $colors = array(
-        '#61a9f3',#blue
-        '#f381b9',#red
-        '#61E3A9',#green
-        #'#D56DE2',
-        '#85eD82',
-        '#F7b7b7',
-        '#CFDF49',
-        '#88d8f2',
-        '#07AF7B',
-        '#B9E3F9',
-        '#FFF3AD',
-        '#EF606A',
-        '#EC8833',
-        '#FFF100',
-        '#87C9A5'
-    );
-    $htmlColors = array();
-    for ($i=0; $i< $count; $i++) {
-        $htmlColors[] = $colors[$i % count($colors)];
-    }
-    return $htmlColors;
-}
-
-/**
  * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
  * @param string $reportTitle title that will be displayed on top of the graph
  * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
@@ -4095,6 +4061,8 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     }
     //store data in format $data[columnname][rowid]
     $data = array();
+    $data[$graphColumn['dataNumericColumn']] = array();
+    $data[$graphColumn['dataFormattedColumn']] = array();
     while ($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
             $data[$columnName][] = $row[$columnName];
@@ -4138,7 +4106,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
             foreach ($data[$column] as $report) {
                 if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
                     $virus = $virus_report[2];
-                    if (isset($virus_array[$virus])) {
+                    if (isset($viruses[$virus])) {
                         $viruses[$virus]++;
                     } else {
                         $viruses[$virus] = 1;
@@ -4154,99 +4122,21 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
                 $data['viruscount'][] = $val;
                 $count++;
             }
+            $numResult = $count;
         }
     }
-
     //create canvas graph
-    $bgcolors = getHexColors(count($data[$graphColumn['dataColumn']]));
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
-  <script src="lib/Chart.js/Chart.min.js"></script>
   <script>
-    function drawPersistentPercentValues() {
-      var ctx = this.chart.ctx;
-      ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, "normal", Chart.defaults.global.defaultFontFamily);
-      ctx.fillStyle = this.chart.config.options.defaultFontColor;
-      this.data.datasets.forEach(function (dataset) {
-        var sum =0;
-        for (var i = 0; i < dataset.data.length; i++) {
-          if(dataset.hidden === true || dataset._meta[0].data[i].hidden === true){ continue; }
-          sum += dataset.data[i];
-        }
-        var curr= 0;
-        for (var i = 0; i < dataset.data.length; i++) {
-          if(dataset.hidden === true || dataset._meta[0].data[i].hidden === true){ continue; }
-          var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model;
-          if(dataset.data[i] !== null) {
-            var part = dataset.data[i]/sum;
-            var radius = model.outerRadius-10; //where to place the text around the center
-            var x = Math.sin((curr+part/2)*2*Math.PI)*radius;
-            var y = Math.cos((curr+part/2)*2*Math.PI)*radius;
-            ctx.fillText((part*100).toFixed(0)+"%",model.x + x - 8 , model.y - y - 5 );
-            curr += part;
-          }
-        }
-      });
-    }
-
-    var ctx = document.getElementById("reportChart");
-    var myChart = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"],
-        datasets: [{
-          label: "' . $reportTitle . '",
-          data: [' . implode(', ', $data[$graphColumn['dataColumn']]) . '],
-          backgroundColor: ["' . implode('", "', $bgcolors) . '"]
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: "' . $reportTitle . '"
-        },
-        legend: {
-          display: true,
-          labels: {
-            generateLabels: function(graph) {
-              var graphData = graph.data.datasets[0].data;
-              var total = 0;
-              for(var i=0; i<graphData.length; i++) {
-                total += graphData[i];
-              };
-              var defaultLabels = Chart.defaults.doughnut.legend.labels.generateLabels(graph);
-              for(var i=0; i<defaultLabels.length; i++) {
-                var label = defaultLabels[i];
-                var percentage = Math.round((graphData[i] / total) * 100);
-                defaultLabels[i].text += " (" + percentage +"%)";
-              }
-              return defaultLabels;
-            }
-          }
-        },
-        responsive: false,
-        tooltips: {
-          callbacks: {
-            label: function(tooltipItem, data) {
-              var allData = data.datasets[tooltipItem.datasetIndex].data;
-              var tooltipLabel = data.labels[tooltipItem.index];
-              var tooltipData = allData[tooltipItem.index];
-              var total = 0;
-              for (var i in allData) {
-                total += allData[i];
-              }
-              var tooltipPercentage = Math.round((tooltipData / total) * 100);
-              return tooltipLabel + ": " + tooltipData + " (" + tooltipPercentage + "%)";
-            }
-          }
-        },
-        animation: {
-          onProgress: drawPersistentPercentValues,
-          onComplete: drawPersistentPercentValues
-        },
-        hover: { animationDuration: 0 }
-      }
-    });
-  </script>';
+  var COLON = "' . __('colon99') . '";
+  var chartTitle = "' . $reportTitle . '";
+  var chartId = "reportChart";
+  var chartLabels = ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"];
+  var chartNumericData = [' . implode(', ', $data[$graphColumn['dataNumericColumn']]) . '];
+  var chartFormattedData = ["' . implode('", "', $data[$graphColumn['dataFormattedColumn']]) . '"];
+  </script>
+  <script src="lib/Chart.js/Chart.min.js"></script>
+  <script src="lib/chartConfig.js"></script>';
 
     // HTML to display the table
     echo '<table class="reportTable">';
@@ -4390,7 +4280,11 @@ function checkConfVariables()
         'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
         'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
+        'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
+        'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
+        'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
+        'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
     );
 
     $results = array();
@@ -4502,7 +4396,11 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    if (defined(MAILWATCH_SMTP_HOSTNAME)) {
+        $mail_param = array('localhost' => MAILWATCH_SMTP_HOSTNAME, 'host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    } else {
+        $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    }
     $mail = new Mail_smtp($mail_param);
 
     return $mail->send($email, $hdrs, $body);
@@ -4714,7 +4612,7 @@ function validateInput($input, $type)
             }
             break;
         case 'action':
-            if (preg_match('/^(new|edit|delete|filters)$/', $input)) {
+            if (preg_match('/^(new|edit|delete|filters|logout)$/', $input)) {
                 return true;
             }
             break;
@@ -4730,6 +4628,11 @@ function validateInput($input, $type)
             break;
         case 'loginerror':
             if (preg_match('/^(baduser|emptypassword|timeout)$/', $input)) {
+                return true;
+            }
+            break;
+        case 'timeout':
+            if (preg_match('/^[0-9]{1,5}$/', $input)) {
                 return true;
             }
             break;
@@ -4772,7 +4675,6 @@ function generateFormToken($formstring)
         die(__('dietoken99'));
     }
 
-    $_SESSION['formtoken'] = generateToken();
     $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
 
     return $calc;
@@ -4789,7 +4691,6 @@ function checkFormToken($formstring, $formtoken)
         return false;
     }
     $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
-    unset($_SESSION['formtoken']);
 
     return $calc === deepSanitizeInput($formtoken, 'url');
 }
@@ -4809,4 +4710,102 @@ function checkLangCode($langCode)
     } else {
         return true;
     }
+}
+
+/**
+ * Updates the user login expiry
+ * @param string $myusername
+ * @return boolean
+ */
+function updateLoginExpiry($myusername)
+{
+    $sql = "SELECT login_timeout from users where username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    if ($result->num_rows === 0) {
+        // Something went wrong, or user no longer exists
+        return false;
+    }
+
+    $login_timeout = database::mysqli_result($result, 0, 'login_timeout');
+
+    // Use global if individual value is disabled (-1)
+    if ($login_timeout === '-1') {
+        if (defined('SESSION_TIMEOUT')) {
+            if (SESSION_TIMEOUT > 0 && SESSION_TIMEOUT <= 99999) {
+                $expiry_val = (time() + SESSION_TIMEOUT);
+            } else {
+                $expiry_val = 0;
+            }
+        } else {
+            $expiry_val = (time() + 600);
+        }
+    // If set, use the individual timeout
+    } elseif ($login_timeout === '0') {
+        $expiry_val = 0;
+    } else {
+        $expiry_val = (time() + (int)$login_timeout);
+    }
+    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    return $result;
+}
+
+/**
+ * Checks the user login expiry against the current time, if enabled
+ * Returns true if expired
+ * @param string $myusername
+ * @return boolean
+ */
+function checkLoginExpiry($myusername)
+{
+    $sql = "SELECT login_expiry FROM users WHERE username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    if ($result->num_rows === 0) {
+        // Something went wrong, or user no longer exists
+        return true;
+    }
+
+    $login_expiry = database::mysqli_result($result, 0, 'login_expiry');
+
+    if ($login_expiry === '-1') {
+        // User administratively logged out
+        return true;
+    } elseif ($login_expiry === '0') {
+        // Login never expires, so just return false
+        return false;
+    } elseif ((int)$login_expiry > time()) {
+        // User is active
+        return false;
+    } else {
+        // User has timed out
+        return true;
+    }
+}
+
+/**
+ * Checks for a privilege change, returns true if changed
+ * @param string $myusername
+ * @return boolean
+ */
+function checkPrivilegeChange($myusername)
+{
+    $sql = "SELECT type FROM users WHERE username='" . safe_value($myusername) . "'";
+    $result = dbquery($sql);
+
+    if ($result->num_rows === 0) {
+        // Something went wrong, or user does not exist
+        return true;
+    }
+
+    $user_type = database::mysqli_result($result, 0, 'type');
+
+    if ($_SESSION['user_type'] !== $user_type) {
+        // Privilege change detected
+        return true;
+    }
+
+    return false;
 }

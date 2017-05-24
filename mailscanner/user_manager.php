@@ -146,6 +146,15 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                 window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id;
             }
         }
+        
+        function logout_user(id) {
+            var yesno = confirm("<?php echo ' ' . __('logout12') . ' '; ?>" + id + "<?php echo __('questionmark12'); ?>");
+            if (yesno === true) {
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=logout&id=" + id;
+            } else {
+                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>";
+            }
+        }
         -->
     </script>
     <?php
@@ -194,6 +203,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" CHECKED> <span class="font-1em">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="0" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
                     echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="0" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                    echo ' <TR><TD CLASS="heading">' . __('usertimeout12') . '</TD><TD><INPUT TYPE="TEXT" NAME="timeout" VALUE="" size="4"> <span class="font-1em">' . __('empty12') . '=' . __('usedefault12') . '</span></TD></TR>' . "\n";
                     echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('create12') . '"></TD></TR>' . "\n";
                     echo '</TABLE></FORM><BR>' . "\n";
                 } else {
@@ -254,19 +264,22 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         if (!isset($_POST['noscan'])) {
                             $noscan = '1';
                         }
-
                         $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
                         if (!validateInput($quarantine_rcpt, 'user')) {
                             $quarantine_rcpt = '';
                         }
-                        $sql = 'INSERT INTO users (username, fullname, password, type, quarantine_report, ';
+                        $timeout = deepSanitizeInput($_POST['timeout'], 'num');
+                        if (!validateInput($timeout, 'timeout')) {
+                            $timeout = '-1';
+                        }
+                        $sql = 'INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, ';
                         if ($spamscore !== '0') {
                             $sql .= 'spamscore, ';
                         }
                         if ($highspamscore !== '0') {
                             $sql .= 'highspamscore, ';
                         }
-                        $sql .= "noscan, quarantine_rcpt) VALUES ('$n_username','$n_fullname','$n_password','$n_type','$quarantine_report',";
+                        $sql .= "noscan, quarantine_rcpt) VALUES ('$n_username','$n_fullname','$n_password','$n_type','$quarantine_report','$timeout',";
                         if ($spamscore !== '0') {
                             $sql .= "'$spamscore',";
                         }
@@ -325,7 +338,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     echo getHtmlMessage(sprintf(__('erroreditdomainforbidden12'), sanitizeInput($ar[1])), 'error');
                 } else {
                     if (!isset($_POST['submit'])) {
-                        $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan FROM users WHERE username='" . $key . "'";
+                        $sql = "SELECT username, fullname, type, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login FROM users WHERE username='" . $key . "'";
                         $result = dbquery($sql);
                         $row = $result->fetch_object();
                         $quarantine_report = '';
@@ -336,11 +349,28 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         if ((int)$row->noscan === 0) {
                             $noscan = 'checked="checked"';
                         }
+                        if ($row->login_timeout === "-1") {
+                            $timeout = '';
+                        } else {
+                            $timeout = $row->login_timeout;
+                        }
 
                         $s['A'] = '';
                         $s['D'] = '';
                         $s['U'] = '';
                         $s['R'] = '';
+
+                        $timestamp = (int)$row->last_login;
+                        if (defined('DATE_FORMAT')) {
+                            $dateformat = preg_replace('/%/', '', DATE_FORMAT);
+                        } else {
+                            $dateformat = 'm/d/y';
+                        }
+                        if (defined('TIME_FORMAT')) {
+                            $timeformat = preg_replace('/%/', '', TIME_FORMAT);
+                        } else {
+                            $timeformat = 'H:i:s';
+                        }
 
                         $s[$row->type] = 'SELECTED';
                         echo '<div id="formerror" class="hidden"></div>';
@@ -352,6 +382,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php edit token') . '">' . "\n";
                         echo '<TABLE CLASS="mail" BORDER=0 CELLPADDING=1 CELLSPACING=1>' . "\n";
                         echo ' <TR><TD CLASS="heading" COLSPAN=2 ALIGN="CENTER">' . __('edituser12') . ' ' . $row->username . '</TD></TR>' . "\n";
+                        if ($timestamp < 0) {
+                            echo ' <TR><TD CLASS="heading">' . __('lastlogin12') . '</TD><TD>' . __('never12') . '</TD></TR>' . "\n";
+                        } else {
+                            echo ' <TR><TD CLASS="heading">' . __('lastlogin12') . '</TD><TD>' . date($dateformat . ' ' . $timeformat, $timestamp) . '</TD></TR>' . "\n";
+                        }
                         echo ' <TR><TD CLASS="heading">' . __('username0212') . '</TD><TD><INPUT TYPE="TEXT" NAME="username" VALUE="' . $row->username . '"></TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('name12') . '</TD><TD><INPUT TYPE="TEXT" NAME="fullname" VALUE="' . $row->fullname . '"></TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('password12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="password" NAME="password" VALUE="XXXXXXXX"></TD></TR>' . "\n";
@@ -368,6 +403,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span class="font-1em">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $row->spamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
                         echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="' . $row->highspamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
+                        echo ' <TR><TD CLASS="heading">' . __('usertimeout12') . '</TD><TD><INPUT TYPE="TEXT" NAME="timeout" VALUE="' . $timeout . '" size="4"> <span class="font-1em">' . __('empty12') . '=' . __('usedefault12') . '</span></TD></TR>' . "\n";
                         echo '<TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<INPUT TYPE="SUBMIT" VALUE="' . __('update12') . '"></TD></TR>' . "\n";
                         echo "</TABLE></FORM><BR>\n";
                         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
@@ -421,6 +457,10 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             if (!validateInput($highspamscore, 'float')) {
                                 $highspamscore = '0';
                             }
+                            $timeout = deepSanitizeInput($_POST['timeout'], 'num');
+                            if (!validateInput($timeout, 'timeout')) {
+                                $timeout = "-1";
+                            }
                             $n_quarantine_report = '1';
                             if (!isset($_POST['quarantine_report'])) {
                                 $n_quarantine_report = '0';
@@ -438,10 +478,10 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
                             if ($_POST['password'] !== 'XXXXXXXX') {
                                 // Password reset required
-                                $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$key'";
+                                $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE username='$key'";
                                 dbquery($sql);
                             } else {
-                                $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$key'";
+                                $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE username='$key'";
                                 dbquery($sql);
                             }
 
@@ -620,6 +660,29 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     }
                 }
                 break;
+                
+            case 'logout':
+                if (false === checkToken($_GET['token'])) {
+                    die(getHtmlMessage(__('dietoken99'), 'error'));
+                }
+                
+                if (isset($_GET['id'])) {
+                    $id = deepSanitizeInput($_GET['id'], 'string');
+                } else {
+                    die(getHtmlMessage(__('dievalidate99'), 'error'));
+                }
+                if (!validateInput($id, 'user')) {
+                    die(getHtmlMessage(__('dievalidate99'), 'error'));
+                }
+                
+                $sql = "UPDATE users SET login_expiry='-1' WHERE username='$id'";
+                dbquery($sql);
+                if (DEBUG === true) {
+                    echo $sql;
+                }
+                
+                echo getHtmlMessage(sprintf(__('userloggedout12'), $id), 'success');
+                break;
         }
     }
 
@@ -662,7 +725,17 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         END AS '" . safe_value(__('spamcheck12')) . "',
           spamscore AS '" . safe_value(__('spamscore12')) . "',
           highspamscore AS '" . safe_value(__('spamhscore12')) . "',
-        CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>') AS '" . safe_value(__('action12')) . "'
+        CASE
+          WHEN login_expiry > " . time() . " THEN '" . safe_value(__('yes12')) . "'
+          WHEN login_expiry = 0 THEN '" . safe_value(__('unknown12')) . "'
+        ELSE 
+          '" . safe_value(__('no12')) . "'
+        END AS '" . safe_value(__('loggedin12')) . "',
+        CASE
+          WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:logout_user(\'',username,'\')\">" . safe_value(__('logout12')) . "</a>')
+        ELSE
+          CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;key=',username,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',username,'\')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',username,'\">" . safe_value(__('filters12')) . "</a>')
+        END AS '" . safe_value(__('action12')) . "'
         FROM
           users " . $domainAdminUserDomainFilter . ' 
         ORDER BY

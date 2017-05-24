@@ -157,7 +157,9 @@ if ($usercount === 1) {
     $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
     $_SESSION['global_array'] = $filter;
     $_SESSION['token'] = generateToken();
-    $_SESSION['last_update'] = time();
+    $_SESSION['formtoken'] = generateToken();
+    // Initialize login expiry in users table for newly logged in user
+    updateLoginExpiry($myusername);
     $redirect_url = 'index.php';
     if (isset($_SESSION['REQUEST_URI'])) {
         $redirect_url = $_SESSION['REQUEST_URI'];
