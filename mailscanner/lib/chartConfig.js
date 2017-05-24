@@ -103,8 +103,11 @@ var myChart = new Chart(ctx, {
             total += allData[i];
           }
           var tooltipPercentage = Math.round((itemData / total) * 100);
-          return " "+ tooltipLabel + ": " + chartFormattedData[tooltipItem.index];
-           // + " (" + tooltipPercentage + "%)";
+          var tooltipOutput = " "+ tooltipLabel + ": " + chartFormattedData[tooltipItem.index];
+          if (tooltipPercentage < 3) {
+            tooltipOutput += " (" + tooltipPercentage + "%)";
+          }
+          return tooltipOutput;
         }
       }
     },
