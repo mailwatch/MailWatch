@@ -45,7 +45,7 @@ if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {
 }
 
 // add the header information such as the logo, search, menu, ....
-html_start(__('reports14'), '0', false, false);
+html_start(__('reports14'), 0, false, false);
 
 // Add filters and save them
 if (isset($_POST['action']) || isset($_GET['action'])) {
