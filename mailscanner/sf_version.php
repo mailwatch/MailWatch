@@ -39,7 +39,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
     audit_log(__('auditlog52', true));
 } else {
-    html_start(__('mwandmsversion52'), '0', false, false);
+    html_start(__('mwandmsversion52'), 0, false, false);
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;

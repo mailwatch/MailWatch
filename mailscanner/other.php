@@ -35,7 +35,7 @@ require_once __DIR__ . '/functions.php';
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
-html_start(__('toolslinks10'), '0', false, false);
+html_start(__('toolslinks10'), 0, false, false);
 
 echo '<table width="100%" class="boxtable">';
 echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
