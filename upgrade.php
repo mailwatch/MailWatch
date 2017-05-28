@@ -348,6 +348,20 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Add mtalog_ids table if not exist (if upgrade from < 1.2.0)
+    echo pad(' - Add mtalog_ids table to `' . DB_NAME . '` database');
+    if (true === check_table_exists('mtalog_ids')) {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'CREATE TABLE IF NOT EXISTS `mtalog_ids` (
+            `smtpd_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
+            `smtp_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
+            UNIQUE KEY `mtalog_ids_idx` (`smtpd_id`,`smtp_id`),
+            KEY `smtpd_id` (`smtpd_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
+        executeQuery($sql);
+    }
+
     // Update users table schema for password-reset feature
     echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
     if (check_column_exists('users', 'resetid') === false) {
@@ -748,7 +762,7 @@ if ($checkConfigEntries['optional']['count'] === 0) {
     echo pad(' - All optional entries are already present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['optional']['list'] as $optionalConfigEntry => $detail) {
-        echo pad(" - optional $optionalConfigEntry ") . ' ' . color('WARNING', 'yellow') . PHP_EOL;
+        echo pad(" - optional $optionalConfigEntry ") . ' ' . color('INFO', 'lightgreen') . PHP_EOL;
         $errors[] = 'conf.php: optional configuration entry "' . $optionalConfigEntry . '" is missing, ' . $detail['description'];
     }
 }
