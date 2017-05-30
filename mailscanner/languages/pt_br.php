@@ -395,10 +395,11 @@ return array(
     'updategeoip10' => 'Atualizar Database GeoIP',
     'links10' => 'Links',
 
-    // 11-sf_versions.php
+    // 11-sf_version.php
     'softver11' => 'Versões dos Software',
     'nodbdown11' => 'Nenhum database baixado',
     'version11' => 'Versão',
+    'systemos11' => 'Operating System Version:'
 
     // 12-user_manager.php
     'usermgnt12' => 'Gerenciamento de Usuários',

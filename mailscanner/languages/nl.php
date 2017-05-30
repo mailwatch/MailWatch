@@ -395,10 +395,11 @@ return array(
     'updategeoip10' => 'Ververs GeoIP Database',
     'links10' => 'Links',
 
-    // 11-sf_versions.php
+    // 11-sf_version.php
     'softver11' => 'Software Versies',
     'nodbdown11' => 'Geen database opgehaalt',
     'version11' => 'Versie',
+    'systemos11' => 'Operating System Version:'
 
     // 12-user_manager.php
     'usermgnt12' => 'Gebruiker Onderhoud',

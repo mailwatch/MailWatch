@@ -40,6 +40,8 @@ if ($_SESSION['user_type'] !== 'A') {
     audit_log(__('auditlog52', true));
 } else {
     html_start(__('mwandmsversion52'), 0, false, false);
+    $os_distrib = exec('cat /etc/*release | grep ^NAME | sed "s/.*\"\(.*\)\".*/\1/"');
+    $os_version = exec('cat /etc/*release | grep ^VERSION | sed "s/.*\"\(.*\)\".*/\1/"');
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
@@ -58,6 +60,8 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
 
+    echo '<br>' . "\n";
+    echo __('systemos11') . ' ' . $os_distrib . ' ' . $os_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
