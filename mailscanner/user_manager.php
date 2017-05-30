@@ -726,8 +726,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
           spamscore AS '" . safe_value(__('spamscore12')) . "',
           highspamscore AS '" . safe_value(__('spamhscore12')) . "',
         CASE
-          WHEN login_expiry > " . time() . " THEN '" . safe_value(__('yes12')) . "'
-          WHEN login_expiry = 0 THEN '" . safe_value(__('unknown12')) . "'
+          WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN '" . safe_value(__('yes12')) . "'
         ELSE 
           '" . safe_value(__('no12')) . "'
         END AS '" . safe_value(__('loggedin12')) . "',

@@ -484,7 +484,6 @@ return array(
     'userdeleted12' => 'Benuter %s wurde gelöscht',
     'userloggedout12' => 'Benutzer %s wurde abgemeldet',
     'loggedin12' => 'wurde angemeldet',
-    'unkown12' => 'Unbekannt',
     'usertimeout12' => 'Benutzer-Timeout:',
     'logout12' => 'Abmelden',
     'empty12' => 'Leer',
