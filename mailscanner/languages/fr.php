@@ -484,7 +484,6 @@ return array(
     'userdeleted12' => 'L\'utilisateur %s a été effacé.',
     'userloggedout12' => 'L\'utilisateur %s a été déconnecté.',
     'loggedin12' => 'Connecté',
-    'unknown12' => 'Inconnu',
     'usertimeout12' => 'Délai d\'expiration de la session :',
     'logout12' => 'Déconnexion',
     'empty12' => 'Vide',
