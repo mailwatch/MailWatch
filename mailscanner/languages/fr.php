@@ -399,7 +399,7 @@ return array(
     'softver11' => 'Version des logiciels',
     'nodbdown11' => 'Aucune base de données téléchargée',
     'version11' => 'version :',
-    'systemos11' => 'Version du Système d\'Exploitation :'
+    'systemos11' => 'Version du Système d\'Exploitation :',
 
     // 12-user_manager.php
     'usermgnt12' => 'Gestion des utilisateurs',
