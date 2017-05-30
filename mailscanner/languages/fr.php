@@ -400,6 +400,9 @@ return array(
     'nodbdown11' => 'Aucune base de données téléchargée',
     'version11' => 'version :',
     'systemos11' => 'Version du Système d\'Exploitation :',
+    'mwandmsversion11' => 'Information sur les versions des logiciels',
+    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'downloaddate11' => 'date de téléchargement',
 
     // 12-user_manager.php
     'usermgnt12' => 'Gestion des utilisateurs',
@@ -800,10 +803,7 @@ return array(
     'message51' => 'Message',
     'time51' => 'Durée',
 
-    // 52-sf_version.php
-    'mwandmsversion52' => 'Information sur les versions des logiciels',
-    'auditlog52' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
-    'downloaddate52' => 'date de téléchargement',
+    // 52-FREE
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',

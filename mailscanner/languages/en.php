@@ -400,6 +400,9 @@ return array(
     'nodbdown11' => 'No database downloaded',
     'version11' => 'Version:',
     'systemos11' => 'Operating System Version:',
+    'mwandmsversion11' => 'MailWatch and MailScanner Version information',
+    'auditlog11' => 'Non-admin user attemped to view Software Version Page',
+    'downloaddate11' => 'download date',
 
     // 12-user_manager.php
     'usermgnt12' => 'User Management',
@@ -800,10 +803,7 @@ return array(
     'message51' => 'Message',
     'time51' => 'Time',
 
-    // 52-sf_version.php
-    'mwandmsversion52' => 'MailWatch and MailScanner Version information',
-    'auditlog52' => 'Non-admin user attemped to view Software Version Page',
-    'downloaddate52' => 'download date',
+    // 52-FREE
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
