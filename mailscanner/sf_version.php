@@ -63,7 +63,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<td>' . "\n";
 
     echo '<br>' . "\n";
-   if (glob('/etc/*release')) {
+    if (glob('/etc/*release')) {
         echo __('systemos11') . ' ' . $os_distrib . ' ' . $os_version . '<br>' . "\n";
         echo '<br>' . "\n";
     }
