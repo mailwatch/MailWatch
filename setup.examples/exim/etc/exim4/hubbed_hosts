@@ -1,0 +1,4 @@
+# Domain routing list for relayed domain names (domains/relay)  -  Mail sent
+# to these domains will be routed via the specified mail server(s).
+#
+# FORMAT:  domain       smarthost[: smarthost[: ...]]
