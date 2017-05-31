@@ -4218,7 +4218,7 @@ function convertVirusesForGraph($data, $column)
     foreach ($viruses as $key => $val) {
         $data['virusname'][] = $key;
         $data['viruscount'][] = $val;
-        if(++$count >= 10) {
+        if (++$count >= 10) {
             break;
         }
     }
