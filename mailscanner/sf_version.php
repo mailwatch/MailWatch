@@ -61,10 +61,8 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr><th>' . __('softver11') . '</th></tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
-
-    echo '<br>' . "\n";
     if (glob('/etc/*release')) {
-        echo __('systemos11') . ' ' . $os_distrib . ' ' . $os_version . '<br>' . "\n";
+        echo '<br>' . "\n" . __('systemos11') . ' ' . $os_distrib . ' ' . $os_version . '<br>' . "\n";
         echo '<br>' . "\n";
     }
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
