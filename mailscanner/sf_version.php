@@ -62,7 +62,8 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
     if (glob('/etc/*release')) {
-        echo '<br>' . "\n" . __('systemos11') . ' ' . $os_distrib . ' ' . $os_version . '<br>' . "\n";
+    	echo '<br>' . "\n";
+        echo '' . __('systemos11') . ' ' . $os_distrib . ' ' . $os_version . '<br>' . "\n";
         echo '<br>' . "\n";
     }
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
