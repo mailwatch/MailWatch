@@ -243,7 +243,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.3';
+    return '1.2.4-dev';
 }
 
 if (!function_exists('imageantialias')) {
