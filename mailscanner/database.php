@@ -55,7 +55,7 @@ class database
                 });
                 self::$link = new mysqli($host, $username, $password, $database);
                 restore_error_handler();
-                self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+                self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
                 $charset = 'utf8';
                 if (self::$link->server_version >= 50503) {
                     //mysql version supports utf8mb4
