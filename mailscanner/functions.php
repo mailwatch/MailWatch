@@ -4138,7 +4138,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
   <script src="lib/Chart.js/Chart.min.js"></script>
   <script src="lib/pieConfig.js"></script>';
 
-  printTable($columns, $data, $numResult);
+    printTable($columns, $data, $numResult);
 }
 
 /**
@@ -4158,7 +4158,7 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     }
     //store data in format $data[columnname][rowid]
     $data = array();
-    for($i=0; $i<count(graphColumn['dataNumericColumns']); $i++) {
+    for ($i=0; $i<count(graphColumn['dataNumericColumns']); $i++) {
         $data[$graphColumn['dataNumericColumn'][$i]] = array();
         $data[$graphColumn['dataFormattedColumn'][$i]] = array();
     }
@@ -4188,7 +4188,7 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     }
     $numericData = "";
     $formattedData = "";
-    for($i=0; $i<count($graphColumn['dataNumericColumns']); $i++) {
+    for ($i=0; $i<count($graphColumn['dataNumericColumns']); $i++) {
         $numericData .= '[' . implode(', ', $data[$graphColumn['dataNumericColumns'][$i]]) . '],';
         $formattedData .= '["' . implode('", "', $data[$graphColumn['dataFormattedColumns'][$i]]) . '"],';
     }
@@ -4207,9 +4207,9 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
   </script>
   <script src="lib/Chart.js/Chart.js"></script>
   <script src="lib/lineConfig.js"></script>';
-  if ($printTable === true) {
-      printTable($columns, $data, $numResult);
-  }
+    if ($printTable === true) {
+        printTable($columns, $data, $numResult);
+    }
 }
 
 function printTable($columns, $data, $rowCount)
