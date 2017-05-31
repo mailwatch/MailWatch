@@ -664,6 +664,14 @@ div.table > .caption > input {
     margin-right: auto;
 }
 
+.lineGraph {
+    text-align: center;
+    height: 600px;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .reportTable {
    padding: 10px;   
    margin-left: auto;

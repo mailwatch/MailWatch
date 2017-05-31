@@ -4136,7 +4136,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
   var chartFormattedData = ["' . implode('", "', $data[$graphColumn['dataFormattedColumn']]) . '"];
   </script>
   <script src="lib/Chart.js/Chart.min.js"></script>
-  <script src="lib/chartConfig.js"></script>';
+  <script src="lib/pieConfig.js"></script>';
 
     // HTML to display the table
     echo '<table class="reportTable">';
@@ -4156,6 +4156,70 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
 
     echo '   </table>' . "\n";
 }
+
+/**
+ * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
+ * @param string $reportTitle title that will be displayed on top of the graph
+ * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
+ * @param array $columns associative array that contains the columnname => titles (columnname can be name of a converted column)
+ * @param array $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
+ * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
+ */
+function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions)
+{
+    $result = dbquery($sqlDataQuery);
+    $numResult = $result->num_rows;
+    if ($numResult <= 0) {
+        die(__('diemysql99') . "\n");
+    }
+    //store data in format $data[columnname][rowid]
+    $data = array();
+    $data[$graphColumn['dataNumericColumn']] = array();
+    $data[$graphColumn['dataFormattedColumn']] = array();
+    while ($row = $result->fetch_assoc()) {
+        foreach ($sqlColumns as $columnName) {
+            $data[$columnName][] = $row[$columnName];
+        }
+    }
+
+    foreach ($valueConversions as $column => $conversion) {
+        if ($conversion == "") {
+        }
+    }    
+    echo '<canvas id="reportChart" class="lineGraph"></canvas>
+  <script>
+  var COLON = "' . __('colon99') . '";
+  var chartTitle = "' . $reportTitle . '";
+  var chartId = "reportChart";
+  var chartLabels = ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"];
+  var chartNumericData = [' . implode(', ', $data[$graphColumn['dataNumericColumn']]) . '];
+  var chartFormattedData = ["' . implode('", "', $data[$graphColumn['dataFormattedColumn']]) . '"];
+  var xAxeDescription = "' . $graphColumn['xAxeDescription'] . '";
+  var yAxeDescription = "' . $graphColumn['yAxeDescription'] . '";
+  var fillBelowLine = true;
+  </script>
+  <script src="lib/Chart.js/Chart.js"></script>
+  <script src="lib/lineConfig.js"></script>';
+
+    // HTML to display the table
+    echo '<table class="reportTable">';
+    echo '    <tr>' . "\n";
+    foreach ($columns as $columnName => $columnTitle) {
+        echo '     <th>' . $columnTitle . '</th>' . "\n";
+    }
+    echo '    </tr>' . "\n";
+
+    for ($i = 0; $i < $numResult; $i++) {
+        echo '    <tr>' . "\n";
+        foreach ($columns as $columnName => $columnTitle) {
+            echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
+        }
+        echo '    </tr>' . "\n";
+    }
+
+    echo '   </table>' . "\n"; 
+}
+
 
 /**
  * @return array

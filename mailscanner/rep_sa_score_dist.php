@@ -57,88 +57,25 @@ $sql = '
   score
 ';
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
+$columns = array(
+    'score' => __('score38'),
+    'count' => __('count38')
+);
+$sqlColumns = array(
+    'score',
+    'count'
+);
+$valueConversion = array(
+);
+$graphColumns = array(
+    'labelColumn' => 'score',
+    'dataNumericColumn' => 'count',
+    'dataFormattedColumn' => 'count',
+    'xAxeDescription' => __('scorerounded38'),
+    'yAxeDescription' => __('nbmessage38')
+);
 
-    // JPGraph
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_log.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_bar.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_line.php';
-
-    // ##### AJOS1 NOTE #####
-    // ### AjosNote - Must be 2 or more rows...
-    // ##### AJOS1 NOTE #####
-    $result = dbquery($sql);
-    if ($result->num_rows <= 1) {
-        die(__('die38') . "\n");
-    }
-
-    while ($row = $result->fetch_object()) {
-        $data_labels[] = $row->score;
-        $data_count[] = $row->count;
-    }
-    // ##### AJOS1 CHANGE #####
-    $labelinterval = 5;
-    if (count($data_labels) <= 30) {
-        $labelinterval = 2;
-    }
-    if (count($data_labels) <= 5) {
-        $labelinterval = 1;
-    }
-    // ##### AJOS1 CHANGE #####
-
-    $graph = new Graph(850, 350, 0, false);
-    $graph->SetShadow();
-    $graph->SetScale('textlin');
-    $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
-    $graph->title->Set(__('sascoredist38'));
-    $graph->xaxis->title->Set(__('scorerounded38'));
-    $graph->xaxis->SetTextLabelInterval($labelinterval);
-    $graph->xaxis->SetTickLabels($data_labels);
-    $graph->yaxis->title->Set(__('nbmessage38'));
-    $graph->yaxis->SetTitleMargin(30);
-    $graph->yaxis->title->SetMargin(20);
-    $graph->legend->SetLayout(LEGEND_HOR);
-    $graph->legend->Pos(0.52, 0.87, 'center');
-    $bar1 = new LinePlot($data_count);
-
-    $graph->Add($bar1);
-
-    $bar1->SetFillColor('blue');
-
-    $graph->Stroke($filename);
-}
-
-echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">' . "\n";
-echo ' <TR>' . "\n";
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
-} else {
-    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo ' </TR>' . "\n";
-echo ' <TR>' . "\n";
-echo '  <TD ALIGN="CENTER">' . "\n";
-echo '<TABLE BORDER="0" WIDTH="500">' . "\n";
-echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
-echo '  <TH>' . __('score38') . '</TH>' . "\n";
-echo '  <TH>' . __('count38') . '</TH>' . "\n";
-echo ' </TR>' . "\n";
-
-for ($i = 0, $data_count_num = count($data_count); $i < $data_count_num; $i++) {
-    echo '<TR BGCOLOR="#EBEBEB">' . "\n";
-    echo ' <TD ALIGN="CENTER">' .$data_labels[$i]. '</TD>' . "\n";
-    echo ' <TD ALIGN="RIGHT">' . number_format($data_count[$i]) . '</TD>' . "\n";
-    echo '</TR>' . "\n";
-}
-echo '</TABLE>' . "\n";
-echo '</TR>' . "\n";
-echo '</TABLE>' . "\n";
+printLineGraph($sql, __('sascoredist38'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();
