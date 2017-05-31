@@ -666,8 +666,8 @@ div.table > .caption > input {
 
 .lineGraph {
     text-align: center;
-    height: 600px;
-    width: auto;
+    height: auto;
+    width: 800px;
     margin-left: auto;
     margin-right: auto;
 }

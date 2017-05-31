@@ -4138,23 +4138,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
   <script src="lib/Chart.js/Chart.min.js"></script>
   <script src="lib/pieConfig.js"></script>';
 
-    // HTML to display the table
-    echo '<table class="reportTable">';
-    echo '    <tr>' . "\n";
-    foreach ($columns as $columnName => $columnTitle) {
-        echo '     <th>' . $columnTitle . '</th>' . "\n";
-    }
-    echo '    </tr>' . "\n";
-
-    for ($i = 0; $i < $numResult; $i++) {
-        echo '    <tr>' . "\n";
-        foreach ($columns as $columnName => $columnTitle) {
-            echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
-        }
-        echo '    </tr>' . "\n";
-    }
-
-    echo '   </table>' . "\n";
+  printTable($columns, $data, $numResult);
 }
 
 /**
@@ -4185,7 +4169,7 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     foreach ($valueConversions as $column => $conversion) {
         if ($conversion == "") {
         }
-    }    
+    }
     echo '<canvas id="reportChart" class="lineGraph"></canvas>
   <script>
   var COLON = "' . __('colon99') . '";
@@ -4200,7 +4184,11 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
   </script>
   <script src="lib/Chart.js/Chart.js"></script>
   <script src="lib/lineConfig.js"></script>';
+  printTable($columns, $data, $numResult);
+}
 
+function printTable($columns, $data, $rowCount)
+{
     // HTML to display the table
     echo '<table class="reportTable">';
     echo '    <tr>' . "\n";
@@ -4209,15 +4197,14 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     }
     echo '    </tr>' . "\n";
 
-    for ($i = 0; $i < $numResult; $i++) {
+    for ($i = 0; $i < $rowCount; $i++) {
         echo '    <tr>' . "\n";
         foreach ($columns as $columnName => $columnTitle) {
             echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
         }
         echo '    </tr>' . "\n";
     }
-
-    echo '   </table>' . "\n"; 
+    echo '   </table>' . "\n";
 }
 
 
