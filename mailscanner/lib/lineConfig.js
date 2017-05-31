@@ -21,7 +21,7 @@ var myChart = new Chart(ctx, {
           fill: fillBelowLine[i],
           yAxisID: "y-axis-"+i,
           type: (typeof types !== 'undefined' ? types[i] : "line"),
-          showLine: (typeof types !== 'undefined' && fillBelowLine[i] ? true : false),
+          showLine: (typeof types === 'undefined' || fillBelowLine[i] ? true : false),
           pointRadius: 1,
         });
       }

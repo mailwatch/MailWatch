@@ -4055,12 +4055,12 @@ function checkForExistingUser($username)
 function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions)
 {
     $result = dbquery($sqlDataQuery);
-    $numResult = $result->num_rows;
-    if ($numResult <= 0) {
+    $data = array();
+    $data['numResult'] = $result->num_rows;
+    if ($data['numResult'] <= 0) {
         die(__('diemysql99') . "\n");
     }
     //store data in format $data[columnname][rowid]
-    $data = array();
     $data[$graphColumn['dataNumericColumn']] = array();
     $data[$graphColumn['dataFormattedColumn']] = array();
     while ($row = $result->fetch_assoc()) {
@@ -4071,58 +4071,13 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
     //do conversion if given
     foreach ($valueConversions as $column => $conversion) {
         if ($conversion === 'scale') {
-            // Work out best size
-            $data[$column . 'conv'] = $data[$column];
-            format_report_volume($data[$column . 'conv'], $size_info);
-            $scale = $size_info['formula'];
-            foreach ($data[$column . 'conv'] as $key => $val) {
-                $data[$column . 'conv'][$key] = formatSize($val * $scale);
-            }
+            $data = convertScaleForGraph($data, $column);
         } elseif ($conversion === 'number') {
-            $data[$column . 'conv'] = array_map(
-                function ($val) {
-                    return number_format($val);
-                },
-                $data[$column]
-            );
+            $data = convertNumberForGraph($data, $column);
         } elseif ($conversion === 'hostnamegeoip') {
-            $data['hostname'] = array();
-            $data['geoip'] = array();
-            foreach ($data[$column] as $ipval) {
-                $hostname = gethostbyaddr($ipval);
-                if ($hostname === $ipval) {
-                    $data['hostname'][] = __('hostfailed39');
-                } else {
-                    $data['hostname'][] = $hostname;
-                }
-                if ($geoip = return_geoip_country($ipval)) {
-                    $data['geoip'][] = $geoip;
-                } else {
-                    $data['geoip'][] = __('geoipfailed39');
-                }
-            }
+            $data = convertHostnameGeoipForGraph($data, $column);
         } elseif ($conversion === 'countviruses') {
-            $viruses = array();
-            foreach ($data[$column] as $report) {
-                if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
-                    $virus = $virus_report[2];
-                    if (isset($viruses[$virus])) {
-                        $viruses[$virus]++;
-                    } else {
-                        $viruses[$virus] = 1;
-                    }
-                }
-            }
-            arsort($viruses);
-            reset($viruses);
-            $count = 0;
-            $data = array();
-            while ((list($key, $val) = each($viruses)) && $count < 10) {
-                $data['virusname'][] = $key;
-                $data['viruscount'][] = $val;
-                $count++;
-            }
-            $numResult = $count;
+            convertVirusesForGraph($data, $column);
         }
     }
     //create canvas graph
@@ -4138,7 +4093,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
   <script src="lib/Chart.js/Chart.min.js"></script>
   <script src="lib/pieConfig.js"></script>';
 
-    printTable($columns, $data, $numResult);
+    printTable($columns, $data);
 }
 
 /**
@@ -4152,15 +4107,15 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
 function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions, $printTable=true, $types)
 {
     $result = dbquery($sqlDataQuery);
-    $numResult = $result->num_rows;
-    if ($numResult <= 0) {
+    $data = array();
+    $data['numResult'] = $result->num_rows;
+    if ($data['numResult'] <= 0) {
         die(__('diemysql99') . "\n");
     }
     //store data in format $data[columnname][rowid]
-    $data = array();
-    for ($i=0; $i<count(graphColumn['dataNumericColumns']); $i++) {
-        $data[$graphColumn['dataNumericColumn'][$i]] = array();
-        $data[$graphColumn['dataFormattedColumn'][$i]] = array();
+    for ($i=0; $i<count($graphColumn['dataNumericColumns']); $i++) {
+        $data[$graphColumn['dataNumericColumns'][$i]] = array();
+        $data[$graphColumn['dataFormattedColumns'][$i]] = array();
     }
     while ($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
@@ -4170,20 +4125,9 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
 
     foreach ($valueConversions as $column => $conversion) {
         if ($conversion === 'scale') {
-            // Work out best size
-            $data[$column . 'conv'] = $data[$column];
-            format_report_volume($data[$column . 'conv'], $size_info);
-            $scale = $size_info['formula'];
-            foreach ($data[$column . 'conv'] as $key => $val) {
-                $data[$column . 'conv'][$key] = formatSize($val * $scale);
-            }
+            $data = convertScaleForGraph($data, $column);
         } elseif ($conversion === 'number') {
-            $data[$column . 'conv'] = array_map(
-                function ($val) {
-                    return number_format($val);
-                },
-                $data[$column]
-            );
+            $data = convertNumberForGraph($data, $column);
         }
     }
     $numericData = "";
@@ -4208,11 +4152,81 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
   <script src="lib/Chart.js/Chart.js"></script>
   <script src="lib/lineConfig.js"></script>';
     if ($printTable === true) {
-        printTable($columns, $data, $numResult);
+        printTable($columns, $data);
     }
 }
 
-function printTable($columns, $data, $rowCount)
+function convertNumberForGraph($data, $column)
+{
+    $data[$column . 'conv'] = array_map(
+        function ($val) {
+            return number_format($val);
+        },
+        $data[$column]
+    );
+    return $data;
+}
+
+function convertScaleForGraph($data, $column)
+{
+    // Work out best size
+    $data[$column . 'conv'] = $data[$column];
+    format_report_volume($data[$column . 'conv'], $size_info);
+    $scale = $size_info['formula'];
+    foreach ($data[$column . 'conv'] as $key => $val) {
+        $data[$column . 'conv'][$key] = formatSize($val * $scale);
+    }
+    return $data;
+}
+
+function convertHostnameGeoipForGraph($data, $column)
+{
+    $data['hostname'] = array();
+    $data['geoip'] = array();
+    foreach ($data[$column] as $ipval) {
+        $hostname = gethostbyaddr($ipval);
+        if ($hostname === $ipval) {
+            $data['hostname'][] = __('hostfailed39');
+        } else {
+            $data['hostname'][] = $hostname;
+        }
+        if ($geoip = return_geoip_country($ipval)) {
+            $data['geoip'][] = $geoip;
+        } else {
+            $data['geoip'][] = __('geoipfailed39');
+        }
+    }
+    return $data;
+}
+
+function convertVirusesForGraph($data, $column)
+{
+    $viruses = array();
+    foreach ($data[$column] as $report) {
+        if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
+            $virus = $virus_report[2];
+            if (isset($viruses[$virus])) {
+                $viruses[$virus]++;
+            } else {
+                $viruses[$virus] = 1;
+            }
+        }
+    }
+    arsort($viruses);
+    reset($viruses);
+    $count = 0;
+    foreach ($viruses as $key => $val) {
+        $data['virusname'][] = $key;
+        $data['viruscount'][] = $val;
+        if(++$count >= 10) {
+            break;
+        }
+    }
+    $data['numResult'] = $count;
+    return $data;
+}
+
+function printTable($columns, $data)
 {
     // HTML to display the table
     echo '<table class="reportTable">';
@@ -4222,7 +4236,7 @@ function printTable($columns, $data, $rowCount)
     }
     echo '    </tr>' . "\n";
 
-    for ($i = 0; $i < $rowCount; $i++) {
+    for ($i = 0; $i < $data['numResult']; $i++) {
         echo '    <tr>' . "\n";
         foreach ($columns as $columnName => $columnTitle) {
             echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
