@@ -32,8 +32,6 @@
 // Require the functions page
 require_once __DIR__ . '/functions.php';
 
-// Start the session
-session_start();
 // Require the login function code
 require __DIR__ . '/login.function.php';
 
@@ -122,9 +120,9 @@ $result = dbquery($sql);
 // Check to make sure something was returned
 if ($result->num_rows === 0) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
-} else {
-    audit_log(__('auditlog04') . ' (id=' . $url_id . ')');
 }
+
+audit_log(__('auditlog04', true) . ' (id=' . $url_id . ')');
 
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
@@ -138,7 +136,7 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('receivedfrom04')) {
             $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
             if (LISTS) {
-                $output .= "<td align=\"right\">[<a href=\"$listurl&amp;type=h&amp;list=w\">" . __('addwl04') . "</a>&nbsp;|&nbsp;<a href=\"$listurl&amp;type=h&amp;list=b\">" . __('addbl04') . '</a>]</td>';
+                $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=h&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=h&amp;list=b">' . __('addbl04') . '</a>]</td>';
             }
             $output .= "</tr></table>\n";
             $row[$f] = $output;
@@ -150,10 +148,10 @@ while ($row = $result->fetch_array()) {
             $output .= ' <th>' . __('ipaddress04') . '</th>' . "\n";
             $output .= ' <th>' . __('hostname04') . '</th>' . "\n";
             $output .= ' <th>' . __('country04') . '</th>' . "\n";
-            $output .= ' <th>RBL</th>' . "\n";
-            $output .= ' <th>Spam</th>' . "\n";
-            $output .= ' <th>Virus</th>' . "\n";
-            $output .= ' <th>' . __('all04') . '</th>' . "\n";
+            $output .= ' <th class="noprint">RBL</th>' . "\n";
+            $output .= ' <th class="noprint">Spam</th>' . "\n";
+            $output .= ' <th class="noprint" >Virus</th>' . "\n";
+            $output .= ' <th class="noprint">' . __('all04') . '</th>' . "\n";
             $output .= ' </tr>' . "\n";
             if (is_array($relays = get_mail_relays($row[$f]))) {
                 foreach ($relays as $relay) {
@@ -186,13 +184,13 @@ while ($row = $result->fetch_array()) {
                         $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
                     }
                     // Link to RBL Lookup
-                    $output .= ' <td align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Spam Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Virus Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to All Messages Report for this relay
-                    $output .= ' <td align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Close table
                     $output .= ' </tr>' . "\n";
                 }
@@ -211,7 +209,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = htmlentities($row[$f]);
             $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
             if (LISTS) {
-                $output .= '<td align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . __('addbl04') . '</a>]</td>' . "\n";
+                $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . __('addbl04') . '</a>]</td>' . "\n";
             }
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
@@ -382,7 +380,7 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === __('submit04')) {
+    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === 'submit') {
         if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
             die(__('error04'));
         }
@@ -482,6 +480,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         echo '</table>' . "\n";
     } else {
+        // get perfromed actions
+        $sql = "SELECT released,salearn FROM `maillog` WHERE `id` = '$url_id'";
+        $result = dbquery($sql);
+        $row = $result->fetch_array();
         echo '<form action="detail.php" method="post" name="quarantine">' . "\n";
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         echo ' <tr>' . "\n";
@@ -489,7 +491,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         echo ' <tr>' . "\n";
         echo '  <th>' . __('release04') . '</th>' . "\n";
-        echo '  <th>' . __('delete04') . '</th>' . "\n";
+        echo '  <th class="noprint">' . __('delete04') . '</th>' . "\n";
         echo '  <th>' . __('salearn04') . '</th>' . "\n";
         echo '  <th>' . __('file04') . '</th>' . "\n";
         echo '  <th>' . __('type04') . '</th>' . "\n";
@@ -498,6 +500,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
+            $tdclass='';
+            if ($row['released'] > 0 && $item['file'] === 'message') {
+                $tdclass='released';
+            }
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
             // Currently this only applies to messages that contain viruses.
@@ -507,18 +513,18 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D') ||
                 $item['dangerous'] !== 'Y'
             ) {
-                echo '  <td align="center"><input type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
+                echo '  <td align="center" class="' . $tdclass . '"><input class="noprint" type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
-                echo '<td>&nbsp;&nbsp;</td>' . "\n";
+                echo '<td class="' . $tdclass . '">&nbsp;&nbsp;</td>' . "\n";
             }
-            echo '  <td align="center"><input type="checkbox" name="delete[]" value="' . $item['id'] . '"></td>' . "\n";
+            echo '  <td class="noprint" align="center"><input type="checkbox" name="delete[]" value="' . $item['id'] . '"></td>' . "\n";
             // If the file is an rfc822 message then allow the file to be learnt
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
                 (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message') &&
                 (strtoupper(get_conf_var('UseSpamAssassin')) !== 'NO')
             ) {
-                echo '   <td align="center"><input type="checkbox" name="learn[]" value="' . $item['id'] . '"><select name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
+                echo '   <td align="center" class="salearn-' . $row['salearn'] . '"><input class="noprint" type="checkbox" name="learn[]" value="' . $item['id'] . '"><select class="noprint" name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
                 echo '   <td>&nbsp;&nbsp;</td>' . "\n";
             }
@@ -548,7 +554,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo '  <td align="center">' . $dangerous . '</td>' . "\n";
             echo ' </tr>' . "\n";
         }
-        echo ' <tr>' . "\n";
+        echo ' <tr class="noprint">' . "\n";
         if ($_SESSION['user_type'] === 'A' ||
             ($_SESSION['user_type'] === 'D' &&
                 ($is_dangerous === 0 ||
@@ -564,7 +570,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
         echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
         echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/detail.php ops token') . '">' . "\n";
-        echo '<input type="SUBMIT" name="submit" value="' . __('submit04') . '">' . "\n";
+        echo '<button type="SUBMIT" name="submit" value="submit">' . __('submit04') . '</button>' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";
         echo '</form>' . "\n";

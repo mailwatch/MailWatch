@@ -39,6 +39,19 @@ define('DEBUG', false);
 // Define language (de, en, fr, it, nl, pt_br);
 define('LANG', 'en');
 
+// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
+// in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
+//define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');
+
+// Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
+// to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
+//define('SESSION_NAME', 'MailWatch');
+
+// Session Timeout - Sets the global session timeout value, default is 600 sec (10 minutes) if not defined
+// Range is 0 to 99999 seconds.  Setting to 0 will disable session timeout and active session statuses.
+// This can also be set individually per user in the MailWatch GUI for greater flexibility.
+//define('SESSION_TIMEOUT', 600);
+
 // Database settings
 //
 // As this file might be publically readable. It might be very userful to
@@ -92,7 +105,7 @@ define('PROXY_USER', '');
 define('PROXY_PASS', '');
 
 // Paths
-define('MAILWATCH_HOME', '/var/www/html/mailscanner');
+define('MAILWATCH_HOME', '/opt/mailwatch/mailscanner');
 define('MS_CONFIG_DIR', '/etc/MailScanner/');
 define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // Path for ConfigDefs.pl file
 define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // Path for sophos-wrapper file
@@ -145,6 +158,8 @@ define('SHOW_MORE_INFO_ON_REPORT_GRAPH', false);
 /* Mailwatch Interface Settings */
 define('MAILWATCH_MAIL_HOST', '127.0.0.1');
 define('MAILWATCH_MAIL_PORT', '25');
+// This is required if you use a remote SMTP server to send MailWatch emails (reports etc).
+//define('MAILWATCH_SMTP_HOSTNAME', gethostname());
 // Change with a fully qualified email address
 define('MAILWATCH_FROM_ADDR', 'postmaster@domain.tld');
 define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
@@ -174,7 +189,11 @@ define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 
 // This turns virus names into links that can be used to get more information
 // about a given virus or virus alias.  Comment out or set to false to disable.
-define('VIRUS_INFO', 'http://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1');
+// As of release 1.2.3 there is no reliable multivendor sources:
+// if you still want to enable this feature remember to substitute the url param containing the virus name with %s
+// look at the commented example below
+//define('VIRUS_INFO', 'http://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1');
+define('VIRUS_INFO', false);
 
 // Display Virus on message listing
 define('DISPLAY_VIRUS_REPORT', true);
@@ -227,6 +246,10 @@ define('RPC_ONLY', false);
 // define('EXIM_QUEUE_IN', '/usr/sbin/exim -bpc');
 // Command to read Exim outbound Mail Queue
 // define('EXIM_QUEUE_OUT', '/usr/sbin/exim -bpc -DOUTGOING');
+// Command to read Sendmail inbound Mail Queue
+// define('SENDMAIL_QUEUE_IN', '/usr/bin/mailq  -bp -OQueueDirectory=/var/spool/mqueue.in');
+// Command to read Sendmail outbound Mail Queue
+// define('SENDMAIL_QUEUE_OUT', '/usr/bin/mailq -bp');
 
 // Do you want an audit trail?
 define('AUDIT', false);
@@ -283,3 +306,4 @@ define('RESET_LINK_EXPIRE', 1);
 // define('PWD_RESET_FROM_NAME', 'Some other name'); // Set if you wish reset email sent from alternative name.
 // define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
 /* End Password Reset */
+

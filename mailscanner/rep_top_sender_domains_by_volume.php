@@ -30,31 +30,27 @@
  */
 
 // Include of necessary functions
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsenderdomvol45'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_sender_by_volume.png.' . time();
-
-$sql = "
+$sql = '
  SELECT
-  SUBSTRING_INDEX(from_address, '@', -1) AS name,
-  COUNT(*) as count,
-  SUM(size) as size
+  SUBSTRING_INDEX(from_address, \'@\', -1) AS `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE
-  from_address <> \"\" 		-- Exclude delivery receipts
+  from_address <> "" 		-- Exclude delivery receipts
  AND
   from_address IS NOT NULL     	-- Exclude delivery receipts
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  GROUP BY
   from_domain
  ORDER BY
@@ -62,10 +58,10 @@ $sql = "
  LIMIT 10
 ';
 
-$columnTitles = array(
-    __('domain45'),
-    __('count03'),
-    __('size03')
+$columns = array(
+    'name' => __('domain45'),
+    'countconv' => __('count03'),
+    'sizeconv' => __('size03')
 );
 $sqlColumns = array(
     'name',
@@ -78,9 +74,10 @@ $valueConversion = array(
 );
 $graphColumns = array(
     'labelColumn' => 'name',
-    'dataColumn' => 'size'
+    'dataNumericColumn' => 'size',
+    'dataFormattedColumn' => 'sizeconv'
 );
-printGraphTable($filename, $sql, __('top10senderdomvol45'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($sql, __('top10senderdomvol45'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

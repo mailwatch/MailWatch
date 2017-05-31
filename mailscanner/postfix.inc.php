@@ -56,7 +56,9 @@ function postfixallq()
 function postfixmailq()
 {
     exec('mailq', $output);
-    while (list(, $row) = each($output)) {
-        echo $row . "\n";
+    if ($output !== null && $output !== '') {
+        foreach ($output as $row) {
+            echo $row . "\n";
+        }
     }
 }

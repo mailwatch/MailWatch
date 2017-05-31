@@ -30,24 +30,20 @@
  */
 
 // Include of necessary functions
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsendersqt46'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_senders_by_quantity.png' . time();
-
 $sql = '
  SELECT
-  from_address as name,
-  COUNT(*) as count,
-  SUM(size) as size
+  from_address as `name`,
+  COUNT(*) as `count`,
+  SUM(size) as `size`
  FROM
   maillog
  WHERE
@@ -62,10 +58,10 @@ $sql = '
  LIMIT 10
 ';
 
-$columnTitles = array(
-    __('email46'),
-    __('count03'),
-    __('size03')
+$columns = array(
+    'name' => __('email46'),
+    'countconv' => __('count03'),
+    'sizeconv' => __('size03')
 );
 $sqlColumns = array(
     'name',
@@ -78,9 +74,10 @@ $valueConversion = array(
 );
 $graphColumns = array(
     'labelColumn' => 'name',
-    'dataColumn' => 'count'
+    'dataNumericColumn' => 'count',
+    'dataFormattedColumn' => 'countconv'
 );
-printGraphTable($filename, $sql, __('top10sendersqt46'), $sqlColumns, $columnTitles, $graphColumns, $valueConversion);
+printGraphTable($sql, __('top10sendersqt46'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();

@@ -30,11 +30,10 @@
  */
 
 //Require files
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // verify login
-session_start();
 require __DIR__ . '/login.function.php';
 
 // Checking to see if there are any filters
@@ -46,7 +45,7 @@ if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {
 }
 
 // add the header information such as the logo, search, menu, ....
-html_start(__('reports14'), '0', false, false);
+html_start(__('reports14'), 0, false, false);
 
 // Add filters and save them
 if (isset($_POST['action']) || isset($_GET['action'])) {

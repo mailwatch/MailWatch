@@ -206,12 +206,11 @@ sub LookupList {
     my ($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip1c, $ip2, $ip2c, $ip3, $ip3c, $subdom, $i, @keys, @subdomains);
     $from = $message->{from};
     $fromdomain = $message->{fromdomain};
-    # Create a array of subdomains for subdomain wildcard matching
-    #   e.g. me@this.that.example.com generates subdomain list of ('that.example.com', 'example.com')
-    #   wildcards of *.com, *.uk, *.gov, etc will never be matched for safety's sake (though *.gov.uk could be)
+    # Create a array of subdomains for subdomain and tld wildcard matching
+    #   e.g. me@this.that.example.com generates subdomain/tld list of ('that.example.com', 'example.com', 'com')
     $subdom = $fromdomain;
     @subdomains = ();
-    while ($subdom =~ /.*?\.(.*\..*)/) {
+    while ($subdom =~ /.*?\.(.*)/) {
         $subdom = $1;
         push (@subdomains, "*.".$subdom);
     }

@@ -32,8 +32,6 @@
 // Require the functions page
 require_once __DIR__ . '/functions.php';
 
-// Start the session
-session_start();
 // Require the login function code
 require __DIR__ . '/login.function.php';
 
@@ -41,7 +39,7 @@ require __DIR__ . '/login.function.php';
 html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 
 // Enter the Action in the Audit log
-audit_log(__('auditlog18'));
+audit_log(__('auditlog18', true));
 
 // Create the table
 echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="690">' . "\n";
@@ -60,7 +58,7 @@ if ($_SESSION['user_type'] === 'A') {
             // You can use --force-expire instead of --clear to test the routine
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --clear', $return);
             if ($return === 0) {
-                audit_log(__('auditlogwipe18'));
+                audit_log(__('auditlogwipe18', true));
             } else {
                 echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">' . "\n";
                 echo '<br>' . __('error18') . ' ' . $return;

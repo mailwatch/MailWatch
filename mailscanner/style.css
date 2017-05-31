@@ -305,6 +305,11 @@ table.mail, table.maildetail, table.navigation, table.boxtable {
     padding: 0;
 }
 
+table.mail tr:hover {
+    -webkit-filter: invert(0.1);
+    filter: invert(0.1);
+
+}
 table.boxtable {
     margin-left: auto;
     margin-right: auto;
@@ -354,7 +359,7 @@ table.boxtable {
     background: #F7CE4A;
 }
 
-#menu.yellow a {
+#menu.yellow a, #menu.yellow select.lang {
     color: #000;
 }
 
@@ -536,6 +541,13 @@ td.dashgreybox {
     table.maildetail {
         border: none;
     }
+    table.reportTable {
+        border: none;
+        border-collapse: collapse;
+    }
+    table.reportTable>tbody>tr>td {
+        border: 1px solid black;
+    }
 }
 
 div.table input {
@@ -653,18 +665,31 @@ div.table > .caption > input {
 }
 
 .reportTable {
-    width: 500px;
-    padding: 10px;
-    margin-left: auto;
-    margin-right: auto;
+   padding: 10px;   
+   margin-left: auto;
+   margin-right: auto;
 }
 
-.reportTable > tbody > tr > td {
+.reportTable>tbody>tr>th {
+   background-color: #F7CE4A;
+}
+
+.reportTable>tbody>tr>td {
+   background-color: #EBEBEB;
+}
+
+.reportTable>tbody>tr>th,
+.reportTable>tbody>tr>td {
     text-align: center;
+    padding: 5px;
 }
 
-.reportTable > tbody > tr > td:first-child {
+.reportTable>tbody>tr>td:first-child {
     text-align: left;
+}
+
+.reportTable>tbody>tr>td:last-child {
+    text-align: right;
 }
 
 td.titleReport {
@@ -672,7 +697,6 @@ td.titleReport {
     font-weight: bold;
     text-align: center;
 }
-
 .reportTable > tbody > tr > td:last-child {
     text-align: right;
 }
@@ -855,4 +879,43 @@ td.message {
 
 .link-transparent > a:hover {
     background-color: transparent;
+}
+
+li.lang {
+    height: 100%;
+}
+
+select.lang {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    height: 100%!important;
+    background-color:#F7CE4A;
+}
+
+#menu.yellow li select.lang:hover {
+    color: #fff;
+    background: #4973f7;
+}
+
+select.lang > option {
+    background:#F7CE4A;
+    border-top:1px solid #444;
+    color: #000;
+}
+
+/* Colors for quarantine actions */
+
+.released {
+    background-color:#008000;
+    color:#fff;
+}
+
+.salearn-1 { /* HAM */
+    background-color:#008000;
+    color:#fff
+}
+
+.salearn-2 { /* SPAM */
+    background-color: #f51111;
+    color:#fff;
 }

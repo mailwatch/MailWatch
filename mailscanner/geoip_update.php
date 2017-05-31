@@ -32,8 +32,7 @@
 //Require files
 require_once __DIR__ . '/functions.php';
 
-// Authentication verification and keep the session alive
-session_start();
+// Authentication verification
 require __DIR__ . '/login.function.php';
 
 html_start(__('geoipupdate15'), 0, false, false);
@@ -181,9 +180,9 @@ if (!isset($_POST['run'])) {
                     exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
                     if ($retval_gunzip > 0) {
                         die(__('extractnotok15') . $file['description'] . "<br>\n");
-                    } else {
-                        echo $file['description'] . ' ' . __('extractok15') . '<br>' . "\n";
                     }
+
+                    echo $file['description'] . ' ' . __('extractok15') . '<br>' . "\n";
                 }
             } else {
                 // unable to extract the file correctly
@@ -195,7 +194,7 @@ if (!isset($_POST['run'])) {
             echo __('processok15') . "\n";
             ob_flush();
             flush();
-            audit_log(__('auditlog15'));
+            audit_log(__('auditlog15', true));
         } else {
             // unable to read or write to the directory
             die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");

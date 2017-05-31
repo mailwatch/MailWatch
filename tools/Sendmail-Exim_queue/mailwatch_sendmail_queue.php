@@ -249,7 +249,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
             foreach ($output as $msgid => $msginfo) {
                 // Use 'From:' if MAIL_SENDER = sender
                 // If 'envelope-from' do not exist, use 'From:' instead (bounce)
-                $from = "";
+                $from = '';
                 if (defined('MAIL_SENDER') && MAIL_SENDER === 'sender') {
                     $from = $msginfo['sender'];
                 } else {
@@ -279,7 +279,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     safe_value($msginfo['ctime']) . "','" .
                     safe_value($from) . "','" .
                     safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : "") . "','" .
+                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : '') . "','" .
                     safe_value($msginfo['message']) . "','" .
                     safe_value($msginfo['size']) . "','" .
                     safe_value($msginfo['priority']) . "','" .

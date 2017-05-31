@@ -33,7 +33,6 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 html_start(__('msgviewer06'), 0, false, false);
@@ -48,68 +47,71 @@ html_start(__('msgviewer06'), 0, false, false);
     </SCRIPT>
 <?php
 dbconn();
-if (!isset($_GET['id'])) {
+if (!isset($_GET['id']) && !isset($_GET['amp;id'])) {
     die(__('nomessid06'));
+}
+if (isset($_GET['amp;id'])) {
+    $message_id = deepSanitizeInput($_GET['amp;id'], 'url');
 } else {
     $message_id = deepSanitizeInput($_GET['id'], 'url');
-    if (!validateInput($message_id, 'msgid')) {
-        die();
-    }
-    $sql = "SELECT * FROM maillog WHERE id='" . $message_id . "' AND " . $_SESSION['global_filter'];
-    $result = dbquery($sql);
-    $message = $result->fetch_object();
-    // See if message is local
-    if (empty($message)) {
-        die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
-    } else {
-        audit_log(sprintf(__('auditlog06'), $message_id));
-    }
-    
-    if ($message->token !== deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
-        die(__('dietoken99'));
-    }
-    
-    $using_rpc = false;
-    if (RPC_ONLY || !is_local($message->hostname)) {
-        // Host is remote - use XML-RPC
-        $using_rpc = true;
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
-        $input = new xmlrpcval($message_id);
-        $parameters = array($input);
-        $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
-        //$rsp = $client->send($msg);
-        $rsp = xmlrpc_wrapper($message->hostname, $msg);
-        if ($rsp->faultCode() === 0) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            die(__('error06') . ' ' . $rsp->faultString());
-        }
-        $file = base64_decode($response);
-    } else {
-        //build filename path
-        $date = DateTime::createFromFormat('Y-m-d', $message->date)->format('Ymd');
-        $quarantine_dir = get_conf_var('QuarantineDir');
-        $filename = '';
-        switch (true) {
-            case (file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id)):
-                $filename = $date . '/nonspam/' . $message_id;
-                break;
-            case (file_exists($quarantine_dir . '/' . $date . '/spam/' . $message_id)):
-                $filename = $date . '/spam/' . $message_id;
-                break;
-            case (file_exists($quarantine_dir . '/' . $date . '/mcp/' . $message_id)):
-                $filename = $date . '/mcp/' . $message_id;
-                break;
-            case (file_exists($quarantine_dir . '/' . $date . '/' . $message_id . '/message')):
-                $filename = $date . '/' . $message_id . '/message';
-                break;
-        }
+}
+if (!validateInput($message_id, 'msgid')) {
+    die();
+}
+$sql = "SELECT * FROM maillog WHERE id='" . $message_id . "' AND " . $_SESSION['global_filter'];
+$result = dbquery($sql);
+$message = $result->fetch_object();
+// See if message is local
+if (empty($message)) {
+    die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
+}
 
-        if (!@file_exists($quarantine_dir . '/' . $filename)) {
-            die(__('errornfd06') . "\n");
-        }
-        $file = file_get_contents($quarantine_dir . '/' . $filename);
+audit_log(sprintf(__('auditlog06', true), $message_id));
+
+if ($message->token !== deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
+    die(__('dietoken99'));
+}
+
+$using_rpc = false;
+if (RPC_ONLY || !is_local($message->hostname)) {
+    // Host is remote - use XML-RPC
+    $using_rpc = true;
+    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
+    $input = new xmlrpcval($message_id);
+    $parameters = array($input);
+    $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
+    //$rsp = $client->send($msg);
+    $rsp = xmlrpc_wrapper($message->hostname, $msg);
+    if ($rsp->faultCode() === 0) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        die(__('error06') . ' ' . $rsp->faultString());
     }
+    $file = base64_decode($response);
+} else {
+    //build filename path
+    $date = DateTime::createFromFormat('Y-m-d', $message->date)->format('Ymd');
+    $quarantine_dir = get_conf_var('QuarantineDir');
+    $filename = '';
+    switch (true) {
+        case (file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id)):
+            $filename = $date . '/nonspam/' . $message_id;
+            break;
+        case (file_exists($quarantine_dir . '/' . $date . '/spam/' . $message_id)):
+            $filename = $date . '/spam/' . $message_id;
+            break;
+        case (file_exists($quarantine_dir . '/' . $date . '/mcp/' . $message_id)):
+            $filename = $date . '/mcp/' . $message_id;
+            break;
+        case (file_exists($quarantine_dir . '/' . $date . '/' . $message_id . '/message')):
+            $filename = $date . '/' . $message_id . '/message';
+            break;
+    }
+
+    if (!@file_exists($quarantine_dir . '/' . $filename)) {
+        die(__('errornfd06') . "\n");
+    }
+    $file = file_get_contents($quarantine_dir . '/' . $filename);
 }
 
 $params['include_bodies'] = false;
@@ -135,10 +137,9 @@ echo " </thead>\n";
 
 function lazy($title, $val, $dohtmlentities = true)
 {
+    $v = $val;
     if ($dohtmlentities) {
-        $v = htmlentities($val);
-    } else {
-        $v = $val;
+        $v = htmlentities($v);
     }
     $titleintl = $title;
     switch ($title) {
@@ -184,7 +185,7 @@ foreach ($header_fields as $field) {
 }
 
 if (
-        ($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) ||
+        ($message->virusinfected === '0' && $message->nameinfected === '0' && $message->otherinfected === '0') ||
         $_SESSION['user_type'] === 'A' ||
         (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
 ) {
@@ -234,7 +235,7 @@ foreach ($mime_struct as $key => $part) {
                 echo __('nonameattachment06');
             }
             if (
-                ($message->virusinfected === 0 && $message->nameinfected === 0 && $message->otherinfected === 0) ||
+                ($message->virusinfected === '0' && $message->nameinfected === '0' && $message->otherinfected === '0') ||
                 $_SESSION['user_type'] === 'A' ||
                 (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
             ) {

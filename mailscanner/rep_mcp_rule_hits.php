@@ -30,11 +30,10 @@
  */
 
 // Include of necessary functions
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
@@ -110,7 +109,10 @@ echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  <th>' . __('mcp34') . '</th>
  <th>%</th>
  </tr>' . "\n";
-while ((list($key, $val) = each($sa_array)) && $count < 10) {
+foreach ($sa_array as $key => $val) {
+    if ($count >= 10) {
+        break;
+    }
     echo '
 <tr bgcolor="#ebebeb">
  <td>' . $key . '</td>

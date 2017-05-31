@@ -348,6 +348,20 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Add mtalog_ids table if not exist (if upgrade from < 1.2.0)
+    echo pad(' - Add mtalog_ids table to `' . DB_NAME . '` database');
+    if (true === check_table_exists('mtalog_ids')) {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'CREATE TABLE IF NOT EXISTS `mtalog_ids` (
+            `smtpd_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
+            `smtp_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
+            UNIQUE KEY `mtalog_ids_idx` (`smtpd_id`,`smtp_id`),
+            KEY `smtpd_id` (`smtpd_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
+        executeQuery($sql);
+    }
+
     // Update users table schema for password-reset feature
     echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
     if (check_column_exists('users', 'resetid') === false) {
@@ -361,6 +375,19 @@ if ($link) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
 
+    // Update users table schema for login_expiry, last_login and individual login_timeout feature
+    echo pad(' - Add login_expiry and login_timeout fields in `users` table');
+    if (check_column_exists('users', 'login_expiry') === false) {
+        $sql = "ALTER TABLE `users` ADD COLUMN (
+            `login_expiry` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+            `last_login` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+            `login_timeout` SMALLINT(5) COLLATE utf8_unicode_ci DEFAULT '-1'
+            );";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    }
+    
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4
@@ -470,7 +497,25 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
-    
+
+    // Add new released column to maillog table
+    echo pad(' - Add released field to `maillog` table');
+    if (true === check_column_exists('maillog', 'released')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = "ALTER TABLE `maillog` ADD `released` tinyint(1) DEFAULT '0'";
+        executeQuery($sql);
+    }
+
+    // Add new salearn column to maillog table
+    echo pad(' - Add salearn field to `maillog` table');
+    if (true === check_column_exists('maillog', 'salearn')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = "ALTER TABLE `maillog` ADD `salearn` tinyint(1) DEFAULT '0'";
+        executeQuery($sql);
+    }
+
     // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
     echo pad(' - Check for missing tokens in `maillog` table');
     if (defined('QUARANTINE_REPORT_DAYS')) {
@@ -491,9 +536,11 @@ if ($link) {
                 $countTokenGenerated++;
             }
         }
+        echo color(' DONE', 'lightgreen') . PHP_EOL;
+        echo '   ' . $countTokenGenerated . ' token generated' . PHP_EOL;
+    } else {
+        echo color(' NOTHING FOUND', 'lightgreen') . PHP_EOL;
     }
-    echo color(' DONE', 'lightgreen') . PHP_EOL;
-    echo '   ' . $countTokenGenerated . ' token generated' . PHP_EOL;
 
     // Add new column and index to mtalog table
     echo pad(' - Add mtalog_id field and primary key to `mtalog` table');
@@ -715,7 +762,7 @@ if ($checkConfigEntries['optional']['count'] === 0) {
     echo pad(' - All optional entries are already present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['optional']['list'] as $optionalConfigEntry => $detail) {
-        echo pad(" - optional $optionalConfigEntry ") . ' ' . color('WARNING', 'yellow') . PHP_EOL;
+        echo pad(" - optional $optionalConfigEntry ") . ' ' . color('INFO', 'lightgreen') . PHP_EOL;
         $errors[] = 'conf.php: optional configuration entry "' . $optionalConfigEntry . '" is missing, ' . $detail['description'];
     }
 }

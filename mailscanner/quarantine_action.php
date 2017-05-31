@@ -35,7 +35,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 function simple_html_start()

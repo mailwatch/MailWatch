@@ -31,7 +31,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-session_start();
 require __DIR__ . '/login.function.php';
 
 if ($_SESSION['user_type'] !== 'A') {
@@ -66,7 +65,7 @@ if ($_SESSION['user_type'] !== 'A') {
             "grep -hr '^\s*describe' " . SA_RULES_DIR . ' /usr/share/spamassassin /usr/local/share/spamassassin ' . SA_PREFS . ' /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq',
             'r'
         );
-        audit_log(__('auditlog13'));
+        audit_log(__('auditlog13', true));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             // debug("line: ".$line."\n");
