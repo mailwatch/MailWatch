@@ -425,6 +425,11 @@ if ($link) {
     $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
     executeQuery($sql);
 
+    // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
+    echo pad(' - Fix schema for timestamp field in `maillog` table');
+    $sql = "ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP";
+    executeQuery($sql);
+
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
     // Table audit_log
@@ -506,7 +511,7 @@ if ($link) {
         $sql = "ALTER TABLE `maillog` ADD `released` tinyint(1) DEFAULT '0'";
         executeQuery($sql);
     }
-
+    
     // Add new salearn column to maillog table
     echo pad(' - Add salearn field to `maillog` table');
     if (true === check_column_exists('maillog', 'salearn')) {

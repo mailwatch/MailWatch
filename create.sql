@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `inq` (
 
 CREATE TABLE IF NOT EXISTS `maillog` (
   `maillog_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id` mediumtext COLLATE utf8_unicode_ci,
   `size` bigint(20) DEFAULT '0',
   `from_address` mediumtext COLLATE utf8_unicode_ci,
