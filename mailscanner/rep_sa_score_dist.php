@@ -39,9 +39,6 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('sascoredist38'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/sa_score_dist.png.' . time();
-
 $sql = '
  SELECT
   ROUND(sascore) AS score,
@@ -69,10 +66,11 @@ $valueConversion = array(
 );
 $graphColumns = array(
     'labelColumn' => 'score',
-    'dataNumericColumn' => 'count',
-    'dataFormattedColumn' => 'count',
+    'dataNumericColumns' => array('count'),
+    'dataFormattedColumns' => array('count'),
     'xAxeDescription' => __('scorerounded38'),
-    'yAxeDescription' => __('nbmessage38')
+    'yAxeDescriptions' => array(__('nbmessage38')),
+    'fillBelowLine' => array('true')
 );
 
 printLineGraph($sql, __('sascoredist38'), $sqlColumns, $columns, $graphColumns, $valueConversion);

@@ -4149,7 +4149,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
  * @param array $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
  * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
-function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions)
+function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions, $printTable=true, $types)
 {
     $result = dbquery($sqlDataQuery);
     $numResult = $result->num_rows;
@@ -4158,8 +4158,10 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     }
     //store data in format $data[columnname][rowid]
     $data = array();
-    $data[$graphColumn['dataNumericColumn']] = array();
-    $data[$graphColumn['dataFormattedColumn']] = array();
+    for($i=0; $i<count(graphColumn['dataNumericColumns']); $i++) {
+        $data[$graphColumn['dataNumericColumn'][$i]] = array();
+        $data[$graphColumn['dataFormattedColumn'][$i]] = array();
+    }
     while ($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
             $data[$columnName][] = $row[$columnName];
@@ -4167,8 +4169,28 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     }
 
     foreach ($valueConversions as $column => $conversion) {
-        if ($conversion == "") {
+        if ($conversion === 'scale') {
+            // Work out best size
+            $data[$column . 'conv'] = $data[$column];
+            format_report_volume($data[$column . 'conv'], $size_info);
+            $scale = $size_info['formula'];
+            foreach ($data[$column . 'conv'] as $key => $val) {
+                $data[$column . 'conv'][$key] = formatSize($val * $scale);
+            }
+        } elseif ($conversion === 'number') {
+            $data[$column . 'conv'] = array_map(
+                function ($val) {
+                    return number_format($val);
+                },
+                $data[$column]
+            );
         }
+    }
+    $numericData = "";
+    $formattedData = "";
+    for($i=0; $i<count($graphColumn['dataNumericColumns']); $i++) {
+        $numericData .= '[' . implode(', ', $data[$graphColumn['dataNumericColumns'][$i]]) . '],';
+        $formattedData .= '["' . implode('", "', $data[$graphColumn['dataFormattedColumns'][$i]]) . '"],';
     }
     echo '<canvas id="reportChart" class="lineGraph"></canvas>
   <script>
@@ -4176,15 +4198,18 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
   var chartTitle = "' . $reportTitle . '";
   var chartId = "reportChart";
   var chartLabels = ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"];
-  var chartNumericData = [' . implode(', ', $data[$graphColumn['dataNumericColumn']]) . '];
-  var chartFormattedData = ["' . implode('", "', $data[$graphColumn['dataFormattedColumn']]) . '"];
+  var chartNumericData = [' . $numericData . '];
+  var chartFormattedData = [' . $formattedData . '];
   var xAxeDescription = "' . $graphColumn['xAxeDescription'] . '";
-  var yAxeDescription = "' . $graphColumn['yAxeDescription'] . '";
-  var fillBelowLine = true;
+  var yAxeDescriptions = ["' . implode('", "', $graphColumn['yAxeDescriptions']) . '"];
+  var fillBelowLine = [' . implode(', ', $graphColumn['fillBelowLine']) . '];
+  ' . ($types === null ? '' : 'var types = ["' . implode('","', $types) . '"]') . '
   </script>
   <script src="lib/Chart.js/Chart.js"></script>
   <script src="lib/lineConfig.js"></script>';
-  printTable($columns, $data, $numResult);
+  if ($printTable === true) {
+      printTable($columns, $data, $numResult);
+  }
 }
 
 function printTable($columns, $data, $rowCount)

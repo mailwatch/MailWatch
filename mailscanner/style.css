@@ -692,6 +692,11 @@ div.table > .caption > input {
     padding: 5px;
 }
 
+.reportTable>tbody>tr>th.white,
+.reportTable>tbody>tr>td.white{
+    background-color: #fffffff;
+}
+
 .reportTable>tbody>tr>td:first-child {
     text-align: left;
 }
