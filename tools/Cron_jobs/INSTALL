@@ -49,9 +49,11 @@ See the instructions in tools/MailScanner_rule_editor/INSTALL
 GeoIP Update
 --------------------------------------------
 
-Maxmind is strict on public geoip updates, be cautious about using cron to update not too often.
-
 Default update is one time per month in /etc/cron.monthly/.
+
+THe sudoers file /etc/sudoers.d/mailwatch must be installed.
+
+Maxmind is strict on public geoip updates, be cautious about using cron to update.
 
 
 ATTENTION:
