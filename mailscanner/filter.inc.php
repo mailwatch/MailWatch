@@ -113,7 +113,7 @@ class Filter
         $this->display_last = 0;
 
         //  Make sure this is not a duplicate
-        foreach ($this->item as $key => $val) {
+        foreach ($this->item as $val) {
             if (($val[0] === $column) && ($val[1] === $operator) && ($val[2] === $value)) {
                 return;
             }

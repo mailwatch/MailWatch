@@ -75,7 +75,7 @@ abstract class MtaLogProcessor
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
             // Reset variables
-            unset($parsed, $mta_parser, $_timestamp, $_host, $_type, $_msg_id, $_status);
+            unset($parsed, $_timestamp, $_host, $_type, $_msg_id, $_status);
 
             $parsed = new SyslogParser($line);
             $_timestamp = safe_value($parsed->timestamp);
