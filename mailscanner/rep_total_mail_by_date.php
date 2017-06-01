@@ -139,15 +139,34 @@ ORDER BY
  timestamp
 ";
 
+
+
+$columns = array(
+);
+$sqlColumns = array(
+    'xaxis',
+    'total_mail',
+    'total_size'
+);
+$valueConversion = array(
+    'total_mail' => 'number',
+    'total_size' => 'scale'
+);
+
+$graphColumns = array(
+    'labelColumn' => 'xaxis',
+    'dataNumericColumns' => array('total_mail','total_size'),
+    'dataFormattedColumns' => array('total_mailconv','total_sizeconv'),
+    'xAxeDescription' => __('date49'),
+    'yAxeDescriptions' => array(__('nomessages49'), __('volume49')),
+    'fillBelowLine' => array('false', 'true')
+);
+$types = array('bar', 'line');
+
+printLineGraph($sql, __('totalmailprocdate49'), $sqlColumns, $columns, $graphColumns, $valueConversion, false, $types);
+
+
 // Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
-
-    // Includes for JPgraph
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_log.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_bar.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_line.php';
-
     // Must be one or more row
     $result = dbquery($sql);
     if (!$result->num_rows > 0) {
@@ -206,79 +225,8 @@ if (is_writable(CACHE_DIR)) {
 
     format_report_volume($data_total_size, $size_info);
 
-    $graph = new Graph(850, 350, 0, false);
-    $graph->SetShadow();
-    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
-    $graph->SetScale('textlin');
-    $graph->SetY2Scale('lin');
-    $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set(__('totalmailprocdate49'));
-    $graph->y2axis->title->Set(__('volume49') . ' (' . $size_info['longdesc'] . ')');
-    $graph->y2axis->title->SetMargin(10);
-    $graph->y2axis->SetTitleMargin(40);
-    $graph->yaxis->title->Set(__('nomessages49'));
-    $graph->yaxis->title->SetMargin(20);
-    $graph->yaxis->SetTitleMargin(30);
-    $graph->xaxis->title->Set(__('date49'));
-    $graph->xaxis->SetTitleMargin(30);
-    $graph->xaxis->SetTickLabels($graph_labels);
-    $graph->xaxis->SetLabelAngle(45);
-    $graph->legend->SetLayout(LEGEND_HOR);
-    $graph->legend->Pos(0.52, 0.92, 'center');
 
-    $bar1 = new BarPlot($data_total_mail);
-    $bar2 = new BarPlot($data_total_virii);
-    $bar3 = new BarPlot($data_total_spam);
-    if ($is_MCP_enabled === true) {
-        $bar4 = new BarPlot($data_total_mcp);
-    }
-    $line1 = new LinePlot($data_total_size);
-    if ($is_MCP_enabled === true) {
-        $abar1 = new AccBarPlot(array($bar2, $bar3, $bar4));
-    } else {
-        $abar1 = new AccBarPlot(array($bar2, $bar3));
-    }
-    $gbplot = new GroupBarPlot(array($bar1, $abar1));
-
-    $graph->Add($gbplot);
-    $graph->AddY2($line1);
-
-    $bar1->SetColor('blue');
-    $bar1->SetFillColor('blue');
-    $bar1->SetLegend(__('barmail49'));
-    $bar2->SetColor('orange');
-    $bar2->SetFillColor('orange');
-    $bar2->SetLegend(__('barvirus49'));
-    $bar3->SetColor('red');
-    $bar3->SetFillColor('red');
-    $bar3->SetLegend(__('barspam49'));
-    if ($is_MCP_enabled === true) {
-        $bar4->SetFillColor('lightblue');
-        $bar4->SetLegend(__('barmcp49'));
-    }
-    $line1->SetColor('lightgreen');
-    $line1->SetFillColor('lightgreen');
-    $line1->SetLegend(__('barvolume49') . ' (' . $size_info['shortdesc'] . ')');
-    $line1->SetCenter();
-
-    $graph->Stroke($filename);
-}
-
-// HTML Code to display the graph
-echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">' . "\n";
-echo ' <TR>' . "\n";
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
-} else {
-    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo ' </TR>' . "\n";
-echo ' <TR>' . "\n";
-echo '  <TD ALIGN="CENTER">' . "\n";
-echo '<TABLE BORDER=0 cellspacing=1 cellpadding=2>' . "\n";
+echo '<TABLE class="reportTable">' . "\n";
 echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
 echo "  <TH rowspan='2'>" . __('date49') . '</TH>' . "\n";
 echo "  <TH rowspan='2' align='right'>" . __('total49') . '</TH>' . "\n";
@@ -291,8 +239,8 @@ if ($is_MCP_enabled === true) {
     echo "  <TH colspan='2'>" . __('mcp49') . '</TH>' . "\n";
 }
 echo "  <TH rowspan='2'>" . __('volume49') . '</TH>' . "\n";
-echo "  <TH bgcolor='#ffffff' rowspan='2'>&nbsp;</TH>\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo '  <TH class="white" rowspan="2">&nbsp;</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('unknoweusers49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('resolve49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('rbl49') . '</TH>' . "\n";
@@ -328,8 +276,8 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     }
     echo ' <TD ALIGN="RIGHT">' . formatSize($data_total_size[$i] * $size_info['formula']) . '</TD>' . "\n";
-    echo " <TD bgcolor='#ffffff'><BR></TD>\n";
     if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+        echo ' <TD class="white"><BR></TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
@@ -360,14 +308,13 @@ if ($is_MCP_enabled === true) {
     echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }
 echo ' <TH ALIGN="RIGHT">' . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . '</TH>' . "\n";
-echo ' <TD bgcolor="#ffffff"><BR></TD>' . "\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo ' <TD class="white"><BR></TD>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unknown_users)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unresolveable)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_rbl)) . '</TH>' . "\n";
 }
 echo '</TR>' . "\n";
-echo '</TABLE>' . "\n";
 echo '</TABLE>' . "\n";
 
 // Add footer

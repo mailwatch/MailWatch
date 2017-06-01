@@ -60,100 +60,37 @@ ORDER BY
  count DESC
 LIMIT 10';
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
 
-    // JpGraph functions
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_pie3d.php';
+$columns = array(
+    'hostname' => __('hostname39'),
+    'clientip' => __('ipaddresses39'),
+    'geoip' => __('country39'),
+    'countconv' => __('messages39'),
+    'total_virusesconv' => __('viruses39'),
+    'total_spamconv' => __('spam39'),
+    'sizeconv'=> __('volume39'),
+);
+$sqlColumns = array(
+    'clientip',
+    'count',
+    'total_viruses',
+    'total_spam',
+    'size'
+);
+$valueConversion = array(
+    'clientip' => 'hostnamegeoip',
+    'count' => 'number',
+    'total_viruses' => 'number',
+    'total_spam' => 'number',
+    'size' => 'scale',
+);
+$graphColumns = array(
+    'labelColumn' => 'hostname',
+    'dataNumericColumn' => 'count',
+    'dataFormattedColumn' => 'countconv',
+);
 
-    $result = dbquery($sql);
-    if (!$result->num_rows > 0) {
-        die(__('diemysql99') . "\n");
-    }
-
-    $relay_array = array();
-
-    while ($row = $result->fetch_object()) {
-        $data[] = $row->count;
-        $hostname = gethostbyaddr($row->clientip);
-        if ($hostname === $row->clientip) {
-            $data_names[] = __('hostfailed39');
-        } else {
-            $data_names[] = $hostname;
-        }
-        $data_ip[] = $row->clientip;
-        if ($geoip = return_geoip_country($row->clientip)) {
-            $data_geoip[] = $geoip;
-        } else {
-            $data_geoip[] = __('geoipfailed39');
-        }
-        $data_virus[] = $row->total_viruses;
-        $data_spam[] = $row->total_spam;
-        $data_size[] = $row->size;
-    }
-
-    $graph = new PieGraph(800, 385, 0, false);
-    $graph->img->SetMargin(40, 30, 20, 40);
-    $graph->SetShadow();
-    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
-    $graph->img->SetAntiAliasing();
-    $graph->title->Set(__('top10mailrelays39'));
-
-    $p1 = new PiePlot3d($data);
-    $p1->SetTheme('sand');
-    $p1->SetLegends($data_names);
-
-    $p1->SetCenter(0.7, 0.5);
-    $graph->legend->SetLayout(LEGEND_VERT);
-    $graph->legend->Pos(0.0, 0.25, 'left');
-
-    $graph->Add($p1);
-    $graph->Stroke($filename);
-}
-
-
-// HTML code to display the graph
-echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
-echo '<TR>';
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
-} else {
-    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo '</TR>';
-echo '<TR>';
-echo '<TD ALIGN="CENTER">';
-echo '<TABLE WIDTH="850">';
-echo '<TR BGCOLOR="#F7CE4A">';
-echo '    <TH>' . __('hostname39') . '</TH>';
-echo '    <TH>' . __('ipaddresses39') . '</TH>';
-echo '    <TH>' . __('country39') . '</TH>';
-echo '    <TH>' . __('messages39') . '</TH>';
-echo '    <TH>' . __('viruses39') . '</TH>';
-echo '    <TH>' . __('spam39') . '</TH>';
-echo '    <TH>' . __('volume39') . '</TH>';
-echo '   </TR>';
-for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; $i++) {
-    echo '
-   <TR BGCOLOR="#EBEBEB">
-    <TD>' . $data_names[$i] . '</TD>
-    <TD>' . $data_ip[$i] . '</TD>
-    <TD>' . $data_geoip[$i] . '</TD>
-    <TD ALIGN="RIGHT">' . number_format($data[$i]) . '</TD>' . "\n" .
-        '<TD ALIGN="RIGHT">' . number_format($data_virus[$i]) . '</TD>' . "\n" .
-        '<TD ALIGN="RIGHT">' . number_format($data_spam[$i]) . '</TD>' . "\n" .
-        '<TD ALIGN="RIGHT">' . formatSize($data_size[$i]) . '</TD></TR>' . "\n";
-}
-echo '
-  </TABLE>
- </TD>
-</TR>
-</TABLE>';
+printGraphTable($sql, __('top10mailrelays39'), $sqlColumns, $columns, $graphColumns, $valueConversion);
 
 // Add footer
 html_end();
