@@ -247,7 +247,7 @@ function mailwatch_version()
 }
 
 if (!function_exists('imageantialias')) {
-    function imageantialias($image, $enabled)
+    function imageantialias()
     {
         return true;
     }
@@ -1455,7 +1455,7 @@ function get_disks()
             return array();
         }
         unset($disks[0]);
-        foreach ($disks as $key => $disk) {
+        foreach ($disks as $disk) {
             $disks[]['mountpoint'] = $disk . ':\\';
         }
     } else {
