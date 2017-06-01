@@ -137,7 +137,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             }
         } else {
             $error_message = "Unable to download GeoIP data file (tried CURL and fsockopen).\n";
-            $error_message .= "Install either cURL extension (preferred) or enable fsockopen in your php.ini";
+            $error_message .= "Install either cURL extension (preferred) or enable fsockopen in your php.ini.";
             die($error_message);
         }
         // Extract files
@@ -168,16 +168,23 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
         } else {
             // unable to extract the file correctly
             $error_message = "Unable to extract GeoIP data file.\n";
-            $error_message .= "Enable Zlib in your PHP installation or install gunzip executable";
+            $error_message .= "Enable Zlib in your PHP installation or install gunzip executable.";
             die($error_message);
         }
 
-        // Apply MailWatch rights to the last run
-        $mwUID =  exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"');
-        $path = $extract_dir . 'GeoIP*.dat';
-        passthru("chown $mwUID.$mwUID $path");
+        // Apply MailWatch rights on files from the last run
+        $mwUID =  exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $retval_cat);
+        if ($retval_cat > 0) {
+            die('Unable to find MailWatch UID value' . "\n");
+        } else {
+            $path = $extract_dir . 'GeoIP*.dat';
+            passthru("chown $mwUID.$mwUID $path", $retval_chown);
+            if ($retval_chown > 0) {
+                die('Unable to find files or change files owner. Check directory contents of ' . $extract_dir . '.' . "\n");
+            }
+        }
 
-        echo 'Process completed!' . "\n";
+        echo 'Process completed!' . "\n\n";
         ob_flush();
         flush();
     } else {
