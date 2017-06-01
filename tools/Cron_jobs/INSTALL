@@ -2,9 +2,13 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
-Copy the file 'mailwatch' into /etc/cron.daily/
+Copy the file 'mailwatch' into /etc/cron.daily/:
+
+# cp tools/Cron_jobs/mailwatch /etc/cron.daily/.
 
 Copy and rename the file 'mailwatch.cron.monthly' into /etc/cron.monthly/mailwatch
+
+# cp tools/Cron_jobs/mailwatch.cron.monthly /etc/cron.monthly/mailwatch
 
 Copy in /usr/local/bin the following files:
 
