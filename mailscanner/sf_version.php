@@ -78,16 +78,12 @@ if ($_SESSION['user_type'] !== 'A') {
                 $vars[$line[0]] = $line[1];
             }
         }
-        if (isset($vars['ID']) && strtolower($vars['ID']) === 'debian') {
+        if (isset($vars['ID']) && in_array(strtolower($vars['ID']), array('centos', 'debian'))) {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
         }
         if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {
             echo __('systemos11') . ' ' . $vars['NAME'] . ' ' . $vars['VERSION'] . '<br>' . "\n";
-            echo '<br>' . "\n";
-        }
-        if (isset($vars['ID']) && strtolower($vars['ID']) === 'centos') {
-            echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
         }
     }
