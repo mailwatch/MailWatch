@@ -58,27 +58,22 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
     // Add test for OS
-    if (strtolower(substr(PHP_OS, 0, 5)) === 'linux')
+    if (strtolower(substr(PHP_OS, 0, 5)) === 'linux') {
     {
         $vars = array();
         $files = glob('/etc/*-release');
-
-        foreach ($files as $file)
-        {
-        $lines = array_filter(array_map(function($line) {
-            $parts = explode('=', $line);
-            if (count($parts) !== 2) return false;
-            $parts[1] = str_replace(array('"', "'"), '', $parts[1]);
-            return $parts;
-        }, file($file)));
-
-        foreach ($lines as $line)
-            $vars[$line[0]] = $line[1];
-        }
-        print_r($vars);
-        echo '<br>' . "\n";
-        echo '<br>' . "\n";
-
+        foreach ($files as $file) {
+            $lines = array_filter(array_map(function ($line) {
+                $parts = explode('=', $line);
+                if (count($parts) !== 2) {
+                    return false;
+                }
+                $parts[1] = str_replace(array('"', "'"), '', $parts[1]);
+                return $parts;
+            }, file($file)));
+            foreach ($lines as $line) {
+                $vars[$line[0]] = $line[1];
+            }
         if (strtolower($vars['ID']) === 'debian') {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
