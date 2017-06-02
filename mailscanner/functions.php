@@ -4104,7 +4104,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
  * @param array $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
  * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
  */
-function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions, $printTable=true, $types)
+function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions, $types, $printTable=true)
 {
     $result = dbquery($sqlDataQuery);
     $data = array();
@@ -4113,10 +4113,6 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
         die(__('diemysql99') . "\n");
     }
     //store data in format $data[columnname][rowid]
-    for ($i=0; $i<count($graphColumn['dataNumericColumns']); $i++) {
-        $data[$graphColumn['dataNumericColumns'][$i]] = array();
-        $data[$graphColumn['dataFormattedColumns'][$i]] = array();
-    }
     while ($row = $result->fetch_assoc()) {
         foreach ($sqlColumns as $columnName) {
             $data[$columnName][] = $row[$columnName];
@@ -4132,9 +4128,28 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     }
     $numericData = "";
     $formattedData = "";
+    $dataLabels="";
+    $graphTypes="";
     for ($i=0; $i<count($graphColumn['dataNumericColumns']); $i++) {
-        $numericData .= '[' . implode(', ', $data[$graphColumn['dataNumericColumns'][$i]]) . '],';
-        $formattedData .= '["' . implode('", "', $data[$graphColumn['dataFormattedColumns'][$i]]) . '"],';
+        //foreach yaxis get the column name for numeric and formatted data
+        $numericData .= '[' . "\n";
+        $formattedData .= '[' . "\n";
+        $dataLabels .= '[' . "\n";
+        $graphTypes .= '[' . "\n";
+        for($j=0; $j<count($graphColumn['dataNumericColumns'][$i]); $j++) {
+            if (isset($graphColumn['dataLabels'][$i])) {
+                $dataLabels .= '"' . $graphColumn['dataLabels'][$i][$j] .'",';
+            }
+            $graphTypes .= '"' . $types[$i][$j] . '",';
+            $numericDataName = $graphColumn['dataNumericColumns'][$i][$j];
+            $formattedDataName = $graphColumn['dataFormattedColumns'][$i][$j];
+            $numericData .= '[' . implode(', ', $data[$numericDataName]) . '],';
+            $formattedData .= '["' . implode('", "', $data[$formattedDataName]) . '"],';
+        }
+        $numericData .= '],' . "\n";
+        $formattedData .= '],' . "\n";
+        $dataLabels .= '],' . "\n";
+        $graphTypes .= '],' . "\n";
     }
     echo '<canvas id="reportChart" class="lineGraph"></canvas>
   <script>
@@ -4147,7 +4162,8 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
   var xAxeDescription = "' . $graphColumn['xAxeDescription'] . '";
   var yAxeDescriptions = ["' . implode('", "', $graphColumn['yAxeDescriptions']) . '"];
   var fillBelowLine = [' . implode(', ', $graphColumn['fillBelowLine']) . '];
-  ' . ($types === null ? '' : 'var types = ["' . implode('","', $types) . '"]') . '
+  ' . (isset($graphColumn['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '' ) . '
+  ' . ($graphTypes === null ? '' : 'var types = [' .  $graphTypes . ']') . '
   </script>
   <script src="lib/Chart.js/Chart.js"></script>
   <script src="lib/lineConfig.js"></script>';

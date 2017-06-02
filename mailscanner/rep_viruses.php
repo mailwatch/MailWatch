@@ -152,6 +152,7 @@ while ($row = $result->fetch_object()) {
 }
 
 reset($virus_array);
+$virus_count = array();
 foreach ($virus_array as $key => $row) {
     $virus_count[$key] = $row['count'];
 }
