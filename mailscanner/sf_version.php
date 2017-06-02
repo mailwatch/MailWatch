@@ -59,6 +59,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<td>' . "\n";
 
     echo '<br>' . "\n";
+    
     // Add test for OS
     if (strtolower(substr(PHP_OS, 0, 5)) === 'linux') {
         $vars = array();
@@ -70,21 +71,22 @@ if ($_SESSION['user_type'] !== 'A') {
                     return false;
                 }
                 $parts[1] = str_replace(array('"', "'"), '', $parts[1]);
+                $parts[1] = trim($parts[1]);
                 return $parts;
             }, file($file)));
             foreach ($lines as $line) {
                 $vars[$line[0]] = $line[1];
             }
         }
-        if (strtolower($vars['ID']) === 'debian') {
+        if (isset($vars['ID']) && strtolower($vars['ID']) === 'debian') {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
         }
-        if (strtolower($vars['ID']) === 'ubuntu') {
+        if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {
             echo __('systemos11') . ' ' . $vars['NAME'] . ' ' . $vars['VERSION'] . '<br>' . "\n";
             echo '<br>' . "\n";
         }
-        if (strtolower($vars['ID']) === 'centos') {
+        if (isset($vars['ID']) && strtolower($vars['ID']) === 'centos') {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
         }
@@ -93,17 +95,20 @@ if ($_SESSION['user_type'] !== 'A') {
         echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
         echo '<br>' . "\n";
     }
+    
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'MailScanner ' . __('version11') . ' ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>';
     $virusScanner = get_conf_var('VirusScanners');
+    
     // Add test for others virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {
         echo 'ClamAV ' . __('version11') . ' ';
         passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
+    
     echo '<br>' . "\n";
     echo 'SpamAssassin ' . __('version11') . ' ';
     passthru(SA_DIR . "spamassassin -V | tr '\\\n' ' ' | cut -d' ' -f3");
