@@ -398,7 +398,7 @@ return array(
     // 11-sf_version.php
     'softver11' => 'Softwareversionen',
     'nodbdown11' => 'Keine Datenbank heruntergeladen',
-    'version11' => 'Version',
+    'version11' => 'Version:',
     'systemos11' => 'Betriebssystem-Version:',
     'mwandmsversion11' => 'MailWatch und MailScanner Versions Informationen',
     'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',

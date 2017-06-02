@@ -398,8 +398,8 @@ return array(
     // 11-sf_version.php
     'softver11' => 'Versões dos Software',
     'nodbdown11' => 'Nenhum database baixado',
-    'version11' => 'Versão',
-    'systemos11' => 'Operating System version:',
+    'version11' => 'Versão:',
+    'systemos11' => 'Operating System Version:',
     'mwandmsversion11' => 'MailWatch and MailScanner Version information',
     'auditlog11' => 'Non-admin user attemped to view Software Version Page',
     'downloaddate11' => 'download date',
