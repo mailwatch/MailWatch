@@ -4143,7 +4143,7 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
         $formattedData .= '[' . "\n";
         $dataLabels .= '[' . "\n";
         $graphTypes .= '[' . "\n";
-        for($j=0; $j<count($graphColumn['dataNumericColumns'][$i]); $j++) {
+        for ($j=0; $j<count($graphColumn['dataNumericColumns'][$i]); $j++) {
             if (isset($graphColumn['dataLabels'][$i])) {
                 $dataLabels .= '"' . $graphColumn['dataLabels'][$i][$j] .'",';
             }
@@ -4169,7 +4169,7 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
   var xAxeDescription = "' . $graphColumn['xAxeDescription'] . '";
   var yAxeDescriptions = ["' . implode('", "', $graphColumn['yAxeDescriptions']) . '"];
   var fillBelowLine = [' . implode(', ', $graphColumn['fillBelowLine']) . '];
-  ' . (isset($graphColumn['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '' ) . '
+  ' . (isset($graphColumn['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '') . '
   ' . ($graphTypes === null ? '' : 'var types = [' .  $graphTypes . ']') . '
   </script>
   <script src="lib/Chart.js/Chart.js"></script>
