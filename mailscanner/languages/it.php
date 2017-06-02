@@ -399,7 +399,7 @@ return array(
     'softver11' => 'Versioni Software',
     'nodbdown11' => 'Nessun database scaricato',
     'version11' => 'Versione:',
-    'systemos11' => 'Operating System Version:',
+    'systemos11' => 'Operating System version:',
     'mwandmsversion11' => 'MailWatch and MailScanner Version information',
     'auditlog11' => 'Non-admin user attemped to view Software Version Page',
     'downloaddate11' => 'download date',
