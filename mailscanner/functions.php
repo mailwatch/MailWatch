@@ -4077,7 +4077,7 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
         } elseif ($conversion === 'hostnamegeoip') {
             $data = convertHostnameGeoipForGraph($data, $column);
         } elseif ($conversion === 'countviruses') {
-            convertVirusesForGraph($data, $column);
+            $data = convertVirusesForGraph($data, $column);
         }
     }
     //create canvas graph
