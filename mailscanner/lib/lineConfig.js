@@ -40,7 +40,7 @@ var myChart = new Chart(ctx, {
       text: chartTitle
     },
     legend: {
-      display: (typeof chartDataLabels === 'undefined' ? true : false),
+      display: (typeof chartDataLabels === 'undefined' ? false : true),
     },
     elements: {
       line: {

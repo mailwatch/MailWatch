@@ -42,9 +42,6 @@ $filter = html_start(__('totalmaildate49'), 0, false, true);
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
 
-// File name
-$filename = CACHE_DIR . '/total_mail_by_date.png.' . time();
-
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
@@ -183,9 +180,10 @@ $is_MCP_enabled = true;//TODO REMOVE
 
 if ($is_MCP_enabled === true) {
     $sqlColumns[] = 'total_mcp';
+    $types[0][] = 'bar';
     $graphColumns['dataLabels'][0][] = __('barmcp49');
     $graphColumns['dataNumericColumns'][0][] = 'total_mcp';
-    $graphColumns['dataFormttedColumns'][0][] = 'total_mcp';
+    $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
 }
 
 printLineGraph($sql, __('totalmailprocdate49'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types, false);

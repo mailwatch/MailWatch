@@ -39,9 +39,6 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topvirus48'), 0, false, true);
 
-// File name
-$filename = CACHE_DIR . '/top_viruses.png.' . time();
-
 // SQL query to find all emails with a virus found
 $sql = '
 SELECT

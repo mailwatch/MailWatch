@@ -195,6 +195,7 @@ return array(
     'released03' => 'Released',
     'learnspam03' => 'Learn:Spam',
     'learnham03' => 'Learn:Ham',
+    'nodata03' => 'Not enough data to generate a graph.',
 
     // 04-detail.php
     'receivedon04' => 'Ontvangen op:',
@@ -756,7 +757,6 @@ return array(
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',
-    'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
     'count48' => 'Count',
 

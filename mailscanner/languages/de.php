@@ -195,6 +195,7 @@ return array(
     'released03' => 'Freigegeben',
     'learnspam03' => 'Gelernt als Spam',
     'learnham03' => 'Gelernt als Ham',
+    'nodata03' => 'Zu wenig Daten zum Generieren des Graphen.',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -756,7 +757,6 @@ return array(
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viren',
     'top10virus48' => 'Top 10 Viren',
-    'nodata48' => 'Zu wenig Daten zum Generieren des Graphen.',
     'virus48' => 'Virus',
     'count48' => 'Anzahl',
 

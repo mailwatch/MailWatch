@@ -4080,6 +4080,12 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
             $data = convertVirusesForGraph($data, $column);
         }
     }
+
+    if (count($data[$graphColumn['dataNumericColumn']]) === 0) {
+        echo __('nodata03');
+        return;
+    }
+
     //create canvas graph
     echo '<canvas id="reportChart" class="reportGraph"></canvas>
   <script>
@@ -4130,6 +4136,7 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     $formattedData = "";
     $dataLabels="";
     $graphTypes="";
+
     for ($i=0; $i<count($graphColumn['dataNumericColumns']); $i++) {
         //foreach yaxis get the column name for numeric and formatted data
         $numericData .= '[' . "\n";
@@ -4231,6 +4238,8 @@ function convertVirusesForGraph($data, $column)
     arsort($viruses);
     reset($viruses);
     $count = 0;
+    $data['virusname'] = array();
+    $data['viruscount'] = array();
     foreach ($viruses as $key => $val) {
         $data['virusname'][] = $key;
         $data['viruscount'][] = $val;

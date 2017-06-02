@@ -195,6 +195,7 @@ return array(
     'released03' => 'Libérer',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
+    'nodata03' => 'Pas assez de données pour générer le graphique.',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -756,7 +757,6 @@ return array(
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top des Virus',
     'top10virus48' => 'Top 10 des Virus',
-    'nodata48' => 'Pas assez de données pour générer le graphique.',
     'virus48' => 'Virus',
     'count48' => 'Nombre',
 
