@@ -75,7 +75,7 @@ if ($_SESSION['user_type'] !== 'A') {
             foreach ($lines as $line) {
                 $vars[$line[0]] = $line[1];
             }
-        }     
+        }
         if (strtolower($vars['ID']) === 'debian') {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
