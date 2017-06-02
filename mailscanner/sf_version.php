@@ -59,7 +59,11 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<td>' . "\n";
     // Add test for OS
     if (strtolower(substr(PHP_OS, 0, 5)) === 'linux') {
-        echo 'Operating System: ' . exec('lsb_release -ds') . '<br>' . "\n";
+        echo __('systemos11') . ' ' . exec('lsb_release -ds') . '<br>' . "\n";
+        echo '<br>' . "\n";
+    }
+    if (strtolower(substr(PHP_OS, 0, 5)) === 'freebsd') {
+        echo __('systemos11') . ' ' . exec('lsb_release -ds') . '<br>' . "\n";
         echo '<br>' . "\n";
     }
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
