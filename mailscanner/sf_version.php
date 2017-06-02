@@ -37,9 +37,9 @@ require __DIR__ . '/login.function.php';
 
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
-    audit_log(__('auditlog11', true));
+    audit_log(__('auditlog52', true));
 } else {
-    html_start(__('mwandmsversion11'), 0, false, false);
+    html_start(__('mwandmsversion52'), 0, false, false);
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
@@ -47,33 +47,34 @@ if ($_SESSION['user_type'] !== 'A') {
     $geoipv4_version = false;
     $geoipv6_version = false;
     if (file_exists('./temp/GeoIP.dat')) {
-        $geoipv4_version = date('r', filemtime('./temp/GeoIP.dat')) . ' (' . __('downloaddate11') . ')';
+        $geoipv4_version = date('r', filemtime('./temp/GeoIP.dat')) . ' (' . __('downloaddate52') . ')';
     }
     if (file_exists('./temp/GeoIPv6.dat')) {
-        $geoipv6_version = date('r', filemtime('./temp/GeoIPv6.dat')) . ' (' . __('downloaddate11') . ')';
+        $geoipv6_version = date('r', filemtime('./temp/GeoIPv6.dat')) . ' (' . __('downloaddate52') . ')';
     }
 
     echo '<table width="100%" class="boxtable">' . "\n";
     echo '<tr><th>' . __('softver11') . '</th></tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
+
+    echo '<br>' . "\n";
     // Add test for OS
-    if (strtolower(substr(PHP_OS, 0, 5)) === 'linux') {
+    if (strtolower(substr(PHP_OS, 0, 5)) === 'linux')
     {
         $vars = array();
         $files = glob('/etc/*-release');
-        foreach ($files as $file) {
-            $lines = array_filter(array_map(function ($line) {
-                $parts = explode('=', $line);
-                if (count($parts) !== 2) {
-                    return false;
-                }
-                $parts[1] = str_replace(array('"', "'"), '', $parts[1]);
-                return $parts;
-            }, file($file)));
-            foreach ($lines as $line) {
-                $vars[$line[0]] = $line[1];
-            }
+        foreach ($files as $file)
+        {
+        $lines = array_filter(array_map(function($line) {
+            $parts = explode('=', $line);
+            if (count($parts) !== 2) return false;
+            $parts[1] = str_replace(array('"', "'"), '', $parts[1]);
+            return $parts;
+        }, file($file)));
+        foreach ($lines as $line)
+            $vars[$line[0]] = $line[1];
+        }
         if (strtolower($vars['ID']) === 'debian') {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
