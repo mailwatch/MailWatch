@@ -40,9 +40,6 @@ if ($_SESSION['user_type'] !== 'A') {
     audit_log(__('auditlog11', true));
 } else {
     html_start(__('mwandmsversion11'), 0, false, false);
-    if (glob('/etc/*release')) {
-        $os_distrib = exec('cat /etc/*release | grep PRETTY_NAME= | sed "s/.*\"\(.*\)\".*/\1/"');
-    }
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
@@ -61,9 +58,8 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr>' . "\n";
     echo '<td>' . "\n";
     // Add test for OS
-    if (glob('/etc/*release')) {
-        echo '<br>' . "\n";
-        echo __('systemos11') . ' ' . $os_distrib . '<br>' . "\n";
+    if (strtolower(substr(PHP_OS, 0, 5)) === 'linux') {
+        echo 'Operating System: ' . exec('lsb_release -ds') . '<br>' . "\n";
         echo '<br>' . "\n";
     }
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
