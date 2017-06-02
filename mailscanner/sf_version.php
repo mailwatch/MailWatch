@@ -59,7 +59,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<td>' . "\n";
 
     echo '<br>' . "\n";
-    
+
     // Add test for OS
     if (strtolower(substr(PHP_OS, 0, 5)) === 'linux') {
         $vars = array();
@@ -95,20 +95,20 @@ if ($_SESSION['user_type'] !== 'A') {
         echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
         echo '<br>' . "\n";
     }
-    
+
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'MailScanner ' . __('version11') . ' ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>';
     $virusScanner = get_conf_var('VirusScanners');
-    
+
     // Add test for others virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {
         echo 'ClamAV ' . __('version11') . ' ';
         passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
-    
+
     echo '<br>' . "\n";
     echo 'SpamAssassin ' . __('version11') . ' ';
     passthru(SA_DIR . "spamassassin -V | tr '\\\n' ' ' | cut -d' ' -f3");
