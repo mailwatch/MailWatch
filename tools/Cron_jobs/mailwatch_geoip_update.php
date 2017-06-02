@@ -93,7 +93,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                         $requestSession->options['proxy']['type'] = 'SOCKS5';
                         break;
                     default:
-                        die('Proxy type should be either "HTTP" or "SOCKS5", check your configuration file');
+                        die('Proxy type should be either "HTTP" or "SOCKS5", check your configuration file.');
                 }
             }
 
@@ -193,6 +193,6 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
     }
 } else {
     $error_message = "Files still exist for some reason.\n";
-    $error_message .= "Delete them manually from $extract_dir";
+    $error_message .= "Delete them manually from $extract_dir.";
     die($error_message);
 }
