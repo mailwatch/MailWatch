@@ -87,7 +87,7 @@ if ($_SESSION['user_type'] !== 'A') {
             echo '<br>' . "\n";
         }
     }
-    if (strtolower(substr(PHP_OS, 0, 5)) === 'freebsd') {
+    if (strtolower(PHP_OS) === 'freebsd') {
         echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
         echo '<br>' . "\n";
     }
