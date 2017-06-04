@@ -61,7 +61,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<br>' . "\n";
 
     // Add test for OS
-    if (strtolower(substr(PHP_OS, 0, 5)) === 'linux') {
+    if (0 === stripos(PHP_OS, 'linux')) {
         $vars = array();
         $files = glob('/etc/*-release');
         foreach ($files as $file) {
@@ -78,7 +78,7 @@ if ($_SESSION['user_type'] !== 'A') {
                 $vars[$line[0]] = $line[1];
             }
         }
-        if (isset($vars['ID']) && in_array(strtolower($vars['ID']), array('centos', 'debian'))) {
+        if (isset($vars['ID']) && in_array(strtolower($vars['ID']), array('centos', 'debian'), true)) {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
             echo '<br>' . "\n";
         }
@@ -87,7 +87,7 @@ if ($_SESSION['user_type'] !== 'A') {
             echo '<br>' . "\n";
         }
     }
-    if (strtolower(substr(PHP_OS, 0, 5)) === 'freebsd') {
+    if (strtolower(PHP_OS) === 'freebsd') {
         echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
         echo '<br>' . "\n";
     }
