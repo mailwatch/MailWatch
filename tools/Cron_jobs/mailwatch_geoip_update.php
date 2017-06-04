@@ -44,10 +44,10 @@ ob_start();
 echo 'Downloading file, please wait...' . "\n";
 
 $files_base_url = 'http://geolite.maxmind.com';
-$files['ipv4']['description'] = 'GeoIP IPv4 data file';
+$files['ipv4']['description'] = __('geoipv452');
 $files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
 $files['ipv4']['destination'] = MAILWATCH_HOME . '/temp/GeoIP.dat.gz';
-$files['ipv6']['description'] = 'GeoIP IPv6 data file';
+$files['ipv6']['description'] = __('geoipv652');
 $files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
 $files['ipv6']['destination'] = MAILWATCH_HOME . '/temp/GeoIPv6.dat.gz';
 
@@ -93,7 +93,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                         $requestSession->options['proxy']['type'] = 'SOCKS5';
                         break;
                     default:
-                        die('Proxy type should be either "HTTP" or "SOCKS5", check your configuration file.');
+                        die(__('dieproxy52'));
                 }
             }
 
@@ -102,17 +102,17 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                     $requestSession->filename = $file['destination'];
                     $result = $requestSession->get($file['path']);
                     if ($result->success === true) {
-                        echo $file['description'] . ' successfully downloaded' . "\n";
+                        echo $file['description'] . ' ' . __('downok52') . "\n";
                     }
                 } catch (Requests_Exception $e) {
-                    echo 'Error occurred while downloading ' . $file['description'] . ': ' . $e->getMessage() . "\n";
+                    echo __('downbad52') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "\n";
                 }
 
                 ob_flush();
                 flush();
             }
 
-            echo 'Download complete, unpacking files...' . "\n";
+            echo __('downokunpack52') . "\n";
             ob_flush();
             flush();
         } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
@@ -130,14 +130,14 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                 exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
                     $output_wget, $retval_wget);
                 if ($retval_wget > 0) {
-                    echo 'Error occurred while downloading ' . $file['description'] . "\n";
+                    echo __('downbad52') . ' ' . $file['description'] . "\n";
                 } else {
                     echo $file['description'] . ' successfully downloaded' . "\n";
                 }
             }
         } else {
-            $error_message = "Unable to download GeoIP data file (tried CURL and fsockopen).\n";
-            $error_message .= "Install either cURL extension (preferred) or enable fsockopen in your php.ini.";
+            $error_message = __('message352') . "\n";
+            $error_message .= __('message452');
             die($error_message);
         }
         // Extract files
@@ -151,7 +151,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                 }
                 gzclose($zp_gz);
                 fclose($targetFile);
-                echo $file['description'] . ' successfully unpacked' . "\n";
+                echo $file['description'] . ' ' . __('unpackok52') . "\n";
                 unlink($file['destination']);
                 ob_flush();
                 flush();
@@ -160,39 +160,39 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             foreach ($files as $file) {
                 exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
                 if ($retval_gunzip > 0) {
-                    die('Unable to extract' . $file['description'] . "\n");
+                    die(__('extractnotok52') . $file['description'] . "\n");
                 } else {
-                    echo $file['description'] . ' successfully extracted' . "\n";
+                    echo $file['description'] . ' ' . __('extractok52') . "\n";
                 }
             }
         } else {
             // unable to extract the file correctly
-            $error_message = "Unable to extract GeoIP data file.\n";
-            $error_message .= "Enable Zlib in your PHP installation or install gunzip executable.";
+            $error_message = __('message552') . "\n";
+            $error_message .= __('message652');
             die($error_message);
         }
 
         // Apply MailWatch rights on files from the last run
         $mwUID =  exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $retval_cat);
         if ($retval_cat > 0) {
-            die('Unable to find MailWatch UID value' . "\n");
+            die(__('nofind52') . '.' . "\n");
         } else {
             $path = $extract_dir . 'GeoIP*.dat';
             passthru("chown $mwUID.$mwUID $path", $retval_chown);
             if ($retval_chown > 0) {
-                die('Unable to find files or change files owner. Check directory contents of ' . $extract_dir . '.' . "\n");
+                die(__('nofindowner52') . ' ' . $extract_dir . '.' . "\n");
             }
         }
 
-        echo 'Process completed!' . "\n\n";
+        echo __('processok52') . "\n\n";
         ob_flush();
         flush();
     } else {
         // unable to read or write to the directory
-        die("Unable to read or write to the " . $extract_dir . " directory.\n");
+        die(__('norread52') . ' ' . $extract_dir . ' ' . __('directory52') . ".\n");
     }
 } else {
-    $error_message = "Files still exist for some reason.\n";
-    $error_message .= "Delete them manually from $extract_dir.";
+    $error_message = __('message752') . "\n";
+    $error_message .= __('message852') . " $extract_dir" . '.';
     die($error_message);
 }

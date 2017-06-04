@@ -399,7 +399,7 @@ return array(
     'softver11' => 'Software Versions',
     'nodbdown11' => 'No database downloaded',
     'version11' => 'Version:',
-    'systemos11' => 'Operating System version:',
+    'systemos11' => 'Operating System Version:',
     'mwandmsversion11' => 'MailWatch and MailScanner Version information',
     'auditlog11' => 'Non-admin user attemped to view Software Version Page',
     'downloaddate11' => 'download date',
@@ -802,7 +802,26 @@ return array(
     'message51' => 'Message',
     'time51' => 'Time',
 
-    // 52-FREE
+    // 52-mailwatch_geoip_update.php
+    'geoipv452' => 'GeoIP IPv4 data file',
+    'geoipv652' => 'GeoIP IPv6 data file',
+    'dieproxy52' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
+    'downok52' => 'successfully downloaded',
+    'downbad52' => 'Error occurred while downloading',
+    'downokunpack52' => 'Download complete, unpacking files...',
+    'message352' => 'Unable to download GeoIP data file (tried CURL and fsockopen).',
+    'message452' => 'Install either cURL extension (preferred) or enable fsockopen in your php.ini',
+    'unpackok52' => 'successfully unpacked',
+    'extractnotok52' => 'Unable to extract',
+    'extractok52' => 'successfully extracted',
+    'message552' => 'Unable to extract GeoIP data file.',
+    'message652' => 'Enable Zlib in your PHP installation or install gunzip executable.',
+    'processok52' => 'Process completed!',
+    'norread52' => 'Unable to read or write to the',
+    'directory52' => 'directory',
+    'nofind52' => 'Unable to find MailWatch UID value',
+    'nofindowner52' => 'Unable to find files or change files owner. Check directory contents of',
+    'auditlog52' => 'Ran GeoIP update',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
