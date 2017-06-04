@@ -395,10 +395,14 @@ return array(
     'updategeoip10' => 'Mettre à jour la base GeoIP',
     'links10' => 'Liens',
 
-    // 11-sf_versions.php
+    // 11-sf_version.php
     'softver11' => 'Version des logiciels',
     'nodbdown11' => 'Aucune base de données téléchargée',
     'version11' => 'version :',
+    'systemos11' => 'Version du Système d\'Exploitation :',
+    'mwandmsversion11' => 'Information sur les versions des logiciels',
+    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'downloaddate11' => 'date de téléchargement',
 
     // 12-user_manager.php
     'usermgnt12' => 'Gestion des utilisateurs',
@@ -429,7 +433,7 @@ return array(
     'scanforspam212' => 'Scan des E-Mail pour les Spam',
     'pontspam12' => 'Points de Spam :',
     'hpontspam12' => 'Points de Spam Haut :',
-    'usedefault12' => 'Utiliser les réglages par défaut',
+    'usedefault12' => 'Utilise les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
@@ -798,10 +802,7 @@ return array(
     'message51' => 'Message',
     'time51' => 'Durée',
 
-    // 52-sf_version.php
-    'mwandmsversion52' => 'Information sur les versions des logiciels',
-    'auditlog52' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
-    'downloaddate52' => 'date de téléchargement',
+    // 52-FREE
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
