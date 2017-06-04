@@ -55,7 +55,7 @@ return array(
     'blacklisted03' => 'Auf Schwarzer Liste',
     'notverified03' => 'Nicht überprüft',
     'mailscanner03' => 'Mailscanner:',
-    'none03' => 'None',
+    'none03' => 'kein Virus',
     'yes03' => 'JA',
     'no03' => 'NEIN',
     'status03' => 'Status',
@@ -113,7 +113,7 @@ return array(
     'radioham03' => 'H',
     'radioforget03' => 'F',
     'radiorelease03' => 'R',
-    'clear03' => 'Clear</a> all',
+    'clear03' => 'alles zurücksetzen</a>',
     'spam203' => 'S</b> = Spam',
     'ham03' => 'H</b> = Ham',
     'forget03' => 'F</b> = Vergessen',
@@ -123,7 +123,7 @@ return array(
     'or03' => 'oder',
     'mwfilterreport03' => 'MailWatch Filter Bericht:',
     'mwforms03' => 'MailWatch für Mailscanner - ',
-    'dieerror03' => 'Error:',
+    'dieerror03' => 'Fehler:',
     'dievirus03' => 'Sie benutzen Mailwatch im distributed mode. Daher kann MailWatch Ihre MailScanner-Konfiguration-Dateien nicht lesen, um den primären Virus-Scanner festzustellen - Bitte bearbeiten Sie functions.php und setzen Sie VIRUS_REGEX für Ihren primären Scanner.',
     'diescanner03' => 'Es konnte kein regulärer Ausdrück für Ihren primären Viren-Scanner ($scanner) ausgewählt werden - bitte beachten Sie die Beispiele in der functions.php um einen zu erstellen.',
     'diedbconn103' => 'Verbindung zu Datenbank fehlgeschlagen:',
@@ -188,7 +188,7 @@ return array(
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
     'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
-    'children03' => 'children',
+    'children03' => 'Kind-Processe',
     'procs03' => 'Prozess(e)',
     'errorWarning03' => 'Warnung: Es ist ein Fehler aufgetreten:',
     'phpxmlnotloaded03' => 'Die PHP-Extension xml wurde nicht geladen',
@@ -349,7 +349,7 @@ return array(
     'id09' => 'Nachricht-ID',
     'size09' => 'Größe (Bytes)',
     'fromaddress09' => 'Von',
-    'fromdomain09' => 'From Domäne',
+    'fromdomain09' => 'Von Domäne',
     'toaddress09' => 'An',
     'todomain09' => 'An Domäne',
     'subject09' => 'Betreff',
@@ -379,7 +379,7 @@ return array(
 
     // 10-other.php
     'tools10' => 'Werkzeuge',
-    'toolslinks10' => 'Tools and Links',
+    'toolslinks10' => 'Werkzeuge und Verknüpfungen',
     'usermgnt10' => 'Benutzerverwaltung',
     'avsophosstatus10' => 'Sophos Status',
     'avfsecurestatus10' => 'F-Secure Status',
@@ -417,7 +417,7 @@ return array(
     'delete12' => 'Löschen',
     'filters12' => 'Filter',
     'newuser12' => 'Neuer Benutzer',
-    'forallusers12' => 'Für alle Benutzer ausser dem Administrator muss der Benutzername eine E-Mail Adresse sein',
+    'forallusers12' => 'Für alle Benutzer außer dem Administrator muss der Benutzername eine E-Mail Adresse sein',
     'username0212' => 'Benutzername:',
     'name12' => 'Name:',
     'password12' => 'Passwort:',
@@ -438,8 +438,8 @@ return array(
     'reset12' => 'Zurücksetzen',
     'areusuredel12' => 'Soll der Benutzer tatsächlich gelöscht werden',
     'errorpass12' => 'Passwörter stimmen nicht überein',
-    'erroruserreq12' => 'Username Required',
-    'errorpwdreq12' => 'Password Required',
+    'erroruserreq12' => 'Benutzername erforderlich',
+    'errorpwdreq12' => 'Password erforderlich',
     'edituser12' => 'Benutzer bearbeiten',
     'create12' => 'Erstellen',
     'userregex12' => 'Benutzer (Regexp)',
@@ -519,12 +519,12 @@ return array(
     'topsendersdomvol14' => 'Top Absender-Domänen nach Volumen',
     'toprecipdomqt14' => 'Top Empfänger-Domänen nach Anzahl',
     'toprecipdomvol14' => 'Top Empfänger-Domänen nach Volumen',
-    'assassinscoredist14' => 'SpamAssassin Score Distribution',
-    'assassinrulhit14' => 'SpamAssassin Rule Hits',
-    'auditlog14' => 'Audit Log',
-    'mrtgreport14' => 'MRTG Style Report',
-    'mcpscoredist14' => 'MCP Score Distribution',
-    'mcprulehit14' => 'MCP Rule Hit',
+    'assassinscoredist14' => 'Verteilung der SpamAssassin-Bewertungen',
+    'assassinrulhit14' => 'Angewandte SpamAssassin-Regeln',
+    'auditlog14' => 'Kontrollbericht',
+    //'mrtgreport14' => 'MRTG Style Report', unused
+    'mcpscoredist14' => 'Verteilung der MCP-Bewertungen',
+    'mcprulehit14' => 'Angewandte MCP-Regeln',
     'reports14' => 'Berichte',
 
     // 15-geoip_update.php
@@ -586,7 +586,7 @@ return array(
 
     // 20-docs.php
     'doc20' => 'Dokumentation',
-    'message20' => 'Diese Seite erfordert eine authentifizierung, sodass Sie hier Links zu Ihrer Dokumentations-Seite einstellen können und Ihren Nutzern Zugriff auf diese gewähren.',
+    'message20' => 'Diese Seite erfordert eine Authentifizierung, sodass Sie hier Links zu Ihrer Dokumentations-Seite einstellen können und Ihren Nutzern Zugriff auf diese gewähren.',
 
     // 21-do_message_ops.php
     'opresult21' => 'Ergebnisse der Aktion',
@@ -654,7 +654,7 @@ return array(
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Mailqueue-Anzeige',
-    'mqcombined32' => 'Kombinierte mail queue (Ein- und Ausgehend)',
+    'mqcombined32' => 'Kombinierte Mail-Queue (Ein- und Ausgehend)',
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Kontrollbericht',
@@ -859,8 +859,8 @@ return array(
     'nomessid58' => 'Keine Nachrichten-ID übertragen',
     'mess58' => 'Nachricht',
     'notfound58' => 'nicht gefunden',
-    'error58' => 'Error:',
-    'errornfd58' => 'Error: Datei nicht gefunden',
+    'error58' => 'Fehler:',
+    'errornfd58' => 'Fehler: Datei nicht gefunden',
     'part58' => 'Abschnitt',
     'title58' => 'Anzeige von Quarantäne-E-Mails',
 
