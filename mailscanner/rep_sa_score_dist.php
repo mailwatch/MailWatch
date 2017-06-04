@@ -66,14 +66,14 @@ $valueConversion = array(
 );
 $graphColumns = array(
     'labelColumn' => 'score',
-    'dataNumericColumns' => array('count'),
-    'dataFormattedColumns' => array('count'),
+    'dataNumericColumns' => array(array('count')),
+    'dataFormattedColumns' => array(array('count')),
     'xAxeDescription' => __('scorerounded38'),
     'yAxeDescriptions' => array(__('nbmessage38')),
     'fillBelowLine' => array('true')
 );
-
-printLineGraph($sql, __('sascoredist38'), $sqlColumns, $columns, $graphColumns, $valueConversion);
+$types = array(array('line'));
+printLineGraph($sql, __('sascoredist38'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types);
 
 // Add footer
 html_end();

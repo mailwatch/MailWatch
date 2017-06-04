@@ -42,9 +42,6 @@ $filter = html_start(__('totalmaildate49'), 0, false, true);
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
 
-// File name
-$filename = CACHE_DIR . '/total_mail_by_date.png.' . time();
-
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
@@ -146,24 +143,50 @@ $columns = array(
 $sqlColumns = array(
     'xaxis',
     'total_mail',
-    'total_size'
+    'total_size',
+    'total_virus',
+    'total_spam',
 );
 $valueConversion = array(
-    'total_mail' => 'number',
     'total_size' => 'scale'
 );
 
 $graphColumns = array(
     'labelColumn' => 'xaxis',
-    'dataNumericColumns' => array('total_mail','total_size'),
-    'dataFormattedColumns' => array('total_mailconv','total_sizeconv'),
+    'dataLabels' => array(
+        array(__('barmail49'), __('barvirus49'), __('barspam49')),
+        array(__('barvolume49')),
+    ),
+    'dataNumericColumns' => array(
+        array('total_mail', 'total_virus', 'total_spam'),
+        array('total_size')
+    ),
+    'dataFormattedColumns' => array(
+        array('total_mail', 'total_virus', 'total_spam'),
+        array('total_sizeconv')
+    ),
     'xAxeDescription' => __('date49'),
-    'yAxeDescriptions' => array(__('nomessages49'), __('volume49')),
+    'yAxeDescriptions' => array(
+        __('nomessages49'),
+        __('volume49')
+    ),
     'fillBelowLine' => array('false', 'true')
 );
-$types = array('bar', 'line');
+$types = array(
+    array('bar', 'bar', 'bar'),
+    array('line')
+);
+$is_MCP_enabled = true;//TODO REMOVE
 
-printLineGraph($sql, __('totalmailprocdate49'), $sqlColumns, $columns, $graphColumns, $valueConversion, false, $types);
+if ($is_MCP_enabled === true) {
+    $sqlColumns[] = 'total_mcp';
+    $types[0][] = 'bar';
+    $graphColumns['dataLabels'][0][] = __('barmcp49');
+    $graphColumns['dataNumericColumns'][0][] = 'total_mcp';
+    $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
+}
+
+printLineGraph($sql, __('totalmailprocdate49'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types, false);
 
 
 // Check permissions to see if apache can actually create the file

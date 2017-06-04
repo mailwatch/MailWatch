@@ -3,8 +3,10 @@
  */
 var lineColors= [
   '#61a9f3', //blue
-  '#61E3A9', //green
   '#f381b9', //red
+  '#61E3A9', //green
+  '#fff3ad',
+  '#b9e3f9'
 ];
 var ctx = document.getElementById(chartId);
 var myChart = new Chart(ctx, {
@@ -14,16 +16,19 @@ var myChart = new Chart(ctx, {
     datasets: (function() {
       datasets=[];
       for(i=0;i<chartNumericData.length;i++) {
-        datasets.push({
-          label: yAxeDescriptions[i],
-          data: chartNumericData[i],
-          backgroundColor: lineColors[i],
-          fill: fillBelowLine[i],
-          yAxisID: "y-axis-"+i,
-          type: (typeof types !== 'undefined' ? types[i] : "line"),
-          showLine: (typeof types === 'undefined' || fillBelowLine[i] ? true : false),
-          pointRadius: 1,
-        });
+        //each yaxe
+        for(j=0;j<chartNumericData[i].length;j++) {
+          datasets.push({
+            label: (typeof chartDataLabels !== 'undefined' ? chartDataLabels[i][j] : ''),
+            data: chartNumericData[i][j],
+            backgroundColor: lineColors[datasets.length],
+            fill: fillBelowLine[i][j],
+            yAxisID: "y-axis-"+i,
+            type: (typeof types !== 'undefined' ? types[i][j] : "line"),
+            showLine: (typeof types === 'undefined' || fillBelowLine[i] ? true : false),
+            pointRadius: 1,
+          });
+        }
       }
       return datasets;
     })()
@@ -35,12 +40,12 @@ var myChart = new Chart(ctx, {
       text: chartTitle
     },
     legend: {
-      display: false,
+      display: (typeof chartDataLabels === 'undefined' ? false : true),
     },
     elements: {
-        line: {
-            tension: 0, // disables bezier curves
-        }
+      line: {
+        tension: 0, // disables bezier curves
+      }
     },
     scales: {
       yAxes: (function() {
