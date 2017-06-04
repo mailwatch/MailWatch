@@ -433,7 +433,7 @@ return array(
     'scanforspam212' => 'Scan des E-Mail pour les Spam',
     'pontspam12' => 'Points de Spam :',
     'hpontspam12' => 'Points de Spam Haut :',
-    'usedefault12' => 'Utiliser les réglages par défaut',
+    'usedefault12' => 'Utilise les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
