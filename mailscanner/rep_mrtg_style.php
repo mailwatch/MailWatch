@@ -42,17 +42,13 @@ $filter = html_start(__('mrtgstyle36'), 0, false, true);
 // File name
 $filename = CACHE_DIR . '/rep_mrtg_style.png.' . time();
 
-list($hour_format, $minute_format, $second_format) = explode(':', TIME_FORMAT);
-
-$date_format = "'" . DATE_FORMAT . ' ' . $hour_format . ':' . $minute_format . "'";
-
-$sql_last24hrs = "
+$sql = "
  SELECT
-  DATE_FORMAT(timestamp, $date_format) AS xaxis,
-  COUNT(*) AS total_mail,
-  SUM(virusinfected) AS total_virii,
-  SUM(isspam) AS total_spam,
-  SUM(size) AS total_size
+  timestamp AS xaxis,
+  1 as total_mail,
+  virusinfected AS total_virus,
+  isspam AS total_spam,
+  size AS total_size
  FROM
   maillog
  WHERE
@@ -60,137 +56,62 @@ $sql_last24hrs = "
  AND
   timestamp BETWEEN (NOW() - INTERVAL 24 HOUR) AND NOW()
 " . $filter->CreateSQL() . '
- GROUP BY
-  xaxis
  ORDER BY
   timestamp DESC
 ';
-
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
-
-    // JPGraph
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_log.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_bar.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_line.php';
-
-    // ##### AJOS1 NOTE #####
-    // ### AjosNote - Must be 2 or more rows...
-    // ##### AJOS1 NOTE #####
-    $result = dbquery($sql_last24hrs);
-    if ($result->num_rows <= 1) {
-        die(__('dieid36') . "\n");
-    }
+$sql_last24hrs = $sql;
+//TODO date format / time format
 
 
-    $last = '';
-    while ($row = $result->fetch_object()) {
-        if ($last === substr($row->xaxis, 0, 2)) {
-            $data_labels_hour[] = '';
-        } else {
-            $data_labels_hour[] = substr($row->xaxis, 0, 2);
-            $last = substr($row->xaxis, 0, 2);
-        }
-        //$data_labels[] = $row->xaxis;
-        $data_total_mail[] = $row->total_mail;
-        $data_total_virii[] = $row->total_virii;
-        $data_total_spam[] = $row->total_spam;
-        $data_total_size[] = $row->total_size;
-    }
+$columns = array(
+    'hours' => __('hour36'),
+    'total_mailconv' =>__('mailcount36'), 
+    'total_virusconv' =>__('viruscount36'), 
+    'total_spamconv' => __('spamcount36'),
+    'total_sizeconvconv' => __('size36'),
+);
+$sqlColumns = array(
+    'xaxis',
+    'total_mail',
+    'total_size',
+    'total_virus',
+    'total_spam',
+);
+$valueConversion = array(
+    'xaxis' => 'generatehours',
+    'total_size' => 'assignperhour',
+    'total_sizeconv' => 'scale', //do not change this order
+    'total_mail' => 'assignperhour',
+    'total_virus' => 'assignperhour',
+    'total_spam' => 'assignperhour',
+);
 
-    /*
-    while($row=$result->fetch_object()) {
-     $data_labels[] = $row->xaxis;
-     $data_total_mail[] = $row->total_mail;
-     $data_total_virii[] = $row->total_virii;
-     $data_total_spam[] = $row->total_spam;
-     $data_total_mcp[] = $row->total_mcp;
-     $data_total_size[] = $row->total_size;
-    }
-    */
-
-    format_report_volume($data_total_size, $size_info);
-
-    $graph = new Graph(850, 350, 0, false);
-    //$graph->SetShadow();
-    $graph->SetScale('textlin');
-    //$graph->SetY2Scale("lin");
-    //$graph->y2axis->title->Set("Volume (".$size_info['longdesc'].")");
-    $graph->yaxis->SetTitleMargin(40);
-    $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set('Last 24 Hrs');
-    $graph->xaxis->title->Set('Date');
-    $graph->xaxis->SetTextLabelInterval(60);
-    $graph->xaxis->SetTickLabels($data_labels_hour);
-    $graph->xaxis->SetLabelAngle(50);
-    $graph->yaxis->title->Set('No. of messages');
-    //$graph->legend->SetLayout(LEGEND_HOR);
-    $graph->legend->Pos(0.52, 0.92, 'center');
-    $bar1 = new LinePlot($data_total_mail);
-    $bar1->SetColor('blue');
-    $bar1->SetFillColor('blue');
-    $bar1->SetLegend('Mail');
-    $bar2 = new LinePlot($data_total_virii);
-    $bar2->SetColor('red');
-    $bar2->SetFillColor('red');
-    $bar2->SetLegend('Virii');
-    $bar3 = new LinePlot($data_total_spam);
-    $bar3->SetColor('pink');
-    $bar3->SetFillColor('pink');
-    $bar3->SetLegend('Spam');
-
-    $line1 = new LinePlot($data_total_size);
-    //$line1->SetColor('green');
-    $line1->SetFillColor('green');
-    $line1->SetLegend('Volume (' . $size_info['shortdesc'] . ')');
-    $line1->SetCenter();
-
-    //$abar1 = new AccBarPlot(array($bar2,$bar3));
-    //$gbplot = new GroupBarPlot(array($bar1,$abar1));
-
-    $graph->Add($bar1);
-    $graph->Add($bar2);
-    $graph->Add($bar3);
-    //$graph->Add($gbplot);
-    $graph->Stroke($filename);
-}
-
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
-echo " <TR>\n";
-
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
-} else {
-    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
-}
-
-echo ' </TR>' . "\n";
-echo ' <TR>' . "\n";
-echo '  <TD ALIGN="CENTER">' . "\n";
-echo '<TABLE BORDER="0" WIDTH="500">' . "\n";
-echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
-echo '  <TH>Date</TH>' . "\n";
-echo '  <TH>Mail</TH' . ">\n";
-echo '  <TH>Spam</TH>' . "\n";
-echo '  <TH>Virus</TH>' . "\n";
-echo '  <TH>Volume</TH>' . "\n";
-echo ' </TR>' . "\n";
-for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; $i++) {
-    echo '<TR BGCOLOR="#EBEBEB">' . "\n";
-    echo ' <TD ALIGN="CENTER">' . $data_labels[$i] . '</TD>' . "\n";
-    echo ' <TD ALIGN="RIGHT">' . number_format($data_total_mail[$i]) . '</TD>' . "\n";
-    echo ' <TD ALIGN="RIGHT">' . number_format($data_total_spam[$i]) . '</TD>' . "\n";
-    echo ' <TD ALIGN="RIGHT">' . number_format($data_total_virii[$i]) . '</TD>' . "\n";
-    echo ' <TD ALIGN="RIGHT">' . formatSize(
-            $data_total_size[$i] * $size_info['formula']
-        ) . '&nbsp;&nbsp;</TD>' . "\n";
-    echo '</TR>' . "\n";
-}
-echo '</TABLE>' . "\n";
-echo '</TR>' . "\n";
-echo '</TABLE>';
+$graphColumns = array(
+    'labelColumn' => 'hours',
+    'dataLabels' => array(
+        array(__('barmail36'), __('barvirus36'), __('barspam36')),
+        array(__('barvolume36')),
+    ),
+    'dataNumericColumns' => array(
+        array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        array('total_sizeconv')
+    ),
+    'dataFormattedColumns' => array(
+        array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        array('total_sizeconvconv')
+    ),
+    'xAxeDescription' => __('hour36'),
+    'yAxeDescriptions' => array(
+        __('nomessages49'),
+        __('volume49')
+    ),
+    'fillBelowLine' => array('false', 'true')
+);
+$types = array(
+    array('bar', 'bar', 'bar'),
+    array('line')
+);
+printLineGraph($sql, __('totalmaillasthours36'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types);
 
 // Add footer
 html_end();

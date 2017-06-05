@@ -4130,6 +4130,10 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
             $data = convertScaleForGraph($data, $column);
         } elseif ($conversion === 'number') {
             $data = convertNumberForGraph($data, $column);
+        } elseif ($conversion === 'generatehours') {
+            $data = generateHoursForGraph($data, $column);
+        } elseif ($conversion === 'assignperhour') {
+            $data = convertAssignPerHourForGraph($data, $column);
         }
     }
     $numericData = "";
@@ -4250,6 +4254,36 @@ function convertVirusesForGraph($data, $column)
     $data['numResult'] = $count;
     return $data;
 }
+
+function generateHoursForGraph($data, $column)
+{
+    $current = new DateTime();
+    $date = $current->sub(new DateInterval("P1DT1H"));
+    for ($i=0;$i< 25;$i++) {
+        $date = $date->add(new DateInterval("PT1H"));
+        $dates[] = $date->format("Y-m-d H:00");
+    }
+    $data['hours'] = $dates;
+    $data['numResult'] = 25;
+    return $data;
+}
+
+function convertAssignPerHourForGraph($data, $column)
+{
+    $convertedData = array();
+    for ($i=0; $i< 25; $i++) {
+        $convertedData[] = 0;
+    }
+    $start = (new DateTime())->sub(new DateInterval("P1D"));
+    for ($i=0; $i<count($data[$column]); $i++) {
+        $timeDiff = $start->diff((new DateTime ($data['xaxis'][$i])), true);
+        $convertedData[$timeDiff->format('%h')] += $data[$column][$i];
+
+    }
+    $data[$column . 'conv'] = $convertedData;
+    return $data;
+}
+
 
 function printTable($columns, $data)
 {

@@ -80,14 +80,27 @@ var myChart = new Chart(ctx, {
           var itemData = dataset.data[tooltipItem.index];
           var total = 0;
           for (var i in dataset.data) {
-            if (dataset._meta[0].data[i].hidden === false) { 
+            if (dataset._meta[0].data[i].hidden === false) {
               total += dataset.data[i];
             }
           }
           var tooltipPercentage = Math.round((itemData / total) * 100);
+          // get id of y-axis to get the corresponding label
+          var axisId = dataset.yAxisID.replace("y-axis-","");
+          var count = 0;
+          var formattedData = null;
+          for (i=0;i<chartFormattedData.length && formattedData == null;i++) {
+            for (j=0;j<chartFormattedData[i].length && formattedData == null; j++) {
+              if (count == tooltipItem.datasetIndex) {
+                formattedData = chartFormattedData[i][j][tooltipItem.index];
+              } else {
+                count++;
+              }
+            }
+          }
           //COLON specified on main page via php __('colon99')
-          var tooltipOutput = " " + yAxeDescriptions[tooltipItem.datasetIndex] + COLON + " " + chartFormattedData[tooltipItem.datasetIndex][tooltipItem.index];
-          
+          var tooltipOutput = " " + yAxeDescriptions[axisId] + COLON + " " + formattedData;
+
           return tooltipOutput;
         }
       }
