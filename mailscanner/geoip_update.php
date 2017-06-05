@@ -201,7 +201,7 @@ if (!isset($_POST['run'])) {
         }
     } else {
         $error_message = __('message715') . "<br>\n";
-        $error_message .= __('message815') . " $extract_dir". '.';
+        $error_message .= __('message815') . " $extract_dir" . '.';
         die($error_message);
     }
 }
