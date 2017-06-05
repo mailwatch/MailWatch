@@ -84,8 +84,8 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
 
                 switch (PROXY_TYPE) {
                     case 'HTTP':
-                    case 'CURLPROXY_HTTP': //BC for old constant name
-                        //$requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
+                    case 'CURLPROXY_HTTP': // BC for old constant name
+                        // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
                         $requestSession->options['proxy']['type'] = 'HTTP';
                         break;
                     case 'SOCKS5':
@@ -116,7 +116,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             ob_flush();
             flush();
         } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
-            //wget
+            // wget
             $proxyString = '';
             if (USE_PROXY) {
                 if (PROXY_USER != '') {
@@ -166,7 +166,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                 }
             }
         } else {
-            // unable to extract the file correctly
+            // Unable to extract the file correctly
             $error_message = __('message552') . "\n";
             $error_message .= __('message652');
             die($error_message);
@@ -188,7 +188,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
         ob_flush();
         flush();
     } else {
-        // unable to read or write to the directory
+        // Unable to read or write to the directory
         die(__('norread52') . ' ' . $extract_dir . ' ' . __('directory52') . ".\n");
     }
 } else {
