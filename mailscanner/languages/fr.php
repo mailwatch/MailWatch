@@ -485,7 +485,7 @@ return array(
     'quarantineReportSend12' => 'Le rapport de quarantaine a été envoyé avec succès.',
     'checkReportRequirementsFailed12' => 'Les exigences pour générer des rapports de quarantaine ne sont pas respectées. Veuillez contacter votre administrateur.',
     'usercreated12' => 'L\'utilisateur %s a été créé.',
-    'useredited12' => 'L\'utilisateur %s a été modifié',
+    'useredited12' => 'L\'utilisateur %s a été modifié.',
     'userdeleted12' => 'L\'utilisateur %s a été effacé.',
     'userloggedout12' => 'L\'utilisateur %s a été déconnecté.',
     'loggedin12' => 'Connecté',
