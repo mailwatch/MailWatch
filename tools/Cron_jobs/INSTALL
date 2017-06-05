@@ -51,10 +51,9 @@ GeoIP Update
 
 Default update is one time per month in /etc/cron.monthly/.
 
-THe sudoers file /etc/sudoers.d/mailwatch must be installed.
+The sudoers file /etc/sudoers.d/mailwatch must be installed.
 
-Maxmind is strict on public geoip updates, be cautious about using cron to update.
-
+Maxmind is very strict about the update conditions. Be cautious not to poll Maxmind GeoIP too often with cron.
 
 ATTENTION:
 
