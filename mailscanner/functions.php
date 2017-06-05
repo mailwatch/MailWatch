@@ -4277,9 +4277,8 @@ function convertAssignPerHourForGraph($data, $column)
     }
     $start = (new DateTime())->sub(new DateInterval("P1D"));
     for ($i=0; $i<count($data[$column]); $i++) {
-        $timeDiff = $start->diff((new DateTime ($data['xaxis'][$i])), true);
+        $timeDiff = $start->diff((new DateTime($data['xaxis'][$i])), true);
         $convertedData[$timeDiff->format('%h')] += $data[$column][$i];
-
     }
     $data[$column . 'conv'] = $convertedData;
     return $data;

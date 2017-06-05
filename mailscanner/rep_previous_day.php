@@ -59,8 +59,8 @@ $sql = "
 
 $columns = array(
     'hours' => __('hours36'),
-    'total_mailconv' => __('mailcount36'), 
-    'total_virusconv' => __('viruscount36'), 
+    'total_mailconv' => __('mailcount36'),
+    'total_virusconv' => __('viruscount36'),
     'total_spamconv' => __('spamcount36'),
     'total_sizeconvconv' => __('size36'),
 );

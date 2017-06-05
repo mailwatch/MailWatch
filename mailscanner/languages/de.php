@@ -687,8 +687,8 @@ return array(
     // 36-rep_previous_day.php
     'totalmaillasthours36' => 'E-Mail-Bericht der letzten 24 Stunden',
     'hours36' => 'Stunde',
-    'mailcount36' => 'Gesamte Anz. Mails', 
-    'viruscount36' => 'Anz. Viren', 
+    'mailcount36' => 'Gesamte Anz. Mails',
+    'viruscount36' => 'Anz. Viren',
     'spamcount36' => 'Anz. Spam',
     'size36' => 'Volumen',
     'barmail36' => 'Mails',

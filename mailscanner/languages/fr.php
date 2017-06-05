@@ -687,8 +687,8 @@ return array(
     // 36-rep_previous_day.php
     'totalmaillasthours36' => 'Mail report of last 24 hours',
     'hours36' => 'hour',
-    'mailcount36' => 'Total mails', 
-    'viruscount36' => 'No. of viruses', 
+    'mailcount36' => 'Total mails',
+    'viruscount36' => 'No. of viruses',
     'spamcount36' => 'No. of spam',
     'size36' => 'Volume',
     'barmail36' => 'Mails',
