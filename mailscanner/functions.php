@@ -4054,33 +4054,13 @@ function checkForExistingUser($username)
  */
 function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions)
 {
-    $result = dbquery($sqlDataQuery);
-    $data = array();
-    $data['numResult'] = $result->num_rows;
-    if ($data['numResult'] <= 0) {
-        die(__('diemysql99') . "\n");
-    }
-    //store data in format $data[columnname][rowid]
+    $data = prepareData($sqlDataQuery, $sqlColumns);
+    
     $data[$graphColumn['dataNumericColumn']] = array();
     $data[$graphColumn['dataFormattedColumn']] = array();
-    while ($row = $result->fetch_assoc()) {
-        foreach ($sqlColumns as $columnName) {
-            $data[$columnName][] = $row[$columnName];
-        }
-    }
-    //do conversion if given
-    foreach ($valueConversions as $column => $conversion) {
-        if ($conversion === 'scale') {
-            $data = convertScaleForGraph($data, $column);
-        } elseif ($conversion === 'number') {
-            $data = convertNumberForGraph($data, $column);
-        } elseif ($conversion === 'hostnamegeoip') {
-            $data = convertHostnameGeoipForGraph($data, $column);
-        } elseif ($conversion === 'countviruses') {
-            $data = convertVirusesForGraph($data, $column);
-        }
-    }
-
+    
+    $data = runConversionsForGraph($data, $valueConversions);
+    
     if (count($data[$graphColumn['dataNumericColumn']]) === 0) {
         echo __('nodata03');
         return;
@@ -4112,30 +4092,10 @@ function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gr
  */
 function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions, $types, $printTable=true)
 {
-    $result = dbquery($sqlDataQuery);
-    $data = array();
-    $data['numResult'] = $result->num_rows;
-    if ($data['numResult'] <= 0) {
-        die(__('diemysql99') . "\n");
-    }
-    //store data in format $data[columnname][rowid]
-    while ($row = $result->fetch_assoc()) {
-        foreach ($sqlColumns as $columnName) {
-            $data[$columnName][] = $row[$columnName];
-        }
-    }
+    $data = prepareData($sqlDataQuery, $sqlColumns);
 
-    foreach ($valueConversions as $column => $conversion) {
-        if ($conversion === 'scale') {
-            $data = convertScaleForGraph($data, $column);
-        } elseif ($conversion === 'number') {
-            $data = convertNumberForGraph($data, $column);
-        } elseif ($conversion === 'generatehours') {
-            $data = generateHoursForGraph($data, $column);
-        } elseif ($conversion === 'assignperhour') {
-            $data = convertAssignPerHourForGraph($data, $column);
-        }
-    }
+    $data = runConversionsForGraph($data, $valueConversions);
+    
     $numericData = "";
     $formattedData = "";
     $dataLabels="";
@@ -4181,6 +4141,50 @@ function printLineGraph($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $gra
     if ($printTable === true) {
         printTable($columns, $data);
     }
+}
+
+function runConversionsForGraph($data, $valueConversions)
+{
+    foreach ($valueConversions as $column => $conversion) {
+        switch ($conversion) {            
+            case 'scale': 
+                $data = convertScaleForGraph($data, $column);
+                break;
+            case 'number':
+                $data = convertNumberForGraph($data, $column);
+                break;
+            case 'generatehours':
+                $data = generateHoursForGraph($data);
+                break;
+            case 'assignperhour':
+                $data = convertAssignPerHourForGraph($data, $column);
+                break;
+            case 'hostnamegeoip':
+                $data = convertHostnameGeoipForGraph($data, $column);
+                break;
+            case 'countviruses':
+                $data = convertVirusesForGraph($data, $column);
+                break;
+        }
+    }
+    return $data;
+}
+
+function prepareDataForGraph($sqlDataQuery, $sqlColumns)
+{
+    $result = dbquery($sqlDataQuery);
+    $data = array();
+    $data['numResult'] = $result->num_rows;
+    if ($data['numResult'] <= 0) {
+        die(__('diemysql99') . "\n");
+    }
+    //store data in format $data[columnname][rowid]
+    while ($row = $result->fetch_assoc()) {
+        foreach ($sqlColumns as $columnName) {
+            $data[$columnName][] = $row[$columnName];
+        }
+    }
+    return $data;
 }
 
 function convertNumberForGraph($data, $column)
@@ -4255,10 +4259,11 @@ function convertVirusesForGraph($data, $column)
     return $data;
 }
 
-function generateHoursForGraph($data, $column)
+function generateHoursForGraph($data)
 {
     $current = new DateTime();
     $date = $current->sub(new DateInterval("P1DT1H"));
+    $dates = array();
     for ($i=0;$i< 25;$i++) {
         $date = $date->add(new DateInterval("PT1H"));
         $hour = $date->format("H");
@@ -4276,7 +4281,8 @@ function convertAssignPerHourForGraph($data, $column)
         $convertedData[] = 0;
     }
     $start = (new DateTime())->sub(new DateInterval("P1D"));
-    for ($i=0; $i<count($data[$column]); $i++) {
+    $count = count($data[$column]);
+    for ($i=0; $i<$count; $i++) {
         $timeDiff = $start->diff((new DateTime($data['xaxis'][$i])), true);
         $convertedData[$timeDiff->format('%h')] += $data[$column][$i];
     }
