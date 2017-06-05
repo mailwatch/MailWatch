@@ -37,10 +37,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start(__('mrtgstyle36'), 0, false, true);
-
-// File name
-$filename = CACHE_DIR . '/rep_mrtg_style.png.' . time();
+$filter = html_start(__('totalmaillasthours36'), 0, false, true);
 
 $sql = "
  SELECT
@@ -59,14 +56,11 @@ $sql = "
  ORDER BY
   timestamp DESC
 ';
-$sql_last24hrs = $sql;
-//TODO date format / time format
-
 
 $columns = array(
-    'hours' => __('hour36'),
-    'total_mailconv' =>__('mailcount36'), 
-    'total_virusconv' =>__('viruscount36'), 
+    'hours' => __('hours36'),
+    'total_mailconv' => __('mailcount36'), 
+    'total_virusconv' => __('viruscount36'), 
     'total_spamconv' => __('spamcount36'),
     'total_sizeconvconv' => __('size36'),
 );
@@ -90,7 +84,7 @@ $graphColumns = array(
     'labelColumn' => 'hours',
     'dataLabels' => array(
         array(__('barmail36'), __('barvirus36'), __('barspam36')),
-        array(__('barvolume36')),
+        array(__('volume36')),
     ),
     'dataNumericColumns' => array(
         array('total_mailconv', 'total_virusconv', 'total_spamconv'),
@@ -100,10 +94,10 @@ $graphColumns = array(
         array('total_mailconv', 'total_virusconv', 'total_spamconv'),
         array('total_sizeconvconv')
     ),
-    'xAxeDescription' => __('hour36'),
+    'xAxeDescription' => __('hours36'),
     'yAxeDescriptions' => array(
-        __('nomessages49'),
-        __('volume49')
+        __('nomessages36'),
+        __('volume36')
     ),
     'fillBelowLine' => array('false', 'true')
 );

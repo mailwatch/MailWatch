@@ -115,6 +115,7 @@ $filter->AddReport('rep_message_listing.php', __('messlisting14'), true);
 $filter->AddReport('rep_message_ops.php', __('messop14'), true);
 
 $filter->AddReport('rep_total_mail_by_date.php', __('messdate14'));
+$filter->AddReport('rep_previous_day.php', __('messhours14'));
 $filter->AddReport('rep_top_mail_relays.php', __('topmailrelay14'));
 
 $filter->AddReport('rep_top_viruses.php', __('topvirus14'));
@@ -124,8 +125,6 @@ $filter->AddReport('rep_top_senders_by_quantity.php', __('topsendersqt14'));
 $filter->AddReport('rep_top_senders_by_volume.php', __('topsendersvol14'));
 $filter->AddReport('rep_top_recipients_by_quantity.php', __('toprecipqt14'));
 $filter->AddReport('rep_top_recipients_by_volume.php', __('toprecipvol14'));
-
-//$filter->AddReport("rep_mrtg_style.php","__('mrtgreport14'));
 
 $filter->AddReport('rep_top_sender_domains_by_quantity.php', __('topsendersdomqt14'));
 $filter->AddReport('rep_top_sender_domains_by_volume.php', __('topsendersdomvol14'));

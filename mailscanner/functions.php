@@ -4261,7 +4261,8 @@ function generateHoursForGraph($data, $column)
     $date = $current->sub(new DateInterval("P1DT1H"));
     for ($i=0;$i< 25;$i++) {
         $date = $date->add(new DateInterval("PT1H"));
-        $dates[] = $date->format("Y-m-d H:00");
+        $hour = $date->format("H");
+        $dates[] = $hour . ':00-' . (intval($hour)+1) . ':00';
     }
     $data['hours'] = $dates;
     $data['numResult'] = 25;
