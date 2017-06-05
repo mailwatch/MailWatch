@@ -804,12 +804,12 @@ return array(
 
     // 52-mailwatch_geoip_update.php
     'geoipv452' => 'GeoIP IPv4 Datendatei',
-    'geoipv652' => 'GeoIP IPv6 data file',
+    'geoipv652' => 'GeoIP IPv6 Datendatei',
     'dieproxy52' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
     'downok52' => 'erfolgreich heruntergeladen',
     'downbad52' => 'Beim Herunterladen ist ein Fehler aufgetreten',
     'downokunpack52' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',
-    'message352' => 'Unable to download GeoIP data file (tried CURL and fsockopen).',
+    'message352' => 'Es konnte keine GeoIP Datendatei heruntergeladen werden (weder CURL nocht fsockopen).',
     'message452' => 'Installieren Sie entweder die cURL-Erweiterung (bevorzugt) oder aktivieren Sie fsockopen in Ihrer php.ini',
     'unpackok52' => 'erfolgreich entpackt',
     'extractnotok52' => 'Konnte Dateien nicht extrahieren',
