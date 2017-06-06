@@ -32,6 +32,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -57,21 +58,22 @@ $sql = "
   timestamp DESC
 ';
 
-$columns = array(
+$graphgenerator = new GraphGenerator();
+$graphgenerator->tableColumns = array(
     'hours' => __('hours36'),
     'total_mailconv' => __('mailcount36'),
     'total_virusconv' => __('viruscount36'),
     'total_spamconv' => __('spamcount36'),
     'total_sizeconvconv' => __('size36'),
 );
-$sqlColumns = array(
+$graphgenerator->sqlColumns = array(
     'xaxis',
     'total_mail',
     'total_size',
     'total_virus',
     'total_spam',
 );
-$valueConversion = array(
+$graphgenerator->valueConversion = array(
     'xaxis' => 'generatehours',
     'total_size' => 'assignperhour',
     'total_sizeconv' => 'scale', //do not change this order
@@ -79,8 +81,7 @@ $valueConversion = array(
     'total_virus' => 'assignperhour',
     'total_spam' => 'assignperhour',
 );
-
-$graphColumns = array(
+$graphgenerator->graphColumns = array(
     'labelColumn' => 'hours',
     'dataLabels' => array(
         array(__('barmail36'), __('barvirus36'), __('barspam36')),
@@ -101,11 +102,12 @@ $graphColumns = array(
     ),
     'fillBelowLine' => array('false', 'true')
 );
-$types = array(
+$graphgenerator->types = array(
     array('bar', 'bar', 'bar'),
     array('line')
 );
-printLineGraph($sql, __('totalmaillasthours36'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types);
+$graphgenerator->graphTitle = __('totalmaillasthours36');
+$graphgenerator->printLineGraph();
 
 // Add footer
 html_end();

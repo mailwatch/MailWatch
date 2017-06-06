@@ -32,6 +32,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -54,17 +55,18 @@ $sql = '
   score
 ';
 
-$columns = array(
+$graphgenerator = new GraphGenerator();
+$graphgenerator->tableColumns = array(
     'score' => __('score38'),
     'count' => __('count38')
 );
-$sqlColumns = array(
+$graphgenerator->sqlColumns = array(
     'score',
     'count'
 );
-$valueConversion = array(
+$graphgenerator->valueConversion = array(
 );
-$graphColumns = array(
+$graphgenerator->graphColumns = array(
     'labelColumn' => 'score',
     'dataNumericColumns' => array(array('count')),
     'dataFormattedColumns' => array(array('count')),
@@ -72,8 +74,9 @@ $graphColumns = array(
     'yAxeDescriptions' => array(__('nbmessage38')),
     'fillBelowLine' => array('true')
 );
-$types = array(array('line'));
-printLineGraph($sql, __('sascoredist38'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types);
+$graphgenerator->types = array(array('line'));
+$graphgenerator->graphTitle = __('sascoredist38');
+$graphgenerator->printLineGraph();
 
 // Add footer
 html_end();

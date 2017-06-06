@@ -32,6 +32,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -58,26 +59,28 @@ $sql = '
  LIMIT 10
 ';
 
-$columns = array(
+$graphgenerator = new GraphGenerator();
+$graphgenerator->tableColumns = array(
     'name' =>__('email47'),
     'countconv' => __('count03'),
     'sizeconv' =>__('size03')
 );
-$sqlColumns = array(
+$graphgenerator->sqlColumns = array(
     'name',
     'count',
     'size'
 );
-$valueConversion = array(
+$graphgenerator->valueConversion = array(
     'size' => 'scale',
     'count' => 'number'
 );
-$graphColumns = array(
+$graphgenerator->graphColumns = array(
     'labelColumn' => 'name',
     'dataNumericColumn' => 'size',
     'dataFormattedColumn' => 'sizeconv'
 );
-printGraphTable($sql, __('top10sendersvol47'), $sqlColumns, $columns, $graphColumns, $valueConversion);
+$graphgenerator->graphTitle = __('top10sendersvol47');
+$graphgenerator->printPieGraph();
 
 // Add footer
 html_end();

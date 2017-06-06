@@ -32,6 +32,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -57,8 +58,8 @@ ORDER BY
  count DESC
 LIMIT 10';
 
-
-$columns = array(
+$graphgenerator = new GraphGenerator();
+$graphgenerator->tableColumns = array(
     'hostname' => __('hostname39'),
     'clientip' => __('ipaddresses39'),
     'geoip' => __('country39'),
@@ -67,27 +68,27 @@ $columns = array(
     'total_spamconv' => __('spam39'),
     'sizeconv'=> __('volume39'),
 );
-$sqlColumns = array(
+$graphgenerator->sqlColumns = array(
     'clientip',
     'count',
     'total_viruses',
     'total_spam',
     'size'
 );
-$valueConversion = array(
+$graphgenerator->valueConversion = array(
     'clientip' => 'hostnamegeoip',
     'count' => 'number',
     'total_viruses' => 'number',
     'total_spam' => 'number',
     'size' => 'scale',
 );
-$graphColumns = array(
+$graphgenerator->graphColumns = array(
     'labelColumn' => 'hostname',
     'dataNumericColumn' => 'count',
     'dataFormattedColumn' => 'countconv',
 );
-
-printGraphTable($sql, __('top10mailrelays39'), $sqlColumns, $columns, $graphColumns, $valueConversion);
+$graphgenerator->graphTitle = __('top10mailrelays39');
+$graphgenerator->printPieGraph();
 
 // Add footer
 html_end();
