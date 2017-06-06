@@ -134,7 +134,8 @@ class GraphGenerator
       </script>
       <script src="lib/Chart.js/Chart.js"></script>
       <script src="lib/lineConfig.js"></script>';
-        $this->printTable;
+
+        $this->printTable();
     }
 
     /**
@@ -313,7 +314,8 @@ class GraphGenerator
             $convertedData[] = 0;
         }
         $start = (new DateTime())->sub(new DateInterval("P1D"));
-        for ($i=0; $i<$this->numResult; $i++) {
+        $count = count($this->data['xaxis']);
+        for ($i=0; $i<$count; $i++) {
             // get the value from data and add it to the corresponding hour
             $timeDiff = $start->diff((new DateTime($this->data['xaxis'][$i])), true);
             $convertedData[$timeDiff->format('%h')] += $this->data[$column][$i];
