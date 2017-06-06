@@ -539,7 +539,7 @@ return array(
     'downok15' => 'erfolgreich heruntergeladen',
     'downbad15' => 'Beim Herunterladen ist ein Fehler aufgetreten',
     'downokunpack15' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',
-    'message315' => 'Es konnte keine GeoIP Datendatei heruntergeladen werden (weder CURL nocht fsockopen).',
+    'message315' => 'Es konnte keine GeoIP Datendatei heruntergeladen werden (weder CURL noch fsockopen).',
     'message415' => 'Installieren Sie entweder die cURL-Erweiterung (bevorzugt) oder aktivieren Sie fsockopen in Ihrer php.ini',
     'unpackok15' => 'erfolgreich entpackt',
     'extractnotok15' => 'Konnte Dateien nicht extrahieren',
@@ -802,7 +802,26 @@ return array(
     'message51' => 'Nachricht',
     'time51' => 'Zeit',
 
-    // 52-FREE
+    // 52-mailwatch_geoip_update.php
+    'geoipv452' => 'GeoIP IPv4 Datendatei',
+    'geoipv652' => 'GeoIP IPv6 Datendatei',
+    'dieproxy52' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
+    'downok52' => 'erfolgreich heruntergeladen',
+    'downbad52' => 'Beim Herunterladen ist ein Fehler aufgetreten',
+    'downokunpack52' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',
+    'message352' => 'Es konnte keine GeoIP Datendatei heruntergeladen werden (weder CURL noch fsockopen).',
+    'message452' => 'Installieren Sie entweder die cURL-Erweiterung (bevorzugt) oder aktivieren Sie fsockopen in Ihrer php.ini',
+    'unpackok52' => 'erfolgreich entpackt',
+    'extractnotok52' => 'Konnte Dateien nicht extrahieren',
+    'extractok52' => 'Extrahieren erfolgreich',
+    'message552' => 'GeoIP Datendatei konnte nicht extrahiert werden.',
+    'message652' => 'Aktivieren Sie Zlib in Ihrer PHP-Installation oder installieren Sie gunzip',
+    'processok52' => 'Vorgang abgeschlossen!',
+    'norread52' => 'Lesen oder Schreiben fehlgeschlagen für',
+    'directory52' => 'Verzeichnis',
+    'nofind52' => 'Der Wert der MailWatch UID konnte nicht gefunden werden',
+    'nofindowner52' => 'Dateien konnten nicht gefunden werden oder haben einen falschen Besitzer. Überprüfen Sie den Inhalt des Verzeichnisses',
+    'auditlog52' => 'GeoIP-Update wurde ausgeführt',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
