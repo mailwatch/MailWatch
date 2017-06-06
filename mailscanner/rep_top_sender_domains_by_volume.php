@@ -40,7 +40,8 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsenderdomvol45'), 0, false, true);
 
-$sql = '
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = '
  SELECT
   SUBSTRING_INDEX(from_address, \'@\', -1) AS `name`,
   COUNT(*) as `count`,
@@ -59,7 +60,6 @@ $sql = '
  LIMIT 10
 ';
 
-$graphgenerator = new GraphGenerator();
 $graphgenerator->tableColumns = array(
     'name' => __('domain45'),
     'countconv' => __('count03'),
@@ -80,7 +80,7 @@ $graphgenerator->graphColumns = array(
     'dataFormattedColumn' => 'sizeconv'
 );
 $graphgenerator->graphTitle = __('top10senderdomvol45');
-$graphgenerator->printGraphTable();
+$graphgenerator->printPieGraph();
 
 // Add footer
 html_end();

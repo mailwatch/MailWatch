@@ -40,7 +40,8 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsendersvol47'), 0, false, true);
 
-$sql = '
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = '
  SELECT
   from_address as `name`,
   COUNT(*) as `count`,
@@ -59,7 +60,6 @@ $sql = '
  LIMIT 10
 ';
 
-$graphgenerator = new GraphGenerator();
 $graphgenerator->tableColumns = array(
     'name' =>__('email47'),
     'countconv' => __('count03'),

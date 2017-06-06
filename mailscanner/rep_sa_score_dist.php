@@ -40,7 +40,8 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('sascoredist38'), 0, false, true);
 
-$sql = '
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = '
  SELECT
   ROUND(sascore) AS score,
   COUNT(*) AS count
@@ -55,7 +56,6 @@ $sql = '
   score
 ';
 
-$graphgenerator = new GraphGenerator();
 $graphgenerator->tableColumns = array(
     'score' => __('score38'),
     'count' => __('count38')

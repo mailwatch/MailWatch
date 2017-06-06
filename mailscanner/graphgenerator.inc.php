@@ -33,52 +33,30 @@ class GraphGenerator
 {
     public $sqlQuery;
     public $graphTitle;
-    public $sqlColumns;
-    public $tableColumns;
-    public $graphColumns;
-    public $valueConversions;
+    public $sqlColumns = array();
+    public $tableColumns = array();
+    public $graphColumns = array();
+    public $valueConversion = array();
     public $types = null;
     public $printTable = true;
-    
+
     private $data;
     private $numResult;
-       
-       	
-    /**
-     * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
-     * @param string $graphTitle title that will be displayed on top of the graph
-     * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
-     * @param array $tableColumns associative array that contains the columnname => titles (columnname can be name of a converted column)
-     * @param array $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
-     * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
-     * @param array $types the type of the datasets 'line' or 'bar' (only line graph)
-     * @param bool $printTable defines if a table shall be printed
-     */
-    public function __construct($sqlDataQuery, $graphTitle, $sqlColumns, $tableColumns, $graphColumn, $valueConversions, $types = null, $printTable=true)
+
+
+    public function __construct()
     {
-        $this->sqlDataQuery = $sqlDataQuery;
-        $this->graphTitle = $graphTitle;
-        $this->sqlColumns = $sqlColumns;
-        $this->tableColumns = $tableColumns;
-        $this->graphColumn = $graphColumn;
-        $this->valueConversions = $valueConversions;
-        $this->types = $types;
-        $this->printTypes = $printTable;
     }
-       
+
     /**
      * @return void
      */
     public function printPieGraph()
     {
         $this->prepareData();
-        
-        $this->data[$this->graphColumn['dataNumericColumn']] = array();
-        $this->data[$this->graphColumn['dataFormattedColumn']] = array();
-        
-        $this->runConversionsForGraph();
-        
-        if (count($this->data[$this->graphColumn['dataNumericColumn']]) === 0) {
+
+        $this->runConversions();
+        if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
             echo __('nodata03');
             return;
         }
@@ -89,18 +67,18 @@ class GraphGenerator
       var COLON = "' . __('colon99') . '";
       var chartTitle = "' . $this->graphTitle . '";
       var chartId = "reportChart";
-      var chartLabels = ["' . implode('", "', $this->data[$this->graphColumn['labelColumn']]) . '"];
-      var chartNumericData = [' . implode(', ', $this->data[$this->graphColumn['dataNumericColumn']]) . '];
-      var chartFormattedData = ["' . implode('", "', $this->data[$this->graphColumn['dataFormattedColumn']]) . '"];
+      var chartLabels = ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"];
+      var chartNumericData = [' . implode(', ', $this->data[$this->graphColumns['dataNumericColumn']]) . '];
+      var chartFormattedData = ["' . implode('", "', $this->data[$this->graphColumns['dataFormattedColumn']]) . '"];
       </script>
       <script src="lib/Chart.js/Chart.min.js"></script>
       <script src="lib/pieConfig.js"></script>';
 
-        $this->printTable($columns, $data);
+        $this->printTable();
     }
 
     /**
-     * Generates a line/bar graph  
+     * Generates a line/bar graph
      *
      * @return void
      */
@@ -112,26 +90,26 @@ class GraphGenerator
         }
         $this->prepareData();
 
-        $this->runConversionsForGraph();
-        
+        $this->runConversions();
+
         $numericData = "";
         $formattedData = "";
         $dataLabels="";
         $graphTypes="";
 
-        for ($i=0; $i<count($this->graphColumn['dataNumericColumns']); $i++) {
+        for ($i=0; $i<count($this->graphColumns['dataNumericColumns']); $i++) {
             //foreach yaxis get the column name for numeric and formatted data
             $numericData .= '[' . "\n";
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
             $graphTypes .= '[' . "\n";
-            for ($j=0; $j<count($this->graphColumn['dataNumericColumns'][$i]); $j++) {
-                if (isset($this->graphColumn['dataLabels'][$i])) {
-                    $dataLabels .= '"' . $this->graphColumn['dataLabels'][$i][$j] .'",';
+            for ($j=0; $j<count($this->graphColumns['dataNumericColumns'][$i]); $j++) {
+                if (isset($this->graphColumns['dataLabels'][$i])) {
+                    $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] .'",';
                 }
                 $graphTypes .= '"' . $this->types[$i][$j] . '",';
-                $numericDataName = $this->graphColumn['dataNumericColumns'][$i][$j];
-                $formattedDataName = $this->graphColumn['dataFormattedColumns'][$i][$j];
+                $numericDataName = $this->graphColumns['dataNumericColumns'][$i][$j];
+                $formattedDataName = $this->graphColumns['dataFormattedColumns'][$i][$j];
                 $numericData .= '[' . implode(', ', $this->data[$numericDataName]) . '],';
                 $formattedData .= '["' . implode('", "', $this->data[$formattedDataName]) . '"],';
             }
@@ -145,30 +123,30 @@ class GraphGenerator
       var COLON = "' . __('colon99') . '";
       var chartTitle = "' . $this->graphTitle . '";
       var chartId = "reportChart";
-      var chartLabels = ["' . implode('", "', $this->data[$this->graphColumn['labelColumn']]) . '"];
+      var chartLabels = ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"];
       var chartNumericData = [' . $numericData . '];
       var chartFormattedData = [' . $formattedData . '];
-      var xAxeDescription = "' . $this->graphColumn['xAxeDescription'] . '";
-      var yAxeDescriptions = ["' . implode('", "', $this->graphColumn['yAxeDescriptions']) . '"];
-      var fillBelowLine = [' . implode(', ', $this->graphColumn['fillBelowLine']) . '];
-      ' . (isset($this->graphColumn['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '') . '
+      var xAxeDescription = "' . $this->graphColumns['xAxeDescription'] . '";
+      var yAxeDescriptions = ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"];
+      var fillBelowLine = [' . implode(', ', $this->graphColumns['fillBelowLine']) . '];
+      ' . (isset($this->graphColumns['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '') . '
       ' . ($graphTypes === null ? '' : 'var types = [' .  $graphTypes . ']') . '
       </script>
       <script src="lib/Chart.js/Chart.js"></script>
       <script src="lib/lineConfig.js"></script>';
         $this->printTable;
     }
-        
+
     /**
-     * Executes the conversion defined by $this->valueConversions 
+     * Executes the conversion defined by $this->valueConversion
      *
      * @return void
      */
     protected function runConversions()
     {
-        foreach ($this->valueConversions as $column => $conversion) {
+        foreach ($this->valueConversion as $column => $conversion) {
             switch ($conversion) {
-                case 'scale': 
+                case 'scale':
                     $this->convertScale($column);
                     break;
                 case 'number':
@@ -191,13 +169,13 @@ class GraphGenerator
     }
 
     /**
-     * Gets the data for $this->sqlDataQuery from db and stores it in $this->data
+     * Gets the data for $this->sqlQuery from db and stores it in $this->data
      *
      * @return void
      */
     protected function prepareData()
     {
-        $result = dbquery($this->sqlDataQuery);
+        $result = dbquery($this->sqlQuery);
         $this->data = array();
         $this->numResult = $result->num_rows;
         if ($this->numResult <= 0) {
@@ -246,7 +224,7 @@ class GraphGenerator
 
     /**
      * Converts the data (ip address) from $this->data[$column] so that the hostname and geoip lookup are generated in $this->data['hostname'] and $this->data['geoip']
-     * 
+     *
      * @param string $column the data column that shall be converted
      * @return void
      */
@@ -268,9 +246,9 @@ class GraphGenerator
             }
         }
     }
-    
+
     /**
-     * Converts the data from $this->data[$column] so that virus names and counter are inserted in $this->data['virusname'] and $this->data['viruscount'] 
+     * Converts the data from $this->data[$column] so that virus names and counter are inserted in $this->data['virusname'] and $this->data['viruscount']
      *
      * @param string $column the data column that shall be converted
      * @return void
@@ -351,7 +329,7 @@ class GraphGenerator
     public function printTable()
     {
         if ($this->printTable !== true) {
-            return
+            return;
         }
         // HTML to display the table
         echo '<table class="reportTable">';
@@ -361,7 +339,7 @@ class GraphGenerator
         }
         echo '    </tr>' . "\n";
 
-        for ($i = 0; $i < $this->data['numResult']; $i++) {
+        for ($i = 0; $i < $this->numResult; $i++) {
             echo '    <tr>' . "\n";
             foreach ($this->tableColumns as $columnName => $columnTitle) {
                 echo '     <td>' . $this->data[$columnName][$i] . '</td>' . "\n";

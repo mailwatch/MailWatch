@@ -41,7 +41,8 @@ require __DIR__ . '/login.function.php';
 $filter = html_start(__('topvirus48'), 0, false, true);
 
 // SQL query to find all emails with a virus found
-$sql = '
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = '
 SELECT
  report
 FROM
@@ -52,7 +53,6 @@ AND
  report IS NOT NULL
 ' . $filter->CreateSQL();
 
-$graphgenerator = new GraphGenerator();
 $graphgenerator->tableColumns = array(
     'virusname' =>  __('virus48'),
     'viruscount' =>  __('count48'),

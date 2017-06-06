@@ -137,8 +137,6 @@ ORDER BY
  timestamp
 ";
 
-$columns = array(
-);
 $sqlColumns = array(
     'xaxis',
     'total_mail',
@@ -149,7 +147,6 @@ $sqlColumns = array(
 $valueConversion = array(
     'total_size' => 'scale'
 );
-
 $graphColumns = array(
     'labelColumn' => 'xaxis',
     'dataLabels' => array(
@@ -184,7 +181,14 @@ if ($is_MCP_enabled === true) {
     $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
 }
 
-$graphgenerator = new GraphGenerator($sql, __('totalmailprocdate49'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types, false);
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = $sql;
+$graphgenerator->sqlColumns = $sqlColumns ;
+$graphgenerator->graphColumns = $graphColumns;
+$graphgenerator->valueConversion = $valueConversion;
+$graphgenerator->types = $types;
+$graphgenerator->graphTitle = __('totalmailprocdate49');
+$graphgenerator->printTable = false;
 $graphgenerator->printLineGraph();
 
 /////////////////////////////////////////Generate Table //////////////////////////////////

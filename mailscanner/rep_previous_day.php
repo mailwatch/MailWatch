@@ -40,7 +40,8 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('totalmaillasthours36'), 0, false, true);
 
-$sql = "
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = "
  SELECT
   timestamp AS xaxis,
   1 as total_mail,
@@ -58,7 +59,6 @@ $sql = "
   timestamp DESC
 ';
 
-$graphgenerator = new GraphGenerator();
 $graphgenerator->tableColumns = array(
     'hours' => __('hours36'),
     'total_mailconv' => __('mailcount36'),

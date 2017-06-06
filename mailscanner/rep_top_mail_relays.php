@@ -40,7 +40,8 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topmailrelays39'), 0, false, true);
 
-$sql = '
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = '
 SELECT
  clientip,
  count(*) AS count,
@@ -58,7 +59,6 @@ ORDER BY
  count DESC
 LIMIT 10';
 
-$graphgenerator = new GraphGenerator();
 $graphgenerator->tableColumns = array(
     'hostname' => __('hostname39'),
     'clientip' => __('ipaddresses39'),
