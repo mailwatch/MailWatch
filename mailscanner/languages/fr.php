@@ -485,7 +485,7 @@ return array(
     'quarantineReportSend12' => 'Le rapport de quarantaine a été envoyé avec succès.',
     'checkReportRequirementsFailed12' => 'Les exigences pour générer des rapports de quarantaine ne sont pas respectées. Veuillez contacter votre administrateur.',
     'usercreated12' => 'L\'utilisateur %s a été créé.',
-    'useredited12' => 'L\'utilisateur %s a été modifié',
+    'useredited12' => 'L\'utilisateur %s a été modifié.',
     'userdeleted12' => 'L\'utilisateur %s a été effacé.',
     'userloggedout12' => 'L\'utilisateur %s a été déconnecté.',
     'loggedin12' => 'Connecté',
@@ -802,7 +802,26 @@ return array(
     'message51' => 'Message',
     'time51' => 'Durée',
 
-    // 52-FREE
+    // 52-mailwatch_geoip_update.php
+    'geoipv452' => 'Fichier de données GeoIP IPv4',
+    'geoipv652' => 'Fichier de données GeoIP IPv6',
+    'dieproxy52' => 'Le type de proxy doit être en "HTTP" ou en "SOCKS5". Vérifiez votre fichier de configuration.',
+    'downok52' => ': téléchargement réussi',
+    'downbad52' => 'Une erreur c\'est produite pendant le téléchargement',
+    'downokunpack52' => 'Téléchargement complet, extraction des fichiers...',
+    'message352' => 'Impossible de télécharger le fichier de données GeoIP (curl et fsockopen essayés).',
+    'message452' => 'Veuillez installer le module PHP cURL (préféré) ou activer fsockopen dans votre fichier php.ini',
+    'unpackok52' => ': décompactage réussi',
+    'extractnotok52' => 'Extraction impossible',
+    'extractok52' => 'extraction réussie',
+    'message552' => 'Impossible d\'extraire le fichier de données GeoIP.',
+    'message652' => 'Activez le module PHP Zlib dans votre configuration PHP ou installez le binaire gunzip.',
+    'processok52' => 'Processus terminé !',
+    'norread52' => 'Impossible de lire ou d\'écrire sur le',
+    'directory52' => 'répertoire',
+    'nofind52' => 'Impossible de trouver la valeur du UID de MailWatch',
+    'nofindowner52' => 'Impossible de trouver le fichier ou de changer les droits d\'utilisateur. Vérifier le contenu du répertoire',
+    'auditlog52' => 'Exécution de la mise à jour GeoIP.',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
