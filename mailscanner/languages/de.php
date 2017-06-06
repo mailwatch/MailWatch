@@ -819,8 +819,8 @@ return array(
     'processok52' => 'Vorgang abgeschlossen!',
     'norread52' => 'Lesen oder Schreiben fehlgeschlagen für',
     'directory52' => 'Verzeichnis',
-    'nofind52' => 'Unable to find MailWatch UID value',
-    'nofindowner52' => 'Unable to find files or change files owner. Check directory contents of',
+    'nofind52' => 'Der Wert der MailWatch UID konnte nicht gefunden werden',
+    'nofindowner52' => 'Dateien konnten nicht gefunden werden oder haben einen falschen Besitzer. Überprüfen Sie den Inhalt des Verzeichnisses',
     'auditlog52' => 'GeoIP-Update wurde ausgeführt',
 
     // 53-sophos_status.php
