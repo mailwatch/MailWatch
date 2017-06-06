@@ -192,7 +192,7 @@ class GraphGenerator
 
     /**
      * Converts the data from $this->data[$column] to numbers
-     * 
+     *
      * @param string $column the data column that shall be converted
      * @return void
      */
@@ -208,7 +208,7 @@ class GraphGenerator
 
     /**
      * Converts the data from $this->data[$column] so that so that it is scaled in kB, MB, GB etc
-     * 
+     *
      * @param string $column the data column that shall be converted
      * @return void
      */
