@@ -53,7 +53,9 @@ class GraphGenerator
      */
     public function printPieGraph()
     {
-        $this->prepareData();
+        if ($this->prepareData() === false) {
+            return;
+        }
 
         $this->runConversions();
         if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
@@ -88,7 +90,9 @@ class GraphGenerator
             echo("No types defined");
             return;
         }
-        $this->prepareData();
+        if ($this->prepareData() === false) {
+            return;
+        }
 
         $this->runConversions();
 
@@ -172,7 +176,7 @@ class GraphGenerator
     /**
      * Gets the data for $this->sqlQuery from db and stores it in $this->data
      *
-     * @return void
+     * @return boolean true on success, false on error
      */
     protected function prepareData()
     {
@@ -180,7 +184,8 @@ class GraphGenerator
         $this->data = array();
         $this->numResult = $result->num_rows;
         if ($this->numResult <= 0) {
-            die(__('diemysql99') . "\n");
+            echo __('diemysql99') . "\n";
+            return false;
         }
         //store data in format $data[columnname][rowid]
         while ($row = $result->fetch_assoc()) {
@@ -188,6 +193,7 @@ class GraphGenerator
                 $this->data[$columnName][] = $row[$columnName];
             }
         }
+        return true;
     }
 
     /**
