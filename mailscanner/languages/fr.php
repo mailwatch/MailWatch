@@ -509,7 +509,7 @@ return array(
     'messlisting14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
     'messdate14' => 'Total des messages par date',
-    'messhours14' => 'Nombre de messages par heure des dernières 24 heures',
+    'messhours14' => 'Messages par heure des dernières 24 heures',
     'topmailrelay14' => 'Top des relais de messagerie',
     'topvirus14' => 'Top Virus',
     'virusrepor14' => 'Rapport sur les Virus',
