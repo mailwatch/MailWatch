@@ -429,6 +429,9 @@ if ($link) {
     echo pad(' - Fix schema for timestamp field in `maillog` table');
     $sql = "ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP";
     executeQuery($sql);
+    echo pad(' - Fix schema for last_update field in `maillog` table');
+    $sql = "ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
+    executeQuery($sql);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
