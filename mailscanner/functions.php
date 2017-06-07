@@ -3604,10 +3604,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $isfp = null;
             }
             if ($isfp !== null) {
-                $sql = 'UPDATE maillog SET timestamp=timestamp, isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
+                $sql = 'UPDATE maillog SET isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
                     . safe_value($list[$val]['msgid']) . "'";
             }
-            
+
             if (true === $use_spamassassin) {
                 // Run SpamAssassin to report or revoke spam/ham
                 exec(
