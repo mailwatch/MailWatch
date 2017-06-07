@@ -509,6 +509,7 @@ return array(
     'messlisting14' => 'Nachrichten-Übersicht',
     'messop14' => 'Nachrichten-Aktionen',
     'messdate14' => 'Gesamtanzahl Nachrichten nach Tag',
+    'messhours14' => 'Anzahl Nachrichten pro Stunde (letzter Tag)',
     'topmailrelay14' => 'Top Mail Relays',
     'topvirus14' => 'Top Viren',
     'virusrepor14' => 'Viren-Bericht',
@@ -523,7 +524,6 @@ return array(
     'assassinscoredist14' => 'Verteilung der SpamAssassin-Bewertungen',
     'assassinrulhit14' => 'Angewandte SpamAssassin-Regeln',
     'auditlog14' => 'Kontrollbericht',
-    //'mrtgreport14' => 'MRTG Style Report', unused
     'mcpscoredist14' => 'Verteilung der MCP-Bewertungen',
     'mcprulehit14' => 'Angewandte MCP-Regeln',
     'reports14' => 'Berichte',
@@ -684,9 +684,19 @@ return array(
     'score35' => 'Bewertung',
     'count35' => 'Anzahl',
 
-    // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'E-Mail-Bericht im MRTG Format',
-    'die36' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
+    // 36-rep_previous_day.php
+    'totalmaillasthours36' => 'E-Mail-Bericht der letzten 24 Stunden',
+    'hours36' => 'Stunde',
+    'mailcount36' => 'Gesamte Anz. Mails',
+    'viruscount36' => 'Anz. Viren',
+    'spamcount36' => 'Anz. Spam',
+    'size36' => 'Volumen',
+    'barmail36' => 'Mails',
+    'barvirus36' => 'Viren',
+    'barspam36' => 'Spam',
+    'barsize36' => 'Volumen',
+    'volume36' => 'Volumen',
+    'nomessages36' => 'Anz. Nachrichten',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',

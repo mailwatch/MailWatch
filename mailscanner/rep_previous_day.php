@@ -38,49 +38,76 @@ require_once __DIR__ . '/graphgenerator.inc.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start(__('topsendersvol47'), 0, false, true);
+$filter = html_start(__('totalmaillasthours36'), 0, false, true);
 
 $graphgenerator = new GraphGenerator();
-$graphgenerator->sqlQuery = '
+$graphgenerator->sqlQuery = "
  SELECT
-  from_address as `name`,
-  COUNT(*) as `count`,
-  SUM(size) as `size`
+  timestamp AS xaxis,
+  1 as total_mail,
+  virusinfected AS total_virus,
+  isspam AS total_spam,
+  size AS total_size
  FROM
   maillog
  WHERE
-  from_address <> "" 		-- Exclude delivery receipts
+  1=1
  AND
-  from_address IS NOT NULL     	-- Exclude delivery receipts
-' . $filter->CreateSQL() . '
- GROUP BY
-  from_address
+  timestamp BETWEEN (NOW() - INTERVAL 24 HOUR) AND NOW()
+" . $filter->CreateSQL() . '
  ORDER BY
-  size DESC
- LIMIT 10
+  timestamp DESC
 ';
 
 $graphgenerator->tableColumns = array(
-    'name' =>__('email47'),
-    'countconv' => __('count03'),
-    'sizeconv' =>__('size03')
+    'hours' => __('hours36'),
+    'total_mailconv' => __('mailcount36'),
+    'total_virusconv' => __('viruscount36'),
+    'total_spamconv' => __('spamcount36'),
+    'total_sizeconvconv' => __('size36'),
 );
 $graphgenerator->sqlColumns = array(
-    'name',
-    'count',
-    'size'
+    'xaxis',
+    'total_mail',
+    'total_size',
+    'total_virus',
+    'total_spam',
 );
 $graphgenerator->valueConversion = array(
-    'size' => 'scale',
-    'count' => 'number'
+    'xaxis' => 'generatehours',
+    'total_size' => 'assignperhour',
+    'total_sizeconv' => 'scale', //do not change this order
+    'total_mail' => 'assignperhour',
+    'total_virus' => 'assignperhour',
+    'total_spam' => 'assignperhour',
 );
 $graphgenerator->graphColumns = array(
-    'labelColumn' => 'name',
-    'dataNumericColumn' => 'size',
-    'dataFormattedColumn' => 'sizeconv'
+    'labelColumn' => 'hours',
+    'dataLabels' => array(
+        array(__('barmail36'), __('barvirus36'), __('barspam36')),
+        array(__('volume36')),
+    ),
+    'dataNumericColumns' => array(
+        array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        array('total_sizeconv')
+    ),
+    'dataFormattedColumns' => array(
+        array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        array('total_sizeconvconv')
+    ),
+    'xAxeDescription' => __('hours36'),
+    'yAxeDescriptions' => array(
+        __('nomessages36'),
+        __('volume36')
+    ),
+    'fillBelowLine' => array('false', 'true')
 );
-$graphgenerator->graphTitle = __('top10sendersvol47');
-$graphgenerator->printPieGraph();
+$graphgenerator->types = array(
+    array('bar', 'bar', 'bar'),
+    array('line')
+);
+$graphgenerator->graphTitle = __('totalmaillasthours36');
+$graphgenerator->printLineGraph();
 
 // Add footer
 html_end();

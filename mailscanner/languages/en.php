@@ -509,6 +509,7 @@ return array(
     'messlisting14' => 'Message Listing',
     'messop14' => 'Message Operations',
     'messdate14' => 'Total Messages by Date',
+    'messhours14' => 'Number of Messages per Hour for the last 24 hours',
     'topmailrelay14' => 'Top Mail Relays',
     'topvirus14' => 'Top Viruses',
     'virusrepor14' => 'Virus Report',
@@ -523,7 +524,6 @@ return array(
     'assassinscoredist14' => 'SpamAssassin Score Distribution',
     'assassinrulhit14' => 'SpamAssassin Rule Hits',
     'auditlog14' => 'Audit Log',
-    'mrtgreport14' => 'MRTG Style Report',
     'mcpscoredist14' => 'MCP Score Distribution',
     'mcprulehit14' => 'MCP Rule Hit',
     'reports14' => 'Reports',
@@ -684,9 +684,19 @@ return array(
     'score35' => 'Score',
     'count35' => 'Count',
 
-    // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'MRTG Style Mail Report',
-    'die36' => 'Error: Needs 2 or more rows of data to be retrieved from database',
+    // 36-rep_previous_day.php
+    'totalmaillasthours36' => 'Number of Messages per Hour for the last 24 hours',
+    'hours36' => 'hour',
+    'mailcount36' => 'Total mails',
+    'viruscount36' => 'No. of viruses',
+    'spamcount36' => 'No. of spam',
+    'size36' => 'Volume',
+    'barmail36' => 'Mails',
+    'barvirus36' => 'Viruses',
+    'barspam36' => 'Spam',
+    'barsize36' => 'Volume',
+    'volume36' => 'Volume',
+    'nomessages36' => 'No. of mails',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',

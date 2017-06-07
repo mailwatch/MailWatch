@@ -32,6 +32,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -136,10 +137,6 @@ ORDER BY
  timestamp
 ";
 
-
-
-$columns = array(
-);
 $sqlColumns = array(
     'xaxis',
     'total_mail',
@@ -150,7 +147,6 @@ $sqlColumns = array(
 $valueConversion = array(
     'total_size' => 'scale'
 );
-
 $graphColumns = array(
     'labelColumn' => 'xaxis',
     'dataLabels' => array(
@@ -176,7 +172,6 @@ $types = array(
     array('bar', 'bar', 'bar'),
     array('line')
 );
-$is_MCP_enabled = true;//TODO REMOVE
 
 if ($is_MCP_enabled === true) {
     $sqlColumns[] = 'total_mcp';
@@ -186,67 +181,74 @@ if ($is_MCP_enabled === true) {
     $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
 }
 
-printLineGraph($sql, __('totalmailprocdate49'), $sqlColumns, $columns, $graphColumns, $valueConversion, $types, false);
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = $sql;
+$graphgenerator->sqlColumns = $sqlColumns ;
+$graphgenerator->graphColumns = $graphColumns;
+$graphgenerator->valueConversion = $valueConversion;
+$graphgenerator->types = $types;
+$graphgenerator->graphTitle = __('totalmailprocdate49');
+$graphgenerator->printTable = false;
+$graphgenerator->printLineGraph();
 
+/////////////////////////////////////////Generate Table //////////////////////////////////
+// Must be one or more row
+$result = dbquery($sql);
+if (!$result->num_rows > 0) {
+    die(__('diemysql99') . "\n");
+}
 
-// Check permissions to see if apache can actually create the file
-    // Must be one or more row
-    $result = dbquery($sql);
-    if (!$result->num_rows > 0) {
-        die(__('diemysql99') . "\n");
-    }
+// Connecting to the DB and running the query
+$result1 = dbquery($sql1);
 
-    // Connecting to the DB and running the query
-    $result1 = dbquery($sql1);
+// pulling the data in variables
+while ($row = $result->fetch_object()) {
+    $data_labels[] = $row->xaxis;
+    $data_total_mail[] = $row->total_mail;
+    $data_total_virii[] = $row->total_virus;
+    $data_total_blocked[] = $row->total_blocked;
+    $data_total_spam[] = $row->total_spam;
+    $data_total_lowspam[] = $row->total_lowspam;
+    $data_total_highspam[] = $row->total_highspam;
+    $data_total_mcp[] = $row->total_mcp;
+    $data_total_clean[] = $row->total_clean;
+    $data_total_size[] = $row->total_size;
+}
 
-    // pulling the data in variables
-    while ($row = $result->fetch_object()) {
-        $data_labels[] = $row->xaxis;
-        $data_total_mail[] = $row->total_mail;
-        $data_total_virii[] = $row->total_virus;
-        $data_total_blocked[] = $row->total_blocked;
-        $data_total_spam[] = $row->total_spam;
-        $data_total_lowspam[] = $row->total_lowspam;
-        $data_total_highspam[] = $row->total_highspam;
-        $data_total_mcp[] = $row->total_mcp;
-        $data_total_clean[] = $row->total_clean;
-        $data_total_size[] = $row->total_size;
-    }
-
-    // Merge in MTA data
-    $data_total_unknown_users = array();
-    $data_total_rbl = array();
-    $data_total_unresolveable = array();
-    while ($row1 = $result1->fetch_object()) {
-        if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
-            switch (true) {
-                case($row1->type === 'unknown_user'):
-                    $data_total_unknown_users[$key] = $row1->count;
-                    break;
-                case($row1->type === 'rbl'):
-                    $data_total_rbl[$key] = $row1->count;
-                    break;
-                case($row1->type === 'unresolveable'):
-                    $data_total_unresolveable[$key] = $row1->count;
-                    break;
-            }
+// Merge in MTA data
+$data_total_unknown_users = array();
+$data_total_rbl = array();
+$data_total_unresolveable = array();
+while ($row1 = $result1->fetch_object()) {
+    if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
+        switch (true) {
+            case($row1->type === 'unknown_user'):
+                $data_total_unknown_users[$key] = $row1->count;
+                break;
+            case($row1->type === 'rbl'):
+                $data_total_rbl[$key] = $row1->count;
+                break;
+            case($row1->type === 'unresolveable'):
+                $data_total_unresolveable[$key] = $row1->count;
+                break;
         }
     }
+}
 
-    // Setting the graph labels
-    $graph_labels = $data_labels;
+// Setting the graph labels
+$graph_labels = $data_labels;
 
-    // Reduce the number of labels on the graph to prevent them being sqashed.
-    if (count($graph_labels) > 20) {
-        $b = substr(count($graph_labels), 0, 1);
-        for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
-            if ($a % $b) {
-                $graph_labels[$a] = '';
-            }
+// Reduce the number of labels on the graph to prevent them being sqashed.
+if (count($graph_labels) > 20) {
+    $b = substr(count($graph_labels), 0, 1);
+    for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
+        if ($a % $b) {
+            $graph_labels[$a] = '';
         }
     }
+}
 
-    format_report_volume($data_total_size, $size_info);
+format_report_volume($data_total_size, $size_info);
 
 
 echo '<TABLE class="reportTable">' . "\n";

@@ -32,6 +32,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -39,7 +40,8 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('toprecipqt42'), 0, false, true);
 
-$sql = '
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = '
  SELECT
   REPLACE(to_address,",",", ") as `name`,
   COUNT(*) as `count`,
@@ -58,26 +60,27 @@ $sql = '
  LIMIT 10
 ';
 
-$columns = array(
+$graphgenerator->tableColumns = array(
     'name' => __('email42'),
     'countconv' => __('count03'),
     'sizeconv' => __('size03')
 );
-$sqlColumns = array(
+$graphgenerator->sqlColumns = array(
     'name',
     'count',
     'size'
 );
-$valueConversion = array(
+$graphgenerator->valueConversion = array(
     'size' => 'scale',
     'count' => 'number'
 );
-$graphColumns = array(
+$graphgenerator->graphColumns = array(
     'labelColumn' => 'name',
     'dataNumericColumn' => 'count',
     'dataFormattedColumn' => 'countconv'
 );
-printGraphTable($sql, __('top10recipqt42'), $sqlColumns, $columns, $graphColumns, $valueConversion);
+$graphgenerator->graphTitle = __('top10recipqt42');
+$graphgenerator->printPieGraph();
 
 // Add footer
 html_end();

@@ -509,6 +509,7 @@ return array(
     'messlisting14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
     'messdate14' => 'Total des messages par date',
+    'messhours14' => 'Nombre de messages par heure des dernières 24 heures',
     'topmailrelay14' => 'Top des relais de messagerie',
     'topvirus14' => 'Top Virus',
     'virusrepor14' => 'Rapport sur les Virus',
@@ -523,7 +524,6 @@ return array(
     'assassinscoredist14' => 'Distribution SpamAssassin par point',
     'assassinrulhit14' => 'Distribution SpamAssassin par règle',
     'auditlog14' => 'Log de l\'Audit',
-    'mrtgreport14' => 'Rapport de message MRTG',
     'mcpscoredist14' => 'Score MCP par point',
     'mcprulehit14' => 'Score MCP par règle',
     'reports14' => 'Rapports',
@@ -684,9 +684,19 @@ return array(
     'score35' => 'Distribution',
     'count35' => 'Total',
 
-    // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'Rapport de message MRTG',
-    'die36' => 'Erreur : il est nécessaire d\'avoir deux enregistrements ou plus dans la base de données',
+    // 36-rep_previous_day.php
+    'totalmaillasthours36' => 'Nombre de messages par heure des dernières 24 heures',
+    'hours36' => 'heure',
+    'mailcount36' => 'Total des E-Mails',
+    'viruscount36' => 'Nombre de Virus',
+    'spamcount36' => 'Nombre de Spam',
+    'size36' => 'Volume',
+    'barmail36' => 'E-Mails',
+    'barvirus36' => 'Virus',
+    'barspam36' => 'Spam',
+    'barsize36' => 'Volume',
+    'volume36' => 'Volume',
+    'nomessages36' => 'Nombre d\'E-Mail',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'Distribution de SpamAssassin par règle',
