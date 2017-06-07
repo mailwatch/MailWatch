@@ -74,7 +74,8 @@ class GraphGenerator
       var chartFormattedData = ["' . implode('", "', $this->data[$this->graphColumns['dataFormattedColumn']]) . '"];
       </script>
       <script src="lib/Chart.js/Chart.min.js"></script>
-      <script src="lib/pieConfig.js"></script>';
+      <script src="lib/pieConfig.js"></script>
+      <br>';
 
         $this->printTable();
     }
@@ -136,7 +137,7 @@ class GraphGenerator
       ' . (isset($this->graphColumns['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '') . '
       ' . ($graphTypes === null ? '' : 'var types = [' .  $graphTypes . ']') . '
       </script>
-      <script src="lib/Chart.js/Chart.js"></script>
+      <script src="lib/Chart.js/Chart.min.js"></script>
       <script src="lib/lineConfig.js"></script>';
 
         $this->printTable();
