@@ -688,15 +688,15 @@ return array(
     'totalmaillasthours36' => 'Number of Messages per Hour for the last 24 hours',
     'hours36' => 'Hour',
     'mailcount36' => 'Total e-mails',
-    'viruscount36' => 'No. of viruses',
-    'spamcount36' => 'No. of spam',
+    'viruscount36' => 'Number. of viruses',
+    'spamcount36' => 'Number of spam',
     'size36' => 'Volume',
     'barmail36' => 'E-mails',
     'barvirus36' => 'Viruses',
     'barspam36' => 'Spam',
     'barsize36' => 'Volume',
     'volume36' => 'Volume',
-    'nomessages36' => 'No. of e-mails',
+    'nomessages36' => 'Number of e-mails',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
