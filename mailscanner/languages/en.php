@@ -686,7 +686,7 @@ return array(
 
     // 36-rep_previous_day.php
     'totalmaillasthours36' => 'Number of Messages per Hour for the last 24 hours',
-    'hours36' => 'hour',
+    'hours36' => 'Hour',
     'mailcount36' => 'Total mails',
     'viruscount36' => 'No. of viruses',
     'spamcount36' => 'No. of spam',
