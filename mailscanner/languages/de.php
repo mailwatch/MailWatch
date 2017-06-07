@@ -509,7 +509,7 @@ return array(
     'messlisting14' => 'Nachrichten-Übersicht',
     'messop14' => 'Nachrichten-Aktionen',
     'messdate14' => 'Gesamtanzahl Nachrichten nach Tag',
-    'messhours14' => 'Anzahl Nachrichten pro Stunde (letzter Tag)',
+    'messhours14' => 'Nachrichten pro Stunde für die letzten 24 Stunden',
     'topmailrelay14' => 'Top Mail Relays',
     'topvirus14' => 'Top Viren',
     'virusrepor14' => 'Viren-Bericht',
@@ -685,7 +685,7 @@ return array(
     'count35' => 'Anzahl',
 
     // 36-rep_previous_day.php
-    'totalmaillasthours36' => 'E-Mail-Bericht der letzten 24 Stunden',
+    'totalmaillasthours36' => 'Nachrichten pro Stunde für die letzten 24 Stunden',
     'hours36' => 'Stunde',
     'mailcount36' => 'Gesamte Anz. Mails',
     'viruscount36' => 'Anz. Viren',
