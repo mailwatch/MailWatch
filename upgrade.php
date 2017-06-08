@@ -513,7 +513,7 @@ if ($link) {
     }
 
     echo pad(' - Add last_update field to `maillog` table');
-    if (check_column_exists('users', 'resetid') === false) {
+    if (check_column_exists('maillog', 'last_update') === false) {
         $sql = "ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
         executeQuery($sql);
     } else {
