@@ -688,7 +688,7 @@ return array(
     'totalmaillasthours36' => 'Number of Messages per Hour for the last 24 hours',
     'hours36' => 'Hour',
     'mailcount36' => 'Total e-mails',
-    'viruscount36' => 'Number. of viruses',
+    'viruscount36' => 'Number of viruses',
     'spamcount36' => 'Number of spam',
     'size36' => 'Volume',
     'barmail36' => 'E-mails',
