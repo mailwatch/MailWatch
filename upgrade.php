@@ -75,17 +75,23 @@ function pad($input)
 
 /**
  * @param string $sql
+ * @param bool $beSilent
  */
 function executeQuery($sql, $beSilent = false)
 {
     global $link;
-    if ($link->query($sql)) {
-        if (!$beSilent) {
-            echo color(' OK', 'green') . PHP_EOL;
+    try {
+        if ($link->query($sql)) {
+            if (!$beSilent) {
+                echo color(' OK', 'green') . PHP_EOL;
+            }
+        } else {
+            echo color(' ERROR', 'red') . PHP_EOL;
+            die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
         }
-    } else {
+    } catch (Exception $e) {
         echo color(' ERROR', 'red') . PHP_EOL;
-        die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
+        die('Database error: ' . $e->getMessage() . " - SQL = '$sql'" . PHP_EOL);
     }
 }
 
@@ -532,10 +538,10 @@ if ($link) {
     // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
     echo pad(' - Check for missing tokens in `maillog` table');
     if (defined('QUARANTINE_REPORT_DAYS')) {
-        $report_days=QUARANTINE_REPORT_DAYS;
+        $report_days = QUARANTINE_REPORT_DAYS;
     } else {
         // Missing, but let's keep going...
-        $report_days=7;
+        $report_days = 7;
     }
     $sql = 'SELECT `id`,`token` FROM `maillog` WHERE `date` >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . $report_days . ' DAY)';
     $result = dbquery($sql);
