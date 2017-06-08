@@ -141,7 +141,7 @@ date_default_timezone_set(TIME_ZONE);
 
 // XML-RPC
 if (!function_exists('xml_parser_create') && (!ini_get('enable_dl') || dl('xml.so') !== true)) {
-    die('phpxmlnotloaded03');
+    die(__('phpxmlnotloaded03'));
 }
 require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
 require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
