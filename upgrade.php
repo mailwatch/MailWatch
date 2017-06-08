@@ -429,9 +429,6 @@ if ($link) {
     echo pad(' - Fix schema for timestamp field in `maillog` table');
     $sql = "ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP";
     executeQuery($sql);
-    echo pad(' - Fix schema for last_update field in `maillog` table');
-    $sql = "ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
-    executeQuery($sql);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
@@ -513,6 +510,14 @@ if ($link) {
     } else {
         $sql = "ALTER TABLE `maillog` ADD `released` tinyint(1) DEFAULT '0'";
         executeQuery($sql);
+    }
+
+    echo pad(' - Add last_update field to `maillog` table');
+    if (check_column_exists('users', 'resetid') === false) {
+        $sql = "ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
     
     // Add new salearn column to maillog table
