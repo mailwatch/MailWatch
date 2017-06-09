@@ -723,7 +723,19 @@ if ($link) {
     echo color(' FAILED', 'red') . PHP_EOL;
     $errors[] = 'Database connection failed: ' . $link->error;
 }
+echo PHP_EOL;
 
+echo 'Checking for obsolete files: ' . PHP_EOL;
+if (file_exists(MAILWATCH_HOME . '/images/cache/')) {
+    $result = rmdir(MAILWATCH_HOME . '/images/cache/') . PHP_EOL;
+    if ($result === true) {
+        echo 'Cache dir was still present. Removed it' . color(' INFO', 'lightgreen') . PHP_EOL;
+    } else {
+        echo 'Cache dir was still present but removing it failed' . color(' ERROR', 'red') . PHP_EOL;
+    }
+} else {
+    echo 'Cache dir already removed' . color(' OK', 'green') . PHP_EOL;
+}
 echo PHP_EOL;
 
 // Check MailScanner settings
