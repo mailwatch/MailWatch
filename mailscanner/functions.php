@@ -531,11 +531,11 @@ function printMTAQueue()
         if (is_readable($incomingdir) || is_readable($outgoingdir)) {
             $inq = postfixinq();
             $outq = postfixallq() - $inq;
-        } elseif (!DISTRIBUTED_SETUP) {
+        } elseif (!defined('RPC_REMOTE_SERVER')) {
             echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
         }
 
-        if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
+        if (defined('RPC_REMOTE_SERVER')) {
             $pqerror = '';
             $servers = explode(' ', RPC_REMOTE_SERVER);
 
