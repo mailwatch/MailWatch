@@ -82,35 +82,32 @@ if (file_exists('conf.php')) {
         }
     } else {
         $output[] = __('notallowed59');
-    } ?>
+    }
+    echo '
 <!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><?php echo __('title59'); ?></title>
+    <title>' . __('title59') . '</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
     <link rel="stylesheet" href="style.css" type="text/css">
-    <?php if (is_file(__DIR__ . '/skin.css')) {
-        echo '<link rel="stylesheet" href="skin.css" type="text/css">';
-    } ?>
+    ' . (is_file(__DIR__ . '/skin.css') ? '<link rel="stylesheet" href="skin.css" type="text/css">' : '') . '
 </head>
 <body class="autorelease">
 <div class="autorelease">
-    <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+    <img src="' . MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '">
     <div class="border-rounded">
-        <h1><?php echo __('title59'); ?></h1>
-        <?php
-        foreach ($output as $msg) {
-            echo '<p>' . $msg . '</p>';
-        } ?>
+        <h1>' . __('title59') . '</h1>' . "\n";
+    foreach ($output as $msg) {
+        echo '<p>' . $msg . '</p>' . "\n";
+    }
+    echo '
     </div>
 </div>
 </body>
-</html>
-<?php
-
+</html>';
 } else {
     echo __('cannot_read_conf');
 }

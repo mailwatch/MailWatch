@@ -305,7 +305,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                         <?php echo $errors; ?>
                                     </p>
                                     <?php
-
                 }
 
                 if ($fields === 'stage1') {
@@ -314,7 +313,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <p><input name="email" type="text" id="email" autofocus></p>
                                     <p><button type="submit" name="Submit" value="stage1Submit"><?php echo __('requestpwdreset63'); ?></button></p>
                                     <?php
-
                 }
                 if ($fields === 'stage2') {
                     ?>
@@ -326,14 +324,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <p><input name="pwd2" type="password" id="pwd2" autocomplete="off"></p>
                                     <p><button type="submit" name="Submit" value="stage2Submit"><?php echo __('button63'); ?></button></p>
                                     <?php
-
                 } ?>
 
                             </fieldset>
                             <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
                         </form>
                         <?php
-
             } elseif ($message !== '') {
                 echo $message;
             } elseif ($errors !== '') {
@@ -345,7 +341,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                         <?php echo __('cannot_read_conf'); ?>
                     </p>
                     <?php
-
         } ?>
             </div>
         </div>
@@ -353,7 +348,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         </body>
         </html>
         <?php
-
     } else {
         die();
     }
