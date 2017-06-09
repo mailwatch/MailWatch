@@ -4106,7 +4106,6 @@ function checkConfVariables()
         'TEMP_DIR',
         'TIME_FORMAT',
         'TIME_ZONE',
-        'TTF_DIR',
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
@@ -4120,6 +4119,7 @@ function checkConfVariables()
         'QUARANTINE_FROM_ADDR',
         'QUARANTINE_REPORT_HOSTURL',
         'CACHE_DIR',
+        'TTF_DIR',
     );
 
     $optional = array(
