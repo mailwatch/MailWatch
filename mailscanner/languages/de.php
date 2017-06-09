@@ -195,7 +195,6 @@ return array(
     'released03' => 'Freigegeben',
     'learnspam03' => 'Gelernt als Spam',
     'learnham03' => 'Gelernt als Ham',
-    'nodata03' => 'Zu wenig Daten zum Generieren des Graphen.',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -713,7 +712,6 @@ return array(
     'nbmessage38' => 'Anz. Nachrichten',
     'score38' => 'Bewertung',
     'count38' => 'Anzahl',
-    'die38' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',
@@ -725,8 +723,6 @@ return array(
     'viruses39' => 'Viren',
     'spam39' => 'Spam',
     'volume39' => 'Größe',
-    'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
-    'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Empfänger Domänen nach Anzahl',
@@ -735,7 +731,7 @@ return array(
   
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Empfänger Domänen nach Größe',
-   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
+    'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
     'domain41' => 'Domäne',
   
     // 42-rep_top_recipients_by_quantity.php
@@ -969,6 +965,11 @@ return array(
     'auditlogidmismatch63' => 'Zurücksetzen des Passworts für Benutzer %s fehlgeschlagen - Rücksetz-ID stimmt nicht überein',
     'auditlogexpired63' => 'Zurücksetzen des Passworts für Benutzer %s fehlgeschlagen - Rücksetz-Link abgelaufen',
     'auditloglinkerror63' => 'Fehlerhafter Link in der Rücksetz-Mail',
+
+    // 64 - graphgenerator.inc.php
+    'nodata64' => 'Zu wenig Daten zum Generieren des Graphen.',
+    'geoipfailed64' => '(GeoIP konnte nicht aufgelöst werden)',
+    'hostfailed64' => '(Hostname konnte nicht aufgelöst werden)',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

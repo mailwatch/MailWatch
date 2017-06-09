@@ -195,7 +195,6 @@ return array(
     'released03' => 'Libérer',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
-    'nodata03' => 'Pas assez de données pour générer le graphique.',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -713,7 +712,6 @@ return array(
     'nbmessage38' => 'Nb de message',
     'score38' => 'Points',
     'count38' => 'Nombre',
-    'die38' => 'Erreur : il est nécessaire d\'avoir deux enregistrements ou plus dans la base de données',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top des relais de messagerie',
@@ -725,8 +723,6 @@ return array(
     'viruses39' => 'Virus',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
-    'geoipfailed39' => '(Pas de réponse de GeoIP)',
-    'hostfailed39' => '(Nom d\'hôte indéfini)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
@@ -969,6 +965,11 @@ return array(
     'auditlogidmismatch63' => 'La réinitialisation du mot de passe pour l\'utilisateur %s a échouée. L\'ID de réinitialisation ne correspond pas.',
     'auditlogexpired63' => 'La réinitialisation du mot de passe pour l\'utilisateur %s a échouée. L\'ID de réinitialisation a expiré.',
     'auditloglinkerror63' => 'Erreur sur le lien de réinitialisation de l\'E-Mail.',
+
+    // 64 - graphgenerator.inc.php
+    'nodata64' => 'Pas assez de données pour générer le graphique.',
+    'geoipfailed64' => '(Pas de réponse de GeoIP)',
+    'hostfailed64' => '(Nom d\'hôte indéfini)',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.

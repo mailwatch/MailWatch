@@ -59,7 +59,7 @@ class GraphGenerator
 
         $this->runConversions();
         if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
-            echo __('nodata03');
+            echo __('nodata64');
             return;
         }
 
@@ -243,14 +243,14 @@ class GraphGenerator
         foreach ($this->data[$column] as $ipval) {
             $hostname = gethostbyaddr($ipval);
             if ($hostname === $ipval) {
-                $this->data['hostname'][] = __('hostfailed39');
+                $this->data['hostname'][] = __('hostfailed64');
             } else {
                 $this->data['hostname'][] = $hostname;
             }
             if ($geoip = return_geoip_country($ipval)) {
                 $this->data['geoip'][] = $geoip;
             } else {
-                $this->data['geoip'][] = __('geoipfailed39');
+                $this->data['geoip'][] = __('geoipfailed64');
             }
         }
     }
