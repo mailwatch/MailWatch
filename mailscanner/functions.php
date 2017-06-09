@@ -246,13 +246,6 @@ function mailwatch_version()
     return '1.2.4-dev';
 }
 
-if (!function_exists('imageantialias')) {
-    function imageantialias()
-    {
-        return true;
-    }
-}
-
 /**
  * @param $number
  * @return string
@@ -3992,26 +3985,6 @@ function xmlrpc_wrapper($host, $msg)
 }
 
 /**
- * Clean Cache folder
- */
-function clear_cache_dir()
-{
-    $cache_dir = MAILWATCH_HOME . '/' . CACHE_DIR;
-    $files = glob($cache_dir . '/*');
-    // Life of cached images: hard set to 60 seconds
-    $life = '60';
-    // File not to delete
-    $placeholder_file = $cache_dir . '/place_holder.txt';
-    foreach ($files as $file) {
-        if (is_file($file) || is_link($file)) {
-            if (($file !== $placeholder_file) && (time() - filemtime($file) >= $life)) {
-                unlink($file);
-            }
-        }
-    }
-}
-
-/**
  * @param $user
  * @param $hash
  */
@@ -4054,7 +4027,6 @@ function checkConfVariables()
         'AUDIT',
         'AUDIT_DAYS_TO_KEEP',
         'AUTO_RELEASE',
-        'CACHE_DIR',
         'DATE_FORMAT',
         'DB_DSN',
         'DB_HOST',
@@ -4151,6 +4123,7 @@ function checkConfVariables()
         'QUARANTINE_MAIL_PORT',
         'QUARANTINE_FROM_ADDR',
         'QUARANTINE_REPORT_HOSTURL',
+        'CACHE_DIR',
     );
 
     $optional = array(

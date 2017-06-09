@@ -144,8 +144,6 @@ if ($_SESSION['user_type'] === 'A') {
 }
 $filter->Display($_SESSION['token']);
 
-clear_cache_dir();
-
 // Add footer
 html_end();
 // Close any open db connections
