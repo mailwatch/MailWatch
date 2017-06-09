@@ -195,7 +195,6 @@ return array(
     'released03' => 'Released',
     'learnspam03' => 'Learn:Spam',
     'learnham03' => 'Learn:Ham',
-    'nodata03' => 'Not enough data to generate a graph.',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
@@ -713,7 +712,6 @@ return array(
     'nbmessage38' => 'No. of messages',
     'score38' => 'Score',
     'count38' => 'Count',
-    'die38' => 'Error: Needs 2 or more rows of data to be retrieved from database',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',
@@ -725,8 +723,6 @@ return array(
     'viruses39' => 'Viruses',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
-    'geoipfailed39' => '(GeoIP lookup failed)',
-    'hostfailed39' => '(Hostname lookup failed)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
@@ -969,6 +965,11 @@ return array(
     'auditlogidmismatch63' => 'Password reset failed for user: %s - Reset ID mismatch.',
     'auditlogexpired63' => 'Password reset failed for user: %s - Reset link expired.',
     'auditloglinkerror63' => 'Reset E-mail link error.',
+
+    // 64 - graphgenerator.inc.php
+    'nodata64' => 'Not enough data to generate a graph.',
+    'geoipfailed64' => '(GeoIP lookup failed)',
+    'hostfailed64' => '(Hostname lookup failed)',
 
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
