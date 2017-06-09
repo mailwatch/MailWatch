@@ -70,7 +70,6 @@ function simple_html_result($status)
         </tr>
     </table>
 <?php
-
 }
 
 if (!isset($_GET['id'])) {
