@@ -121,7 +121,7 @@ if (!isset($_POST['run'])) {
                         if ($result->success === true) {
                             echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                         }
-                    } catch (Requests_Exception $e) {
+                    } catch (\Requests_Exception $e) {
                         echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "<br>\n";
                     }
 

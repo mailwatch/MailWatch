@@ -29,7 +29,7 @@ namespace MailWatch;
 
 class database
 {
-    /** @var mysqli $link */
+    /** @var \mysqli $link */
     public static $link;
 
     private function __construct()
@@ -41,11 +41,11 @@ class database
      * @param string $username
      * @param string $password
      * @param string $database
-     * @return mysqli
+     * @return \mysqli
      */
     public static function connect($host = '', $username = '', $password = '', $database = '')
     {
-        if (!self::$link instanceof mysqli) {
+        if (!self::$link instanceof \mysqli) {
             try {
                 $driver = new \mysqli_driver();
                 $driver->report_mode = MYSQLI_REPORT_ALL;
@@ -60,7 +60,7 @@ class database
                     $charset = 'utf8mb4';
                 }
                 self::$link->set_charset($charset);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 die(__('diedbconn103') . ' ' . $e->getCode() . ' ' . $e->getMessage() . PHP_EOL);
             }
         }
@@ -73,7 +73,7 @@ class database
     public static function close()
     {
         $result = true;
-        if (self::$link instanceof mysqli) {
+        if (self::$link instanceof \mysqli) {
             $result = self::$link->close();
             self::$link = null;
         }
@@ -81,7 +81,7 @@ class database
     }
 
     /**
-     * @param mysqli_result $result
+     * @param \mysqli_result $result
      * @param int $row
      * @param int|string $col
      * @return bool|mixed
