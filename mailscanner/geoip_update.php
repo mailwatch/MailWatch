@@ -25,6 +25,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
 // Require files
 require_once __DIR__ . '/functions.php';
 
@@ -80,7 +81,7 @@ if (!isset($_POST['run'])) {
     if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['destination'])) {
         if (is_writable($extract_dir) && is_readable($extract_dir)) {
             if (function_exists('fsockopen') || extension_loaded('curl')) {
-                $requestSession = new Requests_Session($files_base_url . '/');
+                $requestSession = new \Requests_Session($files_base_url . '/');
                 $requestSession->useragent = 'MailWatch/' . str_replace(array(' - ', ' '), array('-', '-'),
                         mailwatch_version());
 
@@ -100,7 +101,7 @@ if (!isset($_POST['run'])) {
                     switch (PROXY_TYPE) {
                         case 'HTTP':
                         case 'CURLPROXY_HTTP': // BC for old constant name
-                            // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
+                            // $requestProxy = new \Requests_Proxy_HTTP($requestProxyParams);
                             $requestSession->options['proxy']['type'] = 'HTTP';
                             break;
                         case 'SOCKS5':

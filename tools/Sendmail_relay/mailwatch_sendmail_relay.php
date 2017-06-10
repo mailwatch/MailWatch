@@ -26,6 +26,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
