@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 // Require the functions page
 require_once __DIR__ . '/functions.php';
 

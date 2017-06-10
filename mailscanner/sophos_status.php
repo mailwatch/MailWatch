@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 require_once __DIR__ . '/functions.php';
 
 include __DIR__ . '/login.function.php';

@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 // Include of necessary functions
 require_once __DIR__ . '/functions.php';
 include __DIR__ . '/msre_table_functions.php';

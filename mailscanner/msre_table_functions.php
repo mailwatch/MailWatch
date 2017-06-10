@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 // table_functions.php
 // table functions for MSRE
 

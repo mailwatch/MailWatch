@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 class GraphGenerator
 {
     public $sqlQuery;

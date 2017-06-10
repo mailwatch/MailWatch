@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
     include __DIR__ . '/checklogin.php';
 } elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername']) && isset($_GET['httpbasic'])) {

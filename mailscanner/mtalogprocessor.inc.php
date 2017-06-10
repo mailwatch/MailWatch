@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 require_once __DIR__ . '/syslog_parser.inc.php';
 
 abstract class MtaLogProcessor

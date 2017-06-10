@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 function postfixinq()
 {
     $handle = opendir('/var/spool/postfix/hold/');

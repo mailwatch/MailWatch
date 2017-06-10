@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 require_once __DIR__ . '/functions.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 

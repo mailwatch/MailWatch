@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 header('Expires: Sat, 10 May 2003 00:00:00 GMT');
 header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
 header('Cache-Control: no-store, no-cache, must-revalidate');

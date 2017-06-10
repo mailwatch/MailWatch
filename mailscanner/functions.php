@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 // Set error level (some distro's have php.ini set to E_ALL)
 if (version_compare(PHP_VERSION, '5.3.0', '<')) {
     error_reporting(E_ALL);

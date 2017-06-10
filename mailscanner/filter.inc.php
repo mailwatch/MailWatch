@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 /**
  * Class Filter
  */

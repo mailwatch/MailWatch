@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 class database
 {
     /** @var mysqli $link */

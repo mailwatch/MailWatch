@@ -25,6 +25,7 @@
  */
 
 namespace MailWatch;
+
 require_once __DIR__ . '/functions.php';
 
 //Check if LDAP is enabled, if so, prevent usage

@@ -26,6 +26,7 @@
  */
 
 namespace MailWatch;
+
 class Quarantine_Report
 {
     /**
