@@ -114,7 +114,7 @@ $sql = "
 $result = dbquery($sql);
 
 // Check to make sure something was returned
-if ($result->num_rows === 0 || $result->num_rows > 1) {
+if ($result->num_rows !== 1) {
     die(__('dieid04') . " '" . $maillog_id . "' " . __('dienotfound04') . "\n </TABLE>");
 }
 $row = $result->fetch_array();
