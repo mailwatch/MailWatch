@@ -51,6 +51,13 @@ var myChart = new Chart(ctx, {
       yAxes: (function() {
         axes = [];
         for(i=0;i<yAxeDescriptions.length;i++) {
+          var max = 0;
+          for(j=0;j<chartFormattedData[i].length;j++) {
+            max = Math.max(
+              max,
+              Math.max.apply(null, chartFormattedData[i][j])
+            );
+          }
           axes.push({
             id: "y-axis-"+i,
             position: (i%2 == 0 ? "left" : "right" ),
@@ -58,6 +65,7 @@ var myChart = new Chart(ctx, {
               display: true,
               labelString: yAxeDescriptions[i]
             },
+            ticks: { suggestedMax: max * 1.05 },
           });
         }
         return axes;
