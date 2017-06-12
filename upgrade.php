@@ -736,7 +736,7 @@ if (file_exists(MAILWATCH_HOME . '/images/cache/')) {
         echo pad(' - Cache dir was still present but removing it failed') . color(' ERROR', 'red') . PHP_EOL;
     }
 } else {
-    echo pad('Cache dir already removed') . color(' OK', 'green') . PHP_EOL;
+    echo pad(' - Cache dir already removed') . color(' OK', 'green') . PHP_EOL;
 }
 echo PHP_EOL;
 
