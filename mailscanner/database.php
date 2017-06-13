@@ -66,12 +66,12 @@ class database
     margin: 0 auto;
     text-align: center;
     margin-top: 100px;
-    border: solid 5px #000;
+    border: solid 3px #ebcccc;
     -webkit-border-radius:20px;
     -moz-border-radius:20px;
     border-radius:20px;
-    background: rgb(255, 0, 0);
-    color: #fff;
+    background-color: #f2dede;
+    color: #a94442;
 }
 
 .db-error .emphasise {
