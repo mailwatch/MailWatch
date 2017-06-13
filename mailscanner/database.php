@@ -59,7 +59,30 @@ class database
                 }
                 self::$link->set_charset($charset);
             } catch (Exception $e) {
-                die(__('diedbconn103') . ' ' . $e->getCode() . ' ' . $e->getMessage() . PHP_EOL);
+                $output = '
+<style>
+.db-error {
+    width: 40%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 100px;
+    border: solid 5px #000;
+    -webkit-border-radius:20px;
+    -moz-border-radius:20px;
+    border-radius:20px;
+    background: rgb(255, 0, 0);
+    color: #fff;
+}
+
+.db-error .emphasise {
+    font-weight:bold;
+    font-size:larger;
+}
+</style>
+                <div class="db-error">';
+                $output .= __('dbconnecterror99');
+                $output .= '</div>';
+                die ($output);
             }
         }
         return self::$link;
