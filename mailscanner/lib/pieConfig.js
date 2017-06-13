@@ -54,70 +54,72 @@ function getChartBgColors(count) {
   return bgColors;
 }
 
-var ctx = document.getElementById(chartId);
-var myChart = new Chart(ctx, {
-  type: "pie",
-  data: {
-    labels: chartLabels,
-    datasets: [{
-      label: chartTitle,
-      data: chartNumericData,
-      backgroundColor: getChartBgColors(chartNumericData.length)
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      fontSize: 18,
-      text: chartTitle
+function printPieGraph(chartId, settings) {
+  var ctx = document.getElementById(chartId);
+  var myChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: settings.chartLabels,
+      datasets: [{
+        label: settings.chartTitle,
+        data: settings.chartNumericData,
+        backgroundColor: getChartBgColors(settings.chartNumericData.length)
+      }]
     },
-    legend: {
-      display: true,
-      labels: {
-        generateLabels: function(graph) {
-          var defaultLabels = Chart.defaults.doughnut.legend.labels.generateLabels(graph);
-          /* uncomment this to additionally add the percentage to the labels
-          var graphData = graph.data.datasets[0].data;
-          var total = 0;
-          for(var i=0; i<graphData.length; i++) {
-            total += graphData[i];
-          };
-          for(var i=0; i<defaultLabels.length; i++) {
-            var label = defaultLabels[i];
-            var percentage = Math.round((graphData[i] / total) * 100);
-            defaultLabels[i].text += " (" + percentage +"%)";
-          }*/
-          return defaultLabels;
+    options: {
+      title: {
+        display: true,
+        fontSize: 18,
+        text: settings.chartTitle
+      },
+      legend: {
+        display: true,
+        labels: {
+          generateLabels: function(graph) {
+            var defaultLabels = Chart.defaults.doughnut.legend.labels.generateLabels(graph);
+            /* uncomment this to additionally add the percentage to the labels
+            var graphData = graph.data.datasets[0].data;
+            var total = 0;
+            for(var i=0; i<graphData.length; i++) {
+              total += graphData[i];
+            };
+            for(var i=0; i<defaultLabels.length; i++) {
+              var label = defaultLabels[i];
+              var percentage = Math.round((graphData[i] / total) * 100);
+              defaultLabels[i].text += " (" + percentage +"%)";
+            }*/
+            return defaultLabels;
+          }
         }
-      }
-    },
-    responsive: false,
-    tooltips: {
-      callbacks: {
-        label: function(tooltipItem, data) {
-          var dataset = data.datasets[tooltipItem.datasetIndex];
-          var tooltipLabel = data.labels[tooltipItem.index];
-          var itemData = dataset.data[tooltipItem.index];
-          var total = 0;
-          for (var i in dataset.data) {
-            if (dataset._meta[0].data[i].hidden === false) { 
-              total += dataset.data[i];
+      },
+      responsive: false,
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            var dataset = data.datasets[tooltipItem.datasetIndex];
+            var tooltipLabel = data.labels[tooltipItem.index];
+            var itemData = dataset.data[tooltipItem.index];
+            var total = 0;
+            for (var i in dataset.data) {
+              if (dataset._meta[0].data[i].hidden === false) { 
+                total += dataset.data[i];
+              }
             }
+            var tooltipPercentage = Math.round((itemData / total) * 100);
+            //COLON specified on main page via php __('colon99')
+            var tooltipOutput = " " + tooltipLabel + COLON + " " + settings.chartFormattedData[tooltipItem.index];
+            if (tooltipPercentage < 3) {
+              tooltipOutput += " (" + tooltipPercentage + "%)";
+            }
+            return tooltipOutput;
           }
-          var tooltipPercentage = Math.round((itemData / total) * 100);
-          //COLON specified on main page via php __('colon99')
-          var tooltipOutput = " " + tooltipLabel + COLON + " " + chartFormattedData[tooltipItem.index];
-          if (tooltipPercentage < 3) {
-            tooltipOutput += " (" + tooltipPercentage + "%)";
-          }
-          return tooltipOutput;
         }
-      }
-    },
-    animation: {
-      onProgress: drawPersistentPercentValues,
-      onComplete: drawPersistentPercentValues
-    },
-    hover: { animationDuration: 0 }
-  }
-});
+      },
+      animation: {
+        onProgress: drawPersistentPercentValues,
+        onComplete: drawPersistentPercentValues
+      },
+      hover: { animationDuration: 0 }
+    }
+  });
+}

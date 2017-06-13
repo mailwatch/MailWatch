@@ -72,6 +72,7 @@ $graphgenerator->graphColumns = array(
 );
 $graphgenerator->types = array(array('line'));
 $graphgenerator->graphTitle = __('sascoredist38');
+$graphgenerator->settings['drawLines'] = true;
 $graphgenerator->printLineGraph();
 
 // Add footer
