@@ -162,8 +162,32 @@ function decode_structure($structure)
             break;
         case 'multipart/alternative':
             break;
+        case 'message/partial':
+            // @link https://tools.ietf.org/html/rfc2046#section-5.2.2
+            header('Content-Type: application/octet-stream');
+            //get message id
+            preg_match('/.*id="?([^";]*)"?.*/', $structure->headers['content-type'], $identifier);
+            //get part number
+            preg_match("/.*number=([\d]*).*/", $structure->headers['content-type'], $partNumber);
+            //get total parts
+            preg_match("/.*total=([\d]*).*/", $structure->headers['content-type'], $totalParts);
+
+            //build filename
+            $filename = isset($identifier[1]) ? $identifier[1] : 'partialMessage';
+            if (isset($partNumber[1])) {
+                $filename .= ' - Part ' . $partNumber[1];
+            }
+            if (isset($totalParts[1])) {
+                $filename .= ' of ' . $totalParts[1];
+            }
+            $filename .= '.bin';
+
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            echo $structure->body;
+            break;
         default:
             header('Content-Type: ' . $structure->headers['content-type']);
+            // in case of missing Content-Disposition use a standard one
             if (isset($structure->headers['content-disposition'])) {
                 header('Content-Disposition: ' . $structure->headers['content-disposition']);
             } else {
