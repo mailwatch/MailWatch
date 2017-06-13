@@ -4670,7 +4670,8 @@ function checkPrivilegeChange($myusername)
     return false;
 }
 
-function printTenMinutesGraph() {
+function printTenMinutesGraph()
+{
     require_once __DIR__ . '/graphgenerator.inc.php';
 
     // Authentication checking
