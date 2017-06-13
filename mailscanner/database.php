@@ -82,7 +82,7 @@ class database
                 <div class="db-error">';
                 $output .= __('dbconnecterror99');
                 $output .= '</div>';
-                die ($output);
+                die($output);
             }
         }
         return self::$link;
