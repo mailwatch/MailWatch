@@ -60,18 +60,21 @@ class GraphGenerator
             return;
         }
 
+        $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
         //create canvas graph
-        echo '<canvas id="reportChart" class="reportGraph"></canvas>
-      <script>
-      var COLON = "' . __('colon99') . '";
-      var chartTitle = "' . $this->graphTitle . '";
-      var chartId = "reportChart";
-      var chartLabels = ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"];
-      var chartNumericData = [' . implode(', ', $this->data[$this->graphColumns['dataNumericColumn']]) . '];
-      var chartFormattedData = ["' . implode('", "', $this->data[$this->graphColumns['dataFormattedColumn']]) . '"];
-      </script>
+        echo '<canvas id="' . $chartId . '" class="reportGraph"></canvas>
       <script src="lib/Chart.js/Chart.min.js"></script>
       <script src="lib/pieConfig.js"></script>
+      <script>
+        COLON = "' . __('colon99') . '";
+        printPieGraph("' . $chartId .'", {
+          chartTitle :  "' . $this->graphTitle . '",
+          chartId : "' . $chartId . '",
+          chartLabels : ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"],
+          chartNumericData : [' . implode(', ', $this->data[$this->graphColumns['dataNumericColumn']]) . '],
+          chartFormattedData : ["' . implode('", "', $this->data[$this->graphColumns['dataFormattedColumn']]) . '"],
+        });
+      </script>
       <br>';
 
         $this->printTable();
@@ -123,23 +126,25 @@ class GraphGenerator
         }
         $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
         echo '<canvas id="' . $chartId . '" class="lineGraph"></canvas>
-      <script>
-      var COLON = "' . __('colon99') . '";
-      var chartTitle = "' . $this->graphTitle . '";
-      var chartId = "' . $chartId . '";
-      var chartLabels = ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"];
-      var chartNumericData = [' . $numericData . '];
-      var chartFormattedData = [' . $formattedData . '];
-      var xAxeDescription = "' . $this->graphColumns['xAxeDescription'] . '";
-      var yAxeDescriptions = ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"];
-      var fillBelowLine = [' . implode(', ', $this->graphColumns['fillBelowLine']) . '];
-      var plainGraph = ' . (!isset($this->settings['plainGraph']) || $this->settings['plainGraph'] === true ?  'true' : 'false' ). ';
-      ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'var drawLines = true;' : '' ). '
-      ' . (isset($this->graphColumns['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '') . '
-      ' . ($graphTypes === null ? '' : 'var types = [' .  $graphTypes . ']') . '
-      </script>
       <script src="lib/Chart.js/Chart.min.js"></script>
-      <script src="lib/lineConfig.js"></script>';
+      <script src="lib/lineConfig.js"></script>
+      <script>
+        COLON = "' . __('colon99') . '";
+        printLineGraph("' . $chartId . '",  {
+          chartTitle : "' . $this->graphTitle . '",
+          chartId : "' . $chartId . '",
+          chartLabels : ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"],
+          chartNumericData : [' . $numericData . '],
+          chartFormattedData : [' . $formattedData . '],
+          xAxeDescription : "' . $this->graphColumns['xAxeDescription'] . '",
+          yAxeDescriptions : ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"],
+          fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
+          plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ?  'true' : 'false' ). ',
+          ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'drawLines : true,' : '' ). '
+          ' . (isset($this->graphColumns['dataLabels']) ? 'chartDataLabels : [' . $dataLabels . '],' : '') . '
+          ' . ($graphTypes === null ? '' : 'types : [' .  $graphTypes . '],') . '
+        });
+      </script>';
 
         $this->printTable();
     }
@@ -308,7 +313,7 @@ class GraphGenerator
 
         $now = new DateTime();
         $date = clone $now;
-        $date = $date->sub(new DateInterval($interval))->sub(new DateInterval($scale));
+        $date = $date->sub(new DateInterval($interval));
         $dates = array();
         $count = 0;
         while($date < $now) {
@@ -341,8 +346,9 @@ class GraphGenerator
         $format = $this->settings['timeFormat'];
 
         $convertedData = array();
-        $start = (new DateTime())->sub(new DateInterval($interval))->sub(new DateInterval($scale));
         $now = new DateTime();
+        $start = clone $now;
+        $start = $start->sub(new DateInterval($interval));
         //initialize the time scales with zeros
         while($start < $now) {
             $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
