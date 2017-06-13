@@ -139,8 +139,8 @@ class GraphGenerator
           xAxeDescription : "' . $this->graphColumns['xAxeDescription'] . '",
           yAxeDescriptions : ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"],
           fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
-          plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ?  'true' : 'false' ). ',
-          ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'drawLines : true,' : '' ). '
+          plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ?  'true' : 'false'). ',
+          ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'drawLines : true,' : ''). '
           ' . (isset($this->graphColumns['dataLabels']) ? 'chartDataLabels : [' . $dataLabels . '],' : '') . '
           ' . ($graphTypes === null ? '' : 'types : [' .  $graphTypes . '],') . '
         });
@@ -316,7 +316,7 @@ class GraphGenerator
         $date = $date->sub(new DateInterval($interval));
         $dates = array();
         $count = 0;
-        while($date < $now) {
+        while ($date < $now) {
             //get the next interval and create the label for it
             $date = $date->add(new DateInterval($scale));
             $start = $date->format($format);
@@ -350,7 +350,7 @@ class GraphGenerator
         $start = clone $now;
         $start = $start->sub(new DateInterval($interval));
         //initialize the time scales with zeros
-        while($start < $now) {
+        while ($start < $now) {
             $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
         }
         //get the values from the sql result and assign them to the correct time scale part
