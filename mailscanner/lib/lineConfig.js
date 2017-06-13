@@ -51,11 +51,12 @@ var myChart = new Chart(ctx, {
       yAxes: (function() {
         axes = [];
         for(i=0;i<yAxeDescriptions.length;i++) {
+          //get max for all of yaxis to set the axis max
           var max = 0;
           for(j=0;j<chartFormattedData[i].length;j++) {
             max = Math.max(
               max,
-              Math.max.apply(null, chartFormattedData[i][j])
+              Math.max.apply(null, chartNumericData[i][j])
             );
           }
           axes.push({
