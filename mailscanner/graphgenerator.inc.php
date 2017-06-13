@@ -35,8 +35,9 @@ class GraphGenerator
     public $valueConversion = array();
     public $types = null;
     public $printTable = true;
+    public $settings = array();
 
-    private $data;
+    private $data = array();
     private $numResult;
 
 
@@ -154,11 +155,11 @@ class GraphGenerator
                 case 'number':
                     $this->convertNumber($column);
                     break;
-                case 'generatehours':
-                    $this->generateHours();
+                case 'generatetimescale':
+                    $this->generateTimeScale();
                     break;
-                case 'assignperhour':
-                    $this->convertAssignPerHour($column);
+                case 'timescale':
+                    $this->convertToTimeScale($column);
                     break;
                 case 'hostnamegeoip':
                     $this->convertHostnameGeoip($column);
@@ -286,44 +287,71 @@ class GraphGenerator
     }
 
     /**
-     * Generates $this->data['hours'] with the last 25 hours beginning with the oldest one
+     * Generates $this->data['time'] with the time beginning with $this->settings['timeInterval'] and
+     * in steps of $this->settings['timeScale']
      *
      * @return void
      */
-    protected function generateHours()
+    protected function generateTimeScale()
     {
-        $current = new DateTime();
-        $date = $current->sub(new DateInterval("P1DT1H"));
-        $dates = array();
-        for ($i=0;$i< 25;$i++) {
-            $date = $date->add(new DateInterval("PT1H"));
-            $hour = $date->format("H");
-            $dates[] = $hour . ':00-' . (intval($hour)+1) . ':00';
+        if (!isset($this->settings['timeInterval']) || !isset($this->settings['timeScale'])
+             || !isset($this->settings['timeFormat'])) {
+            throw new \Exception('timeInterval or timeScale not set');
         }
-        $this->data['hours'] = $dates;
-        $this->numResult = 25;
+        $interval = $this->settings['timeInterval'];
+        $scale = $this->settings['timeScale'];
+        $format = str_replace('%', '', $this->settings['timeFormat']);
+
+        $now = new DateTime();
+        $date = clone $now;
+        $date = $date->sub(new DateInterval($interval));
+        $dates = array();
+        $count = 0;
+        while($date < $now) {
+            //get the next interval and create the label for it
+            $date = $date->add(new DateInterval($scale));
+            $start = $date->format($format);
+            $end = clone $date;
+            $end = $end->add(new DateInterval($scale))->format($format);
+            $dates[] = $start . '-' . $end;
+            $count++;
+        }
+        //store the time scales and define the result count
+        $this->data['time'] = $dates;
+        $this->numResult = $count;
     }
 
     /**
-     * Converts the data from $this->data[$column] so that it is mapped to an hour
+     * Converts the data from $this->data[$column] so that it is mapped to an time scale
      *
      * @param string $column the data column that shall be converted
      * @return void
      */
-    protected function convertAssignPerHour($column)
+    protected function convertToTimeScale($column)
     {
-        $convertedData = array();
-        for ($i=0; $i< 25; $i++) {
-            $convertedData[] = 0;
+        if (!isset($this->settings['timeInterval'], $this->settings['timeScale'], $this->settings['timeFormat'])) {
+            throw new \Exception('timeInterval or timeScale not set');
         }
-        $start = (new DateTime())->sub(new DateInterval("P1D"));
+        $interval = $this->settings['timeInterval'];
+        $scale = $this->settings['timeScale'];
+        $format = $this->settings['timeFormat'];
+
+        $convertedData = array();
+        $start = (new DateTime())->sub(new DateInterval($interval));
+        $now = new DateTime();
+        //initialize the time scales with zeros
+        while($start < $now) {
+            $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
+        }
+        //get the values from the sql result and assign them to the correct time scale part
         $count = count($this->data['xaxis']);
         for ($i=0; $i<$count; $i++) {
             // get the value from data and add it to the corresponding hour
-            $timeDiff = $start->diff((new DateTime($this->data['xaxis'][$i])), true);
-            $convertedData[$timeDiff->format('%h')] += $this->data[$column][$i];
+            $timeDiff = new DateTime($this->data['xaxis'][$i]);
+            $convertedData[$timeDiff->format($format)] += $this->data[$column][$i];
         }
-        $this->data[$column . 'conv'] = $convertedData;
+        //we only need the value and not the keys
+        $this->data[$column . 'conv'] = array_values($convertedData);
     }
 
     /**

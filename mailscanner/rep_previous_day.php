@@ -56,7 +56,7 @@ $graphgenerator->sqlQuery = "
 ';
 
 $graphgenerator->tableColumns = array(
-    'hours' => __('hours36'),
+    'time' => __('hours36'),
     'total_mailconv' => __('mailcount36'),
     'total_virusconv' => __('viruscount36'),
     'total_spamconv' => __('spamcount36'),
@@ -70,15 +70,15 @@ $graphgenerator->sqlColumns = array(
     'total_spam',
 );
 $graphgenerator->valueConversion = array(
-    'xaxis' => 'generatehours',
-    'total_size' => 'assignperhour',
+    'xaxis' => 'generatetimescale',
+    'total_size' => 'timescale',
     'total_sizeconv' => 'scale', //do not change this order
-    'total_mail' => 'assignperhour',
-    'total_virus' => 'assignperhour',
-    'total_spam' => 'assignperhour',
+    'total_mail' => 'timescale',
+    'total_virus' => 'timescale',
+    'total_spam' => 'timescale',
 );
 $graphgenerator->graphColumns = array(
-    'labelColumn' => 'hours',
+    'labelColumn' => 'time',
     'dataLabels' => array(
         array(__('barmail36'), __('barvirus36'), __('barspam36')),
         array(__('volume36')),
@@ -103,6 +103,9 @@ $graphgenerator->types = array(
     array('line')
 );
 $graphgenerator->graphTitle = __('totalmaillasthours36');
+$graphgenerator->settings['timeInterval'] = 'P1D';
+$graphgenerator->settings['timeScale'] = 'PT1H';
+$graphgenerator->settings['timeFormat'] = 'H:00';
 $graphgenerator->printLineGraph();
 
 // Add footer
