@@ -78,6 +78,8 @@ $sql .= "
   mcpwhitelisted,
   mcpblacklisted,
   mcpsascore,
+  released,
+  salearn,
   '' AS status
  FROM
   maillog
