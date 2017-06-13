@@ -391,6 +391,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         echo '  </table>' . "\n";
         echo '  </td>' . "\n";
+
+        echo '<td align="center" valign="top">' . "\n";
+        printTenMinutesGraph();
+        echo '</td>';
     }
 
     echo '<td align="center" valign="top">' . "\n";
@@ -4664,4 +4668,71 @@ function checkPrivilegeChange($myusername)
     }
 
     return false;
+}
+
+function printTenMinutesGraph() {
+    require_once __DIR__ . '/graphgenerator.inc.php';
+
+    // Authentication checking
+    require __DIR__ . '/login.function.php';
+
+    $graphgenerator = new GraphGenerator();
+    $graphgenerator->sqlQuery = '
+     SELECT
+      timestamp AS xaxis,
+      1 as total_mail,
+      virusinfected AS total_virus,
+      isspam AS total_spam,
+      size AS total_size
+     FROM
+      maillog
+     WHERE
+      1=1
+     AND
+      timestamp BETWEEN (NOW() - INTERVAL 10 MINUTE) AND NOW()
+     ORDER BY
+      timestamp DESC
+    ';
+
+    $graphgenerator->sqlColumns = array(
+        'xaxis',
+        'total_mail',
+        'total_virus',
+        'total_spam',
+    );
+    $graphgenerator->valueConversion = array(
+        'xaxis' => 'generatetimescale',
+        'total_mail' => 'timescale',
+        'total_virus' => 'timescale',
+        'total_spam' => 'timescale',
+    );
+    $graphgenerator->graphColumns = array(
+        'labelColumn' => 'time',
+        'dataLabels' => array(
+            array('','','',''),
+        ),
+        'dataNumericColumns' => array(
+            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        ),
+        'dataFormattedColumns' => array(
+            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        ),
+        'xAxeDescription' => '',
+        'yAxeDescriptions' => array(
+            '',
+        ),
+        'fillBelowLine' => array('false')
+    );
+    $graphgenerator->types = array(
+        array('line', 'line', 'line'),
+    );
+    $graphgenerator->graphTitle = '';
+    $graphgenerator->settings['timeInterval'] = 'PT10M';
+    $graphgenerator->settings['timeScale'] = 'PT1M';
+    $graphgenerator->settings['timeFormat'] = 'i';
+    $graphgenerator->settings['plainGraph'] = true;
+    $graphgenerator->settings['drawLines'] = true;
+    $graphgenerator->settings['chartId'] = 'last10mingraph';
+    $graphgenerator->printTable = false;
+    $graphgenerator->printLineGraph();
 }
