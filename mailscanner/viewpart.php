@@ -119,6 +119,9 @@ if (isset($_GET['part'])) {
     die(__('part58') . __('notfound58') . "\n");
 }
 
+/**
+ * @param stdClass $structure a Mail_mimeDecode structure object
+ */
 function decode_structure($structure)
 {
     $type = $structure->ctype_primary . '/' . $structure->ctype_secondary;
@@ -135,7 +138,6 @@ function decode_structure($structure)
  <html>
  <head>
  <meta charset="utf-8">
- <link rel="shortcut icon" href="images/favicon.png">
  <title>' . __('title58') . '</title>
  </head>
  <body>
@@ -162,7 +164,11 @@ function decode_structure($structure)
             break;
         default:
             header('Content-Type: ' . $structure->headers['content-type']);
-            header('Content-Disposition: ' . $structure->headers['content-disposition']);
+            if (isset($structure->headers['content-disposition'])) {
+                header('Content-Disposition: ' . $structure->headers['content-disposition']);
+            } else {
+                header('Content-Disposition: attachment; filename="attachment.bin"');
+            }
             echo $structure->body;
             break;
     }
