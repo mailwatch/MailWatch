@@ -88,6 +88,7 @@ class GraphGenerator
             echo("No types defined");
             return;
         }
+
         if ($this->prepareData() === false) {
             return;
         }
@@ -120,17 +121,20 @@ class GraphGenerator
             $dataLabels .= '],' . "\n";
             $graphTypes .= '],' . "\n";
         }
-        echo '<canvas id="reportChart" class="lineGraph"></canvas>
+        $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
+        echo '<canvas id="' . $chartId . '" class="lineGraph"></canvas>
       <script>
       var COLON = "' . __('colon99') . '";
       var chartTitle = "' . $this->graphTitle . '";
-      var chartId = "reportChart";
+      var chartId = "' . $chartId . '";
       var chartLabels = ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"];
       var chartNumericData = [' . $numericData . '];
       var chartFormattedData = [' . $formattedData . '];
       var xAxeDescription = "' . $this->graphColumns['xAxeDescription'] . '";
       var yAxeDescriptions = ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"];
       var fillBelowLine = [' . implode(', ', $this->graphColumns['fillBelowLine']) . '];
+      var plainGraph = ' . (!isset($this->settings['plainGraph']) || $this->settings['plainGraph'] === true ?  'true' : 'false' ). ';
+      ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'var drawLines = true;' : '' ). '
       ' . (isset($this->graphColumns['dataLabels']) ? 'var chartDataLabels = [' . $dataLabels . '];' : '') . '
       ' . ($graphTypes === null ? '' : 'var types = [' .  $graphTypes . ']') . '
       </script>
@@ -304,7 +308,7 @@ class GraphGenerator
 
         $now = new DateTime();
         $date = clone $now;
-        $date = $date->sub(new DateInterval($interval));
+        $date = $date->sub(new DateInterval($interval))->sub(new DateInterval($scale));
         $dates = array();
         $count = 0;
         while($date < $now) {
@@ -337,7 +341,7 @@ class GraphGenerator
         $format = $this->settings['timeFormat'];
 
         $convertedData = array();
-        $start = (new DateTime())->sub(new DateInterval($interval));
+        $start = (new DateTime())->sub(new DateInterval($interval))->sub(new DateInterval($scale));
         $now = new DateTime();
         //initialize the time scales with zeros
         while($start < $now) {

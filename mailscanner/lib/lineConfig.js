@@ -22,10 +22,12 @@ var myChart = new Chart(ctx, {
             label: (typeof chartDataLabels !== 'undefined' ? chartDataLabels[i][j] : ''),
             data: chartNumericData[i][j],
             backgroundColor: lineColors[datasets.length],
-            fill: fillBelowLine[i][j],
+            borderColor: lineColors[datasets.length],
+            fill: fillBelowLine[i],
             yAxisID: "y-axis-"+i,
             type: (typeof types !== 'undefined' ? types[i][j] : "line"),
-            showLine: (typeof types === 'undefined' || fillBelowLine[i] ? true : false),
+            showLine: (typeof types === 'undefined' || fillBelowLine[i][j] ? true :
+                        (typeof drawLines === 'undefined' ? false : drawLines)),
             pointRadius: 1,
           });
         }
@@ -35,12 +37,13 @@ var myChart = new Chart(ctx, {
   },
   options: {
     title: {
-      display: true,
+      display: (typeof plainGraph === 'undefined' ? true : !plainGraph),
       fontSize: 18,
       text: chartTitle
     },
     legend: {
-      display: (typeof chartDataLabels === 'undefined' ? false : true),
+      display: (typeof chartDataLabels === 'undefined' ? false : (
+                  typeof plainGraph === 'undefined' ? true : !plainGraph)),
     },
     elements: {
       line: {
@@ -63,7 +66,7 @@ var myChart = new Chart(ctx, {
             id: "y-axis-"+i,
             position: (i%2 == 0 ? "left" : "right" ),
             scaleLabel: {
-              display: true,
+              display: (typeof plainGraph === 'undefined' ? true : !plainGraph),
               labelString: yAxeDescriptions[i]
             },
             ticks: { suggestedMax: max * 1.05 },
@@ -75,7 +78,7 @@ var myChart = new Chart(ctx, {
         maxBarThickness: 7,
 //        gridLines: {offsetGridLines: false},
         scaleLabel: {
-          display: true,
+          display: (typeof plainGraph === 'undefined' ? true : !plainGraph),
           labelString: xAxeDescription
         }
       }]

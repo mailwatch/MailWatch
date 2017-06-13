@@ -928,3 +928,8 @@ select.lang > option {
     background-color: #f51111;
     color:#fff;
 }
+
+#last10mingraph {
+    width: auto;
+    height: 180px;
+}
