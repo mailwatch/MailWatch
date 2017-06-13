@@ -25,6 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 // Set error level (some distro's have php.ini set to E_ALL)
 if (version_compare(PHP_VERSION, '5.3.0', '<')) {
     error_reporting(E_ALL);
@@ -529,10 +531,10 @@ function printMTAQueue()
             $servers = explode(' ', RPC_REMOTE_SERVER);
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
-                $msg = new xmlrpcmsg('postfix_queues', array());
+                $msg = new \xmlrpcmsg('postfix_queues', array());
                 $rsp = xmlrpc_wrapper($servers[$i], $msg);
                 if ($rsp->faultCode() === 0) {
-                    $response = php_xmlrpc_decode($rsp->value());
+                    $response = \php_xmlrpc_decode($rsp->value());
                     $inq += $response['inq'];
                     $outq += $response['outq'];
                 } else {
@@ -870,7 +872,7 @@ function java_time()
 {
     echo '
 function updateClock() {
-  var currentTime = new Date();
+  var currentTime = new \Date();
 
   var currentHours = currentTime.getHours();
   var currentMinutes = currentTime.getMinutes();
@@ -1021,8 +1023,8 @@ function dbquerydebug($link, $sql)
  */
 function sanitizeInput($string)
 {
-    $config = HTMLPurifier_Config::createDefault();
-    $purifier = new HTMLPurifier($config);
+    $config = \HTMLPurifier_Config::createDefault();
+    $purifier = new \HTMLPurifier($config);
 
     return $purifier->purify($string);
 }
@@ -1922,7 +1924,7 @@ function generatePager($sql)
         'delta' => 2,
         'totalItems' => $rows,
     );
-    $pager = Pager::factory($pager_options);
+    $pager = \Pager::factory($pager_options);
 
     //then we fetch the relevant records for the current page
     list($from, $to) = $pager->getOffsetByPageId();
@@ -2592,7 +2594,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
             'delta' => 2,
             'totalItems' => $rows,
         );
-        $pager = Pager::factory($pager_options);
+        $pager = \Pager::factory($pager_options);
 
         //then we fetch the relevant records for the current page
         list($from, $to) = $pager->getOffsetByPageId();
@@ -2684,7 +2686,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
             'delta' => 2,
             'totalItems' => $rows,
         );
-        $pager = Pager::factory($pager_options);
+        $pager = \Pager::factory($pager_options);
 
         //then we fetch the relevant records for the current page
         list($from, $to) = $pager->getOffsetByPageId();
@@ -3410,11 +3412,11 @@ SELECT
 
     // Host is remote call quarantine_list_items by RPC
     debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
+    //$client = new \xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
     //if(DEBUG) { $client->setDebug(1); }
     //$parameters = array($input);
-    //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
-    $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($msgid)));
+    //$msg = new \xmlrpcmsg('quarantine_list_items',$parameters);
+    $msg = new \xmlrpcmsg('quarantine_list_items', array(new \xmlrpcval($msgid)));
     $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
     if ($rsp->faultCode() === 0) {
         $response = php_xmlrpc_decode($rsp->value());
@@ -3450,7 +3452,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail/smtp.php';
             $crlf = "\r\n";
             $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
-            $mime = new Mail_mime($crlf);
+            $mime = new \Mail_mime($crlf);
             $mime->setTXTBody(QUARANTINE_MSG_BODY);
             // Loop through each selected file and attach them to the mail
             foreach ($num as $key => $val) {
@@ -3465,7 +3467,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $mail_param = array('host' => MAILWATCH_MAIL_HOST);
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
-            $mail = new Mail_smtp($mail_param);
+            $mail = new \Mail_smtp($mail_param);
 
             $m_result = $mail->send($to, $hdrs, $body);
             if (is_a($m_result, 'PEAR_Error')) {
@@ -3510,26 +3512,26 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
     } else {
         // Host is remote - handle by RPC
         debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+        //$client = new \xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
         $list_output = array();
         foreach ($list as $list_array) {
             $list_struct = array();
             foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
+                $list_struct[$key] = new \xmlrpcval($val);
             }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
+            $list_output[] = new \xmlrpcval($list_struct, 'struct');
         }
         $num_output = array();
         foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
+            $num_output[$key] = new \xmlrpcval($val);
         }
         // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
-        $param3 = new xmlrpcval($to, 'string');
+        $param1 = new \xmlrpcval($list_output, 'array');
+        $param2 = new \xmlrpcval($num_output, 'array');
+        $param3 = new \xmlrpcval($to, 'string');
         $parameters = array($param1, $param2, $param3);
-        $msg = new xmlrpcmsg('quarantine_release', $parameters);
+        $msg = new \xmlrpcmsg('quarantine_release', $parameters);
         $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
         if ($rsp->faultCode() === 0) {
             $response = php_xmlrpc_decode($rsp->value());
@@ -3679,26 +3681,26 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
 
     // Call by RPC
     debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    //$client = new \xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
     $list_output = array();
     foreach ($list as $list_array) {
         $list_struct = array();
         foreach ($list_array as $key => $val) {
-            $list_struct[$key] = new xmlrpcval($val);
+            $list_struct[$key] = new \xmlrpcval($val);
         }
-        $list_output[] = new xmlrpcval($list_struct, 'struct');
+        $list_output[] = new \xmlrpcval($list_struct, 'struct');
     }
     $num_output = array();
     foreach ($num as $key => $val) {
-        $num_output[$key] = new xmlrpcval($val);
+        $num_output[$key] = new \xmlrpcval($val);
     }
     // Build input parameters
-    $param1 = new xmlrpcval($list_output, 'array');
-    $param2 = new xmlrpcval($num_output, 'array');
-    $param3 = new xmlrpcval($type, 'string');
+    $param1 = new \xmlrpcval($list_output, 'array');
+    $param2 = new \xmlrpcval($num_output, 'array');
+    $param3 = new \xmlrpcval($type, 'string');
     $parameters = array($param1, $param2, $param3);
-    $msg = new xmlrpcmsg('quarantine_learn', $parameters);
+    $msg = new \xmlrpcmsg('quarantine_learn', $parameters);
     $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
     if ($rsp->faultCode() === 0) {
         $response = php_xmlrpc_decode($rsp->value());
@@ -3743,25 +3745,25 @@ function quarantine_delete($list, $num, $rpc_only = false)
 
     // Call by RPC
     debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    //$client = new \xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
     $list_output = array();
     foreach ($list as $list_array) {
         $list_struct = array();
         foreach ($list_array as $key => $val) {
-            $list_struct[$key] = new xmlrpcval($val);
+            $list_struct[$key] = new \xmlrpcval($val);
         }
-        $list_output[] = new xmlrpcval($list_struct, 'struct');
+        $list_output[] = new \xmlrpcval($list_struct, 'struct');
     }
     $num_output = array();
     foreach ($num as $key => $val) {
-        $num_output[$key] = new xmlrpcval($val);
+        $num_output[$key] = new \xmlrpcval($val);
     }
     // Build input parameters
-    $param1 = new xmlrpcval($list_output, 'array');
-    $param2 = new xmlrpcval($num_output, 'array');
+    $param1 = new \xmlrpcval($list_output, 'array');
+    $param2 = new \xmlrpcval($num_output, 'array');
     $parameters = array($param1, $param2);
-    $msg = new xmlrpcmsg('quarantine_delete', $parameters);
+    $msg = new \xmlrpcmsg('quarantine_delete', $parameters);
     $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
     if ($rsp->faultCode() === 0) {
         $response = php_xmlrpc_decode($rsp->value());
@@ -3970,7 +3972,7 @@ function xmlrpc_wrapper($host, $msg)
     } else {
         $port = 80;
     }
-    $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH') . '/rpcserver.php', $host, $port);
+    $client = new \xmlrpc_client(constant('RPC_RELATIVE_PATH') . '/rpcserver.php', $host, $port);
     if (DEBUG) {
         $client->setDebug(1);
     }
@@ -4229,7 +4231,7 @@ function get_random_string($lenght)
  */
 function send_email($email, $html, $text, $subject, $pwdreset = false)
 {
-    $mime = new Mail_mime("\n");
+    $mime = new \Mail_mime("\n");
     if ($pwdreset === true && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
         $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
     } else {
@@ -4257,7 +4259,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     } else {
         $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     }
-    $mail = new Mail_smtp($mail_param);
+    $mail = new \Mail_smtp($mail_param);
 
     return $mail->send($email, $hdrs, $body);
 }

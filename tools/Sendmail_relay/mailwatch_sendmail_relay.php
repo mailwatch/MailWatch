@@ -26,6 +26,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
@@ -50,7 +52,7 @@ if (!@is_file($pathToFunctions)) {
 // Set-up environment
 set_time_limit(0);
 
-class SendmailLogProcessor extends MtaLogProcessor
+class mailwatch_sendmail_relay extends MtaLogProcessor
 {
     public function __construct()
     {
@@ -100,7 +102,7 @@ class SendmailLogProcessor extends MtaLogProcessor
     }
 }
 
-$logprocessor = new SendmailLogProcessor();
+$logprocessor = new mailwatch_sendmail_relay();
 if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
     $logprocessor->doit('cat ' . MAIL_LOG);
 } else {

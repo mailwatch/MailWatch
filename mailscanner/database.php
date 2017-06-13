@@ -25,9 +25,11 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 class database
 {
-    /** @var mysqli $link */
+    /** @var \mysqli $link */
     public static $link;
 
     private function __construct()
@@ -39,17 +41,17 @@ class database
      * @param string $username
      * @param string $password
      * @param string $database
-     * @return mysqli
+     * @return \mysqli
      */
     public static function connect($host = '', $username = '', $password = '', $database = '')
     {
-        if (!self::$link instanceof mysqli) {
+        if (!self::$link instanceof \mysqli) {
             try {
-                $driver = new mysqli_driver();
+                $driver = new \mysqli_driver();
                 $driver->report_mode = MYSQLI_REPORT_ALL;
                 set_error_handler(function () {
                 });
-                self::$link = new mysqli($host, $username, $password, $database);
+                self::$link = new \mysqli($host, $username, $password, $database);
                 restore_error_handler();
                 self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
                 $charset = 'utf8';
@@ -58,7 +60,7 @@ class database
                     $charset = 'utf8mb4';
                 }
                 self::$link->set_charset($charset);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 die(__('diedbconn103') . ' ' . $e->getCode() . ' ' . $e->getMessage() . PHP_EOL);
             }
         }
@@ -71,7 +73,7 @@ class database
     public static function close()
     {
         $result = true;
-        if (self::$link instanceof mysqli) {
+        if (self::$link instanceof \mysqli) {
             $result = self::$link->close();
             self::$link = null;
         }
@@ -79,12 +81,12 @@ class database
     }
 
     /**
-     * @param mysqli_result $result
+     * @param \mysqli_result $result
      * @param int $row
      * @param int|string $col
      * @return bool|mixed
      */
-    public static function mysqli_result(mysqli_result $result, $row = 0, $col = 0)
+    public static function mysqli_result(\mysqli_result $result, $row = 0, $col = 0)
     {
         $numrows = $result->num_rows;
         if ($numrows && $row <= ($numrows - 1) && $row >= 0) {

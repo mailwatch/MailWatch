@@ -25,6 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
 ini_set('memory_limit', MEMORY_LIMIT);
@@ -72,10 +74,10 @@ $using_rpc = false;
 if (RPC_ONLY || !is_local($message->hostname)) {
     // Host is remote - use XML-RPC
     $using_rpc = true;
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
-    $input = new xmlrpcval($message_id);
+    //$client = new \xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
+    $input = new \xmlrpcval($message_id);
     $parameters = array($input);
-    $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
+    $msg = new \xmlrpcmsg('return_quarantined_file', $parameters);
     //$rsp = $client->send($msg);
     $rsp = xmlrpc_wrapper($message->hostname, $msg);
     if ($rsp->faultCode() === 0) {
@@ -115,7 +117,7 @@ $params['decode_bodies'] = true;
 $params['decode_headers'] = true;
 $params['input'] = $file;
 
-$Mail_mimeDecode = new Mail_mimeDecode($file);
+$Mail_mimeDecode = new \Mail_mimeDecode($file);
 $structure = $Mail_mimeDecode->decode($params);
 $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 

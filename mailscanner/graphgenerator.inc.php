@@ -25,6 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 class GraphGenerator
 {
     public $sqlQuery;
@@ -292,11 +294,11 @@ class GraphGenerator
      */
     protected function generateHours()
     {
-        $current = new DateTime();
-        $date = $current->sub(new DateInterval("P1DT1H"));
+        $current = new \DateTime();
+        $date = $current->sub(new \DateInterval("P1DT1H"));
         $dates = array();
         for ($i=0;$i< 25;$i++) {
-            $date = $date->add(new DateInterval("PT1H"));
+            $date = $date->add(new \DateInterval("PT1H"));
             $hour = $date->format("H");
             $dates[] = $hour . ':00-' . (intval($hour)+1) . ':00';
         }
@@ -316,11 +318,11 @@ class GraphGenerator
         for ($i=0; $i< 25; $i++) {
             $convertedData[] = 0;
         }
-        $start = (new DateTime())->sub(new DateInterval("P1D"));
+        $start = (new \DateTime())->sub(new \DateInterval("P1D"));
         $count = count($this->data['xaxis']);
         for ($i=0; $i<$count; $i++) {
             // get the value from data and add it to the corresponding hour
-            $timeDiff = $start->diff((new DateTime($this->data['xaxis'][$i])), true);
+            $timeDiff = $start->diff((new \DateTime($this->data['xaxis'][$i])), true);
             $convertedData[$timeDiff->format('%h')] += $this->data[$column][$i];
         }
         $this->data[$column . 'conv'] = $convertedData;
