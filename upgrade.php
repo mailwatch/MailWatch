@@ -436,7 +436,7 @@ if ($link) {
         $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT 0';
         $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
         executeQuery($sql1);
-        executeQuery($sql2);
+        executeQuery($sql2, true);
     } else {
         $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP';
         executeQuery($sql);
