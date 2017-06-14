@@ -4145,6 +4145,7 @@ function checkConfVariables()
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
         'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
+        'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
     );
 
     $results = array();
@@ -4674,8 +4675,7 @@ function printTenMinutesGraph()
 {
     require_once __DIR__ . '/graphgenerator.inc.php';
 
-    // Authentication checking
-    require __DIR__ . '/login.function.php';
+    $graphInterval = (defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
 
     $graphgenerator = new GraphGenerator();
     $graphgenerator->sqlQuery = '
@@ -4690,7 +4690,7 @@ function printTenMinutesGraph()
      WHERE
       1=1
      AND
-      timestamp BETWEEN (NOW() - INTERVAL 10 MINUTE) AND NOW()
+      timestamp BETWEEN (NOW() - INTERVAL ' . $graphInterval . ' MINUTE) AND NOW()
      ORDER BY
       timestamp DESC
     ';
@@ -4728,7 +4728,7 @@ function printTenMinutesGraph()
         array('line', 'line', 'line'),
     );
     $graphgenerator->graphTitle = '';
-    $graphgenerator->settings['timeInterval'] = 'PT10M';
+    $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
     $graphgenerator->settings['timeScale'] = 'PT1M';
     $graphgenerator->settings['timeFormat'] = 'i';
     $graphgenerator->settings['plainGraph'] = true;

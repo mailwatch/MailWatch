@@ -301,3 +301,5 @@ define('RESET_LINK_EXPIRE', 1);
 // define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
 /* End Password Reset */
 
+//Interval for the traffic chart for admins (in minutes) default is 60
+//define('STATUSGRAPH_INTERVAL', 60);
