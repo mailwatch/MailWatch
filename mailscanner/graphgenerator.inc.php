@@ -359,7 +359,7 @@ class GraphGenerator
             // get the value from data and add it to the corresponding hour
             $timeDiff = (new DateTime($this->data['xaxis'][$i]))->format($format);
             //recheck if the entry is inside the value range
-            if (isset($convertedData[$timeDiff])) {
+            if (true) {
                 $convertedData[$timeDiff] += $this->data[$column][$i];
             }
         }
