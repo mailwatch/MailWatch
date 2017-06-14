@@ -44,8 +44,7 @@ function printLineGraph(chartId, settings) {
         text: settings.chartTitle
       },
       legend: {
-        display: (typeof settings.chartDataLabels === 'undefined' ? false : (
-                    typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph)),
+        display: (typeof settings.chartDataLabels === 'undefined' ? false : true),
       },
       elements: {
         line: {
@@ -71,7 +70,7 @@ function printLineGraph(chartId, settings) {
                 display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
                 labelString: settings.yAxeDescriptions[i]
               },
-              ticks: { suggestedMax: max * 1.05 },
+              ticks: { suggestedMax: max * 1.05, min: 0 },
             });
           }
           return axes;
