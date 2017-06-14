@@ -190,7 +190,7 @@ class GraphGenerator
         $result = dbquery($this->sqlQuery);
         $this->data = array();
         $this->numResult = $result->num_rows;
-        if ($this->numResult <= 0) {
+        if ($this->numResult <= 0 && (!isset($this->settings['ignoreEmptyResult']) || $this->settings['ignoreEmptyResult'] === false)) {
             echo __('diemysql99') . "\n";
             return false;
         }
@@ -354,11 +354,14 @@ class GraphGenerator
             $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
         }
         //get the values from the sql result and assign them to the correct time scale part
-        $count = count($this->data['xaxis']);
+        $count = isset($this->data['xaxis']) ? count($this->data['xaxis']) : 0;
         for ($i=0; $i<$count; $i++) {
             // get the value from data and add it to the corresponding hour
-            $timeDiff = new DateTime($this->data['xaxis'][$i]);
-            $convertedData[$timeDiff->format($format)] += $this->data[$column][$i];
+            $timeDiff = (new DateTime($this->data['xaxis'][$i]))->format($format);
+            //recheck if the entry is inside the value range
+            if (isset($convertedData[$timeDiff])) {
+                $convertedData[$timeDiff] += $this->data[$column][$i];
+            }
         }
         //we only need the value and not the keys
         $this->data[$column . 'conv'] = array_values($convertedData);

@@ -406,7 +406,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     printNavBar();
     echo '
  <tr>
-  <td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
 
     if ($report) {
         $return_items = $filter;
@@ -834,7 +834,7 @@ function printNavBar()
 
     //Navigation table
     echo '<tr class="noprint">' . "\n";
-    echo '<td colspan="4">' . "\n";
+    echo '<td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">' . "\n";
 
     echo '<ul id="menu" class="yellow">' . "\n";
 
@@ -4710,7 +4710,7 @@ function printTenMinutesGraph()
     $graphgenerator->graphColumns = array(
         'labelColumn' => 'time',
         'dataLabels' => array(
-            array('','','',''),
+            array(__('barmail36'), __('barvirus36'), __('barspam36')),
         ),
         'dataNumericColumns' => array(
             array('total_mailconv', 'total_virusconv', 'total_spamconv'),
@@ -4734,6 +4734,7 @@ function printTenMinutesGraph()
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'last10mingraph';
+    $graphgenerator->settings['ignoreEmptyResult'] = true;
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
 }
