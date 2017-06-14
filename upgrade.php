@@ -429,8 +429,18 @@ if ($link) {
 
     // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
     echo pad(' - Fix schema for timestamp field in `maillog` table');
-    $sql = "ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP";
-    executeQuery($sql);
+    if ($link->server_version < 50600) {
+        //MySQL < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
+        //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
+        //Second query drops the default
+        $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT 0';
+        $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
+        executeQuery($sql1);
+        executeQuery($sql2);
+    } else {
+        $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP';
+        executeQuery($sql);
+    }
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
@@ -516,7 +526,7 @@ if ($link) {
 
     echo pad(' - Add last_update field to `maillog` table');
     if (check_column_exists('maillog', 'last_update') === false) {
-        $sql = "ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
+        $sql = 'ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
         executeQuery($sql);
     } else {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
