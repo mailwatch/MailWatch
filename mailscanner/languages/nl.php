@@ -192,6 +192,9 @@ return array(
     'learnspam03' => 'Learn:Spam',
     'learnham03' => 'Learn:Ham',
     'trafficgraph03' => 'Traffic for the last %s minutes',
+    'barmail03' => 'E-mails',
+    'barvirus03' => 'Viruses',
+    'barspam03' => 'Spam',
 
     // 04-detail.php
     'receivedon04' => 'Ontvangen op:',

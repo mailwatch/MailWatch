@@ -4716,7 +4716,7 @@ function printTrafficGraph()
     $graphgenerator->graphColumns = array(
         'labelColumn' => 'time',
         'dataLabels' => array(
-            array(__('barmail36'), __('barvirus36'), __('barspam36')),
+            array(__('barmail03'), __('barvirus03'), __('barspam03')),
         ),
         'dataNumericColumns' => array(
             array('total_mailconv', 'total_virusconv', 'total_spamconv'),
