@@ -4689,8 +4689,8 @@ function printTrafficGraph()
      SELECT
       timestamp AS xaxis,
       1 as total_mail,
-      SUM(CASE WHEN (virusinfected+nameinfected+otherinfected) > 0 THEN 1 ELSE 0 END) AS total_virus,
-      SUM(CASE WHEN (isspam+ishighspam+issaspam+isrblspam+spamblacklisted) > 0 THEN 1 ELSE 0 END) AS total_spam,
+      virusinfected AS total_virus,
+      isspam AS total_spam,
       size AS total_size
      FROM
       maillog
