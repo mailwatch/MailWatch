@@ -191,7 +191,7 @@ return array(
     'released03' => 'Freigegeben',
     'learnspam03' => 'Gelernt als Spam',
     'learnham03' => 'Gelernt als Ham',
-    'trafficgraph03' => 'Traffic of the last %s minutes',
+    'trafficgraph03' => 'Traffic der letzten %s Minuten',
     'barmail03' => 'E-Mails',
     'barvirus03' => 'Viren',
     'barspam03' => 'Spam',
