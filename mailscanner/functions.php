@@ -4729,7 +4729,7 @@ function printTenMinutesGraph()
         'yAxeDescriptions' => array(
             '',
         ),
-        'fillBelowLine' => array('false')
+        'fillBelowLine' => array('true')
     );
     $graphgenerator->types = array(
         array('line', 'line', 'line'),
