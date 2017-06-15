@@ -929,7 +929,7 @@ select.lang > option {
     color:#fff;
 }
 
-#last10mingraph {
+#trafficgraph {
     width: auto;
     height: 180px;
 }

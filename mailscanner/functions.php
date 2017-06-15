@@ -397,7 +397,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), STATUSGRAPH_INTERVAL) . '</th></tr>' . "\n";
         echo '    <tr>' . "\n";
         echo '    <td>' . "\n";
-        printTenMinutesGraph();
+        printTrafficGraph();
         echo '    </td>' . "\n";
         echo '    </tr>' . "\n";
         echo '  </table>' . "\n";
@@ -4678,7 +4678,7 @@ function checkPrivilegeChange($myusername)
     return false;
 }
 
-function printTenMinutesGraph()
+function printTrafficGraph()
 {
     require_once __DIR__ . '/graphgenerator.inc.php';
 
@@ -4740,7 +4740,7 @@ function printTenMinutesGraph()
     $graphgenerator->settings['timeFormat'] = 'i';
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
-    $graphgenerator->settings['chartId'] = 'last10mingraph';
+    $graphgenerator->settings['chartId'] = 'trafficgraph';
     $graphgenerator->settings['ignoreEmptyResult'] = true;
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
