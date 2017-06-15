@@ -191,6 +191,7 @@ return array(
     'released03' => 'Released',
     'learnspam03' => 'Learn:Spam',
     'learnham03' => 'Learn:Ham',
+    'trafficgraph03' => 'Traffic for the last %s minutes',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',

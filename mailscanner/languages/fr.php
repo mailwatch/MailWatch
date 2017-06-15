@@ -191,6 +191,7 @@ return array(
     'released03' => 'Libérer',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
+    'trafficgraph03' => 'Trafic pour les %s minutes',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',

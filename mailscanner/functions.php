@@ -393,8 +393,15 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  </td>' . "\n";
 
         echo '<td align="center" valign="top">' . "\n";
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), STATUSGRAPH_INTERVAL) . '</th></tr>' . "\n";
+        echo '    <tr>' . "\n";
+        echo '    <td>' . "\n";
         printTenMinutesGraph();
-        echo '</td>';
+        echo '    </td>' . "\n";
+        echo '    </tr>' . "\n";
+        echo '  </table>' . "\n";
+        echo '  </td>' . "\n";
     }
 
     echo '<td align="center" valign="top">' . "\n";
