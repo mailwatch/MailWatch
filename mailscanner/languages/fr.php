@@ -191,7 +191,7 @@ return array(
     'released03' => 'Libérer',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
-    'trafficgraph03' => 'Trafic pour les %s dernières minutes',
+    'trafficgraph03' => 'Trafic des %s dernières minutes',
     'barmail03' => 'E-Mails',
     'barvirus03' => 'Virus',
     'barspam03' => 'Spam',
