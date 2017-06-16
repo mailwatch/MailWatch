@@ -394,7 +394,11 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
         echo '<td align="center" valign="top">' . "\n";
         echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), STATUSGRAPH_INTERVAL) . '</th></tr>' . "\n";
+        if (STATUSGRAPH_INTERVAL <= 60) {
+            echo '    <tr><th colspan="1">' . __('trafficgraph03') . '</th></tr>' . "\n";
+        } else {
+            echo '    <tr><th colspan="1">' . sprintf(__('trafficgraphmore03'), STATUSGRAPH_INTERVAL / 60) . '</th></tr>' . "\n";
+        }
         echo '    <tr>' . "\n";
         echo '    <td>' . "\n";
         printTrafficGraph();
