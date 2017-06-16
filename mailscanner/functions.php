@@ -4737,7 +4737,7 @@ function printTrafficGraph()
     $graphgenerator->graphTitle = '';
     $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
     $graphgenerator->settings['timeScale'] = 'PT1M';
-    $graphgenerator->settings['timeFormat'] = 'i';
+    $graphgenerator->settings['timeFormat'] = 'H:i';
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'trafficgraph';

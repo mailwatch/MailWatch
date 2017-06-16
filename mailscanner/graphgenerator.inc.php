@@ -319,10 +319,7 @@ class GraphGenerator
         while ($date < $now) {
             //get the next interval and create the label for it
             $date = $date->add(new DateInterval($scale));
-            $start = $date->format($format);
-            $end = clone $date;
-            $end = $end->add(new DateInterval($scale))->format($format);
-            $dates[] = $start . '-' . $end;
+            $dates[] = $date->format($format);
             $count++;
         }
         //store the time scales and define the result count
