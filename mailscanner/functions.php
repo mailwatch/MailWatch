@@ -4677,7 +4677,11 @@ function printTrafficGraph()
 
     echo '<td align="center" valign="top">' . "\n";
     echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-    echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), $graphInterval) . '</th></tr>' . "\n";
+    if ($graphInterval <= 60) {
+        echo '    <tr><th colspan="1">' . __('trafficgraph03') . '</th></tr>' . "\n";
+    } else {
+        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraphmore03'), $graphInterval / 60) . '</th></tr>' . "\n";
+    }
     echo '    <tr>' . "\n";
     echo '    <td>' . "\n";
     
@@ -4688,7 +4692,6 @@ function printTrafficGraph()
       1 as total_mail,
       virusinfected AS total_virus,
       isspam AS total_spam,
-      size AS total_size
      FROM
       maillog
      WHERE
@@ -4745,5 +4748,5 @@ function printTrafficGraph()
     echo '    </td>' . "\n";
     echo '    </tr>' . "\n";
     echo '  </table>' . "\n";
-    echo '  </td>' . "\n";
+    echo '  </td>' . "\n";    
 }
