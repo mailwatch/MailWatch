@@ -384,7 +384,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
         printServiceStatus();
         printAverageLoad();
-       
+
         if ($_SESSION['user_type'] === 'A') {
             printMTAQueue();
             printFreeDiskSpace();
@@ -392,16 +392,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  </table>' . "\n";
         echo '  </td>' . "\n";
 
-        echo '<td align="center" valign="top">' . "\n";
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), STATUSGRAPH_INTERVAL) . '</th></tr>' . "\n";
-        echo '    <tr>' . "\n";
-        echo '    <td>' . "\n";
         printTrafficGraph();
-        echo '    </td>' . "\n";
-        echo '    </tr>' . "\n";
-        echo '  </table>' . "\n";
-        echo '  </td>' . "\n";
     }
 
     echo '<td align="center" valign="top">' . "\n";
@@ -4684,6 +4675,12 @@ function printTrafficGraph()
 
     $graphInterval = (defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
 
+    echo '<td align="center" valign="top">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), $graphInterval) . '</th></tr>' . "\n";
+    echo '    <tr>' . "\n";
+    echo '    <td>' . "\n";
+    
     $graphgenerator = new GraphGenerator();
     $graphgenerator->sqlQuery = '
      SELECT
@@ -4744,4 +4741,9 @@ function printTrafficGraph()
     $graphgenerator->settings['ignoreEmptyResult'] = true;
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
+   
+    echo '    </td>' . "\n";
+    echo '    </tr>' . "\n";
+    echo '  </table>' . "\n";
+    echo '  </td>' . "\n";
 }
