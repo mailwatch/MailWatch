@@ -393,8 +393,15 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  </td>' . "\n";
 
         echo '<td align="center" valign="top">' . "\n";
-        printTenMinutesGraph();
-        echo '</td>';
+        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), STATUSGRAPH_INTERVAL) . '</th></tr>' . "\n";
+        echo '    <tr>' . "\n";
+        echo '    <td>' . "\n";
+        printTrafficGraph();
+        echo '    </td>' . "\n";
+        echo '    </tr>' . "\n";
+        echo '  </table>' . "\n";
+        echo '  </td>' . "\n";
     }
 
     echo '<td align="center" valign="top">' . "\n";
@@ -4671,7 +4678,7 @@ function checkPrivilegeChange($myusername)
     return false;
 }
 
-function printTenMinutesGraph()
+function printTrafficGraph()
 {
     require_once __DIR__ . '/graphgenerator.inc.php';
 
@@ -4710,7 +4717,7 @@ function printTenMinutesGraph()
     $graphgenerator->graphColumns = array(
         'labelColumn' => 'time',
         'dataLabels' => array(
-            array(__('barmail36'), __('barvirus36'), __('barspam36')),
+            array(__('barmail03'), __('barvirus03'), __('barspam03')),
         ),
         'dataNumericColumns' => array(
             array('total_mailconv', 'total_virusconv', 'total_spamconv'),
@@ -4722,7 +4729,7 @@ function printTenMinutesGraph()
         'yAxeDescriptions' => array(
             '',
         ),
-        'fillBelowLine' => array('false')
+        'fillBelowLine' => array('true')
     );
     $graphgenerator->types = array(
         array('line', 'line', 'line'),
@@ -4733,7 +4740,7 @@ function printTenMinutesGraph()
     $graphgenerator->settings['timeFormat'] = 'i';
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
-    $graphgenerator->settings['chartId'] = 'last10mingraph';
+    $graphgenerator->settings['chartId'] = 'trafficgraph';
     $graphgenerator->settings['ignoreEmptyResult'] = true;
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
