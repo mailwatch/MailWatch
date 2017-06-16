@@ -4684,14 +4684,18 @@ function printTrafficGraph()
     }
     echo '    <tr>' . "\n";
     echo '    <td>' . "\n";
-    
+
     $graphgenerator = new GraphGenerator();
     $graphgenerator->sqlQuery = '
      SELECT
       timestamp AS xaxis,
       1 as total_mail,
-      virusinfected AS total_virus,
-      isspam AS total_spam,
+      CASE
+      WHEN virusinfected > 0 THEN 1
+      WHEN nameinfected > 0 THEN 1
+      WHEN otherinfected > 0 THEN 1
+      ELSE 0 END AS total_virus,
+      isspam AS total_spam
      FROM
       maillog
      WHERE
@@ -4744,7 +4748,7 @@ function printTrafficGraph()
     $graphgenerator->settings['ignoreEmptyResult'] = true;
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
-   
+
     echo '    </td>' . "\n";
     echo '    </tr>' . "\n";
     echo '  </table>' . "\n";
