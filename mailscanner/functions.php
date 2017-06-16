@@ -4748,5 +4748,5 @@ function printTrafficGraph()
     echo '    </td>' . "\n";
     echo '    </tr>' . "\n";
     echo '  </table>' . "\n";
-    echo '  </td>' . "\n";    
+    echo '  </td>' . "\n";
 }
