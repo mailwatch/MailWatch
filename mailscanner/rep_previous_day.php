@@ -105,6 +105,7 @@ $graphgenerator->types = array(
 $graphgenerator->graphTitle = __('totalmaillasthours36');
 $graphgenerator->settings['timeInterval'] = 'P1D';
 $graphgenerator->settings['timeScale'] = 'PT1H';
+$graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
 $graphgenerator->settings['timeFormat'] = 'H:00';
 $graphgenerator->printLineGraph();
 

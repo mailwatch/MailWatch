@@ -934,5 +934,6 @@ select.lang > option {
     height: 180px;
     margin-top: -4px;
     margin-bottom: -13px;
-    margin-right: -4px;
+    margin-right: -2px;
+    margin-left: 2px;
 }

@@ -126,7 +126,7 @@ class GraphGenerator
         }
         $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
         echo '<canvas id="' . $chartId . '" class="lineGraph"></canvas>
-      <script src="lib/Chart.js/Chart.min.js"></script>
+      <script src="lib/Chart.js/Chart.bundle.min.js"></script>
       <script src="lib/lineConfig.js"></script>
       <script>
         COLON = "' . __('colon99') . '";
@@ -341,7 +341,7 @@ class GraphGenerator
         }
         $interval = $this->settings['timeInterval'];
         $scale = $this->settings['timeScale'];
-        $format = $this->settings['timeFormat'];
+        $format = $this->settings['timeGroupFormat'];
 
         $now = $this->settings['now'];
         $start = clone $now;
