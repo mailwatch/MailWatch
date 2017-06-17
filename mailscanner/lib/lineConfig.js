@@ -84,7 +84,6 @@ function printLineGraph(chartId, settings) {
           },
           time: {
             unit: 'hour',
-//            format: 'HH:mm',
             displayFormats: {
               'minute': 'HH:mm',
               'hour': 'HH:mm',

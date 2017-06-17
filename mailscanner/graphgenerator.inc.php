@@ -316,7 +316,7 @@ class GraphGenerator
         $date = clone $now;
         $date = $date->sub(new DateInterval($interval));
         $dates = array($date->format($format));
-        $count = 0;
+        $count = 1;
         while ($date < $now) {
             //get the next interval and create the label for it
             $date = $date->add(new DateInterval($scale));
