@@ -239,7 +239,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.4';
+    return '1.2.5-dev';
 }
 
 /**
