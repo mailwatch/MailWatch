@@ -4708,26 +4708,26 @@ function printTrafficGraph()
 
     $graphgenerator->sqlColumns = array(
         'xaxis',
+        'total_mail',
         'total_virus',
         'total_spam',
-        'total_mail',
     );
     $graphgenerator->valueConversion = array(
         'xaxis' => 'generatetimescale',
+        'total_mail' => 'timescale',
         'total_virus' => 'timescale',
         'total_spam' => 'timescale',
-        'total_mail' => 'timescale',
     );
     $graphgenerator->graphColumns = array(
         'labelColumn' => 'time',
         'dataLabels' => array(
-            array(__('barvirus03'), __('barspam03'), __('barmail03')),
+            array(__('barmail03'), __('barvirus03'), __('barspam03')),
         ),
         'dataNumericColumns' => array(
-            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
+            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
         ),
         'dataFormattedColumns' => array(
-            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
+            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
         ),
         'xAxeDescription' => '',
         'yAxeDescriptions' => array(
