@@ -302,4 +302,4 @@ define('RESET_LINK_EXPIRE', 1);
 /* End Password Reset */
 
 // Interval for the traffic chart for admins in minutes (default is 60, max 1440 (24h))
-//define('STATUSGRAPH_INTERVAL', 60);
+define('STATUSGRAPH_INTERVAL', 60);
