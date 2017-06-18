@@ -22,10 +22,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -75,17 +71,23 @@ function pad($input)
 
 /**
  * @param string $sql
+ * @param bool $beSilent
  */
 function executeQuery($sql, $beSilent = false)
 {
     global $link;
-    if ($link->query($sql)) {
-        if (!$beSilent) {
-            echo color(' OK', 'green') . PHP_EOL;
+    try {
+        if ($link->query($sql)) {
+            if (!$beSilent) {
+                echo color(' OK', 'green') . PHP_EOL;
+            }
+        } else {
+            echo color(' ERROR', 'red') . PHP_EOL;
+            die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
         }
-    } else {
+    } catch (Exception $e) {
         echo color(' ERROR', 'red') . PHP_EOL;
-        die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
+        die('Database error: ' . $e->getMessage() . " - SQL = '$sql'" . PHP_EOL);
     }
 }
 
@@ -425,6 +427,21 @@ if ($link) {
     $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
     executeQuery($sql);
 
+    // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
+    echo pad(' - Fix schema for timestamp field in `maillog` table');
+    if ($link->server_version < 50600) {
+        //MySQL < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
+        //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
+        //Second query drops the default
+        $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT 0';
+        $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
+        executeQuery($sql1);
+        executeQuery($sql2, true);
+    } else {
+        $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP';
+        executeQuery($sql);
+    }
+
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
     // Table audit_log
@@ -507,6 +524,14 @@ if ($link) {
         executeQuery($sql);
     }
 
+    echo pad(' - Add last_update field to `maillog` table');
+    if (check_column_exists('maillog', 'last_update') === false) {
+        $sql = 'ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    }
+    
     // Add new salearn column to maillog table
     echo pad(' - Add salearn field to `maillog` table');
     if (true === check_column_exists('maillog', 'salearn')) {
@@ -519,10 +544,10 @@ if ($link) {
     // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
     echo pad(' - Check for missing tokens in `maillog` table');
     if (defined('QUARANTINE_REPORT_DAYS')) {
-        $report_days=QUARANTINE_REPORT_DAYS;
+        $report_days = QUARANTINE_REPORT_DAYS;
     } else {
         // Missing, but let's keep going...
-        $report_days=7;
+        $report_days = 7;
     }
     $sql = 'SELECT `id`,`token` FROM `maillog` WHERE `date` >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . $report_days . ' DAY)';
     $result = dbquery($sql);
@@ -708,7 +733,21 @@ if ($link) {
     echo color(' FAILED', 'red') . PHP_EOL;
     $errors[] = 'Database connection failed: ' . $link->error;
 }
+echo PHP_EOL;
 
+echo 'Checking for obsolete files: ' . PHP_EOL;
+echo PHP_EOL;
+
+if (file_exists(MAILWATCH_HOME . '/images/cache/')) {
+    $result = rmdir(MAILWATCH_HOME . '/images/cache/') . PHP_EOL;
+    if ($result === true) {
+        echo pad(' - Cache dir was still present. Removed it') . color(' INFO', 'lightgreen') . PHP_EOL;
+    } else {
+        echo pad(' - Cache dir was still present but removing it failed') . color(' ERROR', 'red') . PHP_EOL;
+    }
+} else {
+    echo pad(' - Cache dir already removed') . color(' OK', 'green') . PHP_EOL;
+}
 echo PHP_EOL;
 
 // Check MailScanner settings

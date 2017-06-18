@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -195,6 +191,11 @@ return array(
     'released03' => 'Libérer',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
+    'trafficgraph03' => 'Trafic de la derniere heure',
+    'trafficgraphmore03' => 'Trafic des %s dernières heures',
+    'barmail03' => 'E-Mails',
+    'barvirus03' => 'Virus',
+    'barspam03' => 'Spam',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -395,10 +396,14 @@ return array(
     'updategeoip10' => 'Mettre à jour la base GeoIP',
     'links10' => 'Liens',
 
-    // 11-sf_versions.php
+    // 11-sf_version.php
     'softver11' => 'Version des logiciels',
     'nodbdown11' => 'Aucune base de données téléchargée',
     'version11' => 'version :',
+    'systemos11' => 'Version du Système d\'Exploitation :',
+    'mwandmsversion11' => 'Information sur les versions des logiciels',
+    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'downloaddate11' => 'date de téléchargement',
 
     // 12-user_manager.php
     'usermgnt12' => 'Gestion des utilisateurs',
@@ -429,7 +434,7 @@ return array(
     'scanforspam212' => 'Scan des E-Mail pour les Spam',
     'pontspam12' => 'Points de Spam :',
     'hpontspam12' => 'Points de Spam Haut :',
-    'usedefault12' => 'Utiliser les réglages par défaut',
+    'usedefault12' => 'Utilise les réglages par défaut',
     'action_0212' => 'Action :',
     'reset12' => 'Réinitialiser',
     'areusuredel12' => 'Voulez-vous vraiment effacer l\'utilisateur',
@@ -480,7 +485,7 @@ return array(
     'quarantineReportSend12' => 'Le rapport de quarantaine a été envoyé avec succès.',
     'checkReportRequirementsFailed12' => 'Les exigences pour générer des rapports de quarantaine ne sont pas respectées. Veuillez contacter votre administrateur.',
     'usercreated12' => 'L\'utilisateur %s a été créé.',
-    'useredited12' => 'L\'utilisateur %s a été modifié',
+    'useredited12' => 'L\'utilisateur %s a été modifié.',
     'userdeleted12' => 'L\'utilisateur %s a été effacé.',
     'userloggedout12' => 'L\'utilisateur %s a été déconnecté.',
     'loggedin12' => 'Connecté',
@@ -504,6 +509,7 @@ return array(
     'messlisting14' => 'Listing des messages',
     'messop14' => 'Manipulation sur les messages',
     'messdate14' => 'Total des messages par date',
+    'messhours14' => 'Messages par heure des dernières 24 heures',
     'topmailrelay14' => 'Top des relais de messagerie',
     'topvirus14' => 'Top Virus',
     'virusrepor14' => 'Rapport sur les Virus',
@@ -518,7 +524,6 @@ return array(
     'assassinscoredist14' => 'Distribution SpamAssassin par point',
     'assassinrulhit14' => 'Distribution SpamAssassin par règle',
     'auditlog14' => 'Log de l\'Audit',
-    'mrtgreport14' => 'Rapport de message MRTG',
     'mcpscoredist14' => 'Score MCP par point',
     'mcprulehit14' => 'Score MCP par règle',
     'reports14' => 'Rapports',
@@ -679,9 +684,19 @@ return array(
     'score35' => 'Distribution',
     'count35' => 'Total',
 
-    // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'Rapport de message MRTG',
-    'die36' => 'Erreur : il est nécessaire d\'avoir deux enregistrements ou plus dans la base de données',
+    // 36-rep_previous_day.php
+    'totalmaillasthours36' => 'Nombre de messages par heure des dernières 24 heures',
+    'hours36' => 'Heure',
+    'mailcount36' => 'Total des E-Mails',
+    'viruscount36' => 'Nombre de Virus',
+    'spamcount36' => 'Nombre de Spam',
+    'size36' => 'Volume',
+    'barmail36' => 'E-Mails',
+    'barvirus36' => 'Virus',
+    'barspam36' => 'Spam',
+    'barsize36' => 'Volume',
+    'volume36' => 'Volume',
+    'nomessages36' => 'Nombre d\'E-Mail',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'Distribution de SpamAssassin par règle',
@@ -698,7 +713,6 @@ return array(
     'nbmessage38' => 'Nb de message',
     'score38' => 'Points',
     'count38' => 'Nombre',
-    'die38' => 'Erreur : il est nécessaire d\'avoir deux enregistrements ou plus dans la base de données',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top des relais de messagerie',
@@ -710,8 +724,6 @@ return array(
     'viruses39' => 'Virus',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
-    'geoipfailed39' => '(Pas de réponse de GeoIP)',
-    'hostfailed39' => '(Nom d\'hôte indéfini)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top des domaines de destination par quantité',
@@ -756,7 +768,6 @@ return array(
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top des Virus',
     'top10virus48' => 'Top 10 des Virus',
-    'nodata48' => 'Pas assez de données pour générer le graphique.',
     'virus48' => 'Virus',
     'count48' => 'Nombre',
 
@@ -766,12 +777,12 @@ return array(
     'volume49' => 'Volume',
     'nomessages49' => 'Nb de message',
     'date49' => 'Date',
-    'barmail49' => 'Mail',
+    'barmail49' => 'E-Mail',
     'barvirus49' => 'Virus',
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volume',
-    'total49' => 'Total<br>Mail',
+    'total49' => 'Total<br>E-Mail',
     'clean49' => 'Légitime',
     'lowespam49' => 'Spam Bas',
     'highspam49' => 'Spam Haut',
@@ -798,10 +809,26 @@ return array(
     'message51' => 'Message',
     'time51' => 'Durée',
 
-    // 52-sf_version.php
-    'mwandmsversion52' => 'Information sur les versions des logiciels',
-    'auditlog52' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
-    'downloaddate52' => 'date de téléchargement',
+    // 52-mailwatch_geoip_update.php
+    'geoipv452' => 'Fichier de données GeoIP IPv4',
+    'geoipv652' => 'Fichier de données GeoIP IPv6',
+    'dieproxy52' => 'Le type de proxy doit être en "HTTP" ou en "SOCKS5". Vérifiez votre fichier de configuration.',
+    'downok52' => ': téléchargement réussi',
+    'downbad52' => 'Une erreur c\'est produite pendant le téléchargement',
+    'downokunpack52' => 'Téléchargement complet, extraction des fichiers...',
+    'message352' => 'Impossible de télécharger le fichier de données GeoIP (curl et fsockopen essayés).',
+    'message452' => 'Veuillez installer le module PHP cURL (préféré) ou activer fsockopen dans votre fichier php.ini',
+    'unpackok52' => ': décompactage réussi',
+    'extractnotok52' => 'Extraction impossible',
+    'extractok52' => 'extraction réussie',
+    'message552' => 'Impossible d\'extraire le fichier de données GeoIP.',
+    'message652' => 'Activez le module PHP Zlib dans votre configuration PHP ou installez le binaire gunzip.',
+    'processok52' => 'Processus terminé !',
+    'norread52' => 'Impossible de lire ou d\'écrire sur le',
+    'directory52' => 'répertoire',
+    'nofind52' => 'Impossible de trouver la valeur du UID de MailWatch',
+    'nofindowner52' => 'Impossible de trouver le fichier ou de changer les droits d\'utilisateur. Vérifier le contenu du répertoire',
+    'auditlog52' => 'Exécution de la mise à jour GeoIP.',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -940,6 +967,11 @@ return array(
     'auditlogexpired63' => 'La réinitialisation du mot de passe pour l\'utilisateur %s a échouée. L\'ID de réinitialisation a expiré.',
     'auditloglinkerror63' => 'Erreur sur le lien de réinitialisation de l\'E-Mail.',
 
+    // 64 - graphgenerator.inc.php
+    'nodata64' => 'Pas assez de données pour générer le graphique.',
+    'geoipfailed64' => '(Pas de réponse de GeoIP)',
+    'hostfailed64' => '(Nom d\'hôte indéfini)',
+
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ' :',
@@ -959,4 +991,5 @@ return array(
     'it' => 'Italiano',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
+    'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
 );

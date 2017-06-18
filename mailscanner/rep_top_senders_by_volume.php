@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -32,6 +28,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -39,7 +36,8 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = html_start(__('topsendersvol47'), 0, false, true);
 
-$sql = '
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = '
  SELECT
   from_address as `name`,
   COUNT(*) as `count`,
@@ -58,26 +56,27 @@ $sql = '
  LIMIT 10
 ';
 
-$columns = array(
+$graphgenerator->tableColumns = array(
     'name' =>__('email47'),
     'countconv' => __('count03'),
     'sizeconv' =>__('size03')
 );
-$sqlColumns = array(
+$graphgenerator->sqlColumns = array(
     'name',
     'count',
     'size'
 );
-$valueConversion = array(
+$graphgenerator->valueConversion = array(
     'size' => 'scale',
     'count' => 'number'
 );
-$graphColumns = array(
+$graphgenerator->graphColumns = array(
     'labelColumn' => 'name',
     'dataNumericColumn' => 'size',
     'dataFormattedColumn' => 'sizeconv'
 );
-printGraphTable($sql, __('top10sendersvol47'), $sqlColumns, $columns, $graphColumns, $valueConversion);
+$graphgenerator->graphTitle = __('top10sendersvol47');
+$graphgenerator->printPieGraph();
 
 // Add footer
 html_end();

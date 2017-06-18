@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# MailWatch for MailScanner
+# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+
+# GeoIP Update
+# Can be changed according to your need (time in second).
+UPDATEMAXDELAY=3600
+
+test -x /usr/local/bin/mailwatch_geoip_update.php || exit 0
+sleep $[( $RANDOM % $UPDATEMAXDELAY )+1]s
+/usr/local/bin/mailwatch_geoip_update.php  >/dev/null 2>&1
+
+exit 0

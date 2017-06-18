@@ -21,15 +21,11 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//Require files
+// Require files
 require_once __DIR__ . '/functions.php';
 
 // Authentication verification
@@ -103,8 +99,8 @@ if (!isset($_POST['run'])) {
 
                     switch (PROXY_TYPE) {
                         case 'HTTP':
-                        case 'CURLPROXY_HTTP': //BC for old constant name
-                            //$requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
+                        case 'CURLPROXY_HTTP': // BC for old constant name
+                            // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
                             $requestSession->options['proxy']['type'] = 'HTTP';
                             break;
                         case 'SOCKS5':
@@ -135,7 +131,7 @@ if (!isset($_POST['run'])) {
                 ob_flush();
                 flush();
             } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-                //wget
+                // wget
                 $proxyString = '';
                 if (USE_PROXY) {
                     if (PROXY_USER !== '') {
@@ -185,7 +181,7 @@ if (!isset($_POST['run'])) {
                     echo $file['description'] . ' ' . __('extractok15') . '<br>' . "\n";
                 }
             } else {
-                // unable to extract the file correctly
+                // Unable to extract the file correctly
                 $error_message = __('message515') . "<br>\n";
                 $error_message .= __('message615');
                 die($error_message);
@@ -196,17 +192,17 @@ if (!isset($_POST['run'])) {
             flush();
             audit_log(__('auditlog15', true));
         } else {
-            // unable to read or write to the directory
+            // Unable to read or write to the directory
             die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");
         }
     } else {
         $error_message = __('message715') . "<br>\n";
-        $error_message .= __('message815') . " $extract_dir";
+        $error_message .= __('message815') . " $extract_dir" . '.';
         die($error_message);
     }
 }
 
 // Add the footer
 html_end();
-// close the connection to the Database
+// Close the connection to the Database
 dbclose();

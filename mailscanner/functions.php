@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -140,8 +136,8 @@ session_start();
 date_default_timezone_set(TIME_ZONE);
 
 // XML-RPC
-if (!function_exists('xml_parser_create') && (!ini_get('enable_dl') || dl('xml.so') !== true)) {
-    die('phpxmlnotloaded03');
+if (!function_exists('xml_parser_create') && (!ini_get('enable_dl') || @dl('xml.so') !== true)) {
+    die(__('phpxmlnotloaded03'));
 }
 require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
 require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
@@ -243,14 +239,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.3';
-}
-
-if (!function_exists('imageantialias')) {
-    function imageantialias($image, $enabled)
-    {
-        return true;
-    }
+    return '1.2.4';
 }
 
 /**
@@ -395,13 +384,15 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
         printServiceStatus();
         printAverageLoad();
-       
+
         if ($_SESSION['user_type'] === 'A') {
             printMTAQueue();
             printFreeDiskSpace();
         }
         echo '  </table>' . "\n";
         echo '  </td>' . "\n";
+
+        printTrafficGraph();
     }
 
     echo '<td align="center" valign="top">' . "\n";
@@ -413,7 +404,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     printNavBar();
     echo '
  <tr>
-  <td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
 
     if ($report) {
         $return_items = $filter;
@@ -531,11 +522,11 @@ function printMTAQueue()
         if (is_readable($incomingdir) || is_readable($outgoingdir)) {
             $inq = postfixinq();
             $outq = postfixallq() - $inq;
-        } elseif (!DISTRIBUTED_SETUP) {
+        } elseif (!defined('RPC_REMOTE_SERVER')) {
             echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
         }
 
-        if (DISTRIBUTED_SETUP && defined('RPC_REMOTE_SERVER')) {
+        if (defined('RPC_REMOTE_SERVER')) {
             $pqerror = '';
             $servers = explode(' ', RPC_REMOTE_SERVER);
 
@@ -841,7 +832,7 @@ function printNavBar()
 
     //Navigation table
     echo '<tr class="noprint">' . "\n";
-    echo '<td colspan="4">' . "\n";
+    echo '<td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">' . "\n";
 
     echo '<ul id="menu" class="yellow">' . "\n";
 
@@ -1455,7 +1446,7 @@ function get_disks()
             return array();
         }
         unset($disks[0]);
-        foreach ($disks as $key => $disk) {
+        foreach ($disks as $disk) {
             $disks[]['mountpoint'] = $disk . ':\\';
         }
     } else {
@@ -3604,10 +3595,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $isfp = null;
             }
             if ($isfp !== null) {
-                $sql = 'UPDATE maillog SET timestamp=timestamp, isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
+                $sql = 'UPDATE maillog SET isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
                     . safe_value($list[$val]['msgid']) . "'";
             }
-            
+
             if (true === $use_spamassassin) {
                 // Run SpamAssassin to report or revoke spam/ham
                 exec(
@@ -3992,26 +3983,6 @@ function xmlrpc_wrapper($host, $msg)
 }
 
 /**
- * Clean Cache folder
- */
-function clear_cache_dir()
-{
-    $cache_dir = MAILWATCH_HOME . '/' . CACHE_DIR;
-    $files = glob($cache_dir . '/*');
-    // Life of cached images: hard set to 60 seconds
-    $life = '60';
-    // File not to delete
-    $placeholder_file = $cache_dir . '/place_holder.txt';
-    foreach ($files as $file) {
-        if (is_file($file) || is_link($file)) {
-            if (($file !== $placeholder_file) && (time() - filemtime($file) >= $life)) {
-                unlink($file);
-            }
-        }
-    }
-}
-
-/**
  * @param $user
  * @param $hash
  */
@@ -4045,119 +4016,6 @@ function checkForExistingUser($username)
 }
 
 /**
- * @param string $sqlDataQuery sql query that will be used to get the data that should be displayed
- * @param string $reportTitle title that will be displayed on top of the graph
- * @param array $sqlColumns array that contains the column names that will be used to get the associative values from the mysqli_result to display that data
- * @param array $columns associative array that contains the columnname => titles (columnname can be name of a converted column)
- * @param array $graphColumn array that contains an associative array with keys 'dataColumn' and 'labelColumn' that defines the sql columns for data shown in the graph and the label
- * @param array $valueConversions array that contains an associative array of (<columnname> => <conversion identifier>) that defines what conversion should be applied on the data
- */
-function printGraphTable($sqlDataQuery, $reportTitle, $sqlColumns, $columns, $graphColumn, $valueConversions)
-{
-    $result = dbquery($sqlDataQuery);
-    $numResult = $result->num_rows;
-    if ($numResult <= 0) {
-        die(__('diemysql99') . "\n");
-    }
-    //store data in format $data[columnname][rowid]
-    $data = array();
-    $data[$graphColumn['dataNumericColumn']] = array();
-    $data[$graphColumn['dataFormattedColumn']] = array();
-    while ($row = $result->fetch_assoc()) {
-        foreach ($sqlColumns as $columnName) {
-            $data[$columnName][] = $row[$columnName];
-        }
-    }
-    //do conversion if given
-    foreach ($valueConversions as $column => $conversion) {
-        if ($conversion === 'scale') {
-            // Work out best size
-            $data[$column . 'conv'] = $data[$column];
-            format_report_volume($data[$column . 'conv'], $size_info);
-            $scale = $size_info['formula'];
-            foreach ($data[$column . 'conv'] as $key => $val) {
-                $data[$column . 'conv'][$key] = formatSize($val * $scale);
-            }
-        } elseif ($conversion === 'number') {
-            $data[$column . 'conv'] = array_map(
-                function ($val) {
-                    return number_format($val);
-                },
-                $data[$column]
-            );
-        } elseif ($conversion === 'hostnamegeoip') {
-            $data['hostname'] = array();
-            $data['geoip'] = array();
-            foreach ($data[$column] as $ipval) {
-                $hostname = gethostbyaddr($ipval);
-                if ($hostname === $ipval) {
-                    $data['hostname'][] = __('hostfailed39');
-                } else {
-                    $data['hostname'][] = $hostname;
-                }
-                if ($geoip = return_geoip_country($ipval)) {
-                    $data['geoip'][] = $geoip;
-                } else {
-                    $data['geoip'][] = __('geoipfailed39');
-                }
-            }
-        } elseif ($conversion === 'countviruses') {
-            $viruses = array();
-            foreach ($data[$column] as $report) {
-                if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
-                    $virus = $virus_report[2];
-                    if (isset($viruses[$virus])) {
-                        $viruses[$virus]++;
-                    } else {
-                        $viruses[$virus] = 1;
-                    }
-                }
-            }
-            arsort($viruses);
-            reset($viruses);
-            $count = 0;
-            $data = array();
-            while ((list($key, $val) = each($viruses)) && $count < 10) {
-                $data['virusname'][] = $key;
-                $data['viruscount'][] = $val;
-                $count++;
-            }
-            $numResult = $count;
-        }
-    }
-    //create canvas graph
-    echo '<canvas id="reportChart" class="reportGraph"></canvas>
-  <script>
-  var COLON = "' . __('colon99') . '";
-  var chartTitle = "' . $reportTitle . '";
-  var chartId = "reportChart";
-  var chartLabels = ["' . implode('", "', $data[$graphColumn['labelColumn']]) . '"];
-  var chartNumericData = [' . implode(', ', $data[$graphColumn['dataNumericColumn']]) . '];
-  var chartFormattedData = ["' . implode('", "', $data[$graphColumn['dataFormattedColumn']]) . '"];
-  </script>
-  <script src="lib/Chart.js/Chart.min.js"></script>
-  <script src="lib/chartConfig.js"></script>';
-
-    // HTML to display the table
-    echo '<table class="reportTable">';
-    echo '    <tr>' . "\n";
-    foreach ($columns as $columnName => $columnTitle) {
-        echo '     <th>' . $columnTitle . '</th>' . "\n";
-    }
-    echo '    </tr>' . "\n";
-
-    for ($i = 0; $i < $numResult; $i++) {
-        echo '    <tr>' . "\n";
-        foreach ($columns as $columnName => $columnTitle) {
-            echo '     <td>' . $data[$columnName][$i] . '</td>' . "\n";
-        }
-        echo '    </tr>' . "\n";
-    }
-
-    echo '   </table>' . "\n";
-}
-
-/**
  * @return array
  */
 function checkConfVariables()
@@ -4167,7 +4025,6 @@ function checkConfVariables()
         'AUDIT',
         'AUDIT_DAYS_TO_KEEP',
         'AUTO_RELEASE',
-        'CACHE_DIR',
         'DATE_FORMAT',
         'DB_DSN',
         'DB_HOST',
@@ -4251,7 +4108,6 @@ function checkConfVariables()
         'TEMP_DIR',
         'TIME_FORMAT',
         'TIME_ZONE',
-        'TTF_DIR',
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
@@ -4264,6 +4120,8 @@ function checkConfVariables()
         'QUARANTINE_MAIL_PORT',
         'QUARANTINE_FROM_ADDR',
         'QUARANTINE_REPORT_HOSTURL',
+        'CACHE_DIR',
+        'TTF_DIR',
     );
 
     $optional = array(
@@ -4285,6 +4143,7 @@ function checkConfVariables()
         'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
         'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
+        'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
     );
 
     $results = array();
@@ -4396,7 +4255,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
-    if (defined(MAILWATCH_SMTP_HOSTNAME)) {
+    if (defined('MAILWATCH_SMTP_HOSTNAME')) {
         $mail_param = array('localhost' => MAILWATCH_SMTP_HOSTNAME, 'host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     } else {
         $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
@@ -4808,4 +4667,97 @@ function checkPrivilegeChange($myusername)
     }
 
     return false;
+}
+
+function printTrafficGraph()
+{
+    require_once __DIR__ . '/graphgenerator.inc.php';
+
+    $graphInterval = (defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
+
+    echo '<td align="center" valign="top">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    if ($graphInterval <= 60) {
+        echo '    <tr><th colspan="1">' . __('trafficgraph03') . '</th></tr>' . "\n";
+    } else {
+        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraphmore03'), $graphInterval / 60) . '</th></tr>' . "\n";
+    }
+    echo '    <tr>' . "\n";
+    echo '    <td>' . "\n";
+
+    $graphgenerator = new GraphGenerator();
+    $graphgenerator->sqlQuery = '
+     SELECT
+      timestamp AS xaxis,
+      1 as total_mail,
+      CASE
+      WHEN virusinfected > 0 THEN 1
+      WHEN nameinfected > 0 THEN 1
+      WHEN otherinfected > 0 THEN 1
+      ELSE 0 END AS total_virus,
+      isspam AS total_spam
+     FROM
+      maillog
+     WHERE
+      1=1
+     AND
+      timestamp BETWEEN (NOW() - INTERVAL ' . $graphInterval . ' MINUTE) AND NOW()
+     ORDER BY
+      timestamp DESC
+    ';
+
+    $graphgenerator->sqlColumns = array(
+        'xaxis',
+        'total_mail',
+        'total_virus',
+        'total_spam',
+    );
+    $graphgenerator->valueConversion = array(
+        'xaxis' => 'generatetimescale',
+        'total_mail' => 'timescale',
+        'total_virus' => 'timescale',
+        'total_spam' => 'timescale',
+    );
+    $graphgenerator->graphColumns = array(
+        'labelColumn' => 'time',
+        'dataLabels' => array(
+            array(__('barmail03'), __('barvirus03'), __('barspam03')),
+        ),
+        'dataNumericColumns' => array(
+            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        ),
+        'dataFormattedColumns' => array(
+            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+        ),
+        'xAxeDescription' => '',
+        'yAxeDescriptions' => array(
+            '',
+        ),
+        'fillBelowLine' => array('true')
+    );
+    $graphgenerator->types = array(
+        array('line', 'line', 'line'),
+    );
+    $graphgenerator->graphTitle = '';
+    $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
+    if ($graphInterval < 240) {
+        $graphgenerator->settings['timeScale'] = 'PT1M';
+        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
+        $graphgenerator->settings['timeFormat'] = 'H:i';
+    } else {
+        $graphgenerator->settings['timeScale'] = 'PT1H';
+        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
+        $graphgenerator->settings['timeFormat'] = 'H:00';
+    }
+    $graphgenerator->settings['plainGraph'] = true;
+    $graphgenerator->settings['drawLines'] = true;
+    $graphgenerator->settings['chartId'] = 'trafficgraph';
+    $graphgenerator->settings['ignoreEmptyResult'] = true;
+    $graphgenerator->printTable = false;
+    $graphgenerator->printLineGraph();
+
+    echo '    </td>' . "\n";
+    echo '    </tr>' . "\n";
+    echo '  </table>' . "\n";
+    echo '  </td>' . "\n";
 }

@@ -1,3 +1,22 @@
+1.2.4
+-----------
+Improvements
+- Converted remaining graph to Chart.js and removed JpGraph dependency
+- Add OS detection in Software Version page
+- Add geoip_update cron script
+- New graph: Messages per Hour for the last 24 hours
+- Recognition of Message/Partial as attachment in view mail
+- Beautify error message on database exception
+- Add visual display for released and learned messages
+- Add a comunity code of conduct
+- Localization updates
+
+Fixes
+- Fix wrong MAILWATCH_SMTP_HOSTNAME defined check
+- Correct some graph generation
+- Fix timestamp field autoupdating in maillog table
+- Fix status mail queues in MailWatch cluster
+
 1.2.3
 -----------
 Improvements

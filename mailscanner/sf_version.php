@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -59,17 +55,52 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<td>' . "\n";
 
     echo '<br>' . "\n";
+
+    // Add test for OS
+    if (0 === stripos(PHP_OS, 'linux')) {
+        $vars = array();
+        $files = glob('/etc/*-release');
+        foreach ($files as $file) {
+            $lines = array_filter(array_map(function ($line) {
+                $parts = explode('=', $line);
+                if (count($parts) !== 2) {
+                    return false;
+                }
+                $parts[1] = str_replace(array('"', "'"), '', $parts[1]);
+                $parts[1] = trim($parts[1]);
+                return $parts;
+            }, file($file)));
+            foreach ($lines as $line) {
+                $vars[$line[0]] = $line[1];
+            }
+        }
+        if (isset($vars['ID']) && in_array(strtolower($vars['ID']), array('centos', 'debian'), true)) {
+            echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
+            echo '<br>' . "\n";
+        }
+        if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {
+            echo __('systemos11') . ' ' . $vars['NAME'] . ' ' . $vars['VERSION'] . '<br>' . "\n";
+            echo '<br>' . "\n";
+        }
+    }
+    if (strtolower(PHP_OS) === 'freebsd') {
+        echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
+        echo '<br>' . "\n";
+    }
+
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'MailScanner ' . __('version11') . ' ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>';
     $virusScanner = get_conf_var('VirusScanners');
+
     // Add test for others virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {
         echo 'ClamAV ' . __('version11') . ' ';
         passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
+
     echo '<br>' . "\n";
     echo 'SpamAssassin ' . __('version11') . ' ';
     passthru(SA_DIR . "spamassassin -V | tr '\\\n' ' ' | cut -d' ' -f3");

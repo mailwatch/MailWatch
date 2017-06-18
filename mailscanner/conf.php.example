@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -105,14 +101,12 @@ define('PROXY_USER', '');
 define('PROXY_PASS', '');
 
 // Paths
-define('MAILWATCH_HOME', '/opt/mailwatch/mailscanner');
+define('MAILWATCH_HOME', '/var/www/html/mailscanner');
 define('MS_CONFIG_DIR', '/etc/MailScanner/');
 define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // Path for ConfigDefs.pl file
 define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // Path for sophos-wrapper file
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
 define('IMAGES_DIR', './images/'); // Trailing slash needed
-define('CACHE_DIR', './images/cache/'); // JpGraph cache
-define('TTF_DIR', './lib/jpgraph/src/fonts/'); // JpGraph fonts
 define('SA_DIR', '/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spamassassin.conf'); // spam.assassin.prefs.conf in V4, spamassassin.conf in V5
@@ -307,3 +301,5 @@ define('RESET_LINK_EXPIRE', 1);
 // define('PWD_RESET_FROM_ADDRESS', 'support@yourdomain.com'); // Set is you wish reset email sent from alternative address.
 /* End Password Reset */
 
+// Interval for the traffic chart for admins in minutes (default is 60, max 1440 (24h))
+define('STATUSGRAPH_INTERVAL', 60);

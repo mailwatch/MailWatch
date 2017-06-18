@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -32,6 +28,7 @@
 // Include of necessary functions
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/graphgenerator.inc.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -41,9 +38,6 @@ $filter = html_start(__('totalmaildate49'), 0, false, true);
 
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
-
-// File name
-$filename = CACHE_DIR . '/total_mail_by_date.png.' . time();
 
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
@@ -139,146 +133,121 @@ ORDER BY
  timestamp
 ";
 
-// Check permissions to see if apache can actually create the file
-if (is_writable(CACHE_DIR)) {
+$sqlColumns = array(
+    'xaxis',
+    'total_mail',
+    'total_size',
+    'total_virus',
+    'total_spam',
+);
+$valueConversion = array(
+    'total_size' => 'scale'
+);
+$graphColumns = array(
+    'labelColumn' => 'xaxis',
+    'dataLabels' => array(
+        array(__('barmail49'), __('barvirus49'), __('barspam49')),
+        array(__('barvolume49')),
+    ),
+    'dataNumericColumns' => array(
+        array('total_mail', 'total_virus', 'total_spam'),
+        array('total_size')
+    ),
+    'dataFormattedColumns' => array(
+        array('total_mail', 'total_virus', 'total_spam'),
+        array('total_sizeconv')
+    ),
+    'xAxeDescription' => __('date49'),
+    'yAxeDescriptions' => array(
+        __('nomessages49'),
+        __('volume49')
+    ),
+    'fillBelowLine' => array('false', 'true')
+);
+$types = array(
+    array('bar', 'bar', 'bar'),
+    array('line')
+);
 
-    // Includes for JPgraph
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_log.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_bar.php';
-    include_once __DIR__ . '/lib/jpgraph/src/jpgraph_line.php';
-
-    // Must be one or more row
-    $result = dbquery($sql);
-    if (!$result->num_rows > 0) {
-        die(__('diemysql99') . "\n");
-    }
-
-    // Connecting to the DB and running the query
-    $result1 = dbquery($sql1);
-
-    // pulling the data in variables
-    while ($row = $result->fetch_object()) {
-        $data_labels[] = $row->xaxis;
-        $data_total_mail[] = $row->total_mail;
-        $data_total_virii[] = $row->total_virus;
-        $data_total_blocked[] = $row->total_blocked;
-        $data_total_spam[] = $row->total_spam;
-        $data_total_lowspam[] = $row->total_lowspam;
-        $data_total_highspam[] = $row->total_highspam;
-        $data_total_mcp[] = $row->total_mcp;
-        $data_total_clean[] = $row->total_clean;
-        $data_total_size[] = $row->total_size;
-    }
-
-    // Merge in MTA data
-    $data_total_unknown_users = array();
-    $data_total_rbl = array();
-    $data_total_unresolveable = array();
-    while ($row1 = $result1->fetch_object()) {
-        if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
-            switch (true) {
-                case($row1->type === 'unknown_user'):
-                    $data_total_unknown_users[$key] = $row1->count;
-                    break;
-                case($row1->type === 'rbl'):
-                    $data_total_rbl[$key] = $row1->count;
-                    break;
-                case($row1->type === 'unresolveable'):
-                    $data_total_unresolveable[$key] = $row1->count;
-                    break;
-            }
-        }
-    }
-
-    // Setting the graph labels
-    $graph_labels = $data_labels;
-
-    // Reduce the number of labels on the graph to prevent them being sqashed.
-    if (count($graph_labels) > 20) {
-        $b = substr(count($graph_labels), 0, 1);
-        for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
-            if ($a % $b) {
-                $graph_labels[$a] = '';
-            }
-        }
-    }
-
-    format_report_volume($data_total_size, $size_info);
-
-    $graph = new Graph(850, 350, 0, false);
-    $graph->SetShadow();
-    $graph->title->SetFont(FF_DV_SANSSERIF, FS_BOLD, 14);
-    $graph->SetScale('textlin');
-    $graph->SetY2Scale('lin');
-    $graph->img->SetMargin(60, 60, 30, 70);
-    $graph->title->Set(__('totalmailprocdate49'));
-    $graph->y2axis->title->Set(__('volume49') . ' (' . $size_info['longdesc'] . ')');
-    $graph->y2axis->title->SetMargin(10);
-    $graph->y2axis->SetTitleMargin(40);
-    $graph->yaxis->title->Set(__('nomessages49'));
-    $graph->yaxis->title->SetMargin(20);
-    $graph->yaxis->SetTitleMargin(30);
-    $graph->xaxis->title->Set(__('date49'));
-    $graph->xaxis->SetTitleMargin(30);
-    $graph->xaxis->SetTickLabels($graph_labels);
-    $graph->xaxis->SetLabelAngle(45);
-    $graph->legend->SetLayout(LEGEND_HOR);
-    $graph->legend->Pos(0.52, 0.92, 'center');
-
-    $bar1 = new BarPlot($data_total_mail);
-    $bar2 = new BarPlot($data_total_virii);
-    $bar3 = new BarPlot($data_total_spam);
-    if ($is_MCP_enabled === true) {
-        $bar4 = new BarPlot($data_total_mcp);
-    }
-    $line1 = new LinePlot($data_total_size);
-    if ($is_MCP_enabled === true) {
-        $abar1 = new AccBarPlot(array($bar2, $bar3, $bar4));
-    } else {
-        $abar1 = new AccBarPlot(array($bar2, $bar3));
-    }
-    $gbplot = new GroupBarPlot(array($bar1, $abar1));
-
-    $graph->Add($gbplot);
-    $graph->AddY2($line1);
-
-    $bar1->SetColor('blue');
-    $bar1->SetFillColor('blue');
-    $bar1->SetLegend(__('barmail49'));
-    $bar2->SetColor('orange');
-    $bar2->SetFillColor('orange');
-    $bar2->SetLegend(__('barvirus49'));
-    $bar3->SetColor('red');
-    $bar3->SetFillColor('red');
-    $bar3->SetLegend(__('barspam49'));
-    if ($is_MCP_enabled === true) {
-        $bar4->SetFillColor('lightblue');
-        $bar4->SetLegend(__('barmcp49'));
-    }
-    $line1->SetColor('lightgreen');
-    $line1->SetFillColor('lightgreen');
-    $line1->SetLegend(__('barvolume49') . ' (' . $size_info['shortdesc'] . ')');
-    $line1->SetCenter();
-
-    $graph->Stroke($filename);
+if ($is_MCP_enabled === true) {
+    $sqlColumns[] = 'total_mcp';
+    $types[0][] = 'bar';
+    $graphColumns['dataLabels'][0][] = __('barmcp49');
+    $graphColumns['dataNumericColumns'][0][] = 'total_mcp';
+    $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
 }
 
-// HTML Code to display the graph
-echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">' . "\n";
-echo ' <TR>' . "\n";
+$graphgenerator = new GraphGenerator();
+$graphgenerator->sqlQuery = $sql;
+$graphgenerator->sqlColumns = $sqlColumns ;
+$graphgenerator->graphColumns = $graphColumns;
+$graphgenerator->valueConversion = $valueConversion;
+$graphgenerator->types = $types;
+$graphgenerator->graphTitle = __('totalmailprocdate49');
+$graphgenerator->printTable = false;
+$graphgenerator->printLineGraph();
 
-//  Check Permissions to see if the file has been written and that apache to read it.
-if (is_readable($filename)) {
-    echo ' <TD ALIGN="CENTER"><IMG SRC="' . $filename . '" ALT="Graph"></TD>';
-} else {
-    echo '<TD ALIGN="CENTER"> ' . __('message199') . ' ' . CACHE_DIR . ' ' . __('message299');
+/////////////////////////////////////////Generate Table //////////////////////////////////
+// Must be one or more row
+$result = dbquery($sql);
+if (!$result->num_rows > 0) {
+    die(__('diemysql99') . "\n");
 }
 
-echo ' </TR>' . "\n";
-echo ' <TR>' . "\n";
-echo '  <TD ALIGN="CENTER">' . "\n";
-echo '<TABLE BORDER=0 cellspacing=1 cellpadding=2>' . "\n";
+// Connecting to the DB and running the query
+$result1 = dbquery($sql1);
+
+// pulling the data in variables
+while ($row = $result->fetch_object()) {
+    $data_labels[] = $row->xaxis;
+    $data_total_mail[] = $row->total_mail;
+    $data_total_virii[] = $row->total_virus;
+    $data_total_blocked[] = $row->total_blocked;
+    $data_total_spam[] = $row->total_spam;
+    $data_total_lowspam[] = $row->total_lowspam;
+    $data_total_highspam[] = $row->total_highspam;
+    $data_total_mcp[] = $row->total_mcp;
+    $data_total_clean[] = $row->total_clean;
+    $data_total_size[] = $row->total_size;
+}
+
+// Merge in MTA data
+$data_total_unknown_users = array();
+$data_total_rbl = array();
+$data_total_unresolveable = array();
+while ($row1 = $result1->fetch_object()) {
+    if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
+        switch (true) {
+            case($row1->type === 'unknown_user'):
+                $data_total_unknown_users[$key] = $row1->count;
+                break;
+            case($row1->type === 'rbl'):
+                $data_total_rbl[$key] = $row1->count;
+                break;
+            case($row1->type === 'unresolveable'):
+                $data_total_unresolveable[$key] = $row1->count;
+                break;
+        }
+    }
+}
+
+// Setting the graph labels
+$graph_labels = $data_labels;
+
+// Reduce the number of labels on the graph to prevent them being sqashed.
+if (count($graph_labels) > 20) {
+    $b = substr(count($graph_labels), 0, 1);
+    for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
+        if ($a % $b) {
+            $graph_labels[$a] = '';
+        }
+    }
+}
+
+format_report_volume($data_total_size, $size_info);
+
+
+echo '<TABLE class="reportTable">' . "\n";
 echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
 echo "  <TH rowspan='2'>" . __('date49') . '</TH>' . "\n";
 echo "  <TH rowspan='2' align='right'>" . __('total49') . '</TH>' . "\n";
@@ -291,8 +260,8 @@ if ($is_MCP_enabled === true) {
     echo "  <TH colspan='2'>" . __('mcp49') . '</TH>' . "\n";
 }
 echo "  <TH rowspan='2'>" . __('volume49') . '</TH>' . "\n";
-echo "  <TH bgcolor='#ffffff' rowspan='2'>&nbsp;</TH>\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo '  <TH class="white" rowspan="2">&nbsp;</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('unknoweusers49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('resolve49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('rbl49') . '</TH>' . "\n";
@@ -328,8 +297,8 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     }
     echo ' <TD ALIGN="RIGHT">' . formatSize($data_total_size[$i] * $size_info['formula']) . '</TD>' . "\n";
-    echo " <TD bgcolor='#ffffff'><BR></TD>\n";
     if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+        echo ' <TD class="white"><BR></TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
@@ -360,14 +329,13 @@ if ($is_MCP_enabled === true) {
     echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }
 echo ' <TH ALIGN="RIGHT">' . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . '</TH>' . "\n";
-echo ' <TD bgcolor="#ffffff"><BR></TD>' . "\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    echo ' <TD class="white"><BR></TD>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unknown_users)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unresolveable)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_rbl)) . '</TH>' . "\n";
 }
 echo '</TR>' . "\n";
-echo '</TABLE>' . "\n";
 echo '</TABLE>' . "\n";
 
 // Add footer
