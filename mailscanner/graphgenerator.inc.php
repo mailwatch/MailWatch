@@ -126,7 +126,7 @@ class GraphGenerator
         }
         $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
         echo '<canvas id="' . $chartId . '" class="lineGraph"></canvas>
-      <script src="lib/Chart.js/Chart.min.js"></script>
+      <script src="lib/Chart.js/Chart.bundle.min.js"></script>
       <script src="lib/lineConfig.js"></script>
       <script>
         COLON = "' . __('colon99') . '";
@@ -312,10 +312,11 @@ class GraphGenerator
         $format = str_replace('%', '', $this->settings['timeFormat']);
 
         $now = new DateTime();
+        $this->settings['now'] = $now;
         $date = clone $now;
         $date = $date->sub(new DateInterval($interval));
-        $dates = array();
-        $count = 0;
+        $dates = array($date->format($format));
+        $count = 1;
         while ($date < $now) {
             //get the next interval and create the label for it
             $date = $date->add(new DateInterval($scale));
@@ -340,13 +341,14 @@ class GraphGenerator
         }
         $interval = $this->settings['timeInterval'];
         $scale = $this->settings['timeScale'];
-        $format = $this->settings['timeFormat'];
+        $format = $this->settings['timeGroupFormat'];
 
-        $convertedData = array();
-        $now = new DateTime();
+        $now = $this->settings['now'];
         $start = clone $now;
         $start = $start->sub(new DateInterval($interval));
+        $oldest = clone $start;
         //initialize the time scales with zeros
+        $convertedData = array(($start->format($format)) => 0);
         while ($start < $now) {
             $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
         }
@@ -354,10 +356,10 @@ class GraphGenerator
         $count = isset($this->data['xaxis']) ? count($this->data['xaxis']) : 0;
         for ($i=0; $i<$count; $i++) {
             // get the value from data and add it to the corresponding hour
-            $timeDiff = (new DateTime($this->data['xaxis'][$i]))->format($format);
+            $time = new DateTime($this->data['xaxis'][$i]);
             //recheck if the entry is inside the value range
-            if (true) {
-                $convertedData[$timeDiff] += $this->data[$column][$i];
+            if ($time >= $oldest && $time < $now) {
+                $convertedData[$time->format($format)] += $this->data[$column][$i];
             }
         }
         //we only need the value and not the keys

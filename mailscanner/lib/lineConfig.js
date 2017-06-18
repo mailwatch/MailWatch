@@ -81,7 +81,21 @@ function printLineGraph(chartId, settings) {
           scaleLabel: {
             display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
             labelString: settings.xAxeDescription,
-          }
+          },
+          time: {
+            unit: 'hour',
+            displayFormats: {
+              'minute': 'HH:mm',
+              'hour': 'HH:mm',
+              max: (new Date()).toISOString(),
+              min: (function(){
+                var date = new Date();
+                date.setDate(date.getDate()-1);
+                return date.toISOString();
+              })()
+            }
+          },
+          type: 'category',
         }]
       },
       responsive: false,

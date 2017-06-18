@@ -384,7 +384,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
         printServiceStatus();
         printAverageLoad();
-       
+
         if ($_SESSION['user_type'] === 'A') {
             printMTAQueue();
             printFreeDiskSpace();
@@ -392,16 +392,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '  </table>' . "\n";
         echo '  </td>' . "\n";
 
-        echo '<td align="center" valign="top">' . "\n";
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraph03'), STATUSGRAPH_INTERVAL) . '</th></tr>' . "\n";
-        echo '    <tr>' . "\n";
-        echo '    <td>' . "\n";
         printTrafficGraph();
-        echo '    </td>' . "\n";
-        echo '    </tr>' . "\n";
-        echo '  </table>' . "\n";
-        echo '  </td>' . "\n";
     }
 
     echo '<td align="center" valign="top">' . "\n";
@@ -4684,14 +4675,27 @@ function printTrafficGraph()
 
     $graphInterval = (defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
 
+    echo '<td align="center" valign="top">' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+    if ($graphInterval <= 60) {
+        echo '    <tr><th colspan="1">' . __('trafficgraph03') . '</th></tr>' . "\n";
+    } else {
+        echo '    <tr><th colspan="1">' . sprintf(__('trafficgraphmore03'), $graphInterval / 60) . '</th></tr>' . "\n";
+    }
+    echo '    <tr>' . "\n";
+    echo '    <td>' . "\n";
+
     $graphgenerator = new GraphGenerator();
     $graphgenerator->sqlQuery = '
      SELECT
       timestamp AS xaxis,
       1 as total_mail,
-      virusinfected AS total_virus,
-      isspam AS total_spam,
-      size AS total_size
+      CASE
+      WHEN virusinfected > 0 THEN 1
+      WHEN nameinfected > 0 THEN 1
+      WHEN otherinfected > 0 THEN 1
+      ELSE 0 END AS total_virus,
+      isspam AS total_spam
      FROM
       maillog
      WHERE
@@ -4736,12 +4740,24 @@ function printTrafficGraph()
     );
     $graphgenerator->graphTitle = '';
     $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
-    $graphgenerator->settings['timeScale'] = 'PT1M';
-    $graphgenerator->settings['timeFormat'] = 'H:i';
+    if ($graphInterval < 240) {
+        $graphgenerator->settings['timeScale'] = 'PT1M';
+        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
+        $graphgenerator->settings['timeFormat'] = 'H:i';
+    } else {
+        $graphgenerator->settings['timeScale'] = 'PT1H';
+        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
+        $graphgenerator->settings['timeFormat'] = 'H:00';
+    }
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'trafficgraph';
     $graphgenerator->settings['ignoreEmptyResult'] = true;
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
+
+    echo '    </td>' . "\n";
+    echo '    </tr>' . "\n";
+    echo '  </table>' . "\n";
+    echo '  </td>' . "\n";
 }

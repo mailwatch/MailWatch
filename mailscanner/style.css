@@ -932,4 +932,8 @@ select.lang > option {
 #trafficgraph {
     width: auto;
     height: 180px;
+    margin-top: -4px;
+    margin-bottom: -9px;
+    margin-right: -2px;
+    margin-left: 2px;
 }
