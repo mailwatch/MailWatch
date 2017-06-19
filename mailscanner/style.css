@@ -261,6 +261,11 @@ table.mail td.notscanned {
     width: 15px;
 }
 
+table.mail td.clean {
+    background-color: #eee;
+    width: 15px;
+}
+
 table.mail td.mcp {
     background-color: #ADD8E6;
     width: 15px;

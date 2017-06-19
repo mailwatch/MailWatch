@@ -428,7 +428,7 @@ function printColorCodes()
     echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
     echo '    <td class="blacklisted"></td> <td>' . __('blacklisted03') . '</td>' . "\n";
     echo '    <td>' . __('notverified03') . '</td> <td class="notscanned"></td>' . "\n";
-    echo '    <td></td> <td>' . __('clean03') . '</td></tr>' . "\n";
+    echo '    <td class="clean"></td> <td>' . __('clean03') . '</td></tr>' . "\n";
     echo '   </table><br>' . "\n";
 }
 
