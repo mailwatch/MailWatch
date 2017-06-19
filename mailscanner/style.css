@@ -213,7 +213,7 @@ table.colorcodes tr {
 
 table.colorcodes tr:hover {
     -webkit-filter: none;
-    filter: none);
+    filter: none;
 }
 
 table.sa_rules_report TH {
