@@ -418,7 +418,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 function printColorCodes()
 {
     echo '   <table border="0" cellpadding="1" cellspacing="1"  align="center" class="mail">' . "\n";
-    //echo '    <tr> <th colspan="18">' . __('colorcodes03') . '</th> </tr>' . "\n";
     echo '    <tr><td class="infected"></td> <td>' . __('badcontentinfected03') . '</td>' . "\n";
     echo '    <td class="spam"></td> <td>' . __('spam103') . '</td>' . "\n";
     echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
