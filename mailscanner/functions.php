@@ -372,7 +372,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
-    printColorCodes();
+    //printColorCodes();
     echo '  </td>' . "\n";
 
     if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
@@ -417,20 +417,20 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
 function printColorCodes()
 {
-    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
-    echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
-    echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
-    echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . __('highspam03') . '</td> <td class="highspam"></td> </tr>' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="1"  align="center" class="mail">' . "\n";
+    //echo '    <tr> <th colspan="18">' . __('colorcodes03') . '</th> </tr>' . "\n";
+    echo '    <tr><td class="infected"></td> <td>' . __('badcontentinfected03') . '</td>' . "\n";
+    echo '    <td class="spam"></td> <td>' . __('spam103') . '</td>' . "\n";
+    echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
-        echo '    <tr> <td>' . __('mcp03') . '</td> <td class="mcp"></td> </tr>' . "\n";
-        echo '    <tr> <td>' . __('highmcp03') . '</td><td class="highmcp"></td></tr>' . "\n";
+        echo '    <td class="mcp"></td>> <td>' . __('mcp03') . '</td>' . "\n";
+        echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
     }
-    echo '    <tr> <td>' . __('whitelisted03') . '</td> <td class="whitelisted"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . __('blacklisted03') . '</td> <td class="blacklisted"></td> </tr>' . "\n";
-    echo '        <tr> <td>' . __('notverified03') . '</td> <td class="notscanned"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . __('clean03') . '</td> <td></td> </tr>' . "\n";
-    echo '   </table>' . "\n";
+    echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
+    echo '    <td class="blacklisted"></td> <td>' . __('blacklisted03') . '</td>' . "\n";
+    echo '    <td>' . __('notverified03') . '</td> <td class="notscanned"></td>' . "\n";
+    echo '    <td></td> <td>' . __('clean03') . '</td></tr>' . "\n";
+    echo '   </table><br>' . "\n";
 }
 
 function printServiceStatus()
@@ -2013,6 +2013,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
             echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/do_message_ops.php form token') . '">' . "\n";
         }
+        printColorCodes();
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
         // Work out which columns to display
         $display = array();
