@@ -417,7 +417,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 function printColorCodes()
 {
     echo '   <table border="0" cellpadding="1" cellspacing="3"  align="center" class="mail colorcodes">' . "\n";
-    echo '    <tr class="legend"><td class="infected"></td> <td style="background-color: inherit">' . __('badcontentinfected03') . '</td>' . "\n";
+    echo '    <tr><td class="infected"></td> <td>' . __('badcontentinfected03') . '</td>' . "\n";
     echo '    <td class="spam"></td> <td>' . __('spam103'). ' </td>' . "\n";
     echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
