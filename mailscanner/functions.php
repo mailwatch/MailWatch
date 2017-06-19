@@ -416,18 +416,18 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
 function printColorCodes()
 {
-    echo '   <table border="0" cellpadding="1" cellspacing="3"  align="center" class="mail">' . "\n";
-    echo '    <tr><td class="infected"></td> <td style="background-color: white">' . __('badcontentinfected03') . '</td>' . "\n";
-    echo '    <td class="spam"></td> <td style="background-color: white">' . __('spam103'). ' </td>' . "\n";
-    echo '    <td class="highspam"></td> <td style="background-color: white">' . __('highspam03') . '</td>' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="3"  align="center" class="mail colorcodes">' . "\n";
+    echo '    <tr class="legend"><td class="infected"></td> <td style="background-color: inherit">' . __('badcontentinfected03') . '</td>' . "\n";
+    echo '    <td class="spam"></td> <td>' . __('spam103'). ' </td>' . "\n";
+    echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
-        echo '    <td class="mcp"></td>> <td style="background-color: white">' . __('mcp03') . '</td>' . "\n";
-        echo '    <td class="highmcp"></td> <td style="background-color: white">' . __('highmcp03') . '</td>' . "\n";
+        echo '    <td class="mcp"></td>> <td>' . __('mcp03') . '</td>' . "\n";
+        echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
     }
-    echo '    <td class="whitelisted"></td> <td style="background-color: white">' . __('whitelisted03') . '</td>' . "\n";
-    echo '    <td class="blacklisted"></td> <td style="background-color: white">' . __('blacklisted03') . '</td>' . "\n";
-    echo '    <td class="notscanned"></td> <td style="background-color: white">' . __('notverified03') . '</td>' . "\n";
-    echo '    <td class="clean"></td> <td style="background-color: white">' . __('clean03') . '</td></tr>' . "\n";
+    echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
+    echo '    <td class="blacklisted"></td> <td>' . __('blacklisted03') . '</td>' . "\n";
+    echo '    <td class="notscanned"></td> <td>' . __('notverified03') . '</td>' . "\n";
+    echo '    <td class="clean"></td> <td>' . __('clean03') . '</td></tr>' . "\n";
     echo '   </table><br>' . "\n";
 }
 

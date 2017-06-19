@@ -207,6 +207,15 @@ table.mail tr, table.sophos tr, table.sa_rules_report tr {
     background-color: #EBEBEB;
 }
 
+table.legend tr {
+    background-color: inherit;
+}
+
+table.colorcodes tr:hover {
+    -webkit-filter: none;
+    filter: none);
+}
+
 table.sa_rules_report TH {
     text-align: left;
 }
