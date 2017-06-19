@@ -223,6 +223,7 @@ td.rule_desc {
 
 table.mail td.infected {
     background-color: #B22222;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -233,6 +234,7 @@ table.mail tr.spam {
 
 table.mail td.spam {
     background-color: #F5BBBB;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -243,31 +245,37 @@ table.mail tr.highspam {
 
 table.mail td.highspam {
     background-color: #EE6262;
+    border: 1px solid #000;
     width: 15px;
 }
 
 table.mail tr.mcp {
     background-color: #ADD8E6;
+    border: 1px solid #000;
     color: #000;
 }
 
 table.mail tr.notscanned {
     background-color: #800080;
+    border: 1px solid #000;
     color: #FFF;
 }
 
 table.mail td.notscanned {
     background-color: #800080;
+    border: 1px solid #000;
     width: 15px;
 }
 
 table.mail td.clean {
     background-color: #eee;
+    border: 1px solid #000;
     width: 15px;
 }
 
 table.mail td.mcp {
     background-color: #ADD8E6;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -278,6 +286,7 @@ table.mail tr.highmcp {
 
 table.mail td.highmcp {
     background-color: #00008B;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -288,6 +297,7 @@ table.mail tr.whitelisted {
 
 table.mail td.whitelisted {
     background-color: #90EE90;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -298,6 +308,7 @@ table.mail tr.blacklisted {
 
 table.mail td.blacklisted {
     background-color: #000;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -674,7 +685,7 @@ div.table > .caption > input {
 }
 
 .reportTable {
-   padding: 10px;   
+   padding: 10px;
    margin-left: auto;
    margin-right: auto;
 }
