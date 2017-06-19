@@ -251,13 +251,11 @@ table.mail td.highspam {
 
 table.mail tr.mcp {
     background-color: #ADD8E6;
-    border: 1px solid #000;
     color: #000;
 }
 
 table.mail tr.notscanned {
     background-color: #800080;
-    border: 1px solid #000;
     color: #FFF;
 }
 
@@ -267,8 +265,13 @@ table.mail td.notscanned {
     width: 15px;
 }
 
+table.mail tr.clean {
+    background-color: #EBEBEB;
+    color: #FFF;
+}
+
 table.mail td.clean {
-    background-color: #eee;
+    background-color: #EBEBEB;
     border: 1px solid #000;
     width: 15px;
 }
