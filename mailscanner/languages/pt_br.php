@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Carregar a mensagem:',
     'cuser03' => 'Usu&aacute;rio',
     'cst03' => 'Hora do Sistema',
-    'colorcodes03' => 'C&oacute;digo de Cores',
     'badcontentinfected03' => 'Conte&uacute;do Bloq./Infectado',
     'whitelisted03' => 'Lista Branca',
     'blacklisted03' => 'Lista Negra',

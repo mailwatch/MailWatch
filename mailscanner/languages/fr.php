@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',
     'cst03' => 'Heure Système',
-    'colorcodes03' => 'Codes couleur',
     'badcontentinfected03' => 'Contenu dangereux/infecté',
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
