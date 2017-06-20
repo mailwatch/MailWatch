@@ -211,11 +211,6 @@ table.colorcodes tr {
     background-color: inherit;
 }
 
-table.colorcodes tr:hover {
-    -webkit-filter: none;
-    filter: none;
-}
-
 table.sa_rules_report TH {
     text-align: left;
 }
@@ -334,6 +329,12 @@ table.mail tr:hover {
     filter: invert(0.1);
 
 }
+
+table.colorcodes tr:hover {
+    -webkit-filter: none;
+    filter: none;
+}
+
 table.boxtable {
     margin-left: auto;
     margin-right: auto;
