@@ -372,7 +372,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</td>' . "\n";
 
     echo '<td align="left" valign="top">' . "\n";
-    echo '  </td>' . "\n";
 
     if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo '  <td align="center" valign="top">' . "\n";
