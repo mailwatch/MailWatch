@@ -2,11 +2,11 @@
  * This customizes a line chart for ChartJs. This files requires that the variables chartTitle, chartId, chartFormattedData and chartNumericData, fillBelowLine, COLON are already set.
  */
 var lineColors= [
-  '#61a9f3', //blue
-  '#f381b9', //red
-  '#61E3A9', //green
-  '#fff3ad',
-  '#b9e3f9'
+  '#4973f7', // blue
+  '#B22222', // dark red
+  '#EE6262', // red
+  '#f5d932', // yellow
+  '#b9e3f9' // light blue
 ];
 
 function printLineGraph(chartId, settings) {
