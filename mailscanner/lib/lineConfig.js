@@ -9,6 +9,9 @@ var lineColors= [
   '#b9e3f9' // light blue
 ];
 
+// see https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+function formatBytes(a,i,v){if(0==a)return"0B";var c=1e3,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(0))+" "+e[f]}
+
 function printLineGraph(chartId, settings) {
   var ctx = document.getElementById(chartId);
   var myChart = new Chart(ctx, {
@@ -70,7 +73,14 @@ function printLineGraph(chartId, settings) {
                 display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
                 labelString: settings.yAxeDescriptions[i]
               },
-              ticks: { suggestedMax: max * 1.05, min: 0 },
+              ticks: {
+                suggestedMax: max * 1.05,
+                min: 0,
+                callback: ((typeof settings.valueTypes === 'undefined' || settings.valueTypes[i] == 'plain') ? 
+                            Chart.Ticks.formatters.linear :
+                            formatBytes
+                )
+              },
             });
           }
           return axes;
