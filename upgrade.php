@@ -238,6 +238,21 @@ function getTableIndexes($table)
     return $indexes;
 }
 
+function getSqlServer()
+{
+    global $link;
+    //test if mysql or mariadb is used.
+    $sql = 'SHOW variables WHERE variable_name="aria_block_size"';
+    $result = $link->query($sql);
+    $result_count = $result->num_rows;
+    if ($result_count === 0) {
+        //mysql does not support aria storage engine
+        return "mysql";
+    } else {
+        return "mariadb";
+    }
+}
+
 /**
  * @param string $string
  * @param string $color
@@ -429,7 +444,7 @@ if ($link) {
 
     // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
     echo pad(' - Fix schema for timestamp field in `maillog` table');
-    if ($link->server_version < 50600) {
+    if ($link->server_version < 50600 && getSqlServer() === "mysql") {
         //MySQL < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
         //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
         //Second query drops the default
