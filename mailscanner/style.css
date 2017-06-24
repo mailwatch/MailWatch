@@ -54,7 +54,7 @@ body {
 }
 
 .login h1 {
-    background-color: #f7ce4a;
+    background-color: #639EAA;
     -webkit-border-radius: 15px 15px 0 0;
     -moz-border-radius: 15px 15px 0 0;
     border-radius: 15px 15px 0 0;
@@ -118,7 +118,7 @@ body {
 .login fieldset button[type="submit"],
 .pwdresetform fieldset button[type="submit"] {
     font-size: 16px;
-    background-color: #f7ce4a;
+    background-color: #639EAA;
     color: #222;
     display: block;
     margin: 0 auto;
@@ -148,7 +148,7 @@ body {
 
 .pwdresetButton a.loginButton {
     padding: 10px;
-    background-color: #f7ce4a;
+    background-color: #639EAA;
     color: #222222;
     margin: 0 auto;
     min-width: 100px;
@@ -184,7 +184,7 @@ table.mail TH, table.boxtable TH, table.maildetail TH {
     font-size: 10pt;
     font-weight: 700;
     text-align: center;
-    background-color: #F7CE4A;
+    background-color: #639EAA;
 }
 
 table.blackwhitelist {
@@ -212,7 +212,7 @@ table.sa_rules_report TH {
 }
 
 table.mail tr.infected {
-    background-color: #B22222;
+    background-color: #d279a6;
     color: #FFF;
 }
 
@@ -222,27 +222,27 @@ td.rule_desc {
 }
 
 table.mail td.infected {
-    background-color: #B22222;
+    background-color: #d279a6;
     width: 15px;
 }
 
 table.mail tr.spam {
-    background-color: #F5BBBB;
+    background-color: #F4C1C1;
     color: #000;
 }
 
 table.mail td.spam {
-    background-color: #F5BBBB;
+    background-color: #F4C1C1;
     width: 15px;
 }
 
 table.mail tr.highspam {
-    background-color: #EE6262;
+    background-color: #E08B8B;
     color: #000;
 }
 
 table.mail td.highspam {
-    background-color: #EE6262;
+    background-color: #E08B8B;
     width: 15px;
 }
 
@@ -288,11 +288,11 @@ table.mail td.whitelisted {
 
 table.mail tr.blacklisted {
     color: #FFF;
-    background-color: #000;
+    background-color: #8E8E8E;
 }
 
 table.mail td.blacklisted {
-    background-color: #000;
+    background-color: #8E8E8E;
     width: 15px;
 }
 
@@ -352,7 +352,7 @@ table.boxtable {
 /* Yellow Menu */
 #menu.yellow {
     border: 2px solid #000;
-    background: #F7CE4A;
+    background: #639EAA;
 }
 
 #menu.yellow a, #menu.yellow select.lang {
@@ -366,13 +366,13 @@ table.boxtable {
 }
 
 td.heading {
-    background-color: #F7CE4A;
+    background-color: #639EAA;
     font-weight: 700;
     font-size: 10pt;
 }
 
 td.heading-w175 {
-    background-color: #F7CE4A;
+    background-color: #639EAA;
     font-weight: 700;
     font-size: 10pt;
     width: 175px;
@@ -462,7 +462,7 @@ table.mailwatch TH {
     font-size: 10pt;
     font-weight: bold;
     text-align: center;
-    background-color: #F7CE4A;
+    background-color: #639EAA;
 }
 
 table.mailwatch tr {
@@ -578,7 +578,7 @@ div.table .cell:first-child {
 }
 
 div.table .head {
-    background-color: #F7CE4A;
+    background-color: #639EAA;
 }
 
 div.table .data {
@@ -626,7 +626,7 @@ div.table > .caption > input {
 }
 
 .autorelease h1 {
-    background-color: #f7ce4a;
+    background-color: #639EAA;
     color: #222;
     font-size: 28px;
     margin: 0;
@@ -675,7 +675,7 @@ div.table > .caption > input {
 }
 
 .reportTable>tbody>tr>th {
-   background-color: #F7CE4A;
+   background-color: #639EAA;
 }
 
 .reportTable>tbody>tr>td {
@@ -711,7 +711,7 @@ td.titleReport {
 }
 
 td.message {
-    background-color: #F7CE4A;
+    background-color: #639EAA;
     font-size: 10pt;
 }
 
@@ -729,7 +729,7 @@ td.message {
 }
 
 .pwdreset h1 {
-    background-color: #f7ce4a;
+    background-color: #639EAA;
     color: #222;
     font-size: 28px;
     margin: 0;
@@ -797,7 +797,7 @@ td.message {
 }
 
 .pwdreset fieldset input[type="submit"] {
-    background-color: #f7ce4a;
+    background-color: #639EAA;
     color: #222;
     display: block;
     margin: 0 auto;
@@ -863,7 +863,7 @@ td.message {
 }
 
 .table-background:hover {
-    background-color: #F7CE4A !important;
+    background-color: #639EAA !important;
 }
 
 .mw-icon {
@@ -898,7 +898,7 @@ select.lang {
     font-family: Arial, sans-serif;
     font-weight: 700;
     height: 100%!important;
-    background-color:#F7CE4A;
+    background-color:#639EAA;
 }
 
 #menu.yellow li select.lang:hover {
@@ -907,7 +907,7 @@ select.lang {
 }
 
 select.lang > option {
-    background:#F7CE4A;
+    background:#639EAA;
     border-top:1px solid #444;
     color: #000;
 }
@@ -931,7 +931,7 @@ select.lang > option {
 
 #trafficgraph {
     width: auto;
-    height: 180px;
+    height: 203px;
     margin-top: -4px;
     margin-bottom: -9px;
     margin-right: -2px;
