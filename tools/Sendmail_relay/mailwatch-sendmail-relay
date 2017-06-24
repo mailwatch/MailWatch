@@ -23,7 +23,7 @@
 # Author: @stefaweb, 14/06/2015
 
 NAME="mailwatch-sendmail-relay"
-DAEMON="/usr/local/bin/sendmail_relay.php"
+DAEMON="/usr/local/bin/mailwatch-sendmail-relay.php"
 SETTINGS="/etc/default/$NAME"
 DESC="Sendmail Relay for MailWatch"
 PIDFILE="/var/run/$NAME.pid"
