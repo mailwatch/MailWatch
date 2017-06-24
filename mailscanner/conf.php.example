@@ -37,16 +37,17 @@ define('LANG', 'en');
 
 // Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
 // in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
-//define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');
+define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');
 
 // Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
+// A valid session name may consists of digits, letters A to Z (both upper and lower case), comma and dash
 //define('SESSION_NAME', 'MailWatch');
 
 // Session Timeout - Sets the global session timeout value, default is 600 sec (10 minutes) if not defined
 // Range is 0 to 99999 seconds.  Setting to 0 will disable session timeout and active session statuses.
 // This can also be set individually per user in the MailWatch GUI for greater flexibility.
-//define('SESSION_TIMEOUT', 600);
+define('SESSION_TIMEOUT', 600);
 
 // Database settings
 //

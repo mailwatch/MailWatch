@@ -239,7 +239,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.4';
+    return '1.2.5-dev';
 }
 
 /**
@@ -1942,7 +1942,7 @@ function generatePager($sql)
       </table>
 </tr>
 <tr>
-<td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
 
     return $from;
 }
@@ -2612,7 +2612,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
           </table>
 </tr>
 <tr>
- <td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
 
         // Re-run the original query and limit the rows
         $sql .= ' LIMIT ' . ($from - 1) . ',' . MAX_RESULTS;
@@ -2704,7 +2704,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
           </table>
 </tr>
 <tr>
- <td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
     }
 }
 

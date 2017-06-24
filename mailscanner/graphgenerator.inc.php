@@ -141,6 +141,7 @@ class GraphGenerator
           fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
           plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ?  'true' : 'false'). ',
           ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'drawLines : true,' : ''). '
+          ' . (isset($this->settings['valueTypes']) && count($this->settings['valueTypes']) !== 0 ?  'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : ''). '
           ' . (isset($this->graphColumns['dataLabels']) ? 'chartDataLabels : [' . $dataLabels . '],' : '') . '
           ' . ($graphTypes === null ? '' : 'types : [' .  $graphTypes . '],') . '
         });

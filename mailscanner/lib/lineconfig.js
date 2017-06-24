@@ -2,15 +2,12 @@
  * This customizes a line chart for ChartJs. This files requires that the variables chartTitle, chartId, chartFormattedData and chartNumericData, fillBelowLine, COLON are already set.
  */
 var lineColors= [
-  '#4973f7', // blue
-  '#B22222', // dark red
-  '#EE6262', // red
-  '#f5d932', // yellow
-  '#b9e3f9' // light blue
+  '#61a9f3', //blue
+  '#f381b9', //red
+  '#61E3A9', //green
+  '#fff3ad',
+  '#b9e3f9'
 ];
-
-// see https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
-function formatBytes(a,i,v){if(0==a)return"0B";var c=1e3,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(0))+" "+e[f]}
 
 function printLineGraph(chartId, settings) {
   var ctx = document.getElementById(chartId);
@@ -28,7 +25,7 @@ function printLineGraph(chartId, settings) {
               data: settings.chartNumericData[i][j],
               backgroundColor: lineColors[datasetsTmp.length],
               borderColor: lineColors[datasetsTmp.length],
-              fill: settings.fillBelowLine[i],
+              fill: false,
               yAxisID: "y-axis-"+i,
               type: (typeof settings.types !== 'undefined' ? settings.types[i][j] : "line"),
               showLine: (typeof settings.types === 'undefined' || settings.fillBelowLine[i] ? true :
@@ -73,14 +70,7 @@ function printLineGraph(chartId, settings) {
                 display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
                 labelString: settings.yAxeDescriptions[i]
               },
-              ticks: {
-                suggestedMax: max * 1.05,
-                min: 0,
-                callback: ((typeof settings.valueTypes === 'undefined' || settings.valueTypes[i] == 'plain') ? 
-                            Chart.Ticks.formatters.linear :
-                            formatBytes
-                )
-              },
+              ticks: { suggestedMax: max * 1.05, min: 0 },
             });
           }
           return axes;
