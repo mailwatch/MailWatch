@@ -25,7 +25,7 @@ function printLineGraph(chartId, settings) {
               data: settings.chartNumericData[i][j],
               backgroundColor: lineColors[datasetsTmp.length],
               borderColor: lineColors[datasetsTmp.length],
-              fill: settings.fillBelowLine[i],
+              fill: false,
               yAxisID: "y-axis-"+i,
               type: (typeof settings.types !== 'undefined' ? settings.types[i][j] : "line"),
               showLine: (typeof settings.types === 'undefined' || settings.fillBelowLine[i] ? true :
