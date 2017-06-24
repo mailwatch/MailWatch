@@ -145,91 +145,98 @@ require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
 
 include __DIR__ . '/postfix.inc.php';
 
-/*
- For reporting of Virus names and statistics a regular expression matching
- the output of your virus scanner is required.  As Virus names vary across
- the vendors and are therefore impossible to match - you can only define one
- scanner as your primary scanner - this should be the scanner you wish to
- report against.  It defaults to the first scanner found in MailScanner.conf.
+function getVirusRegex($scanner = null) {
+    /*
+     For reporting of Virus names and statistics a regular expression matching
+     the output of your virus scanner is required.  As Virus names vary across
+     the vendors and are therefore impossible to match - you can only define one
+     scanner as your primary scanner - this should be the scanner you wish to
+     report against.  It defaults to the first scanner found in MailScanner.conf.
 
- Please submit any new regular expressions to the MailWatch mailing-list or
- open an issue on GitHub.
+     Please submit any new regular expressions to the MailWatch mailing-list or
+     open an issue on GitHub.
 
- If you are running MailWatch in DISTRIBUTED_MODE or you wish to override the
- selection of the regular expression - you will need to add one of the following
- statements to conf.php and set the regular expression manually.
-*/
-// define('VIRUS_REGEX', '<<your regexp here>>');
-// define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
-
-if (!defined('VIRUS_REGEX')) {
-    switch ($scanner = get_primary_scanner()) {
-        case 'none':
-            define('VIRUS_REGEX', '/^Dummy$/');
-            break;
-        case 'sophos':
-            define('VIRUS_REGEX', '/(>>>) Virus \'(\S+)\' found/');
-            break;
-        case 'sophossavi':
-            define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
-            break;
-        case 'clamav':
-            define('VIRUS_REGEX', '/(.+) contains (\S+)/');
-            break;
-        case 'clamd':
-            define('VIRUS_REGEX', '/(.+) was infected: (\S+)/');
-            break;
-        case 'clamavmodule':
-            define('VIRUS_REGEX', '/(.+) was infected: (\S+)/');
-            break;
-        case 'f-prot':
-            define('VIRUS_REGEX', '/(.+) Infection: (\S+)/');
-            break;
-        case 'f-protd-6':
-            define('VIRUS_REGEX', '/(.+) Infection: (\S+)/');
-            break;
-        case 'mcafee':
-            define('VIRUS_REGEX', '/(.+) Found the (\S+) virus !!!/');
-            break;
-        case 'mcafee6':
-            define('VIRUS_REGEX', '/(.+) Found the (\S+) virus !!!/');
-            break;
-        case 'f-secure':
-            define('VIRUS_REGEX', '/(.+) Infected: (\S+)/');
-            break;
-        case 'trend':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in file (\S+)/');
-            break;
-        case 'bitdefender':
-            define('VIRUS_REGEX', '/(\S+) Found virus (\S+)/');
-            break;
-        case 'kaspersky-4.5':
-            define('VIRUS_REGEX', '/(.+) INFECTED (\S+)/');
-            break;
-        case 'etrust':
-            define('VIRUS_REGEX', '/(\S+) is infected by virus: (\S+)/');
-            break;
-        case 'avg':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in file (\S+)/');
-            break;
-        case 'norman':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in file (\S+)/');
-            break;
-        case 'nod32-1.99':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in (\S+)/');
-            break;
-        case 'antivir':
-            define('VIRUS_REGEX', '/(ALERT:) \[(\S+) \S+\]/');
-            break;
-        //default:
-        // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
-        // break;
+     If you are running MailWatch in DISTRIBUTED_MODE or you wish to override the
+     selection of the regular expression - you will need to add one of the following
+     statements to conf.php and set the regular expression manually.
+    */
+    // define('VIRUS_REGEX', '<<your regexp here>>');
+    // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
+    if ($scanner === null) {
+        $scanner = get_primary_scanner();
     }
-} elseif (defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
-    // Have to set manually as running in DISTRIBUTED_MODE
-    die('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
+    if (!defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
+        // Have to set manually as running in DISTRIBUTED_MODE
+        die('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
+    } elseif (!defined('VIRUS_REGEX')) {
+        $regex = null;
+        switch ($scanner) {
+            case 'none':
+                $regex = '/^Dummy$/';
+                break;
+            case 'sophos':
+                $regex = '/(>>>) Virus \'(\S+)\' found/';
+                break;
+            case 'sophossavi':
+                $regex = '/(\S+) was infected by (\S+)/';
+                break;
+            case 'clamav':
+                $regex = '/(.+) contains (\S+)/';
+                break;
+            case 'clamd':
+                $regex = '/(.+) was infected: (\S+)/';
+                break;
+            case 'clamavmodule':
+                $regex = '/(.+) was infected: (\S+)/';
+                break;
+            case 'f-prot':
+                $regex = '/(.+) Infection: (\S+)/';
+                break;
+            case 'f-protd-6':
+                $regex = '/(.+) Infection: (\S+)/';
+                break;
+            case 'mcafee':
+                $regex = '/(.+) Found the (\S+) virus !!!/';
+                break;
+            case 'mcafee6':
+                $regex = '/(.+) Found the (\S+) virus !!!/';
+                break;
+            case 'f-secure':
+                $regex = '/(.+) Infected: (\S+)/';
+                break;
+            case 'trend':
+                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                break;
+            case 'bitdefender':
+                $regex = '/(\S+) Found virus (\S+)/';
+                break;
+            case 'kaspersky-4.5':
+                $regex = '/(.+) INFECTED (\S+)/';
+                break;
+            case 'etrust':
+                $regex = '/(\S+) is infected by virus: (\S+)/';
+                break;
+            case 'avg':
+                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                break;
+            case 'norman':
+                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                break;
+            case 'nod32-1.99':
+                $regex = '/(Found virus) (\S+) in (\S+)/';
+                break;
+            case 'antivir':
+                $regex = '/(ALERT:) \[(\S+) \S+\]/';
+                break;
+            //default:
+            // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
+            // break;
+        }
+        return $regex;
+    } else {
+        return VIRUS_REGEX;
+    }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
@@ -1406,7 +1413,7 @@ AND
     arsort($virus_array);
     reset($virus_array);
     // Get the topmost entry from the array
-    if (!defined('VIRUS_REGEX')) {
+    if (getVirusRegex() === null) {
         return __('unknownvirusscanner03');
     }
 
@@ -4764,14 +4771,19 @@ function printTrafficGraph()
  */
 function getVirus($report)
 {
-    if (!defined('VIRUS_REGEX')) {
-        return null;
-    }    
-    $scanners = explode(' ', get_conf_var('VirusScanners'));
-    foreach ($scanners as $scanner) {
-        if (preg_match($scanner, $report, $match) === 1) {
-            return $match[2];
+    $match = null;
+    if (defined('VIRUS_REGEX')) {
+        preg_match(VIRUS_REGEX, $report, $match);
+    } else {
+        $scanners = explode(' ', get_conf_var('VirusScanners'));
+        foreach ($scanners as $scanner) {
+            if (preg_match(getVirusRegex($scanner), $report, $match) === 1) {
+                break;
+            }
         }
     }
-    return "";
+    if (count($match) > 2) {
+        return $match[2];
+    }
+    return $report;
 }

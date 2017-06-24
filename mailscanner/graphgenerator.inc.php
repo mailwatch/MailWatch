@@ -53,7 +53,6 @@ class GraphGenerator
         if ($this->prepareData() === false) {
             return;
         }
-
         $this->runConversions();
         if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
             echo __('nodata64');
