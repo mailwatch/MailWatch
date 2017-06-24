@@ -212,7 +212,7 @@ table.sa_rules_report TH {
 }
 
 table.mail tr.infected {
-    background-color: #D1407C;
+    background-color: #d279a6;
     color: #FFF;
 }
 
@@ -222,7 +222,7 @@ td.rule_desc {
 }
 
 table.mail td.infected {
-    background-color: #D1407C;
+    background-color: #d279a6;
     width: 15px;
 }
 
