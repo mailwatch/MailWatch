@@ -272,8 +272,8 @@ class GraphGenerator
     {
         $viruses = array();
         foreach ($this->data[$column] as $report) {
-            if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
-                $virus = $virus_report[2];
+            $virus = getVirus($report);
+            if ($virus !== null) {
                 if (isset($viruses[$virus])) {
                     $viruses[$virus]++;
                 } else {

@@ -1393,8 +1393,9 @@ AND
     $result = dbquery($sql);
     $virus_array = array();
     while ($row = $result->fetch_object()) {
-        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
-            $virus = return_virus_link($virus_reports[2]);
+        $virus = getVirus($row->report);
+        if ($virus !== null) {
+            $virus = return_virus_link($virus);
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus] = 1;
             } else {
@@ -2344,11 +2345,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && defined('DISPLAY_VIRUS_REPORT')
-                            && DISPLAY_VIRUS_REPORT === true && preg_match(VIRUS_REGEX, $row[$f], $virus)
-                        ) {
+                        $virus = getVirus($row[$f]);
+                        if (defined('DISPLAY_VIRUS_REPORT') && DISPLAY_VIRUS_REPORT === true && $virus !== null) {
                             foreach ($status_array as $k => $v) {
-                                if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
+                                if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus) . ')', $v)) {
                                     $status_array[$k] = $v;
                                 }
                             }
@@ -4756,4 +4756,22 @@ function printTrafficGraph()
     echo '    </tr>' . "\n";
     echo '  </table>' . "\n";
     echo '  </td>' . "\n";
+}
+
+/**
+ * @param string $report virus report message
+ * @return string|null
+ */
+function getVirus($report)
+{
+    if (!defined('VIRUS_REGEX')) {
+        return null;
+    }    
+    $scanners = explode(' ', get_conf_var('VirusScanners'));
+    foreach ($scanners as $scanner) {
+        if (preg_match($scanner, $report, $match) === 1) {
+            return $match[2];
+        }
+    }
+    return "";
 }
