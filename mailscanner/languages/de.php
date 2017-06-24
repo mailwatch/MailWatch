@@ -196,6 +196,7 @@ return array(
     'barmail03' => 'E-Mails',
     'barvirus03' => 'Viren',
     'barspam03' => 'Spam',
+    'moretopviruses03' => 'und %s weitere Viren',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
