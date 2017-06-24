@@ -145,7 +145,8 @@ require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
 
 include __DIR__ . '/postfix.inc.php';
 
-function getVirusRegex($scanner = null) {
+function getVirusRegex($scanner = null)
+{
     /*
      For reporting of Virus names and statistics a regular expression matching
      the output of your virus scanner is required.  As Virus names vary across
@@ -1387,6 +1388,9 @@ function return_mcp_rule_desc($rule)
  */
 function return_todays_top_virus()
 {
+    if (getVirusRegex() === null) {
+        return __('unknownvirusscanner03');
+    }
     $sql = '
 SELECT
  report
@@ -1410,28 +1414,29 @@ AND
             }
         }
     }
-    arsort($virus_array);
-    reset($virus_array);
-    // Get the topmost entry from the array
-    if (getVirusRegex() === null) {
-        return __('unknownvirusscanner03');
-    }
-
-    if ((list($key, $val) = each($virus_array)) !== '') {
-        // Check and make sure there first placed isn't tied!
-        $saved_key = $key;
-        $saved_val = $val;
-        list($key, $val) = each($virus_array);
-        if ($val !== $saved_val) {
-            return $saved_key;
-        }
-
-        // Tied first place - return none
-        // FIXME: Should return all top viruses
+    if (count($virus_array) === 0) {
         return __('none03');
     }
+    arsort($virus_array);
+    reset($virus_array);
 
-    return __('none03');
+    // Get the topmost entry from the array
+    $top = $null;
+    $count = 0;
+    foreach ($virus_array as $key => $val) {
+        if ($top === null) {
+            $top = $val;
+        } elseif ($val !== $top) {
+            break;
+        }
+        $count++;
+    }
+    $topvirus = array_keys($virus_array)[0];
+    if ($count > 1) {
+        // and ... others
+        $topvirus .= sprintf(' ' . __('moretopviruses03'), $count-1);
+    }
+    return $topvirus;
 }
 
 /**
