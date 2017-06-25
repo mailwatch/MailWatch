@@ -242,10 +242,9 @@ function getSqlServer()
 {
     global $link;
     //test if mysql or mariadb is used.
-    $sql = 'SHOW variables WHERE variable_name="aria_block_size"';
+    $sql = 'SELECT VERSION() as version"';
     $result = $link->query($sql);
-    $result_count = $result->num_rows;
-    if ($result_count === 0) {
+    if (strpos($result->fetch_array['version'], 'MariaDB') === false) {
         //mysql does not support aria storage engine
         return "mysql";
     } else {
