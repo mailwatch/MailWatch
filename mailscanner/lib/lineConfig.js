@@ -1,13 +1,31 @@
 /**
  * This customizes a line chart for ChartJs. This files requires that the variables chartTitle, chartId, chartFormattedData and chartNumericData, fillBelowLine, COLON are already set.
  */
-var lineColors= [
-  '#4973f7', // blue
-  '#B22222', // dark red
-  '#EE6262', // red
-  '#f5d932', // yellow
+
+/******modify the colors here****/
+var mailColor   = '#4973f7'; // blue
+var virusColor  = '#B22222'; // dark red
+var spamColor   = '#EE6262'; // red
+var volumeColor = '#f5d932'; // yellow
+/*******************************/
+
+var defaultColors= [
+  mailColor,
+  virusColor,
+  spamColor,
+  volumeColor,
   '#b9e3f9' // light blue
 ];
+
+function getColor(axisid, lineid, datasetid, customColors) {
+  if (typeof customColors !== 'undefined') {
+    var color = customColors[axisid][lineid];
+    if (typeof color !== 'undefined' && typeof window[color] !== 'undefined') {
+      return window[color];
+    }
+  }
+  return defaultColors[datasetid];
+}
 
 // see https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function formatBytes(a,i,v){if(0==a)return"0B";var c=1e3,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(0))+" "+e[f]}
@@ -26,8 +44,8 @@ function printLineGraph(chartId, settings) {
             datasetsTmp.push({
               label: (typeof settings.chartDataLabels !== 'undefined' ? settings.chartDataLabels[i][j] : ''),
               data: settings.chartNumericData[i][j],
-              backgroundColor: lineColors[datasetsTmp.length],
-              borderColor: lineColors[datasetsTmp.length],
+              backgroundColor: getColor(i, j, datasetsTmp.length, settings.colors),
+              borderColor: getColor(i, j, datasetsTmp.length, settings.colors),
               fill: settings.fillBelowLine[i],
               yAxisID: "y-axis-"+i,
               type: (typeof settings.types !== 'undefined' ? settings.types[i][j] : "line"),
