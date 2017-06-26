@@ -402,7 +402,7 @@ return array(
     'version11' => 'Version:',
     'systemos11' => 'Betriebssystem-Version:',
     'mwandmsversion11' => 'MailWatch und MailScanner Versions Informationen',
-    'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',
+    'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen.',
     'downloaddate11' => 'Download-Datum',
 
     // 12-user_manager.php
@@ -638,7 +638,7 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
-    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
+    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung.',
     'editrule29' => 'Wähle einen Regelsatz zum Bearbeiten:',
     'norulefound29' => 'Keine Regeln gefunden',
 

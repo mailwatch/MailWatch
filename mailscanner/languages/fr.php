@@ -402,7 +402,7 @@ return array(
     'version11' => 'version :',
     'systemos11' => 'Version du Système d\'Exploitation :',
     'mwandmsversion11' => 'Information sur les versions des logiciels',
-    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels.',
     'downloaddate11' => 'date de téléchargement',
 
     // 12-user_manager.php
@@ -638,7 +638,7 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
-    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner',
+    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner.',
     'editrule29' => 'Choisissez une règle à éditer :',
     'norulefound29' => 'Aucune règle trouvée',
 

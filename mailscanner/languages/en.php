@@ -402,7 +402,7 @@ return array(
     'version11' => 'Version:',
     'systemos11' => 'Operating System Version:',
     'mwandmsversion11' => 'MailWatch and MailScanner Version information',
-    'auditlog11' => 'Non-admin user attemped to view Software Version Page',
+    'auditlog11' => 'Non-admin user attemped to view Software Version Page.',
     'downloaddate11' => 'download date',
 
     // 12-user_manager.php
