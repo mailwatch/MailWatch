@@ -106,7 +106,7 @@ function printLineGraph(chartId, settings) {
         })(),
         xAxes: [{
           maxBarThickness: 7,
-//        gridLines: {offsetGridLines: false},
+        gridLines: {offsetGridLines: false},
           scaleLabel: {
             display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
             labelString: settings.xAxeDescription,
