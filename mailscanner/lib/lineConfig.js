@@ -7,6 +7,7 @@ var mailColor   = '#4973f7'; // blue
 var virusColor  = '#B22222'; // dark red
 var spamColor   = '#EE6262'; // red
 var volumeColor = '#f5d932'; // yellow
+var mcpColor    = '#b9e3f9'; // light blue
 /*******************************/
 
 var defaultColors= [
@@ -14,7 +15,7 @@ var defaultColors= [
   virusColor,
   spamColor,
   volumeColor,
-  '#b9e3f9' // light blue
+  mcpColor
 ];
 
 function getColor(axisid, lineid, datasetid, customColors) {
