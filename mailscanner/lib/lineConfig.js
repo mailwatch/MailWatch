@@ -45,8 +45,8 @@ function findBestTickCount(valueCount, minCount, maxCount) {
   return {val: bestValue, match: bestMatch};
 }
 
-function autoSkipTick(value, index, values, maxTickCount) {
-  bestTick = findBestTickCount(values.length-1, 2, maxTickCount);
+function autoSkipTick(value, index, values, minTickCount, maxTickCount) {
+  bestTick = findBestTickCount(values.length-1, minTickCount, maxTickCount);
   console.log(bestTick);
   if(Math.abs(index % bestTick.val) <= bestTick.match || index == values.length-1) {
     console.log(values.length/bestTick.val);
@@ -141,7 +141,7 @@ function printLineGraph(chartId, settings) {
           ticks: {
                 callback: function(tick, index, values) { 
 //                            Chart.Ticks.formatters.linear :
-            return autoSkipTick(tick,index,values,8)
+            return autoSkipTick(tick,index,values,2,8)
                 },
                 stepSize: 1,
                 autoSkip: false,
