@@ -31,6 +31,30 @@ function getColor(axisid, lineid, datasetid, customColors) {
 // see https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function formatBytes(a,i,v){if(0==a)return"0B";var c=1e3,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(0))+" "+e[f]}
 
+function findBestTickCount(valueCount, minCount, maxCount) {
+  var bestMatch = 0.5;
+  var bestValue = maxCount;
+  for(i=maxCount; i>minCount; i--) {
+    var val = ((valueCount-1)/i) % 1;
+    var diff = Math.abs(Math.round(val)-val);
+    if(diff < bestMatch) {
+      bestMatch = diff;
+      bestValue = i;
+    }
+  }
+  return bestValue;
+}
+
+function autoSkipTick(value, index, values, maxTickCount) {
+  console.log(findBestTickCount(values.length, 2, maxTickCount));
+  if(index % findBestTickCount(values.length, 2, maxTickCount) == 0 || index == values.length-1) {
+    return value;
+  } else {
+    return "";
+  }
+}
+
+
 function printLineGraph(chartId, settings) {
   var ctx = document.getElementById(chartId);
   var myChart = new Chart(ctx, {
@@ -98,6 +122,7 @@ function printLineGraph(chartId, settings) {
                 callback: ((typeof settings.valueTypes === 'undefined' || settings.valueTypes[i] == 'plain') ? 
                             Chart.Ticks.formatters.linear :
                             formatBytes
+                          
                 )
               },
             });
@@ -106,7 +131,7 @@ function printLineGraph(chartId, settings) {
         })(),
         xAxes: [{
           maxBarThickness: 7,
-        gridLines: {offsetGridLines: false},
+          gridLines: {offsetGridLines: false},
           scaleLabel: {
             display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
             labelString: settings.xAxeDescription,
@@ -123,6 +148,13 @@ function printLineGraph(chartId, settings) {
                 return date.toISOString();
               })()
             }
+          },
+          ticks: {
+                callback: function(tick, index, values) { 
+//                            Chart.Ticks.formatters.linear :
+            return autoSkipTick(tick,index,values,8)
+                }
+
           },
           type: 'category',
         }]
