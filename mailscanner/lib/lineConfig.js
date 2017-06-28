@@ -32,22 +32,24 @@ function getColor(axisid, lineid, datasetid, customColors) {
 function formatBytes(a,i,v){if(0==a)return"0B";var c=1e3,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(0))+" "+e[f]}
 
 function findBestTickCount(valueCount, minCount, maxCount) {
-  var bestMatch = 0.5;
-  var bestValue = maxCount;
-  for(i=maxCount; i>minCount; i--) {
-    var val = ((valueCount-1)/i) % 1;
+  var bestMatch = Number.MAX_VALUE;
+  var bestValue = minCount;
+  for(i=Math.ceil(valueCount/maxCount); i<= Math.floor(valueCount/minCount);i++) {
+    var val = valueCount/i;
     var diff = Math.abs(Math.round(val)-val);
     if(diff < bestMatch) {
       bestMatch = diff;
       bestValue = i;
     }
   }
-  return bestValue;
+  return {val: bestValue, match: bestMatch};
 }
 
 function autoSkipTick(value, index, values, maxTickCount) {
-  console.log(findBestTickCount(values.length, 2, maxTickCount));
-  if(index % findBestTickCount(values.length, 2, maxTickCount) == 0 || index == values.length-1) {
+  bestTick = findBestTickCount(values.length-1, 2, maxTickCount);
+  console.log(bestTick);
+  if(Math.abs(index % bestTick.val) <= bestTick.match || index == values.length-1) {
+    console.log(values.length/bestTick.val);
     return value;
   } else {
     return "";
@@ -136,25 +138,13 @@ function printLineGraph(chartId, settings) {
             display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
             labelString: settings.xAxeDescription,
           },
-          time: {
-            unit: 'hour',
-            displayFormats: {
-              'minute': 'HH:mm',
-              'hour': 'HH:mm',
-              max: (new Date()).toISOString(),
-              min: (function(){
-                var date = new Date();
-                date.setDate(date.getDate()-1);
-                return date.toISOString();
-              })()
-            }
-          },
           ticks: {
                 callback: function(tick, index, values) { 
 //                            Chart.Ticks.formatters.linear :
             return autoSkipTick(tick,index,values,8)
-                }
-
+                },
+                stepSize: 1,
+                autoSkip: false,
           },
           type: 'category',
         }]
