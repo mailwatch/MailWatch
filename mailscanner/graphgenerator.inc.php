@@ -102,6 +102,7 @@ class GraphGenerator
         $formattedData = "";
         $dataLabels="";
         $graphTypes="";
+        $colors="";
 
         for ($i=0; $i<count($this->graphColumns['dataNumericColumns']); $i++) {
             //foreach yaxis get the column name for numeric and formatted data
@@ -109,6 +110,7 @@ class GraphGenerator
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
             $graphTypes .= '[' . "\n";
+            $colors .= isset($this->settings['colors']) ? '["' . implode('", "', $this->settings['colors'][$i]) . '"]' : '';
             for ($j=0; $j<count($this->graphColumns['dataNumericColumns'][$i]); $j++) {
                 if (isset($this->graphColumns['dataLabels'][$i])) {
                     $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] .'",';
@@ -141,6 +143,7 @@ class GraphGenerator
           fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
           plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ?  'true' : 'false'). ',
           ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'drawLines : true,' : ''). '
+          ' . (isset($this->settings['colors']) ? 'colors : [' . $colors . '],'  : ''). '
           ' . (isset($this->settings['valueTypes']) && count($this->settings['valueTypes']) !== 0 ?  'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : ''). '
           ' . (isset($this->graphColumns['dataLabels']) ? 'chartDataLabels : [' . $dataLabels . '],' : '') . '
           ' . ($graphTypes === null ? '' : 'types : [' .  $graphTypes . '],') . '
