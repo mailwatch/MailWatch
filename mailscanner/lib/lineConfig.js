@@ -20,92 +20,95 @@ var defaultColors= [
 
 // See https://stackoverflow.com/questions/37250456/chart-js-evenly-distribute-ticks-when-using-maxtickslimit/37257056#37257056
 Chart.pluginService.register({
-  beforeRender: function(chart) {
-    var xScale = chart.scales['x-axis-0'];
-    if (xScale.options.ticks.maxTicksLimit) {
-      // store the original maxTicksLimit
-      xScale.options.ticks._maxTicksLimit = xScale.options.ticks.maxTicksLimit;
-      // let chart.js draw the first and last label
-      xScale.options.ticks.maxTicksLimit = (xScale.ticks.length % xScale.options.ticks._maxTicksLimit === 0) ? 1 : 2;
-    }
-  },
+	afterUpdate: function (chart) {
+		var xScale = chart.scales['x-axis-0'];
+		if (xScale.options.ticks.maxTicksLimit) {
+			// store the original maxTicksLimit
+			xScale.options.ticks._maxTicksLimit = xScale.options.ticks.maxTicksLimit;
+			// let chart.js draw the first and last label
+			xScale.options.ticks.maxTicksLimit = (xScale.ticks.length % xScale.options.ticks._maxTicksLimit === 0) ? 1 : 2;
 
-  afterDraw: function(chart, easing) {
-    var xScale = chart.scales['x-axis-0'];
-    if (xScale.options.ticks.maxTicksLimit) {
-      var helpers = Chart.helpers;
+			var originalXScaleDraw = xScale.draw
+			xScale.draw = function () {
+				originalXScaleDraw.apply(this, arguments);
 
-      var tickFontColor = helpers.getValueOrDefault(xScale.options.ticks.fontColor, Chart.defaults.global.defaultFontColor);
-      var tickFontSize = helpers.getValueOrDefault(xScale.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
-      var tickFontStyle = helpers.getValueOrDefault(xScale.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
-      var tickFontFamily = helpers.getValueOrDefault(xScale.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
-      var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
-      var tl = xScale.options.gridLines.tickMarkLength;
+				var xScale = chart.scales['x-axis-0'];
+				if (xScale.options.ticks.maxTicksLimit) {
+					var helpers = Chart.helpers;
 
-      var isRotated = xScale.labelRotation !== 0;
-      var yTickStart = xScale.top;
-      var yTickEnd = xScale.top + tl;
-      var chartArea = chart.chartArea;
+					var tickFontColor = helpers.getValueOrDefault(xScale.options.ticks.fontColor, Chart.defaults.global.defaultFontColor);
+					var tickFontSize = helpers.getValueOrDefault(xScale.options.ticks.fontSize, Chart.defaults.global.defaultFontSize);
+					var tickFontStyle = helpers.getValueOrDefault(xScale.options.ticks.fontStyle, Chart.defaults.global.defaultFontStyle);
+					var tickFontFamily = helpers.getValueOrDefault(xScale.options.ticks.fontFamily, Chart.defaults.global.defaultFontFamily);
+					var tickLabelFont = helpers.fontString(tickFontSize, tickFontStyle, tickFontFamily);
+					var tl = xScale.options.gridLines.tickMarkLength;
 
-      // use the saved ticks
-      var maxTicks = xScale.options.ticks._maxTicksLimit - 1;
-      var ticksPerVisibleTick = xScale.ticks.length / maxTicks;
+					var isRotated = xScale.labelRotation !== 0;
+					var yTickStart = xScale.top;
+					var yTickEnd = xScale.top + tl;
+					var chartArea = chart.chartArea;
 
-      // chart.js uses an integral skipRatio - this causes all the fractional ticks to be accounted for between the last 2 labels
-      // we use a fractional skipRatio
-      var ticksCovered = 0;
-      helpers.each(xScale.ticks, function(label, index) {
-        if (index < ticksCovered)
-          return;
+					// use the saved ticks
+					var maxTicks = xScale.options.ticks._maxTicksLimit - 1;
+					var ticksPerVisibleTick = xScale.ticks.length / maxTicks;
 
-        ticksCovered += ticksPerVisibleTick;
+					// chart.js uses an integral skipRatio - this causes all the fractional ticks to be accounted for between the last 2 labels
+					// we use a fractional skipRatio
+					var ticksCovered = 0;
+					helpers.each(xScale.ticks, function (label, index) {
+						if (index < ticksCovered)
+							return;
 
-        // chart.js has already drawn these 2
-        if (index === 0 || index === (xScale.ticks.length - 1))
-          return;
+						ticksCovered += ticksPerVisibleTick;
 
-        // copy of chart.js code
-        var xLineValue = this.getPixelForTick(index);
-        var xLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines);
+						// chart.js has already drawn these 2
+						if (index === 0 || index === (xScale.ticks.length - 1))
+							return;
 
-        if (this.options.gridLines.display) {
-          this.ctx.lineWidth = this.options.gridLines.lineWidth;
-          this.ctx.strokeStyle = this.options.gridLines.color;
+						// copy of chart.js code
+						var xLineValue = this.getPixelForTick(index);
+						var xLabelValue = this.getPixelForTick(index, this.options.gridLines.offsetGridLines);
 
-          xLineValue += helpers.aliasPixel(this.ctx.lineWidth);
+						if (this.options.gridLines.display) {
+							this.ctx.lineWidth = this.options.gridLines.lineWidth;
+							this.ctx.strokeStyle = this.options.gridLines.color;
 
-          // Draw the label area
-          this.ctx.beginPath();
+							xLineValue += helpers.aliasPixel(this.ctx.lineWidth);
 
-          if (this.options.gridLines.drawTicks) {
-            this.ctx.moveTo(xLineValue, yTickStart);
-            this.ctx.lineTo(xLineValue, yTickEnd);
-          }
+							// Draw the label area
+							this.ctx.beginPath();
 
-          // Draw the chart area
-          if (this.options.gridLines.drawOnChartArea) {
-            this.ctx.moveTo(xLineValue, chartArea.top);
-            this.ctx.lineTo(xLineValue, chartArea.bottom);
-          }
+							if (this.options.gridLines.drawTicks) {
+								this.ctx.moveTo(xLineValue, yTickStart);
+								this.ctx.lineTo(xLineValue, yTickEnd);
+							}
 
-          // Need to stroke in the loop because we are potentially changing line widths & colours
-          this.ctx.stroke();
-        }
+							// Draw the chart area
+							if (this.options.gridLines.drawOnChartArea) {
+								this.ctx.moveTo(xLineValue, chartArea.top);
+								this.ctx.lineTo(xLineValue, chartArea.bottom);
+							}
 
-        if (this.options.ticks.display) {
-          this.ctx.save();
-          this.ctx.translate(xLabelValue + this.options.ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
-          this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
-          this.ctx.font = tickLabelFont;
-          this.ctx.fillStyle = tickFontColor;
-          this.ctx.textAlign = (isRotated) ? "right" : "center";
-          this.ctx.textBaseline = (isRotated) ? "middle" : this.options.position === "top" ? "bottom" : "top";
-          this.ctx.fillText(label, 0, 0);
-          this.ctx.restore();
-        }
-      }, xScale);
-    }
-  }
+							// Need to stroke in the loop because we are potentially changing line widths & colours
+							this.ctx.stroke();
+						}
+
+						if (this.options.ticks.display) {
+							this.ctx.save();
+							this.ctx.translate(xLabelValue + this.options.ticks.labelOffset, (isRotated) ? this.top + 12 : this.options.position === "top" ? this.bottom - tl : this.top + tl);
+							this.ctx.rotate(helpers.toRadians(this.labelRotation) * -1);
+							this.ctx.font = tickLabelFont;
+							this.ctx.fillStyle = tickFontColor;
+							this.ctx.textAlign = (isRotated) ? "right" : "center";
+							this.ctx.textBaseline = (isRotated) ? "middle" : this.options.position === "top" ? "bottom" : "top";
+							this.ctx.fillText(label, 0, 0);
+							this.ctx.restore();
+						}
+					}, xScale);
+				}
+			};
+		}
+	},
 });
 
 function getColor(axisid, lineid, datasetid, customColors) {
