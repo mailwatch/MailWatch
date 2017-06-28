@@ -4740,15 +4740,9 @@ function printTrafficGraph()
     );
     $graphgenerator->graphTitle = '';
     $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
-    if ($graphInterval < 240) {
-        $graphgenerator->settings['timeScale'] = 'PT1M';
-        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
-        $graphgenerator->settings['timeFormat'] = 'H:i';
-    } else {
-        $graphgenerator->settings['timeScale'] = 'PT1H';
-        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
-        $graphgenerator->settings['timeFormat'] = 'H:00';
-    }
+    $graphgenerator->settings['timeScale'] = 'PT1M';
+    $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
+    $graphgenerator->settings['timeFormat'] = 'H:i';
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'trafficgraph';
