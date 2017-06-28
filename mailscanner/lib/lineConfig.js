@@ -218,8 +218,7 @@ function printLineGraph(chartId, settings) {
           },
           ticks: {
               // Need to be a variable (for rep_total_mail_by_date.php and rep_previous_day.php)
-              // auto or a number
-              //maxTicksLimit: 10
+              maxTicksLimit: 10
           },
           type: 'category',
        }]
