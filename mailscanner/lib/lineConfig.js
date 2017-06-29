@@ -45,20 +45,35 @@ function findBestTickCount(valueCount, minCount, maxCount) {
   return {val: bestValue, match: bestMatch};
 }
 
-function autoSkipTick(value, index, values, minTickCount, maxTickCount) {
-  bestTick = findBestTickCount(values.length-1, minTickCount, maxTickCount);
-  console.log(bestTick);
-  if(Math.abs(index % bestTick.val) <= bestTick.match || index == values.length-1) {
-    console.log(values.length/bestTick.val);
+function autoSkipTick(value, index, valueCount, bestTick, gridFactor) {
+  if(index % bestTick.val <= bestTick.match || index == valueCount-1) {
+    //label and grid line
     return value;
   } else {
-    return "";
+    if(bestTick.val/gridFactor == Math.round(bestTick.val/gridFactor) && (index % Math.ceil(bestTick.val/gridFactor) <= bestTick.match || index == valueCount-1)) {
+      //no label but grid lines
+      return "";
+    } else {
+      //no label, no grid line
+      return;
+    }
   }
 }
 
+function getBestGridFactor(bestTick, valueCount, maxGridCount) {
+  var gridFactor =1;
+  for(; gridFactor<=bestTick.val && gridFactor * valueCount/bestTick.val <= maxGridCount; gridFactor*=2) {
+    if(bestTick.val/gridFactor % 2 != 0)  {
+      break;
+    }
+  }
+  return gridFactor;
+}
 
 function printLineGraph(chartId, settings) {
   var ctx = document.getElementById(chartId);
+  var bestTick = findBestTickCount(settings.chartLabels.length - 1, 2, 12);
+  var bestGridFactor = getBestGridFactor(bestTick, settings.chartLabels.length - 1, 32);
   var myChart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -140,8 +155,7 @@ function printLineGraph(chartId, settings) {
           },
           ticks: {
                 callback: function(tick, index, values) { 
-//                            Chart.Ticks.formatters.linear :
-            return autoSkipTick(tick,index,values,2,8)
+                  return autoSkipTick(tick, index, values.length, bestTick, bestGridFactor)
                 },
                 stepSize: 1,
                 autoSkip: false,

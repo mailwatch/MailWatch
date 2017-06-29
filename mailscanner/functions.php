@@ -4740,7 +4740,7 @@ function printTrafficGraph()
     );
     $graphgenerator->graphTitle = '';
     $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
-    if ($graphInterval < 240) {
+    if ($graphInterval < 360) {
         $graphgenerator->settings['timeScale'] = 'PT1M';
         $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
         $graphgenerator->settings['timeFormat'] = 'H:i';
