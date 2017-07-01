@@ -170,7 +170,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
 
         // Apply MailWatch rights on files from the last run
         $mwUID =  exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $retval_cat);
-        if ($retval_cat > 0) {
+        if ($retval_cat['0'] > 0) {
             die(__('nofind52') . '.' . "\n");
         } else {
             $path = $extract_dir . 'GeoIP*.dat';
