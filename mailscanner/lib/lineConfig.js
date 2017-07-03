@@ -93,8 +93,8 @@ function printLineGraph(chartId, settings) {
               type: (typeof settings.types !== 'undefined' ? settings.types[i][j] : "line"),
               showLine: (typeof settings.types === 'undefined' || settings.fillBelowLine[i] ? true :
                           (typeof settings.drawLines === 'undefined' ? false : settings.drawLines)),
-              pointRadius: 1,
-              borderWidth: 0.1,
+              pointRadius: 0,
+              borderWidth: 1.5          
             });
           }
         }
