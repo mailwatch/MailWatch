@@ -94,6 +94,7 @@ function printLineGraph(chartId, settings) {
               showLine: (typeof settings.types === 'undefined' || settings.fillBelowLine[i] ? true :
                           (typeof settings.drawLines === 'undefined' ? false : settings.drawLines)),
               pointRadius: 1,
+              borderWidth: 0.1,
             });
           }
         }
