@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Go to message:',
     'cuser03' => 'User',
     'cst03' => 'System Time',
-    'colorcodes03' => 'Color Codes',
     'badcontentinfected03' => 'Bad Content/Infected',
     'whitelisted03' => 'Whitelisted',
     'blacklisted03' => 'Blacklisted',

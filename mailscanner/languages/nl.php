@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Ga naar e-mail:',
     'cuser03' => 'Gebruiker',
     'cst03' => 'Systeemtijd',
-    'colorcodes03' => 'Kleurcodes',
     'badcontentinfected03' => 'Gevaarlijke Inhoud/Infectie',
     'whitelisted03' => 'Vrijgewaard',
     'blacklisted03' => 'Geblokkeert',
