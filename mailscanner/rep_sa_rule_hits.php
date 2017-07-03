@@ -100,7 +100,7 @@ while ($row = $result->fetch_object()) {
             $sa_array[$rule]['not-spam'] = 0;
         }
 
-        if ($row->isspam !== 0) {
+        if ($row->isspam !== '0') {
             $sa_array[$rule]['spam']++;
         } else {
             $sa_array[$rule]['not-spam']++;

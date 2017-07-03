@@ -161,7 +161,7 @@ if ($usercount === 1) {
         $redirect_url = $_SESSION['REQUEST_URI'];
         unset($_SESSION['REQUEST_URI']);
     }
-    header('Location: ' . sanitizeInput($redirect_url));
+    header('Location: ' . str_replace('&amp;', '&', sanitizeInput($redirect_url)));
 } else {
     header('Location: login.php?error=baduser');
 }

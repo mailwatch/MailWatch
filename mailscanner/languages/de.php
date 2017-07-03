@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Zu Nachricht gehen:',
     'cuser03' => 'Benutzer',
     'cst03' => 'Systemzeit',
-    'colorcodes03' => 'Farbkodierungen',
     'badcontentinfected03' => 'Schlechter Inhalt/Infiziert',
     'whitelisted03' => 'Auf Weisser Liste',
     'blacklisted03' => 'Auf Schwarzer Liste',
@@ -196,6 +195,7 @@ return array(
     'barmail03' => 'E-Mails',
     'barvirus03' => 'Viren',
     'barspam03' => 'Spam',
+    'moretopviruses03' => 'und %s weitere Viren',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -402,7 +402,7 @@ return array(
     'version11' => 'Version:',
     'systemos11' => 'Betriebssystem-Version:',
     'mwandmsversion11' => 'MailWatch und MailScanner Versions Informationen',
-    'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',
+    'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen.',
     'downloaddate11' => 'Download-Datum',
 
     // 12-user_manager.php
@@ -484,10 +484,10 @@ return array(
     'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
     'quarantineReportSend12' => 'Der Quarantäne-Bericht wurde erfolgreich versendet.',
     'checkReportRequirementsFailed12' => 'Die Anforderungen für das Senden von Quarantäne-Berichten sind nicht erfüllt. Bitte kontaktieren Sie ihren Administrator.',
-    'usercreated12' => 'Benutzer %s wurde erstellt',
-    'useredited12' => 'Benutzer %s wurde geändert',
-    'userdeleted12' => 'Benuter %s wurde gelöscht',
-    'userloggedout12' => 'Benutzer %s wurde abgemeldet',
+    'usercreated12' => 'Benutzer %s wurde erstellt.',
+    'useredited12' => 'Benutzer %s wurde geändert.',
+    'userdeleted12' => 'Benuter %s wurde gelöscht.',
+    'userloggedout12' => 'Benutzer %s wurde abgemeldet.',
     'loggedin12' => 'wurde angemeldet',
     'usertimeout12' => 'Benutzer-Timeout:',
     'logout12' => 'Abmelden',
@@ -638,7 +638,7 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
-    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
+    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung.',
     'editrule29' => 'Wähle einen Regelsatz zum Bearbeiten:',
     'norulefound29' => 'Keine Regeln gefunden',
 

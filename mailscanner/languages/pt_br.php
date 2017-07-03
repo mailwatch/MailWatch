@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Carregar a mensagem:',
     'cuser03' => 'Usu&aacute;rio',
     'cst03' => 'Hora do Sistema',
-    'colorcodes03' => 'C&oacute;digo de Cores',
     'badcontentinfected03' => 'Conte&uacute;do Bloq./Infectado',
     'whitelisted03' => 'Lista Branca',
     'blacklisted03' => 'Lista Negra',
@@ -196,6 +195,7 @@ return array(
     'barmail03' => 'E-mails',
     'barvirus03' => 'Viruses',
     'barspam03' => 'Spam',
+    'moretopviruses03' => 'and %s other viruses',
 
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
@@ -402,7 +402,7 @@ return array(
     'version11' => 'Versão:',
     'systemos11' => 'Operating System Version:',
     'mwandmsversion11' => 'MailWatch and MailScanner Version information',
-    'auditlog11' => 'Non-admin user attemped to view Software Version Page',
+    'auditlog11' => 'Non-admin user attemped to view Software Version Page.',
     'downloaddate11' => 'download date',
 
     // 12-user_manager.php
@@ -484,10 +484,10 @@ return array(
     'quarantineReportFailed12' => 'An error occured while sending the quarantine report.',
     'quarantineReportSend12' => 'The quarantine report was successfully sent.',
     'checkReportRequirementsFailed12' => 'Requirements for generating quarantine reports are not met. Please contact your administrator.',
-    'usercreated12' => 'User %s has been created',
-    'useredited12' => 'User %s has been edited',
-    'userdeleted12' => 'User %s has been deleted',
-    'userloggedout12' => 'User %s has been logged out',
+    'usercreated12' => 'User %s has been created.',
+    'useredited12' => 'User %s has been edited.',
+    'userdeleted12' => 'User %s has been deleted.',
+    'userloggedout12' => 'User %s has been logged out.',
     'loggedin12' => 'Logged In',
     'usertimeout12' => 'User Timeout:',
     'logout12' => 'Logout',

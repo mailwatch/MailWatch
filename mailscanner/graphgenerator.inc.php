@@ -53,7 +53,6 @@ class GraphGenerator
         if ($this->prepareData() === false) {
             return;
         }
-
         $this->runConversions();
         if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
             echo __('nodata64');
@@ -275,8 +274,8 @@ class GraphGenerator
     {
         $viruses = array();
         foreach ($this->data[$column] as $report) {
-            if (preg_match(VIRUS_REGEX, $report, $virus_report)) {
-                $virus = $virus_report[2];
+            $virus = getVirus($report);
+            if ($virus !== null) {
                 if (isset($viruses[$virus])) {
                     $viruses[$virus]++;
                 } else {
