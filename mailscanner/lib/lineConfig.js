@@ -1,19 +1,79 @@
 /**
  * This customizes a line chart for ChartJs. This files requires that the variables chartTitle, chartId, chartFormattedData and chartNumericData, fillBelowLine, COLON are already set.
  */
-var lineColors= [
-  '#4973f7', // blue
-  '#B22222', // dark red
-  '#EE6262', // red
-  '#f5d932', // yellow
-  '#b9e3f9' // light blue
+
+/******modify the colors here****/
+var mailColor   = '#4973f7'; // blue
+var virusColor  = '#B22222'; // dark red
+var spamColor   = '#EE6262'; // red
+var volumeColor = '#f5d932'; // yellow
+var mcpColor    = '#b9e3f9'; // light blue
+/*******************************/
+
+var defaultColors= [
+  mailColor,
+  virusColor,
+  spamColor,
+  volumeColor,
+  mcpColor
 ];
+
+function getColor(axisid, lineid, datasetid, customColors) {
+  if (typeof customColors !== 'undefined') {
+    var color = customColors[axisid][lineid];
+    if (typeof color !== 'undefined' && typeof window[color] !== 'undefined') {
+      return window[color];
+    }
+  }
+  return defaultColors[datasetid];
+}
 
 // see https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function formatBytes(a,i,v){if(0==a)return"0B";var c=1e3,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));return parseFloat((a/Math.pow(c,f)).toFixed(0))+" "+e[f]}
 
+function findBestTickCount(valueCount, minCount, maxCount) {
+  var bestMatch = Number.MAX_VALUE;
+  var bestValue = minCount;
+  for(i=Math.ceil(valueCount/maxCount); i<= Math.floor(valueCount/minCount);i++) {
+    var val = valueCount/i;
+    var diff = Math.abs(Math.round(val)-val);
+    if(diff < bestMatch) {
+      bestMatch = diff;
+      bestValue = i;
+    }
+  }
+  return {val: bestValue, match: bestMatch};
+}
+
+function autoSkipTick(value, index, valueCount, bestTick, gridFactor) {
+  if(index % bestTick.val <= bestTick.match || index == valueCount-1) {
+    //label and grid line
+    return value;
+  } else {
+    if(bestTick.val/gridFactor == Math.round(bestTick.val/gridFactor) && (index % Math.ceil(bestTick.val/gridFactor) <= bestTick.match || index == valueCount-1)) {
+      //no label but grid lines
+      return "";
+    } else {
+      //no label, no grid line
+      return;
+    }
+  }
+}
+
+function getBestGridFactor(bestTick, valueCount, maxGridCount) {
+  var gridFactor =1;
+  for(; gridFactor<=bestTick.val && gridFactor * valueCount/bestTick.val <= maxGridCount; gridFactor*=2) {
+    if(bestTick.val/gridFactor % 2 != 0)  {
+      break;
+    }
+  }
+  return gridFactor;
+}
+
 function printLineGraph(chartId, settings) {
   var ctx = document.getElementById(chartId);
+  var bestTick = findBestTickCount(settings.chartLabels.length - 1, 2, 12);
+  var bestGridFactor = getBestGridFactor(bestTick, settings.chartLabels.length - 1, 32);
   var myChart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -26,14 +86,15 @@ function printLineGraph(chartId, settings) {
             datasetsTmp.push({
               label: (typeof settings.chartDataLabels !== 'undefined' ? settings.chartDataLabels[i][j] : ''),
               data: settings.chartNumericData[i][j],
-              backgroundColor: lineColors[datasetsTmp.length],
-              borderColor: lineColors[datasetsTmp.length],
+              backgroundColor: getColor(i, j, datasetsTmp.length, settings.colors),
+              borderColor: getColor(i, j, datasetsTmp.length, settings.colors),
               fill: settings.fillBelowLine[i],
               yAxisID: "y-axis-"+i,
               type: (typeof settings.types !== 'undefined' ? settings.types[i][j] : "line"),
               showLine: (typeof settings.types === 'undefined' || settings.fillBelowLine[i] ? true :
                           (typeof settings.drawLines === 'undefined' ? false : settings.drawLines)),
               pointRadius: 1,
+              borderWidth: 0.1,
             });
           }
         }
@@ -79,6 +140,7 @@ function printLineGraph(chartId, settings) {
                 callback: ((typeof settings.valueTypes === 'undefined' || settings.valueTypes[i] == 'plain') ? 
                             Chart.Ticks.formatters.linear :
                             formatBytes
+                          
                 )
               },
             });
@@ -87,23 +149,17 @@ function printLineGraph(chartId, settings) {
         })(),
         xAxes: [{
           maxBarThickness: 7,
-//        gridLines: {offsetGridLines: false},
+          gridLines: {offsetGridLines: false},
           scaleLabel: {
             display: (typeof settings.plainGraph === 'undefined' ? true : !settings.plainGraph),
             labelString: settings.xAxeDescription,
           },
-          time: {
-            unit: 'hour',
-            displayFormats: {
-              'minute': 'HH:mm',
-              'hour': 'HH:mm',
-              max: (new Date()).toISOString(),
-              min: (function(){
-                var date = new Date();
-                date.setDate(date.getDate()-1);
-                return date.toISOString();
-              })()
-            }
+          ticks: {
+                callback: function(tick, index, values) { 
+                  return autoSkipTick(tick, index, values.length, bestTick, bestGridFactor)
+                },
+                stepSize: 1,
+                autoSkip: false,
           },
           type: 'category',
         }]

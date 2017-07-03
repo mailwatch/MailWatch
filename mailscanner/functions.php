@@ -4729,13 +4729,13 @@ function printTrafficGraph()
     $graphgenerator->graphColumns = array(
         'labelColumn' => 'time',
         'dataLabels' => array(
-            array(__('barmail03'), __('barvirus03'), __('barspam03')),
+            array(__('barvirus03'), __('barspam03'), __('barmail03')),
         ),
         'dataNumericColumns' => array(
-            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
         ),
         'dataFormattedColumns' => array(
-            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
         ),
         'xAxeDescription' => '',
         'yAxeDescriptions' => array(
@@ -4748,19 +4748,15 @@ function printTrafficGraph()
     );
     $graphgenerator->graphTitle = '';
     $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
-    if ($graphInterval < 240) {
-        $graphgenerator->settings['timeScale'] = 'PT1M';
-        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
-        $graphgenerator->settings['timeFormat'] = 'H:i';
-    } else {
-        $graphgenerator->settings['timeScale'] = 'PT1H';
-        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
-        $graphgenerator->settings['timeFormat'] = 'H:00';
-    }
+    $graphgenerator->settings['timeScale'] = 'PT1M';
+    $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
+    $graphgenerator->settings['timeFormat'] = 'H:i';
+
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'trafficgraph';
     $graphgenerator->settings['ignoreEmptyResult'] = true;
+    $graphgenerator->settings['colors'] = array(array('virusColor', 'spamColor', 'mailColor'));
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
 
