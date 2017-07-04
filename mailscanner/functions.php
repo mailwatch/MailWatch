@@ -4752,6 +4752,7 @@ function printTrafficGraph()
     $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
     $graphgenerator->settings['timeFormat'] = 'H:i';
 
+    $graphgenerator->settings['maxTicks'] = 6;
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'trafficgraph';

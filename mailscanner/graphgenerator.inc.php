@@ -141,6 +141,7 @@ class GraphGenerator
           yAxeDescriptions : ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"],
           fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
           plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ?  'true' : 'false'). ',
+          maxTicks: ' . (isset($this->settings['maxTicks']) ? $this->settings['maxTicks'] : '12') . ',
           ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'drawLines : true,' : ''). '
           ' . (isset($this->settings['colors']) ? 'colors : [' . $colors . '],'  : ''). '
           ' . (isset($this->settings['valueTypes']) && count($this->settings['valueTypes']) !== 0 ?  'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : ''). '

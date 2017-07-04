@@ -46,7 +46,9 @@ function findBestTickCount(valueCount, minCount, maxCount) {
 }
 
 function autoSkipTick(value, index, valueCount, bestTick, gridFactor) {
-  if(index % bestTick.val <= bestTick.match || index == valueCount-1) {
+  //second condition is to prevent ticks close to the end overlapping
+  if((index % bestTick.val <= bestTick.match && valueCount-bestTick.val-index >= 0)|| index == valueCount-1) {
+  console.log(index);
     //label and grid line
     return value;
   } else {
@@ -72,8 +74,8 @@ function getBestGridFactor(bestTick, valueCount, maxGridCount) {
 
 function printLineGraph(chartId, settings) {
   var ctx = document.getElementById(chartId);
-  var bestTick = findBestTickCount(settings.chartLabels.length - 1, 2, 12);
-  var bestGridFactor = getBestGridFactor(bestTick, settings.chartLabels.length - 1, 32);
+  var bestTick = findBestTickCount(settings.chartLabels.length-1, 2, settings.maxTicks);
+  var bestGridFactor = getBestGridFactor(bestTick, settings.chartLabels.length - 1, settings.maxTicks * 3);
   var myChart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -160,6 +162,7 @@ function printLineGraph(chartId, settings) {
                 },
                 stepSize: 1,
                 autoSkip: false,
+                maxRotation: 0,
           },
           type: 'category',
         }]
