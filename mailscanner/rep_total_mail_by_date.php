@@ -191,6 +191,7 @@ $graphgenerator->types = $types;
 $graphgenerator->graphTitle = __('totalmailprocdate49');
 $graphgenerator->printTable = false;
 $graphgenerator->settings['valueTypes'] = array('plain','volume');
+$graphgenerator->settings['maxTicks'] = 10;
 $graphgenerator->printLineGraph();
 
 /////////////////////////////////////////Generate Table //////////////////////////////////

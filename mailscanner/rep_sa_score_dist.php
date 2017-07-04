@@ -73,6 +73,7 @@ $graphgenerator->graphColumns = array(
 $graphgenerator->types = array(array('line'));
 $graphgenerator->graphTitle = __('sascoredist38');
 $graphgenerator->settings['drawLines'] = true;
+$graphgenerator->settings['maxTicks'] = 24;
 $graphgenerator->printLineGraph();
 
 // Add footer
