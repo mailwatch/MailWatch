@@ -244,7 +244,8 @@ function getSqlServer()
     //test if mysql or mariadb is used.
     $sql = 'SELECT VERSION() as version';
     $result = $link->query($sql);
-    if (strpos($result->fetch_array()['version'], 'MariaDB') === false) {
+    $fetch = $result->fetch_array();
+    if (strpos($fetch['version'], 'MariaDB') === false) {
         //mysql does not support aria storage engine
         return "mysql";
     } else {
