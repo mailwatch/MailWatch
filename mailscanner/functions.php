@@ -322,7 +322,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '' . java_time() . '';
     //$current_url = "".MAILWATCH_HOME."/status.php";
     //if($_SERVER['SCRIPT_FILENAME'] === $active_url){
-    echo '' . row_highandclick() . '';
     echo '</script>';
     if ($report) {
         echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
@@ -583,7 +582,7 @@ function printFreeDiskSpace()
             $total_space = disk_total_space($disk['mountpoint']);
             $percent = '<span>';
             if (round($free_space / $total_space, 2) <= 0.1) {
-                $percent = '<span style="color:red">';
+                $percent = '<span class="error">';
             }
             $percent .= ' [';
             $percent .= round($free_space / $total_space, 2) * 100;
@@ -770,39 +769,39 @@ function printTodayStatistics()
 
     $sth = dbquery($sql);
     while ($row = $sth->fetch_object()) {
-        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail todaystatistics" width="220">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
-        echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('processed03') . '</td><td>' . number_format(
                 $row->processed
-            ) . '</td><td align="right">' . formatSize(
+            ) . '</td><td>' . formatSize(
                 $row->size
             ) . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('cleans03') . '</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('cleans03') . '</td><td>' . number_format(
                 $row->clean
-            ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('viruses03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->cleanpercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('viruses03') . '</td><td>' . number_format(
                 $row->viruses
-            ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
-        echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('blockedfiles03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->viruspercent . '%</tr>' . "\n";
+        echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2">' . return_todays_top_virus() . '</td></tr>' . "\n";
+        echo ' <tr><td>' . __('blockedfiles03') . '</td><td>' . number_format(
                 $row->blockedfiles
-            ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('others03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->blockedfilespercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('others03') . '</td><td>' . number_format(
                 $row->otherinfected
-            ) . '</td><td align="right">' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('spam03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('spam03') . '</td><td>' . number_format(
                 $row->spam
-            ) . '</td><td align="right">' . $row->spampercent . '%</td></tr>' . "\n";
-        echo ' <tr><td style="white-space:nowrap">' . __('hscospam03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->spampercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('hscospam03') . '</td><td>' . number_format(
                 $row->highspam
-            ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
+            ) . '</td><td>' . $row->highspampercent . '%</td></tr>' . "\n";
         if (get_conf_truefalse('mcpchecks')) {
-            echo ' <tr><td>MCP:</td><td align="right">' . number_format(
+            echo ' <tr><td>MCP:</td><td>' . number_format(
                     $row->mcp
-                ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
-            echo ' <tr><td style="white-space:nowrap">' . __('hscomcp03') . '</td><td align="right">' . number_format(
+                ) . '</td><td>' . $row->mcppercent . '%</td></tr>' . "\n";
+            echo ' <tr><td>' . __('hscomcp03') . '</td><td>' . number_format(
                     $row->highmcp
-                ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
+                ) . '</td><td>' . $row->highmcppercent . '%</td></tr>' . "\n";
         }
         echo '</table>' . "\n";
     }
@@ -911,25 +910,6 @@ function updateClock() {
 ';
 }
 
-function row_highandclick()
-{
-    echo '
-  function ChangeColor(tableRow, highLight) {
-    if (highLight)
-    {
-      tableRow.style.backgroundColor = \'#dcfac9\';
-    }
-    else
-    {
-      tableRow.sytle.backgroundColor = \'white\';
-    }
-  }
-
-  function DoNav(theUrl) {
-    document.location.href = theUrl;
-  }';
-}
-
 /**
  * @param string $footer
  */
@@ -940,11 +920,11 @@ function html_end($footer = '')
     echo '</table>' . "\n";
     echo $footer;
     if (DEBUG) {
-        echo '<p class="center" style="font-size:13px"><i>' . "\n";
+        echo '<p class="center footer"><i>' . "\n";
         echo page_creation_timer();
         echo '</i></p>' . "\n";
     }
-    echo '<p class="center noprint" style="font-size:13px">' . "\n";
+    echo '<p class="center footer noprint">' . "\n";
     echo __('footer03');
     echo mailwatch_version();
     echo ' - &copy; 2006-' . date('Y');
@@ -1076,7 +1056,7 @@ function __($string, $useSystemLang = false)
     $post_string = '';
     if (DEBUG === true) {
         $debug_message = ' (' . $string . ')';
-        $pre_string = '<span style="color:red">';
+        $pre_string = '<span class="error">';
         $post_string = '</span>';
     }
 
@@ -1283,7 +1263,7 @@ function get_sa_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
-        return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
+        return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     }
 
     return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
@@ -1362,7 +1342,7 @@ function get_mcp_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
-        return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200px;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
+        return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     }
 
     return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";
