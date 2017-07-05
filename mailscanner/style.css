@@ -339,6 +339,9 @@ table.boxtable {
     margin-left: auto;
     margin-right: auto;
 }
+table.boxtable td.textdata {
+    padding-left: 10px;
+}
 
 #menu {
     font-family: Arial, sans-serif;
