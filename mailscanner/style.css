@@ -220,11 +220,6 @@ table.mail tr.infected {
     color: #FFF;
 }
 
-td.rule_desc {
-    text-align: left;
-    width: 200px;
-}
-
 table.mail td.infected {
     background-color: #B22222;
     border: 1px solid #000;
@@ -532,9 +527,13 @@ span.debug {
     color: green;
 }
 
-span.error {
+.error {
     font-size: 10pt;
     color: red;
+}
+.success {
+    font-size: 10pt;
+    color: green;
 }
 
 td.dashblackbox {
@@ -883,11 +882,13 @@ td.message {
 
 /* dbtable */
 
-.table-background:nth-child(even) {
+.table-background:nth-child(even),
+.blackwhitelist>tbody>tr:nth-child(even) {
     background-color: #EBEBEB;
 }
 
-.table-background:nth-child(odd) {
+.table-background:nth-child(odd),
+.blackwhitelist>tbody>tr:nth-child(odd) {
     background-color: #D8D8D8;
 }
 
@@ -966,3 +967,28 @@ select.lang > option {
     margin-right: -2px;
     margin-left: 4px;
 }
+.filterbuttons {
+    white-space: nowrap; 
+    text-align:right;
+}
+
+.todaystatistics>tbody>tr>td {
+    white-space: nowrap;
+}
+.todaystatistics>tbody>tr>td:not(:first-child) {
+    text-align: right;
+}
+p.footer {
+    font-size: 13px;
+}
+
+table.sa_rules_report>tbody>tr>td {
+    text-align: left;
+}
+table.sa_rules_report>tbody>tr>td:nth-child(2) {
+    width: 200px;
+}
+table.mail>tbody>tr>th.alignleft {
+    text-align: left;
+}
+

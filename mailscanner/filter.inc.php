@@ -296,7 +296,7 @@ WHERE
         $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><button type="submit" name="action" value="save">' . __('save09') . '</button></td></tr>' . "\n";
         $return .= '<tr><td>' . "\n";
         $return .= $this->ListSaved();
-        $return .= '</td><td style="white-space: nowrap; text-align:right;"><button type="submit" name="action" value="load">' . __('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . __('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . __('delete09') . '</button></td></tr>' . "\n";
+        $return .= '</td><td class="filterbuttons"><button type="submit" name="action" value="load">' . __('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . __('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . __('delete09') . '</button></td></tr>' . "\n";
         $return .= '</table>' . "\n";
         $return .= '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
         $return .= '<input type="hidden" name="formtoken" value="' . generateFormToken('/filter.inc.php form token') . '">' . "\n";

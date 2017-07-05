@@ -45,7 +45,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo ' <tr>';
     echo '  <td align="center">
     <form method="post" action="sa_rules_update.php">
-    <div style="margin: 5px">' . "\n";
+    <div>' . "\n";
     echo '<input type="submit" value="' . __('input13') . '"><br><br>';
     echo '<input type="hidden" name="run" value="true">
     </div>

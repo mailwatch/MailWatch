@@ -300,8 +300,6 @@ if ($url_submit === 'delete') {
 
 function build_table($sql, $list)
 {
-    global $bg_colors;
-
     $sth = dbquery($sql);
     if ($sth->num_rows > 0) {
         echo '<table class="blackwhitelist">' . "\n";
@@ -310,14 +308,11 @@ function build_table($sql, $list)
         echo '  <th>' . __('to07') . '</th>' . "\n";
         echo '  <th>' . __('action07') . '</th>' . "\n";
         echo ' </tr>' . "\n";
-        $i = 1;
         while ($row = $sth->fetch_row()) {
-            $i = 1 - $i;
-            $bgcolor = $bg_colors[$i];
             echo ' <tr>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[1] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; ">' . $row[2] . '</td>' . "\n";
-            echo '  <td style="background-color: ' . $bgcolor . '; "><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            echo '  <td>' . $row[1] . '</td>' . "\n";
+            echo '  <td>' . $row[2] . '</td>' . "\n";
+            echo '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
