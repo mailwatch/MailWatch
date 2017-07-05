@@ -22,10 +22,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -61,7 +57,7 @@ if ($required_constant_missing_count === 0) {
             if (preg_match('/^\d{8}$/', $f) && is_array($array = quarantine_list_dir($f))) {
                 foreach ($array as $id) {
                     dbg("Updating: $id");
-                    $sql = "UPDATE maillog SET timestamp=timestamp, quarantined=1 WHERE id='$id'";
+                    $sql = "UPDATE maillog SET quarantined=1 WHERE id='$id'";
                     dbquery($sql);
                 }
             }
@@ -84,7 +80,7 @@ if ($required_constant_missing_count === 0) {
                     dbg("Processing directory $f: found " . count($array) . ' records to delete');
                     foreach ($array as $id) {
                         // Update the quarantine flag
-                        $sql = "UPDATE maillog SET timestamp=timestamp, quarantined = NULL WHERE id='$id'";
+                        $sql = "UPDATE maillog SET quarantined = NULL WHERE id='$id'";
                         dbquery($sql);
                         //If auto quarantine release is enabled, remove from autorelease table when quarantined email expires
                         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {

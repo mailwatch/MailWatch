@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -222,6 +218,7 @@ foreach ($mime_struct as $key => $part) {
         default:
             echo ' <tr>' . "\n";
             echo '  <td colspan=2 class="detail">';
+
             if (property_exists($part, 'd_parameters')) {
                 if (isset($part->d_parameters['filename'])) {
                     echo $part->d_parameters['filename'];
@@ -232,8 +229,20 @@ foreach ($mime_struct as $key => $part) {
                     echo '&nbsp;(size ' . formatSize($part->d_parameters['size']) . ')';
                 }
             } else {
-                echo __('nonameattachment06');
+                $filename = __('nonameattachment06');
+                if ($type = 'message/partial' && property_exists($part, 'ctype_parameters')) {
+                    $filename = isset($part->ctype_parameters['id']) ? $part->ctype_parameters['id'] : 'partialMessage';
+                    if (isset($part->ctype_parameters['number'])) {
+                        $filename .= ' - Part ' . $part->ctype_parameters['number'];
+                    }
+                    if (isset($part->ctype_parameters['total'])) {
+                        $filename .= ' of ' . $part->ctype_parameters['total'];
+                    }
+                    $filename .= '.bin';
+                }
+                echo $filename;
             }
+
             if (
                 ($message->virusinfected === '0' && $message->nameinfected === '0' && $message->otherinfected === '0') ||
                 $_SESSION['user_type'] === 'A' ||
@@ -241,6 +250,7 @@ foreach ($mime_struct as $key => $part) {
             ) {
                 echo ' <a href="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }
+
             echo '  </td>';
 
             echo ' </tr>' . "\n";

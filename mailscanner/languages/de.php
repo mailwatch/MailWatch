@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -54,8 +50,8 @@ return array(
     'whitelisted03' => 'Auf Weisser Liste',
     'blacklisted03' => 'Auf Schwarzer Liste',
     'notverified03' => 'Nicht überprüft',
-    'mailscanner03' => 'Mailscanner:',
-    'none03' => 'None',
+    'mailscanner03' => 'MailScanner:',
+    'none03' => 'kein Virus',
     'yes03' => 'JA',
     'no03' => 'NEIN',
     'status03' => 'Status',
@@ -108,12 +104,12 @@ return array(
     'matrule03' => 'Zutreffende Regel',
     'description03' => 'Beschreibung',
     'footer03' => 'MailWatch für MailScanner v',
-    'mailwatchtitle03' => 'MailWatch für Mailscanner',
+    'mailwatchtitle03' => 'MailWatch für MailScanner',
     'radiospam203' => 'S',
     'radioham03' => 'H',
     'radioforget03' => 'F',
     'radiorelease03' => 'R',
-    'clear03' => 'Clear</a> all',
+    'clear03' => 'alles zurücksetzen</a>',
     'spam203' => 'S</b> = Spam',
     'ham03' => 'H</b> = Ham',
     'forget03' => 'F</b> = Vergessen',
@@ -123,7 +119,7 @@ return array(
     'or03' => 'oder',
     'mwfilterreport03' => 'MailWatch Filter Bericht:',
     'mwforms03' => 'MailWatch für Mailscanner - ',
-    'dieerror03' => 'Error:',
+    'dieerror03' => 'Fehler:',
     'dievirus03' => 'Sie benutzen Mailwatch im distributed mode. Daher kann MailWatch Ihre MailScanner-Konfiguration-Dateien nicht lesen, um den primären Virus-Scanner festzustellen - Bitte bearbeiten Sie functions.php und setzen Sie VIRUS_REGEX für Ihren primären Scanner.',
     'diescanner03' => 'Es konnte kein regulärer Ausdrück für Ihren primären Viren-Scanner ($scanner) ausgewählt werden - bitte beachten Sie die Beispiele in der functions.php um einen zu erstellen.',
     'diedbconn103' => 'Verbindung zu Datenbank fehlgeschlagen:',
@@ -188,13 +184,18 @@ return array(
     'saspam03' => 'Spam',
     'sanotspam03' => 'Kein Spam',
     'unknownvirusscanner03' => 'Unbekannter Virusscanner wurde in MailScanner.conf definiert. Überprufen Sie die Konfiguration und benutzen Sie nicht \'auto\' als Antivirus-Name (see FAQ).',
-    'children03' => 'children',
+    'children03' => 'Kind-Processe',
     'procs03' => 'Prozess(e)',
     'errorWarning03' => 'Warnung: Es ist ein Fehler aufgetreten:',
     'phpxmlnotloaded03' => 'Die PHP-Extension xml wurde nicht geladen',
     'released03' => 'Freigegeben',
     'learnspam03' => 'Gelernt als Spam',
     'learnham03' => 'Gelernt als Ham',
+    'trafficgraph03' => 'Traffic in der letzten Stunde',
+    'trafficgraphmore03' => 'Traffic der letzten %s Stunden',
+    'barmail03' => 'E-Mails',
+    'barvirus03' => 'Viren',
+    'barspam03' => 'Spam',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -349,7 +350,7 @@ return array(
     'id09' => 'Nachricht-ID',
     'size09' => 'Größe (Bytes)',
     'fromaddress09' => 'Von',
-    'fromdomain09' => 'From Domäne',
+    'fromdomain09' => 'Von Domäne',
     'toaddress09' => 'An',
     'todomain09' => 'An Domäne',
     'subject09' => 'Betreff',
@@ -379,7 +380,7 @@ return array(
 
     // 10-other.php
     'tools10' => 'Werkzeuge',
-    'toolslinks10' => 'Tools and Links',
+    'toolslinks10' => 'Werkzeuge und Verknüpfungen',
     'usermgnt10' => 'Benutzerverwaltung',
     'avsophosstatus10' => 'Sophos Status',
     'avfsecurestatus10' => 'F-Secure Status',
@@ -395,10 +396,14 @@ return array(
     'updategeoip10' => 'Aktualisiere die GeoIP Datenbank',
     'links10' => 'Links',
 
-    // 11-sf_versions.php
+    // 11-sf_version.php
     'softver11' => 'Softwareversionen',
     'nodbdown11' => 'Keine Datenbank heruntergeladen',
-    'version11' => 'Version',
+    'version11' => 'Version:',
+    'systemos11' => 'Betriebssystem-Version:',
+    'mwandmsversion11' => 'MailWatch und MailScanner Versions Informationen',
+    'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',
+    'downloaddate11' => 'Download-Datum',
 
     // 12-user_manager.php
     'usermgnt12' => 'Benutzerverwaltung',
@@ -413,7 +418,7 @@ return array(
     'delete12' => 'Löschen',
     'filters12' => 'Filter',
     'newuser12' => 'Neuer Benutzer',
-    'forallusers12' => 'Für alle Benutzer ausser dem Administrator muss der Benutzername eine E-Mail Adresse sein',
+    'forallusers12' => 'Für alle Benutzer außer dem Administrator muss der Benutzername eine E-Mail Adresse sein',
     'username0212' => 'Benutzername:',
     'name12' => 'Name:',
     'password12' => 'Passwort:',
@@ -434,8 +439,8 @@ return array(
     'reset12' => 'Zurücksetzen',
     'areusuredel12' => 'Soll der Benutzer tatsächlich gelöscht werden',
     'errorpass12' => 'Passwörter stimmen nicht überein',
-    'erroruserreq12' => 'Username Required',
-    'errorpwdreq12' => 'Password Required',
+    'erroruserreq12' => 'Benutzername erforderlich',
+    'errorpwdreq12' => 'Password erforderlich',
     'edituser12' => 'Benutzer bearbeiten',
     'create12' => 'Erstellen',
     'userregex12' => 'Benutzer (Regexp)',
@@ -504,6 +509,7 @@ return array(
     'messlisting14' => 'Nachrichten-Übersicht',
     'messop14' => 'Nachrichten-Aktionen',
     'messdate14' => 'Gesamtanzahl Nachrichten nach Tag',
+    'messhours14' => 'Nachrichten pro Stunde für die letzten 24 Stunden',
     'topmailrelay14' => 'Top Mail Relays',
     'topvirus14' => 'Top Viren',
     'virusrepor14' => 'Viren-Bericht',
@@ -515,12 +521,11 @@ return array(
     'topsendersdomvol14' => 'Top Absender-Domänen nach Volumen',
     'toprecipdomqt14' => 'Top Empfänger-Domänen nach Anzahl',
     'toprecipdomvol14' => 'Top Empfänger-Domänen nach Volumen',
-    'assassinscoredist14' => 'SpamAssassin Score Distribution',
-    'assassinrulhit14' => 'SpamAssassin Rule Hits',
-    'auditlog14' => 'Audit Log',
-    'mrtgreport14' => 'MRTG Style Report',
-    'mcpscoredist14' => 'MCP Score Distribution',
-    'mcprulehit14' => 'MCP Rule Hit',
+    'assassinscoredist14' => 'Verteilung der SpamAssassin-Bewertungen',
+    'assassinrulhit14' => 'Angewandte SpamAssassin-Regeln',
+    'auditlog14' => 'Kontrollbericht',
+    'mcpscoredist14' => 'Verteilung der MCP-Bewertungen',
+    'mcprulehit14' => 'Angewandte MCP-Regeln',
     'reports14' => 'Berichte',
 
     // 15-geoip_update.php
@@ -534,7 +539,7 @@ return array(
     'downok15' => 'erfolgreich heruntergeladen',
     'downbad15' => 'Beim Herunterladen ist ein Fehler aufgetreten',
     'downokunpack15' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',
-    'message315' => 'Es konnte keine GeoIP Datendatei heruntergeladen werden (weder CURL nocht fsockopen).',
+    'message315' => 'Es konnte keine GeoIP Datendatei heruntergeladen werden (weder CURL noch fsockopen).',
     'message415' => 'Installieren Sie entweder die cURL-Erweiterung (bevorzugt) oder aktivieren Sie fsockopen in Ihrer php.ini',
     'unpackok15' => 'erfolgreich entpackt',
     'extractnotok15' => 'Konnte Dateien nicht extrahieren',
@@ -582,7 +587,7 @@ return array(
 
     // 20-docs.php
     'doc20' => 'Dokumentation',
-    'message20' => 'Diese Seite erfordert eine authentifizierung, sodass Sie hier Links zu Ihrer Dokumentations-Seite einstellen können und Ihren Nutzern Zugriff auf diese gewähren.',
+    'message20' => 'Diese Seite erfordert eine Authentifizierung, sodass Sie hier Links zu Ihrer Dokumentations-Seite einstellen können und Ihren Nutzern Zugriff auf diese gewähren.',
 
     // 21-do_message_ops.php
     'opresult21' => 'Ergebnisse der Aktion',
@@ -650,7 +655,7 @@ return array(
 
     // 32-postfixmailq.php
     'mqviewer32' => 'Mailqueue-Anzeige',
-    'mqcombined32' => 'Kombinierte mail queue (Ein- und Ausgehend)',
+    'mqcombined32' => 'Kombinierte Mail-Queue (Ein- und Ausgehend)',
 
     // 33-rep_audit_log.php
     'auditlog33' => 'Kontrollbericht',
@@ -679,9 +684,19 @@ return array(
     'score35' => 'Bewertung',
     'count35' => 'Anzahl',
 
-    // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'E-Mail-Bericht im MRTG Format',
-    'die36' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
+    // 36-rep_previous_day.php
+    'totalmaillasthours36' => 'Nachrichten pro Stunde für die letzten 24 Stunden',
+    'hours36' => 'Stunde',
+    'mailcount36' => 'Gesamte Anz. E-Mails',
+    'viruscount36' => 'Anzahl Viren',
+    'spamcount36' => 'Anzahl Spam',
+    'size36' => 'Volumen',
+    'barmail36' => 'E-Mails',
+    'barvirus36' => 'Viren',
+    'barspam36' => 'Spam',
+    'barsize36' => 'Volumen',
+    'volume36' => 'Volumen',
+    'nomessages36' => 'Anzahl Nachrichten',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
@@ -698,7 +713,6 @@ return array(
     'nbmessage38' => 'Anz. Nachrichten',
     'score38' => 'Bewertung',
     'count38' => 'Anzahl',
-    'die38' => 'Fehler: 2 oder mehr Einträge müssen aus der Datenbank empfangen werden',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',
@@ -710,8 +724,6 @@ return array(
     'viruses39' => 'Viren',
     'spam39' => 'Spam',
     'volume39' => 'Größe',
-    'geoipfailed39' => '(GeoIP konnte nicht aufgelöst werden)',
-    'hostfailed39' => '(Hostname konnte nicht aufgelöst werden)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Empfänger Domänen nach Anzahl',
@@ -720,7 +732,7 @@ return array(
   
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Empfänger Domänen nach Größe',
-   'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
+    'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
     'domain41' => 'Domäne',
   
     // 42-rep_top_recipients_by_quantity.php
@@ -756,7 +768,6 @@ return array(
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viren',
     'top10virus48' => 'Top 10 Viren',
-    'nodata48' => 'Zu wenig Daten zum Generieren des Graphen.',
     'virus48' => 'Virus',
     'count48' => 'Anzahl',
 
@@ -766,12 +777,12 @@ return array(
     'volume49' => 'Volumen',
     'nomessages49' => 'Anz. Nachrichten',
     'date49' => 'Datum',
-    'barmail49' => 'Mails',
+    'barmail49' => 'E-Mails',
     'barvirus49' => 'Viren',
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volumen',
-    'total49' => 'Gesamt<br>Mail',
+    'total49' => 'Gesamt<br>E-Mail',
     'clean49' => 'Clean',
     'lowespam49' => 'Low Spam',
     'highspam49' => 'High Spam',
@@ -798,10 +809,26 @@ return array(
     'message51' => 'Nachricht',
     'time51' => 'Zeit',
 
-    // 52-sf_version.php
-    'mwandmsversion52' => 'MailWatch und MailScanner Versions Informationen',
-    'auditlog52' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',
-    'downloaddate52' => 'Download-Datum',
+    // 52-mailwatch_geoip_update.php
+    'geoipv452' => 'GeoIP IPv4 Datendatei',
+    'geoipv652' => 'GeoIP IPv6 Datendatei',
+    'dieproxy52' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
+    'downok52' => 'erfolgreich heruntergeladen',
+    'downbad52' => 'Beim Herunterladen ist ein Fehler aufgetreten',
+    'downokunpack52' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',
+    'message352' => 'Es konnte keine GeoIP Datendatei heruntergeladen werden (weder CURL noch fsockopen).',
+    'message452' => 'Installieren Sie entweder die cURL-Erweiterung (bevorzugt) oder aktivieren Sie fsockopen in Ihrer php.ini',
+    'unpackok52' => 'erfolgreich entpackt',
+    'extractnotok52' => 'Konnte Dateien nicht extrahieren',
+    'extractok52' => 'Extrahieren erfolgreich',
+    'message552' => 'GeoIP Datendatei konnte nicht extrahiert werden.',
+    'message652' => 'Aktivieren Sie Zlib in Ihrer PHP-Installation oder installieren Sie gunzip',
+    'processok52' => 'Vorgang abgeschlossen!',
+    'norread52' => 'Lesen oder Schreiben fehlgeschlagen für',
+    'directory52' => 'Verzeichnis',
+    'nofind52' => 'Der Wert der MailWatch UID konnte nicht gefunden werden',
+    'nofindowner52' => 'Dateien konnten nicht gefunden werden oder haben einen falschen Besitzer. Überprüfen Sie den Inhalt des Verzeichnisses',
+    'auditlog52' => 'GeoIP-Update wurde ausgeführt',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -848,7 +875,7 @@ return array(
     'diemnf57' => 'Error: Nachricht in Quarantäne nicht gefunden',
     'dieuaction57' => 'Unbekannte Aktion:',
     'closewindow57' => 'Fenster schließen',
-    'mailwatchtitle57' => 'MailWatch für Mailscanner',
+    'mailwatchtitle57' => 'MailWatch für MailScanner',
     'result57' => 'Ergebnis',
     'delete57' => 'Löschen: Sind Sie sicher?',
     'yes57' => 'Ja',
@@ -858,8 +885,8 @@ return array(
     'nomessid58' => 'Keine Nachrichten-ID übertragen',
     'mess58' => 'Nachricht',
     'notfound58' => 'nicht gefunden',
-    'error58' => 'Error:',
-    'errornfd58' => 'Error: Datei nicht gefunden',
+    'error58' => 'Fehler:',
+    'errornfd58' => 'Fehler: Datei nicht gefunden',
     'part58' => 'Abschnitt',
     'title58' => 'Anzeige von Quarantäne-E-Mails',
 
@@ -940,6 +967,11 @@ return array(
     'auditlogexpired63' => 'Zurücksetzen des Passworts für Benutzer %s fehlgeschlagen - Rücksetz-Link abgelaufen',
     'auditloglinkerror63' => 'Fehlerhafter Link in der Rücksetz-Mail',
 
+    // 64 - graphgenerator.inc.php
+    'nodata64' => 'Zu wenig Daten zum Generieren des Graphen.',
+    'geoipfailed64' => '(GeoIP konnte nicht aufgelöst werden)',
+    'hostfailed64' => '(Hostname konnte nicht aufgelöst werden)',
+
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ':',
@@ -959,4 +991,5 @@ return array(
     'it' => 'Italiano',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
+    'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
 );

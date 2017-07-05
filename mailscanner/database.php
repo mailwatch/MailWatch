@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -63,7 +59,30 @@ class database
                 }
                 self::$link->set_charset($charset);
             } catch (Exception $e) {
-                die(__('diedbconn103') . ' ' . $e->getCode() . ' ' . $e->getMessage() . PHP_EOL);
+                $output = '
+<style>
+.db-error {
+    width: 40%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 100px;
+    border: solid 3px #ebcccc;
+    -webkit-border-radius:20px;
+    -moz-border-radius:20px;
+    border-radius:20px;
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.db-error .emphasise {
+    font-weight:bold;
+    font-size:larger;
+}
+</style>
+                <div class="db-error">';
+                $output .= __('dbconnecterror99');
+                $output .= '</div>';
+                die($output);
             }
         }
         return self::$link;

@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -86,35 +82,32 @@ if (file_exists('conf.php')) {
         }
     } else {
         $output[] = __('notallowed59');
-    } ?>
+    }
+    echo '
 <!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><?php echo __('title59'); ?></title>
+    <title>' . __('title59') . '</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
     <link rel="stylesheet" href="style.css" type="text/css">
-    <?php if (is_file(__DIR__ . '/skin.css')) {
-        echo '<link rel="stylesheet" href="skin.css" type="text/css">';
-    } ?>
+    ' . (is_file(__DIR__ . '/skin.css') ? '<link rel="stylesheet" href="skin.css" type="text/css">' : '') . '
 </head>
 <body class="autorelease">
 <div class="autorelease">
-    <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+    <img src="' . MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '">
     <div class="border-rounded">
-        <h1><?php echo __('title59'); ?></h1>
-        <?php
-        foreach ($output as $msg) {
-            echo '<p>' . $msg . '</p>';
-        } ?>
+        <h1>' . __('title59') . '</h1>' . "\n";
+    foreach ($output as $msg) {
+        echo '<p>' . $msg . '</p>' . "\n";
+    }
+    echo '
     </div>
 </div>
 </body>
-</html>
-<?php
-
+</html>';
 } else {
     echo __('cannot_read_conf');
 }

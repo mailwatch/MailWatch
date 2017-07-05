@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -123,6 +119,9 @@ if (isset($_GET['part'])) {
     die(__('part58') . __('notfound58') . "\n");
 }
 
+/**
+ * @param stdClass $structure a Mail_mimeDecode structure object
+ */
 function decode_structure($structure)
 {
     $type = $structure->ctype_primary . '/' . $structure->ctype_secondary;
@@ -139,7 +138,6 @@ function decode_structure($structure)
  <html>
  <head>
  <meta charset="utf-8">
- <link rel="shortcut icon" href="images/favicon.png">
  <title>' . __('title58') . '</title>
  </head>
  <body>
@@ -164,9 +162,37 @@ function decode_structure($structure)
             break;
         case 'multipart/alternative':
             break;
+        case 'message/partial':
+            // @link https://tools.ietf.org/html/rfc2046#section-5.2.2
+            header('Content-Type: application/octet-stream');
+            //get message id
+            preg_match('/.*id="?([^";]*)"?.*/', $structure->headers['content-type'], $identifier);
+            //get part number
+            preg_match("/.*number=([\d]*).*/", $structure->headers['content-type'], $partNumber);
+            //get total parts
+            preg_match("/.*total=([\d]*).*/", $structure->headers['content-type'], $totalParts);
+
+            //build filename
+            $filename = isset($identifier[1]) ? $identifier[1] : 'partialMessage';
+            if (isset($partNumber[1])) {
+                $filename .= ' - Part ' . $partNumber[1];
+            }
+            if (isset($totalParts[1])) {
+                $filename .= ' of ' . $totalParts[1];
+            }
+            $filename .= '.bin';
+
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            echo $structure->body;
+            break;
         default:
             header('Content-Type: ' . $structure->headers['content-type']);
-            header('Content-Disposition: ' . $structure->headers['content-disposition']);
+            // in case of missing Content-Disposition use a standard one
+            if (isset($structure->headers['content-disposition'])) {
+                header('Content-Disposition: ' . $structure->headers['content-disposition']);
+            } else {
+                header('Content-Disposition: attachment; filename="attachment.bin"');
+            }
             echo $structure->body;
             break;
     }

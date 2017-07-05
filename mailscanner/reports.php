@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -115,6 +111,7 @@ $filter->AddReport('rep_message_listing.php', __('messlisting14'), true);
 $filter->AddReport('rep_message_ops.php', __('messop14'), true);
 
 $filter->AddReport('rep_total_mail_by_date.php', __('messdate14'));
+$filter->AddReport('rep_previous_day.php', __('messhours14'));
 $filter->AddReport('rep_top_mail_relays.php', __('topmailrelay14'));
 
 $filter->AddReport('rep_top_viruses.php', __('topvirus14'));
@@ -124,8 +121,6 @@ $filter->AddReport('rep_top_senders_by_quantity.php', __('topsendersqt14'));
 $filter->AddReport('rep_top_senders_by_volume.php', __('topsendersvol14'));
 $filter->AddReport('rep_top_recipients_by_quantity.php', __('toprecipqt14'));
 $filter->AddReport('rep_top_recipients_by_volume.php', __('toprecipvol14'));
-
-//$filter->AddReport("rep_mrtg_style.php","__('mrtgreport14'));
 
 $filter->AddReport('rep_top_sender_domains_by_quantity.php', __('topsendersdomqt14'));
 $filter->AddReport('rep_top_sender_domains_by_volume.php', __('topsendersdomvol14'));
@@ -144,8 +139,6 @@ if ($_SESSION['user_type'] === 'A') {
     $filter->AddReport('rep_audit_log.php', __('auditlog14'), true);
 }
 $filter->Display($_SESSION['token']);
-
-clear_cache_dir();
 
 // Add footer
 html_end();

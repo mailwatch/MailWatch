@@ -56,7 +56,6 @@ MYSQL_PASS="secret"
 
 ##################### DON'T TOUCH ANYTHING BELOW THIS LINE #####################
 
-DIRNAME="$(dirname "$0")"
 TEMPFILE="$(mktemp)"
 
 LDAP_USERS="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" \

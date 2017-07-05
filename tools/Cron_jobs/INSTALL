@@ -2,15 +2,22 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
-Copy the file 'mailwatch' into /etc/cron.daily/
+Copy the file 'mailwatch' into /etc/cron.daily/:
+
+# cp tools/Cron_jobs/mailwatch /etc/cron.daily/.
+
+Copy and rename the file 'mailwatch.cron.monthly' into /etc/cron.monthly/mailwatch
+
+# cp tools/Cron_jobs/mailwatch.cron.monthly /etc/cron.monthly/mailwatch
 
 Copy in /usr/local/bin the following files:
 
 mailwatch_db_clean.php
 mailwatch_quarantine_maint.php
 mailwatch_quarantine_report.php
+mailwatch_geoip_update.php
 
-Verify if the 3 files are executable. If not, use "chmod +x" to correct this problem.
+Verify if the 4 files are executable. If not, use "chmod +x" to correct this problem.
 
 -------------------------------------------
 Database cleanup of maillog records
@@ -37,6 +44,16 @@ Configure the file msre_reload to fit your need.
 Copy the file msre_reload into /etc/cron.d/.
 
 See the instructions in tools/MailScanner_rule_editor/INSTALL
+
+--------------------------------------------
+GeoIP Update
+--------------------------------------------
+
+Default update is one time per month in /etc/cron.monthly/.
+
+The sudoers file /etc/sudoers.d/mailwatch must be installed.
+
+Maxmind is very strict about the update conditions. Be cautious not to poll Maxmind GeoIP too often with cron.
 
 ATTENTION:
 

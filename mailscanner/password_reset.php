@@ -20,10 +20,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -309,7 +305,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                         <?php echo $errors; ?>
                                     </p>
                                     <?php
-
                 }
 
                 if ($fields === 'stage1') {
@@ -318,7 +313,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <p><input name="email" type="text" id="email" autofocus></p>
                                     <p><button type="submit" name="Submit" value="stage1Submit"><?php echo __('requestpwdreset63'); ?></button></p>
                                     <?php
-
                 }
                 if ($fields === 'stage2') {
                     ?>
@@ -330,14 +324,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <p><input name="pwd2" type="password" id="pwd2" autocomplete="off"></p>
                                     <p><button type="submit" name="Submit" value="stage2Submit"><?php echo __('button63'); ?></button></p>
                                     <?php
-
                 } ?>
 
                             </fieldset>
                             <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
                         </form>
                         <?php
-
             } elseif ($message !== '') {
                 echo $message;
             } elseif ($errors !== '') {
@@ -349,7 +341,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                         <?php echo __('cannot_read_conf'); ?>
                     </p>
                     <?php
-
         } ?>
             </div>
         </div>
@@ -357,7 +348,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         </body>
         </html>
         <?php
-
     } else {
         die();
     }

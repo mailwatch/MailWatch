@@ -21,10 +21,6 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
@@ -54,7 +50,7 @@ return array(
     'whitelisted03' => 'Whitelist',
     'blacklisted03' => 'Blacklist',
     'notverified03' => 'Non Verificato',
-    'mailscanner03' => 'Mailscanner:',
+    'mailscanner03' => 'MailScanner:',
     'none03' => 'None',
     'yes03' => 'YES',
     'no03' => 'NO',
@@ -108,7 +104,7 @@ return array(
     'matrule03' => 'Regola Corrispondente',
     'description03' => 'Descrizione',
     'footer03' => 'MailWatch for MailScanner v',
-    'mailwatchtitle03' => 'MailWatch for Mailscanner',
+    'mailwatchtitle03' => 'MailWatch for MailScanner',
     'radiospam203' => 'S',
     'radioham03' => 'H',
     'radioforget03' => 'F',
@@ -122,7 +118,7 @@ return array(
     'ops03' => 'Options',
     'or03' => 'or',
     'mwfilterreport03' => 'MailWatch Filter Report:',
-    'mwforms03' => 'MailWatch for Mailscanner - ',
+    'mwforms03' => 'MailWatch for MailScanner - ',
     'dieerror03' => 'Error:',
     'dievirus03' => 'You are running MailWatch in distributed mode therefore MailWatch cannot read your MailScanner configuration files to acertain your primary virus scanner - please edit functions.php and manually set the VIRUS_REGEX constant for your primary scanner.',
     'diescanner03' => 'Unable to select a regular expression for your primary virus scanner ($scanner) - please see the examples in functions.php to create one.',
@@ -195,6 +191,11 @@ return array(
     'released03' => 'Released',
     'learnspam03' => 'Learn:Spam',
     'learnham03' => 'Learn:Ham',
+    'trafficgraph03' => 'Last hour traffic',
+    'trafficgraphmore03' => 'Traffic of the last %s hours',
+    'barmail03' => 'E-mails',
+    'barvirus03' => 'Viruses',
+    'barspam03' => 'Spam',
 
     // 04-detail.php
     'receivedon04' => 'Ricevuto il:',
@@ -395,10 +396,14 @@ return array(
     'updategeoip10' => 'Aggiorna Database GeoIP',
     'links10' => 'Links',
 
-    // 11-sf_versions.php
+    // 11-sf_version.php
     'softver11' => 'Versioni Software',
     'nodbdown11' => 'Nessun database scaricato',
     'version11' => 'Versione:',
+    'systemos11' => 'Operating System Version:',
+    'mwandmsversion11' => 'MailWatch and MailScanner Version information',
+    'auditlog11' => 'Non-admin user attemped to view Software Version Page',
+    'downloaddate11' => 'download date',
 
     // 12-user_manager.php
     'usermgnt12' => 'Gestore Utenti',
@@ -413,7 +418,7 @@ return array(
     'delete12' => 'Elimina',
     'filters12' => 'Filtri',
     'newuser12' => 'Nuovo Utente',
-    'forallusers12' => 'Per tutti gli utenti diversi da Amministratore devi utilizzare un indirizzo email come nome utente',
+    'forallusers12' => 'Per tutti gli utenti diversi da Amministratore devi utilizzare un indirizzo e-mail come nome utente',
     'username0212' => 'Nome Utente:',
     'name12' => 'Nome:',
     'password12' => 'Password:',
@@ -504,6 +509,7 @@ return array(
     'messlisting14' => 'Message Listing',
     'messop14' => 'Message Operations',
     'messdate14' => 'Total Messages by Date',
+    'messhours14' => 'Messages per Hour for the last 24 hours',
     'topmailrelay14' => 'Top Mail Relays',
     'topvirus14' => 'Top Viruses',
     'virusrepor14' => 'Virus Report',
@@ -518,7 +524,6 @@ return array(
     'assassinscoredist14' => 'SpamAssassin Score Distribution',
     'assassinrulhit14' => 'SpamAssassin Rule Hits',
     'auditlog14' => 'Audit Log',
-    'mrtgreport14' => 'MRTG Style Report',
     'mcpscoredist14' => 'MCP Score Distribution',
     'mcprulehit14' => 'MCP Rule Hit',
     'reports14' => 'Reports',
@@ -679,9 +684,19 @@ return array(
     'score35' => 'Score',
     'count35' => 'Count',
 
-    // 36-rep_mrtg_style.php
-    'mrtgstyle36' => 'MRTG Style Mail Report',
-    'die36' => 'Error: Needs 2 or more rows of data to be retrieved from database',
+    // 36-rep_previous_day.php
+    'totalmaillasthours36' => 'Number of Messages per Hour for the last 24 hours',
+    'hours36' => 'Hour',
+    'mailcount36' => 'Total e-mails',
+    'viruscount36' => 'Number of viruses',
+    'spamcount36' => 'Number of spam',
+    'size36' => 'Volume',
+    'barmail36' => 'E-mails',
+    'barvirus36' => 'Viruses',
+    'barspam36' => 'Spam',
+    'barsize36' => 'Volume',
+    'volume36' => 'Volume',
+    'nomessages36' => 'Number of e-mails',
 
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
@@ -698,7 +713,6 @@ return array(
     'nbmessage38' => 'No. of messages',
     'score38' => 'Score',
     'count38' => 'Count',
-    'die38' => 'Error: Needs 2 or more rows of data to be retrieved from database',
 
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Top Mail Relays',
@@ -710,8 +724,6 @@ return array(
     'viruses39' => 'Viruses',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
-    'geoipfailed39' => '(GeoIP lookup failed)',
-    'hostfailed39' => '(Hostname lookup failed)',
 
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
@@ -756,7 +768,6 @@ return array(
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',
-    'nodata48' => 'Not enough data to generate a graph.',
     'virus48' => 'Virus',
     'count48' => 'Count',
 
@@ -766,12 +777,12 @@ return array(
     'volume49' => 'Volume',
     'nomessages49' => 'No. of messages',
     'date49' => 'Date',
-    'barmail49' => 'Mail',
+    'barmail49' => 'E-mail',
     'barvirus49' => 'Viruses',
     'barspam49' => 'Spam',
     'barmcp49' => 'MCP',
     'barvolume49' => 'Volume',
-    'total49' => 'Total<br>Mail',
+    'total49' => 'Total<br>E-mail',
     'clean49' => 'Clean',
     'lowespam49' => 'Low Spam',
     'highspam49' => 'High Spam',
@@ -798,10 +809,26 @@ return array(
     'message51' => 'Message',
     'time51' => 'Time',
 
-    // 52-sf_version.php
-    'mwandmsversion52' => 'MailWatch and MailScanner Version information',
-    'auditlog52' => 'Non-admin user attemped to view Software Version Page',
-    'downloaddate52' => 'download date',
+    // 52-mailwatch_geoip_update.php
+    'geoipv452' => 'GeoIP IPv4 data file',
+    'geoipv652' => 'GeoIP IPv6 data file',
+    'dieproxy52' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
+    'downok52' => 'successfully downloaded',
+    'downbad52' => 'Error occurred while downloading',
+    'downokunpack52' => 'Download complete, unpacking files...',
+    'message352' => 'Unable to download GeoIP data file (tried CURL and fsockopen).',
+    'message452' => 'Install either cURL extension (preferred) or enable fsockopen in your php.ini',
+    'unpackok52' => 'successfully unpacked',
+    'extractnotok52' => 'Unable to extract',
+    'extractok52' => 'successfully extracted',
+    'message552' => 'Unable to extract GeoIP data file.',
+    'message652' => 'Enable Zlib in your PHP installation or install gunzip executable.',
+    'processok52' => 'Process completed!',
+    'norread52' => 'Unable to read or write to the',
+    'directory52' => 'directory',
+    'nofind52' => 'Unable to find MailWatch UID value',
+    'nofindowner52' => 'Unable to find files or change files owner. Check directory contents of',
+    'auditlog52' => 'Ran GeoIP update',
 
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
@@ -940,6 +967,11 @@ return array(
     'auditlogexpired63' => 'Password reset failed for user: %s - Reset link expired.',
     'auditloglinkerror63' => 'Reset Email link error.',
 
+    // 64 - graphgenerator.inc.php
+    'nodata64' => 'Not enough data to generate a graph.',
+    'geoipfailed64' => '(GeoIP lookup failed)',
+    'hostfailed64' => '(Hostname lookup failed)',
+
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ':',
@@ -959,4 +991,5 @@ return array(
     'it' => 'Italiano',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
+    'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
 );
