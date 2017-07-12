@@ -850,7 +850,7 @@ function printNavBar()
     }
 
     if (defined('USER_SELECTABLE_LANG')) {
-        $langCodes = split(',', USER_SELECTABLE_LANG);
+        $langCodes = explode(',', USER_SELECTABLE_LANG);
         $langCount = count($langCodes);
         if ($langCount > 1) {
             global $langCode;
@@ -4569,7 +4569,7 @@ function checkFormToken($formstring, $formtoken)
  */
 function checkLangCode($langCode)
 {
-    $validLang = split(',', USER_SELECTABLE_LANG);
+    $validLang = explode(',', USER_SELECTABLE_LANG);
     $found = array_search($langCode, $validLang);
     if ($found === false || $found === null) {
         audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
