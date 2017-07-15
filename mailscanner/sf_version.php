@@ -89,6 +89,28 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 
     echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
+    
+    // Add test for MTA
+    $mta = get_conf_var('mta');
+    if (get_conf_var('MTA', true) === 'postfix') {
+        echo '<br>' . "\n";
+        echo 'Postfix ' . __('version11') . ' ';
+        passthru("/usr/sbin/postconf -d | grep 'mail_version =' | cut -d' ' -f3");
+        echo '<br>' . "\n";
+    }
+    if (get_conf_var('MTA', true) === 'exim') {
+        echo '<br>' . "\n";
+        echo 'Exim ' . __('version11') . ' ';
+        passthru("/usr/sbin/exim -bV | grep 'Exim version' | cut -d' ' -f3");
+        echo '<br>' . "\n";
+    }
+    if (get_conf_var('MTA', true) === 'sendmail') {
+        echo '<br>' . "\n";
+        echo 'Sendmail ' . __('version11') . ' ';
+        passthru("/usr/sbin/sendmail -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
+        echo '<br>' . "\n";
+    }
+
     echo '<br>' . "\n";
     echo 'MailScanner ' . __('version11') . ' ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>';
