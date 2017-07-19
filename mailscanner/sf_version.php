@@ -56,6 +56,9 @@ if ($_SESSION['user_type'] !== 'A') {
 
     echo '<br>' . "\n";
 
+    echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
+    echo '<br>' . "\n";
+
     // Add test for OS
     if (0 === stripos(PHP_OS, 'linux')) {
         $vars = array();
@@ -76,20 +79,15 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         if (isset($vars['ID']) && in_array(strtolower($vars['ID']), array('centos', 'debian'), true)) {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
-            echo '<br>' . "\n";
         }
         if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {
             echo __('systemos11') . ' ' . $vars['NAME'] . ' ' . $vars['VERSION'] . '<br>' . "\n";
-            echo '<br>' . "\n";
         }
     }
     if (strtolower(PHP_OS) === 'freebsd') {
         echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
-        echo '<br>' . "\n";
     }
 
-    echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
-    
     // Add test for MTA
     $mta = get_conf_var('mta');
     if (get_conf_var('MTA', true) === 'postfix') {
