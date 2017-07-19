@@ -43,10 +43,10 @@ if ($_SESSION['user_type'] !== 'A') {
     $geoipv4_version = false;
     $geoipv6_version = false;
     if (file_exists('./temp/GeoIP.dat')) {
-        $geoipv4_version = date('r', filemtime('./temp/GeoIP.dat')) . ' (' . __('downloaddate52') . ')';
+        $geoipv4_version = date('r', filemtime('./temp/GeoIP.dat')) . ' (' . __('downloaddate11') . ')';
     }
     if (file_exists('./temp/GeoIPv6.dat')) {
-        $geoipv6_version = date('r', filemtime('./temp/GeoIPv6.dat')) . ' (' . __('downloaddate52') . ')';
+        $geoipv6_version = date('r', filemtime('./temp/GeoIPv6.dat')) . ' (' . __('downloaddate11') . ')';
     }
 
     echo '<table width="100%" class="boxtable">' . "\n";
@@ -54,6 +54,9 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr>' . "\n";
     echo '<td class="textdata">' . "\n";
 
+    echo '<br>' . "\n";
+
+    echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
 
     // Add test for OS
@@ -76,19 +79,36 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         if (isset($vars['ID']) && in_array(strtolower($vars['ID']), array('centos', 'debian'), true)) {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
-            echo '<br>' . "\n";
         }
         if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {
             echo __('systemos11') . ' ' . $vars['NAME'] . ' ' . $vars['VERSION'] . '<br>' . "\n";
-            echo '<br>' . "\n";
         }
     }
     if (strtolower(PHP_OS) === 'freebsd') {
         echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
+    }
+
+    // Add test for MTA
+    $mta = get_conf_var('mta');
+    if (get_conf_var('MTA', true) === 'postfix') {
+        echo '<br>' . "\n";
+        echo 'Postfix ' . __('version11') . ' ';
+        passthru("/usr/sbin/postconf -d | grep 'mail_version =' | cut -d' ' -f3");
+        echo '<br>' . "\n";
+    }
+    if (get_conf_var('MTA', true) === 'exim') {
+        echo '<br>' . "\n";
+        echo 'Exim ' . __('version11') . ' ';
+        passthru("/usr/sbin/exim -bV | grep 'Exim version' | cut -d' ' -f3");
+        echo '<br>' . "\n";
+    }
+    if (get_conf_var('MTA', true) === 'sendmail') {
+        echo '<br>' . "\n";
+        echo 'Sendmail ' . __('version11') . ' ';
+        passthru("/usr/sbin/sendmail -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
 
-    echo 'MailWatch ' . __('version11') . ' ' . $mailwatch_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'MailScanner ' . __('version11') . ' ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>';
