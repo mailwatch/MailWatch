@@ -1401,7 +1401,7 @@ AND
     reset($virus_array);
 
     // Get the topmost entry from the array
-    $top = $null;
+    $top = null;
     $count = 0;
     foreach ($virus_array as $key => $val) {
         if ($top === null) {
@@ -1411,7 +1411,8 @@ AND
         }
         $count++;
     }
-    $topvirus = array_keys($virus_array)[0];
+    $topvirus_arraykeys = array_keys($virus_array);
+    $topvirus = $topvirus_arraykeys[0];
     if ($count > 1) {
         // and ... others
         $topvirus .= sprintf(' ' . __('moretopviruses03'), $count-1);
