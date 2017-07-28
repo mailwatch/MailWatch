@@ -533,18 +533,20 @@ function printMTAQueue()
             $servers = explode(' ', RPC_REMOTE_SERVER);
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
-                $msg = new xmlrpcmsg('postfix_queues', array());
-                $rsp = xmlrpc_wrapper($servers[$i], $msg);
-                if ($rsp->faultCode() === 0) {
-                    $response = php_xmlrpc_decode($rsp->value());
-                    $inq += $response['inq'];
-                    $outq += $response['outq'];
-                } else {
-                    $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                if ($servers[$i] !== getHostByName(getHostName())) {
+                    $msg = new xmlrpcmsg('postfix_queues', array());
+                    $rsp = xmlrpc_wrapper($servers[$i], $msg);
+                    if ($rsp->faultCode() === 0) {
+                        $response = php_xmlrpc_decode($rsp->value());
+                        $inq += $response['inq'];
+                        $outq += $response['outq'];
+                    } else {
+                        $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                    }
                 }
-            }
-            if ($pqerror !== '') {
-                echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                if ($pqerror !== '') {
+                    echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                }
             }
         }
         if ($inq !== null && $outq !== null) {
