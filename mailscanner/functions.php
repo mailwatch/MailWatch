@@ -2003,7 +2003,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/do_message_ops.php form token') . '">' . "\n";
         }
         printColorCodes();
-        echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
+        echo '<table cellspacing="1" width="100%" class="mail rowhover">' . "\n";
         // Work out which columns to display
         $display = array();
         $orderable = array();
@@ -2190,12 +2190,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $column_headings++;
                 }
             }
-            echo ' <tr>' . "\n";
+            echo ' <tr class="nohover"">' . "\n";
             echo '  <th colspan="' . $column_headings . '">' . $table_heading . '</th>' . "\n";
             echo ' </tr>' . "\n";
         }
         // Column headings
-        echo '<tr class="sonoqui">' . "\n";
+        echo '<tr class="sonoqui nohover">' . "\n";
         for ($f = 0; $f < $fields; $f++) {
             if ($display[$f]) {
                 if ($order && $orderable[$f]) {

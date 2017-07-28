@@ -319,12 +319,16 @@ table.mail, table.maildetail, table.navigation, table.boxtable {
     padding: 0;
 }
 
-table.mail tr:hover {
+table.rowhover tr:hover {
     -webkit-filter: invert(0.1);
     filter: invert(0.1);
 
 }
 
+tr.nohover {
+    -webkit-filter:none !important;
+    filter:none !important;
+}
 table.colorcodes tr:hover {
     -webkit-filter: none;
     filter: none;
