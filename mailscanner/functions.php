@@ -4041,7 +4041,6 @@ function checkConfVariables()
         'LDAP_PASS',
         'LDAP_PORT',
         'LDAP_PROTOCOL_VERSION',
-        'LDAP_SITE',
         'LDAP_SSL',
         'LDAP_USER',
         'LDAP_USERNAME_FIELD',
