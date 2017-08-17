@@ -41,11 +41,12 @@ if (!@is_file($pathToFunctions)) {
 require $pathToFunctions;
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = MAILWATCH_HOME . '/mtalogprocessor.inc.php';
+$pathToMtaLogProc = MAILWATCH_HOME . '/mtalogprocessor.inc.php';
 
-if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+if (!@is_file($pathToMtaLogProc)) {
+    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToMtaLogProc . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
 }
+require_once $pathToMtaLogProc;
 
 // Set-up environment
 set_time_limit(0);
