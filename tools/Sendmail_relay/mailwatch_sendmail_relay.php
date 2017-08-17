@@ -41,7 +41,7 @@ if (!@is_file($pathToFunctions)) {
 require $pathToFunctions;
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = '/opt/mailwatch/mailscanner/mtalogprocessor.inc.php';
+$pathToFunctions = MAILWATCH_HOME . '/mtalogprocessor.inc.php';
 
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
