@@ -900,11 +900,11 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
-    'title59' => 'Quarantine Release',
+    'title59' => 'Libération de quarantaine',
 
     // 60-rpcserver.php
-    'paratype160' => 'Parameter type',
-    'paratype260' => 'mismatch expected type.',
+    'paratype160' => 'Type de paramètre',
+    'paratype260' => 'type de concordance inadéquate.',
     'notfile60' => 'n\est pas un fichier.',
     'permdenied60' => 'permission refusée.',
     'client160' => 'Le client',
