@@ -444,7 +444,7 @@ if ($link) {
 
     // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
     // We don't need a default / on update value for the timestamp field in the maillog table because we only change it in mailwatch.pm
-    //  where we use the current system time from perl (not mysql function) as value. So we can remove it. Initial remove because MySQL 
+    //  where we use the current system time from perl (not mysql function) as value. So we can remove it. Initial remove because MySQL
     //  in version < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
     echo pad(' - Fix schema for timestamp field in `maillog` table');
     //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
