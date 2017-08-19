@@ -443,19 +443,16 @@ if ($link) {
     executeQuery($sql);
 
     // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
+    // We don't need a default / on update value for the timestamp field in the maillog table because we only change it in mailwatch.pm
+    //  where we use the current system time from perl (not mysql function) as value. So we can remove it. Initial remove because MySQL 
+    //  in version < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
     echo pad(' - Fix schema for timestamp field in `maillog` table');
-    if ($link->server_version < 50600 && getSqlServer() === "mysql") {
-        //MySQL < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
-        //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
-        //Second query drops the default
-        $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT 0';
-        $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
-        executeQuery($sql1);
-        executeQuery($sql2, true);
-    } else {
-        $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP';
-        executeQuery($sql);
-    }
+    //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
+    //Second query drops the default
+    $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT 0';
+    $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
+    executeQuery($sql1);
+    executeQuery($sql2, true);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
