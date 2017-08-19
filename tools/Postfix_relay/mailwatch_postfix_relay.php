@@ -31,8 +31,7 @@ ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
 // Edit if you changed webapp directory from default
-//$pathToMailscannerDir = '/opt/mailwatch/mailscanner/';
-$pathToMailscannerDir = '/opt/mailwatch/mailscanner/';
+$pathToMailscannerDir = '/var/www/html/mailscanner/';
 
 $pathToFunctions = $pathToMailscannerDir . 'functions.php';
 
