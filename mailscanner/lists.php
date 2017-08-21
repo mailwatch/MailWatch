@@ -26,7 +26,6 @@
  */
 
 require_once __DIR__ . '/functions.php';
-
 require __DIR__ . '/login.function.php';
 
 html_start(__('wblists07'), 0, false, false);
@@ -298,27 +297,36 @@ if ($url_submit === 'delete') {
     $url_list = '';
 }
 
+/**
+ * @param string $sql
+ * @param string $list
+ * @return array
+ */
 function build_table($sql, $list)
 {
     $sth = dbquery($sql);
+    $table_html = '';
+    $entries = $sth->num_rows;
     if ($sth->num_rows > 0) {
-        echo '<table class="blackwhitelist">' . "\n";
-        echo ' <tr>' . "\n";
-        echo '  <th>' . __('from07') . '</th>' . "\n";
-        echo '  <th>' . __('to07') . '</th>' . "\n";
-        echo '  <th>' . __('action07') . '</th>' . "\n";
-        echo ' </tr>' . "\n";
+        $table_html .= '<table class="blackwhitelist">' . "\n";
+        $table_html .= ' <tr>' . "\n";
+        $table_html .= '  <th>' . __('from07') . '</th>' . "\n";
+        $table_html .= '  <th>' . __('to07') . '</th>' . "\n";
+        $table_html .= '  <th>' . __('action07') . '</th>' . "\n";
+        $table_html .= ' </tr>' . "\n";
         while ($row = $sth->fetch_row()) {
-            echo ' <tr>' . "\n";
-            echo '  <td>' . $row[1] . '</td>' . "\n";
-            echo '  <td>' . $row[2] . '</td>' . "\n";
-            echo '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
-            echo ' </tr>' . "\n";
+            $table_html .= ' <tr>' . "\n";
+            $table_html .= '  <td>' . $row[1] . '</td>' . "\n";
+            $table_html .= '  <td>' . $row[2] . '</td>' . "\n";
+            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            $table_html .= ' </tr>' . "\n";
         }
-        echo '</table>' . "\n";
+        $table_html .= '</table>' . "\n";
     } else {
-        echo __('noentries07') . "\n";
+        $table_html = __('noentries07') . "\n";
     }
+
+    return array('html' => $table_html, 'entry_number' => $entries);
 }
 
 echo '
@@ -401,29 +409,32 @@ if (isset($errors)) {
   <td>' . implode('<br>', $errors) . '</td>
  </tr>';
 }
+
+$whitelist = build_table(
+    'SELECT id, from_address, to_address FROM whitelist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
+    'w'
+);
+$blacklist = build_table(
+    'SELECT id, from_address, to_address FROM blacklist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
+    'b'
+);
 echo '</table>
    </form>
    <br>
 <table cellspacing="1" width="100%" class="mail">
 <tr>
-  <th class="whitelist">' . __('wl07') . '</th>
-  <th class="blacklist">' . __('bl07') . '</th>
+  <th class="whitelist">' . sprintf(__('wl07'), $whitelist['entry_number']) . '</th>
+  <th class="blacklist">' . sprintf(__('bl07'), $whitelist['entry_number']) . '</th>
 </tr>
 <tr>
   <td class="blackwhitelist">
     <!-- Whitelist -->';
 
-build_table(
-    'SELECT id, from_address, to_address FROM whitelist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
-    'w'
-);
-echo '</td>
- <td  class="blackwhitelist">
-  <!-- Blacklist -->';
-build_table(
-    'SELECT id, from_address, to_address FROM blacklist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
-    'b'
-);
+echo $whitelist['html'];
+echo '</td>';
+echo '<td class="blackwhitelist">
+<!-- Blacklist -->';
+echo $blacklist['html'];
 echo '</td>
 </tr>
 </table>';
