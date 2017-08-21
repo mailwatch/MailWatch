@@ -387,7 +387,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         // Release
         if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
+            if (isset($_POST['alt_recpt_yn']) && deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
                 $to = deepSanitizeInput($_POST['alt_recpt'], 'string');
                 if (!validateInput($to, 'user')) {
                     die(__('error04') . ' ' . $to);

@@ -54,7 +54,7 @@ body {
 }
 
 .login h1 {
-    background-color: #f7ce4a;
+    background-color: #F7CE4A;
     -webkit-border-radius: 15px 15px 0 0;
     -moz-border-radius: 15px 15px 0 0;
     border-radius: 15px 15px 0 0;
@@ -108,7 +108,7 @@ body {
 }
 
 .login fieldset input[type="text"], .login fieldset input[type="password"] {
-    background-color: #e9e9e9;
+    background-color: #E9E9E9;
     color: #222;
     padding: 4px;
     width: 298px;
@@ -118,7 +118,7 @@ body {
 .login fieldset button[type="submit"],
 .pwdresetform fieldset button[type="submit"] {
     font-size: 16px;
-    background-color: #f7ce4a;
+    background-color: #F7Ce4A;
     color: #222;
     display: block;
     margin: 0 auto;
@@ -137,7 +137,7 @@ body {
 
 .login fieldset button[type="submit"]:hover,
 .pwdresetform fieldset button[type="submit"]:hover {
-    background-color: #deb531;
+    background-color: #DEB531;
 }
 
 .pwdresetButton {
@@ -148,7 +148,7 @@ body {
 
 .pwdresetButton a.loginButton {
     padding: 10px;
-    background-color: #f7ce4a;
+    background-color: #F7CE4A;
     color: #222222;
     margin: 0 auto;
     min-width: 100px;
@@ -160,7 +160,7 @@ body {
 }
 
 .pwdresetButton a.loginButton:hover {
-    background-color: #deb531;
+    background-color: #DEB531;
 }
 
 .pwdresetButton a {
@@ -207,6 +207,10 @@ table.mail tr, table.sophos tr, table.sa_rules_report tr {
     background-color: #EBEBEB;
 }
 
+table.colorcodes tr {
+    background-color: inherit;
+}
+
 table.sa_rules_report TH {
     text-align: left;
 }
@@ -216,13 +220,9 @@ table.mail tr.infected {
     color: #FFF;
 }
 
-td.rule_desc {
-    text-align: left;
-    width: 200px;
-}
-
 table.mail td.infected {
     background-color: #B22222;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -233,6 +233,7 @@ table.mail tr.spam {
 
 table.mail td.spam {
     background-color: #F5BBBB;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -243,6 +244,7 @@ table.mail tr.highspam {
 
 table.mail td.highspam {
     background-color: #EE6262;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -258,11 +260,24 @@ table.mail tr.notscanned {
 
 table.mail td.notscanned {
     background-color: #800080;
+    border: 1px solid #000;
+    width: 15px;
+}
+
+table.mail tr.clean {
+    background-color: #EBEBEB;
+    color: #FFF;
+}
+
+table.mail td.clean {
+    background-color: #EBEBEB;
+    border: 1px solid #000;
     width: 15px;
 }
 
 table.mail td.mcp {
     background-color: #ADD8E6;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -273,6 +288,7 @@ table.mail tr.highmcp {
 
 table.mail td.highmcp {
     background-color: #00008B;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -283,6 +299,7 @@ table.mail tr.whitelisted {
 
 table.mail td.whitelisted {
     background-color: #90EE90;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -293,6 +310,7 @@ table.mail tr.blacklisted {
 
 table.mail td.blacklisted {
     background-color: #000;
+    border: 1px solid #000;
     width: 15px;
 }
 
@@ -301,14 +319,27 @@ table.mail, table.maildetail, table.navigation, table.boxtable {
     padding: 0;
 }
 
-table.mail tr:hover {
+table.rowhover tr:hover {
     -webkit-filter: invert(0.1);
     filter: invert(0.1);
 
 }
+
+tr.nohover {
+    -webkit-filter:none !important;
+    filter:none !important;
+}
+table.colorcodes tr:hover {
+    -webkit-filter: none;
+    filter: none;
+}
+
 table.boxtable {
     margin-left: auto;
     margin-right: auto;
+}
+table.boxtable td.textdata {
+    padding-left: 10px;
 }
 
 #menu {
@@ -344,7 +375,7 @@ table.boxtable {
 }
 
 #menu li a:hover, #menu li.active a {
-    background-color: #f5f5f5;
+    background-color: #F5F5F5;
     border-bottom: 2px solid #DDD;
     color: #999;
 }
@@ -467,12 +498,12 @@ table.mailwatch TH {
 
 table.mailwatch tr {
     font-size: 8pt;
-    background-color: #ebebeb;
+    background-color: #EBEBEB;
 }
 
 table.mailwatch tr.alt {
     font-size: 8pt;
-    background-color: #cfccdf;
+    background-color: #CFCCDF;
 }
 
 table.mailwatch td.footer {
@@ -503,9 +534,13 @@ span.debug {
     color: green;
 }
 
-span.error {
+.error {
     font-size: 10pt;
     color: red;
+}
+.success {
+    font-size: 10pt;
+    color: green;
 }
 
 td.dashblackbox {
@@ -515,7 +550,7 @@ td.dashblackbox {
 }
 
 td.dashgreybox {
-    border: 2px dashed #cccccc;
+    border: 2px dashed #CCCCCC;
     background-color: white;
     padding: 5px;
 }
@@ -613,7 +648,7 @@ div.table > .caption > input {
 
 /*auto-release*/
 .autorelease body {
-    background-color: #ffffff;
+    background-color: #FFFFFF;
     color: #000;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
@@ -626,7 +661,7 @@ div.table > .caption > input {
 }
 
 .autorelease h1 {
-    background-color: #f7ce4a;
+    background-color: #F7CE4A;
     color: #222;
     font-size: 28px;
     margin: 0;
@@ -669,7 +704,7 @@ div.table > .caption > input {
 }
 
 .reportTable {
-   padding: 10px;   
+   padding: 10px;
    margin-left: auto;
    margin-right: auto;
 }
@@ -690,7 +725,7 @@ div.table > .caption > input {
 
 .reportTable>tbody>tr>th.white,
 .reportTable>tbody>tr>td.white{
-    background-color: #fffffff;
+    background-color: #FFFFFFF;
 }
 
 .reportTable>tbody>tr>td:first-child {
@@ -729,7 +764,7 @@ td.message {
 }
 
 .pwdreset h1 {
-    background-color: #f7ce4a;
+    background-color: #F7CE4A;
     color: #222;
     font-size: 28px;
     margin: 0;
@@ -745,7 +780,7 @@ td.message {
 
 .pwdreset form {
     border-top: 0;
-    background-color: #fff;
+    background-color: #FFF;
     -webkit-border-radius: 0 0 15px 15px;
     -moz-border-radius: 0 0 15px 15px;
     border-radius: 0 0 15px 15px;
@@ -789,7 +824,7 @@ td.message {
 }
 
 .pwdreset fieldset input[type="text"], .pwdreset fieldset input[type="password"] {
-    background-color: #e9e9e9;
+    background-color: #E9E9E9;
     color: #222;
     padding: 4px;
     width: 256px;
@@ -797,7 +832,7 @@ td.message {
 }
 
 .pwdreset fieldset input[type="submit"] {
-    background-color: #f7ce4a;
+    background-color: #F7CE4A;
     color: #222;
     display: block;
     margin: 0 auto;
@@ -809,7 +844,7 @@ td.message {
 }
 
 .pwdreset fieldset input[type="submit"]:hover {
-    background-color: #deb531;
+    background-color: #DEB531;
 }
 
 .pwdreset .border-rounded {
@@ -854,11 +889,13 @@ td.message {
 
 /* dbtable */
 
-.table-background:nth-child(even) {
+.table-background:nth-child(even),
+.blackwhitelist>tbody>tr:nth-child(even) {
     background-color: #EBEBEB;
 }
 
-.table-background:nth-child(odd) {
+.table-background:nth-child(odd),
+.blackwhitelist>tbody>tr:nth-child(odd) {
     background-color: #D8D8D8;
 }
 
@@ -925,7 +962,7 @@ select.lang > option {
 }
 
 .salearn-2 { /* SPAM */
-    background-color: #f51111;
+    background-color: #F51111;
     color:#fff;
 }
 
@@ -933,7 +970,32 @@ select.lang > option {
     width: auto;
     height: 180px;
     margin-top: -4px;
-    margin-bottom: -9px;
+    margin-bottom: 0px;
     margin-right: -2px;
-    margin-left: 2px;
+    margin-left: 4px;
 }
+.filterbuttons {
+    white-space: nowrap; 
+    text-align:right;
+}
+
+.todaystatistics>tbody>tr>td {
+    white-space: nowrap;
+}
+.todaystatistics>tbody>tr>td:not(:first-child) {
+    text-align: right;
+}
+p.footer {
+    font-size: 13px;
+}
+
+table.sa_rules_report>tbody>tr>td {
+    text-align: left;
+}
+table.sa_rules_report>tbody>tr>td:nth-child(2) {
+    width: 200px;
+}
+table.mail>tbody>tr>th.alignleft {
+    text-align: left;
+}
+

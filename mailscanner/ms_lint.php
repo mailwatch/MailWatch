@@ -35,7 +35,7 @@ echo ' <tr>' . "\n";
 echo '  <th colspan="2">' . __('mailscannerlint28') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="1" style="text-align:left">' . __('message28') . '</th>' . "\n";
+echo '  <th colspan="1" class="alignleft">' . __('message28') . '</th>' . "\n";
 echo '  <th colspan="1">' . __('time28') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 

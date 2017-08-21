@@ -42,6 +42,8 @@ $date_format = "'" . DATE_FORMAT . "'";
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
+
+$graphgenerator = new GraphGenerator();
 // SQL query to pull the data from maillog
 $sql = "
  SELECT
@@ -175,9 +177,12 @@ if ($is_MCP_enabled === true) {
     $graphColumns['dataLabels'][0][] = __('barmcp49');
     $graphColumns['dataNumericColumns'][0][] = 'total_mcp';
     $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
+    $graphgenerator->settings['colors'] = array(
+        array('mailColor', 'virusColor', 'spamColor', 'mcpColor'),
+        array('volumeColor')
+    );
 }
 
-$graphgenerator = new GraphGenerator();
 $graphgenerator->sqlQuery = $sql;
 $graphgenerator->sqlColumns = $sqlColumns ;
 $graphgenerator->graphColumns = $graphColumns;
@@ -185,6 +190,8 @@ $graphgenerator->valueConversion = $valueConversion;
 $graphgenerator->types = $types;
 $graphgenerator->graphTitle = __('totalmailprocdate49');
 $graphgenerator->printTable = false;
+$graphgenerator->settings['valueTypes'] = array('plain','volume');
+$graphgenerator->settings['maxTicks'] = 10;
 $graphgenerator->printLineGraph();
 
 /////////////////////////////////////////Generate Table //////////////////////////////////

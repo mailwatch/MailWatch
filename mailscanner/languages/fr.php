@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',
     'cst03' => 'Heure Système',
-    'colorcodes03' => 'Codes couleur',
     'badcontentinfected03' => 'Contenu dangereux/infecté',
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
@@ -191,11 +190,12 @@ return array(
     'released03' => 'Libérer',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
-    'trafficgraph03' => 'Trafic de la derniere heure',
-    'trafficgraphmore03' => 'Trafic des %s dernières heures',
+    'trafficgraph03' => 'Trafic par minute de la derniere heure',
+    'trafficgraphmore03' => 'Trafic par minute des %s dernières heures',
     'barmail03' => 'E-Mails',
     'barvirus03' => 'Virus',
     'barspam03' => 'Spam',
+    'moretopviruses03' => 'et %s autres virus',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -402,7 +402,7 @@ return array(
     'version11' => 'version :',
     'systemos11' => 'Version du Système d\'Exploitation :',
     'mwandmsversion11' => 'Information sur les versions des logiciels',
-    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels.',
     'downloaddate11' => 'date de téléchargement',
 
     // 12-user_manager.php
@@ -638,7 +638,7 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
-    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner',
+    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner.',
     'editrule29' => 'Choisissez une règle à éditer :',
     'norulefound29' => 'Aucune règle trouvée',
 
@@ -900,11 +900,11 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
-    'title59' => 'Quarantine Release',
+    'title59' => 'Libération de quarantaine',
 
     // 60-rpcserver.php
-    'paratype160' => 'Parameter type',
-    'paratype260' => 'mismatch expected type.',
+    'paratype160' => 'Type de paramètre',
+    'paratype260' => 'type de concordance inadéquate.',
     'notfile60' => 'n\est pas un fichier.',
     'permdenied60' => 'permission refusée.',
     'client160' => 'Le client',
@@ -992,4 +992,5 @@ return array(
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
     'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
+    'dbconnecterror99_plain' => 'Error: Database connection failed: it is possible that the database is overloaded or otherwise not running properly; contact the system administrator if the problem persists',
 );
