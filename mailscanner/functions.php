@@ -4589,7 +4589,7 @@ function updateLoginExpiry($myusername)
         } else {
             $expiry_val = (time() + 600);
         }
-    // If set, use the individual timeout
+        // If set, use the individual timeout
     } elseif ($login_timeout === '0') {
         $expiry_val = 0;
     } else {
