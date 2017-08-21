@@ -190,7 +190,7 @@ ORDER BY
   AND
    BINARY id IN ($msg_ids)";
 
-// Hide high spam/mcp from regular users if enabled
+            // Hide high spam/mcp from regular users if enabled
             if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
                 $sql .= '
     AND

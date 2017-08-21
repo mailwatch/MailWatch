@@ -1,3 +1,8 @@
+1.2.6-dev
+-----------
+Improvements
+- Add entries counter on white and black list
+
 1.2.5
 -----------
 Improvements
