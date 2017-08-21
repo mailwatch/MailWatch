@@ -361,7 +361,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src="' . MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";

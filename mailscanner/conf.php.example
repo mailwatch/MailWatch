@@ -106,7 +106,7 @@ define('MS_CONFIG_DIR', '/etc/MailScanner/');
 define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // Path for ConfigDefs.pl file
 define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // Path for sophos-wrapper file
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
-define('IMAGES_DIR', './images/'); // Trailing slash needed
+define('IMAGES_DIR', '/images/'); // Both leading and trailing slash needed
 define('SA_DIR', '/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spamassassin.conf'); // spam.assassin.prefs.conf in V4, spamassassin.conf in V5
@@ -156,6 +156,7 @@ define('MAILWATCH_MAIL_PORT', '25');
 //define('MAILWATCH_SMTP_HOSTNAME', gethostname());
 // Change with a fully qualified email address
 define('MAILWATCH_FROM_ADDR', 'postmaster@domain.tld');
+// Don't add trailing slash
 define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
 
 /* Quarantine settings */
