@@ -11,7 +11,7 @@ Improvements
 Fixes
 - Fixes issue when sanitization causes ampersand to be html-ified (#882)
 - Fix mailwatch-sendmail-relay init script (#881)
-- Fix code for php 5.3 compatibility (#889)
+- Fix code for php 5.3 compatibility (#889) and php 7.0 compatibility (#897)
 - Fix path to mtalogprocessor file in senmail_relay (#912)
 - Remove on update/default value for timestamp in maillog table (#915)
 - Permit up to 20 chars in first part of Postfix msgid (#652)
