@@ -60,6 +60,11 @@ $mysql_utf8_variant = array(
     'utf8mb4' => array('charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci')
 );
 
+
+/*****************************************************************
+ * Start helper functions
+ *****************************************************************/
+
 /**
  * @param string $input
  * @return string
@@ -283,6 +288,32 @@ function color($string, $color = '')
     return $before . $string . $after;
 }
 
+function stringStartsWith($haystack, $needles)
+{
+    foreach ((array)$needles as $needle) {
+        if ($needle !== '' && 0 === strpos($haystack, (string)$needle)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function stringEndsWith($haystack, $needles)
+{
+    foreach ((array)$needles as $needle) {
+        if (substr($haystack, -strlen($needle)) === (string)$needle) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*****************************************************************
+ * End helper functions
+ *****************************************************************/
+
 $errors = false;
 
 // Upgrade mailwatch database
@@ -371,8 +402,8 @@ if ($link) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'CREATE TABLE IF NOT EXISTS `mtalog_ids` (
-            `smtpd_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
-            `smtp_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
+            `smtpd_id` VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
+            `smtp_id` VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
             UNIQUE KEY `mtalog_ids_idx` (`smtpd_id`,`smtp_id`),
             KEY `smtpd_id` (`smtpd_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
@@ -404,7 +435,7 @@ if ($link) {
     } else {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
-    
+
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4
@@ -476,7 +507,7 @@ if ($link) {
     executeQuery($sql);
 
     echo PHP_EOL;
-    
+
     // Cleanup orphaned user_filters
     echo pad(' - Cleanup orphaned user_filters');
     $sql = 'DELETE FROM `user_filters` WHERE `username` NOT IN (SELECT `username` FROM `users`)';
@@ -514,10 +545,10 @@ if ($link) {
     if (true === check_column_exists('maillog', 'rblspamreport')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL';
+        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
-    
+
     // Add new token column to maillog table
     echo pad(' - Add token field to `maillog` table');
     if (true === check_column_exists('maillog', 'token')) {
@@ -532,24 +563,24 @@ if ($link) {
     if (true === check_column_exists('maillog', 'released')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = "ALTER TABLE `maillog` ADD `released` tinyint(1) DEFAULT '0'";
+        $sql = "ALTER TABLE `maillog` ADD `released` TINYINT(1) DEFAULT '0'";
         executeQuery($sql);
     }
 
     echo pad(' - Add last_update field to `maillog` table');
     if (check_column_exists('maillog', 'last_update') === false) {
-        $sql = 'ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
+        $sql = 'ALTER TABLE `maillog` ADD `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
         executeQuery($sql);
     } else {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
-    
+
     // Add new salearn column to maillog table
     echo pad(' - Add salearn field to `maillog` table');
     if (true === check_column_exists('maillog', 'salearn')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = "ALTER TABLE `maillog` ADD `salearn` tinyint(1) DEFAULT '0'";
+        $sql = "ALTER TABLE `maillog` ADD `salearn` TINYINT(1) DEFAULT '0'";
         executeQuery($sql);
     }
 
@@ -705,15 +736,35 @@ if ($link) {
     // check for missing indexes
     $indexes = array(
         'maillog' => array(
-            'maillog_datetime_idx' => array('fields' => '(`date`,`time`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_datetime_idx' => array(
+                'fields' => '(`date`,`time`)',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_clientip_idx' => array('fields' => '(`clientip`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_from_idx' => array('fields' => '(`from_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_clientip_idx' => array(
+                'fields' => '(`clientip`(20))',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
+            'maillog_from_idx' => array(
+                'fields' => '(`from_address`(191))',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'maillog_to_idx' => array('fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
             'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'from_domain_idx' => array('fields' => '(`from_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'from_domain_idx' => array(
+                'fields' => '(`from_domain`(50))',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_quarantined' => array('fields' => '(`quarantined`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_quarantined' => array(
+                'fields' => '(`quarantined`)',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
             // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
             'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'),
@@ -721,7 +772,8 @@ if ($link) {
     );
 
     foreach ($indexes as $table => $indexlist) {
-        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(' DONE', 'green') . PHP_EOL;
+        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(' DONE',
+                'green') . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
@@ -764,27 +816,34 @@ echo PHP_EOL;
 
 // Check MailScanner settings
 echo 'Checking MailScanner.conf settings: ' . PHP_EOL;
-echo PHP_EOL;
-$check_settings = array(
-    'QuarantineWholeMessage' => 'yes',
-    'QuarantineWholeMessagesAsQueueFiles' => 'no',
-    'DetailedSpamReport' => 'yes',
-    'IncludeScoresInSpamAssassinReport' => 'yes',
-    'SpamActions' => 'store',
-    'HighScoringSpamActions' => 'store',
-    'AlwaysLookedUpLast' => '&MailWatchLogging'
-);
 
-foreach ($check_settings as $setting => $value) {
-    echo pad(" - $setting ");
-    if (preg_match('/' . $value . '/', get_conf_var($setting))) {
-        echo color(' OK', 'green') . PHP_EOL;
-    } else {
-        echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
-        $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
+echo PHP_EOL;
+
+if (!is_file(MS_CONFIG_DIR . 'MailScanner.conf')) {
+    $err_msg = 'MailScanner.conf: cannot find file on path "' . MS_CONFIG_DIR . 'MailScanner.conf' . '"';
+    echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
+    $errors[] = $err_msg;
+} else {
+    $check_settings = array(
+        'QuarantineWholeMessage' => 'yes',
+        'QuarantineWholeMessagesAsQueueFiles' => 'no',
+        'DetailedSpamReport' => 'yes',
+        'IncludeScoresInSpamAssassinReport' => 'yes',
+        'SpamActions' => 'store',
+        'HighScoringSpamActions' => 'store',
+        'AlwaysLookedUpLast' => '&MailWatchLogging'
+    );
+
+    foreach ($check_settings as $setting => $value) {
+        echo pad(" - $setting ");
+        if (preg_match('/' . $value . '/', get_conf_var($setting))) {
+            echo color(' OK', 'green') . PHP_EOL;
+        } else {
+            echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
+            $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
+        }
     }
 }
-
 echo PHP_EOL;
 
 // Check configuration for missing entries
@@ -816,6 +875,22 @@ if ($checkConfigEntries['optional']['count'] === 0) {
         echo pad(" - optional $optionalConfigEntry ") . ' ' . color('INFO', 'lightgreen') . PHP_EOL;
         $errors[] = 'conf.php: optional configuration entry "' . $optionalConfigEntry . '" is missing, ' . $detail['description'];
     }
+}
+
+echo PHP_EOL;
+
+/* Check configuration for syntactically wrong entries */
+// IMAGES_DIR need both leading and trailing slash
+if (!stringStartsWith(IMAGES_DIR, '/') || !stringEndsWith(IMAGES_DIR, '/')) {
+    $err_msg = 'conf.php: IMAGES_DIR must start and end with a slash';
+    echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
+    $errors[] = $err_msg;
+}
+// MAILWATCH_HOSTURL don't need trailing slash
+if (stringEndsWith(MAILWATCH_HOSTURL, '/')) {
+    $err_msg = 'conf.php: MAILWATCH_HOSTURL must not end with a slash';
+    echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
+    $errors[] = $err_msg;
 }
 
 echo PHP_EOL;
