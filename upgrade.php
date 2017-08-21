@@ -48,7 +48,7 @@ if (isset($argv) && count($argv) > 1) {
 }
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 17) . PHP_EOL);
 }
 
 require_once $pathToFunctions;
