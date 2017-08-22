@@ -3440,9 +3440,15 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             require_once __DIR__ . '/lib/pear/Mail/smtp.php';
-            $crlf = "\r\n";
+
             $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
-            $mime = new Mail_mime($crlf);
+            $mailMimeParams = array(
+                'eol' => "\r\n",
+                'html_charset' => 'UTF-8',
+                'text_charset' => 'UTF-8',
+                'head_charset' => 'UTF-8'
+            );
+            $mime = new Mail_mime($mailMimeParams);
             $mime->setTXTBody(QUARANTINE_MSG_BODY);
             // Loop through each selected file and attach them to the mail
             foreach ($num as $key => $val) {
