@@ -480,7 +480,7 @@ if ($link) {
     echo pad(' - Fix schema for timestamp field in `maillog` table');
     //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
     //Second query drops the default
-    $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT 0';
+    $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
     $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
     executeQuery($sql1);
     executeQuery($sql2, true);
