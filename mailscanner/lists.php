@@ -424,7 +424,7 @@ echo '</table>
 <table cellspacing="1" width="100%" class="mail">
 <tr>
   <th class="whitelist">' . sprintf(__('wl07'), $whitelist['entry_number']) . '</th>
-  <th class="blacklist">' . sprintf(__('bl07'), $whitelist['entry_number']) . '</th>
+  <th class="blacklist">' . sprintf(__('bl07'), $blacklist['entry_number']) . '</th>
 </tr>
 <tr>
   <td class="blackwhitelist">
