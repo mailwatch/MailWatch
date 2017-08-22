@@ -3,6 +3,9 @@
 Improvements
 - Add entries counter on white and black list
 
+Fixes
+- Fix upgrade script for compatibility with MySQL 5.7 and 8.0 strict SQL mode
+
 1.2.5
 -----------
 Improvements
