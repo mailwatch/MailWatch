@@ -478,8 +478,9 @@ if ($link) {
     //  where we use the current system time from perl (not mysql function) as value. So we can remove it. Initial remove because MySQL
     //  in version < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
     echo pad(' - Fix schema for timestamp field in `maillog` table');
-    //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
+    //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default to CURRENT_TIMESTAMP
     //Second query drops the default
+    //warning: MariaDB 10.2 and 10.3 still keep the default after dropping it with the second query
     $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
     $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
     executeQuery($sql1);
