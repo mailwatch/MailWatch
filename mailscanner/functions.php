@@ -127,10 +127,9 @@ if (PHP_SAPI !== 'cli') {
     header('X-XSS-Protection: 1; mode=block');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
+    unset($session_cookie_secure);
+    session_start();
 }
-
-unset($session_cookie_secure);
-session_start();
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
