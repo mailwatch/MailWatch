@@ -424,7 +424,7 @@ function printColorCodes()
     echo '    <td class="spam"></td> <td>' . __('spam103'). ' </td>' . "\n";
     echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
-        echo '    <td class="mcp"></td>> <td>' . __('mcp03') . '</td>' . "\n";
+        echo '    <td class="mcp"></td> <td>' . __('mcp03') . '</td>' . "\n";
         echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
     }
     echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
