@@ -301,6 +301,8 @@ return array(
     'action07' => 'Actie:',
     'wl07' => 'Vrijwaring',
     'bl07' => 'Blokkering',
+    'wlentries07' => 'Whitelist - %d entries',
+    'blentries07' => 'Blacklist - %d entries',
     'reset07' => 'Herstart',
     'add07' => 'Voeg toe',
     'delete07' => 'Verwijder',
