@@ -109,7 +109,7 @@ class GraphGenerator
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
             $graphTypes .= '[' . "\n";
-            $colors .= isset($this->settings['colors']) ? '["' . implode('", "', $this->settings['colors'][$i]) . '"]' : '';
+            $colors .= isset($this->settings['colors']) ? '["' . implode('", "', $this->settings['colors'][$i]) . '"],' : '';
             for ($j=0; $j<count($this->graphColumns['dataNumericColumns'][$i]); $j++) {
                 if (isset($this->graphColumns['dataLabels'][$i])) {
                     $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] .'",';
