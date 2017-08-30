@@ -999,3 +999,6 @@ table.mail>tbody>tr>th.alignleft {
     text-align: left;
 }
 
+a {
+    white-space: nowrap;
+}
