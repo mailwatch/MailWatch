@@ -308,7 +308,7 @@ function build_table($sql, $list)
     $table_html = '';
     $entries = $sth->num_rows;
     if ($sth->num_rows > 0) {
-        $table_html .= '<table class="blackwhitelist">' . "\n";
+        $table_html .= '<table class="blackwhitelist rowhover">' . "\n";
         $table_html .= ' <tr>' . "\n";
         $table_html .= '  <th>' . __('from07') . '</th>' . "\n";
         $table_html .= '  <th>' . __('to07') . '</th>' . "\n";
