@@ -974,6 +974,7 @@ select.lang > option {
     margin-right: -2px;
     margin-left: 4px;
 }
+
 .filterbuttons {
     white-space: nowrap; 
     text-align:right;
@@ -982,9 +983,11 @@ select.lang > option {
 .todaystatistics>tbody>tr>td {
     white-space: nowrap;
 }
+
 .todaystatistics>tbody>tr>td:not(:first-child) {
     text-align: right;
 }
+
 p.footer {
     font-size: 13px;
 }
@@ -992,13 +995,15 @@ p.footer {
 table.sa_rules_report>tbody>tr>td {
     text-align: left;
 }
+
 table.sa_rules_report>tbody>tr>td:nth-child(2) {
     width: 200px;
 }
+
 table.mail>tbody>tr>th.alignleft {
     text-align: left;
 }
 
-a {
+.nowrap {
     white-space: nowrap;
 }
