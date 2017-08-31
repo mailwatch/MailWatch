@@ -541,7 +541,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             } else {
                 echo '  <td>' . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
             }
-            if ($_SESSION['user_type'] !== 'A' && $item['dangerous'] === 'Y') {
+            if ($item['dangerous'] === 'Y') {
                 $dangerous = $yes;
                 $is_dangerous++;
             } else {
