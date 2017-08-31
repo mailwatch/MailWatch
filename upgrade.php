@@ -261,7 +261,8 @@ function getSqlServer()
     return 'mariadb';
 }
 
-function getColumnInfo($table, $column) {
+function getColumnInfo($table, $column)
+{
     global $link;
     $sql = 'SHOW COLUMNS FROM ' . $table . " LIKE '" . $column . "'";
     $result = $link->query($sql);
@@ -572,7 +573,7 @@ if ($link) {
 
     // Table mcp_rules
     echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
-    $mcp_rules_rule_desc_info = getColumnInfo('users', 'fullname');
+    $mcp_rules_rule_desc_info = getColumnInfo('mcp_rules', 'rule_desc');
     if ($mcp_rules_rule_desc_info['Type'] !== 'varchar(200)') {
         $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
         executeQuery($sql);
