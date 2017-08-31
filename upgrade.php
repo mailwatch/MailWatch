@@ -500,13 +500,14 @@ if ($link) {
     // in version < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
     echo pad(' - Fix schema for timestamp field in `maillog` table');
     $maillog_timestamp_info = getColumnInfo('maillog', 'timestamp');
-    if (null !== $maillog_timestamp_info['Default'] && '' !== $maillog_timestamp_info['Extra']) {
+    if (null !== $maillog_timestamp_info['Default'] || '' !== $maillog_timestamp_info['Extra']) {
         //Set NULL default on timestamp column
         $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NULL DEFAULT NULL;';
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
+    unset($maillog_timestamp_info);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
