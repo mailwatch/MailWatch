@@ -510,11 +510,6 @@ if ($link) {
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
-    // Table audit_log
-    echo pad(' - Fix schema for username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
     // Table users
     echo pad(' - Fix schema for password field in `users` table');
     $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
