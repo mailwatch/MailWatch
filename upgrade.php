@@ -433,7 +433,7 @@ if ($link) {
 
     // Update users table schema for password-reset feature
     echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
-    if (check_column_exists('users', 'resetid') === false) {
+    if (false === check_column_exists('users', 'resetid')) {
         $sql = 'ALTER TABLE `users` ADD COLUMN (
             `resetid` VARCHAR(32),
             `resetexpire` BIGINT(20),
@@ -446,7 +446,7 @@ if ($link) {
 
     // Update users table schema for login_expiry, last_login and individual login_timeout feature
     echo pad(' - Add login_expiry and login_timeout fields in `users` table');
-    if (check_column_exists('users', 'login_expiry') === false) {
+    if (false === check_column_exists('users', 'login_expiry')) {
         $sql = "ALTER TABLE `users` ADD COLUMN (
             `login_expiry` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
             `last_login` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
@@ -463,36 +463,73 @@ if ($link) {
 
     // Table audit_log
     echo pad(' - Fix schema for username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $audit_log_user_info = getColumnInfo('audit_log', 'user');
+    if ($audit_log_user_info['Type'] !== 'varchar(191)') {
+        $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR(191) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($audit_log_user_info);
 
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
-    $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
-    executeQuery($sql);
-
-    // Table users
-    echo pad(' - Fix schema for username field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Fix schema for spamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` FLOAT DEFAULT '0'";
-    executeQuery($sql);
-
-    echo pad(' - Fix schema for highspamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` FLOAT DEFAULT '0'";
-    executeQuery($sql);
-
-    // Table user_filters
-    echo pad(' - Fix schema for username field in `user_filters` table');
-    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $blacklist_id_info = getColumnInfo('blacklist', 'id');
+    if (strtolower($blacklist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($blacklist_id_info['Null']) !== 'NO' || strtolower($blacklist_id_info['Extra']) !== 'auto_increment') {
+        $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($blacklist_id_info);
 
     // Table whitelist
-    echo pad(' - Fix schema for username field in `whitelist` table');
-    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
-    executeQuery($sql);
+    echo pad(' - Fix schema for id field in `whitelist` table');
+    $whitelist_id_info = getColumnInfo('whitelist', 'id');
+    if (strtolower($whitelist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($whitelist_id_info['Null']) !== 'NO' || strtolower($whitelist_id_info['Extra']) !== 'auto_increment') {
+        $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    // user name lenght to 191
+    echo pad(' - Fix schema for username field in `users` table');
+    $users_username_info = getColumnInfo('users', 'username');
+    if ($users_username_info['Type'] !== 'varchar(191)') {
+        $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR(191) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    echo pad(' - Fix schema for username field in `user_filters` table');
+    $user_filters_username_info = getColumnInfo('users', 'username');
+    if ($user_filters_username_info['Type'] !== 'varchar(191)') {
+        $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    // Table user_filters spam score to float
+    echo pad(' - Fix schema for spamscore field in `users` table');
+    $users_spamscore_info = getColumnInfo('users', 'spamscore');
+    if ($users_spamscore_info['Type'] !== 'float') {
+        $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` FLOAT DEFAULT '0'";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    echo pad(' - Fix schema for highspamscore field in `users` table');
+    $users_highspamscore_info = getColumnInfo('users', 'highspamscore');
+    if ($users_highspamscore_info['Type'] !== 'float') {
+        $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` FLOAT DEFAULT '0'";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
 
     // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
     // We don't need a default / on update value for the timestamp field in the maillog table because we only change it in mailwatch.pm
@@ -511,19 +548,38 @@ if ($link) {
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
-    // Table users
+    // Table users password to 255
     echo pad(' - Fix schema for password field in `users` table');
-    $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
-    executeQuery($sql);
+    $users_password_info = getColumnInfo('users', 'password');
+    if ($users_password_info['Type'] !== 'varchar(255)') {
+        $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($users_password_info);
 
+    // Table users fullname to 255
     echo pad(' - Fix schema for fullname field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $users_fullname_info = getColumnInfo('users', 'fullname');
+    if ($users_fullname_info['Type'] !== 'varchar(255)') {
+        $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($users_fullname_info);
 
     // Table mcp_rules
     echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
-    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $mcp_rules_rule_desc_info = getColumnInfo('users', 'fullname');
+    if ($mcp_rules_rule_desc_info['Type'] !== 'varchar(200)') {
+        $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($mcp_rules_rule_desc_info);
 
     echo PHP_EOL;
 
