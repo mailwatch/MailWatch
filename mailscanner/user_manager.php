@@ -689,11 +689,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
     if ($_SESSION['user_type'] === 'D') {
         if ($_SESSION['domain'] === '') {
             //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
-            $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%"';
+            $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
             $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
             $result = dbquery($sql);
-            $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
+            $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
             for ($i=0;$i<$result->num_rows;$i++) {
                 $filter = $result->fetch_row();
                 $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . $filter[0] . '" AND type = "U")';
