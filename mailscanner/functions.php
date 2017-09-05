@@ -4141,6 +4141,8 @@ function checkConfVariables()
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
         'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
         'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
+        'ALLOW_NO_USER_DOMAIN' => array('description' => 'allow usernames not in mail format for domain admins and regular users'),
+        'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
     );
 
     $results = array();

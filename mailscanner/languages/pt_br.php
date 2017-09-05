@@ -475,6 +475,7 @@ return array(
     'errordeletedomainforbidden12' => 'Error: You don\'t have the permissions, to delete users of domain %s',
     'errorcreatenodomainforbidden12' => 'Error: You don\'t have the permissions, to add users without domain',
     'errorcreatedomainforbidden12' => 'Error: You don\'t have the permissions, to add users of domain %s',
+    'erroradminforbidden12' => 'Error: You don\'t have the permissions to create/edit/delete admins',
     'retypepassword12' => 'Confirm Password:',
     'userexists12' => 'User already exists with username %s',
     'savedsettings12' => 'Settings saved',
