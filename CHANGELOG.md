@@ -1,3 +1,21 @@
+1.2.6
+-----------
+Security
+- Restrict domain admin permission so that they can only modify/create/delete regular users.  Also, emails must be used for all non-admin accounts (#940)
+
+Improvements
+- Add entries counter on white and black list (#509)
+- Changed character set used in quarantine release email to UTF-8 (#910)
+- Upgrade.php alters tables only if needed
+- Fixes for dangerous content display on detail.php (#939)
+
+Fixes
+- Fix upgrade script for compatibility with MySQL 5.7 and 8.0 strict SQL mode
+- Fix PHP header warning for cli scripts
+- Fix invalid colors for multiple y-axes in a line graph (#926)
+- Remove wrong alter table on audit_log.user which revert length to 255 from 191
+- Convert delay from seconds to mysql time format in MTA log processor (#924, #941)
+
 1.2.5
 -----------
 Improvements
@@ -11,7 +29,7 @@ Improvements
 Fixes
 - Fixes issue when sanitization causes ampersand to be html-ified (#882)
 - Fix mailwatch-sendmail-relay init script (#881)
-- Fix code for php 5.3 compatibility (#889)
+- Fix code for php 5.3 compatibility (#889) and php 7.0 compatibility (#897)
 - Fix path to mtalogprocessor file in senmail_relay (#912)
 - Remove on update/default value for timestamp in maillog table (#915)
 - Permit up to 20 chars in first part of Postfix msgid (#652)

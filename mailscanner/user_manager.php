@@ -39,6 +39,7 @@ html_start(__('usermgnt12'), 0, false, false);
 /**
  * @param string $value
  * @param string $type
+ * @return string
  */
 function getHtmlMessage($value, $type)
 {
@@ -61,7 +62,7 @@ function getHtmlMessage($value, $type)
        var pass1 = document.getElementById("retypepassword");
        pass0.classList.remove("inputerror");
        pass1.classList.remove("inputerror");
-       if(pass0.value != pass1.value) {
+       if(pass0.value !== pass1.value) {
            var errorDiv = document.getElementById("formerror");
            var errormsg = errorDiv.innerHTML;
            errorDiv.innerHTML = errormsg+"<?php echo __('errorpass12');?><br>";
@@ -107,7 +108,7 @@ function getHtmlMessage($value, $type)
        errorDiv.classList.add("hidden");
        var required = requiredFields();
        var checkpwd = checkPasswords();
-       return !(checkpwd == false || required == false);
+       return !(checkpwd === false || required === false);
    }
 
 </script>
@@ -160,7 +161,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $action = deepSanitizeInput($_GET['action'], 'url');
     }
     if (isset($action)) {
-        if (!validateInput($action, 'action') && $action !== 'sendReportNow') {
+        if ($action !== 'sendReportNow' && !validateInput($action, 'action')) {
             die(getHtmlMessage(__('dievalidate99'), 'error'));
         }
         switch ($action) {
@@ -219,7 +220,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $filter = $result->fetch_row();
                         $filter_domain[] = $filter[0];
                     }
-                    if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+                    if ($n_type !== 'A' && validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
+                        echo getHtmlMessage(__('forallusers12'), 'error');
+                    } elseif ($_SESSION['user_type'] === 'D' && $n_type !== 'U' &&  (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
+                        echo getHtmlMessage(__('erroradminforbidden12'), 'error');
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
                         echo getHtmlMessage(__('errorcreatenodomainforbidden12'), 'error');
                     } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
                         echo getHtmlMessage(sprintf(__('errorcreatedomainforbidden12'), $ar[1]), 'error');
@@ -328,9 +333,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     $filter = $result->fetch_row();
                     $filter_domain[] = $filter[0];
                 }
-                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+                if ($_SESSION['domain'] !== '' && $_SESSION['user_type'] === 'D' && count($ar) === 1) {
                     echo getHtmlMessage(__('erroreditnodomainforbidden12'), 'error');
-                } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
                     echo getHtmlMessage(sprintf(__('erroreditdomainforbidden12'), sanitizeInput($ar[1])), 'error');
                 } else {
                     if (!isset($_POST['submit'])) {
@@ -415,9 +420,13 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         }
                         $ar = explode('@', $username);
                         $n_type = deepSanitizeInput($_POST['type'], 'url');
-                        if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+                        if ($n_type !== 'A' && validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
+                            echo getHtmlMessage(__('forallusers12'), 'error');
+                        } elseif ($_SESSION['user_type'] === 'D' && $n_type !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
+                            echo getHtmlMessage(__('erroradminforbidden12'), 'error');
+                        } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['domain'] !== '' && count($ar) === 1) {
                             echo getHtmlMessage(__('errortonodomainforbidden12'), 'error');
-                        } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                        } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
                             echo getHtmlMessage(sprintf(__('errortodomainforbidden12'), $ar[1]), 'error');
                         } elseif ($_SESSION['user_type'] === 'D' && $_POST['type'] === 'A') {
                             echo getHtmlMessage(__('errortypesetforbidden12'), 'error');
@@ -455,7 +464,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                             }
                             $timeout = deepSanitizeInput($_POST['timeout'], 'num');
                             if (!validateInput($timeout, 'timeout')) {
-                                $timeout = "-1";
+                                $timeout = '-1';
                             }
                             $n_quarantine_report = '1';
                             if (!isset($_POST['quarantine_report'])) {
@@ -472,31 +481,35 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
                             // Record old user type to audit user type promotion/demotion
                             $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
-                            if ($_POST['password'] !== 'XXXXXXXX') {
-                                // Password reset required
-                                $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE username='$key'";
-                                dbquery($sql);
+                            if (($o_type === 'A' && $_SESSION['user_type'] !== 'A') || ($o_type === 'D' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
+                                echo getHtmlMessage(__('erroradminforbidden12'), 'error');
                             } else {
-                                $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE username='$key'";
-                                dbquery($sql);
-                            }
+                                if ($_POST['password'] !== 'XXXXXXXX') {
+                                    // Password reset required
+                                    $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE username='$key'";
+                                    dbquery($sql);
+                                } else {
+                                    $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE username='$key'";
+                                    dbquery($sql);
+                                }
 
-                            // Update user_filters if username was changed
-                            if ($key !== $n_username) {
-                                $sql = "UPDATE user_filters SET username='$n_username' WHERE username = '$key'";
-                                dbquery($sql);
+                                // Update user_filters if username was changed
+                                if ($key !== $n_username) {
+                                    $sql = "UPDATE user_filters SET username='$n_username' WHERE username = '$key'";
+                                    dbquery($sql);
+                                }
+                                //Audit
+                                $type['A'] = __('admin12', true);
+                                $type['D'] = __('domainadmin12', true);
+                                $type['U'] = __('user12', true);
+                                $type['R'] = __('user12', true);
+                                if ($o_type !== $n_type) {
+                                    audit_log(
+                                        __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12', true) . ' ' . $type[$o_type] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
+                                    );
+                                }
+                                echo getHtmlMessage(sprintf(__('useredited12'), $key), 'success');
                             }
-                            //Audit
-                            $type['A'] = __('admin12', true);
-                            $type['D'] = __('domainadmin12', true);
-                            $type['U'] = __('user12', true);
-                            $type['R'] = __('user12', true);
-                            if ($o_type !== $n_type) {
-                                audit_log(
-                                    __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12', true) . ' ' . $type[$o_type] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
-                                );
-                            }
-                            echo getHtmlMessage(sprintf(__('useredited12'), $key), 'success');
                         }
                     }
                 }
@@ -519,9 +532,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $filter_domain[] = $filter[0];
                     }
                 }
-                if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+                $n_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='" . safe_value($id) . "'"), 0);
+                if ($_SESSION['user_type'] === 'D' && $n_type !== 'U') {
+                    echo getHtmlMessage(__('erroradminforbidden12'), 'error');
+                } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['domain'] !== '' && count($ar) === 1) {
                     echo getHtmlMessage(__('errordeletenodomainforbidden12'), 'error');
-                } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
                     echo getHtmlMessage(sprintf(__('errordeletedomainforbidden12'), sanitizeInput($ar[1])), 'error');
                 } elseif ($_SESSION['myusername'] === $id) {
                     echo getHtmlMessage(__('errordeleteself12'), 'error');
@@ -573,7 +589,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                     }
                 }
 
-                if (isset($_GET['delete']) && isset($_GET['filter'])) {
+                if (isset($_GET['delete'], $_GET['filter'])) {
                     $getFilter = deepSanitizeInput($_GET['filter'], 'url');
                     if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
                         die(__('dievalidate99'));
@@ -584,7 +600,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         echo $sql;
                     }
                 }
-                if (isset($_GET['change_state']) && isset($_GET['filter'])) {
+                if (isset($_GET['change_state'], $_GET['filter'])) {
                     $getFilter = deepSanitizeInput($_GET['filter'], 'url');
                     if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
                         die(__('dievalidate99'));
@@ -641,9 +657,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         die(getHtmlMessage(__('dievalidate99'), 'error'));
                     }
                     $ar = explode('@', $key);
-                    if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+                    if ($_SESSION['user_type'] === 'D' && $_SESSION['domain'] !== '' && count($ar) === 1) {
                         echo getHtmlMessage(__('errorreporttonodomainforbidden12'), 'error');
-                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain) === false)) {
+                    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
                         echo getHtmlMessage(sprintf(__('errorreporttodomainforbidden12'), $ar[1]), 'error');
                     } else {
                         $quarantine_report = new Quarantine_Report();
@@ -689,11 +705,11 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
     if ($_SESSION['user_type'] === 'D') {
         if ($_SESSION['domain'] === '') {
             //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
-            $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%"';
+            $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
             $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
             $result = dbquery($sql);
-            $domainAdminUserDomainFilter = 'WHERE username LIKE "%@' . $_SESSION['domain'] . '"';
+            $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
             for ($i=0;$i<$result->num_rows;$i++) {
                 $filter = $result->fetch_row();
                 $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . $filter[0] . '" AND type = "U")';

@@ -110,6 +110,8 @@ set_include_path(
     MAILWATCH_HOME . '/lib/xmlrpc'
 );
 
+//ForceUTF8
+require_once __DIR__ . '/lib/ForceUTF8/Encoding.php';
 
 //HTLMPurifier
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
@@ -127,10 +129,9 @@ if (PHP_SAPI !== 'cli') {
     header('X-XSS-Protection: 1; mode=block');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
+    unset($session_cookie_secure);
+    session_start();
 }
-
-unset($session_cookie_secure);
-session_start();
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
@@ -247,7 +248,7 @@ function getVirusRegex($scanner = null)
  */
 function mailwatch_version()
 {
-    return '1.2.5';
+    return '1.2.6';
 }
 
 /**
@@ -425,7 +426,7 @@ function printColorCodes()
     echo '    <td class="spam"></td> <td>' . __('spam103'). ' </td>' . "\n";
     echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
-        echo '    <td class="mcp"></td>> <td>' . __('mcp03') . '</td>' . "\n";
+        echo '    <td class="mcp"></td> <td>' . __('mcp03') . '</td>' . "\n";
         echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
     }
     echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
@@ -3441,10 +3442,16 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             require_once __DIR__ . '/lib/pear/Mail/smtp.php';
-            $crlf = "\r\n";
-            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
-            $mime = new Mail_mime($crlf);
-            $mime->setTXTBody(QUARANTINE_MSG_BODY);
+
+            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r'));
+            $mailMimeParams = array(
+                'eol' => "\r\n",
+                'html_charset' => 'UTF-8',
+                'text_charset' => 'UTF-8',
+                'head_charset' => 'UTF-8'
+            );
+            $mime = new Mail_mime($mailMimeParams);
+            $mime->setTXTBody(\ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY));
             // Loop through each selected file and attach them to the mail
             foreach ($num as $key => $val) {
                 // If the message is of rfc822 type then set it as Quoted printable
@@ -4134,6 +4141,8 @@ function checkConfVariables()
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
         'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
         'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
+        'ALLOW_NO_USER_DOMAIN' => array('description' => 'allow usernames not in mail format for domain admins and regular users'),
+        'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
     );
 
     $results = array();

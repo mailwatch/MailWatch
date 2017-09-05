@@ -304,3 +304,9 @@ define('RESET_LINK_EXPIRE', 1);
 
 // Interval for the traffic chart for admins in minutes (default is 60, max 1440 (24h))
 define('STATUSGRAPH_INTERVAL', 60);
+
+//Allow domain admins to create/edit/delete other domain admins from the same domain (not recommended, only for backward compatibility)
+//define('ENABLE_SUPER_DOMAIN_ADMINS',true);
+//Allow the username of domain admins and normal users to not be in mail format (not recommended, only for backward compatibility)
+//define('ALLOW_NO_USER_DOMAIN',true);
+
