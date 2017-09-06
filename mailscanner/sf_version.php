@@ -93,19 +93,34 @@ if ($_SESSION['user_type'] !== 'A') {
     if (get_conf_var('MTA', true) === 'postfix') {
         echo '<br>' . "\n";
         echo 'Postfix ' . __('version11') . ' ';
-        passthru("/usr/sbin/postconf -d | grep 'mail_version =' | cut -d' ' -f3");
+        exec("which postconf", $postconf);
+        if (isset($postconf[0])) {
+            passthru("$postconf[0] -d | grep 'mail_version =' | cut -d' ' -f3");
+        } else {
+            echo 'postconf ' . __('notfound06');
+        }
         echo '<br>' . "\n";
     }
     if (get_conf_var('MTA', true) === 'exim') {
         echo '<br>' . "\n";
         echo 'Exim ' . __('version11') . ' ';
-        passthru("/usr/sbin/exim -bV | grep 'Exim version' | cut -d' ' -f3");
+        exec("which exim", $exim);
+        if (isset($exim[0])) {
+            passthru("$exim[0] -bV | grep 'Exim version' | cut -d' ' -f3");
+        } else {
+            echo 'exim ' . __('notfound06');
+        }
         echo '<br>' . "\n";
     }
     if (get_conf_var('MTA', true) === 'sendmail') {
         echo '<br>' . "\n";
         echo 'Sendmail ' . __('version11') . ' ';
-        passthru("/usr/sbin/sendmail -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
+        exec("which sendmail", $sendmail);
+        if (isset($sendmail[0])) {
+            passthru("$sendmail[0] -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
+        } else {
+            echo 'sendmail ' . __('notfound06');
+        }
         echo '<br>' . "\n";
     }
 
