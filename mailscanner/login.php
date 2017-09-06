@@ -71,7 +71,7 @@ echo '
     }, 60000);
 </script>
 <div class="login">
-    <div class="center"><img src="' . MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"></div>
+    <div class="center"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"></div>
     <h1>' . __('mwlogin01') . '</h1>
     <div class="inner-container">';
 if (file_exists('conf.php')) {
