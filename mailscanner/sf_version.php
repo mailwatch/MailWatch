@@ -93,7 +93,7 @@ if ($_SESSION['user_type'] !== 'A') {
     if (get_conf_var('MTA', true) === 'postfix') {
         echo '<br>' . "\n";
         echo 'Postfix ' . __('version11') . ' ';
-        exec ("which postconf", $postconf);
+        exec("which postconf", $postconf);
         passthru("$postconf[0] -d | grep 'mail_version =' | cut -d' ' -f3");
         echo '<br>' . "\n";
     }
