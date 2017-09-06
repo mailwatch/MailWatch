@@ -97,7 +97,7 @@ if ($_SESSION['user_type'] !== 'A') {
         if (isset($postconf[0])) {
             passthru("$postconf[0] -d | grep 'mail_version =' | cut -d' ' -f3");
         } else {
-            echo 'postconf ' . __('notfound11');
+            echo 'postconf ' . __('notfound06');
         }
         echo '<br>' . "\n";
     }
@@ -108,7 +108,7 @@ if ($_SESSION['user_type'] !== 'A') {
         if (isset($exim[0])) {
             passthru("$exim[0] -bV | grep 'Exim version' | cut -d' ' -f3");
         } else {
-            echo 'exim ' . __('notfound11');
+            echo 'exim ' . __('notfound06');
         }
         echo '<br>' . "\n";
     }
@@ -119,7 +119,7 @@ if ($_SESSION['user_type'] !== 'A') {
         if (isset($sendmail[0])) {
             passthru("$sendmail[0] -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
         } else {
-            echo 'sendmail ' . __('notfound11');
+            echo 'sendmail ' . __('notfound06');
         }
         echo '<br>' . "\n";
     }

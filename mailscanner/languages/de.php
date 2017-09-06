@@ -406,7 +406,6 @@ return array(
     'mwandmsversion11' => 'MailWatch und MailScanner Versions Informationen',
     'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen.',
     'downloaddate11' => 'Download-Datum',
-    'notfound11' => 'not found',
 
     // 12-user_manager.php
     'usermgnt12' => 'Benutzerverwaltung',
