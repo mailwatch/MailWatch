@@ -100,13 +100,15 @@ if ($_SESSION['user_type'] !== 'A') {
     if (get_conf_var('MTA', true) === 'exim') {
         echo '<br>' . "\n";
         echo 'Exim ' . __('version11') . ' ';
-        passthru("/usr/sbin/exim -bV | grep 'Exim version' | cut -d' ' -f3");
+        exec("which exim", $exim);
+        passthru("$exim[0] -bV | grep 'Exim version' | cut -d' ' -f3");
         echo '<br>' . "\n";
     }
     if (get_conf_var('MTA', true) === 'sendmail') {
         echo '<br>' . "\n";
         echo 'Sendmail ' . __('version11') . ' ';
-        passthru("/usr/sbin/sendmail -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
+        exec("which sendmail", $sendmail);
+        passthru("$sendmail[0] -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
 
