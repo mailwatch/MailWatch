@@ -406,6 +406,7 @@ return array(
     'mwandmsversion11' => 'Information sur les versions des logiciels',
     'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels.',
     'downloaddate11' => 'date de téléchargement',
+    'notfound11' => 'not found',
 
     // 12-user_manager.php
     'usermgnt12' => 'Gestion des utilisateurs',

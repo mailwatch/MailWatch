@@ -406,6 +406,7 @@ return array(
     'mwandmsversion11' => 'MailWatch and MailScanner Version information',
     'auditlog11' => 'Non-admin user attemped to view Software Version Page.',
     'downloaddate11' => 'download date',
+    'notfound11' => 'not found',
 
     // 12-user_manager.php
     'usermgnt12' => 'Gerenciamento de Usuários',
