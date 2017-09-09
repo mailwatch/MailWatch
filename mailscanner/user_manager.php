@@ -481,7 +481,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
                             // Record old user type to audit user type promotion/demotion
                             $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
-                            if (($o_type === 'A' && $_SESSION['user_type'] !== 'A') || ($o_type === 'D' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
+                            if (($o_type === 'A' && $_SESSION['user_type'] !== 'A') || ($_SESSION['user_type'] === 'D' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
                                 echo getHtmlMessage(__('erroradminforbidden12'), 'error');
                             } else {
                                 if ($_POST['password'] !== 'XXXXXXXX') {
