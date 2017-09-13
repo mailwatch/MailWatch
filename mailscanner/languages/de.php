@@ -475,7 +475,7 @@ return array(
     'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
     'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
     'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
-    'erroradminforbidden12' => 'Error: You don\'t have the permissions to create/edit/delete admins',
+    'erroradminforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Administrator zu bearbeiten',
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',

@@ -422,7 +422,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
                         $n_type = deepSanitizeInput($_POST['type'], 'url');
                         if ($n_type !== 'A' && validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
                             echo getHtmlMessage(__('forallusers12'), 'error');
-                        } elseif ($_SESSION['user_type'] === 'D' && $n_type !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
+                        } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['myusername'] !== $username && $n_type !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
                             echo getHtmlMessage(__('erroradminforbidden12'), 'error');
                         } elseif ($_SESSION['user_type'] === 'D' && $_SESSION['domain'] !== '' && count($ar) === 1) {
                             echo getHtmlMessage(__('errortonodomainforbidden12'), 'error');
@@ -481,7 +481,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
 
                             // Record old user type to audit user type promotion/demotion
                             $o_type = database::mysqli_result(dbquery("SELECT type FROM users WHERE username='$key'"), 0);
-                            if (($o_type === 'A' && $_SESSION['user_type'] !== 'A') || ($_SESSION['user_type'] === 'D' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
+                            if (($o_type === 'A' && $_SESSION['user_type'] !== 'A') || ($_SESSION['user_type'] === 'D' && $_SESSION['myusername'] !== $username && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
                                 echo getHtmlMessage(__('erroradminforbidden12'), 'error');
                             } else {
                                 if ($_POST['password'] !== 'XXXXXXXX') {
