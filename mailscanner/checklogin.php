@@ -55,7 +55,7 @@ if (
     (($result = ldap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
-    $myusername = safe_value($myusername);
+    $myusername = safe_value($result);
     $mypassword = safe_value($mypassword);
 } else {
     $_SESSION['user_ldap'] = false;
