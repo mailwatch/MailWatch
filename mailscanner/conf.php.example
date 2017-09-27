@@ -83,6 +83,10 @@ define('LDAP_USERNAME_FIELD', 'cn');
 // Microsoft Active Directory compatibility support for searches from Domain Base DN
 define('LDAP_MS_AD_COMPATIBILITY', true);
 
+// IMAP settings for authentication
+define('USE_IMAP', false);
+define('IMAP_HOST', '{imap.example.com:993/imap/ssl}'); //for parameters check http://php.net/manual/en/function.imap-open.php
+
 // Set Time Zone
 // See http://php.net/manual/en/timezones.php for a list of usable timezones.
 define('TIME_ZONE', 'America/New_York');
