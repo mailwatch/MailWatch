@@ -2972,6 +2972,46 @@ function ldap_authenticate($username, $password)
 }
 
 /**
+ * @param string $username
+ * @param string $password
+ * @return null|string
+ */
+function imap_authenticate($username, $password)
+{
+    $username = strtolower($username);
+    $email = $username;
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        //user has no mail but it is required for mailwatch
+        return null;
+    }
+
+    if ($username !== '' && $password !== '') {
+        $mbox = imap_open(IMAP_HOST, $username, $password, NULL, 0);
+
+        if ( false === $mbox ) {
+            //auth faild
+            return null;
+        }
+
+        $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($email));
+        $sth = dbquery($sql);
+        if ($sth->num_rows === 0) {
+            $sql = sprintf(
+                "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                quote_smart($email),
+                quote_smart($result[0]['cn'][0])
+            );
+            dbquery($sql);
+        }
+
+        return $email;
+    }
+
+    return null;
+}
+
+/**
  * @param Resource $ds
  * @return string
  */
@@ -4041,6 +4081,7 @@ function checkConfVariables()
         'HIDE_NON_SPAM',
         'HIDE_UNKNOWN',
         'IMAGES_DIR',
+        'IMAP_HOST',
         'LANG',
         'LDAP_DN',
         'LDAP_EMAIL_FIELD',
@@ -4105,6 +4146,7 @@ function checkConfVariables()
         'TEMP_DIR',
         'TIME_FORMAT',
         'TIME_ZONE',
+        'USE_IMAP',
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
