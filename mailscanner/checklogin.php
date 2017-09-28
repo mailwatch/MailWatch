@@ -57,18 +57,7 @@ if (
     $_SESSION['user_ldap'] = true;
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
-} else {
-    $_SESSION['user_ldap'] = false;
-    if ($mypassword !== '') {
-        $myusername = safe_value($myusername);
-        $mypassword = safe_value($mypassword);
-    } else {
-        header('Location: login.php?error=emptypassword');
-        die();
-    }
-}
-
-if (
+} elseif (
     (USE_IMAP === true) &&
     (($result = imap_authenticate($myusername, $mypassword)) !== null)
 ) {
@@ -76,6 +65,7 @@ if (
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
 } else {
+    $_SESSION['user_ldap'] = false;
     $_SESSION['user_imap'] = false;
     if ($mypassword !== '') {
         $myusername = safe_value($myusername);
