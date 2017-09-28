@@ -2979,9 +2979,8 @@ function ldap_authenticate($username, $password)
 function imap_authenticate($username, $password)
 {
     $username = strtolower($username);
-    $email = $username;
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
         //user has no mail but it is required for mailwatch
         return null;
     }
@@ -2994,18 +2993,18 @@ function imap_authenticate($username, $password)
             return null;
         }
 
-        $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($email));
+        $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($username));
         $sth = dbquery($sql);
         if ($sth->num_rows === 0) {
             $sql = sprintf(
                 "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                quote_smart($email),
+                quote_smart($username),
                 quote_smart($result[0]['cn'][0])
             );
             dbquery($sql);
         }
 
-        return $email;
+        return $username;
     }
 
     return null;
