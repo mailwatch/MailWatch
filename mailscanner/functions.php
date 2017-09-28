@@ -2986,9 +2986,9 @@ function imap_authenticate($username, $password)
     }
 
     if ($username !== '' && $password !== '') {
-        $mbox = imap_open(IMAP_HOST, $username, $password, NULL, 0);
+        $mbox = imap_open(IMAP_HOST, $username, $password, null, 0);
 
-        if ( false === $mbox ) {
+        if (false === $mbox) {
             //auth faild
             return null;
         }
