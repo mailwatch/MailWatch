@@ -4050,7 +4050,6 @@ function checkConfVariables()
         'LDAP_PASS',
         'LDAP_PORT',
         'LDAP_PROTOCOL_VERSION',
-        'LDAP_SSL',
         'LDAP_USER',
         'LDAP_USERNAME_FIELD',
         'LISTS',
@@ -4118,6 +4117,7 @@ function checkConfVariables()
         'QUARANTINE_FROM_ADDR',
         'QUARANTINE_REPORT_HOSTURL',
         'CACHE_DIR',
+        'LDAP_SSL',
         'TTF_DIR',
     );
 

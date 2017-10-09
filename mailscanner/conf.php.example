@@ -65,7 +65,6 @@ define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . '/'
 
 // LDAP settings for authentication
 define('USE_LDAP', false);
-define('LDAP_SSL', false); // Set to true if using LDAP with SSL encryption.
 define('LDAP_HOST', 'server.example.com');
 define('LDAP_PORT', '389');
 define('LDAP_DN', 'DC=example,DC=com');
