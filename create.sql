@@ -266,6 +266,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `login_expiry` bigint(20) COLLATE utf8_unicode_ci DEFAULT '-1',
   `last_login` bigint(20) COLLATE utf8_unicode_ci DEFAULT '-1',
   `login_timeout` smallint(5) COLLATE utf8_unicode_ci DEFAULT '-1',
+  `id` INT NOT NULL AUTO_INCREMENT UNIQUE KEY,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

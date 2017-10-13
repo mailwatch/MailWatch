@@ -458,6 +458,17 @@ if ($link) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
 
+    // Update users table schema for unique id
+    echo pad(' - Add id field in `users` table');
+    if (false === check_column_exists('users', 'id')) {
+        $sql = "ALTER TABLE `users` ADD COLUMN (
+            `id` INT NOT NULL AUTO_INCREMENT UNIQUE KEY;
+            );";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    }
+
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4
