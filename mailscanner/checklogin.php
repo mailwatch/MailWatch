@@ -46,7 +46,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
         header('Location: login.php?error=baduser');
         die();
     }
-    $myusername = $_POST['myusername'];
+    $myusername = html_entity_decode($_POST['myusername']);
     $mypassword = $_POST['mypassword'];
 }
 

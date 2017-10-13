@@ -497,6 +497,15 @@ return array(
     'empty12' => 'Leer',
     'lastlogin12' => 'Letzter Login: ',
     'never12' => 'Niemals',
+    'auditlogunknownuser12' => 'Benutzer %s versuchte den nicht exitierenden Nutzer mit der ID %d aufzurufen',
+    'accessunknownuser12' => 'Benutzer konnte nicht gefunden werden',
+    'errorlogoutnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer ohne Domäne auszuloggen',
+    'errorlogoutdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer der Domäne %s auszuloggen',
+    'errorfilternodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Filter von Benutzern ohne Domäne zu ändern',
+    'errorfilterdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Filter von Benutzern der Domäne %s zu ändern',
+    'errorreportnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Spam-Berichte für Benutzer ohne Domäne zu senden',
+    'errorreportdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Spam-Berichte für Benutzer der Domäne %s zu senden',
+    'noReportsEnabled12' => 'Fehler: Sie müssen tägliche Berichte aktiviert haben, um einen Bericht anzufordern',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',

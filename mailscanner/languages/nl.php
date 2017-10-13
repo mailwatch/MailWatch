@@ -497,6 +497,15 @@ return array(
     'empty12' => 'Empty',
     'lastlogin12' => 'Last login:',
     'never12' => 'Never',
+    'auditlogunknownuser12' => 'User %s tried to access not existing user with id %d',
+    'accessunknownuser12' => 'User couldn\'t be found',
+    'errorlogoutnodomainforbidden12' => 'Error: You don\'t have the permissions, to logout users without domain',
+    'errorlogoutdomainforbidden12' => 'Error: You don\'t have the permissions, to logout users of domain %s',
+    'errorfilternodomainforbidden12' => 'Error: You don\'t have the permissions, to change filters of users without domain',
+    'errorfilterdomainforbidden12' => 'Error: You don\'t have the permissions, to change filters of users of domain %s',
+    'errorreportnodomainforbidden12' => 'Error: You don\'t have the permissions, to send spam reports for users without domain',
+    'errorreportdomainforbidden12' => 'Error: You don\'t have the permissions, to send spam reports for users of domain %s',
+    'noReportsEnabled12' => 'Error: You have to enable daily reports to request one',
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
