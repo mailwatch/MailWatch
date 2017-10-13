@@ -112,14 +112,9 @@ function testValidUser($username, $usertype, $oldUsername)
 
 function testtoken()
 {
-    if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
-        }
-    } else {
-        if (false === checkToken($_GET['token'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
-        }
+    if ((isset($_POST['token']) && false === checkToken($_POST['token']))
+          || !isset($_GET['token']) || false === checkToken($_GET['token'])) {
+        return getHtmlMessage(__('dietoken99'), 'error');
     }
 }
 
@@ -250,7 +245,9 @@ function newUser()
         }
 
         $n_type = deepSanitizeInput($_POST['type'], 'url');
-        if (is_string($membertest = testSameDomainMembership($username, 'create'))) {
+        if (false === $n_type) {
+            return getHtmlMessage(__('dievalidate99'), 'error');
+        } elseif (is_string($membertest = testSameDomainMembership($username, 'create'))) {
             return $membertest;
         } elseif (is_string($permissiontest = testPermissions($username, $n_type, ''))) {
             return $permissiontest;
@@ -359,7 +356,9 @@ function editUser()
             $username = '';
         }
         $n_type = deepSanitizeInput($_POST['type'], 'url');
-        if (is_string($membertest = testSameDomainMembership($username, 'to'))) {
+        if (false === $n_type) {
+            return getHtmlMessage(__('dievalidate99'), 'error');
+        } elseif (is_string($membertest = testSameDomainMembership($username, 'to'))) {
             return $membertest;
         } elseif (is_string($permissiontest = testPermissions($username, $n_type, $user->type))) {
             return $permissiontest;
@@ -509,7 +508,7 @@ function sendReport()
             return $user;
         }
 
-        if (is_string($membertest = testSameDomainMembership($username, 'report'))) {
+        if (is_string($membertest = testSameDomainMembership($user->username, 'report'))) {
             return $membertest;
         } else {
             $quarantine_report = new Quarantine_Report();
@@ -536,7 +535,7 @@ function logoutUser()
 
     if (is_string($membertest = testSameDomainMembership($user->username, 'logout'))) {
         return $membertest;
-    } elseif (is_string($permissiontest = testPermissions($user->username, $usre->type, ''))) {
+    } elseif (is_string($permissiontest = testPermissions($user->username, $user->type, ''))) {
         return $permissiontest;
     } elseif (is_string($validuser = testValidUser($user->username, $user->type, ''))) {
         return $validuser;
