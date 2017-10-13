@@ -55,7 +55,12 @@ function getHtmlMessage($value, $type)
     }
 }
 
-function testSameDomainMembership($username, $method) {
+/**
+ * @param string $username
+ * @param string $method
+ */
+function testSameDomainMembership($username, $method)
+{
     $ar = explode('@', $username);
     $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
     $result = dbquery($sql);
@@ -71,15 +76,25 @@ function testSameDomainMembership($username, $method) {
     }
 }
 
+/**
+ * @param string $username
+ * @param string $userType
+ * @param string $oldUserType
+ */
 function testPermissions($username, $userType, $oldUserType)
 {
-    if (($_SESSION['user_type'] !== 'A' && $oldUserType === 'A' )|| $_SESSION['user_type'] === 'D' && $_SESSION['myusername'] !== $username && $userType !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
+    if (($_SESSION['user_type'] !== 'A' && $oldUserType === 'A')|| $_SESSION['user_type'] === 'D' && $_SESSION['myusername'] !== $username && $userType !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
         return getHtmlMessage(__('erroradminforbidden12'), 'error');
     } elseif ($_SESSION['user_type'] === 'D' && $userType === 'A') {
         return getHtmlMessage(__('errortypesetforbidden12'), 'error');
     }
 }
 
+/**
+ * @param string $username
+ * @param string $usertype
+ * @param string $oldUsername
+ */
 function testValidUser($username, $usertype, $oldUsername)
 {
     if ($usertype !== 'A' && validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
@@ -95,21 +110,35 @@ function testValidUser($username, $usertype, $oldUsername)
     }
 }
 
+function testtoken()
+{
+    if (isset($_POST['token'])) {
+        if (false === checkToken($_POST['token'])) {
+            return getHtmlMessage(__('dietoken99'), 'error');
+        }
+    } else {
+        if (false === checkToken($_GET['token'])) {
+            return getHtmlMessage(__('dietoken99'), 'error');
+        }
+    }
+}
+
 function getUserById($userid, $additionalFields = false)
 {
-    if(!isset($userid) || ($id = deepSanitizeInput($userid, 'num')) < -1) {
+    if (!isset($userid) || ($id = deepSanitizeInput($userid, 'num')) < -1) {
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
     $sql = "SELECT id, username, type " . ($additionalFields ? ", fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login " : "") . "FROM users WHERE id='" . $id . "'";
     $result = dbquery($sql);
-    if($result->num_rows === 0) {
+    if ($result->num_rows === 0) {
         audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $id));
         return getHtmlMessage(__('accessunknownuser12'), 'error');
     }
     return $result->fetch_object();
 }
 
-function storeUser($n_username, $n_type, $id, $oldUsername = '', $oldType = '') {
+function storeUser($n_username, $n_type, $id, $oldUsername = '', $oldType = '')
+{
     $n_fullname = deepSanitizeInput($_POST['fullname'], 'string');
     if (!validateInput($n_fullname, 'general')) {
         $n_fullname = '';
@@ -144,12 +173,12 @@ function storeUser($n_username, $n_type, $id, $oldUsername = '', $oldType = '') 
         $quarantine_rcpt = '';
     }
 
-
+    $type = array();
     $type['A'] = __('admin12', true);
     $type['D'] = __('domainadmin12', true);
     $type['U'] = __('user12', true);
     $type['R'] = __('user12', true);
-    if($id === -1) {//new user
+    if ($id === -1) {//new user
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
                         VALUES ('$n_username','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
         dbquery($sql);
@@ -178,17 +207,10 @@ function storeUser($n_username, $n_type, $id, $oldUsername = '', $oldType = '') 
 
 function newUser()
 {
-    if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) {
-            echo getHtmlMessage(__('dietoken99'), 'error');
-            return;
-        }
-    } else {
-        if (false === checkToken($_GET['token'])) {
-            echo getHtmlMessage(__('dietoken99'), 'error');
-            return;
-        }
+    if (is_string($tokentest = testToken())) {
+        return $tokentest;
     }
+
     if (!isset($_POST['submit'])) {
         echo '<div id="formerror" class="hidden"></div>';
         echo '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . "\n";
@@ -228,7 +250,7 @@ function newUser()
         }
 
         $n_type = deepSanitizeInput($_POST['type'], 'url');
-        if(is_string($membertest = testSameDomainMembership($username, 'create'))) {
+        if (is_string($membertest = testSameDomainMembership($username, 'create'))) {
             return $membertest;
         } elseif (is_string($permissiontest = testPermissions($username, $n_type, ''))) {
             return $permissiontest;
@@ -243,14 +265,8 @@ function newUser()
 
 function editUser()
 {
-    if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
-        }
-    } else {
-        if (false === checkToken($_GET['token'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
-        }
+    if (is_string($tokentest = testToken())) {
+        return $tokentest;
     }
     // if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
     // Validate id
@@ -259,11 +275,11 @@ function editUser()
     } else {
         $user = getUserById($_GET['id'], true);
     }
-    if(is_string($user)) {
+    if (is_string($user)) {
         return $user;
     }
 
-    if(is_string($membertest = testSameDomainMembership($user->username, 'edit'))) {
+    if (is_string($membertest = testSameDomainMembership($user->username, 'edit'))) {
         return $membertest;
     } elseif (!isset($_POST['submit'])) {
         $quarantine_report = '';
@@ -280,6 +296,7 @@ function editUser()
             $timeout = $user->login_timeout;
         }
 
+        $s = array();
         $s['A'] = '';
         $s['D'] = '';
         $s['U'] = '';
@@ -356,16 +373,16 @@ function editUser()
 
 function deleteUser()
 {
-    if (false === checkToken($_GET['token'])) {
-        return getHtmlMessage(__('dietoken99'), 'error');
+    if (is_string($tokentest = testToken())) {
+        return $tokentest;
     }
 
     $user = getUserById($_GET['id']);
-    if(is_string($user)) {
+    if (is_string($user)) {
         return $user;
     }
 
-    if(is_string($membertest = testSameDomainMembership($user->username, 'delete'))) {
+    if (is_string($membertest = testSameDomainMembership($user->username, 'delete'))) {
         return $membertest;
     } elseif ($_SESSION['user_type'] === 'D' && $user->type !== 'U') {
         return getHtmlMessage(__('erroradminforbidden12'), 'error');
@@ -381,14 +398,8 @@ function deleteUser()
 
 function userFilter()
 {
-    if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
-        }
-    } else {
-        if (false === checkToken($_GET['token'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
-        }
+    if (is_string($tokentest = testToken())) {
+        return $tokentest;
     }
 
     if (isset($_POST['id'])) {
@@ -396,16 +407,17 @@ function userFilter()
     } else {
         $user = getUserById($_GET['id']);
     }
-    if(is_string($user)) {
+    if (is_string($user)) {
         return $user;
-    } elseif(is_string($membertest = testSameDomainMembership($user->username, 'filter'))) {
+    } elseif (is_string($membertest = testSameDomainMembership($user->username, 'filter'))) {
         return $membertest;
-    } elseif(is_string($permissiontest = testPermissions($user->username, $user->type, ''))) {
+    } elseif (is_string($permissiontest = testPermissions($user->username, $user->type, ''))) {
         return $permissiontest;
     }
 
     $id = $user->id;
 
+    $getFilter = '';
     if (isset($_POST['filter'])) {
         if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
             return getHtmlMessage(__('dietoken99'), 'error');
@@ -493,11 +505,11 @@ function sendReport()
         return getHtmlMessage(__('checkReportRequirementsFailed12'), 'error');
     } else {
         $user = getUserById($_POST['id']);
-        if(is_string($user)) {
+        if (is_string($user)) {
             return $user;
         }
 
-        if(is_string($membertest = testSameDomainMembership($username, 'report'))) {
+        if (is_string($membertest = testSameDomainMembership($username, 'report'))) {
             return $membertest;
         } else {
             $quarantine_report = new Quarantine_Report();
@@ -513,20 +525,20 @@ function sendReport()
 
 function logoutUser()
 {
-    if (false === checkToken($_GET['token'])) {
-        return getHtmlMessage(__('dietoken99'), 'error');
+    if (is_string($tokentest = testToken())) {
+        return $tokentest;
     }
 
     $user = getUserById($_GET['id']);
-    if(is_string($user)) {
+    if (is_string($user)) {
         return $user;
     }
 
-    if(is_string($membertest = testSameDomainMembership($username, 'logout'))) {
+    if (is_string($membertest = testSameDomainMembership($user->username, 'logout'))) {
         return $membertest;
-    } elseif (is_string($permissiontest = testPermissions($username, $n_type, ''))) {
+    } elseif (is_string($permissiontest = testPermissions($user->username, $usre->type, ''))) {
         return $permissiontest;
-    } elseif (is_string($validuser = testValidUser($username, $n_type, ''))) {
+    } elseif (is_string($validuser = testValidUser($user->username, $user->type, ''))) {
         return $validuser;
     }
 
@@ -775,7 +787,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
             if ($requirementsCheck !== true) {
                 echo getHtmlMessage(__('checkReportRequirementsFailed12'), 'error');
                 error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
-            } elseif(!isset($_POST['quarantine_report'])) {
+            } elseif (!isset($_POST['quarantine_report'])) {
                 echo getHtmlMessage(__('noReportsEnabled12'), 'error');
             } else {
                 $quarantine_report = new Quarantine_Report();
