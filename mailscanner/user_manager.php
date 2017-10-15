@@ -61,7 +61,7 @@ function getHtmlMessage($value, $type)
  */
 function testSameDomainMembership($username, $method)
 {
-    $ar = explode('@', $username);
+    $parts = explode('@', $username);
     $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
     $result = dbquery($sql);
     $filter_domain = array();
@@ -69,10 +69,10 @@ function testSameDomainMembership($username, $method)
         $filter = $result->fetch_row();
         $filter_domain[] = $filter[0];
     }
-    if ($_SESSION['user_type'] === 'D' && count($ar) === 1 && $_SESSION['domain'] !== '') {
+    if ($_SESSION['user_type'] === 'D' && count($parts) === 1 && $_SESSION['domain'] !== '') {
         return getHtmlMessage(__('error'.$method.'nodomainforbidden12'), 'error');
-    } elseif ($_SESSION['user_type'] === 'D' && count($ar) === 2 && ($ar[1] !== $_SESSION['domain'] && in_array($ar[1], $filter_domain, true) === false)) {
-        return getHtmlMessage(sprintf(__('error'.$method.'domainforbidden12'), $ar[1]), 'error');
+    } elseif ($_SESSION['user_type'] === 'D' && count($parts) === 2 && ($parts[1] !== $_SESSION['domain'] && in_array($parts[1], $filter_domain, true) === false)) {
+        return getHtmlMessage(sprintf(__('error'.$method.'domainforbidden12'), $parts[1]), 'error');
     }
 }
 
@@ -126,19 +126,19 @@ function testtoken()
 function getUserById($additionalFields = false)
 {
     if (isset($_POST['id'])) {
-        $id = $_POST['id'];
+        $uid = $_POST['id'];
     } elseif (isset($_GET['id'])) {
-        $id = $_GET['id'];
+        $uid = $_GET['id'];
     } else {
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
-    if (($id = deepSanitizeInput($id, 'num')) < -1) {
+    if (($uid = deepSanitizeInput($uid, 'num')) < -1) {
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
-    $sql = "SELECT id, username, type" . ($additionalFields ? ", fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login" : "") . " FROM users WHERE id='" . $id . "'";
+    $sql = "SELECT id, username, type" . ($additionalFields ? ", fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login" : "") . " FROM users WHERE id='" . $uid . "'";
     $result = dbquery($sql);
     if ($result->num_rows === 0) {
-        audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $id));
+        audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $uid));
         return getHtmlMessage(__('accessunknownuser12'), 'error');
     }
     return $result->fetch_object();
@@ -146,7 +146,7 @@ function getUserById($additionalFields = false)
 
 /**
  * @param string $action 'edit' or 'new'
- * @param int $id
+ * @param int $uid
  * @param string $lastlogin
  * @param string $username
  * @param string $fullname
@@ -159,14 +159,14 @@ function getUserById($additionalFields = false)
  * @param string|float|int $highspamscore default 0
  */
 
-function printUserFormular($action, $id = '', $lastlogin = '', $username = '', $fullname = '', $type = array('A'=>'', 'D'=>'', 'U'=>'selected', 'R'=>''),
+function printUserFormular($action, $uid = '', $lastlogin = '', $username = '', $fullname = '', $type = array('A'=>'', 'D'=>'', 'U'=>'selected', 'R'=>''),
            $timeout = '', $quarantine_report = '', $quarantine_rcpt = '', $noscan = 'checked', $spamscore = '0', $highspamscore = '0')
 {
     echo '<div id="formerror" class="hidden"></div>';
     echo '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
     if ($action == 'edit') {
-        echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $id . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $uid . '">' . "\n";
         $formheader =  __('edituser12') . ' ' . $username;
         $password = "XXXXXXXX";
     } else {
@@ -206,7 +206,7 @@ function printUserFormular($action, $id = '', $lastlogin = '', $username = '', $
     echo "</TABLE></FORM><BR>\n";
 }
 
-function storeUser($n_username, $n_type, $id, $oldUsername = '', $oldType = '')
+function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
 {
     if (!isset($_POST['fullname'], $_POST['spamscore'], $_POST['highspamscore'], $_POST['timeout'], $_POST['quarantine_rcpt'])) {
         return getHtmlMessage(__('dievalidate99'), 'error');
@@ -250,7 +250,7 @@ function storeUser($n_username, $n_type, $id, $oldUsername = '', $oldType = '')
     $type['D'] = __('domainadmin12', true);
     $type['U'] = __('user12', true);
     $type['R'] = __('user12', true);
-    if ($id === -1) {//new user
+    if ($uid === -1) {//new user
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
                         VALUES ('$n_username','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
         dbquery($sql);
@@ -258,9 +258,9 @@ function storeUser($n_username, $n_type, $id, $oldUsername = '', $oldType = '')
         return getHtmlMessage(sprintf(__('usercreated12'), $n_username), 'success');
     } else {
         if ($_POST['password'] !== 'XXXXXXXX') {// Password reset required
-            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$id'";
+            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$uid'";
         } else {
-            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$id'";
+            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$uid'";
         }
         dbquery($sql);
         // Update user_filters if username was changed
@@ -281,36 +281,29 @@ function newUser()
 {
     if (is_string($tokentest = testToken())) {
         return $tokentest;
+    } elseif (!isset($_POST['submit'])) {
+        return printUserFormular('new');
+    } elseif (!isset($_POST['formtoken'], $_POST['username'], $_POST['type'])) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    } elseif (false === checkFormToken('/user_manager.php new token', $_POST['formtoken'])) {
+        return getHtmlMessage(__('dietoken99'), 'error');
     }
-
-    if (!isset($_POST['submit'])) {
-        printUserFormular('new');
-    } else {
-        if (!isset($_POST['formtoken'], $_POST['username'], $_POST['type'])) {
-            return getHtmlMessage(__('dievalidate99'), 'error');
-        } elseif (false === checkFormToken('/user_manager.php new token', $_POST['formtoken'])) {
-            echo getHtmlMessage(__('dietoken99'), 'error');
-            return;
-        }
-        $username = html_entity_decode(deepSanitizeInput($_POST['username'], 'string'));
-        if ($username === false || !validateInput($username, 'user')) {
-            $username = '';
-        }
-
-        $n_type = deepSanitizeInput($_POST['type'], 'url');
-        if (false === $n_type) {
-            return getHtmlMessage(__('dievalidate99'), 'error');
-        } elseif (is_string($membertest = testSameDomainMembership($username, 'create'))) {
-            return $membertest;
-        } elseif (is_string($permissiontest = testPermissions($username, $n_type, ''))) {
-            return $permissiontest;
-        } elseif (is_string($validuser = testValidUser($username, $n_type, ''))) {
-            return $validuser;
-        } else {
-            $n_username = safe_value($username);
-            return storeUser($n_username, $n_type, -1, '', '');
-        }
+    $username = html_entity_decode(deepSanitizeInput($_POST['username'], 'string'));
+    $n_type = deepSanitizeInput($_POST['type'], 'url');
+    if ($username === false || !validateInput($username, 'user')) {
+        $username = '';
     }
+    if (false === $n_type) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    } elseif (is_string($membertest = testSameDomainMembership($username, 'create'))) {
+        return $membertest;
+    } elseif (is_string($permissiontest = testPermissions($username, $n_type, ''))) {
+        return $permissiontest;
+    } elseif (is_string($validuser = testValidUser($username, $n_type, ''))) {
+        return $validuser;
+    }
+    $n_username = safe_value($username);
+    return storeUser($n_username, $n_type, -1, '', '');
 }
 
 function editUser()
@@ -320,12 +313,9 @@ function editUser()
     }
     // if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
     // Validate id
-    $user = getUserById(true);
-    if (is_string($user)) {
+    if (is_string($user = getUserById(true))) {
         return $user;
-    }
-
-    if (is_string($membertest = testSameDomainMembership($user->username, 'edit'))) {
+    } elseif (is_string($membertest = testSameDomainMembership($user->username, 'edit'))) {
         return $membertest;
     } elseif (!isset($_POST['submit'])) {
         $quarantine_report = '';
@@ -364,30 +354,28 @@ function editUser()
         }
         $types[$user->type] = 'SELECTED';
 
-        printUserFormular('edit', $user->id, $lastlogin, $user->username, $user->fullname, $types, $timeout, $quarantine_report, $user->quarantine_rcpt, $noscan, $user->spamscore, $user->highspamscore);
+        return printUserFormular('edit', $user->id, $lastlogin, $user->username, $user->fullname, $types, $timeout, $quarantine_report, $user->quarantine_rcpt, $noscan, $user->spamscore, $user->highspamscore);
+    } elseif (!isset($_POST['formtoken'], $_POST['username'], $_POST['type'])) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    } elseif (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
+        return getHtmlMessage(__('dietoken99'), 'error');
+    }
+    // Do update
+    $username = html_entity_decode(deepSanitizeInput($_POST['username'], 'string'));
+    if (!validateInput($username, 'user')) {
+        $username = '';
+    }
+    $n_type = deepSanitizeInput($_POST['type'], 'url');
+    if (false === $n_type) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    } elseif (is_string($membertest = testSameDomainMembership($username, 'to'))) {
+        return $membertest;
+    } elseif (is_string($permissiontest = testPermissions($username, $n_type, $user->type))) {
+        return $permissiontest;
+    } elseif (is_string($validusertest = testValidUser($username, $n_type, $user->username))) {
+        return $validusertest;
     } else {
-        if (!isset($_POST['formtoken'], $_POST['username'], $_POST['type'])) {
-            return getHtmlMessage(__('dievalidate99'), 'error');
-        } elseif (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
-        }
-        // Do update
-        $username = html_entity_decode(deepSanitizeInput($_POST['username'], 'string'));
-        if (!validateInput($username, 'user')) {
-            $username = '';
-        }
-        $n_type = deepSanitizeInput($_POST['type'], 'url');
-        if (false === $n_type) {
-            return getHtmlMessage(__('dievalidate99'), 'error');
-        } elseif (is_string($membertest = testSameDomainMembership($username, 'to'))) {
-            return $membertest;
-        } elseif (is_string($permissiontest = testPermissions($username, $n_type, $user->type))) {
-            return $permissiontest;
-        } elseif (is_string($validusertest = testValidUser($username, $n_type, $user->username))) {
-            return $validusertest;
-        } else {
-            return storeUser($username, $n_type, $user->id, $user->username, $user->type);
-        }
+        return storeUser($username, $n_type, $user->id, $user->username, $user->type);
     }
 }
 
