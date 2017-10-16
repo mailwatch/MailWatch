@@ -462,7 +462,7 @@ if ($link) {
     echo pad(' - Add id field in `users` table');
     if (false === check_column_exists('users', 'id')) {
         $sql = "ALTER TABLE `users` ADD COLUMN (
-            `id` INT NOT NULL AUTO_INCREMENT UNIQUE KEY;
+            `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE KEY FIRST;
             );";
         executeQuery($sql);
     } else {

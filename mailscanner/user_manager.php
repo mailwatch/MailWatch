@@ -74,6 +74,7 @@ function testSameDomainMembership($username, $method)
     } elseif ($_SESSION['user_type'] === 'D' && count($parts) === 2 && ($parts[1] !== $_SESSION['domain'] && in_array($parts[1], $filter_domain, true) === false)) {
         return getHtmlMessage(sprintf(__('error'.$method.'domainforbidden12'), $parts[1]), 'error');
     }
+    return true;
 }
 
 /**
@@ -88,6 +89,7 @@ function testPermissions($username, $userType, $oldUserType)
     } elseif ($_SESSION['user_type'] === 'D' && $userType === 'A') {
         return getHtmlMessage(__('errortypesetforbidden12'), 'error');
     }
+    return true;
 }
 
 /**
@@ -110,6 +112,7 @@ function testValidUser($username, $usertype, $oldUsername)
     } elseif ($oldUsername !== $username && checkForExistingUser($username)) {
         return getHtmlMessage(sprintf(__('userexists12'), sanitizeInput($username)), 'error');
     }
+    return true;
 }
 
 function testtoken()
@@ -121,14 +124,15 @@ function testtoken()
           || (isset($_GET['token']) && (false === checkToken($_GET['token'])))) {
         return getHtmlMessage(__('dietoken99'), 'error');
     }
+    return true;
 }
 
 function getUserById($additionalFields = false)
 {
     if (isset($_POST['id'])) {
-        $uid = $_POST['id'];
+        $uid = (int)$_POST['id'];
     } elseif (isset($_GET['id'])) {
-        $uid = $_GET['id'];
+        $uid = (int)$_GET['id'];
     } else {
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
