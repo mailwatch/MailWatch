@@ -461,9 +461,7 @@ if ($link) {
     // Update users table schema for unique id
     echo pad(' - Add id field in `users` table');
     if (false === check_column_exists('users', 'id')) {
-        $sql = "ALTER TABLE `users` ADD COLUMN (
-            `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE KEY FIRST;
-            );";
+        $sql = 'ALTER TABLE users ADD id BIGINT NOT NULL AUTO_INCREMENT FIRST, ADD UNIQUE (id);';
         executeQuery($sql);
     } else {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
