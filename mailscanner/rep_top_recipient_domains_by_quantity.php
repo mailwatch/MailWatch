@@ -39,7 +39,7 @@ $filter = html_start(__('toprecipdomqt40'), 0, false, true);
 $graphgenerator = new GraphGenerator();
 $graphgenerator->sqlQuery = '
  SELECT
-  SUBSTRING_INDEX(to_address, \'@\', -1) AS `name`,
+  to_domain AS `name`,
   COUNT(*) as `count`,
   SUM(size) as `size`
  FROM
