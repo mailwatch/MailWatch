@@ -39,15 +39,15 @@ $filter = html_start(__('topsenderdomvol45'), 0, false, true);
 $graphgenerator = new GraphGenerator();
 $graphgenerator->sqlQuery = '
  SELECT
-  SUBSTRING_INDEX(from_address, \'@\', -1) AS `name`,
+  from_domain as `name`,
   COUNT(*) as `count`,
   SUM(size) as `size`
  FROM
   maillog
  WHERE
-  from_address <> "" 		-- Exclude delivery receipts
+  from_domain <> "" 		-- Exclude delivery receipts
  AND
-  from_address IS NOT NULL     	-- Exclude delivery receipts
+  from_domain IS NOT NULL     	-- Exclude delivery receipts
 ' . $filter->CreateSQL() . '
  GROUP BY
   from_domain
