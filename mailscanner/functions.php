@@ -194,6 +194,9 @@ function getVirusRegex($scanner = null)
             case 'f-prot':
                 $regex = '/(.+) Infection: (\S+)/';
                 break;
+            case 'f-prot-6':
+                $regex = '/(.+) Infection: (\S+)/';
+                break;
             case 'f-protd-6':
                 $regex = '/(.+) Infection: (\S+)/';
                 break;
