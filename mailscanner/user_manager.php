@@ -778,7 +778,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . "\n";
-        if ($_SESSION['user_ldap'] !== true) {
+        if ($_SESSION['user_ldap'] !== true && $_SESSION['user_imap'] !== true) {
             echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
             echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
         }
