@@ -58,6 +58,7 @@ if (
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
 } elseif (
+    defined('USE_IMAP') &&
     (USE_IMAP === true) &&
     (($result = imap_authenticate($myusername, $mypassword)) !== null)
 ) {

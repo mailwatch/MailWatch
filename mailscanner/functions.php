@@ -4080,7 +4080,6 @@ function checkConfVariables()
         'HIDE_NON_SPAM',
         'HIDE_UNKNOWN',
         'IMAGES_DIR',
-        'IMAP_HOST',
         'LANG',
         'LDAP_DN',
         'LDAP_EMAIL_FIELD',
@@ -4145,7 +4144,6 @@ function checkConfVariables()
         'TEMP_DIR',
         'TIME_FORMAT',
         'TIME_ZONE',
-        'USE_IMAP',
         'USE_LDAP',
         'USE_PROXY',
         'VIRUS_INFO',
@@ -4184,6 +4182,8 @@ function checkConfVariables()
         'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
         'ALLOW_NO_USER_DOMAIN' => array('description' => 'allow usernames not in mail format for domain admins and regular users'),
         'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
+        'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
+        'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
     );
 
     $results = array();
