@@ -4290,7 +4290,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 
     if ($privateLocal === 'local') {
         $localIPSet = new \IPSet\IPSet(array(
-            '127.0.0.1',
+            '127.0.0.0/8',
             '::1',
         ));
 
