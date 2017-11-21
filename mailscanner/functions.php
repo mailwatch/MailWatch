@@ -1491,7 +1491,7 @@ function get_disks()
  */
 function formatSize($size, $precision = 2)
 {
-    if ($size === null) {
+    if ($size === null || $size === '0') {
         return 'n/a';
     }
     if ($size === 0) {
