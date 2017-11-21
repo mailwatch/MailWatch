@@ -318,7 +318,7 @@ function build_table($sql, $list)
             $table_html .= ' <tr>' . "\n";
             $table_html .= '  <td>' . $row[1] . '</td>' . "\n";
             $table_html .= '  <td>' . $row[2] . '</td>' . "\n";
-            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a><td>' . "\n";
+            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a></td>' . "\n";
             $table_html .= ' </tr>' . "\n";
         }
         $table_html .= '</table>' . "\n";
