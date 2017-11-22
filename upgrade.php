@@ -556,6 +556,16 @@ if ($link) {
     }
     unset($maillog_timestamp_info);
 
+    // Fix schema for nameinfected to allow for >9 entries.  #981
+    echo pad(' - Fix schema for nameinfected in `maillog` table');
+    $maillog_nameinfected = getColumnInfo('maillog', 'nameinfected');
+    if ($maillog_nameinfected['Type'] !== 'tinyint(2)') {
+        $sql = 'ALTER TABLE `maillog` CHANGE `nameinfected` `nameinfected` TINYINT(2) DEFAULT 0';
+        executeQuery($sql);
+    }
+        else color('ALREADY DONE', 'lightgreen') . PHP_EOL;
+    unset($maillog_nameinfected);
+
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
     // Table users password to 255

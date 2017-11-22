@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   `sascore` decimal(7,2) DEFAULT '0.00',
   `spamreport` mediumtext COLLATE utf8_unicode_ci,
   `virusinfected` tinyint(1) DEFAULT '0',
-  `nameinfected` tinyint(1) DEFAULT '0',
+  `nameinfected` tinyint(2) DEFAULT '0',
   `otherinfected` tinyint(1) DEFAULT '0',
   `report` mediumtext COLLATE utf8_unicode_ci,
   `ismcp` tinyint(1) DEFAULT '0',
