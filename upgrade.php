@@ -562,8 +562,9 @@ if ($link) {
     if ($maillog_nameinfected['Type'] !== 'tinyint(2)') {
         $sql = 'ALTER TABLE `maillog` CHANGE `nameinfected` `nameinfected` TINYINT(2) DEFAULT 0';
         executeQuery($sql);
+    } else {
+        color('ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
-        else color('ALREADY DONE', 'lightgreen') . PHP_EOL;
     unset($maillog_nameinfected);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
