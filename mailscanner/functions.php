@@ -1491,10 +1491,10 @@ function get_disks()
  */
 function formatSize($size, $precision = 2)
 {
-    if ($size === null || $size === '0') {
+    if ($size === null) {
         return 'n/a';
     }
-    if ($size === 0) {
+    if ($size === 0 || $size === '0') {
         return '0';
     }
     $base = log($size) / log(1024);
