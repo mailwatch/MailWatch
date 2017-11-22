@@ -187,7 +187,7 @@ return array(
     'procs03' => 'processus',
     'errorWarning03' => 'Attention : une erreur s\'est produite :',
     'phpxmlnotloaded03' => 'L\'extension xml pour PHP est manquante.',
-    'released03' => 'Libérer',
+    'released03' => 'Libéré',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
     'trafficgraph03' => 'Trafic par minute de la derniere heure',
