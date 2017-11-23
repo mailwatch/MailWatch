@@ -97,7 +97,7 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
 }
 
 $params['include_bodies'] = true;
-$params['decode_bodies'] = true;
+$params['decode_bodies'] = 'UTF8//TRANSLIT/IGNORE';
 $params['decode_headers'] = true;
 $params['input'] = $file;
 
@@ -134,6 +134,13 @@ function decode_structure($structure)
                 $structure->body = utf8_decode($structure->body);
             }
             */
+            if (isset($structure->ctype_parameters['charset'])) {
+                if (strtolower($structure->ctype_parameters['charset']) == 'windows-1255') {
+                    $structure->body = iconv('ISO-8859-8', 'UTF-8', $structure->body);
+                } elseif (strtolower($structure->ctype_parameters['charset']) !== 'utf-8') {
+                    $structure->body = utf8_encode($structure->body);
+                }
+            }
             echo '<!DOCTYPE html>
  <html>
  <head>
@@ -141,17 +148,18 @@ function decode_structure($structure)
  <title>' . __('title58') . '</title>
  </head>
  <body>
- <pre>' . htmlentities(wordwrap($structure->body)) . '</pre>
+ <pre>' . htmlspecialchars(wordwrap($structure->body)) . '</pre>
  </body>
  </html>' . "\n";
             break;
         case 'text/html':
             echo '<!DOCTYPE html>' . "\n";
-            if (
-                isset($structure->ctype_parameters['charset']) &&
-                strtolower($structure->ctype_parameters['charset']) !== 'utf-8'
-            ) {
-                $structure->body = utf8_encode($structure->body);
+            if (isset($structure->ctype_parameters['charset'])) {
+                if (strtolower($structure->ctype_parameters['charset']) == 'windows-1255') {
+                    $structure->body = iconv('ISO-8859-8', 'UTF-8', $structure->body);
+                } elseif (strtolower($structure->ctype_parameters['charset']) !== 'utf-8') {
+                    $structure->body = utf8_encode($structure->body);
+                }
             }
             if (STRIP_HTML) {
                 $structure->body = str_replace('<!DOCTYPE', '<DOCTYPE', $structure->body);
