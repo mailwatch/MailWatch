@@ -3149,6 +3149,47 @@ function ldap_get_conf_truefalse($entry)
 }
 
 /**
+ * @param string $username
+ * @param string $password
+ * @return null|string
+ */
+function imap_authenticate($username, $password)
+{
+    $username = strtolower($username);
+
+    if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+        //user has no mail but it is required for mailwatch
+        return null;
+    }
+
+    if ($username !== '' && $password !== '') {
+        $mbox = imap_open(IMAP_HOST, $username, $password, null, 0);
+
+        if (false === $mbox) {
+            //auth faild
+            return null;
+        }
+
+        if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
+            $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($username));
+            $sth = dbquery($sql);
+            if ($sth->num_rows === 0) {
+                $sql = sprintf(
+                    "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                    quote_smart($username),
+                    quote_smart($password)
+                );
+                dbquery($sql);
+            }
+        }
+
+        return $username;
+    }
+
+    return null;
+}
+
+/**
  * @param $name
  * @return string
  */
@@ -4146,6 +4187,9 @@ function checkConfVariables()
         'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
         'ALLOW_NO_USER_DOMAIN' => array('description' => 'allow usernames not in mail format for domain admins and regular users'),
         'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
+        'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
+        'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
+        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autorcreate user from valid imap login')
     );
 
     $results = array();
