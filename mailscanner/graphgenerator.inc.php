@@ -62,8 +62,8 @@ class GraphGenerator
         $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
         //create canvas graph
         echo '<canvas id="' . $chartId . '" class="reportGraph"></canvas>
-      <script src="lib/Chart.js/Chart.min.js"></script>
-      <script src="lib/pieConfig.js"></script>
+      <script src="js/Chart.js/Chart.min.js"></script>
+      <script src="js/pieConfig.js"></script>
       <script>
         COLON = "' . __('colon99') . '";
         printPieGraph("' . $chartId .'", {
@@ -127,8 +127,8 @@ class GraphGenerator
         }
         $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
         echo '<canvas id="' . $chartId . '" class="lineGraph"></canvas>
-      <script src="lib/Chart.js/Chart.bundle.min.js"></script>
-      <script src="lib/lineConfig.js"></script>
+      <script src="js/Chart.js/Chart.bundle.min.js"></script>
+      <script src="js/lineConfig.js"></script>
       <script>
         COLON = "' . __('colon99') . '";
         printLineGraph("' . $chartId . '",  {
