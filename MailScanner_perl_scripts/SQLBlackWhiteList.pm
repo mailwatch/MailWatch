@@ -251,7 +251,6 @@ sub LookupList {
         return 1 if $BlackWhite->{$i}{$ip1};
         return 1 if $BlackWhite->{$i}{$ip1c};
         return 1 if $BlackWhite->{$i}{'default'};
-        return 1 if $BlackWhite->{$i}{'default'};
         foreach (@subdomains) {
             return 1 if $BlackWhite->{$i}{$_};
         }
