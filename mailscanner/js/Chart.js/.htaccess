@@ -3,6 +3,6 @@
   Require all denied
 
   #for apache 2.2
-#  Ordner Allow,Deny
+#  Order Allow,Deny
 #  Deny from all
 </Files>
