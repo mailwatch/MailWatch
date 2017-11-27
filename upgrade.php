@@ -563,7 +563,7 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` CHANGE `nameinfected` `nameinfected` TINYINT(2) DEFAULT 0';
         executeQuery($sql);
     } else {
-        echo color('ALREADY DONE', 'lightgreen') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
     unset($maillog_nameinfected);
 
