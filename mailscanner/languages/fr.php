@@ -953,7 +953,7 @@ return array(
     'errordb63' => 'Erreur de base de données.',
     'title63' => 'Réinitialiser le mot de passe.',
     'passwdresetrequest63' => 'Demande de réinitialisation de mot de passe.',
-    'p1email63' => 'Une demande de réinitialisation de mot de passe a été reçu pour %s.<br>Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.<p>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous.<br>',
+    'p1email63' => 'Une demande de réinitialisation de mot de passe a été reçu pour %s.<br>Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.<br>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous.<br>',
     'button63' => 'Réinitialiser le mot de passe',
     '01emailplaintxt63' => 'Demande de réinitialisation de mot de passe.\nUne demande de réinitialisation de mot de passe a été reçue pour %s.\nSi vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.\nPour réinitialiser votre mot de passe, veuillez copier et coller le lien ci-dessous dans votre navigateur :\n',
     '01emailsuccess63' => 'Votre demande de réinitialisation de mot de passe a réussi. Veuillez consulter votre boîte de courriel pour la prochaine étape.',
