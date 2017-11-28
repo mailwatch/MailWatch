@@ -4181,7 +4181,7 @@ function checkConfVariables()
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
         'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
         'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
-        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
+        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,ja,nl,pt_br"'),
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
         'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
         'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
