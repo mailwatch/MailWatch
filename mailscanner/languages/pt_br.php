@@ -953,7 +953,7 @@ return array(
     'errordb63' => 'Database error',
     'title63' => 'Password Reset',
     'passwdresetrequest63' => 'Password reset request',
-    'p1email63' => 'A password reset request has been received for %s.<br>If you did not make this request, please contact your system administrator immediately.<p>To reset you password, please click the link below.<br>',
+    'p1email63' => 'A password reset request has been received for %s.<br>If you did not make this request, please contact your system administrator immediately.<br>To reset you password, please click the link below.<br>',
     'button63' => 'Reset Password',
     '01emailplaintxt63' => 'Password reset request.\nA password reset request has been received for %s.\nIf you did not make this request, please contact your system administrator immediately.\nTo reset your password, please copy and paste the link below into your browser:\n',
     '01emailsuccess63' => 'Your password reset request has been successful. Please check your email inbox for the next step.',
