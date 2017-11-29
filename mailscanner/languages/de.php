@@ -1001,9 +1001,9 @@ return array(
     'en' => 'English',
     'fr' => 'Français',
     'it' => 'Italiano',
-    'ja' => 'Japanese',
+    'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
-    'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
-    'dbconnecterror99_plain' => 'Error: Database connection failed: it is possible that the database is overloaded or otherwise not running properly; contact the system administrator if the problem persists',
+    'dbconnecterror99' => '<p>Fehler: Datenbankverbindung fehlgeschlagen</p><p>Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt.</p><p class="emphasise">Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht</p>',
+    'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht'
 );
