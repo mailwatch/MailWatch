@@ -199,7 +199,7 @@ sub LookupList {
     return 0 unless $message; # Sanity check the input
 
     # Find the "from" address and the first "to" address
-    my ($from, $fromdomain, @todomain, $todomain, @to, $to, $ip, $ip1, $ip1c, $ip2, $ip2c, $ip3, $ip3c, $subdom, $i, @keys, @subdomains);
+    my ($from, $fromdomain, $toAdd, $todomainAdd, @todomain, $todomain, @to, $to, $ip, $ip1, $ip1c, $ip2, $ip2c, $ip3, $ip3c, $subdom, $i, @keys, @subdomains);
     $from = $message->{from};
     $fromdomain = $message->{fromdomain};
     # Create a array of subdomains for subdomain and tld wildcard matching
@@ -210,10 +210,16 @@ sub LookupList {
         $subdom = $1;
         push (@subdomains, "*.".$subdom);
     }
+
+    @keys = ('default');
     @todomain = @{$message->{todomain}};
-    $todomain = $todomain[0];
     @to = @{$message->{to}};
-    $to = $to[0];
+    foreach $toAdd (@to) {
+        push (@keys, $toAdd);
+    }
+    foreach $todomainAdd (@todomain) {
+        push (@keys, $todomainAdd);
+    }
     $ip = $message->{clientip};
     
     # Match on leading 3, 2, or 1 octets
@@ -232,8 +238,6 @@ sub LookupList {
     # the IP address is listed,
     # the first 3, 2, or 1 octets of the ipaddress are listed with or without a trailing dot
     # or a subdomain match of the form *.subdomain.example.com is listed
-
-    @keys = ($to, $todomain, 'default');
     foreach (@keys) {
         $i = $_;
         return 1 if $BlackWhite->{$i}{$from};
@@ -246,12 +250,11 @@ sub LookupList {
         return 1 if $BlackWhite->{$i}{$ip2c};
         return 1 if $BlackWhite->{$i}{$ip1};
         return 1 if $BlackWhite->{$i}{$ip1c};
+        return 1 if $BlackWhite->{$i}{'default'};
         foreach (@subdomains) {
             return 1 if $BlackWhite->{$i}{$_};
         }
     }
-    return 1 if $BlackWhite->{$to}{'default'};
-    return 1 if $BlackWhite->{$todomain}{'default'};
 
     # It is not in the list
     return 0;
