@@ -1,0 +1,7 @@
+# for apache version >=2.4 uncomment
+Require all denied
+
+
+# for apache version <2.4 uncomment
+#Order deny,allow
+#Deny from all

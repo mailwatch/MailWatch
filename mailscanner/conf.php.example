@@ -32,12 +32,12 @@
 // Debug messages
 define('DEBUG', false);
 
-// Define language (de, en, fr, it, nl, pt_br);
+// Define language (de, en, fr, it, ja, nl, pt_br);
 define('LANG', 'en');
 
 // Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
 // in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
-define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');
+define('USER_SELECTABLE_LANG', 'de,en,fr,it,ja,nl,pt_br');
 
 // Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
@@ -65,7 +65,6 @@ define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . '/'
 
 // LDAP settings for authentication
 define('USE_LDAP', false);
-define('LDAP_SSL', false); // Set to true if using LDAP with SSL encryption.
 define('LDAP_HOST', 'server.example.com');
 define('LDAP_PORT', '389');
 define('LDAP_DN', 'DC=example,DC=com');
@@ -82,6 +81,11 @@ define('LDAP_USERNAME_FIELD', 'cn');
 // define('LDAP_BIND_SUFFIX', ',' . LDAP_DN);
 // Microsoft Active Directory compatibility support for searches from Domain Base DN
 define('LDAP_MS_AD_COMPATIBILITY', true);
+
+// IMAP settings for authentication
+define('USE_IMAP', false);
+define('IMAP_HOST', '{imap.example.com:993/imap/ssl}'); //for parameters check http://php.net/manual/en/function.imap-open.php
+define('IMAP_AUTOCREATE_VALID_USER', false); // Set to true to autocerate a valid IMAP user in MailWatch database after sucessful login
 
 // Set Time Zone
 // See http://php.net/manual/en/timezones.php for a list of usable timezones.

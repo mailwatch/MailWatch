@@ -97,7 +97,7 @@ if (file_exists('conf.php')) {
 </head>
 <body class="autorelease">
 <div class="autorelease">
-    <img src="' . MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '">
+    <img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '">
     <div class="border-rounded">
         <h1>' . __('title59') . '</h1>' . "\n";
     foreach ($output as $msg) {
