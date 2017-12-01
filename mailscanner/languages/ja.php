@@ -666,7 +666,7 @@ return array(
     'user33' => 'ユーザー：',
     'ipaddress33' => 'IPアドレス：',
     'action33' => 'アクション：',
-    'filter33' => 'Filter',
+    'filter33' => 'フィルタ:',
     'applyfilter33' => '適用',
     'startdate33' => '開始日：',
     'enddate33' => '終了日：',
