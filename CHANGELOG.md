@@ -1,4 +1,4 @@
-1.2.7-dev
+1.2.7
 -----------
 Security
 - More restricted access to library and public available files (#990)
