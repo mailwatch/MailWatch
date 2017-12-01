@@ -290,7 +290,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         <body class="pwdreset">
         <div class="pwdreset">
             <div class="mw-logo">
-                <img src="<?php echo MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+                <img src="<?php echo '.' . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
             </div>
             <div class="border-rounded">
                 <h1><?php echo __('title63'); ?></h1>

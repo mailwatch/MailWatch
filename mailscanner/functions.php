@@ -194,6 +194,9 @@ function getVirusRegex($scanner = null)
             case 'f-prot':
                 $regex = '/(.+) Infection: (\S+)/';
                 break;
+            case 'f-prot-6':
+                $regex = '/(.+) Infection: (\S+)/';
+                break;
             case 'f-protd-6':
                 $regex = '/(.+) Infection: (\S+)/';
                 break;
@@ -248,7 +251,7 @@ function getVirusRegex($scanner = null)
  */
 function mailwatch_version()
 {
-    return '1.2.6';
+    return '1.2.7';
 }
 
 /**
@@ -362,7 +365,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src="' . MAILWATCH_HOSTURL . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
@@ -1491,7 +1494,7 @@ function formatSize($size, $precision = 2)
     if ($size === null) {
         return 'n/a';
     }
-    if ($size === 0) {
+    if ($size === 0 || $size === '0') {
         return '0';
     }
     $base = log($size) / log(1024);
@@ -3146,6 +3149,47 @@ function ldap_get_conf_truefalse($entry)
 }
 
 /**
+ * @param string $username
+ * @param string $password
+ * @return null|string
+ */
+function imap_authenticate($username, $password)
+{
+    $username = strtolower($username);
+
+    if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+        //user has no mail but it is required for mailwatch
+        return null;
+    }
+
+    if ($username !== '' && $password !== '') {
+        $mbox = imap_open(IMAP_HOST, $username, $password, null, 0);
+
+        if (false === $mbox) {
+            //auth faild
+            return null;
+        }
+
+        if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
+            $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($username));
+            $sth = dbquery($sql);
+            if ($sth->num_rows === 0) {
+                $sql = sprintf(
+                    "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                    quote_smart($username),
+                    quote_smart($password)
+                );
+                dbquery($sql);
+            }
+        }
+
+        return $username;
+    }
+
+    return null;
+}
+
+/**
  * @param $name
  * @return string
  */
@@ -4050,7 +4094,6 @@ function checkConfVariables()
         'LDAP_PASS',
         'LDAP_PORT',
         'LDAP_PROTOCOL_VERSION',
-        'LDAP_SSL',
         'LDAP_USER',
         'LDAP_USERNAME_FIELD',
         'LISTS',
@@ -4118,6 +4161,7 @@ function checkConfVariables()
         'QUARANTINE_FROM_ADDR',
         'QUARANTINE_REPORT_HOSTURL',
         'CACHE_DIR',
+        'LDAP_SSL',
         'TTF_DIR',
     );
 
@@ -4137,12 +4181,15 @@ function checkConfVariables()
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
         'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
         'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
-        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
+        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,ja,nl,pt_br"'),
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
         'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
         'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
         'ALLOW_NO_USER_DOMAIN' => array('description' => 'allow usernames not in mail format for domain admins and regular users'),
         'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
+        'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
+        'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
+        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autorcreate user from valid imap login')
     );
 
     $results = array();
@@ -4287,7 +4334,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 
     if ($privateLocal === 'local') {
         $localIPSet = new \IPSet\IPSet(array(
-            '127.0.0.1',
+            '127.0.0.0/8',
             '::1',
         ));
 
@@ -4364,7 +4411,7 @@ function validateInput($input, $type)
             }
             break;
         case 'user':
-            if (preg_match('/^[\p{L}\p{M}\p{N}~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
+            if (preg_match('/^[\p{L}\p{M}\p{N}\&~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
                 return true;
             }
             break;
@@ -4770,7 +4817,12 @@ function getVirus($report)
     } else {
         $scanners = explode(' ', get_conf_var('VirusScanners'));
         foreach ($scanners as $scanner) {
-            if (preg_match(getVirusRegex($scanner), $report, $match) === 1) {
+            $scannerRegex = getVirusRegex($scanner);
+            if ($scannerRegex === null || $scannerRegex === "") {
+                error_log("Could not find regex for virus scanner " . $scanner);
+                continue;
+            }
+            if (preg_match($scannerRegex, $report, $match) === 1) {
                 break;
             }
         }

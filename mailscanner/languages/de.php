@@ -475,7 +475,7 @@ return array(
     'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
     'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
     'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
-    'erroradminforbidden12' => 'Error: You don\'t have the permissions to create/edit/delete admins',
+    'erroradminforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Administrator zu bearbeiten',
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
@@ -497,6 +497,15 @@ return array(
     'empty12' => 'Leer',
     'lastlogin12' => 'Letzter Login: ',
     'never12' => 'Niemals',
+    'auditlogunknownuser12' => 'Benutzer %s versuchte den nicht exitierenden Nutzer mit der ID %d aufzurufen',
+    'accessunknownuser12' => 'Benutzer konnte nicht gefunden werden',
+    'errorlogoutnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer ohne Domäne auszuloggen',
+    'errorlogoutdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer der Domäne %s auszuloggen',
+    'errorfilternodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Filter von Benutzern ohne Domäne zu ändern',
+    'errorfilterdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Filter von Benutzern der Domäne %s zu ändern',
+    'errorreportnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Spam-Berichte für Benutzer ohne Domäne zu senden',
+    'errorreportdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Spam-Berichte für Benutzer der Domäne %s zu senden',
+    'noReportsEnabled12' => 'Fehler: Sie müssen tägliche Berichte aktiviert haben, um einen Bericht anzufordern',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -992,8 +1001,9 @@ return array(
     'en' => 'English',
     'fr' => 'Français',
     'it' => 'Italiano',
+    'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
-    'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
-    'dbconnecterror99_plain' => 'Error: Database connection failed: it is possible that the database is overloaded or otherwise not running properly; contact the system administrator if the problem persists',
+    'dbconnecterror99' => '<p>Fehler: Datenbankverbindung fehlgeschlagen</p><p>Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt.</p><p class="emphasise">Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht</p>',
+    'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht'
 );

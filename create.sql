@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   `sascore` decimal(7,2) DEFAULT '0.00',
   `spamreport` mediumtext COLLATE utf8_unicode_ci,
   `virusinfected` tinyint(1) DEFAULT '0',
-  `nameinfected` tinyint(1) DEFAULT '0',
+  `nameinfected` tinyint(2) DEFAULT '0',
   `otherinfected` tinyint(1) DEFAULT '0',
   `report` mediumtext COLLATE utf8_unicode_ci,
   `ismcp` tinyint(1) DEFAULT '0',
@@ -251,6 +251,7 @@ CREATE TABLE IF NOT EXISTS `sa_rules` (
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE KEY,
   `username` varchar(191) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `fullname` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',

@@ -458,6 +458,15 @@ if ($link) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
 
+    // Update users table schema for unique id
+    echo pad(' - Add id field in `users` table');
+    if (false === check_column_exists('users', 'id')) {
+        $sql = 'ALTER TABLE users ADD id BIGINT NOT NULL AUTO_INCREMENT FIRST, ADD UNIQUE (id);';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    }
+
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4
@@ -546,6 +555,17 @@ if ($link) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
     unset($maillog_timestamp_info);
+
+    // Fix schema for nameinfected to allow for >9 entries.  #981
+    echo pad(' - Fix schema for nameinfected in `maillog` table');
+    $maillog_nameinfected = getColumnInfo('maillog', 'nameinfected');
+    if ($maillog_nameinfected['Type'] !== 'tinyint(2)') {
+        $sql = 'ALTER TABLE `maillog` CHANGE `nameinfected` `nameinfected` TINYINT(2) DEFAULT 0';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($maillog_nameinfected);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
