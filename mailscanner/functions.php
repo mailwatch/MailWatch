@@ -110,6 +110,8 @@ set_include_path(
     MAILWATCH_HOME . '/lib/xmlrpc'
 );
 
+//ForceUTF8
+require_once __DIR__ . '/lib/ForceUTF8/Encoding.php';
 
 //HTLMPurifier
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
@@ -127,10 +129,9 @@ if (PHP_SAPI !== 'cli') {
     header('X-XSS-Protection: 1; mode=block');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
+    unset($session_cookie_secure);
+    session_start();
 }
-
-unset($session_cookie_secure);
-session_start();
 
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
@@ -145,91 +146,102 @@ require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
 
 include __DIR__ . '/postfix.inc.php';
 
-/*
- For reporting of Virus names and statistics a regular expression matching
- the output of your virus scanner is required.  As Virus names vary across
- the vendors and are therefore impossible to match - you can only define one
- scanner as your primary scanner - this should be the scanner you wish to
- report against.  It defaults to the first scanner found in MailScanner.conf.
+function getVirusRegex($scanner = null)
+{
+    /*
+     For reporting of Virus names and statistics a regular expression matching
+     the output of your virus scanner is required.  As Virus names vary across
+     the vendors and are therefore impossible to match - you can only define one
+     scanner as your primary scanner - this should be the scanner you wish to
+     report against.  It defaults to the first scanner found in MailScanner.conf.
 
- Please submit any new regular expressions to the MailWatch mailing-list or
- open an issue on GitHub.
+     Please submit any new regular expressions to the MailWatch mailing-list or
+     open an issue on GitHub.
 
- If you are running MailWatch in DISTRIBUTED_MODE or you wish to override the
- selection of the regular expression - you will need to add one of the following
- statements to conf.php and set the regular expression manually.
-*/
-// define('VIRUS_REGEX', '<<your regexp here>>');
-// define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
-
-if (!defined('VIRUS_REGEX')) {
-    switch ($scanner = get_primary_scanner()) {
-        case 'none':
-            define('VIRUS_REGEX', '/^Dummy$/');
-            break;
-        case 'sophos':
-            define('VIRUS_REGEX', '/(>>>) Virus \'(\S+)\' found/');
-            break;
-        case 'sophossavi':
-            define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
-            break;
-        case 'clamav':
-            define('VIRUS_REGEX', '/(.+) contains (\S+)/');
-            break;
-        case 'clamd':
-            define('VIRUS_REGEX', '/(.+) was infected: (\S+)/');
-            break;
-        case 'clamavmodule':
-            define('VIRUS_REGEX', '/(.+) was infected: (\S+)/');
-            break;
-        case 'f-prot':
-            define('VIRUS_REGEX', '/(.+) Infection: (\S+)/');
-            break;
-        case 'f-protd-6':
-            define('VIRUS_REGEX', '/(.+) Infection: (\S+)/');
-            break;
-        case 'mcafee':
-            define('VIRUS_REGEX', '/(.+) Found the (\S+) virus !!!/');
-            break;
-        case 'mcafee6':
-            define('VIRUS_REGEX', '/(.+) Found the (\S+) virus !!!/');
-            break;
-        case 'f-secure':
-            define('VIRUS_REGEX', '/(.+) Infected: (\S+)/');
-            break;
-        case 'trend':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in file (\S+)/');
-            break;
-        case 'bitdefender':
-            define('VIRUS_REGEX', '/(\S+) Found virus (\S+)/');
-            break;
-        case 'kaspersky-4.5':
-            define('VIRUS_REGEX', '/(.+) INFECTED (\S+)/');
-            break;
-        case 'etrust':
-            define('VIRUS_REGEX', '/(\S+) is infected by virus: (\S+)/');
-            break;
-        case 'avg':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in file (\S+)/');
-            break;
-        case 'norman':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in file (\S+)/');
-            break;
-        case 'nod32-1.99':
-            define('VIRUS_REGEX', '/(Found virus) (\S+) in (\S+)/');
-            break;
-        case 'antivir':
-            define('VIRUS_REGEX', '/(ALERT:) \[(\S+) \S+\]/');
-            break;
-        //default:
-        // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
-        // break;
+     If you are running MailWatch in DISTRIBUTED_MODE or you wish to override the
+     selection of the regular expression - you will need to add one of the following
+     statements to conf.php and set the regular expression manually.
+    */
+    // define('VIRUS_REGEX', '<<your regexp here>>');
+    // define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
+    if ($scanner === null) {
+        $scanner = get_primary_scanner();
     }
-} elseif (defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
-    // Have to set manually as running in DISTRIBUTED_MODE
-    die('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
+    if (!defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
+        // Have to set manually as running in DISTRIBUTED_MODE
+        die('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
+    } elseif (!defined('VIRUS_REGEX')) {
+        $regex = null;
+        switch ($scanner) {
+            case 'none':
+                $regex = '/^Dummy$/';
+                break;
+            case 'sophos':
+                $regex = '/(>>>) Virus \'(\S+)\' found/';
+                break;
+            case 'sophossavi':
+                $regex = '/(\S+) was infected by (\S+)/';
+                break;
+            case 'clamav':
+                $regex = '/(.+) contains (\S+)/';
+                break;
+            case 'clamd':
+                $regex = '/(.+) was infected: (\S+)/';
+                break;
+            case 'clamavmodule':
+                $regex = '/(.+) was infected: (\S+)/';
+                break;
+            case 'f-prot':
+                $regex = '/(.+) Infection: (\S+)/';
+                break;
+            case 'f-prot-6':
+                $regex = '/(.+) Infection: (\S+)/';
+                break;
+            case 'f-protd-6':
+                $regex = '/(.+) Infection: (\S+)/';
+                break;
+            case 'mcafee':
+                $regex = '/(.+) Found the (\S+) virus !!!/';
+                break;
+            case 'mcafee6':
+                $regex = '/(.+) Found the (\S+) virus !!!/';
+                break;
+            case 'f-secure':
+                $regex = '/(.+) Infected: (\S+)/';
+                break;
+            case 'trend':
+                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                break;
+            case 'bitdefender':
+                $regex = '/(\S+) Found virus (\S+)/';
+                break;
+            case 'kaspersky-4.5':
+                $regex = '/(.+) INFECTED (\S+)/';
+                break;
+            case 'etrust':
+                $regex = '/(\S+) is infected by virus: (\S+)/';
+                break;
+            case 'avg':
+                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                break;
+            case 'norman':
+                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                break;
+            case 'nod32-1.99':
+                $regex = '/(Found virus) (\S+) in (\S+)/';
+                break;
+            case 'antivir':
+                $regex = '/(ALERT:) \[(\S+) \S+\]/';
+                break;
+            //default:
+            // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
+            // break;
+        }
+        return $regex;
+    } else {
+        return VIRUS_REGEX;
+    }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
@@ -239,7 +251,7 @@ if (!defined('VIRUS_REGEX')) {
  */
 function mailwatch_version()
 {
-    return '1.2.4';
+    return '1.2.7';
 }
 
 /**
@@ -314,7 +326,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '' . java_time() . '';
     //$current_url = "".MAILWATCH_HOME."/status.php";
     //if($_SERVER['SCRIPT_FILENAME'] === $active_url){
-    echo '' . row_highandclick() . '';
     echo '</script>';
     if ($report) {
         echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
@@ -354,7 +365,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td>' . "\n";
     echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
     echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src="' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
+    echo '<td align="left"><a href="index.php" class="logo"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
     echo '</tr>' . "\n";
     echo '<tr>' . "\n";
     echo '<td valign="bottom" align="left" class="jump">' . "\n";
@@ -370,10 +381,6 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
     echo '</table>' . "\n";
     echo '</td>' . "\n";
-
-    echo '<td align="left" valign="top">' . "\n";
-    printColorCodes();
-    echo '  </td>' . "\n";
 
     if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         echo '  <td align="center" valign="top">' . "\n";
@@ -417,20 +424,19 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 
 function printColorCodes()
 {
-    echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail" width="180">' . "\n";
-    echo '    <tr> <th colspan="2">' . __('colorcodes03') . '</th> </tr>' . "\n";
-    echo '    <tr> <td>' . __('badcontentinfected03') . '</TD> <td class="infected"></TD> </TR>' . "\n";
-    echo '    <tr> <td>' . __('spam103') . '</td> <td class="spam"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . __('highspam03') . '</td> <td class="highspam"></td> </tr>' . "\n";
+    echo '   <table border="0" cellpadding="1" cellspacing="3"  align="center" class="mail colorcodes">' . "\n";
+    echo '    <tr><td class="infected"></td> <td>' . __('badcontentinfected03') . '</td>' . "\n";
+    echo '    <td class="spam"></td> <td>' . __('spam103'). ' </td>' . "\n";
+    echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
     if (get_conf_truefalse('mcpchecks')) {
-        echo '    <tr> <td>' . __('mcp03') . '</td> <td class="mcp"></td> </tr>' . "\n";
-        echo '    <tr> <td>' . __('highmcp03') . '</td><td class="highmcp"></td></tr>' . "\n";
+        echo '    <td class="mcp"></td> <td>' . __('mcp03') . '</td>' . "\n";
+        echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
     }
-    echo '    <tr> <td>' . __('whitelisted03') . '</td> <td class="whitelisted"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . __('blacklisted03') . '</td> <td class="blacklisted"></td> </tr>' . "\n";
-    echo '        <tr> <td>' . __('notverified03') . '</td> <td class="notscanned"></td> </tr>' . "\n";
-    echo '    <tr> <td>' . __('clean03') . '</td> <td></td> </tr>' . "\n";
-    echo '   </table>' . "\n";
+    echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
+    echo '    <td class="blacklisted"></td> <td>' . __('blacklisted03') . '</td>' . "\n";
+    echo '    <td class="notscanned"></td> <td>' . __('notverified03') . '</td>' . "\n";
+    echo '    <td class="clean"></td> <td>' . __('clean03') . '</td></tr>' . "\n";
+    echo '   </table><br>' . "\n";
 }
 
 function printServiceStatus()
@@ -531,18 +537,20 @@ function printMTAQueue()
             $servers = explode(' ', RPC_REMOTE_SERVER);
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
-                $msg = new xmlrpcmsg('postfix_queues', array());
-                $rsp = xmlrpc_wrapper($servers[$i], $msg);
-                if ($rsp->faultCode() === 0) {
-                    $response = php_xmlrpc_decode($rsp->value());
-                    $inq += $response['inq'];
-                    $outq += $response['outq'];
-                } else {
-                    $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                if ($servers[$i] !== getHostByName(getHostName())) {
+                    $msg = new xmlrpcmsg('postfix_queues', array());
+                    $rsp = xmlrpc_wrapper($servers[$i], $msg);
+                    if ($rsp->faultCode() === 0) {
+                        $response = php_xmlrpc_decode($rsp->value());
+                        $inq += $response['inq'];
+                        $outq += $response['outq'];
+                    } else {
+                        $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                    }
                 }
-            }
-            if ($pqerror !== '') {
-                echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                if ($pqerror !== '') {
+                    echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                }
             }
         }
         if ($inq !== null && $outq !== null) {
@@ -580,7 +588,7 @@ function printFreeDiskSpace()
             $total_space = disk_total_space($disk['mountpoint']);
             $percent = '<span>';
             if (round($free_space / $total_space, 2) <= 0.1) {
-                $percent = '<span style="color:red">';
+                $percent = '<span class="error">';
             }
             $percent .= ' [';
             $percent .= round($free_space / $total_space, 2) * 100;
@@ -767,39 +775,39 @@ function printTodayStatistics()
 
     $sth = dbquery($sql);
     while ($row = $sth->fetch_object()) {
-        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail" width="220">' . "\n";
+        echo '<table border="0" cellpadding="1" cellspacing="1" class="mail todaystatistics" width="220">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
-        echo ' <tr><td>' . __('processed03') . '</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('processed03') . '</td><td>' . number_format(
                 $row->processed
-            ) . '</td><td align="right">' . formatSize(
+            ) . '</td><td>' . formatSize(
                 $row->size
             ) . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('cleans03') . '</td><td align="right">' . number_format(
+        echo ' <tr><td>' . __('cleans03') . '</td><td>' . number_format(
                 $row->clean
-            ) . '</td><td align="right">' . $row->cleanpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('viruses03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->cleanpercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('viruses03') . '</td><td>' . number_format(
                 $row->viruses
-            ) . '</td><td align="right">' . $row->viruspercent . '%</tr>' . "\n";
-        echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2" align="right" style="white-space:nowrap">' . return_todays_top_virus() . '</td></tr>' . "\n";
-        echo ' <tr><td>' . __('blockedfiles03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->viruspercent . '%</tr>' . "\n";
+        echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2">' . return_todays_top_virus() . '</td></tr>' . "\n";
+        echo ' <tr><td>' . __('blockedfiles03') . '</td><td>' . number_format(
                 $row->blockedfiles
-            ) . '</td><td align="right">' . $row->blockedfilespercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('others03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->blockedfilespercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('others03') . '</td><td>' . number_format(
                 $row->otherinfected
-            ) . '</td><td align="right">' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
-        echo ' <tr><td>' . __('spam03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('spam03') . '</td><td>' . number_format(
                 $row->spam
-            ) . '</td><td align="right">' . $row->spampercent . '%</td></tr>' . "\n";
-        echo ' <tr><td style="white-space:nowrap">' . __('hscospam03') . '</td><td align="right">' . number_format(
+            ) . '</td><td>' . $row->spampercent . '%</td></tr>' . "\n";
+        echo ' <tr><td>' . __('hscospam03') . '</td><td>' . number_format(
                 $row->highspam
-            ) . '</td><td align="right">' . $row->highspampercent . '%</td></tr>' . "\n";
+            ) . '</td><td>' . $row->highspampercent . '%</td></tr>' . "\n";
         if (get_conf_truefalse('mcpchecks')) {
-            echo ' <tr><td>MCP:</td><td align="right">' . number_format(
+            echo ' <tr><td>MCP:</td><td>' . number_format(
                     $row->mcp
-                ) . '</td><td align="right">' . $row->mcppercent . '%</td></tr>' . "\n";
-            echo ' <tr><td style="white-space:nowrap">' . __('hscomcp03') . '</td><td align="right">' . number_format(
+                ) . '</td><td>' . $row->mcppercent . '%</td></tr>' . "\n";
+            echo ' <tr><td>' . __('hscomcp03') . '</td><td>' . number_format(
                     $row->highmcp
-                ) . '</td><td align="right">' . $row->highmcppercent . '%</td></tr>' . "\n";
+                ) . '</td><td>' . $row->highmcppercent . '%</td></tr>' . "\n";
         }
         echo '</table>' . "\n";
     }
@@ -847,7 +855,7 @@ function printNavBar()
     }
 
     if (defined('USER_SELECTABLE_LANG')) {
-        $langCodes = split(',', USER_SELECTABLE_LANG);
+        $langCodes = explode(',', USER_SELECTABLE_LANG);
         $langCount = count($langCodes);
         if ($langCount > 1) {
             global $langCode;
@@ -908,25 +916,6 @@ function updateClock() {
 ';
 }
 
-function row_highandclick()
-{
-    echo '
-  function ChangeColor(tableRow, highLight) {
-    if (highLight)
-    {
-      tableRow.style.backgroundColor = \'#dcfac9\';
-    }
-    else
-    {
-      tableRow.sytle.backgroundColor = \'white\';
-    }
-  }
-
-  function DoNav(theUrl) {
-    document.location.href = theUrl;
-  }';
-}
-
 /**
  * @param string $footer
  */
@@ -937,11 +926,11 @@ function html_end($footer = '')
     echo '</table>' . "\n";
     echo $footer;
     if (DEBUG) {
-        echo '<p class="center" style="font-size:13px"><i>' . "\n";
+        echo '<p class="center footer"><i>' . "\n";
         echo page_creation_timer();
         echo '</i></p>' . "\n";
     }
-    echo '<p class="center noprint" style="font-size:13px">' . "\n";
+    echo '<p class="center footer noprint">' . "\n";
     echo __('footer03');
     echo mailwatch_version();
     echo ' - &copy; 2006-' . date('Y');
@@ -1073,7 +1062,7 @@ function __($string, $useSystemLang = false)
     $post_string = '';
     if (DEBUG === true) {
         $debug_message = ' (' . $string . ')';
-        $pre_string = '<span style="color:red">';
+        $pre_string = '<span class="error">';
         $post_string = '</span>';
     }
 
@@ -1280,7 +1269,7 @@ function get_sa_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
-        return ('<tr><td style="text-align:left;">' . $rule_score . '</td><td class="rule_desc">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
+        return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     }
 
     return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
@@ -1359,7 +1348,7 @@ function get_mcp_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
-        return ('<tr><td align="left">' . $rule_score . '</td><td style="width:200px;">' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
+        return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
     }
 
     return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";
@@ -1385,6 +1374,9 @@ function return_mcp_rule_desc($rule)
  */
 function return_todays_top_virus()
 {
+    if (getVirusRegex() === null) {
+        return __('unknownvirusscanner03');
+    }
     $sql = '
 SELECT
  report
@@ -1398,8 +1390,9 @@ AND
     $result = dbquery($sql);
     $virus_array = array();
     while ($row = $result->fetch_object()) {
-        if (defined('VIRUS_REGEX') && preg_match(VIRUS_REGEX, $row->report, $virus_reports)) {
-            $virus = return_virus_link($virus_reports[2]);
+        $virus = getVirus($row->report);
+        if ($virus !== null) {
+            $virus = return_virus_link($virus);
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus] = 1;
             } else {
@@ -1407,28 +1400,30 @@ AND
             }
         }
     }
-    arsort($virus_array);
-    reset($virus_array);
-    // Get the topmost entry from the array
-    if (!defined('VIRUS_REGEX')) {
-        return __('unknownvirusscanner03');
-    }
-
-    if ((list($key, $val) = each($virus_array)) !== '') {
-        // Check and make sure there first placed isn't tied!
-        $saved_key = $key;
-        $saved_val = $val;
-        list($key, $val) = each($virus_array);
-        if ($val !== $saved_val) {
-            return $saved_key;
-        }
-
-        // Tied first place - return none
-        // FIXME: Should return all top viruses
+    if (count($virus_array) === 0) {
         return __('none03');
     }
+    arsort($virus_array);
+    reset($virus_array);
 
-    return __('none03');
+    // Get the topmost entry from the array
+    $top = null;
+    $count = 0;
+    foreach ($virus_array as $key => $val) {
+        if ($top === null) {
+            $top = $val;
+        } elseif ($val !== $top) {
+            break;
+        }
+        $count++;
+    }
+    $topvirus_arraykeys = array_keys($virus_array);
+    $topvirus = $topvirus_arraykeys[0];
+    if ($count > 1) {
+        // and ... others
+        $topvirus .= sprintf(' ' . __('moretopviruses03'), $count-1);
+    }
+    return $topvirus;
 }
 
 /**
@@ -1499,7 +1494,7 @@ function formatSize($size, $precision = 2)
     if ($size === null) {
         return 'n/a';
     }
-    if ($size === 0) {
+    if ($size === 0 || $size === '0') {
         return '0';
     }
     $base = log($size) / log(1024);
@@ -1942,7 +1937,7 @@ function generatePager($sql)
       </table>
 </tr>
 <tr>
-<td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
 
     return $from;
 }
@@ -2013,7 +2008,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
             echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/do_message_ops.php form token') . '">' . "\n";
         }
-        echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
+        printColorCodes();
+        echo '<table cellspacing="1" width="100%" class="mail rowhover">' . "\n";
         // Work out which columns to display
         $display = array();
         $orderable = array();
@@ -2200,12 +2196,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $column_headings++;
                 }
             }
-            echo ' <tr>' . "\n";
+            echo ' <tr class="nohover"">' . "\n";
             echo '  <th colspan="' . $column_headings . '">' . $table_heading . '</th>' . "\n";
             echo ' </tr>' . "\n";
         }
         // Column headings
-        echo '<tr class="sonoqui">' . "\n";
+        echo '<tr class="sonoqui nohover">' . "\n";
         for ($f = 0; $f < $fields; $f++) {
             if ($display[$f]) {
                 if ($order && $orderable[$f]) {
@@ -2348,11 +2344,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'report':
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
-                        if (defined('VIRUS_REGEX') && defined('DISPLAY_VIRUS_REPORT')
-                            && DISPLAY_VIRUS_REPORT === true && preg_match(VIRUS_REGEX, $row[$f], $virus)
-                        ) {
+                        $virus = getVirus($row[$f]);
+                        if (defined('DISPLAY_VIRUS_REPORT') && DISPLAY_VIRUS_REPORT === true && $virus !== null) {
                             foreach ($status_array as $k => $v) {
-                                if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus[2]) . ')', $v)) {
+                                if ($v = str_replace('Virus', 'Virus (' . return_virus_link($virus) . ')', $v)) {
                                     $status_array[$k] = $v;
                                 }
                             }
@@ -2612,7 +2607,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
           </table>
 </tr>
 <tr>
- <td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
 
         // Re-run the original query and limit the rows
         $sql .= ' LIMIT ' . ($from - 1) . ',' . MAX_RESULTS;
@@ -2704,7 +2699,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
           </table>
 </tr>
 <tr>
- <td colspan="4">';
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
     }
 }
 
@@ -3154,6 +3149,47 @@ function ldap_get_conf_truefalse($entry)
 }
 
 /**
+ * @param string $username
+ * @param string $password
+ * @return null|string
+ */
+function imap_authenticate($username, $password)
+{
+    $username = strtolower($username);
+
+    if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+        //user has no mail but it is required for mailwatch
+        return null;
+    }
+
+    if ($username !== '' && $password !== '') {
+        $mbox = imap_open(IMAP_HOST, $username, $password, null, 0);
+
+        if (false === $mbox) {
+            //auth faild
+            return null;
+        }
+
+        if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
+            $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($username));
+            $sth = dbquery($sql);
+            if ($sth->num_rows === 0) {
+                $sql = sprintf(
+                    "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
+                    quote_smart($username),
+                    quote_smart($password)
+                );
+                dbquery($sql);
+            }
+        }
+
+        return $username;
+    }
+
+    return null;
+}
+
+/**
  * @param $name
  * @return string
  */
@@ -3450,10 +3486,16 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             require_once __DIR__ . '/lib/pear/Mail/smtp.php';
-            $crlf = "\r\n";
-            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => QUARANTINE_SUBJECT, 'Date' => date('r'));
-            $mime = new Mail_mime($crlf);
-            $mime->setTXTBody(QUARANTINE_MSG_BODY);
+
+            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r'));
+            $mailMimeParams = array(
+                'eol' => "\r\n",
+                'html_charset' => 'UTF-8',
+                'text_charset' => 'UTF-8',
+                'head_charset' => 'UTF-8'
+            );
+            $mime = new Mail_mime($mailMimeParams);
+            $mime->setTXTBody(\ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY));
             // Loop through each selected file and attach them to the mail
             foreach ($num as $key => $val) {
                 // If the message is of rfc822 type then set it as Quoted printable
@@ -4052,8 +4094,6 @@ function checkConfVariables()
         'LDAP_PASS',
         'LDAP_PORT',
         'LDAP_PROTOCOL_VERSION',
-        'LDAP_SITE',
-        'LDAP_SSL',
         'LDAP_USER',
         'LDAP_USERNAME_FIELD',
         'LISTS',
@@ -4121,6 +4161,7 @@ function checkConfVariables()
         'QUARANTINE_FROM_ADDR',
         'QUARANTINE_REPORT_HOSTURL',
         'CACHE_DIR',
+        'LDAP_SSL',
         'TTF_DIR',
     );
 
@@ -4140,10 +4181,15 @@ function checkConfVariables()
         'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
         'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
         'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
-        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,nl,pt_br"'),
+        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,ja,nl,pt_br"'),
         'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
         'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
         'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
+        'ALLOW_NO_USER_DOMAIN' => array('description' => 'allow usernames not in mail format for domain admins and regular users'),
+        'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
+        'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
+        'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
+        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autorcreate user from valid imap login')
     );
 
     $results = array();
@@ -4288,7 +4334,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 
     if ($privateLocal === 'local') {
         $localIPSet = new \IPSet\IPSet(array(
-            '127.0.0.1',
+            '127.0.0.0/8',
             '::1',
         ));
 
@@ -4365,7 +4411,7 @@ function validateInput($input, $type)
             }
             break;
         case 'user':
-            if (preg_match('/^[\p{L}\p{M}\p{N}~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
+            if (preg_match('/^[\p{L}\p{M}\p{N}\&~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
                 return true;
             }
             break;
@@ -4405,7 +4451,7 @@ function validateInput($input, $type)
             }
             break;
         case 'msgid':
-            if (preg_match('/^([A-F0-9]{7,12}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,16}(?=z[A-Za-x]{4,8})|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,14})$/',
+            if (preg_match('/^([A-F0-9]{7,20}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,16}(?=z[A-Za-x]{4,8})|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,14})$/',
                 $input)) {
                 return true;
             }
@@ -4561,7 +4607,7 @@ function checkFormToken($formstring, $formtoken)
  */
 function checkLangCode($langCode)
 {
-    $validLang = split(',', USER_SELECTABLE_LANG);
+    $validLang = explode(',', USER_SELECTABLE_LANG);
     $found = array_search($langCode, $validLang);
     if ($found === false || $found === null) {
         audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
@@ -4599,7 +4645,7 @@ function updateLoginExpiry($myusername)
         } else {
             $expiry_val = (time() + 600);
         }
-    // If set, use the individual timeout
+        // If set, use the individual timeout
     } elseif ($login_timeout === '0') {
         $expiry_val = 0;
     } else {
@@ -4721,13 +4767,13 @@ function printTrafficGraph()
     $graphgenerator->graphColumns = array(
         'labelColumn' => 'time',
         'dataLabels' => array(
-            array(__('barmail03'), __('barvirus03'), __('barspam03')),
+            array(__('barvirus03'), __('barspam03'), __('barmail03')),
         ),
         'dataNumericColumns' => array(
-            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
         ),
         'dataFormattedColumns' => array(
-            array('total_mailconv', 'total_virusconv', 'total_spamconv'),
+            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
         ),
         'xAxeDescription' => '',
         'yAxeDescriptions' => array(
@@ -4740,19 +4786,16 @@ function printTrafficGraph()
     );
     $graphgenerator->graphTitle = '';
     $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
-    if ($graphInterval < 240) {
-        $graphgenerator->settings['timeScale'] = 'PT1M';
-        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
-        $graphgenerator->settings['timeFormat'] = 'H:i';
-    } else {
-        $graphgenerator->settings['timeScale'] = 'PT1H';
-        $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
-        $graphgenerator->settings['timeFormat'] = 'H:00';
-    }
+    $graphgenerator->settings['timeScale'] = 'PT1M';
+    $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:i:00';
+    $graphgenerator->settings['timeFormat'] = 'H:i';
+
+    $graphgenerator->settings['maxTicks'] = 6;
     $graphgenerator->settings['plainGraph'] = true;
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'trafficgraph';
     $graphgenerator->settings['ignoreEmptyResult'] = true;
+    $graphgenerator->settings['colors'] = array(array('virusColor', 'spamColor', 'mailColor'));
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
 
@@ -4760,4 +4803,32 @@ function printTrafficGraph()
     echo '    </tr>' . "\n";
     echo '  </table>' . "\n";
     echo '  </td>' . "\n";
+}
+
+/**
+ * @param string $report virus report message
+ * @return string|null
+ */
+function getVirus($report)
+{
+    $match = null;
+    if (defined('VIRUS_REGEX')) {
+        preg_match(VIRUS_REGEX, $report, $match);
+    } else {
+        $scanners = explode(' ', get_conf_var('VirusScanners'));
+        foreach ($scanners as $scanner) {
+            $scannerRegex = getVirusRegex($scanner);
+            if ($scannerRegex === null || $scannerRegex === "") {
+                error_log("Could not find regex for virus scanner " . $scanner);
+                continue;
+            }
+            if (preg_match($scannerRegex, $report, $match) === 1) {
+                break;
+            }
+        }
+    }
+    if (count($match) > 2) {
+        return $match[2];
+    }
+    return $report;
 }

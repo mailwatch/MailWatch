@@ -89,9 +89,9 @@ if (isset($_POST) && !empty($_POST)) {
         echo '<td><a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
         if (empty($items)) {
-            echo '<td style="color: #ff0000;">' . __('diemnf21') . '</td>' . "\n";
+            echo '<td class="error">' . __('diemnf21') . '</td>' . "\n";
         } elseif (is_string($items)) {
-            echo '<td style="color: #ff0000;">' . $items . '</td>' . "\n";
+            echo '<td class="error">' . $items . '</td>' . "\n";
         } else {
             if (count($items) > 0) {
                 $num = 0;
@@ -127,7 +127,7 @@ if (isset($_POST) && !empty($_POST)) {
     echo '<tr><td colspan="3">' . __('diemnf21') . '</td></tr>' . "\n";
 }
 echo ' </table>' . "\n";
-echo '<p style="text-align:center"><a href="javascript:history.back(1)">' . __('back21') . '</a></p><br>' . "\n";
+echo '<p class="center"><a href="javascript:history.back(1)">' . __('back21') . '</a></p><br>' . "\n";
 
 //Add footer
 html_end();

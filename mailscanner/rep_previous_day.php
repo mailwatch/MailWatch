@@ -107,6 +107,8 @@ $graphgenerator->settings['timeInterval'] = 'P1D';
 $graphgenerator->settings['timeScale'] = 'PT1H';
 $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
 $graphgenerator->settings['timeFormat'] = 'H:00';
+$graphgenerator->settings['maxTicks'] = '12';
+$graphgenerator->settings['valueTypes'] = array('plain', 'volume');
 $graphgenerator->printLineGraph();
 
 // Add footer

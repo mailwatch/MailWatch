@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Zu Nachricht gehen:',
     'cuser03' => 'Benutzer',
     'cst03' => 'Systemzeit',
-    'colorcodes03' => 'Farbkodierungen',
     'badcontentinfected03' => 'Schlechter Inhalt/Infiziert',
     'whitelisted03' => 'Auf Weisser Liste',
     'blacklisted03' => 'Auf Schwarzer Liste',
@@ -191,11 +190,12 @@ return array(
     'released03' => 'Freigegeben',
     'learnspam03' => 'Gelernt als Spam',
     'learnham03' => 'Gelernt als Ham',
-    'trafficgraph03' => 'Traffic in der letzten Stunde',
-    'trafficgraphmore03' => 'Traffic der letzten %s Stunden',
+    'trafficgraph03' => 'Traffic pro Minute in der letzten Stunde',
+    'trafficgraphmore03' => 'Traffic pro Minute der letzten %s Stunden',
     'barmail03' => 'E-Mails',
     'barvirus03' => 'Viren',
     'barspam03' => 'Spam',
+    'moretopviruses03' => 'und %s weitere Viren',
 
     // 04-detail.php
     'receivedon04' => 'Empfangen um:',
@@ -301,6 +301,8 @@ return array(
     'action07' => 'Aktion:',
     'wl07' => 'Weisse Liste',
     'bl07' => 'Schwarze Liste',
+    'wlentries07' => 'Weisse Liste - %d Einträge',
+    'blentries07' => 'Schwarze Liste - %d Einträge',
     'reset07' => 'Zurücksetzen',
     'add07' => 'Hinzufügen',
     'delete07' => 'Löschen',
@@ -402,7 +404,7 @@ return array(
     'version11' => 'Version:',
     'systemos11' => 'Betriebssystem-Version:',
     'mwandmsversion11' => 'MailWatch und MailScanner Versions Informationen',
-    'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen',
+    'auditlog11' => 'Nicht-Admin versuchte die Softwareversions-Seite anzuzeigen.',
     'downloaddate11' => 'Download-Datum',
 
     // 12-user_manager.php
@@ -473,6 +475,7 @@ return array(
     'errordeletedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s zu löschen',
     'errorcreatenodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer ohne Domäne hinzuzufügen',
     'errorcreatedomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Benutzer der Domäne %s hinzuzufügen',
+    'erroradminforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um einen Administrator zu bearbeiten',
     'retypepassword12' => 'Passwort bestätigen:',
     'userexists12' => 'Es existiert bereits ein Benutzer mit dem Benutzernamen %s',
     'savedsettings12' => 'Einstellungen gespeichert',
@@ -484,16 +487,25 @@ return array(
     'quarantineReportFailed12' => 'Es ist ein Fehler beim Versenden des Quarantäne-Berichts aufgetregen.',
     'quarantineReportSend12' => 'Der Quarantäne-Bericht wurde erfolgreich versendet.',
     'checkReportRequirementsFailed12' => 'Die Anforderungen für das Senden von Quarantäne-Berichten sind nicht erfüllt. Bitte kontaktieren Sie ihren Administrator.',
-    'usercreated12' => 'Benutzer %s wurde erstellt',
-    'useredited12' => 'Benutzer %s wurde geändert',
-    'userdeleted12' => 'Benuter %s wurde gelöscht',
-    'userloggedout12' => 'Benutzer %s wurde abgemeldet',
+    'usercreated12' => 'Benutzer %s wurde erstellt.',
+    'useredited12' => 'Benutzer %s wurde geändert.',
+    'userdeleted12' => 'Benuter %s wurde gelöscht.',
+    'userloggedout12' => 'Benutzer %s wurde abgemeldet.',
     'loggedin12' => 'wurde angemeldet',
     'usertimeout12' => 'Benutzer-Timeout:',
     'logout12' => 'Abmelden',
     'empty12' => 'Leer',
     'lastlogin12' => 'Letzter Login: ',
     'never12' => 'Niemals',
+    'auditlogunknownuser12' => 'Benutzer %s versuchte den nicht exitierenden Nutzer mit der ID %d aufzurufen',
+    'accessunknownuser12' => 'Benutzer konnte nicht gefunden werden',
+    'errorlogoutnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer ohne Domäne auszuloggen',
+    'errorlogoutdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Benutzer der Domäne %s auszuloggen',
+    'errorfilternodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Filter von Benutzern ohne Domäne zu ändern',
+    'errorfilterdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Filter von Benutzern der Domäne %s zu ändern',
+    'errorreportnodomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Spam-Berichte für Benutzer ohne Domäne zu senden',
+    'errorreportdomainforbidden12' => 'Fehler: Sie besitzen nicht die nötigen Rechte, um Spam-Berichte für Benutzer der Domäne %s zu senden',
+    'noReportsEnabled12' => 'Fehler: Sie müssen tägliche Berichte aktiviert haben, um einen Bericht anzufordern',
 
     // 13-sa_rules_update.php
     'input13' => 'Jetzt ausführen',
@@ -638,7 +650,7 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Regelsatz Editor',
-    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung',
+    'auditlog29' => 'Anzeigeversuch eines Nicht-Admins der MailScanner-Seite zur Regelbearbeitung.',
     'editrule29' => 'Wähle einen Regelsatz zum Bearbeiten:',
     'norulefound29' => 'Keine Regeln gefunden',
 
@@ -989,7 +1001,9 @@ return array(
     'en' => 'English',
     'fr' => 'Français',
     'it' => 'Italiano',
+    'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
-    'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
+    'dbconnecterror99' => '<p>Fehler: Datenbankverbindung fehlgeschlagen</p><p>Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt.</p><p class="emphasise">Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht</p>',
+    'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht'
 );

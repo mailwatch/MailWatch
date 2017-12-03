@@ -32,21 +32,22 @@
 // Debug messages
 define('DEBUG', false);
 
-// Define language (de, en, fr, it, nl, pt_br);
+// Define language (de, en, fr, it, ja, nl, pt_br);
 define('LANG', 'en');
 
 // Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
 // in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
-//define('USER_SELECTABLE_LANG', 'de,en,fr,it,nl,pt_br');
+define('USER_SELECTABLE_LANG', 'de,en,fr,it,ja,nl,pt_br');
 
 // Session Handling - conflicts can exist when the your environment makes use of multiple php sessions on the same server
 // to resolve this, uncomment the following option.  See https://github.com/mailwatch/MailWatch/issues/730 for more info
+// A valid session name may consists of digits, letters A to Z (both upper and lower case), comma and dash
 //define('SESSION_NAME', 'MailWatch');
 
 // Session Timeout - Sets the global session timeout value, default is 600 sec (10 minutes) if not defined
 // Range is 0 to 99999 seconds.  Setting to 0 will disable session timeout and active session statuses.
 // This can also be set individually per user in the MailWatch GUI for greater flexibility.
-//define('SESSION_TIMEOUT', 600);
+define('SESSION_TIMEOUT', 600);
 
 // Database settings
 //
@@ -64,13 +65,11 @@ define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . '/'
 
 // LDAP settings for authentication
 define('USE_LDAP', false);
-define('LDAP_SSL', false); // Set to true if using LDAP with SSL encryption.
 define('LDAP_HOST', 'server.example.com');
 define('LDAP_PORT', '389');
 define('LDAP_DN', 'DC=example,DC=com');
 define('LDAP_USER', 'LDAPProxy@example.com'); // If no email set: cn=admin,dc=example,dc=com
 define('LDAP_PASS', 'secret');
-define('LDAP_SITE', 'default');
 define('LDAP_FILTER', 'mail=%s'); //%s will be replaced by username eg. 'mail=%', 'mail=SMTP:%s', 'sAMAccountName=%s'
 define('LDAP_PROTOCOL_VERSION', 3);
 // can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
@@ -82,6 +81,11 @@ define('LDAP_USERNAME_FIELD', 'cn');
 // define('LDAP_BIND_SUFFIX', ',' . LDAP_DN);
 // Microsoft Active Directory compatibility support for searches from Domain Base DN
 define('LDAP_MS_AD_COMPATIBILITY', true);
+
+// IMAP settings for authentication
+define('USE_IMAP', false);
+define('IMAP_HOST', '{imap.example.com:993/imap/ssl}'); //for parameters check http://php.net/manual/en/function.imap-open.php
+define('IMAP_AUTOCREATE_VALID_USER', false); // Set to true to autocerate a valid IMAP user in MailWatch database after sucessful login
 
 // Set Time Zone
 // See http://php.net/manual/en/timezones.php for a list of usable timezones.
@@ -106,7 +110,7 @@ define('MS_CONFIG_DIR', '/etc/MailScanner/');
 define('MS_SHARE_DIR', '/usr/share/MailScanner/'); // Path for ConfigDefs.pl file
 define('MS_LIB_DIR', '/usr/lib/MailScanner/'); // Path for sophos-wrapper file
 define('MS_EXECUTABLE_PATH', '/usr/sbin/MailScanner');
-define('IMAGES_DIR', './images/'); // Trailing slash needed
+define('IMAGES_DIR', '/images/'); // Both leading and trailing slash needed
 define('SA_DIR', '/usr/bin/');
 define('SA_RULES_DIR', '/usr/share/spamassassin/');
 define('SA_PREFS', MS_CONFIG_DIR . 'spamassassin.conf'); // spam.assassin.prefs.conf in V4, spamassassin.conf in V5
@@ -156,6 +160,7 @@ define('MAILWATCH_MAIL_PORT', '25');
 //define('MAILWATCH_SMTP_HOSTNAME', gethostname());
 // Change with a fully qualified email address
 define('MAILWATCH_FROM_ADDR', 'postmaster@domain.tld');
+// Don't add trailing slash
 define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
 
 /* Quarantine settings */
@@ -303,3 +308,9 @@ define('RESET_LINK_EXPIRE', 1);
 
 // Interval for the traffic chart for admins in minutes (default is 60, max 1440 (24h))
 define('STATUSGRAPH_INTERVAL', 60);
+
+//Allow domain admins to create/edit/delete other domain admins from the same domain (not recommended, only for backward compatibility)
+//define('ENABLE_SUPER_DOMAIN_ADMINS',true);
+//Allow the username of domain admins and normal users to not be in mail format (not recommended, only for backward compatibility)
+//define('ALLOW_NO_USER_DOMAIN',true);
+

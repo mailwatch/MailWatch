@@ -41,7 +41,7 @@ echo " <tr>\n";
 echo '  <th colspan="2">' . __('salint51') . '</th>' . "\n";
 echo " </tr>\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="1" style="text-align:left">' . __('message51') . '</th>' . "\n";
+echo '  <th colspan="1" class="alignleft">' . __('message51') . '</th>' . "\n";
 echo '  <th colspan="1">' . __('time51') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 

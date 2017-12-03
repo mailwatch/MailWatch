@@ -112,7 +112,7 @@ if (RPC_ONLY || !is_local($message->hostname)) {
 
 $params['include_bodies'] = false;
 $params['decode_bodies'] = true;
-$params['decode_headers'] = true;
+$params['decode_headers'] = 'UTF8//TRANSLIT/IGNORE';
 $params['input'] = $file;
 
 $Mail_mimeDecode = new Mail_mimeDecode($file);
@@ -172,11 +172,11 @@ foreach ($header_fields as $field) {
         if (is_array($structure->headers[$field['name']])) {
             $structure->headers[$field['name']] = implode('; ', $structure->headers[$field['name']]);
         }
-        $structure->headers[$field['name']] = getUTF8String($structure->headers[$field['name']]);
+        $structure->headers[$field['name']] = htmlspecialchars(getUTF8String(decode_header($structure->headers[$field['name']])));
         if ($field['replaceQuote']) {
             $structure->headers[$field['name']] = str_replace('"', '', $structure->headers[$field['name']]);
         }
-        lazy(ucfirst($field['name']) . ':', $structure->headers[$field['name']]);
+        lazy(ucfirst($field['name']) . ':', $structure->headers[$field['name']], false);
     }
 }
 

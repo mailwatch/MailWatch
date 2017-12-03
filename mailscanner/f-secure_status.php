@@ -48,8 +48,8 @@ if ($_SESSION['user_type'] !== 'A') {
  </tr>
 </table>';
 
-// Add footer
+    // Add footer
     html_end();
-// Close any open db connections
+    // Close any open db connections
     dbclose();
 }

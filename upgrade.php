@@ -48,7 +48,7 @@ if (isset($argv) && count($argv) > 1) {
 }
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 17) . PHP_EOL);
 }
 
 require_once $pathToFunctions;
@@ -59,6 +59,11 @@ $mysql_utf8_variant = array(
     'utf8' => array('charset' => 'utf8', 'collation' => 'utf8_unicode_ci'),
     'utf8mb4' => array('charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci')
 );
+
+
+/*****************************************************************
+ * Start helper functions
+ *****************************************************************/
 
 /**
  * @param string $input
@@ -239,6 +244,33 @@ function getTableIndexes($table)
 }
 
 /**
+ * @return string
+ */
+function getSqlServer()
+{
+    global $link;
+    //test if mysql or mariadb is used.
+    $sql = 'SELECT VERSION() as version';
+    $result = $link->query($sql);
+    $fetch = $result->fetch_array();
+    if (false === strpos($fetch['version'], 'MariaDB')) {
+        //mysql does not support aria storage engine
+        return 'mysql';
+    }
+
+    return 'mariadb';
+}
+
+function getColumnInfo($table, $column)
+{
+    global $link;
+    $sql = 'SHOW COLUMNS FROM ' . $table . " LIKE '" . $column . "'";
+    $result = $link->query($sql);
+
+    return $result->fetch_array();
+}
+
+/**
  * @param string $string
  * @param string $color
  * @return string
@@ -267,6 +299,42 @@ function color($string, $color = '')
 
     return $before . $string . $after;
 }
+
+/**
+ * @param string $haystack
+ * @param string $needles
+ * @return bool
+ */
+function stringStartsWith($haystack, $needles)
+{
+    foreach ((array)$needles as $needle) {
+        if ($needle !== '' && 0 === strpos($haystack, (string)$needle)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * @param string $haystack
+ * @param string $needles
+ * @return bool
+ */
+function stringEndsWith($haystack, $needles)
+{
+    foreach ((array)$needles as $needle) {
+        if (substr($haystack, -strlen($needle)) === (string)$needle) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*****************************************************************
+ * End helper functions
+ *****************************************************************/
 
 $errors = false;
 
@@ -356,8 +424,8 @@ if ($link) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     } else {
         $sql = 'CREATE TABLE IF NOT EXISTS `mtalog_ids` (
-            `smtpd_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
-            `smtp_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
+            `smtpd_id` VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
+            `smtp_id` VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
             UNIQUE KEY `mtalog_ids_idx` (`smtpd_id`,`smtp_id`),
             KEY `smtpd_id` (`smtpd_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
@@ -366,7 +434,7 @@ if ($link) {
 
     // Update users table schema for password-reset feature
     echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
-    if (check_column_exists('users', 'resetid') === false) {
+    if (false === check_column_exists('users', 'resetid')) {
         $sql = 'ALTER TABLE `users` ADD COLUMN (
             `resetid` VARCHAR(32),
             `resetexpire` BIGINT(20),
@@ -379,7 +447,7 @@ if ($link) {
 
     // Update users table schema for login_expiry, last_login and individual login_timeout feature
     echo pad(' - Add login_expiry and login_timeout fields in `users` table');
-    if (check_column_exists('users', 'login_expiry') === false) {
+    if (false === check_column_exists('users', 'login_expiry')) {
         $sql = "ALTER TABLE `users` ADD COLUMN (
             `login_expiry` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
             `last_login` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
@@ -389,82 +457,153 @@ if ($link) {
     } else {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
-    
+
+    // Update users table schema for unique id
+    echo pad(' - Add id field in `users` table');
+    if (false === check_column_exists('users', 'id')) {
+        $sql = 'ALTER TABLE users ADD id BIGINT NOT NULL AUTO_INCREMENT FIRST, ADD UNIQUE (id);';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    }
+
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4
 
     // Table audit_log
     echo pad(' - Fix schema for username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 191 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $audit_log_user_info = getColumnInfo('audit_log', 'user');
+    if ($audit_log_user_info['Type'] !== 'varchar(191)') {
+        $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR(191) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($audit_log_user_info);
 
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
-    $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
-    executeQuery($sql);
-
-    // Table users
-    echo pad(' - Fix schema for username field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    echo pad(' - Fix schema for spamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` FLOAT DEFAULT '0'";
-    executeQuery($sql);
-
-    echo pad(' - Fix schema for highspamscore field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` FLOAT DEFAULT '0'";
-    executeQuery($sql);
-
-    // Table user_filters
-    echo pad(' - Fix schema for username field in `user_filters` table');
-    $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $blacklist_id_info = getColumnInfo('blacklist', 'id');
+    if (strtolower($blacklist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($blacklist_id_info['Null']) !== 'NO' || strtolower($blacklist_id_info['Extra']) !== 'auto_increment') {
+        $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($blacklist_id_info);
 
     // Table whitelist
-    echo pad(' - Fix schema for username field in `whitelist` table');
-    $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
-    executeQuery($sql);
+    echo pad(' - Fix schema for id field in `whitelist` table');
+    $whitelist_id_info = getColumnInfo('whitelist', 'id');
+    if (strtolower($whitelist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($whitelist_id_info['Null']) !== 'NO' || strtolower($whitelist_id_info['Extra']) !== 'auto_increment') {
+        $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    // user name lenght to 191
+    echo pad(' - Fix schema for username field in `users` table');
+    $users_username_info = getColumnInfo('users', 'username');
+    if ($users_username_info['Type'] !== 'varchar(191)') {
+        $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR(191) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    echo pad(' - Fix schema for username field in `user_filters` table');
+    $user_filters_username_info = getColumnInfo('users', 'username');
+    if ($user_filters_username_info['Type'] !== 'varchar(191)') {
+        $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    // Table user_filters spam score to float
+    echo pad(' - Fix schema for spamscore field in `users` table');
+    $users_spamscore_info = getColumnInfo('users', 'spamscore');
+    if ($users_spamscore_info['Type'] !== 'float') {
+        $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` FLOAT DEFAULT '0'";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+
+    echo pad(' - Fix schema for highspamscore field in `users` table');
+    $users_highspamscore_info = getColumnInfo('users', 'highspamscore');
+    if ($users_highspamscore_info['Type'] !== 'float') {
+        $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` FLOAT DEFAULT '0'";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
 
     // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
+    // We don't need a default / on update value for the timestamp field in the maillog table because we only change it in mailwatch.pm
+    // where we use the current system time from perl (not mysql function) as value. So we can remove it. Initial remove because MySQL
+    // in version < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
     echo pad(' - Fix schema for timestamp field in `maillog` table');
-    if ($link->server_version < 50600) {
-        //MySQL < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
-        //First query removes ON UPDATE CURRENT_TIMESTAMP and sets a default different from CURRENT_TIMESTAMP
-        //Second query drops the default
-        $sql1 = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NOT NULL DEFAULT 0';
-        $sql2 = 'ALTER TABLE `maillog` ALTER COLUMN `timestamp` DROP DEFAULT';
-        executeQuery($sql1);
-        executeQuery($sql2, true);
-    } else {
-        $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP';
+    $maillog_timestamp_info = getColumnInfo('maillog', 'timestamp');
+    if (null !== $maillog_timestamp_info['Default'] || '' !== $maillog_timestamp_info['Extra']) {
+        //Set NULL default on timestamp column
+        $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NULL DEFAULT NULL;';
         executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
+    unset($maillog_timestamp_info);
+
+    // Fix schema for nameinfected to allow for >9 entries.  #981
+    echo pad(' - Fix schema for nameinfected in `maillog` table');
+    $maillog_nameinfected = getColumnInfo('maillog', 'nameinfected');
+    if ($maillog_nameinfected['Type'] !== 'tinyint(2)') {
+        $sql = 'ALTER TABLE `maillog` CHANGE `nameinfected` `nameinfected` TINYINT(2) DEFAULT 0';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($maillog_nameinfected);
 
     // Revert back some tables to the right values due to previous errors in upgrade.php
 
-    // Table audit_log
-    echo pad(' - Fix schema for username field in `audit_log` table');
-    $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR( 255 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
-
-    // Table users
+    // Table users password to 255
     echo pad(' - Fix schema for password field in `users` table');
-    $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
-    executeQuery($sql);
+    $users_password_info = getColumnInfo('users', 'password');
+    if ($users_password_info['Type'] !== 'varchar(255)') {
+        $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($users_password_info);
 
+    // Table users fullname to 255
     echo pad(' - Fix schema for fullname field in `users` table');
-    $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $users_fullname_info = getColumnInfo('users', 'fullname');
+    if ($users_fullname_info['Type'] !== 'varchar(255)') {
+        $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($users_fullname_info);
 
     // Table mcp_rules
     echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
-    $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
-    executeQuery($sql);
+    $mcp_rules_rule_desc_info = getColumnInfo('mcp_rules', 'rule_desc');
+    if ($mcp_rules_rule_desc_info['Type'] !== 'varchar(200)') {
+        $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($mcp_rules_rule_desc_info);
 
     echo PHP_EOL;
-    
+
     // Cleanup orphaned user_filters
     echo pad(' - Cleanup orphaned user_filters');
     $sql = 'DELETE FROM `user_filters` WHERE `username` NOT IN (SELECT `username` FROM `users`)';
@@ -502,10 +641,10 @@ if ($link) {
     if (true === check_column_exists('maillog', 'rblspamreport')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL';
+        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
-    
+
     // Add new token column to maillog table
     echo pad(' - Add token field to `maillog` table');
     if (true === check_column_exists('maillog', 'token')) {
@@ -520,24 +659,24 @@ if ($link) {
     if (true === check_column_exists('maillog', 'released')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = "ALTER TABLE `maillog` ADD `released` tinyint(1) DEFAULT '0'";
+        $sql = "ALTER TABLE `maillog` ADD `released` TINYINT(1) DEFAULT '0'";
         executeQuery($sql);
     }
 
     echo pad(' - Add last_update field to `maillog` table');
     if (check_column_exists('maillog', 'last_update') === false) {
-        $sql = 'ALTER TABLE `maillog` ADD `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
+        $sql = 'ALTER TABLE `maillog` ADD `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
         executeQuery($sql);
     } else {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
-    
+
     // Add new salearn column to maillog table
     echo pad(' - Add salearn field to `maillog` table');
     if (true === check_column_exists('maillog', 'salearn')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = "ALTER TABLE `maillog` ADD `salearn` tinyint(1) DEFAULT '0'";
+        $sql = "ALTER TABLE `maillog` ADD `salearn` TINYINT(1) DEFAULT '0'";
         executeQuery($sql);
     }
 
@@ -693,15 +832,35 @@ if ($link) {
     // check for missing indexes
     $indexes = array(
         'maillog' => array(
-            'maillog_datetime_idx' => array('fields' => '(`date`,`time`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_datetime_idx' => array(
+                'fields' => '(`date`,`time`)',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_clientip_idx' => array('fields' => '(`clientip`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_from_idx' => array('fields' => '(`from_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_clientip_idx' => array(
+                'fields' => '(`clientip`(20))',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
+            'maillog_from_idx' => array(
+                'fields' => '(`from_address`(191))',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'maillog_to_idx' => array('fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
             'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'from_domain_idx' => array('fields' => '(`from_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'from_domain_idx' => array(
+                'fields' => '(`from_domain`(50))',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_quarantined' => array('fields' => '(`quarantined`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            'maillog_quarantined' => array(
+                'fields' => '(`quarantined`)',
+                'type' => 'KEY',
+                'minMysqlVersion' => '50100'
+            ),
             'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
             // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
             'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'),
@@ -709,7 +868,8 @@ if ($link) {
     );
 
     foreach ($indexes as $table => $indexlist) {
-        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(' DONE', 'green') . PHP_EOL;
+        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(' DONE',
+                'green') . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
@@ -752,27 +912,34 @@ echo PHP_EOL;
 
 // Check MailScanner settings
 echo 'Checking MailScanner.conf settings: ' . PHP_EOL;
-echo PHP_EOL;
-$check_settings = array(
-    'QuarantineWholeMessage' => 'yes',
-    'QuarantineWholeMessagesAsQueueFiles' => 'no',
-    'DetailedSpamReport' => 'yes',
-    'IncludeScoresInSpamAssassinReport' => 'yes',
-    'SpamActions' => 'store',
-    'HighScoringSpamActions' => 'store',
-    'AlwaysLookedUpLast' => '&MailWatchLogging'
-);
 
-foreach ($check_settings as $setting => $value) {
-    echo pad(" - $setting ");
-    if (preg_match('/' . $value . '/', get_conf_var($setting))) {
-        echo color(' OK', 'green') . PHP_EOL;
-    } else {
-        echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
-        $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
+echo PHP_EOL;
+
+if (!is_file(MS_CONFIG_DIR . 'MailScanner.conf')) {
+    $err_msg = 'MailScanner.conf: cannot find file on path "' . MS_CONFIG_DIR . 'MailScanner.conf' . '"';
+    echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
+    $errors[] = $err_msg;
+} else {
+    $check_settings = array(
+        'QuarantineWholeMessage' => 'yes',
+        'QuarantineWholeMessagesAsQueueFiles' => 'no',
+        'DetailedSpamReport' => 'yes',
+        'IncludeScoresInSpamAssassinReport' => 'yes',
+        'SpamActions' => 'store',
+        'HighScoringSpamActions' => 'store',
+        'AlwaysLookedUpLast' => '&MailWatchLogging'
+    );
+
+    foreach ($check_settings as $setting => $value) {
+        echo pad(" - $setting ");
+        if (preg_match('/' . $value . '/', get_conf_var($setting))) {
+            echo color(' OK', 'green') . PHP_EOL;
+        } else {
+            echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
+            $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
+        }
     }
 }
-
 echo PHP_EOL;
 
 // Check configuration for missing entries
@@ -804,6 +971,22 @@ if ($checkConfigEntries['optional']['count'] === 0) {
         echo pad(" - optional $optionalConfigEntry ") . ' ' . color('INFO', 'lightgreen') . PHP_EOL;
         $errors[] = 'conf.php: optional configuration entry "' . $optionalConfigEntry . '" is missing, ' . $detail['description'];
     }
+}
+
+echo PHP_EOL;
+
+/* Check configuration for syntactically wrong entries */
+// IMAGES_DIR need both leading and trailing slash
+if (!stringStartsWith(IMAGES_DIR, '/') || !stringEndsWith(IMAGES_DIR, '/')) {
+    $err_msg = 'conf.php: IMAGES_DIR must start and end with a slash';
+    echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
+    $errors[] = $err_msg;
+}
+// MAILWATCH_HOSTURL don't need trailing slash
+if (stringEndsWith(MAILWATCH_HOSTURL, '/')) {
+    $err_msg = 'conf.php: MAILWATCH_HOSTURL must not end with a slash';
+    echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
+    $errors[] = $err_msg;
 }
 
 echo PHP_EOL;

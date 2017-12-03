@@ -47,7 +47,7 @@ if ($_SESSION['user_type'] === 'A') {
     $return = 0;
     if (isset($_POST['clear'])) {
         if (!is_file(SA_DIR . 'sa-learn')) {
-            echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">' . "\n";
+            echo '<div class="error center">' . "\n";
             echo '<br>' . __('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
             echo '</div>' . "\n";
         } else {
@@ -56,7 +56,7 @@ if ($_SESSION['user_type'] === 'A') {
             if ($return === 0) {
                 audit_log(__('auditlogwipe18', true));
             } else {
-                echo '<div style="font-size: 10pt; font-weight: 700; text-align: center; color: red; ">' . "\n";
+                echo '<div class="error center">' . "\n";
                 echo '<br>' . __('error18') . ' ' . $return;
                 echo '</div>' . "\n";
             }
@@ -139,7 +139,7 @@ echo '</table>' . "\n";
 // Clear button
 if ($_SESSION['user_type'] === 'A') {
     echo '<br>' . "\n";
-    echo '<div style="text-align: center; ">' . "\n";
+    echo '<div class="center">' . "\n";
     echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >' . "\n";
     echo '<input type="submit" value="' . __('cleardbbayes18') . '">' . "\n";
     echo '<input type="hidden" name="clear" value="true">' . "\n";

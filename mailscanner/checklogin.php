@@ -46,7 +46,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
         header('Location: login.php?error=baduser');
         die();
     }
-    $myusername = $_POST['myusername'];
+    $myusername = html_entity_decode($_POST['myusername']);
     $mypassword = $_POST['mypassword'];
 }
 
@@ -55,10 +55,19 @@ if (
     (($result = ldap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
+    $myusername = safe_value($result);
+    $mypassword = safe_value($mypassword);
+} elseif (
+    defined('USE_IMAP') &&
+    (USE_IMAP === true) &&
+    (($result = imap_authenticate($myusername, $mypassword)) !== null)
+) {
+    $_SESSION['user_imap'] = true;
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
 } else {
     $_SESSION['user_ldap'] = false;
+    $_SESSION['user_imap'] = false;
     if ($mypassword !== '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
@@ -80,7 +89,10 @@ if ($usercount === 0) {
     die();
 }
 
-if ($_SESSION['user_ldap'] === false) {
+if (
+    ($_SESSION['user_ldap'] === false) &&
+    ($_SESSION['user_imap'] === false)
+) {
     $passwordInDb = database::mysqli_result($result, 0, 'password');
     if (!password_verify($mypassword, $passwordInDb)) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
@@ -161,7 +173,7 @@ if ($usercount === 1) {
         $redirect_url = $_SESSION['REQUEST_URI'];
         unset($_SESSION['REQUEST_URI']);
     }
-    header('Location: ' . sanitizeInput($redirect_url));
+    header('Location: ' . str_replace('&amp;', '&', sanitizeInput($redirect_url)));
 } else {
     header('Location: login.php?error=baduser');
 }

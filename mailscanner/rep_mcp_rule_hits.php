@@ -72,7 +72,7 @@ while ($row = $result->fetch_object()) {
             $rule = $regs[1];
         }
         $sa_array[$rule]['total']++;
-        if ($row->ismcp !== 0) {
+        if ($row->ismcp !== '0') {
             $sa_array[$rule]['mcp']++;
         } else {
             $sa_array[$rule]['not-mcp']++;

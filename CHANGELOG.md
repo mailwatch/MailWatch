@@ -1,3 +1,65 @@
+1.2.7
+-----------
+Security
+- More restricted access to library and public available files (#990)
+- Fix email blacklist bypass when an email with more than 2 normal recipient is processed (#255, #992)
+
+Improvements
+- Add check for path of postconf, exim and sendmail executables in sf_version.php (#948)
+- Enable use of '&' in username (#964)
+- Add f-prot 6 virus scanner support
+- Enlarge localhost ip detection to full 127.0.0.0/8 class
+- Add IMAP auth support (#961)
+- Better support for Hebrew charset
+- Add Japanese language translation
+- Updated translations
+- Some code refactoring
+
+Fixes
+- Uniform use of IMAGES_DIR as a relative path instead of an absolute path (#944)
+- Fix admins editing domain admins
+- Fix LDAP sAMAccountname not being used for login (#955)
+- Fix domain admins not being able to change own password
+- Fix ONLY_FULL_GROUP_BY MySQL error (#733)
+- Fix UTF8 headers in viewmail
+- Update sudoers file to use mailq to match conf.php.example
+
+1.2.6
+-----------
+Security
+- Restrict domain admin permission so that they can only modify/create/delete regular users. Also, emails must be used for all non-admin accounts (#940)
+
+Improvements
+- Add entries counter on white and black list (#509)
+- Changed character set used in quarantine release email to UTF-8 (#910)
+- Upgrade.php alters tables only if needed
+- Fixes for dangerous content display on detail.php (#939)
+
+Fixes
+- Fix upgrade script for compatibility with MySQL 5.7 and 8.0 strict SQL mode
+- Fix PHP header warning for cli scripts
+- Fix invalid colors for multiple y-axes in a line graph (#926)
+- Remove wrong alter table on audit_log.user which revert length to 255 from 191
+- Convert delay from seconds to mysql time format in MTA log processor (#924, #941)
+
+1.2.5
+-----------
+Improvements
+- Support for multiple virus scanners and multiple top viruses (#874)
+- Add detection of MySQL or MariaDB in upgrade process (#873)
+- Prevents Mail Queue summary from duplicating mail count when local server is defined in RPC list (#904, #905)
+- Enhance upgrade.php with check for conf.php syntax and MailScanner.conf existence
+- Better UI on tables and graphs
+- Improved translations
+
+Fixes
+- Fixes issue when sanitization causes ampersand to be html-ified (#882)
+- Fix mailwatch-sendmail-relay init script (#881)
+- Fix code for php 5.3 compatibility (#889) and php 7.0 compatibility (#897)
+- Fix path to mtalogprocessor file in senmail_relay (#912)
+- Remove on update/default value for timestamp in maillog table (#915)
+- Permit up to 20 chars in first part of Postfix msgid (#652)
+
 1.2.4
 -----------
 Improvements

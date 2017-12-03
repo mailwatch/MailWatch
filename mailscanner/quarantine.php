@@ -132,14 +132,14 @@ AND
 AND
  quarantined = 1";
 
-// Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
-    $sql .= '
+        // Hide high spam/mcp from regular users if enabled
+        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+            $sql .= '
     AND
      ishighspam=0
     AND
      COALESCE(ishighmcp,0)=0';
-}
+        }
 
         $sql .= '
 ORDER BY
@@ -190,14 +190,14 @@ ORDER BY
   AND
    BINARY id IN ($msg_ids)";
 
-// Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
-    $sql .= '
+            // Hide high spam/mcp from regular users if enabled
+            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+                $sql .= '
     AND
      ishighspam=0
     AND
      COALESCE(ishighmcp,0)=0';
-}
+            }
 
             $sql .= '
   ORDER BY

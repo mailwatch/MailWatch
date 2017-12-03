@@ -132,7 +132,7 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('receivedfrom04')) {
             $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
             if (LISTS) {
-                $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=h&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=h&amp;list=b">' . __('addbl04') . '</a>]</td>';
+                $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=b">' . __('addbl04') . '</a>]</td>';
             }
             $output .= "</tr></table>\n";
             $row[$f] = $output;
@@ -205,7 +205,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = htmlentities($row[$f]);
             $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
             if (LISTS) {
-                $output .= '<td class="noprint" align="right">[<a href="' . $listurl . '&amp;type=f&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a href="' . $listurl . '&amp;type=f&amp;list=b">' . __('addbl04') . '</a>]</td>' . "\n";
+                $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=b">' . __('addbl04') . '</a>]</td>' . "\n";
             }
             $output .= '</tr></table>' . "\n";
             $row[$f] = $output;
@@ -387,7 +387,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         // Release
         if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
+            if (isset($_POST['alt_recpt_yn']) && deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
                 $to = deepSanitizeInput($_POST['alt_recpt'], 'string');
                 if (!validateInput($to, 'user')) {
                     die(__('error04') . ' ' . $to);
@@ -395,7 +395,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             } else {
                 $to = $quarantined[0]['to'];
             }
-            
+
             $arrid = $_POST['release'];
             if (!is_array($arrid)) {
                 die();
@@ -541,7 +541,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             } else {
                 echo '  <td>' . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
             }
-            if ($_SESSION['user_type'] !== 'A' && $item['dangerous'] === 'Y') {
+            if ($item['dangerous'] === 'Y') {
                 $dangerous = $yes;
                 $is_dangerous++;
             } else {

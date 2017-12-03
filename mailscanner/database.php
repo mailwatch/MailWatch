@@ -59,7 +59,8 @@ class database
                 }
                 self::$link->set_charset($charset);
             } catch (Exception $e) {
-                $output = '
+                if (PHP_SAPI !== 'cli') {
+                    $output = '
 <style>
 .db-error {
     width: 40%;
@@ -80,8 +81,11 @@ class database
 }
 </style>
                 <div class="db-error">';
-                $output .= __('dbconnecterror99');
-                $output .= '</div>';
+                    $output .= __('dbconnecterror99');
+                    $output .= '</div>';
+                } else {
+                    $output = __('dbconnecterror99_plain') . PHP_EOL;
+                }
                 die($output);
             }
         }

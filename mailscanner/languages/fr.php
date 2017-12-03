@@ -45,7 +45,6 @@ return array(
     'jumpmessage03' => 'Aller au message :',
     'cuser03' => 'Utilisateur',
     'cst03' => 'Heure Système',
-    'colorcodes03' => 'Codes couleur',
     'badcontentinfected03' => 'Contenu dangereux/infecté',
     'whitelisted03' => 'Liste Blanche',
     'blacklisted03' => 'Liste Noire',
@@ -188,14 +187,15 @@ return array(
     'procs03' => 'processus',
     'errorWarning03' => 'Attention : une erreur s\'est produite :',
     'phpxmlnotloaded03' => 'L\'extension xml pour PHP est manquante.',
-    'released03' => 'Libérer',
+    'released03' => 'Libéré',
     'learnspam03' => 'Renseigné comme Spam',
     'learnham03' => 'Renseigné comme légitime',
-    'trafficgraph03' => 'Trafic de la derniere heure',
-    'trafficgraphmore03' => 'Trafic des %s dernières heures',
+    'trafficgraph03' => 'Trafic par minute de la derniere heure',
+    'trafficgraphmore03' => 'Trafic par minute des %s dernières heures',
     'barmail03' => 'E-Mails',
     'barvirus03' => 'Virus',
     'barspam03' => 'Spam',
+    'moretopviruses03' => 'et %s autres virus',
 
     // 04-detail.php
     'receivedon04' => 'Reçu le :',
@@ -301,6 +301,8 @@ return array(
     'action07' => 'Action :',
     'wl07' => 'Liste Blanche',
     'bl07' => 'Liste Noire',
+    'wlentries07' => 'Liste Blanche - %d entrées',
+    'blentries07' => 'Liste Noire - %d entrées',
     'reset07' => 'Réinitialiser',
     'add07' => 'Ajouter',
     'delete07' => 'Supprimer',
@@ -402,7 +404,7 @@ return array(
     'version11' => 'version :',
     'systemos11' => 'Version du Système d\'Exploitation :',
     'mwandmsversion11' => 'Information sur les versions des logiciels',
-    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels',
+    'auditlog11' => 'Un Utilisateur non administrateur a tenté d\'afficher la page des versions des logiciels.',
     'downloaddate11' => 'date de téléchargement',
 
     // 12-user_manager.php
@@ -473,6 +475,7 @@ return array(
     'errordeletedomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour supprimer les utilisateurs du domaine %s',
     'errorcreatenodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs sans domaine',
     'errorcreatedomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour ajouter des utilisateurs au domaine %s',
+    'erroradminforbidden12' => 'Erreur : Vous n\'avez pas les autorisations pour créer / modifier / supprimer des administrateurs',
     'retypepassword12' => 'Confirmez le mot de passe :',
     'userexists12' => 'L\'utilisateur existe déjà avec le nom d\'utilisateur %s',
     'savedsettings12' => 'Règlages enregistrés',
@@ -494,6 +497,15 @@ return array(
     'empty12' => 'Vide',
     'lastlogin12' => 'Dernière connexion :',
     'never12' => 'Jamais',
+    'auditlogunknownuser12' => 'L\'utilisateur %s que vous essayez d\'utiliser n\'existe pas avec le ID %d.',
+    'accessunknownuser12' => 'L\'utilisateur ne peut être trouvé.',
+    'errorlogoutnodomainforbidden12' => 'Erreur : vous n\'avez pas les autorisations pour déconnecter les utilisateurs sans domaine.',
+    'errorlogoutdomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour déconnecter les utilisateurs du domaine %s.',
+    'errorfilternodomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour changer les filtres des utilisateurs sans domaine.',
+    'errorfilterdomainforbidden12' => 'Erreur : vous n\'avez pas les permissions pour changer les filtres des utilisateurs du domaine %s.',
+    'errorreportnodomainforbidden12' => 'Erreur : vous ne disposez pas des autorisations nécessaires pour envoyer des rapports de spam aux utilisateurs sans domaine.',
+    'errorreportdomainforbidden12' => 'Erreur : vous ne disposez pas des autorisations nécessaires pour envoyer des rapports de spam aux utilisateurs du domaine %s.',
+    'noReportsEnabled12' => 'Erreur : vous devez activer les rapports quotidiens pour en demander un.',
 
     // 13-sa_rules_update.php
     'input13' => 'Démarrer',
@@ -638,7 +650,7 @@ return array(
 
     // 29-msre_index.php
     'rulesetedit29' => 'Editeur de règle',
-    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner',
+    'auditlog29' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de d\'Edition des Règles de MailScanner.',
     'editrule29' => 'Choisissez une règle à éditer :',
     'norulefound29' => 'Aucune règle trouvée',
 
@@ -900,11 +912,11 @@ return array(
     'dberror59' => 'Quelque-chose s\'est mal passé - Contactez le Support',
     'arview059' => 'Afficher',
     'arrelease059' => 'Libérer',
-    'title59' => 'Quarantine Release',
+    'title59' => 'Libération de quarantaine',
 
     // 60-rpcserver.php
-    'paratype160' => 'Parameter type',
-    'paratype260' => 'mismatch expected type.',
+    'paratype160' => 'Type de paramètre',
+    'paratype260' => 'type de concordance inadéquate.',
     'notfile60' => 'n\est pas un fichier.',
     'permdenied60' => 'permission refusée.',
     'client160' => 'Le client',
@@ -941,7 +953,7 @@ return array(
     'errordb63' => 'Erreur de base de données.',
     'title63' => 'Réinitialiser le mot de passe.',
     'passwdresetrequest63' => 'Demande de réinitialisation de mot de passe.',
-    'p1email63' => 'Une demande de réinitialisation de mot de passe a été reçu pour %s.<br>Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.<p>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous.<br>',
+    'p1email63' => 'Une demande de réinitialisation de mot de passe a été reçu pour %s.<br>Si vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.<br>Pour réinitialiser votre mot de passe, cliquez sur le lien ci-dessous.<br>',
     'button63' => 'Réinitialiser le mot de passe',
     '01emailplaintxt63' => 'Demande de réinitialisation de mot de passe.\nUne demande de réinitialisation de mot de passe a été reçue pour %s.\nSi vous n\'avez pas fait cette demande, contactez votre administrateur système immédiatement.\nPour réinitialiser votre mot de passe, veuillez copier et coller le lien ci-dessous dans votre navigateur :\n',
     '01emailsuccess63' => 'Votre demande de réinitialisation de mot de passe a réussi. Veuillez consulter votre boîte de courriel pour la prochaine étape.',
@@ -989,7 +1001,9 @@ return array(
     'en' => 'English',
     'fr' => 'Français',
     'it' => 'Italiano',
+    'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
     'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
+    'dbconnecterror99_plain' => 'Error: Database connection failed: it is possible that the database is overloaded or otherwise not running properly; contact the system administrator if the problem persists',
 );
