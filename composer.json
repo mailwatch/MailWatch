@@ -12,7 +12,8 @@
     "neitanod/forceutf8": "~2.0",
     "ezyang/htmlpurifier": "^4.9",
     "wikimedia/ip-set": "^1.1",
-    "ircmaxell/password-compat": "^1.0"
+    "ircmaxell/password-compat": "^1.0",
+    "indigophp/hash-compat": "^1.1"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^2.2 || ^3.0.2",
