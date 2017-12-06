@@ -107,9 +107,6 @@ set_include_path(
     MAILWATCH_HOME . '/lib/xmlrpc'
 );
 
-//HTLMPurifier
-require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
-
 //Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
