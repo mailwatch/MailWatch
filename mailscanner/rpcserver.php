@@ -253,8 +253,8 @@ function rpc_bayes_info()
 
 function rpc_postfix_queues()
 {
-    $inq = postfixinq();
-    $outq = postfixallq() - $inq;
+    $inq = \MailWatch\MTA\Postfix::postfixinq();
+    $outq = \MailWatch\MTA\Postfix::postfixallq() - $inq;
     $result = array(
         'inq' => new xmlrpcval($inq),
         'outq' => new xmlrpcval($outq),

@@ -25,36 +25,41 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-function postfixinq()
+namespace MailWatch\MTA;
+
+class Postfix
 {
-    $handle = opendir('/var/spool/postfix/hold/');
-    $inq = 0;
-    while (false !== ($file = readdir($handle))) {
-        //evaluate each entry, removing the . & .. entries
-        if ($file !== '.' && $file !== '..') {
-            $inq++;
+    public static function postfixinq()
+    {
+        $handle = opendir('/var/spool/postfix/hold/');
+        $inq = 0;
+        while (false !== ($file = readdir($handle))) {
+            //evaluate each entry, removing the . & .. entries
+            if ($file !== '.' && $file !== '..') {
+                $inq++;
+            }
         }
+        closedir($handle);
+
+        return $inq;
     }
-    closedir($handle);
 
-    return $inq;
-}
+    public static function postfixallq()
+    {
+        $last_line = exec('mailq');
+        $pos = strpos($last_line, 'in ');
+        $start = substr($last_line, $pos + 3);
 
-function postfixallq()
-{
-    $last_line = exec('mailq');
-    $pos = strpos($last_line, 'in ');
-    $start = substr($last_line, $pos + 3);
+        return (int)$start;
+    }
 
-    return (int)$start;
-}
-
-function postfixmailq()
-{
-    exec('mailq', $output);
-    if ($output !== null && $output !== '') {
-        foreach ($output as $row) {
-            echo $row . "\n";
+    public static function postfixmailq()
+    {
+        exec('mailq', $output);
+        if ($output !== null && $output !== '') {
+            foreach ($output as $row) {
+                echo $row . "\n";
+            }
         }
     }
 }

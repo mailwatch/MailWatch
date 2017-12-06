@@ -33,7 +33,7 @@ html_start(__('mqviewer32'));
 
 echo '<b>' . __('mqviewer32') . '</b>' . "\n";
 echo '<pre>';
-postfixmailq();
+\MailWatch\MTA\Postfix::postfixmailq();
 echo '</pre>';
 html_end();
 dbclose();
