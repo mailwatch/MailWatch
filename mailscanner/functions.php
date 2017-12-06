@@ -26,12 +26,9 @@
  */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-    error_reporting(E_ALL);
-} else {
-    // E_DEPRECATED added in PHP 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
-}
+error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
+
+$autoloader = require __DIR__ . '/../src/bootstrap.php';
 
 // Read in MailWatch configuration file
 if (!is_readable(__DIR__ . '/conf.php')) {
