@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 
 /*
@@ -27,12 +27,10 @@
  */
 
 if (PHP_SAPI !== 'cli') {
-    header('Content-type: text/plain');
+    throw new \RuntimeException('Upgrade script must be run from console');
 }
 
-// Edit if you changed webapp directory from default and not using command line argument to define it
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
-//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+$pathToFunctions = __DIR__ . '/../mailscanner/functions.php';
 
 $cli_options = getopt('', array('skip-user-confirm'));
 
@@ -48,7 +46,7 @@ if (isset($argv) && count($argv) > 1) {
 }
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 17) . PHP_EOL);
+    throw new \RuntimeException('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 17) . PHP_EOL);
 }
 
 require_once $pathToFunctions;
@@ -88,11 +86,11 @@ function executeQuery($sql, $beSilent = false)
             }
         } else {
             echo color(' ERROR', 'red') . PHP_EOL;
-            die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
+            throw new \RuntimeException('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
         }
     } catch (Exception $e) {
         echo color(' ERROR', 'red') . PHP_EOL;
-        die('Database error: ' . $e->getMessage() . " - SQL = '$sql'" . PHP_EOL);
+        throw new \RuntimeException('Database error: ' . $e->getMessage() . " - SQL = '$sql'" . PHP_EOL);
     }
 }
 
