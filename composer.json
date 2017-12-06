@@ -2,7 +2,7 @@
   "name": "mailwatch/mailwatch",
   "description": "MailWatch is a web-based front-end to MailScanner",
   "homepage": "http://mailwatch.org/",
-  "license": "GPLv2",
+  "license": "GPL-2.0",
   "type": "project",
   "support": {
     "issues": "https://github.com/mailwatch/MailWatch/issues"
@@ -13,7 +13,13 @@
     "ezyang/htmlpurifier": "^4.9",
     "wikimedia/ip-set": "^1.1",
     "ircmaxell/password-compat": "^1.0",
-    "indigophp/hash-compat": "^1.1"
+    "indigophp/hash-compat": "^1.1",
+    "pear/pear-core-minimal": "^1.10",
+    "pear/mail_mime-decode": "1.5.5.2",
+    "pear/net_socket": "^1.2",
+    "pear/net_smtp": "^1.7",
+    "pear/mail": "^1.4",
+    "pear/pager": "^2.5"
   },
   "autoload": {
     "psr-4": {

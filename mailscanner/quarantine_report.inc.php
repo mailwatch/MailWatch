@@ -251,17 +251,10 @@ ORDER BY a.date DESC, a.time DESC';
             return false;
         }
         if (PHP_SAPI === 'cli') {
-            require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
-            require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
-            require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
             ini_set('html_errors', 'off');
             ini_set('display_errors', 'on');
             ini_set('implicit_flush', 'false');
             ini_set('error_reporting', E_ALL);
-        } else {
-            require_once __DIR__ . '/lib/pear/Mail.php';
-            require_once __DIR__ . '/lib/pear/Mail/smtp.php';
-            require_once __DIR__ . '/lib/pear/Mail/mime.php';
         }
         date_default_timezone_set(TIME_ZONE);
         ini_set('memory_limit', '256M');

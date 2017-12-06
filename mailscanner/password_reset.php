@@ -38,10 +38,6 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
     }
 }
 
-// Load in the required PEAR modules
-require_once MAILWATCH_HOME . '/lib/pear/Mail.php';
-require_once MAILWATCH_HOME . '/lib/pear/Mail/smtp.php';
-require_once MAILWATCH_HOME . '/lib/pear/Mail/mime.php';
 date_default_timezone_set(TIME_ZONE);
 
 $showpage = false;
@@ -155,7 +151,6 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $result = dbquery($sql);
                 $row = $result->fetch_array();
                 if ($row['resetid'] === $uid) {
-                    require_once MAILWATCH_HOME . '/lib/password.php';
                     $password = $link->real_escape_string(password_hash($_POST['pwd1'], PASSWORD_DEFAULT));
                     $lastreset = time();
                     $sql = "UPDATE users SET password = '$password', resetid = '', resetexpire = '0', lastreset ='$lastreset' WHERE username ='$email'";

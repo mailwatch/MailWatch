@@ -103,7 +103,6 @@ if ($missingConfigEntries['needed']['count'] !== 0) {
 // Set PHP path to use local PEAR modules only
 set_include_path(
     '.' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/xmlrpc'
 );
 
@@ -1884,7 +1883,6 @@ function subtract_multi_get_vars($preserve)
  */
 function generatePager($sql)
 {
-    require_once __DIR__ . '/lib/pear/Pager.php';
     if (isset($_GET['offset'])) {
         $from = (int)$_GET['offset'];
     } else {
@@ -1942,8 +1940,6 @@ function generatePager($sql)
  */
 function db_colorised_table($sql, $table_heading = false, $pager = false, $order = false, $operations = false)
 {
-    require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
-
     // Ordering
     $orderby = null;
     $orderdir = '';
@@ -2553,7 +2549,6 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
     // Turn on paging of for the database
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
         $from = 0;
         if (isset($_GET['offset'])) {
             $from = (int)$_GET['offset'];
@@ -2649,7 +2644,6 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
     }
     echo '<br>' . "\n";
     if ($pager) {
-        require_once __DIR__ . '/lib/pear/Pager.php';
         $from = 0;
         if (isset($_GET['offset'])) {
             $from = (int)$_GET['offset'];
@@ -3472,12 +3466,6 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         if (!QUARANTINE_USE_SENDMAIL) {
-            // Load in the required PEAR modules
-            require_once __DIR__ . '/lib/pear/PEAR.php';
-            require_once __DIR__ . '/lib/pear/Mail.php';
-            require_once __DIR__ . '/lib/pear/Mail/mime.php';
-            require_once __DIR__ . '/lib/pear/Mail/smtp.php';
-
             $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r'));
             $mailMimeParams = array(
                 'eol' => "\r\n",
