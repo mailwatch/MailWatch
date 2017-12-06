@@ -107,9 +107,6 @@ set_include_path(
     MAILWATCH_HOME . '/lib/xmlrpc'
 );
 
-//ForceUTF8
-require_once __DIR__ . '/lib/ForceUTF8/Encoding.php';
-
 //HTLMPurifier
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 
