@@ -174,8 +174,8 @@ function check_utf8_table($db, $table, $utf8variant = 'utf8')
             AND t.table_name = "' . $link->real_escape_string($table) . '"';
     $result = $link->query($sql);
 
-    $table_charset = database::mysqli_result($result, 0, 0);
-    $table_collation = database::mysqli_result($result, 0, 1);
+    $table_charset = \MailWatch\Db::mysqli_result($result, 0, 0);
+    $table_collation = \MailWatch\Db::mysqli_result($result, 0, 1);
 
     return (
         strtolower($table_charset) === $mysql_utf8_variant[$utf8variant]['charset'] &&
@@ -197,7 +197,7 @@ function is_table_type_innodb($db, $table)
             AND t.table_name = "' . $link->real_escape_string($table) . '"';
     $result = $link->query($sql);
 
-    return 'innodb' === strtolower(database::mysqli_result($result, 0, 0));
+    return 'innodb' === strtolower(\MailWatch\Db::mysqli_result($result, 0, 0));
 }
 
 /**

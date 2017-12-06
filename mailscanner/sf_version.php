@@ -26,6 +26,8 @@
  */
 
 // Include of necessary functions
+use MailWatch\Db;
+
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
@@ -39,7 +41,7 @@ if ($_SESSION['user_type'] !== 'A') {
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
-    $mysql_version = database::mysqli_result(dbquery('SELECT VERSION()'), 0);
+    $mysql_version = Db::mysqli_result(dbquery('SELECT VERSION()'), 0);
     $geoipv4_version = false;
     $geoipv6_version = false;
     if (file_exists('./temp/GeoIP.dat')) {

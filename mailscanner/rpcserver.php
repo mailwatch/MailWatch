@@ -25,6 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+use MailWatch\Db;
+
 require_once __DIR__ . '/functions.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 
@@ -87,7 +89,7 @@ function rpc_return_quarantined_file($msg)
     dbconn();
     $input = php_xmlrpc_decode(array_shift($msg->params));
     $input = preg_replace('[\.\/|\.\.\/]', '', $input);
-    $date = @database::mysqli_result(
+    $date = @Db::mysqli_result(
         dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . safe_value($input) . "'"),
         0
     );

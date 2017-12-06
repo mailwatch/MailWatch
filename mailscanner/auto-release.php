@@ -25,6 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+use MailWatch\Db;
+
 require_once __DIR__ . '/functions.php';
 if (file_exists('conf.php')) {
     $output = array();
@@ -45,7 +47,7 @@ if (file_exists('conf.php')) {
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);
         if (!$result) {
-            dbg('Error fetching from database' . database::$link->error);
+            dbg('Error fetching from database' . Db::$link->error);
             $output[] = __('dberror59');
         }
         if ($result->num_rows === 0) {
@@ -74,7 +76,7 @@ if (file_exists('conf.php')) {
                 $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
                 $result = dbquery($query, false);
                 if (!$result) {
-                    dbg('ERROR cleaning up database... ' . database::$link->error);
+                    dbg('ERROR cleaning up database... ' . Db::$link->error);
                 }
             } else {
                 $output[] = __('tokenmismatch59');

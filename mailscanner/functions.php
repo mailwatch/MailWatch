@@ -26,6 +26,8 @@
  */
 
 // Set error level (some distro's have php.ini set to E_ALL)
+use MailWatch\Db;
+
 error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 
 $autoloader = require __DIR__ . '/../src/bootstrap.php';
@@ -97,8 +99,6 @@ if ($missingConfigEntries['needed']['count'] !== 0) {
     }
     die();
 }
-
-require_once __DIR__ . '/database.php';
 
 // Set PHP path to use local PEAR modules only
 set_include_path(
@@ -937,7 +937,7 @@ function dbconn()
 {
     //$link = mysql_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, false, 128);
 
-    return database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    return Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 }
 
 /**
@@ -945,7 +945,7 @@ function dbconn()
  */
 function dbclose()
 {
-    return database::close();
+    return Db::close();
 }
 
 /**
@@ -964,7 +964,7 @@ function dbquery($sql, $printError = true)
 
     if (true === $printError && false === $result) {
         // stop on query error
-        $message = '<strong>Invalid query</strong>: ' . database::$link->errno . ': ' . database::$link->error . "<br>\n";
+        $message = '<strong>Invalid query</strong>: ' . Db::$link->errno . ': ' . Db::$link->error . "<br>\n";
         $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
         die($message);
     }
@@ -1901,7 +1901,7 @@ function generatePager($sql)
     // Count the number of rows that would be returned by the query
     $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
     $results = dbquery($sqlcount);
-    $rows = database::mysqli_result($results, 0);
+    $rows = Db::mysqli_result($results, 0);
 
     // Build the pager data
     $pager_options = array(
@@ -2663,7 +2663,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
         // Count the number of rows that would be returned by the query
         $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-        $rows = database::mysqli_result(dbquery($sqlcount), 0);
+        $rows = Db::mysqli_result(dbquery($sqlcount), 0);
 
         // Build the pager data
         $pager_options = array(
@@ -4023,7 +4023,7 @@ function updateUserPasswordHash($user, $hash)
 {
     $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
     $passwordFiledLengthResult = dbquery($sqlCheckLenght);
-    $passwordFiledLength = (int)database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
+    $passwordFiledLength = (int)Db::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
 
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
@@ -4622,7 +4622,7 @@ function updateLoginExpiry($myusername)
         return false;
     }
 
-    $login_timeout = database::mysqli_result($result, 0, 'login_timeout');
+    $login_timeout = Db::mysqli_result($result, 0, 'login_timeout');
 
     // Use global if individual value is disabled (-1)
     if ($login_timeout === '-1') {
@@ -4663,7 +4663,7 @@ function checkLoginExpiry($myusername)
         return true;
     }
 
-    $login_expiry = database::mysqli_result($result, 0, 'login_expiry');
+    $login_expiry = Db::mysqli_result($result, 0, 'login_expiry');
 
     if ($login_expiry === '-1') {
         // User administratively logged out
@@ -4695,7 +4695,7 @@ function checkPrivilegeChange($myusername)
         return true;
     }
 
-    $user_type = database::mysqli_result($result, 0, 'type');
+    $user_type = Db::mysqli_result($result, 0, 'type');
 
     if ($_SESSION['user_type'] !== $user_type) {
         // Privilege change detected

@@ -15,6 +15,11 @@
     "ircmaxell/password-compat": "^1.0",
     "indigophp/hash-compat": "^1.1"
   },
+  "autoload": {
+    "psr-4": {
+      "MailWatch\\": "src/MailWatch"
+    }
+  },
   "require-dev": {
     "squizlabs/php_codesniffer": "^2.2 || ^3.0.2",
     "wimg/php-compatibility": "*"
