@@ -171,6 +171,5 @@ switch ($_GET['action']) {
 }
 
 \MailWatch\Db::close();
-?>
-</body>
-</html>
+
+simple_html_end();
