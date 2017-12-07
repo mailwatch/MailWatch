@@ -75,7 +75,7 @@ class SendmailLogProcessor extends MtaLogProcessor
                 // Domain does not resolve
                 return [
                     'type' => safe_value('unresolveable'),
-                    'status' => safe_value(get_email($this->entries['reject']))
+                    'status' => safe_value($this->getEmail($this->entries['reject']))
                 ];
             }
         }

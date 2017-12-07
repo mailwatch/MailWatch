@@ -109,7 +109,7 @@ abstract class MtaLogProcessor
                     )
                 ) {
                     $_type = safe_value('unknown_user');
-                    $_status = safe_value($this->getEmail());
+                    $_status = safe_value($this->getEmail($this->entries['to']));
                 }
 
                 // Unknown users
@@ -215,14 +215,15 @@ abstract class MtaLogProcessor
     }
 
     /**
+     * @param string $entry
      * @return string
      */
-    public function getEmail()
+    public function getEmail($entry)
     {
-        if (preg_match('/<(\S+)>/', $this->entries['to'], $match)) {
+        if (preg_match('/<(\S+)>/', $entry, $match)) {
             return $match[1];
         }
 
-        return $this->entries['to'];
+        return $entry;
     }
 }
