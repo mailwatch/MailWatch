@@ -42,7 +42,7 @@ echo '<tr>
 
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
 if ($_SESSION['user_type'] === 'A') {
-    $virusScanner = get_conf_var('VirusScanners');
+    $virusScanner = \MailWatch\MailScanner::getConfVar('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
         echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
     }

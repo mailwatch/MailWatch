@@ -46,9 +46,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
     require $pathToFunctions;
     date_default_timezone_set(TIME_ZONE);
 
-    $queue['inq'] = get_conf_var('IncomingQueueDir') . '/';
-    $queue['outq'] = get_conf_var('OutgoingQueueDir') . '/';
-    $MTA = get_conf_var('MTA');
+    $queue['inq'] = \MailWatch\MailScanner::getConfVar('IncomingQueueDir') . '/';
+    $queue['outq'] = \MailWatch\MailScanner::getConfVar('OutgoingQueueDir') . '/';
+    $MTA = \MailWatch\MailScanner::getConfVar('MTA');
 
     foreach ($queue as $table_name => $queuedir) {
         // Clear the output array

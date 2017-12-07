@@ -540,10 +540,10 @@ function updateClock() {
     {
         // Display the MTA queue
         // Postfix if mta = postfix
-        if (get_conf_var('MTA', true) === 'postfix') {
+        if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'postfix') {
             // Mail Queues display
-            $incomingdir = get_conf_var('incomingqueuedir', true);
-            $outgoingdir = get_conf_var('outgoingqueuedir', true);
+            $incomingdir = \MailWatch\MailScanner::getConfVar('incomingqueuedir', true);
+            $outgoingdir = \MailWatch\MailScanner::getConfVar('outgoingqueuedir', true);
             $inq = null;
             $outq = null;
             if (is_readable($incomingdir) || is_readable($outgoingdir)) {
@@ -582,7 +582,7 @@ function updateClock() {
 
             // Else use MAILQ from conf.php which is for Sendmail or Exim
         } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
-            if (get_conf_var('MTA') === 'exim') {
+            if (\MailWatch\MailScanner::getConfVar('MTA') === 'exim') {
                 $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                 $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
             } else {
@@ -662,7 +662,7 @@ function updateClock() {
             echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
-            $mta = get_conf_var('mta');
+            $mta = \MailWatch\MailScanner::getConfVar('mta');
             exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
             if (count($output) > 0) {
                 $running = $yes;

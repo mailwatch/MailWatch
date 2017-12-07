@@ -36,7 +36,7 @@ function rpc_get_quarantine($msg)
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (is_string($input)) {
         $input = strtolower($input);
-        $quarantinedir = get_conf_var('QuarantineDir');
+        $quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
         $item = [];
         $output = [];
         if ($input === '/') {
@@ -93,7 +93,7 @@ function rpc_return_quarantined_file($msg)
         dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . safe_value($input) . "'"),
         0
     );
-    $qdir = get_conf_var('QuarantineDir');
+    $qdir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
     $file = null;
     switch (true) {
         case (file_exists($qdir . '/' . $date . '/nonspam/' . $input)):
@@ -110,7 +110,7 @@ function rpc_return_quarantined_file($msg)
             break;
     }
 
-    $quarantinedir = get_conf_var('QuarantineDir');
+    $quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
     switch (true) {
         case(!is_string($file)):
             return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($file) . ' ' . __('paratyper260'));
@@ -182,7 +182,7 @@ function rpc_get_conf_var($msg)
     global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (is_string($input)) {
-        return new xmlrpcresp(new xmlrpcval(get_conf_var($input), 'string'));
+        return new xmlrpcresp(new xmlrpcval(\MailWatch\MailScanner::getConfVar($input), 'string'));
     }
 
     return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));

@@ -25,51 +25,44 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once __DIR__ . '/functions.php';
+namespace MailWatch;
 
-require __DIR__ . '/login.function.php';
+class MailScanner
+{
 
-if ($_SESSION['user_type'] !== 'A') {
-    header('Location: index.php');
-} else {
-    \MailWatch\Html::start(__('rules30'));
-
-    // Limit accessible files to the ones in MailScanner etc directory or reports directory
-    $MailscannerRepDir = realpath(\MailWatch\MailScanner::getConfVar('%report-dir%'));
-    $MailscannerEtcDir = realpath(\MailWatch\MailScanner::getConfVar('%etc-dir%'));
-    if (!isset($_GET['file'])) {
-        $FilePath = false;
-    } else {
-        $FilePath = realpath(sanitizeInput($_GET['file']));
-    }
-
-    if ($FilePath === false || (strpos($FilePath, $MailscannerEtcDir) !== 0 && strpos($FilePath, $MailscannerRepDir) !== 0)) {
-        // Directory Traversal
-        echo __('dirblocked30') . "\n";
-    } else {
-        echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-        echo '<tr><td class="heading">' . __('file30') . ' ' . $FilePath . '</td></tr>' . "\n";
-        echo '<tr><td><pre>' . "\n";
-        if ($fh = @fopen($FilePath, 'rb')) {
-            while (!feof($fh)) {
-                $line = rtrim(fgets($fh, 4096));
-                if (isset($_GET['strip_comments']) && $_GET['strip_comments']) {
-                    if (!preg_match('/^#/', $line) && !preg_match('/^$/', $line)) {
-                        echo $line . "\n";
-                    }
-                } else {
-                    echo $line . "\n";
-                }
-            }
-            fclose($fh);
-        } else {
-            echo __('unableopenfile30') . "\n";
+    /**
+     * @param string $name MailScanner config parameter name
+     * @param bool $force
+     * @return bool
+     */
+    public static function getConfVar($name, $force = false)
+    {
+        if (DISTRIBUTED_SETUP && !$force) {
+            return false;
         }
-        echo '</pre></td></tr>' . "\n";
-        echo '</table>' . "\n";
-    }
-    // Add the footer
-    \MailWatch\Html::end();
-}
+        $conf_dir = get_conf_include_folder($force);
+        $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
-\MailWatch\Db::close();
+        $array_output1 = static::parseConfFile($MailScanner_conf_file);
+        $array_output2 = parse_conf_dir($conf_dir);
+
+        $array_output = $array_output1;
+        if (is_array($array_output2)) {
+            $array_output = array_merge($array_output1, $array_output2);
+        }
+
+        foreach ($array_output as $parameter_name => $parameter_value) {
+            $parameter_name = preg_replace('/ */', '', $parameter_name);
+
+            if (strtolower($parameter_name) === strtolower($name)) {
+                if (is_file($parameter_value)) {
+                    return read_ruleset_default($parameter_value);
+                }
+
+                return $parameter_value;
+            }
+        }
+
+        die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $MailScanner_conf_file\n");
+    }
+}

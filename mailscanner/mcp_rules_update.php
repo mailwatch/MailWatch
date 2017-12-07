@@ -49,9 +49,9 @@ if ($_SESSION['user_type'] !== 'A') {
 
     if (isset($_POST['run'])) {
         echo '<tr><td align="CENTER"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule26') . '</th><th>' . __('description26') . '</th></tr>' . "\n";
-        $mcp_prefs_file = get_conf_var('MCPSpamAssassinPrefsFile');
-        $mcp_local_rules_dir = get_conf_var('MCPSpamAssassinLocalRulesDir');
-        $mcp_default_rules_dir = get_conf_var('MCPSpamAssassinDefaultRulesDir');
+        $mcp_prefs_file = \MailWatch\MailScanner::getConfVar('MCPSpamAssassinPrefsFile');
+        $mcp_local_rules_dir = \MailWatch\MailScanner::getConfVar('MCPSpamAssassinLocalRulesDir');
+        $mcp_default_rules_dir = \MailWatch\MailScanner::getConfVar('MCPSpamAssassinDefaultRulesDir');
         if ($mcp_local_rules_dir !== $mcp_default_rules_dir) {
             $fh = popen(
                 "ls $mcp_prefs_file $mcp_local_rules_dir/*.cf $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'",

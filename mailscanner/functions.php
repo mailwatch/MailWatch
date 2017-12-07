@@ -899,41 +899,7 @@ function get_default_ruleset_value($file)
     return false;
 }
 
-/**
- * @param string $name
- * @param bool $force
- * @return bool
- */
-function get_conf_var($name, $force = false)
-{
-    if (DISTRIBUTED_SETUP && !$force) {
-        return false;
-    }
-    $conf_dir = get_conf_include_folder($force);
-    $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
-    $array_output1 = parse_conf_file($MailScanner_conf_file);
-    $array_output2 = parse_conf_dir($conf_dir);
-
-    $array_output = $array_output1;
-    if (is_array($array_output2)) {
-        $array_output = array_merge($array_output1, $array_output2);
-    }
-
-    foreach ($array_output as $parameter_name => $parameter_value) {
-        $parameter_name = preg_replace('/ */', '', $parameter_name);
-
-        if (strtolower($parameter_name) === strtolower($name)) {
-            if (is_file($parameter_value)) {
-                return read_ruleset_default($parameter_value);
-            }
-
-            return $parameter_value;
-        }
-    }
-
-    die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $MailScanner_conf_file\n");
-}
 
 /**
  * @param $conf_dir
@@ -1111,7 +1077,7 @@ function parse_conf_file($name)
 function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
-    $scanners = explode(' ', get_conf_var('VirusScanners'));
+    $scanners = explode(' ', \MailWatch\MailScanner::getConfVar('VirusScanners'));
 
     return $scanners[0];
 }
@@ -2610,7 +2576,7 @@ function stripPortFromIp($ip)
  */
 function quarantine_list($input = '/')
 {
-    $quarantinedir = get_conf_var('QuarantineDir') . '/';
+    $quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir') . '/';
     $item = [];
     if ($input === '/') {
 
@@ -2694,7 +2660,7 @@ SELECT
     }
     $row = $sth->fetch_object();
     if (!$rpc_only && is_local($row->hostname)) {
-        $quarantinedir = get_conf_var('QuarantineDir');
+        $quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
         $quarantine = $quarantinedir . '/' . $row->date . '/' . $row->id;
         $spam = $quarantinedir . '/' . $row->date . '/spam/' . $row->id;
         $nonspam = $quarantinedir . '/' . $row->date . '/nonspam/' . $row->id;
@@ -3115,7 +3081,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
  */
 function fixMessageId($id)
 {
-    $mta = get_conf_var('mta');
+    $mta = \MailWatch\MailScanner::getConfVar('mta');
     if ($mta === 'postfix') {
         $id = str_replace('_', '.', $id);
     }
@@ -4019,7 +3985,7 @@ function getVirus($report)
     if (defined('VIRUS_REGEX')) {
         preg_match(VIRUS_REGEX, $report, $match);
     } else {
-        $scanners = explode(' ', get_conf_var('VirusScanners'));
+        $scanners = explode(' ', \MailWatch\MailScanner::getConfVar('VirusScanners'));
         foreach ($scanners as $scanner) {
             $scannerRegex = getVirusRegex($scanner);
             if ($scannerRegex === null || $scannerRegex === '') {

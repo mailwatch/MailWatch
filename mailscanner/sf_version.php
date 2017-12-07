@@ -39,7 +39,7 @@ if ($_SESSION['user_type'] !== 'A') {
 } else {
     \MailWatch\Html::start(__('mwandmsversion11'), 0, false, false);
     $mailwatch_version = mailwatch_version();
-    $mailscanner_version = get_conf_var('MailScannerVersionNumber');
+    $mailscanner_version = \MailWatch\MailScanner::getConfVar('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
     $mysql_version = Db::mysqli_result(dbquery('SELECT VERSION()'), 0);
     $geoipv4_version = false;
@@ -91,8 +91,8 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 
     // Add test for MTA
-    $mta = get_conf_var('mta');
-    if (get_conf_var('MTA', true) === 'postfix') {
+    $mta = \MailWatch\MailScanner::getConfVar('mta');
+    if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'postfix') {
         echo '<br>' . "\n";
         echo 'Postfix ' . __('version11') . ' ';
         exec('which postconf', $postconf);
@@ -103,7 +103,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         echo '<br>' . "\n";
     }
-    if (get_conf_var('MTA', true) === 'exim') {
+    if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'exim') {
         echo '<br>' . "\n";
         echo 'Exim ' . __('version11') . ' ';
         exec('which exim', $exim);
@@ -114,7 +114,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         echo '<br>' . "\n";
     }
-    if (get_conf_var('MTA', true) === 'sendmail') {
+    if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'sendmail') {
         echo '<br>' . "\n";
         echo 'Sendmail ' . __('version11') . ' ';
         exec('which sendmail', $sendmail);
@@ -129,7 +129,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<br>' . "\n";
     echo 'MailScanner ' . __('version11') . ' ' . $mailscanner_version . '<br>' . "\n";
     echo '<br>';
-    $virusScanner = get_conf_var('VirusScanners');
+    $virusScanner = \MailWatch\MailScanner::getConfVar('VirusScanners');
 
     // Add test for others virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {

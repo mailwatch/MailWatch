@@ -51,7 +51,7 @@ if ($required_constant_missing_count === 0) {
 
     function quarantine_reconcile()
     {
-        $quarantine = get_conf_var('QuarantineDir');
+        $quarantine = \MailWatch\MailScanner::getConfVar('QuarantineDir');
         $d = dir($quarantine) or die($php_errormsg);
         while (false !== ($f = $d->read())) {
             if (preg_match('/^\d{8}$/', $f) && is_array($array = quarantine_list_dir($f))) {
@@ -67,7 +67,7 @@ if ($required_constant_missing_count === 0) {
     function quarantine_clean()
     {
         $oldest = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
-        $quarantine = get_conf_var('QuarantineDir');
+        $quarantine = \MailWatch\MailScanner::getConfVar('QuarantineDir');
 
         $d = dir($quarantine) or die($php_errormsg);
         while (false !== ($f = $d->read())) {
@@ -117,7 +117,7 @@ if ($required_constant_missing_count === 0) {
 
     function quarantine_list_dir($dir)
     {
-        $dir = get_conf_var('QuarantineDir') . "/$dir";
+        $dir = \MailWatch\MailScanner::getConfVar('QuarantineDir') . "/$dir";
         $spam = "$dir/spam";
         $nonspam = "$dir/nonspam";
         $mcp = "$dir/mcp";

@@ -52,7 +52,7 @@ dbquery('DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (NOW() - INTERVAL ' 
 // Cleaning the mta_log and optionally the mta_log_id table
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
-$mta = get_conf_var('mta');
+$mta = \MailWatch\MailScanner::getConfVar('mta');
 $optimize_mtalog_id = '';
 if ($mta === 'postfix' && $tablecheck->num_rows > 0) {
     //version for postfix with mtalog_ids enabled

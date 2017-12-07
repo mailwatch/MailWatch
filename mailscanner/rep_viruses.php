@@ -37,7 +37,7 @@ $filter = \MailWatch\Html::start(__('virusreport50'), 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
 $scanner = [];
-$scanners = explode(' ', get_conf_var('virusscanners'));
+$scanners = explode(' ', \MailWatch\MailScanner::getConfVar('virusscanners'));
 foreach ($scanners as $vscanner) {
     switch ($vscanner) {
         case('sophos'):

@@ -932,11 +932,11 @@ if (!is_file(MS_CONFIG_DIR . 'MailScanner.conf')) {
 
     foreach ($check_settings as $setting => $value) {
         echo pad(" - $setting ");
-        if (preg_match('/' . $value . '/', get_conf_var($setting))) {
+        if (preg_match('/' . $value . '/', \MailWatch\MailScanner::getConfVar($setting))) {
             echo color(' OK', 'green') . PHP_EOL;
         } else {
             echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
-            $errors[] = "MailScanner.conf: $setting != $value (=" . get_conf_var($setting) . ')';
+            $errors[] = "MailScanner.conf: $setting != $value (=" . \MailWatch\MailScanner::getConfVar($setting) . ')';
         }
     }
 }

@@ -72,7 +72,7 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
     $file = base64_decode($response);
 } else {
     //build filename path
-    $quarantine_dir = get_conf_var('QuarantineDir');
+    $quarantine_dir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
     $filename = '';
     switch (true) {
         case (file_exists($quarantine_dir . '/' . $message_data->date . '/nonspam/' . $message_id)):

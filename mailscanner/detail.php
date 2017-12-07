@@ -62,7 +62,7 @@ $yes = '<span class="yes">&nbsp;' . __('yes04') . '&nbsp;</span>';
 $no = '<span class="no">&nbsp;' . __('no04') . '&nbsp;</span>';
 
 // Setting what Mail Transfer Agent is being used
-$mta = get_conf_var('mta');
+$mta = \MailWatch\MailScanner::getConfVar('mta');
 
 // The sql command to pull the data
 $sql = "
@@ -248,12 +248,12 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('spam04') && !DISTRIBUTED_SETUP) {
             // Display actions if spam/not-spam
             if ($row[$f] === $yes) {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
+                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(' ', ', ', \MailWatch\MailScanner::getConfVar('SpamActions'));
             } else {
                 $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
                         ' ',
                         ', ',
-                        get_conf_var('NonSpamActions')
+                        \MailWatch\MailScanner::getConfVar('NonSpamActions')
                     );
             }
         }
@@ -262,7 +262,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
                     ' ',
                     ', ',
-                    get_conf_var('HighScoringSpamActions')
+                    \MailWatch\MailScanner::getConfVar('HighScoringSpamActions')
                 );
         }
 
@@ -371,7 +371,7 @@ echo "</table>\n";
 
 flush();
 
-$quarantinedir = get_conf_var('QuarantineDir');
+$quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
 $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
@@ -518,7 +518,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
                 (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message') &&
-                (strtoupper(get_conf_var('UseSpamAssassin')) !== 'NO')
+                (strtoupper(\MailWatch\MailScanner::getConfVar('UseSpamAssassin')) !== 'NO')
             ) {
                 echo '   <td align="center" class="salearn-' . $row['salearn'] . '"><input class="noprint" type="checkbox" name="learn[]" value="' . $item['id'] . '"><select class="noprint" name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
