@@ -105,14 +105,14 @@ class GraphGenerator
         $graphTypes = '';
         $colors = '';
 
-        for ($i = 0; $i < count($this->graphColumns['dataNumericColumns']); $i++) {
+        for ($i = 0, $iMax = count($this->graphColumns['dataNumericColumns']); $i < $iMax; $i++) {
             //foreach yaxis get the column name for numeric and formatted data
             $numericData .= '[' . "\n";
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
             $graphTypes .= '[' . "\n";
             $colors .= isset($this->settings['colors']) ? '["' . implode('", "', $this->settings['colors'][$i]) . '"],' : '';
-            for ($j = 0; $j < count($this->graphColumns['dataNumericColumns'][$i]); $j++) {
+            for ($j = 0, $jMax = count($this->graphColumns['dataNumericColumns'][$i]); $j < $jMax; $j++) {
                 if (isset($this->graphColumns['dataLabels'][$i])) {
                     $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] . '",';
                 }
