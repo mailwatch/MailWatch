@@ -19,7 +19,11 @@
     "pear/net_socket": "^1.2",
     "pear/net_smtp": "^1.7",
     "pear/mail": "^1.4",
-    "pear/pager": "^2.5"
+    "pear/pager": "^2.5",
+    "geoip/geoip": "^1.17"
+  },
+  "conflict": {
+    "ext-geoip": "*"
   },
   "autoload": {
     "psr-4": {

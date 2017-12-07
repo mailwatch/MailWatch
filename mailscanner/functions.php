@@ -2578,7 +2578,6 @@ function debug_print_r($input)
  */
 function return_geoip_country($ip)
 {
-    require_once __DIR__ . '/lib/geoip.inc';
     //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
     $ip = stripPortFromIp($ip);
     $countryname = false;
