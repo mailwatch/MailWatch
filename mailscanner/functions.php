@@ -450,7 +450,7 @@ function getSUBJECTheader($header)
                 $linePartArr = imap_mime_header_decode($subLines[$i]);
                 for ($j = 0, $countLinePartArr = count($linePartArr); $j < $countLinePartArr; $j++) {
                     if (strtolower($linePartArr[$j]->charset) === 'default') {
-                        if ($linePartArr[$j]->text != ' ') {
+                        if ($linePartArr[$j]->text !== ' ') {
                             $convLine .= $linePartArr[$j]->text;
                         }
                     } else {

@@ -134,7 +134,7 @@ function decode_structure($structure)
             }
             */
             if (isset($structure->ctype_parameters['charset'])) {
-                if (strtolower($structure->ctype_parameters['charset']) == 'windows-1255') {
+                if (strtolower($structure->ctype_parameters['charset']) === 'windows-1255') {
                     $structure->body = iconv('ISO-8859-8', 'UTF-8', $structure->body);
                 } elseif (strtolower($structure->ctype_parameters['charset']) !== 'utf-8') {
                     $structure->body = utf8_encode($structure->body);
@@ -154,7 +154,7 @@ function decode_structure($structure)
         case 'text/html':
             echo '<!DOCTYPE html>' . "\n";
             if (isset($structure->ctype_parameters['charset'])) {
-                if (strtolower($structure->ctype_parameters['charset']) == 'windows-1255') {
+                if (strtolower($structure->ctype_parameters['charset']) === 'windows-1255') {
                     $structure->body = iconv('ISO-8859-8', 'UTF-8', $structure->body);
                 } elseif (strtolower($structure->ctype_parameters['charset']) !== 'utf-8') {
                     $structure->body = utf8_encode($structure->body);

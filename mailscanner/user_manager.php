@@ -179,7 +179,7 @@ function printUserFormular(
     echo '<div id="formerror" class="hidden"></div>';
     echo '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-    if ($action == 'edit') {
+    if ($action === 'edit') {
         echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $uid . '">' . "\n";
         $formheader =  __('edituser12') . ' ' . $username;
         $password = 'XXXXXXXX';
@@ -194,7 +194,7 @@ function printUserFormular(
     if (!defined('ALLOW_NO_USER_DOMAIN') || !ALLOW_NO_USER_DOMAIN) {
         echo ' <TR><TD CLASS="message" COLSPAN="2" ALIGN="CENTER">' . __('forallusers12') . '</TD></TR>' . "\n";
     }
-    if ($action == 'edit') {
+    if ($action === 'edit') {
         echo ' <TR><TD CLASS="heading">' . __('lastlogin12') . '</TD><TD>' . $lastlogin . '</TD></TR>' . "\n";
     }
     echo ' <TR><TD CLASS="heading">' . __('username0212') . '</TD><TD><INPUT TYPE="TEXT" ID="username" NAME="username" VALUE="' . $username . '"></TD></TR>' . "\n";
@@ -206,17 +206,17 @@ function printUserFormular(
 <OPTION ' . $type['A'] . ' VALUE="A">' . __('admin12') . '</OPTION>
 <OPTION ' . $type['D'] . ' VALUE="D">' . __('domainadmin12') . '</OPTION>
 <OPTION ' . $type['U'] . ' VALUE="U">' . __('user12') . '</OPTION>
-' . ($action == 'edit' ? '<OPTION ' . $type['R'] . ' VALUE="R">' . __('userregex12') . '</OPTION>' : '') . '
+' . ($action === 'edit' ? '<OPTION ' . $type['R'] . ' VALUE="R">' . __('userregex12') . '</OPTION>' : '') . '
 </SELECT></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . __('usertimeout12') . '</TD><TD><INPUT TYPE="TEXT" NAME="timeout" VALUE="' . $timeout . '" size="5"> <span class="font-1em">' . __('empty12') . '=' . __('usedefault12') . '</span></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . __('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span>
-' . ($action == 'edit' ? '<button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button>' : '') . '
+' . ($action === 'edit' ? '<button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button>' : '') . '
  </td></tr>' . "\n";
     echo ' <TR><TD CLASS="heading">' . __('quarreprec12') . '</TD><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt" VALUE="' . $quarantine_rcpt . '"><br><span class="font-1em">' . __('overrec12') . '</span></TD>' . "\n";
     echo ' <TR><TD CLASS="heading">' . __('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span class="font-1em">' . __('scanforspam212') . '</span></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . __('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $spamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . __('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="' . $highspamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></TD></TR>' . "\n";
-    echo ' <TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<button type="submit" name="submit">' . ($action == 'edit' ? __('update12') : __('create12')) . '</button></TD></TR>' . "\n";
+    echo ' <TR><TD CLASS="heading">' . __('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . __('reset12') . '">&nbsp;&nbsp;<button type="submit" name="submit">' . ($action === 'edit' ? __('update12') : __('create12')) . '</button></TD></TR>' . "\n";
     echo "</TABLE></FORM><BR>\n";
 }
 
