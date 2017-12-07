@@ -27,6 +27,7 @@
 
 // Set error level (some distro's have php.ini set to E_ALL)
 use MailWatch\Db;
+use MailWatch\Filter;
 
 error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 
@@ -318,7 +319,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     if ($report) {
         echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
         if (!isset($_SESSION['filter'])) {
-            require_once __DIR__ . '/filter.inc.php';
+
             $filter = new Filter();
             $_SESSION['filter'] = $filter;
         } else {

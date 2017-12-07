@@ -26,7 +26,7 @@
  */
 
 // Include of necessary functions
-require_once __DIR__ . '/filter.inc.php';
+
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/graphgenerator.inc.php';
 

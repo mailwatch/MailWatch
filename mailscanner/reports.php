@@ -25,8 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//Require files
-require_once __DIR__ . '/filter.inc.php';
+use MailWatch\Filter;
+
 require_once __DIR__ . '/functions.php';
 
 // verify login
@@ -63,7 +63,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     
     switch (strtolower($action)) {
         case 'add':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], sanitizeInput($_POST['value']));
@@ -76,7 +76,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             echo "Session destroyed\n";
             exit;
         case 'save':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             if (isset($_POST['save_as'])) {
@@ -90,13 +90,13 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             }
             break;
         case 'load':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             $filter->Load(sanitizeInput($_POST['filter']));
             break;
         case 'delete':
-            if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
+            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             $filter->Delete(sanitizeInput($_POST['filter']));

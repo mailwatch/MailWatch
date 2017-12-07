@@ -321,7 +321,7 @@ return array(
     'qviewer08' => '検疫ビューア',
     'dienodir08' => '隔離ディレクトリが見つかりませんでした',
 
-    // 09-filter.inc.php
+    // 09-Filter.php
     'activefilters09' => 'アクティブフィルタ',
     'addfilter09' => 'フォルダ追加',
     'loadsavef09' => 'フィルタの読み込み/保存',

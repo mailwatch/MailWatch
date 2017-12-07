@@ -321,7 +321,7 @@ return array(
     'qviewer08' => 'Quarantine Viewer',
     'dienodir08' => 'Kein Quarantäne-Verzeichnis gefunden',
 
-    // 09-filter.inc.php
+    // 09-Filter.php
     'activefilters09' => 'Aktive Filter',
     'addfilter09' => 'Filter hinzufügen',
     'loadsavef09' => 'Filter öffnen/speichern',

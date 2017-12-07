@@ -25,16 +25,18 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 /**
  * Class Filter
  */
 class Filter
 {
     /** @var array */
-    public $item = array();
-    public $operators = array();
-    public $columns = array();
-    public $reports = array();
+    public $item = [];
+    public $operators = [];
+    public $columns = [];
+    public $reports = [];
     public $last_operator;
     public $last_column;
     public $last_value;
@@ -45,7 +47,7 @@ class Filter
      */
     public function __construct()
     {
-        $this->operators = array(
+        $this->operators = [
             '=' => __('equal09'),
             '<>' => __('notequal09'),
             '>' => __('greater09'),
@@ -58,8 +60,8 @@ class Filter
             'NOT REGEXP' => __('notregexp09'),
             'IS NULL' => __('isnull09'),
             'IS NOT NULL' => __('isnotnull09')
-        );
-        $this->columns = array(
+        ];
+        $this->columns = [
             'date' => __('date09'),
             'headers' => __('headers09'),
             'id' => __('id09'),
@@ -90,7 +92,7 @@ class Filter
             'otherinfected' => __('otherinfected09'),
             'report' => __('report09'),
             'hostname' => __('hostname09')
-        );
+        ];
     }
 
     /**
@@ -115,7 +117,7 @@ class Filter
             }
         }
 
-        $this->item[] = array($column, $operator, $value);
+        $this->item[] = [$column, $operator, $value];
     }
 
     /**
@@ -190,7 +192,7 @@ WHERE
             if ($val[0] === 'date') {
                 // Change field from timestamp to date format
                 $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
-                
+
                 $sql .= self::getSqlCondition($val);
             }
         }
@@ -207,7 +209,7 @@ WHERE
 
         return $sql;
     }
-    
+
     private static function getSqlCondition($val)
     {
         // If LIKE selected - place wildcards either side of the query string
@@ -219,7 +221,7 @@ WHERE
         } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
             // Handle NULL and NOT NULL's
             return "AND\n $val[0] $val[1]\n";
-        } elseif ($val[2]!=='' && $val[2]{0} === '!') {
+        } elseif ($val[2] !== '' && $val[2]{0} === '!') {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
         } else {
@@ -299,7 +301,7 @@ WHERE
         $return .= '</td><td class="filterbuttons"><button type="submit" name="action" value="load">' . __('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . __('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . __('delete09') . '</button></td></tr>' . "\n";
         $return .= '</table>' . "\n";
         $return .= '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
-        $return .= '<input type="hidden" name="formtoken" value="' . generateFormToken('/filter.inc.php form token') . '">' . "\n";
+        $return .= '<input type="hidden" name="formtoken" value="' . generateFormToken('/Filter.php form token') . '">' . "\n";
         $return .= '</form>' . "\n";
 
         return $return;
@@ -318,7 +320,7 @@ WHERE
                 unset($this->reports[$key]);
             }
         }
-        $this->reports[] = array('url' => $url, 'description' => $description, 'useToken' => $useToken);
+        $this->reports[] = ['url' => $url, 'description' => $description, 'useToken' => $useToken];
     }
 
     /**
@@ -331,7 +333,7 @@ WHERE
             return;
         }
 
-        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (count($this->item) > 0) {
             // Delete the existing first
             $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
@@ -356,8 +358,8 @@ WHERE
         if (!validateInput($name, 'general')) {
             return;
         }
-        
-        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+        Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
         while ($row = $sth->fetch_row()) {
@@ -374,8 +376,8 @@ WHERE
         if (!validateInput($name, 'general')) {
             return;
         }
-        
-        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+        Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
         dbquery($sql);
     }
@@ -404,7 +406,7 @@ WHERE
 
         return in_array($operator, $validKeys, true);
     }
-    
+
     /**
      * @param string $column
      * @return bool
