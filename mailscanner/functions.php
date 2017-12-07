@@ -126,14 +126,6 @@ if (PHP_SAPI !== 'cli') {
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
 
-// XML-RPC
-if (!function_exists('xml_parser_create') && (!ini_get('enable_dl') || @dl('xml.so') !== true)) {
-    die(__('phpxmlnotloaded03'));
-}
-require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
-require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
-require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
-
 function getVirusRegex($scanner = null)
 {
     /*

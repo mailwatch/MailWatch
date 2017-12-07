@@ -558,8 +558,8 @@ function updateClock() {
                 $servers = explode(' ', RPC_REMOTE_SERVER);
 
                 for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
-                    if ($servers[$i] !== getHostByName(getHostName())) {
-                        $msg = new xmlrpcmsg('postfix_queues', []);
+                    if ($servers[$i] !== gethostbyname(gethostname())) {
+                        $msg = new \xmlrpcmsg('postfix_queues', []);
                         $rsp = xmlrpc_wrapper($servers[$i], $msg);
                         if ($rsp->faultCode() === 0) {
                             $response = php_xmlrpc_decode($rsp->value());
