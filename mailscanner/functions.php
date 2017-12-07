@@ -4020,8 +4020,6 @@ function checkPrivilegeChange($myusername)
 
 function printTrafficGraph()
 {
-
-
     $graphInterval = (defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
 
     echo '<td align="center" valign="top">' . "\n";
