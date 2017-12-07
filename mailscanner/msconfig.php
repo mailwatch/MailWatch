@@ -35,7 +35,7 @@ if ($_SESSION['user_type'] !== 'A') {
     \MailWatch\Html::start(__('config27'));
     audit_log(__('auditlog27', true));
 
-    $conf_dir = get_conf_include_folder();
+    $conf_dir = \MailWatch\MailScanner::getConfIncludeFolder();
     $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
 
     echo '<table border="0" cellpadding="1" cellspacing="1" class="maildetail" width="100%">';

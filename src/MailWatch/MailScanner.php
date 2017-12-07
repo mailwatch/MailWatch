@@ -95,6 +95,36 @@ class MailScanner
     }
 
     /**
+     * @param bool $force
+     * @return bool|mixed
+     */
+    public static function getConfIncludeFolder($force = false)
+    {
+        if (DISTRIBUTED_SETUP && !$force) {
+            return false;
+        }
+
+        static $conf_include_folder;
+        if (null !== $conf_include_folder) {
+            return $conf_include_folder;
+        }
+
+        $msconfig = MS_CONFIG_DIR . 'MailScanner.conf';
+        if (!is_file($msconfig) || !is_readable($msconfig)) {
+            return false;
+        }
+
+        if (preg_match('/^include\s+([^=]*)\*\S*$/im', file_get_contents($msconfig), $match) === 1) {
+            $conf_include_folder = $match[1];
+
+            return $conf_include_folder;
+        }
+
+        die(__('dienoconfigval103') . ' include ' . __('dienoconfigval203') . ' ' . $msconfig . "\n");
+    }
+
+
+    /**
      * @param string $name MailScanner config parameter name
      * @param bool $force
      * @return bool
@@ -104,7 +134,7 @@ class MailScanner
         if (DISTRIBUTED_SETUP && !$force) {
             return false;
         }
-        $conf_dir = get_conf_include_folder($force);
+        $conf_dir = static::getConfIncludeFolder($force);
         $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
         $array_output1 = static::parseConfFile($MailScanner_conf_file);
