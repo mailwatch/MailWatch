@@ -25,6 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+use MailWatch\LogParser\PostfixLogProcessor;
+
 ini_set('error_log', 'syslog');
 ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
@@ -41,53 +43,8 @@ if (!@is_file($pathToFunctions)) {
 
 require_once $pathToFunctions;
 
-// Edit if you changed webapp directory from default
-$pathToMTALogProcessor = $pathToMailscannerDir .'mtalogprocessor.inc.php';
-
-if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 14) . "\n");
-}
-
-require_once $pathToMTALogProcessor;
-
 // Set-up environment
 set_time_limit(0);
-
-class PostfixLogProcessor extends MtaLogProcessor
-{
-    public function __construct()
-    {
-        $this->mtaprocess = 'postfix/smtp';
-        $this->delayField = 'delay';
-        $this->statusField = 'status';
-    }
-
-    public function getRejectReasons()
-    {
-        // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
-        // example
-        $rejectReasons = [];
-        if (false !== stripos($this->entry, 'NOQUEUE')) {
-            if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
-                $rejectReasons['type'] = safe_value('unknown_hostname');
-            } else {
-                $rejectReasons['type'] = safe_value('NOQUEUE');
-            }
-            $rejectReasons['status'] = safe_value($this->raw);
-        }
-
-        return $rejectReasons;
-    }
-
-    public function extractKeyValuePairs($match)
-    {
-        $entries = [];
-        $pattern = '/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/';
-        preg_match($pattern, $match[2], $entries);
-
-        return $entries;
-    }
-}
 
 $logprocessor = new PostfixLogProcessor();
 if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {

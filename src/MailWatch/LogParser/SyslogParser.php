@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 
 /*
@@ -26,31 +25,60 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-use MailWatch\LogParser\SendmailLogProcessor;
+namespace MailWatch\LogParser;
 
-ini_set('error_log', 'syslog');
-ini_set('html_errors', 'off');
-ini_set('display_errors', 'on');
-ini_set('implicit_flush', 'false');
+class SyslogParser
+{
+    public $raw;
+    public $timestamp;
+    public $date;
+    public $time;
+    public $rfctime;
+    public $host;
+    public $process;
+    public $pid;
+    public $entry;
+    public $months = [
+        'Jan' => '1',
+        'Feb' => '2',
+        'Mar' => '3',
+        'Apr' => '4',
+        'May' => '5',
+        'Jun' => '6',
+        'Jul' => '7',
+        'Aug' => '8',
+        'Sep' => '9',
+        'Oct' => '10',
+        'Nov' => '11',
+        'Dec' => '12'
+    ];
 
-// Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+    /**
+     * @param string $line
+     */
+    public function __construct($line)
+    {
+        // Parse the date, time, host, process pid and log entry
+        if (preg_match('/^(\S+)\s+(\d+)\s(\d+):(\d+):(\d+)\s(\S+)\s(\S+)\[(\d+)\]:\s(.+)$/', $line, $explode)) {
+            // Store raw line
+            $this->raw = $explode[0];
 
-if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
-}
+            // Decode the syslog time/date
+            $month = $this->months[$explode[1]];
+            $thismonth = date('n');
+            $thisyear = date('Y');
+            // Work out the year
+            $year = $month <= $thismonth ? $thisyear : $thisyear - 1;
+            $this->date = $explode[2] . ' ' . $explode[1] . ' ' . $year;
+            $this->time = $explode[3] . ':' . $explode[4] . ':' . $explode[5];
+            $datetime = $this->date . ' ' . $this->time;
+            $this->timestamp = strtotime($datetime);
+            $this->rfctime = date('r', $this->timestamp);
 
-require $pathToFunctions;
-
-// Set-up environment
-set_time_limit(0);
-
-$logprocessor = new SendmailLogProcessor();
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
-    $logprocessor->doit('cat ' . MAIL_LOG);
-} else {
-    // Refresh first
-    $logprocessor->doit('cat ' . MAIL_LOG);
-    // Start watching the maillog
-    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
+            $this->host = $explode[6];
+            $this->process = $explode[7];
+            $this->pid = $explode[8];
+            $this->entry = $explode[9];
+        }
+    }
 }

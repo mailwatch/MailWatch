@@ -25,7 +25,9 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once __DIR__ . '/syslog_parser.inc.php';
+namespace MailWatch\LogParser;
+
+use MailWatch\Db;
 
 abstract class MtaLogProcessor
 {
@@ -66,7 +68,7 @@ abstract class MtaLogProcessor
         if (!$fp = popen($input, 'r')) {
             die(__('diepipe56'));
         }
-        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
@@ -81,7 +83,7 @@ abstract class MtaLogProcessor
             $_relay = '';
             $_msg_id = '';
             $_status = '';
-            
+
             if ($parsed->process === $this->mtaprocess) {
                 $this->parse($parsed->entry);
                 if (true === DEBUG) {
@@ -144,7 +146,7 @@ abstract class MtaLogProcessor
             }
             $lines++;
         }
-        \MailWatch\Db::close();
+        Db::close();
         pclose($fp);
     }
 

@@ -878,7 +878,7 @@ return [
     'delete55' => 'Delete',
     'newrule55' => 'Add New Rule:',
 
-    // 56-mtalogprocessor.inc.php
+    // 56-MtaLogProcessor.php
     'diepipe56' => 'Cannot open pipe',
 
     // 57-quarantine_action.php

@@ -869,7 +869,7 @@ return [
     'delete55' => '削除',
     'newrule55' => '新しいルールを追加：',
 
-    // 56-mtalogprocessor.inc.php
+    // 56-MtaLogProcessor.php
     'diepipe56' => 'パイプを開くことができません',
 
     // 57-quarantine_action.php

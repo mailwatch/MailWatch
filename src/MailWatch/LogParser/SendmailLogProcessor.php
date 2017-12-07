@@ -1,4 +1,3 @@
-#!/usr/bin/php -q
 <?php
 
 /*
@@ -26,31 +25,54 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-use MailWatch\LogParser\SendmailLogProcessor;
+namespace MailWatch\LogParser;
 
-ini_set('error_log', 'syslog');
-ini_set('html_errors', 'off');
-ini_set('display_errors', 'on');
-ini_set('implicit_flush', 'false');
+class SendmailLogProcessor extends MtaLogProcessor
+{
+    public function __construct()
+    {
+        $this->mtaprocess = 'sendmail';
+        $this->delayField = 'xdelay';
+        $this->statusField = 'stat';
+    }
 
-// Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+    public function getRulesets()
+    {
+        if (isset($this->entries['ruleset'])) {
+            if ($this->entries['ruleset'] === 'check_relay') {
+                // Listed in RBL(s)
+                return [
+                    'type' => safe_value('rbl'),
+                    'relay' => safe_value($this->entries['arg2']),
+                    'status' => safe_value($this->entries['reject'])
+                ];
+            }
+            if ($this->entries['ruleset'] === 'check_mail') {
+                // Domain does not resolve
+                return [
+                    'type' => safe_value('unresolveable'),
+                    'status' => safe_value($this->getEmail($this->entries['reject']))
+                ];
+            }
+        }
+    }
 
-if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
-}
-
-require $pathToFunctions;
-
-// Set-up environment
-set_time_limit(0);
-
-$logprocessor = new SendmailLogProcessor();
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
-    $logprocessor->doit('cat ' . MAIL_LOG);
-} else {
-    // Refresh first
-    $logprocessor->doit('cat ' . MAIL_LOG);
-    // Start watching the maillog
-    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
+    public function extractKeyValuePairs($match)
+    {
+        $items = explode(', ', $match[2]);
+        $entries = [];
+        foreach ($items as $item) {
+            $entry = explode('=', $item);
+            if (isset($entry[1])) {
+                $entries[$entry[0]] = $entry[1];
+                // fix for the id= issue 09.12.2011
+                if (isset($entry[2])) {
+                    $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
+                } else {
+                    $entries[$entry[0]] = $entry[1];
+                }
+            }
+        }
+        return $entries;
+    }
 }

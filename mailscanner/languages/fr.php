@@ -878,7 +878,7 @@ return [
     'delete55' => 'Effacer',
     'newrule55' => 'Ajouter une nouvelle règle :',
 
-    // 56-mtalogprocessor.inc.php
+    // 56-MtaLogProcessor.php
     'diepipe56' => 'Impossible d\'ouvrir le conduit',
 
     // 57-quarantine_action.php
