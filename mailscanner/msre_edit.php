@@ -67,13 +67,13 @@ if ($_SESSION['user_type'] !== 'A') {
 
     // Ruleset keywords are the key words that you can use in a ruleset.
     // This value is used to populate the dropdown boxen.
-    $CONF_ruleset_keyword = array(
+    $CONF_ruleset_keyword = [
         'From:',
         'To:',
         'FromOrTo:',
         'FromAndTo:',
         'Virus:'
-    );
+    ];
 
     define('MSRE_COLUMNS', 6);
 
@@ -147,7 +147,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     TR_Single("<pre>$file_contents</pre>", 'colspan="' . MSRE_COLUMNS . '"');
 
     // Now grab any lines in the file that aren't comments.
-    $ruleset = array();
+    $ruleset = [];
     $previous_line = '';
     foreach (preg_split("/\n/", $file_contents) as $line) {
         //echo "$i: $line<br>\n";
@@ -166,7 +166,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             if (substr($previous_line, 0, 1) === '#') {
                 $desc = $previous_line;
             }
-            $ruleset[] = array($desc, $line);
+            $ruleset[] = [$desc, $line];
         }
         $previous_line = $line;
     }
@@ -185,7 +185,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // Now I have to get rid of any blank elements, which would be
         // created if there are multiple tabs or spaces in the line
         $old_rule_part = $rule_part;
-        $rule_part = array();
+        $rule_part = [];
         foreach ($old_rule_part as $current_part) {
             if ($current_part !== '') {
                 $rule_part[] = $current_part;
@@ -198,7 +198,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // that is to be taken.  We need to get that right away, since
         // different rules can have different parts.
         $old_rule_part = $rule_part;
-        $rule_part = array();
+        $rule_part = [];
         $rule_part['99action'] = array_pop($old_rule_part);
         // Now I should be able to assign the other parts names as well
         // if fewer than 5 parts to rule, fill other parts with NULL
@@ -267,7 +267,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // Now create the rule text
         // sort by keys first
         ksort($rule_part);
-        $rule_text = array();
+        $rule_text = [];
         
         // Description line (and action select box)
         $rule_action_select = 'rule' . $rule_count . '_rule_action';
@@ -309,13 +309,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             '  <option value="" selected>----</option>' . "\n" .
             '  <option value="Delete">' . __('delete55') . '</option>' . "\n" .
             $rule_action_select_options . '</select>' . "\n";
-        $desc_text = array(
+        $desc_text = [
             $rule_action_select_html => 'rowspan="3"',
             '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
             'name="' . $desc_field . '" size="95" value="' . $desc_value . '"' .
             $disable_desc_text . '>' . $hidden_field_code
             => 'colspan="' . (MSRE_COLUMNS - 1) . '"'
-        );
+        ];
 
         foreach ($rule_part as $key => $value) {
             $part_name = 'rule' . $rule_count . '_' . preg_replace("/\d/", '', $key);
@@ -444,16 +444,16 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<input type="hidden" name="rule_count" value="' . $rule_count . '">' . "\n";
 
     // Now put a blank one on the bottom, so the user can add a new one.
-    $add_rule_text = array();
+    $add_rule_text = [];
     $add_prefix = 'rule' . $rule_count . '_';
     
     // Description
-    $desc_text = array(
+    $desc_text = [
         '' => 'rowspan="3"',
         '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
         $add_prefix . 'description" value="" size="95">' =>
             'colspan="' . (MSRE_COLUMNS - 1) . '"'
-    );
+    ];
     
     // Direction
     $temp_html = '<b>' . __('conditions55') . '</b>&nbsp;&nbsp;<select name="' . $add_prefix .
@@ -504,7 +504,7 @@ function Process_Form($file_contents, $short_filename)
     // returns the number of bytes written and status messages, which it
     // gets from Write_File
 
-    $new_file = array();
+    $new_file = [];
     $bytes = 0;
     $status_msg = '';
 
@@ -547,7 +547,7 @@ function Process_Form($file_contents, $short_filename)
     // to re-arrange the rule varibles from the _POST var
     // into a single multi-dimensional array that will hold
     // all the info i need for the rules.
-    $new_ruleset = array();
+    $new_ruleset = [];
     // I should know the number of rules I have... right?
     // we do <= so that we can check for the add rule thingy,
     // which will end up being on the end of the ruleset
@@ -662,7 +662,7 @@ function Process_Form($file_contents, $short_filename)
 
         if (isset($_POST[$direction]) && $_POST[$direction]) {
             //echo "$direction: $_POST[$direction]<br>\n";
-            $new_ruleset[] = array(
+            $new_ruleset[] = [
                 'description' => $_POST[$description],
                 'direction' => $_POST[$direction],
                 'target' => $_POST[$target],
@@ -670,7 +670,7 @@ function Process_Form($file_contents, $short_filename)
                 'and_direction' => $_POST[$and_direction],
                 'and_target' => $_POST[$and_target],
                 'action' => $_POST[$action]
-            );
+            ];
         }
     }
 
@@ -724,7 +724,7 @@ function Process_Form($file_contents, $short_filename)
     }
     $status_msg .= "</span>\n";
 
-    return array($bytes, $status_msg);
+    return [$bytes, $status_msg];
 }
 
 function Read_File($filename, $size)
@@ -786,7 +786,7 @@ function Write_File($filename, $content)
     $status_msg .= __('donewrite55') . '<br>' . "\n";
     $status_msg .= '</span>' . "\n";
 
-    return array($bytes, $status_msg);
+    return [$bytes, $status_msg];
 }
 
 function Fix_Quotes($stuff)

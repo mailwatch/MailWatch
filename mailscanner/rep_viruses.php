@@ -36,7 +36,7 @@ require __DIR__ . '/login.function.php';
 $filter = html_start(__('virusreport50'), 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
-$scanner = array();
+$scanner = [];
 $scanners = explode(' ', get_conf_var('virusscanners'));
 foreach ($scanners as $vscanner) {
     switch ($vscanner) {
@@ -128,7 +128,7 @@ if (!$result->num_rows > 0) {
     die(__('diemysql99') . "\n");
 }
 
-$virus_array = array();
+$virus_array = [];
 
 while ($row = $result->fetch_object()) {
     foreach ($scanner as $scan => $vals) {
@@ -148,14 +148,14 @@ while ($row = $result->fetch_object()) {
 }
 
 reset($virus_array);
-$virus_count = array();
+$virus_count = [];
 foreach ($virus_array as $key => $row) {
     $virus_count[$key] = $row['count'];
 }
 array_multisort($virus_count, SORT_DESC, $virus_array);
 
 $count = 0;
-$data_names = array();
+$data_names = [];
 foreach ($virus_array as $key => $val) {
     $data[] = $val['count'];
     $data_names[] = "$key";

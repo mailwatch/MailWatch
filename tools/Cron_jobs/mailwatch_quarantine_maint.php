@@ -33,7 +33,7 @@ if (!@is_file($pathToFunctions)) {
 }
 require $pathToFunctions;
 
-$required_constant = array('TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP');
+$required_constant = ['TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP'];
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
@@ -121,7 +121,7 @@ if ($required_constant_missing_count === 0) {
         $spam = "$dir/spam";
         $nonspam = "$dir/nonspam";
         $mcp = "$dir/mcp";
-        $array = array();
+        $array = [];
 
         if (is_dir($dir)) {
             // Main quarantine

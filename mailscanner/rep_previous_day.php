@@ -55,60 +55,60 @@ $graphgenerator->sqlQuery = "
   timestamp DESC
 ';
 
-$graphgenerator->tableColumns = array(
+$graphgenerator->tableColumns = [
     'time' => __('hours36'),
     'total_mailconv' => __('mailcount36'),
     'total_virusconv' => __('viruscount36'),
     'total_spamconv' => __('spamcount36'),
     'total_sizeconvconv' => __('size36'),
-);
-$graphgenerator->sqlColumns = array(
+];
+$graphgenerator->sqlColumns = [
     'xaxis',
     'total_mail',
     'total_size',
     'total_virus',
     'total_spam',
-);
-$graphgenerator->valueConversion = array(
+];
+$graphgenerator->valueConversion = [
     'xaxis' => 'generatetimescale',
     'total_size' => 'timescale',
     'total_sizeconv' => 'scale', //do not change this order
     'total_mail' => 'timescale',
     'total_virus' => 'timescale',
     'total_spam' => 'timescale',
-);
-$graphgenerator->graphColumns = array(
+];
+$graphgenerator->graphColumns = [
     'labelColumn' => 'time',
-    'dataLabels' => array(
-        array(__('barmail36'), __('barvirus36'), __('barspam36')),
-        array(__('volume36')),
-    ),
-    'dataNumericColumns' => array(
-        array('total_mailconv', 'total_virusconv', 'total_spamconv'),
-        array('total_sizeconv')
-    ),
-    'dataFormattedColumns' => array(
-        array('total_mailconv', 'total_virusconv', 'total_spamconv'),
-        array('total_sizeconvconv')
-    ),
+    'dataLabels' => [
+        [__('barmail36'), __('barvirus36'), __('barspam36')],
+        [__('volume36')],
+    ],
+    'dataNumericColumns' => [
+        ['total_mailconv', 'total_virusconv', 'total_spamconv'],
+        ['total_sizeconv']
+    ],
+    'dataFormattedColumns' => [
+        ['total_mailconv', 'total_virusconv', 'total_spamconv'],
+        ['total_sizeconvconv']
+    ],
     'xAxeDescription' => __('hours36'),
-    'yAxeDescriptions' => array(
+    'yAxeDescriptions' => [
         __('nomessages36'),
         __('volume36')
-    ),
-    'fillBelowLine' => array('false', 'true')
-);
-$graphgenerator->types = array(
-    array('bar', 'bar', 'bar'),
-    array('line')
-);
+    ],
+    'fillBelowLine' => ['false', 'true']
+];
+$graphgenerator->types = [
+    ['bar', 'bar', 'bar'],
+    ['line']
+];
 $graphgenerator->graphTitle = __('totalmaillasthours36');
 $graphgenerator->settings['timeInterval'] = 'P1D';
 $graphgenerator->settings['timeScale'] = 'PT1H';
 $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';
 $graphgenerator->settings['timeFormat'] = 'H:00';
 $graphgenerator->settings['maxTicks'] = '12';
-$graphgenerator->settings['valueTypes'] = array('plain', 'volume');
+$graphgenerator->settings['valueTypes'] = ['plain', 'volume'];
 $graphgenerator->printLineGraph();
 
 // Add footer

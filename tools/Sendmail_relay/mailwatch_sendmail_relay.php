@@ -65,18 +65,18 @@ class SendmailLogProcessor extends MtaLogProcessor
         if (isset($this->entries['ruleset'])) {
             if ($this->entries['ruleset'] === 'check_relay') {
                 // Listed in RBL(s)
-                return array(
+                return [
                     'type' => safe_value('rbl'),
                     'relay' => safe_value($this->entries['arg2']),
                     'status' => safe_value($this->entries['reject'])
-                );
+                ];
             }
             if ($this->entries['ruleset'] === 'check_mail') {
                 // Domain does not resolve
-                return array(
+                return [
                     'type' => safe_value('unresolveable'),
                     'status' => safe_value(get_email($this->entries['reject']))
-                );
+                ];
             }
         }
     }
@@ -84,7 +84,7 @@ class SendmailLogProcessor extends MtaLogProcessor
     public function extractKeyValuePairs($match)
     {
         $items = explode(', ', $match[2]);
-        $entries = array();
+        $entries = [];
         foreach ($items as $item) {
             $entry = explode('=', $item);
             if (isset($entry[1])) {

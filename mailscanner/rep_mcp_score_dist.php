@@ -52,26 +52,26 @@ $graphgenerator->sqlQuery = '
   score
 ';
 
-$graphgenerator->tableColumns = array(
+$graphgenerator->tableColumns = [
     'score' => __('score35'),
     'countconv' => __('count35')
-);
-$graphgenerator->sqlColumns = array(
+];
+$graphgenerator->sqlColumns = [
     'score',
     'count'
-);
-$graphgenerator->valueConversion = array(
+];
+$graphgenerator->valueConversion = [
     'count' => 'number'
-);
-$graphgenerator->graphColumns = array(
+];
+$graphgenerator->graphColumns = [
     'labelColumn' => 'score',
-    'dataNumericColumns' => array(array('count')),
-    'dataFormattedColumns' => array(array('countconv')),
+    'dataNumericColumns' => [['count']],
+    'dataFormattedColumns' => [['countconv']],
     'xAxeDescription' => __('scorerounded35'),
-    'yAxeDescriptions' => array(__('nbmessage35')),
-    'fillBelowLine' => array('true')
-);
-$graphgenerator->types = array(array('line'));
+    'yAxeDescriptions' => [__('nbmessage35')],
+    'fillBelowLine' => ['true']
+];
+$graphgenerator->types = [['line']];
 $graphgenerator->graphTitle = __('mcpscoredist35');
 $graphgenerator->printLineGraph();
 

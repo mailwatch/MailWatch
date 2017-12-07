@@ -35,7 +35,7 @@ if (!@is_file($pathToFunctions)) {
 require $pathToFunctions;
 require_once MAILWATCH_HOME . '/quarantine_report.inc.php';
 
-$usersForReport = array();
+$usersForReport = [];
 if (isset($argv) && count($argv) > 1) {
     //get path from command line argument if set
     $usersForReport = split(',', $argv[1]);

@@ -63,7 +63,7 @@ function testSameDomainMembership($username, $method)
     $parts = explode('@', $username);
     $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
     $result = dbquery($sql);
-    $filter_domain = array();
+    $filter_domain = [];
     for ($i=0;$i<$result->num_rows;$i++) {
         $filter = $result->fetch_row();
         $filter_domain[] = $filter[0];
@@ -162,9 +162,20 @@ function getUserById($additionalFields = false)
  * @param string|float|int $highspamscore default 0
  */
 
-function printUserFormular($action, $uid = '', $lastlogin = '', $username = '', $fullname = '', $type = array('A'=>'', 'D'=>'', 'U'=>'selected', 'R'=>''),
-           $timeout = '', $quarantine_report = '', $quarantine_rcpt = '', $noscan = 'checked', $spamscore = '0', $highspamscore = '0')
-{
+function printUserFormular(
+    $action,
+    $uid = '',
+    $lastlogin = '',
+    $username = '',
+    $fullname = '',
+    $type = ['A'=>'', 'D'=>'', 'U'=>'selected', 'R'=>''],
+           $timeout = '',
+    $quarantine_report = '',
+    $quarantine_rcpt = '',
+    $noscan = 'checked',
+    $spamscore = '0',
+    $highspamscore = '0'
+) {
     echo '<div id="formerror" class="hidden"></div>';
     echo '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
@@ -248,7 +259,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         $quarantine_rcpt = '';
     }
 
-    $type = array();
+    $type = [];
     $type['A'] = __('admin12', true);
     $type['D'] = __('domainadmin12', true);
     $type['U'] = __('user12', true);
@@ -334,7 +345,7 @@ function editUser()
             $timeout = $user->login_timeout;
         }
 
-        $types = array();
+        $types = [];
         $types['A'] = '';
         $types['D'] = '';
         $types['U'] = '';
@@ -504,7 +515,7 @@ function sendReport()
     }
 
     $quarantine_report = new Quarantine_Report();
-    $reportResult = $quarantine_report->send_quarantine_reports(array($user->username));
+    $reportResult = $quarantine_report->send_quarantine_reports([$user->username]);
     if ($reportResult['succ'] >= 0) {
         return getHtmlMessage(__('quarantineReportSend12'), 'success');
     } else {
@@ -775,7 +786,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
                 echo getHtmlMessage(__('noReportsEnabled12'), 'error');
             } else {
                 $quarantine_report = new Quarantine_Report();
-                $reportResult = $quarantine_report->send_quarantine_reports(array($_SESSION['myusername']));
+                $reportResult = $quarantine_report->send_quarantine_reports([$_SESSION['myusername']]);
                 if ($reportResult['succ'] === 1) {
                     echo getHtmlMessage(__('quarantineReportSend12'), 'error');
                 } else {

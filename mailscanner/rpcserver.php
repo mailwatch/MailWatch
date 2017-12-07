@@ -37,8 +37,8 @@ function rpc_get_quarantine($msg)
     if (is_string($input)) {
         $input = strtolower($input);
         $quarantinedir = get_conf_var('QuarantineDir');
-        $item = array();
-        $output = array();
+        $item = [];
+        $output = [];
         if ($input === '/') {
 
             // Return top-level directory
@@ -133,8 +133,8 @@ function rpc_quarantine_list_items($msg)
         return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratyper260'));
     }
     $return = quarantine_list_items($input);
-    $output = array();
-    $struct = array();
+    $output = [];
+    $struct = [];
     foreach ($return as $array) {
         foreach ($array as $key => $val) {
             $struct[$key] = new xmlrpcval($val);
@@ -191,14 +191,14 @@ function rpc_get_conf_var($msg)
 function rpc_dump_mailscanner_conf()
 {
     $fh = fopen(MS_CONFIG_DIR . 'MailScanner.conf', 'rb');
-    $output = array();
+    $output = [];
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, 4096));
         if (preg_match('/^([^#].+) = ([^#].*)/', $line, $regs)) {
             # Strip trailing comments
             $regs[2] = preg_replace('/#.*$/', '', $regs[2]);
             # store %var% variables
-            $var = array();
+            $var = [];
             if (preg_match('/%.+%/', $regs[1])) {
                 $var[$regs[1]] = $regs[2];
             }
@@ -216,7 +216,7 @@ function rpc_dump_mailscanner_conf()
 function rpc_bayes_info()
 {
     $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
-    $output = array();
+    $output = [];
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, 4096));
         if (preg_match('/\S+\s+\S+\s+(\S+)\s+\S+\s+non-token data: (.+)/', $line, $regs)) {
@@ -255,70 +255,70 @@ function rpc_postfix_queues()
 {
     $inq = \MailWatch\MTA\Postfix::postfixinq();
     $outq = \MailWatch\MTA\Postfix::postfixallq() - $inq;
-    $result = array(
+    $result = [
         'inq' => new xmlrpcval($inq),
         'outq' => new xmlrpcval($outq),
-    );
+    ];
     return new xmlrpcresp(new xmlrpcval($result, 'struct'));
 }
 
-$s = new xmlrpc_server(array(
-        'get_quarantine' => array(
+$s = new xmlrpc_server([
+        'get_quarantine' => [
             'function' => 'rpc_get_quarantine',
-            'signature' => array(array('array', 'string')),
+            'signature' => [['array', 'string']],
             'docstring' => 'This service returns a listing of files in the relative quarantine directory.'
-        ),
-        'return_quarantined_file' => array(
+        ],
+        'return_quarantined_file' => [
             'function' => 'rpc_return_quarantined_file',
-            'signature' => array(array('base64', 'string')),
+            'signature' => [['base64', 'string']],
             'docstring' => 'This service returns the contents of a quarantined file.'
-        ),
-        'quarantine_list_items' => array(
+        ],
+        'quarantine_list_items' => [
             'function' => 'rpc_quarantine_list_items',
-            'signature' => array(array('array', 'string')),
+            'signature' => [['array', 'string']],
             'docstring' => 'This service lists the files quarantined for a given message.'
-        ),
-        'quarantine_release' => array(
+        ],
+        'quarantine_release' => [
             'function' => 'rpc_quarantine_release',
-            'signature' => array(array('string', 'array', 'array', 'string')),
+            'signature' => [['string', 'array', 'array', 'string']],
             'docstring' => 'This service release a message from the quarantine.'
-        ),
-        'quarantine_learn' => array(
+        ],
+        'quarantine_learn' => [
             'function' => 'rpc_quarantine_learn',
-            'signature' => array(array('string', 'array', 'array', 'string')),
+            'signature' => [['string', 'array', 'array', 'string']],
             'docstring' => 'This service runs sa-learn on a message in the quarantine.'
-        ),
-        'quarantine_delete' => array(
+        ],
+        'quarantine_delete' => [
             'function' => 'rpc_quarantine_delete',
-            'signature' => array(array('string', 'array', 'array')),
+            'signature' => [['string', 'array', 'array']],
             'docstring' => 'This service deltes one or more items from the quarantine.'
-        ),
-        'sophos_status' => array(
+        ],
+        'sophos_status' => [
             'function' => 'rpc_sophos_status',
-            'signature' => array(array('string')),
+            'signature' => [['string']],
             'docstring' => 'This service returns the Sophos version and IDE information.'
-        ),
-        'get_conf_var' => array(
+        ],
+        'get_conf_var' => [
             'function' => 'rpc_get_conf_var',
-            'signature' => array(array('string', 'string')),
+            'signature' => [['string', 'string']],
             'docstring' => 'This service returns a named configuration value from MailScanner.conf.'
-        ),
-        'dump_mailscanner_conf' => array(
+        ],
+        'dump_mailscanner_conf' => [
             'function' => 'rpc_dump_mailscanner_conf',
-            'signature' => array(array('struct')),
+            'signature' => [['struct']],
             'docstring' => 'This service returns all configuration values and settings from MailScanner.conf.'
-        ),
-        'get_bayes_info' => array(
+        ],
+        'get_bayes_info' => [
             'function' => 'rpc_bayes_info',
-            'signature' => array(array('struct')),
+            'signature' => [['struct']],
             'docstring' => 'This service return information about the bayes database.'
-        ),
-        'postfix_queues' => array(
+        ],
+        'postfix_queues' => [
             'function' => 'rpc_postfix_queues',
-            'signature' => array(array('array')),
+            'signature' => [['array']],
             'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.'
-        ),
-    ), false);
+        ],
+    ], false);
 
 // Check that the client is authorised to connect
 if (is_rpc_client_allowed()) {

@@ -32,7 +32,7 @@ if (PHP_SAPI !== 'cli') {
 
 $pathToFunctions = __DIR__ . '/../mailscanner/functions.php';
 
-$cli_options = getopt('', array('skip-user-confirm'));
+$cli_options = getopt('', ['skip-user-confirm']);
 
 if (isset($argv) && count($argv) > 1) {
     if (empty($cli_options)) {
@@ -53,10 +53,10 @@ require_once $pathToFunctions;
 
 $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-$mysql_utf8_variant = array(
-    'utf8' => array('charset' => 'utf8', 'collation' => 'utf8_unicode_ci'),
-    'utf8mb4' => array('charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci')
-);
+$mysql_utf8_variant = [
+    'utf8' => ['charset' => 'utf8', 'collation' => 'utf8_unicode_ci'],
+    'utf8mb4' => ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']
+];
 
 
 /*****************************************************************
@@ -229,7 +229,7 @@ function getTableIndexes($table)
     $sql = 'SHOW INDEX FROM `' . $table . '`';
     $result = $link->query($sql);
 
-    $indexes = array();
+    $indexes = [];
     if (false === $result || $result->num_rows === 0) {
         return $indexes;
     }
@@ -743,10 +743,10 @@ if ($link) {
     echo PHP_EOL;
 
     // Fix existing index size for utf8mb4 conversion
-    $too_big_indexes = array(
+    $too_big_indexes = [
         'maillog_from_idx',
         'maillog_to_idx',
-    );
+    ];
 
     foreach ($too_big_indexes as $item) {
         echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
@@ -776,7 +776,7 @@ if ($link) {
 
     echo PHP_EOL;
 
-    $utf8_tables = array(
+    $utf8_tables = [
         'audit_log',
         'autorelease',
         'blacklist',
@@ -791,7 +791,7 @@ if ($link) {
         'users',
         'user_filters',
         'whitelist',
-    );
+    ];
 
     // Convert tables to utf8 using $utf8_tables array
     foreach ($utf8_tables as $table) {
@@ -828,46 +828,48 @@ if ($link) {
     }
 
     // check for missing indexes
-    $indexes = array(
-        'maillog' => array(
-            'maillog_datetime_idx' => array(
+    $indexes = [
+        'maillog' => [
+            'maillog_datetime_idx' => [
                 'fields' => '(`date`,`time`)',
                 'type' => 'KEY',
                 'minMysqlVersion' => '50100'
-            ),
-            'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_clientip_idx' => array(
+            ],
+            'maillog_id_idx' => ['fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_clientip_idx' => [
                 'fields' => '(`clientip`(20))',
                 'type' => 'KEY',
                 'minMysqlVersion' => '50100'
-            ),
-            'maillog_from_idx' => array(
+            ],
+            'maillog_from_idx' => [
                 'fields' => '(`from_address`(191))',
                 'type' => 'KEY',
                 'minMysqlVersion' => '50100'
-            ),
-            'maillog_to_idx' => array('fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'from_domain_idx' => array(
+            ],
+            'maillog_to_idx' => ['fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_host' => ['fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'from_domain_idx' => [
                 'fields' => '(`from_domain`(50))',
                 'type' => 'KEY',
                 'minMysqlVersion' => '50100'
-            ),
-            'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_quarantined' => array(
+            ],
+            'to_domain_idx' => ['fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_quarantined' => [
                 'fields' => '(`quarantined`)',
                 'type' => 'KEY',
                 'minMysqlVersion' => '50100'
-            ),
-            'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+            ],
+            'timestamp_idx' => ['fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
             // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
-            'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'),
-        )
-    );
+            'subject_idx' => ['fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'],
+        ]
+    ];
 
     foreach ($indexes as $table => $indexlist) {
-        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(' DONE',
-                'green') . PHP_EOL;
+        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(
+            ' DONE',
+                'green'
+        ) . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
@@ -918,7 +920,7 @@ if (!is_file(MS_CONFIG_DIR . 'MailScanner.conf')) {
     echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
     $errors[] = $err_msg;
 } else {
-    $check_settings = array(
+    $check_settings = [
         'QuarantineWholeMessage' => 'yes',
         'QuarantineWholeMessagesAsQueueFiles' => 'no',
         'DetailedSpamReport' => 'yes',
@@ -926,7 +928,7 @@ if (!is_file(MS_CONFIG_DIR . 'MailScanner.conf')) {
         'SpamActions' => 'store',
         'HighScoringSpamActions' => 'store',
         'AlwaysLookedUpLast' => '&MailWatchLogging'
-    );
+    ];
 
     foreach ($check_settings as $setting => $value) {
         echo pad(" - $setting ");

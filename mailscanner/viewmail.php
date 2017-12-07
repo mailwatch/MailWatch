@@ -73,7 +73,7 @@ if (RPC_ONLY || !is_local($message->hostname)) {
     $using_rpc = true;
     //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
     $input = new xmlrpcval($message_id);
-    $parameters = array($input);
+    $parameters = [$input];
     $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
     //$rsp = $client->send($msg);
     $rsp = xmlrpc_wrapper($message->hostname, $msg);
@@ -158,12 +158,12 @@ function lazy($title, $val, $dohtmlentities = true)
 }
 
 // Display the headers
-$header_fields = array(
-    array('name' => 'date', 'replaceQuote' => false),
-    array('name' => 'from', 'replaceQuote' => true),
-    array('name' => 'to', 'replaceQuote' => true),
-    array('name' => 'subject', 'replaceQuote' => false),
-);
+$header_fields = [
+    ['name' => 'date', 'replaceQuote' => false],
+    ['name' => 'from', 'replaceQuote' => true],
+    ['name' => 'to', 'replaceQuote' => true],
+    ['name' => 'subject', 'replaceQuote' => false],
+];
 
 foreach ($header_fields as $field) {
     if (isset($structure->headers[$field['name']])) {

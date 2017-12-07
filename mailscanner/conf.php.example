@@ -35,7 +35,7 @@ define('DEBUG', false);
 // Define language (de, en, fr, it, ja, nl, pt_br);
 define('LANG', 'en');
 
-// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
+// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown
 // in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
 define('USER_SELECTABLE_LANG', 'de,en,fr,it,ja,nl,pt_br');
 
@@ -74,7 +74,7 @@ define('LDAP_FILTER', 'mail=%s'); //%s will be replaced by username eg. 'mail=%'
 define('LDAP_PROTOCOL_VERSION', 3);
 // can be set to 'proxyaddresses' or 'mail'. Please refer to your LDAP system manual for the right keyword
 define('LDAP_EMAIL_FIELD', 'mail');
-// Ldap field that is used to bind to the ldap server to check the credentials. 
+// Ldap field that is used to bind to the ldap server to check the credentials.
 // The value of the LDAP_USERNAME_FIELD will be extended by LDAP_BIND_PREFIX and LDAP_BIND_SUFFIX to created the binding username.
 define('LDAP_USERNAME_FIELD', 'cn');
 // define('LDAP_BIND_PREFIX', 'cn=');
@@ -313,4 +313,3 @@ define('STATUSGRAPH_INTERVAL', 60);
 //define('ENABLE_SUPER_DOMAIN_ADMINS',true);
 //Allow the username of domain admins and normal users to not be in mail format (not recommended, only for backward compatibility)
 //define('ALLOW_NO_USER_DOMAIN',true);
-

@@ -52,7 +52,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
 
     foreach ($queue as $table_name => $queuedir) {
         // Clear the output array
-        $output = array();
+        $output = [];
         if ($dh = @opendir($queuedir)) {
             while (false !== ($file = readdir($dh))) {
                 if ($MTA === 'exim') {

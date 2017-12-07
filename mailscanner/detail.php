@@ -226,11 +226,11 @@ while ($row = $result->fetch_array()) {
         if ($fieldn === __('msgheaders04')) {
             if (version_compare(PHP_VERSION, '5.4', '>=')) {
                 $row[$f] = nl2br(
-                    str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
+                    str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
                 );
             } else {
                 $row[$f] = nl2br(
-                    str_replace(array("\n", "\t"), array('<br>', '&nbsp; &nbsp; &nbsp;'), htmlentities($row[$f]))
+                    str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f]))
                 );
             }
             if (function_exists('iconv_mime_decode')) {
@@ -383,7 +383,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         debug('submit branch taken');
         // Reset error status
         $error = 0;
-        $status = array();
+        $status = [];
         // Release
         if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
@@ -400,7 +400,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             if (!is_array($arrid)) {
                 die();
             }
-            $arrid2 = array();
+            $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
@@ -416,7 +416,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             if (!is_array($arrid)) {
                 die();
             }
-            $arrid2 = array();
+            $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
@@ -436,7 +436,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             if (!is_array($arrid)) {
                 die();
             }
-            $arrid2 = array();
+            $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
@@ -552,8 +552,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         echo ' <tr class="noprint">' . "\n";
         if ($_SESSION['user_type'] === 'A' ||
-            ($_SESSION['user_type'] === 'D' &&
-                ($is_dangerous === 0 ||
+            (
+                $_SESSION['user_type'] === 'D' &&
+                (
+                    $is_dangerous === 0 ||
                 ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
                 )
             )

@@ -97,11 +97,11 @@ switch ($_GET['action']) {
         $result = '';
         if (count($list) === 1) {
             $to = $list[0]['to'];
-            $result = quarantine_release($list, array(0), $to);
+            $result = quarantine_release($list, [0], $to);
         } else {
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
-                    $result = quarantine_release($list, array($i), $list[$i]['to']);
+                    $result = quarantine_release($list, [$i], $list[$i]['to']);
                 }
             }
         }
@@ -118,7 +118,7 @@ switch ($_GET['action']) {
         if (false === checkToken($_GET['token'])) {
             die(__('dietoken99'));
         }
-        $status = array();
+        $status = [];
         if (isset($_GET['html'])) {
             if (!isset($_GET['confirm'])) {
                 // Dislay an 'Are you sure' dialog
@@ -146,7 +146,7 @@ switch ($_GET['action']) {
             } else {
                 simple_html_start();
                 for ($i = 0, $countList = count($list); $i < $countList; $i++) {
-                    $status[] = quarantine_delete($list, array($i));
+                    $status[] = quarantine_delete($list, [$i]);
                 }
                 $status = implode('<br/>', $status);
                 simple_html_result($status);
@@ -158,7 +158,7 @@ switch ($_GET['action']) {
             }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
-                $status[] = quarantine_delete($list, array($i));
+                $status[] = quarantine_delete($list, [$i]);
             }
         }
         break;

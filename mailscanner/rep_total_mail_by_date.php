@@ -135,41 +135,41 @@ ORDER BY
  timestamp
 ";
 
-$sqlColumns = array(
+$sqlColumns = [
     'xaxis',
     'total_mail',
     'total_size',
     'total_virus',
     'total_spam',
-);
-$valueConversion = array(
+];
+$valueConversion = [
     'total_size' => 'scale'
-);
-$graphColumns = array(
+];
+$graphColumns = [
     'labelColumn' => 'xaxis',
-    'dataLabels' => array(
-        array(__('barmail49'), __('barvirus49'), __('barspam49')),
-        array(__('barvolume49')),
-    ),
-    'dataNumericColumns' => array(
-        array('total_mail', 'total_virus', 'total_spam'),
-        array('total_size')
-    ),
-    'dataFormattedColumns' => array(
-        array('total_mail', 'total_virus', 'total_spam'),
-        array('total_sizeconv')
-    ),
+    'dataLabels' => [
+        [__('barmail49'), __('barvirus49'), __('barspam49')],
+        [__('barvolume49')],
+    ],
+    'dataNumericColumns' => [
+        ['total_mail', 'total_virus', 'total_spam'],
+        ['total_size']
+    ],
+    'dataFormattedColumns' => [
+        ['total_mail', 'total_virus', 'total_spam'],
+        ['total_sizeconv']
+    ],
     'xAxeDescription' => __('date49'),
-    'yAxeDescriptions' => array(
+    'yAxeDescriptions' => [
         __('nomessages49'),
         __('volume49')
-    ),
-    'fillBelowLine' => array('false', 'true')
-);
-$types = array(
-    array('bar', 'bar', 'bar'),
-    array('line')
-);
+    ],
+    'fillBelowLine' => ['false', 'true']
+];
+$types = [
+    ['bar', 'bar', 'bar'],
+    ['line']
+];
 
 if ($is_MCP_enabled === true) {
     $sqlColumns[] = 'total_mcp';
@@ -177,10 +177,10 @@ if ($is_MCP_enabled === true) {
     $graphColumns['dataLabels'][0][] = __('barmcp49');
     $graphColumns['dataNumericColumns'][0][] = 'total_mcp';
     $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
-    $graphgenerator->settings['colors'] = array(
-        array('mailColor', 'virusColor', 'spamColor', 'mcpColor'),
-        array('volumeColor')
-    );
+    $graphgenerator->settings['colors'] = [
+        ['mailColor', 'virusColor', 'spamColor', 'mcpColor'],
+        ['volumeColor']
+    ];
 }
 
 $graphgenerator->sqlQuery = $sql;
@@ -190,7 +190,7 @@ $graphgenerator->valueConversion = $valueConversion;
 $graphgenerator->types = $types;
 $graphgenerator->graphTitle = __('totalmailprocdate49');
 $graphgenerator->printTable = false;
-$graphgenerator->settings['valueTypes'] = array('plain','volume');
+$graphgenerator->settings['valueTypes'] = ['plain','volume'];
 $graphgenerator->settings['maxTicks'] = 10;
 $graphgenerator->printLineGraph();
 
@@ -219,9 +219,9 @@ while ($row = $result->fetch_object()) {
 }
 
 // Merge in MTA data
-$data_total_unknown_users = array();
-$data_total_rbl = array();
-$data_total_unresolveable = array();
+$data_total_unknown_users = [];
+$data_total_rbl = [];
+$data_total_unresolveable = [];
 while ($row1 = $result1->fetch_object()) {
     if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
         switch (true) {

@@ -55,7 +55,7 @@ ORDER BY
  count DESC
 LIMIT 10';
 
-$graphgenerator->tableColumns = array(
+$graphgenerator->tableColumns = [
     'hostname' => __('hostname39'),
     'clientip' => __('ipaddresses39'),
     'geoip' => __('country39'),
@@ -63,26 +63,26 @@ $graphgenerator->tableColumns = array(
     'total_virusesconv' => __('viruses39'),
     'total_spamconv' => __('spam39'),
     'sizeconv'=> __('volume39'),
-);
-$graphgenerator->sqlColumns = array(
+];
+$graphgenerator->sqlColumns = [
     'clientip',
     'count',
     'total_viruses',
     'total_spam',
     'size'
-);
-$graphgenerator->valueConversion = array(
+];
+$graphgenerator->valueConversion = [
     'clientip' => 'hostnamegeoip',
     'count' => 'number',
     'total_viruses' => 'number',
     'total_spam' => 'number',
     'size' => 'scale',
-);
-$graphgenerator->graphColumns = array(
+];
+$graphgenerator->graphColumns = [
     'labelColumn' => 'hostname',
     'dataNumericColumn' => 'count',
     'dataFormattedColumn' => 'countconv',
-);
+];
 $graphgenerator->graphTitle = __('top10mailrelays39');
 $graphgenerator->printPieGraph();
 

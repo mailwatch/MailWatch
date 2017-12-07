@@ -42,9 +42,9 @@ if ($_SESSION['user_type'] !== 'A') {
 
     // Start a table
     echo '<table border="0" class="mailwatch" align="center">' . "\n";
-    TRH(array(__('editrule29')));
+    TRH([__('editrule29')]);
 
-    $ruleset_file = array();
+    $ruleset_file = [];
     // Open directory and read its contents
     if (is_dir(MSRE_RULESET_DIR) && $dh = opendir(MSRE_RULESET_DIR)) {
         while ($file = readdir($dh)) {
@@ -57,15 +57,15 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 
     if (empty($ruleset_file)) {
-        TR(array(__('norulefound29')));
+        TR([__('norulefound29')]);
     } else {
         // Display it in a sorted table with links
         asort($ruleset_file);
         foreach ($ruleset_file as $this_ruleset_file) {
-            TR(array('<a href="msre_edit.php?token=' . $_SESSION['token'] .'&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>'));
+            TR(['<a href="msre_edit.php?token=' . $_SESSION['token'] .'&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>']);
         }
         // Put a blank header line on the bottom. It just looks nicer that way to me.
-        TRH(array(''));
+        TRH(['']);
     }
     echo '</table><tr><td>' . "\n";
     html_end();

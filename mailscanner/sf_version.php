@@ -63,7 +63,7 @@ if ($_SESSION['user_type'] !== 'A') {
 
     // Add test for OS
     if (0 === stripos(PHP_OS, 'linux')) {
-        $vars = array();
+        $vars = [];
         $files = glob('/etc/*-release');
         foreach ($files as $file) {
             $lines = array_filter(array_map(function ($line) {
@@ -71,7 +71,7 @@ if ($_SESSION['user_type'] !== 'A') {
                 if (count($parts) !== 2) {
                     return false;
                 }
-                $parts[1] = str_replace(array('"', "'"), '', $parts[1]);
+                $parts[1] = str_replace(['"', "'"], '', $parts[1]);
                 $parts[1] = trim($parts[1]);
                 return $parts;
             }, file($file)));
@@ -79,7 +79,7 @@ if ($_SESSION['user_type'] !== 'A') {
                 $vars[$line[0]] = $line[1];
             }
         }
-        if (isset($vars['ID']) && in_array(strtolower($vars['ID']), array('centos', 'debian'), true)) {
+        if (isset($vars['ID']) && in_array(strtolower($vars['ID']), ['centos', 'debian'], true)) {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
         }
         if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {

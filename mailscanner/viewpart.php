@@ -60,7 +60,7 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
     // Host is remote - use XML-RPC
     //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php', $host, 80);
     $input = new xmlrpcval($message_id);
-    $parameters = array($input);
+    $parameters = [$input];
     $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
     //$rsp = $client->send($msg);
     $rsp = xmlrpc_wrapper($message_data->hostname, $msg);

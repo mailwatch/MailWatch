@@ -32,7 +32,7 @@ class Quarantine_Report
      */
     public static function check_quarantine_report_requirements()
     {
-        $required_constant = array(
+        $required_constant = [
             'QUARANTINE_REPORT_DAYS',
             'MAILWATCH_HOSTURL',
             'QUARANTINE_DAYS_TO_KEEP',
@@ -47,7 +47,7 @@ class Quarantine_Report
             'DATE_FORMAT',
             'TIME_FORMAT',
             'QUARANTINE_FILTERS_COMBINED'
-        );
+        ];
         $required_constant_missing = '';
         foreach ($required_constant as $constant) {
             if (!defined($constant)) {
@@ -245,7 +245,7 @@ ORDER BY a.date DESC, a.time DESC';
      * @param array $usersForReport array containing users for which the reports should be send; if empty reports are send for all users
      * @return false|array if requirements not met; else an associative array counting successfull and failed reports for users
      */
-    public function send_quarantine_reports($usersForReport = array())
+    public function send_quarantine_reports($usersForReport = [])
     {
         if (self::check_quarantine_report_requirements() !== true) {
             return false;
@@ -261,7 +261,7 @@ ORDER BY a.date DESC, a.time DESC';
         ini_set('max_execution_time', 0);
 
         if (count($usersForReport) > 0) {
-            $userConditions = array();
+            $userConditions = [];
             foreach ($usersForReport as $item) {
                 $userConditions[] = ' username=' . quote_smart($item);
             }
@@ -317,10 +317,10 @@ ORDER BY a.date DESC, a.time DESC';
             }
         }
 
-        return array(
+        return [
             'succ' => $num_successfull_reports,
             'failed' => $num_failed_reports
-        );
+        ];
     }
 
     /**
@@ -335,7 +335,7 @@ ORDER BY a.date DESC, a.time DESC';
     {
         self::dbg(" ==== Recipient e-mail address is $email");
         // Get any additional reports required
-        $filters = array_merge(array($to_address), self::return_user_filters($username));
+        $filters = array_merge([$to_address], self::return_user_filters($username));
         if (QUARANTINE_FILTERS_COMBINED === false) {
             $sendResult = false;
             foreach ($filters as $filter) {
@@ -361,8 +361,8 @@ ORDER BY a.date DESC, a.time DESC';
         } else {
 
             //combined
-            $quarantine_list = array();
-            $quarantined = array();
+            $quarantine_list = [];
+            $quarantined = [];
 
             foreach ($filters as $filter) {
                 if ($type === 'D') {
@@ -413,7 +413,7 @@ ORDER BY a.date DESC, a.time DESC';
     {
         $result = dbquery(sprintf(self::$filters_sql, quote_smart($user)));
         $rows = $result->num_rows;
-        $array = array();
+        $array = [];
         if ($rows > 0) {
             while ($row = $result->fetch_object()) {
                 $array[] = $row->filter;
@@ -432,10 +432,10 @@ ORDER BY a.date DESC, a.time DESC';
     {
         $result = dbquery(sprintf(self::get_report_sql(), quote_smart($to_address), quote_smart($to_domain)));
         $rows = $result->num_rows;
-        $array = array();
+        $array = [];
         if ($rows > 0) {
             while ($row = $result->fetch_object()) {
-                $array[] = array(
+                $array[] = [
                     'id' => trim($row->id),
                     'datetime' => trim($row->datetime),
                     'to' => trim_output($row->to_address, FROMTO_MAXLEN),
@@ -444,7 +444,7 @@ ORDER BY a.date DESC, a.time DESC';
                     'reason' => trim($row->reason),
                     'timestamp' => trim($row->timestamp),
                     'token' => trim($row->token)
-                );
+                ];
             }
         }
 

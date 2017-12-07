@@ -52,7 +52,7 @@ if (!$result->num_rows > 0) {
 }
 
 // Initialise the array
-$sa_array = array();
+$sa_array = [];
 
 // Retrieve rows and insert into array
 while ($row = $result->fetch_object()) {

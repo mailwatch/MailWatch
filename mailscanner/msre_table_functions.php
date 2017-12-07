@@ -127,7 +127,7 @@ function TR_Extended($row_data, $tr_param)
     echo $my_tr;
 
     // Now the <td>'s
-    $td_param = array();
+    $td_param = [];
     foreach ($row_data as $td_text => $td_param) {
         $my_td = "\t" . '<td';
         if ($td_param) {

@@ -29,7 +29,7 @@ use MailWatch\Db;
 
 require_once __DIR__ . '/functions.php';
 if (file_exists('conf.php')) {
-    $output = array();
+    $output = [];
     if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $mid = deepSanitizeInput($_GET['mid'], 'url');
@@ -60,12 +60,12 @@ if (file_exists('conf.php')) {
                 $result = '';
                 if (count($list) === 1) {
                     $to = $list[0]['to'];
-                    $result = quarantine_release($list, array(0), $to);
+                    $result = quarantine_release($list, [0], $to);
                 } else {
                     $listCount = count($list);
                     for ($i = 0; $i < $listCount; $i++) {
                         if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
-                            $result = quarantine_release($list, array($i), $list[$i]['to']);
+                            $result = quarantine_release($list, [$i], $list[$i]['to']);
                         }
                     }
                 }

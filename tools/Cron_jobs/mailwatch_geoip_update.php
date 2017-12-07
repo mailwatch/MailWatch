@@ -62,20 +62,23 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
     if (is_writable($extract_dir) && is_readable($extract_dir)) {
         if (function_exists('fsockopen') || extension_loaded('curl')) {
             $requestSession = new Requests_Session($files_base_url . '/');
-            $requestSession->useragent = 'MailWatch/' . str_replace(array(' - ', ' '), array('-', '-'),
-                    mailwatch_version());
+            $requestSession->useragent = 'MailWatch/' . str_replace(
+                [' - ', ' '],
+                ['-', '-'],
+                    mailwatch_version()
+            );
 
             if (USE_PROXY === true) {
                 if (PROXY_USER != '') {
-                    $requestSession->options['proxy']['authentication'] = array(
+                    $requestSession->options['proxy']['authentication'] = [
                         PROXY_SERVER . ':' . PROXY_PORT,
                         PROXY_USER,
                         PROXY_PASS
-                    );
+                    ];
                 } else {
-                    $requestSession->options['proxy']['authentication'] = array(
+                    $requestSession->options['proxy']['authentication'] = [
                         PROXY_SERVER . ':' . PROXY_PORT
-                    );
+                    ];
                 }
 
                 switch (PROXY_TYPE) {
@@ -123,8 +126,11 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             }
 
             foreach ($files as $file) {
-                exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
-                    $output_wget, $retval_wget);
+                exec(
+                    'wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
+                    $output_wget,
+                    $retval_wget
+                );
                 if ($retval_wget > 0) {
                     echo __('downbad52') . ' ' . $file['description'] . "\n";
                 } else {

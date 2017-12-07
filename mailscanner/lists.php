@@ -146,19 +146,19 @@ switch ($url_type) {
 
 $myusername = $_SESSION['myusername'];
 // Validate input against the user type
-$to_user_filter = array();
-$to_domain_filter = array();
+$to_user_filter = [];
+$to_domain_filter = [];
 $to_address = '';
 switch ($_SESSION['user_type']) {
     case 'U': // User
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result1 = dbquery($sql1);
 
-        $filter = array();
+        $filter = [];
         while ($row = $result1->fetch_assoc()) {
             $filter[] = $row['filter'];
         }
-        $user_filter = array();
+        $user_filter = [];
         foreach ($filter as $user_filter_check) {
             if (preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $user_filter_check)) {
                 $user_filter[] = $user_filter_check;
@@ -326,7 +326,7 @@ function build_table($sql, $list)
         $table_html = __('noentries07') . "\n";
     }
 
-    return array('html' => $table_html, 'entry_number' => $entries);
+    return ['html' => $table_html, 'entry_number' => $entries];
 }
 
 echo '
