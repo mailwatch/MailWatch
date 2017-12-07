@@ -42,7 +42,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr><th colspan="2">' . __('msconfig27') . '</th></tr>';
 
     $array_output = [];
-    $array_output1 = parse_conf_file($MailScanner_conf_file);
+    $array_output1 = \MailWatch\MailScanner::parseConfFile($MailScanner_conf_file);
     $array_output2 = parse_conf_dir($conf_dir);
 
     if (is_array($array_output2)) {

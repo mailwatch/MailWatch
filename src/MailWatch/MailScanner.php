@@ -29,6 +29,70 @@ namespace MailWatch;
 
 class MailScanner
 {
+    /**
+     * Parse conf files
+     *
+     * @param string $name
+     * @return array
+     */
+    public static function parseConfFile($name)
+    {
+        static $conf_file_cache;
+        if (null !== $conf_file_cache && isset($conf_file_cache[$name])) {
+            return $conf_file_cache[$name];
+        }
+
+        // check if file can be read
+        if (!is_file($name) || !is_readable($name)) {
+            die(__('dienomsconf03'));
+        }
+
+        $array_output = [];
+        $var = [];
+        // open each file and read it
+        $fileContent = array_filter(
+            file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
+            function ($value) {
+                return !($value[0] === '#');
+            }
+        );
+
+        foreach ($fileContent as $line) {
+            //echo "line: ".$line."\n"; // only use for troubleshooting lines
+
+            // find all lines that match
+            if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
+
+                // Strip trailing comments
+                $regs['value'] = preg_replace('/#.*$/', '', $regs['value']);
+
+                // store %var% variables
+                if (preg_match('/%.+%/', $regs['name'])) {
+                    $var[$regs['name']] = $regs['value'];
+                }
+
+                // expand %var% variables
+                if (preg_match('/(%[^%]+%)/', $regs['value'], $matches)) {
+                    array_shift($matches);
+                    foreach ($matches as $varname) {
+                        $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
+                    }
+                }
+
+                // Remove any html entities from the code
+                $key = htmlentities($regs['name']);
+                //$string = htmlentities($regs['value']);
+                $string = $regs['value'];
+
+                // Stuff all of the data to an array
+                $array_output[$key] = $string;
+            }
+        }
+        unset($fileContent);
+
+        $conf_file_cache[$name] = $array_output;
+        return $conf_file_cache[$name];
+    }
 
     /**
      * @param string $name MailScanner config parameter name
