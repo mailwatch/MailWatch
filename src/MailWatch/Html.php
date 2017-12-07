@@ -547,8 +547,8 @@ function updateClock() {
             $inq = null;
             $outq = null;
             if (is_readable($incomingdir) || is_readable($outgoingdir)) {
-                $inq = \MailWatch\MTA\Postfix::postfixinq();
-                $outq = \MailWatch\MTA\Postfix::postfixallq() - $inq;
+                $inq = MTA\Postfix::postfixinq();
+                $outq = MTA\Postfix::postfixallq() - $inq;
             } elseif (!defined('RPC_REMOTE_SERVER')) {
                 echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
             }
