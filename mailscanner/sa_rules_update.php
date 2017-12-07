@@ -32,7 +32,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    html_start(__('saruldesupdate13'), 0, false, false);
+    \MailWatch\Html::start(__('saruldesupdate13'), 0, false, false);
     echo '<table class="boxtable" width="100%">';
     echo '<tr><th>' . __('updatesadesc13') . '</th></tr>';
     echo '<tr>';
@@ -84,6 +84,6 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 }
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

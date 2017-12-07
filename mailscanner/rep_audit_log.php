@@ -37,7 +37,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     // add the header information such as the logo, search, menu, ....
-    html_start(__('auditlog33'), 0, false, false);
+    \MailWatch\Html::start(__('auditlog33'), 0, false, false);
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
             die(__('dietoken99'));
@@ -150,7 +150,7 @@ if ($_SESSION['user_type'] !== 'A') {
       </table>' . "\n";
 
     // Add footer
-    html_end();
+    \MailWatch\Html::end();
     // Close any open db connections
     \MailWatch\Db::close();
 }

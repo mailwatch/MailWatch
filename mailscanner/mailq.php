@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-html_start(__('mqviewer24'), STATUS_REFRESH, false, false);
+\MailWatch\Html::start(__('mqviewer24'), STATUS_REFRESH, false, false);
 
 if (false === checkToken($_GET['token'])) {
     die(__('dietoken99'));
@@ -78,6 +78,6 @@ ORDER BY
 );
 
 // Add the footer
-html_end();
+\MailWatch\Html::end();
 // close the connection to the Database
 \MailWatch\Db::close();

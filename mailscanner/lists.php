@@ -28,7 +28,7 @@
 require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
-html_start(__('wblists07'), 0, false, false);
+\MailWatch\Html::start(__('wblists07'), 0, false, false);
 
 if (isset($_GET['type'])) {
     $url_type = deepSanitizeInput($_GET['type'], 'url');
@@ -440,6 +440,6 @@ echo '</td>
 </table>';
 
 // Add the footer
-html_end();
+\MailWatch\Html::end();
 // close the connection to the Database
 \MailWatch\Db::close();

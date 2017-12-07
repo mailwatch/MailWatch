@@ -34,7 +34,7 @@ require_once __DIR__ . '/graphgenerator.inc.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start(__('topvirus48'), 0, false, true);
+$filter = \MailWatch\Html::start(__('topvirus48'), 0, false, true);
 
 // SQL query to find all emails with a virus found
 $graphgenerator = new GraphGenerator();
@@ -69,6 +69,6 @@ $graphgenerator->graphTitle = __('top10virus48');
 $graphgenerator->printPieGraph();
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

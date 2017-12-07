@@ -28,7 +28,7 @@
 require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
-html_start(__('salint51'), 0, false, false);
+\MailWatch\Html::start(__('salint51'), 0, false, false);
 
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
     die(__('diepipe51'));
@@ -88,6 +88,6 @@ echo '   </TR>' . "\n";
 echo '</TABLE>' . "\n";
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

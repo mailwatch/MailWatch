@@ -37,7 +37,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
     audit_log(__('auditlog11', true));
 } else {
-    html_start(__('mwandmsversion11'), 0, false, false);
+    \MailWatch\Html::start(__('mwandmsversion11'), 0, false, false);
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
@@ -166,7 +166,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '</table>' . "\n";
 
     // Add footer
-    html_end();
+    \MailWatch\Html::end();
     // Close any open db connections
     \MailWatch\Db::close();
 }

@@ -38,7 +38,7 @@ if ($_SESSION['user_type'] !== 'A') {
     audit_log(__('auditlog19', true));
 } else {
     // Start the header code and Title
-    html_start(__('avclamavstatus19'), 0, false, false);
+    \MailWatch\Html::start(__('avclamavstatus19'), 0, false, false);
     // Create the table
     echo '<table class="boxtable" width="100%">';
     echo '<tr>';
@@ -52,7 +52,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '</table>';
 
     // Add footer
-    html_end();
+    \MailWatch\Html::end();
     // Close any open db connections
     \MailWatch\Db::close();
 }

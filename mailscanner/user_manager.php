@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-html_start(__('usermgnt12'), 0, false, false);
+\MailWatch\Html::start(__('usermgnt12'), 0, false, false);
 
 /**
  * @param string $value
@@ -838,6 +838,6 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     }
 }
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

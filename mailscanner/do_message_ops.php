@@ -30,7 +30,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-$refresh = html_start(__('opresult21'));
+$refresh = \MailWatch\Html::start(__('opresult21'));
 
 if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
     die(__('dietoken99'));
@@ -130,6 +130,6 @@ echo ' </table>' . "\n";
 echo '<p class="center"><a href="javascript:history.back(1)">' . __('back21') . '</a></p><br>' . "\n";
 
 //Add footer
-html_end();
+\MailWatch\Html::end();
 //Close database connection
 \MailWatch\Db::close();

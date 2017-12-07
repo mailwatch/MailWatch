@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start(__('messagelisting17'), 0, false, true);
+$filter = \MailWatch\Html::start(__('messagelisting17'), 0, false, true);
 
 if (false === checkToken($_GET['token'])) {
     die(__('dietoken99'));
@@ -113,6 +113,6 @@ $sql .= '
 db_colorised_table($sql, __('messageops17'), true, true, true);
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

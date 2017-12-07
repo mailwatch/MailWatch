@@ -33,7 +33,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    html_start(__('fprotstatus22'), 0, false, false);
+    \MailWatch\Html::start(__('fprotstatus22'), 0, false, false);
     echo '
 <table class="boxtable" width="100%">
  <tr>
@@ -50,7 +50,7 @@ if ($_SESSION['user_type'] !== 'A') {
 </table>';
 
     // Add footer
-    html_end();
+    \MailWatch\Html::end();
     // Close any open db connections
     \MailWatch\Db::close();
 }

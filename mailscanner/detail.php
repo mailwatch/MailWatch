@@ -55,7 +55,7 @@ if (!validateInput($url_id, 'msgid')) {
 }
 
 // Start the header code and Title
-html_start(__('messdetail04') . ' ' . $url_id, 0, false, false);
+\MailWatch\Html::start(__('messdetail04') . ' ' . $url_id, 0, false, false);
 
 // Setting the yes and no variable
 $yes = '<span class="yes">&nbsp;' . __('yes04') . '&nbsp;</span>';
@@ -581,6 +581,6 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
 }
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

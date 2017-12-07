@@ -29,11 +29,11 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-html_start(__('mqviewer32'));
+\MailWatch\Html::start(__('mqviewer32'));
 
 echo '<b>' . __('mqviewer32') . '</b>' . "\n";
 echo '<pre>';
 \MailWatch\MTA\Postfix::postfixmailq();
 echo '</pre>';
-html_end();
+\MailWatch\Html::end();
 \MailWatch\Db::close();

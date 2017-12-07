@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start(__('sarulehits37'), 0, false, true);
+$filter = \MailWatch\Html::start(__('sarulehits37'), 0, false, true);
 
 $sql = '
  SELECT
@@ -147,6 +147,6 @@ echo '
 ';
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-html_start(__('mysqlstatus31'), 0, false, false);
+\MailWatch\Html::start(__('mysqlstatus31'), 0, false, false);
 
 if ($_SESSION['user_type'] !== 'A') {
     echo __('notauthorized31') . '\n';
@@ -44,7 +44,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '</div>' . "\n";
 
     // Add footer
-    html_end();
+    \MailWatch\Html::end();
     // Close any open db connections
     \MailWatch\Db::close();
 }

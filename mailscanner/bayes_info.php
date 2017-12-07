@@ -32,7 +32,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // Start the header code and Title
-html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
+\MailWatch\Html::start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 
 // Enter the Action in the Audit log
 audit_log(__('auditlog18', true));
@@ -149,7 +149,7 @@ if ($_SESSION['user_type'] === 'A') {
 }
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 
 // Close any open db connections
 \MailWatch\Db::close();

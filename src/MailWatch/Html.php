@@ -1,0 +1,669 @@
+<?php
+
+namespace MailWatch;
+
+class Html
+{
+    /**
+     * @param $title
+     * @param int $refresh
+     * @param bool|true $cacheable
+     * @param bool|false $report
+     * @return Filter|int
+     */
+    public static function start($title, $refresh = 0, $cacheable = true, $report = false)
+    {
+        if (PHP_SAPI !== 'cli') {
+            if (!$cacheable) {
+                // Cache control (as per PHP website)
+                disableBrowserCache();
+            } else {
+                // calc an offset of 24 hours
+                $offset = 3600 * 48;
+                // calc the string in GMT not localtime and add the offset
+                $expire = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
+                //output the HTTP header
+                header($expire);
+                header('Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1');
+                header('Pragma: cache');
+            }
+        }
+
+        // Check for a privilege change
+        if (checkPrivilegeChange($_SESSION['myusername']) === true) {
+            header('Location: logout.php?error=timeout');
+            die();
+        }
+
+        if (checkLoginExpiry($_SESSION['myusername']) === true) {
+            header('Location: logout.php?error=timeout');
+            die();
+        } else {
+            if ($refresh === 0) {
+                // User is moving about on non-refreshing pages, keep session alive
+                updateLoginExpiry($_SESSION['myusername']);
+            }
+        }
+
+        echo page_creation_timer();
+        echo '<!DOCTYPE HTML>' . "\n";
+        echo '<html>' . "\n";
+        echo '<head>' . "\n";
+        echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
+        echo '<link rel="shortcut icon" href="images/favicon.png" >' . "\n";
+        echo '<script type="text/javascript">';
+        echo '' . static::javascriptTime() . '';
+        //$current_url = "".MAILWATCH_HOME."/status.php";
+        //if($_SERVER['SCRIPT_FILENAME'] === $active_url){
+        echo '</script>';
+        if ($report) {
+            echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
+            if (!isset($_SESSION['filter'])) {
+                $filter = new Filter();
+                $_SESSION['filter'] = $filter;
+            } else {
+                // Use existing filters
+                $filter = $_SESSION['filter'];
+            }
+            audit_log(__('auditlogreport03', true) . ' ' . $title);
+        } else {
+            echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
+        }
+        echo '<link rel="stylesheet" type="text/css" href="./style.css">' . "\n";
+        if (is_file(__DIR__ . '/skin.css')) {
+            echo '<link rel="stylesheet" href="./skin.css" type="text/css">';
+        }
+
+        if ($refresh > 0) {
+            echo '<meta http-equiv="refresh" content="' . $refresh . '">' . "\n";
+        }
+
+        if (isset($_GET['id'])) {
+            $message_id = trim(htmlentities(safe_value(sanitizeInput($_GET['id']))), ' ');
+            if (!validateInput($message_id, 'msgid')) {
+                $message_id = '';
+            }
+        } else {
+            $message_id = '';
+        }
+        echo '</head>' . "\n";
+        echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
+        echo '<table border="0" cellpadding="5" width="100%">' . "\n";
+        echo '<tr class="noprint">' . "\n";
+        echo '<td>' . "\n";
+        echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
+        echo '<tr>' . "\n";
+        echo '<td align="left"><a href="index.php" class="logo"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
+        echo '</tr>' . "\n";
+        echo '<tr>' . "\n";
+        echo '<td valign="bottom" align="left" class="jump">' . "\n";
+        echo '<form action="./detail.php">' . "\n";
+        echo '<p>' . __('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
+        echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
+        echo '</form>' . "\n";
+        echo '</td>';
+        echo '</tr>';
+        echo '</table>' . "\n";
+        echo '<table cellspacing="1" class="mail">' . "\n";
+        echo '<tr><td class="heading" align="center">' . __('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
+        echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
+        echo '</table>' . "\n";
+        echo '</td>' . "\n";
+
+        if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
+            echo '  <td align="center" valign="top">' . "\n";
+
+            // Status table
+            echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
+            echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
+
+            static::printServiceStatus();
+            static::printAverageLoad();
+
+            if ($_SESSION['user_type'] === 'A') {
+                static::printMTAQueue();
+                static::printFreeDiskSpace();
+            }
+            echo '  </table>' . "\n";
+            echo '  </td>' . "\n";
+
+            printTrafficGraph();
+        }
+
+        echo '<td align="center" valign="top">' . "\n";
+        static::printTodayStatistics();
+        echo '  </td>' . "\n";
+
+        echo ' </tr>' . "\n";
+
+        static::printNavBar();
+        echo '
+ <tr>
+  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
+
+        if ($report) {
+            $return_items = $filter;
+        } else {
+            $return_items = $refresh;
+        }
+
+        return $return_items;
+    }
+
+    /**
+     * @param string $footer
+     */
+    public static function end($footer = '')
+    {
+        echo '</td>' . "\n";
+        echo '</tr>' . "\n";
+        echo '</table>' . "\n";
+        echo $footer;
+        if (DEBUG) {
+            echo '<p class="center footer"><i>' . "\n";
+            echo page_creation_timer();
+            echo '</i></p>' . "\n";
+        }
+        echo '<p class="center footer noprint">' . "\n";
+        echo __('footer03');
+        echo mailwatch_version();
+        echo ' - &copy; 2006-' . date('Y');
+        echo '</p>' . "\n";
+        echo '</body>' . "\n";
+        echo '</html>' . "\n";
+    }
+
+    public static function javascriptTime()
+    {
+        echo '
+function updateClock() {
+  var currentTime = new Date();
+
+  var currentHours = currentTime.getHours();
+  var currentMinutes = currentTime.getMinutes();
+  var currentSeconds = currentTime.getSeconds();
+
+  // Pad the minutes and seconds with leading zeros, if required
+  currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+  currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+  // Choose either "AM" or "PM" as appropriate
+  var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+';
+
+        if (TIME_FORMAT === '%h:%i:%s') {
+            echo '
+  // Convert the hours component to 12-hour format if needed
+  currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+  // Convert an hours component of "0" to "12"
+  currentHours = ( currentHours === 0 ) ? 12 : currentHours;';
+        }
+
+        echo '
+
+  // Compose the string for display
+  var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+  // Update the time display
+  document.getElementById("clock").firstChild.nodeValue = currentTimeString;
+}
+
+// -->
+';
+    }
+
+    public static function printNavBar()
+    {
+        // Navigation links - put them into an array to allow them to be switched
+        // on or off as necessary and to allow for the table widths to be calculated.
+        $nav = [];
+        $nav['status.php'] = __('recentmessages03');
+        if (LISTS) {
+            $nav['lists.php'] = __('lists03');
+        }
+        if (!DISTRIBUTED_SETUP) {
+            $nav['quarantine.php'] = __('quarantine03');
+        }
+        $nav['reports.php'] = __('reports03');
+        $nav['other.php'] = __('toolslinks03');
+
+        if (SHOW_SFVERSION === true && $_SESSION['user_type'] === 'A') {
+            $nav['sf_version.php'] = __('softwareversions03');
+        }
+
+        if (SHOW_DOC === true) {
+            $nav['docs.php'] = __('documentation03');
+        }
+        $nav['logout.php'] = __('logout03');
+        //$table_width = round(100 / count($nav));
+
+        //Navigation table
+        echo '<tr class="noprint">' . "\n";
+        echo '<td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">' . "\n";
+
+        echo '<ul id="menu" class="yellow">' . "\n";
+
+        // Display the different words
+        foreach ($nav as $url => $desc) {
+            $active_url = MAILWATCH_HOME . '/' . $url;
+            if ($_SERVER['SCRIPT_FILENAME'] === $active_url) {
+                echo "<li class=\"active\"><a href=\"$url\">$desc</a></li>\n";
+            } else {
+                echo "<li><a href=\"$url\">$desc</a></li>\n";
+            }
+        }
+
+        if (defined('USER_SELECTABLE_LANG')) {
+            $langCodes = explode(',', USER_SELECTABLE_LANG);
+            $langCount = count($langCodes);
+            if ($langCount > 1) {
+                global $langCode;
+                echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
+                echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
+                for ($i = 0; $i < $langCount; $i++) {
+                    echo '<option value="' . $langCodes[$i] . '"'
+                        . ($langCodes[$i] === $langCode ? ' selected' : '')
+                        . '>' . __($langCodes[$i]) . '</option>' . "\n";
+                }
+                echo '</select></li>' . "\n";
+            }
+        }
+
+        echo '
+ </ul>
+ </td>
+ </tr>';
+    }
+
+    public static function printTodayStatistics()
+    {
+        $sql = '
+ SELECT
+  COUNT(*) AS processed,
+  SUM(
+   CASE WHEN (
+    (virusinfected=0 OR virusinfected IS NULL)
+    AND (nameinfected=0 OR nameinfected IS NULL)
+    AND (otherinfected=0 OR otherinfected IS NULL)
+    AND (isspam=0 OR isspam IS NULL)
+    AND (ishighspam=0 OR ishighspam IS NULL)
+    AND (ismcp=0 OR ismcp IS NULL)
+    AND (ishighmcp=0 OR ishighmcp IS NULL)
+   ) THEN 1 ELSE 0 END
+  ) AS clean,
+  ROUND((
+   SUM(
+    CASE WHEN (
+     (virusinfected=0 OR virusinfected IS NULL)
+     AND (nameinfected=0 OR nameinfected IS NULL)
+     AND (otherinfected=0 OR otherinfected IS NULL)
+     AND (isspam=0 OR isspam IS NULL)
+     AND (ishighspam=0 OR ishighspam IS NULL)
+     AND (ismcp=0 OR ismcp IS NULL)
+     AND (ishighmcp=0 OR ishighmcp IS NULL)
+    ) THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS cleanpercent,
+  SUM(
+   CASE WHEN
+    virusinfected>0
+   THEN 1 ELSE 0 END
+  ) AS viruses,
+  ROUND((
+   SUM(
+    CASE WHEN
+     virusinfected>0
+    THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS viruspercent,
+  SUM(
+   CASE WHEN
+    nameinfected>0
+    AND (virusinfected=0 OR virusinfected IS NULL)
+    AND (otherinfected=0 OR otherinfected IS NULL)
+    -- AND (isspam=0 OR isspam IS NULL)
+    -- AND (ishighspam=0 OR ishighspam IS NULL)
+   THEN 1 ELSE 0 END
+  ) AS blockedfiles,
+  ROUND((
+   SUM(
+    CASE WHEN
+     nameinfected>0
+     AND (virusinfected=0 OR virusinfected IS NULL)
+     AND (otherinfected=0 OR otherinfected IS NULL)
+     -- AND (isspam=0 OR isspam IS NULL)
+     -- AND (ishighspam=0 OR ishighspam IS NULL)
+    THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS blockedfilespercent,
+  SUM(
+   CASE WHEN
+    otherinfected>0
+    AND (nameinfected=0 OR nameinfected IS NULL)
+    AND (virusinfected=0 OR virusinfected IS NULL)
+    AND (isspam=0 OR isspam IS NULL)
+    AND (ishighspam=0 OR ishighspam IS NULL)
+   THEN 1 ELSE 0 END
+  ) AS otherinfected,
+  ROUND((
+   SUM(
+    CASE WHEN
+     otherinfected>0
+     AND (nameinfected=0 OR nameinfected IS NULL)
+     AND (virusinfected=0 OR virusinfected IS NULL)
+     AND (isspam=0 OR isspam IS NULL)
+     AND (ishighspam=0 OR ishighspam IS NULL)
+    THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS otherinfectedpercent,
+  SUM(
+   CASE WHEN
+    isspam>0
+    AND (virusinfected=0 OR virusinfected IS NULL)
+    AND (nameinfected=0 OR nameinfected IS NULL)
+    AND (otherinfected=0 OR otherinfected IS NULL)
+    AND (ishighspam=0 OR ishighspam IS NULL)
+   THEN 1 ELSE 0 END
+  ) AS spam,
+  ROUND((
+   SUM(
+    CASE WHEN
+     isspam>0
+     AND (virusinfected=0 OR virusinfected IS NULL)
+     AND (nameinfected=0 OR nameinfected IS NULL)
+     AND (otherinfected=0 OR otherinfected IS NULL)
+     AND (ishighspam=0 OR ishighspam IS NULL)
+    THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS spampercent,
+  SUM(
+   CASE WHEN
+    ishighspam>0
+    AND (virusinfected=0 OR virusinfected IS NULL)
+    AND (nameinfected=0 OR nameinfected IS NULL)
+    AND (otherinfected=0 OR otherinfected IS NULL)
+   THEN 1 ELSE 0 END
+  ) AS highspam,
+  ROUND((
+   SUM(
+    CASE WHEN
+     ishighspam>0
+     AND (virusinfected=0 OR virusinfected IS NULL)
+     AND (nameinfected=0 OR nameinfected IS NULL)
+     AND (otherinfected=0 OR otherinfected IS NULL)
+    THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS highspampercent,
+  SUM(
+   CASE WHEN
+    ismcp>0
+    AND (virusinfected=0 OR virusinfected IS NULL)
+    AND (nameinfected=0 OR nameinfected IS NULL)
+    AND (otherinfected=0 OR otherinfected IS NULL)
+    AND (isspam=0 OR isspam IS NULL)
+    AND (ishighspam=0 OR ishighspam IS NULL)
+    AND (ishighmcp=0 OR ishighmcp IS NULL)
+   THEN 1 ELSE 0 END
+  ) AS mcp,
+  ROUND((
+   SUM(
+    CASE WHEN
+     ismcp>0
+     AND (virusinfected=0 OR virusinfected IS NULL)
+     AND (nameinfected=0 OR nameinfected IS NULL)
+     AND (otherinfected=0 OR otherinfected IS NULL)
+     AND (isspam=0 OR isspam IS NULL)
+     AND (ishighspam=0 OR ishighspam IS NULL)
+     AND (ishighmcp=0 OR ishighmcp IS NULL)
+    THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS mcppercent,
+  SUM(
+   CASE WHEN
+    ishighmcp>0
+    AND (virusinfected=0 OR virusinfected IS NULL)
+    AND (nameinfected=0 OR nameinfected IS NULL)
+    AND (otherinfected=0 OR otherinfected IS NULL)
+    AND (isspam=0 OR isspam IS NULL)
+    AND (ishighspam=0 OR ishighspam IS NULL)
+   THEN 1 ELSE 0 END
+  ) AS highmcp,
+  ROUND((
+   SUM(
+    CASE WHEN
+     ishighmcp>0
+     AND (virusinfected=0 OR virusinfected IS NULL)
+     AND (nameinfected=0 OR nameinfected IS NULL)
+     AND (otherinfected=0 OR otherinfected IS NULL)
+     AND (isspam=0 OR isspam IS NULL)
+     AND (ishighspam=0 OR ishighspam IS NULL)
+    THEN 1 ELSE 0 END
+   )/COUNT(*))*100,1
+  ) AS highmcppercent,
+  SUM(size) AS size
+ FROM
+  maillog
+ WHERE
+  date = CURRENT_DATE()
+ AND
+  ' . $_SESSION['global_filter'] . '
+';
+
+        $sth = dbquery($sql);
+        while ($row = $sth->fetch_object()) {
+            echo '<table border="0" cellpadding="1" cellspacing="1" class="mail todaystatistics" width="220">' . "\n";
+            echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
+            echo ' <tr><td>' . __('processed03') . '</td><td>' . number_format(
+                    $row->processed
+                ) . '</td><td>' . formatSize(
+                    $row->size
+                ) . '</td></tr>' . "\n";
+            echo ' <tr><td>' . __('cleans03') . '</td><td>' . number_format(
+                    $row->clean
+                ) . '</td><td>' . $row->cleanpercent . '%</td></tr>' . "\n";
+            echo ' <tr><td>' . __('viruses03') . '</td><td>' . number_format(
+                    $row->viruses
+                ) . '</td><td>' . $row->viruspercent . '%</tr>' . "\n";
+            echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2">' . return_todays_top_virus() . '</td></tr>' . "\n";
+            echo ' <tr><td>' . __('blockedfiles03') . '</td><td>' . number_format(
+                    $row->blockedfiles
+                ) . '</td><td>' . $row->blockedfilespercent . '%</td></tr>' . "\n";
+            echo ' <tr><td>' . __('others03') . '</td><td>' . number_format(
+                    $row->otherinfected
+                ) . '</td><td>' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
+            echo ' <tr><td>' . __('spam03') . '</td><td>' . number_format(
+                    $row->spam
+                ) . '</td><td>' . $row->spampercent . '%</td></tr>' . "\n";
+            echo ' <tr><td>' . __('hscospam03') . '</td><td>' . number_format(
+                    $row->highspam
+                ) . '</td><td>' . $row->highspampercent . '%</td></tr>' . "\n";
+            if (get_conf_truefalse('mcpchecks')) {
+                echo ' <tr><td>MCP:</td><td>' . number_format(
+                        $row->mcp
+                    ) . '</td><td>' . $row->mcppercent . '%</td></tr>' . "\n";
+                echo ' <tr><td>' . __('hscomcp03') . '</td><td>' . number_format(
+                        $row->highmcp
+                    ) . '</td><td>' . $row->highmcppercent . '%</td></tr>' . "\n";
+            }
+            echo '</table>' . "\n";
+        }
+    }
+
+    public static function printFreeDiskSpace()
+    {
+        if (!DISTRIBUTED_SETUP) {
+            // Drive display
+            echo '    <tr><td colspan="3" class="heading" align="center">' . __('freedspace03') . '</td></tr>' . "\n";
+            foreach (get_disks() as $disk) {
+                $free_space = disk_free_space($disk['mountpoint']);
+                $total_space = disk_total_space($disk['mountpoint']);
+                $percent = '<span>';
+                if (round($free_space / $total_space, 2) <= 0.1) {
+                    $percent = '<span class="error">';
+                }
+                $percent .= ' [';
+                $percent .= round($free_space / $total_space, 2) * 100;
+                $percent .= '%] ';
+                $percent .= '</span>';
+                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
+            }
+        }
+    }
+
+    public static function printMTAQueue()
+    {
+        // Display the MTA queue
+        // Postfix if mta = postfix
+        if (get_conf_var('MTA', true) === 'postfix') {
+            // Mail Queues display
+            $incomingdir = get_conf_var('incomingqueuedir', true);
+            $outgoingdir = get_conf_var('outgoingqueuedir', true);
+            $inq = null;
+            $outq = null;
+            if (is_readable($incomingdir) || is_readable($outgoingdir)) {
+                $inq = \MailWatch\MTA\Postfix::postfixinq();
+                $outq = \MailWatch\MTA\Postfix::postfixallq() - $inq;
+            } elseif (!defined('RPC_REMOTE_SERVER')) {
+                echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+            }
+
+            if (defined('RPC_REMOTE_SERVER')) {
+                $pqerror = '';
+                $servers = explode(' ', RPC_REMOTE_SERVER);
+
+                for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
+                    if ($servers[$i] !== getHostByName(getHostName())) {
+                        $msg = new xmlrpcmsg('postfix_queues', []);
+                        $rsp = xmlrpc_wrapper($servers[$i], $msg);
+                        if ($rsp->faultCode() === 0) {
+                            $response = php_xmlrpc_decode($rsp->value());
+                            $inq += $response['inq'];
+                            $outq += $response['outq'];
+                        } else {
+                            $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                        }
+                    }
+                    if ($pqerror !== '') {
+                        echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                    }
+                }
+            }
+            if ($inq !== null && $outq !== null) {
+                echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+            }
+
+            // Else use MAILQ from conf.php which is for Sendmail or Exim
+        } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
+            if (get_conf_var('MTA') === 'exim') {
+                $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
+                $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
+            } else {
+                $cmd = exec('sudo ' . SENDMAIL_QUEUE_IN . ' 2>&1');
+                preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
+                $inq = $output_array[2];
+                $cmd = exec('sudo ' . SENDMAIL_QUEUE_OUT . ' 2>&1');
+                preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
+                $outq = $output_array[2];
+            }
+            echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+        }
+    }
+
+    public static function printAverageLoad()
+    {
+        // Load average
+        if (!DISTRIBUTED_SETUP && file_exists('/proc/loadavg')) {
+            $loadavg = file('/proc/loadavg');
+            $loadavg = explode(' ', $loadavg[0]);
+            $la_1m = $loadavg[0];
+            $la_5m = $loadavg[1];
+            $la_15m = $loadavg[2];
+            echo '
+        <tr>
+            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
+            <td align="right">' . __('1minute03') . '&nbsp;</td>
+            <td align="right">' . $la_1m . '</td>
+        </tr>
+        </tr>
+            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_5m . '</td>
+        </tr>
+            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_15m . '</td>
+        </tr>
+        ' . "\n";
+        } elseif (!DISTRIBUTED_SETUP && file_exists('/usr/bin/uptime')) {
+            $loadavg = shell_exec('/usr/bin/uptime');
+            $loadavg = explode(' ', $loadavg);
+            $la_1m = rtrim($loadavg[count($loadavg) - 3], ',');
+            $la_5m = rtrim($loadavg[count($loadavg) - 2], ',');
+            $la_15m = rtrim($loadavg[count($loadavg) - 1]);
+            echo '
+        <tr>
+            <td align="left" rowspan="3">' . __('loadaverage03') . '&nbsp;</td>
+            <td align="right">' . __('1minute03') . '&nbsp;</td>
+            <td align="right">' . $la_1m . '</td>
+        </tr>
+        </tr>
+            <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_5m . '</td>
+        </tr>
+            <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
+            <td align="right">' . $la_15m . '</td>
+        </tr>
+        ' . "\n";
+        }
+    }
+
+    public static function printServiceStatus()
+    {
+        // MailScanner running?
+        if (!DISTRIBUTED_SETUP) {
+            $no = '<span class="yes">&nbsp;' . __('no03') . '&nbsp;</span>' . "\n";
+            $yes = '<span class="no">&nbsp;' . __('yes03') . '&nbsp;</span>' . "\n";
+            exec('ps ax | grep MailScanner | grep -v grep', $output);
+            if (count($output) > 0) {
+                $running = $yes;
+                $procs = count($output) - 1 . ' ' . __('children03');
+            } else {
+                $running = $no;
+                $procs = count($output) . ' ' . __('procs03');
+            }
+            echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+
+            // is MTA running
+            $mta = get_conf_var('mta');
+            exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
+            if (count($output) > 0) {
+                $running = $yes;
+            } else {
+                $running = $no;
+            }
+            $procs = count($output) . ' ' . __('procs03');
+            echo '    <tr><td>' . ucwords($mta) . __('colon99') . '</td>'
+                . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+        }
+    }
+
+    public static function printColorCodes()
+    {
+        echo '   <table border="0" cellpadding="1" cellspacing="3"  align="center" class="mail colorcodes">' . "\n";
+        echo '    <tr><td class="infected"></td> <td>' . __('badcontentinfected03') . '</td>' . "\n";
+        echo '    <td class="spam"></td> <td>' . __('spam103') . ' </td>' . "\n";
+        echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
+        if (get_conf_truefalse('mcpchecks')) {
+            echo '    <td class="mcp"></td> <td>' . __('mcp03') . '</td>' . "\n";
+            echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
+        }
+        echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
+        echo '    <td class="blacklisted"></td> <td>' . __('blacklisted03') . '</td>' . "\n";
+        echo '    <td class="notscanned"></td> <td>' . __('notverified03') . '</td>' . "\n";
+        echo '    <td class="clean"></td> <td>' . __('clean03') . '</td></tr>' . "\n";
+        echo '   </table><br>' . "\n";
+    }
+}

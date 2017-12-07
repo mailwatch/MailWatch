@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-html_start(__('mailscannerlint28'), 0, false, false);
+\MailWatch\Html::start(__('mailscannerlint28'), 0, false, false);
 echo '<table class="mail" cellspacing="1" width="100%">' . "\n";
 echo ' <tr>' . "\n";
 echo '  <th colspan="2">' . __('mailscannerlint28') . '</th>' . "\n";
@@ -89,6 +89,6 @@ if (!defined('MS_EXECUTABLE_PATH')) {
 }
 echo '</table>' . "\n";
 // Add the footer
-html_end();
+\MailWatch\Html::end();
 // close the connection to the Database
 \MailWatch\Db::close();

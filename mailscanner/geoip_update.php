@@ -31,7 +31,7 @@ require_once __DIR__ . '/functions.php';
 // Authentication verification
 require __DIR__ . '/login.function.php';
 
-html_start(__('geoipupdate15'), 0, false, false);
+\MailWatch\Html::start(__('geoipupdate15'), 0, false, false);
 
 if (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">
@@ -209,6 +209,6 @@ if (!isset($_POST['run'])) {
 }
 
 // Add the footer
-html_end();
+\MailWatch\Html::end();
 // Close the connection to the Database
 \MailWatch\Db::close();

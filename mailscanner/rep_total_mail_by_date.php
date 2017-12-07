@@ -34,7 +34,7 @@ require_once __DIR__ . '/graphgenerator.inc.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start(__('totalmaildate49'), 0, false, true);
+$filter = \MailWatch\Html::start(__('totalmaildate49'), 0, false, true);
 
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
@@ -346,6 +346,6 @@ echo '</TR>' . "\n";
 echo '</TABLE>' . "\n";
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

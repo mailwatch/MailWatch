@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-html_start(__('qviewer08'), 0, false, false);
+\MailWatch\Html::start(__('qviewer08'), 0, false, false);
 
 if (!isset($_GET['dir'])) {
     // Get the top-level list
@@ -210,5 +210,5 @@ ORDER BY
     }
 }
 
-html_end();
+\MailWatch\Html::end();
 \MailWatch\Db::close();

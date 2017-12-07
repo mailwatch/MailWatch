@@ -32,7 +32,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    html_start(__('rules30'));
+    \MailWatch\Html::start(__('rules30'));
 
     // Limit accessible files to the ones in MailScanner etc directory or reports directory
     $MailscannerRepDir = realpath(get_conf_var('%report-dir%'));
@@ -69,7 +69,7 @@ if ($_SESSION['user_type'] !== 'A') {
         echo '</table>' . "\n";
     }
     // Add the footer
-    html_end();
+    \MailWatch\Html::end();
 }
 
 \MailWatch\Db::close();

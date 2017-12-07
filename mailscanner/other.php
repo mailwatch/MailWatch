@@ -31,7 +31,7 @@ require_once __DIR__ . '/functions.php';
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
-html_start(__('toolslinks10'), 0, false, false);
+\MailWatch\Html::start(__('toolslinks10'), 0, false, false);
 
 echo '<table width="100%" class="boxtable">';
 echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
@@ -110,6 +110,6 @@ echo '
 </table>';
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

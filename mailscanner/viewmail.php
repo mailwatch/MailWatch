@@ -30,7 +30,7 @@ ini_set('memory_limit', MEMORY_LIMIT);
 
 require __DIR__ . '/login.function.php';
 
-html_start(__('msgviewer06'), 0, false, false);
+\MailWatch\Html::start(__('msgviewer06'), 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -260,6 +260,6 @@ foreach ($mime_struct as $key => $part) {
 echo '</table>' . "\n";
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

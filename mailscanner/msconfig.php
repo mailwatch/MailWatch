@@ -32,7 +32,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    html_start(__('config27'));
+    \MailWatch\Html::start(__('config27'));
     audit_log(__('auditlog27', true));
 
     $conf_dir = get_conf_include_folder();
@@ -75,7 +75,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '</table>' . "\n";
 
     // Add footer
-    html_end();
+    \MailWatch\Html::end();
     // Close any open db connections
     \MailWatch\Db::close();
 }

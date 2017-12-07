@@ -58,7 +58,7 @@ if ($_SESSION['user_type'] !== 'A') {
     }
     $short_filename = basename($short_filename);
     $pageheader = __('msreedit55') . ' ' . $short_filename;
-    $filter = html_start($pageheader, 0, false, false);
+    $filter = \MailWatch\Html::start($pageheader, 0, false, false);
 
     // Includes and whatnot
     include __DIR__ . '/msre_table_functions.php';
@@ -110,7 +110,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // Clear status message
     $status_message = '';
     echo '</table><tr><td>' . "\n";
-    html_end();
+    \MailWatch\Html::end();
 }
 
 // Functions

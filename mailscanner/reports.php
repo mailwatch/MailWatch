@@ -41,7 +41,7 @@ if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {
 }
 
 // add the header information such as the logo, search, menu, ....
-html_start(__('reports14'), 0, false, false);
+\MailWatch\Html::start(__('reports14'), 0, false, false);
 
 // Add filters and save them
 if (isset($_POST['action']) || isset($_GET['action'])) {
@@ -141,6 +141,6 @@ if ($_SESSION['user_type'] === 'A') {
 $filter->Display($_SESSION['token']);
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

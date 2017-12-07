@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-$refresh = html_start(__('recentmsg05'), STATUS_REFRESH, false, false);
+$refresh = \MailWatch\Html::start(__('recentmsg05'), STATUS_REFRESH, false, false);
 
 $sql = "
 SELECT
@@ -81,6 +81,6 @@ LIMIT ' . MAX_RESULTS;
 db_colorised_table($sql, __('last05') . ' ' . MAX_RESULTS . ' ' . __('messages05') . ' (' . __('refevery05') . " $refresh " . __('seconds05') . ')');
 
 // Add footer
-html_end();
+\MailWatch\Html::end();
 // Close any open db connections
 \MailWatch\Db::close();

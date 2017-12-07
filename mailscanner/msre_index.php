@@ -38,7 +38,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
     audit_log(__('auditlog29', true));
 } else {
-    html_start(__('rulesetedit29'), 0, false, false);
+    \MailWatch\Html::start(__('rulesetedit29'), 0, false, false);
 
     // Start a table
     echo '<table border="0" class="mailwatch" align="center">' . "\n";
@@ -68,5 +68,5 @@ if ($_SESSION['user_type'] !== 'A') {
         TRH(['']);
     }
     echo '</table><tr><td>' . "\n";
-    html_end();
+    \MailWatch\Html::end();
 }
