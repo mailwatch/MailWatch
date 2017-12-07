@@ -970,7 +970,7 @@ return [
     'auditlogexpired63' => 'ユーザーのパスワードリセットに失敗しました：%s  - リセットリンクの有効期限が切れています。',
     'auditloglinkerror63' => '電子メールのリンクエラーをリセットします。',
 
-    // 64  -  graphgenerator.inc.php
+    // 64  -  GraphGenerator.php
     'nodata64' => 'グラフを生成するのに十分なデータがありません。',
     'geoipfailed64' => '（GeoIP検索に失敗しました）',
     'hostfailed64' => '（ホスト名の検索に失敗しました）',

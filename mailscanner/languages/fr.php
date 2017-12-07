@@ -979,7 +979,7 @@ return [
     'auditlogexpired63' => 'La réinitialisation du mot de passe pour l\'utilisateur %s a échouée. L\'ID de réinitialisation a expiré.',
     'auditloglinkerror63' => 'Erreur sur le lien de réinitialisation de l\'E-Mail.',
 
-    // 64 - graphgenerator.inc.php
+    // 64 - GraphGenerator.php
     'nodata64' => 'Pas assez de données pour générer le graphique.',
     'geoipfailed64' => '(Pas de réponse de GeoIP)',
     'hostfailed64' => '(Nom d\'hôte indéfini)',

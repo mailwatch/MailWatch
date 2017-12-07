@@ -28,7 +28,7 @@
 // Include of necessary functions
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/graphgenerator.inc.php';
+
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -43,7 +43,7 @@ $date_format = "'" . DATE_FORMAT . "'";
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
 
-$graphgenerator = new GraphGenerator();
+$graphgenerator = new \MailWatch\GraphGenerator();
 // SQL query to pull the data from maillog
 $sql = "
  SELECT

@@ -28,7 +28,7 @@
 // Include of necessary functions
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/graphgenerator.inc.php';
+
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -36,7 +36,7 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = \MailWatch\Html::start(__('mcpscoredist35'), 0, false, true);
 
-$graphgenerator = new GraphGenerator();
+$graphgenerator = new \MailWatch\GraphGenerator();
 $graphgenerator->sqlQuery = '
  SELECT
   ROUND(mcpsascore) AS score,

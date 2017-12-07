@@ -979,7 +979,7 @@ return [
     'auditlogexpired63' => 'Zurücksetzen des Passworts für Benutzer %s fehlgeschlagen - Rücksetz-Link abgelaufen',
     'auditloglinkerror63' => 'Fehlerhafter Link in der Rücksetz-Mail',
 
-    // 64 - graphgenerator.inc.php
+    // 64 - GraphGenerator.php
     'nodata64' => 'Zu wenig Daten zum Generieren des Graphen.',
     'geoipfailed64' => '(GeoIP konnte nicht aufgelöst werden)',
     'hostfailed64' => '(Hostname konnte nicht aufgelöst werden)',

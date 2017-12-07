@@ -979,7 +979,7 @@ return [
     'auditlogexpired63' => 'Password reset failed for user: %s - Reset link expired.',
     'auditloglinkerror63' => 'Reset Email link error.',
 
-    // 64 - graphgenerator.inc.php
+    // 64 - GraphGenerator.php
     'nodata64' => 'Not enough data to generate a graph.',
     'geoipfailed64' => '(GeoIP lookup failed)',
     'hostfailed64' => '(Hostname lookup failed)',

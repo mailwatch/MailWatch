@@ -4021,7 +4021,7 @@ function checkPrivilegeChange($myusername)
 
 function printTrafficGraph()
 {
-    require_once __DIR__ . '/graphgenerator.inc.php';
+
 
     $graphInterval = (defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
 
@@ -4035,7 +4035,7 @@ function printTrafficGraph()
     echo '    <tr>' . "\n";
     echo '    <td>' . "\n";
 
-    $graphgenerator = new GraphGenerator();
+    $graphgenerator = new \MailWatch\GraphGenerator();
     $graphgenerator->sqlQuery = '
      SELECT
       timestamp AS xaxis,

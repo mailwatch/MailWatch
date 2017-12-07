@@ -25,6 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+namespace MailWatch;
+
 class GraphGenerator
 {
     public $sqlQuery;
@@ -62,11 +64,11 @@ class GraphGenerator
         $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
         //create canvas graph
         echo '<canvas id="' . $chartId . '" class="reportGraph"></canvas>
-      <script src="js/Chart.js/Chart.min.js"></script>
-      <script src="js/pieConfig.js"></script>
+      <script src="../../mailscanner/js/Chart.js/Chart.min.js"></script>
+      <script src="../../mailscanner/js/pieConfig.js"></script>
       <script>
         COLON = "' . __('colon99') . '";
-        printPieGraph("' . $chartId .'", {
+        printPieGraph("' . $chartId . '", {
           chartTitle :  "' . $this->graphTitle . '",
           chartId : "' . $chartId . '",
           chartLabels : ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"],
@@ -87,7 +89,7 @@ class GraphGenerator
     public function printLineGraph()
     {
         if ($this->types === null) {
-            echo("No types defined");
+            echo('No types defined');
             return;
         }
 
@@ -99,20 +101,20 @@ class GraphGenerator
 
         $numericData = "";
         $formattedData = "";
-        $dataLabels="";
-        $graphTypes="";
-        $colors="";
+        $dataLabels = "";
+        $graphTypes = "";
+        $colors = "";
 
-        for ($i=0; $i<count($this->graphColumns['dataNumericColumns']); $i++) {
+        for ($i = 0; $i < count($this->graphColumns['dataNumericColumns']); $i++) {
             //foreach yaxis get the column name for numeric and formatted data
             $numericData .= '[' . "\n";
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
             $graphTypes .= '[' . "\n";
             $colors .= isset($this->settings['colors']) ? '["' . implode('", "', $this->settings['colors'][$i]) . '"],' : '';
-            for ($j=0; $j<count($this->graphColumns['dataNumericColumns'][$i]); $j++) {
+            for ($j = 0; $j < count($this->graphColumns['dataNumericColumns'][$i]); $j++) {
                 if (isset($this->graphColumns['dataLabels'][$i])) {
-                    $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] .'",';
+                    $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] . '",';
                 }
                 $graphTypes .= '"' . $this->types[$i][$j] . '",';
                 $numericDataName = $this->graphColumns['dataNumericColumns'][$i][$j];
@@ -140,13 +142,13 @@ class GraphGenerator
           xAxeDescription : "' . $this->graphColumns['xAxeDescription'] . '",
           yAxeDescriptions : ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"],
           fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
-          plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ?  'true' : 'false'). ',
+          plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ? 'true' : 'false') . ',
           maxTicks: ' . (isset($this->settings['maxTicks']) ? $this->settings['maxTicks'] : '12') . ',
-          ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ?  'drawLines : true,' : ''). '
-          ' . (isset($this->settings['colors']) ? 'colors : [' . $colors . '],'  : ''). '
-          ' . (isset($this->settings['valueTypes']) && count($this->settings['valueTypes']) !== 0 ?  'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : ''). '
+          ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ? 'drawLines : true,' : '') . '
+          ' . (isset($this->settings['colors']) ? 'colors : [' . $colors . '],' : '') . '
+          ' . (isset($this->settings['valueTypes']) && count($this->settings['valueTypes']) !== 0 ? 'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : '') . '
           ' . (isset($this->graphColumns['dataLabels']) ? 'chartDataLabels : [' . $dataLabels . '],' : '') . '
-          ' . ($graphTypes === null ? '' : 'types : [' .  $graphTypes . '],') . '
+          ' . ($graphTypes === null ? '' : 'types : [' . $graphTypes . '],') . '
         });
       </script>';
 
@@ -308,22 +310,22 @@ class GraphGenerator
     protected function generateTimeScale()
     {
         if (!isset($this->settings['timeInterval']) || !isset($this->settings['timeScale'])
-             || !isset($this->settings['timeFormat'])) {
+            || !isset($this->settings['timeFormat'])) {
             throw new \Exception('timeInterval or timeScale not set');
         }
         $interval = $this->settings['timeInterval'];
         $scale = $this->settings['timeScale'];
         $format = str_replace('%', '', $this->settings['timeFormat']);
 
-        $now = new DateTime();
+        $now = new \DateTime();
         $this->settings['now'] = $now;
         $date = clone $now;
-        $date = $date->sub(new DateInterval($interval));
+        $date = $date->sub(new \DateInterval($interval));
         $dates = [$date->format($format)];
         $count = 1;
         while ($date < $now) {
             //get the next interval and create the label for it
-            $date = $date->add(new DateInterval($scale));
+            $date = $date->add(new \DateInterval($scale));
             $dates[] = $date->format($format);
             $count++;
         }
@@ -349,18 +351,18 @@ class GraphGenerator
 
         $now = $this->settings['now'];
         $start = clone $now;
-        $start = $start->sub(new DateInterval($interval));
+        $start = $start->sub(new \DateInterval($interval));
         $oldest = clone $start;
         //initialize the time scales with zeros
         $convertedData = [($start->format($format)) => 0];
         while ($start < $now) {
-            $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
+            $convertedData[$start->add(new \DateInterval($scale))->format($format)] = 0;
         }
         //get the values from the sql result and assign them to the correct time scale part
         $count = isset($this->data['xaxis']) ? count($this->data['xaxis']) : 0;
-        for ($i=0; $i<$count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             // get the value from data and add it to the corresponding hour
-            $time = new DateTime($this->data['xaxis'][$i]);
+            $time = new \DateTime($this->data['xaxis'][$i]);
             //recheck if the entry is inside the value range
             if ($time >= $oldest && $time < $now) {
                 $convertedData[$time->format($format)] += $this->data[$column][$i];

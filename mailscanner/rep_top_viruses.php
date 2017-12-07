@@ -28,7 +28,7 @@
 // Include of necessary functions
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/graphgenerator.inc.php';
+
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
@@ -37,7 +37,7 @@ require __DIR__ . '/login.function.php';
 $filter = \MailWatch\Html::start(__('topvirus48'), 0, false, true);
 
 // SQL query to find all emails with a virus found
-$graphgenerator = new GraphGenerator();
+$graphgenerator = new \MailWatch\GraphGenerator();
 $graphgenerator->sqlQuery = '
 SELECT
  report
