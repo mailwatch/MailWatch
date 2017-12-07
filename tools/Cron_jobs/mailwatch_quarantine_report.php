@@ -38,7 +38,7 @@ require_once MAILWATCH_HOME . '/quarantine_report.inc.php';
 $usersForReport = [];
 if (isset($argv) && count($argv) > 1) {
     //get path from command line argument if set
-    $usersForReport = split(',', $argv[1]);
+    $usersForReport = explode(',', $argv[1]);
 }
 $report = new Quarantine_Report();
 $requirements_met = Quarantine_Report::check_quarantine_report_requirements();
