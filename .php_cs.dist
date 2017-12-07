@@ -1,0 +1,14 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->exclude(['vendor', 'mailscanner/lib', '_materiale'])
+    ->in(__DIR__);
+
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setFinder($finder)
+    ->setRules(array(
+        '@PSR2' => true,
+        '@PHP56Migration' => true,
+        'array_syntax' => ['syntax' => 'short'],
+    ));
