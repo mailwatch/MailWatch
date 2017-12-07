@@ -66,7 +66,7 @@ abstract class MtaLogProcessor
         if (!$fp = popen($input, 'r')) {
             die(__('diepipe56'));
         }
-        dbconn();
+        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
@@ -144,7 +144,7 @@ abstract class MtaLogProcessor
             }
             $lines++;
         }
-        dbclose();
+        \MailWatch\Db::close();
         pclose($fp);
     }
 

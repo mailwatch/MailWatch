@@ -205,4 +205,4 @@ if (!isset($_POST['run'])) {
 // Add the footer
 html_end();
 // Close the connection to the Database
-dbclose();
+\MailWatch\Db::close();

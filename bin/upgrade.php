@@ -51,7 +51,7 @@ if (!@is_file($pathToFunctions)) {
 
 require_once $pathToFunctions;
 
-$link = dbconn();
+$link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 $mysql_utf8_variant = array(
     'utf8' => array('charset' => 'utf8', 'collation' => 'utf8_unicode_ci'),
@@ -886,7 +886,7 @@ if ($link) {
             }
         }
     }
-    dbclose();
+    \MailWatch\Db::close();
 } else {
     echo color(' FAILED', 'red') . PHP_EOL;
     $errors[] = 'Database connection failed: ' . $link->error;

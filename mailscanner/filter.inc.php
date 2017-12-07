@@ -331,7 +331,7 @@ WHERE
             return;
         }
 
-        dbconn();
+        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (count($this->item) > 0) {
             // Delete the existing first
             $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
@@ -357,7 +357,7 @@ WHERE
             return;
         }
         
-        dbconn();
+        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . $_SESSION['myusername'] . "'";
         $sth = dbquery($sql);
         while ($row = $sth->fetch_row()) {
@@ -375,7 +375,7 @@ WHERE
             return;
         }
         
-        dbconn();
+        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
         dbquery($sql);
     }

@@ -72,4 +72,4 @@ if ($_SESSION['user_type'] !== 'A') {
     html_end();
 }
 
-dbclose();
+\MailWatch\Db::close();

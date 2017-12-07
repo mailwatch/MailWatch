@@ -829,4 +829,4 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
 // Add footer
 html_end();
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();

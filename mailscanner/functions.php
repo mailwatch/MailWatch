@@ -928,31 +928,13 @@ function html_end($footer = '')
 }
 
 /**
- * @return mysqli
- */
-function dbconn()
-{
-    //$link = mysql_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, false, 128);
-
-    return Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-}
-
-/**
- * @return bool
- */
-function dbclose()
-{
-    return Db::close();
-}
-
-/**
  * @param string $sql
  * @param bool $printError
  * @return mysqli_result
  */
 function dbquery($sql, $printError = true)
 {
-    $link = dbconn();
+    $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
         dbquerydebug($link, $sql);
     }
@@ -1021,7 +1003,7 @@ function quote_smart($value)
  */
 function safe_value($value)
 {
-    $link = dbconn();
+    $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
         $value = stripslashes($value);
     }
@@ -3571,7 +3553,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
  */
 function quarantine_learn($list, $num, $type, $rpc_only = false)
 {
-    dbconn();
+    \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
@@ -3813,7 +3795,7 @@ function fixMessageId($id)
  */
 function audit_log($action)
 {
-    $link = dbconn();
+    $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     if (AUDIT) {
         $user = 'unknown';
         if (isset($_SESSION['myusername'])) {

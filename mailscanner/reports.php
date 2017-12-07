@@ -143,4 +143,4 @@ $filter->Display($_SESSION['token']);
 // Add footer
 html_end();
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();

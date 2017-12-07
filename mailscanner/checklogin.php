@@ -84,7 +84,7 @@ $result = dbquery($sql);
 $usercount = $result->num_rows;
 if ($usercount === 0) {
     //no user found, redirect to login
-    dbclose();
+    \MailWatch\Db::close();
     header('Location: login.php?error=baduser');
     die();
 }
@@ -179,4 +179,4 @@ if ($usercount === 1) {
 }
 
 // close any DB connections
-dbclose();
+\MailWatch\Db::close();

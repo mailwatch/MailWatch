@@ -91,4 +91,4 @@ echo '</table>' . "\n";
 // Add the footer
 html_end();
 // close the connection to the Database
-dbclose();
+\MailWatch\Db::close();

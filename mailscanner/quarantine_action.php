@@ -170,7 +170,7 @@ switch ($_GET['action']) {
         die(__('dieuaction57') . ' ' . sanitizeInput($_GET['action']));
 }
 
-dbclose();
+\MailWatch\Db::close();
 ?>
 </body>
 </html>

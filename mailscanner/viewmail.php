@@ -41,7 +41,7 @@ html_start(__('msgviewer06'), 0, false, false);
         -->
     </SCRIPT>
 <?php
-dbconn();
+\MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if (!isset($_GET['id']) && !isset($_GET['amp;id'])) {
     die(__('nomessid06'));
 }
@@ -262,4 +262,4 @@ echo '</table>' . "\n";
 // Add footer
 html_end();
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();

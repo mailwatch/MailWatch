@@ -581,4 +581,4 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
 // Add footer
 html_end();
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();

@@ -124,4 +124,4 @@ db_colorised_table($sql, __('messlisting16'), true, true);
 // Add footer
 html_end();
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();

@@ -132,4 +132,4 @@ echo '<p class="center"><a href="javascript:history.back(1)">' . __('back21') . 
 //Add footer
 html_end();
 //Close database connection
-dbclose();
+\MailWatch\Db::close();

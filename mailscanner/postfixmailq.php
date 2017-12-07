@@ -36,4 +36,4 @@ echo '<pre>';
 \MailWatch\MTA\Postfix::postfixmailq();
 echo '</pre>';
 html_end();
-dbclose();
+\MailWatch\Db::close();

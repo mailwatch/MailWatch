@@ -46,5 +46,5 @@ if ($_SESSION['user_type'] !== 'A') {
     // Add footer
     html_end();
     // Close any open db connections
-    dbclose();
+    \MailWatch\Db::close();
 }

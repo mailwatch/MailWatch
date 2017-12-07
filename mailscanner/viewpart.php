@@ -44,7 +44,7 @@ if (!validateInput($message_id, 'msgid')) {
     die(__('dievalidate99'));
 }
 // See if message is local
-dbconn(); // required db link for mysql_real_escape_string
+\MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME); // required db link for mysql_real_escape_string
 $result = dbquery(
     "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
     $message_id . "' AND "
@@ -208,4 +208,4 @@ function decode_structure($structure)
 decode_structure($mime_struct[$part]);
 
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();

@@ -86,7 +86,7 @@ function rpc_get_quarantine($msg)
 function rpc_return_quarantined_file($msg)
 {
     global $xmlrpcerruser;
-    dbconn();
+    \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     $input = php_xmlrpc_decode(array_shift($msg->params));
     $input = preg_replace('[\.\/|\.\.\/]', '', $input);
     $date = @Db::mysqli_result(

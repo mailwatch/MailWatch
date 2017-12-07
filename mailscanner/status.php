@@ -83,4 +83,4 @@ db_colorised_table($sql, __('last05') . ' ' . MAX_RESULTS . ' ' . __('messages05
 // Add footer
 html_end();
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();

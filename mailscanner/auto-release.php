@@ -31,7 +31,7 @@ require_once __DIR__ . '/functions.php';
 if (file_exists('conf.php')) {
     $output = array();
     if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {
-        dbconn();
+        Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $mid = deepSanitizeInput($_GET['mid'], 'url');
         if ($mid === false || !validateInput($mid, 'msgid')) {
             die();

@@ -93,7 +93,7 @@ if (!isset($_GET['dir'])) {
     }
     
     if (QUARANTINE_USE_FLAG) {
-        dbconn();
+        \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $date = translateQuarantineDate($dir, 'sql');
         $sql = "
 SELECT
@@ -211,4 +211,4 @@ ORDER BY
 }
 
 html_end();
-dbclose();
+\MailWatch\Db::close();

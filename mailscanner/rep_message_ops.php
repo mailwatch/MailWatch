@@ -115,4 +115,4 @@ db_colorised_table($sql, __('messageops17'), true, true, true);
 // Add footer
 html_end();
 // Close any open db connections
-dbclose();
+\MailWatch\Db::close();
