@@ -107,7 +107,7 @@ set_include_path(
 );
 
 //Enforce SSL if SSL_ONLY=true
-if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
+if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
         header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;

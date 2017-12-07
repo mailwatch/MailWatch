@@ -354,7 +354,7 @@ class GraphGenerator
         $start = $start->sub(new \DateInterval($interval));
         $oldest = clone $start;
         //initialize the time scales with zeros
-        $convertedData = [($start->format($format)) => 0];
+        $convertedData = [$start->format($format) => 0];
         while ($start < $now) {
             $convertedData[$start->add(new \DateInterval($scale))->format($format)] = 0;
         }

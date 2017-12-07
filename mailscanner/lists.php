@@ -198,13 +198,13 @@ switch ($_SESSION['user_type']) {
         break;
 }
 switch (true) {
-    case(!empty($url_to)):
+    case!empty($url_to):
         $to_address = $url_to;
         if (!empty($url_domain)) {
             $to_address .= '@' . $url_domain;
         }
         break;
-    case(!empty($url_domain)):
+    case!empty($url_domain):
         $to_address = $url_domain;
         break;
 }
