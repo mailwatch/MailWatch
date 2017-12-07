@@ -114,7 +114,7 @@ function testValidUser($username, $usertype, $oldUsername)
     return true;
 }
 
-function testtoken()
+function testToken()
 {
     if (!isset($_POST['token']) && !isset($_GET['token'])) {
         return getHtmlMessage(__('dievalidate99'), 'error');
