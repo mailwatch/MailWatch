@@ -382,7 +382,7 @@ ORDER BY a.date DESC, a.time DESC';
                     $quarantined[] = $tmp_quarantined;
                 }
             }
-            $quarantined = call_user_func_array('array_merge', $quarantined);
+            $quarantined = array_merge(...$quarantined);
             if (count($quarantined) > 0) {
                 $list = implode(', ', $quarantine_list);
                 return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));

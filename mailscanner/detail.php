@@ -224,7 +224,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = formatSize($row[$f]);
         }
         if ($fieldn === __('msgheaders04')) {
-            if (version_compare(PHP_VERSION, '5.4', '>=')) {
+            if (PHP_VERSION_ID >= 50400) {
                 $row[$f] = nl2br(
                     str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
                 );

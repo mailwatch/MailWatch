@@ -742,7 +742,7 @@ AND
 function get_disks()
 {
     $disks = [];
-    if (php_uname('s') === 'Windows NT') {
+    if (PHP_OS === 'Windows NT') {
         // windows
         $disks = `fsutil fsinfo drives`;
         $disks = str_word_count($disks, 1);
@@ -810,7 +810,7 @@ function formatSize($size, $precision = 2)
     $base = log($size) / log(1024);
     $suffixes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
 
-    return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
+    return round(1024 ** ($base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
 
 /**

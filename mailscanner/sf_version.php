@@ -87,7 +87,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
     }
     if (strtolower(PHP_OS) === 'freebsd') {
-        echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
+        echo __('systemos11') . ' ' . PHP_OS . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
     }
 
     // Add test for MTA
