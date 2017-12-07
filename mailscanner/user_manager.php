@@ -138,7 +138,7 @@ function getUserById($additionalFields = false)
     if (($uid = deepSanitizeInput($uid, 'num')) < -1) {
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
-    $sql = "SELECT id, username, type" . ($additionalFields ? ", fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login" : "") . " FROM users WHERE id='" . $uid . "'";
+    $sql = 'SELECT id, username, type' . ($additionalFields ? ', fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login' : '') . " FROM users WHERE id='" . $uid . "'";
     $result = dbquery($sql);
     if ($result->num_rows === 0) {
         audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $uid));
@@ -182,7 +182,7 @@ function printUserFormular(
     if ($action == 'edit') {
         echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $uid . '">' . "\n";
         $formheader =  __('edituser12') . ' ' . $username;
-        $password = "XXXXXXXX";
+        $password = 'XXXXXXXX';
     } else {
         $formheader = __('newuser12');
         $password = '';
@@ -341,7 +341,7 @@ function editUser()
             $noscan = 'checked="checked"';
         }
         $timeout = '';
-        if ($user->login_timeout !== "-1") {
+        if ($user->login_timeout !== '-1') {
             $timeout = $user->login_timeout;
         }
 

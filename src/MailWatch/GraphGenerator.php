@@ -99,11 +99,11 @@ class GraphGenerator
 
         $this->runConversions();
 
-        $numericData = "";
-        $formattedData = "";
-        $dataLabels = "";
-        $graphTypes = "";
-        $colors = "";
+        $numericData = '';
+        $formattedData = '';
+        $dataLabels = '';
+        $graphTypes = '';
+        $colors = '';
 
         for ($i = 0; $i < count($this->graphColumns['dataNumericColumns']); $i++) {
             //foreach yaxis get the column name for numeric and formatted data

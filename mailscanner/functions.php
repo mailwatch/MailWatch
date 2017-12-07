@@ -4118,8 +4118,8 @@ function getVirus($report)
         $scanners = explode(' ', get_conf_var('VirusScanners'));
         foreach ($scanners as $scanner) {
             $scannerRegex = getVirusRegex($scanner);
-            if ($scannerRegex === null || $scannerRegex === "") {
-                error_log("Could not find regex for virus scanner " . $scanner);
+            if ($scannerRegex === null || $scannerRegex === '') {
+                error_log('Could not find regex for virus scanner ' . $scanner);
                 continue;
             }
             if (preg_match($scannerRegex, $report, $match) === 1) {

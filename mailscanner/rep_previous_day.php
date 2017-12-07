@@ -37,7 +37,7 @@ require __DIR__ . '/login.function.php';
 $filter = \MailWatch\Html::start(__('totalmaillasthours36'), 0, false, true);
 
 $graphgenerator = new \MailWatch\GraphGenerator();
-$graphgenerator->sqlQuery = "
+$graphgenerator->sqlQuery = '
  SELECT
   timestamp AS xaxis,
   1 as total_mail,
@@ -50,7 +50,7 @@ $graphgenerator->sqlQuery = "
   1=1
  AND
   timestamp BETWEEN (NOW() - INTERVAL 24 HOUR) AND NOW()
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  ORDER BY
   timestamp DESC
 ';
