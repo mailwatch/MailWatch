@@ -27,7 +27,6 @@
 
 // Set error level (some distro's have php.ini set to E_ALL)
 use MailWatch\Db;
-use MailWatch\Filter;
 
 error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 
@@ -732,7 +731,7 @@ AND
     $topvirus = $topvirus_arraykeys[0];
     if ($count > 1) {
         // and ... others
-        $topvirus .= sprintf(' ' . __('moretopviruses03'), $count-1);
+        $topvirus .= sprintf(' ' . __('moretopviruses03'), $count - 1);
     }
     return $topvirus;
 }
@@ -954,7 +953,7 @@ function parse_conf_dir($conf_dir)
     if ($dh = opendir($conf_dir)) {
         while (($file = readdir($dh)) !== false) {
             // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
-            if (strlen($file) > 0 &&  substr($file, 0, 1) !== '.' && is_file($conf_dir . $file)) {
+            if (strlen($file) > 0 && substr($file, 0, 1) !== '.' && is_file($conf_dir . $file)) {
                 $file_name = $conf_dir . $file;
                 if (!is_array($array_output1)) {
                     $array_output1 = parse_conf_file($file_name);
@@ -1955,10 +1954,10 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
             echo ' <tr class="table-background">' . "\n";
             for ($f = 0; $f < $fields; $f++) {
                 echo '  <td>' . preg_replace(
-                    "/,([^\s])/",
-                    ', $1',
+                        "/,([^\s])/",
+                        ', $1',
                         $row[$f]
-                ) . '</td>' . "\n";
+                    ) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }
@@ -2251,7 +2250,7 @@ function ldap_authenticate($username, $password)
                             break;
                         }
                     }
-                    
+
                     if (!isset($email)) {
                         //user has no mail but it is required for mailwatch
                         return null;
@@ -3479,7 +3478,7 @@ function checkConfVariables()
         'PWD_RESET_FROM_NAME' => ['description' => 'needed if Password Reset feature is enabled'],
         'PWD_RESET_FROM_ADDRESS' => ['description' => 'needed if Password Reset feature is enabled'],
         'MAILQ' => ['description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'],
-        'MAIL_SENDER'  => ['description' => 'needed if you use Exim or Sendmail Queue'],
+        'MAIL_SENDER' => ['description' => 'needed if you use Exim or Sendmail Queue'],
         'SESSION_NAME' => ['description' => 'needed if experiencing session conflicts'],
         'SENDMAIL_QUEUE_IN' => ['description' => 'needed only if using Sendmail as MTA'],
         'SENDMAIL_QUEUE_OUT' => ['description' => 'needed only if using Sendmail as MTA'],
@@ -3927,7 +3926,7 @@ function checkLangCode($langCode)
  */
 function updateLoginExpiry($myusername)
 {
-    $sql = "SELECT login_timeout from users where username='" . safe_value($myusername) . "'";
+    $sql = "SELECT login_timeout FROM users WHERE username='" . safe_value($myusername) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
@@ -4036,7 +4035,7 @@ function printTrafficGraph()
     $graphgenerator->sqlQuery = '
      SELECT
       timestamp AS xaxis,
-      1 as total_mail,
+      1 AS total_mail,
       CASE
       WHEN virusinfected > 0 THEN 1
       WHEN nameinfected > 0 THEN 1
