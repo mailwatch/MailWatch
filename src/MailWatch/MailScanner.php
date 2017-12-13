@@ -184,4 +184,76 @@ class MailScanner
 
         die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $MailScanner_conf_file\n");
     }
+
+
+    /**
+     * @param $file
+     * @return bool
+     */
+    public static function getDefaultRulesetValue($file)
+    {
+        $fh = fopen($file, 'rb') or die(__('dieruleset03') . " $file");
+        while (!feof($fh)) {
+            $line = rtrim(fgets($fh, filesize($file)));
+            if (preg_match('/^([^#]\S+:)\s+(\S+)\s+([^#]\S+)/', $line, $regs)) {
+                if ($regs[2] === 'default') {
+                    return $regs[3];
+                }
+            }
+        }
+        fclose($fh);
+
+        return false;
+    }
+
+
+    /**
+     * @param string $name
+     * @param bool $force
+     * @return bool
+     */
+    public static function getConfTrueFalse($name, $force = false)
+    {
+        if (DISTRIBUTED_SETUP && !$force) {
+            return true;
+        }
+
+        $conf_dir = static::getConfIncludeFolder($force);
+        $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
+
+        $array_output1 = static::parseConfFile($MailScanner_conf_file);
+        $array_output2 = static::parseConfDir($conf_dir);
+
+        $array_output = $array_output1;
+        if (is_array($array_output2)) {
+            $array_output = array_merge($array_output1, $array_output2);
+        }
+
+        foreach ($array_output as $parameter_name => $parameter_value) {
+            $parameter_name = preg_replace('/ */', '', $parameter_name);
+
+            if (strtolower($parameter_name) === strtolower($name)) {
+                // Is it a ruleset?
+                if (is_readable($parameter_value)) {
+                    $parameter_value = static::getDefaultRulesetValue($parameter_value);
+                }
+                $parameter_value = strtolower($parameter_value);
+                switch ($parameter_value) {
+                    case 'yes':
+                    case '1':
+                        return true;
+                    case 'no':
+                    case '0':
+                        return false;
+                    default:
+                        // if $parameter_value is a ruleset or a function call return true
+                        $parameter_value = trim($parameter_value);
+
+                        return strlen($parameter_value) > 0;
+                }
+            }
+        }
+
+        return false;
+    }
 }

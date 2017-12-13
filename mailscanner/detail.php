@@ -121,7 +121,7 @@ if ($result->num_rows === 0) {
 audit_log(__('auditlog04', true) . ' (id=' . $url_id . ')');
 
 // Check if MCP is enabled
-$is_MCP_enabled = get_conf_truefalse('mcpchecks');
+$is_MCP_enabled = \MailWatch\MailScanner::getConfTrueFalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = $result->fetch_array()) {

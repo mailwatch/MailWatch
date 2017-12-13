@@ -40,7 +40,7 @@ $filter = \MailWatch\Html::start(__('totalmaildate49'), 0, false, true);
 $date_format = "'" . DATE_FORMAT . "'";
 
 // Check if MCP is enabled
-$is_MCP_enabled = get_conf_truefalse('mcpchecks');
+$is_MCP_enabled = \MailWatch\MailScanner::getConfTrueFalse('mcpchecks');
 
 
 $graphgenerator = new \MailWatch\GraphGenerator();

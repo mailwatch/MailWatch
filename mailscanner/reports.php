@@ -127,11 +127,11 @@ $filter->AddReport('rep_top_sender_domains_by_volume.php', __('topsendersdomvol1
 $filter->AddReport('rep_top_recipient_domains_by_quantity.php', __('toprecipdomqt14'));
 $filter->AddReport('rep_top_recipient_domains_by_volume.php', __('toprecipdomvol14'));
 
-if (get_conf_truefalse('UseSpamAssassin') === true) {
+if (\MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin') === true) {
     $filter->AddReport('rep_sa_score_dist.php', __('assassinscoredist14'));
     $filter->AddReport('rep_sa_rule_hits.php', __('assassinrulhit14'));
 }
-if (get_conf_truefalse('MCPChecks') === true) {
+if (\MailWatch\MailScanner::getConfTrueFalse('MCPChecks') === true) {
     $filter->AddReport('rep_mcp_score_dist.php', __('mcpscoredist14'));
     $filter->AddReport('rep_mcp_rule_hits.php', __('mcprulehit14'));
 }

@@ -503,7 +503,7 @@ function updateClock() {
             echo ' <tr><td>' . __('hscospam03') . '</td><td>' . number_format(
                     $row->highspam
                 ) . '</td><td>' . $row->highspampercent . '%</td></tr>' . "\n";
-            if (get_conf_truefalse('mcpchecks')) {
+            if (MailScanner::getConfTrueFalse('mcpchecks')) {
                 echo ' <tr><td>MCP:</td><td>' . number_format(
                         $row->mcp
                     ) . '</td><td>' . $row->mcppercent . '%</td></tr>' . "\n";
@@ -540,10 +540,10 @@ function updateClock() {
     {
         // Display the MTA queue
         // Postfix if mta = postfix
-        if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'postfix') {
+        if (MailScanner::getConfVar('MTA', true) === 'postfix') {
             // Mail Queues display
-            $incomingdir = \MailWatch\MailScanner::getConfVar('incomingqueuedir', true);
-            $outgoingdir = \MailWatch\MailScanner::getConfVar('outgoingqueuedir', true);
+            $incomingdir = MailScanner::getConfVar('incomingqueuedir', true);
+            $outgoingdir = MailScanner::getConfVar('outgoingqueuedir', true);
             $inq = null;
             $outq = null;
             if (is_readable($incomingdir) || is_readable($outgoingdir)) {
@@ -582,7 +582,7 @@ function updateClock() {
 
             // Else use MAILQ from conf.php which is for Sendmail or Exim
         } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
-            if (\MailWatch\MailScanner::getConfVar('MTA') === 'exim') {
+            if (MailScanner::getConfVar('MTA') === 'exim') {
                 $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                 $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
             } else {
@@ -662,7 +662,7 @@ function updateClock() {
             echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
-            $mta = \MailWatch\MailScanner::getConfVar('mta');
+            $mta = MailScanner::getConfVar('mta');
             exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
             if (count($output) > 0) {
                 $running = $yes;
@@ -681,7 +681,7 @@ function updateClock() {
         echo '    <tr><td class="infected"></td> <td>' . __('badcontentinfected03') . '</td>' . "\n";
         echo '    <td class="spam"></td> <td>' . __('spam103') . ' </td>' . "\n";
         echo '    <td class="highspam"></td> <td>' . __('highspam03') . '</td>' . "\n";
-        if (get_conf_truefalse('mcpchecks')) {
+        if (MailScanner::getConfTrueFalse('mcpchecks')) {
             echo '    <td class="mcp"></td> <td>' . __('mcp03') . '</td>' . "\n";
             echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
         }

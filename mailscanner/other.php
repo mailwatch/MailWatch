@@ -64,14 +64,14 @@ if ($_SESSION['user_type'] === 'A') {
     if (defined('MSRE') && MSRE === true) {
         echo '<li><a href="msre_index.php">' . __('editmsrules10') . '</a>';
     }
-    if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') === true) {
+    if (!DISTRIBUTED_SETUP && \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin') === true) {
         echo '
      <li><a href="bayes_info.php">'.__('spamassassinbayesdatabaseinfo10').'</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
      <li><a href="sa_rules_update.php">' . __('updatesadesc10') . '</a>';
     }
-    if (!DISTRIBUTED_SETUP && get_conf_truefalse('MCPChecks') === true) {
+    if (!DISTRIBUTED_SETUP && \MailWatch\MailScanner::getConfTrueFalse('MCPChecks') === true) {
         echo '<li><a href="mcp_rules_update.php">' . __('updatemcpdesc10') . '</a>';
     }
     echo '<li><a href="geoip_update.php">' . __('updategeoip10') . '</a>';
@@ -85,7 +85,7 @@ if ($_SESSION['user_type'] === 'A') {
     <li><a href="http://mailwatch.org">MailWatch for MailScanner</a>
     <li><a href="http://www.mailscanner.info">MailScanner</a>';
 
-    if (true === get_conf_truefalse('UseSpamAssassin')) {
+    if (true === \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin')) {
         echo '<li><a href="http://spamassassin.apache.org/">SpamAssassin</a>';
     }
 
