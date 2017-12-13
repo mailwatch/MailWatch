@@ -43,7 +43,7 @@ if ($_SESSION['user_type'] !== 'A') {
 
     $array_output = [];
     $array_output1 = \MailWatch\MailScanner::parseConfFile($MailScanner_conf_file);
-    $array_output2 = parse_conf_dir($conf_dir);
+    $array_output2 = \MailWatch\MailScanner::parseConfDir($conf_dir);
 
     if (is_array($array_output2)) {
         $array_output = array_merge($array_output1, $array_output2);

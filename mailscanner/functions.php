@@ -901,31 +901,7 @@ function get_default_ruleset_value($file)
 
 
 
-/**
- * @param $conf_dir
- * @return array
- */
-function parse_conf_dir($conf_dir)
-{
-    $array_output1 = [];
-    if ($dh = opendir($conf_dir)) {
-        while (($file = readdir($dh)) !== false) {
-            // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
-            if (strlen($file) > 0 && substr($file, 0, 1) !== '.' && is_file($conf_dir . $file)) {
-                $file_name = $conf_dir . $file;
-                if (!is_array($array_output1)) {
-                    $array_output1 = \MailWatch\MailScanner::parseConfFile($file_name);
-                } else {
-                    $array_output2 = \MailWatch\MailScanner::parseConfFile($file_name);
-                    $array_output1 = array_merge($array_output1, $array_output2);
-                }
-            }
-        }
-    }
-    closedir($dh);
 
-    return $array_output1;
-}
 
 /**
  * @param string $name
@@ -942,7 +918,7 @@ function get_conf_truefalse($name, $force = false)
     $MailScanner_conf_file = MS_CONFIG_DIR . 'MailScanner.conf';
 
     $array_output1 = \MailWatch\MailScanner::parseConfFile($MailScanner_conf_file);
-    $array_output2 = parse_conf_dir($conf_dir);
+    $array_output2 = \MailWatch\MailScanner::parseConfDir($conf_dir);
 
     $array_output = $array_output1;
     if (is_array($array_output2)) {
