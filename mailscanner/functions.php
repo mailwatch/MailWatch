@@ -3645,4 +3645,3 @@ function checkPrivilegeChange($myusername)
 
     return false;
 }
-

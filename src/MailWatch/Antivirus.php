@@ -69,7 +69,6 @@ class Antivirus
      */
     public static function getVirusRegex($scanner = null)
     {
-
         if ($scanner === null) {
             $scanner = self::getPrimaryScanner();
         }
