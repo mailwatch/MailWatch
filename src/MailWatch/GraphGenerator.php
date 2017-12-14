@@ -277,7 +277,7 @@ class GraphGenerator
     {
         $viruses = [];
         foreach ($this->data[$column] as $report) {
-            $virus = getVirus($report);
+            $virus = \MailWatch\Antivirus::getVirus($report);
             if ($virus !== null) {
                 if (isset($viruses[$virus])) {
                     $viruses[$virus]++;

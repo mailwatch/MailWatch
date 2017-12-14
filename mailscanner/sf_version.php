@@ -134,7 +134,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // Add test for others virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {
         echo 'ClamAV ' . __('version11') . ' ';
-        passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
+        passthru(\MailWatch\Antivirus::getAntivirusConf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
         echo '<br>' . "\n";
     }
 

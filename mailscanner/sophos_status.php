@@ -34,7 +34,7 @@ include __DIR__ . '/login.function.php';
 echo '<table class="boxtable" width="100%">';
 echo '<tr>';
 echo '<td align="center">';
-passthru(get_virus_conf('sophos') . ' -v | awk -f ' . __DIR__ . '/sophos.awk');
+passthru(\MailWatch\Antivirus::getAntivirusConf('sophos') . ' -v | awk -f ' . __DIR__ . '/sophos.awk');
 echo '</td>';
 echo '</tr>';
 echo '</table>';

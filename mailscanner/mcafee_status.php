@@ -39,7 +39,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<table class="boxtable" width="100%">' . "\n";
     echo '<tr>' . "\n";
     echo '<td align="center">' . "\n";
-    passthru(get_virus_conf('mcafee') . ' --version | awk -f ' . __DIR__ . '/mcafee.awk');
+    passthru(\MailWatch\Antivirus::getAntivirusConf('mcafee') . ' --version | awk -f ' . __DIR__ . '/mcafee.awk');
     echo '</td>' . "\n";
     echo '</tr>' . "\n";
     echo '</table>' . "\n";

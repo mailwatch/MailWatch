@@ -40,9 +40,9 @@ if ($_SESSION['user_type'] !== 'A') {
   <td align="center">';
 
     if (false !== strpos(\MailWatch\MailScanner::getConfVar('VirusScanners'), '/-6/')) {
-        passthru(get_virus_conf('f-prot') . ' -virno | awk -f ' . __DIR__ . '/f-prot.awk');
+        passthru(\MailWatch\Antivirus::getAntivirusConf('f-prot') . ' -virno | awk -f ' . __DIR__ . '/f-prot.awk');
     } else {
-        passthru(get_virus_conf('f-prot') . ' -verno | awk -f ' . __DIR__ . '/f-prot.awk');
+        passthru(\MailWatch\Antivirus::getAntivirusConf('f-prot') . ' -verno | awk -f ' . __DIR__ . '/f-prot.awk');
     }
     echo '
 </td>
