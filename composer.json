@@ -21,7 +21,8 @@
     "pear/net_smtp": "^1.7",
     "pear/mail": "^1.4",
     "pear/pager": "^2.5",
-    "geoip/geoip": "^1.17"
+    "geoip/geoip": "^1.17",
+    "rmccue/requests": "^1.6"
   },
   "conflict": {
     "ext-geoip": "*"

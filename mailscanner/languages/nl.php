@@ -564,7 +564,7 @@ return [
     'message815' => 'Delete them manually from',
     'directory15' => 'directory',
     'geoipupdate15' => 'GeoIP Database Update',
-    'dieproxy15' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
+    'dieproxy15' => 'Proxy type should be "HTTP", check your configuration file',
     'auditlog15' => 'Ran GeoIP update',
 
     // 16-rep_message_listing.php
@@ -824,7 +824,7 @@ return [
     // 52-mailwatch_geoip_update.php
     'geoipv452' => 'GeoIP IPv4 data file',
     'geoipv652' => 'GeoIP IPv6 data file',
-    'dieproxy52' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
+    'dieproxy52' => 'Proxy type should be "HTTP", check your configuration file',
     'downok52' => 'successfully downloaded',
     'downbad52' => 'Error occurred while downloading',
     'downokunpack52' => 'Download complete, unpacking files...',

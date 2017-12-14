@@ -52,9 +52,6 @@ if (!isset($_POST['run'])) {
             </table>
             </form>' . "\n";
 } else {
-    require_once __DIR__ . '/lib/request/Requests.php';
-    Requests::register_autoloader();
-
     ob_start();
     echo __('downfile15') . '<br>' . "\n";
 
@@ -106,10 +103,10 @@ if (!isset($_POST['run'])) {
                             // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
                             $requestSession->options['proxy']['type'] = 'HTTP';
                             break;
-                        case 'SOCKS5':
+                        /*case 'SOCKS5':
                         case 'CURLPROXY_SOCKS5': //BC for old constant name
                             $requestSession->options['proxy']['type'] = 'SOCKS5';
-                            break;
+                            break;*/
                         default:
                             die(__('dieproxy15'));
                     }

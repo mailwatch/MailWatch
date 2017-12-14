@@ -27,14 +27,11 @@
  */
 
 // Edit if you changed webapp directory from default
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
+$pathToFunctions = __DIR__ . '/../../mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
-
-require_once MAILWATCH_HOME . '/lib/request/Requests.php';
-Requests::register_autoloader();
 
 ob_start();
 echo 'Downloading file, please wait...' . "\n";
@@ -69,7 +66,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             );
 
             if (USE_PROXY === true) {
-                if (PROXY_USER != '') {
+                if (PROXY_USER !== '') {
                     $requestSession->options['proxy']['authentication'] = [
                         PROXY_SERVER . ':' . PROXY_PORT,
                         PROXY_USER,
@@ -87,10 +84,10 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                         // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
                         $requestSession->options['proxy']['type'] = 'HTTP';
                         break;
-                    case 'SOCKS5':
+                    /*case 'SOCKS5':
                     case 'CURLPROXY_SOCKS5': //BC for old constant name
                         $requestSession->options['proxy']['type'] = 'SOCKS5';
-                        break;
+                        break;*/
                     default:
                         die(__('dieproxy52'));
                 }
@@ -114,11 +111,11 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             echo __('downokunpack52') . "\n";
             ob_flush();
             flush();
-        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
             // wget
             $proxyString = '';
             if (USE_PROXY) {
-                if (PROXY_USER != '') {
+                if (PROXY_USER !== '') {
                     $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
                 } else {
                     $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
@@ -158,7 +155,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                 ob_flush();
                 flush();
             }
-        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
             foreach ($files as $file) {
                 exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
                 if ($retval_gunzip > 0) {
