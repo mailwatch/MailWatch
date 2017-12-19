@@ -3047,7 +3047,6 @@ function checkConfVariables()
         'PROXY_PASS',
         'PROXY_PORT',
         'PROXY_SERVER',
-        'PROXY_TYPE',
         'PROXY_USER',
         'QUARANTINE_DAYS_TO_KEEP',
         'QUARANTINE_FILTERS_COMBINED',
@@ -3093,6 +3092,7 @@ function checkConfVariables()
         'CACHE_DIR',
         'LDAP_SSL',
         'TTF_DIR',
+        'PROXY_TYPE',
     ];
 
     $optional = [

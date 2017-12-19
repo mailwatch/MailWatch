@@ -98,8 +98,6 @@ define('TIME_FORMAT', '%H:%i:%s');
 define('USE_PROXY', false);
 define('PROXY_SERVER', '127.0.0.1');
 define('PROXY_PORT', '8080');
-// Can be set to HTTP only
-define('PROXY_TYPE', 'HTTP');
 // If left blank no authenication will be used.
 define('PROXY_USER', '');
 define('PROXY_PASS', '');

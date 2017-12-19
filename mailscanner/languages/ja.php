@@ -555,7 +555,6 @@ return [
     'message815' => '手動で削除する',
     'directory15' => 'ディレクトリ',
     'geoipupdate15' => 'GeoIPデータベースの更新',
-    'dieproxy15' => 'プロキシタイプは "HTTP"か "SOCKS5" のどちらかで、設定ファイルをチェックしてください。',
     'auditlog15' => 'GeoIP アップデートの実行',
 
     // 16-rep_message_listing.php
@@ -815,7 +814,6 @@ return [
     // 52-mailwatch_geoip_update.php
     'geoipv452' => 'GeoIP IPv4データファイル',
     'geoipv652' => 'GeoIP IPv6データファイル',
-    'dieproxy52' => 'プロキシタイプは "HTTP"または "SOCKS5"で、設定ファイルをチェックしてください。',
     'downok52' => '正常にダウンロードされました',
     'downbad52' => 'ダウンロード中にエラーが発生しました',
     'downokunpack52' => '完全なファイルを解凍してダウンロード...',

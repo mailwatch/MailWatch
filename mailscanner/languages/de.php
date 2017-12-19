@@ -564,7 +564,6 @@ return [
     'message815' => 'Löschen Sie die Dateien manuell aus',
     'directory15' => 'Verzeichnis',
     'geoipupdate15' => 'GeoIP Datenbank-Aktualisierung',
-    'dieproxy15' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
     'auditlog15' => 'GeoIP-Update wurde ausgeführt',
 
     // 16-rep_message_listing.php
@@ -824,7 +823,6 @@ return [
     // 52-mailwatch_geoip_update.php
     'geoipv452' => 'GeoIP IPv4 Datendatei',
     'geoipv652' => 'GeoIP IPv6 Datendatei',
-    'dieproxy52' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
     'downok52' => 'erfolgreich heruntergeladen',
     'downbad52' => 'Beim Herunterladen ist ein Fehler aufgetreten',
     'downokunpack52' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',

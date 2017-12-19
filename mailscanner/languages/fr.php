@@ -564,7 +564,6 @@ return [
     'message815' => 'Effacez-les à la main à partir de',
     'directory15' => 'répertoire',
     'geoipupdate15' => 'Mise à jour des bases GeoIP',
-    'dieproxy15' => 'Le type de proxy doit être en "HTTP" ou en "SOCKS5". Vérifiez votre fichier de configuration.',
     'auditlog15' => 'Exécution de la mise à jour GeoIP',
 
     // 16-rep_message_listing.php
@@ -824,7 +823,6 @@ return [
     // 52-mailwatch_geoip_update.php
     'geoipv452' => 'Fichier de données GeoIP IPv4',
     'geoipv652' => 'Fichier de données GeoIP IPv6',
-    'dieproxy52' => 'Le type de proxy doit être en "HTTP" ou en "SOCKS5". Vérifiez votre fichier de configuration.',
     'downok52' => ': téléchargement réussi',
     'downbad52' => 'Une erreur c\'est produite pendant le téléchargement',
     'downokunpack52' => 'Téléchargement complet, extraction des fichiers...',

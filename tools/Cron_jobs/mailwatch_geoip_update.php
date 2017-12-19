@@ -66,6 +66,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             );
 
             if (USE_PROXY === true) {
+                $requestSession->options['proxy']['type'] = 'HTTP';
                 if (PROXY_USER !== '') {
                     $requestSession->options['proxy']['authentication'] = [
                         PROXY_SERVER . ':' . PROXY_PORT,
@@ -76,20 +77,6 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                     $requestSession->options['proxy']['authentication'] = [
                         PROXY_SERVER . ':' . PROXY_PORT
                     ];
-                }
-
-                switch (PROXY_TYPE) {
-                    case 'HTTP':
-                    case 'CURLPROXY_HTTP': // BC for old constant name
-                        // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
-                        $requestSession->options['proxy']['type'] = 'HTTP';
-                        break;
-                    /*case 'SOCKS5':
-                    case 'CURLPROXY_SOCKS5': //BC for old constant name
-                        $requestSession->options['proxy']['type'] = 'SOCKS5';
-                        break;*/
-                    default:
-                        die(__('dieproxy52'));
                 }
             }
 
