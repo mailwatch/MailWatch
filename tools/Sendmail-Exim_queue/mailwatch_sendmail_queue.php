@@ -270,18 +270,18 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
      lastattempt,
      hostname)
     VALUES
-    ('" .  \MailWatch\Strings::safe_value($msgid) . "','" .
-                     \MailWatch\Strings::safe_value($msginfo['cdate']) . "','" .
-                     \MailWatch\Strings::safe_value($msginfo['ctime']) . "','" .
-                     \MailWatch\Strings::safe_value($from) . "','" .
-                     \MailWatch\Strings::safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                     \MailWatch\Strings::safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : '') . "','" .
-                     \MailWatch\Strings::safe_value($msginfo['message']) . "','" .
-                     \MailWatch\Strings::safe_value($msginfo['size']) . "','" .
-                     \MailWatch\Strings::safe_value($msginfo['priority']) . "','" .
-                     \MailWatch\Strings::safe_value($msginfo['attempts']) . "','" .
-                     \MailWatch\Strings::safe_value($msginfo['lastattempttime']) . "','" .
-                     \MailWatch\Strings::safe_value($sys_hostname) . "')";
+    ('" .  \MailWatch\Sanitize::safe_value($msgid) . "','" .
+                     \MailWatch\Sanitize::safe_value($msginfo['cdate']) . "','" .
+                     \MailWatch\Sanitize::safe_value($msginfo['ctime']) . "','" .
+                     \MailWatch\Sanitize::safe_value($from) . "','" .
+                     \MailWatch\Sanitize::safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
+                     \MailWatch\Sanitize::safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : '') . "','" .
+                     \MailWatch\Sanitize::safe_value($msginfo['message']) . "','" .
+                     \MailWatch\Sanitize::safe_value($msginfo['size']) . "','" .
+                     \MailWatch\Sanitize::safe_value($msginfo['priority']) . "','" .
+                     \MailWatch\Sanitize::safe_value($msginfo['attempts']) . "','" .
+                     \MailWatch\Sanitize::safe_value($msginfo['lastattempttime']) . "','" .
+                     \MailWatch\Sanitize::safe_value($sys_hostname) . "')";
                 dbquery($sql);
             }
         }

@@ -687,8 +687,8 @@ function Process_Form($file_contents, $short_filename)
     }
     // And add on the default rule if there is one.
     if ($default_action !== '') {
-        $new_file[] = '#' . \MailWatch\Strings::sanitizeInput($default_desc) . "\n";
-        $new_file[] = \MailWatch\Strings::sanitizeInput($default_direction) . "\tdefault\t\t\t" . \MailWatch\Strings::sanitizeInput($default_action) ."\n";
+        $new_file[] = '#' . \MailWatch\Sanitize::sanitizeInput($default_desc) . "\n";
+        $new_file[] = \MailWatch\Sanitize::sanitizeInput($default_direction) . "\tdefault\t\t\t" . \MailWatch\Sanitize::sanitizeInput($default_action) ."\n";
     }
 
     // ### ---> Debugging
@@ -705,7 +705,7 @@ function Process_Form($file_contents, $short_filename)
     */
 
     // mmmkay, now we should be able to write the new file
-    $getFile = basename(\MailWatch\Strings::sanitizeInput($short_filename));
+    $getFile = basename(\MailWatch\Sanitize::sanitizeInput($short_filename));
     $filename = MSRE_RULESET_DIR . '/' . $getFile;
     list($bytes, $status_msg) = Write_File($filename, $new_file);
 

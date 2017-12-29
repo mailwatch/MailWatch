@@ -28,7 +28,7 @@
 namespace MailWatch;
 
 
-class Strings
+class Sanitize
 {
     /**
      * @param $string
@@ -48,7 +48,7 @@ class Strings
      */
     public static function quote_smart($value)
     {
-        return "'" .  \MailWatch\Strings::safe_value($value) . "'";
+        return "'" .  \MailWatch\Sanitize::safe_value($value) . "'";
     }
 
     /**

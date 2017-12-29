@@ -33,7 +33,7 @@ if (USE_LDAP === true) {
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     if (!$_SERVER['HTTPS'] === 'on') {
-        header('Location: https://' . \MailWatch\Strings::sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
+        header('Location: https://' . \MailWatch\Sanitize::sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
 }
@@ -292,7 +292,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 <?php if (file_exists('conf.php')) {
             if ($fields !== '') {
                 ?>
-                        <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo \MailWatch\Strings::sanitizeInput($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+                        <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo \MailWatch\Sanitize::sanitizeInput($_SERVER['PHP_SELF']); ?>" autocomplete="off">
                             <fieldset>
                                 <?php if (isset($_GET['error']) || $errors !== '') {
                     ?>

@@ -94,19 +94,19 @@ if ($_SESSION['user_type'] !== 'A') {
         }
     }
     if ($startDate !== '') {
-        $auditFilter .= ' AND a.timestamp >= "' .  \MailWatch\Strings::safe_value($startDate) . ' 00:00:00"';
+        $auditFilter .= ' AND a.timestamp >= "' .  \MailWatch\Sanitize::safe_value($startDate) . ' 00:00:00"';
     }
     if ($endDate !== '') {
-        $auditFilter .= ' AND a.timestamp <= "' .  \MailWatch\Strings::safe_value($endDate) . ' 23:59:59"';
+        $auditFilter .= ' AND a.timestamp <= "' .  \MailWatch\Sanitize::safe_value($endDate) . ' 23:59:59"';
     }
     if ($username !== '') {
-        $auditFilter .= ' AND b.username = "' .  \MailWatch\Strings::safe_value($username) . '"';
+        $auditFilter .= ' AND b.username = "' .  \MailWatch\Sanitize::safe_value($username) . '"';
     }
     if ($ipaddress !== '') {
-        $auditFilter .= ' AND a.ip_address = "' .  \MailWatch\Strings::safe_value($ipaddress) . '"';
+        $auditFilter .= ' AND a.ip_address = "' .  \MailWatch\Sanitize::safe_value($ipaddress) . '"';
     }
     if ($actions !== '') {
-        $auditFilter .= ' AND a.action like "%' .  \MailWatch\Strings::safe_value($actions) . '%"';
+        $auditFilter .= ' AND a.action like "%' .  \MailWatch\Sanitize::safe_value($actions) . '%"';
     }
 
     // SQL query for the audit log

@@ -152,7 +152,7 @@ ORDER BY
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
             $msg_ids = implode($items, ',');
-            $date =  \MailWatch\Strings::safe_value(translateQuarantineDate($dir, 'sql'));
+            $date =  \MailWatch\Sanitize::safe_value(translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
    id AS id2,

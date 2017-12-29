@@ -76,8 +76,8 @@ abstract class MtaLogProcessor
             unset($parsed, $_timestamp, $_host, $_type, $_msg_id, $_status);
 
             $parsed = new SyslogParser($line);
-            $_timestamp =  \MailWatch\Strings::safe_value($parsed->timestamp);
-            $_host =  \MailWatch\Strings::safe_value($parsed->host);
+            $_timestamp =  \MailWatch\Sanitize::safe_value($parsed->timestamp);
+            $_host =  \MailWatch\Sanitize::safe_value($parsed->host);
             $_dsn = '';
             $_delay = '';
             $_relay = '';
@@ -90,7 +90,7 @@ abstract class MtaLogProcessor
                     print_r($this);
                 }
 
-                $_msg_id =  \MailWatch\Strings::safe_value($this->id);
+                $_msg_id =  \MailWatch\Sanitize::safe_value($this->id);
 
                 //apply rulesets if they exist
                 $rulesets = $this->getRulesets();
@@ -110,15 +110,15 @@ abstract class MtaLogProcessor
                         $this->entries['reject']
                     )
                 ) {
-                    $_type =  \MailWatch\Strings::safe_value('unknown_user');
-                    $_status =  \MailWatch\Strings::safe_value($this->getEmail($this->entries['to']));
+                    $_type =  \MailWatch\Sanitize::safe_value('unknown_user');
+                    $_status =  \MailWatch\Sanitize::safe_value($this->getEmail($this->entries['to']));
                 }
 
                 // Unknown users
                 if (preg_match('/user unknown/i', $this->entry)) {
                     // Unknown users
-                    $_type =  \MailWatch\Strings::safe_value('unknown_user');
-                    $_status =  \MailWatch\Strings::safe_value($this->raw);
+                    $_type =  \MailWatch\Sanitize::safe_value('unknown_user');
+                    $_status =  \MailWatch\Sanitize::safe_value($this->raw);
                 }
 
                 //apply reject reasons if they exist
@@ -132,11 +132,11 @@ abstract class MtaLogProcessor
 
                 // Relay lines
                 if (isset($this->entries['relay'], $this->entries[$this->statusField])) {
-                    $_type =  \MailWatch\Strings::safe_value('relay');
-                    $_delay =  \MailWatch\Strings::safe_value($this->entries[$this->delayField]);
-                    $_relay =  \MailWatch\Strings::safe_value($this->getIp());
-                    $_dsn =  \MailWatch\Strings::safe_value($this->entries['dsn']);
-                    $_status =  \MailWatch\Strings::safe_value($this->entries[$this->statusField]);
+                    $_type =  \MailWatch\Sanitize::safe_value('relay');
+                    $_delay =  \MailWatch\Sanitize::safe_value($this->entries[$this->delayField]);
+                    $_relay =  \MailWatch\Sanitize::safe_value($this->getIp());
+                    $_dsn =  \MailWatch\Sanitize::safe_value($this->entries['dsn']);
+                    $_status =  \MailWatch\Sanitize::safe_value($this->entries[$this->statusField]);
                 }
             }
             if (isset($_type)) {
