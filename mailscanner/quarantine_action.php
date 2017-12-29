@@ -167,7 +167,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die(__('dieuaction57') . ' ' . \MailWatch\Strings::sanitizeInput($_GET['action']));
+        die(__('dieuaction57') . ' ' . \MailWatch\Sanitize::sanitizeInput($_GET['action']));
 }
 
 \MailWatch\Db::close();

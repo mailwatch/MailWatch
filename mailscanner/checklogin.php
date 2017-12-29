@@ -55,22 +55,22 @@ if (
     (($result = ldap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
-    $myusername =  \MailWatch\Strings::safe_value($result);
-    $mypassword =  \MailWatch\Strings::safe_value($mypassword);
+    $myusername =  \MailWatch\Sanitize::safe_value($result);
+    $mypassword =  \MailWatch\Sanitize::safe_value($mypassword);
 } elseif (
     defined('USE_IMAP') &&
     (USE_IMAP === true) &&
     (($result = imap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_imap'] = true;
-    $myusername =  \MailWatch\Strings::safe_value($myusername);
-    $mypassword =  \MailWatch\Strings::safe_value($mypassword);
+    $myusername =  \MailWatch\Sanitize::safe_value($myusername);
+    $mypassword =  \MailWatch\Sanitize::safe_value($mypassword);
 } else {
     $_SESSION['user_ldap'] = false;
     $_SESSION['user_imap'] = false;
     if ($mypassword !== '') {
-        $myusername =  \MailWatch\Strings::safe_value($myusername);
-        $mypassword =  \MailWatch\Strings::safe_value($mypassword);
+        $myusername =  \MailWatch\Sanitize::safe_value($myusername);
+        $mypassword =  \MailWatch\Sanitize::safe_value($mypassword);
     } else {
         header('Location: login.php?error=emptypassword');
         die();
@@ -173,7 +173,7 @@ if ($usercount === 1) {
         $redirect_url = $_SESSION['REQUEST_URI'];
         unset($_SESSION['REQUEST_URI']);
     }
-    header('Location: ' . str_replace('&amp;', '&', \MailWatch\Strings::sanitizeInput($redirect_url)));
+    header('Location: ' . str_replace('&amp;', '&', \MailWatch\Sanitize::sanitizeInput($redirect_url)));
 } else {
     header('Location: login.php?error=baduser');
 }

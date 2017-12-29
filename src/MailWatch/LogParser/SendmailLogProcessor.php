@@ -42,16 +42,16 @@ class SendmailLogProcessor extends MtaLogProcessor
             if ($this->entries['ruleset'] === 'check_relay') {
                 // Listed in RBL(s)
                 return [
-                    'type' =>  \MailWatch\Strings::safe_value('rbl'),
-                    'relay' =>  \MailWatch\Strings::safe_value($this->entries['arg2']),
-                    'status' =>  \MailWatch\Strings::safe_value($this->entries['reject'])
+                    'type' =>  \MailWatch\Sanitize::safe_value('rbl'),
+                    'relay' =>  \MailWatch\Sanitize::safe_value($this->entries['arg2']),
+                    'status' =>  \MailWatch\Sanitize::safe_value($this->entries['reject'])
                 ];
             }
             if ($this->entries['ruleset'] === 'check_mail') {
                 // Domain does not resolve
                 return [
-                    'type' =>  \MailWatch\Strings::safe_value('unresolveable'),
-                    'status' =>  \MailWatch\Strings::safe_value($this->getEmail($this->entries['reject']))
+                    'type' =>  \MailWatch\Sanitize::safe_value('unresolveable'),
+                    'status' =>  \MailWatch\Sanitize::safe_value($this->getEmail($this->entries['reject']))
                 ];
             }
         }

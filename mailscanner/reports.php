@@ -66,10 +66,10 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
-            $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], \MailWatch\Strings::sanitizeInput($_POST['value']));
+            $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], \MailWatch\Sanitize::sanitizeInput($_POST['value']));
             break;
         case 'remove':
-            $filter->Remove(\MailWatch\Strings::sanitizeInput($_GET['column']));
+            $filter->Remove(\MailWatch\Sanitize::sanitizeInput($_GET['column']));
             break;
         case 'destroy':
             session_destroy();
@@ -80,10 +80,10 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
                 die(__('dietoken99'));
             }
             if (isset($_POST['save_as'])) {
-                $name = \MailWatch\Strings::sanitizeInput($_POST['save_as']);
+                $name = \MailWatch\Sanitize::sanitizeInput($_POST['save_as']);
             }
             if (isset($_POST['filter']) && $_POST['filter'] !== '_none_') {
-                $name = \MailWatch\Strings::sanitizeInput($_POST['filter']);
+                $name = \MailWatch\Sanitize::sanitizeInput($_POST['filter']);
             }
             if (!empty($name)) {
                 $filter->Save($name);
@@ -93,13 +93,13 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
-            $filter->Load(\MailWatch\Strings::sanitizeInput($_POST['filter']));
+            $filter->Load(\MailWatch\Sanitize::sanitizeInput($_POST['filter']));
             break;
         case 'delete':
             if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
-            $filter->Delete(\MailWatch\Strings::sanitizeInput($_POST['filter']));
+            $filter->Delete(\MailWatch\Sanitize::sanitizeInput($_POST['filter']));
             break;
     }
 }

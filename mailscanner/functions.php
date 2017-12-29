@@ -109,7 +109,7 @@ set_include_path(
 //Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
-        header('Location: https://' . \MailWatch\Strings::sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
+        header('Location: https://' . \MailWatch\Sanitize::sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
 }
@@ -892,7 +892,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     $orderby = null;
     $orderdir = '';
     if (isset($_GET['orderby'])) {
-        $orderby = \MailWatch\Strings::sanitizeInput($_GET['orderby']);
+        $orderby = \MailWatch\Sanitize::sanitizeInput($_GET['orderby']);
         switch (strtoupper($_GET['orderdir'])) {
             case 'A':
                 $orderdir = 'ASC';
@@ -1884,13 +1884,13 @@ function ldap_authenticate($username, $password)
                         return null;
                     }
 
-                    $sql = sprintf('SELECT username FROM users WHERE username = %s',  \MailWatch\Strings::quote_smart($email));
+                    $sql = sprintf('SELECT username FROM users WHERE username = %s',  \MailWatch\Sanitize::quote_smart($email));
                     $sth = dbquery($sql);
                     if ($sth->num_rows === 0) {
                         $sql = sprintf(
                             "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                             \MailWatch\Strings::quote_smart($email),
-                             \MailWatch\Strings::quote_smart($result[0]['cn'][0])
+                             \MailWatch\Sanitize::quote_smart($email),
+                             \MailWatch\Sanitize::quote_smart($result[0]['cn'][0])
                         );
                         dbquery($sql);
                     }
@@ -2107,13 +2107,13 @@ function imap_authenticate($username, $password)
         }
 
         if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
-            $sql = sprintf('SELECT username FROM users WHERE username = %s',  \MailWatch\Strings::quote_smart($username));
+            $sql = sprintf('SELECT username FROM users WHERE username = %s',  \MailWatch\Sanitize::quote_smart($username));
             $sth = dbquery($sql);
             if ($sth->num_rows === 0) {
                 $sql = sprintf(
                     "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                     \MailWatch\Strings::quote_smart($username),
-                     \MailWatch\Strings::quote_smart($password)
+                     \MailWatch\Sanitize::quote_smart($username),
+                     \MailWatch\Sanitize::quote_smart($password)
                 );
                 dbquery($sql);
             }
@@ -2447,7 +2447,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 global $error;
                 $error = true;
             } else {
-                $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Strings::safe_value($list[0]['msgid']) . "'";
+                $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[0]['msgid']) . "'";
                 dbquery($sql);
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
@@ -2464,7 +2464,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 debug($cmd . $list[$val]['path']);
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if ($retval === 0) {
-                    $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Strings::safe_value($list[0]['msgid']) . "'";
+                    $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[0]['msgid']) . "'";
                     dbquery($sql);
                     $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
@@ -2567,7 +2567,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
             }
             if ($isfp !== null) {
                 $sql = 'UPDATE maillog SET isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
-                    .  \MailWatch\Strings::safe_value($list[$val]['msgid']) . "'";
+                    .  \MailWatch\Sanitize::safe_value($list[$val]['msgid']) . "'";
             }
 
             if (true === $use_spamassassin) {
@@ -2641,7 +2641,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $numeric_type = 1;
                 }
                 if (isset($numeric_type)) {
-                    $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" .  \MailWatch\Strings::safe_value($list[$val]['msgid']) . "'";
+                    $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[$val]['msgid']) . "'";
                     dbquery($sql);
                 }
             }
@@ -2772,8 +2772,8 @@ function audit_log($action)
             $user = $link->real_escape_string($_SESSION['myusername']);
         }
 
-        $action =  \MailWatch\Strings::safe_value($action);
-        $ip =  \MailWatch\Strings::safe_value($_SERVER['REMOTE_ADDR']);
+        $action =  \MailWatch\Sanitize::safe_value($action);
+        $ip =  \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
         if ($ret) {
             return true;
@@ -2945,7 +2945,7 @@ function updateUserPasswordHash($user, $hash)
  */
 function checkForExistingUser($username)
 {
-    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" .  \MailWatch\Strings::safe_value($username) . "'";
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" .  \MailWatch\Sanitize::safe_value($username) . "'";
     $row = dbquery($sqlQuery)->fetch_object();
 
     return $row->counter > 0;
@@ -3256,33 +3256,33 @@ function deepSanitizeInput($input, $type)
     switch ($type) {
         case 'email':
             $string = filter_var($input, FILTER_SANITIZE_EMAIL);
-            $string = \MailWatch\Strings::sanitizeInput($string);
-            $string =  \MailWatch\Strings::safe_value($string);
+            $string = \MailWatch\Sanitize::sanitizeInput($string);
+            $string =  \MailWatch\Sanitize::safe_value($string);
 
             return $string;
         case 'url':
             $string = filter_var($input, FILTER_SANITIZE_URL);
-            $string = \MailWatch\Strings::sanitizeInput($string);
+            $string = \MailWatch\Sanitize::sanitizeInput($string);
             $string = htmlentities($string);
-            $string =  \MailWatch\Strings::safe_value($string);
+            $string =  \MailWatch\Sanitize::safe_value($string);
 
             return $string;
         case 'num':
             $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
-            $string = \MailWatch\Strings::sanitizeInput($string);
-            $string =  \MailWatch\Strings::safe_value($string);
+            $string = \MailWatch\Sanitize::sanitizeInput($string);
+            $string =  \MailWatch\Sanitize::safe_value($string);
 
             return $string;
         case 'float':
             $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            $string = \MailWatch\Strings::sanitizeInput($string);
-            $string =  \MailWatch\Strings::safe_value($string);
+            $string = \MailWatch\Sanitize::sanitizeInput($string);
+            $string =  \MailWatch\Sanitize::safe_value($string);
 
             return $string;
         case 'string':
             $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
-            $string = \MailWatch\Strings::sanitizeInput($string);
-            $string =  \MailWatch\Strings::safe_value($string);
+            $string = \MailWatch\Sanitize::sanitizeInput($string);
+            $string =  \MailWatch\Sanitize::safe_value($string);
 
             return $string;
         default:
@@ -3519,7 +3519,7 @@ function checkLangCode($langCode)
  */
 function updateLoginExpiry($myusername)
 {
-    $sql = "SELECT login_timeout FROM users WHERE username='" .  \MailWatch\Strings::safe_value($myusername) . "'";
+    $sql = "SELECT login_timeout FROM users WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
@@ -3546,7 +3546,7 @@ function updateLoginExpiry($myusername)
     } else {
         $expiry_val = (time() + (int)$login_timeout);
     }
-    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" .  \MailWatch\Strings::safe_value($myusername) . "'";
+    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
     $result = dbquery($sql);
 
     return $result;
@@ -3560,7 +3560,7 @@ function updateLoginExpiry($myusername)
  */
 function checkLoginExpiry($myusername)
 {
-    $sql = "SELECT login_expiry FROM users WHERE username='" .  \MailWatch\Strings::safe_value($myusername) . "'";
+    $sql = "SELECT login_expiry FROM users WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
@@ -3592,7 +3592,7 @@ function checkLoginExpiry($myusername)
  */
 function checkPrivilegeChange($myusername)
 {
-    $sql = "SELECT type FROM users WHERE username='" .  \MailWatch\Strings::safe_value($myusername) . "'";
+    $sql = "SELECT type FROM users WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {

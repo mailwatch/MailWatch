@@ -40,7 +40,7 @@ if ($_SESSION['user_type'] !== 'A') {
     if (!isset($_GET['file'])) {
         $FilePath = false;
     } else {
-        $FilePath = realpath(\MailWatch\Strings::sanitizeInput($_GET['file']));
+        $FilePath = realpath(\MailWatch\Sanitize::sanitizeInput($_GET['file']));
     }
 
     if ($FilePath === false || (strpos($FilePath, $MailscannerEtcDir) !== 0 && strpos($FilePath, $MailscannerRepDir) !== 0)) {
