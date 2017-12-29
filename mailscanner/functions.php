@@ -1884,7 +1884,7 @@ function ldap_authenticate($username, $password)
                         return null;
                     }
 
-                    $sql = sprintf('SELECT username FROM users WHERE username = %s',  \MailWatch\Sanitize::quote_smart($email));
+                    $sql = sprintf('SELECT username FROM users WHERE username = %s', \MailWatch\Sanitize::quote_smart($email));
                     $sth = dbquery($sql);
                     if ($sth->num_rows === 0) {
                         $sql = sprintf(
@@ -2107,7 +2107,7 @@ function imap_authenticate($username, $password)
         }
 
         if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
-            $sql = sprintf('SELECT username FROM users WHERE username = %s',  \MailWatch\Sanitize::quote_smart($username));
+            $sql = sprintf('SELECT username FROM users WHERE username = %s', \MailWatch\Sanitize::quote_smart($username));
             $sth = dbquery($sql);
             if ($sth->num_rows === 0) {
                 $sql = sprintf(
