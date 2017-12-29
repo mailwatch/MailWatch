@@ -59,7 +59,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 header('Location: password_reset.php?stage=1');
                 die();
             }
-            if (!validateInput($email, 'email')) {
+            if (!\MailWatch\Sanitize::validateInput($email, 'email')) {
                 die();
             }
             $sql = "SELECT * FROM users WHERE username = '$email'";
@@ -136,12 +136,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         } elseif ($_POST['Submit'] === 'stage2Submit') {
             //check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
             $email = $link->real_escape_string($_POST['email']);
-            if (!validateInput($email, 'email')) {
+            if (!\MailWatch\Sanitize::validateInput($email, 'email')) {
                 die();
             }
             $uid = $link->real_escape_string($_POST['uid']);
-            //var_dump($_POST, $email, $uid, validateInput($uid, 'resetid'));
-            if (!validateInput($uid, 'resetid')) {
+            //var_dump($_POST, $email, $uid, \MailWatch\Sanitize::validateInput($uid, 'resetid'));
+            if (!\MailWatch\Sanitize::validateInput($uid, 'resetid')) {
                 die();
             }
             if ($_POST['pwd1'] === $_POST['pwd2']) {

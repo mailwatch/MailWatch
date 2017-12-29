@@ -50,7 +50,7 @@ if (isset($_GET['amp;id'])) {
 } else {
     $message_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
 }
-if (!validateInput($message_id, 'msgid')) {
+if (!\MailWatch\Sanitize::validateInput($message_id, 'msgid')) {
     die();
 }
 $sql = "SELECT * FROM maillog WHERE id='" . $message_id . "' AND " . $_SESSION['global_filter'];

@@ -55,13 +55,13 @@ if (isset($_POST) && !empty($_POST)) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
             $id = \MailWatch\Sanitize::deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
-            if (!validateInput($id, 'msgid')) {
+            if (!\MailWatch\Sanitize::validateInput($id, 'msgid')) {
                 die();
             }
         } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
             $id = \MailWatch\Sanitize::deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
-            if (!validateInput($id, 'msgid')) {
+            if (!\MailWatch\Sanitize::validateInput($id, 'msgid')) {
                 die();
             }
         } else {

@@ -80,7 +80,7 @@ if (!isset($_GET['action'])) {
 }
 
 $id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
-if ($id === false || !validateInput($id, 'msgid')) {
+if ($id === false || !\MailWatch\Sanitize::validateInput($id, 'msgid')) {
     die();
 }
 

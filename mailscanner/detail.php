@@ -50,7 +50,7 @@ if (isset($_POST['id'])) {
     $url_id = trim(\MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url'), ' ');
 }
 
-if (!validateInput($url_id, 'msgid')) {
+if (!\MailWatch\Sanitize::validateInput($url_id, 'msgid')) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n");
 }
 
@@ -389,7 +389,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Send to the original recipient(s) or to an alternate address
             if (isset($_POST['alt_recpt_yn']) && \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
                 $to = \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt'], 'string');
-                if (!validateInput($to, 'user')) {
+                if (!\MailWatch\Sanitize::validateInput($to, 'user')) {
                     die(__('error04') . ' ' . $to);
                 }
             } else {
@@ -403,7 +403,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = \MailWatch\Sanitize::deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) {
+                if (!\MailWatch\Sanitize::validateInput($id2, 'num')) {
                     die();
                 }
                 $arrid2[] = $id2;
@@ -419,13 +419,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = \MailWatch\Sanitize::deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) {
+                if (!\MailWatch\Sanitize::validateInput($id2, 'num')) {
                     die(__('dievalidate99'));
                 }
                 $arrid2[] = $id2;
             }
             $type = \MailWatch\Sanitize::deepSanitizeInput($_POST['learn_type'], 'url');
-            if (!validateInput($type, 'salearnops')) {
+            if (!\MailWatch\Sanitize::validateInput($type, 'salearnops')) {
                 die(__('dievalidate99'));
             }
             $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
@@ -439,7 +439,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = \MailWatch\Sanitize::deepSanitizeInput($id, 'num');
-                if (!validateInput($id2, 'num')) {
+                if (!\MailWatch\Sanitize::validateInput($id2, 'num')) {
                     die(__('dievalidate99'));
                 }
                 $arrid2[] = $id2;

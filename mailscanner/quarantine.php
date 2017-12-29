@@ -84,11 +84,11 @@ if (!isset($_GET['dir'])) {
         die(__('dietoken99'));
     }
     $dir = \MailWatch\Sanitize::deepSanitizeInput($_GET['dir'], 'url');
-    if (!validateInput($dir, 'quardir')) {
+    if (!\MailWatch\Sanitize::validateInput($dir, 'quardir')) {
         die(__('dievalidate99'));
     }
 
-    if (isset($_GET['pageID']) && !validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+    if (isset($_GET['pageID']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
         die(__('dievalidate99'));
     }
     

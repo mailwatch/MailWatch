@@ -40,7 +40,7 @@ if (false === checkToken($_GET['token'])) {
 }
 
 $message_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
-if (!validateInput($message_id, 'msgid')) {
+if (!\MailWatch\Sanitize::validateInput($message_id, 'msgid')) {
     die(__('dievalidate99'));
 }
 // See if message is local
@@ -106,7 +106,7 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 if (isset($_GET['part'])) {
     $part = \MailWatch\Sanitize::deepSanitizeInput($_GET['part'], 'url');
-    if (!validateInput($part, 'mimepart')) {
+    if (!\MailWatch\Sanitize::validateInput($part, 'mimepart')) {
         die(__('dievalidate99'));
     }
 
