@@ -109,4 +109,156 @@ class Sanitize
                 return false;
         }
     }
+
+    /**
+     * @param $input
+     * @param $type
+     * @return bool
+     */
+    public static function validateInput($input, $type)
+    {
+        switch ($type) {
+            case 'email':
+                if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
+                    return true;
+                }
+                break;
+            case 'user':
+                if (preg_match('/^[\p{L}\p{M}\p{N}\&~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
+                    return true;
+                }
+                break;
+            case 'general':
+                if (preg_match('/^[\p{L}\p{M}\p{N}\p{Z}\p{P}\p{S}]{1,256}$/u', $input)) {
+                    return true;
+                }
+                break;
+            case 'yn':
+                if (preg_match('/^[YNyn]$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'quardir':
+                if (preg_match('/^[0-9]{8}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'num':
+                if (preg_match('/^[0-9]{1,256}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'float':
+                if (is_float(filter_var($input, FILTER_VALIDATE_FLOAT))) {
+                    return true;
+                }
+                break;
+            case 'orderby':
+                if (preg_match('/^(datetime|from_address|to_address|subject|size|sascore)$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'orderdir':
+                if (preg_match('/^[ad]$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'msgid':
+                if (preg_match(
+                    '/^([A-F0-9]{7,20}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,16}(?=z[A-Za-x]{4,8})|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,14})$/',
+                    $input
+                )) {
+                    return true;
+                }
+                break;
+            case 'urltype':
+                if (preg_match('/^[hf]$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'host':
+                if (preg_match('/^[\p{N}\p{L}\p{M}.:-]{2,256}$/u', $input)) {
+                    return true;
+                }
+                break;
+            case 'list':
+                if (preg_match('/^[wb]$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'listsubmit':
+                if (preg_match('/^(add|delete)$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'releasetoken':
+                if (preg_match('/^[0-9A-Fa-f]{20}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'resetid':
+                if (preg_match('/^[0-9A-Za-z]{32}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'mailq':
+                if (preg_match('/^(inq|outq)$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'salearnops':
+                if (preg_match('/^(spam|ham|forget|report|revoke)$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'file':
+                if (preg_match('/^[A-Za-z0-9._-]{2,256}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'date':
+                if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'alnum':
+                if (preg_match('/^[0-9A-Za-z]{1,256}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'ip':
+                if (filter_var($input, FILTER_VALIDATE_IP)) {
+                    return true;
+                }
+                break;
+            case 'action':
+                if (preg_match('/^(new|edit|delete|filters|logout)$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'type':
+                if (preg_match('/^[UDA]$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'mimepart':
+                if (preg_match('/^[0-9.]{1,10}$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'loginerror':
+                if (preg_match('/^(baduser|emptypassword|timeout)$/', $input)) {
+                    return true;
+                }
+                break;
+            case 'timeout':
+                if (preg_match('/^[0-9]{1,5}$/', $input)) {
+                    return true;
+                }
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
 }

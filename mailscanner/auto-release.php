@@ -33,7 +33,7 @@ if (file_exists('conf.php')) {
     if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $mid = \MailWatch\Sanitize::deepSanitizeInput($_GET['mid'], 'url');
-        if ($mid === false || !validateInput($mid, 'msgid')) {
+        if ($mid === false || !\MailWatch\Sanitize::validateInput($mid, 'msgid')) {
             die();
         }
         if (isset($_GET['amp;r'])) {
@@ -41,7 +41,7 @@ if (file_exists('conf.php')) {
         } else {
             $token = \MailWatch\Sanitize::deepSanitizeInput($_GET['r'], 'url');
         }
-        if (!validateInput($token, 'releasetoken')) {
+        if (!\MailWatch\Sanitize::validateInput($token, 'releasetoken')) {
             die(__('dietoken99'));
         }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";

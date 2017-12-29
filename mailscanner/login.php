@@ -34,7 +34,7 @@ $_SESSION['token'] = generateToken();
 
 if (file_exists('conf.php') && isset($_GET['error'])) {
     $loginerror = \MailWatch\Sanitize::deepSanitizeInput($_GET['error'], 'url');
-    if (false === validateInput($loginerror, 'loginerror')) {
+    if (false === \MailWatch\Sanitize::validateInput($loginerror, 'loginerror')) {
         header('Location: login.php');
     }
 }

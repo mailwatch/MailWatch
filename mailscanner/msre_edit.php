@@ -53,7 +53,7 @@ if ($_SESSION['user_type'] !== 'A') {
     } else {
         $short_filename = \MailWatch\Sanitize::deepSanitizeInput($_GET['file'], 'url');
     }
-    if (!validateInput($short_filename, 'file')) {
+    if (!\MailWatch\Sanitize::validateInput($short_filename, 'file')) {
         die(__('dievalidate99'));
     }
     $short_filename = basename($short_filename);
@@ -559,7 +559,7 @@ function Process_Form($file_contents, $short_filename)
     $default_action = '';
     $default_desc = '';
     $count = \MailWatch\Sanitize::deepSanitizeInput($_POST['rule_count'], 'num');
-    if (!validateInput($count, 'num')) {
+    if (!\MailWatch\Sanitize::validateInput($count, 'num')) {
         die(__('dievalidate99'));
     }
     for ($i = -1; $i <= $count; $i++) {

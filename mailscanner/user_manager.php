@@ -98,7 +98,7 @@ function testPermissions($username, $userType, $oldUserType)
  */
 function testValidUser($username, $usertype, $oldUsername)
 {
-    if ($usertype !== 'A' && validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
+    if ($usertype !== 'A' && \MailWatch\Sanitize::validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
         return getHtmlMessage(__('forallusers12'), 'error');
     } elseif (!isset($_POST['password'], $_POST['password1'])) {
         return getHtmlMessage(__('dievalidate99'), 'error');
@@ -226,24 +226,24 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
     $n_fullname = \MailWatch\Sanitize::deepSanitizeInput($_POST['fullname'], 'string');
-    if (!validateInput($n_fullname, 'general')) {
+    if (!\MailWatch\Sanitize::validateInput($n_fullname, 'general')) {
         $n_fullname = '';
     }
     $n_password =  \MailWatch\Sanitize::safe_value(password_hash($_POST['password'], PASSWORD_DEFAULT));
 
-    if (!validateInput($n_type, 'type')) {
+    if (!\MailWatch\Sanitize::validateInput($n_type, 'type')) {
         $n_type = 'U';
     }
     $spamscore = \MailWatch\Sanitize::deepSanitizeInput($_POST['spamscore'], 'float');
-    if (!validateInput($spamscore, 'float')) {
+    if (!\MailWatch\Sanitize::validateInput($spamscore, 'float')) {
         $spamscore = '0';
     }
     $highspamscore = \MailWatch\Sanitize::deepSanitizeInput($_POST['highspamscore'], 'float');
-    if (!validateInput($highspamscore, 'float')) {
+    if (!\MailWatch\Sanitize::validateInput($highspamscore, 'float')) {
         $highspamscore = '0';
     }
     $timeout = \MailWatch\Sanitize::deepSanitizeInput($_POST['timeout'], 'num');
-    if (!validateInput($timeout, 'timeout')) {
+    if (!\MailWatch\Sanitize::validateInput($timeout, 'timeout')) {
         $timeout = '-1';
     }
     $n_quarantine_report = '1';
@@ -255,7 +255,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         $noscan = '1';
     }
     $quarantine_rcpt = \MailWatch\Sanitize::deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
-    if (!validateInput($quarantine_rcpt, 'user')) {
+    if (!\MailWatch\Sanitize::validateInput($quarantine_rcpt, 'user')) {
         $quarantine_rcpt = '';
     }
 
@@ -304,7 +304,7 @@ function newUser()
     }
     $username = html_entity_decode(\MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string'));
     $n_type = \MailWatch\Sanitize::deepSanitizeInput($_POST['type'], 'url');
-    if ($username === false || !validateInput($username, 'user')) {
+    if ($username === false || !\MailWatch\Sanitize::validateInput($username, 'user')) {
         $username = '';
     }
     if (false === $n_type) {
@@ -376,7 +376,7 @@ function editUser()
     }
     // Do update
     $username = html_entity_decode(\MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string'));
-    if (!validateInput($username, 'user')) {
+    if (!\MailWatch\Sanitize::validateInput($username, 'user')) {
         $username = '';
     }
     $n_type = \MailWatch\Sanitize::deepSanitizeInput($_POST['type'], 'url');
@@ -430,14 +430,14 @@ function userFilter()
             return getHtmlMessage(__('dietoken99'), 'error');
         }
         $getFilter = \MailWatch\Sanitize::deepSanitizeInput($_POST['filter'], 'url');
-        if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
+        if (!\MailWatch\Sanitize::validateInput($getFilter, 'email') && !\MailWatch\Sanitize::validateInput($getFilter, 'host')) {
             $getFilter = '';
         }
     }
 
     if (isset($_POST['new']) && $getFilter !== '') {
         $getActive = \MailWatch\Sanitize::deepSanitizeInput($_POST['active'], 'url');
-        if (!validateInput($getActive, 'yn')) {
+        if (!\MailWatch\Sanitize::validateInput($getActive, 'yn')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
         $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" .  \MailWatch\Sanitize::safe_value($user->username) . "','" .  \MailWatch\Sanitize::safe_value($getFilter) . "','" .  \MailWatch\Sanitize::safe_value($getActive) . "')";
@@ -449,7 +449,7 @@ function userFilter()
 
     if (isset($_GET['delete'], $_GET['filter'])) {
         $getFilter = \MailWatch\Sanitize::deepSanitizeInput($_GET['filter'], 'url');
-        if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
+        if (!\MailWatch\Sanitize::validateInput($getFilter, 'email') && !\MailWatch\Sanitize::validateInput($getFilter, 'host')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
         $sql = "DELETE FROM user_filters WHERE username='" .  \MailWatch\Sanitize::safe_value($user->username) . "' AND filter='" .  \MailWatch\Sanitize::safe_value($getFilter) . "'";
@@ -460,7 +460,7 @@ function userFilter()
     }
     if (isset($_GET['change_state'], $_GET['filter'])) {
         $getFilter = \MailWatch\Sanitize::deepSanitizeInput($_GET['filter'], 'url');
-        if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
+        if (!\MailWatch\Sanitize::validateInput($getFilter, 'email') && !\MailWatch\Sanitize::validateInput($getFilter, 'host')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
         $sql = "SELECT active FROM user_filters WHERE username='" .  \MailWatch\Sanitize::safe_value($user->username) . "' AND filter='" .  \MailWatch\Sanitize::safe_value($getFilter) . "'";
@@ -651,7 +651,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $action = \MailWatch\Sanitize::deepSanitizeInput($_GET['action'], 'url');
     }
     if (isset($action)) {
-        if ($action !== 'sendReportNow' && !validateInput($action, 'action')) {
+        if ($action !== 'sendReportNow' && !\MailWatch\Sanitize::validateInput($action, 'action')) {
             die(getHtmlMessage(__('dievalidate99'), 'error'));
         }
         switch ($action) {
@@ -801,11 +801,11 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
                 $n_password =  \MailWatch\Sanitize::safe_value($_POST['password']);
             }
             $spamscore = \MailWatch\Sanitize::deepSanitizeInput($_POST['spamscore'], 'float');
-            if (!validateInput($spamscore, 'float')) {
+            if (!\MailWatch\Sanitize::validateInput($spamscore, 'float')) {
                 $spamscore = '0';
             }
             $highspamscore = \MailWatch\Sanitize::deepSanitizeInput($_POST['highspamscore'], 'float');
-            if (!validateInput($highspamscore, 'float')) {
+            if (!\MailWatch\Sanitize::validateInput($highspamscore, 'float')) {
                 $highspamscore = '0';
             }
             $n_quarantine_report = '1';
@@ -817,7 +817,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
                 $noscan = '1';
             }
             $quarantine_rcpt = \MailWatch\Sanitize::deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
-            if ($quarantine_rcpt !== '' && !validateInput($quarantine_rcpt, 'user')) {
+            if ($quarantine_rcpt !== '' && !\MailWatch\Sanitize::validateInput($quarantine_rcpt, 'user')) {
                 die(getHtmlMessage(__('dievalidate99'), 'error'));
             }
 

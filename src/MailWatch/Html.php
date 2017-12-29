@@ -104,8 +104,8 @@ class Html
         }
 
         if (isset($_GET['id'])) {
-            $message_id = trim(htmlentities( \MailWatch\Sanitize::safe_value(Sanitize::sanitizeInput($_GET['id']))), ' ');
-            if (!validateInput($message_id, 'msgid')) {
+            $message_id = trim(htmlentities(Sanitize::safe_value(Sanitize::sanitizeInput($_GET['id']))), ' ');
+            if (!Sanitize::validateInput($message_id, 'msgid')) {
                 $message_id = '';
             }
         } else {

@@ -48,7 +48,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
     }
 
-    if (isset($_GET['pageID']) && !validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+    if (isset($_GET['pageID']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
         die(__('dievalidate99'));
     }
 
@@ -64,31 +64,31 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         if (isset($_POST['startDate'])) {
             $startDate=\MailWatch\Sanitize::deepSanitizeInput($_POST['startDate'], 'url');
-            if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) {
+            if ($startDate !== '' && $startDate !== null && !\MailWatch\Sanitize::validateInput($startDate, 'date')) {
                 $startDate = '';
             }
         }
         if (isset($_POST['endDate'])) {
             $endDate=\MailWatch\Sanitize::deepSanitizeInput($_POST['endDate'], 'url');
-            if ($endDate !== '' && $endDate !== null && !validateInput($endDate, 'date')) {
+            if ($endDate !== '' && $endDate !== null && !\MailWatch\Sanitize::validateInput($endDate, 'date')) {
                 $endDate = '';
             }
         }
         if (isset($_POST['username'])) {
             $username=\MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string');
-            if ($username !== '' && $username !== null && !validateInput($username, 'user')) {
+            if ($username !== '' && $username !== null && !\MailWatch\Sanitize::validateInput($username, 'user')) {
                 $username = '';
             }
         }
         if (isset($_POST['ipaddress'])) {
             $ipaddress=\MailWatch\Sanitize::deepSanitizeInput($_POST['ipaddress'], 'url');
-            if (!validateInput($ipaddress, 'ip')) {
+            if (!\MailWatch\Sanitize::validateInput($ipaddress, 'ip')) {
                 $ipaddress = '';
             }
         }
         if (isset($_POST['actions'])) {
             $actions=\MailWatch\Sanitize::deepSanitizeInput($_POST['actions'], 'string');
-            if ($actions !== '' && $actions !== null && !validateInput($actions, 'general')) {
+            if ($actions !== '' && $actions !== null && !\MailWatch\Sanitize::validateInput($actions, 'general')) {
                 $actions = '';
             }
         }

@@ -105,7 +105,7 @@ class Filter
         // Don't show the last column, operator, and value now
         $value = Sanitize::deepSanitizeInput($value, 'string');
         if (!$this->ValidateOperator($operator) || !$this->ValidateColumn($column)
-            || !validateInput($value, 'general')) {
+            || !Sanitize::validateInput($value, 'general')) {
             return;
         }
         $this->display_last = 0;
@@ -146,7 +146,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . \MailWatch\Sanitize::sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . Sanitize::sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
@@ -251,7 +251,7 @@ WHERE
     public function DisplayForm()
     {
         // Form
-        $return = '<form method="post" action="' . \MailWatch\Sanitize::sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
+        $return = '<form method="post" action="' . Sanitize::sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
 
         // Table
         $return .= '<table width="100%">' . "\n";
@@ -328,8 +328,8 @@ WHERE
      */
     public function Save($name)
     {
-        $name = \MailWatch\Sanitize::deepSanitizeInput($name, 'string');
-        if (!validateInput($name, 'general')) {
+        $name = Sanitize::deepSanitizeInput($name, 'string');
+        if (!Sanitize::validateInput($name, 'general')) {
             return;
         }
 
@@ -354,8 +354,8 @@ WHERE
      */
     public function Load($name)
     {
-        $name = \MailWatch\Sanitize::deepSanitizeInput($name, 'string');
-        if (!validateInput($name, 'general')) {
+        $name = Sanitize::deepSanitizeInput($name, 'string');
+        if (!Sanitize::validateInput($name, 'general')) {
             return;
         }
 
@@ -372,8 +372,8 @@ WHERE
      */
     public function Delete($name)
     {
-        $name = \MailWatch\Sanitize::deepSanitizeInput($name, 'string');
-        if (!validateInput($name, 'general')) {
+        $name = Sanitize::deepSanitizeInput($name, 'string');
+        if (!Sanitize::validateInput($name, 'general')) {
             return;
         }
 
