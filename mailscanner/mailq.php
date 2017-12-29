@@ -35,7 +35,7 @@ if (false === checkToken($_GET['token'])) {
     die(__('dietoken99'));
 }
 
-$queue = deepSanitizeInput($_GET['queue'], 'url');
+$queue = \MailWatch\Sanitize::deepSanitizeInput($_GET['queue'], 'url');
 if (!validateInput($queue, 'mailq')) {
     die(__('dievalidate99'));
 }

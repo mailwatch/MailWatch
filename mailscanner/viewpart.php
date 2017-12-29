@@ -39,7 +39,7 @@ if (false === checkToken($_GET['token'])) {
     die(__('dietoken99'));
 }
 
-$message_id = deepSanitizeInput($_GET['id'], 'url');
+$message_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
 if (!validateInput($message_id, 'msgid')) {
     die(__('dievalidate99'));
 }
@@ -105,7 +105,7 @@ $structure = $Mail_mimeDecode->decode($params);
 $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 
 if (isset($_GET['part'])) {
-    $part = deepSanitizeInput($_GET['part'], 'url');
+    $part = \MailWatch\Sanitize::deepSanitizeInput($_GET['part'], 'url');
     if (!validateInput($part, 'mimepart')) {
         die(__('dievalidate99'));
     }

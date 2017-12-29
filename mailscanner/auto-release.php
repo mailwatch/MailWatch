@@ -32,14 +32,14 @@ if (file_exists('conf.php')) {
     $output = [];
     if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        $mid = deepSanitizeInput($_GET['mid'], 'url');
+        $mid = \MailWatch\Sanitize::deepSanitizeInput($_GET['mid'], 'url');
         if ($mid === false || !validateInput($mid, 'msgid')) {
             die();
         }
         if (isset($_GET['amp;r'])) {
-            $token = deepSanitizeInput($_GET['amp;r'], 'url');
+            $token = \MailWatch\Sanitize::deepSanitizeInput($_GET['amp;r'], 'url');
         } else {
-            $token = deepSanitizeInput($_GET['r'], 'url');
+            $token = \MailWatch\Sanitize::deepSanitizeInput($_GET['r'], 'url');
         }
         if (!validateInput($token, 'releasetoken')) {
             die(__('dietoken99'));

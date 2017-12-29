@@ -48,7 +48,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
     }
 
-    if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+    if (isset($_GET['pageID']) && !validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
         die(__('dievalidate99'));
     }
 
@@ -63,31 +63,31 @@ if ($_SESSION['user_type'] !== 'A') {
             die(__('dietoken99'));
         }
         if (isset($_POST['startDate'])) {
-            $startDate=deepSanitizeInput($_POST['startDate'], 'url');
+            $startDate=\MailWatch\Sanitize::deepSanitizeInput($_POST['startDate'], 'url');
             if ($startDate !== '' && $startDate !== null && !validateInput($startDate, 'date')) {
                 $startDate = '';
             }
         }
         if (isset($_POST['endDate'])) {
-            $endDate=deepSanitizeInput($_POST['endDate'], 'url');
+            $endDate=\MailWatch\Sanitize::deepSanitizeInput($_POST['endDate'], 'url');
             if ($endDate !== '' && $endDate !== null && !validateInput($endDate, 'date')) {
                 $endDate = '';
             }
         }
         if (isset($_POST['username'])) {
-            $username=deepSanitizeInput($_POST['username'], 'string');
+            $username=\MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string');
             if ($username !== '' && $username !== null && !validateInput($username, 'user')) {
                 $username = '';
             }
         }
         if (isset($_POST['ipaddress'])) {
-            $ipaddress=deepSanitizeInput($_POST['ipaddress'], 'url');
+            $ipaddress=\MailWatch\Sanitize::deepSanitizeInput($_POST['ipaddress'], 'url');
             if (!validateInput($ipaddress, 'ip')) {
                 $ipaddress = '';
             }
         }
         if (isset($_POST['actions'])) {
-            $actions=deepSanitizeInput($_POST['actions'], 'string');
+            $actions=\MailWatch\Sanitize::deepSanitizeInput($_POST['actions'], 'string');
             if ($actions !== '' && $actions !== null && !validateInput($actions, 'general')) {
                 $actions = '';
             }

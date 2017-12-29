@@ -46,9 +46,9 @@ if (!isset($_GET['id']) && !isset($_GET['amp;id'])) {
     die(__('nomessid06'));
 }
 if (isset($_GET['amp;id'])) {
-    $message_id = deepSanitizeInput($_GET['amp;id'], 'url');
+    $message_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['amp;id'], 'url');
 } else {
-    $message_id = deepSanitizeInput($_GET['id'], 'url');
+    $message_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
 }
 if (!validateInput($message_id, 'msgid')) {
     die();
@@ -63,7 +63,7 @@ if (empty($message)) {
 
 audit_log(sprintf(__('auditlog06', true), $message_id));
 
-if ($message->token !== deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
+if ($message->token !== \MailWatch\Sanitize::deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
     die(__('dietoken99'));
 }
 

@@ -83,12 +83,12 @@ if (!isset($_GET['dir'])) {
     if (false === checkToken($_GET['token'])) {
         die(__('dietoken99'));
     }
-    $dir = deepSanitizeInput($_GET['dir'], 'url');
+    $dir = \MailWatch\Sanitize::deepSanitizeInput($_GET['dir'], 'url');
     if (!validateInput($dir, 'quardir')) {
         die(__('dievalidate99'));
     }
 
-    if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+    if (isset($_GET['pageID']) && !validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
         die(__('dievalidate99'));
     }
     

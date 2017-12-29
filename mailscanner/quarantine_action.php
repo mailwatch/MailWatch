@@ -79,7 +79,7 @@ if (!isset($_GET['action'])) {
     die(__('dienoaction57'));
 }
 
-$id = deepSanitizeInput($_GET['id'], 'url');
+$id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
 if ($id === false || !validateInput($id, 'msgid')) {
     die();
 }

@@ -56,9 +56,9 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     }
 
     if (isset($_POST['action'])) {
-        $action = deepSanitizeInput($_POST['action'], 'url');
+        $action = \MailWatch\Sanitize::deepSanitizeInput($_POST['action'], 'url');
     } else {
-        $action = deepSanitizeInput($_GET['action'], 'url');
+        $action = \MailWatch\Sanitize::deepSanitizeInput($_GET['action'], 'url');
     }
     
     switch (strtolower($action)) {

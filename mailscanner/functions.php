@@ -3247,50 +3247,6 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 }
 
 /**
- * @param string $input
- * @param string $type
- * @return string|false
- */
-function deepSanitizeInput($input, $type)
-{
-    switch ($type) {
-        case 'email':
-            $string = filter_var($input, FILTER_SANITIZE_EMAIL);
-            $string = \MailWatch\Sanitize::sanitizeInput($string);
-            $string =  \MailWatch\Sanitize::safe_value($string);
-
-            return $string;
-        case 'url':
-            $string = filter_var($input, FILTER_SANITIZE_URL);
-            $string = \MailWatch\Sanitize::sanitizeInput($string);
-            $string = htmlentities($string);
-            $string =  \MailWatch\Sanitize::safe_value($string);
-
-            return $string;
-        case 'num':
-            $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
-            $string = \MailWatch\Sanitize::sanitizeInput($string);
-            $string =  \MailWatch\Sanitize::safe_value($string);
-
-            return $string;
-        case 'float':
-            $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            $string = \MailWatch\Sanitize::sanitizeInput($string);
-            $string =  \MailWatch\Sanitize::safe_value($string);
-
-            return $string;
-        case 'string':
-            $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
-            $string = \MailWatch\Sanitize::sanitizeInput($string);
-            $string =  \MailWatch\Sanitize::safe_value($string);
-
-            return $string;
-        default:
-            return false;
-    }
-}
-
-/**
  * @param string|bool $input
  * @param string $type
  * @return boolean
@@ -3462,7 +3418,7 @@ function checkToken($token)
         return false;
     }
 
-    return $_SESSION['token'] === deepSanitizeInput($token, 'url');
+    return $_SESSION['token'] === \MailWatch\Sanitize::deepSanitizeInput($token, 'url');
 }
 
 /**
@@ -3492,7 +3448,7 @@ function checkFormToken($formstring, $formtoken)
     }
     $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
 
-    return $calc === deepSanitizeInput($formtoken, 'url');
+    return $calc === \MailWatch\Sanitize::deepSanitizeInput($formtoken, 'url');
 }
 
 /**

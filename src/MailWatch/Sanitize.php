@@ -48,7 +48,7 @@ class Sanitize
      */
     public static function quote_smart($value)
     {
-        return "'" .  \MailWatch\Sanitize::safe_value($value) . "'";
+        return "'" . Sanitize::safe_value($value) . "'";
     }
 
     /**
@@ -66,5 +66,47 @@ class Sanitize
         return $value;
     }
 
+    /**
+     * @param $input
+     * @param $type
+     * @return bool|mixed|string
+     */
+    public static function deepSanitizeInput($input, $type)
+    {
+        switch ($type) {
+            case 'email':
+                $string = filter_var($input, FILTER_SANITIZE_EMAIL);
+                $string = Sanitize::sanitizeInput($string);
+                $string = Sanitize::safe_value($string);
 
+                return $string;
+            case 'url':
+                $string = filter_var($input, FILTER_SANITIZE_URL);
+                $string = Sanitize::sanitizeInput($string);
+                $string = htmlentities($string);
+                $string = Sanitize::safe_value($string);
+
+                return $string;
+            case 'num':
+                $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
+                $string = Sanitize::sanitizeInput($string);
+                $string = Sanitize::safe_value($string);
+
+                return $string;
+            case 'float':
+                $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $string = Sanitize::sanitizeInput($string);
+                $string = Sanitize::safe_value($string);
+
+                return $string;
+            case 'string':
+                $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
+                $string = Sanitize::sanitizeInput($string);
+                $string = Sanitize::safe_value($string);
+
+                return $string;
+            default:
+                return false;
+        }
+    }
 }
