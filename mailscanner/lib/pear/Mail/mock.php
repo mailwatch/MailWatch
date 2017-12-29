@@ -2,31 +2,33 @@
 /**
  * Mock implementation
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  *
- * Copyright (c) 2010 Chuck Hagenbuch
+ * Copyright (c) 2010-2017, Chuck Hagenbuch
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  *
- * o Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- * o Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in the
- *   documentation and/or other materials provided with the distribution.
- * o The names of the authors may not be used to endorse or promote
- *   products derived from this software without specific prior written
- *   permission.
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
  * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
  * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -37,8 +39,8 @@
  * @category    Mail
  * @package     Mail
  * @author      Chuck Hagenbuch <chuck@horde.org> 
- * @copyright   2010 Chuck Hagenbuch
- * @license     http://opensource.org/licenses/bsd-license.php New BSD License
+ * @copyright   2010-2017 Chuck Hagenbuch
+ * @license     http://opensource.org/licenses/BSD-3-Clause New BSD License
  * @version     CVS: $Id$
  * @link        http://pear.php.net/package/Mail/
  */
@@ -55,23 +57,22 @@ class Mail_mock extends Mail {
      * Array of messages that have been sent with the mock.
      *
      * @var array
-     * @access public
      */
-    var $sentMessages = array();
+    public $sentMessages = array();
 
     /**
      * Callback before sending mail.
      *
      * @var callback
      */
-    var $_preSendCallback;
+    protected $_preSendCallback;
 
     /**
      * Callback after sending mai.
      *
      * @var callback
      */
-    var $_postSendCallback;
+    protected $_postSendCallback;
 
     /**
      * Constructor.
@@ -82,9 +83,8 @@ class Mail_mock extends Mail {
      *     postSendCallback  Called after an email would have been sent.
      *
      * @param array Hash containing any parameters.
-     * @access public
      */
-    function Mail_mock($params)
+    public function __construct($params)
     {
         if (isset($params['preSendCallback']) &&
             is_callable($params['preSendCallback'])) {
@@ -120,9 +120,8 @@ class Mail_mock extends Mail {
      * @return mixed Returns true on success, or a PEAR_Error
      *               containing a descriptive error message on
      *               failure.
-     * @access public
      */
-    function send($recipients, $headers, $body)
+    public function send($recipients, $headers, $body)
     {
         if ($this->_preSendCallback) {
             call_user_func_array($this->_preSendCallback,

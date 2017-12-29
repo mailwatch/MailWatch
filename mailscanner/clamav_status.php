@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,37 +21,31 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 // Require the functions page
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
-// Start the session
-session_start();
 // Require the login function code
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrater
-if ($_SESSION['user_type'] != 'A') {
+if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrater send them back to the index page.
-    header("Location: index.php");
-    audit_log('Non-admin user attemped to view ClamAV Status page');
+    header('Location: index.php');
+    audit_log(__('auditlog19', true));
 } else {
     // Start the header code and Title
-    html_start("ClamAV Status", 0, false, false);
+    html_start(__('avclamavstatus19'), 0, false, false);
     // Create the table
     echo '<table class="boxtable" width="100%">';
     echo '<tr>';
     echo '<td align="center">';
 
     // Output the information from the conf file
-    passthru(get_virus_conf('clamav') . " -V | awk -f " . __DIR__ . "/clamav.awk");
+    passthru(get_virus_conf('clamav') . ' . -V | awk -f ' . __DIR__ . '/clamav.awk');
 
     echo '</td>';
     echo '</tr>';

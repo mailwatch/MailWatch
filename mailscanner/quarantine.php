@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,20 +21,15 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-html_start("Quarantine Viewer", 0, false, false);
+html_start(__('qviewer08'), 0, false, false);
 
 if (!isset($_GET['dir'])) {
     // Get the top-level list
@@ -44,14 +39,14 @@ if (!isset($_GET['dir'])) {
         echo '<table class="mail" cellspacing="2" align="center">' . "\n";
         echo '<tr><th colspan=2>' . __('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
-            $sql = "SELECT id FROM maillog WHERE " . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
+            $sql = 'SELECT id FROM maillog WHERE ' . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
             $result = dbquery($sql);
-            $rowcnt = mysql_num_rows($result);
-            $rowstr = "  ----------";
+            $rowcnt = $result->num_rows;
+            $rowstr = '  ----------';
             if ($rowcnt > 0) {
-                $rowstr = sprintf("  %02d " . __('items08'), $rowcnt);
+                $rowstr = sprintf('  %02d ' . __('items08'), $rowcnt);
             }
-            echo '<tr><td align="right"><a href="quarantine.php?dir=' . $date . '">' . translateQuarantineDate(
+            echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . translateQuarantineDate(
                     $date,
                     DATE_FORMAT
                 ) .  '</a></td>' . "\n";
@@ -70,7 +65,7 @@ if (!isset($_GET['dir'])) {
                 //To look and see if any of the folders in the quarantine folder are strings and not numbers.
                 if (is_numeric($f)) {
                     // Display the Quarantine folders and create links for them.
-                    echo '<tr><td align="center"><a href="quarantine.php?dir=' . $f . '">' . translateQuarantineDate(
+                    echo '<tr><td align="center"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $f . '">' . translateQuarantineDate(
                             $f,
                             DATE_FORMAT
                         ) . '</a></td></tr>' . "\n";
@@ -81,21 +76,32 @@ if (!isset($_GET['dir'])) {
             }
             echo '</table>' . "\n";
         } else {
-            die("No quarantine directories found\n");
+            die(__('dienodir08') . "\n");
         }
     }
 } else {
-    $dir = sanitizeInput($_GET['dir']);
+    if (false === checkToken($_GET['token'])) {
+        die(__('dietoken99'));
+    }
+    $dir = deepSanitizeInput($_GET['dir'], 'url');
+    if (!validateInput($dir, 'quardir')) {
+        die(__('dievalidate99'));
+    }
+
+    if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
+        die(__('dievalidate99'));
+    }
+    
     if (QUARANTINE_USE_FLAG) {
         dbconn();
-        $date = mysql_real_escape_string(translateQuarantineDate($dir, 'sql'));
+        $date = translateQuarantineDate($dir, 'sql');
         $sql = "
 SELECT
  id AS id2,
- DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
+ DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
  from_address,";
         if (defined('DISPLAY_IP') && DISPLAY_IP) {
-            $sql .= "clientip,";
+            $sql .= 'clientip,';
         }
         $sql .= "
  to_address,
@@ -126,34 +132,34 @@ AND
 AND
  quarantined = 1";
 
-// Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] == 'U') {
-    $sql .= "
+        // Hide high spam/mcp from regular users if enabled
+        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+            $sql .= '
     AND
      ishighspam=0
     AND
-     COALESCE(ishighmcp,0)=0";
-}
+     COALESCE(ishighmcp,0)=0';
+        }
 
-        $sql .= "
+        $sql .= '
 ORDER BY
- date DESC, time DESC";
-        db_colorised_table($sql, __('folder08') . ': ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
+ date DESC, time DESC';
+        db_colorised_table($sql, __('folder08') . ' ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
         $dir = preg_replace('[\.|\.\.|\/]', '', $dir);
         $items = quarantine_list($dir);
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
-            $msg_ids = join($items, ",");
-            $date = mysql_real_escape_string(translateQuarantineDate($dir, 'sql'));
+            $msg_ids = implode($items, ',');
+            $date = safe_value(translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
    id AS id2,
-   DATE_FORMAT(timestamp, '" . DATE_FORMAT . " " . TIME_FORMAT . "') AS datetime,
+   DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
    from_address,";
             if (defined('DISPLAY_IP') && DISPLAY_IP) {
-                $sql .= "clientip,";
+                $sql .= 'clientip,';
             }
             $sql .= "
    to_address,
@@ -184,22 +190,22 @@ ORDER BY
   AND
    BINARY id IN ($msg_ids)";
 
-// Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] == 'U') {
-    $sql .= "
+            // Hide high spam/mcp from regular users if enabled
+            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+                $sql .= '
     AND
      ishighspam=0
     AND
-     COALESCE(ishighmcp,0)=0";
-}
+     COALESCE(ishighmcp,0)=0';
+            }
 
-            $sql .= "
+            $sql .= '
   ORDER BY
    date DESC, time DESC
-  ";
-            db_colorised_table($sql, __('folder_0208') . ': ' . translateQuarantineDate($dir), true, true);
+  ';
+            db_colorised_table($sql, __('folder_0208') . __('colon99') . ' ' . translateQuarantineDate($dir), true, true);
         } else {
-            echo "No quarantined messages found\n";
+            echo __('dienodir08') . "\n";
         }
     }
 }

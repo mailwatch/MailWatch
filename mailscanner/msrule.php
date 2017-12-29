@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,25 +21,21 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
-    header("Location: index.php");
+if ($_SESSION['user_type'] !== 'A') {
+    header('Location: index.php');
 } else {
-    html_start("Rules");
+    html_start(__('rules30'));
 
-    // limit accessible files to the ones in MailScanner etc directory
+    // Limit accessible files to the ones in MailScanner etc directory or reports directory
+    $MailscannerRepDir = realpath(get_conf_var('%report-dir%'));
     $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));
     if (!isset($_GET['file'])) {
         $FilePath = false;
@@ -47,14 +43,14 @@ if ($_SESSION['user_type'] != 'A') {
         $FilePath = realpath(sanitizeInput($_GET['file']));
     }
 
-    if ($FilePath === false || strpos($FilePath, $MailscannerEtcDir) !== 0) {
-        //Directory Traversal
-        echo "Directory traversal attempt blocked.\n";
+    if ($FilePath === false || (strpos($FilePath, $MailscannerEtcDir) !== 0 && strpos($FilePath, $MailscannerRepDir) !== 0)) {
+        // Directory Traversal
+        echo __('dirblocked30') . "\n";
     } else {
         echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-        echo '<tr><td class="heading">File: ' . $FilePath . '</td></tr>' . "\n";
+        echo '<tr><td class="heading">' . __('file30') . ' ' . $FilePath . '</td></tr>' . "\n";
         echo '<tr><td><pre>' . "\n";
-        if ($fh = @@fopen($FilePath, 'r')) {
+        if ($fh = @fopen($FilePath, 'rb')) {
             while (!feof($fh)) {
                 $line = rtrim(fgets($fh, 4096));
                 if (isset($_GET['strip_comments']) && $_GET['strip_comments']) {
@@ -67,7 +63,7 @@ if ($_SESSION['user_type'] != 'A') {
             }
             fclose($fh);
         } else {
-            echo "Unable to open file.\n";
+            echo __('unableopenfile30') . "\n";
         }
         echo '</pre></td></tr>' . "\n";
         echo '</table>' . "\n";
@@ -75,5 +71,5 @@ if ($_SESSION['user_type'] != 'A') {
     // Add the footer
     html_end();
 }
-// close the connection to the Database
+
 dbclose();

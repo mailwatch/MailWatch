@@ -1,0 +1,32 @@
+-----------------------------
+INSTALLATION INSTRUCTIONS
+-----------------------------
+
+The mailwatch_sendmail_queue.php script process the MTA Exim or Sendmail queue to store messages 
+in MailWatch database and see them in the MailWatch GUI.
+
+For best result, you need to install the imap PHP package (php5-imap)
+but mailwatch_sendmail_queue.php can work without it.
+
+Copy the mailwatch_sendmail_queue.php file in /usr/local/bin
+
+Verify if the file is executable. If not, use "chmod +x" to correct this problem.
+
+Edit CRONTAB:
+
+# crontab -e
+
+# Run each minute
+0-59 * * * * 	/usr/local/bin/mailwatch_sendmail_queue.php
+
+Note: mailwatch_sendmail_queue.php re-creates all entries on each run, 
+so for busy sites you will probably want to change this to run every 5 minutes or greater.
+
+ATTENTION:
+
+Several files have changed their name and location in MailWatch 1.2.0, 
+particularly the PHP files that are launched in cron and the Init script files.
+Please read the documentation carefully to remove old files during the upgrade.
+
+Since MailWatch 1.2.0, you no longer need to use mailwatch_sendmail_queue.php
+with Exim MTA. Call to Exim queue is now managed by direct call using 'exim -bpc'.

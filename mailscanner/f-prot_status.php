@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,42 +21,36 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
-// Authentication checking
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] != 'A') {
-    header("Location: index.php");
+if ($_SESSION['user_type'] !== 'A') {
+    header('Location: index.php');
 } else {
-    html_start("F-Prot Status", 0, false, false);
+    html_start(__('fprotstatus22'), 0, false, false);
     echo '
 <table class="boxtable" width="100%">
  <tr>
   <td align="center">';
 
-    if (preg_match('/-6/i', get_conf_var('VirusScanners'))) {
-        passthru(get_virus_conf('f-prot') . " -virno | awk -f " . __DIR__ . "/f-prot.awk");
+    if (false !== strpos(get_conf_var('VirusScanners'), '/-6/')) {
+        passthru(get_virus_conf('f-prot') . ' -virno | awk -f ' . __DIR__ . '/f-prot.awk');
     } else {
-        passthru(get_virus_conf('f-prot') . " -verno | awk -f " . __DIR__ . "/f-prot.awk");
+        passthru(get_virus_conf('f-prot') . ' -verno | awk -f ' . __DIR__ . '/f-prot.awk');
     }
     echo '
 </td>
  </tr>
 </table>';
 
-// Add footer
+    // Add footer
     html_end();
-// Close any open db connections
+    // Close any open db connections
     dbclose();
 }

@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,29 +21,21 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc');
+require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("MCP Rule Hits", 0, false, true);
+$filter = html_start(__('mcprulehits34'), 0, false, true);
 
-// File name
-$filename = "" . CACHE_DIR . "/rep_mcp_rule_hits.png." . time() . "";
-
-$sql = "
+$sql = '
  SELECT
   mcpreport,
   ismcp
@@ -51,19 +43,19 @@ $sql = "
   maillog
  WHERE
   mcpreport IS NOT NULL
- AND mcpreport != \"\"
-" . $filter->CreateSQL();
+ AND mcpreport != ""
+' . $filter->CreateSQL();
 
 $result = dbquery($sql);
-if (!mysql_num_rows($result) > 0) {
-    die("Error: no rows retrieved from database\n");
+if (!$result->num_rows > 0) {
+    die(__('diemysql99') . "\n");
 }
 
 // Initialise the array
 $sa_array = array();
 
 // Retrieve rows and insert into array
-while ($row = mysql_fetch_object($result)) {
+while ($row = $result->fetch_object()) {
     // Clean-up input
     $row->mcpreport = preg_replace('/\n/', '', $row->mcpreport);
     $row->mcpreport = preg_replace('/\t/', ' ', $row->mcpreport);
@@ -71,7 +63,7 @@ while ($row = mysql_fetch_object($result)) {
     // Get rid of first match from the array
     $junk = array_shift($sa_rules);
     // Split the array, and get rid of the score and required values
-    $sa_rules = explode(", ", $sa_rules[0]);
+    $sa_rules = explode(', ', $sa_rules[0]);
     $junk = array_shift($sa_rules); // score=
     $junk = array_shift($sa_rules); // required
     foreach ($sa_rules as $rule) {
@@ -80,7 +72,7 @@ while ($row = mysql_fetch_object($result)) {
             $rule = $regs[1];
         }
         $sa_array[$rule]['total']++;
-        if ($row->ismcp <> 0) {
+        if ($row->ismcp !== '0') {
             $sa_array[$rule]['mcp']++;
         } else {
             $sa_array[$rule]['not-mcp']++;
@@ -99,19 +91,21 @@ reset($sa_array);
 arsort($sa_array);
 
 echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
- <tr><td align="center"><img src="' . IMAGES_DIR . MS_LOGO . '" alt="MailScanner Logo"></td></tr>
  <tr><td align="center">
  <table class="boxtable" align="center" border="0">
  <tr bgcolor="#F7CE4A">
- <th>Rule</th>
- <th>Description</th>
- <th>Total</th>
- <th>Clean</th>
+ <th>' . __('rule34') . '</th>
+ <th>' . __('des34') . '</th>
+ <th>' . __('total34') . '</th>
+ <th>' . __('clean34') . '</th>
  <th>%</th>
- <th>MCP</th>
+ <th>' . __('mcp34') . '</th>
  <th>%</th>
  </tr>' . "\n";
-while ((list($key, $val) = each($sa_array)) && $count < 10) {
+foreach ($sa_array as $key => $val) {
+    if ($count >= 10) {
+        break;
+    }
     echo '
 <tr bgcolor="#ebebeb">
  <td>' . $key . '</td>
@@ -123,11 +117,11 @@ while ((list($key, $val) = each($sa_array)) && $count < 10) {
  <td align="right">' . round(($val['mcp'] / $val['total']) * 100, 1) . '</td>
  </tr>' . "\n";
 }
-echo "
+echo '
   </table>
  </td>
 </tr>
-</table>";
+</table>';
 
 // Add footer
 html_end();

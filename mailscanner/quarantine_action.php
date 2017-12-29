@@ -4,7 +4,7 @@
  MailWatch for MailScanner
  Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -24,29 +24,21 @@
  your version of the program, but you are not obligated to do so.
  If you do not wish to do so, delete this exception statement from your version.
 
- As a special exception, you have permission to link this program with the JpGraph library and
- distribute executables, as long as you follow the requirements of the GNU GPL in regard to all of the software
- in the executable aside from JpGraph.
-
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 function simple_html_start()
 {
     echo '<html>
 <head>
-<title>MailWatch for Mailscanner</title>
+<title>' . __('mailwatchtitle57') . '</title>
 <link rel="shortcut icon" href="images/favicon.png">
-<style type="text/css">
-
-</style>
 <body>';
 }
 
@@ -65,43 +57,49 @@ function simple_html_result($status)
             <td valign="middle" align="center">
                 <table border=0>
                     <tr>
-                        <th>Result</th>
+                        <th><?php echo __('result57') ?></th>
                     </tr>
                     <tr>
-                        <td><?php echo $status;
-    ?></td>
+                        <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="javascript:window.close()">Close Window</a></td>
+                        <td align="center"><b><a href="javascript:window.close()"><?php echo __('closewindow57') ?></a></td>
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
 <?php
-
 }
 
 if (!isset($_GET['id'])) {
-    die("Error: No Message ID");
+    die(__('dienoid57'));
 }
 if (!isset($_GET['action'])) {
-    die("Error: No action");
+    die(__('dienoaction57'));
 }
 
-$list = quarantine_list_items(sanitizeInput($_GET['id']));
-if (count($list) == 0) {
-    die("Error: Message not found in quarantine");
+$id = deepSanitizeInput($_GET['id'], 'url');
+if ($id === false || !validateInput($id, 'msgid')) {
+    die();
+}
+
+$list = quarantine_list_items($id);
+if (count($list) === 0) {
+    die(__('diemnf57'));
 }
 
 switch ($_GET['action']) {
     case 'release':
+        if (false === checkToken($_GET['token'])) {
+            die(__('dietoken99'));
+        }
         $result = '';
-        if (count($list) == 1) {
+        if (count($list) === 1) {
             $to = $list[0]['to'];
             $result = quarantine_release($list, array(0), $to);
         } else {
-            for ($i = 0; $i < count($list); $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
                     $result = quarantine_release($list, array($i), $list[$i]['to']);
                 }
@@ -117,25 +115,26 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
+        if (false === checkToken($_GET['token'])) {
+            die(__('dietoken99'));
+        }
         $status = array();
         if (isset($_GET['html'])) {
             if (!isset($_GET['confirm'])) {
                 // Dislay an 'Are you sure' dialog
-                simple_html_start();
-                ?>
+                simple_html_start(); ?>
                 <table width="100%" height="100%">
                     <tr>
                         <td align="center" valign="middle">
                             <table>
                                 <tr>
-                                    <th>Delete: Are you sure?</th>
+                                    <th><?php echo __('delete57') ?></th>
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="quarantine_action.php?id=<?php echo sanitizeInput($_GET['id']);
-                ?>&amp;action=delete&amp;html=true&amp;confirm=true">Yes</a>
+                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo __('yes57') ?></a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="javascript:window.close()">No</a>
+                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo __('no57') ?></a>
                                     </td>
                                 </tr>
                             </table>
@@ -146,16 +145,19 @@ switch ($_GET['action']) {
                 simple_html_end();
             } else {
                 simple_html_start();
-                for ($i = 0; $i < count($list); $i++) {
+                for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                     $status[] = quarantine_delete($list, array($i));
                 }
-                $status = join('<br/>', $status);
+                $status = implode('<br/>', $status);
                 simple_html_result($status);
                 simple_html_end();
             }
         } else {
+            if (false === checkToken($_GET['token'])) {
+                die(__('dietoken99'));
+            }
             // Delete
-            for ($i = 0; $i < count($list); $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 $status[] = quarantine_delete($list, array($i));
             }
         }
@@ -165,7 +167,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die("Unknown action: " . sanitizeInput($_GET['action']));
+        die(__('dieuaction57') . ' ' . sanitizeInput($_GET['action']));
 }
 
 dbclose();

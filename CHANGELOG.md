@@ -1,4 +1,221 @@
-1.2.0 - RC1 DEV
+1.2.7
+-----------
+Security
+- More restricted access to library and public available files (#990)
+- Fix email blacklist bypass when an email with more than 2 normal recipient is processed (#255, #992)
+
+Improvements
+- Add check for path of postconf, exim and sendmail executables in sf_version.php (#948)
+- Enable use of '&' in username (#964)
+- Add f-prot 6 virus scanner support
+- Enlarge localhost ip detection to full 127.0.0.0/8 class
+- Add IMAP auth support (#961)
+- Better support for Hebrew charset
+- Add Japanese language translation
+- Updated translations
+- Some code refactoring
+
+Fixes
+- Uniform use of IMAGES_DIR as a relative path instead of an absolute path (#944)
+- Fix admins editing domain admins
+- Fix LDAP sAMAccountname not being used for login (#955)
+- Fix domain admins not being able to change own password
+- Fix ONLY_FULL_GROUP_BY MySQL error (#733)
+- Fix UTF8 headers in viewmail
+- Update sudoers file to use mailq to match conf.php.example
+
+1.2.6
+-----------
+Security
+- Restrict domain admin permission so that they can only modify/create/delete regular users. Also, emails must be used for all non-admin accounts (#940)
+
+Improvements
+- Add entries counter on white and black list (#509)
+- Changed character set used in quarantine release email to UTF-8 (#910)
+- Upgrade.php alters tables only if needed
+- Fixes for dangerous content display on detail.php (#939)
+
+Fixes
+- Fix upgrade script for compatibility with MySQL 5.7 and 8.0 strict SQL mode
+- Fix PHP header warning for cli scripts
+- Fix invalid colors for multiple y-axes in a line graph (#926)
+- Remove wrong alter table on audit_log.user which revert length to 255 from 191
+- Convert delay from seconds to mysql time format in MTA log processor (#924, #941)
+
+1.2.5
+-----------
+Improvements
+- Support for multiple virus scanners and multiple top viruses (#874)
+- Add detection of MySQL or MariaDB in upgrade process (#873)
+- Prevents Mail Queue summary from duplicating mail count when local server is defined in RPC list (#904, #905)
+- Enhance upgrade.php with check for conf.php syntax and MailScanner.conf existence
+- Better UI on tables and graphs
+- Improved translations
+
+Fixes
+- Fixes issue when sanitization causes ampersand to be html-ified (#882)
+- Fix mailwatch-sendmail-relay init script (#881)
+- Fix code for php 5.3 compatibility (#889) and php 7.0 compatibility (#897)
+- Fix path to mtalogprocessor file in senmail_relay (#912)
+- Remove on update/default value for timestamp in maillog table (#915)
+- Permit up to 20 chars in first part of Postfix msgid (#652)
+
+1.2.4
+-----------
+Improvements
+- Converted remaining graph to Chart.js and removed JpGraph dependency
+- Add OS detection in Software Version page
+- Add geoip_update cron script
+- New graph: Messages per Hour for the last 24 hours
+- Recognition of Message/Partial as attachment in view mail
+- Beautify error message on database exception
+- Add visual display for released and learned messages
+- Add a comunity code of conduct
+- Localization updates
+
+Fixes
+- Fix wrong MAILWATCH_SMTP_HOSTNAME defined check
+- Correct some graph generation
+- Fix timestamp field autoupdating in maillog table
+- Fix status mail queues in MailWatch cluster
+
+1.2.3
+-----------
+Improvements
+- Better compatibility for MySQL 5.7 (ONLY_FULL_GROUP_BY)
+- Disable broken VIRUS_INFO per default
+- Better handling of Postfix message ids
+- Allow plus sign in username
+- Add ability to send quarantine report to single user
+- Enable users to immediately send his own quarantine report
+- Add ability for users to select the language of the gui
+- Converted some graph to Chart.js
+- Warn about installing PHP XML extension where not present
+- Add option to specify HELO hostname for SMTP transactions
+- Improved Sendmail queue code 
+- Allow blacklisting and whitelisting an entire TLD
+- Use domain admin username as domain filter
+- Database driven session enhancements
+- Add per user session timeout
+- Provides visual display of release and learned messages
+- Enhanced detail page printing
+- Enhanced upgrade.php
+- Localization updates
+- Code refactoring to clean up duplication and code smell
+
+Fixes
+- Ignores MailScanner config files (conf.d/*) in subfolders and hidden files
+- Options in messages operations do not select all the lines when clicking S/H/F/R
+- Fix issue where Mail Queue on status page displayed intermittently
+- Fix sa-learning in languages containing special chars in submit text (e.g. German)
+- Fix session conflict and multitab surfing
+- Fix broken html with certain virus names
+- Fix duplication of default rule in msre_edit.php
+- Fix errors with /etc/cron.daily/mailwatch scripts
+- Create.sql can be run on MySQL <= 5.5 again
+- Fix &amp; encoding in links
+- Fix SA-Learn blocking apache server
+
+1.2.2
+-----------
+Fixes
+- Regression in SA Learning and Releasing not working in detail page
+
+1.2.1
+-----------
+Improvements
+- Show RBL list in Message Detail
+- Better decoding of sender and subject in Mail Queue
+- Disable browser caching to prevent token mismatch
+- Add unique token to logged emails
+- Clean orphaned filter in upgrade.php
+- Add optional skinning of web interface
+- Moved upgrade doc to online documentation
+- Improved performance
+- Enhanced session expiration
+- Prevents domain admins from editing their own filters
+- Allows domain admins to view,edit,add,delete users in their filter domains
+- Code refactoring to clean up duplication and code smell
+
+Fixes
+- Fix regression on some input validation (the Bad Dog Biting Bug™)
+- Rename 00MailWatchConf.pm to MailWatchConf.pm, which is failing on some perl versions
+- Fix Audit log access
+- Don't permit logged in Admin/Domain admin to delete his/her user
+- Fix MailWatchConf.pm loading on some platforms
+- Remove double ldap_escape on username
+- Fix upgrade.php failing on some MariaDB versions
+- Fix MIME part visualization
+- Fix session loop
+
+1.2.0
+-----------
+- Multiple vulnerability fixed
+- Fixed invalid mime message parsing
+- Improved upgrade.php script
+- Update filters when user is deleted or renamed
+- Provides administrator the ability to combine quarantine reports into a single report
+- Better support for remote postfix queue count
+- Code refactoring and fixes
+
+1.2.0 - RC5
+-----------
+ - Add the ability for domain admins to create/edit/delete users of the same domain
+ - Reorganization of Tools directory
+ - Add filter on audit report
+ - Add the possibility to 'Clear' bayes database in Bayes Info page
+ - Add password reset
+ - Move database setup in separate perl module (00MailWatchConf.pm)
+ - Improved upgrade.php script 
+ - Improve compatibility with MailScanner V5
+ - Improve IPv6 support
+ - Improve UTF8 compatibility and add support for utf8mb4 in perl module
+ - Improve LDAP compatibility
+ - Add better Exim queue count
+ - Fix printing in some reports
+ - Fix for auto/unknown Virus scanner
+ - A lot of cosmetic enhancement
+ - Code cleanup
+ - Updated translations
+ 
+1.2.0 - RC4
+-----------
+ - Move to MySQLi PHP extension
+ - PHP 7 compatibility
+ - Use utf8mb4 on capable systems (MySQL >= 5.5.3)
+ - Fix geoip function dereclaration
+ - Warn on missing sa-learn binary
+ - Add SA_PREFS to list of SpamAssassin rules directory
+ - Improve session cookie security
+ - Upgrade pear packages
+ - Filter LDAP username and password before passing them to LDAP server
+ - Improve LDAP compatibility with server other than Active Directory
+ - Remove password change functionality for LDAP Domain Admin and User
+ - Permit LDAP login with password containing special characters
+ - Code cleanup
+ - Updated translations
+
+1.2.0 - RC3
+-----------
+ - Update postfix relay documentation (GH #320)
+ - Update JpGraph to 4.0.1 (GH #289)
+ - Fix Reports.php and Lists.php when used in languages other than English (GH #307, GH #288)
+ - Proper expansion multiple %var% references in MailScanner parameters (GH #311)
+ - Updated traslation
+ - Add HIDE_UNKNOWN config option (GH #240, GH #254)
+ - Add Autorelease feature (one click release of quarantined emails) (GH #260)
+ - Fix per user spam score defaults (GH #263)
+
+1.2.0 - RC2
+-----------
+ - Fix name collision in queries (GH #243)
+ - Fix loading of SpamAssassin rule description if it starts with a space (GH #242)
+ - Fix login bypass on LDAP introduced in RC1 (GH #246, GH #248)
+ - Improve rep_total_mail_by_date report (GH #249, GH #250, GH #251)
+ - Fix LDAP search for 'mail' prefix (GH #252)
+ - Try to not encode multiple times a string that is already UTF8 (GH #225)
+ 
+1.2.0 - RC1
 -----------
  - Display load average if /proc/loadavg doesn't exists but /usr/bin/uptime does
  - Improve loggings for connections not coming from 127.0.0.1
@@ -33,6 +250,9 @@
  - Improving upgrade.php script
  - Sanitize user input on reports
  - Rewrite of GeoIP file download procedure
+ - Decline login as LDAP group
+ - Move luser add-on to another git repository
+ - Better logging of UTF8 subjects
 
 1.2.0 - Beta 8
 -----------

@@ -4,7 +4,7 @@
 /**
  * Contains the Pager_HtmlWidgets class
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE: Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -48,20 +48,20 @@
  */
 class Pager_HtmlWidgets
 {
-    var $pager = null;
-    
+    public $pager;
+
     // {{{ constructor
-    
+
     /**
      * Constructor
      *
-     * @param object &$pager Pager instance
+     * @param Pager_Common $pager Pager instance
      */
-    function Pager_HtmlWidgets(&$pager)
+    public function __construct(Pager_Common $pager)
     {
-        $this->pager =& $pager;
+        $this->pager = $pager;
     }
-    
+
     // }}}
     // {{{ getPerPageSelectBox()
 
@@ -90,7 +90,7 @@ class Pager_HtmlWidgets
      * @return string xhtml select box
      * @access public
      */
-    function getPerPageSelectBox($start=5, $end=30, $step=5, $showAllData=false, $extraParams=array())
+    public function getPerPageSelectBox($start = 5, $end = 30, $step = 5, $showAllData = false, $extraParams = array())
     {
         // FIXME: needs POST support
         $optionText = '%d';
@@ -170,7 +170,7 @@ class Pager_HtmlWidgets
 
         $tmp .= '>';
         $last = $start;
-        for ($i=$start; $i<=$end; $i+=$step) {
+        for ($i = $start; $i <= $end; $i += $step) {
             $last = $i;
             $tmp .= '<option value="'.$i.'"';
             if ($i == $selected) {
@@ -218,7 +218,7 @@ class Pager_HtmlWidgets
      * @return string xhtml select box
      * @access public
      */
-    function getPageSelectBox($params = array(), $extraAttributes = '')
+    public function getPageSelectBox($params = array(), $extraAttributes = '')
     {
         $optionText = '%d';
         if (array_key_exists('optionText', $params)) {
@@ -231,7 +231,7 @@ class Pager_HtmlWidgets
                 ERROR_PAGER_INVALID_PLACEHOLDER
             );
         }
-        
+
         $tmp = '<select name="'.$this->pager->_urlVar.'"';
         if (!empty($extraAttributes)) {
             $tmp .= ' '.$extraAttributes;
@@ -267,7 +267,7 @@ class Pager_HtmlWidgets
         $start = 1;
         $end   = $this->pager->numPages();
         $selected = $this->pager->getCurrentPageID();
-        for ($i=$start; $i<=$end; $i++) {
+        for ($i = $start; $i <= $end; $i++) {
             $tmp .= '<option value="'.$i.'"';
             if ($i == $selected) {
                 $tmp .= ' selected="selected"';
@@ -277,7 +277,6 @@ class Pager_HtmlWidgets
         $tmp .= '</select>';
         return $tmp;
     }
-    
+
     // }}}
 }
-?>

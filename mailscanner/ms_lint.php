@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,42 +21,41 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-html_start("MailScanner Lint", 0, false, false);
+html_start(__('mailscannerlint28'), 0, false, false);
 echo '<table class="mail" cellspacing="1" width="100%">' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="2">MailScanner Lint</th>' . "\n";
+echo '  <th colspan="2">' . __('mailscannerlint28') . '</th>' . "\n";
+echo ' </tr>' . "\n";
+echo ' <tr>' . "\n";
+echo '  <th colspan="1" class="alignleft">' . __('message28') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('time28') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 
 if (!defined('MS_EXECUTABLE_PATH')) {
     echo '<tr>
-    <td colspan="2">Please set MS_EXECUTABLE_PATH in conf.php to enable this feature</td>
+    <td colspan="2">' . __('errormessage28') . '</td>
     </tr>';
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {
-        die("Cannot open pipe");
-    } else {
-        audit_log('Run MailScanner lint');
+        die(__('diepipe28'));
     }
+
+    audit_log(__('auditlog28', true));
 
     // Start timer
     $start = get_microtime();
     $last = false;
     while ($line = fgets($fp, 2096)) {
-        $line = preg_replace("/\n/i", "", $line);
-        if ($line !== "" && $line !== " ") {
+        $line = preg_replace("/\n/i", '', $line);
+        if ($line !== '' && $line !== ' ') {
             $timer = get_microtime();
             $linet = $timer - $start;
             if (!$last) {
@@ -84,7 +83,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     }
     pclose($fp);
     echo '   <tr>' . "\n";
-    echo '    <td><b>Finish - Total Time</b></td>' . "\n";
+    echo '    <td><b>' . __('finish28') . '</b></td>' . "\n";
     echo '    <td align="right"><b>' . round(get_microtime() - $start, 5) . '</b></td>' . "\n";
     echo '   </tr>' . "\n";
 }

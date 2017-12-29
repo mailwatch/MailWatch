@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,32 +21,43 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-session_start();
+require_once __DIR__ . '/functions.php';
+
+// Clear the login expiry timestamp
+$sql = "UPDATE users SET login_expiry='-1' WHERE username='" . safe_value($_SESSION['myusername']) . "'";
+dbquery($sql);
+dbclose();
+
 // reset session variables
 $_SESSION = array();
 
 // delete the session cookie.
-if (ini_get("session.use_cookies")) {
+if (ini_get('session.use_cookies')) {
+    ini_set('session.cookie_httponly', 1);
     $params = session_get_cookie_params();
     setcookie(
         session_name(),
         '',
         time() - 42000,
-        $params["path"],
-        $params["domain"],
-        $params["secure"],
-        $params["httponly"]
+        $params['path'],
+        $params['domain'],
+        true,
+        true
     );
 }
 
 session_destroy();
 
-header("Location: index.php");
+if (isset($_GET['error'])) {
+    $loginerror = deepSanitizeInput($_GET['error'], 'url');
+    if (false === validateInput($loginerror, "loginerror")) {
+        header('Location: login.php');
+    }
+    header('Location: login.php?error=' . $loginerror);
+} else {
+    header('Location: index.php');
+}

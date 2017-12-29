@@ -1,0 +1,12 @@
+----------------------------------
+INSTALLATION INSTRUCTIONS
+----------------------------------
+
+Copy the following files in /etc/MailScanner/custom:
+
+MailWatch.pm
+SQLBlackWhiteList.pm
+SQLSpamSettings.pm
+MailWatchConf.pm
+
+Set database connection settings in MailWatchConf.pm.

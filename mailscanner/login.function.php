@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,25 +21,21 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 if (isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername'])) {
-    include(__DIR__ . '/checklogin.php');
+    include __DIR__ . '/checklogin.php';
 } elseif (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SESSION['myusername']) && isset($_GET['httpbasic'])) {
     header('WWW-Authenticate: Basic realm="MailWatch for MailScanner"');
     header('HTTP/1.0 401 Unauthorized');
-    header("Location: login.php?error=baduser");
+    header('Location: login.php?error=baduser');
     exit;
 } elseif (!isset($_SESSION['myusername'])) {
     if (isset($_SERVER['REQUEST_URI'])) {
-        $_SESSION['REQUEST_URI'] = sanitizeInput($_SERVER['REQUEST_URI']);
+        $_SESSION['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
     }
-    header("Location: login.php");
+    header('Location: login.php');
     exit;
 }

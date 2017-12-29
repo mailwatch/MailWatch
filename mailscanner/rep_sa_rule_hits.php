@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,26 +21,21 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 // Include of necessary functions
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc');
+require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = html_start("SpamAssassin Rule Hits", 0, false, true);
+$filter = html_start(__('sarulehits37'), 0, false, true);
 
-$sql = "
+$sql = '
  SELECT
   spamreport,
   isspam
@@ -48,19 +43,19 @@ $sql = "
   maillog
  WHERE
   spamreport IS NOT NULL
- AND spamreport != \"\"
-" . $filter->CreateSQL();
+ AND spamreport != ""
+' . $filter->CreateSQL();
 
 $result = dbquery($sql);
-if (!mysql_num_rows($result) > 0) {
-    die("Error: no rows retrieved from database\n");
+if (!$result->num_rows > 0) {
+    die(__('diemysql99') . "\n");
 }
 
 // Initialise the array
 $sa_array = array();
 
 // Retrieve rows and insert into array
-while ($row = mysql_fetch_object($result)) {
+while ($row = $result->fetch_object()) {
     //##### TODEL/TODO #
     //##### TODEL/TODO # stdClass Object
     //##### TODEL/TODO # (
@@ -75,7 +70,7 @@ while ($row = mysql_fetch_object($result)) {
     $junk = array_shift($sa_rules);
     // Split the array, and get rid of the score and required values
     if (isset($sa_rules[0])) {
-        $sa_rules = explode(", ", $sa_rules[0]);
+        $sa_rules = explode(', ', $sa_rules[0]);
     } else {
         $sa_rules = array();
     }
@@ -85,11 +80,16 @@ while ($row = mysql_fetch_object($result)) {
         // Check if SA scoring is present
         if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
             $rule = $regs[1];
+            $score = $regs[2];
         }
         if (isset($sa_array[$rule]['total'])) {
             $sa_array[$rule]['total']++;
         } else {
             $sa_array[$rule]['total'] = 1;
+        }
+
+        if (!isset($sa_array[$rule]['score'])) {
+            $sa_array[$rule]['score'] = $score;
         }
 
         // Initialise the other dimensions of the array
@@ -100,7 +100,7 @@ while ($row = mysql_fetch_object($result)) {
             $sa_array[$rule]['not-spam'] = 0;
         }
 
-        if ($row->isspam <> 0) {
+        if ($row->isspam !== '0') {
             $sa_array[$rule]['spam']++;
         } else {
             $sa_array[$rule]['not-spam']++;
@@ -111,39 +111,40 @@ while ($row = mysql_fetch_object($result)) {
 reset($sa_array);
 arsort($sa_array);
 
-echo "<TABLE BORDER=\"0\" CELLPADDING=\"10\" CELLSPACING=\"0\" WIDTH=\"100%\">";
-echo "<TR><TD ALIGN=\"CENTER\"><IMG SRC=\"" . IMAGES_DIR . MS_LOGO . "\" ALT=\"MailScanner Logo\"></TD></TR>";
-echo "<TR><TD ALIGN=\"CENTER\">";
-
-echo "<TABLE CLASS=\"boxtable\" ALIGN=\"CENTER\" BORDER=\"0\">\n";
-echo "
-<TR BGCOLOR=\"#F7CE4A\">
- <TH>Rule</TH>
- <TH>Description</TH>
- <TH>Total</TH>
- <TH>Ham</TH>
+echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
+echo '<TR><TD CLASS="titleReport">' . __('sarulehits37') . '<BR></TD></TR>' . "\n";
+echo '<TR><TD ALIGN="CENTER">';
+echo '<TABLE CLASS="boxtable" ALIGN="CENTER" BORDER="0">' . "\n";
+echo '
+<TR BGCOLOR="#F7CE4A">
+ <TH>' . __('rule37') . '</TH>
+ <TH>' . __('desc37') . '</TH>
+ <TH>' . __('score37') . '</TH>
+ <TH>' . __('total37') . '</TH>
+ <TH>' . __('ham37') . '</TH>
  <TH>%</TH>
- <TH>Spam</TH>
+ <TH>' . __('spam37') . '</TH>
  <TH>%</TH>
-</TR>\n";
+</TR>' . "\n";
 
-while ((list($key, $val) = each($sa_array))) {
+foreach ($sa_array as $key => $val) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
- <TD>" . return_sa_rule_desc(strtoupper($key)) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['total']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['not-spam']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . round(($val['not-spam'] / $val['total']) * 100, 1) . "</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($val['spam']) . "</TD>
- <TD ALIGN=\"RIGHT\">" . round(($val['spam'] / $val['total']) * 100, 1) .
-        "</TD></TR>";
+ <TD>" . return_sa_rule_desc(strtoupper($key)) . '</TD>
+ <TD ALIGN="RIGHT">' . sprintf('%0.2f', $val['score']) . '</TD>
+ <TD ALIGN="RIGHT">' . number_format($val['total']) . '</TD>
+ <TD ALIGN="RIGHT">' . number_format($val['not-spam']) . '</TD>
+ <TD ALIGN="RIGHT">' . round(($val['not-spam'] / $val['total']) * 100, 1) . '</TD>
+ <TD ALIGN="RIGHT">' . number_format($val['spam']) . '</TD>
+ <TD ALIGN="RIGHT">' . round(($val['spam'] / $val['total']) * 100, 1) .
+        '</TD></TR>';
 }
-echo "</TABLE>\n";
+echo '</TABLE>' . "\n";
 
-echo "
+echo '
   </TABLE>
-";
+';
 
 // Add footer
 html_end();

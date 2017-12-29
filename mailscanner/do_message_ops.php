@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,43 +21,54 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
-require_once(__DIR__ . '/filter.inc');
+require_once __DIR__ . '/filter.inc.php';
+require_once __DIR__ . '/functions.php';
 
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-$refresh = html_start("Operation Results");
+$refresh = html_start(__('opresult21'));
 
-echo '<table border="0" width="100%" class="maildetail">' . "\n";
+if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
+    die(__('dietoken99'));
+}
+if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
+    die(__('dietoken99'));
+}
+
+echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="3">Spam Learn Results</th>' . "\n";
+echo '  <th colspan="3">' . __('spamlearnresult21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 echo ' <tr>' . "\n";
-echo '  <td colspan="3" class="detail">' . "\n";
+echo '  <th colspan="1">' . __('messageid21') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('result21') . '</th>' . "\n";
+echo '  <th colspan="1">' . __('message21') . '</th>' . "\n";
+echo ' </tr>' . "\n";
 
 // Iterate through the POST variables
-unset($_POST['SUBMIT']);
+unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
 if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
-            $id = $Regs[1];
+            $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
+            if (!validateInput($id, 'msgid')) {
+                die();
+            }
         } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
-            $id = $Regs[1];
+            $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
+            if (!validateInput($id, 'msgid')) {
+                die();
+            }
         } else {
             continue;
         }
-        switch ($v) {
+        switch (deepSanitizeInput($v, 'url')) {
             case 'S':
                 $type = 'spam';
                 break;
@@ -71,46 +82,52 @@ if (isset($_POST) && !empty($_POST)) {
                 $type = 'release';
                 break;
             default:
-                continue;
+                continue 2; //continue with next foreach loop
         }
         $items = quarantine_list_items($id, RPC_ONLY);
-        // Commenting out the below line since it shouldn't make a table for every message
-        // echo "<TABLE WIDTH=\"100%\">\n";
-        if (count($items) > 0) {
-            $num = 0;
-            $itemnum = array($num);
-            echo '<tr><td><a href="detail.php?id=' . $id . '">' . $id . '</a></td><td>' . $type . '</td><td>';
-            if ($type == 'release') {
-                if ($quarantined = quarantine_list_items($id, RPC_ONLY)) {
-                    $to = $quarantined[0]['to'];
+        echo '<tr>' . "\n";
+        echo '<td><a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $id . '">' . $id . '</a></td>';
+        echo '<td>' . $type . '</td>';
+        if (empty($items)) {
+            echo '<td class="error">' . __('diemnf21') . '</td>' . "\n";
+        } elseif (is_string($items)) {
+            echo '<td class="error">' . $items . '</td>' . "\n";
+        } else {
+            if (count($items) > 0) {
+                $num = 0;
+                $itemnum = array($num);
+                echo '<td>';
+                if ($type === 'release') {
+                    $quarantined = quarantine_list_items($id, RPC_ONLY);
+                    if (is_array($quarantined)) {
+                        $to = $quarantined[0]['to'];
+                        echo quarantine_release(
+                            $quarantined,
+                            $itemnum,
+                            $to,
+                            RPC_ONLY
+                        );
+                    } else {
+                        echo $quarantined;
+                    }
+                } else {
+                    echo quarantine_learn(
+                        $items,
+                        $itemnum,
+                        $type,
+                        RPC_ONLY
+                    );
                 }
-                echo quarantine_release(
-                    $quarantined,
-                    $itemnum,
-                    $to,
-                    RPC_ONLY
-                );
-            } else {
-                echo quarantine_learn(
-                    $items,
-                    $itemnum,
-                    $type,
-                    RPC_ONLY
-                );
+                echo '</td>' . "\n";
             }
-            echo '</td></tr>' . "\n";
         }
+        echo '</tr>' . "\n";
     }
 } else {
-    echo '<tr><td colspan="3">Message not found in quarantine</td></tr>' . "\n";
+    echo '<tr><td colspan="3">' . __('diemnf21') . '</td></tr>' . "\n";
 }
-echo '</table>' . "\n";
-
-echo '  </td>' . "\n";
-echo ' </tr>' . "\n";
 echo ' </table>' . "\n";
-
-echo '<p><a href="javascript:history.back(1)">Back</a>' . "\n";
+echo '<p class="center"><a href="javascript:history.back(1)">' . __('back21') . '</a></p><br>' . "\n";
 
 //Add footer
 html_end();

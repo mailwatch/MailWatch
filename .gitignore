@@ -1,9 +1,7 @@
-#directories
-mailscanner/images/cache/*
-
 #files
-mailscanner/conf.php
-mailscanner/temp/GeoIP.dat
-mailscanner/temp/GeoIPv6.dat.gz
-mailscanner/temp/GeoIPv6.dat
-mailscanner/temp/GeoIP.dat.gz
+/mailscanner/conf.php
+/mailscanner/skin.css
+
+#development files
+/_msconfig/
+/vendor/

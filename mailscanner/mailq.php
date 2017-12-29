@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2015  MailWatch Team (https://github.com/orgs/mailwatch/teams/team-stable)
+ * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -21,32 +21,36 @@
  * your version of the program, but you are not obligated to do so.
  * If you do not wish to do so, delete this exception statement from your version.
  *
- * As a special exception, you have permission to link this program with the JpGraph library and distribute executables,
- * as long as you follow the requirements of the GNU GPL in regard to all of the software in the executable aside from
- * JpGraph.
- *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
-session_start();
-require(__DIR__ . '/login.function.php');
+require __DIR__ . '/login.function.php';
 
-html_start("Mail Queue Viewer", 0, false, false);
+html_start(__('mqviewer24'), STATUS_REFRESH, false, false);
 
-switch ($_GET['queue']) {
-    case "inq":
+if (false === checkToken($_GET['token'])) {
+    die(__('dietoken99'));
+}
+
+$queue = deepSanitizeInput($_GET['queue'], 'url');
+if (!validateInput($queue, 'mailq')) {
+    die(__('dievalidate99'));
+}
+
+switch ($queue) {
+    case 'inq':
         $queue = 'inq';
-        $display = 'Inbound Mail Queue';
+        $display = __('inq24');
         break;
-    case "outq":
+    case 'outq':
         $queue = 'outq';
-        $display = 'Outbound Mail Queue';
+        $display = __('outq24');
         break;
     default:
-        die("No queue specified\n");
+        die(__('diemq24') . "\n");
 }
 
 db_colorised_table(
@@ -63,11 +67,11 @@ db_colorised_table(
  attempts,
  CASE WHEN lastattempt=0 THEN '00:00:00' ELSE SEC_TO_TIME((UNIX_TIMESTAMP() - lastattempt)) END AS lastattempt
 FROM
- " . $queue . "
+ " . $queue . '
 WHERE
- " . $_SESSION['global_filter'] . "
+ ' . $_SESSION['global_filter'] . '
 ORDER BY
- cdate, ctime",
+ cdate, ctime',
     $display,
     true,
     true
