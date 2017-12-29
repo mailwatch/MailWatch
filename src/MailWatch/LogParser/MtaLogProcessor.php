@@ -192,9 +192,10 @@ abstract class MtaLogProcessor
                 // fix for the id= issue 09.12.2011
                 if (isset($entry[2])) {
                     $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                } else {
+                } elseif (isset($entry[1])) {
                     $entries[$entry[0]] = $entry[1];
                 }
+                // ignore cases where a part after ',' does not contain '=' (see issue #1021)
             }
             $this->entries = $entries;
 
