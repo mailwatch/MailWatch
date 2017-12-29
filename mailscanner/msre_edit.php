@@ -49,9 +49,9 @@ if ($_SESSION['user_type'] !== 'A') {
 
     // Add the header information such as the logo, search, menu, ....
     if (isset($_POST['file'])) {
-        $short_filename = deepSanitizeInput($_POST['file'], 'url');
+        $short_filename = \MailWatch\Sanitize::deepSanitizeInput($_POST['file'], 'url');
     } else {
-        $short_filename = deepSanitizeInput($_GET['file'], 'url');
+        $short_filename = \MailWatch\Sanitize::deepSanitizeInput($_GET['file'], 'url');
     }
     if (!validateInput($short_filename, 'file')) {
         die(__('dievalidate99'));
@@ -558,7 +558,7 @@ function Process_Form($file_contents, $short_filename)
     $default_direction = 'FromOrTo:';
     $default_action = '';
     $default_desc = '';
-    $count = deepSanitizeInput($_POST['rule_count'], 'num');
+    $count = \MailWatch\Sanitize::deepSanitizeInput($_POST['rule_count'], 'num');
     if (!validateInput($count, 'num')) {
         die(__('dievalidate99'));
     }

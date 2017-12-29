@@ -103,7 +103,7 @@ class Filter
     public function Add($column, $operator, $value)
     {
         // Don't show the last column, operator, and value now
-        $value = deepSanitizeInput($value, 'string');
+        $value = Sanitize::deepSanitizeInput($value, 'string');
         if (!$this->ValidateOperator($operator) || !$this->ValidateColumn($column)
             || !validateInput($value, 'general')) {
             return;
@@ -328,7 +328,7 @@ WHERE
      */
     public function Save($name)
     {
-        $name = deepSanitizeInput($name, 'string');
+        $name = \MailWatch\Sanitize::deepSanitizeInput($name, 'string');
         if (!validateInput($name, 'general')) {
             return;
         }
@@ -354,7 +354,7 @@ WHERE
      */
     public function Load($name)
     {
-        $name = deepSanitizeInput($name, 'string');
+        $name = \MailWatch\Sanitize::deepSanitizeInput($name, 'string');
         if (!validateInput($name, 'general')) {
             return;
         }
@@ -372,7 +372,7 @@ WHERE
      */
     public function Delete($name)
     {
-        $name = deepSanitizeInput($name, 'string');
+        $name = \MailWatch\Sanitize::deepSanitizeInput($name, 'string');
         if (!validateInput($name, 'general')) {
             return;
         }

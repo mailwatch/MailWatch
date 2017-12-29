@@ -31,7 +31,7 @@ require __DIR__ . '/login.function.php';
 \MailWatch\Html::start(__('wblists07'), 0, false, false);
 
 if (isset($_GET['type'])) {
-    $url_type = deepSanitizeInput($_GET['type'], 'url');
+    $url_type = \MailWatch\Sanitize::deepSanitizeInput($_GET['type'], 'url');
     if (!validateInput($url_type, 'urltype')) {
         $url_type = '';
     }
@@ -40,12 +40,12 @@ if (isset($_GET['type'])) {
 }
 
 if (isset($_POST['to'])) {
-    $url_to = deepSanitizeInput($_POST['to'], 'string');
+    $url_to = \MailWatch\Sanitize::deepSanitizeInput($_POST['to'], 'string');
     if (!empty($url_to) && !validateInput($url_to, 'user')) {
         $url_to = '';
     }
 } elseif (isset($_GET['to'])) {
-    $url_to = deepSanitizeInput($_GET['to'], 'string');
+    $url_to = \MailWatch\Sanitize::deepSanitizeInput($_GET['to'], 'string');
     if (!validateInput($url_to, 'user')) {
         $url_to = '';
     }
@@ -54,7 +54,7 @@ if (isset($_POST['to'])) {
 }
 
 if (isset($_GET['host'])) {
-    $url_host = deepSanitizeInput($_GET['host'], 'url');
+    $url_host = \MailWatch\Sanitize::deepSanitizeInput($_GET['host'], 'url');
     if (!validateInput($url_host, 'host')) {
         $url_host = '';
     }
@@ -63,12 +63,12 @@ if (isset($_GET['host'])) {
 }
 
 if (isset($_POST['from'])) {
-    $url_from = deepSanitizeInput($_POST['from'], 'string');
+    $url_from = \MailWatch\Sanitize::deepSanitizeInput($_POST['from'], 'string');
     if (!validateInput($url_from, 'user')) {
         $url_from = '';
     }
 } elseif (isset($_GET['from'])) {
-    $url_from = deepSanitizeInput($_GET['from'], 'string');
+    $url_from = \MailWatch\Sanitize::deepSanitizeInput($_GET['from'], 'string');
     if (!validateInput($url_from, 'user')) {
         $url_from = '';
     }
@@ -77,12 +77,12 @@ if (isset($_POST['from'])) {
 }
 
 if (isset($_POST['submit'])) {
-    $url_submit = deepSanitizeInput($_POST['submit'], 'url');
+    $url_submit = \MailWatch\Sanitize::deepSanitizeInput($_POST['submit'], 'url');
     if (!validateInput($url_submit, 'listsubmit')) {
         $url_submit = '';
     }
 } elseif (isset($_GET['submit'])) {
-    $url_submit = deepSanitizeInput($_GET['submit'], 'url');
+    $url_submit = \MailWatch\Sanitize::deepSanitizeInput($_GET['submit'], 'url');
     if (!validateInput($url_submit, 'listsubmit')) {
         $url_submit = '';
     }
@@ -91,12 +91,12 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_POST['list'])) {
-    $url_list = deepSanitizeInput($_POST['list'], 'url');
+    $url_list = \MailWatch\Sanitize::deepSanitizeInput($_POST['list'], 'url');
     if (!validateInput($url_list, 'list')) {
         $url_list = '';
     }
 } elseif (isset($_GET['list'])) {
-    $url_list = deepSanitizeInput($_GET['list'], 'url');
+    $url_list = \MailWatch\Sanitize::deepSanitizeInput($_GET['list'], 'url');
     if (!validateInput($url_list, 'list')) {
         $url_list = '';
     }
@@ -105,7 +105,7 @@ if (isset($_POST['list'])) {
 }
 
 if (isset($_POST['domain'])) {
-    $url_domain = deepSanitizeInput($_POST['domain'], 'url');
+    $url_domain = \MailWatch\Sanitize::deepSanitizeInput($_POST['domain'], 'url');
     if (!empty($url_domain) && !validateInput($url_domain, 'host')) {
         $url_domain = '';
     }
@@ -114,7 +114,7 @@ if (isset($_POST['domain'])) {
 }
 
 if (isset($_GET['listid'])) {
-    $url_id = deepSanitizeInput($_GET['listid'], 'num');
+    $url_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['listid'], 'num');
     if (!validateInput($url_id, 'num')) {
         $url_id = '';
     }

@@ -45,9 +45,9 @@ if (isset($_POST['token'])) {
 }
 
 if (isset($_POST['id'])) {
-    $url_id = trim(deepSanitizeInput($_POST['id'], 'url'), ' ');
+    $url_id = trim(\MailWatch\Sanitize::deepSanitizeInput($_POST['id'], 'url'), ' ');
 } else {
-    $url_id = trim(deepSanitizeInput($_GET['id'], 'url'), ' ');
+    $url_id = trim(\MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url'), ' ');
 }
 
 if (!validateInput($url_id, 'msgid')) {
@@ -376,7 +376,7 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === 'submit') {
+    if (isset($_POST['submit']) && \MailWatch\Sanitize::deepSanitizeInput($_POST['submit'], 'url') === 'submit') {
         if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
             die(__('error04'));
         }
@@ -387,8 +387,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         // Release
         if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (isset($_POST['alt_recpt_yn']) && deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
-                $to = deepSanitizeInput($_POST['alt_recpt'], 'string');
+            if (isset($_POST['alt_recpt_yn']) && \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
+                $to = \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt'], 'string');
                 if (!validateInput($to, 'user')) {
                     die(__('error04') . ' ' . $to);
                 }
@@ -402,7 +402,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
-                $id2 = deepSanitizeInput($id, 'num');
+                $id2 = \MailWatch\Sanitize::deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
                     die();
                 }
@@ -418,13 +418,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
-                $id2 = deepSanitizeInput($id, 'num');
+                $id2 = \MailWatch\Sanitize::deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
                     die(__('dievalidate99'));
                 }
                 $arrid2[] = $id2;
             }
-            $type = deepSanitizeInput($_POST['learn_type'], 'url');
+            $type = \MailWatch\Sanitize::deepSanitizeInput($_POST['learn_type'], 'url');
             if (!validateInput($type, 'salearnops')) {
                 die(__('dievalidate99'));
             }
@@ -438,7 +438,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
-                $id2 = deepSanitizeInput($id, 'num');
+                $id2 = \MailWatch\Sanitize::deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
                     die(__('dievalidate99'));
                 }

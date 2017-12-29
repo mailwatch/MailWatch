@@ -31,7 +31,7 @@ require __DIR__ . '/login.function.php';
 
 $refresh = \MailWatch\Html::start(__('opresult21'));
 
-if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
+if ($_SESSION['token'] !== \MailWatch\Sanitize::deepSanitizeInput($_POST['token'], 'url')) {
     die(__('dietoken99'));
 }
 if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
@@ -53,13 +53,13 @@ unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
 if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
-            $id = deepSanitizeInput($Regs[1], 'url');
+            $id = \MailWatch\Sanitize::deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {
                 die();
             }
         } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
-            $id = deepSanitizeInput($Regs[1], 'url');
+            $id = \MailWatch\Sanitize::deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {
                 die();
@@ -67,7 +67,7 @@ if (isset($_POST) && !empty($_POST)) {
         } else {
             continue;
         }
-        switch (deepSanitizeInput($v, 'url')) {
+        switch (\MailWatch\Sanitize::deepSanitizeInput($v, 'url')) {
             case 'S':
                 $type = 'spam';
                 break;
