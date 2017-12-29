@@ -1,0 +1,15 @@
+# MailWatch with postfix on debian.
+
+First you set the "dpkg-override".
+If Postfix gets updates, this keeps the postfix folders from resetting to the user/group defaults. 
+
+dpkg-statoverride --add postfix www-data 750 /var/spool/postfix/hold
+dpkg-statoverride --add postfix www-data 750 /var/spool/postfix/incoming
+
+Now adjust the running setup and check you MailWatch interface. 
+chown postfix:www-data /var/spool/postfix/hold
+chown postfix:www-data /var/spool/postfix/incoming/
+chown postfix:www-data /var/spool/postfix/incoming
+chmod 750 /var/spool/postfix/hold
+chmod 750 /var/spool/postfix/incoming
+
