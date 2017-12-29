@@ -263,7 +263,7 @@ ORDER BY a.date DESC, a.time DESC';
         if (count($usersForReport) > 0) {
             $userConditions = [];
             foreach ($usersForReport as $item) {
-                $userConditions[] = ' username=' . quote_smart($item);
+                $userConditions[] = ' username=' .  \MailWatch\Strings::quote_smart($item);
             }
             $this->users_sql .= ' AND ( ' . implode(' OR ', $userConditions) . ' ) ';
         }
@@ -411,7 +411,7 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_user_filters($user)
     {
-        $result = dbquery(sprintf(self::$filters_sql, quote_smart($user)));
+        $result = dbquery(sprintf(self::$filters_sql,  \MailWatch\Strings::quote_smart($user)));
         $rows = $result->num_rows;
         $array = [];
         if ($rows > 0) {
@@ -430,7 +430,7 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_quarantine_list_array($to_address, $to_domain)
     {
-        $result = dbquery(sprintf(self::get_report_sql(), quote_smart($to_address), quote_smart($to_domain)));
+        $result = dbquery(sprintf(self::get_report_sql(),  \MailWatch\Strings::quote_smart($to_address),  \MailWatch\Strings::quote_smart($to_domain)));
         $rows = $result->num_rows;
         $array = [];
         if ($rows > 0) {

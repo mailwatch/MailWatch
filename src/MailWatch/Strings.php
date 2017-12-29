@@ -42,5 +42,29 @@ class Strings
         return $purifier->purify($string);
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
+    public static function quote_smart($value)
+    {
+        return "'" .  \MailWatch\Strings::safe_value($value) . "'";
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public static function safe_value($value)
+    {
+        $link = Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
+            $value = stripslashes($value);
+        }
+        $value = $link->real_escape_string($value);
+
+        return $value;
+    }
+
 
 }

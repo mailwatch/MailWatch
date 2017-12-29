@@ -69,7 +69,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], \MailWatch\Strings::sanitizeInput($_POST['value']));
             break;
         case 'remove':
-            $filter->Remove(sanitizeInput($_GET['column']));
+            $filter->Remove(\MailWatch\Strings::sanitizeInput($_GET['column']));
             break;
         case 'destroy':
             session_destroy();
@@ -93,13 +93,13 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
-            $filter->Load(sanitizeInput($_POST['filter']));
+            $filter->Load(\MailWatch\Strings::sanitizeInput($_POST['filter']));
             break;
         case 'delete':
             if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
-            $filter->Delete(sanitizeInput($_POST['filter']));
+            $filter->Delete(\MailWatch\Strings::sanitizeInput($_POST['filter']));
             break;
     }
 }
