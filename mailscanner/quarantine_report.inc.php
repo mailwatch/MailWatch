@@ -411,7 +411,7 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_user_filters($user)
     {
-        $result = dbquery(sprintf(self::$filters_sql,  \MailWatch\Sanitize::quote_smart($user)));
+        $result = dbquery(sprintf(self::$filters_sql, \MailWatch\Sanitize::quote_smart($user)));
         $rows = $result->num_rows;
         $array = [];
         if ($rows > 0) {
@@ -430,7 +430,7 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_quarantine_list_array($to_address, $to_domain)
     {
-        $result = dbquery(sprintf(self::get_report_sql(),  \MailWatch\Sanitize::quote_smart($to_address),  \MailWatch\Sanitize::quote_smart($to_domain)));
+        $result = dbquery(sprintf(self::get_report_sql(), \MailWatch\Sanitize::quote_smart($to_address), \MailWatch\Sanitize::quote_smart($to_domain)));
         $rows = $result->num_rows;
         $array = [];
         if ($rows > 0) {

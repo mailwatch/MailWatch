@@ -27,7 +27,6 @@
 
 namespace MailWatch;
 
-
 class Sanitize
 {
     /**
@@ -36,8 +35,8 @@ class Sanitize
      */
     public static function sanitizeInput($string)
     {
-        $config = HTMLPurifier_Config::createDefault();
-        $purifier = new HTMLPurifier($config);
+        $config = \HTMLPurifier_Config::createDefault();
+        $purifier = new \HTMLPurifier($config);
 
         return $purifier->purify($string);
     }
