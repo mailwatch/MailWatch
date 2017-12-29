@@ -109,7 +109,7 @@ function testValidUser($username, $usertype, $oldUsername)
     } elseif ($username === '') {
         return getHtmlMessage(__('erroruserreq12'), 'error');
     } elseif ($oldUsername !== $username && checkForExistingUser($username)) {
-        return getHtmlMessage(sprintf(__('userexists12'), sanitizeInput($username)), 'error');
+        return getHtmlMessage(sprintf(__('userexists12'), \MailWatch\Strings::sanitizeInput($username)), 'error');
     }
     return true;
 }

@@ -146,7 +146,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . \MailWatch\Strings::sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
@@ -251,7 +251,7 @@ WHERE
     public function DisplayForm()
     {
         // Form
-        $return = '<form method="post" action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
+        $return = '<form method="post" action="' . \MailWatch\Strings::sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
 
         // Table
         $return .= '<table width="100%">' . "\n";

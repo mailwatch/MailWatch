@@ -66,7 +66,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
-            $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], sanitizeInput($_POST['value']));
+            $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], \MailWatch\Strings::sanitizeInput($_POST['value']));
             break;
         case 'remove':
             $filter->Remove(sanitizeInput($_GET['column']));
@@ -80,10 +80,10 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
                 die(__('dietoken99'));
             }
             if (isset($_POST['save_as'])) {
-                $name = sanitizeInput($_POST['save_as']);
+                $name = \MailWatch\Strings::sanitizeInput($_POST['save_as']);
             }
             if (isset($_POST['filter']) && $_POST['filter'] !== '_none_') {
-                $name = sanitizeInput($_POST['filter']);
+                $name = \MailWatch\Strings::sanitizeInput($_POST['filter']);
             }
             if (!empty($name)) {
                 $filter->Save($name);
