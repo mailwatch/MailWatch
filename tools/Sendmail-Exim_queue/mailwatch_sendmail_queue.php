@@ -270,18 +270,18 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
      lastattempt,
      hostname)
     VALUES
-    ('" . safe_value($msgid) . "','" .
-                    safe_value($msginfo['cdate']) . "','" .
-                    safe_value($msginfo['ctime']) . "','" .
-                    safe_value($from) . "','" .
-                    safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : '') . "','" .
-                    safe_value($msginfo['message']) . "','" .
-                    safe_value($msginfo['size']) . "','" .
-                    safe_value($msginfo['priority']) . "','" .
-                    safe_value($msginfo['attempts']) . "','" .
-                    safe_value($msginfo['lastattempttime']) . "','" .
-                    safe_value($sys_hostname) . "')";
+    ('" .  \MailWatch\Strings::safe_value($msgid) . "','" .
+                     \MailWatch\Strings::safe_value($msginfo['cdate']) . "','" .
+                     \MailWatch\Strings::safe_value($msginfo['ctime']) . "','" .
+                     \MailWatch\Strings::safe_value($from) . "','" .
+                     \MailWatch\Strings::safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
+                     \MailWatch\Strings::safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : '') . "','" .
+                     \MailWatch\Strings::safe_value($msginfo['message']) . "','" .
+                     \MailWatch\Strings::safe_value($msginfo['size']) . "','" .
+                     \MailWatch\Strings::safe_value($msginfo['priority']) . "','" .
+                     \MailWatch\Strings::safe_value($msginfo['attempts']) . "','" .
+                     \MailWatch\Strings::safe_value($msginfo['lastattempttime']) . "','" .
+                     \MailWatch\Strings::safe_value($sys_hostname) . "')";
                 dbquery($sql);
             }
         }

@@ -55,22 +55,22 @@ if (
     (($result = ldap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
-    $myusername = safe_value($result);
-    $mypassword = safe_value($mypassword);
+    $myusername =  \MailWatch\Strings::safe_value($result);
+    $mypassword =  \MailWatch\Strings::safe_value($mypassword);
 } elseif (
     defined('USE_IMAP') &&
     (USE_IMAP === true) &&
     (($result = imap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_imap'] = true;
-    $myusername = safe_value($myusername);
-    $mypassword = safe_value($mypassword);
+    $myusername =  \MailWatch\Strings::safe_value($myusername);
+    $mypassword =  \MailWatch\Strings::safe_value($mypassword);
 } else {
     $_SESSION['user_ldap'] = false;
     $_SESSION['user_imap'] = false;
     if ($mypassword !== '') {
-        $myusername = safe_value($myusername);
-        $mypassword = safe_value($mypassword);
+        $myusername =  \MailWatch\Strings::safe_value($myusername);
+        $mypassword =  \MailWatch\Strings::safe_value($mypassword);
     } else {
         header('Location: login.php?error=emptypassword');
         die();

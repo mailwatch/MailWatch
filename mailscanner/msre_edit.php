@@ -705,7 +705,7 @@ function Process_Form($file_contents, $short_filename)
     */
 
     // mmmkay, now we should be able to write the new file
-    $getFile = basename(sanitizeInput($short_filename));
+    $getFile = basename(\MailWatch\Strings::sanitizeInput($short_filename));
     $filename = MSRE_RULESET_DIR . '/' . $getFile;
     list($bytes, $status_msg) = Write_File($filename, $new_file);
 
