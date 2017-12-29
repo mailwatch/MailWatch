@@ -687,8 +687,8 @@ function Process_Form($file_contents, $short_filename)
     }
     // And add on the default rule if there is one.
     if ($default_action !== '') {
-        $new_file[] = '#' . sanitizeInput($default_desc) . "\n";
-        $new_file[] = sanitizeInput($default_direction) . "\tdefault\t\t\t" . sanitizeInput($default_action) ."\n";
+        $new_file[] = '#' . \MailWatch\Strings::sanitizeInput($default_desc) . "\n";
+        $new_file[] = \MailWatch\Strings::sanitizeInput($default_direction) . "\tdefault\t\t\t" . \MailWatch\Strings::sanitizeInput($default_action) ."\n";
     }
 
     // ### ---> Debugging

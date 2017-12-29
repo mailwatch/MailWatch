@@ -109,7 +109,7 @@ set_include_path(
 //Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
-        header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
+        header('Location: https://' . \MailWatch\Strings::sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
 }
@@ -214,13 +214,14 @@ function dbquerydebug($link, $sql)
  * @param $string
  * @return string
  */
-function sanitizeInput($string)
-{
-    $config = HTMLPurifier_Config::createDefault();
-    $purifier = new HTMLPurifier($config);
-
-    return $purifier->purify($string);
-}
+//function sanitizeInput($string)
+//{
+//    $config = HTMLPurifier_Config::createDefault();
+//    $purifier = new HTMLPurifier($config);
+//
+//    return $purifier->purify($string);
+//}
+//TODO::remove
 
 /**
  * @param $value
@@ -928,7 +929,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     $orderby = null;
     $orderdir = '';
     if (isset($_GET['orderby'])) {
-        $orderby = sanitizeInput($_GET['orderby']);
+        $orderby = \MailWatch\Strings::sanitizeInput($_GET['orderby']);
         switch (strtoupper($_GET['orderdir'])) {
             case 'A':
                 $orderdir = 'ASC';
@@ -3292,32 +3293,32 @@ function deepSanitizeInput($input, $type)
     switch ($type) {
         case 'email':
             $string = filter_var($input, FILTER_SANITIZE_EMAIL);
-            $string = sanitizeInput($string);
+            $string = \MailWatch\Strings::sanitizeInput($string);
             $string = safe_value($string);
 
             return $string;
         case 'url':
             $string = filter_var($input, FILTER_SANITIZE_URL);
-            $string = sanitizeInput($string);
+            $string = \MailWatch\Strings::sanitizeInput($string);
             $string = htmlentities($string);
             $string = safe_value($string);
 
             return $string;
         case 'num':
             $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
-            $string = sanitizeInput($string);
+            $string = \MailWatch\Strings::sanitizeInput($string);
             $string = safe_value($string);
 
             return $string;
         case 'float':
             $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            $string = sanitizeInput($string);
+            $string = \MailWatch\Strings::sanitizeInput($string);
             $string = safe_value($string);
 
             return $string;
         case 'string':
             $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
-            $string = sanitizeInput($string);
+            $string = \MailWatch\Strings::sanitizeInput($string);
             $string = safe_value($string);
 
             return $string;
