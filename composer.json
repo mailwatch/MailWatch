@@ -53,25 +53,53 @@
     "psr-4": {
       "MailWatch\\": "src/MailWatch"
     },
-    "classmap": [
-      "mailscanner/lib/xmlrpc"
-    ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "MailWatch\\Tests\\": "tests/"
-    }
-  },
-  "replace": {
-    "symfony/polyfill-iconv": "*",
-    "symfony/polyfill-php70": "*",
-    "symfony/polyfill-php56": "*"
-  },
-  "scripts": {
-    "auto-scripts": {
-      "cache:clear": "symfony-cmd",
-      "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd",
-      "assets:install %PUBLIC_DIR%": "symfony-cmd"
+    "require-dev": {
+      "symfony/dotenv": "^3.4",
+      "symfony/profiler-pack": "^1.0",
+      "symfony/thanks": "^1.0",
+      "friendsofphp/php-cs-fixer": "^2.8"
+    },
+    "config": {
+      "preferred-install": {
+        "*": "dist"
+      },
+      "sort-packages": true
+    },
+    "autoload": {
+      "psr-4": {
+        "MailWatch\\": "src/MailWatch"
+      },
+      "classmap": [
+        "mailscanner/lib/xmlrpc"
+      ]
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "MailWatch\\Tests\\": "tests/"
+      }
+    },
+    "replace": {
+      "symfony/polyfill-iconv": "*",
+      "symfony/polyfill-php70": "*",
+      "symfony/polyfill-php56": "*"
+    },
+    "scripts": {
+      "auto-scripts": {
+        "cache:clear": "symfony-cmd",
+        "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd",
+        "doctrine:migrations:migrate": "symfony-cmd"
+      },
+      "post-install-cmd": [
+        "@auto-scripts"
+      ],
+      "post-update-cmd": [
+        "@auto-scripts"
+      ],
+      "fix-cs": "vendor/bin/php-cs-fixer fix --verbose"
+    },
+    "conflict": {
+      "symfony/symfony": "*",
+      "ext-geoip": "*"
     },
     "post-install-cmd": [
       "@auto-scripts"

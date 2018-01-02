@@ -36,7 +36,8 @@ class XXXCompatController extends Controller
         return $this->render($compatSrc . $path);
     }
 
-    private function setSessionParams($usr){
+    private function setSessionParams($usr)
+    {
         $myusername=$usr->getUsername();
         $usertype=$usr->getType();
 
