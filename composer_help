@@ -1,0 +1,31 @@
+# Useful commands for use with composer:
+
+configure composer components:
+`composer install`
+
+update composer components (if composer.json changed):
+`composer update`
+
+start internal webserver:
+`php bin/console server:run 0.0.0.0:8000`
+
+show routes:
+`php bin/console debug:router`
+
+create database schema diff:
+`php bin/console doctrine:migrations:diff`
+
+migrate to updated database schema (requires previous diff / manual migration script in src/MailWatch/Migrations/):
+`php bin/console doctrine:migrations:migrate [version]`
+
+
+#To use symfony with apache enable this for the public directory and set the public directory as DocumentRoot:
+```
+       <IfModule mod_rewrite.c>
+            Options -MultiViews
+            RewriteEngine On
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteRule ^(.*)$ index.php [QSA,L]
+        </IfModule>
+
+```
