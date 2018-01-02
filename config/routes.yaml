@@ -1,0 +1,3 @@
+#index:
+#    path: /
+#    defaults: { _controller: 'MailWatch\Controller\DefaultController::index' }

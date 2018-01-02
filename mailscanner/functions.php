@@ -33,7 +33,7 @@ error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 $autoloader = require __DIR__ . '/../src/bootstrap.php';
 
 // Read in MailWatch configuration file
-if (!is_readable(__DIR__ . '/conf.php')) {
+/*if (!is_readable(__DIR__ . '/conf.php')) {
     die(\MailWatch\Translation::__('cannot_read_conf'));
 }
 require_once __DIR__ . '/conf.php';
@@ -43,7 +43,7 @@ ini_set('session.use_cookies', 1);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', 0);
-
+*/
 $session_cookie_secure = false;
 if (SSL_ONLY === true) {
     ini_set('session.cookie_secure', 1);
@@ -121,7 +121,7 @@ if (PHP_SAPI !== 'cli') {
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
     unset($session_cookie_secure);
-    session_start();
+//    session_start();
 }
 
 // set default timezone

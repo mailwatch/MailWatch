@@ -1,0 +1,41 @@
+security:
+    # https://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        in_memory: 
+            memory:
+                users:
+                    ryan:
+                        password: ryanpass
+                        roles: 'ROLE_USER'
+                    admin:
+                        password: adminpass
+                        roles: 'ROLE_ADMIN'
+        databaseprovider:
+            entity:
+                class: MailWatch\Entity\User
+                property: username
+
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext        
+        MailWatch\Entity\User:
+            algorithm: bcrypt
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+            provider: databaseprovider
+        main:
+            anonymous: ~
+
+            # activate different ways to authenticate
+
+            # http_basic: ~
+            # https://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: ~
+            # https://symfony.com/doc/current/cookbook/security/form_login_setup.html
+            form_login:
+                login_path: login
+                check_path: login
+                default_target_path: status
+            provider: databaseprovider

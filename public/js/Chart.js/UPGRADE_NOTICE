@@ -1,0 +1,22 @@
+To reduce the space between the xaxis and the labels we have to change that positioning:
+
+search for second occurance of "labelString" in Chart.js and change this (17 lines before that)
+
+				if (isHorizontal) {
+					scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
+					scaleLabelY = options.position === 'bottom' ? me.bottom - (scaleLabelFont.size / 2) : me.top + (scaleLabelFont.size / 2);
+				} else {
+				
+to
+				if (isHorizontal) {
+					scaleLabelX = me.left + ((me.right - me.left) / 2); // midpoint of the width
+					scaleLabelY = options.position === 'bottom' ? me.bottom - (scaleLabelFont.size) : me.top + (scaleLabelFont.size);
+				} else {
+		
+		
+same for Chart.min.js search for second "labelString" change this (ca. 300 character in front of that "labelString")
+
+                ,_="bottom"===o.position?a.bottom-y.size/2:a.top+y.size/2;else{var F="left"===o.position;P=F?a.left+y.size/2:a.right-y.size/2
+
+to
+                ,_="bottom"===o.position?a.bottom-y.size:a.top+y.size;else{var F="left"===o.position;P=F?a.left+y.size/2:a.right-y.size/2

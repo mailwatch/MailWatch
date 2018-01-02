@@ -60,7 +60,7 @@ class Html
             die();
         }
 
-        if (Security::checkLoginExpiry($_SESSION['myusername']) === true) {
+/*        if (\MailWatch\Security::checkLoginExpiry($_SESSION['myusername']) === true) {
             header('Location: logout.php?error=timeout');
             die();
         }
@@ -69,7 +69,7 @@ class Html
             // User is moving about on non-refreshing pages, keep session alive
             Security::updateLoginExpiry($_SESSION['myusername']);
         }
-
+*/
         echo page_creation_timer();
         echo '<!DOCTYPE HTML>' . "\n";
         echo '<html>' . "\n";
