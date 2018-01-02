@@ -26,10 +26,10 @@
  */
 
 // Include of necessary functions
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');

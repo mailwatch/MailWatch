@@ -77,8 +77,14 @@
     "gecko-packages/gecko-php-unit": {
         "version": "v3.0"
     },
-    "geoip/geoip": {
-        "version": "v1.17"
+    "guzzlehttp/guzzle": {
+        "version": "6.3.3"
+    },
+    "guzzlehttp/promises": {
+        "version": "v1.3.1"
+    },
+    "guzzlehttp/psr7": {
+        "version": "1.4.2"
     },
     "indigophp/hash-compat": {
         "version": "v1.1.0"
@@ -88,6 +94,9 @@
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "maxmind-db/reader": {
+        "version": "v1.3.0"
     },
     "neitanod/forceutf8": {
         "version": "v2.0.1"
@@ -100,6 +109,9 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "paragonie/random_compat": {
+        "version": "v2.0.15"
     },
     "pear/console_getopt": {
         "version": "v1.4.1"
@@ -133,6 +145,9 @@
     },
     "psr/container": {
         "version": "1.0.0"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
     },
     "psr/log": {
         "version": "1.0.2"
@@ -248,8 +263,17 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.8.0"
     },
+    "symfony/polyfill-php56": {
+        "version": "v1.8.0"
+    },
+    "symfony/polyfill-php70": {
+        "version": "v1.8.0"
+    },
     "symfony/polyfill-php72": {
         "version": "v1.6.0"
+    },
+    "symfony/polyfill-util": {
+        "version": "v1.8.0"
     },
     "symfony/process": {
         "version": "v3.4.11"

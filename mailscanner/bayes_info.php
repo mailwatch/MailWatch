@@ -26,10 +26,10 @@
  */
 
 // Require the functions page
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // Require the login function code
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 // Start the header code and Title
 \MailWatch\Html::start(\MailWatch\Translation::__('spamassassinbayesdatabaseinfo18'), 0, false, false);

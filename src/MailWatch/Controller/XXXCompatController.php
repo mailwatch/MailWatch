@@ -12,7 +12,7 @@ class XXXCompatController extends Controller
     /**
      * @Route("/status", name="status")
      * @Route("/", name="start")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_U') or is_granted('ROLE_U')")
      */
     public function compatStatusCall()
     {
@@ -21,7 +21,7 @@ class XXXCompatController extends Controller
 
     /**
      * @Route("/{path}")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_U') or is_granted('ROLE_U')")
      */
     public function compatCall($path)
     {
@@ -87,8 +87,9 @@ class XXXCompatController extends Controller
         $_SESSION['global_filter'] = '(' . $global_filter . ')';
         $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
         $_SESSION['global_array'] = $filter;
-        $_SESSION['token'] = generateToken();
-        $_SESSION['formtoken'] = generateToken();
-
+        if(!isset($_SESSION['token']))
+            $_SESSION['token'] = generateToken();
+        if(!isset($_SESSION['formtoken']))
+            $_SESSION['formtoken'] = generateToken();
     }
 }

@@ -26,10 +26,10 @@
  */
 
 // Require the functions page
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // Require the login function code
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 // Set the Memory usage
 ini_set('memory_limit', MEMORY_LIMIT);
