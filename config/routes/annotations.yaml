@@ -1,0 +1,3 @@
+controllers1:
+    resource: ../../src/MailWatch/Controller/
+    type: annotation

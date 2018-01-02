@@ -1,0 +1,8 @@
+<Files "UPGRADE_NOTICE">
+  #for apache 2.4
+  Require all denied
+
+  #for apache 2.2
+#  Order Allow,Deny
+#  Deny from all
+</Files>
