@@ -11,6 +11,7 @@ class XXXCompatController extends Controller
 
     /**
      * @Route("/status", name="status")
+     * @Route("/", name="start")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A')")
      */
     public function compatStatusCall()
