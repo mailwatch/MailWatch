@@ -26,10 +26,10 @@
  */
 
 // Require files
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // Authentication verification
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 \MailWatch\Html::start(\MailWatch\Translation::__('geoipupdate15'), 0, false, false);
 

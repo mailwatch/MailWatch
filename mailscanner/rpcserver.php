@@ -27,7 +27,7 @@
 
 use MailWatch\Db;
 
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 
 function rpc_get_quarantine($msg)

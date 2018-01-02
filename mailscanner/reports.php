@@ -27,10 +27,10 @@
 
 use MailWatch\Filter;
 
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // verify login
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 // Checking to see if there are any filters
 if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {

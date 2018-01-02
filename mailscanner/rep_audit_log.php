@@ -27,10 +27,10 @@
 
 // Include of necessary functions
 
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // Authentication checking
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 // If the user isn't an administrator to send them back to the main page
 if ($_SESSION['user_type'] !== 'A') {
