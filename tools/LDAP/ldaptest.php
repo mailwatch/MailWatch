@@ -86,12 +86,12 @@ if (defined('LDAP_PROTOCOL_VERSION')) {
                     die("found ldap account is a group! won't login as group!!");
                 }
                 
-                if(isset($verbose) && $verbose === true) {
+                if (isset($verbose) && $verbose === true) {
                     var_dump($result);
                 }
                     
                 if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
-                    if(!isset($result[0][strtolower(LDAP_USERNAME_FIELD)], $result[0][strtolower(LDAP_USERNAME_FIELD)][0])) {
+                    if (!isset($result[0][strtolower(LDAP_USERNAME_FIELD)], $result[0][strtolower(LDAP_USERNAME_FIELD)][0])) {
                         die("Use all lower case LDAP_USERNAME_FIELD!");
                     }
                     die("found ldap account object does not contain the username field: " . LDAP_USERNAME_FIELD);
