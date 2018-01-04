@@ -37,7 +37,7 @@ $username='';
 $password='';
 require "/var/www/html/mailscanner/functions.php";
 //uncomment the following line for more verbose output
-//$verbose=true
+//$verbose=true;
 
 echo "Test connection to server" . PHP_EOL;
 $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die("Connection to server failed");
@@ -91,7 +91,7 @@ if (defined('LDAP_PROTOCOL_VERSION')) {
                 }
                     
                 if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
-                    if(!isset($result[0][strtolower(LDAP_USERNAME_FIELD)]), $result[0][strtolower(LDAP_USERNAME_FIELD)][0])) {
+                    if(!isset($result[0][strtolower(LDAP_USERNAME_FIELD)], $result[0][strtolower(LDAP_USERNAME_FIELD)][0])) {
                         die("Use all lower case LDAP_USERNAME_FIELD!");
                     }
                     die("found ldap account object does not contain the username field: " . LDAP_USERNAME_FIELD);
@@ -106,7 +106,7 @@ if (defined('LDAP_PROTOCOL_VERSION')) {
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
-                    if (!isset($result[0][strtolower(LDAP_EMAIL_FIELD)]))) {
+                    if (!isset($result[0][strtolower(LDAP_EMAIL_FIELD)])) {
                         die("Use all lower case LDAP_EMAIL_FIELD!");
                     }
                     die("found ldap account object does not contain the mail field: ". LDAP_EMAIL_FIELD);
