@@ -76,6 +76,7 @@ define('LDAP_PROTOCOL_VERSION', 3);
 define('LDAP_EMAIL_FIELD', 'mail');
 // Ldap field that is used to bind to the ldap server to check the credentials.
 // The value of the LDAP_USERNAME_FIELD will be extended by LDAP_BIND_PREFIX and LDAP_BIND_SUFFIX to created the binding username.
+// They should be all lowercase.
 define('LDAP_USERNAME_FIELD', 'cn');
 // define('LDAP_BIND_PREFIX', 'cn=');
 // define('LDAP_BIND_SUFFIX', ',' . LDAP_DN);
