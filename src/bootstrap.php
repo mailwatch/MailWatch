@@ -25,9 +25,11 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-if (!$loader = require __DIR__ . '/../vendor/autoload.php') {
+$loader = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($loader)) {
     echo 'You must set up the project dependencies using `composer install`' . PHP_EOL .
-        'See https://getcomposer.org/download/ for instructions on installing Composer' . PHP_EOL;
+        'See https://getcomposer.org/download/ for instructions on installing Composer' . PHP_EOL .
+        'A setup script is also provided in the root directory `setup_composer` which will automate the setup' . PHP_EOL;
     exit(1);
 }
-return $loader;
+return require $loader;
