@@ -3083,7 +3083,7 @@ function generateToken()
 {
     $tokenLenght = 32;
 
-    return get_random_string($tokenLenght);
+    return \MailWatch\Security::get_random_string($tokenLenght);
 }
 
 /**
