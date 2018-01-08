@@ -55,18 +55,18 @@ class Html
         }
 
         // Check for a privilege change
-        if (checkPrivilegeChange($_SESSION['myusername']) === true) {
+        if (\MailWatch\Security::checkPrivilegeChange($_SESSION['myusername']) === true) {
             header('Location: logout.php?error=timeout');
             die();
         }
 
-        if (checkLoginExpiry($_SESSION['myusername']) === true) {
+        if (\MailWatch\Security::checkLoginExpiry($_SESSION['myusername']) === true) {
             header('Location: logout.php?error=timeout');
             die();
         } else {
             if ($refresh === 0) {
                 // User is moving about on non-refreshing pages, keep session alive
-                updateLoginExpiry($_SESSION['myusername']);
+                \MailWatch\Security::updateLoginExpiry($_SESSION['myusername']);
             }
         }
 
