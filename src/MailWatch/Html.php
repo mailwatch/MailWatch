@@ -41,7 +41,7 @@ class Html
         if (PHP_SAPI !== 'cli') {
             if (!$cacheable) {
                 // Cache control (as per PHP website)
-                disableBrowserCache();
+                \MailWatch\Security::disableBrowserCache();
             } else {
                 // calc an offset of 24 hours
                 $offset = 3600 * 48;

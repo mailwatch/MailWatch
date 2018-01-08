@@ -28,7 +28,7 @@
 use MailWatch\Db;
 
 require_once __DIR__ . '/functions.php';
-disableBrowserCache();
+\MailWatch\Security::disableBrowserCache();
 
 if (isset($_POST['token'])) {
     if (false === checkToken($_POST['token'])) {
