@@ -231,69 +231,6 @@ function getUTF8String($string)
 }
 
 /**
- * @param $spamreport
- * @return string
- */
-function format_spam_report($spamreport)
-{
-    // Run regex against the MailScanner spamreport picking out the (score=xx, required x, RULES...)
-    if (preg_match('/\s\((.+?)\)/i', $spamreport, $sa_rules)) {
-        // Get rid of the first match from the array
-        array_shift($sa_rules);
-        // Split the array
-        $sa_rules = explode(', ', $sa_rules[0]);
-        // Check to make sure a check was actually run
-        if ($sa_rules[0] === 'Message larger than max testing size' || $sa_rules[0] === 'timed out') {
-            return $sa_rules[0];
-        }
-
-        // Get rid of the 'score=', 'required' and 'autolearn=' lines
-        $notRulesLines = [
-            //english
-            'cached',
-            'score=',
-            'required',
-            'autolearn=',
-            //italian
-            'punteggio=',
-            'necessario',
-            //german
-            'benoetigt',
-            'Wertung=',
-            'gecached',
-            //french
-            'requis'
-        ];
-        array_walk($notRulesLines, function ($value) {
-            return preg_quote($value, '/');
-        });
-        $notRulesLinesRegex = '(' . implode('|', $notRulesLines) . ')';
-
-        $sa_rules = array_filter($sa_rules, function ($val) use ($notRulesLinesRegex) {
-            return preg_match("/$notRulesLinesRegex/i", $val) === 0;
-        });
-
-        $output_array = [];
-        foreach ($sa_rules as $sa_rule) {
-            $output_array[] = \MailWatch\SpamAssassin::get_rule_desc($sa_rule);
-        }
-
-        // Return the result as an html formatted string
-        if (count($output_array) > 0) {
-            return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                    "\n",
-                    $output_array
-                ) . '</table>' . "\n";
-        }
-
-        return $spamreport;
-    }
-
-    // Regular expression did not match, return unmodified report instead
-    return $spamreport;
-}
-
-/**
  * @param string $mcpreport
  * @return mixed|string
  */
