@@ -180,7 +180,7 @@ if (!isset($_POST['run'])) {
             echo __('processok15') . "\n";
             ob_flush();
             flush();
-            audit_log(__('auditlog15', true));
+            \MailWatch\Security::audit_log(__('auditlog15', true));
         } else {
             // Unable to read or write to the directory
             die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");

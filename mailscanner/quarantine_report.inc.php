@@ -462,7 +462,7 @@ ORDER BY a.date DESC, a.time DESC';
         $result = \MailWatch\Db::query("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')", false);
         if (!$result) {
             self::dbg(' ==== Error generating auto_release....skipping...');
-            audit_log('Quarantine_Report: Error generating auto_release for msg_id ' . $id . ', uid' . $rand);
+            \MailWatch\Security::audit_log('Quarantine_Report: Error generating auto_release for msg_id ' . $id . ', uid' . $rand);
 
             return false;
         }

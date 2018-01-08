@@ -33,7 +33,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     \MailWatch\Html::start(__('config27'));
-    audit_log(__('auditlog27', true));
+    \MailWatch\Security::audit_log(__('auditlog27', true));
 
     $conf_dir = \MailWatch\MailScanner::getConfIncludeFolder();
     $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';

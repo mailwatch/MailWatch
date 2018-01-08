@@ -37,4 +37,28 @@ class Security
         header('Cache-Control: no-store, no-cache, must-revalidate');
         header('Cache-Control: post-check=0, pre-check=0', false);
     }
+
+    /**
+     * @param $action
+     * @return bool
+     */
+    public static function audit_log($action)
+    {
+        $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        if (AUDIT) {
+            $user = 'unknown';
+            if (isset($_SESSION['myusername'])) {
+                $user = $link->real_escape_string($_SESSION['myusername']);
+            }
+
+            $action =  \MailWatch\Sanitize::safe_value($action);
+            $ip =  \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
+            $ret = \MailWatch\Db::query("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
+            if ($ret) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

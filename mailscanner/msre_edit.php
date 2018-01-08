@@ -35,7 +35,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
-    audit_log(__('auditlog55', true));
+    \MailWatch\Security::audit_log(__('auditlog55', true));
 } else {
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {

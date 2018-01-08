@@ -36,7 +36,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
-    audit_log(__('auditlog29', true));
+    \MailWatch\Security::audit_log(__('auditlog29', true));
 } else {
     \MailWatch\Html::start(__('rulesetedit29'), 0, false, false);
 

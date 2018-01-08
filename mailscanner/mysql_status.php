@@ -34,7 +34,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     echo __('notauthorized31') . '\n';
 } else {
-    audit_log(__('auditlog31', true));
+    \MailWatch\Security::audit_log(__('auditlog31', true));
     dbtable('SHOW TABLE STATUS');
     echo "<BR>\n";
     dbtable('SHOW FULL PROCESSLIST');
