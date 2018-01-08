@@ -2030,9 +2030,9 @@ function ldap_get_conf_truefalse($entry)
     $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
 
     $info = ldap_get_entries($lh, $sh);
-    \MailWatch\Debug::debug(debug_print_r($info));
+    \MailWatch\Debug::debug(\MailWatch\Debug::debug_print_r($info));
     if ($info['count'] > 0) {
-        \MailWatch\Debug::debug('Entry: ' . debug_print_r($info[0][$info[0][0]][0]));
+        \MailWatch\Debug::debug('Entry: ' . \MailWatch\Debug::debug_print_r($info[0][$info[0][0]][0]));
         switch ($info[0][$info[0][0]][0]) {
             case 'yes':
             case '1':
@@ -2148,20 +2148,6 @@ function decode_header($input)
     }
 
     return $input;
-}
-
-/**
- * @param $input
- * @return string
- */
-function debug_print_r($input)
-{
-    ob_start();
-    print_r($input);
-    $return = ob_get_contents();
-    ob_end_clean();
-
-    return $return;
 }
 
 /**

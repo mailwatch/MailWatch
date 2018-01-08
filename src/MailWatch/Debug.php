@@ -64,4 +64,18 @@ class Debug
             die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
         }
     }
+
+    /**
+     * @param $input
+     * @return string
+     */
+    public static function debug_print_r($input)
+    {
+        ob_start();
+        print_r($input);
+        $return = ob_get_contents();
+        ob_end_clean();
+
+        return $return;
+    }
 }
