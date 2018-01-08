@@ -218,7 +218,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
         }
         if ($fieldn === __('spamrep04')) {
-            $row[$f] = format_spam_report($row[$f]);
+            $row[$f] = \MailWatch\SpamAssassin::format_spam_report($row[$f]);
         }
         if ($fieldn === __('size04')) {
             $row[$f] = formatSize($row[$f]);
