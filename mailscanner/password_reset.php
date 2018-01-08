@@ -47,10 +47,10 @@ $message = '';
 $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if (defined('PWD_RESET') && PWD_RESET === true) {
     if (isset($_POST['Submit'])) {
-        if (false === checkToken($_POST['token'])) {
+        if (false === \MailWatch\Security::checkToken($_POST['token'])) {
             die();
         }
-        $_SESSION['token'] = generateToken();
+        $_SESSION['token'] = \MailWatch\Security::generateToken();
 
         if ($_POST['Submit'] === 'stage1Submit') {
             //check email add registered user and password reset is allowed
@@ -212,7 +212,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         }
     } elseif (isset($_GET['stage'])) {
         if (!isset($_SESSION['token'])) {
-            $_SESSION['token'] = generateToken();
+            $_SESSION['token'] = \MailWatch\Security::generateToken();
         }
         if ($_GET['stage'] === '1') {
             //first stage, need to get email address

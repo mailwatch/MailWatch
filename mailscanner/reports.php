@@ -46,11 +46,11 @@ if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {
 // Add filters and save them
 if (isset($_POST['action']) || isset($_GET['action'])) {
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) {
+        if (false === \MailWatch\Security::checkToken($_POST['token'])) {
             die(__('dietoken99'));
         }
     } else {
-        if (false === checkToken($_GET['token'])) {
+        if (false === \MailWatch\Security::checkToken($_GET['token'])) {
             die(__('dietoken99'));
         }
     }

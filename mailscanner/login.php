@@ -30,7 +30,7 @@ require_once __DIR__ . '/functions.php';
 \MailWatch\Security::disableBrowserCache();
 session_regenerate_id(true);
 
-$_SESSION['token'] = generateToken();
+$_SESSION['token'] = \MailWatch\Security::generateToken();
 
 if (file_exists('conf.php') && isset($_GET['error'])) {
     $loginerror = \MailWatch\Sanitize::deepSanitizeInput($_GET['error'], 'url');

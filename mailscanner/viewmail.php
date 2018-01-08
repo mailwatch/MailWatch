@@ -63,7 +63,7 @@ if (empty($message)) {
 
 \MailWatch\Security::audit_log(sprintf(__('auditlog06', true), $message_id));
 
-if ($message->token !== \MailWatch\Sanitize::deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
+if ($message->token !== \MailWatch\Sanitize::deepSanitizeInput($_GET['token'], 'url') && false === \MailWatch\Security::checkToken($_GET['token'])) {
     die(__('dietoken99'));
 }
 

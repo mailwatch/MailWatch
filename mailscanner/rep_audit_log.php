@@ -39,11 +39,11 @@ if ($_SESSION['user_type'] !== 'A') {
     // add the header information such as the logo, search, menu, ....
     \MailWatch\Html::start(__('auditlog33'), 0, false, false);
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) {
+        if (false === \MailWatch\Security::checkToken($_POST['token'])) {
             die(__('dietoken99'));
         }
     } else {
-        if (false === checkToken($_GET['token'])) {
+        if (false === \MailWatch\Security::checkToken($_GET['token'])) {
             die(__('dietoken99'));
         }
     }

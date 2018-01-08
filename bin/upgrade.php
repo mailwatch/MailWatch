@@ -693,7 +693,7 @@ if ($link) {
     if ($rows > 0) {
         while ($row = $result->fetch_object()) {
             if ($row->token === null) {
-                $sql = 'UPDATE `maillog` SET `token`=\'' . generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
+                $sql = 'UPDATE `maillog` SET `token`=\'' . \MailWatch\Security::generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
                 executeQuery($sql, true);
                 $countTokenGenerated++;
             }

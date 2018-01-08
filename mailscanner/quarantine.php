@@ -80,7 +80,7 @@ if (!isset($_GET['dir'])) {
         }
     }
 } else {
-    if (false === checkToken($_GET['token'])) {
+    if (false === \MailWatch\Security::checkToken($_GET['token'])) {
         die(__('dietoken99'));
     }
     $dir = \MailWatch\Sanitize::deepSanitizeInput($_GET['dir'], 'url');
