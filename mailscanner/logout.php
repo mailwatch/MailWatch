@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 // Clear the login expiry timestamp
 $sql = "UPDATE users SET login_expiry='-1' WHERE username='" .  \MailWatch\Sanitize::safe_value($_SESSION['myusername']) . "'";
-dbquery($sql);
+\MailWatch\Db::query($sql);
 \MailWatch\Db::close();
 
 // reset session variables

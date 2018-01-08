@@ -160,31 +160,6 @@ function disableBrowserCache()
     header('Cache-Control: post-check=0, pre-check=0', false);
 }
 
-
-/**
- * @param string $sql
- * @param bool $printError
- * @return mysqli_result
- */
-function dbquery($sql, $printError = true)
-{
-    $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
-        \MailWatch\Debug::dbquerydebug($link, $sql);
-    }
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-    $result = $link->query($sql);
-
-    if (true === $printError && false === $result) {
-        // stop on query error
-        $message = '<strong>Invalid query</strong>: ' . Db::$link->errno . ': ' . Db::$link->error . "<br>\n";
-        $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
-        die($message);
-    }
-
-    return $result;
-}
-
 /**
  * @param string $string
  * @param boolean $useSystemLang
@@ -412,7 +387,7 @@ function get_sa_rule_desc($rule)
         $rule = $regs[1];
         $rule_score = $regs[2];
     }
-    $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
+    $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
@@ -427,7 +402,7 @@ function get_sa_rule_desc($rule)
  */
 function return_sa_rule_desc($rule)
 {
-    $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
+    $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row) {
         return htmlentities($row->rule_desc);
@@ -491,7 +466,7 @@ function get_mcp_rule_desc($rule)
     if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
         list($rule, $rule_score) = $regs;
     }
-    $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
+    $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row && $row->rule && $row->rule_desc) {
         return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
@@ -506,7 +481,7 @@ function get_mcp_rule_desc($rule)
  */
 function return_mcp_rule_desc($rule)
 {
-    $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
+    $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row) {
         return $row->rule_desc;
@@ -533,7 +508,7 @@ WHERE
 AND
  date = CURRENT_DATE()
 ';
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
     $virus_array = [];
     while ($row = $result->fetch_object()) {
         $virus = \MailWatch\Antivirus::getVirus($row->report);
@@ -821,7 +796,7 @@ function generatePager($sql)
 
     // Count the number of rows that would be returned by the query
     $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-    $results = dbquery($sqlcount);
+    $results = \MailWatch\Db::query($sqlcount);
     $rows = Db::mysqli_result($results, 0);
 
     // Build the pager data
@@ -894,7 +869,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         // Re-run the original query and limit the rows
         $limit = $from - 1;
         $sql .= " LIMIT $limit," . MAX_RESULTS;
-        $sth = dbquery($sql);
+        $sth = \MailWatch\Db::query($sql);
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
@@ -902,7 +877,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $fields++;
         }
     } else {
-        $sth = dbquery($sql);
+        $sth = \MailWatch\Db::query($sql);
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
@@ -1461,7 +1436,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 {
     /*
     // Query the data
-    $sth = dbquery($sql);
+    $sth = \MailWatch\Db::query($sql);
 
     // Count the number of rows in a table
     $rows = $sth->num_rows;
@@ -1487,7 +1462,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         // Count the number of rows that would be returned by the query
         $sqlcount = 'SELECT COUNT(*) AS numrows ' . strstr($sqlcount, 'FROM');
 
-        $results = dbquery($sqlcount);
+        $results = \MailWatch\Db::query($sqlcount);
         $resultsFirstRow = $results->fetch_array();
         $rows = (int)$resultsFirstRow['numrows'];
 
@@ -1520,7 +1495,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
         // Re-run the original query and limit the rows
         $sql .= ' LIMIT ' . ($from - 1) . ',' . MAX_RESULTS;
-        $sth = dbquery($sql);
+        $sth = \MailWatch\Db::query($sql);
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
@@ -1528,7 +1503,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
             $fields++;
         }
     } else {
-        $sth = dbquery($sql);
+        $sth = \MailWatch\Db::query($sql);
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
@@ -1583,7 +1558,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
         // Count the number of rows that would be returned by the query
         $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-        $rows = Db::mysqli_result(dbquery($sqlcount), 0);
+        $rows = Db::mysqli_result(\MailWatch\Db::query($sqlcount), 0);
 
         // Build the pager data
         $pager_options = [
@@ -1619,7 +1594,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
 function db_vertical_table($sql)
  * {
- * $sth = dbquery($sql);
+ * $sth = \MailWatch\Db::query($sql);
  * $rows = $sth->num_rows;
  * $fields = $sth->field_count;
  *
@@ -1850,14 +1825,14 @@ function ldap_authenticate($username, $password)
                     }
 
                     $sql = sprintf('SELECT username FROM users WHERE username = %s', \MailWatch\Sanitize::quote_smart($email));
-                    $sth = dbquery($sql);
+                    $sth = \MailWatch\Db::query($sql);
                     if ($sth->num_rows === 0) {
                         $sql = sprintf(
                             "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                              \MailWatch\Sanitize::quote_smart($email),
                              \MailWatch\Sanitize::quote_smart($result[0]['cn'][0])
                         );
-                        dbquery($sql);
+                        \MailWatch\Db::query($sql);
                     }
 
                     return $email;
@@ -2073,14 +2048,14 @@ function imap_authenticate($username, $password)
 
         if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
             $sql = sprintf('SELECT username FROM users WHERE username = %s', \MailWatch\Sanitize::quote_smart($username));
-            $sth = dbquery($sql);
+            $sth = \MailWatch\Db::query($sql);
             if ($sth->num_rows === 0) {
                 $sql = sprintf(
                     "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                      \MailWatch\Sanitize::quote_smart($username),
                      \MailWatch\Sanitize::quote_smart($password)
                 );
-                dbquery($sql);
+                \MailWatch\Db::query($sql);
             }
         }
 
@@ -2274,7 +2249,7 @@ SELECT
   maillog
  WHERE
   id = '$msgid'";
-    $sth = dbquery($sql);
+    $sth = \MailWatch\Db::query($sql);
     $rows = $sth->num_rows;
     if ($rows <= 0) {
         die(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
@@ -2399,7 +2374,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $error = true;
             } else {
                 $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[0]['msgid']) . "'";
-                dbquery($sql);
+                \MailWatch\Db::query($sql);
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
             }
@@ -2416,7 +2391,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if ($retval === 0) {
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[0]['msgid']) . "'";
-                    dbquery($sql);
+                    \MailWatch\Db::query($sql);
                     $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
@@ -2532,7 +2507,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
                         \MailWatch\Debug::debug("Learner - running SQL: $sql");
-                        dbquery($sql);
+                        \MailWatch\Db::query($sql);
                     }
                     $status[] = __('spamassassin03') . ' ' . implode(', ', $output_array);
                     switch ($learn_type) {
@@ -2571,7 +2546,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
                         \MailWatch\Debug::debug("Learner - running SQL: $sql");
-                        dbquery($sql);
+                        \MailWatch\Db::query($sql);
                     }
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
                     audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
@@ -2593,7 +2568,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 }
                 if (isset($numeric_type)) {
                     $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[$val]['msgid']) . "'";
-                    dbquery($sql);
+                    \MailWatch\Db::query($sql);
                 }
             }
         }
@@ -2653,7 +2628,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
         foreach ($num as $key => $val) {
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
-                dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
+                \MailWatch\Db::query("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
                 audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
             } else {
                 $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
@@ -2725,7 +2700,7 @@ function audit_log($action)
 
         $action =  \MailWatch\Sanitize::safe_value($action);
         $ip =  \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
-        $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
+        $ret = \MailWatch\Db::query("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
         if ($ret) {
             return true;
         }
@@ -2876,17 +2851,17 @@ function xmlrpc_wrapper($host, $msg)
 function updateUserPasswordHash($user, $hash)
 {
     $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
-    $passwordFiledLengthResult = dbquery($sqlCheckLenght);
+    $passwordFiledLengthResult = \MailWatch\Db::query($sqlCheckLenght);
     $passwordFiledLength = (int)Db::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
 
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
-        dbquery($sqlUpdateFieldLength);
+        \MailWatch\Db::query($sqlUpdateFieldLength);
         audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
     }
 
     $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
-    dbquery($sqlUpdateHash);
+    \MailWatch\Db::query($sqlUpdateHash);
     audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
 }
 
@@ -2897,7 +2872,7 @@ function updateUserPasswordHash($user, $hash)
 function checkForExistingUser($username)
 {
     $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" .  \MailWatch\Sanitize::safe_value($username) . "'";
-    $row = dbquery($sqlQuery)->fetch_object();
+    $row = \MailWatch\Db::query($sqlQuery)->fetch_object();
 
     return $row->counter > 0;
 }
@@ -3275,7 +3250,7 @@ function checkLangCode($langCode)
 function updateLoginExpiry($myusername)
 {
     $sql = "SELECT login_timeout FROM users WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
 
     if ($result->num_rows === 0) {
         // Something went wrong, or user no longer exists
@@ -3302,7 +3277,7 @@ function updateLoginExpiry($myusername)
         $expiry_val = (time() + (int)$login_timeout);
     }
     $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
 
     return $result;
 }
@@ -3316,7 +3291,7 @@ function updateLoginExpiry($myusername)
 function checkLoginExpiry($myusername)
 {
     $sql = "SELECT login_expiry FROM users WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
 
     if ($result->num_rows === 0) {
         // Something went wrong, or user no longer exists
@@ -3348,7 +3323,7 @@ function checkLoginExpiry($myusername)
 function checkPrivilegeChange($myusername)
 {
     $sql = "SELECT type FROM users WHERE username='" .  \MailWatch\Sanitize::safe_value($myusername) . "'";
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
 
     if ($result->num_rows === 0) {
         // Something went wrong, or user does not exist

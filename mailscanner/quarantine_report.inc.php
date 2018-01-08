@@ -267,7 +267,7 @@ ORDER BY a.date DESC, a.time DESC';
             }
             $this->users_sql .= ' AND ( ' . implode(' OR ', $userConditions) . ' ) ';
         }
-        $result = dbquery($this->users_sql);
+        $result = \MailWatch\Db::query($this->users_sql);
         $rows = $result->num_rows;
         $num_successfull_reports = 0;
         $num_failed_reports = 0;
@@ -411,7 +411,7 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_user_filters($user)
     {
-        $result = dbquery(sprintf(self::$filters_sql, \MailWatch\Sanitize::quote_smart($user)));
+        $result = \MailWatch\Db::query(sprintf(self::$filters_sql, \MailWatch\Sanitize::quote_smart($user)));
         $rows = $result->num_rows;
         $array = [];
         if ($rows > 0) {
@@ -430,7 +430,7 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_quarantine_list_array($to_address, $to_domain)
     {
-        $result = dbquery(sprintf(self::get_report_sql(), \MailWatch\Sanitize::quote_smart($to_address), \MailWatch\Sanitize::quote_smart($to_domain)));
+        $result = \MailWatch\Db::query(sprintf(self::get_report_sql(), \MailWatch\Sanitize::quote_smart($to_address), \MailWatch\Sanitize::quote_smart($to_domain)));
         $rows = $result->num_rows;
         $array = [];
         if ($rows > 0) {
@@ -459,7 +459,7 @@ ORDER BY a.date DESC, a.time DESC';
     {
         $id = $qitem['id'];
         $rand = $qitem['rand'];
-        $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')", false);
+        $result = \MailWatch\Db::query("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')", false);
         if (!$result) {
             self::dbg(' ==== Error generating auto_release....skipping...');
             audit_log('Quarantine_Report: Error generating auto_release for msg_id ' . $id . ', uid' . $rand);
@@ -478,7 +478,7 @@ ORDER BY a.date DESC, a.time DESC';
     {
         //function checks if message already has an autorelease entry
         $id = $qitem['id'];
-        $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'", false);
+        $result = \MailWatch\Db::query("SELECT * FROM autorelease WHERE msg_id = '$id'", false);
         if (!$result) {
             self::dbg(' === Error checking if msg_id already exists.....skipping....');
         } else {

@@ -475,7 +475,7 @@ function updateClock() {
   ' . $_SESSION['global_filter'] . '
 ';
 
-        $sth = dbquery($sql);
+        $sth = \MailWatch\Db::query($sql);
         while ($row = $sth->fetch_object()) {
             echo '<table border="0" cellpadding="1" cellspacing="1" class="mail todaystatistics" width="220">' . "\n";
             echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";

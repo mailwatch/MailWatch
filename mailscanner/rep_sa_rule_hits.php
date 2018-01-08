@@ -46,7 +46,7 @@ $sql = '
  AND spamreport != ""
 ' . $filter->CreateSQL();
 
-$result = dbquery($sql);
+$result = \MailWatch\Db::query($sql);
 if (!$result->num_rows > 0) {
     die(__('diemysql99') . "\n");
 }

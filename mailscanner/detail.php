@@ -111,7 +111,7 @@ $sql = "
 ";
 
 // Pull the data back and put it in the the $result variable
-$result = dbquery($sql);
+$result = \MailWatch\Db::query($sql);
 
 // Check to make sure something was returned
 if ($result->num_rows === 0) {
@@ -304,7 +304,7 @@ while ($row = $result->fetch_array()) {
 // Display the relay information only if there are matching
 // rows in the relay table (maillog.id = relay.msg_id)...
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
-$tablecheck = dbquery($sqlcheck);
+$tablecheck = \MailWatch\Db::query($sqlcheck);
 if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
     $sql1 = "
  SELECT
@@ -340,7 +340,7 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
   timestamp DESC";
 }
 
-$sth1 = dbquery($sql1);
+$sth1 = \MailWatch\Db::query($sql1);
 if (false !== $sth1 && $sth1->num_rows > 0) {
     // Display the relay table entries
     echo ' <tr><td class="heading-w175">' .  __('relayinfo04') . '</td><td class="detail">' . "\n";
@@ -478,7 +478,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
     } else {
         // get perfromed actions
         $sql = "SELECT released,salearn FROM `maillog` WHERE `id` = '$url_id'";
-        $result = dbquery($sql);
+        $result = \MailWatch\Db::query($sql);
         $row = $result->fetch_array();
         echo '<form action="detail.php" method="post" name="quarantine">' . "\n";
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";

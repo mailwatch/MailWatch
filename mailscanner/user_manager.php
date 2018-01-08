@@ -62,7 +62,7 @@ function testSameDomainMembership($username, $method)
 {
     $parts = explode('@', $username);
     $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
     $filter_domain = [];
     for ($i=0;$i<$result->num_rows;$i++) {
         $filter = $result->fetch_row();
@@ -139,7 +139,7 @@ function getUserById($additionalFields = false)
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
     $sql = 'SELECT id, username, type' . ($additionalFields ? ', fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login' : '') . " FROM users WHERE id='" . $uid . "'";
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
     if ($result->num_rows === 0) {
         audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $uid));
         return getHtmlMessage(__('accessunknownuser12'), 'error');
@@ -267,7 +267,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
     if ($uid === -1) {//new user
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
                         VALUES ('$n_username','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
-        dbquery($sql);
+        \MailWatch\Db::query($sql);
         audit_log(__('auditlog0112', true) . ' ' . $type[$n_type] . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212', true));
         return getHtmlMessage(sprintf(__('usercreated12'), $n_username), 'success');
     } else {
@@ -276,11 +276,11 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         } else {
             $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$uid'";
         }
-        dbquery($sql);
+        \MailWatch\Db::query($sql);
         // Update user_filters if username was changed
         if ($oldUsername !== $n_username) {
             $sql = "UPDATE user_filters SET username='$n_username' WHERE username = '$oldUsername'";
-            dbquery($sql);
+            \MailWatch\Db::query($sql);
         }
         if ($oldType !== $n_type) {
             audit_log(
@@ -407,7 +407,7 @@ function deleteUser()
         return getHtmlMessage(__('errordeleteself12'), 'error');
     }
     $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" .  \MailWatch\Sanitize::safe_value($user->username) . "'";
-    dbquery($sql);
+    \MailWatch\Db::query($sql);
     audit_log(sprintf(__('auditlog0412', true), $user->username));
     return getHtmlMessage(sprintf(__('userdeleted12'), $user->username), 'success');
 }
@@ -441,7 +441,7 @@ function userFilter()
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
         $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" .  \MailWatch\Sanitize::safe_value($user->username) . "','" .  \MailWatch\Sanitize::safe_value($getFilter) . "','" .  \MailWatch\Sanitize::safe_value($getActive) . "')";
-        dbquery($sql);
+        \MailWatch\Db::query($sql);
         if (DEBUG === true) {
             echo $sql;
         }
@@ -453,7 +453,7 @@ function userFilter()
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
         $sql = "DELETE FROM user_filters WHERE username='" .  \MailWatch\Sanitize::safe_value($user->username) . "' AND filter='" .  \MailWatch\Sanitize::safe_value($getFilter) . "'";
-        dbquery($sql);
+        \MailWatch\Db::query($sql);
         if (DEBUG === true) {
             echo $sql;
         }
@@ -464,17 +464,17 @@ function userFilter()
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
         $sql = "SELECT active FROM user_filters WHERE username='" .  \MailWatch\Sanitize::safe_value($user->username) . "' AND filter='" .  \MailWatch\Sanitize::safe_value($getFilter) . "'";
-        $result = dbquery($sql);
+        $result = \MailWatch\Db::query($sql);
         $row = $result->fetch_row();
         $active = 'Y';
         if ($row[0] === 'Y') {
             $active = 'N';
         }
         $sql = "UPDATE user_filters SET active='" . $active . "' WHERE username='" .  \MailWatch\Sanitize::safe_value($user->username) . "' AND filter='" .  \MailWatch\Sanitize::safe_value($getFilter) . "'";
-        dbquery($sql);
+        \MailWatch\Db::query($sql);
     }
     $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" .  \MailWatch\Sanitize::safe_value($user->id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" .  \MailWatch\Sanitize::safe_value($user->id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" .  \MailWatch\Sanitize::safe_value($user->username) . "'";
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
     echo '<FORM METHOD="POST" ACTION="user_manager.php">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
@@ -538,7 +538,7 @@ function logoutUser()
     }
 
     $sql = "UPDATE users SET login_expiry='-1' WHERE id='$user->id'";
-    dbquery($sql);
+    \MailWatch\Db::query($sql);
     if (DEBUG === true) {
         echo $sql;
     }
@@ -686,7 +686,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
             $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
-            $result = dbquery($sql);
+            $result = \MailWatch\Db::query($sql);
             $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
             for ($i=0;$i<$result->num_rows;$i++) {
                 $filter = $result->fetch_row();
@@ -733,7 +733,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
 } else {
     if (!isset($_POST['submit'])) {
         $sql = "SELECT id, username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" .  \MailWatch\Sanitize::safe_value($_SESSION['myusername']) . "'";
-        $result = dbquery($sql);
+        $result = \MailWatch\Db::query($sql);
         $row = $result->fetch_object();
         $quarantine_report = '';
         if ((int)$row->quarantine_report === 1) {
@@ -768,7 +768,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" name="action" value="' . __('update12') . '"></td></tr>' . "\n";
         echo '</table></form><br>' . "\n";
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
-        $result = dbquery($sql);
+        $result = \MailWatch\Db::query($sql);
     } else {
         if (false === checkToken($_POST['token'])
               || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
@@ -825,10 +825,10 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
                 // Password reset required
                 $password = password_hash($n_password, PASSWORD_DEFAULT);
                 $sql = "UPDATE users SET password='" . $password . "', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
-                dbquery($sql);
+                \MailWatch\Db::query($sql);
             } else {
                 $sql = "UPDATE users SET quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
-                dbquery($sql);
+                \MailWatch\Db::query($sql);
             }
 
             // Audit

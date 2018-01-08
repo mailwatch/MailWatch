@@ -125,4 +125,28 @@ class Db
         }
         return false;
     }
+
+    /**
+     * @param $sql
+     * @param bool $printError
+     * @return bool|\mysqli_result
+     */
+    public static function query($sql, $printError = true)
+    {
+        $link = Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
+            Debug::dbquerydebug($link, $sql);
+        }
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        $result = $link->query($sql);
+
+        if (true === $printError && false === $result) {
+            // stop on query error
+            $message = '<strong>Invalid query</strong>: ' . Db::$link->errno . ': ' . Db::$link->error . "<br>\n";
+            $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
+            die($message);
+        }
+
+        return $result;
+    }
 }

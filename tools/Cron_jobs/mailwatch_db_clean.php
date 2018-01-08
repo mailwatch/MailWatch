@@ -47,27 +47,27 @@ if (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
 }
 
 // Cleaning the maillog table
-dbquery('DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
+\MailWatch\Db::query('DELETE LOW_PRIORITY FROM maillog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
 
 // Cleaning the mta_log and optionally the mta_log_id table
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
-$tablecheck = dbquery($sqlcheck);
+$tablecheck = \MailWatch\Db::query($sqlcheck);
 $mta = \MailWatch\MailScanner::getConfVar('mta');
 $optimize_mtalog_id = '';
 if ($mta === 'postfix' && $tablecheck->num_rows > 0) {
     //version for postfix with mtalog_ids enabled
-    dbquery(
+    \MailWatch\Db::query(
         'DELETE i.*, m.* FROM mtalog AS m
          LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id
          WHERE m.timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)'
     );
     $optimize_mtalog_id = ', mtalog_ids';
 } else {
-    dbquery('DELETE FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
+    \MailWatch\Db::query('DELETE FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
 }
 
 // Clean the audit log
-dbquery('DELETE FROM audit_log WHERE timestamp < (NOW() - INTERVAL ' . AUDIT_DAYS_TO_KEEP . ' DAY)');
+\MailWatch\Db::query('DELETE FROM audit_log WHERE timestamp < (NOW() - INTERVAL ' . AUDIT_DAYS_TO_KEEP . ' DAY)');
 
 // Optimize all of tables
-dbquery('OPTIMIZE TABLE maillog, mtalog, audit_log' . $optimize_mtalog_id);
+\MailWatch\Db::query('OPTIMIZE TABLE maillog, mtalog, audit_log' . $optimize_mtalog_id);

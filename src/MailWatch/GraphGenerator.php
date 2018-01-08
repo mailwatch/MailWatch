@@ -193,7 +193,7 @@ class GraphGenerator
      */
     protected function prepareData()
     {
-        $result = dbquery($this->sqlQuery);
+        $result = \MailWatch\Db::query($this->sqlQuery);
         $this->data = [];
         $this->numResult = $result->num_rows;
         if ($this->numResult <= 0 && (!isset($this->settings['ignoreEmptyResult']) || $this->settings['ignoreEmptyResult'] === false)) {

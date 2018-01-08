@@ -58,7 +58,7 @@ if ($required_constant_missing_count === 0) {
                 foreach ($array as $id) {
                     dbg("Updating: $id");
                     $sql = "UPDATE maillog SET quarantined=1 WHERE id='$id'";
-                    dbquery($sql);
+                    \MailWatch\Db::query($sql);
                 }
             }
         }
@@ -81,11 +81,11 @@ if ($required_constant_missing_count === 0) {
                     foreach ($array as $id) {
                         // Update the quarantine flag
                         $sql = "UPDATE maillog SET quarantined = NULL WHERE id='$id'";
-                        dbquery($sql);
+                        \MailWatch\Db::query($sql);
                         //If auto quarantine release is enabled, remove from autorelease table when quarantined email expires
                         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
                             $sql = "DELETE FROM autorelease WHERE msg_id = '$id'";
-                            dbquery($sql);
+                            \MailWatch\Db::query($sql);
                         }
                     }
                     dbg('Deleting: ' . escapeshellarg($quarantine . '/' . $f));
