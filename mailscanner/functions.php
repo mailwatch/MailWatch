@@ -101,10 +101,12 @@ if ($missingConfigEntries['needed']['count'] !== 0) {
 }
 
 // Set PHP path to use local PEAR modules only
-set_include_path(
+// This appears to be handled by composer now, and is causing a conflict with Pager/Common.php not being found.
+//Code remains pending further testing / verification.  Haven't discovered any side-effects of removing this yet.
+/*set_include_path(
     '.' . PATH_SEPARATOR .
     MAILWATCH_HOME . '/lib/xmlrpc'
-);
+);*/
 
 //Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
