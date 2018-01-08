@@ -372,7 +372,7 @@ echo "</table>\n";
 flush();
 
 $quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
-$quarantined = quarantine_list_items($url_id, RPC_ONLY);
+$quarantined = \MailWatch\Quarantine::quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
@@ -408,7 +408,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 }
                 $arrid2[] = $id2;
             }
-            $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY);
+            $status[] = \MailWatch\Quarantine::quarantine_release($quarantined, $arrid2, $to, RPC_ONLY);
         }
         // sa-learn
         if (isset($_POST['learn'])) {
@@ -428,7 +428,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             if (!\MailWatch\Sanitize::validateInput($type, 'salearnops')) {
                 die(__('dievalidate99'));
             }
-            $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
+            $status[] = \MailWatch\Quarantine::quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
         }
         // Delete
         if (isset($_POST['delete'])) {
@@ -444,7 +444,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 }
                 $arrid2[] = $id2;
             }
-            $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY);
+            $status[] = \MailWatch\Quarantine::quarantine_delete($quarantined, $arrid2, RPC_ONLY);
         }
         echo '<table border="0" cellpadding="1" cellspacing="1" width="100%" class="maildetail">' . "\n";
         echo ' <tr>' . "\n";

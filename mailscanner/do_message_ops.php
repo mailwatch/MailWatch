@@ -83,7 +83,7 @@ if (isset($_POST) && !empty($_POST)) {
             default:
                 continue 2; //continue with next foreach loop
         }
-        $items = quarantine_list_items($id, RPC_ONLY);
+        $items = \MailWatch\Quarantine::quarantine_list_items($id, RPC_ONLY);
         echo '<tr>' . "\n";
         echo '<td><a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
@@ -97,10 +97,10 @@ if (isset($_POST) && !empty($_POST)) {
                 $itemnum = [$num];
                 echo '<td>';
                 if ($type === 'release') {
-                    $quarantined = quarantine_list_items($id, RPC_ONLY);
+                    $quarantined = \MailWatch\Quarantine::quarantine_list_items($id, RPC_ONLY);
                     if (is_array($quarantined)) {
                         $to = $quarantined[0]['to'];
-                        echo quarantine_release(
+                        echo \MailWatch\Quarantine::quarantine_release(
                             $quarantined,
                             $itemnum,
                             $to,
@@ -110,7 +110,7 @@ if (isset($_POST) && !empty($_POST)) {
                         echo $quarantined;
                     }
                 } else {
-                    echo quarantine_learn(
+                    echo \MailWatch\Quarantine::quarantine_learn(
                         $items,
                         $itemnum,
                         $type,
