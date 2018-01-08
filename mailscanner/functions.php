@@ -1242,85 +1242,8 @@ function address_filter_sql($addresses, $type)
 
 /**
  * @param $entry
- * @return string
- */
-function ldap_get_conf_var($entry)
-{
-    // Translate MailScanner.conf vars to internal
-    $entry = translate_etoi($entry);
-
-    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
-
-    @ldap_bind($lh)
-    or die(__('ldapgetconfvar203') . "\n");
-
-    # As per MailScanner Config.pm
-    $filter = '(objectClass=mailscannerconfmain)';
-    $filter = "(&$filter(mailScannerConfBranch=main))";
-
-    $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
-
-    $info = ldap_get_entries($lh, $sh);
-    if ($info['count'] > 0 && $info[0]['count'] !== 0) {
-        if ($info[0]['count'] === 0) {
-            // Return single value
-            return $info[0][$info[0][0]][0];
-        }
-
-        // Multi-value option, build array and return as space delimited
-        $return = [];
-        for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
-            $return[] = $info[0][$info[0][0]][$n];
-        }
-
-        return implode(' ', $return);
-    }
-
-    // No results
-    die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
-}
-
-/**
- * @param $entry
  * @return bool
  */
-function ldap_get_conf_truefalse($entry)
-{
-    // Translate MailScanner.conf vars to internal
-    $entry = translate_etoi($entry);
-
-    $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
-    or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
-
-    @ldap_bind($lh)
-    or die(__('ldapgetconfvar203') . "\n");
-
-    # As per MailScanner Config.pm
-    $filter = '(objectClass=mailscannerconfmain)';
-    $filter = "(&$filter(mailScannerConfBranch=main))";
-
-    $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
-
-    $info = ldap_get_entries($lh, $sh);
-    \MailWatch\Debug::debug(\MailWatch\Debug::debug_print_r($info));
-    if ($info['count'] > 0) {
-        \MailWatch\Debug::debug('Entry: ' . \MailWatch\Debug::debug_print_r($info[0][$info[0][0]][0]));
-        switch ($info[0][$info[0][0]][0]) {
-            case 'yes':
-            case '1':
-                return true;
-            case 'no':
-            case '0':
-            default:
-                return false;
-        }
-    } else {
-        // No results
-        //die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
-        return false;
-    }
-}
 
 /**
  * @param string $username
