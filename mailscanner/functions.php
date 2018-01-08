@@ -236,33 +236,6 @@ function get_disks()
 }
 
 /**
- * @param $date
- * @param string $format
- * @return mixed|string
- */
-function translateQuarantineDate($date, $format = 'dmy')
-{
-    $y = substr($date, 0, 4);
-    $m = substr($date, 4, 2);
-    $d = substr($date, 6, 2);
-
-    $format = strtolower($format);
-
-    switch ($format) {
-        case 'dmy':
-            return "$d/$m/$y";
-        case 'sql':
-            return "$y-$m-$d";
-        default:
-            $format = preg_replace('/%y/', $y, $format);
-            $format = preg_replace('/%m/', $m, $format);
-            $format = preg_replace('/%d/', $d, $format);
-
-            return $format;
-    }
-}
-
-/**
  * @param $preserve
  * @return string|false
  */

@@ -46,7 +46,7 @@ if (!isset($_GET['dir'])) {
             if ($rowcnt > 0) {
                 $rowstr = sprintf('  %02d ' . __('items08'), $rowcnt);
             }
-            echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . translateQuarantineDate(
+            echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . \MailWatch\Format::translateQuarantineDate(
                     $date,
                     DATE_FORMAT
                 ) .  '</a></td>' . "\n";
@@ -65,7 +65,7 @@ if (!isset($_GET['dir'])) {
                 //To look and see if any of the folders in the quarantine folder are strings and not numbers.
                 if (is_numeric($f)) {
                     // Display the Quarantine folders and create links for them.
-                    echo '<tr><td align="center"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $f . '">' . translateQuarantineDate(
+                    echo '<tr><td align="center"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $f . '">' . \MailWatch\Format::translateQuarantineDate(
                             $f,
                             DATE_FORMAT
                         ) . '</a></td></tr>' . "\n";
@@ -94,7 +94,7 @@ if (!isset($_GET['dir'])) {
     
     if (QUARANTINE_USE_FLAG) {
         \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        $date = translateQuarantineDate($dir, 'sql');
+        $date = \MailWatch\Format::translateQuarantineDate($dir, 'sql');
         $sql = "
 SELECT
  id AS id2,
@@ -144,7 +144,7 @@ AND
         $sql .= '
 ORDER BY
  date DESC, time DESC';
-        db_colorised_table($sql, __('folder08') . ' ' . translateQuarantineDate($dir, DATE_FORMAT), true, true);
+        db_colorised_table($sql, __('folder08') . ' ' . \MailWatch\Format::translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
         $dir = preg_replace('[\.|\.\.|\/]', '', $dir);
@@ -152,7 +152,7 @@ ORDER BY
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
             $msg_ids = implode($items, ',');
-            $date =  \MailWatch\Sanitize::safe_value(translateQuarantineDate($dir, 'sql'));
+            $date =  \MailWatch\Sanitize::safe_value(\MailWatch\Format::translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
    id AS id2,
@@ -203,7 +203,7 @@ ORDER BY
   ORDER BY
    date DESC, time DESC
   ';
-            db_colorised_table($sql, __('folder_0208') . __('colon99') . ' ' . translateQuarantineDate($dir), true, true);
+            db_colorised_table($sql, __('folder_0208') . __('colon99') . ' ' . \MailWatch\Format::translateQuarantineDate($dir), true, true);
         } else {
             echo __('dienodir08') . "\n";
         }
