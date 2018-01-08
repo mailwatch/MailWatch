@@ -141,7 +141,7 @@ function getUserById($additionalFields = false)
     $sql = 'SELECT id, username, type' . ($additionalFields ? ', fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login' : '') . " FROM users WHERE id='" . $uid . "'";
     $result = \MailWatch\Db::query($sql);
     if ($result->num_rows === 0) {
-        audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $uid));
+        \MailWatch\Security::audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $uid));
         return getHtmlMessage(__('accessunknownuser12'), 'error');
     }
     return $result->fetch_object();
@@ -268,7 +268,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
                         VALUES ('$n_username','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
         \MailWatch\Db::query($sql);
-        audit_log(__('auditlog0112', true) . ' ' . $type[$n_type] . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212', true));
+        \MailWatch\Security::audit_log(__('auditlog0112', true) . ' ' . $type[$n_type] . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212', true));
         return getHtmlMessage(sprintf(__('usercreated12'), $n_username), 'success');
     } else {
         if ($_POST['password'] !== 'XXXXXXXX') {// Password reset required
@@ -283,7 +283,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
             \MailWatch\Db::query($sql);
         }
         if ($oldType !== $n_type) {
-            audit_log(
+            \MailWatch\Security::audit_log(
                 __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12', true) . ' ' . $type[$oldType] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
             );
         }
@@ -408,7 +408,7 @@ function deleteUser()
     }
     $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" .  \MailWatch\Sanitize::safe_value($user->username) . "'";
     \MailWatch\Db::query($sql);
-    audit_log(sprintf(__('auditlog0412', true), $user->username));
+    \MailWatch\Security::audit_log(sprintf(__('auditlog0412', true), $user->username));
     return getHtmlMessage(sprintf(__('userdeleted12'), $user->username), 'success');
 }
 
@@ -832,7 +832,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
             }
 
             // Audit
-            audit_log(sprintf(__('auditlog0512', true), $username));
+            \MailWatch\Security::audit_log(sprintf(__('auditlog0512', true), $username));
             echo getHtmlMessage(__('savedsettings12'), 'success');
         }
     }

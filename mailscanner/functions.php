@@ -2368,7 +2368,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[0]['msgid']) . "'";
                 \MailWatch\Db::query($sql);
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
+                \MailWatch\Security::audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
             }
 
             return $status;
@@ -2385,7 +2385,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[0]['msgid']) . "'";
                     \MailWatch\Db::query($sql);
                     $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                    audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
+                    \MailWatch\Security::audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
                     $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
                             "\n",
@@ -2510,7 +2510,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                             $learn_type = 'ham';
                             break;
                     }
-                    audit_log(
+                    \MailWatch\Security::audit_log(
                         sprintf(__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                     );
                 } else {
@@ -2541,7 +2541,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                         \MailWatch\Db::query($sql);
                     }
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
-                    audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
+                    \MailWatch\Security::audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
                     $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
                             "\n",
@@ -2621,7 +2621,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                 \MailWatch\Db::query("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
+                \MailWatch\Security::audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
             } else {
                 $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
                 global $error;
@@ -2849,12 +2849,12 @@ function updateUserPasswordHash($user, $hash)
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
         \MailWatch\Db::query($sqlUpdateFieldLength);
-        audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
+        \MailWatch\Security::audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
     }
 
     $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
     \MailWatch\Db::query($sqlUpdateHash);
-    audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
+    \MailWatch\Security::audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
 }
 
 /**
@@ -3227,7 +3227,7 @@ function checkLangCode($langCode)
     $validLang = explode(',', USER_SELECTABLE_LANG);
     $found = array_search($langCode, $validLang);
     if ($found === false || $found === null) {
-        audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
+        \MailWatch\Security::audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
         return false;
     } else {
         return true;

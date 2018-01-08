@@ -118,7 +118,7 @@ if ($result->num_rows === 0) {
     die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 }
 
-audit_log(__('auditlog04', true) . ' (id=' . $url_id . ')');
+\MailWatch\Security::audit_log(__('auditlog04', true) . ' (id=' . $url_id . ')');
 
 // Check if MCP is enabled
 $is_MCP_enabled = \MailWatch\MailScanner::getConfTrueFalse('mcpchecks');

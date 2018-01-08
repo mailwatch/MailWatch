@@ -90,7 +90,7 @@ class Html
                 // Use existing filters
                 $filter = $_SESSION['filter'];
             }
-            audit_log(__('auditlogreport03', true) . ' ' . $title);
+            \MailWatch\Security::audit_log(__('auditlogreport03', true) . ' ' . $title);
         } else {
             echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
         }
