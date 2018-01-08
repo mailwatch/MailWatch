@@ -52,7 +52,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 
 if (
     (USE_LDAP === true) &&
-    (($result = ldap_authenticate($myusername, $mypassword)) !== null)
+    (($result = \MailWatch\Ldap::authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
     $myusername =  \MailWatch\Sanitize::safe_value($result);
