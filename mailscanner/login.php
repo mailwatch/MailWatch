@@ -27,7 +27,7 @@
 
 require_once __DIR__ . '/functions.php';
 
-disableBrowserCache();
+\MailWatch\Security::disableBrowserCache();
 session_regenerate_id(true);
 
 $_SESSION['token'] = generateToken();
