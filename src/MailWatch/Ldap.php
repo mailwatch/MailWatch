@@ -54,7 +54,7 @@ class Ldap
 
             $bindResult = @ldap_bind($ds, LDAP_USER, LDAP_PASS);
             if (false === $bindResult) {
-                die(ldap_print_error($ds));
+                die(Ldap::print_error($ds));
             }
 
             //search for $user in LDAP directory
@@ -120,15 +120,15 @@ class Ldap
                             return null;
                         }
 
-                        $sql = sprintf('SELECT username FROM users WHERE username = %s', \MailWatch\Sanitize::quote_smart($email));
-                        $sth = \MailWatch\Db::query($sql);
+                        $sql = sprintf('SELECT username FROM users WHERE username = %s', Sanitize::quote_smart($email));
+                        $sth = Db::query($sql);
                         if ($sth->num_rows === 0) {
                             $sql = sprintf(
                                 "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                                \MailWatch\Sanitize::quote_smart($email),
-                                \MailWatch\Sanitize::quote_smart($result[0]['cn'][0])
+                                Sanitize::quote_smart($email),
+                                Sanitize::quote_smart($result[0]['cn'][0])
                             );
-                            \MailWatch\Db::query($sql);
+                            Db::query($sql);
                         }
 
                         return $email;
@@ -138,11 +138,26 @@ class Ldap
                         //LDAP_INVALID_CREDENTIALS
                         return null;
                     }
-                    die(ldap_print_error($ds));
+                    die(Ldap::print_error($ds));
                 }
             }
         }
 
         return null;
     }
+
+    /**
+     * @param $ds
+     * @return string
+     */
+    public static function print_error($ds)
+    {
+        return sprintf(
+            __('ldapnobind03'),
+            LDAP_HOST,
+            ldap_errno($ds),
+            ldap_error($ds)
+        );
+    }
 }
+
