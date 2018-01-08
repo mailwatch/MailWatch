@@ -153,7 +153,7 @@ SELECT
         //if(DEBUG) { $client->setDebug(1); }
         //$parameters = array($input);
         //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
-        $msg = new xmlrpcmsg('quarantine_list_items', [new xmlrpcval($msgid)]);
+        $msg = new \xmlrpcmsg('quarantine_list_items', [new \xmlrpcval($msgid)]);
         $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
         if ($rsp->faultCode() === 0) {
             $response = php_xmlrpc_decode($rsp->value());
@@ -248,20 +248,20 @@ SELECT
             foreach ($list as $list_array) {
                 $list_struct = [];
                 foreach ($list_array as $key => $val) {
-                    $list_struct[$key] = new xmlrpcval($val);
+                    $list_struct[$key] = new \xmlrpcval($val);
                 }
-                $list_output[] = new xmlrpcval($list_struct, 'struct');
+                $list_output[] = new \xmlrpcval($list_struct, 'struct');
             }
             $num_output = [];
             foreach ($num as $key => $val) {
-                $num_output[$key] = new xmlrpcval($val);
+                $num_output[$key] = new \xmlrpcval($val);
             }
             // Build input parameters
-            $param1 = new xmlrpcval($list_output, 'array');
-            $param2 = new xmlrpcval($num_output, 'array');
-            $param3 = new xmlrpcval($to, 'string');
+            $param1 = new \xmlrpcval($list_output, 'array');
+            $param2 = new \xmlrpcval($num_output, 'array');
+            $param3 = new \xmlrpcval($to, 'string');
             $parameters = [$param1, $param2, $param3];
-            $msg = new xmlrpcmsg('quarantine_release', $parameters);
+            $msg = new \xmlrpcmsg('quarantine_release', $parameters);
             $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
             if ($rsp->faultCode() === 0) {
                 $response = php_xmlrpc_decode($rsp->value());
@@ -410,20 +410,20 @@ SELECT
         foreach ($list as $list_array) {
             $list_struct = [];
             foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
+                $list_struct[$key] = new \xmlrpcval($val);
             }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
+            $list_output[] = new \xmlrpcval($list_struct, 'struct');
         }
         $num_output = [];
         foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
+            $num_output[$key] = new \xmlrpcval($val);
         }
         // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
-        $param3 = new xmlrpcval($type, 'string');
+        $param1 = new \xmlrpcval($list_output, 'array');
+        $param2 = new \xmlrpcval($num_output, 'array');
+        $param3 = new \xmlrpcval($type, 'string');
         $parameters = [$param1, $param2, $param3];
-        $msg = new xmlrpcmsg('quarantine_learn', $parameters);
+        $msg = new \xmlrpcmsg('quarantine_learn', $parameters);
         $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
         if ($rsp->faultCode() === 0) {
             $response = php_xmlrpc_decode($rsp->value());
@@ -468,19 +468,19 @@ SELECT
         foreach ($list as $list_array) {
             $list_struct = [];
             foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
+                $list_struct[$key] = new \xmlrpcval($val);
             }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
+            $list_output[] = new \xmlrpcval($list_struct, 'struct');
         }
         $num_output = [];
         foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
+            $num_output[$key] = new \xmlrpcval($val);
         }
         // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
+        $param1 = new \xmlrpcval($list_output, 'array');
+        $param2 = new \xmlrpcval($num_output, 'array');
         $parameters = [$param1, $param2];
-        $msg = new xmlrpcmsg('quarantine_delete', $parameters);
+        $msg = new \xmlrpcmsg('quarantine_delete', $parameters);
         $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
         if ($rsp->faultCode() === 0) {
             $response = php_xmlrpc_decode($rsp->value());
