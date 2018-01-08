@@ -170,7 +170,7 @@ function dbquery($sql, $printError = true)
 {
     $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
-        dbquerydebug($link, $sql);
+        \MailWatch\Debug::dbquerydebug($link, $sql);
     }
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     $result = $link->query($sql);
@@ -183,31 +183,6 @@ function dbquery($sql, $printError = true)
     }
 
     return $result;
-}
-
-/**
- * @param mysqli $link
- * @param string $sql
- */
-function dbquerydebug($link, $sql)
-{
-    echo "<!--\n\n";
-    $dbg_sql = 'EXPLAIN ' . $sql;
-    echo "SQL:\n\n$sql\n\n";
-    /** @var mysqli_result $result */
-    $result = $link->query($dbg_sql);
-    if ($result) {
-        while ($row = $result->fetch_row()) {
-            for ($f = 0; $f < $link->field_count; $f++) {
-                echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
-            }
-        }
-
-        echo "\n-->\n\n";
-        $result->free_result();
-    } else {
-        die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
-    }
 }
 
 /**

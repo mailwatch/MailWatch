@@ -40,5 +40,28 @@ class Debug
         }
     }
 
+    /**
+     * @param $link
+     * @param $sql
+     */
+    public static function dbquerydebug($link, $sql)
+    {
+        echo "<!--\n\n";
+        $dbg_sql = 'EXPLAIN ' . $sql;
+        echo "SQL:\n\n$sql\n\n";
+        /** @var mysqli_result $result */
+        $result = $link->query($dbg_sql);
+        if ($result) {
+            while ($row = $result->fetch_row()) {
+                for ($f = 0; $f < $link->field_count; $f++) {
+                    echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
+                }
+            }
 
+            echo "\n-->\n\n";
+            $result->free_result();
+        } else {
+            die(__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
+        }
+    }
 }
