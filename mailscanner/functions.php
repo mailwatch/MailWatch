@@ -2680,30 +2680,6 @@ function fixMessageId($id)
 }
 
 /**
- * @param string $action
- * @return bool
- */
-function audit_log($action)
-{
-    $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-    if (AUDIT) {
-        $user = 'unknown';
-        if (isset($_SESSION['myusername'])) {
-            $user = $link->real_escape_string($_SESSION['myusername']);
-        }
-
-        $action =  \MailWatch\Sanitize::safe_value($action);
-        $ip =  \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
-        $ret = \MailWatch\Db::query("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
-        if ($ret) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/**
  * @param $array
  * @return array|number
  */
@@ -2836,27 +2812,6 @@ function xmlrpc_wrapper($host, $msg)
     $client->setSSLVerifyHost(0);
 
     return $client->send($msg, 0, $method);
-}
-
-/**
- * @param $user
- * @param $hash
- */
-function updateUserPasswordHash($user, $hash)
-{
-    $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
-    $passwordFiledLengthResult = \MailWatch\Db::query($sqlCheckLenght);
-    $passwordFiledLength = (int)Db::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
-
-    if ($passwordFiledLength < 255) {
-        $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
-        \MailWatch\Db::query($sqlUpdateFieldLength);
-        \MailWatch\Security::audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
-    }
-
-    $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
-    \MailWatch\Db::query($sqlUpdateHash);
-    \MailWatch\Security::audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
 }
 
 /**
