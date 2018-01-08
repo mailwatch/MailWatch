@@ -490,7 +490,7 @@ function updateClock() {
             echo ' <tr><td>' . __('viruses03') . '</td><td>' . number_format(
                     $row->viruses
                 ) . '</td><td>' . $row->viruspercent . '%</tr>' . "\n";
-            echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2">' . return_todays_top_virus() . '</td></tr>' . "\n";
+            echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2">' . \MailWatch\Antivirus::return_todays_top_virus() . '</td></tr>' . "\n";
             echo ' <tr><td>' . __('blockedfiles03') . '</td><td>' . number_format(
                     $row->blockedfiles
                 ) . '</td><td>' . $row->blockedfilespercent . '%</td></tr>' . "\n";
