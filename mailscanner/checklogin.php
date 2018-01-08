@@ -167,7 +167,7 @@ if ($usercount === 1) {
     $_SESSION['token'] = \MailWatch\Security::generateToken();
     $_SESSION['formtoken'] = \MailWatch\Security::generateToken();
     // Initialize login expiry in users table for newly logged in user
-    updateLoginExpiry($myusername);
+    \MailWatch\Security::updateLoginExpiry($myusername);
     $redirect_url = 'index.php';
     if (isset($_SESSION['REQUEST_URI'])) {
         $redirect_url = $_SESSION['REQUEST_URI'];
