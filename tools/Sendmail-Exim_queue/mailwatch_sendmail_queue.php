@@ -114,9 +114,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             fclose($fh);
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 // Read Subject
-                                $output[$msgid]['subject'] = getSUBJECTheader($header);
+                                $output[$msgid]['subject'] = \MailWatch\MTA\Sendmail::getSUBJECTheader($header);
                                 // Read Sender
-                                $output[$msgid]['sender'] = getFROMheader($header);
+                                $output[$msgid]['sender'] = \MailWatch\MTA\Sendmail::getFROMheader($header);
                             }
 
                             //  Get the message file
@@ -227,9 +227,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                             fclose($fh);
                             if ($header = @file_get_contents($queuedir . $file)) {
                                 // Read Subject
-                                $output[$msgid]['subject'] = getSUBJECTheader($header);
+                                $output[$msgid]['subject'] = \MailWatch\MTA\Sendmail::getSUBJECTheader($header);
                                 // Read Sender
-                                $output[$msgid]['sender'] = getFROMheader($header);
+                                $output[$msgid]['sender'] = \MailWatch\MTA\Sendmail::getFROMheader($header);
                             }
                         }
                     }
