@@ -132,7 +132,7 @@ function rpc_quarantine_list_items($msg)
     if (!is_string($input)) {
         return new xmlrpcresp(0, $xmlrpcerruser+1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratyper260'));
     }
-    $return = quarantine_list_items($input);
+    $return = \MailWatch\Quarantine::quarantine_list_items($input);
     $output = [];
     $struct = [];
     foreach ($return as $array) {
@@ -150,7 +150,7 @@ function rpc_quarantine_release($msg)
     $items = php_xmlrpc_decode(array_shift($msg->params));
     $item = php_xmlrpc_decode(array_shift($msg->params));
     $to = php_xmlrpc_decode(array_shift($msg->params));
-    $return = quarantine_release($items, $item, $to);
+    $return = \MailWatch\Quarantine::quarantine_release($items, $item, $to);
     return new xmlrpcresp(new xmlrpcval($return, 'string'));
 }
 
@@ -159,7 +159,7 @@ function rpc_quarantine_learn($msg)
     $items = php_xmlrpc_decode(array_shift($msg->params));
     $item = php_xmlrpc_decode(array_shift($msg->params));
     $type = php_xmlrpc_decode(array_shift($msg->params));
-    $return = quarantine_learn($items, $item, $type);
+    $return = \MailWatch\Quarantine::quarantine_learn($items, $item, $type);
     return new xmlrpcresp(new xmlrpcval($return, 'string'));
 }
 
@@ -167,7 +167,7 @@ function rpc_quarantine_delete($msg)
 {
     $items = php_xmlrpc_decode(array_shift($msg->params));
     $item = php_xmlrpc_decode(array_shift($msg->params));
-    $return = quarantine_delete($items, $item);
+    $return = \MailWatch\Quarantine::quarantine_delete($items, $item);
     return new xmlrpcresp(new xmlrpcval($return, 'string'));
 }
 

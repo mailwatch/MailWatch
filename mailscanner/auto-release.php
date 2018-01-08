@@ -56,16 +56,16 @@ if (file_exists('conf.php')) {
         } else {
             $row = $result->fetch_assoc();
             if ($row['uid'] === $token) {
-                $list = quarantine_list_items($mid);
+                $list = \MailWatch\Quarantine::quarantine_list_items($mid);
                 $result = '';
                 if (count($list) === 1) {
                     $to = $list[0]['to'];
-                    $result = quarantine_release($list, [0], $to);
+                    $result = \MailWatch\Quarantine::quarantine_release($list, [0], $to);
                 } else {
                     $listCount = count($list);
                     for ($i = 0; $i < $listCount; $i++) {
                         if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
-                            $result = quarantine_release($list, [$i], $list[$i]['to']);
+                            $result = \MailWatch\Quarantine::quarantine_release($list, [$i], $list[$i]['to']);
                         }
                     }
                 }

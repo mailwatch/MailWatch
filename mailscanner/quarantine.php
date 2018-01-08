@@ -35,7 +35,7 @@ if (!isset($_GET['dir'])) {
     // Get the top-level list
     if (QUARANTINE_USE_FLAG) {
         // Don't use the database any more - it's too slow on big datasets
-        $dates = return_quarantine_dates();
+        $dates = \MailWatch\Quarantine::return_quarantine_dates();
         echo '<table class="mail" cellspacing="2" align="center">' . "\n";
         echo '<tr><th colspan=2>' . __('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
@@ -54,7 +54,7 @@ if (!isset($_GET['dir'])) {
         }
         echo '</table>' . "\n";
     } else {
-        $items = quarantine_list('/');
+        $items = \MailWatch\Quarantine::quarantine_list('/');
         if (count($items) > 0) {
             // Sort in reverse chronological order
             arsort($items);
@@ -148,7 +148,7 @@ ORDER BY
     } else {
         // SECURITY: trim off any potential nasties
         $dir = preg_replace('[\.|\.\.|\/]', '', $dir);
-        $items = quarantine_list($dir);
+        $items = \MailWatch\Quarantine::quarantine_list($dir);
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
             $msg_ids = implode($items, ',');

@@ -84,7 +84,7 @@ if ($id === false || !\MailWatch\Sanitize::validateInput($id, 'msgid')) {
     die();
 }
 
-$list = quarantine_list_items($id);
+$list = \MailWatch\Quarantine::quarantine_list_items($id);
 if (count($list) === 0) {
     die(__('diemnf57'));
 }
@@ -97,11 +97,11 @@ switch ($_GET['action']) {
         $result = '';
         if (count($list) === 1) {
             $to = $list[0]['to'];
-            $result = quarantine_release($list, [0], $to);
+            $result = \MailWatch\Quarantine::quarantine_release($list, [0], $to);
         } else {
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
                 if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
-                    $result = quarantine_release($list, [$i], $list[$i]['to']);
+                    $result = \MailWatch\Quarantine::quarantine_release($list, [$i], $list[$i]['to']);
                 }
             }
         }
@@ -146,7 +146,7 @@ switch ($_GET['action']) {
             } else {
                 simple_html_start();
                 for ($i = 0, $countList = count($list); $i < $countList; $i++) {
-                    $status[] = quarantine_delete($list, [$i]);
+                    $status[] = \MailWatch\Quarantine::quarantine_delete($list, [$i]);
                 }
                 $status = implode('<br/>', $status);
                 simple_html_result($status);
@@ -158,7 +158,7 @@ switch ($_GET['action']) {
             }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
-                $status[] = quarantine_delete($list, [$i]);
+                $status[] = \MailWatch\Quarantine::quarantine_delete($list, [$i]);
             }
         }
         break;
