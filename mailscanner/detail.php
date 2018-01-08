@@ -377,7 +377,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
     if (isset($_POST['submit']) && \MailWatch\Sanitize::deepSanitizeInput($_POST['submit'], 'url') === 'submit') {
-        if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
+        if (false === \MailWatch\Security::checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
             die(__('error04'));
         }
         \MailWatch\Debug::debug('submit branch taken');
@@ -567,7 +567,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo '  <td align="right">' . "\n";
         echo '<input type="HIDDEN" name="id" value="' . $quarantined[0]['msgid'] . '">' . "\n";
         echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/detail.php ops token') . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/detail.php ops token') . '">' . "\n";
         echo '<button type="SUBMIT" name="submit" value="submit">' . __('submit04') . '</button>' . "\n";
         echo '  </td></tr>' . "\n";
         echo '</table>' . "\n";

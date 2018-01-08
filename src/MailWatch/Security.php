@@ -152,4 +152,30 @@ class Security
 
         return $_SESSION['token'] === Sanitize::deepSanitizeInput($token, 'url');
     }
+
+    public static function generateFormToken($formstring)
+    {
+        if (!isset($_SESSION['token'])) {
+            die(__('dietoken99'));
+        }
+
+        $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+
+        return $calc;
+    }
+
+    /**
+     * @param $formstring
+     * @param $formtoken
+     * @return bool
+     */
+    public static function checkFormToken($formstring, $formtoken)
+    {
+        if (!isset($_SESSION['token'], $_SESSION['formtoken'])) {
+            return false;
+        }
+        $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+
+        return $calc === \MailWatch\Sanitize::deepSanitizeInput($formtoken, 'url');
+    }
 }

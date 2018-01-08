@@ -63,7 +63,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     
     switch (strtolower($action)) {
         case 'add':
-            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
+            if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], \MailWatch\Sanitize::sanitizeInput($_POST['value']));
@@ -76,7 +76,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             echo "Session destroyed\n";
             exit;
         case 'save':
-            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
+            if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             if (isset($_POST['save_as'])) {
@@ -90,13 +90,13 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             }
             break;
         case 'load':
-            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
+            if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             $filter->Load(\MailWatch\Sanitize::sanitizeInput($_POST['filter']));
             break;
         case 'delete':
-            if (false === checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
+            if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
                 die(__('dietoken99'));
             }
             $filter->Delete(\MailWatch\Sanitize::sanitizeInput($_POST['filter']));

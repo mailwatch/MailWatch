@@ -214,7 +214,7 @@ if ($url_submit === 'add') {
     if (false === \MailWatch\Security::checkToken($_POST['token'])) {
         die(__('dietoken99'));
     }
-    if (false === checkFormToken('/lists.php list token', $_POST['formtoken'])) {
+    if (false === \MailWatch\Security::checkFormToken('/lists.php list token', $_POST['formtoken'])) {
         die(__('dietoken99'));
     }
 
@@ -342,7 +342,7 @@ echo '
  <tr>
   <td class="heading">' . __('to07') . '</td>';
 echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token') . '">' . "\n";
+echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/lists.php list token') . '">' . "\n";
 switch ($_SESSION['user_type']) {
     case 'A':
         echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
