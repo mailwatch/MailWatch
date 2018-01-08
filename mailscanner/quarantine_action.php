@@ -91,7 +91,7 @@ if (count($list) === 0) {
 
 switch ($_GET['action']) {
     case 'release':
-        if (false === checkToken($_GET['token'])) {
+        if (false === \MailWatch\Security::checkToken($_GET['token'])) {
             die(__('dietoken99'));
         }
         $result = '';
@@ -115,7 +115,7 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
-        if (false === checkToken($_GET['token'])) {
+        if (false === \MailWatch\Security::checkToken($_GET['token'])) {
             die(__('dietoken99'));
         }
         $status = [];
@@ -153,7 +153,7 @@ switch ($_GET['action']) {
                 simple_html_end();
             }
         } else {
-            if (false === checkToken($_GET['token'])) {
+            if (false === \MailWatch\Security::checkToken($_GET['token'])) {
                 die(__('dietoken99'));
             }
             // Delete

@@ -31,7 +31,7 @@ require __DIR__ . '/login.function.php';
 
 \MailWatch\Html::start(__('mqviewer24'), STATUS_REFRESH, false, false);
 
-if (false === checkToken($_GET['token'])) {
+if (false === \MailWatch\Security::checkToken($_GET['token'])) {
     die(__('dietoken99'));
 }
 

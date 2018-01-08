@@ -35,7 +35,7 @@ require __DIR__ . '/login.function.php';
 // add the header information such as the logo, search, menu, ....
 $filter = \MailWatch\Html::start(__('messagelisting17'), 0, false, true);
 
-if (false === checkToken($_GET['token'])) {
+if (false === \MailWatch\Security::checkToken($_GET['token'])) {
     die(__('dietoken99'));
 }
 

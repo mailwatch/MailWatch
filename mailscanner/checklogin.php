@@ -31,11 +31,11 @@ require_once __DIR__ . '/functions.php';
 \MailWatch\Security::disableBrowserCache();
 
 if (isset($_POST['token'])) {
-    if (false === checkToken($_POST['token'])) {
+    if (false === \MailWatch\Security::checkToken($_POST['token'])) {
         die(__('dietoken99'));
     }
 }
-$_SESSION['token'] = generateToken();
+$_SESSION['token'] = \MailWatch\Security::generateToken();
 
 if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = $_SERVER['PHP_AUTH_USER'];
@@ -164,8 +164,8 @@ if ($usercount === 1) {
     $_SESSION['global_filter'] = '(' . $global_filter . ')';
     $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
     $_SESSION['global_array'] = $filter;
-    $_SESSION['token'] = generateToken();
-    $_SESSION['formtoken'] = generateToken();
+    $_SESSION['token'] = \MailWatch\Security::generateToken();
+    $_SESSION['formtoken'] = \MailWatch\Security::generateToken();
     // Initialize login expiry in users table for newly logged in user
     updateLoginExpiry($myusername);
     $redirect_url = 'index.php';

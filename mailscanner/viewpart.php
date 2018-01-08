@@ -35,7 +35,7 @@ if (!isset($_GET['id'])) {
     die(__('nomessid58'));
 }
 
-if (false === checkToken($_GET['token'])) {
+if (false === \MailWatch\Security::checkToken($_GET['token'])) {
     die(__('dietoken99'));
 }
 

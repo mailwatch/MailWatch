@@ -35,11 +35,11 @@ require __DIR__ . '/login.function.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 
 if (isset($_POST['token'])) {
-    if (false === checkToken($_POST['token'])) {
+    if (false === \MailWatch\Security::checkToken($_POST['token'])) {
         die(__('dietoken99'));
     }
 } else {
-    if (false === checkToken($_GET['token'])) {
+    if (false === \MailWatch\Security::checkToken($_GET['token'])) {
         die(__('dietoken99'));
     }
 }

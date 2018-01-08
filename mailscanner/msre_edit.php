@@ -38,11 +38,11 @@ if ($_SESSION['user_type'] !== 'A') {
     \MailWatch\Security::audit_log(__('auditlog55', true));
 } else {
     if (isset($_POST['token'])) {
-        if (false === checkToken($_POST['token'])) {
+        if (false === \MailWatch\Security::checkToken($_POST['token'])) {
             die(__('dietoken99'));
         }
     } else {
-        if (false === checkToken($_GET['token'])) {
+        if (false === \MailWatch\Security::checkToken($_GET['token'])) {
             die(__('dietoken99'));
         }
     }

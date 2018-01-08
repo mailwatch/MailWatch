@@ -128,4 +128,28 @@ class Security
 
         return $random;
     }
+
+    /**
+     * @return bool|string
+     * @throws \Exception
+     */
+    public static function generateToken()
+    {
+        $tokenLenght = 32;
+
+        return Security::get_random_string($tokenLenght);
+    }
+
+    /**
+     * @param $token
+     * @return bool
+     */
+    public static function checkToken($token)
+    {
+        if (!isset($_SESSION['token'])) {
+            return false;
+        }
+
+        return $_SESSION['token'] === Sanitize::deepSanitizeInput($token, 'url');
+    }
 }

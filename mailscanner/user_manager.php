@@ -119,8 +119,8 @@ function testToken()
     if (!isset($_POST['token']) && !isset($_GET['token'])) {
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
-    if ((isset($_POST['token']) && (false === checkToken($_POST['token'])))
-          || (isset($_GET['token']) && (false === checkToken($_GET['token'])))) {
+    if ((isset($_POST['token']) && (false === \MailWatch\Security::checkToken($_POST['token'])))
+          || (isset($_GET['token']) && (false === \MailWatch\Security::checkToken($_GET['token'])))) {
         return getHtmlMessage(__('dietoken99'), 'error');
     }
     return true;
@@ -770,7 +770,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
         $result = \MailWatch\Db::query($sql);
     } else {
-        if (false === checkToken($_POST['token'])
+        if (false === \MailWatch\Security::checkToken($_POST['token'])
               || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
             die(getHtmlMessage(__('dietoken99'), 'error'));
         }

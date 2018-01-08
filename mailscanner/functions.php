@@ -3077,29 +3077,6 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 }
 
 /**
- * @return string
- */
-function generateToken()
-{
-    $tokenLenght = 32;
-
-    return \MailWatch\Security::get_random_string($tokenLenght);
-}
-
-/**
- * @param string $token
- * @return boolean
- */
-function checkToken($token)
-{
-    if (!isset($_SESSION['token'])) {
-        return false;
-    }
-
-    return $_SESSION['token'] === \MailWatch\Sanitize::deepSanitizeInput($token, 'url');
-}
-
-/**
  * @param string $formstring
  * @return string
  */
