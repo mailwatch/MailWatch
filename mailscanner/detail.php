@@ -154,7 +154,7 @@ while ($row = $result->fetch_array()) {
                     $output .= ' <tr>' . "\n";
                     $output .= ' <td>' . $relay . '</td>' . "\n";
                     // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-                    $relay = stripPortFromIp($relay);
+                    $relay = \MailWatch\Format::stripPortFromIp($relay);
                     //check if address is in private IP space
                     $isPrivateNetwork = ip_in_range($relay, false, 'private');
                     $isLocalNetwork = ip_in_range($relay, false, 'local');

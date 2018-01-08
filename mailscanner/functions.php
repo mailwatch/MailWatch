@@ -1638,7 +1638,7 @@ function decode_header($input)
 function return_geoip_country($ip)
 {
     //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-    $ip = stripPortFromIp($ip);
+    $ip = \MailWatch\Format::stripPortFromIp($ip);
     $countryname = false;
     if (strpos($ip, ':') === false) {
         //ipv4
@@ -1657,19 +1657,6 @@ function return_geoip_country($ip)
     }
 
     return $countryname;
-}
-
-/**
- * @param $ip
- * @return string
- */
-function stripPortFromIp($ip)
-{
-    if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
-        $ip = current(array_slice(explode(':', $ip), 0, 1));
-    }
-
-    return $ip;
 }
 
 /**
