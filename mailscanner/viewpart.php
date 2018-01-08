@@ -45,7 +45,7 @@ if (!\MailWatch\Sanitize::validateInput($message_id, 'msgid')) {
 }
 // See if message is local
 \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME); // required db link for mysql_real_escape_string
-$result = dbquery(
+$result = \MailWatch\Db::query(
     "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
     $message_id . "' AND "
     . $_SESSION['global_filter']

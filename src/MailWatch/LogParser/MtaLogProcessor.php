@@ -140,7 +140,7 @@ abstract class MtaLogProcessor
                 }
             }
             if (isset($_type)) {
-                dbquery(
+                \MailWatch\Db::query(
                     "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
                 );
             }

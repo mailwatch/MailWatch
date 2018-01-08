@@ -687,7 +687,7 @@ if ($link) {
         $report_days = 7;
     }
     $sql = 'SELECT `id`,`token` FROM `maillog` WHERE `date` >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . $report_days . ' DAY)';
-    $result = dbquery($sql);
+    $result = \MailWatch\Db::query($sql);
     $rows = $result->num_rows;
     $countTokenGenerated = 0;
     if ($rows > 0) {

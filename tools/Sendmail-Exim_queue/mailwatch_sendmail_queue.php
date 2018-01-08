@@ -240,7 +240,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         // Get our hostname
         $sys_hostname = rtrim(gethostname());
         // Drop everything from the table first
-        dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
+        \MailWatch\Db::query('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
             foreach ($output as $msgid => $msginfo) {
                 // Use 'From:' if MAIL_SENDER = sender
@@ -282,7 +282,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                      \MailWatch\Sanitize::safe_value($msginfo['attempts']) . "','" .
                      \MailWatch\Sanitize::safe_value($msginfo['lastattempttime']) . "','" .
                      \MailWatch\Sanitize::safe_value($sys_hostname) . "')";
-                dbquery($sql);
+                \MailWatch\Db::query($sql);
             }
         }
     }

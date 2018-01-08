@@ -72,7 +72,7 @@ if ($_SESSION['user_type'] !== 'A') {
                 echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . "</td></tr>\n";
                 $regs[1] =  \MailWatch\Sanitize::safe_value($regs[1]);
                 $regs[2] =  \MailWatch\Sanitize::safe_value($regs[2]);
-                dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
+                \MailWatch\Db::query("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
                 //\MailWatch\Debug::debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
                 \MailWatch\Debug::debug("$line - did not match regexp, not inserting into database");

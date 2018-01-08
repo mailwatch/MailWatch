@@ -52,7 +52,7 @@ function doit($input)
         if (preg_match('/^.*MailScanner.*: Requeue: (\S+\.\S+) to (\S+)\s$/', $line, $explode)) {
             $smtpd_id = $explode[1];
             $smtp_id = $explode[2];
-            dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+            \MailWatch\Db::query("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
         }
         $lines++;
     }

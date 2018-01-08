@@ -54,7 +54,7 @@ if (!\MailWatch\Sanitize::validateInput($message_id, 'msgid')) {
     die();
 }
 $sql = "SELECT * FROM maillog WHERE id='" . $message_id . "' AND " . $_SESSION['global_filter'];
-$result = dbquery($sql);
+$result = \MailWatch\Db::query($sql);
 $message = $result->fetch_object();
 // See if message is local
 if (empty($message)) {

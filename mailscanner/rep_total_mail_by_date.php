@@ -196,13 +196,13 @@ $graphgenerator->printLineGraph();
 
 /////////////////////////////////////////Generate Table //////////////////////////////////
 // Must be one or more row
-$result = dbquery($sql);
+$result = \MailWatch\Db::query($sql);
 if (!$result->num_rows > 0) {
     die(__('diemysql99') . "\n");
 }
 
 // Connecting to the DB and running the query
-$result1 = dbquery($sql1);
+$result1 = \MailWatch\Db::query($sql1);
 
 // pulling the data in variables
 while ($row = $result->fetch_object()) {

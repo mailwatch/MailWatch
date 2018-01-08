@@ -78,7 +78,7 @@ if (
 }
 
 $sql = "SELECT * FROM users WHERE username='$myusername'";
-$result = dbquery($sql);
+$result = \MailWatch\Db::query($sql);
 
 // mysql_num_row is counting table row
 $usercount = $result->num_rows;
@@ -115,7 +115,7 @@ $fullname = Db::mysqli_result($result, 0, 'fullname');
 $usertype = Db::mysqli_result($result, 0, 'type');
 
 $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-$result_userfilter = dbquery($sql_userfilter);
+$result_userfilter = \MailWatch\Db::query($sql_userfilter);
 
 $filter[] = $myusername;
 while ($row = $result_userfilter->fetch_array()) {

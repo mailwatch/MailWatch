@@ -40,7 +40,7 @@ if (!isset($_GET['dir'])) {
         echo '<tr><th colspan=2>' . __('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
             $sql = 'SELECT id FROM maillog WHERE ' . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
-            $result = dbquery($sql);
+            $result = \MailWatch\Db::query($sql);
             $rowcnt = $result->num_rows;
             $rowstr = '  ----------';
             if ($rowcnt > 0) {

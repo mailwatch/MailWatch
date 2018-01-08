@@ -152,7 +152,7 @@ $to_address = '';
 switch ($_SESSION['user_type']) {
     case 'U': // User
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-        $result1 = dbquery($sql1);
+        $result1 = \MailWatch\Db::query($sql1);
 
         $filter = [];
         while ($row = $result1->fetch_assoc()) {
@@ -179,7 +179,7 @@ switch ($_SESSION['user_type']) {
         break;
     case 'D': // Domain Admin
         $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-        $result1 = dbquery($sql1);
+        $result1 = \MailWatch\Db::query($sql1);
 
         while ($row = $result1->fetch_assoc()) {
             $to_domain_filter[] = $row['filter'];
@@ -243,7 +243,7 @@ if ($url_submit === 'add') {
             . "('" .  \MailWatch\Sanitize::safe_value($to_address) . "',"
             . "'" .  \MailWatch\Sanitize::safe_value($to_domain) . "',"
             . "'" .  \MailWatch\Sanitize::safe_value($from) . "')";
-        dbquery($sql);
+        \MailWatch\Db::query($sql);
         audit_log(sprintf(__('auditlogadded07', true), $from, $to_address, $listi18));
     }
     $to_domain = '';
@@ -270,7 +270,7 @@ if ($url_submit === 'delete') {
     }
 
     $sqlfrom = "SELECT from_address FROM $list WHERE id='$id'";
-    $result = dbquery($sqlfrom);
+    $result = \MailWatch\Db::query($sqlfrom);
     $row = $result->fetch_array();
     $from_address = $row['from_address'];
 
@@ -290,7 +290,7 @@ if ($url_submit === 'delete') {
     }
 
     $id =  \MailWatch\Sanitize::safe_value($url_id);
-    dbquery($sql);
+    \MailWatch\Db::query($sql);
     $to_domain = '';
     $touser = '';
     $from = '';
@@ -304,7 +304,7 @@ if ($url_submit === 'delete') {
  */
 function build_table($sql, $list)
 {
-    $sth = dbquery($sql);
+    $sth = \MailWatch\Db::query($sql);
     $table_html = '';
     $entries = $sth->num_rows;
     if ($sth->num_rows > 0) {

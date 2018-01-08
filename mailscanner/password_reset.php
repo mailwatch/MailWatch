@@ -63,7 +63,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 die();
             }
             $sql = "SELECT * FROM users WHERE username = '$email'";
-            $result = dbquery($sql);
+            $result = \MailWatch\Db::query($sql);
             if ($result->num_rows !== 1) {
                 //user not found
                 $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '</p>
@@ -78,7 +78,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $rand = get_random_string(16);
                     $resetexpire = time() + 60 * 60 * RESET_LINK_EXPIRE;
                     $sql = "UPDATE users SET resetid = '$rand', resetexpire = '$resetexpire' WHERE username = '$email'";
-                    $result = dbquery($sql);
+                    $result = \MailWatch\Db::query($sql);
                     if (!$result) {
                         die(__('errordbupdate63'));
                     }
@@ -148,13 +148,13 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 //passwords match, now we need to store them
                 //first, check form hasn't been modified
                 $sql = "SELECT resetid FROM users WHERE username = '$email'";
-                $result = dbquery($sql);
+                $result = \MailWatch\Db::query($sql);
                 $row = $result->fetch_array();
                 if ($row['resetid'] === $uid) {
                     $password = $link->real_escape_string(password_hash($_POST['pwd1'], PASSWORD_DEFAULT));
                     $lastreset = time();
                     $sql = "UPDATE users SET password = '$password', resetid = '', resetexpire = '0', lastreset ='$lastreset' WHERE username ='$email'";
-                    $result = dbquery($sql);
+                    $result = \MailWatch\Db::query($sql);
 
                     //now send email telling user password has been updated.
                     $html = '<!DOCTYPE html>
@@ -225,7 +225,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $uid = $link->real_escape_string($_GET['uid']);
 
                 $sql = "SELECT * FROM users WHERE resetid = '$uid'";
-                $result = dbquery($sql);
+                $result = \MailWatch\Db::query($sql);
                 if ($result->num_rows !== 1) {
                     audit_log(sprintf(__('auditlogunf63', true), $uid));
                     $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '

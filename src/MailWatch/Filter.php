@@ -166,7 +166,7 @@ FROM
 WHERE
  1=1
 " . $this->CreateSQL();
-        $sth = dbquery($query);
+        $sth = \MailWatch\Db::query($query);
         while ($row = $sth->fetch_object()) {
             echo ' <tr><td>' . __('oldrecord09') . '</td><td align="right">' . $row->oldest . '</td></tr>' . "\n";
             echo ' <tr><td>' . __('newrecord09') . '</td><td align="right">' . $row->newest . '</td></tr>' . "\n";
@@ -337,14 +337,14 @@ WHERE
         if (count($this->item) > 0) {
             // Delete the existing first
             $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
-            dbquery($dsql);
+            \MailWatch\Db::query($dsql);
             foreach ($this->item as $key => $val) {
                 $sql = "REPLACE INTO `saved_filters` (`name`, `col`, `operator`, `value`, `username`)  VALUES ('$name',";
                 foreach ($val as $value) {
                     $sql .= "'$value',";
                 }
                 $sql .= "'" . $_SESSION['myusername'] . "')";
-                dbquery($sql);
+                \MailWatch\Db::query($sql);
             }
         }
     }
@@ -361,7 +361,7 @@ WHERE
 
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . $_SESSION['myusername'] . "'";
-        $sth = dbquery($sql);
+        $sth = \MailWatch\Db::query($sql);
         while ($row = $sth->fetch_row()) {
             $this->item[] = $row;
         }
@@ -379,13 +379,13 @@ WHERE
 
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
-        dbquery($sql);
+        \MailWatch\Db::query($sql);
     }
 
     public function ListSaved()
     {
         $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "'";
-        $sth = dbquery($sql);
+        $sth = \MailWatch\Db::query($sql);
         $return = '<select name="filter">' . "\n";
         $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";
         while ($row = $sth->fetch_array()) {

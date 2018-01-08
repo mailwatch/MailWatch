@@ -41,7 +41,7 @@ if ($_SESSION['user_type'] !== 'A') {
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = \MailWatch\MailScanner::getConfVar('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
-    $mysql_version = Db::mysqli_result(dbquery('SELECT VERSION()'), 0);
+    $mysql_version = Db::mysqli_result(\MailWatch\Db::query('SELECT VERSION()'), 0);
     $geoipv4_version = false;
     $geoipv6_version = false;
     if (file_exists('./temp/GeoIP.dat')) {
