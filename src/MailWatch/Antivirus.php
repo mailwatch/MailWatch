@@ -216,4 +216,61 @@ class Antivirus
 
         return $virus;
     }
+
+    /**
+     * @return string
+     */
+    public static function return_todays_top_virus()
+    {
+        if (Antivirus::getVirusRegex() === null) {
+            return __('unknownvirusscanner03');
+        }
+        $sql = '
+SELECT
+ report
+FROM
+ maillog
+WHERE
+ virusinfected>0
+AND
+ date = CURRENT_DATE()
+';
+        $result = Db::query($sql);
+        $virus_array = [];
+        while ($row = $result->fetch_object()) {
+            $virus = Antivirus::getVirus($row->report);
+            if ($virus !== null) {
+                $virus = Antivirus::getVirusLink($virus);
+                if (!isset($virus_array[$virus])) {
+                    $virus_array[$virus] = 1;
+                } else {
+                    $virus_array[$virus]++;
+                }
+            }
+        }
+        if (count($virus_array) === 0) {
+            return __('none03');
+        }
+        arsort($virus_array);
+        reset($virus_array);
+
+        // Get the topmost entry from the array
+        $top = null;
+        $count = 0;
+        foreach ($virus_array as $key => $val) {
+            if ($top === null) {
+                $top = $val;
+            } elseif ($val !== $top) {
+                break;
+            }
+            $count++;
+        }
+        $topvirus_arraykeys = array_keys($virus_array);
+        $topvirus = $topvirus_arraykeys[0];
+        if ($count > 1) {
+            // and ... others
+            $topvirus .= sprintf(' ' . __('moretopviruses03'), $count - 1);
+        }
+        return $topvirus;
+    }
 }
