@@ -131,7 +131,7 @@ foreach ($sa_array as $key => $val) {
     echo "
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
- <TD>" . return_sa_rule_desc(strtoupper($key)) . '</TD>
+ <TD>" . \MailWatch\SpamAssassin::return_rule_desc(strtoupper($key)) . '</TD>
  <TD ALIGN="RIGHT">' . sprintf('%0.2f', $val['score']) . '</TD>
  <TD ALIGN="RIGHT">' . number_format($val['total']) . '</TD>
  <TD ALIGN="RIGHT">' . number_format($val['not-spam']) . '</TD>

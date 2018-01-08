@@ -239,7 +239,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
         }
         if ($fieldn === __('saautolearn04')) {
-            if (($autolearn = sa_autolearn($row[$f])) !== false) {
+            if (($autolearn = \MailWatch\SpamAssassin::autolearn($row[$f])) !== false) {
                 $row[$f] = $yes . " ($autolearn)";
             } else {
                 $row[$f] = $no;

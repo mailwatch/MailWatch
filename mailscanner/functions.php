@@ -231,23 +231,6 @@ function getUTF8String($string)
 }
 
 /**
- * @param string $spamreport
- * @return string|false
- */
-function sa_autolearn($spamreport)
-{
-    if (preg_match('/autolearn=spam/', $spamreport) === 1) {
-        return __('saspam03');
-    }
-
-    if (preg_match('/autolearn=not spam/', $spamreport) === 1) {
-        return __('sanotspam03');
-    }
-
-    return false;
-}
-
-/**
  * @param $spamreport
  * @return string
  */
@@ -292,7 +275,7 @@ function format_spam_report($spamreport)
 
         $output_array = [];
         foreach ($sa_rules as $sa_rule) {
-            $output_array[] = get_sa_rule_desc($sa_rule);
+            $output_array[] = \MailWatch\SpamAssassin::get_rule_desc($sa_rule);
         }
 
         // Return the result as an html formatted string
@@ -308,42 +291,6 @@ function format_spam_report($spamreport)
 
     // Regular expression did not match, return unmodified report instead
     return $spamreport;
-}
-
-/**
- * @param string $rule
- * @return string
- */
-function get_sa_rule_desc($rule)
-{
-    // Check if SA scoring is enabled
-    $rule_score = '';
-    if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
-        $rule = $regs[1];
-        $rule_score = $regs[2];
-    }
-    $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
-    $row = $result->fetch_object();
-    if ($row && $row->rule && $row->rule_desc) {
-        return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
-    }
-
-    return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
-}
-
-/**
- * @param string $rule
- * @return string|false
- */
-function return_sa_rule_desc($rule)
-{
-    $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
-    $row = $result->fetch_object();
-    if ($row) {
-        return htmlentities($row->rule_desc);
-    }
-
-    return false;
 }
 
 /**
