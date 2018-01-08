@@ -380,7 +380,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
             die(__('error04'));
         }
-        debug('submit branch taken');
+        \MailWatch\Debug::debug('submit branch taken');
         // Reset error status
         $error = 0;
         $status = [];

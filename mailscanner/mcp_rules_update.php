@@ -64,16 +64,16 @@ if ($_SESSION['user_type'] !== 'A') {
         audit_log(__('auditlog26', true));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
-            debug('line: ' . $line . "\n");
+            \MailWatch\Debug::debug('line: ' . $line . "\n");
             preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1], $regs[2])) {
                 $regs[1] =  \MailWatch\Sanitize::safe_value(ltrim(rtrim($regs[1])));
                 $regs[2] =  \MailWatch\Sanitize::safe_value(ltrim(rtrim($regs[2])));
                 echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . '</td></tr>' . "\n";
                 dbquery("REPLACE INTO mcp_rules VALUES ('$regs[1]','$regs[2]')");
-                //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
+                //\MailWatch\Debug::debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
-                debug("$line - did not match regexp, not inserting into database");
+                \MailWatch\Debug::debug("$line - did not match regexp, not inserting into database");
             }
         }
         pclose($fh);

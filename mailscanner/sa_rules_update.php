@@ -64,7 +64,7 @@ if ($_SESSION['user_type'] !== 'A') {
         audit_log(__('auditlog13', true));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
-            // debug("line: ".$line."\n");
+            // \MailWatch\Debug::debug("line: ".$line."\n");
             preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1], $regs[2])) {
                 $regs[1] = trim($regs[1]);
@@ -73,9 +73,9 @@ if ($_SESSION['user_type'] !== 'A') {
                 $regs[1] =  \MailWatch\Sanitize::safe_value($regs[1]);
                 $regs[2] =  \MailWatch\Sanitize::safe_value($regs[2]);
                 dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
-                //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
+                //\MailWatch\Debug::debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
-                debug("$line - did not match regexp, not inserting into database");
+                \MailWatch\Debug::debug("$line - did not match regexp, not inserting into database");
             }
         }
         pclose($fh);

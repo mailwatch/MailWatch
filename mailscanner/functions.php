@@ -1690,16 +1690,6 @@ function page_creation_timer()
 }
 
 /**
- * @param $text
- */
-function debug($text)
-{
-    if (true === DEBUG && headers_sent()) {
-        echo "<!-- DEBUG: $text -->\n";
-    }
-}
-
-/**
  * @param $dir
  * @return bool|int
  *
@@ -2065,9 +2055,9 @@ function ldap_get_conf_truefalse($entry)
     $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
 
     $info = ldap_get_entries($lh, $sh);
-    debug(debug_print_r($info));
+    \MailWatch\Debug::debug(debug_print_r($info));
     if ($info['count'] > 0) {
-        debug('Entry: ' . debug_print_r($info[0][$info[0][0]][0]));
+        \MailWatch\Debug::debug('Entry: ' . debug_print_r($info[0][$info[0][0]][0]));
         switch ($info[0][$info[0][0]][0]) {
             case 'yes':
             case '1':
@@ -2382,7 +2372,7 @@ SELECT
     }
 
     // Host is remote call quarantine_list_items by RPC
-    debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
+    \MailWatch\Debug::debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
     //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
     //if(DEBUG) { $client->setDebug(1); }
     //$parameters = array($input);
@@ -2461,7 +2451,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
         foreach ($num as $key => $val) {
             if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
-                debug($cmd . $list[$val]['path']);
+                \MailWatch\Debug::debug($cmd . $list[$val]['path']);
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if ($retval === 0) {
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  \MailWatch\Sanitize::safe_value($list[0]['msgid']) . "'";
@@ -2482,7 +2472,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         }
     } else {
         // Host is remote - handle by RPC
-        debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
+        \MailWatch\Debug::debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
         $list_output = [];
@@ -2580,7 +2570,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 if ($retval === 0) {
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
-                        debug("Learner - running SQL: $sql");
+                        \MailWatch\Debug::debug("Learner - running SQL: $sql");
                         dbquery($sql);
                     }
                     $status[] = __('spamassassin03') . ' ' . implode(', ', $output_array);
@@ -2619,7 +2609,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                 if ($retval === 0) {
                     // Command succeeded - update the database accordingly
                     if (isset($sql)) {
-                        debug("Learner - running SQL: $sql");
+                        \MailWatch\Debug::debug("Learner - running SQL: $sql");
                         dbquery($sql);
                     }
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
@@ -2651,7 +2641,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     }
 
     // Call by RPC
-    debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
+    \MailWatch\Debug::debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
     //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
     $list_output = [];
@@ -2715,7 +2705,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
     }
 
     // Call by RPC
-    debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
+    \MailWatch\Debug::debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
     //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
     $list_output = [];
