@@ -235,10 +235,10 @@ class GraphGenerator
     {
         // Work out best size
         $this->data[$column . 'conv'] = $this->data[$column];
-        format_report_volume($this->data[$column . 'conv'], $size_info);
+        \MailWatch\Format::format_report_volume($this->data[$column . 'conv'], $size_info);
         $scale = $size_info['formula'];
         foreach ($this->data[$column . 'conv'] as $key => $val) {
-            $this->data[$column . 'conv'][$key] = formatSize($val * $scale);
+            $this->data[$column . 'conv'][$key] = \MailWatch\Format::formatSize($val * $scale);
         }
     }
 

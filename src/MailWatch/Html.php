@@ -481,7 +481,7 @@ function updateClock() {
             echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
             echo ' <tr><td>' . __('processed03') . '</td><td>' . number_format(
                     $row->processed
-                ) . '</td><td>' . formatSize(
+                ) . '</td><td>' . \MailWatch\Format::formatSize(
                     $row->size
                 ) . '</td></tr>' . "\n";
             echo ' <tr><td>' . __('cleans03') . '</td><td>' . number_format(
@@ -531,7 +531,7 @@ function updateClock() {
                 $percent .= round($free_space / $total_space, 2) * 100;
                 $percent .= '%] ';
                 $percent .= '</span>';
-                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
+                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . \MailWatch\Format::formatSize($free_space) . $percent . '</td>' . "\n";
             }
         }
     }
