@@ -66,7 +66,7 @@ class Security
      * @param $user
      * @param $hash
      */
-    function updateUserPasswordHash($user, $hash)
+    public static function updateUserPasswordHash($user, $hash)
     {
         $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
         $passwordFiledLengthResult = Db::query($sqlCheckLenght);
@@ -81,5 +81,51 @@ class Security
         $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
         Db::query($sqlUpdateHash);
         Security::audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
+    }
+
+    /**
+     * @param $length
+     * @return bool|string
+     * @throws \Exception
+     */
+    public static function get_random_string($length)
+    {
+        if (function_exists('random_bytes')) {
+            return bin2hex(random_bytes($length));
+        }
+
+        if (function_exists('mcrypt_create_iv')) {
+            $random = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+            if (false !== $random) {
+                return bin2hex($random);
+            }
+        }
+
+        if (DIRECTORY_SEPARATOR === '/' && @is_readable('/dev/urandom')) {
+            // On unix system and if /dev/urandom is readable
+            $handle = fopen('/dev/urandom', 'rb');
+            $random = fread($handle, $length);
+            fclose($handle);
+
+            return bin2hex($random);
+        }
+
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            $random = openssl_random_pseudo_bytes($length);
+            if (false !== $random) {
+                return bin2hex($random);
+            }
+        }
+
+        // if none of the above three secure functions are enabled use a pseudorandom string generator
+        // note to sysadmin: check your php installation if the following code is executed and make your system secure!
+        $random = '';
+        $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $max = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $random .= $keyspace[mt_rand(0, $max)];
+        }
+
+        return $random;
     }
 }
