@@ -109,7 +109,7 @@ foreach ($sa_array as $key => $val) {
     echo '
 <tr bgcolor="#ebebeb">
  <td>' . $key . '</td>
- <td>' . return_mcp_rule_desc(strtoupper($key)) . '</td>
+ <td>' . \MailWatch\Mcp::return_rule_desc(strtoupper($key)) . '</td>
  <td align="right">' . number_format($val['total']) . '</td>
  <td align="right">' . number_format($val['not-mcp']) . '</td>
  <td align="right">' . round(($val['not-mcp'] / $val['total']) * 100, 1) . '</td>

@@ -268,7 +268,7 @@ while ($row = $result->fetch_array()) {
 
         if ($is_MCP_enabled === true) {
             if ($fieldn === __('mcprep04')) {
-                $row[$f] = format_mcp_report($row[$f]);
+                $row[$f] = \MailWatch\Mcp::format_report($row[$f]);
             }
         } else {
             if ($fieldn === 'HEADER' && strpos($row[$f], 'MCP') !== false) {
