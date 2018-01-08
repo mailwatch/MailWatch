@@ -1246,15 +1246,7 @@ function address_filter_sql($addresses, $type)
  * @param Resource $ds
  * @return string
  */
-function ldap_print_error($ds)
-{
-    return sprintf(
-        __('ldapnobind03'),
-        LDAP_HOST,
-        ldap_errno($ds),
-        ldap_error($ds)
-    );
-}
+
 
 if (!function_exists('ldap_escape')) {
     define('LDAP_ESCAPE_FILTER', 0x01);
