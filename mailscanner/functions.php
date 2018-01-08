@@ -885,7 +885,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             // Start form for operations
             echo '<form name="operations" action="./do_message_ops.php" method="POST">' . "\n";
             echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
-            echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/do_message_ops.php form token') . '">' . "\n";
+            echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/do_message_ops.php form token') . '">' . "\n";
         }
         \MailWatch\Html::printColorCodes();
         echo '<table cellspacing="1" width="100%" class="mail rowhover">' . "\n";
@@ -3074,36 +3074,6 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 
     //return false to fail gracefully
     return false;
-}
-
-/**
- * @param string $formstring
- * @return string
- */
-function generateFormToken($formstring)
-{
-    if (!isset($_SESSION['token'])) {
-        die(__('dietoken99'));
-    }
-
-    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
-
-    return $calc;
-}
-
-/**
- * @param string $formstring
- * @param string $formtoken
- * @return bool
- */
-function checkFormToken($formstring, $formtoken)
-{
-    if (!isset($_SESSION['token'], $_SESSION['formtoken'])) {
-        return false;
-    }
-    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
-
-    return $calc === \MailWatch\Sanitize::deepSanitizeInput($formtoken, 'url');
 }
 
 /**

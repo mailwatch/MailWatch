@@ -188,7 +188,7 @@ function printUserFormular(
         $password = '';
     }
     echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="' . $action . '">' . "\n";
-    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php ' . $action . ' token') . '">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/user_manager.php ' . $action . ' token') . '">' . "\n";
     echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
     echo ' <TR><TD CLASS="heading" COLSPAN="2" ALIGN="CENTER">' . $formheader . '</TD></TR>' . "\n";
     if (!defined('ALLOW_NO_USER_DOMAIN') || !ALLOW_NO_USER_DOMAIN) {
@@ -299,7 +299,7 @@ function newUser()
         return printUserFormular('new');
     } elseif (!isset($_POST['formtoken'], $_POST['username'], $_POST['type'])) {
         return getHtmlMessage(__('dievalidate99'), 'error');
-    } elseif (false === checkFormToken('/user_manager.php new token', $_POST['formtoken'])) {
+    } elseif (false === \MailWatch\Security::checkFormToken('/user_manager.php new token', $_POST['formtoken'])) {
         return getHtmlMessage(__('dietoken99'), 'error');
     }
     $username = html_entity_decode(\MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string'));
@@ -371,7 +371,7 @@ function editUser()
         return printUserFormular('edit', $user->id, $lastlogin, $user->username, $user->fullname, $types, $timeout, $quarantine_report, $user->quarantine_rcpt, $noscan, $user->spamscore, $user->highspamscore);
     } elseif (!isset($_POST['formtoken'], $_POST['username'], $_POST['type'])) {
         return getHtmlMessage(__('dievalidate99'), 'error');
-    } elseif (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
+    } elseif (false === \MailWatch\Security::checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
         return getHtmlMessage(__('dietoken99'), 'error');
     }
     // Do update
@@ -426,7 +426,7 @@ function userFilter()
 
     $getFilter = '';
     if (isset($_POST['filter'])) {
-        if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
+        if (false === \MailWatch\Security::checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
             return getHtmlMessage(__('dietoken99'), 'error');
         }
         $getFilter = \MailWatch\Sanitize::deepSanitizeInput($_POST['filter'], 'url');
@@ -479,7 +479,7 @@ function userFilter()
     echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $user->id . '">' . "\n";
-    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php filter token') . '">' . "\n";
+    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/user_manager.php filter token') . '">' . "\n";
 
     echo '<INPUT TYPE="hidden" NAME="new" VALUE="true">' . "\n";
     echo '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . "\n";
@@ -751,7 +751,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         echo '<input type="hidden" name="action" value="edit">' . "\n";
         echo '<input type="hidden" name="id" value="' . $row->id . '">' . "\n";
         echo '<input type="hidden" name="submit" value="true">' . "\n";
-        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token') . '">' . "\n";
+        echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/user_manager.php user token') . '">' . "\n";
         echo '<table class="mail useredit" border="0" cellpadding="1" cellspacing="1">' . "\n";
         echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>' . "\n";
@@ -771,7 +771,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         $result = \MailWatch\Db::query($sql);
     } else {
         if (false === \MailWatch\Security::checkToken($_POST['token'])
-              || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
+              || false === \MailWatch\Security::checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
             die(getHtmlMessage(__('dietoken99'), 'error'));
         }
         if (!isset($_POST['action'])) {

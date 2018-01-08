@@ -94,7 +94,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // Check to see if the form was submitted, and if so process it.
     $status_message = '';
     if (isset($_POST['submitted'])) {
-        if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
+        if (false === \MailWatch\Security::checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
             die(__('dietoken99'));
         }
 
@@ -126,7 +126,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<form method="post" name="msre_edit" action="msre_edit.php">' . "\n";
     echo '<input type="hidden" name="file" value="' . $short_filename . '">' . "\n";
     echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
-    echo '<input type="hidden" name="formtoken" value="' . generateFormToken('/msre_edit.php form token') . '">' . "\n";
+    echo '<input type="hidden" name="formtoken" value="' . \MailWatch\Security::generateFormToken('/msre_edit.php form token') . '">' . "\n";
     echo '<input type="hidden" name="submitted" value="1">' . "\n";
     
     // Check for status message, and append it to the end of the header

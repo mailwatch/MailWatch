@@ -34,7 +34,7 @@ $refresh = \MailWatch\Html::start(__('opresult21'));
 if ($_SESSION['token'] !== \MailWatch\Sanitize::deepSanitizeInput($_POST['token'], 'url')) {
     die(__('dietoken99'));
 }
-if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
+if (false === \MailWatch\Security::checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
     die(__('dietoken99'));
 }
 
