@@ -61,4 +61,25 @@ class Security
 
         return false;
     }
+
+    /**
+     * @param $user
+     * @param $hash
+     */
+    function updateUserPasswordHash($user, $hash)
+    {
+        $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
+        $passwordFiledLengthResult = Db::query($sqlCheckLenght);
+        $passwordFiledLength = (int)Db::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
+
+        if ($passwordFiledLength < 255) {
+            $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
+            Db::query($sqlUpdateFieldLength);
+            Security::audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
+        }
+
+        $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
+        Db::query($sqlUpdateHash);
+        Security::audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
+    }
 }

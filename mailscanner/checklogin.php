@@ -101,12 +101,12 @@ if (
         }
 
         $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-        updateUserPasswordHash($myusername, $newPasswordHash);
+        \MailWatch\Security::updateUserPasswordHash($myusername, $newPasswordHash);
     } else {
         // upgraded password is valid, continue as normal
         if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
             $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-            updateUserPasswordHash($myusername, $newPasswordHash);
+            \MailWatch\Security::updateUserPasswordHash($myusername, $newPasswordHash);
         }
     }
 }
