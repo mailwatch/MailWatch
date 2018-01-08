@@ -142,19 +142,6 @@ function mailwatch_version()
 }
 
 /**
- * @param $number
- * @return string
- */
-function suppress_zeros($number)
-{
-    if (abs($number - 0.0) < 0.1) {
-        return '.';
-    }
-
-    return $number;
-}
-
-/**
  * @param string $string
  * @param boolean $useSystemLang
  * @return string
@@ -188,46 +175,6 @@ function __($string, $useSystemLang = false)
     }
 
     return $pre_string . $language['i18_missing'] . $debug_message . $post_string;
-}
-
-/**
- * Returns true if $string is valid UTF-8 and false otherwise.
- *
- * @param  string $string
- * @return integer
- */
-function is_utf8($string)
-{
-    // From http://w3.org/International/questions/qa-forms-utf-8.html
-    return preg_match('%^(?:
-          [\x09\x0A\x0D\x20-\x7E]            # ASCII
-        | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-        |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-        |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-        |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-        | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-        |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-    )*$%xs', $string);
-}
-
-/**
- * @param string $string
- * @return string
- */
-function getUTF8String($string)
-{
-    if (function_exists('mb_check_encoding')) {
-        if (!mb_check_encoding($string, 'UTF-8')) {
-            $string = mb_convert_encoding($string, 'UTF-8');
-        }
-    } else {
-        if (!is_utf8($string)) {
-            $string = utf8_encode($string);
-        }
-    }
-
-    return $string;
 }
 
 /**
@@ -287,103 +234,6 @@ function get_disks()
 
     return $disks;
 }
-
-/**
- * @param double $size
- * @param int $precision
- * @return string
- */
-function formatSize($size, $precision = 2)
-{
-    if ($size === null) {
-        return 'n/a';
-    }
-    if ($size === 0 || $size === '0') {
-        return '0';
-    }
-    $base = log($size) / log(1024);
-    $suffixes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
-
-    return round(1024 ** ($base - floor($base)), $precision) . $suffixes[(int)floor($base)];
-}
-
-/**
- * @param $data_in
- * @param $info_out
- */
-function format_report_volume(&$data_in, &$info_out)
-{
-    // Measures
-    $kb = 1024;
-    $mb = 1024 * $kb;
-    $gb = 1024 * $mb;
-    $tb = 1024 * $gb;
-
-    // Copy the data to a temporary variable
-    $temp = $data_in;
-
-    // Work out the average size of values in the array
-    $count = count($temp);
-    $sum = array_sum($temp);
-    $average = $sum / $count;
-
-    // Work out the largest value in the array
-    arsort($temp);
-    array_pop($temp);
-
-    // Calculate the correct display size for the average value
-    if ($average < $kb) {
-        $info_out['formula'] = 1;
-        $info_out['shortdesc'] = 'b';
-        $info_out['longdesc'] = 'Bytes';
-    } else {
-        if ($average < $mb) {
-            $info_out['formula'] = $kb;
-            $info_out['shortdesc'] = 'Kb';
-            $info_out['longdesc'] = 'Kilobytes';
-        } else {
-            if ($average < $gb) {
-                $info_out['formula'] = $mb;
-                $info_out['shortdesc'] = 'Mb';
-                $info_out['longdesc'] = 'Megabytes';
-            } else {
-                if ($average < $tb) {
-                    $info_out['formula'] = $gb;
-                    $info_out['shortdesc'] = 'Gb';
-                    $info_out['longdesc'] = 'Gigabytes';
-                } else {
-                    $info_out['formula'] = $tb;
-                    $info_out['shortdesc'] = 'Tb';
-                    $info_out['longdesc'] = 'Terabytes';
-                }
-            }
-        }
-    }
-
-    // Modify the original data accordingly
-    $num_data_in = count($data_in);
-    for ($i = 0; $i < $num_data_in; $i++) {
-        $data_in[$i] /= $info_out['formula'];
-    }
-}
-
-/**
- * @param $input
- * @param $maxlen
- * @return string
- */
-function trim_output($input, $maxlen)
-{
-    if ($maxlen > 0 && strlen($input) >= $maxlen) {
-        return substr($input, 0, $maxlen) . '...';
-    }
-
-    return $input;
-}
-
-
-
-
 
 /**
  * @param $date
@@ -846,7 +696,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'from_address':
                         $row[$f] = htmlentities($row[$f]);
                         if (FROMTO_MAXLEN > 0) {
-                            $row[$f] = trim_output($row[$f], FROMTO_MAXLEN);
+                            $row[$f] = \MailWatch\Format::trim_output($row[$f], FROMTO_MAXLEN);
                         }
                         break;
                     case 'clientip':
@@ -867,7 +717,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             $to_temp = explode(',', $row[$f]);
                             $num_to_temp = count($to_temp);
                             for ($t = 0; $t < $num_to_temp; $t++) {
-                                $to_temp[$t] = trim_output($to_temp[$t], FROMTO_MAXLEN);
+                                $to_temp[$t] = \MailWatch\Format::trim_output($to_temp[$t], FROMTO_MAXLEN);
                             }
                             // Return the data
                             $row[$f] = implode(',', $to_temp);
@@ -876,9 +726,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = str_replace(',', '<br>', $row[$f]);
                         break;
                     case 'subject':
-                        $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
+                        $row[$f] = htmlspecialchars(\MailWatch\Format::getUTF8String(decode_header($row[$f])));
                         if (SUBJECT_MAXLEN > 0) {
-                            $row[$f] = trim_output($row[$f], SUBJECT_MAXLEN);
+                            $row[$f] = \MailWatch\Format::trim_output($row[$f], SUBJECT_MAXLEN);
                         }
                         break;
                     case 'isspam':
@@ -934,7 +784,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         }
                         break;
                     case 'size':
-                        $row[$f] = formatSize($row[$f]);
+                        $row[$f] = \MailWatch\Format::formatSize($row[$f]);
                         break;
                     case 'spamwhitelisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {

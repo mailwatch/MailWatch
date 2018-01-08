@@ -251,7 +251,7 @@ if (count($graph_labels) > 20) {
     }
 }
 
-format_report_volume($data_total_size, $size_info);
+\MailWatch\Format::format_report_volume($data_total_size, $size_info);
 
 
 echo '<TABLE class="reportTable">' . "\n";
@@ -295,20 +295,20 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
     echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_lowspam[$i] / $data_total_mail[$i] * 100, 1) . '</TD>' . "\n";
     echo ' <TD ALIGN="RIGHT">' . number_format($data_total_highspam[$i]) . '</TD>' . "\n";
     echo ' <TD ALIGN="RIGHT">' . number_format($data_total_highspam[$i] / $data_total_mail[$i] * 100, 1) . '</TD>' . "\n";
-    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_blocked[$i])) . '</TD>' . "\n";
-    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_blocked[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
-    echo ' <TD ALIGN="RIGHT">' . suppress_zeros(number_format($data_total_virii[$i])) . '</TD>' . "\n";
-    echo ' <TD ALIGN="RIGHT">' . suppress_zeros(number_format($data_total_virii[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
+    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . \MailWatch\Format::suppress_zeros(number_format($data_total_blocked[$i])) . '</TD>' . "\n";
+    echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . \MailWatch\Format::suppress_zeros(number_format($data_total_blocked[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . \MailWatch\Format::suppress_zeros(number_format($data_total_virii[$i])) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . \MailWatch\Format::suppress_zeros(number_format($data_total_virii[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     if ($is_MCP_enabled === true) {
-        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i])) . '</TD>' . "\n";
-        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
+        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . \MailWatch\Format::suppress_zeros(number_format($data_total_mcp[$i])) . '</TD>' . "\n";
+        echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . \MailWatch\Format::suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     }
-    echo ' <TD ALIGN="RIGHT">' . formatSize($data_total_size[$i] * $size_info['formula']) . '</TD>' . "\n";
+    echo ' <TD ALIGN="RIGHT">' . \MailWatch\Format::formatSize($data_total_size[$i] * $size_info['formula']) . '</TD>' . "\n";
     if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
         echo ' <TD class="white"><BR></TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
     }
     echo '</TR>' . "\n";
 }
@@ -335,7 +335,7 @@ if ($is_MCP_enabled === true) {
     echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp)) . '</TH>' . "\n";
     echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }
-echo ' <TH ALIGN="RIGHT">' . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . '</TH>' . "\n";
+echo ' <TH ALIGN="RIGHT">' . \MailWatch\Format::formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . '</TH>' . "\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
     echo ' <TD class="white"><BR></TD>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unknown_users)) . '</TH>' . "\n";

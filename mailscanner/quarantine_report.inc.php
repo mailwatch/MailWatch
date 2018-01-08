@@ -438,9 +438,9 @@ ORDER BY a.date DESC, a.time DESC';
                 $array[] = [
                     'id' => trim($row->id),
                     'datetime' => trim($row->datetime),
-                    'to' => trim_output($row->to_address, FROMTO_MAXLEN),
-                    'from' => trim_output($row->from_address, FROMTO_MAXLEN),
-                    'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
+                    'to' => \MailWatch\Format::trim_output($row->to_address, FROMTO_MAXLEN),
+                    'from' => \MailWatch\Format::trim_output($row->from_address, FROMTO_MAXLEN),
+                    'subject' => \MailWatch\Format::trim_output($row->subject, SUBJECT_MAXLEN),
                     'reason' => trim($row->reason),
                     'timestamp' => trim($row->timestamp),
                     'token' => trim($row->token)

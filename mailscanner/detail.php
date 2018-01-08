@@ -215,13 +215,13 @@ while ($row = $result->fetch_array()) {
             $row[$f] = str_replace(',', '<br>', $row[$f]);
         }
         if ($fieldn === __('subject04')) {
-            $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
+            $row[$f] = htmlspecialchars(\MailWatch\Format::getUTF8String(decode_header($row[$f])));
         }
         if ($fieldn === __('spamrep04')) {
             $row[$f] = \MailWatch\SpamAssassin::format_spam_report($row[$f]);
         }
         if ($fieldn === __('size04')) {
-            $row[$f] = formatSize($row[$f]);
+            $row[$f] = \MailWatch\Format::formatSize($row[$f]);
         }
         if ($fieldn === __('msgheaders04')) {
             if (PHP_VERSION_ID >= 50400) {

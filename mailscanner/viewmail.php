@@ -171,7 +171,7 @@ foreach ($header_fields as $field) {
         if (is_array($structure->headers[$field['name']])) {
             $structure->headers[$field['name']] = implode('; ', $structure->headers[$field['name']]);
         }
-        $structure->headers[$field['name']] = htmlspecialchars(getUTF8String(decode_header($structure->headers[$field['name']])));
+        $structure->headers[$field['name']] = htmlspecialchars(\MailWatch\Format::getUTF8String(decode_header($structure->headers[$field['name']])));
         if ($field['replaceQuote']) {
             $structure->headers[$field['name']] = str_replace('"', '', $structure->headers[$field['name']]);
         }
@@ -225,7 +225,7 @@ foreach ($mime_struct as $key => $part) {
                     echo __('nonameattachment06');
                 }
                 if (isset($part->d_parameters['size'])) {
-                    echo '&nbsp;(size ' . formatSize($part->d_parameters['size']) . ')';
+                    echo '&nbsp;(size ' . \MailWatch\Format::formatSize($part->d_parameters['size']) . ')';
                 }
             } else {
                 $filename = __('nonameattachment06');
