@@ -2993,51 +2993,6 @@ function checkConfVariables()
 }
 
 /**
- * @param integer $lenght
- * @return string
- */
-function get_random_string($lenght)
-{
-    if (function_exists('random_bytes')) {
-        return bin2hex(random_bytes($lenght));
-    }
-
-    if (function_exists('mcrypt_create_iv')) {
-        $random = mcrypt_create_iv($lenght, MCRYPT_DEV_URANDOM);
-        if (false !== $random) {
-            return bin2hex($random);
-        }
-    }
-
-    if (DIRECTORY_SEPARATOR === '/' && @is_readable('/dev/urandom')) {
-        // On unix system and if /dev/urandom is readable
-        $handle = fopen('/dev/urandom', 'rb');
-        $random = fread($handle, $lenght);
-        fclose($handle);
-
-        return bin2hex($random);
-    }
-
-    if (function_exists('openssl_random_pseudo_bytes')) {
-        $random = openssl_random_pseudo_bytes($lenght);
-        if (false !== $random) {
-            return bin2hex($random);
-        }
-    }
-
-    // if none of the above three secure functions are enabled use a pseudorandom string generator
-    // note to sysadmin: check your php installation if the following code is executed and make your system secure!
-    $random = '';
-    $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $max = mb_strlen($keyspace, '8bit') - 1;
-    for ($i = 0; $i < $lenght; ++$i) {
-        $random .= $keyspace[mt_rand(0, $max)];
-    }
-
-    return $random;
-}
-
-/**
  * @param string $email
  * @param string $html
  * @param string $text

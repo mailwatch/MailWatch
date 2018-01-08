@@ -519,7 +519,7 @@ ORDER BY a.date DESC, a.time DESC';
                 //Check if email already has an autorelease entry
                 $exists = self::check_auto_release($qitem);
                 if (!$exists) {
-                    $qitem['rand'] = get_random_string(10);
+                    $qitem['rand'] = \MailWatch\Security::get_random_string(10);
                     $auto_release = self::store_auto_release($qitem);
                 } else {
                     $qitem['rand'] = $exists;

@@ -75,7 +75,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $row = $result->fetch_assoc();
                 if ($row['type'] === 'U') {
                     //user type is user, password reset allowed
-                    $rand = get_random_string(16);
+                    $rand = \MailWatch\Security::get_random_string(16);
                     $resetexpire = time() + 60 * 60 * RESET_LINK_EXPIRE;
                     $sql = "UPDATE users SET resetid = '$rand', resetexpire = '$resetexpire' WHERE username = '$email'";
                     $result = \MailWatch\Db::query($sql);
