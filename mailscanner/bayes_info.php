@@ -74,7 +74,7 @@ $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 while (!feof($fh)) {
     $line = rtrim(fgets($fh, 4096));
 
-    debug('line: ' . $line . "\n");
+    \MailWatch\Debug::debug('line: ' . $line . "\n");
 
     if (preg_match('/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+non-token data: (.+)/', $line, $regs)) {
         switch ($regs[5]) {
