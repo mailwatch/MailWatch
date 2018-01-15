@@ -37,5 +37,8 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.8"
+  },
+  "scripts": {
+    "fix-cs": "vendor/bin/php-cs-fixer fix --verbose"
   }
 }

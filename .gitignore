@@ -5,3 +5,4 @@
 #development files
 /_msconfig/
 /vendor/
+/.php_cs.cache
