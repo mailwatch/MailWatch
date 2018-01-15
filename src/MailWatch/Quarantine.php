@@ -27,7 +27,6 @@
 
 namespace MailWatch;
 
-
 class Quarantine
 {
     /**
@@ -500,5 +499,4 @@ SELECT
 
         return $array;
     }
-
 }

@@ -27,7 +27,6 @@
 
 namespace MailWatch;
 
-
 class SpamAssassin
 {
     /**
@@ -145,5 +144,4 @@ class SpamAssassin
         // Regular expression did not match, return unmodified report instead
         return $spamreport;
     }
-
 }
