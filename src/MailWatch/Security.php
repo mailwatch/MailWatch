@@ -27,7 +27,6 @@
 
 namespace MailWatch;
 
-
 class Security
 {
     public static function disableBrowserCache()
@@ -276,5 +275,4 @@ class Security
 
         return false;
     }
-
 }

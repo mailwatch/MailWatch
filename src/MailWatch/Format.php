@@ -27,7 +27,6 @@
 
 namespace MailWatch;
 
-
 class Format
 {
     /**
@@ -205,7 +204,7 @@ class Format
      * @param $ip
      * @return string
      */
-    function stripPortFromIp($ip)
+    public function stripPortFromIp($ip)
     {
         if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
             $ip = current(array_slice(explode(':', $ip), 0, 1));

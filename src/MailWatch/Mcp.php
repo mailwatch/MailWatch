@@ -27,7 +27,6 @@
 
 namespace MailWatch;
 
-
 class Mcp
 {
     /**

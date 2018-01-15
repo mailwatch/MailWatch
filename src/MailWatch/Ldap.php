@@ -27,7 +27,6 @@
 
 namespace MailWatch;
 
-
 class Ldap
 {
     /**
@@ -243,7 +242,4 @@ class Ldap
             return false;
         }
     }
-
-
 }
-
