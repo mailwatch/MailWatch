@@ -43,7 +43,7 @@ class XXXCompatController extends Controller
         $usertype=$usr->getType();
 
         $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-        $result_userfilter = dbquery($sql_userfilter);
+        $result_userfilter = \MailWatch\Db::query($sql_userfilter);
 
         $filter[] = $myusername;
         while ($row = $result_userfilter->fetch_array()) {
@@ -88,8 +88,8 @@ class XXXCompatController extends Controller
         $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
         $_SESSION['global_array'] = $filter;
         if(!isset($_SESSION['token']))
-            $_SESSION['token'] = generateToken();
+            $_SESSION['token'] = \MailWatch\Security::generateToken();
         if(!isset($_SESSION['formtoken']))
-            $_SESSION['formtoken'] = generateToken();
+            $_SESSION['formtoken'] = \MailWatch\Security::generateToken();
     }
 }
