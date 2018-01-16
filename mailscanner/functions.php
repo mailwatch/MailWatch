@@ -2907,25 +2907,12 @@ function ldap_authenticate($username, $password)
 
         if ($ldap_search_results) {
             $result = ldap_get_entries($ds, $ldap_search_results) or die(__('ldpaauth303'));
+            $user_dn = ldap_get_dn($ds, ldap_first_entry($ds, $ldap_search_results));
             ldap_free_result($ldap_search_results);
             if (isset($result[0])) {
                 if (in_array('group', array_values($result[0]['objectclass']), true)) {
                     // do not login as group
                     return null;
-                }
-
-                if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
-                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
-
-                    return null;
-                }
-
-                $user = $result[0][LDAP_USERNAME_FIELD][0];
-                if (defined('LDAP_BIND_PREFIX')) {
-                    $user = LDAP_BIND_PREFIX . $user;
-                }
-                if (defined('LDAP_BIND_SUFFIX')) {
-                    $user .= LDAP_BIND_SUFFIX;
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
@@ -2934,7 +2921,7 @@ function ldap_authenticate($username, $password)
                     return null;
                 }
 
-                $bindResult = @ldap_bind($ds, $user, $password);
+                $bindResult = @ldap_bind($ds, $user_dn, $password);
                 if (false !== $bindResult) {
                     foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
                         if (0 === strpos($email, 'SMTP')) {
