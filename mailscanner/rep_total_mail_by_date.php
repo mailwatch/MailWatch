@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('totalmaildate49'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('totalmaildate49'), 0, false, true);
 
 // Set Date format
 $date_format = "'" . DATE_FORMAT . "'";
@@ -148,8 +148,8 @@ $valueConversion = [
 $graphColumns = [
     'labelColumn' => 'xaxis',
     'dataLabels' => [
-        [__('barmail49'), __('barvirus49'), __('barspam49')],
-        [__('barvolume49')],
+        [\MailWatch\Translation::__('barmail49'), \MailWatch\Translation::__('barvirus49'), \MailWatch\Translation::__('barspam49')],
+        [\MailWatch\Translation::__('barvolume49')],
     ],
     'dataNumericColumns' => [
         ['total_mail', 'total_virus', 'total_spam'],
@@ -159,10 +159,10 @@ $graphColumns = [
         ['total_mail', 'total_virus', 'total_spam'],
         ['total_sizeconv']
     ],
-    'xAxeDescription' => __('date49'),
+    'xAxeDescription' => \MailWatch\Translation::__('date49'),
     'yAxeDescriptions' => [
-        __('nomessages49'),
-        __('volume49')
+        \MailWatch\Translation::__('nomessages49'),
+        \MailWatch\Translation::__('volume49')
     ],
     'fillBelowLine' => ['false', 'true']
 ];
@@ -174,7 +174,7 @@ $types = [
 if ($is_MCP_enabled === true) {
     $sqlColumns[] = 'total_mcp';
     $types[0][] = 'bar';
-    $graphColumns['dataLabels'][0][] = __('barmcp49');
+    $graphColumns['dataLabels'][0][] = \MailWatch\Translation::__('barmcp49');
     $graphColumns['dataNumericColumns'][0][] = 'total_mcp';
     $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
     $graphgenerator->settings['colors'] = [
@@ -188,7 +188,7 @@ $graphgenerator->sqlColumns = $sqlColumns ;
 $graphgenerator->graphColumns = $graphColumns;
 $graphgenerator->valueConversion = $valueConversion;
 $graphgenerator->types = $types;
-$graphgenerator->graphTitle = __('totalmailprocdate49');
+$graphgenerator->graphTitle = \MailWatch\Translation::__('totalmailprocdate49');
 $graphgenerator->printTable = false;
 $graphgenerator->settings['valueTypes'] = ['plain','volume'];
 $graphgenerator->settings['maxTicks'] = 10;
@@ -198,7 +198,7 @@ $graphgenerator->printLineGraph();
 // Must be one or more row
 $result = \MailWatch\Db::query($sql);
 if (!$result->num_rows > 0) {
-    die(__('diemysql99') . "\n");
+    die(\MailWatch\Translation::__('diemysql99') . "\n");
 }
 
 // Connecting to the DB and running the query
@@ -256,22 +256,22 @@ if (count($graph_labels) > 20) {
 
 echo '<TABLE class="reportTable">' . "\n";
 echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
-echo "  <TH rowspan='2'>" . __('date49') . '</TH>' . "\n";
-echo "  <TH rowspan='2' align='right'>" . __('total49') . '</TH>' . "\n";
-echo "  <TH colspan='2'>" . __('clean49') . '</TH>' . "\n";
-echo "  <TH nowrap colspan='2'>" . __('lowespam49') . '</TH>' . "\n";
-echo "  <TH nowrap colspan='2'>" . __('highspam49') . '</TH>' . "\n";
-echo "  <TH nowrap colspan='2'>" . __('blocked49') . '</TH>' . "\n";
-echo "  <TH colspan='2'>" . __('virus49') . '</TH>' . "\n";
+echo "  <TH rowspan='2'>" . \MailWatch\Translation::__('date49') . '</TH>' . "\n";
+echo "  <TH rowspan='2' align='right'>" . \MailWatch\Translation::__('total49') . '</TH>' . "\n";
+echo "  <TH colspan='2'>" . \MailWatch\Translation::__('clean49') . '</TH>' . "\n";
+echo "  <TH nowrap colspan='2'>" . \MailWatch\Translation::__('lowespam49') . '</TH>' . "\n";
+echo "  <TH nowrap colspan='2'>" . \MailWatch\Translation::__('highspam49') . '</TH>' . "\n";
+echo "  <TH nowrap colspan='2'>" . \MailWatch\Translation::__('blocked49') . '</TH>' . "\n";
+echo "  <TH colspan='2'>" . \MailWatch\Translation::__('virus49') . '</TH>' . "\n";
 if ($is_MCP_enabled === true) {
-    echo "  <TH colspan='2'>" . __('mcp49') . '</TH>' . "\n";
+    echo "  <TH colspan='2'>" . \MailWatch\Translation::__('mcp49') . '</TH>' . "\n";
 }
-echo "  <TH rowspan='2'>" . __('volume49') . '</TH>' . "\n";
+echo "  <TH rowspan='2'>" . \MailWatch\Translation::__('volume49') . '</TH>' . "\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
     echo '  <TH class="white" rowspan="2">&nbsp;</TH>' . "\n";
-    echo "  <TH rowspan='2'>" . __('unknoweusers49') . '</TH>' . "\n";
-    echo "  <TH rowspan='2'>" . __('resolve49') . '</TH>' . "\n";
-    echo "  <TH rowspan='2'>" . __('rbl49') . '</TH>' . "\n";
+    echo "  <TH rowspan='2'>" . \MailWatch\Translation::__('unknoweusers49') . '</TH>' . "\n";
+    echo "  <TH rowspan='2'>" . \MailWatch\Translation::__('resolve49') . '</TH>' . "\n";
+    echo "  <TH rowspan='2'>" . \MailWatch\Translation::__('rbl49') . '</TH>' . "\n";
 }
 echo " </TR>\n";
 
@@ -314,7 +314,7 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
 }
 
 echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
-echo ' <TH ALIGN="RIGHT">' . __('totals49') . '</TH>' . "\n";
+echo ' <TH ALIGN="RIGHT">' . \MailWatch\Translation::__('totals49') . '</TH>' . "\n";
 echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mail)) . '</TH>' . "\n";
 
 echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_clean)) . '</TH>' . "\n";

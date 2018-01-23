@@ -32,7 +32,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    \MailWatch\Html::start(__('rules30'));
+    \MailWatch\Html::start(\MailWatch\Translation::__('rules30'));
 
     // Limit accessible files to the ones in MailScanner etc directory or reports directory
     $MailscannerRepDir = realpath(\MailWatch\MailScanner::getConfVar('%report-dir%'));
@@ -45,10 +45,10 @@ if ($_SESSION['user_type'] !== 'A') {
 
     if ($FilePath === false || (strpos($FilePath, $MailscannerEtcDir) !== 0 && strpos($FilePath, $MailscannerRepDir) !== 0)) {
         // Directory Traversal
-        echo __('dirblocked30') . "\n";
+        echo \MailWatch\Translation::__('dirblocked30') . "\n";
     } else {
         echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-        echo '<tr><td class="heading">' . __('file30') . ' ' . $FilePath . '</td></tr>' . "\n";
+        echo '<tr><td class="heading">' . \MailWatch\Translation::__('file30') . ' ' . $FilePath . '</td></tr>' . "\n";
         echo '<tr><td><pre>' . "\n";
         if ($fh = @fopen($FilePath, 'rb')) {
             while (!feof($fh)) {
@@ -63,7 +63,7 @@ if ($_SESSION['user_type'] !== 'A') {
             }
             fclose($fh);
         } else {
-            echo __('unableopenfile30') . "\n";
+            echo \MailWatch\Translation::__('unableopenfile30') . "\n";
         }
         echo '</pre></td></tr>' . "\n";
         echo '</table>' . "\n";

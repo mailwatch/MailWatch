@@ -29,9 +29,9 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('mqviewer32'));
+\MailWatch\Html::start(\MailWatch\Translation::__('mqviewer32'));
 
-echo '<b>' . __('mqviewer32') . '</b>' . "\n";
+echo '<b>' . \MailWatch\Translation::__('mqviewer32') . '</b>' . "\n";
 echo '<pre>';
 \MailWatch\MTA\Postfix::postfixmailq();
 echo '</pre>';

@@ -28,7 +28,7 @@
 require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('wblists07'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('wblists07'), 0, false, false);
 
 if (isset($_GET['type'])) {
     $url_type = \MailWatch\Sanitize::deepSanitizeInput($_GET['type'], 'url');
@@ -212,18 +212,18 @@ switch (true) {
 // Submitted
 if ($url_submit === 'add') {
     if (false === \MailWatch\Security::checkToken($_POST['token'])) {
-        die(__('dietoken99'));
+        die(\MailWatch\Translation::__('dietoken99'));
     }
     if (false === \MailWatch\Security::checkFormToken('/lists.php list token', $_POST['formtoken'])) {
-        die(__('dietoken99'));
+        die(\MailWatch\Translation::__('dietoken99'));
     }
 
     // Check input is valid
     if (empty($url_list)) {
-        $errors[] = __('error071');
+        $errors[] = \MailWatch\Translation::__('error071');
     }
     if (empty($from)) {
-        $errors[] = __('error072');
+        $errors[] = \MailWatch\Translation::__('error072');
     }
 
     $to_domain = strtolower($url_domain);
@@ -232,11 +232,11 @@ if ($url_submit === 'add') {
         switch ($url_list) {
             case 'w': // Whitelist
                 $list = 'whitelist';
-                $listi18 = __('wl07');
+                $listi18 = \MailWatch\Translation::__('wl07');
                 break;
             case 'b': // Blacklist
                 $list = 'blacklist';
-                $listi18 = __('bl07');
+                $listi18 = \MailWatch\Translation::__('bl07');
                 break;
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
@@ -244,7 +244,7 @@ if ($url_submit === 'add') {
             . "'" .  \MailWatch\Sanitize::safe_value($to_domain) . "',"
             . "'" .  \MailWatch\Sanitize::safe_value($from) . "')";
         \MailWatch\Db::query($sql);
-        \MailWatch\Security::audit_log(sprintf(__('auditlogadded07', true), $from, $to_address, $listi18));
+        \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogadded07', true), $from, $to_address, $listi18));
     }
     $to_domain = '';
     $touser = '';
@@ -255,17 +255,17 @@ if ($url_submit === 'add') {
 // Delete
 if ($url_submit === 'delete') {
     if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-        die(__('dietoken99'));
+        die(\MailWatch\Translation::__('dietoken99'));
     }
     $id = $url_id;
     switch ($url_list) {
         case 'w':
             $list = 'whitelist';
-            $listi18 = __('wl07');
+            $listi18 = \MailWatch\Translation::__('wl07');
             break;
         case 'b':
             $list = 'blacklist';
-            $listi18 = __('bl07');
+            $listi18 = \MailWatch\Translation::__('bl07');
             break;
     }
 
@@ -277,15 +277,15 @@ if ($url_submit === 'delete') {
     switch ($_SESSION['user_type']) {
         case 'U':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            \MailWatch\Security::audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
+            \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogremoved07', true), $from_address, $to_address, $listi18));
             break;
         case 'D':
             $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            \MailWatch\Security::audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
+            \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogremoved07', true), $from_address, $to_address, $listi18));
             break;
         case 'A':
             $sql = "DELETE FROM $list WHERE id='$id'";
-            \MailWatch\Security::audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
+            \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogremoved07', true), $from_address, $to_address, $listi18));
             break;
     }
 
@@ -310,20 +310,20 @@ function build_table($sql, $list)
     if ($sth->num_rows > 0) {
         $table_html .= '<table class="blackwhitelist rowhover">' . "\n";
         $table_html .= ' <tr>' . "\n";
-        $table_html .= '  <th>' . __('from07') . '</th>' . "\n";
-        $table_html .= '  <th>' . __('to07') . '</th>' . "\n";
-        $table_html .= '  <th>' . __('action07') . '</th>' . "\n";
+        $table_html .= '  <th>' . \MailWatch\Translation::__('from07') . '</th>' . "\n";
+        $table_html .= '  <th>' . \MailWatch\Translation::__('to07') . '</th>' . "\n";
+        $table_html .= '  <th>' . \MailWatch\Translation::__('action07') . '</th>' . "\n";
         $table_html .= ' </tr>' . "\n";
         while ($row = $sth->fetch_row()) {
             $table_html .= ' <tr>' . "\n";
             $table_html .= '  <td>' . $row[1] . '</td>' . "\n";
             $table_html .= '  <td>' . $row[2] . '</td>' . "\n";
-            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a></td>' . "\n";
+            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . \MailWatch\Translation::__('delete07') . '</a></td>' . "\n";
             $table_html .= ' </tr>' . "\n";
         }
         $table_html .= '</table>' . "\n";
     } else {
-        $table_html = __('noentries07') . "\n";
+        $table_html = \MailWatch\Translation::__('noentries07') . "\n";
     }
 
     return ['html' => $table_html, 'entry_number' => $entries];
@@ -333,14 +333,14 @@ echo '
 <form action="lists.php" method="post">
 <table cellspacing="1" class="mail">
  <tr>
-  <th colspan=2>' . __('addwlbl07') . '</th>
+  <th colspan=2>' . \MailWatch\Translation::__('addwlbl07') . '</th>
  </tr>
  <tr>
-  <td class="heading">' . __('from07') . '</td>
+  <td class="heading">' . \MailWatch\Translation::__('from07') . '</td>
   <td><input type="text" name="from" size=50 value="' . $from . '"></td>
  </tr>
  <tr>
-  <td class="heading">' . __('to07') . '</td>';
+  <td class="heading">' . \MailWatch\Translation::__('to07') . '</td>';
 echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
 echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/lists.php list token') . '">' . "\n";
 switch ($_SESSION['user_type']) {
@@ -381,7 +381,7 @@ switch ($_SESSION['user_type']) {
 echo '
  </tr>
  <tr>
-  <td class="heading">' . __('list07') . '</td>
+  <td class="heading">' . \MailWatch\Translation::__('list07') . '</td>
   <td>';
 
 $w = '';
@@ -394,18 +394,18 @@ switch ($url_list) {
         $b = 'CHECKED';
         break;
 }
-echo '   <input type="radio" value="w" name="list" ' . $w . '>' . __('wl07') . '&nbsp;&nbsp;' . "\n";
-echo '   <input type="radio" value="b" name="list" ' . $b . '>' . __('bl07') . '' . "\n";
+echo '   <input type="radio" value="w" name="list" ' . $w . '>' . \MailWatch\Translation::__('wl07') . '&nbsp;&nbsp;' . "\n";
+echo '   <input type="radio" value="b" name="list" ' . $b . '>' . \MailWatch\Translation::__('bl07') . '' . "\n";
 
 echo '  </td>
  </tr>
  <tr>
-  <td class="heading">' . __('action07') . '</td>
-  <td><button type="reset" value="reset">' . __('reset07') . '</button>&nbsp;&nbsp;<button type="submit" name="submit" value="add">' . __('add07') . '</button></td>
+  <td class="heading">' . \MailWatch\Translation::__('action07') . '</td>
+  <td><button type="reset" value="reset">' . \MailWatch\Translation::__('reset07') . '</button>&nbsp;&nbsp;<button type="submit" name="submit" value="add">' . \MailWatch\Translation::__('add07') . '</button></td>
  </tr>';
 if (isset($errors)) {
     echo '<tr>
-  <td class="heading">' . __('errors07') . '</td>
+  <td class="heading">' . \MailWatch\Translation::__('errors07') . '</td>
   <td>' . implode('<br>', $errors) . '</td>
  </tr>';
 }
@@ -423,8 +423,8 @@ echo '</table>
    <br>
 <table cellspacing="1" width="100%" class="mail">
 <tr>
-  <th class="whitelist">' . sprintf(__('wlentries07'), $whitelist['entry_number']) . '</th>
-  <th class="blacklist">' . sprintf(__('blentries07'), $blacklist['entry_number']) . '</th>
+  <th class="whitelist">' . sprintf(\MailWatch\Translation::__('wlentries07'), $whitelist['entry_number']) . '</th>
+  <th class="blacklist">' . sprintf(\MailWatch\Translation::__('blentries07'), $blacklist['entry_number']) . '</th>
 </tr>
 <tr>
   <td class="blackwhitelist">

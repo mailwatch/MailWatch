@@ -32,14 +32,14 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    \MailWatch\Html::start(__('config27'));
-    \MailWatch\Security::audit_log(__('auditlog27', true));
+    \MailWatch\Html::start(\MailWatch\Translation::__('config27'));
+    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog27', true));
 
     $conf_dir = \MailWatch\MailScanner::getConfIncludeFolder();
     $MailScanner_conf_file = '' . MS_CONFIG_DIR . 'MailScanner.conf';
 
     echo '<table border="0" cellpadding="1" cellspacing="1" class="maildetail" width="100%">';
-    echo '<tr><th colspan="2">' . __('msconfig27') . '</th></tr>';
+    echo '<tr><th colspan="2">' . \MailWatch\Translation::__('msconfig27') . '</th></tr>';
 
     $array_output = [];
     $array_output1 = \MailWatch\MailScanner::parseConfFile($MailScanner_conf_file);

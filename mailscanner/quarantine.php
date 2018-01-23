@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('qviewer08'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('qviewer08'), 0, false, false);
 
 if (!isset($_GET['dir'])) {
     // Get the top-level list
@@ -37,14 +37,14 @@ if (!isset($_GET['dir'])) {
         // Don't use the database any more - it's too slow on big datasets
         $dates = \MailWatch\Quarantine::return_quarantine_dates();
         echo '<table class="mail" cellspacing="2" align="center">' . "\n";
-        echo '<tr><th colspan=2>' . __('folder08') . '</th></tr>' . "\n";
+        echo '<tr><th colspan=2>' . \MailWatch\Translation::__('folder08') . '</th></tr>' . "\n";
         foreach ($dates as $date) {
             $sql = 'SELECT id FROM maillog WHERE ' . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
             $result = \MailWatch\Db::query($sql);
             $rowcnt = $result->num_rows;
             $rowstr = '  ----------';
             if ($rowcnt > 0) {
-                $rowstr = sprintf('  %02d ' . __('items08'), $rowcnt);
+                $rowstr = sprintf('  %02d ' . \MailWatch\Translation::__('items08'), $rowcnt);
             }
             echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . \MailWatch\Format::translateQuarantineDate(
                     $date,
@@ -59,7 +59,7 @@ if (!isset($_GET['dir'])) {
             // Sort in reverse chronological order
             arsort($items);
             echo '<table class="mail" width="100%" cellspacing="2" align="center">' . "\n";
-            echo '<tr><th colspan=2>' . __('folder_0308') . '</th></tr>' . "\n";
+            echo '<tr><th colspan=2>' . \MailWatch\Translation::__('folder_0308') . '</th></tr>' . "\n";
             $count = 0;
             foreach ($items as $f) {
                 //To look and see if any of the folders in the quarantine folder are strings and not numbers.
@@ -76,20 +76,20 @@ if (!isset($_GET['dir'])) {
             }
             echo '</table>' . "\n";
         } else {
-            die(__('dienodir08') . "\n");
+            die(\MailWatch\Translation::__('dienodir08') . "\n");
         }
     }
 } else {
     if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-        die(__('dietoken99'));
+        die(\MailWatch\Translation::__('dietoken99'));
     }
     $dir = \MailWatch\Sanitize::deepSanitizeInput($_GET['dir'], 'url');
     if (!\MailWatch\Sanitize::validateInput($dir, 'quardir')) {
-        die(__('dievalidate99'));
+        die(\MailWatch\Translation::__('dievalidate99'));
     }
 
     if (isset($_GET['pageID']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-        die(__('dievalidate99'));
+        die(\MailWatch\Translation::__('dievalidate99'));
     }
     
     if (QUARANTINE_USE_FLAG) {
@@ -144,7 +144,7 @@ AND
         $sql .= '
 ORDER BY
  date DESC, time DESC';
-        db_colorised_table($sql, __('folder08') . ' ' . \MailWatch\Format::translateQuarantineDate($dir, DATE_FORMAT), true, true);
+        db_colorised_table($sql, \MailWatch\Translation::__('folder08') . ' ' . \MailWatch\Format::translateQuarantineDate($dir, DATE_FORMAT), true, true);
     } else {
         // SECURITY: trim off any potential nasties
         $dir = preg_replace('[\.|\.\.|\/]', '', $dir);
@@ -203,9 +203,9 @@ ORDER BY
   ORDER BY
    date DESC, time DESC
   ';
-            db_colorised_table($sql, __('folder_0208') . __('colon99') . ' ' . \MailWatch\Format::translateQuarantineDate($dir), true, true);
+            db_colorised_table($sql, \MailWatch\Translation::__('folder_0208') . \MailWatch\Translation::__('colon99') . ' ' . \MailWatch\Format::translateQuarantineDate($dir), true, true);
         } else {
-            echo __('dienodir08') . "\n";
+            echo \MailWatch\Translation::__('dienodir08') . "\n";
         }
     }
 }

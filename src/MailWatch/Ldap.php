@@ -38,7 +38,7 @@ class Ldap
     {
         $username = ldap_escape(strtolower($username), '', LDAP_ESCAPE_DN);
         if ($username !== '' && $password !== '') {
-            $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(__('ldpaauth103') . ' ' . LDAP_HOST);
+            $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(\MailWatch\Translation::__('ldpaauth103') . ' ' . LDAP_HOST);
 
             $ldap_protocol_version = 3;
             if (defined('LDAP_PROTOCOL_VERSION')) {
@@ -57,27 +57,27 @@ class Ldap
             }
 
             //search for $user in LDAP directory
-            $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $username)) or die(__('ldpaauth203'));
+            $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $username)) or die(\MailWatch\Translation::__('ldpaauth203'));
 
             if (false === $ldap_search_results) {
-                @trigger_error(__('ldapnoresult03') . ' "' . $username . '"');
+                @trigger_error(\MailWatch\Translation::__('ldapnoresult03') . ' "' . $username . '"');
 
                 return null;
             }
             if (1 > ldap_count_entries($ds, $ldap_search_results)) {
                 //
-                @trigger_error(__('ldapresultnodata03') . ' "' . $username . '"');
+                @trigger_error(\MailWatch\Translation::__('ldapresultnodata03') . ' "' . $username . '"');
 
                 return null;
             }
             if (ldap_count_entries($ds, $ldap_search_results) > 1) {
-                @trigger_error(__('ldapresultset03') . ' "' . $username . '" ' . __('ldapisunique03'));
+                @trigger_error(\MailWatch\Translation::__('ldapresultset03') . ' "' . $username . '" ' . \MailWatch\Translation::__('ldapisunique03'));
 
                 return null;
             }
 
             if ($ldap_search_results) {
-                $result = ldap_get_entries($ds, $ldap_search_results) or die(__('ldpaauth303'));
+                $result = ldap_get_entries($ds, $ldap_search_results) or die(\MailWatch\Translation::__('ldpaauth303'));
                 ldap_free_result($ldap_search_results);
                 if (isset($result[0])) {
                     if (in_array('group', array_values($result[0]['objectclass']), true)) {
@@ -86,7 +86,7 @@ class Ldap
                     }
 
                     if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
-                        @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+                        @trigger_error(\MailWatch\Translation::__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . \MailWatch\Translation::__('ldapresults03'));
 
                         return null;
                     }
@@ -100,7 +100,7 @@ class Ldap
                     }
 
                     if (!isset($result[0][LDAP_EMAIL_FIELD])) {
-                        @trigger_error(__('ldapno03') . ' "' . LDAP_EMAIL_FIELD . '" ' . __('ldapresults03'));
+                        @trigger_error(\MailWatch\Translation::__('ldapno03') . ' "' . LDAP_EMAIL_FIELD . '" ' . \MailWatch\Translation::__('ldapresults03'));
 
                         return null;
                     }
@@ -152,7 +152,7 @@ class Ldap
     public static function print_error($ds)
     {
         return sprintf(
-            __('ldapnobind03'),
+            \MailWatch\Translation::__('ldapnobind03'),
             LDAP_HOST,
             ldap_errno($ds),
             ldap_error($ds)
@@ -170,10 +170,10 @@ class Ldap
         $entry = translate_etoi($entry);
 
         $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
+        or die(\MailWatch\Translation::__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
         @ldap_bind($lh)
-        or die(__('ldapgetconfvar203') . "\n");
+        or die(\MailWatch\Translation::__('ldapgetconfvar203') . "\n");
 
         # As per MailScanner Config.pm
         $filter = '(objectClass=mailscannerconfmain)';
@@ -198,7 +198,7 @@ class Ldap
         }
 
         // No results
-        die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
+        die(\MailWatch\Translation::__('ldapgetconfvar303') . " '$entry' " . \MailWatch\Translation::__('ldapgetconfvar403') . "\n");
     }
 
     /**
@@ -212,10 +212,10 @@ class Ldap
         $entry = translate_etoi($entry);
 
         $lh = ldap_connect(LDAP_HOST, LDAP_PORT)
-        or die(__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
+        or die(\MailWatch\Translation::__('ldapgetconfvar103') . ' ' . LDAP_HOST . "\n");
 
         @ldap_bind($lh)
-        or die(__('ldapgetconfvar203') . "\n");
+        or die(\MailWatch\Translation::__('ldapgetconfvar203') . "\n");
 
         # As per MailScanner Config.pm
         $filter = '(objectClass=mailscannerconfmain)';
@@ -238,7 +238,7 @@ class Ldap
             }
         } else {
             // No results
-            //die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
+            //die(\MailWatch\Translation::__('ldapgetconfvar303') . " '$entry' " . \MailWatch\Translation::__('ldapgetconfvar403') . "\n");
             return false;
         }
     }

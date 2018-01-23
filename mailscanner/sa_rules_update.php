@@ -32,21 +32,21 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    \MailWatch\Html::start(__('saruldesupdate13'), 0, false, false);
+    \MailWatch\Html::start(\MailWatch\Translation::__('saruldesupdate13'), 0, false, false);
     echo '<table class="boxtable" width="100%">';
-    echo '<tr><th>' . __('updatesadesc13') . '</th></tr>';
+    echo '<tr><th>' . \MailWatch\Translation::__('updatesadesc13') . '</th></tr>';
     echo '<tr>';
     echo '  <td>';
-    echo '   <br>' . __('message113') . '<br>';
+    echo '   <br>' . \MailWatch\Translation::__('message113') . '<br>';
     echo '   <br>';
-    echo '   ' . __('message213') . '<br><br>';
+    echo '   ' . \MailWatch\Translation::__('message213') . '<br><br>';
     echo '  </td>';
     echo '</tr>';
     echo ' <tr>';
     echo '  <td align="center">
     <form method="post" action="sa_rules_update.php">
     <div>' . "\n";
-    echo '<input type="submit" value="' . __('input13') . '"><br><br>';
+    echo '<input type="submit" value="' . \MailWatch\Translation::__('input13') . '"><br><br>';
     echo '<input type="hidden" name="run" value="true">
     </div>
     </form>
@@ -56,12 +56,12 @@ if ($_SESSION['user_type'] !== 'A') {
 
     if (isset($_POST['run'])) {
         echo '<table width="100%">';
-        echo '<tr><td align="center"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
+        echo '<tr><td align="center"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . \MailWatch\Translation::__('rule13') . '</th><th>' . \MailWatch\Translation::__('description13') . "</th></tr>\n";
         $fh = popen(
             "grep -hr '^\s*describe' " . SA_RULES_DIR . ' /usr/share/spamassassin /usr/local/share/spamassassin ' . SA_PREFS . ' /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq',
             'r'
         );
-        \MailWatch\Security::audit_log(__('auditlog13', true));
+        \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog13', true));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             // \MailWatch\Debug::debug("line: ".$line."\n");

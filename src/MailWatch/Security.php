@@ -74,12 +74,12 @@ class Security
         if ($passwordFiledLength < 255) {
             $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
             Db::query($sqlUpdateFieldLength);
-            Security::audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
+            Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
         }
 
         $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
         Db::query($sqlUpdateHash);
-        Security::audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
+        Security::audit_log(\MailWatch\Translation::__('auditlogupdateuser03', true) . ' ' . $user);
     }
 
     /**
@@ -155,7 +155,7 @@ class Security
     public static function generateFormToken($formstring)
     {
         if (!isset($_SESSION['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
 
         $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);

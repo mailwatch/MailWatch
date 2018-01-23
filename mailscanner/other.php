@@ -31,56 +31,56 @@ require_once __DIR__ . '/functions.php';
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('toolslinks10'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('toolslinks10'), 0, false, false);
 
 echo '<table width="100%" class="boxtable">';
-echo '<tr><th>' . __('toolslinks03') . '</th></tr>';
+echo '<tr><th>' . \MailWatch\Translation::__('toolslinks03') . '</th></tr>';
 echo '<tr>
         <td>
-         <p>' . __('tools10') . '</p>
+         <p>' . \MailWatch\Translation::__('tools10') . '</p>
       <ul>';
 
-echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
+echo '<li><a href="user_manager.php">' . \MailWatch\Translation::__('usermgnt10') . '</a>';
 if ($_SESSION['user_type'] === 'A') {
     $virusScanner = \MailWatch\MailScanner::getConfVar('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
-        echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
+        echo '<li><a href="sophos_status.php">' . \MailWatch\Translation::__('avsophosstatus10') . '</a>';
     }
     if (preg_match('/f-secure/i', $virusScanner)) {
-        echo '<li><a href="f-secure_status.php">' . __('avfsecurestatus10') . '</a>';
+        echo '<li><a href="f-secure_status.php">' . \MailWatch\Translation::__('avfsecurestatus10') . '</a>';
     }
     if (preg_match('/clam/i', $virusScanner)) {
-        echo '<li><a href="clamav_status.php">' . __('avclamavstatus10') . '</a>';
+        echo '<li><a href="clamav_status.php">' . \MailWatch\Translation::__('avclamavstatus10') . '</a>';
     }
     if (preg_match('/mcafee/i', $virusScanner)) {
-        echo '<li><a href="mcafee_status.php">' . __('avmcafeestatus10') . '</a>';
+        echo '<li><a href="mcafee_status.php">' . \MailWatch\Translation::__('avmcafeestatus10') . '</a>';
     }
     if (preg_match('/f-prot/i', $virusScanner)) {
-        echo '<li><a href="f-prot_status.php">' . __('avfprotstatus10') . '</a>';
+        echo '<li><a href="f-prot_status.php">' . \MailWatch\Translation::__('avfprotstatus10') . '</a>';
     }
 
-    echo '<li><a href="mysql_status.php">'.__('mysqldatabasestatus10').'</a>';
-    echo '<li><a href="msconfig.php">' . __('viewconfms10') . '</a>';
+    echo '<li><a href="mysql_status.php">'.\MailWatch\Translation::__('mysqldatabasestatus10').'</a>';
+    echo '<li><a href="msconfig.php">' . \MailWatch\Translation::__('viewconfms10') . '</a>';
     if (defined('MSRE') && MSRE === true) {
-        echo '<li><a href="msre_index.php">' . __('editmsrules10') . '</a>';
+        echo '<li><a href="msre_index.php">' . \MailWatch\Translation::__('editmsrules10') . '</a>';
     }
     if (!DISTRIBUTED_SETUP && \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin') === true) {
         echo '
-     <li><a href="bayes_info.php">'.__('spamassassinbayesdatabaseinfo10').'</a>
+     <li><a href="bayes_info.php">'.\MailWatch\Translation::__('spamassassinbayesdatabaseinfo10').'</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
-     <li><a href="sa_rules_update.php">' . __('updatesadesc10') . '</a>';
+     <li><a href="sa_rules_update.php">' . \MailWatch\Translation::__('updatesadesc10') . '</a>';
     }
     if (!DISTRIBUTED_SETUP && \MailWatch\MailScanner::getConfTrueFalse('MCPChecks') === true) {
-        echo '<li><a href="mcp_rules_update.php">' . __('updatemcpdesc10') . '</a>';
+        echo '<li><a href="mcp_rules_update.php">' . \MailWatch\Translation::__('updatemcpdesc10') . '</a>';
     }
-    echo '<li><a href="geoip_update.php">' . __('updategeoip10') . '</a>';
+    echo '<li><a href="geoip_update.php">' . \MailWatch\Translation::__('updategeoip10') . '</a>';
 }
 echo '</ul>';
 
 if ($_SESSION['user_type'] === 'A') {
     echo '
-   <p>' . __('links10') . '</p>
+   <p>' . \MailWatch\Translation::__('links10') . '</p>
    <ul>
     <li><a href="http://mailwatch.org">MailWatch for MailScanner</a>
     <li><a href="http://www.mailscanner.info">MailScanner</a>';

@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('sascoredist38'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('sascoredist38'), 0, false, true);
 
 $graphgenerator = new \MailWatch\GraphGenerator();
 $graphgenerator->sqlQuery = '
@@ -53,8 +53,8 @@ $graphgenerator->sqlQuery = '
 ';
 
 $graphgenerator->tableColumns = [
-    'score' => __('score38'),
-    'count' => __('count38')
+    'score' => \MailWatch\Translation::__('score38'),
+    'count' => \MailWatch\Translation::__('count38')
 ];
 $graphgenerator->sqlColumns = [
     'score',
@@ -66,12 +66,12 @@ $graphgenerator->graphColumns = [
     'labelColumn' => 'score',
     'dataNumericColumns' => [['count']],
     'dataFormattedColumns' => [['count']],
-    'xAxeDescription' => __('scorerounded38'),
-    'yAxeDescriptions' => [__('nbmessage38')],
+    'xAxeDescription' => \MailWatch\Translation::__('scorerounded38'),
+    'yAxeDescriptions' => [\MailWatch\Translation::__('nbmessage38')],
     'fillBelowLine' => ['true']
 ];
 $graphgenerator->types = [['line']];
-$graphgenerator->graphTitle = __('sascoredist38');
+$graphgenerator->graphTitle = \MailWatch\Translation::__('sascoredist38');
 $graphgenerator->settings['drawLines'] = true;
 $graphgenerator->settings['maxTicks'] = 24;
 $graphgenerator->printLineGraph();

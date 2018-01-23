@@ -74,7 +74,7 @@ class Antivirus
         }
         if (!defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
             // Have to set manually as running in DISTRIBUTED_MODE
-            throw new \RuntimeException('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
+            throw new \RuntimeException('<B>' . \MailWatch\Translation::__('dieerror03') . "</B><BR>\n&nbsp;" . \MailWatch\Translation::__('dievirus03') . "\n");
         }
 
         if (!defined('VIRUS_REGEX')) {
@@ -141,7 +141,7 @@ class Antivirus
                     $regex = '/(ALERT:) \[(\S+) \S+\]/';
                     break;
                 //default:
-                // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
+                // die("<B>" . \MailWatch\Translation::__('dieerror03') . "</B><BR>\n&nbsp;" . \MailWatch\Translation::__('diescanner03' . "\n");
                 // break;
             }
             return $regex;
@@ -223,7 +223,7 @@ class Antivirus
     public static function return_todays_top_virus()
     {
         if (Antivirus::getVirusRegex() === null) {
-            return __('unknownvirusscanner03');
+            return \MailWatch\Translation::__('unknownvirusscanner03');
         }
         $sql = '
 SELECT
@@ -249,7 +249,7 @@ AND
             }
         }
         if (count($virus_array) === 0) {
-            return __('none03');
+            return \MailWatch\Translation::__('none03');
         }
         arsort($virus_array);
         reset($virus_array);
@@ -269,7 +269,7 @@ AND
         $topvirus = $topvirus_arraykeys[0];
         if ($count > 1) {
             // and ... others
-            $topvirus .= sprintf(' ' . __('moretopviruses03'), $count - 1);
+            $topvirus .= sprintf(' ' . \MailWatch\Translation::__('moretopviruses03'), $count - 1);
         }
         return $topvirus;
     }

@@ -35,15 +35,15 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
-    \MailWatch\Security::audit_log(__('auditlog55', true));
+    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog55', true));
 } else {
     if (isset($_POST['token'])) {
         if (false === \MailWatch\Security::checkToken($_POST['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
     } else {
         if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
     }
 
@@ -54,10 +54,10 @@ if ($_SESSION['user_type'] !== 'A') {
         $short_filename = \MailWatch\Sanitize::deepSanitizeInput($_GET['file'], 'url');
     }
     if (!\MailWatch\Sanitize::validateInput($short_filename, 'file')) {
-        die(__('dievalidate99'));
+        die(\MailWatch\Translation::__('dievalidate99'));
     }
     $short_filename = basename($short_filename);
-    $pageheader = __('msreedit55') . ' ' . $short_filename;
+    $pageheader = \MailWatch\Translation::__('msreedit55') . ' ' . $short_filename;
     $filter = \MailWatch\Html::start($pageheader, 0, false, false);
 
     // Includes and whatnot
@@ -81,7 +81,7 @@ if ($_SESSION['user_type'] !== 'A') {
     $full_filename = MSRE_RULESET_DIR . '/' . $short_filename;
 
     if (!file_exists($full_filename)) {
-        die(__('diefnf55') . ' ' . $full_filename);
+        die(\MailWatch\Translation::__('diefnf55') . ' ' . $full_filename);
     }
 
     // Read the file into a variable, so that each function doesn't
@@ -95,7 +95,7 @@ if ($_SESSION['user_type'] !== 'A') {
     $status_message = '';
     if (isset($_POST['submitted'])) {
         if (false === \MailWatch\Security::checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
 
         list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
@@ -141,7 +141,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     }
 
     // Write out the table header(s)
-    TRH_Single(sprintf(__('contentsof55'), $short_filename), 'colspan="' . MSRE_COLUMNS . '"');
+    TRH_Single(sprintf(\MailWatch\Translation::__('contentsof55'), $short_filename), 'colspan="' . MSRE_COLUMNS . '"');
     
     // Display the file contents
     TR_Single("<pre>$file_contents</pre>", 'colspan="' . MSRE_COLUMNS . '"');
@@ -172,7 +172,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     }
 
     // Okay, now display it again, but in a format that the user can edit.
-    TRH_Single(__('editrules55'), 'colspan="' . MSRE_COLUMNS . '"');
+    TRH_Single(\MailWatch\Translation::__('editrules55'), 'colspan="' . MSRE_COLUMNS . '"');
     $colorpicker = 0;
     $rule_count = 0;
     foreach ($ruleset as $ruleanddesc) {
@@ -280,14 +280,14 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         $desc_value = htmlentities($desc, ENT_QUOTES);
         if (preg_match('/#DISABLED#/', $rule_part['0direction'])) {
             $rule_disabled = 1;
-            $rule_action_select_options = '<option value="Enable">' . __('enable55') . '</option>' . "\n";
+            $rule_action_select_options = '<option value="Enable">' . \MailWatch\Translation::__('enable55') . '</option>' . "\n";
             $disable_desc_text = ' disabled ';
             $desc_field = 'rule' . $rule_count . '_description_disabled';
             $hidden_field_code = '<input type="hidden" name="' .
                 preg_replace('/_disabled$/', '', $desc_field) . "\" value=\"$desc_value\">";
         } else {
             $rule_disabled = 0;
-            $rule_action_select_options = '<option value="Disable">' . __('disable55') .'</option>' . "\n";
+            $rule_action_select_options = '<option value="Disable">' . \MailWatch\Translation::__('disable55') .'</option>' . "\n";
             $disable_desc_text = '';
             $desc_field = 'rule' . $rule_count . '_description';
             $hidden_field_code = '';
@@ -307,11 +307,11 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // Now continue on.
         $rule_action_select_html .= '>' . "\n" .
             '  <option value="" selected>----</option>' . "\n" .
-            '  <option value="Delete">' . __('delete55') . '</option>' . "\n" .
+            '  <option value="Delete">' . \MailWatch\Translation::__('delete55') . '</option>' . "\n" .
             $rule_action_select_options . '</select>' . "\n";
         $desc_text = [
             $rule_action_select_html => 'rowspan="3"',
-            '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
+            '<b>' . \MailWatch\Translation::__('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
             'name="' . $desc_field . '" size="95" value="' . $desc_value . '"' .
             $disable_desc_text . '>' . $hidden_field_code
             => 'colspan="' . (MSRE_COLUMNS - 1) . '"'
@@ -337,7 +337,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     if ($rule_disabled) {
                         $checkbox_html .= ' disabled ';
                     }
-                    $checkbox_html .= '> ' . __('and55');
+                    $checkbox_html .= '> ' . \MailWatch\Translation::__('and55');
                     if ($rule_disabled) {
                         $checkbox_html .= "\n" . '<input type="hidden" name="' . $part_name . '" value="';
                         if ($value) {
@@ -395,7 +395,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                         $field_name .= '_disabled';
                     }
                     if (strtolower($key) === '99action') {
-                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55')
+                        $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . \MailWatch\Translation::__('action55')
                         . '</b>&nbsp;&nbsp;<input type="text" name="' . $field_name . '" value="' . $value . '" size="100"';
                     } else {
                         $temp_text = '<input type="text" name="' . $field_name . '" value="' . $value . '"';
@@ -450,13 +450,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // Description
     $desc_text = [
         '' => 'rowspan="3"',
-        '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
+        '<b>' . \MailWatch\Translation::__('description55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
         $add_prefix . 'description" value="" size="95">' =>
             'colspan="' . (MSRE_COLUMNS - 1) . '"'
     ];
     
     // Direction
-    $temp_html = '<b>' . __('conditions55') . '</b>&nbsp;&nbsp;<select name="' . $add_prefix .
+    $temp_html = '<b>' . \MailWatch\Translation::__('conditions55') . '</b>&nbsp;&nbsp;<select name="' . $add_prefix .
         'direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
         $temp_html .= '<option value="' . $kw . '">' . $kw . '</option>';
@@ -468,7 +468,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'target" value="">';
     $add_rule_text[] = '<input type="checkbox" name="' . $add_prefix .
-        'and" value="and"> ' . __('and55');
+        'and" value="and"> ' . \MailWatch\Translation::__('and55');
     $temp_html = '<select name="' . $add_prefix .
         'and_direction"><option value=""></option>';
     foreach ($CONF_ruleset_keyword as $kw) {
@@ -480,20 +480,20 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // And target
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'and_target" value="">';
-    $add_rule_text[] = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
+    $add_rule_text[] = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . \MailWatch\Translation::__('action55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
         $add_prefix . 'action" value="" size="100">';
 
     // Now write it
-    TRH_Single(__('newrule55'), 'colspan="' . MSRE_COLUMNS . '"');
+    TRH_Single(\MailWatch\Translation::__('newrule55'), 'colspan="' . MSRE_COLUMNS . '"');
     TR_Extended($desc_text, '');
     TR($add_rule_text);
 
     // Need to put a submit button on the bottom
-    TRH_Single('<input type="submit" name="submit" value="' . __('savevalue55') . '">', 'colspan="' . MSRE_COLUMNS . '"');
+    TRH_Single('<input type="submit" name="submit" value="' . \MailWatch\Translation::__('savevalue55') . '">', 'colspan="' . MSRE_COLUMNS . '"');
 
     // Finally, display page footer
     TR_Single(
-        '<a href="msre_index.php">' . __('backmsre55') . '</a><br>' . "\n" . '<a href="other.php">' . __('backmw55') . '</a><br>' . "\n",
+        '<a href="msre_index.php">' . \MailWatch\Translation::__('backmsre55') . '</a><br>' . "\n" . '<a href="other.php">' . \MailWatch\Translation::__('backmw55') . '</a><br>' . "\n",
         'colspan="' . MSRE_COLUMNS . '" class="footer"'
     );
 }
@@ -560,7 +560,7 @@ function Process_Form($file_contents, $short_filename)
     $default_desc = '';
     $count = \MailWatch\Sanitize::deepSanitizeInput($_POST['rule_count'], 'num');
     if (!\MailWatch\Sanitize::validateInput($count, 'num')) {
-        die(__('dievalidate99'));
+        die(\MailWatch\Translation::__('dievalidate99'));
     }
     for ($i = -1; $i <= $count; $i++) {
         $rule_prefix = 'rule' . $i . '_';
@@ -714,13 +714,13 @@ function Process_Form($file_contents, $short_filename)
     // startup/reload script, and that could be a bad idea.
     // So instead, I schedule a reload with the msre_reload.cron cron job
     $status_msg .= '<span class="status">' . "\n";
-    $status_msg .= __('schedureloadmw55');
+    $status_msg .= \MailWatch\Translation::__('schedureloadmw55');
     $fh = fopen('/tmp/msre_reload', 'wb');
     // We don't need to write to the file, just it existing is enough
     if (!$fh) {
-        $status_msg .= '<span class="error">' . __('error0155') . '</span><br>' . "\n";
+        $status_msg .= '<span class="error">' . \MailWatch\Translation::__('error0155') . '</span><br>' . "\n";
     } else {
-        $status_msg .= __('error55') . '<br>' . "\n" . sprintf(__('message55'), MSRE_RELOAD_INTERVAL) . '<br>' . "\n";
+        $status_msg .= \MailWatch\Translation::__('error55') . '<br>' . "\n" . sprintf(\MailWatch\Translation::__('message55'), MSRE_RELOAD_INTERVAL) . '<br>' . "\n";
     }
     $status_msg .= "</span>\n";
 
@@ -758,32 +758,32 @@ function Write_File($filename, $content)
     $status_msg .= '<span class="status">' . "\n";
     
     // Make a backup copy of the file first, in case anything goes wrong.
-    $status_msg .= __('backupfile55');
+    $status_msg .= \MailWatch\Translation::__('backupfile55');
     $backup_name = $filename . '.bak';
     if (!copy($filename, $backup_name)) {
-        $status_msg .= '<span class="error">' . __('error0255') . '</span><br>' . "\n";
+        $status_msg .= '<span class="error">' . \MailWatch\Translation::__('error0255') . '</span><br>' . "\n";
     } else {
-        $status_msg .= __('ok55') . '<br>' . "\n";
+        $status_msg .= \MailWatch\Translation::__('ok55') . '<br>' . "\n";
         // Now open the file for writing
-        $status_msg .= sprintf(__('openwriting55'), $filename);
+        $status_msg .= sprintf(\MailWatch\Translation::__('openwriting55'), $filename);
         $fh = fopen($filename, 'wb');
         if (!$fh) {
-            $status_msg .= '<span class="error">' . sprintf(__('error0355'), $filename) . '</span><br>' . "\n";
+            $status_msg .= '<span class="error">' . sprintf(\MailWatch\Translation::__('error0355'), $filename) . '</span><br>' . "\n";
         } else {
-            $status_msg .= __('ok55') . '<br>' . "\n";
+            $status_msg .= \MailWatch\Translation::__('ok55') . '<br>' . "\n";
             // Write contents
-            $status_msg .= __('writefile55');
+            $status_msg .= \MailWatch\Translation::__('writefile55');
             foreach ($content as $line) {
                 $bytes += fwrite($fh, $line);
             }
-            $status_msg .= sprintf(__('writebytes55'), $bytes) . '<br>' . "\n";
+            $status_msg .= sprintf(\MailWatch\Translation::__('writebytes55'), $bytes) . '<br>' . "\n";
             // Close file
             fclose($fh);
-            $status_msg .= __('fileclosed55') . '<br>' . "\n";
+            $status_msg .= \MailWatch\Translation::__('fileclosed55') . '<br>' . "\n";
         }
     }
 
-    $status_msg .= __('donewrite55') . '<br>' . "\n";
+    $status_msg .= \MailWatch\Translation::__('donewrite55') . '<br>' . "\n";
     $status_msg .= '</span>' . "\n";
 
     return [$bytes, $status_msg];

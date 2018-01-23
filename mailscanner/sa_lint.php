@@ -28,21 +28,21 @@
 require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('salint51'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('salint51'), 0, false, false);
 
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
-    die(__('diepipe51'));
+    die(\MailWatch\Translation::__('diepipe51'));
 }
 
-\MailWatch\Security::audit_log(__('auditlog51', true));
+\MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog51', true));
 
 echo '<table class="mail" border="0" cellpadding="1" cellspacing="1" width="100%">' . "\n";
 echo " <tr>\n";
-echo '  <th colspan="2">' . __('salint51') . '</th>' . "\n";
+echo '  <th colspan="2">' . \MailWatch\Translation::__('salint51') . '</th>' . "\n";
 echo " </tr>\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="1" class="alignleft">' . __('message51') . '</th>' . "\n";
-echo '  <th colspan="1">' . __('time51') . '</th>' . "\n";
+echo '  <th colspan="1" class="alignleft">' . \MailWatch\Translation::__('message51') . '</th>' . "\n";
+echo '  <th colspan="1">' . \MailWatch\Translation::__('time51') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 
 // Start timer
@@ -82,7 +82,7 @@ while ($line = fgets($fp, 2096)) {
 }
 pclose($fp);
 echo '   <TR>' . "\n";
-echo '    <TD><B>' . __('finish51') . '</B></TD>' . "\n";
+echo '    <TD><B>' . \MailWatch\Translation::__('finish51') . '</B></TD>' . "\n";
 echo '    <TD ALIGN="RIGHT"><B>' . round(get_microtime() - $start, 5) . '</B></TD>' . "\n";
 echo '   </TR>' . "\n";
 echo '</TABLE>' . "\n";

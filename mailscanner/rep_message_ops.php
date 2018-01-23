@@ -33,22 +33,22 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('messagelisting17'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('messagelisting17'), 0, false, true);
 
 if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-    die(__('dietoken99'));
+    die(\MailWatch\Translation::__('dietoken99'));
 }
 
 if (isset($_GET['pageID']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-    die(__('dievalidate99'));
+    die(\MailWatch\Translation::__('dievalidate99'));
 }
 
 if (isset($_GET['orderby']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['orderby'], 'url'), 'orderby')) {
-    die(__('dievalidate99'));
+    die(\MailWatch\Translation::__('dievalidate99'));
 }
 
 if (isset($_GET['orderdir']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['orderdir'], 'url'), 'orderdir')) {
-    die(__('dievalidate99'));
+    die(\MailWatch\Translation::__('dievalidate99'));
 }
 
 // Checks to see if you are looking for quarantined files only
@@ -110,7 +110,7 @@ $sql .= '
 ';
 
 // function to display the data from functions.php
-db_colorised_table($sql, __('messageops17'), true, true, true);
+db_colorised_table($sql, \MailWatch\Translation::__('messageops17'), true, true, true);
 
 // Add footer
 \MailWatch\Html::end();

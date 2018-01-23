@@ -29,26 +29,26 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('mailscannerlint28'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('mailscannerlint28'), 0, false, false);
 echo '<table class="mail" cellspacing="1" width="100%">' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="2">' . __('mailscannerlint28') . '</th>' . "\n";
+echo '  <th colspan="2">' . \MailWatch\Translation::__('mailscannerlint28') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="1" class="alignleft">' . __('message28') . '</th>' . "\n";
-echo '  <th colspan="1">' . __('time28') . '</th>' . "\n";
+echo '  <th colspan="1" class="alignleft">' . \MailWatch\Translation::__('message28') . '</th>' . "\n";
+echo '  <th colspan="1">' . \MailWatch\Translation::__('time28') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 
 if (!defined('MS_EXECUTABLE_PATH')) {
     echo '<tr>
-    <td colspan="2">' . __('errormessage28') . '</td>
+    <td colspan="2">' . \MailWatch\Translation::__('errormessage28') . '</td>
     </tr>';
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {
-        die(__('diepipe28'));
+        die(\MailWatch\Translation::__('diepipe28'));
     }
 
-    \MailWatch\Security::audit_log(__('auditlog28', true));
+    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog28', true));
 
     // Start timer
     $start = get_microtime();
@@ -83,7 +83,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     }
     pclose($fp);
     echo '   <tr>' . "\n";
-    echo '    <td><b>' . __('finish28') . '</b></td>' . "\n";
+    echo '    <td><b>' . \MailWatch\Translation::__('finish28') . '</b></td>' . "\n";
     echo '    <td align="right"><b>' . round(get_microtime() - $start, 5) . '</b></td>' . "\n";
     echo '   </tr>' . "\n";
 }

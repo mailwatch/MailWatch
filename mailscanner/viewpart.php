@@ -32,16 +32,16 @@ require __DIR__ . '/login.function.php';
 ini_set('memory_limit', MEMORY_LIMIT);
 
 if (!isset($_GET['id'])) {
-    die(__('nomessid58'));
+    die(\MailWatch\Translation::__('nomessid58'));
 }
 
 if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-    die(__('dietoken99'));
+    die(\MailWatch\Translation::__('dietoken99'));
 }
 
 $message_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
 if (!\MailWatch\Sanitize::validateInput($message_id, 'msgid')) {
-    die(__('dievalidate99'));
+    die(\MailWatch\Translation::__('dievalidate99'));
 }
 // See if message is local
 \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME); // required db link for mysql_real_escape_string
@@ -53,7 +53,7 @@ $result = \MailWatch\Db::query(
 $message_data = $result->fetch_object();
 
 if (!$message_data) {
-    die(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
+    die(\MailWatch\Translation::__('mess58') . " '" . $message_id . "' " . \MailWatch\Translation::__('notfound58') . "\n");
 }
 
 if (RPC_ONLY || !is_local($message_data->hostname)) {
@@ -67,7 +67,7 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
     if ($rsp->faultCode() === 0) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
-        die(__('error58') . ' ' . $rsp->faultString());
+        die(\MailWatch\Translation::__('error58') . ' ' . $rsp->faultString());
     }
     $file = base64_decode($response);
 } else {
@@ -90,7 +90,7 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
     }
 
     if (!@file_exists($quarantine_dir . '/' . $filename)) {
-        die(__('errornfd58') . "\n");
+        die(\MailWatch\Translation::__('errornfd58') . "\n");
     }
     $file = file_get_contents($quarantine_dir . '/' . $filename);
 }
@@ -107,15 +107,15 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 if (isset($_GET['part'])) {
     $part = \MailWatch\Sanitize::deepSanitizeInput($_GET['part'], 'url');
     if (!\MailWatch\Sanitize::validateInput($part, 'mimepart')) {
-        die(__('dievalidate99'));
+        die(\MailWatch\Translation::__('dievalidate99'));
     }
 
     // Make sure that part being requested actually exists
     if (!isset($mime_struct[$part])) {
-        die(__('part58') . ' ' . $part . ' ' . __('notfound58') . "\n");
+        die(\MailWatch\Translation::__('part58') . ' ' . $part . ' ' . \MailWatch\Translation::__('notfound58') . "\n");
     }
 } else {
-    die(__('part58') . __('notfound58') . "\n");
+    die(\MailWatch\Translation::__('part58') . \MailWatch\Translation::__('notfound58') . "\n");
 }
 
 /**
@@ -144,7 +144,7 @@ function decode_structure($structure)
  <html>
  <head>
  <meta charset="utf-8">
- <title>' . __('title58') . '</title>
+ <title>' . \MailWatch\Translation::__('title58') . '</title>
  </head>
  <body>
  <pre>' . htmlspecialchars(wordwrap($structure->body)) . '</pre>

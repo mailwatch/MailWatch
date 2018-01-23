@@ -28,7 +28,7 @@ require_once __DIR__ . '/functions.php';
 
 //Check if LDAP is enabled, if so, prevent usage
 if (USE_LDAP === true) {
-    die(__('pwdresetldap63'));
+    die(\MailWatch\Translation::__('pwdresetldap63'));
 }
 
 if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
@@ -66,9 +66,9 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             $result = \MailWatch\Db::query($sql);
             if ($result->num_rows !== 1) {
                 //user not found
-                $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '</p>
-                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
-                \MailWatch\Security::audit_log(sprintf(__('auditlogunf63', true), $email));
+                $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('usernotfound63') . '</p>
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
+                \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogunf63', true), $email));
                 $showpage = true;
             } else {
                 //user found, now check type of user
@@ -80,12 +80,12 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $sql = "UPDATE users SET resetid = '$rand', resetexpire = '$resetexpire' WHERE username = '$email'";
                     $result = \MailWatch\Db::query($sql);
                     if (!$result) {
-                        die(__('errordbupdate63'));
+                        die(\MailWatch\Translation::__('errordbupdate63'));
                     }
                     $html = '<!DOCTYPE html>
     <html>
     <head>
-     <title>' . __('title63') . '</title>
+     <title>' . \MailWatch\Translation::__('title63') . '</title>
      <style type="text/css">
      <!--
       body, td, tr {
@@ -100,36 +100,36 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
     <!-- Outer table -->
     <table width="100%" border="0">
      <tr>
-      <td><img src="' . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
+      <td><img src="' . MW_LOGO . '" alt="' . \MailWatch\Translation::__('mwlogo99') . '"/></td>
      </tr>
      <tr>
       <td align="center" valign="middle">
-       <h2>' . __('passwdresetrequest63') . '</h2>
-       <p>' . sprintf(__('p1email63'), $email) . '</p>
-        <a href="' . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&uid=' . $rand . '"><button>' . __('button63') . '</button></a></p>
+       <h2>' . \MailWatch\Translation::__('passwdresetrequest63') . '</h2>
+       <p>' . sprintf(\MailWatch\Translation::__('p1email63'), $email) . '</p>
+        <a href="' . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&uid=' . $rand . '"><button>' . \MailWatch\Translation::__('button63') . '</button></a></p>
       </td>
      </tr>
      </table>
     </body>
     </html>';
-                    $text = sprintf(__('01emailplaintxt63'), $email) . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&uid=' . $rand;
+                    $text = sprintf(\MailWatch\Translation::__('01emailplaintxt63'), $email) . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&uid=' . $rand;
 
                     //Send email
-                    $subject = __('passwdresetrequest63');
+                    $subject = \MailWatch\Translation::__('passwdresetrequest63');
                     $isSent = send_email($email, $html, $text, $subject, true);
                     if ($isSent !== true) {
                         die('Error Sending email: ' . $isSent);
                     }
 
-                    $message = '<p>' . __('01emailsuccess63') . '</p>
-                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
-                    \MailWatch\Security::audit_log(sprintf(__('auditlogreserreqested63', true), $email));
+                    $message = '<p>' . \MailWatch\Translation::__('01emailsuccess63') . '</p>
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
+                    \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogreserreqested63', true), $email));
                     $showpage = true;
                 } else {
                     //password reset not allowed
-                    \MailWatch\Security::audit_log(sprintf(__('auditlogresetdenied63', true), $email));
-                    $errors = '<p class="pwdreseterror">' . __('resetnotallowed63') . '</p>';
-                    $errors .= '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                    \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogresetdenied63', true), $email));
+                    $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('resetnotallowed63') . '</p>';
+                    $errors .= '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
                     $showpage = true;
                 }
             }
@@ -160,7 +160,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $html = '<!DOCTYPE html>
     <html>
     <head>
-     <title>' . __('pwdresetsuccess63') . '</title>
+     <title>' . \MailWatch\Translation::__('pwdresetsuccess63') . '</title>
      <style type="text/css">
      <!--
       body, td, tr {
@@ -175,34 +175,34 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
     <!-- Outer table -->
     <table width="100%%" border="0">
      <tr>
-      <td><img src="' . MW_LOGO . '" alt="' . __('mwlogo99') . '"/></td>
+      <td><img src="' . MW_LOGO . '" alt="' . \MailWatch\Translation::__('mwlogo99') . '"/></td>
      </tr>
      <tr> 
       <td align="center" valign="middle">
-       <h2>' . __('pwdresetsuccess63') . '</h2>
-       <p>' . sprintf(__('03pwdresetemail63'), $email) . '</p>
+       <h2>' . \MailWatch\Translation::__('pwdresetsuccess63') . '</h2>
+       <p>' . sprintf(\MailWatch\Translation::__('03pwdresetemail63'), $email) . '</p>
       </td>
      </tr>
      </table>
     </body>
     </html>';
-                    $text = sprintf(__('04pwdresetemail63'), $email);
+                    $text = sprintf(\MailWatch\Translation::__('04pwdresetemail63'), $email);
 
                     //Send email
-                    $subject = __('pwdresetsuccess63');
+                    $subject = \MailWatch\Translation::__('pwdresetsuccess63');
                     send_email($email, $html, $text, $subject, true);
-                    \MailWatch\Security::audit_log(sprintf(__('auditlogresetsuccess63', true), $email));
-                    $message = '<p>' . __('pwdresetsuccess63') . '</p>
-                        <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                    \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogresetsuccess63', true), $email));
+                    $message = '<p>' . \MailWatch\Translation::__('pwdresetsuccess63') . '</p>
+                        <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
                     $showpage = true;
                 } else {
-                    \MailWatch\Security::audit_log(sprintf(__('auditlogidmismatch63', true), $email));
-                    $errors = '<p class="pwdreseterror">' . __('pwdresetidmismatch63') . '</p>
-                        <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                    \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogidmismatch63', true), $email));
+                    $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('pwdresetidmismatch63') . '</p>
+                        <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
                     $showpage = true;
                 }
             } else {
-                $errors = '<p class="pwdreseterror">' . __('pwdmismatch63');
+                $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('pwdmismatch63');
                 $fields = 'stage2';
                 $showpage = true;
             }
@@ -227,9 +227,9 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $sql = "SELECT * FROM users WHERE resetid = '$uid'";
                 $result = \MailWatch\Db::query($sql);
                 if ($result->num_rows !== 1) {
-                    \MailWatch\Security::audit_log(sprintf(__('auditlogunf63', true), $uid));
-                    $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '
-                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                    \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogunf63', true), $uid));
+                    $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('usernotfound63') . '
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
                     $showpage = true;
                 } else {
                     $row = $result->fetch_array();
@@ -237,25 +237,25 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     if ($row['resetid'] === $uid) {
                         //reset id matches - check if link expired
                         if ($row['resetexpire'] < time()) {
-                            \MailWatch\Security::audit_log(sprintf(__('auditlogexpired63', true), $row['username']));
-                            $errors = '<p class="pwdreseterror">' . __('resetexpired63') . '
-                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                            \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogexpired63', true), $row['username']));
+                            $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('resetexpired63') . '
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
                             $showpage = true;
                         } else {
                             $fields = 'stage2';
                             $showpage = true;
                         }
                     } else {
-                        \MailWatch\Security::audit_log(sprintf(__('auditlogidmismatch63', true), $row['username']));
-                        $errors = '<p class="pwdreseterror">' . __('pwdresetidmismatch63') . '
-                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                        \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogidmismatch63', true), $row['username']));
+                        $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('pwdresetidmismatch63') . '
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
                         $showpage = true;
                     }
                 }
             } else {
                 //no matches - deny
-                \MailWatch\Security::audit_log(__('auditloglinkerror63', true));
-                $errors = __('brokenlink63') . '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditloglinkerror63', true));
+                $errors = \MailWatch\Translation::__('brokenlink63') . '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
                 $showpage = true;
             }
         } else {
@@ -274,7 +274,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         <head>
             <meta charset="utf-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <title><?php echo __('title63'); ?></title>
+            <title><?php echo \MailWatch\Translation::__('title63'); ?></title>
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="shortcut icon" href="images/favicon.png">
             <link rel="stylesheet" href="style.css" type="text/css">
@@ -285,10 +285,10 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         <body class="pwdreset">
         <div class="pwdreset">
             <div class="mw-logo">
-                <img src="<?php echo '.' . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo __('mwlogo99'); ?>">
+                <img src="<?php echo '.' . IMAGES_DIR . MW_LOGO; ?>" alt="<?php echo \MailWatch\Translation::__('mwlogo99'); ?>">
             </div>
             <div class="border-rounded">
-                <h1><?php echo __('title63'); ?></h1>
+                <h1><?php echo \MailWatch\Translation::__('title63'); ?></h1>
                 <?php if (file_exists('conf.php')) {
             if ($fields !== '') {
                 ?>
@@ -304,20 +304,20 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 if ($fields === 'stage1') {
                     ?>
-                                    <p><label for="email"><?php echo __('emailaddress63'); ?></label></p>
+                                    <p><label for="email"><?php echo \MailWatch\Translation::__('emailaddress63'); ?></label></p>
                                     <p><input name="email" type="text" id="email" autofocus></p>
-                                    <p><button type="submit" name="Submit" value="stage1Submit"><?php echo __('requestpwdreset63'); ?></button></p>
+                                    <p><button type="submit" name="Submit" value="stage1Submit"><?php echo \MailWatch\Translation::__('requestpwdreset63'); ?></button></p>
                                     <?php
                 }
                 if ($fields === 'stage2') {
                     ?>
                                     <input type="hidden" name="email" value="<?php echo $email; ?>">
                                     <input type="hidden" name="uid" value="<?php echo $uid; ?>">
-                                    <p><label for="pwd1"><?php echo __('01pwd63'); ?></label></p>
+                                    <p><label for="pwd1"><?php echo \MailWatch\Translation::__('01pwd63'); ?></label></p>
                                     <p><input name="pwd1" type="password" id="pwd1" autocomplete="off" autofocus></p>
-                                    <p><label for="pwd2"><?php echo __('02pwd63'); ?></label></p>
+                                    <p><label for="pwd2"><?php echo \MailWatch\Translation::__('02pwd63'); ?></label></p>
                                     <p><input name="pwd2" type="password" id="pwd2" autocomplete="off"></p>
-                                    <p><button type="submit" name="Submit" value="stage2Submit"><?php echo __('button63'); ?></button></p>
+                                    <p><button type="submit" name="Submit" value="stage2Submit"><?php echo \MailWatch\Translation::__('button63'); ?></button></p>
                                     <?php
                 } ?>
 
@@ -333,7 +333,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         } else {
             ?>
                     <p class="error">
-                        <?php echo __('cannot_read_conf'); ?>
+                        <?php echo \MailWatch\Translation::__('cannot_read_conf'); ?>
                     </p>
                     <?php
         } ?>
@@ -347,5 +347,5 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         die();
     }
 } else {
-    die(__('conferror63'));
+    die(\MailWatch\Translation::__('conferror63'));
 }

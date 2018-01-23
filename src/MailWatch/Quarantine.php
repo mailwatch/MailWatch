@@ -91,7 +91,7 @@ SELECT
         $sth = Db::query($sql);
         $rows = $sth->num_rows;
         if ($rows <= 0) {
-            die(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
+            die(\MailWatch\Translation::__('diequarantine103') . " $msgid " . \MailWatch\Translation::__('diequarantine103') . "\n");
         }
         $row = $sth->fetch_object();
         if (!$rpc_only && is_local($row->hostname)) {
@@ -123,7 +123,7 @@ SELECT
             }
             // Check the main quarantine
             if (is_dir($quarantine) && is_readable($quarantine)) {
-                $d = opendir($quarantine) or die(__('diequarantine303') . " $quarantine\n");
+                $d = opendir($quarantine) or die(\MailWatch\Translation::__('diequarantine303') . " $quarantine\n");
                 while (false !== ($f = readdir($d))) {
                     if ($f !== '..' && $f !== '.') {
                         $quarantined[$count]['id'] = $count;
@@ -201,14 +201,14 @@ SELECT
                 $m_result = $mail->send($to, $hdrs, $body);
                 if (is_a($m_result, 'PEAR_Error')) {
                     // Error
-                    $status = __('releaseerror03') . ' (' . $m_result->getMessage() . ')';
+                    $status = \MailWatch\Translation::__('releaseerror03') . ' (' . $m_result->getMessage() . ')';
                     global $error;
                     $error = true;
                 } else {
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  Sanitize::safe_value($list[0]['msgid']) . "'";
                     Db::query($sql);
-                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                    Security::audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
+                    $status = \MailWatch\Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                    Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
                 }
 
                 return $status;
@@ -224,10 +224,10 @@ SELECT
                     if ($retval === 0) {
                         $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  Sanitize::safe_value($list[0]['msgid']) . "'";
                         Db::query($sql);
-                        $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                        Security::audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
+                        $status = \MailWatch\Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                        Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                     } else {
-                        $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
+                        $status = \MailWatch\Translation::__('releaseerrorcode03') . ' ' . $retval . ' ' . \MailWatch\Translation::__('returnedfrom03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -334,7 +334,7 @@ SELECT
                             Debug::debug("Learner - running SQL: $sql");
                             Db::query($sql);
                         }
-                        $status[] = __('spamassassin03') . ' ' . implode(', ', $output_array);
+                        $status[] = \MailWatch\Translation::__('spamassassin03') . ' ' . implode(', ', $output_array);
                         switch ($learn_type) {
                             case '-r':
                                 $learn_type = 'spam';
@@ -344,10 +344,10 @@ SELECT
                                 break;
                         }
                         Security::audit_log(
-                            sprintf(__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
+                            sprintf(\MailWatch\Translation::__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                         );
                     } else {
-                        $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
+                        $status[] = \MailWatch\Translation::__('spamerrorcode0103') . ' ' . $retval . \MailWatch\Translation::__('spamerrorcode0203') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -373,10 +373,10 @@ SELECT
                             Debug::debug("Learner - running SQL: $sql");
                             Db::query($sql);
                         }
-                        $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
-                        Security::audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
+                        $status[] = \MailWatch\Translation::__('salearn03') . ' ' . implode(', ', $output_array);
+                        Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
                     } else {
-                        $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
+                        $status[] = \MailWatch\Translation::__('salearnerror03') . ' ' . $retval . ' ' . \MailWatch\Translation::__('salearnreturn03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -448,9 +448,9 @@ SELECT
                 if (@unlink($list[$val]['path'])) {
                     $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                     \MailWatch\Db::query("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                    \MailWatch\Security::audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
+                    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
                 } else {
-                    $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
+                    $status[] = \MailWatch\Translation::__('auditlogdelerror03') . ' ' . $list[$val]['path'];
                     global $error;
                     $error = true;
                 }

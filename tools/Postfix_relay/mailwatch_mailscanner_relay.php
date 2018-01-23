@@ -44,7 +44,7 @@ function doit($input)
 {
     global $fp;
     if (!$fp = popen($input, 'r')) {
-        die(__('diepipe54'));
+        die(\MailWatch\Translation::__('diepipe54'));
     }
 
     $lines = 1;

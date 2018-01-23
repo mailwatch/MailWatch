@@ -44,7 +44,7 @@ class MailScanner
 
         // check if file can be read
         if (!is_file($name) || !is_readable($name)) {
-            die(__('dienomsconf03'));
+            die(\MailWatch\Translation::__('dienomsconf03'));
         }
 
         $array_output = [];
@@ -146,7 +146,7 @@ class MailScanner
             return $conf_include_folder;
         }
 
-        die(__('dienoconfigval103') . ' include ' . __('dienoconfigval203') . ' ' . $msconfig . "\n");
+        die(\MailWatch\Translation::__('dienoconfigval103') . ' include ' . \MailWatch\Translation::__('dienoconfigval203') . ' ' . $msconfig . "\n");
     }
 
     /**
@@ -182,7 +182,7 @@ class MailScanner
             }
         }
 
-        die(__('dienoconfigval103') . " $name " . __('dienoconfigval203') . " $MailScanner_conf_file\n");
+        die(\MailWatch\Translation::__('dienoconfigval103') . " $name " . \MailWatch\Translation::__('dienoconfigval203') . " $MailScanner_conf_file\n");
     }
 
 
@@ -192,7 +192,7 @@ class MailScanner
      */
     public static function getDefaultRulesetValue($file)
     {
-        $fh = fopen($file, 'rb') or die(__('dieruleset03') . " $file");
+        $fh = fopen($file, 'rb') or die(\MailWatch\Translation::__('dieruleset03') . " $file");
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, filesize($file)));
             if (preg_match('/^([^#]\S+:)\s+(\S+)\s+([^#]\S+)/', $line, $regs)) {

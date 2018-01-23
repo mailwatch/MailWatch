@@ -35,10 +35,10 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrater send them back to the index page.
     header('Location: index.php');
-    \MailWatch\Security::audit_log(__('auditlog19', true));
+    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog19', true));
 } else {
     // Start the header code and Title
-    \MailWatch\Html::start(__('avclamavstatus19'), 0, false, false);
+    \MailWatch\Html::start(\MailWatch\Translation::__('avclamavstatus19'), 0, false, false);
     // Create the table
     echo '<table class="boxtable" width="100%">';
     echo '<tr>';

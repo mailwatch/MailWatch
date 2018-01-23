@@ -29,23 +29,23 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-$refresh = \MailWatch\Html::start(__('opresult21'));
+$refresh = \MailWatch\Html::start(\MailWatch\Translation::__('opresult21'));
 
 if ($_SESSION['token'] !== \MailWatch\Sanitize::deepSanitizeInput($_POST['token'], 'url')) {
-    die(__('dietoken99'));
+    die(\MailWatch\Translation::__('dietoken99'));
 }
 if (false === \MailWatch\Security::checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
-    die(__('dietoken99'));
+    die(\MailWatch\Translation::__('dietoken99'));
 }
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="3">' . __('spamlearnresult21') . '</th>' . "\n";
+echo '  <th colspan="3">' . \MailWatch\Translation::__('spamlearnresult21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 echo ' <tr>' . "\n";
-echo '  <th colspan="1">' . __('messageid21') . '</th>' . "\n";
-echo '  <th colspan="1">' . __('result21') . '</th>' . "\n";
-echo '  <th colspan="1">' . __('message21') . '</th>' . "\n";
+echo '  <th colspan="1">' . \MailWatch\Translation::__('messageid21') . '</th>' . "\n";
+echo '  <th colspan="1">' . \MailWatch\Translation::__('result21') . '</th>' . "\n";
+echo '  <th colspan="1">' . \MailWatch\Translation::__('message21') . '</th>' . "\n";
 echo ' </tr>' . "\n";
 
 // Iterate through the POST variables
@@ -88,7 +88,7 @@ if (isset($_POST) && !empty($_POST)) {
         echo '<td><a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
         if (empty($items)) {
-            echo '<td class="error">' . __('diemnf21') . '</td>' . "\n";
+            echo '<td class="error">' . \MailWatch\Translation::__('diemnf21') . '</td>' . "\n";
         } elseif (is_string($items)) {
             echo '<td class="error">' . $items . '</td>' . "\n";
         } else {
@@ -123,10 +123,10 @@ if (isset($_POST) && !empty($_POST)) {
         echo '</tr>' . "\n";
     }
 } else {
-    echo '<tr><td colspan="3">' . __('diemnf21') . '</td></tr>' . "\n";
+    echo '<tr><td colspan="3">' . \MailWatch\Translation::__('diemnf21') . '</td></tr>' . "\n";
 }
 echo ' </table>' . "\n";
-echo '<p class="center"><a href="javascript:history.back(1)">' . __('back21') . '</a></p><br>' . "\n";
+echo '<p class="center"><a href="javascript:history.back(1)">' . \MailWatch\Translation::__('back21') . '</a></p><br>' . "\n";
 
 //Add footer
 \MailWatch\Html::end();

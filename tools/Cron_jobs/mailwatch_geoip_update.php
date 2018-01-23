@@ -37,10 +37,10 @@ ob_start();
 echo 'Downloading file, please wait...' . "\n";
 
 $files_base_url = 'http://geolite.maxmind.com';
-$files['ipv4']['description'] = __('geoipv452');
+$files['ipv4']['description'] = \MailWatch\Translation::__('geoipv452');
 $files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
 $files['ipv4']['destination'] = MAILWATCH_HOME . '/temp/GeoIP.dat.gz';
-$files['ipv6']['description'] = __('geoipv652');
+$files['ipv6']['description'] = \MailWatch\Translation::__('geoipv652');
 $files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
 $files['ipv6']['destination'] = MAILWATCH_HOME . '/temp/GeoIPv6.dat.gz';
 
@@ -85,17 +85,17 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                     $requestSession->filename = $file['destination'];
                     $result = $requestSession->get($file['path']);
                     if ($result->success === true) {
-                        echo $file['description'] . ' ' . __('downok52') . "\n";
+                        echo $file['description'] . ' ' . \MailWatch\Translation::__('downok52') . "\n";
                     }
                 } catch (Requests_Exception $e) {
-                    echo __('downbad52') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "\n";
+                    echo \MailWatch\Translation::__('downbad52') . ' ' . $file['description'] . \MailWatch\Translation::__('colon99') . ' ' . $e->getMessage() . "\n";
                 }
 
                 ob_flush();
                 flush();
             }
 
-            echo __('downokunpack52') . "\n";
+            echo \MailWatch\Translation::__('downokunpack52') . "\n";
             ob_flush();
             flush();
         } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
@@ -116,14 +116,14 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                     $retval_wget
                 );
                 if ($retval_wget > 0) {
-                    echo __('downbad52') . ' ' . $file['description'] . "\n";
+                    echo \MailWatch\Translation::__('downbad52') . ' ' . $file['description'] . "\n";
                 } else {
                     echo $file['description'] . ' successfully downloaded' . "\n";
                 }
             }
         } else {
-            $error_message = __('message352') . "\n";
-            $error_message .= __('message452');
+            $error_message = \MailWatch\Translation::__('message352') . "\n";
+            $error_message .= \MailWatch\Translation::__('message452');
             die($error_message);
         }
         // Extract files
@@ -137,7 +137,7 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                 }
                 gzclose($zp_gz);
                 fclose($targetFile);
-                echo $file['description'] . ' ' . __('unpackok52') . "\n";
+                echo $file['description'] . ' ' . \MailWatch\Translation::__('unpackok52') . "\n";
                 unlink($file['destination']);
                 ob_flush();
                 flush();
@@ -146,39 +146,39 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
             foreach ($files as $file) {
                 exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
                 if ($retval_gunzip > 0) {
-                    die(__('extractnotok52') . $file['description'] . "\n");
+                    die(\MailWatch\Translation::__('extractnotok52') . $file['description'] . "\n");
                 } else {
-                    echo $file['description'] . ' ' . __('extractok52') . "\n";
+                    echo $file['description'] . ' ' . \MailWatch\Translation::__('extractok52') . "\n";
                 }
             }
         } else {
             // Unable to extract the file correctly
-            $error_message = __('message552') . "\n";
-            $error_message .= __('message652');
+            $error_message = \MailWatch\Translation::__('message552') . "\n";
+            $error_message .= \MailWatch\Translation::__('message652');
             die($error_message);
         }
 
         // Apply MailWatch rights on files from the last run
         $mwUID =  exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $output_cat, $retval_cat);
         if ($retval_cat > 0) {
-            die(__('nofind52') . '.' . "\n");
+            die(\MailWatch\Translation::__('nofind52') . '.' . "\n");
         } else {
             $path = $extract_dir . 'GeoIP*.dat';
             passthru("chown $mwUID.$mwUID $path", $retval_chown);
             if ($retval_chown > 0) {
-                die(__('nofindowner52') . ' ' . $extract_dir . '.' . "\n");
+                die(\MailWatch\Translation::__('nofindowner52') . ' ' . $extract_dir . '.' . "\n");
             }
         }
 
-        echo __('processok52') . "\n\n";
+        echo \MailWatch\Translation::__('processok52') . "\n\n";
         ob_flush();
         flush();
     } else {
         // Unable to read or write to the directory
-        die(__('norread52') . ' ' . $extract_dir . ' ' . __('directory52') . ".\n");
+        die(\MailWatch\Translation::__('norread52') . ' ' . $extract_dir . ' ' . \MailWatch\Translation::__('directory52') . ".\n");
     }
 } else {
-    $error_message = __('message752') . "\n";
-    $error_message .= __('message852') . " $extract_dir" . '.';
+    $error_message = \MailWatch\Translation::__('message752') . "\n";
+    $error_message .= \MailWatch\Translation::__('message852') . " $extract_dir" . '.';
     die($error_message);
 }

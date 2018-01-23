@@ -34,7 +34,7 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    \MailWatch\Html::start(__('mcafeestatus25'), 0, false, false);
+    \MailWatch\Html::start(\MailWatch\Translation::__('mcafeestatus25'), 0, false, false);
 
     echo '<table class="boxtable" width="100%">' . "\n";
     echo '<tr>' . "\n";

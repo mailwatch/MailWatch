@@ -37,7 +37,7 @@ $required_constant = ['TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP'];
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
-        echo sprintf(__('message62'), $constant) . "\n";
+        echo sprintf(\MailWatch\Translation::__('message62'), $constant) . "\n";
         $required_constant_missing_count++;
     }
 }
@@ -91,7 +91,7 @@ if ($required_constant_missing_count === 0) {
                     dbg('Deleting: ' . escapeshellarg($quarantine . '/' . $f));
                     exec('rm -rf ' . escapeshellarg($quarantine . '/' . $f), $output, $return);
                     if ($return > 0) {
-                        echo __('error62') . " $output\n";
+                        echo \MailWatch\Translation::__('error62') . " $output\n";
                     }
                 }
             }

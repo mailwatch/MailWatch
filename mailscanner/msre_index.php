@@ -36,13 +36,13 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
-    \MailWatch\Security::audit_log(__('auditlog29', true));
+    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog29', true));
 } else {
-    \MailWatch\Html::start(__('rulesetedit29'), 0, false, false);
+    \MailWatch\Html::start(\MailWatch\Translation::__('rulesetedit29'), 0, false, false);
 
     // Start a table
     echo '<table border="0" class="mailwatch" align="center">' . "\n";
-    TRH([__('editrule29')]);
+    TRH([\MailWatch\Translation::__('editrule29')]);
 
     $ruleset_file = [];
     // Open directory and read its contents
@@ -57,7 +57,7 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 
     if (empty($ruleset_file)) {
-        TR([__('norulefound29')]);
+        TR([\MailWatch\Translation::__('norulefound29')]);
     } else {
         // Display it in a sorted table with links
         asort($ruleset_file);

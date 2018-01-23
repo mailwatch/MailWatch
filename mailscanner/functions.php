@@ -34,7 +34,7 @@ $autoloader = require __DIR__ . '/../src/bootstrap.php';
 
 // Read in MailWatch configuration file
 if (!is_readable(__DIR__ . '/conf.php')) {
-    die(__('cannot_read_conf'));
+    die(\MailWatch\Translation::__('cannot_read_conf'));
 }
 require_once __DIR__ . '/conf.php';
 
@@ -93,7 +93,7 @@ if ($missingConfigEntries['needed']['count'] !== 0) {
     if (PHP_SAPI !== 'cli') {
         $br = '<br>';
     }
-    echo __('missing_conf_entries') . $br . PHP_EOL;
+    echo \MailWatch\Translation::__('missing_conf_entries') . $br . PHP_EOL;
     foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
         echo '- ' . $missingConfigEntry . $br . PHP_EOL;
     }
@@ -141,41 +141,7 @@ function mailwatch_version()
     return '1.99.0-dev';
 }
 
-/**
- * @param string $string
- * @param boolean $useSystemLang
- * @return string
- */
-function __($string, $useSystemLang = false)
-{
-    if ($useSystemLang) {
-        global $systemLang;
-        $language = $systemLang;
-    } else {
-        global $lang;
-        $language = $lang;
-    }
 
-    $debug_message = '';
-    $pre_string = '';
-    $post_string = '';
-    if (DEBUG === true) {
-        $debug_message = ' (' . $string . ')';
-        $pre_string = '<span class="error">';
-        $post_string = '</span>';
-    }
-
-    if (isset($language[$string])) {
-        return $language[$string] . $debug_message;
-    }
-
-    $en_lang = require __DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php';
-    if (isset($en_lang[$string])) {
-        return $pre_string . $en_lang[$string] . $debug_message . $post_string;
-    }
-
-    return $pre_string . $language['i18_missing'] . $debug_message . $post_string;
-}
 
 /**
  * @return array|mixed
@@ -319,7 +285,7 @@ function generatePager($sql)
 
     echo '<table cellspacing="1" class="mail" >
 <tr>
-<th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
+<th colspan="5">' . \MailWatch\Translation::__('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . \MailWatch\Translation::__('of03') . ' ' . $pager->numPages() . ' - ' . \MailWatch\Translation::__('records03') . ' ' . $from . ' ' . \MailWatch\Translation::__('to0203') . ' ' . $to . ' ' . \MailWatch\Translation::__('of03') . ' ' . $pager->numItems() . '</th>
 </tr>
 <tr>
 <td align="center">' . "\n";
@@ -413,7 +379,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 $orderable[$f] = false;
                 // Set it up not to wrap - tricky way to leach onto the align field
                 $align[$f] = 'center" style="white-space:nowrap';
-                $fieldname[$f] = __('ops03') . '<br><a href="javascript:SetRadios(\'S\')">' . __('radiospam203') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'H\')">' . __('radioham03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'F\')">' . __('radioforget03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'R\')">' . __('radiorelease03') . '</a>';
+                $fieldname[$f] = \MailWatch\Translation::__('ops03') . '<br><a href="javascript:SetRadios(\'S\')">' . \MailWatch\Translation::__('radiospam203') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'H\')">' . \MailWatch\Translation::__('radioham03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'F\')">' . \MailWatch\Translation::__('radioforget03') . '</a>&nbsp;&nbsp;&nbsp;<a href="javascript:SetRadios(\'R\')">' . \MailWatch\Translation::__('radiorelease03') . '</a>';
                 continue;
             }
             $display[$f] = true;
@@ -436,11 +402,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     }
                     break;
                 case 'timestamp':
-                    $fieldname[$f] = __('datetime03');
+                    $fieldname[$f] = \MailWatch\Translation::__('datetime03');
                     $align[$f] = 'center';
                     break;
                 case 'datetime':
-                    $fieldname[$f] = __('datetime03');
+                    $fieldname[$f] = \MailWatch\Translation::__('datetime03');
                     $align[$f] = 'center';
                     break;
                 case 'id':
@@ -454,21 +420,21 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $align[$f] = 'center';
                     break;
                 case 'size':
-                    $fieldname[$f] = __('size03');
+                    $fieldname[$f] = \MailWatch\Translation::__('size03');
                     $align[$f] = 'right';
                     break;
                 case 'from_address':
-                    $fieldname[$f] = __('from03');
+                    $fieldname[$f] = \MailWatch\Translation::__('from03');
                     break;
                 case 'to_address':
-                    $fieldname[$f] = __('to03');
+                    $fieldname[$f] = \MailWatch\Translation::__('to03');
                     break;
                 case 'subject':
-                    $fieldname[$f] = __('subject03');
+                    $fieldname[$f] = \MailWatch\Translation::__('subject03');
                     break;
                 case 'clientip':
                     if (defined('DISPLAY_IP') && DISPLAY_IP) {
-                        $fieldname[$f] = __('clientip03');
+                        $fieldname[$f] = \MailWatch\Translation::__('clientip03');
                     }
                     $display[$f] = true;
                     break;
@@ -527,21 +493,21 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $display[$f] = false;
                     break;
                 case 'hostname':
-                    $fieldname[$f] = __('host03');
+                    $fieldname[$f] = \MailWatch\Translation::__('host03');
                     $display[$f] = true;
                     break;
                 case 'date':
-                    $fieldname[$f] = __('date03');
+                    $fieldname[$f] = \MailWatch\Translation::__('date03');
                     break;
                 case 'time':
-                    $fieldname[$f] = __('time03');
+                    $fieldname[$f] = \MailWatch\Translation::__('time03');
                     break;
                 case 'headers':
                     $display[$f] = false;
                     break;
                 case 'sascore':
                     if (true === \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin')) {
-                        $fieldname[$f] = __('sascore03');
+                        $fieldname[$f] = \MailWatch\Translation::__('sascore03');
                         $align[$f] = 'right';
                     } else {
                         $display[$f] = false;
@@ -549,25 +515,25 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'mcpsascore':
                     if (\MailWatch\MailScanner::getConfTrueFalse('MCPChecks')) {
-                        $fieldname[$f] = __('mcpscore03');
+                        $fieldname[$f] = \MailWatch\Translation::__('mcpscore03');
                         $align[$f] = 'right';
                     } else {
                         $display[$f] = false;
                     }
                     break;
                 case 'status':
-                    $fieldname[$f] = __('status03');
+                    $fieldname[$f] = \MailWatch\Translation::__('status03');
                     $orderable[$f] = false;
                     break;
                 case 'message':
-                    $fieldname[$f] = __('message03');
+                    $fieldname[$f] = \MailWatch\Translation::__('message03');
                     break;
                 case 'attempts':
-                    $fieldname[$f] = __('tries03');
+                    $fieldname[$f] = \MailWatch\Translation::__('tries03');
                     $align[$f] = 'right';
                     break;
                 case 'lastattempt':
-                    $fieldname[$f] = __('last03');
+                    $fieldname[$f] = \MailWatch\Translation::__('last03');
                     $align[$f] = 'right';
                     break;
                 case 'released':
@@ -707,7 +673,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'isspam':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $spam = true;
-                            $status_array[] = __('spam103');
+                            $status_array[] = \MailWatch\Translation::__('spam103');
                         }
                         break;
                     case 'ishighspam':
@@ -718,7 +684,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'ismcp':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $mcp = true;
-                            $status_array[] = __('mcp03');
+                            $status_array[] = \MailWatch\Translation::__('mcp03');
                         }
                         break;
                     case 'ishighmcp':
@@ -729,7 +695,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'virusinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = __('virus03');
+                            $status_array[] = \MailWatch\Translation::__('virus03');
                         }
                         break;
                     case 'report':
@@ -747,13 +713,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'nameinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = __('badcontent03');
+                            $status_array[] = \MailWatch\Translation::__('badcontent03');
                         }
                         break;
                     case 'otherinfected':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $infected = true;
-                            $status_array[] = __('otherinfected03');
+                            $status_array[] = \MailWatch\Translation::__('otherinfected03');
                         }
                         break;
                     case 'size':
@@ -762,19 +728,19 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'spamwhitelisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $whitelisted = true;
-                            $status_array[] = __('whitelisted03');
+                            $status_array[] = \MailWatch\Translation::__('whitelisted03');
                         }
                         break;
                     case 'spamblacklisted':
                         if ($row[$f] === 'Y' || $row[$f] > 0) {
                             $blacklisted = true;
-                            $status_array[] = __('blacklisted03');
+                            $status_array[] = \MailWatch\Translation::__('blacklisted03');
                         }
                         break;
                     case 'clienthost':
                         $hostname = gethostbyaddr($row[$f]);
                         if ($hostname === $row[$f]) {
-                            $row[$f] = __('hostfailed03');
+                            $row[$f] = \MailWatch\Translation::__('hostfailed03');
                         } else {
                             $row[$f] = $hostname;
                         }
@@ -782,18 +748,18 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'released':
                         if ($row[$f] > 0) {
                             $released = true;
-                            $status_array[] = __('released03');
+                            $status_array[] = \MailWatch\Translation::__('released03');
                         }
                         break;
                     case 'salearn':
                         switch ($row[$f]) {
                             case 1:
                                 $salearnham = true;
-                                $status_array[] = __('learnham03');
+                                $status_array[] = \MailWatch\Translation::__('learnham03');
                                 break;
                             case 2:
                                 $salearnspam = true;
-                                $status_array[] = __('learnspam03');
+                                $status_array[] = \MailWatch\Translation::__('learnspam03');
                                 break;
                         }
                         break;
@@ -801,15 +767,15 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // NOTE: this should always be the last row for it to be displayed correctly
                         // Work out status
                         if (count($status_array) === 0) {
-                            $status = __('clean03');
+                            $status = \MailWatch\Translation::__('clean03');
                         } else {
                             $status = '';
                             foreach ($status_array as $item) {
-                                if ($item === __('released03')) {
+                                if ($item === \MailWatch\Translation::__('released03')) {
                                     $class = 'released';
-                                } elseif ($item === __('learnham03')) {
+                                } elseif ($item === \MailWatch\Translation::__('learnham03')) {
                                     $class = 'salearn-1';
-                                } elseif ($item === __('learnspam03')) {
+                                } elseif ($item === \MailWatch\Translation::__('learnspam03')) {
                                     $class = 'salearn-2';
                                 } else {
                                     $class = '';
@@ -914,14 +880,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
     }
 </script>
-   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">" . __('radiospam203') . "</a>
-   &nbsp; <a href=\"javascript:SetRadios('H')\">" . __('radioham03') . "</a>
-   &nbsp; <a href=\"javascript:SetRadios('F')\">" . __('radioforget03') . "</a>
-   &nbsp; <a href=\"javascript:SetRadios('R')\">" . __('radiorelease03') . '</a>
-   &nbsp; ' . __('or03') . " <a href=\"javascript:SetRadios('C')\">" . __('clear03') . "</p>
-   <p><input type='SUBMIT' name='SUBMIT' value='" . __('learn03') . "'></p>
+   <p>&nbsp; <a href=\"javascript:SetRadios('S')\">" . \MailWatch\Translation::__('radiospam203') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('H')\">" . \MailWatch\Translation::__('radioham03') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('F')\">" . \MailWatch\Translation::__('radioforget03') . "</a>
+   &nbsp; <a href=\"javascript:SetRadios('R')\">" . \MailWatch\Translation::__('radiorelease03') . '</a>
+   &nbsp; ' . \MailWatch\Translation::__('or03') . " <a href=\"javascript:SetRadios('C')\">" . \MailWatch\Translation::__('clear03') . "</p>
+   <p><input type='SUBMIT' name='SUBMIT' value='" . \MailWatch\Translation::__('learn03') . "'></p>
    </form>
-   <p><b>" . __('spam203') . ' &nbsp; <b>' . __('ham03') . ' &nbsp; <b>' . __('forget03') . ' &nbsp; <b>' . __('release03') . '' . "\n";
+   <p><b>" . \MailWatch\Translation::__('spam203') . ' &nbsp; <b>' . \MailWatch\Translation::__('ham03') . ' &nbsp; <b>' . \MailWatch\Translation::__('forget03') . ' &nbsp; <b>' . \MailWatch\Translation::__('release03') . '' . "\n";
         }
         echo '<br>' . "\n";
         if ($pager) {
@@ -986,7 +952,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
+   <th colspan="5">' . \MailWatch\Translation::__('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . \MailWatch\Translation::__('of03') . ' ' . $pager->numPages() . ' - ' . \MailWatch\Translation::__('records03') . ' ' . $from . ' ' . \MailWatch\Translation::__('to0203') . ' ' . $to . ' ' . \MailWatch\Translation::__('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -1047,7 +1013,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         }
         echo '</table>' . "\n";
     } else {
-        echo __('norowfound03') . "\n";
+        echo \MailWatch\Translation::__('norowfound03') . "\n";
     }
     echo '<br>' . "\n";
     if ($pager) {
@@ -1080,7 +1046,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
-   <th colspan="5">' . __('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . __('of03') . ' ' . $pager->numPages() . ' - ' . __('records03') . ' ' . $from . ' ' . __('to0203') . ' ' . $to . ' ' . __('of03') . ' ' . $pager->numItems() . '</th>
+   <th colspan="5">' . \MailWatch\Translation::__('disppage03') . ' ' . $pager->getCurrentPageID() . ' ' . \MailWatch\Translation::__('of03') . ' ' . $pager->numPages() . ' - ' . \MailWatch\Translation::__('records03') . ' ' . $from . ' ' . \MailWatch\Translation::__('to0203') . ' ' . $to . ' ' . \MailWatch\Translation::__('of03') . ' ' . $pager->numItems() . '</th>
   </tr>
   <tr>
   <td align="center">' . "\n";
@@ -1141,7 +1107,7 @@ function page_creation_timer()
         $pc_end_time = get_microtime();
         $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
 
-        return sprintf(__('pggen03') . ' %f ' . __('seconds03') . "\n", $pc_total_time);
+        return sprintf(\MailWatch\Translation::__('pggen03') . ' %f ' . \MailWatch\Translation::__('seconds03') . "\n", $pc_total_time);
     }
 }
 
@@ -1295,7 +1261,7 @@ function translate_etoi($name)
     $name = strtolower($name);
     $file = MS_SHARE_DIR . 'perl/MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'rb')
-    or die(__('dietranslateetoi03') . " $file\n");
+    or die(\MailWatch\Translation::__('dietranslateetoi03') . " $file\n");
     $etoi = [];
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
@@ -1427,7 +1393,7 @@ function mailwatch_array_sum($array)
  */
 function read_ruleset_default($file)
 {
-    $fh = fopen($file, 'rb') or die(__('diereadruleset03') . " ($file)");
+    $fh = fopen($file, 'rb') or die(\MailWatch\Translation::__('diereadruleset03') . " ($file)");
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/(\S+)\s+(\S+)\s+(\S+)/', $line, $regs)) {
@@ -1797,7 +1763,7 @@ function checkLangCode($langCode)
     $validLang = explode(',', USER_SELECTABLE_LANG);
     $found = array_search($langCode, $validLang);
     if ($found === false || $found === null) {
-        \MailWatch\Security::audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
+        \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditundefinedlang12', true), $langCode));
         return false;
     } else {
         return true;

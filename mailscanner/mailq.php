@@ -29,28 +29,28 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('mqviewer24'), STATUS_REFRESH, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('mqviewer24'), STATUS_REFRESH, false, false);
 
 if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-    die(__('dietoken99'));
+    die(\MailWatch\Translation::__('dietoken99'));
 }
 
 $queue = \MailWatch\Sanitize::deepSanitizeInput($_GET['queue'], 'url');
 if (!\MailWatch\Sanitize::validateInput($queue, 'mailq')) {
-    die(__('dievalidate99'));
+    die(\MailWatch\Translation::__('dievalidate99'));
 }
 
 switch ($queue) {
     case 'inq':
         $queue = 'inq';
-        $display = __('inq24');
+        $display = \MailWatch\Translation::__('inq24');
         break;
     case 'outq':
         $queue = 'outq';
-        $display = __('outq24');
+        $display = \MailWatch\Translation::__('outq24');
         break;
     default:
-        die(__('diemq24') . "\n");
+        die(\MailWatch\Translation::__('diemq24') . "\n");
 }
 
 db_colorised_table(

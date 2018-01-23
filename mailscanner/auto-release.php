@@ -42,17 +42,17 @@ if (file_exists('conf.php')) {
             $token = \MailWatch\Sanitize::deepSanitizeInput($_GET['r'], 'url');
         }
         if (!\MailWatch\Sanitize::validateInput($token, 'releasetoken')) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = \MailWatch\Db::query($sql, false);
         if (!$result) {
             dbg('Error fetching from database' . Db::$link->error);
-            $output[] = __('dberror59');
+            $output[] = \MailWatch\Translation::__('dberror59');
         }
         if ($result->num_rows === 0) {
-            $output[] = __('msgnotfound159');
-            $output[] = __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359');
+            $output[] = \MailWatch\Translation::__('msgnotfound159');
+            $output[] = \MailWatch\Translation::__('msgnotfound259') . htmlentities($mid) . ' ' . \MailWatch\Translation::__('msgnotfound359');
         } else {
             $row = $result->fetch_assoc();
             if ($row['uid'] === $token) {
@@ -70,7 +70,7 @@ if (file_exists('conf.php')) {
                     }
                 }
                 //success
-                $output[] = __('msgreleased59');
+                $output[] = \MailWatch\Translation::__('msgreleased59');
                 //cleanup
                 $releaseID = $row['id'];
                 $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
@@ -79,11 +79,11 @@ if (file_exists('conf.php')) {
                     dbg('ERROR cleaning up database... ' . Db::$link->error);
                 }
             } else {
-                $output[] = __('tokenmismatch59');
+                $output[] = \MailWatch\Translation::__('tokenmismatch59');
             }
         }
     } else {
-        $output[] = __('notallowed59');
+        $output[] = \MailWatch\Translation::__('notallowed59');
     }
     echo '
 <!doctype html>
@@ -91,7 +91,7 @@ if (file_exists('conf.php')) {
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>' . __('title59') . '</title>
+    <title>' . \MailWatch\Translation::__('title59') . '</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="images/favicon.png">
     <link rel="stylesheet" href="style.css" type="text/css">
@@ -99,9 +99,9 @@ if (file_exists('conf.php')) {
 </head>
 <body class="autorelease">
 <div class="autorelease">
-    <img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '">
+    <img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . \MailWatch\Translation::__('mwlogo99') . '">
     <div class="border-rounded">
-        <h1>' . __('title59') . '</h1>' . "\n";
+        <h1>' . \MailWatch\Translation::__('title59') . '</h1>' . "\n";
     foreach ($output as $msg) {
         echo '<p>' . $msg . '</p>' . "\n";
     }
@@ -111,5 +111,5 @@ if (file_exists('conf.php')) {
 </body>
 </html>';
 } else {
-    echo __('cannot_read_conf');
+    echo \MailWatch\Translation::__('cannot_read_conf');
 }

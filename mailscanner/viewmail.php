@@ -30,7 +30,7 @@ ini_set('memory_limit', MEMORY_LIMIT);
 
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('msgviewer06'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('msgviewer06'), 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
@@ -43,7 +43,7 @@ require __DIR__ . '/login.function.php';
 <?php
 \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if (!isset($_GET['id']) && !isset($_GET['amp;id'])) {
-    die(__('nomessid06'));
+    die(\MailWatch\Translation::__('nomessid06'));
 }
 if (isset($_GET['amp;id'])) {
     $message_id = \MailWatch\Sanitize::deepSanitizeInput($_GET['amp;id'], 'url');
@@ -58,13 +58,13 @@ $result = \MailWatch\Db::query($sql);
 $message = $result->fetch_object();
 // See if message is local
 if (empty($message)) {
-    die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
+    die(\MailWatch\Translation::__('mess06') . " '" . $message_id . "' " . \MailWatch\Translation::__('notfound06') . "\n");
 }
 
-\MailWatch\Security::audit_log(sprintf(__('auditlog06', true), $message_id));
+\MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlog06', true), $message_id));
 
 if ($message->token !== \MailWatch\Sanitize::deepSanitizeInput($_GET['token'], 'url') && false === \MailWatch\Security::checkToken($_GET['token'])) {
-    die(__('dietoken99'));
+    die(\MailWatch\Translation::__('dietoken99'));
 }
 
 $using_rpc = false;
@@ -80,7 +80,7 @@ if (RPC_ONLY || !is_local($message->hostname)) {
     if ($rsp->faultCode() === 0) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
-        die(__('error06') . ' ' . $rsp->faultString());
+        die(\MailWatch\Translation::__('error06') . ' ' . $rsp->faultString());
     }
     $file = base64_decode($response);
 } else {
@@ -104,7 +104,7 @@ if (RPC_ONLY || !is_local($message->hostname)) {
     }
 
     if (!@file_exists($quarantine_dir . '/' . $filename)) {
-        die(__('errornfd06') . "\n");
+        die(\MailWatch\Translation::__('errornfd06') . "\n");
     }
     $file = file_get_contents($quarantine_dir . '/' . $filename);
 }
@@ -121,9 +121,9 @@ $mime_struct = $Mail_mimeDecode->getMimeNumbers($structure);
 echo '<table border="0" cellspacing="1" cellpadding="1" class="maildetail" width="100%">' . "\n";
 echo " <thead>\n";
 if ($using_rpc) {
-    $title = __('msgviewer06') . __('colon99') . ' ' . $message_id . ' on ' . $message->hostname;
+    $title = \MailWatch\Translation::__('msgviewer06') . \MailWatch\Translation::__('colon99') . ' ' . $message_id . ' on ' . $message->hostname;
 } else {
-    $title = __('msgviewer06') . __('colon99') . ' ' . $message_id;
+    $title = \MailWatch\Translation::__('msgviewer06') . \MailWatch\Translation::__('colon99') . ' ' . $message_id;
 }
 echo "  <tr>\n";
 echo "    <th colspan=2>$title</th>\n";
@@ -139,16 +139,16 @@ function lazy($title, $val, $dohtmlentities = true)
     $titleintl = $title;
     switch ($title) {
         case 'Date:':
-            $titleintl = __('date06');
+            $titleintl = \MailWatch\Translation::__('date06');
             break;
         case 'From:':
-            $titleintl = __('from06');
+            $titleintl = \MailWatch\Translation::__('from06');
             break;
         case 'To:':
-            $titleintl = __('to06');
+            $titleintl = \MailWatch\Translation::__('to06');
             break;
         case 'Subject:':
-            $titleintl = __('subject06');
+            $titleintl = \MailWatch\Translation::__('subject06');
             break;
     }
     echo ' <tr>
@@ -185,8 +185,8 @@ if (
         (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
 ) {
     lazy(
-        __('actions06'),
-        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','delete')\">" . __('deletemsg06') . '</a>',
+        \MailWatch\Translation::__('actions06'),
+        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','release')\">" . \MailWatch\Translation::__('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','delete')\">" . \MailWatch\Translation::__('deletemsg06') . '</a>',
         false
     );
 }
@@ -197,7 +197,7 @@ foreach ($mime_struct as $key => $part) {
     $type .= isset($part->ctype_secondary) ? $part->ctype_secondary : 'undefined';
     
     echo ' <tr>' . "\n";
-    echo '  <td colspan=2 class="heading">' . __('mymetype06') . ' ' . $type . '</td>' . "\n";
+    echo '  <td colspan=2 class="heading">' . \MailWatch\Translation::__('mymetype06') . ' ' . $type . '</td>' . "\n";
 
     switch ($type) {
         case 'text/plain':
@@ -222,13 +222,13 @@ foreach ($mime_struct as $key => $part) {
                 if (isset($part->d_parameters['filename'])) {
                     echo $part->d_parameters['filename'];
                 } else {
-                    echo __('nonameattachment06');
+                    echo \MailWatch\Translation::__('nonameattachment06');
                 }
                 if (isset($part->d_parameters['size'])) {
                     echo '&nbsp;(size ' . \MailWatch\Format::formatSize($part->d_parameters['size']) . ')';
                 }
             } else {
-                $filename = __('nonameattachment06');
+                $filename = \MailWatch\Translation::__('nonameattachment06');
                 if ($type = 'message/partial' && property_exists($part, 'ctype_parameters')) {
                     $filename = isset($part->ctype_parameters['id']) ? $part->ctype_parameters['id'] : 'partialMessage';
                     if (isset($part->ctype_parameters['number'])) {

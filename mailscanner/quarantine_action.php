@@ -37,7 +37,7 @@ function simple_html_start()
 {
     echo '<html>
 <head>
-<title>' . __('mailwatchtitle57') . '</title>
+<title>' . \MailWatch\Translation::__('mailwatchtitle57') . '</title>
 <link rel="shortcut icon" href="images/favicon.png">
 <body>';
 }
@@ -57,13 +57,13 @@ function simple_html_result($status)
             <td valign="middle" align="center">
                 <table border=0>
                     <tr>
-                        <th><?php echo __('result57') ?></th>
+                        <th><?php echo \MailWatch\Translation::__('result57') ?></th>
                     </tr>
                     <tr>
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="javascript:window.close()"><?php echo __('closewindow57') ?></a></td>
+                        <td align="center"><b><a href="javascript:window.close()"><?php echo \MailWatch\Translation::__('closewindow57') ?></a></td>
                     </tr>
                 </table>
             </td>
@@ -73,10 +73,10 @@ function simple_html_result($status)
 }
 
 if (!isset($_GET['id'])) {
-    die(__('dienoid57'));
+    die(\MailWatch\Translation::__('dienoid57'));
 }
 if (!isset($_GET['action'])) {
-    die(__('dienoaction57'));
+    die(\MailWatch\Translation::__('dienoaction57'));
 }
 
 $id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
@@ -86,13 +86,13 @@ if ($id === false || !\MailWatch\Sanitize::validateInput($id, 'msgid')) {
 
 $list = \MailWatch\Quarantine::quarantine_list_items($id);
 if (count($list) === 0) {
-    die(__('diemnf57'));
+    die(\MailWatch\Translation::__('diemnf57'));
 }
 
 switch ($_GET['action']) {
     case 'release':
         if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
         $result = '';
         if (count($list) === 1) {
@@ -116,7 +116,7 @@ switch ($_GET['action']) {
 
     case 'delete':
         if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
         $status = [];
         if (isset($_GET['html'])) {
@@ -128,13 +128,13 @@ switch ($_GET['action']) {
                         <td align="center" valign="middle">
                             <table>
                                 <tr>
-                                    <th><?php echo __('delete57') ?></th>
+                                    <th><?php echo \MailWatch\Translation::__('delete57') ?></th>
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo __('yes57') ?></a>
+                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo \MailWatch\Translation::__('yes57') ?></a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo __('no57') ?></a>
+                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo \MailWatch\Translation::__('no57') ?></a>
                                     </td>
                                 </tr>
                             </table>
@@ -154,7 +154,7 @@ switch ($_GET['action']) {
             }
         } else {
             if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-                die(__('dietoken99'));
+                die(\MailWatch\Translation::__('dietoken99'));
             }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {
@@ -167,7 +167,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die(__('dieuaction57') . ' ' . \MailWatch\Sanitize::sanitizeInput($_GET['action']));
+        die(\MailWatch\Translation::__('dieuaction57') . ' ' . \MailWatch\Sanitize::sanitizeInput($_GET['action']));
 }
 
 \MailWatch\Db::close();

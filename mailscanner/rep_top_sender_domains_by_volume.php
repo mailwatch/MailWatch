@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('topsenderdomvol45'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('topsenderdomvol45'), 0, false, true);
 
 $graphgenerator = new \MailWatch\GraphGenerator();
 $graphgenerator->sqlQuery = '
@@ -57,9 +57,9 @@ $graphgenerator->sqlQuery = '
 ';
 
 $graphgenerator->tableColumns = [
-    'name' => __('domain45'),
-    'countconv' => __('count03'),
-    'sizeconv' => __('size03')
+    'name' => \MailWatch\Translation::__('domain45'),
+    'countconv' => \MailWatch\Translation::__('count03'),
+    'sizeconv' => \MailWatch\Translation::__('size03')
 ];
 $graphgenerator->sqlColumns = [
     'name',
@@ -75,7 +75,7 @@ $graphgenerator->graphColumns = [
     'dataNumericColumn' => 'size',
     'dataFormattedColumn' => 'sizeconv'
 ];
-$graphgenerator->graphTitle = __('top10senderdomvol45');
+$graphgenerator->graphTitle = \MailWatch\Translation::__('top10senderdomvol45');
 $graphgenerator->printPieGraph();
 
 // Add footer

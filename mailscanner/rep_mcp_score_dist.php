@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('mcpscoredist35'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('mcpscoredist35'), 0, false, true);
 
 $graphgenerator = new \MailWatch\GraphGenerator();
 $graphgenerator->sqlQuery = '
@@ -53,8 +53,8 @@ $graphgenerator->sqlQuery = '
 ';
 
 $graphgenerator->tableColumns = [
-    'score' => __('score35'),
-    'countconv' => __('count35')
+    'score' => \MailWatch\Translation::__('score35'),
+    'countconv' => \MailWatch\Translation::__('count35')
 ];
 $graphgenerator->sqlColumns = [
     'score',
@@ -67,12 +67,12 @@ $graphgenerator->graphColumns = [
     'labelColumn' => 'score',
     'dataNumericColumns' => [['count']],
     'dataFormattedColumns' => [['countconv']],
-    'xAxeDescription' => __('scorerounded35'),
-    'yAxeDescriptions' => [__('nbmessage35')],
+    'xAxeDescription' => \MailWatch\Translation::__('scorerounded35'),
+    'yAxeDescriptions' => [\MailWatch\Translation::__('nbmessage35')],
     'fillBelowLine' => ['true']
 ];
 $graphgenerator->types = [['line']];
-$graphgenerator->graphTitle = __('mcpscoredist35');
+$graphgenerator->graphTitle = \MailWatch\Translation::__('mcpscoredist35');
 $graphgenerator->printLineGraph();
 
 // Add footer

@@ -60,7 +60,7 @@ class Mcp
             }
             // Return the result as an html formatted string
             if (count($output_array) > 0) {
-                return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
+                return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . \MailWatch\Translation::__('score03') . '</th><th>' . \MailWatch\Translation::__('matrule03') . '</th><th>' . \MailWatch\Translation::__('description03') . '</th></tr>' . implode(
                         "\n",
                         $output_array
                     ) . '</table>' . "\n";

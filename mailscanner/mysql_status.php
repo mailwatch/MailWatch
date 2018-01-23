@@ -29,12 +29,12 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('mysqlstatus31'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('mysqlstatus31'), 0, false, false);
 
 if ($_SESSION['user_type'] !== 'A') {
-    echo __('notauthorized31') . '\n';
+    echo \MailWatch\Translation::__('notauthorized31') . '\n';
 } else {
-    \MailWatch\Security::audit_log(__('auditlog31', true));
+    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog31', true));
     dbtable('SHOW TABLE STATUS');
     echo "<BR>\n";
     dbtable('SHOW FULL PROCESSLIST');

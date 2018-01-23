@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('sarulehits37'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('sarulehits37'), 0, false, true);
 
 $sql = '
  SELECT
@@ -48,7 +48,7 @@ $sql = '
 
 $result = \MailWatch\Db::query($sql);
 if (!$result->num_rows > 0) {
-    die(__('diemysql99') . "\n");
+    die(\MailWatch\Translation::__('diemysql99') . "\n");
 }
 
 // Initialise the array
@@ -112,18 +112,18 @@ reset($sa_array);
 arsort($sa_array);
 
 echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
-echo '<TR><TD CLASS="titleReport">' . __('sarulehits37') . '<BR></TD></TR>' . "\n";
+echo '<TR><TD CLASS="titleReport">' . \MailWatch\Translation::__('sarulehits37') . '<BR></TD></TR>' . "\n";
 echo '<TR><TD ALIGN="CENTER">';
 echo '<TABLE CLASS="boxtable" ALIGN="CENTER" BORDER="0">' . "\n";
 echo '
 <TR BGCOLOR="#F7CE4A">
- <TH>' . __('rule37') . '</TH>
- <TH>' . __('desc37') . '</TH>
- <TH>' . __('score37') . '</TH>
- <TH>' . __('total37') . '</TH>
- <TH>' . __('ham37') . '</TH>
+ <TH>' . \MailWatch\Translation::__('rule37') . '</TH>
+ <TH>' . \MailWatch\Translation::__('desc37') . '</TH>
+ <TH>' . \MailWatch\Translation::__('score37') . '</TH>
+ <TH>' . \MailWatch\Translation::__('total37') . '</TH>
+ <TH>' . \MailWatch\Translation::__('ham37') . '</TH>
  <TH>%</TH>
- <TH>' . __('spam37') . '</TH>
+ <TH>' . \MailWatch\Translation::__('spam37') . '</TH>
  <TH>%</TH>
 </TR>' . "\n";
 

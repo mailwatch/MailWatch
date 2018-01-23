@@ -37,19 +37,19 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     // add the header information such as the logo, search, menu, ....
-    \MailWatch\Html::start(__('auditlog33'), 0, false, false);
+    \MailWatch\Html::start(\MailWatch\Translation::__('auditlog33'), 0, false, false);
     if (isset($_POST['token'])) {
         if (false === \MailWatch\Security::checkToken($_POST['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
     } else {
         if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
     }
 
     if (isset($_GET['pageID']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-        die(__('dievalidate99'));
+        die(\MailWatch\Translation::__('dievalidate99'));
     }
 
     $auditFilter = '';
@@ -60,7 +60,7 @@ if ($_SESSION['user_type'] !== 'A') {
     $username ='';
     if (isset($_POST['formtoken'])) {
         if (false === \MailWatch\Security::checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
         if (isset($_POST['startDate'])) {
             $startDate=\MailWatch\Sanitize::deepSanitizeInput($_POST['startDate'], 'url');
@@ -112,10 +112,10 @@ if ($_SESSION['user_type'] !== 'A') {
     // SQL query for the audit log
     $sql = "
  SELECT
-  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS '" . __('datetime33') . "',
-  b.fullname AS '" . __('user33') . "',
-  a.ip_address AS '" . __('ipaddress33') . "',
-  a.action AS '" . __('action33') . "'
+  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS '" . \MailWatch\Translation::__('datetime33') . "',
+  b.fullname AS '" . \MailWatch\Translation::__('user33') . "',
+  a.ip_address AS '" . \MailWatch\Translation::__('ipaddress33') . "',
+  a.action AS '" . \MailWatch\Translation::__('action33') . "'
  FROM
   audit_log AS a
  LEFT JOIN
@@ -130,20 +130,20 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . \MailWatch\Security::generateFormToken('/rep_audit_log.php form token') . '">' . "\n";
     echo '<div class="mail table" id="auditFilters">
-      <div class="caption head">' . __('filter33') . '</div>
-      <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('enddate33') . '</div><div class="cell data"><input name="endDate" type="text" placeholder="YYYY-MM-DD" value="' . $endDate . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('user33') . '</div><div class="cell data"><input name="username" type="text" value="' . $username . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('ipaddress33') . '</div><div class="cell data"><input name="ipaddress" type="text" value="' . $ipaddress . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . $actions . '"/></div></div>
-      <div class="row"><div class="cell head"></div><div class="cell head"><button type="submit">' . __('applyfilter33') . '</button></div></div>
+      <div class="caption head">' . \MailWatch\Translation::__('filter33') . '</div>
+      <div class="row"><div class="cell head">' . \MailWatch\Translation::__('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>
+      <div class="row"><div class="cell head">' . \MailWatch\Translation::__('enddate33') . '</div><div class="cell data"><input name="endDate" type="text" placeholder="YYYY-MM-DD" value="' . $endDate . '"/></div></div>
+      <div class="row"><div class="cell head">' . \MailWatch\Translation::__('user33') . '</div><div class="cell data"><input name="username" type="text" value="' . $username . '"/></div></div>
+      <div class="row"><div class="cell head">' . \MailWatch\Translation::__('ipaddress33') . '</div><div class="cell data"><input name="ipaddress" type="text" value="' . $ipaddress . '"/></div></div>
+      <div class="row"><div class="cell head">' . \MailWatch\Translation::__('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . $actions . '"/></div></div>
+      <div class="row"><div class="cell head"></div><div class="cell head"><button type="submit">' . \MailWatch\Translation::__('applyfilter33') . '</button></div></div>
     </div>
   </form>
 </td></tr>
 <tr><td>' . "\n";
 
     // Function to to query and display the data
-    dbtable($sql, __('auditlog33'), true);
+    dbtable($sql, \MailWatch\Translation::__('auditlog33'), true);
 
     // close off the table
     echo '</td></tr>

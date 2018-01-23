@@ -66,7 +66,7 @@ abstract class MtaLogProcessor
     {
         global $fp;//@todo do we need this?
         if (!$fp = popen($input, 'r')) {
-            die(__('diepipe56'));
+            die(\MailWatch\Translation::__('diepipe56'));
         }
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 

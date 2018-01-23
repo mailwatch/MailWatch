@@ -48,50 +48,50 @@ class Filter
     public function __construct()
     {
         $this->operators = [
-            '=' => __('equal09'),
-            '<>' => __('notequal09'),
-            '>' => __('greater09'),
-            '>=' => __('greaterequal09'),
-            '<' => __('less09'),
-            '<=' => __('lessequal09'),
-            'LIKE' => __('like09'),
-            'NOT LIKE' => __('notlike09'),
-            'REGEXP' => __('regexp09'),
-            'NOT REGEXP' => __('notregexp09'),
-            'IS NULL' => __('isnull09'),
-            'IS NOT NULL' => __('isnotnull09')
+            '=' => \MailWatch\Translation::__('equal09'),
+            '<>' => \MailWatch\Translation::__('notequal09'),
+            '>' => \MailWatch\Translation::__('greater09'),
+            '>=' => \MailWatch\Translation::__('greaterequal09'),
+            '<' => \MailWatch\Translation::__('less09'),
+            '<=' => \MailWatch\Translation::__('lessequal09'),
+            'LIKE' => \MailWatch\Translation::__('like09'),
+            'NOT LIKE' => \MailWatch\Translation::__('notlike09'),
+            'REGEXP' => \MailWatch\Translation::__('regexp09'),
+            'NOT REGEXP' => \MailWatch\Translation::__('notregexp09'),
+            'IS NULL' => \MailWatch\Translation::__('isnull09'),
+            'IS NOT NULL' => \MailWatch\Translation::__('isnotnull09')
         ];
         $this->columns = [
-            'date' => __('date09'),
-            'headers' => __('headers09'),
-            'id' => __('id09'),
-            'size' => __('size09'),
-            'from_address' => __('fromaddress09'),
-            'from_domain' => __('fromdomain09'),
-            'to_address' => __('toaddress09'),
-            'to_domain' => __('todomain09'),
-            'subject' => __('subject09'),
-            'clientip' => __('clientip09'),
-            'isspam' => __('isspam09'),
-            'ishighspam' => __('ishighspam09'),
-            'issaspam' => __('issaspam09'),
-            'isrblspam' => __('isrblspam09'),
-            'spamwhitelisted' => __('spamwhitelisted09'),
-            'spamblacklisted' => __('spamblacklisted09'),
-            'sascore' => __('sascore09'),
-            'spamreport' => __('spamreport09'),
-            'ismcp' => __('ismcp09'),
-            'ishighmcp' => __('ishighmcp09'),
-            'issamcp' => __('issamcp09'),
-            'mcpwhitelisted' => __('mcpwhitelisted09'),
-            'mcpblacklisted' => __('mcpblacklisted09'),
-            'mcpscore' => __('mcpscore09'),
-            'mcpreport' => __('mcpreport09'),
-            'virusinfected' => __('virusinfected09'),
-            'nameinfected' => __('nameinfected09'),
-            'otherinfected' => __('otherinfected09'),
-            'report' => __('report09'),
-            'hostname' => __('hostname09')
+            'date' => \MailWatch\Translation::__('date09'),
+            'headers' => \MailWatch\Translation::__('headers09'),
+            'id' => \MailWatch\Translation::__('id09'),
+            'size' => \MailWatch\Translation::__('size09'),
+            'from_address' => \MailWatch\Translation::__('fromaddress09'),
+            'from_domain' => \MailWatch\Translation::__('fromdomain09'),
+            'to_address' => \MailWatch\Translation::__('toaddress09'),
+            'to_domain' => \MailWatch\Translation::__('todomain09'),
+            'subject' => \MailWatch\Translation::__('subject09'),
+            'clientip' => \MailWatch\Translation::__('clientip09'),
+            'isspam' => \MailWatch\Translation::__('isspam09'),
+            'ishighspam' => \MailWatch\Translation::__('ishighspam09'),
+            'issaspam' => \MailWatch\Translation::__('issaspam09'),
+            'isrblspam' => \MailWatch\Translation::__('isrblspam09'),
+            'spamwhitelisted' => \MailWatch\Translation::__('spamwhitelisted09'),
+            'spamblacklisted' => \MailWatch\Translation::__('spamblacklisted09'),
+            'sascore' => \MailWatch\Translation::__('sascore09'),
+            'spamreport' => \MailWatch\Translation::__('spamreport09'),
+            'ismcp' => \MailWatch\Translation::__('ismcp09'),
+            'ishighmcp' => \MailWatch\Translation::__('ishighmcp09'),
+            'issamcp' => \MailWatch\Translation::__('issamcp09'),
+            'mcpwhitelisted' => \MailWatch\Translation::__('mcpwhitelisted09'),
+            'mcpblacklisted' => \MailWatch\Translation::__('mcpblacklisted09'),
+            'mcpscore' => \MailWatch\Translation::__('mcpscore09'),
+            'mcpreport' => \MailWatch\Translation::__('mcpreport09'),
+            'virusinfected' => \MailWatch\Translation::__('virusinfected09'),
+            'nameinfected' => \MailWatch\Translation::__('nameinfected09'),
+            'otherinfected' => \MailWatch\Translation::__('otherinfected09'),
+            'report' => \MailWatch\Translation::__('report09'),
+            'hostname' => \MailWatch\Translation::__('hostname09')
         ];
     }
 
@@ -139,23 +139,23 @@ class Filter
     public function Display($token)
     {
         echo '<table width="600" border="0" class="boxtable">' . "\n";
-        echo ' <tr><th colspan="2">' . __('activefilters09') . '</th></tr>' . "\n";
+        echo ' <tr><th colspan="2">' . \MailWatch\Translation::__('activefilters09') . '</th></tr>' . "\n";
         if (count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
                 echo '<tr><td>' .
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . Sanitize::sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . Sanitize::sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . \MailWatch\Translation::__('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
-            echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
+            echo '<tr><td colspan="2">' . \MailWatch\Translation::__('none09') . '</td></tr>' . "\n";
         }
 
         // Add filter
-        echo ' <tr><th colspan="2">' . __('addfilter09') . '</th></tr>' . "\n";
+        echo ' <tr><th colspan="2">' . \MailWatch\Translation::__('addfilter09') . '</th></tr>' . "\n";
         echo ' <tr><td colspan="2">' . $this->DisplayForm() . '</td></tr>' . "\n";
-        echo ' <tr><th colspan="2">' . __('stats09') . '</th></tr>' . "\n";
+        echo ' <tr><th colspan="2">' . \MailWatch\Translation::__('stats09') . '</th></tr>' . "\n";
         $query = "
 SELECT
  DATE_FORMAT(MIN(date),'" . DATE_FORMAT . "') AS oldest,
@@ -168,11 +168,11 @@ WHERE
 " . $this->CreateSQL();
         $sth = \MailWatch\Db::query($query);
         while ($row = $sth->fetch_object()) {
-            echo ' <tr><td>' . __('oldrecord09') . '</td><td align="right">' . $row->oldest . '</td></tr>' . "\n";
-            echo ' <tr><td>' . __('newrecord09') . '</td><td align="right">' . $row->newest . '</td></tr>' . "\n";
-            echo ' <tr><td>' . __('messagecount09') . '</td><td align="right">' . number_format($row->messages) . '</td></tr>' . "\n";
+            echo ' <tr><td>' . \MailWatch\Translation::__('oldrecord09') . '</td><td align="right">' . $row->oldest . '</td></tr>' . "\n";
+            echo ' <tr><td>' . \MailWatch\Translation::__('newrecord09') . '</td><td align="right">' . $row->newest . '</td></tr>' . "\n";
+            echo ' <tr><td>' . \MailWatch\Translation::__('messagecount09') . '</td><td align="right">' . number_format($row->messages) . '</td></tr>' . "\n";
         }
-        echo '<tr><th colspan="2">' . __('reports09') . '</th></tr>' . "\n";
+        echo '<tr><th colspan="2">' . \MailWatch\Translation::__('reports09') . '</th></tr>' . "\n";
         echo '<tr><td colspan="2"><ul>' . "\n";
         foreach ($this->reports as $report) {
             $url = $report['url'];
@@ -292,13 +292,13 @@ WHERE
             $return .= ' value="' . htmlentities(stripslashes($this->last_value)) . '"';
         }
         $return .= ">\n";
-        $return .= '</td><td align="right"><button type="submit" name="action" value="add">' . __('add09') . '</button></td></tr>' . "\n";
-        $return .= '<tr><td align="left">' . __('tosetdate09') . '</td>' . "\n" . ' <td></td></tr>' . "\n";
-        $return .= '<tr><th colspan="2">' . __('loadsavef09') . '</th></tr>' . "\n";
-        $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><button type="submit" name="action" value="save">' . __('save09') . '</button></td></tr>' . "\n";
+        $return .= '</td><td align="right"><button type="submit" name="action" value="add">' . \MailWatch\Translation::__('add09') . '</button></td></tr>' . "\n";
+        $return .= '<tr><td align="left">' . \MailWatch\Translation::__('tosetdate09') . '</td>' . "\n" . ' <td></td></tr>' . "\n";
+        $return .= '<tr><th colspan="2">' . \MailWatch\Translation::__('loadsavef09') . '</th></tr>' . "\n";
+        $return .= '<tr><td><input type="text" size="50" name="save_as"></td><td align="right"><button type="submit" name="action" value="save">' . \MailWatch\Translation::__('save09') . '</button></td></tr>' . "\n";
         $return .= '<tr><td>' . "\n";
         $return .= $this->ListSaved();
-        $return .= '</td><td class="filterbuttons"><button type="submit" name="action" value="load">' . __('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . __('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . __('delete09') . '</button></td></tr>' . "\n";
+        $return .= '</td><td class="filterbuttons"><button type="submit" name="action" value="load">' . \MailWatch\Translation::__('load09') . '</button>&nbsp;<button type="submit" name="action" value="save">' . \MailWatch\Translation::__('save09') . '</button>&nbsp;<button type="submit" name="action" value="delete">' . \MailWatch\Translation::__('delete09') . '</button></td></tr>' . "\n";
         $return .= '</table>' . "\n";
         $return .= '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
         $return .= '<input type="hidden" name="formtoken" value="' . \MailWatch\Security::generateFormToken('/Filter.php form token') . '">' . "\n";
@@ -387,7 +387,7 @@ WHERE
         $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "'";
         $sth = \MailWatch\Db::query($sql);
         $return = '<select name="filter">' . "\n";
-        $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";
+        $return .= ' <option value="_none_">' . \MailWatch\Translation::__('none09') . '</option>' . "\n";
         while ($row = $sth->fetch_array()) {
             $return .= ' <option value="' . $row[0] . '">' . $row[0] . '</option>' . "\n";
         }

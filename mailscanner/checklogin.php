@@ -32,7 +32,7 @@ require_once __DIR__ . '/functions.php';
 
 if (isset($_POST['token'])) {
     if (false === \MailWatch\Security::checkToken($_POST['token'])) {
-        die(__('dietoken99'));
+        die(\MailWatch\Translation::__('dietoken99'));
     }
 }
 $_SESSION['token'] = \MailWatch\Security::generateToken();

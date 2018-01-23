@@ -83,10 +83,10 @@ class Db
 }
 </style>
                 <div class="db-error">';
-                    $output .= __('dbconnecterror99');
+                    $output .= \MailWatch\Translation::__('dbconnecterror99');
                     $output .= '</div>';
                 } else {
-                    $output = __('dbconnecterror99_plain') . PHP_EOL;
+                    $output = \MailWatch\Translation::__('dbconnecterror99_plain') . PHP_EOL;
                 }
                 die($output);
             }

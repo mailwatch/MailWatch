@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('topvirus48'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('topvirus48'), 0, false, true);
 
 // SQL query to find all emails with a virus found
 $graphgenerator = new \MailWatch\GraphGenerator();
@@ -50,8 +50,8 @@ AND
 ' . $filter->CreateSQL();
 
 $graphgenerator->tableColumns = [
-    'virusname' =>  __('virus48'),
-    'viruscount' =>  __('count48'),
+    'virusname' =>  \MailWatch\Translation::__('virus48'),
+    'viruscount' =>  \MailWatch\Translation::__('count48'),
 ];
 $graphgenerator->sqlColumns = [
     'report'
@@ -65,7 +65,7 @@ $graphgenerator->graphColumns = [
     'dataNumericColumn' => 'viruscount',
     'dataFormattedColumn' => 'viruscount'
 ];
-$graphgenerator->graphTitle = __('top10virus48');
+$graphgenerator->graphTitle = \MailWatch\Translation::__('top10virus48');
 $graphgenerator->printPieGraph();
 
 // Add footer

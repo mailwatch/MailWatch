@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('totalmaillasthours36'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('totalmaillasthours36'), 0, false, true);
 
 $graphgenerator = new \MailWatch\GraphGenerator();
 $graphgenerator->sqlQuery = '
@@ -56,11 +56,11 @@ $graphgenerator->sqlQuery = '
 ';
 
 $graphgenerator->tableColumns = [
-    'time' => __('hours36'),
-    'total_mailconv' => __('mailcount36'),
-    'total_virusconv' => __('viruscount36'),
-    'total_spamconv' => __('spamcount36'),
-    'total_sizeconvconv' => __('size36'),
+    'time' => \MailWatch\Translation::__('hours36'),
+    'total_mailconv' => \MailWatch\Translation::__('mailcount36'),
+    'total_virusconv' => \MailWatch\Translation::__('viruscount36'),
+    'total_spamconv' => \MailWatch\Translation::__('spamcount36'),
+    'total_sizeconvconv' => \MailWatch\Translation::__('size36'),
 ];
 $graphgenerator->sqlColumns = [
     'xaxis',
@@ -80,8 +80,8 @@ $graphgenerator->valueConversion = [
 $graphgenerator->graphColumns = [
     'labelColumn' => 'time',
     'dataLabels' => [
-        [__('barmail36'), __('barvirus36'), __('barspam36')],
-        [__('volume36')],
+        [\MailWatch\Translation::__('barmail36'), \MailWatch\Translation::__('barvirus36'), \MailWatch\Translation::__('barspam36')],
+        [\MailWatch\Translation::__('volume36')],
     ],
     'dataNumericColumns' => [
         ['total_mailconv', 'total_virusconv', 'total_spamconv'],
@@ -91,10 +91,10 @@ $graphgenerator->graphColumns = [
         ['total_mailconv', 'total_virusconv', 'total_spamconv'],
         ['total_sizeconvconv']
     ],
-    'xAxeDescription' => __('hours36'),
+    'xAxeDescription' => \MailWatch\Translation::__('hours36'),
     'yAxeDescriptions' => [
-        __('nomessages36'),
-        __('volume36')
+        \MailWatch\Translation::__('nomessages36'),
+        \MailWatch\Translation::__('volume36')
     ],
     'fillBelowLine' => ['false', 'true']
 ];
@@ -102,7 +102,7 @@ $graphgenerator->types = [
     ['bar', 'bar', 'bar'],
     ['line']
 ];
-$graphgenerator->graphTitle = __('totalmaillasthours36');
+$graphgenerator->graphTitle = \MailWatch\Translation::__('totalmaillasthours36');
 $graphgenerator->settings['timeInterval'] = 'P1D';
 $graphgenerator->settings['timeScale'] = 'PT1H';
 $graphgenerator->settings['timeGroupFormat'] = 'Y-m-dTH:00:00';

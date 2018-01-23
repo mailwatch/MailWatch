@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('virusreport50'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('virusreport50'), 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
 $scanner = [];
@@ -125,7 +125,7 @@ ORDER BY
 
 $result = \MailWatch\Db::query($sql);
 if (!$result->num_rows > 0) {
-    die(__('diemysql99') . "\n");
+    die(\MailWatch\Translation::__('diemysql99') . "\n");
 }
 
 $virus_array = [];
@@ -166,15 +166,15 @@ foreach ($virus_array as $key => $val) {
 
 // HTML Code
 echo '<TABLE BORDER="0" CELLPADDING="10" CELLSPACING="0" WIDTH="100%">';
-echo '<TR><TD CLASS="titleReport">' . __('virusreport50') . '<BR></TD></TR>';
+echo '<TR><TD CLASS="titleReport">' . \MailWatch\Translation::__('virusreport50') . '<BR></TD></TR>';
 echo '<TR>';
 echo '<TD ALIGN="CENTER">';
 echo '<TABLE WIDTH="840">';
 echo '<TR BGCOLOR="#F7CE4A">';
-echo '<TH>' . __('virus50') . '</TH>';
-echo '<TH>' . __('scanner50') . '</TH>';
-echo '<TH>' . __('firstseen50') . '</TH>';
-echo '<TH>' . __('count50') . '</TH>';
+echo '<TH>' . \MailWatch\Translation::__('virus50') . '</TH>';
+echo '<TH>' . \MailWatch\Translation::__('scanner50') . '</TH>';
+echo '<TH>' . \MailWatch\Translation::__('firstseen50') . '</TH>';
+echo '<TH>' . \MailWatch\Translation::__('count50') . '</TH>';
 echo '</TR>';
 
 // Write the data in table

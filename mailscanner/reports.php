@@ -41,17 +41,17 @@ if (!isset($_SESSION['filter']) || !is_object($_SESSION['filter'])) {
 }
 
 // add the header information such as the logo, search, menu, ....
-\MailWatch\Html::start(__('reports14'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('reports14'), 0, false, false);
 
 // Add filters and save them
 if (isset($_POST['action']) || isset($_GET['action'])) {
     if (isset($_POST['token'])) {
         if (false === \MailWatch\Security::checkToken($_POST['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
     } else {
         if (false === \MailWatch\Security::checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            die(\MailWatch\Translation::__('dietoken99'));
         }
     }
 
@@ -64,7 +64,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     switch (strtolower($action)) {
         case 'add':
             if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
-                die(__('dietoken99'));
+                die(\MailWatch\Translation::__('dietoken99'));
             }
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], \MailWatch\Sanitize::sanitizeInput($_POST['value']));
             break;
@@ -77,7 +77,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             exit;
         case 'save':
             if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
-                die(__('dietoken99'));
+                die(\MailWatch\Translation::__('dietoken99'));
             }
             if (isset($_POST['save_as'])) {
                 $name = \MailWatch\Sanitize::sanitizeInput($_POST['save_as']);
@@ -91,13 +91,13 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             break;
         case 'load':
             if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
-                die(__('dietoken99'));
+                die(\MailWatch\Translation::__('dietoken99'));
             }
             $filter->Load(\MailWatch\Sanitize::sanitizeInput($_POST['filter']));
             break;
         case 'delete':
             if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {
-                die(__('dietoken99'));
+                die(\MailWatch\Translation::__('dietoken99'));
             }
             $filter->Delete(\MailWatch\Sanitize::sanitizeInput($_POST['filter']));
             break;
@@ -107,36 +107,36 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
 // add the session filters to the variables
 $_SESSION['filter'] = $filter;
 
-$filter->AddReport('rep_message_listing.php', __('messlisting14'), true);
-$filter->AddReport('rep_message_ops.php', __('messop14'), true);
+$filter->AddReport('rep_message_listing.php', \MailWatch\Translation::__('messlisting14'), true);
+$filter->AddReport('rep_message_ops.php', \MailWatch\Translation::__('messop14'), true);
 
-$filter->AddReport('rep_total_mail_by_date.php', __('messdate14'));
-$filter->AddReport('rep_previous_day.php', __('messhours14'));
-$filter->AddReport('rep_top_mail_relays.php', __('topmailrelay14'));
+$filter->AddReport('rep_total_mail_by_date.php', \MailWatch\Translation::__('messdate14'));
+$filter->AddReport('rep_previous_day.php', \MailWatch\Translation::__('messhours14'));
+$filter->AddReport('rep_top_mail_relays.php', \MailWatch\Translation::__('topmailrelay14'));
 
-$filter->AddReport('rep_top_viruses.php', __('topvirus14'));
-$filter->AddReport('rep_viruses.php', __('virusrepor14'));
+$filter->AddReport('rep_top_viruses.php', \MailWatch\Translation::__('topvirus14'));
+$filter->AddReport('rep_viruses.php', \MailWatch\Translation::__('virusrepor14'));
 
-$filter->AddReport('rep_top_senders_by_quantity.php', __('topsendersqt14'));
-$filter->AddReport('rep_top_senders_by_volume.php', __('topsendersvol14'));
-$filter->AddReport('rep_top_recipients_by_quantity.php', __('toprecipqt14'));
-$filter->AddReport('rep_top_recipients_by_volume.php', __('toprecipvol14'));
+$filter->AddReport('rep_top_senders_by_quantity.php', \MailWatch\Translation::__('topsendersqt14'));
+$filter->AddReport('rep_top_senders_by_volume.php', \MailWatch\Translation::__('topsendersvol14'));
+$filter->AddReport('rep_top_recipients_by_quantity.php', \MailWatch\Translation::__('toprecipqt14'));
+$filter->AddReport('rep_top_recipients_by_volume.php', \MailWatch\Translation::__('toprecipvol14'));
 
-$filter->AddReport('rep_top_sender_domains_by_quantity.php', __('topsendersdomqt14'));
-$filter->AddReport('rep_top_sender_domains_by_volume.php', __('topsendersdomvol14'));
-$filter->AddReport('rep_top_recipient_domains_by_quantity.php', __('toprecipdomqt14'));
-$filter->AddReport('rep_top_recipient_domains_by_volume.php', __('toprecipdomvol14'));
+$filter->AddReport('rep_top_sender_domains_by_quantity.php', \MailWatch\Translation::__('topsendersdomqt14'));
+$filter->AddReport('rep_top_sender_domains_by_volume.php', \MailWatch\Translation::__('topsendersdomvol14'));
+$filter->AddReport('rep_top_recipient_domains_by_quantity.php', \MailWatch\Translation::__('toprecipdomqt14'));
+$filter->AddReport('rep_top_recipient_domains_by_volume.php', \MailWatch\Translation::__('toprecipdomvol14'));
 
 if (\MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin') === true) {
-    $filter->AddReport('rep_sa_score_dist.php', __('assassinscoredist14'));
-    $filter->AddReport('rep_sa_rule_hits.php', __('assassinrulhit14'));
+    $filter->AddReport('rep_sa_score_dist.php', \MailWatch\Translation::__('assassinscoredist14'));
+    $filter->AddReport('rep_sa_rule_hits.php', \MailWatch\Translation::__('assassinrulhit14'));
 }
 if (\MailWatch\MailScanner::getConfTrueFalse('MCPChecks') === true) {
-    $filter->AddReport('rep_mcp_score_dist.php', __('mcpscoredist14'));
-    $filter->AddReport('rep_mcp_rule_hits.php', __('mcprulehit14'));
+    $filter->AddReport('rep_mcp_score_dist.php', \MailWatch\Translation::__('mcpscoredist14'));
+    $filter->AddReport('rep_mcp_rule_hits.php', \MailWatch\Translation::__('mcprulehit14'));
 }
 if ($_SESSION['user_type'] === 'A') {
-    $filter->AddReport('rep_audit_log.php', __('auditlog14'), true);
+    $filter->AddReport('rep_audit_log.php', \MailWatch\Translation::__('auditlog14'), true);
 }
 $filter->Display($_SESSION['token']);
 

@@ -32,23 +32,23 @@ require __DIR__ . '/login.function.php';
 if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
-    \MailWatch\Html::start(__('mcpruledesc26'), 0, false, false);
+    \MailWatch\Html::start(\MailWatch\Translation::__('mcpruledesc26'), 0, false, false);
 
     echo '<form method="post" action="mcp_rules_update.php" >' . "\n";
     echo '<input type="hidden" name="run" value="true">' . "\n";
     echo '<table class="boxtable" width="100%">' . "\n";
     echo ' <tr>' . "\n";
     echo '  <td>' . "\n";
-    echo '   ' . __('message0126') . '<br>
-   <br>' . __('message0226') . '<br>
+    echo '   ' . \MailWatch\Translation::__('message0126') . '<br>
+   <br>' . \MailWatch\Translation::__('message0226') . '<br>
   </td>
  </tr>
  <tr>' . "\n";
-    echo '  <td align="center"><br><input type="submit" value="' . __('input26') . '"><br><br></td>' . "\n";
+    echo '  <td align="center"><br><input type="submit" value="' . \MailWatch\Translation::__('input26') . '"><br><br></td>' . "\n";
     echo ' </tr>' . "\n";
 
     if (isset($_POST['run'])) {
-        echo '<tr><td align="CENTER"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule26') . '</th><th>' . __('description26') . '</th></tr>' . "\n";
+        echo '<tr><td align="CENTER"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . \MailWatch\Translation::__('rule26') . '</th><th>' . \MailWatch\Translation::__('description26') . '</th></tr>' . "\n";
         $mcp_prefs_file = \MailWatch\MailScanner::getConfVar('MCPSpamAssassinPrefsFile');
         $mcp_local_rules_dir = \MailWatch\MailScanner::getConfVar('MCPSpamAssassinLocalRulesDir');
         $mcp_default_rules_dir = \MailWatch\MailScanner::getConfVar('MCPSpamAssassinDefaultRulesDir');
@@ -61,7 +61,7 @@ if ($_SESSION['user_type'] !== 'A') {
             $fh = popen("ls $mcp_prefs_file $mcp_default_rules_dir/*.cf | xargs grep -h '^describe'", 'r');
         }
 
-        \MailWatch\Security::audit_log(__('auditlog26', true));
+        \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog26', true));
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, 4096));
             \MailWatch\Debug::debug('line: ' . $line . "\n");

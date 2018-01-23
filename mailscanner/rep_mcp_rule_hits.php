@@ -33,7 +33,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('mcprulehits34'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('mcprulehits34'), 0, false, true);
 
 $sql = '
  SELECT
@@ -48,7 +48,7 @@ $sql = '
 
 $result = \MailWatch\Db::query($sql);
 if (!$result->num_rows > 0) {
-    die(__('diemysql99') . "\n");
+    die(\MailWatch\Translation::__('diemysql99') . "\n");
 }
 
 // Initialise the array
@@ -94,12 +94,12 @@ echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  <tr><td align="center">
  <table class="boxtable" align="center" border="0">
  <tr bgcolor="#F7CE4A">
- <th>' . __('rule34') . '</th>
- <th>' . __('des34') . '</th>
- <th>' . __('total34') . '</th>
- <th>' . __('clean34') . '</th>
+ <th>' . \MailWatch\Translation::__('rule34') . '</th>
+ <th>' . \MailWatch\Translation::__('des34') . '</th>
+ <th>' . \MailWatch\Translation::__('total34') . '</th>
+ <th>' . \MailWatch\Translation::__('clean34') . '</th>
  <th>%</th>
- <th>' . __('mcp34') . '</th>
+ <th>' . \MailWatch\Translation::__('mcp34') . '</th>
  <th>%</th>
  </tr>' . "\n";
 foreach ($sa_array as $key => $val) {

@@ -34,7 +34,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
-$filter = \MailWatch\Html::start(__('topmailrelays39'), 0, false, true);
+$filter = \MailWatch\Html::start(\MailWatch\Translation::__('topmailrelays39'), 0, false, true);
 
 $graphgenerator = new \MailWatch\GraphGenerator();
 $graphgenerator->sqlQuery = '
@@ -56,13 +56,13 @@ ORDER BY
 LIMIT 10';
 
 $graphgenerator->tableColumns = [
-    'hostname' => __('hostname39'),
-    'clientip' => __('ipaddresses39'),
-    'geoip' => __('country39'),
-    'countconv' => __('messages39'),
-    'total_virusesconv' => __('viruses39'),
-    'total_spamconv' => __('spam39'),
-    'sizeconv'=> __('volume39'),
+    'hostname' => \MailWatch\Translation::__('hostname39'),
+    'clientip' => \MailWatch\Translation::__('ipaddresses39'),
+    'geoip' => \MailWatch\Translation::__('country39'),
+    'countconv' => \MailWatch\Translation::__('messages39'),
+    'total_virusesconv' => \MailWatch\Translation::__('viruses39'),
+    'total_spamconv' => \MailWatch\Translation::__('spam39'),
+    'sizeconv'=> \MailWatch\Translation::__('volume39'),
 ];
 $graphgenerator->sqlColumns = [
     'clientip',
@@ -83,7 +83,7 @@ $graphgenerator->graphColumns = [
     'dataNumericColumn' => 'count',
     'dataFormattedColumn' => 'countconv',
 ];
-$graphgenerator->graphTitle = __('top10mailrelays39');
+$graphgenerator->graphTitle = \MailWatch\Translation::__('top10mailrelays39');
 $graphgenerator->printPieGraph();
 
 // Add footer

@@ -51,7 +51,7 @@ class Quarantine_Report
         $required_constant_missing = '';
         foreach ($required_constant as $constant) {
             if (!defined($constant)) {
-                $required_constant_missing .= sprintf(__('message61'), $constant) . "\n";
+                $required_constant_missing .= sprintf(\MailWatch\Translation::__('message61'), $constant) . "\n";
             }
         }
         if ($required_constant_missing === '') {
@@ -66,7 +66,7 @@ class Quarantine_Report
         return '<!DOCTYPE html>
 <html>
 <head>
- <title>' . __('title61') . '</title>
+ <title>' . \MailWatch\Translation::__('title61') . '</title>
  <style type="text/css">
  <!--
   body, td, tr {
@@ -83,8 +83,8 @@ class Quarantine_Report
  <tr>
   <td><img src="' . MW_LOGO . '"/></td>
   <td align="center" valign="middle">
-   <h2>' . __('text611') . '</h2>
-   ' . __('text612') . '
+   <h2>' . \MailWatch\Translation::__('text611') . '</h2>
+   ' . \MailWatch\Translation::__('text612') . '
   </td>
  </tr>
  <tr>
@@ -99,12 +99,12 @@ class Quarantine_Report
     {
         return '<table width="100%%" border="0">
  <tr>
-  <td style="background-color: #F7CE4A"><b>' . __('received61') . '</b></td>
-  <td style="background-color: #F7CE4A"><b>' . __('to61') . '</b></td>
-  <td style="background-color: #F7CE4A"><b>' . __('from61') . '</b></td>
-  <td style="background-color: #F7CE4A"><b>' . __('subject61') . '</b></td>
-  <td style="background-color: #F7CE4A"><b>' . __('reason61') . '</b></td>
-  <td style="background-color: #F7CE4A"><b>' . __('action61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . \MailWatch\Translation::__('received61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . \MailWatch\Translation::__('to61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . \MailWatch\Translation::__('from61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . \MailWatch\Translation::__('subject61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . \MailWatch\Translation::__('reason61') . '</b></td>
+  <td style="background-color: #F7CE4A"><b>' . \MailWatch\Translation::__('action61') . '</b></td>
  </tr>
 %s
 </table>';
@@ -170,20 +170,20 @@ a.from_address AS from_address,
 a.subject AS subject,
 a.token AS token,
 CASE
- WHEN a.virusinfected>0 THEN '" . __('virus61') . "'
- WHEN a.nameinfected>0 THEN '" . __('badcontent61') . "'
- WHEN a.otherinfected>0 THEN '" . __('infected61') . "'
- WHEN a.ishighspam>0 THEN '" . __('spam61') . "'
- WHEN a.issaspam>0 THEN '" . __('spam61') . "'
- WHEN a.isrblspam>0 THEN '" . __('spam61') . "'
- WHEN a.spamblacklisted>0 THEN '" . __('blacklisted61') . "'
- WHEN a.isspam THEN '" . __('spam61') . "'
- WHEN a.ismcp>0 THEN '" . __('policy61') . "'
- WHEN a.ishighmcp>0 THEN '" . __('policy61') . "'
- WHEN a.issamcp>0 THEN '" . __('policy61') . "'
- WHEN a.mcpblacklisted>0 THEN '" . __('policy61') . "'
- WHEN a.isspam>0 THEN '" . __('spam61') . "'
- ELSE '" . __('unknow61') . "'
+ WHEN a.virusinfected>0 THEN '" . \MailWatch\Translation::__('virus61') . "'
+ WHEN a.nameinfected>0 THEN '" . \MailWatch\Translation::__('badcontent61') . "'
+ WHEN a.otherinfected>0 THEN '" . \MailWatch\Translation::__('infected61') . "'
+ WHEN a.ishighspam>0 THEN '" . \MailWatch\Translation::__('spam61') . "'
+ WHEN a.issaspam>0 THEN '" . \MailWatch\Translation::__('spam61') . "'
+ WHEN a.isrblspam>0 THEN '" . \MailWatch\Translation::__('spam61') . "'
+ WHEN a.spamblacklisted>0 THEN '" . \MailWatch\Translation::__('blacklisted61') . "'
+ WHEN a.isspam THEN '" . \MailWatch\Translation::__('spam61') . "'
+ WHEN a.ismcp>0 THEN '" . \MailWatch\Translation::__('policy61') . "'
+ WHEN a.ishighmcp>0 THEN '" . \MailWatch\Translation::__('policy61') . "'
+ WHEN a.issamcp>0 THEN '" . \MailWatch\Translation::__('policy61') . "'
+ WHEN a.mcpblacklisted>0 THEN '" . \MailWatch\Translation::__('policy61') . "'
+ WHEN a.isspam>0 THEN '" . \MailWatch\Translation::__('spam61') . "'
+ ELSE '" . \MailWatch\Translation::__('unknow61') . "'
 END AS reason
 FROM
  maillog a
@@ -514,7 +514,7 @@ ORDER BY a.date DESC, a.time DESC';
         // Build the quarantine list for this recipient
         foreach ($quarantined as $qitem) {
             //Check if auto-release is enabled
-            $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?token=' . $qitem['token'] . '&id=' . $qitem['id'] . '">' . __('view61') . '</a>';
+            $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?token=' . $qitem['token'] . '&id=' . $qitem['id'] . '">' . \MailWatch\Translation::__('view61') . '</a>';
             if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
                 //Check if email already has an autorelease entry
                 $exists = self::check_auto_release($qitem);
@@ -527,7 +527,7 @@ ORDER BY a.date DESC, a.time DESC';
                 }
                 if ($auto_release) {
                     // add auto release link if enabled
-                    $links .= '  <a href="' . MAILWATCH_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . __('release61') . '</a>';
+                    $links .= '  <a href="' . MAILWATCH_HOSTURL . '/auto-release.php?mid=' . $qitem['id'] . '&r=' . $qitem['rand'] . '">' . \MailWatch\Translation::__('release61') . '</a>';
                 }
             }
 

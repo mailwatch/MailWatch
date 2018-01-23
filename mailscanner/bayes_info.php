@@ -32,15 +32,15 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // Start the header code and Title
-\MailWatch\Html::start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
+\MailWatch\Html::start(\MailWatch\Translation::__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 
 // Enter the Action in the Audit log
-\MailWatch\Security::audit_log(__('auditlog18', true));
+\MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog18', true));
 
 // Create the table
 echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadding="1" width="690">' . "\n";
 // Add a Header to the table
-echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>' . "\n";
+echo '<tr><th colspan="2">' . \MailWatch\Translation::__('bayesdatabaseinfo18') . '</th></tr>' . "\n";
 
 // Clear Bayes database
 if ($_SESSION['user_type'] === 'A') {
@@ -48,16 +48,16 @@ if ($_SESSION['user_type'] === 'A') {
     if (isset($_POST['clear'])) {
         if (!is_file(SA_DIR . 'sa-learn')) {
             echo '<div class="error center">' . "\n";
-            echo '<br>' . __('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
+            echo '<br>' . \MailWatch\Translation::__('cannotfind18') . ' ' . SA_DIR . 'sa-learn';
             echo '</div>' . "\n";
         } else {
             // You can use --force-expire instead of --clear to test the routine
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --clear', $return);
             if ($return === 0) {
-                \MailWatch\Security::audit_log(__('auditlogwipe18', true));
+                \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlogwipe18', true));
             } else {
                 echo '<div class="error center">' . "\n";
-                echo '<br>' . __('error18') . ' ' . $return;
+                echo '<br>' . \MailWatch\Translation::__('error18') . ' ' . $return;
                 echo '</div>' . "\n";
             }
         }
@@ -67,7 +67,7 @@ if ($_SESSION['user_type'] === 'A') {
 
 // Open the spamassassin file
 if (!is_file(SA_DIR . 'sa-learn')) {
-    die(__('cannotfind18') . ' ' . SA_DIR . 'sa-learn');
+    die(\MailWatch\Translation::__('cannotfind18') . ' ' . SA_DIR . 'sa-learn');
 }
 $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 
@@ -79,52 +79,52 @@ while (!feof($fh)) {
     if (preg_match('/(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+non-token data: (.+)/', $line, $regs)) {
         switch ($regs[5]) {
             case 'nspam':
-                echo '<tr><td class="heading">' . __('nbrspammessage18') . '</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('nbrspammessage18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
 
             case 'nham':
-                echo '<tr><td class="heading">' . __('nbrhammessage18') . '</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('nbrhammessage18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
 
             case 'ntokens':
-                echo '<tr><td class="heading">' . __('nbrtoken18') . '</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('nbrtoken18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
 
             case 'oldest atime':
-                echo '<tr><td class="heading">' . __('oldesttoken18') . '</td><td align="right">' . date(
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('oldesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
 
             case 'newest atime':
-                echo '<tr><td class="heading">' . __('newesttoken18') . '</td><td align="right">' . date(
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('newesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
 
             case 'last journal sync atime':
-                echo '<tr><td class="heading">' . __('lastjournalsync18') . '</td><td align="right">' . date(
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('lastjournalsync18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
 
             case 'last expiry atime':
-                echo '<tr><td class="heading">' . __('lastexpiry18') . '</td><td align="right">' . date('r', $regs[3]) . '</td></tr>' . "\n";
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('lastexpiry18') . '</td><td align="right">' . date('r', $regs[3]) . '</td></tr>' . "\n";
                 break;
 
             case 'last expire reduction count':
-                echo '<tr><td class="heading">' . __('lastexpirycount18') . '</td><td align="right">' . number_format(
+                echo '<tr><td class="heading">' . \MailWatch\Translation::__('lastexpirycount18') . '</td><td align="right">' . number_format(
                         $regs[3]
-                    ) . ' ' . __('tokens18') .'</td></tr>' . "\n";
+                    ) . ' ' . \MailWatch\Translation::__('tokens18') .'</td></tr>' . "\n";
                 break;
         }
     }
@@ -140,8 +140,8 @@ echo '</table>' . "\n";
 if ($_SESSION['user_type'] === 'A') {
     echo '<br>' . "\n";
     echo '<div class="center">' . "\n";
-    echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >' . "\n";
-    echo '<input type="submit" value="' . __('cleardbbayes18') . '">' . "\n";
+    echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . \MailWatch\Translation::__('clearmessage18') . '\');" >' . "\n";
+    echo '<input type="submit" value="' . \MailWatch\Translation::__('cleardbbayes18') . '">' . "\n";
     echo '<input type="hidden" name="clear" value="true">' . "\n";
     echo '</form>' . "\n";
     echo '</div>' . "\n";

@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-\MailWatch\Html::start(__('doc20'));
+\MailWatch\Html::start(\MailWatch\Translation::__('doc20'));
 
 if (isset($_GET['doc'])) {
     $file = preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['doc']);
@@ -38,8 +38,8 @@ if (isset($_GET['doc'])) {
     echo '<table width="100%" class="boxtable">' . "\n";
     echo ' <tr>' . "\n";
     echo '  <td>' . "\n";
-    echo '  <h1>' . __('doc20') . '</h1>' . "\n";
-    echo '  ' . __('message20') . "\n";
+    echo '  <h1>' . \MailWatch\Translation::__('doc20') . '</h1>' . "\n";
+    echo '  ' . \MailWatch\Translation::__('message20') . "\n";
     echo '  </td>' . "\n";
     echo ' </tr>' . "\n";
     echo '</table>' . "\n";
