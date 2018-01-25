@@ -54,7 +54,7 @@ class XXXCompatController extends Controller
         $compatSrc = $this->get('kernel')->getProjectDir().'/mailscanner/';
 
         if (!is_readable($compatSrc . 'conf.php')) {
-            die(__('cannot_read_conf'));
+            die('cannot_read_conf');
         }
         require_once $compatSrc . 'conf.php';
         require_once $compatSrc . 'functions.php';

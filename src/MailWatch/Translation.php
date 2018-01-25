@@ -29,6 +29,10 @@ namespace MailWatch;
 
 class Translation
 {
+    static public $langCode;
+    static private $lang;
+    static private $systemLang;
+
     /**
      * @param string $string
      * @param boolean $useSystemLang
@@ -37,11 +41,9 @@ class Translation
     public static function __($string, $useSystemLang = false)
     {
         if ($useSystemLang) {
-            global $systemLang;
-            $language = $systemLang;
+            $language = self::$systemLang;
         } else {
-            global $lang;
-            $language = $lang;
+            $language = self::$lang;
         }
 
         $debug_message = '';
@@ -52,16 +54,55 @@ class Translation
             $pre_string = '<span class="error">';
             $post_string = '</span>';
         }
-
         if (isset($language[$string])) {
             return $language[$string] . $debug_message;
         }
 
-        $en_lang = require __DIR__ . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . 'en.php';
+        $en_lang = \MailWatch\Languages\en::$TRANSLATION;
         if (isset($en_lang[$string])) {
             return $pre_string . $en_lang[$string] . $debug_message . $post_string;
         }
 
         return $pre_string . $language['i18_missing'] . $debug_message . $post_string;
+    }
+
+   /**
+    *  for compatibility with old code
+    */
+    public static function configureLanguage() {
+        $session_cookie_secure = false;
+        if (SSL_ONLY === true) {
+           ini_set('session.cookie_secure', 1);
+            $session_cookie_secure = true;
+        }
+
+        if (!defined('LANG')) {
+            define('LANG', 'en');
+        }
+        self::$langCode = LANG;
+        // If the user is allowed to select the language for the gui check which language he has choosen or create the cookie with the default lang
+        if (defined('USER_SELECTABLE_LANG')) {
+            if (isset($_COOKIE['MW_LANG']) && checkLangCode($_COOKIE['MW_LANG'])) {
+                self::$langCode = $_COOKIE['MW_LANG'];
+            } else {
+                setcookie('MW_LANG', LANG, 0, (session_get_cookie_params())['path'], (session_get_cookie_params())['domain'], $session_cookie_secure, false);
+            }
+        }
+
+        // Load the lang file or en if the spicified language is not available
+        $langClass = '\\MailWatch\\Languages\\' . self::$langCode;
+        if (!class_exists($langClass)) {
+            self::$lang = \MailWatch\Languages\en::$TRANSLATION;
+        } else {
+            self::$lang = (new $langClass)::$TRANSLATION;
+        }
+
+        // Load the lang file or en if the spicified language is not available
+        $sysLangClass = '\\MailWatch\\Languages\\' . LANG;
+        if (!class_exists($sysLangClass)) {
+            self::$systemLang = \MailWatch\Languages\en::$TRANSLATION;
+        } else {
+            self::$systemLang = (new $sysLangClass)::$TRANSLATION;
+        }
     }
 }
