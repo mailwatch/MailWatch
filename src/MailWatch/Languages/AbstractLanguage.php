@@ -25,39 +25,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-namespace MailWatch\Controller;
+namespace MailWatch\Languages;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
-class LoginController extends Controller
-{
-    /**
-     * @Route("/login", name="login")
-     */
-    public function login(Request $request, AuthenticationUtils $authUtils)
-    {
-        // get the login error if there is one
-        $error = $authUtils->getLastAuthenticationError();
-
-        // last username entered by the user
-        $lastUsername = $authUtils->getLastUsername();
-
-        //required for localization
-        $compatSrc = $this->get('kernel')->getProjectDir().'/mailscanner/';
-        if (!is_readable($compatSrc . 'conf.php')) {
-            die(\MailWatch\Translation::__('cannot_read_conf'));
-        }
-        require_once $compatSrc . 'conf.php';
-        require_once $compatSrc . 'functions.php';
-
-
-
-        return $this->render('Security/login.html.php', [
-            'last_username' => $lastUsername,
-            'error'         => $error,
-        ]);
-    }
+class AbstractLanguage {
+    public static $TRANSLATION;
 }

@@ -57,34 +57,7 @@ if (defined('SESSION_NAME')) {
 }
 session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie_secure, true);
 
-// Load Language File
-// If the translation file indicated at conf.php doesn´t exists, the system will load the English version.
-if (!defined('LANG')) {
-    define('LANG', 'en');
-}
-$langCode = LANG;
-// If the user is allowed to select the language for the gui check which language he has choosen or create the cookie with the default lang
-if (defined('USER_SELECTABLE_LANG')) {
-    if (isset($_COOKIE['MW_LANG']) && checkLangCode($_COOKIE['MW_LANG'])) {
-        $langCode = $_COOKIE['MW_LANG'];
-    } else {
-        setcookie('MW_LANG', LANG, 0, $params['path'], $params['domain'], $session_cookie_secure, false);
-    }
-}
-
-// Load the lang file or en if the spicified language is not available
-if (!is_file(__DIR__ . '/languages/' . $langCode . '.php')) {
-    $lang = require __DIR__ . '/languages/en.php';
-} else {
-    $lang = require __DIR__ . '/languages/' . $langCode . '.php';
-}
-
-// Load the lang file or en if the spicified language is not available
-if (!is_file(__DIR__ . '/languages/' . LANG . '.php')) {
-    $systemLang = require __DIR__ . '/languages/en.php';
-} else {
-    $systemLang = require __DIR__ . '/languages/' . LANG . '.php';
-}
+\MailWatch\Translation::configureLanguage();
 
 $missingConfigEntries = checkConfVariables();
 if ($missingConfigEntries['needed']['count'] !== 0) {
