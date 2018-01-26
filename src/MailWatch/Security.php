@@ -38,20 +38,23 @@ class Security
     }
 
     /**
-     * @param $action
+     * @param string $action
+     * @param string $user
      * @return bool
      */
-    public static function audit_log($action)
+    public static function audit_log($action, $user = 'unknown')
     {
         $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (AUDIT) {
-            $user = 'unknown';
             if (isset($_SESSION['myusername'])) {
                 $user = $link->real_escape_string($_SESSION['myusername']);
             }
 
             $action =  \MailWatch\Sanitize::safe_value($action);
-            $ip =  \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
+            $ip = null;
+            if (isset($_SERVER['REMOTE_ADDR'])) {
+                $ip =  \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
+            }
             $ret = \MailWatch\Db::query("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
             if ($ret) {
                 return true;
