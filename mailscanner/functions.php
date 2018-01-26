@@ -3832,19 +3832,24 @@ function fixMessageId($id)
 
 /**
  * @param string $action
+ * @param string $user
  * @return bool
  */
-function audit_log($action)
+function audit_log($action, $user = 'unknown')
 {
     $link = dbconn();
     if (AUDIT) {
-        $user = 'unknown';
         if (isset($_SESSION['myusername'])) {
             $user = $link->real_escape_string($_SESSION['myusername']);
         }
 
         $action = safe_value($action);
-        $ip = safe_value($_SERVER['REMOTE_ADDR']);
+
+        $ip = null;
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            $ip = safe_value($_SERVER['REMOTE_ADDR']);
+        }
+
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
         if ($ret) {
             return true;
