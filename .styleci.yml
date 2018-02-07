@@ -2,6 +2,9 @@ preset: psr2
 
 linting: true
 
+enabled:
+  - short_array_syntax
+
 finder:
   exclude:
     - lib
