@@ -3506,7 +3506,10 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                 }
             }
-            $mail_param = array('host' => MAILWATCH_MAIL_HOST);
+            $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+            if (defined('MAILWATCH_SMTP_HOSTNAME')) {
+                $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
+            }
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
             $mail = new Mail_smtp($mail_param);
@@ -4306,10 +4309,9 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
+    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     if (defined('MAILWATCH_SMTP_HOSTNAME')) {
-        $mail_param = array('localhost' => MAILWATCH_SMTP_HOSTNAME, 'host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
-    } else {
-        $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+        $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
     }
     $mail = new Mail_smtp($mail_param);
 
