@@ -1670,48 +1670,6 @@ function checkConfVariables()
 }
 
 /**
- * @param string $email
- * @param string $html
- * @param string $text
- * @param string $subject
- * @param bool $pwdreset
- * @return mixed
- */
-function send_email($email, $html, $text, $subject, $pwdreset = false)
-{
-    $mime = new Mail_mime("\n");
-    if ($pwdreset === true && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
-        $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
-    } else {
-        $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
-    }
-    $hdrs = [
-        'From' => $sender,
-        'To' => $email,
-        'Subject' => $subject,
-        'Date' => date('r')
-    ];
-    $mime_params = [
-        'text_encoding' => '7bit',
-        'text_charset' => 'UTF-8',
-        'html_charset' => 'UTF-8',
-        'head_charset' => 'UTF-8'
-    ];
-    $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
-    $mime->setTXTBody($text);
-    $mime->setHTMLBody($html);
-    $body = $mime->get($mime_params);
-    $hdrs = $mime->headers($hdrs);
-    $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
-    if (defined('MAILWATCH_SMTP_HOSTNAME')) {
-        $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
-    }
-    $mail = new Mail_smtp($mail_param);
-
-    return $mail->send($email, $hdrs, $body);
-}
-
-/**
  * @param $ip
  * @param bool|string $net
  * @param bool|string $privateLocal

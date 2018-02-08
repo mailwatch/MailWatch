@@ -116,7 +116,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                     //Send email
                     $subject = \MailWatch\Translation::__('passwdresetrequest63');
-                    $isSent = send_email($email, $html, $text, $subject, true);
+                    $isSent = \MailWatch\Mailer::send($email, $html, $text, $subject, true);
                     if ($isSent !== true) {
                         die('Error Sending email: ' . $isSent);
                     }
@@ -190,7 +190,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                     //Send email
                     $subject = \MailWatch\Translation::__('pwdresetsuccess63');
-                    send_email($email, $html, $text, $subject, true);
+                    \MailWatch\Mailer::send($email, $html, $text, $subject, true);
                     \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogresetsuccess63', true), $email));
                     $message = '<p>' . \MailWatch\Translation::__('pwdresetsuccess63') . '</p>
                         <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';

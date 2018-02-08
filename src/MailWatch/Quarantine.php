@@ -193,13 +193,10 @@ SELECT
                         $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                     }
                 }
-                $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
-                if (defined('MAILWATCH_SMTP_HOSTNAME')) {
-                    $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
-                }
+
                 $body = $mime->get();
                 $hdrs = $mime->headers($hdrs);
-                $mail = new \Mail_smtp($mail_param);
+                $mail = new \Mail_smtp(Mailer::getParameters());
 
                 $m_result = $mail->send($to, $hdrs, $body);
                 if (is_a($m_result, 'PEAR_Error')) {

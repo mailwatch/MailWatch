@@ -566,7 +566,7 @@ ORDER BY a.date DESC, a.time DESC';
         }
 
         // Send e-mail
-        $isSent = send_email($email, $html_report, $text_report, QUARANTINE_REPORT_SUBJECT);
+        $isSent = \MailWatch\Mailer::send($email, $html_report, $text_report, QUARANTINE_REPORT_SUBJECT);
         if ($isSent === true) {
             self::dbg(" ==== Sent e-mail to $email");
 
