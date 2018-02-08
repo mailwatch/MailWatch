@@ -73,7 +73,7 @@ class GraphGenerator
           chartId : "' . $chartId . '",
           chartLabels : ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"],
           chartNumericData : [' . implode(', ', $this->data[$this->graphColumns['dataNumericColumn']]) . '],
-          chartFormattedData : ["' . implode('", "', $this->data[$this->graphColumns['dataFormattedColumn']]) . '"],
+          chartFormattedData : ["' . implode('", "', $this->data[$this->graphColumns['dataFormattedColumn']]) . '"]
         });
       </script>
       <br>';
@@ -305,13 +305,12 @@ class GraphGenerator
      * Generates $this->data['time'] with the time beginning with $this->settings['timeInterval'] and
      * in steps of $this->settings['timeScale']
      *
-     * @return void
+     * @throws \Exception
      */
     protected function generateTimeScale()
     {
-        if (!isset($this->settings['timeInterval']) || !isset($this->settings['timeScale'])
-            || !isset($this->settings['timeFormat'])) {
-            throw new \Exception('timeInterval or timeScale not set');
+        if (!isset($this->settings['timeInterval'], $this->settings['timeScale'], $this->settings['timeFormat'])) {
+            throw new \RuntimeException('timeInterval or timeScale not set');
         }
         $interval = $this->settings['timeInterval'];
         $scale = $this->settings['timeScale'];
@@ -338,12 +337,14 @@ class GraphGenerator
      * Converts the data from $this->data[$column] so that it is mapped to an time scale
      *
      * @param string $column the data column that shall be converted
-     * @return void
+     *
+     * @throws \RuntimeException
+     * @throws \Exception
      */
     protected function convertToTimeScale($column)
     {
         if (!isset($this->settings['timeInterval'], $this->settings['timeScale'], $this->settings['timeFormat'])) {
-            throw new \Exception('timeInterval or timeScale not set');
+            throw new \RuntimeException('timeInterval or timeScale not set');
         }
         $interval = $this->settings['timeInterval'];
         $scale = $this->settings['timeScale'];

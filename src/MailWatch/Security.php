@@ -50,10 +50,10 @@ class Security
                 $user = $link->real_escape_string($_SESSION['myusername']);
             }
 
-            $action =  \MailWatch\Sanitize::safe_value($action);
+            $action = \MailWatch\Sanitize::safe_value($action);
             $ip = null;
             if (isset($_SERVER['REMOTE_ADDR'])) {
-                $ip =  \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
+                $ip = \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
             }
             $ret = \MailWatch\Db::query("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
             if ($ret) {
@@ -188,7 +188,7 @@ class Security
      */
     public static function updateLoginExpiry($myusername)
     {
-        $sql = "SELECT login_timeout FROM users WHERE username='" .  Sanitize::safe_value($myusername) . "'";
+        $sql = "SELECT login_timeout FROM users WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);
 
         if ($result->num_rows === 0) {
@@ -215,7 +215,7 @@ class Security
         } else {
             $expiry_val = (time() + (int)$login_timeout);
         }
-        $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" .  Sanitize::safe_value($myusername) . "'";
+        $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);
 
         return $result;
@@ -229,7 +229,7 @@ class Security
      */
     public static function checkLoginExpiry($myusername)
     {
-        $sql = "SELECT login_expiry FROM users WHERE username='" .  Sanitize::safe_value($myusername) . "'";
+        $sql = "SELECT login_expiry FROM users WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);
 
         if ($result->num_rows === 0) {
@@ -242,16 +242,20 @@ class Security
         if ($login_expiry === '-1') {
             // User administratively logged out
             return true;
-        } elseif ($login_expiry === '0') {
+        }
+
+        if ($login_expiry === '0') {
             // Login never expires, so just return false
             return false;
-        } elseif ((int)$login_expiry > time()) {
+        }
+
+        if ((int)$login_expiry > time()) {
             // User is active
             return false;
-        } else {
-            // User has timed out
-            return true;
         }
+
+        // User has timed out
+        return true;
     }
 
     /**
@@ -271,11 +275,6 @@ class Security
 
         $user_type = Db::mysqli_result($result, 0, 'type');
 
-        if ($_SESSION['user_type'] !== $user_type) {
-            // Privilege change detected
-            return true;
-        }
-
-        return false;
+        return $_SESSION['user_type'] !== $user_type;
     }
 }

@@ -218,16 +218,20 @@ WHERE
         }
         if (is_numeric($val[2])) {
             return "AND\n $val[0] $val[1] $val[2]\n";
-        } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
+        }
+
+        if ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
             // Handle NULL and NOT NULL's
             return "AND\n $val[0] $val[1]\n";
-        } elseif ($val[2] !== '' && $val[2]{0} === '!') {
+        }
+
+        if ($val[2] !== '' && $val[2]{0} === '!') {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
-        } else {
-            // Regular string
-            return "AND\n $val[0] $val[1] '$val[2]'\n";
         }
+
+        // Regular string
+        return "AND\n $val[0] $val[1] '$val[2]'\n";
     }
 
     /**
