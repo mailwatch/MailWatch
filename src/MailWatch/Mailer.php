@@ -1,4 +1,5 @@
 <?php
+
 /*
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)

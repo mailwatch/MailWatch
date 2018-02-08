@@ -29,10 +29,11 @@
 /* v0.3.12 */
 
 namespace MailWatch\Languages;
+
 use MailWatch\Languages\AbstractLanguage;
 
-class nl extends AbstractLanguage {
-
+class nl extends AbstractLanguage
+{
     public static $TRANSLATION = [
     // 01-login.php
     'username' => 'Gebruiker:',

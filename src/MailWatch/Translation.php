@@ -29,9 +29,9 @@ namespace MailWatch;
 
 class Translation
 {
-    static public $langCode;
-    static private $lang;
-    static private $systemLang;
+    public static $langCode;
+    private static $lang;
+    private static $systemLang;
 
     /**
      * @param string $string
@@ -66,13 +66,14 @@ class Translation
         return $pre_string . $language['i18_missing'] . $debug_message . $post_string;
     }
 
-   /**
-    *  for compatibility with old code
-    */
-    public static function configureLanguage() {
+    /**
+     *  for compatibility with old code
+     */
+    public static function configureLanguage()
+    {
         $session_cookie_secure = false;
         if (SSL_ONLY === true) {
-           ini_set('session.cookie_secure', 1);
+            ini_set('session.cookie_secure', 1);
             $session_cookie_secure = true;
         }
 
