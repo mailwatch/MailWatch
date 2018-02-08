@@ -27,6 +27,7 @@
 
 namespace MailWatch\Languages;
 
-class AbstractLanguage {
+class AbstractLanguage
+{
     public static $TRANSLATION;
 }
