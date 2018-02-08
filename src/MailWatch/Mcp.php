@@ -56,7 +56,7 @@ class Mcp
             }
             $output_array = [];
             foreach ($sa_rules as $val) {
-                $output_array[] = Mcp::get_rule_desc($val);
+                $output_array[] = self::get_rule_desc($val);
             }
             // Return the result as an html formatted string
             if (count($output_array) > 0) {

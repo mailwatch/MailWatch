@@ -127,7 +127,7 @@ class SpamAssassin
 
             $output_array = [];
             foreach ($sa_rules as $sa_rule) {
-                $output_array[] = SpamAssassin::get_rule_desc($sa_rule);
+                $output_array[] = self::get_rule_desc($sa_rule);
             }
 
             // Return the result as an html formatted string

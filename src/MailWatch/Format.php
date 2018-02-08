@@ -72,7 +72,7 @@ class Format
                 $string = mb_convert_encoding($string, 'UTF-8');
             }
         } else {
-            if (!Format::is_utf8($string)) {
+            if (!self::is_utf8($string)) {
                 $string = utf8_encode($string);
             }
         }

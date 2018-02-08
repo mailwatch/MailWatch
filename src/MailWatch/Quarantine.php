@@ -278,7 +278,7 @@ SELECT
         if (!is_array($list) || !isset($list[0]['msgid'])) {
             return 'Invalid argument';
         }
-        $new = Quarantine::quarantine_list_items($list[0]['msgid']);
+        $new = self::quarantine_list_items($list[0]['msgid']);
         $list =& $new;
         $status = [];
         if (!$rpc_only && is_local($list[0]['host'])) {
@@ -439,7 +439,7 @@ SELECT
             return 'Invalid argument';
         }
 
-        $new = Quarantine::quarantine_list_items($list[0]['msgid']);
+        $new = self::quarantine_list_items($list[0]['msgid']);
         $list =& $new;
 
         if (!$rpc_only && is_local($list[0]['host'])) {

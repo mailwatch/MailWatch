@@ -222,7 +222,7 @@ class Antivirus
      */
     public static function return_todays_top_virus()
     {
-        if (Antivirus::getVirusRegex() === null) {
+        if (self::getVirusRegex() === null) {
             return \MailWatch\Translation::__('unknownvirusscanner03');
         }
         $sql = '
@@ -238,9 +238,9 @@ AND
         $result = Db::query($sql);
         $virus_array = [];
         while ($row = $result->fetch_object()) {
-            $virus = Antivirus::getVirus($row->report);
+            $virus = self::getVirus($row->report);
             if ($virus !== null) {
-                $virus = Antivirus::getVirusLink($virus);
+                $virus = self::getVirusLink($virus);
                 if (!isset($virus_array[$virus])) {
                     $virus_array[$virus] = 1;
                 } else {

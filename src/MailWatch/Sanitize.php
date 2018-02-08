@@ -47,7 +47,7 @@ class Sanitize
      */
     public static function quote_smart($value)
     {
-        return "'" . Sanitize::safe_value($value) . "'";
+        return "'" . self::safe_value($value) . "'";
     }
 
     /**
@@ -75,33 +75,33 @@ class Sanitize
         switch ($type) {
             case 'email':
                 $string = filter_var($input, FILTER_SANITIZE_EMAIL);
-                $string = Sanitize::sanitizeInput($string);
-                $string = Sanitize::safe_value($string);
+                $string = self::sanitizeInput($string);
+                $string = self::safe_value($string);
 
                 return $string;
             case 'url':
                 $string = filter_var($input, FILTER_SANITIZE_URL);
-                $string = Sanitize::sanitizeInput($string);
+                $string = self::sanitizeInput($string);
                 $string = htmlentities($string);
-                $string = Sanitize::safe_value($string);
+                $string = self::safe_value($string);
 
                 return $string;
             case 'num':
                 $string = filter_var($input, FILTER_SANITIZE_NUMBER_INT);
-                $string = Sanitize::sanitizeInput($string);
-                $string = Sanitize::safe_value($string);
+                $string = self::sanitizeInput($string);
+                $string = self::safe_value($string);
 
                 return $string;
             case 'float':
                 $string = filter_var($input, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                $string = Sanitize::sanitizeInput($string);
-                $string = Sanitize::safe_value($string);
+                $string = self::sanitizeInput($string);
+                $string = self::safe_value($string);
 
                 return $string;
             case 'string':
                 $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
-                $string = Sanitize::sanitizeInput($string);
-                $string = Sanitize::safe_value($string);
+                $string = self::sanitizeInput($string);
+                $string = self::safe_value($string);
 
                 return $string;
             default:

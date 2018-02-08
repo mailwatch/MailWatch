@@ -133,7 +133,7 @@ class Db
      */
     public static function query($sql, $printError = true)
     {
-        $link = Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        $link = self::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (DEBUG && headers_sent() && preg_match('/\bselect\b/i', $sql)) {
             Debug::dbquerydebug($link, $sql);
         }
@@ -142,7 +142,7 @@ class Db
 
         if (true === $printError && false === $result) {
             // stop on query error
-            $message = '<strong>Invalid query</strong>: ' . Db::$link->errno . ': ' . Db::$link->error . "<br>\n";
+            $message = '<strong>Invalid query</strong>: ' . self::$link->errno . ': ' . self::$link->error . "<br>\n";
             $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
             die($message);
         }

@@ -53,7 +53,7 @@ class Ldap
 
             $bindResult = @ldap_bind($ds, LDAP_USER, LDAP_PASS);
             if (false === $bindResult) {
-                die(Ldap::print_error($ds));
+                die(self::print_error($ds));
             }
 
             //search for $user in LDAP directory
@@ -137,7 +137,7 @@ class Ldap
                         //LDAP_INVALID_CREDENTIALS
                         return null;
                     }
-                    die(Ldap::print_error($ds));
+                    die(self::print_error($ds));
                 }
             }
         }

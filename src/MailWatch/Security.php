@@ -77,12 +77,12 @@ class Security
         if ($passwordFiledLength < 255) {
             $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
             Db::query($sqlUpdateFieldLength);
-            Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
+            self::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
         }
 
         $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
         Db::query($sqlUpdateHash);
-        Security::audit_log(\MailWatch\Translation::__('auditlogupdateuser03', true) . ' ' . $user);
+        self::audit_log(\MailWatch\Translation::__('auditlogupdateuser03', true) . ' ' . $user);
     }
 
     /**
@@ -139,7 +139,7 @@ class Security
     {
         $tokenLenght = 32;
 
-        return Security::get_random_string($tokenLenght);
+        return self::get_random_string($tokenLenght);
     }
 
     /**
