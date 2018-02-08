@@ -169,7 +169,7 @@ SELECT
             return 'Invalid argument';
         }
 
-        $new = Quarantine::quarantine_list_items($list[0]['msgid']);
+        $new = self::quarantine_list_items($list[0]['msgid']);
         $list =& $new;
 
         if (!$rpc_only && is_local($list[0]['host'])) {
@@ -181,7 +181,7 @@ SELECT
                     'text_charset' => 'UTF-8',
                     'head_charset' => 'UTF-8'
                 ];
-                $mime = new Mail_mime($mailMimeParams);
+                $mime = new \Mail_mime($mailMimeParams);
                 $mime->setTXTBody(\ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY));
                 // Loop through each selected file and attach them to the mail
                 foreach ($num as $key => $val) {
@@ -193,10 +193,13 @@ SELECT
                         $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                     }
                 }
-                $mail_param = ['host' => MAILWATCH_MAIL_HOST];
+                $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
+                if (defined('MAILWATCH_SMTP_HOSTNAME')) {
+                    $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
+                }
                 $body = $mime->get();
                 $hdrs = $mime->headers($hdrs);
-                $mail = new Mail_smtp($mail_param);
+                $mail = new \Mail_smtp($mail_param);
 
                 $m_result = $mail->send($to, $hdrs, $body);
                 if (is_a($m_result, 'PEAR_Error')) {

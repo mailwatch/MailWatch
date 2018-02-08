@@ -1702,10 +1702,9 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
+    $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
     if (defined('MAILWATCH_SMTP_HOSTNAME')) {
-        $mail_param = ['localhost' => MAILWATCH_SMTP_HOSTNAME, 'host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
-    } else {
-        $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
+        $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
     }
     $mail = new Mail_smtp($mail_param);
 
