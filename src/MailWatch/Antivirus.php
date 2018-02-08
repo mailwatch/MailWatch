@@ -176,6 +176,7 @@ class Antivirus
     /**
      * @param string $report virus report message
      * @return string|null
+     * @throws \RuntimeException
      */
     public static function getVirus($report)
     {
@@ -195,7 +196,7 @@ class Antivirus
                 }
             }
         }
-        if (count($match) > 2) {
+        if (isset($match[2]) && count($match) > 2) {
             return $match[2];
         }
         return $report;
@@ -219,6 +220,7 @@ class Antivirus
 
     /**
      * @return string
+     * @throws \RuntimeException
      */
     public static function return_todays_top_virus()
     {

@@ -85,7 +85,7 @@ class Ldap
                         return null;
                     }
 
-                    if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
+                    if (!isset($result[0][LDAP_USERNAME_FIELD][0])) {
                         @trigger_error(\MailWatch\Translation::__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . \MailWatch\Translation::__('ldapresults03'));
 
                         return null;

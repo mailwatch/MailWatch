@@ -86,7 +86,7 @@ class Security
     }
 
     /**
-     * @param $length
+     * @param integer $length
      * @return bool|string
      * @throws \Exception
      */
@@ -97,7 +97,7 @@ class Security
         }
 
         if (function_exists('mcrypt_create_iv')) {
-            $random = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+            $random = mcrypt_create_iv($length);
             if (false !== $random) {
                 return bin2hex($random);
             }
@@ -155,6 +155,10 @@ class Security
         return $_SESSION['token'] === Sanitize::deepSanitizeInput($token, 'url');
     }
 
+    /**
+     * @param string $formstring
+     * @return string
+     */
     public static function generateFormToken($formstring)
     {
         if (!isset($_SESSION['token'])) {
@@ -167,8 +171,8 @@ class Security
     }
 
     /**
-     * @param $formstring
-     * @param $formtoken
+     * @param string $formstring
+     * @param string $formtoken
      * @return bool
      */
     public static function checkFormToken($formstring, $formtoken)
@@ -183,7 +187,7 @@ class Security
 
     /**
      * Updates the user login expiry
-     * @param $myusername
+     * @param string $myusername
      * @return bool|\mysqli_result
      */
     public static function updateLoginExpiry($myusername)
@@ -224,7 +228,7 @@ class Security
     /**
      * Checks the user login expiry against the current time, if enabled
      * Returns true if expired
-     * @param $myusername
+     * @param string $myusername
      * @return bool
      */
     public static function checkLoginExpiry($myusername)
@@ -260,7 +264,7 @@ class Security
 
     /**
      * Checks for a privilege change, returns true if changed
-     * @param $myusername
+     * @param string $myusername
      * @return bool
      */
     public static function checkPrivilegeChange($myusername)

@@ -190,7 +190,7 @@ SELECT
                         $mime->addAttachment($list[$val]['path'], 'message/rfc822', 'Original Message', true, '');
                     } else {
                         // Default is base64 encoded
-                        $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
+                        $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file']);
                     }
                 }
 

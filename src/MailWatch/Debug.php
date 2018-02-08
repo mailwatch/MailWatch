@@ -40,15 +40,14 @@ class Debug
     }
 
     /**
-     * @param $link
-     * @param $sql
+     * @param \mysqli $link
+     * @param string $sql
      */
     public static function dbquerydebug($link, $sql)
     {
         echo "<!--\n\n";
         $dbg_sql = 'EXPLAIN ' . $sql;
         echo "SQL:\n\n$sql\n\n";
-        /** @var mysqli_result $result */
         $result = $link->query($dbg_sql);
         if ($result) {
             while ($row = $result->fetch_row()) {

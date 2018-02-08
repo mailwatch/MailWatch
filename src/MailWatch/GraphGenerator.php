@@ -35,7 +35,7 @@ class GraphGenerator
     public $tableColumns = [];
     public $graphColumns = [];
     public $valueConversion = [];
-    public $types = null;
+    public $types;
     public $printTable = true;
     public $settings = [];
 
@@ -49,6 +49,7 @@ class GraphGenerator
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function printPieGraph()
     {
@@ -85,6 +86,7 @@ class GraphGenerator
      * Generates a line/bar graph
      *
      * @return void
+     * @throws \Exception
      */
     public function printLineGraph()
     {
@@ -159,6 +161,7 @@ class GraphGenerator
      * Executes the conversion defined by $this->valueConversion
      *
      * @return void
+     * @throws \Exception
      */
     protected function runConversions()
     {
@@ -338,7 +341,6 @@ class GraphGenerator
      *
      * @param string $column the data column that shall be converted
      *
-     * @throws \RuntimeException
      * @throws \Exception
      */
     protected function convertToTimeScale($column)
@@ -351,6 +353,7 @@ class GraphGenerator
         $format = $this->settings['timeGroupFormat'];
 
         $now = $this->settings['now'];
+        /** @var \DateTime $start */
         $start = clone $now;
         $start = $start->sub(new \DateInterval($interval));
         $oldest = clone $start;

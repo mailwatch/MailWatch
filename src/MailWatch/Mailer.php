@@ -56,7 +56,7 @@ class Mailer
             'html_charset' => 'UTF-8',
             'head_charset' => 'UTF-8'
         ];
-        $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+        $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO);
         $mime->setTXTBody($text);
         $mime->setHTMLBody($html);
         $body = $mime->get($mime_params);

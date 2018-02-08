@@ -67,8 +67,8 @@ class Db
 .db-error {
     width: 40%;
     margin: 0 auto;
-    text-align: center;
     margin-top: 100px;
+    text-align: center;
     border: solid 3px #ebcccc;
     -webkit-border-radius:20px;
     -moz-border-radius:20px;
