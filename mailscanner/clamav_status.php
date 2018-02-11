@@ -26,10 +26,10 @@
  */
 
 // Require the functions page
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // Require the login function code
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrater
 if ($_SESSION['user_type'] !== 'A') {

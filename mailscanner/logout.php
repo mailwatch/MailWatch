@@ -25,7 +25,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 // Clear the login expiry timestamp
 $sql = "UPDATE users SET login_expiry='-1' WHERE username='" .  \MailWatch\Sanitize::safe_value($_SESSION['myusername']) . "'";

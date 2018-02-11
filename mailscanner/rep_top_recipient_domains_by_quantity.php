@@ -27,11 +27,11 @@
 
 // Include of necessary functions
 
-require_once __DIR__ . '/functions.php';
+//require_once __DIR__ . '/functions.php';
 
 
 // Authentication checking
-require __DIR__ . '/login.function.php';
+//require __DIR__ . '/login.function.php';
 
 // add the header information such as the logo, search, menu, ....
 $filter = \MailWatch\Html::start(\MailWatch\Translation::__('toprecipdomqt40'), 0, false, true);

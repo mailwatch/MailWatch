@@ -60,10 +60,10 @@ class Html
             die();
         }
 
-        if (\MailWatch\Security::checkLoginExpiry($_SESSION['myusername']) === true) {
-            header('Location: logout.php?error=timeout');
-            die();
-        }
+        /*        if (\MailWatch\Security::checkLoginExpiry($_SESSION['myusername']) === true) {
+                    header('Location: logout.php?error=timeout');
+                    die();
+                }*/
 
         if ($refresh === 0) {
             // User is moving about on non-refreshing pages, keep session alive
@@ -283,12 +283,11 @@ function updateClock() {
             $langCodes = explode(',', USER_SELECTABLE_LANG);
             $langCount = count($langCodes);
             if ($langCount > 1) {
-                global $langCode;
                 echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
                 echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
                 for ($i = 0; $i < $langCount; $i++) {
                     echo '<option value="' . $langCodes[$i] . '"'
-                        . ($langCodes[$i] === $langCode ? ' selected' : '')
+                        . ($langCodes[$i] === \MailWatch\Translation::$langCode ? ' selected' : '')
                         . '>' . \MailWatch\Translation::__($langCodes[$i]) . '</option>' . "\n";
                 }
                 echo '</select></li>' . "\n";

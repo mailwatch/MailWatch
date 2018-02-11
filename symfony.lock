@@ -1,0 +1,71 @@
+{
+    "composer/semver": {
+        "version": "1.4.2"
+    },
+    "ezyang/htmlpurifier": {
+        "version": "v4.9.3"
+    },
+    "friendsofphp/php-cs-fixer": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.2",
+            "ref": "9d60c231a92e69c68b89897813ec4931d0697b1f"
+        }
+    },
+    "gecko-packages/gecko-php-unit": {
+        "version": "v3.0"
+    },
+    "geoip/geoip": {
+        "version": "v1.17"
+    },
+    "indigophp/hash-compat": {
+        "version": "v1.1.0"
+    },
+    "ircmaxell/password-compat": {
+        "version": "v1.0.4"
+    },
+    "neitanod/forceutf8": {
+        "version": "v2.0.1"
+    },
+    "pear/console_getopt": {
+        "version": "v1.4.1"
+    },
+    "pear/mail": {
+        "version": "v1.4.1"
+    },
+    "pear/mail_mime-decode": {
+        "version": "1.5.5.2"
+    },
+    "pear/net_smtp": {
+        "version": "1.7.3"
+    },
+    "pear/net_socket": {
+        "version": "v1.2.1"
+    },
+    "pear/pager": {
+        "version": "v2.5.0"
+    },
+    "pear/pear-core-minimal": {
+        "version": "v1.10.3"
+    },
+    "pear/pear_exception": {
+        "version": "v1.0.0"
+    },
+    "php-cs-fixer/diff": {
+        "version": "v1.2.0"
+    },
+    "rmccue/requests": {
+        "version": "v1.7.0"
+    },
+    "symfony/options-resolver": {
+        "version": "v3.4.2"
+    },
+    "symfony/polyfill-php72": {
+        "version": "v1.6.0"
+    },
+    "wikimedia/ip-set": {
+        "version": "1.1.0"
+    }
+}
