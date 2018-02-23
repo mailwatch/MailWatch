@@ -3514,7 +3514,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $hdrs = $mime->headers($hdrs);
             $mail = new Mail_smtp($mail_param);
 
-            $m_result = $mail->send($to, $hdrs, $body);
+            $m_result = $mail->send(stripslashes($to), $hdrs, $body);
             if (is_a($m_result, 'PEAR_Error')) {
                 // Error
                 $status = __('releaseerror03') . ' (' . $m_result->getMessage() . ')';
@@ -3523,7 +3523,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             } else {
                 $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
                 dbquery($sql);
-                $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
             }
 
@@ -3532,7 +3532,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 
         // Use sendmail to release message
         // We can only release message/rfc822 files in this way.
-        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg(stripslashes($to)) . ' < ';
         foreach ($num as $key => $val) {
             if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                 debug($cmd . $list[$val]['path']);
@@ -3540,7 +3540,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 if ($retval === 0) {
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
                     dbquery($sql);
-                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
                     $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
@@ -3843,10 +3843,10 @@ function audit_log($action, $user = 'unknown')
     $link = dbconn();
     if (AUDIT) {
         if (isset($_SESSION['myusername'])) {
-            $user = $link->real_escape_string($_SESSION['myusername']);
+            $user = $link->real_escape_string(stripslashes($_SESSION['myusername']));
         }
 
-        $action = safe_value($action);
+        $action = safe_value(stripslashes($action));
 
         $ip = null;
         if (isset($_SERVER['REMOTE_ADDR'])) {
@@ -4059,7 +4059,7 @@ function updateUserPasswordHash($user, $hash)
  */
 function checkForExistingUser($username)
 {
-    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" . safe_value($username) . "'";
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" . safe_value(stripslashes($username)) . "'";
     $row = dbquery($sqlQuery)->fetch_object();
 
     return $row->counter > 0;
@@ -4413,12 +4413,14 @@ function validateInput($input, $type)
 {
     switch ($type) {
         case 'email':
-            if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var(stripslashes($input), FILTER_VALIDATE_EMAIL)) {
                 return true;
             }
             break;
         case 'user':
-            if (preg_match('/^[\p{L}\p{M}\p{N}\&~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
+            if (filter_var(stripslashes($input), FILTER_VALIDATE_EMAIL)) {
+                return true;
+            } elseif (preg_match('/^[\p{L}\p{M}\p{N}\&~!@$%^*=_:.\/+-\\\\\']{1,256}$/u', stripslashes($input))) {
                 return true;
             }
             break;
@@ -4631,7 +4633,7 @@ function checkLangCode($langCode)
  */
 function updateLoginExpiry($myusername)
 {
-    $sql = "SELECT login_timeout from users where username='" . safe_value($myusername) . "'";
+    $sql = "SELECT login_timeout from users where username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
@@ -4658,7 +4660,7 @@ function updateLoginExpiry($myusername)
     } else {
         $expiry_val = (time() + (int)$login_timeout);
     }
-    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . safe_value($myusername) . "'";
+    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     return $result;
@@ -4672,7 +4674,7 @@ function updateLoginExpiry($myusername)
  */
 function checkLoginExpiry($myusername)
 {
-    $sql = "SELECT login_expiry FROM users WHERE username='" . safe_value($myusername) . "'";
+    $sql = "SELECT login_expiry FROM users WHERE username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
@@ -4704,7 +4706,7 @@ function checkLoginExpiry($myusername)
  */
 function checkPrivilegeChange($myusername)
 {
-    $sql = "SELECT type FROM users WHERE username='" . safe_value($myusername) . "'";
+    $sql = "SELECT type FROM users WHERE username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
