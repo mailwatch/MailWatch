@@ -270,7 +270,7 @@ ORDER BY a.date DESC, a.time DESC';
         if (count($usersForReport) > 0) {
             $userConditions = array();
             foreach ($usersForReport as $item) {
-                $userConditions[] = ' username=' . quote_smart($item);
+                $userConditions[] = ' username=' . quote_smart(stripslashes($item));
             }
             $this->users_sql .= ' AND ( ' . implode(' OR ', $userConditions) . ' ) ';
         }
@@ -280,15 +280,15 @@ ORDER BY a.date DESC, a.time DESC';
         $num_failed_reports = 0;
         if ($rows > 0) {
             while ($user = $result->fetch_object()) {
-                self::dbg("\n === Generating report for " . $user->username . ' type=' . $user->type);
+                self::dbg("\n === Generating report for " . stripslashes($user->username) . ' type=' . $user->type);
                 // Work out destination e-mail address
                 switch ($user->type) {
                     case 'D':
                         // Type: domain admin - this must be overridden
                         if (!empty($user->quarantine_rcpt)) {
-                            $email = $user->quarantine_rcpt;
+                            $email = stripslashes($user->quarantine_rcpt);
                         } else {
-                            $email = filter_var($user->username, FILTER_VALIDATE_EMAIL);
+                            $email = filter_var(stripslashes($user->username), FILTER_VALIDATE_EMAIL);
                         }
                         $to_address = $user->username;
                         if (preg_match('/(\S+)@(\S+)/', $user->username, $split)) {
@@ -302,9 +302,9 @@ ORDER BY a.date DESC, a.time DESC';
                     default:
                         // Type 'A'dministrator, 'U'ser and everything else just in case...
                         if (!empty($user->quarantine_rcpt)) {
-                            $email = $user->quarantine_rcpt;
+                            $email = stripslashes($user->quarantine_rcpt);
                         } else {
-                            $email = filter_var($user->username, FILTER_VALIDATE_EMAIL);
+                            $email = filter_var(stripslashes($user->username), FILTER_VALIDATE_EMAIL);
                         }
                         $to_address = $user->username;
                         $to_domain = $user->username;

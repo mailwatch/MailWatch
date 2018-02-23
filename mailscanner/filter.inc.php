@@ -334,14 +334,14 @@ WHERE
         dbconn();
         if (count($this->item) > 0) {
             // Delete the existing first
-            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
+            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes($_SESSION['myusername'])) . "' AND `name`='$name'";
             dbquery($dsql);
             foreach ($this->item as $key => $val) {
                 $sql = "REPLACE INTO `saved_filters` (`name`, `col`, `operator`, `value`, `username`)  VALUES ('$name',";
                 foreach ($val as $value) {
-                    $sql .= "'$value',";
+                    $sql .= "'" . safe_value($value) . "',";
                 }
-                $sql .= "'" . $_SESSION['myusername'] . "')";
+                $sql .= "'" . safe_value(stripslashes($_SESSION['myusername'])) . "')";
                 dbquery($sql);
             }
         }
@@ -358,7 +358,7 @@ WHERE
         }
         
         dbconn();
-        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . $_SESSION['myusername'] . "'";
+        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
         $sth = dbquery($sql);
         while ($row = $sth->fetch_row()) {
             $this->item[] = $row;
@@ -376,13 +376,13 @@ WHERE
         }
         
         dbconn();
-        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
+        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes($_SESSION['myusername'])) . "' AND `name`='$name'";
         dbquery($sql);
     }
 
     public function ListSaved()
     {
-        $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "'";
+        $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
         $sth = dbquery($sql);
         $return = '<select name="filter">' . "\n";
         $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";
