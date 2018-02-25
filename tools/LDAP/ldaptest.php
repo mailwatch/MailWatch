@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
@@ -23,7 +24,6 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 
 /**
  * This script is a more verbose version of the ldap_authenticate function from functions.php from MW 1.2.7
