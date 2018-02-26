@@ -523,8 +523,6 @@ function logoutUser()
         return $membertest;
     } elseif (is_string($permissiontest = testPermissions($user->username, $user->type, ''))) {
         return $permissiontest;
-    } elseif (is_string($validuser = testValidUser($user->username, $user->type, ''))) {
-        return $validuser;
     }
 
     $sql = "UPDATE users SET login_expiry='-1' WHERE id='$user->id'";
