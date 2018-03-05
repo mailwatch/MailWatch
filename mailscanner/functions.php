@@ -2923,8 +2923,8 @@ function ldap_authenticate($username, $password)
                 } elseif (isset($result[0][LDAP_USERNAME_FIELD][0])) {
                     $user = $result[0][LDAP_USERNAME_FIELD][0];
                 } else {
-                   @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
-                   return null;
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+                    return null;
                 }
 
                 if (defined('LDAP_BIND_PREFIX')) {
