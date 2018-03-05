@@ -2914,13 +2914,19 @@ function ldap_authenticate($username, $password)
                     return null;
                 }
 
-                if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
+                if (!isset($result[0][LDAP_USERNAME_FIELD])) {
                     @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
-
                     return null;
                 }
+                if (!is_array($result[0][LDAP_USERNAME_FIELD])) {
+                    $user = $result[0][LDAP_USERNAME_FIELD];
+                } elseif (isset($result[0][LDAP_USERNAME_FIELD][0])) {
+                    $user = $result[0][LDAP_USERNAME_FIELD][0];
+                } else {
+                   @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
+                   return null;
+                }
 
-                $user = $result[0][LDAP_USERNAME_FIELD][0];
                 if (defined('LDAP_BIND_PREFIX')) {
                     $user = LDAP_BIND_PREFIX . $user;
                 }
