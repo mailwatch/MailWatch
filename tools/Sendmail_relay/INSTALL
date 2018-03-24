@@ -2,7 +2,9 @@
 INSTALLATION INSTRUCTIONS
 ----------------------------------
 
-Setup for the Sendmail Relay Log watcher:
+Setup for the Sendmail Relay Log watcher.
+
+These scripts are attended only for Sendmail. If you use Exim or Postfix, you don't need them.
 
 You can get MailWatch to watch your Sendmail MTA logs and store all message relay information which is then displayed on the 'Message Detail' page which helps debugging and makes it easy for a Helpdesk to actually see where a message was delivered to by the MTA and what the response back was (e.g. the remote queue id etc.).
 

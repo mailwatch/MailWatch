@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 
 /*
@@ -25,24 +26,44 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-require_once __DIR__ . '/functions.php';
+// Edit if you changed webapp directory from default
+$pathToFunctions = '/media/sf_1.2.0/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+}
+require $pathToFunctions;
 
-require __DIR__ . '/login.function.php';
-
-html_start(__('doc20'));
-
-if (isset($_GET['doc'])) {
-    $file = preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['doc']);
-    include_once 'docs/' . $file . '.html';
-} else {
-    echo '<table width="100%" class="boxtable">' . "\n";
-    echo ' <tr>' . "\n";
-    echo '  <td>' . "\n";
-    echo '  <h1>' . __('doc20') . '</h1>' . "\n";
-    echo '  ' . __('message20') . "\n";
-    echo '  </td>' . "\n";
-    echo ' </tr>' . "\n";
-    echo '</table>' . "\n";
+function dbg($text)
+{
+    if (DEBUG) {
+        echo $text . "\n";
+    }
 }
 
-html_end();
+ini_set('error_log', 'syslog');
+ini_set('html_errors', 'off');
+ini_set('display_errors', 'on');
+ini_set('implicit_flush', 'false');
+
+$fh = popen(
+    "grep -hr '^\s*describe' " . SA_RULES_DIR . ' /usr/share/spamassassin /usr/local/share/spamassassin ' . SA_PREFS . ' /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sort | uniq',
+    'r'
+);
+audit_log(__('auditlog13', true), __FILE__);
+while (!feof($fh)) {
+    $line = rtrim(fgets($fh, 4096));
+    // debug("line: ".$line."\n");
+    preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
+    if (isset($regs[1], $regs[2])) {
+        $regs[1] = trim($regs[1]);
+        $regs[2] = trim($regs[2]);
+
+        $regs[1] = safe_value($regs[1]);
+        $regs[2] = safe_value($regs[2]);
+        dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
+        dbg("\t\tinsert: ".$regs[1]. ', ' .$regs[2]);
+    } else {
+        dbg("$line - did not match regexp, not inserting into database");
+    }
+}
+pclose($fh);

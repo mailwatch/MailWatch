@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+ * Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -190,9 +190,10 @@ abstract class MtaLogProcessor
                 // fix for the id= issue 09.12.2011
                 if (isset($entry[2])) {
                     $entries[$entry[0]] = $entry[1] . '=' . $entry[2];
-                } else {
+                } elseif (isset($entry[1])) {
                     $entries[$entry[0]] = $entry[1];
                 }
+                // ignore cases where a part after ',' does not contain '=' (see issue #1021)
             }
             $this->entries = $entries;
 

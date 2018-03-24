@@ -1,9 +1,19 @@
+# General info.
+# After installing this verify you config with : 
+# visudo -c -f /etc/sudoers.d/mailwatch
 #
+# General part
 User_Alias MAILSCANNER = www-data
 Cmnd_Alias MAILSCANLINT = /usr/sbin/MailScanner
 Cmnd_Alias SPAMASSASSINLINT = /usr/bin/spamassassin
-Cmnd_Alias EXIM_QUEUE_IN = /usr/sbin/exim -bpc
-Cmnd_Alias EXIM_QUEUE_OUT = /usr/sbin/exim -bpc -DOUTGOING
-Cmnd_Alias SENDMAIL_QUEUE_IN = /usr/bin/mailq -bp -OQueueDirectory=/var/spool/mqueue.in
-Cmnd_Alias SENDMAIL_QUEUE_OUT = /usr/bin/mailq -bp
-MAILSCANNER ALL= NOPASSWD: MAILSCANLINT, SPAMASSASSINLINT, EXIM_QUEUE_IN, EXIM_QUEUE_OUT, SENDMAIL_QUEUE_IN, SENDMAIL_QUEUE_OUT
+
+# If you use Exim enable these
+#Cmnd_Alias EXIM_QUEUE_IN = /usr/sbin/exim -bpc
+#Cmnd_Alias EXIM_QUEUE_OUT = /usr/sbin/exim -bpc -DOUTGOING
+#Cmnd_Alias SENDMAIL_QUEUE_IN = /usr/bin/mailq -bp -OQueueDirectory=/var/spool/mqueue.in
+#Cmnd_Alias SENDMAIL_QUEUE_OUT = /usr/bin/mailq -bp
+#MAILSCANNER ALL= NOPASSWD: MAILSCANLINT, SPAMASSASSINLINT, EXIM_QUEUE_IN, EXIM_QUEUE_OUT, SENDMAIL_QUEUE_IN, SENDMAIL_QUEUE_OUT
+
+# If you use postfix enable these
+#Cmnd_Alias POSTFIX_QUEUE = /usr/sbin/postqueue
+#MAILSCANNER ALL= NOPASSWD: MAILSCANLINT, SPAMASSASSINLINT, POSTFIX_QUEUE

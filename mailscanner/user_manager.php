@@ -4,7 +4,7 @@
  MailWatch for MailScanner
  Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+ Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ function getHtmlMessage($value, $type)
 function testSameDomainMembership($username, $method)
 {
     $parts = explode('@', $username);
-    $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
+    $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
     $result = dbquery($sql);
     $filter_domain = array();
     for ($i=0;$i<$result->num_rows;$i++) {
@@ -84,7 +84,7 @@ function testSameDomainMembership($username, $method)
  */
 function testPermissions($username, $userType, $oldUserType)
 {
-    if (($_SESSION['user_type'] !== 'A' && $oldUserType === 'A')|| $_SESSION['user_type'] === 'D' && $_SESSION['myusername'] !== $username && $userType !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
+    if (($_SESSION['user_type'] !== 'A' && $oldUserType === 'A')|| $_SESSION['user_type'] === 'D' && stripslashes($_SESSION['myusername']) !== stripslashes($username) && $userType !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
         return getHtmlMessage(__('erroradminforbidden12'), 'error');
     } elseif ($_SESSION['user_type'] === 'D' && $userType === 'A') {
         return getHtmlMessage(__('errortypesetforbidden12'), 'error');
@@ -109,8 +109,8 @@ function testValidUser($username, $usertype, $oldUsername)
         return getHtmlMessage(__('errorpass12'), 'error');
     } elseif ($username === '') {
         return getHtmlMessage(__('erroruserreq12'), 'error');
-    } elseif ($oldUsername !== $username && checkForExistingUser($username)) {
-        return getHtmlMessage(sprintf(__('userexists12'), sanitizeInput($username)), 'error');
+    } elseif (stripslashes($oldUsername) !== stripslashes($username) && checkForExistingUser($username)) {
+        return getHtmlMessage(sprintf(__('userexists12'), sanitizeInput(stripslashes($username))), 'error');
     }
     return true;
 }
@@ -256,20 +256,20 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
     $type['R'] = __('user12', true);
     if ($uid === -1) {//new user
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
-                        VALUES ('$n_username','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
+                        VALUES ('" . safe_value(stripslashes($n_username)) . "','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','" . safe_value(stripslashes($quarantine_rcpt)) . "')";
         dbquery($sql);
         audit_log(__('auditlog0112', true) . ' ' . $type[$n_type] . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212', true));
-        return getHtmlMessage(sprintf(__('usercreated12'), $n_username), 'success');
+        return getHtmlMessage(sprintf(__('usercreated12'), stripslashes($n_username)), 'success');
     } else {
         if ($_POST['password'] !== 'XXXXXXXX') {// Password reset required
-            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$uid'";
+            $sql = "UPDATE users SET username='" . safe_value(stripslashes($n_username)) . "', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
         } else {
-            $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$uid'";
+            $sql = "UPDATE users SET username='" . safe_value(stripslashes($n_username)) . "', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
         }
         dbquery($sql);
         // Update user_filters if username was changed
-        if ($oldUsername !== $n_username) {
-            $sql = "UPDATE user_filters SET username='$n_username' WHERE username = '$oldUsername'";
+        if (stripslashes($oldUsername) !== stripslashes($n_username)) {
+            $sql = "UPDATE user_filters SET username='" . safe_value(stripslashes($n_username)) . "' WHERE username = '" . safe_value(stripslashes($oldUsername)) . "'";
             dbquery($sql);
         }
         if ($oldType !== $n_type) {
@@ -277,7 +277,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
                 __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12', true) . ' ' . $type[$oldType] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
             );
         }
-        return getHtmlMessage(sprintf(__('useredited12'), $oldUsername), 'success');
+        return getHtmlMessage(sprintf(__('useredited12'), stripslashes($oldUsername)), 'success');
     }
 }
 
@@ -306,8 +306,7 @@ function newUser()
     } elseif (is_string($validuser = testValidUser($username, $n_type, ''))) {
         return $validuser;
     }
-    $n_username = safe_value($username);
-    return storeUser($n_username, $n_type, -1, '', '');
+    return storeUser($username, $n_type, -1, '', '');
 }
 
 function editUser()
@@ -396,7 +395,7 @@ function deleteUser()
     } elseif ($_SESSION['myusername'] === $user->username) {
         return getHtmlMessage(__('errordeleteself12'), 'error');
     }
-    $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value($user->username) . "'";
+    $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value(stripslashes($user->username)) . "'";
     dbquery($sql);
     audit_log(sprintf(__('auditlog0412', true), $user->username));
     return getHtmlMessage(sprintf(__('userdeleted12'), $user->username), 'success');
@@ -430,7 +429,7 @@ function userFilter()
         if (!validateInput($getActive, 'yn')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
-        $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value($user->username) . "','" . safe_value($getFilter) . "','" . safe_value($getActive) . "')";
+        $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value(stripslashes($user->username)) . "','" . safe_value(stripslashes($getFilter)) . "','" . safe_value($getActive) . "')";
         dbquery($sql);
         if (DEBUG === true) {
             echo $sql;
@@ -442,7 +441,7 @@ function userFilter()
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
-        $sql = "DELETE FROM user_filters WHERE username='" . safe_value($user->username) . "' AND filter='" . safe_value($getFilter) . "'";
+        $sql = "DELETE FROM user_filters WHERE username='" . safe_value(stripslashes($user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
         dbquery($sql);
         if (DEBUG === true) {
             echo $sql;
@@ -453,17 +452,17 @@ function userFilter()
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
-        $sql = "SELECT active FROM user_filters WHERE username='" . safe_value($user->username) . "' AND filter='" . safe_value($getFilter) . "'";
+        $sql = "SELECT active FROM user_filters WHERE username='" . safe_value(stripslashes($user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
         $result = dbquery($sql);
         $row = $result->fetch_row();
         $active = 'Y';
         if ($row[0] === 'Y') {
             $active = 'N';
         }
-        $sql = "UPDATE user_filters SET active='" . $active . "' WHERE username='" . safe_value($user->username) . "' AND filter='" . safe_value($getFilter) . "'";
+        $sql = "UPDATE user_filters SET active='" . $active . "' WHERE username='" . safe_value(stripslashes($user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
         dbquery($sql);
     }
-    $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($user->id) . "\',\'',filter,'\'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($user->id) . "\',\'',filter,'\')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value($user->username) . "'";
+    $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($user->id) . "\',',QUOTE(filter),'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($user->id) . "\',',QUOTE(filter),')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value(stripslashes($user->username)) . "'";
     $result = dbquery($sql);
     echo '<FORM METHOD="POST" ACTION="user_manager.php">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . "\n";
@@ -477,14 +476,14 @@ function userFilter()
     echo ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . '</TH></TR>' . "\n";
     while ($row = $result->fetch_object()) {
         echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD> ';
-        if ($_SESSION['user_type'] === 'D' && $user->username === $_SESSION['myusername']) {
+        if ($_SESSION['user_type'] === 'D' && stripslashes($user->username) === stripslashes($_SESSION['myusername'])) {
             echo '<TD>' . __('nofilteraction12') . '</TD></TR>' . "\n";
         } else {
             echo '<TD>' . $row->actions . '</TD></TR>' . "\n";
         }
     }
     // Prevent domain admins from altering their own filters
-    if ($_SESSION['user_type'] === 'A' || ($_SESSION['user_type'] === 'D' && $user->username !== $_SESSION['myusername'])) {
+    if ($_SESSION['user_type'] === 'A' || ($_SESSION['user_type'] === 'D' && stripslashes($user->username) !== stripslashes($_SESSION['myusername']))) {
         echo ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . __('add12') . '"></TD></TR>' . "\n";
     }
     echo '</TABLE><BR>' . "\n";
@@ -523,8 +522,6 @@ function logoutUser()
         return $membertest;
     } elseif (is_string($permissiontest = testPermissions($user->username, $user->type, ''))) {
         return $permissiontest;
-    } elseif (is_string($validuser = testValidUser($user->username, $user->type, ''))) {
-        return $validuser;
     }
 
     $sql = "UPDATE users SET login_expiry='-1' WHERE id='$user->id'";
@@ -533,7 +530,7 @@ function logoutUser()
         echo $sql;
     }
 
-    return getHtmlMessage(sprintf(__('userloggedout12'), $user->username), 'success');
+    return getHtmlMessage(sprintf(__('userloggedout12'), stripslashes($user->username)), 'success');
 }
 ?>
 <script>
@@ -675,12 +672,12 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
             //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
-            $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
+            $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
             $result = dbquery($sql);
             $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
             for ($i=0;$i<$result->num_rows;$i++) {
                 $filter = $result->fetch_row();
-                $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . $filter[0] . '" AND type = "U")';
+                $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . safe_value(stripslashes($filter[0])) . '" AND type = "U")';
             }
         }
     }
@@ -711,9 +708,9 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
           '" . safe_value(__('no12')) . "'
         END AS '" . safe_value(__('loggedin12')) . "',
         CASE
-WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',\'',username,'\')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:logout_user(\'',id,'\',\'',username,'\')\">" . safe_value(__('logout12')) . "</a>')
+WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:logout_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('logout12')) . "</a>')
         ELSE
-          CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',\'',username,'\')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>')
+          CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>')
         END AS '" . safe_value(__('action12')) . "'
         FROM
           users " . $domainAdminUserDomainFilter . ' 
@@ -722,7 +719,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     dbtable($sql, __('usermgnt12'));
 } else {
     if (!isset($_POST['submit'])) {
-        $sql = "SELECT id, username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value($_SESSION['myusername']) . "'";
+        $sql = "SELECT id, username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
         $result = dbquery($sql);
         $row = $result->fetch_object();
         $quarantine_report = '';
@@ -744,7 +741,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token') . '">' . "\n";
         echo '<table class="mail useredit" border="0" cellpadding="1" cellspacing="1">' . "\n";
         echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . "\n";
-        echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>' . "\n";
+        echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . stripslashes($_SESSION['myusername']) . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . "\n";
         if ($_SESSION['user_ldap'] !== true && $_SESSION['user_imap'] !== true) {
             echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
@@ -786,7 +783,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         } elseif (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
             echo getHtmlMessage(__('errorpass12'), 'error');
         } else {
-            $username = safe_value($_SESSION['myusername']);
+            $username = safe_value(stripslashes($_SESSION['myusername']));
             if (isset($_POST['password'])) {
                 $n_password = safe_value($_POST['password']);
             }

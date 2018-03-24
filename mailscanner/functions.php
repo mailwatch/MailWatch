@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+ * Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -118,7 +118,7 @@ require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 
 //Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
-    if (!isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
+    if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
         header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
@@ -251,7 +251,7 @@ function getVirusRegex($scanner = null)
  */
 function mailwatch_version()
 {
-    return '1.2.7';
+    return '1.2.8';
 }
 
 /**
@@ -2914,13 +2914,19 @@ function ldap_authenticate($username, $password)
                     return null;
                 }
 
-                if (!isset($result[0][LDAP_USERNAME_FIELD], $result[0][LDAP_USERNAME_FIELD][0])) {
+                if (!isset($result[0][LDAP_USERNAME_FIELD])) {
                     @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
-
+                    return null;
+                }
+                if (!is_array($result[0][LDAP_USERNAME_FIELD])) {
+                    $user = $result[0][LDAP_USERNAME_FIELD];
+                } elseif (isset($result[0][LDAP_USERNAME_FIELD][0])) {
+                    $user = $result[0][LDAP_USERNAME_FIELD][0];
+                } else {
+                    @trigger_error(__('ldapno03') . ' "' . LDAP_USERNAME_FIELD . '" ' . __('ldapresults03'));
                     return null;
                 }
 
-                $user = $result[0][LDAP_USERNAME_FIELD][0];
                 if (defined('LDAP_BIND_PREFIX')) {
                     $user = LDAP_BIND_PREFIX . $user;
                 }
@@ -3506,12 +3512,15 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                 }
             }
-            $mail_param = array('host' => MAILWATCH_MAIL_HOST);
+            $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+            if (defined('MAILWATCH_SMTP_HOSTNAME')) {
+                $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
+            }
             $body = $mime->get();
             $hdrs = $mime->headers($hdrs);
             $mail = new Mail_smtp($mail_param);
 
-            $m_result = $mail->send($to, $hdrs, $body);
+            $m_result = $mail->send(stripslashes($to), $hdrs, $body);
             if (is_a($m_result, 'PEAR_Error')) {
                 // Error
                 $status = __('releaseerror03') . ' (' . $m_result->getMessage() . ')';
@@ -3520,7 +3529,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             } else {
                 $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
                 dbquery($sql);
-                $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
             }
 
@@ -3529,7 +3538,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 
         // Use sendmail to release message
         // We can only release message/rfc822 files in this way.
-        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg($to) . ' < ';
+        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg(stripslashes($to)) . ' < ';
         foreach ($num as $key => $val) {
             if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                 debug($cmd . $list[$val]['path']);
@@ -3537,7 +3546,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                 if ($retval === 0) {
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
                     dbquery($sql);
-                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
                     $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
@@ -3832,19 +3841,24 @@ function fixMessageId($id)
 
 /**
  * @param string $action
+ * @param string $user
  * @return bool
  */
-function audit_log($action)
+function audit_log($action, $user = 'unknown')
 {
     $link = dbconn();
     if (AUDIT) {
-        $user = 'unknown';
         if (isset($_SESSION['myusername'])) {
-            $user = $link->real_escape_string($_SESSION['myusername']);
+            $user = $link->real_escape_string(stripslashes($_SESSION['myusername']));
         }
 
-        $action = safe_value($action);
-        $ip = safe_value($_SERVER['REMOTE_ADDR']);
+        $action = safe_value(stripslashes($action));
+
+        $ip = null;
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            $ip = safe_value($_SERVER['REMOTE_ADDR']);
+        }
+
         $ret = dbquery("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
         if ($ret) {
             return true;
@@ -4051,7 +4065,7 @@ function updateUserPasswordHash($user, $hash)
  */
 function checkForExistingUser($username)
 {
-    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" . safe_value($username) . "'";
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" . safe_value(stripslashes($username)) . "'";
     $row = dbquery($sqlQuery)->fetch_object();
 
     return $row->counter > 0;
@@ -4301,10 +4315,9 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
+    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
     if (defined('MAILWATCH_SMTP_HOSTNAME')) {
-        $mail_param = array('localhost' => MAILWATCH_SMTP_HOSTNAME, 'host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
-    } else {
-        $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+        $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
     }
     $mail = new Mail_smtp($mail_param);
 
@@ -4406,12 +4419,14 @@ function validateInput($input, $type)
 {
     switch ($type) {
         case 'email':
-            if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var(stripslashes($input), FILTER_VALIDATE_EMAIL)) {
                 return true;
             }
             break;
         case 'user':
-            if (preg_match('/^[\p{L}\p{M}\p{N}\&~!@$%^*=_:.\/+-]{1,256}$/u', $input)) {
+            if (filter_var(stripslashes($input), FILTER_VALIDATE_EMAIL)) {
+                return true;
+            } elseif (preg_match('/^[\p{L}\p{M}\p{N}\&~!@$%^*=_:.\/+-\\\\\']{1,256}$/u', stripslashes($input))) {
                 return true;
             }
             break;
@@ -4624,7 +4639,7 @@ function checkLangCode($langCode)
  */
 function updateLoginExpiry($myusername)
 {
-    $sql = "SELECT login_timeout from users where username='" . safe_value($myusername) . "'";
+    $sql = "SELECT login_timeout from users where username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
@@ -4651,7 +4666,7 @@ function updateLoginExpiry($myusername)
     } else {
         $expiry_val = (time() + (int)$login_timeout);
     }
-    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . safe_value($myusername) . "'";
+    $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     return $result;
@@ -4665,7 +4680,7 @@ function updateLoginExpiry($myusername)
  */
 function checkLoginExpiry($myusername)
 {
-    $sql = "SELECT login_expiry FROM users WHERE username='" . safe_value($myusername) . "'";
+    $sql = "SELECT login_expiry FROM users WHERE username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {
@@ -4697,7 +4712,7 @@ function checkLoginExpiry($myusername)
  */
 function checkPrivilegeChange($myusername)
 {
-    $sql = "SELECT type FROM users WHERE username='" . safe_value($myusername) . "'";
+    $sql = "SELECT type FROM users WHERE username='" . safe_value(stripslashes($myusername)) . "'";
     $result = dbquery($sql);
 
     if ($result->num_rows === 0) {

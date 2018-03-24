@@ -1,0 +1,15 @@
+When using postfix with mailwatch and postfix_relay you need the following. 
+
+To prevent postfix from setting (resetting) the folder rights on hold and incoming we use dpkg-statoverride.
+
+dpkg-statoverride --add postfix www-data 750 /var/spool/postfix/hold
+dpkg-statoverride --add postfix www-data 750 /var/spool/postfix/incoming
+
+When that is done, set the rights on the running config. 
+chown postfix:www-data /var/spool/postfix/hold
+chown postfix:www-data /var/spool/postfix/incoming
+chown postfix:www-data /var/spool/postfix/incoming
+chmod 750 /var/spool/postfix/hold
+chmod 750 /var/spool/postfix/incoming
+
+Now check you mailwatch again. 

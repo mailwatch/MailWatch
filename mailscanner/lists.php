@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2017  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+ * Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -144,7 +144,7 @@ switch ($url_type) {
         $from = $url_from;
 }
 
-$myusername = $_SESSION['myusername'];
+$myusername = safe_value(stripslashes($_SESSION['myusername']));
 // Validate input against the user type
 $to_user_filter = array();
 $to_domain_filter = array();
@@ -240,9 +240,9 @@ if ($url_submit === 'add') {
                 break;
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
-            . "('" . safe_value($to_address) . "',"
+            . "('" . safe_value(stripslashes($to_address)) . "',"
             . "'" . safe_value($to_domain) . "',"
-            . "'" . safe_value($from) . "')";
+            . "'" . safe_value(stripslashes($from)) . "')";
         dbquery($sql);
         audit_log(sprintf(__('auditlogadded07', true), $from, $to_address, $listi18));
     }
@@ -345,15 +345,15 @@ echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "
 echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token') . '">' . "\n";
 switch ($_SESSION['user_type']) {
     case 'A':
-        echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
+        echo '<td><input type="text" name="to" size=22 value="' .  stripslashes($touser) . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
         break;
     case 'U':
         echo '<td> <select name="to">';
         foreach ($to_user_filter as $to_user_selection) {
             if ($touser === $to_user_selection) {
-                echo '<option selected>' . $to_user_selection . '</option>';
+                echo '<option selected>' . stripslashes($to_user_selection) . '</option>';
             } else {
-                echo '<option>' . $to_user_selection . '</option>';
+                echo '<option>' . stripslashes($to_user_selection) . '</option>';
             }
         }
         echo '</select>@<select name="domain">';
@@ -367,7 +367,7 @@ switch ($_SESSION['user_type']) {
         echo '</td>';
         break;
     case 'D':
-        echo '<td><input type="text" name="to" size=22 value="' . $touser . '">@<select name="domain">';
+        echo '<td><input type="text" name="to" size=22 value="' . stripslashes($touser) . '">@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
             if ($to_domain === $to_domain_selection) {
                 echo '<option selected>' . $to_domain_selection . '</option>';
