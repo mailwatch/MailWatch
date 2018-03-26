@@ -43,7 +43,7 @@ if (!isset($_POST['run'])) {
                <tr>
                    <td>
                     <br>
-                       ' . __('message115') . ' <a href="http://dev.maxmind.com/geoip/legacy/geolite/" target="_maxmind">MaxMind</a> ' . __('message215') . '<br><br>
+                       ' . __('message115') . ' <a href="https://dev.maxmind.com/geoip/geoip2/geolite2/" target="_maxmind">MaxMind</a> ' . __('message215') . '<br><br>
                    </td>
                </tr>
                <tr>
@@ -59,31 +59,26 @@ if (!isset($_POST['run'])) {
     echo __('downfile15') . '<br>' . "\n";
 
     $files_base_url = 'http://geolite.maxmind.com';
-    $files['ipv4']['description'] = __('geoipv415');
-    $files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
-    $files['ipv4']['destination'] = __DIR__ . '/temp/GeoIP.dat.gz';
-    $files['ipv6']['description'] =  __('geoipv615');
-    $files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
-    $files['ipv6']['destination'] = __DIR__ . '/temp/GeoIPv6.dat.gz';
+    $file['description'] = __('geoip15');
+    $file['path'] = '/download/geoip/database/GeoLite2-Country.tar.gz';
+    $file['destination'] = __DIR__ . '/temp/GeoLite2-Country.tar.gz';
+    $file['destinationFileName'] = 'GeoLite2-Country.mmdb';
 
     $extract_dir = __DIR__ . '/temp/';
 
     // Clean-up from last run
-    foreach ($files as $file) {
-        if (file_exists($file['destination'])) {
-            unlink($file['destination']);
-        }
+    if (file_exists($file['destination'])) {
+        unlink($file['destination']);
+        @unlink(substr($file['destination'], 0, -3));
     }
     ob_flush();
     flush();
 
-    if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['destination'])) {
+    if (!file_exists($file['destination'])) {
         if (is_writable($extract_dir) && is_readable($extract_dir)) {
             if (function_exists('fsockopen') || extension_loaded('curl')) {
                 $requestSession = new Requests_Session($files_base_url . '/');
-                $requestSession->useragent = 'MailWatch/' . str_replace(array(' - ', ' '), array('-', '-'),
-                        mailwatch_version());
-
+                $requestSession->options['useragent'] = 'MailWatch/' . mailwatch_version();
                 if (USE_PROXY === true) {
                     if (PROXY_USER !== '') {
                         $requestSession->options['proxy']['authentication'] = array(
@@ -112,20 +107,18 @@ if (!isset($_POST['run'])) {
                     }
                 }
 
-                foreach ($files as $file) {
-                    try {
-                        $requestSession->filename = $file['destination'];
-                        $result = $requestSession->get($file['path']);
-                        if ($result->success === true) {
-                            echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
-                        }
-                    } catch (Requests_Exception $e) {
-                        echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "<br>\n";
+                try {
+                    $requestSession->options['filename'] = $file['destination'];
+                    $result = $requestSession->get($file['path']);
+                    if ($result->success === true) {
+                        echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                     }
-
-                    ob_flush();
-                    flush();
+                } catch (Requests_Exception $e) {
+                    echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "<br>\n";
                 }
+
+                ob_flush();
+                flush();
 
                 echo __('downokunpack15') . '<br>' . "\n";
                 ob_flush();
@@ -141,49 +134,45 @@ if (!isset($_POST['run'])) {
                     }
                 }
 
-                foreach ($files as $file) {
-                    exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
-                        $output_wget, $retval_wget);
-                    if ($retval_wget > 0) {
-                        echo __('downbad15') . ' ' . $file['description'] . "<br>\n";
-                    } else {
-                        echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
-                    }
+                exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
+                    $output_wget, $retval_wget);
+                if ($retval_wget > 0) {
+                    echo __('downbad15') . ' ' . $file['description'] . "<br>\n";
+                } else {
+                    echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                 }
             } else {
-                $error_message = __('message315') . "<br>\n";
-                $error_message .= __('message415');
+                $error_message = __('message315') . '<br>' . "\n" . __('message415');
                 die($error_message);
             }
+
             // Extract files
-            echo "<br>\n";
-            if (function_exists('gzopen')) {
-                foreach ($files as $file) {
-                    $zp_gz = gzopen($file['destination'], 'r');
-                    $targetFile = fopen(str_replace('.gz', '', $file['destination']), 'wb');
-                    while ($string = gzread($zp_gz, 4096)) {
-                        fwrite($targetFile, $string, strlen($string));
-                    }
-                    gzclose($zp_gz);
-                    fclose($targetFile);
-                    echo $file['description'] . ' ' . __('unpackok15') . '<br>' . "\n";
-                    unlink($file['destination']);
-                    ob_flush();
-                    flush();
-                }
-            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-                foreach ($files as $file) {
-                    exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
-                    if ($retval_gunzip > 0) {
-                        die(__('extractnotok15') . $file['description'] . "<br>\n");
+            echo '<br>' . "\n";
+            if (class_exists('PharData')) {
+                $p = new PharData($file['destination']);
+                $p->decompress();
+                $phar = new PharData(substr($file['destination'], 0, -3));
+                $phar->extractTo($extract_dir, null, true);
+                echo $file['description'] . ' ' . __('unpackok15') . '<br>' . "\n";
+                unlink($file['destination']);
+                unlink(substr($file['destination'], 0, -3));
+
+                foreach (New DirectoryIterator($extract_dir) as $item) {
+                    if ($item->isDot()) {
+                        continue;
                     }
 
-                    echo $file['description'] . ' ' . __('extractok15') . '<br>' . "\n";
+                    if ($item->isDir()) {
+                        $extractedFolder = $item->getFilename();
+                        if (rename($extract_dir . $extractedFolder . '/' . $file['destinationFileName'], $extract_dir.$file['destinationFileName'])) {
+                            array_map('unlink', glob($extract_dir . $extractedFolder . '/*'));
+                            rmdir($extract_dir . $extractedFolder);
+                        }
+                    }
                 }
             } else {
                 // Unable to extract the file correctly
-                $error_message = __('message515') . "<br>\n";
-                $error_message .= __('message615');
+                $error_message = __('message515') . "<br>\n" . __('message615');
                 die($error_message);
             }
 

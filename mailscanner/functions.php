@@ -3272,30 +3272,31 @@ function debug_print_r($input)
 /**
  * @param $ip
  * @return bool
+ * @throws \MaxMind\Db\Reader\InvalidDatabaseException
  */
 function return_geoip_country($ip)
 {
-    require_once __DIR__ . '/lib/geoip.inc';
-    //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-    $ip = stripPortFromIp($ip);
-    $countryname = false;
-    if (strpos($ip, ':') === false) {
-        //ipv4
-        if (file_exists(__DIR__ . '/temp/GeoIP.dat') && filesize(__DIR__ . '/temp/GeoIP.dat') > 0) {
-            $gi = geoip_open(__DIR__ . '/temp/GeoIP.dat', GEOIP_STANDARD);
-            $countryname = geoip_country_name_by_addr($gi, $ip);
-            geoip_close($gi);
+    require_once __DIR__ . '/lib/maxmind-db/reader/autoload.php';
+
+    $geoLite2File = __DIR__ . '/temp/GeoLite2-Country.mmdb';
+    if (file_exists($geoLite2File) && filesize($geoLite2File) > 0) {
+        try {
+            //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+            $ip = stripPortFromIp($ip);
+            $reader = new \MaxMind\Db\Reader($geoLite2File);
+            $countryData = $reader->get($ip);
+            $reader->close();
+            if (isset($countryData['country']['names'][LANG])) {
+                return $countryData['country']['names'][LANG];
+            }
+
+            return $countryData['country']['names']['en'];
+        } catch (Exception $e) {
+            return false;
         }
     } else {
-        //ipv6
-        if (file_exists(__DIR__ . '/temp/GeoIPv6.dat') && filesize(__DIR__ . '/temp/GeoIPv6.dat') > 0) {
-            $gi = geoip_open(__DIR__ . '/temp/GeoIPv6.dat', GEOIP_STANDARD);
-            $countryname = geoip_country_name_by_addr_v6($gi, $ip);
-            geoip_close($gi);
-        }
+        return false;
     }
-
-    return $countryname;
 }
 
 /**
