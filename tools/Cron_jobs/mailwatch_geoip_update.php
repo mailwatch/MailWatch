@@ -27,158 +27,69 @@
  */
 
 // Edit if you changed webapp directory from default
+use GuzzleHttp\Exception\RequestException;
+use MailWatch\GeoIp;
+
 $pathToFunctions = __DIR__ . '/../../mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
     die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 
-ob_start();
-echo 'Downloading file, please wait...' . "\n";
+echo \MailWatch\Translation::__('downfile15') . "\n";
 
-$files_base_url = 'http://geolite.maxmind.com';
-$files['ipv4']['description'] = \MailWatch\Translation::__('geoipv452');
-$files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
-$files['ipv4']['destination'] = MAILWATCH_HOME . '/temp/GeoIP.dat.gz';
-$files['ipv6']['description'] = \MailWatch\Translation::__('geoipv652');
-$files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
-$files['ipv6']['destination'] = MAILWATCH_HOME . '/temp/GeoIPv6.dat.gz';
-
-$extract_dir = MAILWATCH_HOME . '/temp/';
-
+$geoIp = new GeoIp();
 // Clean-up from last run
-foreach ($files as $file) {
-    if (file_exists($file['destination'])) {
-        unlink($file['destination']);
-    }
-}
-ob_flush();
-flush();
+$geoIp->cleanupFiles();
 
-if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['destination'])) {
-    if (is_writable($extract_dir) && is_readable($extract_dir)) {
-        if (function_exists('fsockopen') || extension_loaded('curl')) {
-            $requestSession = new Requests_Session($files_base_url . '/');
-            $requestSession->useragent = 'MailWatch/' . str_replace(
-                [' - ', ' '],
-                ['-', '-'],
-                    mailwatch_version()
-            );
+if (!file_exists($geoIp::$savePath['database'])) {
+    if (is_writable($geoIp::$savePath['extractTo']) && is_readable($geoIp::$savePath['extractTo'])) {
+        $httpClient = $geoIp->getDownloadClient(USE_PROXY, PROXY_SERVER . ':' . PROXY_PORT, PROXY_USER, PROXY_PASS);
+        try {
+            $geoIp->downloadFiles($httpClient);
+            echo $geoIp->download['database'] . ' ' . \MailWatch\Translation::__('downok15') . "\n";
+            $geoIp->verifySignature($geoIp::$savePath['database'], $geoIp::$savePath['md5']);
 
-            if (USE_PROXY === true) {
-                $requestSession->options['proxy']['type'] = 'HTTP';
-                if (PROXY_USER !== '') {
-                    $requestSession->options['proxy']['authentication'] = [
-                        PROXY_SERVER . ':' . PROXY_PORT,
-                        PROXY_USER,
-                        PROXY_PASS
-                    ];
-                } else {
-                    $requestSession->options['proxy']['authentication'] = [
-                        PROXY_SERVER . ':' . PROXY_PORT
-                    ];
-                }
+            $geoIp->decompressArchive();
+
+            // save file to correct location adn delete other extracted files
+            $extractedFolder = $geoIp->moveDatabaseFile();
+
+            $geoIp->cleanupFiles($extractedFolder);
+
+            // Apply MailWatch rights on files from the last run
+            $mwUID = exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $output_cat, $retval_cat);
+            if ($retval_cat > 0) {
+                die(\MailWatch\Translation::__('nofind52') . '.' . "\n");
             }
 
-            foreach ($files as $file) {
-                try {
-                    $requestSession->filename = $file['destination'];
-                    $result = $requestSession->get($file['path']);
-                    if ($result->success === true) {
-                        echo $file['description'] . ' ' . \MailWatch\Translation::__('downok52') . "\n";
-                    }
-                } catch (Requests_Exception $e) {
-                    echo \MailWatch\Translation::__('downbad52') . ' ' . $file['description'] . \MailWatch\Translation::__('colon99') . ' ' . $e->getMessage() . "\n";
-                }
-
-                ob_flush();
-                flush();
-            }
-
-            echo \MailWatch\Translation::__('downokunpack52') . "\n";
-            ob_flush();
-            flush();
-        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-            // wget
-            $proxyString = '';
-            if (USE_PROXY) {
-                if (PROXY_USER !== '') {
-                    $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
-                } else {
-                    $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
-                }
-            }
-
-            foreach ($files as $file) {
-                exec(
-                    'wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
-                    $output_wget,
-                    $retval_wget
-                );
-                if ($retval_wget > 0) {
-                    echo \MailWatch\Translation::__('downbad52') . ' ' . $file['description'] . "\n";
-                } else {
-                    echo $file['description'] . ' successfully downloaded' . "\n";
-                }
-            }
-        } else {
-            $error_message = \MailWatch\Translation::__('message352') . "\n";
-            $error_message .= \MailWatch\Translation::__('message452');
-            die($error_message);
-        }
-        // Extract files
-        echo "\n";
-        if (function_exists('gzopen')) {
-            foreach ($files as $file) {
-                $zp_gz = gzopen($file['destination'], 'r');
-                $targetFile = fopen(str_replace('.gz', '', $file['destination']), 'wb');
-                while ($string = gzread($zp_gz, 4096)) {
-                    fwrite($targetFile, $string, strlen($string));
-                }
-                gzclose($zp_gz);
-                fclose($targetFile);
-                echo $file['description'] . ' ' . \MailWatch\Translation::__('unpackok52') . "\n";
-                unlink($file['destination']);
-                ob_flush();
-                flush();
-            }
-        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-            foreach ($files as $file) {
-                exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
-                if ($retval_gunzip > 0) {
-                    die(\MailWatch\Translation::__('extractnotok52') . $file['description'] . "\n");
-                } else {
-                    echo $file['description'] . ' ' . \MailWatch\Translation::__('extractok52') . "\n";
-                }
-            }
-        } else {
-            // Unable to extract the file correctly
-            $error_message = \MailWatch\Translation::__('message552') . "\n";
-            $error_message .= \MailWatch\Translation::__('message652');
-            die($error_message);
-        }
-
-        // Apply MailWatch rights on files from the last run
-        $mwUID =  exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $output_cat, $retval_cat);
-        if ($retval_cat > 0) {
-            die(\MailWatch\Translation::__('nofind52') . '.' . "\n");
-        } else {
-            $path = $extract_dir . 'GeoIP*.dat';
+            $path = $geoIp::$savePath['mmdbFile'];
             passthru("chown $mwUID.$mwUID $path", $retval_chown);
             if ($retval_chown > 0) {
-                die(\MailWatch\Translation::__('nofindowner52') . ' ' . $extract_dir . '.' . "\n");
+                die(\MailWatch\Translation::__('nofindowner52') . ' ' . $geoIp::$savePath['extractTo'] . '.' . "\n");
             }
-        }
 
-        echo \MailWatch\Translation::__('processok52') . "\n\n";
-        ob_flush();
-        flush();
+            echo \MailWatch\Translation::__('processok52') . "\n\n";
+
+            \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog52', true));
+        } catch (RequestException $e) {
+            echo \MailWatch\Translation::__('downbad52') . ' ' . $e->getRequest()->getUri() . \MailWatch\Translation::__('colon99') . ' ';
+            //echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo $e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase();
+            }
+            echo "<br>\n";
+        } catch (\BadMethodCallException $e) {
+            echo $e->getFile() . ':' . $e->getLine() . ' ' . $e->getMessage() . "\n";
+        } catch (\InvalidArgumentException $e) {
+            echo $e->getMessage() . "\n";
+        }
     } else {
         // Unable to read or write to the directory
-        die(\MailWatch\Translation::__('norread52') . ' ' . $extract_dir . ' ' . \MailWatch\Translation::__('directory52') . ".\n");
+        die(\MailWatch\Translation::__('norread52') . ' ' . $geoIp::$savePath['extractTo'] . ' ' . \MailWatch\Translation::__('directory52') . ".\n");
     }
 } else {
     $error_message = \MailWatch\Translation::__('message752') . "\n";
-    $error_message .= \MailWatch\Translation::__('message852') . " $extract_dir" . '.';
+    $error_message .= \MailWatch\Translation::__('message852') . ' ' . $geoIp::$savePath['extractTo'] . '.';
     die($error_message);
 }

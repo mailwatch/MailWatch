@@ -1313,34 +1313,6 @@ function decode_header($input)
 }
 
 /**
- * @param $ip
- * @return bool
- */
-function return_geoip_country($ip)
-{
-    //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-    $ip = \MailWatch\Format::stripPortFromIp($ip);
-    $countryname = false;
-    if (strpos($ip, ':') === false) {
-        //ipv4
-        if (file_exists(__DIR__ . '/temp/GeoIP.dat') && filesize(__DIR__ . '/temp/GeoIP.dat') > 0) {
-            $gi = geoip_open(__DIR__ . '/temp/GeoIP.dat', GEOIP_STANDARD);
-            $countryname = geoip_country_name_by_addr($gi, $ip);
-            geoip_close($gi);
-        }
-    } else {
-        //ipv6
-        if (file_exists(__DIR__ . '/temp/GeoIPv6.dat') && filesize(__DIR__ . '/temp/GeoIPv6.dat') > 0) {
-            $gi = geoip_open(__DIR__ . '/temp/GeoIPv6.dat', GEOIP_STANDARD);
-            $countryname = geoip_country_name_by_addr_v6($gi, $ip);
-            geoip_close($gi);
-        }
-    }
-
-    return $countryname;
-}
-
-/**
  * @param $host
  * @return bool
  */

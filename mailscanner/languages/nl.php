@@ -546,8 +546,7 @@ return [
     'message115' => 'This utility is used to download the GeoIP database files (which are updated on the first Tuesday of each month) from',
     'message215' => 'which is used to work out the country of origin for any given IP address and is displayed on the Message Detail page.',
     'downfile15' => 'Downloading file, please wait...',
-    'geoipv415' => 'GeoIP IPv4 data file',
-    'geoipv615' => 'GeoIP IPv6 data file',
+    'geoip15' => 'GeoIP data file',
     'downok15' => 'successfully downloaded',
     'downbad15' => 'Error occurred while downloading',
     'downokunpack15' => 'Download complete, unpacking files...',
@@ -821,8 +820,7 @@ return [
     'time51' => 'Time',
 
     // 52-mailwatch_geoip_update.php
-    'geoipv452' => 'GeoIP IPv4 data file',
-    'geoipv652' => 'GeoIP IPv6 data file',
+    'geoip52' => 'GeoIP data file',
     'downok52' => 'successfully downloaded',
     'downbad52' => 'Error occurred while downloading',
     'downokunpack52' => 'Download complete, unpacking files...',

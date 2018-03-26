@@ -26,6 +26,9 @@
  */
 
 // Require files
+use GuzzleHttp\Exception\RequestException;
+use MailWatch\GeoIp;
+
 require_once __DIR__ . '/functions.php';
 
 // Authentication verification
@@ -55,141 +58,49 @@ if (!isset($_POST['run'])) {
     ob_start();
     echo \MailWatch\Translation::__('downfile15') . '<br>' . "\n";
 
-    $files_base_url = 'http://geolite.maxmind.com';
-    $files['ipv4']['description'] = \MailWatch\Translation::__('geoipv415');
-    $files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
-    $files['ipv4']['destination'] = __DIR__ . '/temp/GeoIP.dat.gz';
-    $files['ipv6']['description'] =  \MailWatch\Translation::__('geoipv615');
-    $files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
-    $files['ipv6']['destination'] = __DIR__ . '/temp/GeoIPv6.dat.gz';
-
-    $extract_dir = __DIR__ . '/temp/';
-
+    $geoIp = new GeoIp();
     // Clean-up from last run
-    foreach ($files as $file) {
-        if (file_exists($file['destination'])) {
-            unlink($file['destination']);
-        }
-    }
-    ob_flush();
-    flush();
+    $geoIp->cleanupFiles();
 
-    if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['destination'])) {
-        if (is_writable($extract_dir) && is_readable($extract_dir)) {
-            if (function_exists('fsockopen') || extension_loaded('curl')) {
-                $requestSession = new Requests_Session($files_base_url . '/');
-                $requestSession->useragent = 'MailWatch/' . str_replace(
-                    [' - ', ' '],
-                    ['-', '-'],
-                        mailwatch_version()
-                );
+    if (!file_exists($geoIp::$savePath['database'])) {
+        $httpClient = $geoIp->getDownloadClient(USE_PROXY, PROXY_SERVER . ':' . PROXY_PORT, PROXY_USER, PROXY_PASS);
 
-                if (USE_PROXY === true) {
-                    $requestSession->options['proxy']['type'] = 'HTTP';
-                    if (PROXY_USER !== '') {
-                        $requestSession->options['proxy']['authentication'] = [
-                            PROXY_SERVER . ':' . PROXY_PORT,
-                            PROXY_USER,
-                            PROXY_PASS
-                        ];
-                    } else {
-                        $requestSession->options['proxy']['authentication'] = [
-                            PROXY_SERVER . ':' . PROXY_PORT
-                        ];
-                    }
-                }
+        try {
+            $geoIp->downloadFiles($httpClient);
+            echo $geoIp->download['database'] . ' ' . \MailWatch\Translation::__('downok15') . '<br>' . "\n";
+            $geoIp->verifySignature($geoIp::$savePath['database'], $geoIp::$savePath['md5']);
 
-                foreach ($files as $file) {
-                    try {
-                        $requestSession->filename = $file['destination'];
-                        $result = $requestSession->get($file['path']);
-                        if ($result->success === true) {
-                            echo $file['description'] . ' ' . \MailWatch\Translation::__('downok15') . '<br>' . "\n";
-                        }
-                    } catch (Requests_Exception $e) {
-                        echo \MailWatch\Translation::__('downbad15') . ' ' . $file['description'] . \MailWatch\Translation::__('colon99') . ' ' . $e->getMessage() . "<br>\n";
-                    }
+            $geoIp->decompressArchive();
 
-                    ob_flush();
-                    flush();
-                }
+            // save file to correct location adn delete other extracted files
+            $extractedFolder = $geoIp->moveDatabaseFile();
 
-                echo \MailWatch\Translation::__('downokunpack15') . '<br>' . "\n";
-                ob_flush();
-                flush();
-            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-                // wget
-                $proxyString = '';
-                if (USE_PROXY) {
-                    if (PROXY_USER !== '') {
-                        $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
-                    } else {
-                        $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
-                    }
-                }
-
-                foreach ($files as $file) {
-                    exec(
-                        'wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
-                        $output_wget,
-                        $retval_wget
-                    );
-                    if ($retval_wget > 0) {
-                        echo \MailWatch\Translation::__('downbad15') . ' ' . $file['description'] . "<br>\n";
-                    } else {
-                        echo $file['description'] . ' ' . \MailWatch\Translation::__('downok15') . '<br>' . "\n";
-                    }
-                }
-            } else {
-                $error_message = \MailWatch\Translation::__('message315') . "<br>\n";
-                $error_message .= \MailWatch\Translation::__('message415');
-                die($error_message);
-            }
-            // Extract files
-            echo "<br>\n";
-            if (function_exists('gzopen')) {
-                foreach ($files as $file) {
-                    $zp_gz = gzopen($file['destination'], 'r');
-                    $targetFile = fopen(str_replace('.gz', '', $file['destination']), 'wb');
-                    while ($string = gzread($zp_gz, 4096)) {
-                        fwrite($targetFile, $string, strlen($string));
-                    }
-                    gzclose($zp_gz);
-                    fclose($targetFile);
-                    echo $file['description'] . ' ' . \MailWatch\Translation::__('unpackok15') . '<br>' . "\n";
-                    unlink($file['destination']);
-                    ob_flush();
-                    flush();
-                }
-            } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-                foreach ($files as $file) {
-                    exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
-                    if ($retval_gunzip > 0) {
-                        die(\MailWatch\Translation::__('extractnotok15') . $file['description'] . "<br>\n");
-                    }
-
-                    echo $file['description'] . ' ' . \MailWatch\Translation::__('extractok15') . '<br>' . "\n";
-                }
-            } else {
-                // Unable to extract the file correctly
-                $error_message = \MailWatch\Translation::__('message515') . "<br>\n";
-                $error_message .= \MailWatch\Translation::__('message615');
-                die($error_message);
-            }
+            $geoIp->cleanupFiles($extractedFolder);
 
             echo \MailWatch\Translation::__('processok15') . "\n";
+
             ob_flush();
             flush();
             \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog15', true));
-        } else {
-            // Unable to read or write to the directory
-            die(\MailWatch\Translation::__('norread15') . ' ' . $extract_dir . ' ' . \MailWatch\Translation::__('directory15') . ".\n");
+        } catch (RequestException $e) {
+            echo \MailWatch\Translation::__('downbad15') . ' ' . $e->getRequest()->getUri() . \MailWatch\Translation::__('colon99') . ' ';
+            //echo Psr7\str($e->getRequest());
+            if ($e->hasResponse()) {
+                echo $e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase();
+            }
+            echo "<br>\n";
+        } catch (\BadMethodCallException $e) {
+            echo $e->getFile() . ':' . $e->getLine() . ' ' . $e->getMessage() . "<br>\n";
+        } catch (\InvalidArgumentException $e) {
+            echo $e->getMessage() . "<br>\n";
         }
     } else {
-        $error_message = \MailWatch\Translation::__('message715') . "<br>\n";
-        $error_message .= \MailWatch\Translation::__('message815') . " $extract_dir" . '.';
+        $error_message = \MailWatch\Translation::__('message715') . "<br>\n" . \MailWatch\Translation::__('message815') . ' ' . $geoIp::$savePath['database'] . '.';
         die($error_message);
     }
+
+    ob_flush();
+    flush();
 }
 
 // Add the footer

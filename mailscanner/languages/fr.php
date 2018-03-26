@@ -546,8 +546,7 @@ return [
     'message115' => 'Cet utilitaire est utilisé pour télécharger les fichiers de la base de données GeoIP (qui sont mis à jour le premier mardi de chaque mois) à partir de',
     'message215' => 'qui est utilisé pour travailler sur le pays d\'origine pour une adresse IP donnée et est affiché sur la page Message Détail.',
     'downfile15' => 'Téléchargement du fichier en cours, veuillez patienter...',
-    'geoipv415' => 'Fichier de données GeoIP IPv4',
-    'geoipv615' => 'Fichier de données GeoIP IPv6',
+    'geoip15' => 'Fichier de données GeoIP',
     'downok15' => ': téléchargement réussi',
     'downbad15' => 'Une erreur c\'est produite pendant le téléchargement',
     'downokunpack15' => 'Téléchargement complet, extraction des fichiers...',
@@ -821,8 +820,7 @@ return [
     'time51' => 'Durée',
 
     // 52-mailwatch_geoip_update.php
-    'geoipv452' => 'Fichier de données GeoIP IPv4',
-    'geoipv652' => 'Fichier de données GeoIP IPv6',
+    'geoip52' => 'Fichier de données GeoIP',
     'downok52' => ': téléchargement réussi',
     'downbad52' => 'Une erreur c\'est produite pendant le téléchargement',
     'downokunpack52' => 'Téléchargement complet, extraction des fichiers...',

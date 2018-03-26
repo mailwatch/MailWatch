@@ -546,8 +546,7 @@ return [
     'message115' => 'Dieses Programm wird die GeoIP Datenbankdateien (werden an jedem ersten Dienstag eines Monats aktualisert) von ',
     'message215' => 'herunterladen, wodurch das Ursprungsland für jede IP-Adresse herausgefunden und auf der Detailseite der Nachrichten angezeigt.',
     'downfile15' => 'Laden Dateien herunter, bitte warten...',
-    'geoipv415' => 'GeoIP IPv4 Datendatei',
-    'geoipv615' => 'GeoIP IPv6 Datendatei',
+    'geoip15' => 'GeoIP Datendatei',
     'downok15' => 'erfolgreich heruntergeladen',
     'downbad15' => 'Beim Herunterladen ist ein Fehler aufgetreten',
     'downokunpack15' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',
@@ -821,8 +820,7 @@ return [
     'time51' => 'Zeit',
 
     // 52-mailwatch_geoip_update.php
-    'geoipv452' => 'GeoIP IPv4 Datendatei',
-    'geoipv652' => 'GeoIP IPv6 Datendatei',
+    'geoip52' => 'GeoIP Datendatei',
     'downok52' => 'erfolgreich heruntergeladen',
     'downbad52' => 'Beim Herunterladen ist ein Fehler aufgetreten',
     'downokunpack52' => 'Herunterladen abgeschlossen, Dateien werden entpackt...',

@@ -201,10 +201,12 @@ class Format
     }
 
     /**
+     * Check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+     *
      * @param $ip
      * @return string
      */
-    public function stripPortFromIp($ip)
+    public static function stripPortFromIp($ip)
     {
         if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
             $ip = current(array_slice(explode(':', $ip), 0, 1));

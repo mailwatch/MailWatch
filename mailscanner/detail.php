@@ -174,7 +174,7 @@ while ($row = $result->fetch_array()) {
                         $output .= ' <td>' .  \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
                     } elseif ($isLocalNetwork === true) {
                         $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
-                    } elseif ($geoip_country = return_geoip_country($relay)) {
+                    } elseif ($geoip_country = \MailWatch\GeoIp::getCountry($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
                         $output .= ' <td>' . \MailWatch\Translation::__('geoipfailed04') . '</td>' . "\n";

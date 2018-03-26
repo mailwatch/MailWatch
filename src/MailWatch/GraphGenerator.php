@@ -262,7 +262,7 @@ class GraphGenerator
             } else {
                 $this->data['hostname'][] = $hostname;
             }
-            if ($geoip = return_geoip_country($ipval)) {
+            if ($geoip = GeoIp::getCountry($ipval)) {
                 $this->data['geoip'][] = $geoip;
             } else {
                 $this->data['geoip'][] = \MailWatch\Translation::__('geoipfailed64');
