@@ -40,12 +40,10 @@ ob_start();
 echo 'Downloading file, please wait...' . "\n";
 
 $files_base_url = 'http://geolite.maxmind.com';
-$files['ipv4']['description'] = __('geoipv452');
-$files['ipv4']['path'] = '/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz';
-$files['ipv4']['destination'] = MAILWATCH_HOME . '/temp/GeoIP.dat.gz';
-$files['ipv6']['description'] = __('geoipv652');
-$files['ipv6']['path'] = '/download/geoip/database/GeoIPv6.dat.gz';
-$files['ipv6']['destination'] = MAILWATCH_HOME . '/temp/GeoIPv6.dat.gz';
+$file['description'] = __('geoip15');
+$file['path'] = '/download/geoip/database/GeoLite2-Country.tar.gz';
+$file['destination'] = MAILWATCH_HOME . '/temp/GeoLite2-Country.tar.gz';
+$file['destinationFileName'] = 'GeoLite2-Country.mmdb';
 
 $extract_dir = MAILWATCH_HOME . '/temp/';
 
@@ -53,20 +51,20 @@ $extract_dir = MAILWATCH_HOME . '/temp/';
 foreach ($files as $file) {
     if (file_exists($file['destination'])) {
         unlink($file['destination']);
+        @unlink(substr($file['destination'], 0, -3));
     }
 }
 ob_flush();
 flush();
 
-if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['destination'])) {
+if (!file_exists($file['destination'])) {
     if (is_writable($extract_dir) && is_readable($extract_dir)) {
         if (function_exists('fsockopen') || extension_loaded('curl')) {
             $requestSession = new Requests_Session($files_base_url . '/');
-            $requestSession->useragent = 'MailWatch/' . str_replace(array(' - ', ' '), array('-', '-'),
-                    mailwatch_version());
+            $requestSession->options['useragent'] = 'MailWatch/' . mailwatch_version();
 
             if (USE_PROXY === true) {
-                if (PROXY_USER != '') {
+                if (PROXY_USER !== '') {
                     $requestSession->options['proxy']['authentication'] = array(
                         PROXY_SERVER . ':' . PROXY_PORT,
                         PROXY_USER,
@@ -93,91 +91,84 @@ if (!file_exists($files['ipv4']['destination']) && !file_exists($files['ipv6']['
                 }
             }
 
-            foreach ($files as $file) {
-                try {
-                    $requestSession->filename = $file['destination'];
-                    $result = $requestSession->get($file['path']);
-                    if ($result->success === true) {
-                        echo $file['description'] . ' ' . __('downok52') . "\n";
-                    }
-                } catch (Requests_Exception $e) {
-                    echo __('downbad52') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "\n";
+            try {
+                $requestSession->options['filename'] = $file['destination'];
+                $result = $requestSession->get($file['path']);
+                if ($result->success === true) {
+                    echo $file['description'] . ' ' . __('downok52') . "\n";
                 }
-
-                ob_flush();
-                flush();
+            } catch (Requests_Exception $e) {
+                echo __('downbad52') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "\n";
             }
+
+            ob_flush();
+            flush();
 
             echo __('downokunpack52') . "\n";
             ob_flush();
             flush();
-        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
+        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
             // wget
             $proxyString = '';
             if (USE_PROXY) {
-                if (PROXY_USER != '') {
+                if (PROXY_USER !== '') {
                     $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
                 } else {
                     $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
                 }
             }
 
-            foreach ($files as $file) {
-                exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
-                    $output_wget, $retval_wget);
-                if ($retval_wget > 0) {
-                    echo __('downbad52') . ' ' . $file['description'] . "\n";
-                } else {
-                    echo $file['description'] . ' successfully downloaded' . "\n";
-                }
+            exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
+                $output_wget, $retval_wget);
+            if ($retval_wget > 0) {
+                echo __('downbad52') . ' ' . $file['description'] . "\n";
+            } else {
+                echo $file['description'] . ' successfully downloaded' . "\n";
             }
         } else {
-            $error_message = __('message352') . "\n";
-            $error_message .= __('message452');
+            $error_message = __('message352') . "\n" . __('message452');
             die($error_message);
         }
         // Extract files
         echo "\n";
-        if (function_exists('gzopen')) {
-            foreach ($files as $file) {
-                $zp_gz = gzopen($file['destination'], 'r');
-                $targetFile = fopen(str_replace('.gz', '', $file['destination']), 'wb');
-                while ($string = gzread($zp_gz, 4096)) {
-                    fwrite($targetFile, $string, strlen($string));
+        if (class_exists('PharData')) {
+            $p = new PharData($file['destination']);
+            $p->decompress();
+            $phar = new PharData(substr($file['destination'], 0, -3));
+            $phar->extractTo($extract_dir, null, true);
+            echo $file['description'] . ' ' . __('unpackok15') . '<br>' . "\n";
+            unlink($file['destination']);
+            unlink(substr($file['destination'], 0, -3));
+
+            foreach (New DirectoryIterator($extract_dir) as $item) {
+                if ($item->isDot()) {
+                    continue;
                 }
-                gzclose($zp_gz);
-                fclose($targetFile);
-                echo $file['description'] . ' ' . __('unpackok52') . "\n";
-                unlink($file['destination']);
-                ob_flush();
-                flush();
-            }
-        } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))) {
-            foreach ($files as $file) {
-                exec('gunzip -f ' . $file['destination'], $output_gunzip, $retval_gunzip);
-                if ($retval_gunzip > 0) {
-                    die(__('extractnotok52') . $file['description'] . "\n");
-                } else {
-                    echo $file['description'] . ' ' . __('extractok52') . "\n";
+
+                if ($item->isDir()) {
+                    $extractedFolder = $item->getFilename();
+                    if (rename($extract_dir . $extractedFolder . '/' . $file['destinationFileName'], $extract_dir . $file['destinationFileName'])) {
+                        array_map('unlink', glob($extract_dir . $extractedFolder . '/*'));
+                        rmdir($extract_dir . $extractedFolder);
+                    }
                 }
             }
         } else {
             // Unable to extract the file correctly
-            $error_message = __('message552') . "\n";
-            $error_message .= __('message652');
+            $error_message = __('message552') . "\n" . $error_message .= __('message652');
             die($error_message);
         }
 
         // Apply MailWatch rights on files from the last run
-        $mwUID =  exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $output_cat, $retval_cat);
+        $mwUID = exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"', $output_cat, $retval_cat);
         if ($retval_cat > 0) {
             die(__('nofind52') . '.' . "\n");
-        } else {
-            $path = $extract_dir . 'GeoIP*.dat';
-            passthru("chown $mwUID.$mwUID $path", $retval_chown);
-            if ($retval_chown > 0) {
-                die(__('nofindowner52') . ' ' . $extract_dir . '.' . "\n");
-            }
+        }
+
+        $path = $extract_dir . $file['destinationFileName'];
+        passthru("chown $mwUID.$mwUID $path", $retval_chown);
+        if ($retval_chown > 0) {
+            die(__('nofindowner52') . ' ' . $extract_dir . '.' . "\n");
         }
 
         echo __('processok52') . "\n\n";
