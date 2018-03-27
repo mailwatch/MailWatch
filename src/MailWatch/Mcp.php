@@ -87,7 +87,7 @@ class Mcp
         $result = Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
         $row = $result->fetch_object();
         if ($row && $row->rule && $row->rule_desc) {
-            return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
+            return '<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n";
         }
 
         return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";

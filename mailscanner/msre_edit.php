@@ -72,7 +72,7 @@ if ($_SESSION['user_type'] !== 'A') {
         'To:',
         'FromOrTo:',
         'FromAndTo:',
-        'Virus:'
+        'Virus:',
     ];
 
     define('MSRE_COLUMNS', 6);
@@ -87,7 +87,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // Read the file into a variable, so that each function doesn't
     // need to do it themselves.
     $file_contents = Read_File($full_filename, filesize($full_filename));
-    
+
     // This will get populated later by a function (I need it to find
     // the end of the comments @ the top of the file)
 
@@ -106,7 +106,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // The form always gets displayed, even if it was submitted, so
     // display the form now
     Show_Form($status_message, $short_filename, $file_contents, $CONF_ruleset_keyword);
-    
+
     // Clear status message
     $status_message = '';
     echo '</table><tr><td>' . "\n";
@@ -117,6 +117,10 @@ if ($_SESSION['user_type'] !== 'A') {
 
 /**
  * @param string status_msg
+ * @param mixed $status_msg
+ * @param mixed $short_filename
+ * @param mixed $file_contents
+ * @param mixed $CONF_ruleset_keyword
  * @return displays the form
  */
 function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_keyword)
@@ -128,13 +132,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
     echo '<input type="hidden" name="formtoken" value="' . \MailWatch\Security::generateFormToken('/msre_edit.php form token') . '">' . "\n";
     echo '<input type="hidden" name="submitted" value="1">' . "\n";
-    
+
     // Check for status message, and append it to the end of the header
     $my_header = '';
     if ($status_msg) {
         $my_header .= '<br>' . "\n" . $status_msg;
     }
-    
+
     // Show page header
     if ($my_header) {
         TR_Single($my_header, 'colspan="' . MSRE_COLUMNS . '" class="header"');
@@ -142,7 +146,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
 
     // Write out the table header(s)
     TRH_Single(sprintf(\MailWatch\Translation::__('contentsof55'), $short_filename), 'colspan="' . MSRE_COLUMNS . '"');
-    
+
     // Display the file contents
     TR_Single("<pre>$file_contents</pre>", 'colspan="' . MSRE_COLUMNS . '"');
 
@@ -268,10 +272,10 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // sort by keys first
         ksort($rule_part);
         $rule_text = [];
-        
+
         // Description line (and action select box)
         $rule_action_select = 'rule' . $rule_count . '_rule_action';
-        
+
         // Need to create the select box now too, but the options
         // that are available to us depend on if the rule is
         // disabled or not.
@@ -287,13 +291,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                 preg_replace('/_disabled$/', '', $desc_field) . "\" value=\"$desc_value\">";
         } else {
             $rule_disabled = 0;
-            $rule_action_select_options = '<option value="Disable">' . \MailWatch\Translation::__('disable55') .'</option>' . "\n";
+            $rule_action_select_options = '<option value="Disable">' . \MailWatch\Translation::__('disable55') . '</option>' . "\n";
             $disable_desc_text = '';
             $desc_field = 'rule' . $rule_count . '_description';
             $hidden_field_code = '';
         }
         $rule_action_select_html = '<select name="' . $rule_action_select . '"';
-        
+
         // If this is the default rule, the select box is disabled,
         // because you can't delete, disable, or enable the default
         // rule, only change it.  Originally I had it not there at
@@ -303,7 +307,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         if (strtolower($rule_part['1target'] === 'default')) {
             $rule_action_select_html .= ' disabled';
         }
-        
+
         // Now continue on.
         $rule_action_select_html .= '>' . "\n" .
             '  <option value="" selected>----</option>' . "\n" .
@@ -313,8 +317,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             $rule_action_select_html => 'rowspan="3"',
             '<b>' . \MailWatch\Translation::__('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
             'name="' . $desc_field . '" size="95" value="' . $desc_value . '"' .
-            $disable_desc_text . '>' . $hidden_field_code
-            => 'colspan="' . (MSRE_COLUMNS - 1) . '"'
+            $disable_desc_text . '>' . $hidden_field_code => 'colspan="' . (MSRE_COLUMNS - 1) . '"',
         ];
 
         foreach ($rule_part as $key => $value) {
@@ -407,7 +410,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     if ($rule_disabled) {
                         $temp_text .= "\n" . '<input type="hidden" name="' . $part_name . '" value="' . $value . '">' . "\n";
                     }
-                    $rule_text [] = $temp_text;
+                    $rule_text[] = $temp_text;
                     break;
             }
         }
@@ -432,7 +435,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         echo '</table>' . "\n" .
             '</td>' . "\n" .
             '</tr>' . "\n";
-            
+
         // And a blank space too to break them up a li'l more
         //echo "<tr><td colspan=\"" . MSRE_COLUMNS . "\" bgcolor=\"white\">&nbsp;</td></tr>\n";
 
@@ -446,15 +449,14 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // Now put a blank one on the bottom, so the user can add a new one.
     $add_rule_text = [];
     $add_prefix = 'rule' . $rule_count . '_';
-    
+
     // Description
     $desc_text = [
         '' => 'rowspan="3"',
         '<b>' . \MailWatch\Translation::__('description55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
-        $add_prefix . 'description" value="" size="95">' =>
-            'colspan="' . (MSRE_COLUMNS - 1) . '"'
+        $add_prefix . 'description" value="" size="95">' => 'colspan="' . (MSRE_COLUMNS - 1) . '"',
     ];
-    
+
     // Direction
     $temp_html = '<b>' . \MailWatch\Translation::__('conditions55') . '</b>&nbsp;&nbsp;<select name="' . $add_prefix .
         'direction"><option value=""></option>';
@@ -463,7 +465,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     }
     $temp_html .= '</select>' . "\n";
     $add_rule_text[] = $temp_html;
-    
+
     // Target
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'target" value="">';
@@ -476,7 +478,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     }
     $temp_html .= '</select>' . "\n";
     $add_rule_text[] = $temp_html;
-    
+
     // And target
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'and_target" value="">';
@@ -531,7 +533,6 @@ function Process_Form($file_contents, $short_filename)
     foreach (preg_split("/\n/", $file_contents) as $line) {
         if ($line === '' ||
              (substr($line, 0, 1) === '#' && !preg_match('/#DISABLED#/', $line))
-
         ) {
             if (!$first_line) {
                 $new_file[] = $previous_line . "\n";
@@ -669,14 +670,14 @@ function Process_Form($file_contents, $short_filename)
                 'and' => $_POST[$and],
                 'and_direction' => $_POST[$and_direction],
                 'and_target' => $_POST[$and_target],
-                'action' => $_POST[$action]
+                'action' => $_POST[$action],
             ];
         }
     }
 
     // Ok, at this point I think we can finish assembling the new file.
     foreach ($new_ruleset as $new_rule) {
-        $new_file [] =
+        $new_file[] =
             '#' . $new_rule['description'] . "\n" .
             $new_rule['direction'] . "\t" .
             $new_rule['target'] . "\t" .
@@ -688,7 +689,7 @@ function Process_Form($file_contents, $short_filename)
     // And add on the default rule if there is one.
     if ($default_action !== '') {
         $new_file[] = '#' . \MailWatch\Sanitize::sanitizeInput($default_desc) . "\n";
-        $new_file[] = \MailWatch\Sanitize::sanitizeInput($default_direction) . "\tdefault\t\t\t" . \MailWatch\Sanitize::sanitizeInput($default_action) ."\n";
+        $new_file[] = \MailWatch\Sanitize::sanitizeInput($default_direction) . "\tdefault\t\t\t" . \MailWatch\Sanitize::sanitizeInput($default_action) . "\n";
     }
 
     // ### ---> Debugging
@@ -749,14 +750,14 @@ function Write_File($filename, $content)
     // Writes a file to $filename (which must include the full path!)
     // and fills it with $content (array)
     // Returns the number of bytes written and status messages
-    
+
     // Return the number of bytes written
     $bytes = 0;
     $status_msg = '';
 
     // We will print some status messages as we're doing it.
     $status_msg .= '<span class="status">' . "\n";
-    
+
     // Make a backup copy of the file first, in case anything goes wrong.
     $status_msg .= \MailWatch\Translation::__('backupfile55');
     $backup_name = $filename . '.bak';
@@ -793,8 +794,9 @@ function Fix_Quotes($stuff)
 {
     // Gets rid of any backslashed quotes in the stuff given to it.
     // Also gets rid of any multiple backslashes.
-    $stuff = str_replace("\\\\", "\\", $stuff);
+    $stuff = str_replace('\\\\', '\\', $stuff);
     $stuff = str_replace("\\'", "'", $stuff);
     $stuff = str_replace('\"', '"', $stuff);
+
     return $stuff;
 }

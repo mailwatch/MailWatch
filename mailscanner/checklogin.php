@@ -55,22 +55,22 @@ if (
     (($result = \MailWatch\Ldap::authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
-    $myusername =  \MailWatch\Sanitize::safe_value($result);
-    $mypassword =  \MailWatch\Sanitize::safe_value($mypassword);
+    $myusername = \MailWatch\Sanitize::safe_value($result);
+    $mypassword = \MailWatch\Sanitize::safe_value($mypassword);
 } elseif (
     defined('USE_IMAP') &&
     (USE_IMAP === true) &&
     (($result = imap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_imap'] = true;
-    $myusername =  \MailWatch\Sanitize::safe_value($myusername);
-    $mypassword =  \MailWatch\Sanitize::safe_value($mypassword);
+    $myusername = \MailWatch\Sanitize::safe_value($myusername);
+    $mypassword = \MailWatch\Sanitize::safe_value($mypassword);
 } else {
     $_SESSION['user_ldap'] = false;
     $_SESSION['user_imap'] = false;
     if ($mypassword !== '') {
-        $myusername =  \MailWatch\Sanitize::safe_value($myusername);
-        $mypassword =  \MailWatch\Sanitize::safe_value($mypassword);
+        $myusername = \MailWatch\Sanitize::safe_value($myusername);
+        $mypassword = \MailWatch\Sanitize::safe_value($mypassword);
     } else {
         header('Location: login.php?error=emptypassword');
         die();

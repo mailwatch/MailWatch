@@ -40,69 +40,69 @@ $scanner = [];
 $scanners = explode(' ', \MailWatch\MailScanner::getConfVar('virusscanners'));
 foreach ($scanners as $vscanner) {
     switch ($vscanner) {
-        case('sophos'):
+        case 'sophos':
             $scanner[$vscanner]['name'] = 'Sophos';
             $scanner[$vscanner]['regexp'] = "/(>>>) Virus \'(\S+)\' found/";
             break;
-        case('sophossavi'):
+        case 'sophossavi':
             $scanner[$vscanner]['name'] = 'Sophos SAVI';
             $scanner[$vscanner]['regexp'] = "/(\S+) was infected by (\S+)/";
             break;
-        case('clamav'):
+        case 'clamav':
             $scanner[$vscanner]['name'] = 'ClamAV';
             $scanner[$vscanner]['regexp'] = "/(.+) contains (\S+)/";
             break;
-        case('clamd'):
+        case 'clamd':
             $scanner[$vscanner]['name'] = 'ClamD';
-            #ORIG#$scanner[$vscanner]['regexp'] = "/(.+) contains (\S+)/";
+            //ORIG#$scanner[$vscanner]['regexp'] = "/(.+) contains (\S+)/";
             $scanner[$vscanner]['regexp'] = "/(.+) was infected: (\S+)/";
             break;
-        case('clamavmodule'):
+        case 'clamavmodule':
             $scanner[$vscanner]['name'] = 'Clam AV Module';
             $scanner[$vscanner]['regexp'] = "/(.+) was infected: (\S+)/";
             break;
-        case('f-prot'):
+        case 'f-prot':
             $scanner[$vscanner]['name'] = 'F-Prot';
             $scanner[$vscanner]['regexp'] = "/(.+) Infection: (\S+)/";
             break;
-        case('mcafee'):
-        case('mcafee6'):
+        case 'mcafee':
+        case 'mcafee6':
             $scanner[$vscanner]['name'] = 'McAfee';
             $scanner[$vscanner]['regexp'] = "/(.+) Found the (\S+) (trojan|virus) !!!/";
             break;
-        case('f-secure'):
+        case 'f-secure':
             $scanner[$vscanner]['name'] = 'F-Secure';
             $scanner[$vscanner]['regexp'] = "/(.+) Infected: (\S+)/";
             break;
-        case('trend'):
+        case 'trend':
             $scanner[$vscanner]['name'] = 'Trend';
             $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
             break;
-        case('bitdefender'):
+        case 'bitdefender':
             $scanner[$vscanner]['name'] = 'BitDefender';
             $scanner[$vscanner]['regexp'] = "/(.+) Found virus (\S+)/";
             break;
-        case('kaspersky-4.5'):
+        case 'kaspersky-4.5':
             $scanner[$vscanner]['name'] = 'Kaspersky';
             $scanner[$vscanner]['regexp'] = "/(.+) INFECTED (\S+)/";
             break;
-        case('etrust'):
+        case 'etrust':
             $scanner[$vscanner]['name'] = 'E-Trust';
             $scanner[$vscanner]['regexp'] = "/(\S+) is infected by virus: (\S+)/";
             break;
-        case('avg'):
+        case 'avg':
             $scanner[$vscanner]['name'] = 'AVG';
             $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
             break;
-        case('norman'):
+        case 'norman':
             $scanner[$vscanner]['name'] = 'Norman';
             $scanner[$vscanner]['regexp'] = "/(Found virus) (\S+) in file (\S+)/";
             break;
-        case('nod32-1.99'):
+        case 'nod32-1.99':
             $scanner[$vscanner]['name'] = "NOD32';
             $scanner[$vscanner]['regexp'] = '/(Found virus) (\S+) in (\S+)/";
             break;
-        case('antivir'):
+        case 'antivir':
             $scanner[$vscanner]['name'] = 'AntiVir';
             $scanner[$vscanner]['regexp'] = "/(ALERT:) \[(\S+) \S+\]/";
             break;

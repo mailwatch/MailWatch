@@ -44,16 +44,16 @@ class SendmailLogProcessor extends MtaLogProcessor
             if ($this->entries['ruleset'] === 'check_relay') {
                 // Listed in RBL(s)
                 return [
-                    'type' =>  Sanitize::safe_value('rbl'),
-                    'relay' =>  Sanitize::safe_value($this->entries['arg2']),
-                    'status' =>  Sanitize::safe_value($this->entries['reject'])
+                    'type' => Sanitize::safe_value('rbl'),
+                    'relay' => Sanitize::safe_value($this->entries['arg2']),
+                    'status' => Sanitize::safe_value($this->entries['reject']),
                 ];
             }
             if ($this->entries['ruleset'] === 'check_mail') {
                 // Domain does not resolve
                 return [
-                    'type' =>  Sanitize::safe_value('unresolveable'),
-                    'status' =>  Sanitize::safe_value($this->getEmail($this->entries['reject']))
+                    'type' => Sanitize::safe_value('unresolveable'),
+                    'status' => Sanitize::safe_value($this->getEmail($this->entries['reject'])),
                 ];
             }
         }
@@ -75,6 +75,7 @@ class SendmailLogProcessor extends MtaLogProcessor
                 }
             }
         }
+
         return $entries;
     }
 }

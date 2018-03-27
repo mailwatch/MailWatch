@@ -29,7 +29,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
@@ -54,11 +53,11 @@ $graphgenerator->sqlQuery = '
 
 $graphgenerator->tableColumns = [
     'score' => \MailWatch\Translation::__('score38'),
-    'count' => \MailWatch\Translation::__('count38')
+    'count' => \MailWatch\Translation::__('count38'),
 ];
 $graphgenerator->sqlColumns = [
     'score',
-    'count'
+    'count',
 ];
 $graphgenerator->valueConversion = [
 ];
@@ -68,7 +67,7 @@ $graphgenerator->graphColumns = [
     'dataFormattedColumns' => [['count']],
     'xAxeDescription' => \MailWatch\Translation::__('scorerounded38'),
     'yAxeDescriptions' => [\MailWatch\Translation::__('nbmessage38')],
-    'fillBelowLine' => ['true']
+    'fillBelowLine' => ['true'],
 ];
 $graphgenerator->types = [['line']];
 $graphgenerator->graphTitle = \MailWatch\Translation::__('sascoredist38');

@@ -29,7 +29,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
@@ -41,7 +40,6 @@ $date_format = "'" . DATE_FORMAT . "'";
 
 // Check if MCP is enabled
 $is_MCP_enabled = \MailWatch\MailScanner::getConfTrueFalse('mcpchecks');
-
 
 $graphgenerator = new \MailWatch\GraphGenerator();
 // SQL query to pull the data from maillog
@@ -143,7 +141,7 @@ $sqlColumns = [
     'total_spam',
 ];
 $valueConversion = [
-    'total_size' => 'scale'
+    'total_size' => 'scale',
 ];
 $graphColumns = [
     'labelColumn' => 'xaxis',
@@ -153,22 +151,22 @@ $graphColumns = [
     ],
     'dataNumericColumns' => [
         ['total_mail', 'total_virus', 'total_spam'],
-        ['total_size']
+        ['total_size'],
     ],
     'dataFormattedColumns' => [
         ['total_mail', 'total_virus', 'total_spam'],
-        ['total_sizeconv']
+        ['total_sizeconv'],
     ],
     'xAxeDescription' => \MailWatch\Translation::__('date49'),
     'yAxeDescriptions' => [
         \MailWatch\Translation::__('nomessages49'),
-        \MailWatch\Translation::__('volume49')
+        \MailWatch\Translation::__('volume49'),
     ],
-    'fillBelowLine' => ['false', 'true']
+    'fillBelowLine' => ['false', 'true'],
 ];
 $types = [
     ['bar', 'bar', 'bar'],
-    ['line']
+    ['line'],
 ];
 
 if ($is_MCP_enabled === true) {
@@ -179,18 +177,18 @@ if ($is_MCP_enabled === true) {
     $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
     $graphgenerator->settings['colors'] = [
         ['mailColor', 'virusColor', 'spamColor', 'mcpColor'],
-        ['volumeColor']
+        ['volumeColor'],
     ];
 }
 
 $graphgenerator->sqlQuery = $sql;
-$graphgenerator->sqlColumns = $sqlColumns ;
+$graphgenerator->sqlColumns = $sqlColumns;
 $graphgenerator->graphColumns = $graphColumns;
 $graphgenerator->valueConversion = $valueConversion;
 $graphgenerator->types = $types;
 $graphgenerator->graphTitle = \MailWatch\Translation::__('totalmailprocdate49');
 $graphgenerator->printTable = false;
-$graphgenerator->settings['valueTypes'] = ['plain','volume'];
+$graphgenerator->settings['valueTypes'] = ['plain', 'volume'];
 $graphgenerator->settings['maxTicks'] = 10;
 $graphgenerator->printLineGraph();
 
@@ -225,13 +223,13 @@ $data_total_unresolveable = [];
 while ($row1 = $result1->fetch_object()) {
     if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
         switch (true) {
-            case($row1->type === 'unknown_user'):
+            case $row1->type === 'unknown_user':
                 $data_total_unknown_users[$key] = $row1->count;
                 break;
-            case($row1->type === 'rbl'):
+            case $row1->type === 'rbl':
                 $data_total_rbl[$key] = $row1->count;
                 break;
-            case($row1->type === 'unresolveable'):
+            case $row1->type === 'unresolveable':
                 $data_total_unresolveable[$key] = $row1->count;
                 break;
         }
@@ -252,7 +250,6 @@ if (count($graph_labels) > 20) {
 }
 
 \MailWatch\Format::format_report_volume($data_total_size, $size_info);
-
 
 echo '<TABLE class="reportTable">' . "\n";
 echo ' <TR BGCOLOR="#F7CE4A">' . "\n";

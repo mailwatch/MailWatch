@@ -125,7 +125,7 @@ $is_MCP_enabled = \MailWatch\MailScanner::getConfTrueFalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = $result->fetch_array()) {
-    $listurl = 'lists.php?token=' . $_SESSION['token'] .'&amp;host=' . $row[\MailWatch\Translation::__('receivedfrom04')] . '&amp;from=' . $row[\MailWatch\Translation::__('from04')] . '&amp;to=' . $row[\MailWatch\Translation::__('to04')];
+    $listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[\MailWatch\Translation::__('receivedfrom04')] . '&amp;from=' . $row[\MailWatch\Translation::__('from04')] . '&amp;to=' . $row[\MailWatch\Translation::__('to04')];
     for ($f = 0; $f < $result->field_count; $f++) {
         $fieldInfo = $result->fetch_field_direct($f);
         $fieldn = $fieldInfo->name;
@@ -171,7 +171,7 @@ while ($row = $result->fetch_array()) {
                     }
                     // Do GeoIP lookup on address
                     if (true === $isPrivateNetwork) {
-                        $output .= ' <td>' .  \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
+                        $output .= ' <td>' . \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
                     } elseif ($isLocalNetwork === true) {
                         $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
                     } elseif ($geoip_country = \MailWatch\GeoIp::getCountry($relay)) {
@@ -182,11 +182,11 @@ while ($row = $result->fetch_array()) {
                     // Link to RBL Lookup
                     $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Spam Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to Virus Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Link to All Messages Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
                     // Close table
                     $output .= ' </tr>' . "\n";
                 }
@@ -343,7 +343,7 @@ if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
 $sth1 = \MailWatch\Db::query($sql1);
 if (false !== $sth1 && $sth1->num_rows > 0) {
     // Display the relay table entries
-    echo ' <tr><td class="heading-w175">' .  \MailWatch\Translation::__('relayinfo04') . '</td><td class="detail">' . "\n";
+    echo ' <tr><td class="heading-w175">' . \MailWatch\Translation::__('relayinfo04') . '</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
     for ($f = 0; $f < $sth1->field_count; $f++) {
@@ -496,9 +496,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
-            $tdclass='';
+            $tdclass = '';
             if ($row['released'] > 0 && $item['file'] === 'message') {
-                $tdclass='released';
+                $tdclass = 'released';
             }
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
@@ -535,7 +535,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                     (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
-                echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] .'&amp;id=' . $item['msgid'] . '">' .
+                echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
                     substr($item['path'], strlen($quarantinedir) + 1) .
                     '</a></td>' . "\n";
             } else {

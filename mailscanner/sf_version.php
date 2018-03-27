@@ -73,6 +73,7 @@ if ($_SESSION['user_type'] !== 'A') {
                 }
                 $parts[1] = str_replace(['"', "'"], '', $parts[1]);
                 $parts[1] = trim($parts[1]);
+
                 return $parts;
             }, file($file)));
             foreach ($lines as $line) {

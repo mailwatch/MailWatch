@@ -240,9 +240,9 @@ if ($url_submit === 'add') {
                 break;
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
-            . "('" .  \MailWatch\Sanitize::safe_value($to_address) . "',"
-            . "'" .  \MailWatch\Sanitize::safe_value($to_domain) . "',"
-            . "'" .  \MailWatch\Sanitize::safe_value($from) . "')";
+            . "('" . \MailWatch\Sanitize::safe_value($to_address) . "',"
+            . "'" . \MailWatch\Sanitize::safe_value($to_domain) . "',"
+            . "'" . \MailWatch\Sanitize::safe_value($from) . "')";
         \MailWatch\Db::query($sql);
         \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogadded07', true), $from, $to_address, $listi18));
     }
@@ -289,7 +289,7 @@ if ($url_submit === 'delete') {
             break;
     }
 
-    $id =  \MailWatch\Sanitize::safe_value($url_id);
+    $id = \MailWatch\Sanitize::safe_value($url_id);
     \MailWatch\Db::query($sql);
     $to_domain = '';
     $touser = '';

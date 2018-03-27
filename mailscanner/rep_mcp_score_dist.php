@@ -29,7 +29,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
@@ -54,14 +53,14 @@ $graphgenerator->sqlQuery = '
 
 $graphgenerator->tableColumns = [
     'score' => \MailWatch\Translation::__('score35'),
-    'countconv' => \MailWatch\Translation::__('count35')
+    'countconv' => \MailWatch\Translation::__('count35'),
 ];
 $graphgenerator->sqlColumns = [
     'score',
-    'count'
+    'count',
 ];
 $graphgenerator->valueConversion = [
-    'count' => 'number'
+    'count' => 'number',
 ];
 $graphgenerator->graphColumns = [
     'labelColumn' => 'score',
@@ -69,7 +68,7 @@ $graphgenerator->graphColumns = [
     'dataFormattedColumns' => [['countconv']],
     'xAxeDescription' => \MailWatch\Translation::__('scorerounded35'),
     'yAxeDescriptions' => [\MailWatch\Translation::__('nbmessage35')],
-    'fillBelowLine' => ['true']
+    'fillBelowLine' => ['true'],
 ];
 $graphgenerator->types = [['line']];
 $graphgenerator->graphTitle = \MailWatch\Translation::__('mcpscoredist35');

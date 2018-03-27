@@ -29,7 +29,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
@@ -62,14 +61,14 @@ $graphgenerator->tableColumns = [
     'countconv' => \MailWatch\Translation::__('messages39'),
     'total_virusesconv' => \MailWatch\Translation::__('viruses39'),
     'total_spamconv' => \MailWatch\Translation::__('spam39'),
-    'sizeconv'=> \MailWatch\Translation::__('volume39'),
+    'sizeconv' => \MailWatch\Translation::__('volume39'),
 ];
 $graphgenerator->sqlColumns = [
     'clientip',
     'count',
     'total_viruses',
     'total_spam',
-    'size'
+    'size',
 ];
 $graphgenerator->valueConversion = [
     'clientip' => 'hostnamegeoip',

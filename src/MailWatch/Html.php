@@ -754,7 +754,7 @@ function updateClock() {
             'yAxeDescriptions' => [
                 '',
             ],
-            'fillBelowLine' => ['true']
+            'fillBelowLine' => ['true'],
         ];
         $graphgenerator->types = [
             ['line', 'line', 'line'],

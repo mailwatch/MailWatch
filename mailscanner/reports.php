@@ -60,7 +60,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     } else {
         $action = \MailWatch\Sanitize::deepSanitizeInput($_GET['action'], 'url');
     }
-    
+
     switch (strtolower($action)) {
         case 'add':
             if (false === \MailWatch\Security::checkFormToken('/Filter.php form token', $_POST['formtoken'])) {

@@ -62,7 +62,6 @@ class MailScanner
 
             // find all lines that match
             if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
-
                 // Strip trailing comments
                 $regs['value'] = preg_replace('/#.*$/', '', $regs['value']);
 
@@ -91,6 +90,7 @@ class MailScanner
         unset($fileContent);
 
         $conf_file_cache[$name] = $array_output;
+
         return $conf_file_cache[$name];
     }
 
@@ -185,7 +185,6 @@ class MailScanner
         die(Translation::__('dienoconfigval103') . " $name " . Translation::__('dienoconfigval203') . " $MailScanner_conf_file\n");
     }
 
-
     /**
      * @param $file
      * @return bool
@@ -205,7 +204,6 @@ class MailScanner
 
         return false;
     }
-
 
     /**
      * @param string $name

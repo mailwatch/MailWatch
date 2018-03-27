@@ -53,60 +53,60 @@ if ($_SESSION['user_type'] !== 'A') {
     }
 
     $auditFilter = '';
-    $startDate='';
-    $endDate='';
+    $startDate = '';
+    $endDate = '';
     $ipaddress = '';
-    $actions ='';
-    $username ='';
+    $actions = '';
+    $username = '';
     if (isset($_POST['formtoken'])) {
         if (false === \MailWatch\Security::checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
             die(\MailWatch\Translation::__('dietoken99'));
         }
         if (isset($_POST['startDate'])) {
-            $startDate=\MailWatch\Sanitize::deepSanitizeInput($_POST['startDate'], 'url');
+            $startDate = \MailWatch\Sanitize::deepSanitizeInput($_POST['startDate'], 'url');
             if ($startDate !== '' && $startDate !== null && !\MailWatch\Sanitize::validateInput($startDate, 'date')) {
                 $startDate = '';
             }
         }
         if (isset($_POST['endDate'])) {
-            $endDate=\MailWatch\Sanitize::deepSanitizeInput($_POST['endDate'], 'url');
+            $endDate = \MailWatch\Sanitize::deepSanitizeInput($_POST['endDate'], 'url');
             if ($endDate !== '' && $endDate !== null && !\MailWatch\Sanitize::validateInput($endDate, 'date')) {
                 $endDate = '';
             }
         }
         if (isset($_POST['username'])) {
-            $username=\MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string');
+            $username = \MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string');
             if ($username !== '' && $username !== null && !\MailWatch\Sanitize::validateInput($username, 'user')) {
                 $username = '';
             }
         }
         if (isset($_POST['ipaddress'])) {
-            $ipaddress=\MailWatch\Sanitize::deepSanitizeInput($_POST['ipaddress'], 'url');
+            $ipaddress = \MailWatch\Sanitize::deepSanitizeInput($_POST['ipaddress'], 'url');
             if (!\MailWatch\Sanitize::validateInput($ipaddress, 'ip')) {
                 $ipaddress = '';
             }
         }
         if (isset($_POST['actions'])) {
-            $actions=\MailWatch\Sanitize::deepSanitizeInput($_POST['actions'], 'string');
+            $actions = \MailWatch\Sanitize::deepSanitizeInput($_POST['actions'], 'string');
             if ($actions !== '' && $actions !== null && !\MailWatch\Sanitize::validateInput($actions, 'general')) {
                 $actions = '';
             }
         }
     }
     if ($startDate !== '') {
-        $auditFilter .= ' AND a.timestamp >= "' .  \MailWatch\Sanitize::safe_value($startDate) . ' 00:00:00"';
+        $auditFilter .= ' AND a.timestamp >= "' . \MailWatch\Sanitize::safe_value($startDate) . ' 00:00:00"';
     }
     if ($endDate !== '') {
-        $auditFilter .= ' AND a.timestamp <= "' .  \MailWatch\Sanitize::safe_value($endDate) . ' 23:59:59"';
+        $auditFilter .= ' AND a.timestamp <= "' . \MailWatch\Sanitize::safe_value($endDate) . ' 23:59:59"';
     }
     if ($username !== '') {
-        $auditFilter .= ' AND b.username = "' .  \MailWatch\Sanitize::safe_value($username) . '"';
+        $auditFilter .= ' AND b.username = "' . \MailWatch\Sanitize::safe_value($username) . '"';
     }
     if ($ipaddress !== '') {
-        $auditFilter .= ' AND a.ip_address = "' .  \MailWatch\Sanitize::safe_value($ipaddress) . '"';
+        $auditFilter .= ' AND a.ip_address = "' . \MailWatch\Sanitize::safe_value($ipaddress) . '"';
     }
     if ($actions !== '') {
-        $auditFilter .= ' AND a.action like "%' .  \MailWatch\Sanitize::safe_value($actions) . '%"';
+        $auditFilter .= ' AND a.action like "%' . \MailWatch\Sanitize::safe_value($actions) . '%"';
     }
 
     // SQL query for the audit log

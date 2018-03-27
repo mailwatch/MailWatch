@@ -81,7 +81,7 @@ class Format
     }
 
     /**
-     * @param double $size
+     * @param float $size
      * @param int $precision
      * @return string
      */

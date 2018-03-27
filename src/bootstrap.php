@@ -32,4 +32,5 @@ if (!file_exists($loader)) {
         'A setup script is also provided in the root directory `setup_composer` which will automate the setup' . PHP_EOL;
     exit(1);
 }
+
 return require $loader;

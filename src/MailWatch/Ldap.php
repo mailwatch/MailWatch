@@ -65,7 +65,6 @@ class Ldap
                 return null;
             }
             if (1 > ldap_count_entries($ds, $ldap_search_results)) {
-                //
                 @trigger_error(Translation::__('ldapresultnodata03') . ' "' . $username . '"');
 
                 return null;
@@ -175,7 +174,7 @@ class Ldap
         @ldap_bind($lh)
         or die(Translation::__('ldapgetconfvar203') . "\n");
 
-        # As per MailScanner Config.pm
+        // As per MailScanner Config.pm
         $filter = '(objectClass=mailscannerconfmain)';
         $filter = "(&$filter(mailScannerConfBranch=main))";
 
@@ -217,7 +216,7 @@ class Ldap
         @ldap_bind($lh)
         or die(Translation::__('ldapgetconfvar203') . "\n");
 
-        # As per MailScanner Config.pm
+        // As per MailScanner Config.pm
         $filter = '(objectClass=mailscannerconfmain)';
         $filter = "(&$filter(mailScannerConfBranch=main))";
 

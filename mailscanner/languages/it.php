@@ -739,7 +739,7 @@ return [
     'toprecipdomqt40' => 'Top Recipients Domains by Quantity',
     'top10recipdomqt40' => 'Top 10 Recipients Domains by Quantity',
     'domain40' => 'Domain',
-  
+
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Recipients Domains by Volume',
     'top10recipdomvol41' => 'Top 10 Recipient Domains by Volume',
@@ -749,12 +749,12 @@ return [
     'toprecipqt42' => 'Top Recipients by Quantity',
     'top10recipqt42' => 'Top 10 Recipients by Quantity',
     'email42' => 'E-mail Address',
-  
+
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Recipients by Volume',
     'top10recipvol43' => 'Top 10 Recipients by Volume',
     'email43' => 'E-mail Address',
-  
+
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Sender Domains by Quantity',
     'top10senderdomqt44' => 'Top 10 Sender Domains by Quantity',
@@ -764,17 +764,17 @@ return [
     'topsenderdomvol45' => 'Top Sender Domains by Volume',
     'top10senderdomvol45' => 'Top 10 Sender Domains by Volume',
     'domain45' => 'Domain',
-  
+
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Top Senders by Quantity',
     'top10sendersqt46' => 'Top 10 Senders by Quantity',
     'email46' => 'E-mail Address',
-  
+
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
     'email47' => 'E-mail Address',
-  
+
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',

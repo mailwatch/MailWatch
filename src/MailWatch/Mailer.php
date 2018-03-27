@@ -1,4 +1,5 @@
 <?php
+
 /*
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
@@ -48,13 +49,13 @@ class Mailer
             'From' => $sender,
             'To' => $email,
             'Subject' => $subject,
-            'Date' => date('r')
+            'Date' => date('r'),
         ];
         $mime_params = [
             'text_encoding' => '7bit',
             'text_charset' => 'UTF-8',
             'html_charset' => 'UTF-8',
-            'head_charset' => 'UTF-8'
+            'head_charset' => 'UTF-8',
         ];
         $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO);
         $mime->setTXTBody($text);
@@ -75,6 +76,7 @@ class Mailer
         if (defined('MAILWATCH_SMTP_HOSTNAME')) {
             $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
         }
+
         return $mail_param;
     }
 }

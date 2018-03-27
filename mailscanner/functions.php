@@ -38,7 +38,6 @@ if (!is_readable(__DIR__ . '/conf.php')) {
 }
 require_once __DIR__ . '/conf.php';
 
-
 // more secure session cookies
 ini_set('session.use_cookies', 1);
 ini_set('session.cookie_httponly', 1);
@@ -128,8 +127,6 @@ if (PHP_SAPI !== 'cli') {
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Functions
 ///////////////////////////////////////////////////////////////////////////////
@@ -140,8 +137,6 @@ function mailwatch_version()
 {
     return '1.99.0-dev';
 }
-
-
 
 /**
  * @return array|mixed
@@ -216,6 +211,7 @@ function subtract_get_vars($preserve)
         }
         if (count($output) > 0) {
             $output = implode('&amp;', $output);
+
             return '&amp;' . $output;
         }
 
@@ -240,6 +236,7 @@ function subtract_multi_get_vars($preserve)
         }
         if (count($output) > 0) {
             $output = implode('&amp;', $output);
+
             return '&amp;' . $output;
         }
     }
@@ -1089,7 +1086,7 @@ function db_vertical_table($sql)
  */
 
 /**
- * @return double
+ * @return float
  */
 function get_microtime()
 {
@@ -1134,7 +1131,7 @@ function count_files_in_dir($dir)
  */
 function get_mail_relays($message_headers)
 {
-    $headers = explode("\\n", $message_headers);
+    $headers = explode('\\n', $message_headers);
     $relays = null;
     foreach ($headers as $header) {
         $header = preg_replace('/IPv6\:/', '', $header);
@@ -1208,6 +1205,8 @@ function address_filter_sql($addresses, $type)
 
 /**
  * @param $entry
+ * @param mixed $username
+ * @param mixed $password
  * @return bool
  */
 
@@ -1465,11 +1464,11 @@ function xmlrpc_wrapper($host, $msg)
 
 /**
  * @param string $username username that should be checked if it exists
- * @return boolean true if user exists, else false
+ * @return bool true if user exists, else false
  */
 function checkForExistingUser($username)
 {
-    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" .  \MailWatch\Sanitize::safe_value($username) . "'";
+    $sqlQuery = "SELECT COUNT(username) AS counter FROM users WHERE username = '" . \MailWatch\Sanitize::safe_value($username) . "'";
     $row = \MailWatch\Db::query($sqlQuery)->fetch_object();
 
     return $row->counter > 0;
@@ -1607,7 +1606,7 @@ function checkConfVariables()
         'ENABLE_SUPER_DOMAIN_ADMINS' => ['description' => 'allows domain admins to change domain admins from the same domain'],
         'USE_IMAP' => ['description' => 'use IMAP for user authentication'],
         'IMAP_HOST' => ['description' => 'IMAP host to be used for user authentication'],
-        'IMAP_AUTOCREATE_VALID_USER' => ['description' => 'enable to autorcreate user from valid imap login']
+        'IMAP_AUTOCREATE_VALID_USER' => ['description' => 'enable to autorcreate user from valid imap login'],
     ];
 
     $results = [];
@@ -1672,7 +1671,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 
     if ($privateLocal === false && $net !== false) {
         $network = new \IPSet\IPSet([
-            $net
+            $net,
         ]);
 
         return $network->match($ip);
@@ -1685,7 +1684,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 /**
  * Checks if the passed language code is allowed to be used for the users
  * @param string $langCode
- * @return boolean
+ * @return bool
  */
 function checkLangCode($langCode)
 {
@@ -1693,8 +1692,9 @@ function checkLangCode($langCode)
     $found = array_search($langCode, $validLang);
     if ($found === false || $found === null) {
         \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditundefinedlang12', true), $langCode));
+
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }

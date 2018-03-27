@@ -40,7 +40,6 @@ function rpc_get_quarantine($msg)
         $item = [];
         $output = [];
         if ($input === '/') {
-
             // Return top-level directory
             $d = @opendir($quarantinedir);
             while (false !== ($f = readdir($d))) {
@@ -58,7 +57,7 @@ function rpc_get_quarantine($msg)
             }
         } else {
             switch (true) {
-                case(is_dir($quarantinedir . $input)):
+                case is_dir($quarantinedir . $input):
                     $d = @opendir($quarantinedir . $input);
                     while (false !== ($f = readdir($d))) {
                         if ($f !== '.' && $f !== '..') {
@@ -73,14 +72,15 @@ function rpc_get_quarantine($msg)
                         $output[] = new xmlrpcval($items);
                     }
                     break;
-                case(is_file($quarantinedir . $input)):
+                case is_file($quarantinedir . $input):
                     return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir$input is a file.");
             }
         }
+
         return new xmlrpcresp(new xmlrpcval($output, 'array'));
     }
 
-    return new xmlrpcresp(0, $xmlrpcerruser+1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($input) . ' ' . \MailWatch\Translation::__('paratype260'));
+    return new xmlrpcresp(0, $xmlrpcerruser + 1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($input) . ' ' . \MailWatch\Translation::__('paratype260'));
 }
 
 function rpc_return_quarantined_file($msg)
@@ -90,38 +90,39 @@ function rpc_return_quarantined_file($msg)
     $input = php_xmlrpc_decode(array_shift($msg->params));
     $input = preg_replace('[\.\/|\.\.\/]', '', $input);
     $date = @Db::mysqli_result(
-        \MailWatch\Db::query("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" .  \MailWatch\Sanitize::safe_value($input) . "'"),
+        \MailWatch\Db::query("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . \MailWatch\Sanitize::safe_value($input) . "'"),
         0
     );
     $qdir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
     $file = null;
     switch (true) {
-        case (file_exists($qdir . '/' . $date . '/nonspam/' . $input)):
+        case file_exists($qdir . '/' . $date . '/nonspam/' . $input):
             $file = $date . '/nonspam/' . $input;
             break;
-        case (file_exists($qdir . '/' . $date . '/spam/' . $input)):
+        case file_exists($qdir . '/' . $date . '/spam/' . $input):
             $file = $date . '/spam/' . $input;
             break;
-        case (file_exists($qdir . '/' . $date . '/mcp/' . $input)):
+        case file_exists($qdir . '/' . $date . '/mcp/' . $input):
             $file = $date . '/mcp/' . $input;
             break;
-        case (file_exists($qdir . '/' . $date . '/' . $input . '/message')):
+        case file_exists($qdir . '/' . $date . '/' . $input . '/message'):
             $file = $date . '/' . $input . '/message';
             break;
     }
 
     $quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
     switch (true) {
-        case(!is_string($file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($file) . ' ' . \MailWatch\Translation::__('paratyper260'));
-        case(!is_file($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$" . \MailWatch\Translation::__('notfile60'));
-        case(!is_readable($quarantinedir . '/' . $file)):
-            return new xmlrpcresp(0, $xmlrpcerruser+1, "$quarantinedir/$file" . \MailWatch\Translation::__('colon99') . ' ' . \MailWatch\Translation::__('permdenied60'));
+        case !is_string($file):
+            return new xmlrpcresp(0, $xmlrpcerruser + 1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($file) . ' ' . \MailWatch\Translation::__('paratyper260'));
+        case !is_file($quarantinedir . '/' . $file):
+            return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir/$" . \MailWatch\Translation::__('notfile60'));
+        case !is_readable($quarantinedir . '/' . $file):
+            return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir/$file" . \MailWatch\Translation::__('colon99') . ' ' . \MailWatch\Translation::__('permdenied60'));
         default:
             $output = base64_encode(file_get_contents($quarantinedir . '/' . $file));
             break;
     }
+
     return new xmlrpcresp(new xmlrpcval($output, 'base64'));
 }
 
@@ -130,7 +131,7 @@ function rpc_quarantine_list_items($msg)
     global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (!is_string($input)) {
-        return new xmlrpcresp(0, $xmlrpcerruser+1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($input) . ' ' . \MailWatch\Translation::__('paratyper260'));
+        return new xmlrpcresp(0, $xmlrpcerruser + 1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($input) . ' ' . \MailWatch\Translation::__('paratyper260'));
     }
     $return = \MailWatch\Quarantine::quarantine_list_items($input);
     $output = [];
@@ -151,6 +152,7 @@ function rpc_quarantine_release($msg)
     $item = php_xmlrpc_decode(array_shift($msg->params));
     $to = php_xmlrpc_decode(array_shift($msg->params));
     $return = \MailWatch\Quarantine::quarantine_release($items, $item, $to);
+
     return new xmlrpcresp(new xmlrpcval($return, 'string'));
 }
 
@@ -160,6 +162,7 @@ function rpc_quarantine_learn($msg)
     $item = php_xmlrpc_decode(array_shift($msg->params));
     $type = php_xmlrpc_decode(array_shift($msg->params));
     $return = \MailWatch\Quarantine::quarantine_learn($items, $item, $type);
+
     return new xmlrpcresp(new xmlrpcval($return, 'string'));
 }
 
@@ -168,12 +171,14 @@ function rpc_quarantine_delete($msg)
     $items = php_xmlrpc_decode(array_shift($msg->params));
     $item = php_xmlrpc_decode(array_shift($msg->params));
     $return = \MailWatch\Quarantine::quarantine_delete($items, $item);
+
     return new xmlrpcresp(new xmlrpcval($return, 'string'));
 }
 
 function rpc_sophos_status()
 {
     $output = shell_exec(MS_LIB_DIR . 'wrapper/sophos-wrapper /usr/local/Sophos -v');
+
     return new xmlrpcresp(new xmlrpcval($output, 'string'));
 }
 
@@ -185,7 +190,7 @@ function rpc_get_conf_var($msg)
         return new xmlrpcresp(new xmlrpcval(\MailWatch\MailScanner::getConfVar($input), 'string'));
     }
 
-    return new xmlrpcresp(0, $xmlrpcerruser+1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($input) . ' ' . \MailWatch\Translation::__('paratype260'));
+    return new xmlrpcresp(0, $xmlrpcerruser + 1, \MailWatch\Translation::__('paratype160') . ' ' . gettype($input) . ' ' . \MailWatch\Translation::__('paratype260'));
 }
 
 function rpc_dump_mailscanner_conf()
@@ -195,14 +200,14 @@ function rpc_dump_mailscanner_conf()
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, 4096));
         if (preg_match('/^([^#].+) = ([^#].*)/', $line, $regs)) {
-            # Strip trailing comments
+            // Strip trailing comments
             $regs[2] = preg_replace('/#.*$/', '', $regs[2]);
-            # store %var% variables
+            // store %var% variables
             $var = [];
             if (preg_match('/%.+%/', $regs[1])) {
                 $var[$regs[1]] = $regs[2];
             }
-            # expand %var% variables
+            // expand %var% variables
             if (preg_match('/(%.+%)/', $regs[2], $match)) {
                 $regs[2] = preg_replace('/%.+%/', $var[$match[1]], $regs[2]);
             }
@@ -210,6 +215,7 @@ function rpc_dump_mailscanner_conf()
         }
     }
     fclose($fh);
+
     return new xmlrpcresp(new xmlrpcval($output, 'struct'));
 }
 
@@ -248,6 +254,7 @@ function rpc_bayes_info()
             }
         }
     }
+
     return new xmlrpcresp(new xmlrpcval($output, 'struct'));
 }
 
@@ -259,6 +266,7 @@ function rpc_postfix_queues()
         'inq' => new xmlrpcval($inq),
         'outq' => new xmlrpcval($outq),
     ];
+
     return new xmlrpcresp(new xmlrpcval($result, 'struct'));
 }
 
@@ -266,57 +274,57 @@ $s = new xmlrpc_server([
         'get_quarantine' => [
             'function' => 'rpc_get_quarantine',
             'signature' => [['array', 'string']],
-            'docstring' => 'This service returns a listing of files in the relative quarantine directory.'
+            'docstring' => 'This service returns a listing of files in the relative quarantine directory.',
         ],
         'return_quarantined_file' => [
             'function' => 'rpc_return_quarantined_file',
             'signature' => [['base64', 'string']],
-            'docstring' => 'This service returns the contents of a quarantined file.'
+            'docstring' => 'This service returns the contents of a quarantined file.',
         ],
         'quarantine_list_items' => [
             'function' => 'rpc_quarantine_list_items',
             'signature' => [['array', 'string']],
-            'docstring' => 'This service lists the files quarantined for a given message.'
+            'docstring' => 'This service lists the files quarantined for a given message.',
         ],
         'quarantine_release' => [
             'function' => 'rpc_quarantine_release',
             'signature' => [['string', 'array', 'array', 'string']],
-            'docstring' => 'This service release a message from the quarantine.'
+            'docstring' => 'This service release a message from the quarantine.',
         ],
         'quarantine_learn' => [
             'function' => 'rpc_quarantine_learn',
             'signature' => [['string', 'array', 'array', 'string']],
-            'docstring' => 'This service runs sa-learn on a message in the quarantine.'
+            'docstring' => 'This service runs sa-learn on a message in the quarantine.',
         ],
         'quarantine_delete' => [
             'function' => 'rpc_quarantine_delete',
             'signature' => [['string', 'array', 'array']],
-            'docstring' => 'This service deltes one or more items from the quarantine.'
+            'docstring' => 'This service deltes one or more items from the quarantine.',
         ],
         'sophos_status' => [
             'function' => 'rpc_sophos_status',
             'signature' => [['string']],
-            'docstring' => 'This service returns the Sophos version and IDE information.'
+            'docstring' => 'This service returns the Sophos version and IDE information.',
         ],
         'get_conf_var' => [
             'function' => 'rpc_get_conf_var',
             'signature' => [['string', 'string']],
-            'docstring' => 'This service returns a named configuration value from MailScanner.conf.'
+            'docstring' => 'This service returns a named configuration value from MailScanner.conf.',
         ],
         'dump_mailscanner_conf' => [
             'function' => 'rpc_dump_mailscanner_conf',
             'signature' => [['struct']],
-            'docstring' => 'This service returns all configuration values and settings from MailScanner.conf.'
+            'docstring' => 'This service returns all configuration values and settings from MailScanner.conf.',
         ],
         'get_bayes_info' => [
             'function' => 'rpc_bayes_info',
             'signature' => [['struct']],
-            'docstring' => 'This service return information about the bayes database.'
+            'docstring' => 'This service return information about the bayes database.',
         ],
         'postfix_queues' => [
             'function' => 'rpc_postfix_queues',
             'signature' => [['array']],
-            'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.'
+            'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.',
         ],
     ], false);
 
@@ -325,6 +333,6 @@ if (is_rpc_client_allowed()) {
     $s->service();
 } else {
     global $xmlrpcerruser;
-    $output = new xmlrpcresp(0, $xmlrpcerruser + 1, \MailWatch\Translation::__('client160') ." {$_SERVER['SERVER_ADDR']} " . \MailWatch\Translation::__('client260'));
-    print $output->serialize();
+    $output = new xmlrpcresp(0, $xmlrpcerruser + 1, \MailWatch\Translation::__('client160') . " {$_SERVER['SERVER_ADDR']} " . \MailWatch\Translation::__('client260'));
+    echo $output->serialize();
 }

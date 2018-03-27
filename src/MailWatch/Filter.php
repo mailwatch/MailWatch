@@ -59,7 +59,7 @@ class Filter
             'REGEXP' => Translation::__('regexp09'),
             'NOT REGEXP' => Translation::__('notregexp09'),
             'IS NULL' => Translation::__('isnull09'),
-            'IS NOT NULL' => Translation::__('isnotnull09')
+            'IS NOT NULL' => Translation::__('isnotnull09'),
         ];
         $this->columns = [
             'date' => Translation::__('date09'),
@@ -91,7 +91,7 @@ class Filter
             'nameinfected' => Translation::__('nameinfected09'),
             'otherinfected' => Translation::__('otherinfected09'),
             'report' => Translation::__('report09'),
-            'hostname' => Translation::__('hostname09')
+            'hostname' => Translation::__('hostname09'),
         ];
     }
 
@@ -225,7 +225,7 @@ WHERE
             return "AND\n $val[0] $val[1]\n";
         }
 
-        if ($val[2] !== '' && $val[2]{0} === '!') {
+        if ($val[2] !== '' && $val[2][0] === '!') {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
         }

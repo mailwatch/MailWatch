@@ -40,7 +40,6 @@ class Quarantine
         $quarantinedir = MailScanner::getConfVar('QuarantineDir') . '/';
         $item = [];
         if ($input === '/') {
-
             // Return top-level directory
             $d = @opendir($quarantinedir);
 
@@ -179,7 +178,7 @@ SELECT
         }
 
         $new = self::quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
+        $list = &$new;
 
         if (!$rpc_only && is_local($list[0]['host'])) {
             if (!QUARANTINE_USE_SENDMAIL) {
@@ -188,7 +187,7 @@ SELECT
                     'eol' => "\r\n",
                     'html_charset' => 'UTF-8',
                     'text_charset' => 'UTF-8',
-                    'head_charset' => 'UTF-8'
+                    'head_charset' => 'UTF-8',
                 ];
                 $mime = new \Mail_mime($mailMimeParams);
                 $mime->setTXTBody(Encoding::toUTF8(QUARANTINE_MSG_BODY));
@@ -295,7 +294,7 @@ SELECT
             return 'Invalid argument';
         }
         $new = self::quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
+        $list = &$new;
         $status = [];
         if (!$rpc_only && is_local($list[0]['host'])) {
             //prevent sa-learn process blocking complete apache server
@@ -462,7 +461,7 @@ SELECT
         }
 
         $new = self::quarantine_list_items($list[0]['msgid']);
-        $list =& $new;
+        $list = &$new;
 
         if (!$rpc_only && is_local($list[0]['host'])) {
             $status = [];

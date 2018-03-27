@@ -50,7 +50,7 @@ class SyslogParser
         'Sep' => '9',
         'Oct' => '10',
         'Nov' => '11',
-        'Dec' => '12'
+        'Dec' => '12',
     ];
 
     /**

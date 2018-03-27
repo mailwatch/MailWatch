@@ -28,7 +28,7 @@
 class Quarantine_Report
 {
     /**
-     * @return boolean|string true if requirements are met; else missing requirements as string
+     * @return bool|string true if requirements are met; else missing requirements as string
      */
     public static function check_quarantine_report_requirements()
     {
@@ -46,7 +46,7 @@ class Quarantine_Report
             'TIME_ZONE',
             'DATE_FORMAT',
             'TIME_FORMAT',
-            'QUARANTINE_FILTERS_COMBINED'
+            'QUARANTINE_FILTERS_COMBINED',
         ];
         $required_constant_missing = '';
         foreach ($required_constant as $constant) {
@@ -125,7 +125,6 @@ class Quarantine_Report
 In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
 
 %s';
-
 
     private static $text_content = 'Received: %s
 From: %s
@@ -240,7 +239,6 @@ ORDER BY a.date DESC, a.time DESC';
         return $report_sql;
     }
 
-
     /**
      * @param array $usersForReport array containing users for which the reports should be send; if empty reports are send for all users
      * @return false|array if requirements not met; else an associative array counting successfull and failed reports for users
@@ -263,7 +261,7 @@ ORDER BY a.date DESC, a.time DESC';
         if (count($usersForReport) > 0) {
             $userConditions = [];
             foreach ($usersForReport as $item) {
-                $userConditions[] = ' username=' .  \MailWatch\Sanitize::quote_smart($item);
+                $userConditions[] = ' username=' . \MailWatch\Sanitize::quote_smart($item);
             }
             $this->users_sql .= ' AND ( ' . implode(' OR ', $userConditions) . ' ) ';
         }
@@ -319,7 +317,7 @@ ORDER BY a.date DESC, a.time DESC';
 
         return [
             'succ' => $num_successfull_reports,
-            'failed' => $num_failed_reports
+            'failed' => $num_failed_reports,
         ];
     }
 
@@ -358,39 +356,39 @@ ORDER BY a.date DESC, a.time DESC';
             }
 
             return $sendResult;
-        } else {
-
-            //combined
-            $quarantine_list = [];
-            $quarantined = [];
-
-            foreach ($filters as $filter) {
-                if ($type === 'D') {
-                    $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
-                    $list_for = $filter_domain;
-                } else {
-                    $filter_domain = $to_domain;
-                    $list_for = $filter;
-                }
-
-                $quarantine_list[] = $list_for;
-                self::dbg(" ==== Building list for $list_for");
-                $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
-
-                self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
-                if (count($tmp_quarantined) > 0) {
-                    $quarantined[] = $tmp_quarantined;
-                }
-            }
-            $quarantined = array_merge(...$quarantined);
-            if (count($quarantined) > 0) {
-                $list = implode(', ', $quarantine_list);
-                return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
-            }
-            unset($quarantined, $quarantine_list);
-
-            return false;
         }
+
+        //combined
+        $quarantine_list = [];
+        $quarantined = [];
+
+        foreach ($filters as $filter) {
+            if ($type === 'D') {
+                $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
+                $list_for = $filter_domain;
+            } else {
+                $filter_domain = $to_domain;
+                $list_for = $filter;
+            }
+
+            $quarantine_list[] = $list_for;
+            self::dbg(" ==== Building list for $list_for");
+            $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
+
+            self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
+            if (count($tmp_quarantined) > 0) {
+                $quarantined[] = $tmp_quarantined;
+            }
+        }
+        $quarantined = array_merge(...$quarantined);
+        if (count($quarantined) > 0) {
+            $list = implode(', ', $quarantine_list);
+
+            return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
+        }
+        unset($quarantined, $quarantine_list);
+
+        return false;
     }
 
     /**
@@ -443,7 +441,7 @@ ORDER BY a.date DESC, a.time DESC';
                     'subject' => \MailWatch\Format::trim_output($row->subject, SUBJECT_MAXLEN),
                     'reason' => trim($row->reason),
                     'timestamp' => trim($row->timestamp),
-                    'token' => trim($row->token)
+                    'token' => trim($row->token),
                 ];
             }
         }
@@ -483,7 +481,7 @@ ORDER BY a.date DESC, a.time DESC';
             self::dbg(' === Error checking if msg_id already exists.....skipping....');
         } else {
             if ($result->num_rows === 0) {
-                return false;//msg_id not found,
+                return false; //msg_id not found,
             }
 
             if ($result->num_rows === 1) {
@@ -504,7 +502,7 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $email
      * @param string $filter
      * @param array $quarantined
-     * @return boolean true if mail was send; false if error occured
+     * @return bool true if mail was send; false if error occured
      */
     private static function send_quarantine_email($email, $filter, $quarantined)
     {

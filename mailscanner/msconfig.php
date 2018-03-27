@@ -64,7 +64,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
 
         // Change newline charactors to <br />
-        $value = nl2br(str_replace("\\n", "\n", $value));
+        $value = nl2br(str_replace('\\n', "\n", $value));
 
         // change <br /> to <br> to keep with html 4.01 and above
         $value = preg_replace("/<br \/>/i", '<br>', $value);

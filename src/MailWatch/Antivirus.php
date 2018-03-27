@@ -46,7 +46,6 @@ class Antivirus
     }
 
     /**
-     *
      * For reporting of Virus names and statistics a regular expression matching
      * the output of your virus scanner is required.  As Virus names vary across
      * the vendors and are therefore impossible to match - you can only define one
@@ -144,6 +143,7 @@ class Antivirus
                 // die("<B>" . \MailWatch\Translation::__('dieerror03') . "</B><BR>\n&nbsp;" . \MailWatch\Translation::__('diescanner03' . "\n");
                 // break;
             }
+
             return $regex;
         }
 
@@ -175,8 +175,8 @@ class Antivirus
 
     /**
      * @param string $report virus report message
-     * @return string|null
      * @throws \RuntimeException
+     * @return string|null
      */
     public static function getVirus($report)
     {
@@ -199,6 +199,7 @@ class Antivirus
         if (isset($match[2]) && count($match) > 2) {
             return $match[2];
         }
+
         return $report;
     }
 
@@ -219,8 +220,8 @@ class Antivirus
     }
 
     /**
-     * @return string
      * @throws \RuntimeException
+     * @return string
      */
     public static function return_todays_top_virus()
     {
@@ -273,6 +274,7 @@ AND
             // and ... others
             $topvirus .= sprintf(' ' . Translation::__('moretopviruses03'), $count - 1);
         }
+
         return $topvirus;
     }
 }

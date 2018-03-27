@@ -61,7 +61,7 @@ while (!feof($fh)) {
         $regs[1] = safe_value($regs[1]);
         $regs[2] = safe_value($regs[2]);
         dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
-        dbg("\t\tinsert: ".$regs[1]. ', ' .$regs[2]);
+        dbg("\t\tinsert: " . $regs[1] . ', ' . $regs[2]);
     } else {
         dbg("$line - did not match regexp, not inserting into database");
     }

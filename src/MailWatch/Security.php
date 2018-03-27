@@ -86,9 +86,9 @@ class Security
     }
 
     /**
-     * @param integer $length
-     * @return bool|string
+     * @param int $length
      * @throws \Exception
+     * @return bool|string
      */
     public static function get_random_string($length)
     {
@@ -96,8 +96,8 @@ class Security
     }
 
     /**
-     * @return bool|string
      * @throws \Exception
+     * @return bool|string
      */
     public static function generateToken()
     {

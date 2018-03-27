@@ -31,7 +31,7 @@ class Translation
 {
     /**
      * @param string $string
-     * @param boolean $useSystemLang
+     * @param bool $useSystemLang
      * @return string
      */
     public static function __($string, $useSystemLang = false)

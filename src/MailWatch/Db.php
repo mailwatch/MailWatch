@@ -91,6 +91,7 @@ class Db
                 die($output);
             }
         }
+
         return self::$link;
     }
 
@@ -104,6 +105,7 @@ class Db
             $result = self::$link->close();
             self::$link = null;
         }
+
         return $result;
     }
 
@@ -123,6 +125,7 @@ class Db
                 return $resrow[$col];
             }
         }
+
         return false;
     }
 

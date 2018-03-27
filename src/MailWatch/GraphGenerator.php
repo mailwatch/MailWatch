@@ -42,13 +42,11 @@ class GraphGenerator
     private $data = [];
     private $numResult;
 
-
     public function __construct()
     {
     }
 
     /**
-     * @return void
      * @throws \Exception
      */
     public function printPieGraph()
@@ -59,6 +57,7 @@ class GraphGenerator
         $this->runConversions();
         if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
             echo Translation::__('nodata64');
+
             return;
         }
 
@@ -85,13 +84,13 @@ class GraphGenerator
     /**
      * Generates a line/bar graph
      *
-     * @return void
      * @throws \Exception
      */
     public function printLineGraph()
     {
         if ($this->types === null) {
-            echo('No types defined');
+            echo 'No types defined';
+
             return;
         }
 
@@ -160,7 +159,6 @@ class GraphGenerator
     /**
      * Executes the conversion defined by $this->valueConversion
      *
-     * @return void
      * @throws \Exception
      */
     protected function runConversions()
@@ -192,7 +190,7 @@ class GraphGenerator
     /**
      * Gets the data for $this->sqlQuery from db and stores it in $this->data
      *
-     * @return boolean true on success, false on error
+     * @return bool true on success, false on error
      */
     protected function prepareData()
     {
@@ -201,6 +199,7 @@ class GraphGenerator
         $this->numResult = $result->num_rows;
         if ($this->numResult <= 0 && (!isset($this->settings['ignoreEmptyResult']) || $this->settings['ignoreEmptyResult'] === false)) {
             echo Translation::__('diemysql99') . "\n";
+
             return false;
         }
         //store data in format $data[columnname][rowid]
@@ -209,6 +208,7 @@ class GraphGenerator
                 $this->data[$columnName][] = $row[$columnName];
             }
         }
+
         return true;
     }
 
@@ -216,7 +216,6 @@ class GraphGenerator
      * Converts the data from $this->data[$column] to numbers
      *
      * @param string $column the data column that shall be converted
-     * @return void
      */
     protected function convertNumber($column)
     {
@@ -232,7 +231,6 @@ class GraphGenerator
      * Converts the data from $this->data[$column] so that so that it is scaled in kB, MB, GB etc
      *
      * @param string $column the data column that shall be converted
-     * @return void
      */
     protected function convertScale($column)
     {
@@ -249,7 +247,6 @@ class GraphGenerator
      * Converts the data (ip address) from $this->data[$column] so that the hostname and geoip lookup are generated in $this->data['hostname'] and $this->data['geoip']
      *
      * @param string $column the data column that shall be converted
-     * @return void
      */
     protected function convertHostnameGeoip($column)
     {
@@ -274,7 +271,6 @@ class GraphGenerator
      * Converts the data from $this->data[$column] so that virus names and counter are inserted in $this->data['virusname'] and $this->data['viruscount']
      *
      * @param string $column the data column that shall be converted
-     * @return void
      */
     protected function convertViruses($column)
     {
@@ -378,8 +374,6 @@ class GraphGenerator
 
     /**
      * Prints a html table with the columns defined by $this->tableColumns using the data in $this->data if $this->printTable is true
-     *
-     * @return void
      */
     public function printTable()
     {

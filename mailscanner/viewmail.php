@@ -89,16 +89,16 @@ if (RPC_ONLY || !is_local($message->hostname)) {
     $quarantine_dir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
     $filename = '';
     switch (true) {
-        case (file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id):
             $filename = $date . '/nonspam/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $date . '/spam/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $date . '/spam/' . $message_id):
             $filename = $date . '/spam/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $date . '/mcp/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $date . '/mcp/' . $message_id):
             $filename = $date . '/mcp/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $date . '/' . $message_id . '/message')):
+        case file_exists($quarantine_dir . '/' . $date . '/' . $message_id . '/message'):
             $filename = $date . '/' . $message_id . '/message';
             break;
     }
@@ -195,7 +195,7 @@ foreach ($mime_struct as $key => $part) {
     $type = isset($part->ctype_primary) ? $part->ctype_primary : 'undefined';
     $type .= '/';
     $type .= isset($part->ctype_secondary) ? $part->ctype_secondary : 'undefined';
-    
+
     echo ' <tr>' . "\n";
     echo '  <td colspan=2 class="heading">' . \MailWatch\Translation::__('mymetype06') . ' ' . $type . '</td>' . "\n";
 
@@ -204,7 +204,7 @@ foreach ($mime_struct as $key => $part) {
         case 'text/html':
             echo ' <tr>' . "\n";
             echo '  <td colspan="2">' . "\n";
-            echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?token=' . $_SESSION['token'] .'&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
+            echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
             echo '  </td>' . "\n";
             echo ' </tr>' . "\n";
             break;

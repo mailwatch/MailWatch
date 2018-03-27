@@ -75,16 +75,16 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
     $quarantine_dir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
     $filename = '';
     switch (true) {
-        case (file_exists($quarantine_dir . '/' . $message_data->date . '/nonspam/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $message_data->date . '/nonspam/' . $message_id):
             $filename = $message_data->date . '/nonspam/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $message_data->date . '/spam/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $message_data->date . '/spam/' . $message_id):
             $filename = $message_data->date . '/spam/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $message_data->date . '/mcp/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $message_data->date . '/mcp/' . $message_id):
             $filename = $message_data->date . '/mcp/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $message_data->date . '/' . $message_id . '/message')):
+        case file_exists($quarantine_dir . '/' . $message_data->date . '/' . $message_id . '/message'):
             $filename = $message_data->date . '/' . $message_id . '/message';
             break;
     }

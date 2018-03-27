@@ -49,7 +49,7 @@ if (!isset($_GET['dir'])) {
             echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . \MailWatch\Format::translateQuarantineDate(
                     $date,
                     DATE_FORMAT
-                ) .  '</a></td>' . "\n";
+                ) . '</a></td>' . "\n";
             echo '<td align="left">' . $rowstr . '</a></td></tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -91,7 +91,7 @@ if (!isset($_GET['dir'])) {
     if (isset($_GET['pageID']) && !\MailWatch\Sanitize::validateInput(\MailWatch\Sanitize::deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
         die(\MailWatch\Translation::__('dievalidate99'));
     }
-    
+
     if (QUARANTINE_USE_FLAG) {
         \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $date = \MailWatch\Format::translateQuarantineDate($dir, 'sql');
@@ -152,7 +152,7 @@ ORDER BY
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
             $msg_ids = implode($items, ',');
-            $date =  \MailWatch\Sanitize::safe_value(\MailWatch\Format::translateQuarantineDate($dir, 'sql'));
+            $date = \MailWatch\Sanitize::safe_value(\MailWatch\Format::translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
    id AS id2,

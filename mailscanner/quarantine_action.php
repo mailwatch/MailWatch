@@ -57,13 +57,13 @@ function simple_html_result($status)
             <td valign="middle" align="center">
                 <table border=0>
                     <tr>
-                        <th><?php echo \MailWatch\Translation::__('result57') ?></th>
+                        <th><?php echo \MailWatch\Translation::__('result57'); ?></th>
                     </tr>
                     <tr>
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="javascript:window.close()"><?php echo \MailWatch\Translation::__('closewindow57') ?></a></td>
+                        <td align="center"><b><a href="javascript:window.close()"><?php echo \MailWatch\Translation::__('closewindow57'); ?></a></td>
                     </tr>
                 </table>
             </td>
@@ -113,7 +113,6 @@ switch ($_GET['action']) {
             simple_html_end();
         }
         break;
-
     case 'delete':
         if (false === \MailWatch\Security::checkToken($_GET['token'])) {
             die(\MailWatch\Translation::__('dietoken99'));
@@ -128,13 +127,13 @@ switch ($_GET['action']) {
                         <td align="center" valign="middle">
                             <table>
                                 <tr>
-                                    <th><?php echo \MailWatch\Translation::__('delete57') ?></th>
+                                    <th><?php echo \MailWatch\Translation::__('delete57'); ?></th>
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo \MailWatch\Translation::__('yes57') ?></a>
+                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo \MailWatch\Translation::__('yes57'); ?></a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo \MailWatch\Translation::__('no57') ?></a>
+                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo \MailWatch\Translation::__('no57'); ?></a>
                                     </td>
                                 </tr>
                             </table>
@@ -162,10 +161,8 @@ switch ($_GET['action']) {
             }
         }
         break;
-
     case 'learn':
         break;
-
     default:
         die(\MailWatch\Translation::__('dieuaction57') . ' ' . \MailWatch\Sanitize::sanitizeInput($_GET['action']));
 }

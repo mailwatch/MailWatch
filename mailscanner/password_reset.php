@@ -322,7 +322,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 } ?>
 
                             </fieldset>
-                            <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?>">
+                            <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
                         </form>
                         <?php
             } elseif ($message !== '') {

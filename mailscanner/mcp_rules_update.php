@@ -67,8 +67,8 @@ if ($_SESSION['user_type'] !== 'A') {
             \MailWatch\Debug::debug('line: ' . $line . "\n");
             preg_match("/^describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1], $regs[2])) {
-                $regs[1] =  \MailWatch\Sanitize::safe_value(ltrim(rtrim($regs[1])));
-                $regs[2] =  \MailWatch\Sanitize::safe_value(ltrim(rtrim($regs[2])));
+                $regs[1] = \MailWatch\Sanitize::safe_value(ltrim(rtrim($regs[1])));
+                $regs[2] = \MailWatch\Sanitize::safe_value(ltrim(rtrim($regs[2])));
                 echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . '</td></tr>' . "\n";
                 \MailWatch\Db::query("REPLACE INTO mcp_rules VALUES ('$regs[1]','$regs[2]')");
                 //\MailWatch\Debug::debug("\t\tinsert: ".$regs[1].", ".$regs[2]);

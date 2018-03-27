@@ -59,14 +59,14 @@ if ($_SESSION['user_type'] === 'A') {
         echo '<li><a href="f-prot_status.php">' . \MailWatch\Translation::__('avfprotstatus10') . '</a>';
     }
 
-    echo '<li><a href="mysql_status.php">'.\MailWatch\Translation::__('mysqldatabasestatus10').'</a>';
+    echo '<li><a href="mysql_status.php">' . \MailWatch\Translation::__('mysqldatabasestatus10') . '</a>';
     echo '<li><a href="msconfig.php">' . \MailWatch\Translation::__('viewconfms10') . '</a>';
     if (defined('MSRE') && MSRE === true) {
         echo '<li><a href="msre_index.php">' . \MailWatch\Translation::__('editmsrules10') . '</a>';
     }
     if (!DISTRIBUTED_SETUP && \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin') === true) {
         echo '
-     <li><a href="bayes_info.php">'.\MailWatch\Translation::__('spamassassinbayesdatabaseinfo10').'</a>
+     <li><a href="bayes_info.php">' . \MailWatch\Translation::__('spamassassinbayesdatabaseinfo10') . '</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
      <li><a href="sa_rules_update.php">' . \MailWatch\Translation::__('updatesadesc10') . '</a>';

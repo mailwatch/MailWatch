@@ -258,6 +258,7 @@ class Sanitize
             default:
                 return false;
         }
+
         return false;
     }
 }

@@ -29,7 +29,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
@@ -59,21 +58,21 @@ $graphgenerator->sqlQuery = '
 $graphgenerator->tableColumns = [
     'name' => \MailWatch\Translation::__('domain41'),
     'countconv' => \MailWatch\Translation::__('count03'),
-    'sizeconv' => \MailWatch\Translation::__('size03')
+    'sizeconv' => \MailWatch\Translation::__('size03'),
 ];
 $graphgenerator->sqlColumns = [
     'name',
     'count',
-    'size'
+    'size',
 ];
 $graphgenerator->valueConversion = [
     'size' => 'scale',
-    'count' => 'number'
+    'count' => 'number',
 ];
 $graphgenerator->graphColumns = [
     'labelColumn' => 'name',
     'dataNumericColumn' => 'size',
-    'dataFormattedColumn' => 'sizeconv'
+    'dataFormattedColumn' => 'sizeconv',
 ];
 $graphgenerator->graphTitle = \MailWatch\Translation::__('top10recipdomvol41');
 $graphgenerator->printPieGraph();

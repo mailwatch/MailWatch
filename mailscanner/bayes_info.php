@@ -83,48 +83,41 @@ while (!feof($fh)) {
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
-
             case 'nham':
                 echo '<tr><td class="heading">' . \MailWatch\Translation::__('nbrhammessage18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
-
             case 'ntokens':
                 echo '<tr><td class="heading">' . \MailWatch\Translation::__('nbrtoken18') . '</td><td align="right">' . number_format(
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
-
             case 'oldest atime':
                 echo '<tr><td class="heading">' . \MailWatch\Translation::__('oldesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
-
             case 'newest atime':
                 echo '<tr><td class="heading">' . \MailWatch\Translation::__('newesttoken18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
-
             case 'last journal sync atime':
                 echo '<tr><td class="heading">' . \MailWatch\Translation::__('lastjournalsync18') . '</td><td align="right">' . date(
                         'r',
                         $regs[3]
                     ) . '</td></tr>' . "\n";
                 break;
-
             case 'last expiry atime':
                 echo '<tr><td class="heading">' . \MailWatch\Translation::__('lastexpiry18') . '</td><td align="right">' . date('r', $regs[3]) . '</td></tr>' . "\n";
                 break;
-
             case 'last expire reduction count':
                 echo '<tr><td class="heading">' . \MailWatch\Translation::__('lastexpirycount18') . '</td><td align="right">' . number_format(
                         $regs[3]
-                    ) . ' ' . \MailWatch\Translation::__('tokens18') .'</td></tr>' . "\n";
+                    ) . ' ' . \MailWatch\Translation::__('tokens18') . '</td></tr>' . "\n";
                 break;
         }
     }

@@ -35,14 +35,14 @@ class GeoIp
 {
     public $download = [
         'database' => 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz',
-        'md5' => 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz.md5'
+        'md5' => 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz.md5',
     ];
 
     public static $savePath = [
         'database' => __DIR__ . '/../../data/geoipdb/GeoLite2-Country.tar.gz',
         'md5' => __DIR__ . '/../../data/geoipdb/GeoLite2-Country.tar.gz.md5',
         'extractTo' => __DIR__ . '/../../data/geoipdb/',
-        'mmdbFile' => __DIR__ . '/../../data/geoipdb/GeoLite2-Country.mmdb'
+        'mmdbFile' => __DIR__ . '/../../data/geoipdb/GeoLite2-Country.mmdb',
     ];
 
     /**
@@ -61,6 +61,7 @@ class GeoIp
                 if (isset($countryData['country']['names'][LANG])) {
                     return $countryData['country']['names'][LANG];
                 }
+
                 return $countryData['country']['names']['en'];
             } catch (InvalidDatabaseException $e) {
                 return false;
@@ -68,6 +69,7 @@ class GeoIp
                 return false;
             }
         }
+
         return false;
     }
 
@@ -84,7 +86,7 @@ class GeoIp
             'timeout' => 2.0,
             'headers' => [
                 'User-Agent' => 'MailWatch/' . mailwatch_version(),
-            ]
+            ],
         ];
 
         if (false !== $useProxy) {

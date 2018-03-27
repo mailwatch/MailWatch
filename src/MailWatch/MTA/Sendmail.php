@@ -44,6 +44,7 @@ class Sendmail
                 $sender = str_replace(['<', '>', '"'], '', $match_email[0]);
             }
         }
+
         return $sender;
     }
 

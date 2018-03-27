@@ -62,7 +62,7 @@ if ($_SESSION['user_type'] !== 'A') {
         // Display it in a sorted table with links
         asort($ruleset_file);
         foreach ($ruleset_file as $this_ruleset_file) {
-            TR(['<a href="msre_edit.php?token=' . $_SESSION['token'] .'&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>']);
+            TR(['<a href="msre_edit.php?token=' . $_SESSION['token'] . '&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>']);
         }
         // Put a blank header line on the bottom. It just looks nicer that way to me.
         TRH(['']);

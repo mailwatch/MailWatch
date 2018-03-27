@@ -29,7 +29,6 @@
 
 require_once __DIR__ . '/functions.php';
 
-
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
@@ -85,22 +84,22 @@ $graphgenerator->graphColumns = [
     ],
     'dataNumericColumns' => [
         ['total_mailconv', 'total_virusconv', 'total_spamconv'],
-        ['total_sizeconv']
+        ['total_sizeconv'],
     ],
     'dataFormattedColumns' => [
         ['total_mailconv', 'total_virusconv', 'total_spamconv'],
-        ['total_sizeconvconv']
+        ['total_sizeconvconv'],
     ],
     'xAxeDescription' => \MailWatch\Translation::__('hours36'),
     'yAxeDescriptions' => [
         \MailWatch\Translation::__('nomessages36'),
-        \MailWatch\Translation::__('volume36')
+        \MailWatch\Translation::__('volume36'),
     ],
-    'fillBelowLine' => ['false', 'true']
+    'fillBelowLine' => ['false', 'true'],
 ];
 $graphgenerator->types = [
     ['bar', 'bar', 'bar'],
-    ['line']
+    ['line'],
 ];
 $graphgenerator->graphTitle = \MailWatch\Translation::__('totalmaillasthours36');
 $graphgenerator->settings['timeInterval'] = 'P1D';

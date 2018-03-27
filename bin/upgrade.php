@@ -55,9 +55,8 @@ $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 $mysql_utf8_variant = [
     'utf8' => ['charset' => 'utf8', 'collation' => 'utf8_unicode_ci'],
-    'utf8mb4' => ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci']
+    'utf8mb4' => ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci'],
 ];
-
 
 /*****************************************************************
  * Start helper functions
@@ -103,7 +102,7 @@ function check_table_exists($table)
     global $link;
     $sql = 'SHOW TABLES LIKE "' . $table . '"';
 
-    return ($link->query($sql)->num_rows > 0);
+    return $link->query($sql)->num_rows > 0;
 }
 
 /**
@@ -116,7 +115,7 @@ function check_column_exists($table, $column)
     global $link;
     $sql = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $column . '"';
 
-    return ($link->query($sql)->num_rows > 0);
+    return $link->query($sql)->num_rows > 0;
 }
 
 /**
@@ -177,10 +176,9 @@ function check_utf8_table($db, $table, $utf8variant = 'utf8')
     $table_charset = \MailWatch\Db::mysqli_result($result, 0, 0);
     $table_collation = \MailWatch\Db::mysqli_result($result, 0, 1);
 
-    return (
+    return
         strtolower($table_charset) === $mysql_utf8_variant[$utf8variant]['charset'] &&
-        strtolower($table_collation) === $mysql_utf8_variant[$utf8variant]['collation']
-    );
+        strtolower($table_collation) === $mysql_utf8_variant[$utf8variant]['collation'];
 }
 
 /**
@@ -833,36 +831,36 @@ if ($link) {
             'maillog_datetime_idx' => [
                 'fields' => '(`date`,`time`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
+                'minMysqlVersion' => '50100',
             ],
             'maillog_id_idx' => ['fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
             'maillog_clientip_idx' => [
                 'fields' => '(`clientip`(20))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
+                'minMysqlVersion' => '50100',
             ],
             'maillog_from_idx' => [
                 'fields' => '(`from_address`(191))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
+                'minMysqlVersion' => '50100',
             ],
             'maillog_to_idx' => ['fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
             'maillog_host' => ['fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
             'from_domain_idx' => [
                 'fields' => '(`from_domain`(50))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
+                'minMysqlVersion' => '50100',
             ],
             'to_domain_idx' => ['fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
             'maillog_quarantined' => [
                 'fields' => '(`quarantined`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
+                'minMysqlVersion' => '50100',
             ],
             'timestamp_idx' => ['fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
             // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
             'subject_idx' => ['fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'],
-        ]
+        ],
     ];
 
     foreach ($indexes as $table => $indexlist) {
@@ -927,7 +925,7 @@ if (!is_file(MS_CONFIG_DIR . 'MailScanner.conf')) {
         'IncludeScoresInSpamAssassinReport' => 'yes',
         'SpamActions' => 'store',
         'HighScoringSpamActions' => 'store',
-        'AlwaysLookedUpLast' => '&MailWatchLogging'
+        'AlwaysLookedUpLast' => '&MailWatchLogging',
     ];
 
     foreach ($check_settings as $setting => $value) {

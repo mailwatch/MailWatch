@@ -45,11 +45,11 @@ class PostfixLogProcessor extends MtaLogProcessor
         $rejectReasons = [];
         if (false !== stripos($this->entry, 'NOQUEUE')) {
             if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
-                $rejectReasons['type'] =  Sanitize::safe_value('unknown_hostname');
+                $rejectReasons['type'] = Sanitize::safe_value('unknown_hostname');
             } else {
-                $rejectReasons['type'] =  Sanitize::safe_value('NOQUEUE');
+                $rejectReasons['type'] = Sanitize::safe_value('NOQUEUE');
             }
-            $rejectReasons['status'] =  Sanitize::safe_value($this->raw);
+            $rejectReasons['status'] = Sanitize::safe_value($this->raw);
         }
 
         return $rejectReasons;
