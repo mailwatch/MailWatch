@@ -146,7 +146,7 @@ function get_disks()
     $disks = [];
     if (PHP_OS === 'Windows NT') {
         // windows
-        $disks = `fsutil fsinfo drives`;
+        $disks = shell_exec('fsutil fsinfo drives');
         $disks = str_word_count($disks, 1);
         //TODO: won't work on non english installation, we need to find an universal command
         if ($disks[0] !== 'Drives') {
@@ -179,7 +179,7 @@ function get_disks()
             }
         } else {
             // fallback to mount command
-            $data = `mount`;
+            $data = shell_exec('mount');
             $data = explode("\n", $data);
             foreach ($data as $disk) {
                 $drive = preg_split("/[\s]+/", $disk);
