@@ -36,11 +36,11 @@ class SpamAssassin
     public static function autolearn($spamreport)
     {
         if (preg_match('/autolearn=spam/', $spamreport) === 1) {
-            return \MailWatch\Translation::__('saspam03');
+            return Translation::__('saspam03');
         }
 
         if (preg_match('/autolearn=not spam/', $spamreport) === 1) {
-            return \MailWatch\Translation::__('sanotspam03');
+            return Translation::__('sanotspam03');
         }
 
         return false;
@@ -58,7 +58,7 @@ class SpamAssassin
             $rule = $regs[1];
             $rule_score = $regs[2];
         }
-        $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
+        $result = Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
         $row = $result->fetch_object();
         if ($row && $row->rule && $row->rule_desc) {
             return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
@@ -73,7 +73,7 @@ class SpamAssassin
      */
     public static function return_rule_desc($rule)
     {
-        $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
+        $result = Db::query("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
         $row = $result->fetch_object();
         if ($row) {
             return htmlentities($row->rule_desc);
@@ -132,7 +132,7 @@ class SpamAssassin
 
             // Return the result as an html formatted string
             if (count($output_array) > 0) {
-                return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . \MailWatch\Translation::__('score03') . '</th><th>' . \MailWatch\Translation::__('matrule03') . '</th><th>' . \MailWatch\Translation::__('description03') . '</th></tr>' . implode(
+                return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . Translation::__('score03') . '</th><th>' . Translation::__('matrule03') . '</th><th>' . Translation::__('description03') . '</th></tr>' . implode(
                         "\n",
                         $output_array
                     ) . '</table>' . "\n";

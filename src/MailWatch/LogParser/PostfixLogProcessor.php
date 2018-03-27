@@ -27,6 +27,8 @@
 
 namespace MailWatch\LogParser;
 
+use MailWatch\Sanitize;
+
 class PostfixLogProcessor extends MtaLogProcessor
 {
     public function __construct()
@@ -43,11 +45,11 @@ class PostfixLogProcessor extends MtaLogProcessor
         $rejectReasons = [];
         if (false !== stripos($this->entry, 'NOQUEUE')) {
             if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
-                $rejectReasons['type'] =  \MailWatch\Sanitize::safe_value('unknown_hostname');
+                $rejectReasons['type'] =  Sanitize::safe_value('unknown_hostname');
             } else {
-                $rejectReasons['type'] =  \MailWatch\Sanitize::safe_value('NOQUEUE');
+                $rejectReasons['type'] =  Sanitize::safe_value('NOQUEUE');
             }
-            $rejectReasons['status'] =  \MailWatch\Sanitize::safe_value($this->raw);
+            $rejectReasons['status'] =  Sanitize::safe_value($this->raw);
         }
 
         return $rejectReasons;

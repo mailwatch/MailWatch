@@ -58,7 +58,7 @@ class GraphGenerator
         }
         $this->runConversions();
         if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
-            echo \MailWatch\Translation::__('nodata64');
+            echo Translation::__('nodata64');
             return;
         }
 
@@ -68,7 +68,7 @@ class GraphGenerator
       <script src="../../mailscanner/js/Chart.js/Chart.min.js"></script>
       <script src="../../mailscanner/js/pieConfig.js"></script>
       <script>
-        COLON = "' . \MailWatch\Translation::__('colon99') . '";
+        COLON = "' . Translation::__('colon99') . '";
         printPieGraph("' . $chartId . '", {
           chartTitle :  "' . $this->graphTitle . '",
           chartId : "' . $chartId . '",
@@ -134,7 +134,7 @@ class GraphGenerator
       <script src="js/Chart.js/Chart.bundle.min.js"></script>
       <script src="js/lineConfig.js"></script>
       <script>
-        COLON = "' . \MailWatch\Translation::__('colon99') . '";
+        COLON = "' . Translation::__('colon99') . '";
         printLineGraph("' . $chartId . '",  {
           chartTitle : "' . $this->graphTitle . '",
           chartId : "' . $chartId . '",
@@ -196,11 +196,11 @@ class GraphGenerator
      */
     protected function prepareData()
     {
-        $result = \MailWatch\Db::query($this->sqlQuery);
+        $result = Db::query($this->sqlQuery);
         $this->data = [];
         $this->numResult = $result->num_rows;
         if ($this->numResult <= 0 && (!isset($this->settings['ignoreEmptyResult']) || $this->settings['ignoreEmptyResult'] === false)) {
-            echo \MailWatch\Translation::__('diemysql99') . "\n";
+            echo Translation::__('diemysql99') . "\n";
             return false;
         }
         //store data in format $data[columnname][rowid]
@@ -238,10 +238,10 @@ class GraphGenerator
     {
         // Work out best size
         $this->data[$column . 'conv'] = $this->data[$column];
-        \MailWatch\Format::format_report_volume($this->data[$column . 'conv'], $size_info);
+        Format::format_report_volume($this->data[$column . 'conv'], $size_info);
         $scale = $size_info['formula'];
         foreach ($this->data[$column . 'conv'] as $key => $val) {
-            $this->data[$column . 'conv'][$key] = \MailWatch\Format::formatSize($val * $scale);
+            $this->data[$column . 'conv'][$key] = Format::formatSize($val * $scale);
         }
     }
 
@@ -258,14 +258,14 @@ class GraphGenerator
         foreach ($this->data[$column] as $ipval) {
             $hostname = gethostbyaddr($ipval);
             if ($hostname === $ipval) {
-                $this->data['hostname'][] = \MailWatch\Translation::__('hostfailed64');
+                $this->data['hostname'][] = Translation::__('hostfailed64');
             } else {
                 $this->data['hostname'][] = $hostname;
             }
             if ($geoip = GeoIp::getCountry($ipval)) {
                 $this->data['geoip'][] = $geoip;
             } else {
-                $this->data['geoip'][] = \MailWatch\Translation::__('geoipfailed64');
+                $this->data['geoip'][] = Translation::__('geoipfailed64');
             }
         }
     }
@@ -280,7 +280,7 @@ class GraphGenerator
     {
         $viruses = [];
         foreach ($this->data[$column] as $report) {
-            $virus = \MailWatch\Antivirus::getVirus($report);
+            $virus = Antivirus::getVirus($report);
             if ($virus !== null) {
                 if (isset($viruses[$virus])) {
                     $viruses[$virus]++;

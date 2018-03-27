@@ -28,6 +28,8 @@
 namespace MailWatch\LogParser;
 
 use MailWatch\Db;
+use MailWatch\Sanitize;
+use MailWatch\Translation;
 
 abstract class MtaLogProcessor
 {
@@ -66,7 +68,7 @@ abstract class MtaLogProcessor
     {
         global $fp;//@todo do we need this?
         if (!$fp = popen($input, 'r')) {
-            die(\MailWatch\Translation::__('diepipe56'));
+            die(Translation::__('diepipe56'));
         }
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
@@ -76,8 +78,8 @@ abstract class MtaLogProcessor
             unset($parsed, $_timestamp, $_host, $_type, $_msg_id, $_status);
 
             $parsed = new SyslogParser($line);
-            $_timestamp =  \MailWatch\Sanitize::safe_value($parsed->timestamp);
-            $_host =  \MailWatch\Sanitize::safe_value($parsed->host);
+            $_timestamp =  Sanitize::safe_value($parsed->timestamp);
+            $_host =  Sanitize::safe_value($parsed->host);
             $_dsn = '';
             $_delay = '';
             $_relay = '';
@@ -90,7 +92,7 @@ abstract class MtaLogProcessor
                     print_r($this);
                 }
 
-                $_msg_id =  \MailWatch\Sanitize::safe_value($this->id);
+                $_msg_id =  Sanitize::safe_value($this->id);
 
                 //apply rulesets if they exist
                 $rulesets = $this->getRulesets();
@@ -110,15 +112,15 @@ abstract class MtaLogProcessor
                         $this->entries['reject']
                     )
                 ) {
-                    $_type =  \MailWatch\Sanitize::safe_value('unknown_user');
-                    $_status =  \MailWatch\Sanitize::safe_value($this->getEmail($this->entries['to']));
+                    $_type =  Sanitize::safe_value('unknown_user');
+                    $_status =  Sanitize::safe_value($this->getEmail($this->entries['to']));
                 }
 
                 // Unknown users
                 if (preg_match('/user unknown/i', $this->entry)) {
                     // Unknown users
-                    $_type =  \MailWatch\Sanitize::safe_value('unknown_user');
-                    $_status =  \MailWatch\Sanitize::safe_value($this->raw);
+                    $_type =  Sanitize::safe_value('unknown_user');
+                    $_status =  Sanitize::safe_value($this->raw);
                 }
 
                 //apply reject reasons if they exist
@@ -132,15 +134,15 @@ abstract class MtaLogProcessor
 
                 // Relay lines
                 if (isset($this->entries['relay'], $this->entries[$this->statusField])) {
-                    $_type =  \MailWatch\Sanitize::safe_value('relay');
-                    $_delay =  \MailWatch\Sanitize::safe_value($this->entries[$this->delayField]);
-                    $_relay =  \MailWatch\Sanitize::safe_value($this->getIp());
-                    $_dsn =  \MailWatch\Sanitize::safe_value($this->entries['dsn']);
-                    $_status =  \MailWatch\Sanitize::safe_value($this->entries[$this->statusField]);
+                    $_type =  Sanitize::safe_value('relay');
+                    $_delay =  Sanitize::safe_value($this->entries[$this->delayField]);
+                    $_relay =  Sanitize::safe_value($this->getIp());
+                    $_dsn =  Sanitize::safe_value($this->entries['dsn']);
+                    $_status =  Sanitize::safe_value($this->entries[$this->statusField]);
                 }
             }
             if (isset($_type)) {
-                \MailWatch\Db::query(
+                Db::query(
                     "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
                 );
             }

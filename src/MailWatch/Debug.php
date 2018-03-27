@@ -59,7 +59,7 @@ class Debug
             echo "\n-->\n\n";
             $result->free_result();
         } else {
-            die(\MailWatch\Translation::__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
+            die(Translation::__('diedbquery03') . '(' . $link->connect_errno . ' ' . $link->connect_error . ')');
         }
     }
 

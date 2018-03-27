@@ -27,6 +27,8 @@
 
 namespace MailWatch;
 
+use ForceUTF8\Encoding;
+
 class Quarantine
 {
     /**
@@ -91,7 +93,7 @@ SELECT
         $sth = Db::query($sql);
         $rows = $sth->num_rows;
         if ($rows <= 0) {
-            die(\MailWatch\Translation::__('diequarantine103') . " $msgid " . \MailWatch\Translation::__('diequarantine103') . "\n");
+            die(Translation::__('diequarantine103') . " $msgid " . Translation::__('diequarantine103') . "\n");
         }
         $row = $sth->fetch_object();
         if (!$rpc_only && is_local($row->hostname)) {
@@ -123,7 +125,7 @@ SELECT
             }
             // Check the main quarantine
             if (is_dir($quarantine) && is_readable($quarantine)) {
-                $d = opendir($quarantine) or die(\MailWatch\Translation::__('diequarantine303') . " $quarantine\n");
+                $d = opendir($quarantine) or die(Translation::__('diequarantine303') . " $quarantine\n");
                 while (false !== ($f = readdir($d))) {
                     if ($f !== '..' && $f !== '.') {
                         $quarantined[$count]['id'] = $count;
@@ -147,7 +149,7 @@ SELECT
         }
 
         // Host is remote call quarantine_list_items by RPC
-        \MailWatch\Debug::debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
+        Debug::debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
         //if(DEBUG) { $client->setDebug(1); }
         //$parameters = array($input);
@@ -181,7 +183,7 @@ SELECT
 
         if (!$rpc_only && is_local($list[0]['host'])) {
             if (!QUARANTINE_USE_SENDMAIL) {
-                $hdrs = ['From' => MAILWATCH_FROM_ADDR, 'Subject' => \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r')];
+                $hdrs = ['From' => MAILWATCH_FROM_ADDR, 'Subject' => Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r')];
                 $mailMimeParams = [
                     'eol' => "\r\n",
                     'html_charset' => 'UTF-8',
@@ -189,7 +191,7 @@ SELECT
                     'head_charset' => 'UTF-8'
                 ];
                 $mime = new \Mail_mime($mailMimeParams);
-                $mime->setTXTBody(\ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY));
+                $mime->setTXTBody(Encoding::toUTF8(QUARANTINE_MSG_BODY));
                 // Loop through each selected file and attach them to the mail
                 foreach ($num as $key => $val) {
                     // If the message is of rfc822 type then set it as Quoted printable
@@ -208,14 +210,14 @@ SELECT
                 $m_result = $mail->send($to, $hdrs, $body);
                 if (is_a($m_result, 'PEAR_Error')) {
                     // Error
-                    $status = \MailWatch\Translation::__('releaseerror03') . ' (' . $m_result->getMessage() . ')';
+                    $status = Translation::__('releaseerror03') . ' (' . $m_result->getMessage() . ')';
                     global $error;
                     $error = true;
                 } else {
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" . Sanitize::safe_value($list[0]['msgid']) . "'";
                     Db::query($sql);
-                    $status = \MailWatch\Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                    Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
+                    $status = Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                    Security::audit_log(sprintf(Translation::__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
                 }
 
                 return $status;
@@ -231,10 +233,10 @@ SELECT
                     if ($retval === 0) {
                         $sql = "UPDATE maillog SET released = '1' WHERE id = '" . Sanitize::safe_value($list[0]['msgid']) . "'";
                         Db::query($sql);
-                        $status = \MailWatch\Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
-                        Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
+                        $status = Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
+                        Security::audit_log(sprintf(Translation::__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                     } else {
-                        $status = \MailWatch\Translation::__('releaseerrorcode03') . ' ' . $retval . ' ' . \MailWatch\Translation::__('returnedfrom03') . "\n" . implode(
+                        $status = Translation::__('releaseerrorcode03') . ' ' . $retval . ' ' . Translation::__('returnedfrom03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -348,7 +350,7 @@ SELECT
                             Debug::debug("Learner - running SQL: $sql");
                             Db::query($sql);
                         }
-                        $status[] = \MailWatch\Translation::__('spamassassin03') . ' ' . implode(', ', $output_array);
+                        $status[] = Translation::__('spamassassin03') . ' ' . implode(', ', $output_array);
                         switch ($learn_type) {
                             case '-r':
                                 $learn_type = 'spam';
@@ -358,10 +360,10 @@ SELECT
                                 break;
                         }
                         Security::audit_log(
-                            sprintf(\MailWatch\Translation::__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
+                            sprintf(Translation::__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
                         );
                     } else {
-                        $status[] = \MailWatch\Translation::__('spamerrorcode0103') . ' ' . $retval . \MailWatch\Translation::__('spamerrorcode0203') . "\n" . implode(
+                        $status[] = Translation::__('spamerrorcode0103') . ' ' . $retval . Translation::__('spamerrorcode0203') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -387,10 +389,10 @@ SELECT
                             Debug::debug("Learner - running SQL: $sql");
                             Db::query($sql);
                         }
-                        $status[] = \MailWatch\Translation::__('salearn03') . ' ' . implode(', ', $output_array);
-                        Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
+                        $status[] = Translation::__('salearn03') . ' ' . implode(', ', $output_array);
+                        Security::audit_log(sprintf(Translation::__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
                     } else {
-                        $status[] = \MailWatch\Translation::__('salearnerror03') . ' ' . $retval . ' ' . \MailWatch\Translation::__('salearnreturn03') . "\n" . implode(
+                        $status[] = Translation::__('salearnerror03') . ' ' . $retval . ' ' . Translation::__('salearnreturn03') . "\n" . implode(
                                 "\n",
                                 $output_array
                             );
@@ -467,10 +469,10 @@ SELECT
             foreach ($num as $key => $val) {
                 if (@unlink($list[$val]['path'])) {
                     $status[] = 'Delete: deleted file ' . $list[$val]['path'];
-                    \MailWatch\Db::query("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
-                    \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
+                    Db::query("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
+                    Security::audit_log(Translation::__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
                 } else {
-                    $status[] = \MailWatch\Translation::__('auditlogdelerror03') . ' ' . $list[$val]['path'];
+                    $status[] = Translation::__('auditlogdelerror03') . ' ' . $list[$val]['path'];
                     global $error;
                     $error = true;
                 }
@@ -480,7 +482,7 @@ SELECT
         }
 
         // Call by RPC
-        \MailWatch\Debug::debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
+        Debug::debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
         $list_output = [];

@@ -41,7 +41,7 @@ class Html
         if (PHP_SAPI !== 'cli') {
             if (!$cacheable) {
                 // Cache control (as per PHP website)
-                \MailWatch\Security::disableBrowserCache();
+                Security::disableBrowserCache();
             } else {
                 // calc an offset of 24 hours
                 $offset = 3600 * 48;
@@ -55,19 +55,19 @@ class Html
         }
 
         // Check for a privilege change
-        if (\MailWatch\Security::checkPrivilegeChange($_SESSION['myusername']) === true) {
+        if (Security::checkPrivilegeChange($_SESSION['myusername']) === true) {
             header('Location: logout.php?error=timeout');
             die();
         }
 
-        if (\MailWatch\Security::checkLoginExpiry($_SESSION['myusername']) === true) {
+        if (Security::checkLoginExpiry($_SESSION['myusername']) === true) {
             header('Location: logout.php?error=timeout');
             die();
         }
 
         if ($refresh === 0) {
             // User is moving about on non-refreshing pages, keep session alive
-            \MailWatch\Security::updateLoginExpiry($_SESSION['myusername']);
+            Security::updateLoginExpiry($_SESSION['myusername']);
         }
 
         echo page_creation_timer();
@@ -82,7 +82,7 @@ class Html
         //if($_SERVER['SCRIPT_FILENAME'] === $active_url){
         echo '</script>';
         if ($report) {
-            echo '<title>' . \MailWatch\Translation::__('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
+            echo '<title>' . Translation::__('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
             if (!isset($_SESSION['filter'])) {
                 $filter = new Filter();
                 $_SESSION['filter'] = $filter;
@@ -90,9 +90,9 @@ class Html
                 // Use existing filters
                 $filter = $_SESSION['filter'];
             }
-            \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlogreport03', true) . ' ' . $title);
+            Security::audit_log(Translation::__('auditlogreport03', true) . ' ' . $title);
         } else {
-            echo '<title>' . \MailWatch\Translation::__('mwforms03') . $title . '</title>' . "\n";
+            echo '<title>' . Translation::__('mwforms03') . $title . '</title>' . "\n";
         }
         echo '<link rel="stylesheet" type="text/css" href="./style.css">' . "\n";
         if (is_file(__DIR__ . '/skin.css')) {
@@ -118,19 +118,19 @@ class Html
         echo '<td>' . "\n";
         echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
         echo '<tr>' . "\n";
-        echo '<td align="left"><a href="index.php" class="logo"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . \MailWatch\Translation::__('mailwatchtitle03') . '"></a></td>' . "\n";
+        echo '<td align="left"><a href="index.php" class="logo"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . Translation::__('mailwatchtitle03') . '"></a></td>' . "\n";
         echo '</tr>' . "\n";
         echo '<tr>' . "\n";
         echo '<td valign="bottom" align="left" class="jump">' . "\n";
         echo '<form action="./detail.php">' . "\n";
-        echo '<p>' . \MailWatch\Translation::__('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
+        echo '<p>' . Translation::__('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
         echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
         echo '</form>' . "\n";
         echo '</td>';
         echo '</tr>';
         echo '</table>' . "\n";
         echo '<table cellspacing="1" class="mail">' . "\n";
-        echo '<tr><td class="heading" align="center">' . \MailWatch\Translation::__('cuser03') . '</td><td class="heading" align="center">' . \MailWatch\Translation::__('cst03') . '</td></tr>' . "\n";
+        echo '<tr><td class="heading" align="center">' . Translation::__('cuser03') . '</td><td class="heading" align="center">' . Translation::__('cst03') . '</td></tr>' . "\n";
         echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
         echo '</table>' . "\n";
         echo '</td>' . "\n";
@@ -140,7 +140,7 @@ class Html
 
             // Status table
             echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-            echo '    <tr><th colspan="3">' . \MailWatch\Translation::__('status03') . '</th></tr>' . "\n";
+            echo '    <tr><th colspan="3">' . Translation::__('status03') . '</th></tr>' . "\n";
 
             static::printServiceStatus();
             static::printAverageLoad();
@@ -190,7 +190,7 @@ class Html
             echo '</i></p>' . "\n";
         }
         echo '<p class="center footer noprint">' . "\n";
-        echo \MailWatch\Translation::__('footer03');
+        echo Translation::__('footer03');
         echo mailwatch_version();
         echo ' - &copy; 2006-' . date('Y');
         echo '</p>' . "\n";
@@ -243,24 +243,24 @@ function updateClock() {
         // Navigation links - put them into an array to allow them to be switched
         // on or off as necessary and to allow for the table widths to be calculated.
         $nav = [];
-        $nav['status.php'] = \MailWatch\Translation::__('recentmessages03');
+        $nav['status.php'] = Translation::__('recentmessages03');
         if (LISTS) {
-            $nav['lists.php'] = \MailWatch\Translation::__('lists03');
+            $nav['lists.php'] = Translation::__('lists03');
         }
         if (!DISTRIBUTED_SETUP) {
-            $nav['quarantine.php'] = \MailWatch\Translation::__('quarantine03');
+            $nav['quarantine.php'] = Translation::__('quarantine03');
         }
-        $nav['reports.php'] = \MailWatch\Translation::__('reports03');
-        $nav['other.php'] = \MailWatch\Translation::__('toolslinks03');
+        $nav['reports.php'] = Translation::__('reports03');
+        $nav['other.php'] = Translation::__('toolslinks03');
 
         if (SHOW_SFVERSION === true && $_SESSION['user_type'] === 'A') {
-            $nav['sf_version.php'] = \MailWatch\Translation::__('softwareversions03');
+            $nav['sf_version.php'] = Translation::__('softwareversions03');
         }
 
         if (SHOW_DOC === true) {
-            $nav['docs.php'] = \MailWatch\Translation::__('documentation03');
+            $nav['docs.php'] = Translation::__('documentation03');
         }
-        $nav['logout.php'] = \MailWatch\Translation::__('logout03');
+        $nav['logout.php'] = Translation::__('logout03');
         //$table_width = round(100 / count($nav));
 
         //Navigation table
@@ -289,7 +289,7 @@ function updateClock() {
                 for ($i = 0; $i < $langCount; $i++) {
                     echo '<option value="' . $langCodes[$i] . '"'
                         . ($langCodes[$i] === $langCode ? ' selected' : '')
-                        . '>' . \MailWatch\Translation::__($langCodes[$i]) . '</option>' . "\n";
+                        . '>' . Translation::__($langCodes[$i]) . '</option>' . "\n";
                 }
                 echo '</select></li>' . "\n";
             }
@@ -475,39 +475,39 @@ function updateClock() {
   ' . $_SESSION['global_filter'] . '
 ';
 
-        $sth = \MailWatch\Db::query($sql);
+        $sth = Db::query($sql);
         while ($row = $sth->fetch_object()) {
             echo '<table border="0" cellpadding="1" cellspacing="1" class="mail todaystatistics" width="220">' . "\n";
-            echo ' <tr><th align="center" colspan="3">' . \MailWatch\Translation::__('todaystotals03') . '</th></tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('processed03') . '</td><td>' . number_format(
+            echo ' <tr><th align="center" colspan="3">' . Translation::__('todaystotals03') . '</th></tr>' . "\n";
+            echo ' <tr><td>' . Translation::__('processed03') . '</td><td>' . number_format(
                     $row->processed
-                ) . '</td><td>' . \MailWatch\Format::formatSize(
+                ) . '</td><td>' . Format::formatSize(
                     $row->size
                 ) . '</td></tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('cleans03') . '</td><td>' . number_format(
+            echo ' <tr><td>' . Translation::__('cleans03') . '</td><td>' . number_format(
                     $row->clean
                 ) . '</td><td>' . $row->cleanpercent . '%</td></tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('viruses03') . '</td><td>' . number_format(
+            echo ' <tr><td>' . Translation::__('viruses03') . '</td><td>' . number_format(
                     $row->viruses
                 ) . '</td><td>' . $row->viruspercent . '%</tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('topvirus03') . '</td><td colspan="2">' . \MailWatch\Antivirus::return_todays_top_virus() . '</td></tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('blockedfiles03') . '</td><td>' . number_format(
+            echo ' <tr><td>' . Translation::__('topvirus03') . '</td><td colspan="2">' . Antivirus::return_todays_top_virus() . '</td></tr>' . "\n";
+            echo ' <tr><td>' . Translation::__('blockedfiles03') . '</td><td>' . number_format(
                     $row->blockedfiles
                 ) . '</td><td>' . $row->blockedfilespercent . '%</td></tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('others03') . '</td><td>' . number_format(
+            echo ' <tr><td>' . Translation::__('others03') . '</td><td>' . number_format(
                     $row->otherinfected
                 ) . '</td><td>' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('spam03') . '</td><td>' . number_format(
+            echo ' <tr><td>' . Translation::__('spam03') . '</td><td>' . number_format(
                     $row->spam
                 ) . '</td><td>' . $row->spampercent . '%</td></tr>' . "\n";
-            echo ' <tr><td>' . \MailWatch\Translation::__('hscospam03') . '</td><td>' . number_format(
+            echo ' <tr><td>' . Translation::__('hscospam03') . '</td><td>' . number_format(
                     $row->highspam
                 ) . '</td><td>' . $row->highspampercent . '%</td></tr>' . "\n";
             if (MailScanner::getConfTrueFalse('mcpchecks')) {
                 echo ' <tr><td>MCP:</td><td>' . number_format(
                         $row->mcp
                     ) . '</td><td>' . $row->mcppercent . '%</td></tr>' . "\n";
-                echo ' <tr><td>' . \MailWatch\Translation::__('hscomcp03') . '</td><td>' . number_format(
+                echo ' <tr><td>' . Translation::__('hscomcp03') . '</td><td>' . number_format(
                         $row->highmcp
                     ) . '</td><td>' . $row->highmcppercent . '%</td></tr>' . "\n";
             }
@@ -519,7 +519,7 @@ function updateClock() {
     {
         if (!DISTRIBUTED_SETUP) {
             // Drive display
-            echo '    <tr><td colspan="3" class="heading" align="center">' . \MailWatch\Translation::__('freedspace03') . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="3" class="heading" align="center">' . Translation::__('freedspace03') . '</td></tr>' . "\n";
             foreach (get_disks() as $disk) {
                 $free_space = disk_free_space($disk['mountpoint']);
                 $total_space = disk_total_space($disk['mountpoint']);
@@ -531,7 +531,7 @@ function updateClock() {
                 $percent .= round($free_space / $total_space, 2) * 100;
                 $percent .= '%] ';
                 $percent .= '</span>';
-                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . \MailWatch\Format::formatSize($free_space) . $percent . '</td>' . "\n";
+                echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . Format::formatSize($free_space) . $percent . '</td>' . "\n";
             }
         }
     }
@@ -550,7 +550,7 @@ function updateClock() {
                 $inq = MTA\Postfix::postfixinq();
                 $outq = MTA\Postfix::postfixallq() - $inq;
             } elseif (!defined('RPC_REMOTE_SERVER')) {
-                echo '    <tr><td colspan="3">' . \MailWatch\Translation::__('verifyperm03') . ' ' . $incomingdir . ' ' . \MailWatch\Translation::__('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+                echo '    <tr><td colspan="3">' . Translation::__('verifyperm03') . ' ' . $incomingdir . ' ' . Translation::__('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
             }
 
             if (defined('RPC_REMOTE_SERVER')) {
@@ -570,14 +570,14 @@ function updateClock() {
                         }
                     }
                     if ($pqerror !== '') {
-                        echo '    <tr><td colspan="3">' . \MailWatch\Translation::__('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                        echo '    <tr><td colspan="3">' . Translation::__('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
                     }
                 }
             }
             if ($inq !== null && $outq !== null) {
-                echo '    <tr><td colspan="3" class="heading" align="center">' . \MailWatch\Translation::__('mailqueue03') . '</td></tr>' . "\n";
-                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . \MailWatch\Translation::__('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . \MailWatch\Translation::__('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+                echo '    <tr><td colspan="3" class="heading" align="center">' . Translation::__('mailqueue03') . '</td></tr>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . Translation::__('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+                echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . Translation::__('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
             }
 
             // Else use MAILQ from conf.php which is for Sendmail or Exim
@@ -593,9 +593,9 @@ function updateClock() {
                 preg_match('/(Total requests: )(.*)/', $cmd, $output_array);
                 $outq = $output_array[2];
             }
-            echo '    <tr><td colspan="3" class="heading" align="center">' . \MailWatch\Translation::__('mailqueue03') . '</td></tr>' . "\n";
-            echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . \MailWatch\Translation::__('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-            echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . \MailWatch\Translation::__('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+            echo '    <tr><td colspan="3" class="heading" align="center">' . Translation::__('mailqueue03') . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . Translation::__('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . Translation::__('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
         }
     }
 
@@ -610,15 +610,15 @@ function updateClock() {
             $la_15m = $loadavg[2];
             echo '
         <tr>
-            <td align="left" rowspan="3">' . \MailWatch\Translation::__('loadaverage03') . '&nbsp;</td>
-            <td align="right">' . \MailWatch\Translation::__('1minute03') . '&nbsp;</td>
+            <td align="left" rowspan="3">' . Translation::__('loadaverage03') . '&nbsp;</td>
+            <td align="right">' . Translation::__('1minute03') . '&nbsp;</td>
             <td align="right">' . $la_1m . '</td>
         </tr>
         </tr>
-            <td align="right" colspan="1">' . \MailWatch\Translation::__('5minutes03') . '&nbsp;</td>
+            <td align="right" colspan="1">' . Translation::__('5minutes03') . '&nbsp;</td>
             <td align="right">' . $la_5m . '</td>
         </tr>
-            <td align="right" colspan="1">' . \MailWatch\Translation::__('15minutes03') . '&nbsp;</td>
+            <td align="right" colspan="1">' . Translation::__('15minutes03') . '&nbsp;</td>
             <td align="right">' . $la_15m . '</td>
         </tr>
         ' . "\n";
@@ -630,15 +630,15 @@ function updateClock() {
             $la_15m = rtrim($loadavg[count($loadavg) - 1]);
             echo '
         <tr>
-            <td align="left" rowspan="3">' . \MailWatch\Translation::__('loadaverage03') . '&nbsp;</td>
-            <td align="right">' . \MailWatch\Translation::__('1minute03') . '&nbsp;</td>
+            <td align="left" rowspan="3">' . Translation::__('loadaverage03') . '&nbsp;</td>
+            <td align="right">' . Translation::__('1minute03') . '&nbsp;</td>
             <td align="right">' . $la_1m . '</td>
         </tr>
         </tr>
-            <td align="right" colspan="1">' . \MailWatch\Translation::__('5minutes03') . '&nbsp;</td>
+            <td align="right" colspan="1">' . Translation::__('5minutes03') . '&nbsp;</td>
             <td align="right">' . $la_5m . '</td>
         </tr>
-            <td align="right" colspan="1">' . \MailWatch\Translation::__('15minutes03') . '&nbsp;</td>
+            <td align="right" colspan="1">' . Translation::__('15minutes03') . '&nbsp;</td>
             <td align="right">' . $la_15m . '</td>
         </tr>
         ' . "\n";
@@ -649,17 +649,17 @@ function updateClock() {
     {
         // MailScanner running?
         if (!DISTRIBUTED_SETUP) {
-            $no = '<span class="yes">&nbsp;' . \MailWatch\Translation::__('no03') . '&nbsp;</span>' . "\n";
-            $yes = '<span class="no">&nbsp;' . \MailWatch\Translation::__('yes03') . '&nbsp;</span>' . "\n";
+            $no = '<span class="yes">&nbsp;' . Translation::__('no03') . '&nbsp;</span>' . "\n";
+            $yes = '<span class="no">&nbsp;' . Translation::__('yes03') . '&nbsp;</span>' . "\n";
             exec('ps ax | grep MailScanner | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
-                $procs = count($output) - 1 . ' ' . \MailWatch\Translation::__('children03');
+                $procs = count($output) - 1 . ' ' . Translation::__('children03');
             } else {
                 $running = $no;
-                $procs = count($output) . ' ' . \MailWatch\Translation::__('procs03');
+                $procs = count($output) . ' ' . Translation::__('procs03');
             }
-            echo '     <tr><td>' . \MailWatch\Translation::__('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+            echo '     <tr><td>' . Translation::__('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
             $mta = MailScanner::getConfVar('mta');
@@ -669,8 +669,8 @@ function updateClock() {
             } else {
                 $running = $no;
             }
-            $procs = count($output) . ' ' . \MailWatch\Translation::__('procs03');
-            echo '    <tr><td>' . ucwords($mta) . \MailWatch\Translation::__('colon99') . '</td>'
+            $procs = count($output) . ' ' . Translation::__('procs03');
+            echo '    <tr><td>' . ucwords($mta) . Translation::__('colon99') . '</td>'
                 . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
     }
@@ -678,17 +678,17 @@ function updateClock() {
     public static function printColorCodes()
     {
         echo '   <table border="0" cellpadding="1" cellspacing="3"  align="center" class="mail colorcodes">' . "\n";
-        echo '    <tr><td class="infected"></td> <td>' . \MailWatch\Translation::__('badcontentinfected03') . '</td>' . "\n";
-        echo '    <td class="spam"></td> <td>' . \MailWatch\Translation::__('spam103') . ' </td>' . "\n";
-        echo '    <td class="highspam"></td> <td>' . \MailWatch\Translation::__('highspam03') . '</td>' . "\n";
+        echo '    <tr><td class="infected"></td> <td>' . Translation::__('badcontentinfected03') . '</td>' . "\n";
+        echo '    <td class="spam"></td> <td>' . Translation::__('spam103') . ' </td>' . "\n";
+        echo '    <td class="highspam"></td> <td>' . Translation::__('highspam03') . '</td>' . "\n";
         if (MailScanner::getConfTrueFalse('mcpchecks')) {
-            echo '    <td class="mcp"></td> <td>' . \MailWatch\Translation::__('mcp03') . '</td>' . "\n";
-            echo '    <td class="highmcp"></td> <td>' . \MailWatch\Translation::__('highmcp03') . '</td>' . "\n";
+            echo '    <td class="mcp"></td> <td>' . Translation::__('mcp03') . '</td>' . "\n";
+            echo '    <td class="highmcp"></td> <td>' . Translation::__('highmcp03') . '</td>' . "\n";
         }
-        echo '    <td class="whitelisted"></td> <td>' . \MailWatch\Translation::__('whitelisted03') . '</td>' . "\n";
-        echo '    <td class="blacklisted"></td> <td>' . \MailWatch\Translation::__('blacklisted03') . '</td>' . "\n";
-        echo '    <td class="notscanned"></td> <td>' . \MailWatch\Translation::__('notverified03') . '</td>' . "\n";
-        echo '    <td class="clean"></td> <td>' . \MailWatch\Translation::__('clean03') . '</td></tr>' . "\n";
+        echo '    <td class="whitelisted"></td> <td>' . Translation::__('whitelisted03') . '</td>' . "\n";
+        echo '    <td class="blacklisted"></td> <td>' . Translation::__('blacklisted03') . '</td>' . "\n";
+        echo '    <td class="notscanned"></td> <td>' . Translation::__('notverified03') . '</td>' . "\n";
+        echo '    <td class="clean"></td> <td>' . Translation::__('clean03') . '</td></tr>' . "\n";
         echo '   </table><br>' . "\n";
     }
 
@@ -699,14 +699,14 @@ function updateClock() {
         echo '<td align="center" valign="top">' . "\n";
         echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
         if ($graphInterval <= 60) {
-            echo '    <tr><th colspan="1">' . \MailWatch\Translation::__('trafficgraph03') . '</th></tr>' . "\n";
+            echo '    <tr><th colspan="1">' . Translation::__('trafficgraph03') . '</th></tr>' . "\n";
         } else {
-            echo '    <tr><th colspan="1">' . sprintf(\MailWatch\Translation::__('trafficgraphmore03'), $graphInterval / 60) . '</th></tr>' . "\n";
+            echo '    <tr><th colspan="1">' . sprintf(Translation::__('trafficgraphmore03'), $graphInterval / 60) . '</th></tr>' . "\n";
         }
         echo '    <tr>' . "\n";
         echo '    <td>' . "\n";
 
-        $graphgenerator = new \MailWatch\GraphGenerator();
+        $graphgenerator = new GraphGenerator();
         $graphgenerator->sqlQuery = '
      SELECT
       timestamp AS xaxis,
@@ -742,7 +742,7 @@ function updateClock() {
         $graphgenerator->graphColumns = [
             'labelColumn' => 'time',
             'dataLabels' => [
-                [\MailWatch\Translation::__('barvirus03'), \MailWatch\Translation::__('barspam03'), \MailWatch\Translation::__('barmail03')],
+                [Translation::__('barvirus03'), Translation::__('barspam03'), Translation::__('barmail03')],
             ],
             'dataNumericColumns' => [
                 ['total_virusconv', 'total_spamconv', 'total_mailconv'],

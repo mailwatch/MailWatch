@@ -60,7 +60,7 @@ class Mcp
             }
             // Return the result as an html formatted string
             if (count($output_array) > 0) {
-                return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . \MailWatch\Translation::__('score03') . '</th><th>' . \MailWatch\Translation::__('matrule03') . '</th><th>' . \MailWatch\Translation::__('description03') . '</th></tr>' . implode(
+                return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . Translation::__('score03') . '</th><th>' . Translation::__('matrule03') . '</th><th>' . Translation::__('description03') . '</th></tr>' . implode(
                         "\n",
                         $output_array
                     ) . '</table>' . "\n";
@@ -84,7 +84,7 @@ class Mcp
         if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
             list($rule, $rule_score) = $regs;
         }
-        $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
+        $result = Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
         $row = $result->fetch_object();
         if ($row && $row->rule && $row->rule_desc) {
             return ('<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n");
@@ -99,7 +99,7 @@ class Mcp
      */
     public static function return_rule_desc($rule)
     {
-        $result = \MailWatch\Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
+        $result = Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
         $row = $result->fetch_object();
         if ($row) {
             return $row->rule_desc;

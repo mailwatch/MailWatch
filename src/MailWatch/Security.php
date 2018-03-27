@@ -44,18 +44,18 @@ class Security
      */
     public static function audit_log($action, $user = 'unknown')
     {
-        $link = \MailWatch\Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        $link = Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (AUDIT) {
             if (isset($_SESSION['myusername'])) {
                 $user = $link->real_escape_string($_SESSION['myusername']);
             }
 
-            $action = \MailWatch\Sanitize::safe_value($action);
+            $action = Sanitize::safe_value($action);
             $ip = null;
             if (isset($_SERVER['REMOTE_ADDR'])) {
-                $ip = \MailWatch\Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
+                $ip = Sanitize::safe_value($_SERVER['REMOTE_ADDR']);
             }
-            $ret = \MailWatch\Db::query("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
+            $ret = Db::query("INSERT INTO audit_log (user, ip_address, action) VALUES ('$user', '$ip', '$action')");
             if ($ret) {
                 return true;
             }
@@ -77,12 +77,12 @@ class Security
         if ($passwordFiledLength < 255) {
             $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
             Db::query($sqlUpdateFieldLength);
-            self::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
+            self::audit_log(sprintf(Translation::__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
         }
 
         $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
         Db::query($sqlUpdateHash);
-        self::audit_log(\MailWatch\Translation::__('auditlogupdateuser03', true) . ' ' . $user);
+        self::audit_log(Translation::__('auditlogupdateuser03', true) . ' ' . $user);
     }
 
     /**
@@ -126,7 +126,7 @@ class Security
     public static function generateFormToken($formstring)
     {
         if (!isset($_SESSION['token'])) {
-            die(\MailWatch\Translation::__('dietoken99'));
+            die(Translation::__('dietoken99'));
         }
 
         $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);

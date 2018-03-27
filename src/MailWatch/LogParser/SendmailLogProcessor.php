@@ -27,6 +27,8 @@
 
 namespace MailWatch\LogParser;
 
+use MailWatch\Sanitize;
+
 class SendmailLogProcessor extends MtaLogProcessor
 {
     public function __construct()
@@ -42,16 +44,16 @@ class SendmailLogProcessor extends MtaLogProcessor
             if ($this->entries['ruleset'] === 'check_relay') {
                 // Listed in RBL(s)
                 return [
-                    'type' =>  \MailWatch\Sanitize::safe_value('rbl'),
-                    'relay' =>  \MailWatch\Sanitize::safe_value($this->entries['arg2']),
-                    'status' =>  \MailWatch\Sanitize::safe_value($this->entries['reject'])
+                    'type' =>  Sanitize::safe_value('rbl'),
+                    'relay' =>  Sanitize::safe_value($this->entries['arg2']),
+                    'status' =>  Sanitize::safe_value($this->entries['reject'])
                 ];
             }
             if ($this->entries['ruleset'] === 'check_mail') {
                 // Domain does not resolve
                 return [
-                    'type' =>  \MailWatch\Sanitize::safe_value('unresolveable'),
-                    'status' =>  \MailWatch\Sanitize::safe_value($this->getEmail($this->entries['reject']))
+                    'type' =>  Sanitize::safe_value('unresolveable'),
+                    'status' =>  Sanitize::safe_value($this->getEmail($this->entries['reject']))
                 ];
             }
         }
