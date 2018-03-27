@@ -53,7 +53,6 @@ class GeoIp
     {
         if (file_exists(self::$savePath['mmdbFile']) && filesize(self::$savePath['mmdbFile']) > 0) {
             try {
-
                 $ip = Format::stripPortFromIp($ip);
 
                 $reader = new Reader(self::$savePath['mmdbFile']);

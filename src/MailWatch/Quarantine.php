@@ -163,6 +163,13 @@ SELECT
         return $response;
     }
 
+    /**
+     * @param array $list
+     * @param array $num
+     * @param string $to
+     * @param bool $rpc_only
+     * @return string
+     */
     public static function quarantine_release($list, $num, $to, $rpc_only = false)
     {
         if (!is_array($list) || !isset($list[0]['msgid'])) {
@@ -205,7 +212,7 @@ SELECT
                     global $error;
                     $error = true;
                 } else {
-                    $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  Sanitize::safe_value($list[0]['msgid']) . "'";
+                    $sql = "UPDATE maillog SET released = '1' WHERE id = '" . Sanitize::safe_value($list[0]['msgid']) . "'";
                     Db::query($sql);
                     $status = \MailWatch\Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                     Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
@@ -222,7 +229,7 @@ SELECT
                     Debug::debug($cmd . $list[$val]['path']);
                     exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                     if ($retval === 0) {
-                        $sql = "UPDATE maillog SET released = '1' WHERE id = '" .  Sanitize::safe_value($list[0]['msgid']) . "'";
+                        $sql = "UPDATE maillog SET released = '1' WHERE id = '" . Sanitize::safe_value($list[0]['msgid']) . "'";
                         Db::query($sql);
                         $status = \MailWatch\Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
                         Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
@@ -272,6 +279,13 @@ SELECT
         }
     }
 
+    /**
+     * @param array $list
+     * @param array $num
+     * @param string $type
+     * @param bool $rpc_only
+     * @return string
+     */
     public static function quarantine_learn($list, $num, $type, $rpc_only = false)
     {
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
@@ -318,7 +332,7 @@ SELECT
                 }
                 if ($isfp !== null) {
                     $sql = 'UPDATE maillog SET isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
-                        .  Sanitize::safe_value($list[$val]['msgid']) . "'";
+                        . Sanitize::safe_value($list[$val]['msgid']) . "'";
                 }
 
                 if (true === $use_spamassassin) {
@@ -392,7 +406,7 @@ SELECT
                         $numeric_type = 1;
                     }
                     if (isset($numeric_type)) {
-                        $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" .  Sanitize::safe_value($list[$val]['msgid']) . "'";
+                        $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" . Sanitize::safe_value($list[$val]['msgid']) . "'";
                         Db::query($sql);
                     }
                 }
@@ -433,6 +447,12 @@ SELECT
         return $response . ' (RPC)';
     }
 
+    /**
+     * @param array $list
+     * @param array $num
+     * @param bool $rpc_only
+     * @return string
+     */
     public static function quarantine_delete($list, $num, $rpc_only = false)
     {
         if (!is_array($list) || !isset($list[0]['msgid'])) {
@@ -490,6 +510,9 @@ SELECT
         return $response . ' (RPC)';
     }
 
+    /**
+     * @return array
+     */
     public static function return_quarantine_dates()
     {
         $array = [];
