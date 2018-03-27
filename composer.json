@@ -17,6 +17,7 @@
     "ircmaxell/password-compat": "^1.0",
     "maxmind-db/reader": "~1.0",
     "neitanod/forceutf8": "~2.0",
+    "paragonie/random_compat": "^2.0",
     "pear/mail": "^1.4",
     "pear/mail_mime-decode": "1.5.5.2",
     "pear/net_smtp": "^1.7",
