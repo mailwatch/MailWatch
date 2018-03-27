@@ -132,7 +132,7 @@ SELECT
                         $quarantined[$count]['to'] = $row->to_address;
                         $quarantined[$count]['file'] = $f;
                         $file = escapeshellarg($quarantine . '/' . $f);
-                        $quarantined[$count]['type'] = ltrim(rtrim(`/usr/bin/file -bi $file`));
+                        $quarantined[$count]['type'] = ltrim(rtrim(shell_exec('/usr/bin/file -bi ' . $file)));
                         $quarantined[$count]['path'] = $quarantine . '/' . $f;
                         $quarantined[$count]['md5'] = md5($quarantine . '/' . $f);
                         $quarantined[$count]['dangerous'] = $infected;
