@@ -504,11 +504,13 @@ function sendReport()
     }
 
     $quarantine_report = new Quarantine_Report();
-    $reportResult = $quarantine_report->send_quarantine_reports(array($user->username));
-    if ($reportResult['succ'] >= 0) {
+    $reportResult = $quarantine_report->send_quarantine_reports(array($user->username), true);
+    if ($reportResult == -2) {
+        return getHtmlMessage(__('noReportsEnabled12'), 'error');
+    } elseif ($reportResult['succ'] > 0) {
         return getHtmlMessage(__('quarantineReportSend12'), 'success');
     } else {
-        return getHtmlMessage(__('quarantineReportFailed12'), 'success');
+        return getHtmlMessage(__('quarantineReportFailed12'), 'error');
     }
 }
 
@@ -769,7 +771,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
             if ($requirementsCheck !== true) {
                 echo getHtmlMessage(__('checkReportRequirementsFailed12'), 'error');
                 error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
-            } elseif (!isset($_POST['quarantine_report'])) {
+            } elseif (!isset($_POST['quarantine_report']) || $_POST['quarantine_report'] !== 'on') {
                 echo getHtmlMessage(__('noReportsEnabled12'), 'error');
             } else {
                 $quarantine_report = new Quarantine_Report();

@@ -924,6 +924,7 @@ return array(
     'message61' => '変数 %s は空です。conf.php に値を設定してください。',
     'text611' => '％sの検疫レポート',
     'text612' => '最後の %s 日に隔離されたメールを受信しました。そのメールは以下のとおりです。隔離されたすべてのメールは、受信日から %s 日後に自動的に削除されます。 ',
+    'text613' => 'In the last %s day(s) you have received no e-mails that have been quarantined.',
     'release61' => 'リリース',
     'virus61' => 'ウイルス',
     'badcontent61' => '悪いコンテンツ',

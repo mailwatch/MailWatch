@@ -934,6 +934,7 @@ return array(
     'message61' => 'The variable %s is empty, please set a value in conf.php.',
     'text611' => 'Quarantine Report for %s',
     'text612' => 'In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.',
+    'text613' => 'In the last %s day(s) you have received no e-mails that have been quarantined.',
     'release61' => 'Release',
     'virus61' => 'Virus',
     'badcontent61' => 'Bad Content',
