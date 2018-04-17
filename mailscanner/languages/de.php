@@ -933,6 +933,7 @@ return array(
     'message61' => 'Die Variable %s ist leer, bitte setzen Sie einen Wert in conf.php.',
     'text611' => 'Quarantäne-Bericht für %s',
     'text612' => 'In den letzten %s Tagen wurden %s empfangene E-Mails in die Quarantäne verschoben, die unten aufgeführt sind. Alle Nachrichten in der Quarantäne werden automatisch nach %s Tagen nach deren Empfang gelöscht.',
+    'text613' => 'In den letzten %s Tagen wurden keine empfangene E-Mails in die Quarantäne verschoben.',
     'release61' => 'Freigabe',
     'virus61' => 'Virus',
     'badcontent61' => 'Schlechter Inhalt',
