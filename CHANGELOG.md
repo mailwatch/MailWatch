@@ -1,3 +1,12 @@
+1.2.9
+-----------
+Improvements
+- Use new GeoLite2 database to replace deprecated GeoLite Legacy databases
+
+Fixes
+- Parse correctly GPG signed e-mail (#1053)
+- Send empty quarantine reports over user_manager (#1054)
+
 1.2.8
 -----------
 Improvements
