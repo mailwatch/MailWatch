@@ -157,7 +157,7 @@ if (!isset($_POST['run'])) {
                 unlink($file['destination']);
                 unlink(substr($file['destination'], 0, -3));
 
-                foreach (New DirectoryIterator($extract_dir) as $item) {
+                foreach (new DirectoryIterator($extract_dir) as $item) {
                     if ($item->isDot()) {
                         continue;
                     }
