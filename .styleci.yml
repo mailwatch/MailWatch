@@ -1,10 +1,19 @@
 preset: psr2
 
-linting: true
-
 enabled:
   - short_array_syntax
+  - braces
+  - backtick_to_shell_exec
+  - hash_to_slash_comment
+  - no_tab_indentation
+  - lowercase_cast
+  - modernize_types_casting
+  - native_function_casing
+  - no_closing_tag
+  - no_extra_consecutive_blank_lines
+  - no_php4_constructor
+  - no_trailing_whitespace_in_comment
 
 finder:
   exclude:
-    - lib
+    - mailscanner/lib
