@@ -129,10 +129,13 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<br>';
     $virusScanner = get_conf_var('VirusScanners');
 
-    // Add test for others virus scanners.
+    // Add test for other virus scanners.
     if (preg_match('/clam/i', $virusScanner)) {
         echo 'ClamAV ' . __('version11') . ' ';
-        passthru(get_virus_conf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
+        exec("which clamscan", $clamscan);
+        if (isset($clamscan[0])) {
+            passthru("$clamscan[0] -V | cut -d/ -f1 | cut -d' ' -f2");
+        }
         echo '<br>' . "\n";
     }
 
