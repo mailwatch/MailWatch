@@ -44,8 +44,11 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<tr>';
     echo '<td align="center">';
 
-    // Output the information from the conf file
-    passthru(\MailWatch\Antivirus::getAntivirusConf('clamav') . ' . -V | awk -f ' . __DIR__ . '/clamav.awk');
+    // get version info from clamscan
+    exec('which clamscan', $clamscan);
+    if (isset($clamscan[0])) {
+        passthru("$clamscan[0] -V | awk -f " . __DIR__ . '/clamav.awk');
+    }
 
     echo '</td>';
     echo '</tr>';
