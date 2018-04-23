@@ -41,14 +41,10 @@ if ('A' !== $_SESSION['user_type']) {
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = \MailWatch\MailScanner::getConfVar('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
-    $mysql_version = Db::mysqli_result(\MailWatch\Db::query('SELECT VERSION()'), 0);
-    $geoipv4_version = false;
-    $geoipv6_version = false;
-    if (file_exists('./temp/GeoIP.dat')) {
-        $geoipv4_version = date('r', filemtime('./temp/GeoIP.dat')) . ' (' . \MailWatch\Translation::__('downloaddate11') . ')';
-    }
-    if (file_exists('./temp/GeoIPv6.dat')) {
-        $geoipv6_version = date('r', filemtime('./temp/GeoIPv6.dat')) . ' (' . \MailWatch\Translation::__('downloaddate11') . ')';
+    $mysql_version = Db::mysqli_result(Db::query('SELECT VERSION()'), 0);
+    $geoip_version = false;
+    if (file_exists('./temp/GeoLite2-Country.mmdb')) {
+        $geoip_version = date('r', filemtime('./temp/GeoLite2-Country.mmdb')) . ' (' . __('downloaddate11') . ')';
     }
 
     echo '<table width="100%" class="boxtable">' . "\n";
@@ -149,17 +145,10 @@ if ('A' !== $_SESSION['user_type']) {
     echo 'MySQL ' . \MailWatch\Translation::__('version11') . ' ' . $mysql_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'GeoIP Database ' . \MailWatch\Translation::__('version11') . ' ';
-    if (false !== $geoipv4_version) {
-        echo $geoipv4_version;
+    if (false !== $geoip_version) {
+        echo $geoip_version;
     } else {
         echo \MailWatch\Translation::__('nodbdown11') . ' ';
-    }
-    echo "<br>\n<br>\n";
-    echo 'GeoIPv6 Database ' . \MailWatch\Translation::__('version11') . ' ';
-    if (false !== $geoipv6_version) {
-        echo $geoipv6_version;
-    } else {
-        echo \MailWatch\Translation::__('nodbdown11');
     }
     echo "<br>\n<br>\n";
     echo '</td>' . "\n";
