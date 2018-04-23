@@ -40,13 +40,9 @@ if ($_SESSION['user_type'] !== 'A') {
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
     $mysql_version = database::mysqli_result(dbquery('SELECT VERSION()'), 0);
-    $geoipv4_version = false;
-    $geoipv6_version = false;
-    if (file_exists('./temp/GeoIP.dat')) {
-        $geoipv4_version = date('r', filemtime('./temp/GeoIP.dat')) . ' (' . __('downloaddate11') . ')';
-    }
-    if (file_exists('./temp/GeoIPv6.dat')) {
-        $geoipv6_version = date('r', filemtime('./temp/GeoIPv6.dat')) . ' (' . __('downloaddate11') . ')';
+    $geoip_version = false;
+    if (file_exists('./temp/GeoLite2-Country.mmdb')) {
+        $geoip_version = date('r', filemtime('./temp/GeoLite2-Country.mmdb')) . ' (' . __('downloaddate11') . ')';
     }
 
     echo '<table width="100%" class="boxtable">' . "\n";
@@ -146,17 +142,10 @@ if ($_SESSION['user_type'] !== 'A') {
     echo 'MySQL ' . __('version11') . ' ' . $mysql_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'GeoIP Database ' . __('version11') . ' ';
-    if (false !== $geoipv4_version) {
-        echo $geoipv4_version;
+    if (false !== $geoip_version) {
+        echo $geoip_version;
     } else {
         echo __('nodbdown11') . ' ';
-    }
-    echo "<br>\n<br>\n";
-    echo 'GeoIPv6 Database ' . __('version11') . ' ';
-    if (false !== $geoipv6_version) {
-        echo $geoipv6_version;
-    } else {
-        echo __('nodbdown11');
     }
     echo "<br>\n<br>\n";
     echo '</td>' . "\n";
