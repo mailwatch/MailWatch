@@ -43,8 +43,12 @@ if ('A' !== $_SESSION['user_type']) {
     $php_version = PHP_VERSION;
     $mysql_version = Db::mysqli_result(Db::query('SELECT VERSION()'), 0);
     $geoip_version = false;
-    if (file_exists('./temp/GeoLite2-Country.mmdb')) {
-        $geoip_version = date('r', filemtime('./temp/GeoLite2-Country.mmdb')) . ' (' . __('downloaddate11') . ')';
+    $geoip_database_file = \MailWatch\GeoIp::$savePath['mmdbFile'];
+    if (file_exists($geoip_database_file)) {
+        $geoIpDbReader = new \MaxMind\Db\Reader($geoip_database_file);
+        $GeoIPDbMetadata = $geoIpDbReader->metadata();
+        $geoip_version = ($GeoIPDbMetadata->description['en'] ?? '') . ' ' . date('Y-m-d H:i:s', $GeoIPDbMetadata->buildEpoch);
+        $geoip_version = trim($geoip_version);
     }
 
     echo '<table width="100%" class="boxtable">' . "\n";
@@ -129,7 +133,7 @@ if ('A' !== $_SESSION['user_type']) {
     $virusScanner = \MailWatch\MailScanner::getConfVar('VirusScanners');
 
     // Add test for others virus scanners.
-    if (preg_match('/clam/i', $virusScanner)) {
+    if (false !== stripos($virusScanner, 'clam')) {
         echo 'ClamAV ' . \MailWatch\Translation::__('version11') . ' ';
         passthru(\MailWatch\Antivirus::getAntivirusConf('clamav') . " -V | cut -d/ -f1 | cut -d' ' -f2");
         echo '<br>' . "\n";
