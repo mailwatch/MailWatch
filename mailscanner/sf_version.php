@@ -40,13 +40,14 @@ if ($_SESSION['user_type'] !== 'A') {
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
     $mysql_version = database::mysqli_result(dbquery('SELECT VERSION()'), 0);
-    $geoipv4_version = false;
-    $geoipv6_version = false;
-    if (file_exists('./temp/GeoIP.dat')) {
-        $geoipv4_version = date('r', filemtime('./temp/GeoIP.dat')) . ' (' . __('downloaddate11') . ')';
-    }
-    if (file_exists('./temp/GeoIPv6.dat')) {
-        $geoipv6_version = date('r', filemtime('./temp/GeoIPv6.dat')) . ' (' . __('downloaddate11') . ')';
+    $geoip_version = false;
+    $geoip_database_file = __DIR__ . '/temp/GeoLite2-Country.mmdb';
+    if (file_exists($geoip_database_file)) {
+        require_once __DIR__ . '/lib/maxmind-db/reader/autoload.php';
+        $geoIpDbReader = new \MaxMind\Db\Reader($geoip_database_file);
+        $GeoIPDbMetadata = $geoIpDbReader->metadata();
+        $geoip_version = (isset($GeoIPDbMetadata->description['en']) ? $GeoIPDbMetadata->description['en'] : '') . ' ' . date('Y-m-d H:i:s', $GeoIPDbMetadata->buildEpoch);
+        $geoip_version = trim($geoip_version);
     }
 
     echo '<table width="100%" class="boxtable">' . "\n";
@@ -85,7 +86,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
     }
     if (strtolower(PHP_OS) === 'freebsd') {
-        echo __('systemos11') . ' ' . php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
+        echo __('systemos11') . ' ' . PHP_OS . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
     }
 
     // Add test for MTA
@@ -93,7 +94,7 @@ if ($_SESSION['user_type'] !== 'A') {
     if (get_conf_var('MTA', true) === 'postfix') {
         echo '<br>' . "\n";
         echo 'Postfix ' . __('version11') . ' ';
-        exec("which postconf", $postconf);
+        exec('which postconf', $postconf);
         if (isset($postconf[0])) {
             passthru("$postconf[0] -d | grep 'mail_version =' | cut -d' ' -f3");
         } else {
@@ -104,7 +105,7 @@ if ($_SESSION['user_type'] !== 'A') {
     if (get_conf_var('MTA', true) === 'exim') {
         echo '<br>' . "\n";
         echo 'Exim ' . __('version11') . ' ';
-        exec("which exim", $exim);
+        exec('which exim', $exim);
         if (isset($exim[0])) {
             passthru("$exim[0] -bV | grep 'Exim version' | cut -d' ' -f3");
         } else {
@@ -115,7 +116,7 @@ if ($_SESSION['user_type'] !== 'A') {
     if (get_conf_var('MTA', true) === 'sendmail') {
         echo '<br>' . "\n";
         echo 'Sendmail ' . __('version11') . ' ';
-        exec("which sendmail", $sendmail);
+        exec('which sendmail', $sendmail);
         if (isset($sendmail[0])) {
             passthru("$sendmail[0] -d0.4 -bv root | grep 'Version' | cut -d' ' -f2");
         } else {
@@ -130,7 +131,7 @@ if ($_SESSION['user_type'] !== 'A') {
     $virusScanner = get_conf_var('VirusScanners');
 
     // Add test for other virus scanners.
-    if (preg_match('/clam/i', $virusScanner)) {
+    if (false !== stripos($virusScanner, 'clam')) {
         echo 'ClamAV ' . __('version11') . ' ';
         exec("which clamscan", $clamscan);
         if (isset($clamscan[0])) {
@@ -149,17 +150,10 @@ if ($_SESSION['user_type'] !== 'A') {
     echo 'MySQL ' . __('version11') . ' ' . $mysql_version . '<br>' . "\n";
     echo '<br>' . "\n";
     echo 'GeoIP Database ' . __('version11') . ' ';
-    if (false !== $geoipv4_version) {
-        echo $geoipv4_version;
+    if (false !== $geoip_version) {
+        echo $geoip_version;
     } else {
         echo __('nodbdown11') . ' ';
-    }
-    echo "<br>\n<br>\n";
-    echo 'GeoIPv6 Database ' . __('version11') . ' ';
-    if (false !== $geoipv6_version) {
-        echo $geoipv6_version;
-    } else {
-        echo __('nodbdown11');
     }
     echo "<br>\n<br>\n";
     echo '</td>' . "\n";
