@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(191) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `fullname` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `type` enum('A','D','U','R','H') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` enum('A','D','U','R','H') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'U',
   `quarantine_report` tinyint(1) DEFAULT '0',
   `spamscore` float DEFAULT '0',
   `highspamscore` float DEFAULT '0',
