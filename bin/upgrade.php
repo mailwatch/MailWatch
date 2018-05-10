@@ -473,6 +473,15 @@ if ($link) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     }
 
+    // Update users table schema to prevent empty user type
+    echo pad(' - Fix schema for type field in `users` table');
+    $user_type_info = getColumnInfo('users', 'type');
+    if ($user_type_info['Null'] !== 'No') {
+        $sql = "ALTER TABLE `users` CHANGE `type` `type` enum('A','D','U','R','H') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'U';";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
     echo PHP_EOL;
 
     // Truncate needed for VARCHAR fields used as PRIMARY or FOREIGN KEY when using utf8mb4
