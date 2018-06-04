@@ -1,5 +1,8 @@
 1.2.9
 -----------
+Compatibility
+- Minimal PHP version is now 5.4. Older versions of 5.3.x or lower do not work correctly with GeoLite2 (#1073)
+
 Improvements
 - Use new GeoLite2 database to replace deprecated GeoLite Legacy databases
 
