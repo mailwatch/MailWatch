@@ -1004,7 +1004,7 @@ echo pad(' - Checking minimal PHP version >= 5.4');
 if (version_compare(phpversion(), '5.4.0', '>=')) {
     echo color(' PHP version OK', 'lightgreen') . PHP_EOL;
 } else {
-    echo color(' WARNING: PHP version < 5.4 not fully supported (GeoLite2 not working)', 'red'). PHP_EOL;
+    echo color(' WARNING: PHP version < 5.4 not fully supported (GeoLite2 not working)', 'yellow'). PHP_EOL;
 }
 
 echo PHP_EOL;
