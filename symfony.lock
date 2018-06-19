@@ -263,17 +263,8 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.8.0"
     },
-    "symfony/polyfill-php56": {
-        "version": "v1.8.0"
-    },
-    "symfony/polyfill-php70": {
-        "version": "v1.8.0"
-    },
     "symfony/polyfill-php72": {
         "version": "v1.6.0"
-    },
-    "symfony/polyfill-util": {
-        "version": "v1.8.0"
     },
     "symfony/process": {
         "version": "v3.4.11"
