@@ -1,11 +1,10 @@
 #files
+/public/skin.css
 /mailscanner/conf.php
-/mailscanner/skin.css
 
 #development files
 /_msconfig/
-/vendor/
-
+/composer.phar
 /.php_cs.cache
 
 ###> friendsofphp/php-cs-fixer ###
@@ -18,8 +17,6 @@
 /public/bundles/
 /var/
 /vendor/
-/public/s/conf.php
-/public/s/skin.css
 ###< symfony/framework-bundle ###
 
 ###> symfony/web-server-bundle ###
