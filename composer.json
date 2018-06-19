@@ -35,15 +35,15 @@
     "symfony/orm-pack": "^1.0",
     "symfony/security-bundle": "^3.4",
     "symfony/templating": "^3.4",
-    "symfony/web-server-bundle": "^3.4",
     "symfony/yaml": "^3.4",
     "wikimedia/ip-set": "^1.2"
   },
   "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.12",
     "symfony/dotenv": "^3.4",
     "symfony/profiler-pack": "^1.0",
     "symfony/thanks": "^1.0",
-    "friendsofphp/php-cs-fixer": "^2.12"
+    "symfony/web-server-bundle": "^3.4"
   },
   "config": {
     "preferred-install": {
