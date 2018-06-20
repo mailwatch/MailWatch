@@ -267,6 +267,7 @@ return array(
     'report04' => 'Report :',
     'spamassassin04' => 'SpamAssassin',
     'spamassassinmcp04' => 'SpamAssassin MCP',
+    'geoipnotsupported04' => 'GeoIP non pris en charge',
 
     // 05-status.php
     'recentmsg05' => 'Messages récents',

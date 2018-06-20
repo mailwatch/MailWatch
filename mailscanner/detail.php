@@ -174,6 +174,8 @@ while ($row = $result->fetch_array()) {
                         $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
                     } elseif ($isLocalNetwork === true) {
                         $output .= ' <td>' . __('localhost04') . "</td>\n";
+                    } elseif (!version_compare(phpversion(), '5.4.0', '>=')) {
+                        $output .= ' <td>' . __('geoipnotsupported04') . "</td>\n";
                     } elseif ($geoip_country = return_geoip_country($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
                     } else {
