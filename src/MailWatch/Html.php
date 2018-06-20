@@ -94,10 +94,8 @@ class Html
         } else {
             echo '<title>' . Translation::__('mwforms03') . $title . '</title>' . "\n";
         }
-        echo '<link rel="stylesheet" type="text/css" href="./style.css">' . "\n";
-        if (is_file(__DIR__ . '/skin.css')) {
-            echo '<link rel="stylesheet" href="./skin.css" type="text/css">';
-        }
+        echo '<link rel="stylesheet" type="text/css" href="/css/style.css">' . "\n";
+        echo '<link rel="stylesheet" type="text/css" href="/css/skin.css">';
 
         if ($refresh > 0) {
             echo '<meta http-equiv="refresh" content="' . $refresh . '">' . "\n";

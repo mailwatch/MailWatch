@@ -908,7 +908,7 @@ td.message {
 }
 
 .mw-info-circle {
-    background: url(images/info-circle.png);
+    background: url(/images/info-circle.png);
     -webkit-background-size: contain;
     background-size: contain;
     height: 16px;
@@ -916,7 +916,7 @@ td.message {
 }
 
 .mw-info-circle:hover {
-    background: url(images/info-circle-hover.png);
+    background: url(/images/info-circle-hover.png);
     -webkit-background-size: contain;
     background-size: contain;
     height: 16px;
