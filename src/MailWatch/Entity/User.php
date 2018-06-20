@@ -100,7 +100,7 @@ class User implements UserInterface, EquatableInterface
         $this->username = $username;
         $this->password = $password;
         $this->fullname = $fullname;
-        this . settype($type);
+        $this->setType($type);
     }
 
     public function getId()
@@ -180,8 +180,8 @@ class User implements UserInterface, EquatableInterface
 
     public function setType($type)
     {
-        if (!in_array($type, ['A', 'D', 'U', 'R', 'H'])) {
-            throw new \InvalidArgumentException();
+        if (!\in_array($type, ['A', 'D', 'U', 'R', 'H'])) {
+            throw new \InvalidArgumentException('Wrong user type');
         }
         $this->type = $type;
     }

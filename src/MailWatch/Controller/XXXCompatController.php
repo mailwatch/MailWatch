@@ -27,6 +27,7 @@
 
 namespace MailWatch\Controller;
 
+use MailWatch\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +37,7 @@ class XXXCompatController extends Controller
     /**
      * @Route("/status", name="status")
      * @Route("/", name="start")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_U') or is_granted('ROLE_U')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_D') or is_granted('ROLE_U')")
      */
     public function compatStatusCall()
     {
@@ -45,11 +46,15 @@ class XXXCompatController extends Controller
 
     /**
      * @Route("/{path}")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_U') or is_granted('ROLE_U')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_D') or is_granted('ROLE_U')")
      *
-     * @param mixed $path
+     * @param string $path
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Exception
      */
-    public function compatCall($path)
+    public function compatCall($path): \Symfony\Component\HttpFoundation\Response
     {
         $compatSrc = $this->get('kernel')->getProjectDir() . '/mailscanner/';
 
@@ -64,7 +69,12 @@ class XXXCompatController extends Controller
         return $this->render($compatSrc . $path);
     }
 
-    private function setSessionParams($usr)
+    /**
+     * @param User $usr
+     *
+     * @throws \Exception
+     */
+    private function setSessionParams(User $usr)
     {
         $myusername = $usr->getUsername();
         $usertype = $usr->getType();
@@ -86,7 +96,7 @@ class XXXCompatController extends Controller
                 if (strpos($myusername, '@')) {
                     $ar = explode('@', $myusername);
                     $domainname = $ar[1];
-                    if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
+                    if (\defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
                         $global_filter .= " OR to_domain='$domainname'";
                     } else {
                         $global_filter .= " OR to_domain='$domainname' OR from_domain='$domainname'";
