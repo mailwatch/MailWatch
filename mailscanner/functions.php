@@ -112,64 +112,6 @@ function mailwatch_version()
 }
 
 /**
- * @return array|mixed
- */
-function get_disks()
-{
-    $disks = [];
-    if (PHP_OS === 'Windows NT') {
-        // windows
-        $disks = shell_exec('fsutil fsinfo drives');
-        $disks = str_word_count($disks, 1);
-        //TODO: won't work on non english installation, we need to find an universal command
-        if ($disks[0] !== 'Drives') {
-            return [];
-        }
-        unset($disks[0]);
-        foreach ($disks as $disk) {
-            $disks[]['mountpoint'] = $disk . ':\\';
-        }
-    } else {
-        // unix
-        /*
-         * Using /proc/mounts as it seem to be standard on unix
-         *
-         * http://unix.stackexchange.com/a/24230/33366
-         * http://unix.stackexchange.com/a/12086/33366
-         */
-        $temp_drive = [];
-        if (is_file('/proc/mounts')) {
-            $mounted_fs = file('/proc/mounts');
-            foreach ($mounted_fs as $fs_row) {
-                $drive = preg_split("/[\s]+/", $fs_row);
-                if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
-                    $temp_drive['device'] = $drive[0];
-                    $temp_drive['mountpoint'] = $drive[1];
-                    $disks[] = $temp_drive;
-                    unset($temp_drive);
-                }
-                // TODO: list nfs mount (and other relevant fs type) in $disks[]
-            }
-        } else {
-            // fallback to mount command
-            $data = shell_exec('mount');
-            $data = explode("\n", $data);
-            foreach ($data as $disk) {
-                $drive = preg_split("/[\s]+/", $disk);
-                if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[2], '/chroot/') === false)) {
-                    $temp_drive['device'] = $drive[0];
-                    $temp_drive['mountpoint'] = $drive[2];
-                    $disks[] = $temp_drive;
-                    unset($temp_drive);
-                }
-            }
-        }
-    }
-
-    return $disks;
-}
-
-/**
  * @param $preserve
  * @return string|false
  */

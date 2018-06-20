@@ -517,9 +517,9 @@ function updateClock() {
         if (!DISTRIBUTED_SETUP) {
             // Drive display
             echo '    <tr><td colspan="3" class="heading" align="center">' . Translation::__('freedspace03') . '</td></tr>' . "\n";
-            foreach (get_disks() as $disk) {
-                $free_space = disk_free_space($disk['mountpoint']);
-                $total_space = disk_total_space($disk['mountpoint']);
+            foreach (Filesystem::getDisks() as $disk) {
+                $free_space = \disk_free_space($disk['mountpoint']);
+                $total_space = \disk_total_space($disk['mountpoint']);
                 $percent = '<span>';
                 if (round($free_space / $total_space, 2) <= 0.1) {
                     $percent = '<span class="error">';
