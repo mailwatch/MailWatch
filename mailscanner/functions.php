@@ -1595,21 +1595,3 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
     //return false to fail gracefully
     return false;
 }
-
-/**
- * Checks if the passed language code is allowed to be used for the users
- * @param string $langCode
- * @return bool
- */
-function checkLangCode($langCode)
-{
-    $validLang = explode(',', USER_SELECTABLE_LANG);
-    $found = array_search($langCode, $validLang);
-    if ($found === false || $found === null) {
-        \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditundefinedlang12', true), $langCode));
-
-        return false;
-    }
-
-    return true;
-}

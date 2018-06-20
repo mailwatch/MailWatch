@@ -83,7 +83,7 @@ class Translation
         self::$langCode = LANG;
         // If the user is allowed to select the language for the gui check which language he has choosen or create the cookie with the default lang
         if (defined('USER_SELECTABLE_LANG')) {
-            if (isset($_COOKIE['MW_LANG']) && checkLangCode($_COOKIE['MW_LANG'])) {
+            if (isset($_COOKIE['MW_LANG']) && self::checkLangCode($_COOKIE['MW_LANG'])) {
                 self::$langCode = $_COOKIE['MW_LANG'];
             } else {
                 setcookie('MW_LANG', LANG, 0, (session_get_cookie_params())['path'], (session_get_cookie_params())['domain'], $session_cookie_secure, false);
@@ -105,5 +105,23 @@ class Translation
         } else {
             self::$systemLang = (new $sysLangClass)::$TRANSLATION;
         }
+    }
+
+    /**
+     * Checks if the passed language code is allowed to be used for the users
+     * @param string $langCode
+     * @return bool
+     */
+    public static function checkLangCode($langCode)
+    {
+        $validLang = explode(',', USER_SELECTABLE_LANG);
+        $found = array_search($langCode, $validLang);
+        if ($found === false || $found === null) {
+            \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditundefinedlang12', true), $langCode));
+
+            return false;
+        }
+
+        return true;
     }
 }
