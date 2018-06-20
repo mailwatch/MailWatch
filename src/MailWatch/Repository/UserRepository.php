@@ -27,8 +27,8 @@
 
 namespace MailWatch\Repository;
 
-use MailWatch\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use MailWatch\Entity\User;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class UserRepository extends ServiceEntityRepository

@@ -27,14 +27,12 @@
 
 namespace MailWatch\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
 
 class XXXCompatController extends Controller
 {
-
     /**
      * @Route("/status", name="status")
      * @Route("/", name="start")
@@ -42,31 +40,33 @@ class XXXCompatController extends Controller
      */
     public function compatStatusCall()
     {
-        return $this->compatCall("status.php");
+        return $this->compatCall('status.php');
     }
 
     /**
      * @Route("/{path}")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_U') or is_granted('ROLE_U')")
+     * @param mixed $path
      */
     public function compatCall($path)
     {
-        $compatSrc = $this->get('kernel')->getProjectDir().'/mailscanner/';
+        $compatSrc = $this->get('kernel')->getProjectDir() . '/mailscanner/';
 
         if (!is_readable($compatSrc . 'conf.php')) {
             die('cannot_read_conf');
         }
         require_once $compatSrc . 'conf.php';
         require_once $compatSrc . 'functions.php';
-        $usr=$this->getUser();
+        $usr = $this->getUser();
         $this->setSessionParams($usr);
+
         return $this->render($compatSrc . $path);
     }
 
     private function setSessionParams($usr)
     {
-        $myusername=$usr->getUsername();
-        $usertype=$usr->getType();
+        $myusername = $usr->getUsername();
+        $usertype = $usr->getType();
 
         $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
         $result_userfilter = \MailWatch\Db::query($sql_userfilter);

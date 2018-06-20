@@ -28,8 +28,8 @@
 namespace MailWatch\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="MailWatch\Repository\UserRepository")
@@ -63,7 +63,6 @@ class User implements UserInterface, EquatableInterface
      * @ORM\Column(type="string", length=1, nullable=true)
      */
     private $type;
-
 
     /**
      * @ORM\Column(type="string", length=32, name="resetid", nullable=true)
@@ -101,9 +100,8 @@ class User implements UserInterface, EquatableInterface
         $this->username = $username;
         $this->password = $password;
         $this->fullname = $fullname;
-        this.setType($type);
+        this . settype($type);
     }
-
 
     public function getId()
     {
@@ -182,7 +180,7 @@ class User implements UserInterface, EquatableInterface
 
     public function setType($type)
     {
-        if (!in_array($type, ['A','D','U','R','H'])) {
+        if (!in_array($type, ['A', 'D', 'U', 'R', 'H'])) {
             throw new \InvalidArgumentException();
         }
         $this->type = $type;
@@ -225,12 +223,12 @@ class User implements UserInterface, EquatableInterface
 
     public function getRoles()
     {
-        return ["ROLE_".$this->type]; //TODO: roles have to start with ROLE_ change, migrate db roles
+        return ['ROLE_' . $this->type]; //TODO: roles have to start with ROLE_ change, migrate db roles
     }
 
     public function getSalt()
     {
-        return "";
+        return '';
     }
 
     public function isEqualTo(UserInterface $user): bool
@@ -242,6 +240,7 @@ class User implements UserInterface, EquatableInterface
         if ($this->username !== $user->getUsername()) {
             return false;
         }
+
         return true;
     }
 }

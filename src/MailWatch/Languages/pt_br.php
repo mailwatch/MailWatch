@@ -30,8 +30,6 @@
 
 namespace MailWatch\Languages;
 
-use MailWatch\Languages\AbstractLanguage;
-
 class pt_br extends AbstractLanguage
 {
     public static $TRANSLATION = [

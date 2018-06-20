@@ -95,7 +95,7 @@ class Translation
         if (!class_exists($langClass)) {
             self::$lang = \MailWatch\Languages\en::$TRANSLATION;
         } else {
-            self::$lang = (new $langClass)::$TRANSLATION;
+            self::$lang = (new $langClass())::$TRANSLATION;
         }
 
         // Load the lang file or en if the spicified language is not available
@@ -103,7 +103,7 @@ class Translation
         if (!class_exists($sysLangClass)) {
             self::$systemLang = \MailWatch\Languages\en::$TRANSLATION;
         } else {
-            self::$systemLang = (new $sysLangClass)::$TRANSLATION;
+            self::$systemLang = (new $sysLangClass())::$TRANSLATION;
         }
     }
 

@@ -30,8 +30,6 @@
 
 namespace MailWatch\Languages;
 
-use MailWatch\Languages\AbstractLanguage;
-
 class ja extends AbstractLanguage
 {
     public static $TRANSLATION = [

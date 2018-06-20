@@ -46,18 +46,16 @@ class LoginController extends Controller
         $lastUsername = $authUtils->getLastUsername();
 
         //required for localization
-        $compatSrc = $this->get('kernel')->getProjectDir().'/mailscanner/';
+        $compatSrc = $this->get('kernel')->getProjectDir() . '/mailscanner/';
         if (!is_readable($compatSrc . 'conf.php')) {
             die(\MailWatch\Translation::__('cannot_read_conf'));
         }
         require_once $compatSrc . 'conf.php';
         require_once $compatSrc . 'functions.php';
 
-
-
         return $this->render('Security/login.html.php', [
             'last_username' => $lastUsername,
-            'error'         => $error,
+            'error' => $error,
         ]);
     }
 }

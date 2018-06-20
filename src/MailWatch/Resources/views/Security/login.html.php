@@ -71,7 +71,7 @@ echo '<!doctype html>
     <h1>' . \MailWatch\Translation::__('mwlogin01') . '</h1>
     <div class="inner-container">';
     echo '
-        <form name="loginform" class="loginform" method="post" action="' .  $view['router']->path('login') . '" autocomplete="off">
+        <form name="loginform" class="loginform" method="post" action="' . $view['router']->path('login') . '" autocomplete="off">
             <fieldset>';
     if (isset($_GET['error'])) {
         $error = \MailWatch\Translation::__('errorund01');

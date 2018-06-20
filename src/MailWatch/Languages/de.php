@@ -30,8 +30,6 @@
 
 namespace MailWatch\Languages;
 
-use MailWatch\Languages\AbstractLanguage;
-
 class de extends AbstractLanguage
 {
     public static $TRANSLATION = [
@@ -1007,6 +1005,6 @@ class de extends AbstractLanguage
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
     'dbconnecterror99' => '<p>Fehler: Datenbankverbindung fehlgeschlagen</p><p>Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt.</p><p class="emphasise">Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht</p>',
-    'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht'
+    'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht',
     ];
 }
