@@ -29,7 +29,7 @@
 
 //require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
 } else {
     \MailWatch\Html::start(\MailWatch\Translation::__('saruldesupdate13'), 0, false, false);
@@ -73,7 +73,7 @@ if ($_SESSION['user_type'] !== 'A') {
                 $regs[1] = \MailWatch\Sanitize::safe_value($regs[1]);
                 $regs[2] = \MailWatch\Sanitize::safe_value($regs[2]);
                 \MailWatch\Db::query("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
-                //\MailWatch\Debug::debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
+            //\MailWatch\Debug::debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
                 \MailWatch\Debug::debug("$line - did not match regexp, not inserting into database");
             }

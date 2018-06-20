@@ -32,12 +32,13 @@ class Ldap
     /**
      * @param $username
      * @param $password
+     *
      * @return null|string
      */
     public static function authenticate($username, $password)
     {
         $username = ldap_escape(strtolower($username), '', LDAP_ESCAPE_DN);
-        if ($username !== '' && $password !== '') {
+        if ('' !== $username && '' !== $password) {
             $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(Translation::__('ldpaauth103') . ' ' . LDAP_HOST);
 
             $ldap_protocol_version = 3;
@@ -120,7 +121,7 @@ class Ldap
 
                         $sql = sprintf('SELECT username FROM users WHERE username = %s', Sanitize::quote_smart($email));
                         $sth = Db::query($sql);
-                        if ($sth->num_rows === 0) {
+                        if (0 === $sth->num_rows) {
                             $sql = sprintf(
                                 "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                                 Sanitize::quote_smart($email),
@@ -132,7 +133,7 @@ class Ldap
                         return $email;
                     }
 
-                    if (ldap_errno($ds) === 49) {
+                    if (49 === ldap_errno($ds)) {
                         //LDAP_INVALID_CREDENTIALS
                         return null;
                     }
@@ -146,6 +147,7 @@ class Ldap
 
     /**
      * @param $ds
+     *
      * @return string
      */
     public static function print_error($ds)
@@ -159,8 +161,10 @@ class Ldap
     }
 
     /**
-     * This function appears to be unused - can probably be removed
+     * This function appears to be unused - can probably be removed.
+     *
      * @param $entry
+     *
      * @return string
      */
     public static function ldap_get_conf_var($entry)
@@ -181,15 +185,15 @@ class Ldap
         $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
 
         $info = ldap_get_entries($lh, $sh);
-        if ($info['count'] > 0 && $info[0]['count'] !== 0) {
-            if ($info[0]['count'] === 0) {
+        if ($info['count'] > 0 && 0 !== $info[0]['count']) {
+            if (0 === $info[0]['count']) {
                 // Return single value
                 return $info[0][$info[0][0]][0];
             }
 
             // Multi-value option, build array and return as space delimited
             $return = [];
-            for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
+            for ($n = 0; $n < $info[0][$info[0][0]]['count']; ++$n) {
                 $return[] = $info[0][$info[0][0]][$n];
             }
 
@@ -201,8 +205,10 @@ class Ldap
     }
 
     /**
-     * This function appears to be unused - can probably be removed
+     * This function appears to be unused - can probably be removed.
+     *
      * @param $entry
+     *
      * @return bool
      */
     public static function ldap_get_conf_truefalse($entry)

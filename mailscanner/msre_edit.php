@@ -32,7 +32,7 @@
 //require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrator
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
     \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog55', true));
@@ -121,6 +121,7 @@ if ($_SESSION['user_type'] !== 'A') {
  * @param mixed $short_filename
  * @param mixed $file_contents
  * @param mixed $CONF_ruleset_keyword
+ *
  * @return displays the form
  */
 function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_keyword)
@@ -159,15 +160,15 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // this should find lines w/out comments, or lines that
         // start with #DISABLED#.
         // Treat empty lines as comments
-        if ($line === '') {
+        if ('' === $line) {
             $line = '#';
         }
-        if ((substr($line, 0, 1) !== '#')
+        if (('#' !== substr($line, 0, 1))
             || preg_match('/^#DISABLED#/', $line)
         ) {
             // Check for a description on the previous line
             $desc = '';
-            if (substr($previous_line, 0, 1) === '#') {
+            if ('#' === substr($previous_line, 0, 1)) {
                 $desc = $previous_line;
             }
             $ruleset[] = [$desc, $line];
@@ -191,7 +192,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         $old_rule_part = $rule_part;
         $rule_part = [];
         foreach ($old_rule_part as $current_part) {
-            if ($current_part !== '') {
+            if ('' !== $current_part) {
                 $rule_part[] = $current_part;
             }
         }
@@ -237,7 +238,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         $last_old_rule_part = array_pop($old_rule_part);
         // Need two differnt while loops I think, based on
         // if there was an and or not.
-        if (strtolower($rule_part['2and']) === 'and') {
+        if ('and' === strtolower($rule_part['2and'])) {
             // If there's an and, grab up to the 4and_target.
             $grab_to_field = '4and_target';
         } else {
@@ -250,7 +251,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // Now grab shit.
         while ($last_old_rule_part !== $rule_part[$grab_to_field]) {
             //echo "lorp$rule_count: $last_old_rule_part<br>\n";
-            if ($last_old_rule_part !== null) {
+            if (null !== $last_old_rule_part) {
                 $rule_part['99action'] = $last_old_rule_part . ' ' . $rule_part['99action'];
             }
             $last_old_rule_part = array_pop($old_rule_part);
@@ -261,7 +262,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // leading up to the action. But only if the rule
         // isn't supposed to have an "and".  w/an "and", it already
         // has the proper data thx to the above code.
-        if ($rule_part['2and'] && strtolower($rule_part['2and']) !== 'and') {
+        if ($rule_part['2and'] && 'and' !== strtolower($rule_part['2and'])) {
             // clean shit out
             $rule_part['2and'] = null;
             $rule_part['3and_direction'] = null;
@@ -304,7 +305,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // all, but w/the new way i'm writing the rules (w/the border),
         // each one is in a seperate table, and they don't line up
         // w/out the select box.
-        if (strtolower($rule_part['1target'] === 'default')) {
+        if (strtolower('default' === $rule_part['1target'])) {
             $rule_action_select_html .= ' disabled';
         }
 
@@ -397,13 +398,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     if ($rule_disabled) {
                         $field_name .= '_disabled';
                     }
-                    if (strtolower($key) === '99action') {
+                    if ('99action' === strtolower($key)) {
                         $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . \MailWatch\Translation::__('action55')
                         . '</b>&nbsp;&nbsp;<input type="text" name="' . $field_name . '" value="' . $value . '" size="100"';
                     } else {
                         $temp_text = '<input type="text" name="' . $field_name . '" value="' . $value . '"';
                     }
-                    if ($rule_disabled || (strtolower($key) === '1target' && strtolower($value) === 'default')) {
+                    if ($rule_disabled || ('1target' === strtolower($key) && 'default' === strtolower($value))) {
                         $temp_text .= ' disabled ';
                     }
                     $temp_text .= '>';
@@ -439,7 +440,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // And a blank space too to break them up a li'l more
         //echo "<tr><td colspan=\"" . MSRE_COLUMNS . "\" bgcolor=\"white\">&nbsp;</td></tr>\n";
 
-        $rule_count++;
+        ++$rule_count;
     }
 
     // Write the rule count as a hidden field, so that I have it
@@ -531,8 +532,8 @@ function Process_Form($file_contents, $short_filename)
     $previous_line = '';
     $first_line = true;
     foreach (preg_split("/\n/", $file_contents) as $line) {
-        if ($line === '' ||
-             (substr($line, 0, 1) === '#' && !preg_match('/#DISABLED#/', $line))
+        if ('' === $line ||
+             ('#' === substr($line, 0, 1) && !preg_match('/#DISABLED#/', $line))
         ) {
             if (!$first_line) {
                 $new_file[] = $previous_line . "\n";
@@ -563,7 +564,7 @@ function Process_Form($file_contents, $short_filename)
     if (!\MailWatch\Sanitize::validateInput($count, 'num')) {
         die(\MailWatch\Translation::__('dievalidate99'));
     }
-    for ($i = -1; $i <= $count; $i++) {
+    for ($i = -1; $i <= $count; ++$i) {
         $rule_prefix = 'rule' . $i . '_';
         $description = $rule_prefix . 'description';
         $direction = $rule_prefix . 'direction';
@@ -609,12 +610,12 @@ function Process_Form($file_contents, $short_filename)
         // On no account allow invalid rule
         // Target and Action must both have values
         // delete rule if they don't
-        if ($_POST[$target] === '' || $_POST[$action] === '') {
+        if ('' === $_POST[$target] || '' === $_POST[$action]) {
             continue;
         }
-        if (strtolower($_POST[$target]) === 'default') {
+        if ('default' === strtolower($_POST[$target])) {
             // Default 'direction' can only be "Virus:" or "FromOrTo:"
-            if ($_POST[$direction] === 'Virus:') {
+            if ('Virus:' === $_POST[$direction]) {
                 $default_direction = 'Virus:';
             } else {
                 $default_direction = 'FromOrTo:';
@@ -655,7 +656,7 @@ function Process_Form($file_contents, $short_filename)
             $_POST[$and] = '';
         }
         // If any of the "and" parts are missing, clear the whole and part
-        if ($_POST[$and] === '' || $_POST[$and_direction] === '' || $_POST[$and_target] === '') {
+        if ('' === $_POST[$and] || '' === $_POST[$and_direction] || '' === $_POST[$and_target]) {
             $_POST[$and] = '';
             $_POST[$and_direction] = '';
             $_POST[$and_target] = '';
@@ -687,7 +688,7 @@ function Process_Form($file_contents, $short_filename)
             $new_rule['action'] . "\n";
     }
     // And add on the default rule if there is one.
-    if ($default_action !== '') {
+    if ('' !== $default_action) {
         $new_file[] = '#' . \MailWatch\Sanitize::sanitizeInput($default_desc) . "\n";
         $new_file[] = \MailWatch\Sanitize::sanitizeInput($default_direction) . "\tdefault\t\t\t" . \MailWatch\Sanitize::sanitizeInput($default_action) . "\n";
     }
@@ -743,6 +744,7 @@ function Read_File($filename, $size)
 /**
  * @param string $filename
  * @param array $content
+ *
  * @return array
  */
 function Write_File($filename, $content)

@@ -29,7 +29,7 @@
 
 //require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
 } else {
     \MailWatch\Html::start(\MailWatch\Translation::__('rules30'));
@@ -43,7 +43,7 @@ if ($_SESSION['user_type'] !== 'A') {
         $FilePath = realpath(\MailWatch\Sanitize::sanitizeInput($_GET['file']));
     }
 
-    if ($FilePath === false || (strpos($FilePath, $MailscannerEtcDir) !== 0 && strpos($FilePath, $MailscannerRepDir) !== 0)) {
+    if (false === $FilePath || (0 !== strpos($FilePath, $MailscannerEtcDir) && 0 !== strpos($FilePath, $MailscannerRepDir))) {
         // Directory Traversal
         echo \MailWatch\Translation::__('dirblocked30') . "\n";
     } else {

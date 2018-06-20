@@ -44,6 +44,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param array $match
+     *
      * @return array
      */
     abstract public function extractKeyValuePairs($match);
@@ -146,7 +147,7 @@ abstract class MtaLogProcessor
                     "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
                 );
             }
-            $lines++;
+            ++$lines;
         }
         Db::close();
         pclose($fp);
@@ -154,6 +155,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param string $line
+     *
      * @return bool
      */
     public function parse($line)
@@ -221,6 +223,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param string $entry
+     *
      * @return string
      */
     public function getEmail($entry)

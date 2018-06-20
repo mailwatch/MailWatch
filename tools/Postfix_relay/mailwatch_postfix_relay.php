@@ -47,7 +47,7 @@ require_once $pathToFunctions;
 set_time_limit(0);
 
 $logprocessor = new PostfixLogProcessor();
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
+if (isset($_SERVER['argv'][1]) && '--refresh' === $_SERVER['argv'][1]) {
     $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first

@@ -39,11 +39,11 @@ function rpc_get_quarantine($msg)
         $quarantinedir = \MailWatch\MailScanner::getConfVar('QuarantineDir');
         $item = [];
         $output = [];
-        if ($input === '/') {
+        if ('/' === $input) {
             // Return top-level directory
             $d = @opendir($quarantinedir);
             while (false !== ($f = readdir($d))) {
-                if ($f !== '.' && $f !== '..') {
+                if ('.' !== $f && '..' !== $f) {
                     $item[] = $f;
                 }
             }
@@ -60,7 +60,7 @@ function rpc_get_quarantine($msg)
                 case is_dir($quarantinedir . $input):
                     $d = @opendir($quarantinedir . $input);
                     while (false !== ($f = readdir($d))) {
-                        if ($f !== '.' && $f !== '..') {
+                        if ('.' !== $f && '..' !== $f) {
                             $item[] = $f;
                         }
                     }

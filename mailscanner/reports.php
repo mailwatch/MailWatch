@@ -82,7 +82,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
             if (isset($_POST['save_as'])) {
                 $name = \MailWatch\Sanitize::sanitizeInput($_POST['save_as']);
             }
-            if (isset($_POST['filter']) && $_POST['filter'] !== '_none_') {
+            if (isset($_POST['filter']) && '_none_' !== $_POST['filter']) {
                 $name = \MailWatch\Sanitize::sanitizeInput($_POST['filter']);
             }
             if (!empty($name)) {
@@ -127,15 +127,15 @@ $filter->AddReport('rep_top_sender_domains_by_volume.php', \MailWatch\Translatio
 $filter->AddReport('rep_top_recipient_domains_by_quantity.php', \MailWatch\Translation::__('toprecipdomqt14'));
 $filter->AddReport('rep_top_recipient_domains_by_volume.php', \MailWatch\Translation::__('toprecipdomvol14'));
 
-if (\MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin') === true) {
+if (true === \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin')) {
     $filter->AddReport('rep_sa_score_dist.php', \MailWatch\Translation::__('assassinscoredist14'));
     $filter->AddReport('rep_sa_rule_hits.php', \MailWatch\Translation::__('assassinrulhit14'));
 }
-if (\MailWatch\MailScanner::getConfTrueFalse('MCPChecks') === true) {
+if (true === \MailWatch\MailScanner::getConfTrueFalse('MCPChecks')) {
     $filter->AddReport('rep_mcp_score_dist.php', \MailWatch\Translation::__('mcpscoredist14'));
     $filter->AddReport('rep_mcp_rule_hits.php', \MailWatch\Translation::__('mcprulehit14'));
 }
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     $filter->AddReport('rep_audit_log.php', \MailWatch\Translation::__('auditlog14'), true);
 }
 $filter->Display($_SESSION['token']);

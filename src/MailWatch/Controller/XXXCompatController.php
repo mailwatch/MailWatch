@@ -46,6 +46,7 @@ class XXXCompatController extends Controller
     /**
      * @Route("/{path}")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_U') or is_granted('ROLE_U')")
+     *
      * @param mixed $path
      */
     public function compatCall($path)
@@ -109,9 +110,9 @@ class XXXCompatController extends Controller
         $_SESSION['myusername'] = $usr->getUsername();
         $_SESSION['fullname'] = $usr->getFullname();
         $_SESSION['user_type'] = $usr->getType();
-        $_SESSION['domain'] = (isset($domainname) ? $domainname : '');
+        $_SESSION['domain'] = ($domainname ?? '');
         $_SESSION['global_filter'] = '(' . $global_filter . ')';
-        $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
+        $_SESSION['global_list'] = ($global_list ?? '');
         $_SESSION['global_array'] = $filter;
         if (!isset($_SESSION['token'])) {
             $_SESSION['token'] = \MailWatch\Security::generateToken();

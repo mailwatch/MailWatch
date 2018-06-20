@@ -63,12 +63,14 @@ class Antivirus
      *    define('VIRUS_REGEX', '/(\S+) was infected by (\S+)/');
      *
      * @param string|null $scanner
+     *
      * @throws \RuntimeException
+     *
      * @return null|string
      */
     public static function getVirusRegex($scanner = null)
     {
-        if ($scanner === null) {
+        if (null === $scanner) {
             $scanner = self::getPrimaryScanner();
         }
         if (!defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
@@ -152,6 +154,7 @@ class Antivirus
 
     /**
      * @param string $scanner
+     *
      * @return string|false
      */
     public static function getAntivirusConf($scanner)
@@ -175,7 +178,9 @@ class Antivirus
 
     /**
      * @param string $report virus report message
+     *
      * @throws \RuntimeException
+     *
      * @return string|null
      */
     public static function getVirus($report)
@@ -187,11 +192,11 @@ class Antivirus
             $scanners = explode(' ', MailScanner::getConfVar('VirusScanners'));
             foreach ($scanners as $scanner) {
                 $scannerRegex = static::getVirusRegex($scanner);
-                if ($scannerRegex === null || $scannerRegex === '') {
+                if (null === $scannerRegex || '' === $scannerRegex) {
                     error_log('Could not find regex for virus scanner ' . $scanner);
                     continue;
                 }
-                if (preg_match($scannerRegex, $report, $match) === 1) {
+                if (1 === preg_match($scannerRegex, $report, $match)) {
                     break;
                 }
             }
@@ -205,6 +210,7 @@ class Antivirus
 
     /**
      * @param string $virus
+     *
      * @return string
      */
     public static function getVirusLink($virus)
@@ -221,11 +227,12 @@ class Antivirus
 
     /**
      * @throws \RuntimeException
+     *
      * @return string
      */
     public static function return_todays_top_virus()
     {
-        if (self::getVirusRegex() === null) {
+        if (null === self::getVirusRegex()) {
             return Translation::__('unknownvirusscanner03');
         }
         $sql = '
@@ -242,16 +249,16 @@ AND
         $virus_array = [];
         while ($row = $result->fetch_object()) {
             $virus = self::getVirus($row->report);
-            if ($virus !== null) {
+            if (null !== $virus) {
                 $virus = self::getVirusLink($virus);
                 if (!isset($virus_array[$virus])) {
                     $virus_array[$virus] = 1;
                 } else {
-                    $virus_array[$virus]++;
+                    ++$virus_array[$virus];
                 }
             }
         }
-        if (count($virus_array) === 0) {
+        if (0 === count($virus_array)) {
             return Translation::__('none03');
         }
         arsort($virus_array);
@@ -261,12 +268,12 @@ AND
         $top = null;
         $count = 0;
         foreach ($virus_array as $key => $val) {
-            if ($top === null) {
+            if (null === $top) {
                 $top = $val;
             } elseif ($val !== $top) {
                 break;
             }
-            $count++;
+            ++$count;
         }
         $topvirus_arraykeys = array_keys($virus_array);
         $topvirus = $topvirus_arraykeys[0];

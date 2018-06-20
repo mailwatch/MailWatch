@@ -64,7 +64,7 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
     $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
     //$rsp = $client->send($msg);
     $rsp = xmlrpc_wrapper($message_data->hostname, $msg);
-    if ($rsp->faultCode() === 0) {
+    if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
         die(\MailWatch\Translation::__('error58') . ' ' . $rsp->faultString());
@@ -134,9 +134,9 @@ function decode_structure($structure)
             }
             */
             if (isset($structure->ctype_parameters['charset'])) {
-                if (strtolower($structure->ctype_parameters['charset']) === 'windows-1255') {
+                if ('windows-1255' === strtolower($structure->ctype_parameters['charset'])) {
                     $structure->body = iconv('ISO-8859-8', 'UTF-8', $structure->body);
-                } elseif (strtolower($structure->ctype_parameters['charset']) !== 'utf-8') {
+                } elseif ('utf-8' !== strtolower($structure->ctype_parameters['charset'])) {
                     $structure->body = utf8_encode($structure->body);
                 }
             }
@@ -154,9 +154,9 @@ function decode_structure($structure)
         case 'text/html':
             echo '<!DOCTYPE html>' . "\n";
             if (isset($structure->ctype_parameters['charset'])) {
-                if (strtolower($structure->ctype_parameters['charset']) === 'windows-1255') {
+                if ('windows-1255' === strtolower($structure->ctype_parameters['charset'])) {
                     $structure->body = iconv('ISO-8859-8', 'UTF-8', $structure->body);
-                } elseif (strtolower($structure->ctype_parameters['charset']) !== 'utf-8') {
+                } elseif ('utf-8' !== strtolower($structure->ctype_parameters['charset'])) {
                     $structure->body = utf8_encode($structure->body);
                 }
             }
@@ -180,7 +180,7 @@ function decode_structure($structure)
             preg_match("/.*total=([\d]*).*/", $structure->headers['content-type'], $totalParts);
 
             //build filename
-            $filename = isset($identifier[1]) ? $identifier[1] : 'partialMessage';
+            $filename = $identifier[1] ?? 'partialMessage';
             if (isset($partNumber[1])) {
                 $filename .= ' - Part ' . $partNumber[1];
             }

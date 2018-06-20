@@ -80,12 +80,12 @@ if (!isset($_GET['action'])) {
 }
 
 $id = \MailWatch\Sanitize::deepSanitizeInput($_GET['id'], 'url');
-if ($id === false || !\MailWatch\Sanitize::validateInput($id, 'msgid')) {
+if (false === $id || !\MailWatch\Sanitize::validateInput($id, 'msgid')) {
     die();
 }
 
 $list = \MailWatch\Quarantine::quarantine_list_items($id);
-if (count($list) === 0) {
+if (0 === count($list)) {
     die(\MailWatch\Translation::__('diemnf57'));
 }
 
@@ -95,11 +95,11 @@ switch ($_GET['action']) {
             die(\MailWatch\Translation::__('dietoken99'));
         }
         $result = '';
-        if (count($list) === 1) {
+        if (1 === count($list)) {
             $to = $list[0]['to'];
             $result = \MailWatch\Quarantine::quarantine_release($list, [0], $to);
         } else {
-            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                 if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
                     $result = \MailWatch\Quarantine::quarantine_release($list, [$i], $list[$i]['to']);
                 }
@@ -144,7 +144,7 @@ switch ($_GET['action']) {
                 simple_html_end();
             } else {
                 simple_html_start();
-                for ($i = 0, $countList = count($list); $i < $countList; $i++) {
+                for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                     $status[] = \MailWatch\Quarantine::quarantine_delete($list, [$i]);
                 }
                 $status = implode('<br/>', $status);
@@ -156,7 +156,7 @@ switch ($_GET['action']) {
                 die(\MailWatch\Translation::__('dietoken99'));
             }
             // Delete
-            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                 $status[] = \MailWatch\Quarantine::quarantine_delete($list, [$i]);
             }
         }

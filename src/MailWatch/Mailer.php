@@ -35,12 +35,13 @@ class Mailer
      * @param string $text
      * @param string $subject
      * @param bool $pwdreset
+     *
      * @return mixed
      */
     public static function send($email, $html, $text, $subject, $pwdreset = false)
     {
         $mime = new \Mail_mime("\n");
-        if ($pwdreset === true && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
+        if (true === $pwdreset && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
             $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
         } else {
             $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';

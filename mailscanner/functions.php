@@ -60,9 +60,9 @@ session_set_cookie_params(0, $params['path'], $params['domain'], $session_cookie
 \MailWatch\Translation::configureLanguage();
 
 $missingConfigEntries = checkConfVariables();
-if ($missingConfigEntries['needed']['count'] !== 0) {
+if (0 !== $missingConfigEntries['needed']['count']) {
     $br = '';
-    if (PHP_SAPI !== 'cli') {
+    if (\PHP_SAPI !== 'cli') {
         $br = '<br>';
     }
     echo \MailWatch\Translation::__('missing_conf_entries') . $br . PHP_EOL;
@@ -81,15 +81,15 @@ if ($missingConfigEntries['needed']['count'] !== 0) {
 );*/
 
 //Enforce SSL if SSL_ONLY=true
-if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
-    if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
+if (\PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
+    if (!isset($_SERVER['HTTPS']) || 'on' !== $_SERVER['HTTPS']) {
         header('Location: https://' . \MailWatch\Sanitize::sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
 }
 
 //security headers
-if (PHP_SAPI !== 'cli') {
+if (\PHP_SAPI !== 'cli') {
     header('X-XSS-Protection: 1; mode=block');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
@@ -113,6 +113,7 @@ function mailwatch_version()
 
 /**
  * @param $preserve
+ *
  * @return string|false
  */
 function subtract_get_vars($preserve)
@@ -138,6 +139,7 @@ function subtract_get_vars($preserve)
 
 /**
  * @param string[] $preserve
+ *
  * @return string|false
  */
 function subtract_multi_get_vars($preserve)
@@ -161,6 +163,7 @@ function subtract_multi_get_vars($preserve)
 
 /**
  * @param string $sql the sql query for which the page will be created
+ *
  * @return int
  */
 function generatePager($sql)
@@ -208,7 +211,7 @@ function generatePager($sql)
       </table>
 </tr>
 <tr>
-  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
+  <td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">';
 
     return $from;
 }
@@ -237,7 +240,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
     }
     if (!empty($orderby)) {
-        if (($p = stristr($sql, 'ORDER BY')) !== false) {
+        if (false !== ($p = stristr($sql, 'ORDER BY'))) {
             // We already have an existing ORDER BY clause
             $p = "ORDER BY\n  " . $orderby . ' ' . $orderdir . ',' . substr($p, strlen('ORDER BY') + 2);
             $sql = substr($sql, 0, strpos($sql, 'ORDER BY')) . $p;
@@ -257,21 +260,21 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
-        if ($operations !== false) {
-            $fields++;
+        if (false !== $operations) {
+            ++$fields;
         }
     } else {
         $sth = \MailWatch\Db::query($sql);
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
-        if ($operations !== false) {
-            $fields++;
+        if (false !== $operations) {
+            ++$fields;
         }
     }
 
     if ($rows > 0) {
-        if ($operations !== false) {
+        if (false !== $operations) {
             // Start form for operations
             echo '<form name="operations" action="./do_message_ops.php" method="POST">' . "\n";
             echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
@@ -284,8 +287,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $orderable = [];
         $fieldname = [];
         $align = [];
-        for ($f = 0; $f < $fields; $f++) {
-            if ($f === 0 && $operations !== false) {
+        for ($f = 0; $f < $fields; ++$f) {
+            if (0 === $f && false !== $operations) {
                 // Set up display for operations form elements
                 $display[$f] = true;
                 $orderable[$f] = false;
@@ -299,7 +302,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $align[$f] = false;
             // Set up the mysql column to account for operations
             $colnum = $f;
-            if ($operations !== false) {
+            if (false !== $operations) {
                 $colnum = $f - 1;
             }
 
@@ -457,12 +460,12 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             }
         }
         // Table heading
-        if (isset($table_heading) && $table_heading !== '') {
+        if (isset($table_heading) && '' !== $table_heading) {
             // Work out how many columns are going to be displayed
             $column_headings = 0;
-            for ($f = 0; $f < $fields; $f++) {
+            for ($f = 0; $f < $fields; ++$f) {
                 if ($display[$f]) {
-                    $column_headings++;
+                    ++$column_headings;
                 }
             }
             echo ' <tr class="nohover"">' . "\n";
@@ -471,11 +474,11 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         // Column headings
         echo '<tr class="sonoqui nohover">' . "\n";
-        for ($f = 0; $f < $fields; $f++) {
+        for ($f = 0; $f < $fields; ++$f) {
             if ($display[$f]) {
                 if ($order && $orderable[$f]) {
                     // Set up the mysql column to account for operations
-                    if ($operations !== false) {
+                    if (false !== $operations) {
                         $colnum = $f - 1;
                     } else {
                         $colnum = $f;
@@ -498,9 +501,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $id = '';
         $jsRadioCheck = '';
         $jsReleaseCheck = '';
-        for ($r = 0; $r < $rows; $r++) {
+        for ($r = 0; $r < $rows; ++$r) {
             $row = $sth->fetch_row();
-            if ($operations !== false) {
+            if (false !== $operations) {
                 // Prepend operations elements - later on, replace REPLACEME w/ message id
                 array_unshift(
                     $row,
@@ -520,9 +523,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             $released = false;
             $salearnham = false;
             $salearnspam = false;
-            for ($f = 0; $f < $fields; $f++) {
-                if ($operations !== false) {
-                    if ($f === 0) {
+            for ($f = 0; $f < $fields; ++$f) {
+                if (false !== $operations) {
+                    if (0 === $f) {
                         // Skip the first field if it is operations
                         continue;
                     }
@@ -567,7 +570,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             // Trim each address to specified size
                             $to_temp = explode(',', $row[$f]);
                             $num_to_temp = count($to_temp);
-                            for ($t = 0; $t < $num_to_temp; $t++) {
+                            for ($t = 0; $t < $num_to_temp; ++$t) {
                                 $to_temp[$t] = \MailWatch\Format::trim_output($to_temp[$t], FROMTO_MAXLEN);
                             }
                             // Return the data
@@ -583,29 +586,29 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         }
                         break;
                     case 'isspam':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $spam = true;
                             $status_array[] = \MailWatch\Translation::__('spam103');
                         }
                         break;
                     case 'ishighspam':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $highspam = true;
                         }
                         break;
                     case 'ismcp':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $mcp = true;
                             $status_array[] = \MailWatch\Translation::__('mcp03');
                         }
                         break;
                     case 'ishighmcp':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $highmcp = true;
                         }
                         break;
                     case 'virusinfected':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $infected = true;
                             $status_array[] = \MailWatch\Translation::__('virus03');
                         }
@@ -614,7 +617,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         // IMPORTANT NOTE: for this to work correctly the 'report' field MUST
                         // appear after the 'virusinfected' field within the SQL statement.
                         $virus = \MailWatch\Antivirus::getVirus($row[$f]);
-                        if (defined('DISPLAY_VIRUS_REPORT') && DISPLAY_VIRUS_REPORT === true && $virus !== null) {
+                        if (defined('DISPLAY_VIRUS_REPORT') && DISPLAY_VIRUS_REPORT === true && null !== $virus) {
                             foreach ($status_array as $k => $v) {
                                 if ($v = str_replace('Virus', 'Virus (' . \MailWatch\Antivirus::getVirusLink($virus) . ')', $v)) {
                                     $status_array[$k] = $v;
@@ -623,13 +626,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         }
                         break;
                     case 'nameinfected':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $infected = true;
                             $status_array[] = \MailWatch\Translation::__('badcontent03');
                         }
                         break;
                     case 'otherinfected':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $infected = true;
                             $status_array[] = \MailWatch\Translation::__('otherinfected03');
                         }
@@ -638,13 +641,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = \MailWatch\Format::formatSize($row[$f]);
                         break;
                     case 'spamwhitelisted':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $whitelisted = true;
                             $status_array[] = \MailWatch\Translation::__('whitelisted03');
                         }
                         break;
                     case 'spamblacklisted':
-                        if ($row[$f] === 'Y' || $row[$f] > 0) {
+                        if ('Y' === $row[$f] || $row[$f] > 0) {
                             $blacklisted = true;
                             $status_array[] = \MailWatch\Translation::__('blacklisted03');
                         }
@@ -678,7 +681,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'status':
                         // NOTE: this should always be the last row for it to be displayed correctly
                         // Work out status
-                        if (count($status_array) === 0) {
+                        if (0 === count($status_array)) {
                             $status = \MailWatch\Translation::__('clean03');
                         } else {
                             $status = '';
@@ -700,7 +703,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 }
             }
             // Now add the id to the operations form elements
-            if ($operations !== false) {
+            if (false !== $operations) {
                 $row[0] = str_replace('REPLACEME', $id, $row[0]);
                 $jsRadioCheck .= "  document.operations.elements[\"OPT-$id\"][val].checked = true;\n";
                 $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
@@ -729,7 +732,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     echo '<tr class="mcp">' . "\n";
                     break;
                 default:
-                    if (isset($fieldname['mcpsascore']) && $fieldname['mcpsascore'] !== '') {
+                    if (isset($fieldname['mcpsascore']) && '' !== $fieldname['mcpsascore']) {
                         echo '<tr class="mcp">' . "\n";
                     } else {
                         echo '<tr >' . "\n";
@@ -737,10 +740,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
             }
             // Display the rows
-            for ($f = 0; $f < $fields; $f++) {
+            for ($f = 0; $f < $fields; ++$f) {
                 if ($display[$f]) {
                     if ($align[$f]) {
-                        if ($f === 0) {
+                        if (0 === $f) {
                             echo ' <td align="' . $align[$f] . '" class="link-transparent">' . $row[$f] . '</td>' . "\n";
                         } else {
                             echo ' <td align="' . $align[$f] . '">' . $row[$f] . '</td>' . "\n";
@@ -754,7 +757,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
         echo '</table>' . "\n";
         // Javascript function to clear radio buttons
-        if ($operations !== false) {
+        if (false !== $operations) {
             echo "
 <script type='text/javascript'>
     function ClearRadios() {
@@ -809,7 +812,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 }
 
 /**
- * Function to display data as a table
+ * Function to display data as a table.
  *
  * @param $sql
  * @param string|null $title
@@ -875,7 +878,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
           </table>
 </tr>
 <tr>
-  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
+  <td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">';
 
         // Re-run the original query and limit the rows
         $sql .= ' LIMIT ' . ($from - 1) . ',' . MAX_RESULTS;
@@ -883,27 +886,27 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
-        if ($operations !== false) {
-            $fields++;
+        if (false !== $operations) {
+            ++$fields;
         }
     } else {
         $sth = \MailWatch\Db::query($sql);
         $rows = $sth->num_rows;
         $fields = $sth->field_count;
         // Account for extra operations column
-        if ($operations !== false) {
-            $fields++;
+        if (false !== $operations) {
+            ++$fields;
         }
     }
 
     if ($rows > 0) {
         echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
-        if ($title !== null) {
+        if (null !== $title) {
             echo '<tr><th colspan=' . $fields . '>' . $title . '</TH></tr>' . "\n";
         }
         // Column headings
         echo ' <tr>' . "\n";
-        if ($operations !== false) {
+        if (false !== $operations) {
             echo '<td></td>';
         }
 
@@ -914,7 +917,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         // Rows
         while ($row = $sth->fetch_row()) {
             echo ' <tr class="table-background">' . "\n";
-            for ($f = 0; $f < $fields; $f++) {
+            for ($f = 0; $f < $fields; ++$f) {
                 echo '  <td>' . preg_replace(
                         "/,([^\s])/",
                         ', $1',
@@ -969,7 +972,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
           </table>
 </tr>
 <tr>
-  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
+  <td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">';
     }
 }
 
@@ -1025,6 +1028,7 @@ function page_creation_timer()
 
 /**
  * @param $dir
+ *
  * @return bool|int
  *
  * @todo rewrite using SPL
@@ -1032,7 +1036,7 @@ function page_creation_timer()
 function count_files_in_dir($dir)
 {
     $file_list_array = @scandir($dir);
-    if ($file_list_array === false) {
+    if (false === $file_list_array) {
         return false;
     }
 
@@ -1042,6 +1046,7 @@ function count_files_in_dir($dir)
 
 /**
  * @param string $message_headers
+ *
  * @return array|bool
  */
 function get_mail_relays($message_headers)
@@ -1068,6 +1073,7 @@ function get_mail_relays($message_headers)
 /**
  * @param array $addresses
  * @param string $type
+ *
  * @return string
  */
 function address_filter_sql($addresses, $type)
@@ -1122,12 +1128,14 @@ function address_filter_sql($addresses, $type)
  * @param $entry
  * @param mixed $username
  * @param mixed $password
+ *
  * @return bool
  */
 
 /**
  * @param string $username
  * @param string $password
+ *
  * @return null|string
  */
 function imap_authenticate($username, $password)
@@ -1139,7 +1147,7 @@ function imap_authenticate($username, $password)
         return null;
     }
 
-    if ($username !== '' && $password !== '') {
+    if ('' !== $username && '' !== $password) {
         $mbox = imap_open(IMAP_HOST, $username, $password, null, 0);
 
         if (false === $mbox) {
@@ -1150,7 +1158,7 @@ function imap_authenticate($username, $password)
         if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
             $sql = sprintf('SELECT username FROM users WHERE username = %s', \MailWatch\Sanitize::quote_smart($username));
             $sth = \MailWatch\Db::query($sql);
-            if ($sth->num_rows === 0) {
+            if (0 === $sth->num_rows) {
                 $sql = sprintf(
                     "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                      \MailWatch\Sanitize::quote_smart($username),
@@ -1168,6 +1176,7 @@ function imap_authenticate($username, $password)
 
 /**
  * @param $name
+ *
  * @return string
  */
 function translate_etoi($name)
@@ -1196,6 +1205,7 @@ function translate_etoi($name)
 
 /**
  * @param $input
+ *
  * @return string
  */
 function decode_header($input)
@@ -1228,6 +1238,7 @@ function decode_header($input)
 
 /**
  * @param $host
+ *
  * @return bool
  */
 function is_local($host)
@@ -1247,12 +1258,13 @@ function is_local($host)
 
 /**
  * @param $id
+ *
  * @return mixed
  */
 function fixMessageId($id)
 {
     $mta = \MailWatch\MailScanner::getConfVar('mta');
-    if ($mta === 'postfix') {
+    if ('postfix' === $mta) {
         $id = str_replace('_', '.', $id);
     }
 
@@ -1261,6 +1273,7 @@ function fixMessageId($id)
 
 /**
  * @param $array
+ *
  * @return array|number
  */
 function mailwatch_array_sum($array)
@@ -1275,6 +1288,7 @@ function mailwatch_array_sum($array)
 
 /**
  * @param $file
+ *
  * @return mixed
  */
 function read_ruleset_default($file)
@@ -1283,7 +1297,7 @@ function read_ruleset_default($file)
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/(\S+)\s+(\S+)\s+(\S+)/', $line, $regs)) {
-            if (strtolower($regs[2]) === 'default') {
+            if ('default' === strtolower($regs[2])) {
                 // Check that it isn't another ruleset
                 if (is_file($regs[3])) {
                     return read_ruleset_default($regs[3]);
@@ -1307,15 +1321,15 @@ function is_rpc_client_allowed()
         return true;
     }
     // Get list of allowed clients
-    if (defined('RPC_ALLOWED_CLIENTS') && (!RPC_ALLOWED_CLIENTS === false)) {
+    if (defined('RPC_ALLOWED_CLIENTS') && (false === !RPC_ALLOWED_CLIENTS)) {
         // Read in space separated list
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ($client === 'allprivate' && ip_in_range($_SERVER['SERVER_ADDR'], false, 'private')) {
+            if ('allprivate' === $client && ip_in_range($_SERVER['SERVER_ADDR'], false, 'private')) {
                 return true;
             }
-            if ($client === 'local24') {
+            if ('local24' === $client) {
                 // Get machine IP address from the hostname
                 $ip = gethostbyname(rtrim(gethostname()));
                 // Change IP address to a /24 network
@@ -1347,6 +1361,7 @@ function is_rpc_client_allowed()
 /**
  * @param $host
  * @param $msg
+ *
  * @return xmlrpcresp
  */
 function xmlrpc_wrapper($host, $msg)
@@ -1379,6 +1394,7 @@ function xmlrpc_wrapper($host, $msg)
 
 /**
  * @param string $username username that should be checked if it exists
+ *
  * @return bool true if user exists, else false
  */
 function checkForExistingUser($username)
@@ -1559,11 +1575,12 @@ function checkConfVariables()
  * @param $ip
  * @param bool|string $net
  * @param bool|string $privateLocal
+ *
  * @return bool
  */
 function ip_in_range($ip, $net = false, $privateLocal = false)
 {
-    if ($privateLocal === 'private') {
+    if ('private' === $privateLocal) {
         $privateIPSet = new \IPSet\IPSet([
             '10.0.0.0/8',
             '172.16.0.0/12',
@@ -1575,7 +1592,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
         return $privateIPSet->match($ip);
     }
 
-    if ($privateLocal === 'local') {
+    if ('local' === $privateLocal) {
         $localIPSet = new \IPSet\IPSet([
             '127.0.0.0/8',
             '::1',
@@ -1584,7 +1601,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
         return $localIPSet->match($ip);
     }
 
-    if ($privateLocal === false && $net !== false) {
+    if (false === $privateLocal && false !== $net) {
         $network = new \IPSet\IPSet([
             $net,
         ]);

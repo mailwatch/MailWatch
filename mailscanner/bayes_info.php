@@ -43,7 +43,7 @@ echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadd
 echo '<tr><th colspan="2">' . \MailWatch\Translation::__('bayesdatabaseinfo18') . '</th></tr>' . "\n";
 
 // Clear Bayes database
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     $return = 0;
     if (isset($_POST['clear'])) {
         if (!is_file(SA_DIR . 'sa-learn')) {
@@ -53,7 +53,7 @@ if ($_SESSION['user_type'] === 'A') {
         } else {
             // You can use --force-expire instead of --clear to test the routine
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --clear', $return);
-            if ($return === 0) {
+            if (0 === $return) {
                 \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlogwipe18', true));
             } else {
                 echo '<div class="error center">' . "\n";
@@ -130,7 +130,7 @@ pclose($fh);
 echo '</table>' . "\n";
 
 // Clear button
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     echo '<br>' . "\n";
     echo '<div class="center">' . "\n";
     echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . \MailWatch\Translation::__('clearmessage18') . '\');" >' . "\n";

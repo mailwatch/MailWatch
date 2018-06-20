@@ -114,7 +114,7 @@ $sql = "
 $result = \MailWatch\Db::query($sql);
 
 // Check to make sure something was returned
-if ($result->num_rows === 0) {
+if (0 === $result->num_rows) {
     die(\MailWatch\Translation::__('dieid04') . " '" . $url_id . "' " . \MailWatch\Translation::__('dienotfound04') . "\n </TABLE>");
 }
 
@@ -126,7 +126,7 @@ $is_MCP_enabled = \MailWatch\MailScanner::getConfTrueFalse('mcpchecks');
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
 while ($row = $result->fetch_array()) {
     $listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[\MailWatch\Translation::__('receivedfrom04')] . '&amp;from=' . $row[\MailWatch\Translation::__('from04')] . '&amp;to=' . $row[\MailWatch\Translation::__('to04')];
-    for ($f = 0; $f < $result->field_count; $f++) {
+    for ($f = 0; $f < $result->field_count; ++$f) {
         $fieldInfo = $result->fetch_field_direct($f);
         $fieldn = $fieldInfo->name;
         if ($fieldn === \MailWatch\Translation::__('receivedfrom04')) {
@@ -158,9 +158,9 @@ while ($row = $result->fetch_array()) {
                     //check if address is in private IP space
                     $isPrivateNetwork = ip_in_range($relay, false, 'private');
                     $isLocalNetwork = ip_in_range($relay, false, 'local');
-                    if ($isPrivateNetwork === true) {
+                    if (true === $isPrivateNetwork) {
                         $output .= ' <td>' . \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
-                    } elseif ($isLocalNetwork === true) {
+                    } elseif (true === $isLocalNetwork) {
                         $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
                     }
                     // Reverse lookup on address. Possibly need to remove it.
@@ -172,7 +172,7 @@ while ($row = $result->fetch_array()) {
                     // Do GeoIP lookup on address
                     if (true === $isPrivateNetwork) {
                         $output .= ' <td>' . \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
-                    } elseif ($isLocalNetwork === true) {
+                    } elseif (true === $isLocalNetwork) {
                         $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
                     } elseif ($geoip_country = \MailWatch\GeoIp::getCountry($relay)) {
                         $output .= ' <td>' . $geoip_country . '</td>' . "\n";
@@ -224,7 +224,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = \MailWatch\Format::formatSize($row[$f]);
         }
         if ($fieldn === \MailWatch\Translation::__('msgheaders04')) {
-            if (PHP_VERSION_ID >= 50400) {
+            if (\PHP_VERSION_ID >= 50400) {
                 $row[$f] = nl2br(
                     str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
                 );
@@ -239,7 +239,7 @@ while ($row = $result->fetch_array()) {
             $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
         }
         if ($fieldn === \MailWatch\Translation::__('saautolearn04')) {
-            if (($autolearn = \MailWatch\SpamAssassin::autolearn($row[$f])) !== false) {
+            if (false !== ($autolearn = \MailWatch\SpamAssassin::autolearn($row[$f]))) {
                 $row[$f] = $yes . " ($autolearn)";
             } else {
                 $row[$f] = $no;
@@ -266,15 +266,15 @@ while ($row = $result->fetch_array()) {
                 );
         }
 
-        if ($is_MCP_enabled === true) {
+        if (true === $is_MCP_enabled) {
             if ($fieldn === \MailWatch\Translation::__('mcprep04')) {
                 $row[$f] = \MailWatch\Mcp::format_report($row[$f]);
             }
         } else {
-            if ($fieldn === 'HEADER' && strpos($row[$f], 'MCP') !== false) {
+            if ('HEADER' === $fieldn && false !== strpos($row[$f], 'MCP')) {
                 continue;
             }
-            if (strpos($fieldn, 'MCP') !== false) {
+            if (false !== strpos($fieldn, 'MCP')) {
                 continue;
             }
         }
@@ -283,12 +283,12 @@ while ($row = $result->fetch_array()) {
             $row[$f] = $row[$f] . ' (' . $row['rblspamreport'] . ')';
         }
 
-        if ($fieldn === 'rblspamreport') {
+        if ('rblspamreport' === $fieldn) {
             continue;
         }
 
         // Handle dummy header fields
-        if ($fieldn === 'HEADER') {
+        if ('HEADER' === $fieldn) {
             // Display header
             echo '<tr><td class="heading" align="center" valign="top" colspan="2">' . $row[$f] . '</td></tr>' . "\n";
         } else {
@@ -305,7 +305,7 @@ while ($row = $result->fetch_array()) {
 // rows in the relay table (maillog.id = relay.msg_id)...
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = \MailWatch\Db::query($sqlcheck);
-if ($mta === 'postfix' && $tablecheck->num_rows > 0) { //version for postfix
+if ('postfix' === $mta && $tablecheck->num_rows > 0) { //version for postfix
     $sql1 = "
  SELECT
   DATE_FORMAT(m.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS 'Date/Time',
@@ -346,7 +346,7 @@ if (false !== $sth1 && $sth1->num_rows > 0) {
     echo ' <tr><td class="heading-w175">' . \MailWatch\Translation::__('relayinfo04') . '</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
-    for ($f = 0; $f < $sth1->field_count; $f++) {
+    for ($f = 0; $f < $sth1->field_count; ++$f) {
         $fieldInfo1 = $sth1->fetch_field_direct($f);
         echo '   <th>' . $fieldInfo1->name . '</th>' . "\n";
     }
@@ -376,7 +376,7 @@ $quarantined = \MailWatch\Quarantine::quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_POST['submit']) && \MailWatch\Sanitize::deepSanitizeInput($_POST['submit'], 'url') === 'submit') {
+    if (isset($_POST['submit']) && 'submit' === \MailWatch\Sanitize::deepSanitizeInput($_POST['submit'], 'url')) {
         if (false === \MailWatch\Security::checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
             die(\MailWatch\Translation::__('error04'));
         }
@@ -387,7 +387,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         // Release
         if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (isset($_POST['alt_recpt_yn']) && \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
+            if (isset($_POST['alt_recpt_yn']) && 'y' === \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt_yn'], 'url')) {
                 $to = \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt'], 'string');
                 if (!\MailWatch\Sanitize::validateInput($to, 'user')) {
                     die(\MailWatch\Translation::__('error04') . ' ' . $to);
@@ -497,7 +497,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
             $tdclass = '';
-            if ($row['released'] > 0 && $item['file'] === 'message') {
+            if ($row['released'] > 0 && 'message' === $item['file']) {
                 $tdclass = 'released';
             }
             echo " <tr>\n";
@@ -505,9 +505,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Currently this only applies to messages that contain viruses.
             // visible only to Administrators and Domain Admin only if DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS is enabled
             if (
-                $_SESSION['user_type'] === 'A' ||
-                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D') ||
-                $item['dangerous'] !== 'Y'
+                'A' === $_SESSION['user_type'] ||
+                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type']) ||
+                'Y' !== $item['dangerous']
             ) {
                 echo '  <td align="center" class="' . $tdclass . '"><input class="noprint" type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
@@ -517,8 +517,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // If the file is an rfc822 message then allow the file to be learnt
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
-                (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message') &&
-                (strtoupper(\MailWatch\MailScanner::getConfVar('UseSpamAssassin')) !== 'NO')
+                (preg_match('/message\/rfc822/', $item['type']) || 'message' === $item['file']) &&
+                ('NO' !== strtoupper(\MailWatch\MailScanner::getConfVar('UseSpamAssassin')))
             ) {
                 echo '   <td align="center" class="salearn-' . $row['salearn'] . '"><input class="noprint" type="checkbox" name="learn[]" value="' . $item['id'] . '"><select class="noprint" name="learn_type"><option value="ham">' . \MailWatch\Translation::__('asham04') . '</option><option value="spam">' . \MailWatch\Translation::__('aspam04') . '</option><option value="forget">' . \MailWatch\Translation::__('forget04') . '</option><option value="report">' . \MailWatch\Translation::__('spamreport04') . '</option><option value="revoke">' . \MailWatch\Translation::__('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
@@ -530,9 +530,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Domain admins can view the file only if enabled
             if (
                 (
-                    $item['dangerous'] === 'N' ||
-                    $_SESSION['user_type'] === 'A' ||
-                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
+                    'N' === $item['dangerous'] ||
+                    'A' === $_SESSION['user_type'] ||
+                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'] && 'Y' === $item['dangerous'])
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
@@ -541,9 +541,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             } else {
                 echo '  <td>' . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
             }
-            if ($item['dangerous'] === 'Y') {
+            if ('Y' === $item['dangerous']) {
                 $dangerous = $yes;
-                $is_dangerous++;
+                ++$is_dangerous;
             } else {
                 $dangerous = $no;
             }
@@ -551,11 +551,11 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr class="noprint">' . "\n";
-        if ($_SESSION['user_type'] === 'A' ||
+        if ('A' === $_SESSION['user_type'] ||
             (
-                $_SESSION['user_type'] === 'D' &&
+                'D' === $_SESSION['user_type'] &&
                 (
-                    $is_dangerous === 0 ||
+                    0 === $is_dangerous ||
                 ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
                 )
             )

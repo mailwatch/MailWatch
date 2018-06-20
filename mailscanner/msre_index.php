@@ -33,7 +33,7 @@ include __DIR__ . '/msre_table_functions.php';
 //require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrator
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
     \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog29', true));

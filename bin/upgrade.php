@@ -26,7 +26,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-if (PHP_SAPI !== 'cli') {
+if (\PHP_SAPI !== 'cli') {
     throw new \RuntimeException('Upgrade script must be run from console');
 }
 
@@ -64,6 +64,7 @@ $mysql_utf8_variant = [
 
 /**
  * @param string $input
+ *
  * @return string
  */
 function pad($input)
@@ -95,6 +96,7 @@ function executeQuery($sql, $beSilent = false)
 
 /**
  * @param string $table
+ *
  * @return bool|mysqli_result
  */
 function check_table_exists($table)
@@ -108,6 +110,7 @@ function check_table_exists($table)
 /**
  * @param string $table
  * @param string $column
+ *
  * @return bool|mysqli_result
  */
 function check_column_exists($table, $column)
@@ -159,6 +162,7 @@ function get_database_collation()
  * @param string $db
  * @param string $table
  * @param string $utf8variant
+ *
  * @return bool
  */
 function check_utf8_table($db, $table, $utf8variant = 'utf8')
@@ -184,6 +188,7 @@ function check_utf8_table($db, $table, $utf8variant = 'utf8')
 /**
  * @param string $db
  * @param string $table
+ *
  * @return bool
  */
 function is_table_type_innodb($db, $table)
@@ -202,6 +207,7 @@ function is_table_type_innodb($db, $table)
  * @param string $db
  * @param string $table
  * @param string $index
+ *
  * @return int|null
  */
 function get_index_size($db, $table, $index)
@@ -219,6 +225,7 @@ function get_index_size($db, $table, $index)
 
 /**
  * @param string $table
+ *
  * @return array
  */
 function getTableIndexes($table)
@@ -228,7 +235,7 @@ function getTableIndexes($table)
     $result = $link->query($sql);
 
     $indexes = [];
-    if (false === $result || $result->num_rows === 0) {
+    if (false === $result || 0 === $result->num_rows) {
         return $indexes;
     }
 
@@ -269,6 +276,7 @@ function getColumnInfo($table, $column)
 /**
  * @param string $string
  * @param string $color
+ *
  * @return string
  */
 function color($string, $color = '')
@@ -299,12 +307,13 @@ function color($string, $color = '')
 /**
  * @param string $haystack
  * @param string $needles
+ *
  * @return bool
  */
 function stringStartsWith($haystack, $needles)
 {
     foreach ((array)$needles as $needle) {
-        if ($needle !== '' && 0 === strpos($haystack, (string)$needle)) {
+        if ('' !== $needle && 0 === strpos($haystack, (string)$needle)) {
             return true;
         }
     }
@@ -315,6 +324,7 @@ function stringStartsWith($haystack, $needles)
 /**
  * @param string $haystack
  * @param string $needles
+ *
  * @return bool
  */
 function stringEndsWith($haystack, $needles)
@@ -343,7 +353,7 @@ if (!array_key_exists('skip-user-confirm', $cli_options)) {
     echo "Have you done a full backup of your database? Type 'yes' to continue: ";
     $handle = fopen('php://stdin', 'rb');
     $line = fgets($handle);
-    if (strtolower(trim($line)) !== 'yes') {
+    if ('yes' !== strtolower(trim($line))) {
         echo 'ABORTING!' . PHP_EOL;
         exit(1);
     }
@@ -470,7 +480,7 @@ if ($link) {
     // Table audit_log
     echo pad(' - Fix schema for username field in `audit_log` table');
     $audit_log_user_info = getColumnInfo('audit_log', 'user');
-    if ($audit_log_user_info['Type'] !== 'varchar(191)') {
+    if ('varchar(191)' !== $audit_log_user_info['Type']) {
         $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -481,7 +491,7 @@ if ($link) {
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
     $blacklist_id_info = getColumnInfo('blacklist', 'id');
-    if (strtolower($blacklist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($blacklist_id_info['Null']) !== 'NO' || strtolower($blacklist_id_info['Extra']) !== 'auto_increment') {
+    if ('bigint(20) unsigned' !== strtolower($blacklist_id_info['Type']) || 'NO' !== strtoupper($blacklist_id_info['Null']) || 'auto_increment' !== strtolower($blacklist_id_info['Extra'])) {
         $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
         executeQuery($sql);
     } else {
@@ -492,7 +502,7 @@ if ($link) {
     // Table whitelist
     echo pad(' - Fix schema for id field in `whitelist` table');
     $whitelist_id_info = getColumnInfo('whitelist', 'id');
-    if (strtolower($whitelist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($whitelist_id_info['Null']) !== 'NO' || strtolower($whitelist_id_info['Extra']) !== 'auto_increment') {
+    if ('bigint(20) unsigned' !== strtolower($whitelist_id_info['Type']) || 'NO' !== strtoupper($whitelist_id_info['Null']) || 'auto_increment' !== strtolower($whitelist_id_info['Extra'])) {
         $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
         executeQuery($sql);
     } else {
@@ -502,7 +512,7 @@ if ($link) {
     // user name lenght to 191
     echo pad(' - Fix schema for username field in `users` table');
     $users_username_info = getColumnInfo('users', 'username');
-    if ($users_username_info['Type'] !== 'varchar(191)') {
+    if ('varchar(191)' !== $users_username_info['Type']) {
         $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -511,7 +521,7 @@ if ($link) {
 
     echo pad(' - Fix schema for username field in `user_filters` table');
     $user_filters_username_info = getColumnInfo('users', 'username');
-    if ($user_filters_username_info['Type'] !== 'varchar(191)') {
+    if ('varchar(191)' !== $user_filters_username_info['Type']) {
         $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -521,7 +531,7 @@ if ($link) {
     // Table user_filters spam score to float
     echo pad(' - Fix schema for spamscore field in `users` table');
     $users_spamscore_info = getColumnInfo('users', 'spamscore');
-    if ($users_spamscore_info['Type'] !== 'float') {
+    if ('float' !== $users_spamscore_info['Type']) {
         $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` FLOAT DEFAULT '0'";
         executeQuery($sql);
     } else {
@@ -530,7 +540,7 @@ if ($link) {
 
     echo pad(' - Fix schema for highspamscore field in `users` table');
     $users_highspamscore_info = getColumnInfo('users', 'highspamscore');
-    if ($users_highspamscore_info['Type'] !== 'float') {
+    if ('float' !== $users_highspamscore_info['Type']) {
         $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` FLOAT DEFAULT '0'";
         executeQuery($sql);
     } else {
@@ -555,7 +565,7 @@ if ($link) {
     // Fix schema for nameinfected to allow for >9 entries.  #981
     echo pad(' - Fix schema for nameinfected in `maillog` table');
     $maillog_nameinfected = getColumnInfo('maillog', 'nameinfected');
-    if ($maillog_nameinfected['Type'] !== 'tinyint(2)') {
+    if ('tinyint(2)' !== $maillog_nameinfected['Type']) {
         $sql = 'ALTER TABLE `maillog` CHANGE `nameinfected` `nameinfected` TINYINT(2) DEFAULT 0';
         executeQuery($sql);
     } else {
@@ -568,7 +578,7 @@ if ($link) {
     // Table users password to 255
     echo pad(' - Fix schema for password field in `users` table');
     $users_password_info = getColumnInfo('users', 'password');
-    if ($users_password_info['Type'] !== 'varchar(255)') {
+    if ('varchar(255)' !== $users_password_info['Type']) {
         $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
         executeQuery($sql);
     } else {
@@ -579,7 +589,7 @@ if ($link) {
     // Table users fullname to 255
     echo pad(' - Fix schema for fullname field in `users` table');
     $users_fullname_info = getColumnInfo('users', 'fullname');
-    if ($users_fullname_info['Type'] !== 'varchar(255)') {
+    if ('varchar(255)' !== $users_fullname_info['Type']) {
         $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -590,7 +600,7 @@ if ($link) {
     // Table mcp_rules
     echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
     $mcp_rules_rule_desc_info = getColumnInfo('mcp_rules', 'rule_desc');
-    if ($mcp_rules_rule_desc_info['Type'] !== 'varchar(200)') {
+    if ('varchar(200)' !== $mcp_rules_rule_desc_info['Type']) {
         $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -660,7 +670,7 @@ if ($link) {
     }
 
     echo pad(' - Add last_update field to `maillog` table');
-    if (check_column_exists('maillog', 'last_update') === false) {
+    if (false === check_column_exists('maillog', 'last_update')) {
         $sql = 'ALTER TABLE `maillog` ADD `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
         executeQuery($sql);
     } else {
@@ -690,10 +700,10 @@ if ($link) {
     $countTokenGenerated = 0;
     if ($rows > 0) {
         while ($row = $result->fetch_object()) {
-            if ($row->token === null) {
+            if (null === $row->token) {
                 $sql = 'UPDATE `maillog` SET `token`=\'' . \MailWatch\Security::generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
                 executeQuery($sql, true);
-                $countTokenGenerated++;
+                ++$countTokenGenerated;
             }
         }
         echo color(' DONE', 'lightgreen') . PHP_EOL;
@@ -797,7 +807,7 @@ if ($link) {
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
         } else {
-            if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
+            if (false === check_utf8_table(DB_NAME, $table, $server_utf8_variant)) {
                 $sql = 'ALTER TABLE `' . $table .
                     '` CONVERT TO CHARACTER SET ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
                     ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
@@ -816,7 +826,7 @@ if ($link) {
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
         } else {
-            if (is_table_type_innodb(DB_NAME, $table) === false) {
+            if (false === is_table_type_innodb(DB_NAME, $table)) {
                 $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
                 executeQuery($sql);
             } else {
@@ -898,7 +908,7 @@ echo PHP_EOL;
 
 if (file_exists(MAILWATCH_HOME . '/images/cache/')) {
     $result = rmdir(MAILWATCH_HOME . '/images/cache/') . PHP_EOL;
-    if ($result === true) {
+    if (true === $result) {
         echo pad(' - Cache dir was still present. Removed it') . color(' INFO', 'lightgreen') . PHP_EOL;
     } else {
         echo pad(' - Cache dir was still present but removing it failed') . color(' ERROR', 'red') . PHP_EOL;
@@ -944,7 +954,7 @@ echo PHP_EOL;
 echo 'Checking conf.php configuration entry: ' . PHP_EOL;
 echo PHP_EOL;
 $checkConfigEntries = checkConfVariables();
-if ($checkConfigEntries['needed']['count'] === 0) {
+if (0 === $checkConfigEntries['needed']['count']) {
     echo pad(' - All mandatory entries are present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['needed']['list'] as $missingConfigEntry) {
@@ -953,7 +963,7 @@ if ($checkConfigEntries['needed']['count'] === 0) {
     }
 }
 
-if ($checkConfigEntries['obsolete']['count'] === 0) {
+if (0 === $checkConfigEntries['obsolete']['count']) {
     echo pad(' - All obsolete entries are already removed') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['obsolete']['list'] as $obsoleteConfigEntry) {
@@ -962,7 +972,7 @@ if ($checkConfigEntries['obsolete']['count'] === 0) {
     }
 }
 
-if ($checkConfigEntries['optional']['count'] === 0) {
+if (0 === $checkConfigEntries['optional']['count']) {
     echo pad(' - All optional entries are already present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['optional']['list'] as $optionalConfigEntry => $detail) {

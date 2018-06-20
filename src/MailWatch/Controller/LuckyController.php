@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Test class
+ * Test class.
  */
 class LuckyController
 {

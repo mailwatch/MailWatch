@@ -83,7 +83,7 @@ while ($row = $result->fetch_object()) {
             $score = $regs[2];
         }
         if (isset($sa_array[$rule]['total'])) {
-            $sa_array[$rule]['total']++;
+            ++$sa_array[$rule]['total'];
         } else {
             $sa_array[$rule]['total'] = 1;
         }
@@ -100,10 +100,10 @@ while ($row = $result->fetch_object()) {
             $sa_array[$rule]['not-spam'] = 0;
         }
 
-        if ($row->isspam !== '0') {
-            $sa_array[$rule]['spam']++;
+        if ('0' !== $row->isspam) {
+            ++$sa_array[$rule]['spam'];
         } else {
-            $sa_array[$rule]['not-spam']++;
+            ++$sa_array[$rule]['not-spam'];
         }
     }
 }

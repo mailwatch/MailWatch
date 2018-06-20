@@ -52,7 +52,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 
 if (
     (USE_LDAP === true) &&
-    (($result = \MailWatch\Ldap::authenticate($myusername, $mypassword)) !== null)
+    (null !== ($result = \MailWatch\Ldap::authenticate($myusername, $mypassword)))
 ) {
     $_SESSION['user_ldap'] = true;
     $myusername = \MailWatch\Sanitize::safe_value($result);
@@ -60,7 +60,7 @@ if (
 } elseif (
     defined('USE_IMAP') &&
     (USE_IMAP === true) &&
-    (($result = imap_authenticate($myusername, $mypassword)) !== null)
+    (null !== ($result = imap_authenticate($myusername, $mypassword)))
 ) {
     $_SESSION['user_imap'] = true;
     $myusername = \MailWatch\Sanitize::safe_value($myusername);
@@ -68,7 +68,7 @@ if (
 } else {
     $_SESSION['user_ldap'] = false;
     $_SESSION['user_imap'] = false;
-    if ($mypassword !== '') {
+    if ('' !== $mypassword) {
         $myusername = \MailWatch\Sanitize::safe_value($myusername);
         $mypassword = \MailWatch\Sanitize::safe_value($mypassword);
     } else {
@@ -82,7 +82,7 @@ $result = \MailWatch\Db::query($sql);
 
 // mysql_num_row is counting table row
 $usercount = $result->num_rows;
-if ($usercount === 0) {
+if (0 === $usercount) {
     //no user found, redirect to login
     \MailWatch\Db::close();
     header('Location: login.php?error=baduser');
@@ -90,8 +90,8 @@ if ($usercount === 0) {
 }
 
 if (
-    ($_SESSION['user_ldap'] === false) &&
-    ($_SESSION['user_imap'] === false)
+    (false === $_SESSION['user_ldap']) &&
+    (false === $_SESSION['user_imap'])
 ) {
     $passwordInDb = Db::mysqli_result($result, 0, 'password');
     if (!password_verify($mypassword, $passwordInDb)) {
@@ -154,15 +154,15 @@ switch ($usertype) {
 }
 
 // If result matched $myusername and $mypassword, table row must be 1 row
-if ($usercount === 1) {
+if (1 === $usercount) {
     session_regenerate_id(true);
     // Register $myusername, $mypassword and redirect to file "login_success.php"
     $_SESSION['myusername'] = $myusername;
     $_SESSION['fullname'] = $fullname;
-    $_SESSION['user_type'] = (isset($usertype) ? $usertype : '');
-    $_SESSION['domain'] = (isset($domainname) ? $domainname : '');
+    $_SESSION['user_type'] = ($usertype ?? '');
+    $_SESSION['domain'] = ($domainname ?? '');
     $_SESSION['global_filter'] = '(' . $global_filter . ')';
-    $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
+    $_SESSION['global_list'] = ($global_list ?? '');
     $_SESSION['global_array'] = $filter;
     $_SESSION['token'] = \MailWatch\Security::generateToken();
     $_SESSION['formtoken'] = \MailWatch\Security::generateToken();

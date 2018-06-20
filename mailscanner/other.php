@@ -41,7 +41,7 @@ echo '<tr>
       <ul>';
 
 echo '<li><a href="user_manager.php">' . \MailWatch\Translation::__('usermgnt10') . '</a>';
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     $virusScanner = \MailWatch\MailScanner::getConfVar('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
         echo '<li><a href="sophos_status.php">' . \MailWatch\Translation::__('avsophosstatus10') . '</a>';
@@ -64,21 +64,21 @@ if ($_SESSION['user_type'] === 'A') {
     if (defined('MSRE') && MSRE === true) {
         echo '<li><a href="msre_index.php">' . \MailWatch\Translation::__('editmsrules10') . '</a>';
     }
-    if (!DISTRIBUTED_SETUP && \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin') === true) {
+    if (!DISTRIBUTED_SETUP && true === \MailWatch\MailScanner::getConfTrueFalse('UseSpamAssassin')) {
         echo '
      <li><a href="bayes_info.php">' . \MailWatch\Translation::__('spamassassinbayesdatabaseinfo10') . '</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
      <li><a href="sa_rules_update.php">' . \MailWatch\Translation::__('updatesadesc10') . '</a>';
     }
-    if (!DISTRIBUTED_SETUP && \MailWatch\MailScanner::getConfTrueFalse('MCPChecks') === true) {
+    if (!DISTRIBUTED_SETUP && true === \MailWatch\MailScanner::getConfTrueFalse('MCPChecks')) {
         echo '<li><a href="mcp_rules_update.php">' . \MailWatch\Translation::__('updatemcpdesc10') . '</a>';
     }
     echo '<li><a href="geoip_update.php">' . \MailWatch\Translation::__('updategeoip10') . '</a>';
 }
 echo '</ul>';
 
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     echo '
    <p>' . \MailWatch\Translation::__('links10') . '</p>
    <ul>

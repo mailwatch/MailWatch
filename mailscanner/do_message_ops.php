@@ -96,7 +96,7 @@ if (isset($_POST) && !empty($_POST)) {
                 $num = 0;
                 $itemnum = [$num];
                 echo '<td>';
-                if ($type === 'release') {
+                if ('release' === $type) {
                     $quarantined = \MailWatch\Quarantine::quarantine_list_items($id, RPC_ONLY);
                     if (is_array($quarantined)) {
                         $to = $quarantined[0]['to'];

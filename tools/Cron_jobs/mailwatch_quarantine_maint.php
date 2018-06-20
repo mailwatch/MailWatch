@@ -38,10 +38,10 @@ $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
         echo sprintf(\MailWatch\Translation::__('message62'), $constant) . "\n";
-        $required_constant_missing_count++;
+        ++$required_constant_missing_count;
     }
 }
-if ($required_constant_missing_count === 0) {
+if (0 === $required_constant_missing_count) {
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('error_log', 'syslog');
@@ -127,7 +127,7 @@ if ($required_constant_missing_count === 0) {
             // Main quarantine
             $d = dir($dir) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $dir/$f");
                     $array[] = $f;
                 }
@@ -139,7 +139,7 @@ if ($required_constant_missing_count === 0) {
             // Spam folder
             $d = dir($spam) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $spam/$f");
                     $array[] = $f;
                 }
@@ -150,7 +150,7 @@ if ($required_constant_missing_count === 0) {
         if (is_dir($nonspam)) {
             $d = dir($nonspam) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $nonspam/$f");
                     $array[] = $f;
                 }
@@ -161,7 +161,7 @@ if ($required_constant_missing_count === 0) {
         if (is_dir($mcp)) {
             $d = dir($mcp) or die($php_errormsg);
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $mcp/$f");
                     $array[] = $f;
                 }
@@ -172,7 +172,7 @@ if ($required_constant_missing_count === 0) {
         return $array;
     }
 
-    if ($_SERVER['argc'] !== 1 && $_SERVER['argc'] <= 2) {
+    if (1 !== $_SERVER['argc'] && $_SERVER['argc'] <= 2) {
         switch ($_SERVER['argv'][1]) {
             case '--clean':
                 quarantine_clean();

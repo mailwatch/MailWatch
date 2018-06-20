@@ -33,18 +33,19 @@ class Quarantine
 {
     /**
      * @param string $input
+     *
      * @return array
      */
     public static function quarantine_list($input = '/')
     {
         $quarantinedir = MailScanner::getConfVar('QuarantineDir') . '/';
         $item = [];
-        if ($input === '/') {
+        if ('/' === $input) {
             // Return top-level directory
             $d = @opendir($quarantinedir);
 
             while (false !== ($f = @readdir($d))) {
-                if ($f !== '.' && $f !== '..') {
+                if ('.' !== $f && '..' !== $f) {
                     $item[] = $f;
                 }
             }
@@ -56,7 +57,7 @@ class Quarantine
                 if (is_dir($dir) && is_readable($dir)) {
                     $d = @opendir($dir);
                     while (false !== ($f = readdir($d))) {
-                        if ($f !== '.' && $f !== '..') {
+                        if ('.' !== $f && '..' !== $f) {
                             $item[] = "'$f'";
                         }
                     }
@@ -102,7 +103,7 @@ SELECT
             $nonspam = $quarantinedir . '/' . $row->date . '/nonspam/' . $row->id;
             $mcp = $quarantinedir . '/' . $row->date . '/mcp/' . $row->id;
             $infected = 'N';
-            if ($row->virusinfected === 'Y' || $row->nameinfected === 'Y' || $row->otherinfected === 'Y') {
+            if ('Y' === $row->virusinfected || 'Y' === $row->nameinfected || 'Y' === $row->otherinfected) {
                 $infected = 'Y';
             }
             $quarantined = [];
@@ -119,14 +120,14 @@ SELECT
                     $quarantined[$count]['md5'] = md5($category);
                     $quarantined[$count]['dangerous'] = $infected;
                     $quarantined[$count]['isspam'] = $row->isspam;
-                    $count++;
+                    ++$count;
                 }
             }
             // Check the main quarantine
             if (is_dir($quarantine) && is_readable($quarantine)) {
                 $d = opendir($quarantine) or die(Translation::__('diequarantine303') . " $quarantine\n");
                 while (false !== ($f = readdir($d))) {
-                    if ($f !== '..' && $f !== '.') {
+                    if ('..' !== $f && '.' !== $f) {
                         $quarantined[$count]['id'] = $count;
                         $quarantined[$count]['host'] = $row->hostname;
                         $quarantined[$count]['msgid'] = $row->id;
@@ -138,7 +139,7 @@ SELECT
                         $quarantined[$count]['md5'] = md5($quarantine . '/' . $f);
                         $quarantined[$count]['dangerous'] = $infected;
                         $quarantined[$count]['isspam'] = $row->isspam;
-                        $count++;
+                        ++$count;
                     }
                 }
                 closedir($d);
@@ -155,7 +156,7 @@ SELECT
         //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
         $msg = new \xmlrpcmsg('quarantine_list_items', [new \xmlrpcval($msgid)]);
         $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
+        if (0 === $rsp->faultCode()) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
             $response = 'XML-RPC Error: ' . $rsp->faultString();
@@ -169,6 +170,7 @@ SELECT
      * @param array $num
      * @param string $to
      * @param bool $rpc_only
+     *
      * @return string
      */
     public static function quarantine_release($list, $num, $to, $rpc_only = false)
@@ -229,7 +231,7 @@ SELECT
                 if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                     Debug::debug($cmd . $list[$val]['path']);
                     exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
-                    if ($retval === 0) {
+                    if (0 === $retval) {
                         $sql = "UPDATE maillog SET released = '1' WHERE id = '" . Sanitize::safe_value($list[0]['msgid']) . "'";
                         Db::query($sql);
                         $status = Translation::__('releasemessage03') . ' ' . str_replace(',', ', ', $to);
@@ -270,7 +272,7 @@ SELECT
             $parameters = [$param1, $param2, $param3];
             $msg = new \xmlrpcmsg('quarantine_release', $parameters);
             $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
-            if ($rsp->faultCode() === 0) {
+            if (0 === $rsp->faultCode()) {
                 $response = php_xmlrpc_decode($rsp->value());
             } else {
                 $response = 'XML-RPC Error: ' . $rsp->faultString();
@@ -285,6 +287,7 @@ SELECT
      * @param array $num
      * @param string $type
      * @param bool $rpc_only
+     *
      * @return string
      */
     public static function quarantine_learn($list, $num, $type, $rpc_only = false)
@@ -307,12 +310,12 @@ SELECT
                     case 'ham':
                         $learn_type = 'ham';
                         // Learning SPAM as HAM - this is a false-positive
-                        $isfp = ($list[$val]['isspam'] === 'Y' ? '1' : '0');
+                        $isfp = ('Y' === $list[$val]['isspam'] ? '1' : '0');
                         break;
                     case 'spam':
                         $learn_type = 'spam';
                         // Learning HAM as SPAM - this is a false-negative
-                        $isfn = ($list[$val]['isspam'] === 'N' ? '1' : '0');
+                        $isfn = ('N' === $list[$val]['isspam'] ? '1' : '0');
                         break;
                     case 'forget':
                         $learn_type = 'forget';
@@ -331,7 +334,7 @@ SELECT
                         //TODO handle this case
                         $isfp = null;
                 }
-                if ($isfp !== null) {
+                if (null !== $isfp) {
                     $sql = 'UPDATE maillog SET isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
                         . Sanitize::safe_value($list[$val]['msgid']) . "'";
                 }
@@ -343,7 +346,7 @@ SELECT
                         $output_array,
                         $retval
                     );
-                    if ($retval === 0) {
+                    if (0 === $retval) {
                         // Command succeeded - update the database accordingly
                         if (isset($sql)) {
                             Debug::debug("Learner - running SQL: $sql");
@@ -382,7 +385,7 @@ SELECT
                         $retval
                     );
 
-                    if ($retval === 0) {
+                    if (0 === $retval) {
                         // Command succeeded - update the database accordingly
                         if (isset($sql)) {
                             Debug::debug("Learner - running SQL: $sql");
@@ -400,10 +403,10 @@ SELECT
                     }
                 }
                 if (!isset($error)) {
-                    if ($learn_type === 'spam') {
+                    if ('spam' === $learn_type) {
                         $numeric_type = 2;
                     }
-                    if ($learn_type === 'ham') {
+                    if ('ham' === $learn_type) {
                         $numeric_type = 1;
                     }
                     if (isset($numeric_type)) {
@@ -439,7 +442,7 @@ SELECT
         $parameters = [$param1, $param2, $param3];
         $msg = new \xmlrpcmsg('quarantine_learn', $parameters);
         $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
+        if (0 === $rsp->faultCode()) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
             $response = 'XML-RPC Error: ' . $rsp->faultString();
@@ -452,6 +455,7 @@ SELECT
      * @param array $list
      * @param array $num
      * @param bool $rpc_only
+     *
      * @return string
      */
     public static function quarantine_delete($list, $num, $rpc_only = false)
@@ -502,7 +506,7 @@ SELECT
         $parameters = [$param1, $param2];
         $msg = new \xmlrpcmsg('quarantine_delete', $parameters);
         $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
-        if ($rsp->faultCode() === 0) {
+        if (0 === $rsp->faultCode()) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
             $response = 'XML-RPC Error: ' . $rsp->faultString();
@@ -517,7 +521,7 @@ SELECT
     public static function return_quarantine_dates()
     {
         $array = [];
-        for ($d = 0; $d < QUARANTINE_DAYS_TO_KEEP; $d++) {
+        for ($d = 0; $d < QUARANTINE_DAYS_TO_KEEP; ++$d) {
             $array[] = date('Ymd', mktime(0, 0, 0, date('m'), date('d') - $d, date('Y')));
         }
 

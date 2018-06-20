@@ -51,7 +51,7 @@ class Debug
         $result = $link->query($dbg_sql);
         if ($result) {
             while ($row = $result->fetch_row()) {
-                for ($f = 0; $f < $link->field_count; $f++) {
+                for ($f = 0; $f < $link->field_count; ++$f) {
                     echo $result->fetch_field_direct($f)->name . ': ' . $row[$f] . "\n";
                 }
             }
@@ -65,6 +65,7 @@ class Debug
 
     /**
      * @param $input
+     *
      * @return string
      */
     public static function debug_print_r($input)

@@ -30,9 +30,10 @@ namespace MailWatch;
 class MailScanner
 {
     /**
-     * Parse conf files
+     * Parse conf files.
      *
      * @param string $name
+     *
      * @return array
      */
     public static function parseConfFile($name)
@@ -53,7 +54,7 @@ class MailScanner
         $fileContent = array_filter(
             file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
             function ($value) {
-                return !($value[0] === '#');
+                return !('#' === $value[0]);
             }
         );
 
@@ -96,13 +97,14 @@ class MailScanner
 
     /**
      * @param $conf_dir
+     *
      * @return array
      */
     public static function parseConfDir($conf_dir)
     {
         $array_output1 = [];
         if ($dh = opendir($conf_dir)) {
-            while (($file = readdir($dh)) !== false) {
+            while (false !== ($file = readdir($dh))) {
                 // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
                 if (strlen($file) > 0 && 0 !== strpos($file, '.') && is_file($conf_dir . $file)) {
                     $file_name = $conf_dir . $file;
@@ -122,6 +124,7 @@ class MailScanner
 
     /**
      * @param bool $force
+     *
      * @return bool|mixed
      */
     public static function getConfIncludeFolder($force = false)
@@ -140,7 +143,7 @@ class MailScanner
             return false;
         }
 
-        if (preg_match('/^include\s+([^=]*)\*\S*$/im', file_get_contents($msconfig), $match) === 1) {
+        if (1 === preg_match('/^include\s+([^=]*)\*\S*$/im', file_get_contents($msconfig), $match)) {
             $conf_include_folder = $match[1];
 
             return $conf_include_folder;
@@ -152,6 +155,7 @@ class MailScanner
     /**
      * @param string $name MailScanner config parameter name
      * @param bool $force
+     *
      * @return bool
      */
     public static function getConfVar($name, $force = false)
@@ -187,6 +191,7 @@ class MailScanner
 
     /**
      * @param $file
+     *
      * @return bool
      */
     public static function getDefaultRulesetValue($file)
@@ -195,7 +200,7 @@ class MailScanner
         while (!feof($fh)) {
             $line = rtrim(fgets($fh, filesize($file)));
             if (preg_match('/^([^#]\S+:)\s+(\S+)\s+([^#]\S+)/', $line, $regs)) {
-                if ($regs[2] === 'default') {
+                if ('default' === $regs[2]) {
                     return $regs[3];
                 }
             }
@@ -208,6 +213,7 @@ class MailScanner
     /**
      * @param string $name
      * @param bool $force
+     *
      * @return bool
      */
     public static function getConfTrueFalse($name, $force = false)

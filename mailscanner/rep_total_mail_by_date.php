@@ -169,7 +169,7 @@ $types = [
     ['line'],
 ];
 
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     $sqlColumns[] = 'total_mcp';
     $types[0][] = 'bar';
     $graphColumns['dataLabels'][0][] = \MailWatch\Translation::__('barmcp49');
@@ -223,13 +223,13 @@ $data_total_unresolveable = [];
 while ($row1 = $result1->fetch_object()) {
     if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
         switch (true) {
-            case $row1->type === 'unknown_user':
+            case 'unknown_user' === $row1->type:
                 $data_total_unknown_users[$key] = $row1->count;
                 break;
-            case $row1->type === 'rbl':
+            case 'rbl' === $row1->type:
                 $data_total_rbl[$key] = $row1->count;
                 break;
-            case $row1->type === 'unresolveable':
+            case 'unresolveable' === $row1->type:
                 $data_total_unresolveable[$key] = $row1->count;
                 break;
         }
@@ -242,7 +242,7 @@ $graph_labels = $data_labels;
 // Reduce the number of labels on the graph to prevent them being sqashed.
 if (count($graph_labels) > 20) {
     $b = substr(count($graph_labels), 0, 1);
-    for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
+    for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; ++$a) {
         if ($a % $b) {
             $graph_labels[$a] = '';
         }
@@ -260,7 +260,7 @@ echo "  <TH nowrap colspan='2'>" . \MailWatch\Translation::__('lowespam49') . '<
 echo "  <TH nowrap colspan='2'>" . \MailWatch\Translation::__('highspam49') . '</TH>' . "\n";
 echo "  <TH nowrap colspan='2'>" . \MailWatch\Translation::__('blocked49') . '</TH>' . "\n";
 echo "  <TH colspan='2'>" . \MailWatch\Translation::__('virus49') . '</TH>' . "\n";
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     echo "  <TH colspan='2'>" . \MailWatch\Translation::__('mcp49') . '</TH>' . "\n";
 }
 echo "  <TH rowspan='2'>" . \MailWatch\Translation::__('volume49') . '</TH>' . "\n";
@@ -278,11 +278,11 @@ echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 }
 echo "</tr>\n";
-for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; $i++) {
+for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; ++$i) {
     echo "<TR BGCOLOR=\"#EBEBEB\">\n";
     echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
     echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_mail[$i]) . '</TD>' . "\n";
@@ -296,16 +296,16 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
     echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . \MailWatch\Format::suppress_zeros(number_format($data_total_blocked[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     echo ' <TD ALIGN="RIGHT">' . \MailWatch\Format::suppress_zeros(number_format($data_total_virii[$i])) . '</TD>' . "\n";
     echo ' <TD ALIGN="RIGHT">' . \MailWatch\Format::suppress_zeros(number_format($data_total_virii[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
-    if ($is_MCP_enabled === true) {
+    if (true === $is_MCP_enabled) {
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . \MailWatch\Format::suppress_zeros(number_format($data_total_mcp[$i])) . '</TD>' . "\n";
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . \MailWatch\Format::suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     }
     echo ' <TD ALIGN="RIGHT">' . \MailWatch\Format::formatSize($data_total_size[$i] * $size_info['formula']) . '</TD>' . "\n";
     if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
         echo ' <TD class="white"><BR></TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format($data_total_unknown_users[$i] ?? 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format($data_total_unresolveable[$i] ?? 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . \MailWatch\Format::suppress_zeros(number_format($data_total_rbl[$i] ?? 0)) . '</TD>' . "\n";
     }
     echo '</TR>' . "\n";
 }
@@ -328,7 +328,7 @@ echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_tota
 
 echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_virii)) . '</TH>' . "\n";
 echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_virii) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp)) . '</TH>' . "\n";
     echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }

@@ -69,7 +69,7 @@ if (!isset($_GET['dir'])) {
                             $f,
                             DATE_FORMAT
                         ) . '</a></td></tr>' . "\n";
-                    // Skip any folders that are not dates and
+                // Skip any folders that are not dates and
                 } else {
                     continue;
                 }
@@ -133,7 +133,7 @@ AND
  quarantined = 1";
 
         // Hide high spam/mcp from regular users if enabled
-        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
             $sql .= '
     AND
      ishighspam=0
@@ -191,7 +191,7 @@ ORDER BY
    BINARY id IN ($msg_ids)";
 
             // Hide high spam/mcp from regular users if enabled
-            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
                 $sql .= '
     AND
      ishighspam=0

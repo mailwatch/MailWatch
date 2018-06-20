@@ -41,6 +41,7 @@ class Db
      * @param string $username
      * @param string $password
      * @param string $database
+     *
      * @return \mysqli
      */
     public static function connect($host = '', $username = '', $password = '', $database = '')
@@ -61,7 +62,7 @@ class Db
                 }
                 self::$link->set_charset($charset);
             } catch (\Exception $e) {
-                if (PHP_SAPI !== 'cli') {
+                if (\PHP_SAPI !== 'cli') {
                     $output = '
 <style>
 .db-error {
@@ -113,6 +114,7 @@ class Db
      * @param \mysqli_result $result
      * @param int $row
      * @param int|string $col
+     *
      * @return bool|mixed
      */
     public static function mysqli_result(\mysqli_result $result, $row = 0, $col = 0)
@@ -132,6 +134,7 @@ class Db
     /**
      * @param $sql
      * @param bool $printError
+     *
      * @return bool|\mysqli_result
      */
     public static function query($sql, $printError = true)

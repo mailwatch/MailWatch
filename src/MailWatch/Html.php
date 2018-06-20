@@ -34,11 +34,12 @@ class Html
      * @param int $refresh
      * @param bool|true $cacheable
      * @param bool|false $report
+     *
      * @return Filter|int
      */
     public static function start($title, $refresh = 0, $cacheable = true, $report = false)
     {
-        if (PHP_SAPI !== 'cli') {
+        if (\PHP_SAPI !== 'cli') {
             if (!$cacheable) {
                 // Cache control (as per PHP website)
                 Security::disableBrowserCache();
@@ -55,7 +56,7 @@ class Html
         }
 
         // Check for a privilege change
-        if (Security::checkPrivilegeChange($_SESSION['myusername']) === true) {
+        if (true === Security::checkPrivilegeChange($_SESSION['myusername'])) {
             header('Location: logout.php?error=timeout');
             die();
         }
@@ -65,7 +66,7 @@ class Html
                     die();
                 }*/
 
-        if ($refresh === 0) {
+        if (0 === $refresh) {
             // User is moving about on non-refreshing pages, keep session alive
             Security::updateLoginExpiry($_SESSION['myusername']);
         }
@@ -133,7 +134,7 @@ class Html
         echo '</table>' . "\n";
         echo '</td>' . "\n";
 
-        if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
+        if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
             echo '  <td align="center" valign="top">' . "\n";
 
             // Status table
@@ -143,7 +144,7 @@ class Html
             static::printServiceStatus();
             static::printAverageLoad();
 
-            if ($_SESSION['user_type'] === 'A') {
+            if ('A' === $_SESSION['user_type']) {
                 static::printMTAQueue();
                 static::printFreeDiskSpace();
             }
@@ -162,7 +163,7 @@ class Html
         static::printNavBar();
         echo '
  <tr>
-  <td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">';
+  <td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">';
 
         if ($report) {
             $return_items = $filter;
@@ -251,7 +252,7 @@ function updateClock() {
         $nav['reports.php'] = Translation::__('reports03');
         $nav['other.php'] = Translation::__('toolslinks03');
 
-        if (SHOW_SFVERSION === true && $_SESSION['user_type'] === 'A') {
+        if (SHOW_SFVERSION === true && 'A' === $_SESSION['user_type']) {
             $nav['sf_version.php'] = Translation::__('softwareversions03');
         }
 
@@ -263,7 +264,7 @@ function updateClock() {
 
         //Navigation table
         echo '<tr class="noprint">' . "\n";
-        echo '<td colspan="' . ($_SESSION['user_type'] === 'A' ? '5' : '4') . '">' . "\n";
+        echo '<td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">' . "\n";
 
         echo '<ul id="menu" class="yellow">' . "\n";
 
@@ -283,7 +284,7 @@ function updateClock() {
             if ($langCount > 1) {
                 echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
                 echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
-                for ($i = 0; $i < $langCount; $i++) {
+                for ($i = 0; $i < $langCount; ++$i) {
                     echo '<option value="' . $langCodes[$i] . '"'
                         . ($langCodes[$i] === \MailWatch\Translation::$langCode ? ' selected' : '')
                         . '>' . \MailWatch\Translation::__($langCodes[$i]) . '</option>' . "\n";
@@ -537,7 +538,7 @@ function updateClock() {
     {
         // Display the MTA queue
         // Postfix if mta = postfix
-        if (MailScanner::getConfVar('MTA', true) === 'postfix') {
+        if ('postfix' === MailScanner::getConfVar('MTA', true)) {
             // Mail Queues display
             $incomingdir = MailScanner::getConfVar('incomingqueuedir', true);
             $outgoingdir = MailScanner::getConfVar('outgoingqueuedir', true);
@@ -554,11 +555,11 @@ function updateClock() {
                 $pqerror = '';
                 $servers = explode(' ', RPC_REMOTE_SERVER);
 
-                for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
+                for ($i = 0, $count_servers = count($servers); $i < $count_servers; ++$i) {
                     if ($servers[$i] !== gethostbyname(gethostname())) {
                         $msg = new \xmlrpcmsg('postfix_queues', []);
                         $rsp = xmlrpc_wrapper($servers[$i], $msg);
-                        if ($rsp->faultCode() === 0) {
+                        if (0 === $rsp->faultCode()) {
                             $response = php_xmlrpc_decode($rsp->value());
                             $inq += $response['inq'];
                             $outq += $response['outq'];
@@ -566,12 +567,12 @@ function updateClock() {
                             $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
                         }
                     }
-                    if ($pqerror !== '') {
+                    if ('' !== $pqerror) {
                         echo '    <tr><td colspan="3">' . Translation::__('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
                     }
                 }
             }
-            if ($inq !== null && $outq !== null) {
+            if (null !== $inq && null !== $outq) {
                 echo '    <tr><td colspan="3" class="heading" align="center">' . Translation::__('mailqueue03') . '</td></tr>' . "\n";
                 echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . Translation::__('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
                 echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . Translation::__('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
@@ -579,7 +580,7 @@ function updateClock() {
 
             // Else use MAILQ from conf.php which is for Sendmail or Exim
         } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
-            if (MailScanner::getConfVar('MTA') === 'exim') {
+            if ('exim' === MailScanner::getConfVar('MTA')) {
                 $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                 $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
             } else {

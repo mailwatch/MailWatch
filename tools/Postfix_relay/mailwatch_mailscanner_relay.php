@@ -54,12 +54,12 @@ function doit($input)
             $smtp_id = $explode[2];
             \MailWatch\Db::query("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
         }
-        $lines++;
+        ++$lines;
     }
     pclose($fp);
 }
 
-if ($_SERVER['argv'][1] === '--refresh') {
+if ('--refresh' === $_SERVER['argv'][1]) {
     doit('cat ' . MS_LOG);
 } else {
     // Refresh first

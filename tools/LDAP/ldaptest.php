@@ -84,7 +84,7 @@ if ($ldap_search_results) {
             die("found ldap account is a group! won't login as group!!");
         }
 
-        if (isset($verbose) && $verbose === true) {
+        if (isset($verbose) && true === $verbose) {
             var_dump($result);
         }
 
@@ -128,7 +128,7 @@ if ($ldap_search_results) {
             die('login success' . PHP_EOL);
         }
 
-        if (ldap_errno($ds) === 49) {
+        if (49 === ldap_errno($ds)) {
             //LDAP_INVALID_CREDENTIALS
             die('invalid credentials');
         }

@@ -29,7 +29,7 @@
 
 //require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
 } else {
     \MailWatch\Html::start(\MailWatch\Translation::__('config27'));

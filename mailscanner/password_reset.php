@@ -31,8 +31,8 @@ if (USE_LDAP === true) {
     die(\MailWatch\Translation::__('pwdresetldap63'));
 }
 
-if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
-    if (!$_SERVER['HTTPS'] === 'on') {
+if (\PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
+    if ('on' === !$_SERVER['HTTPS']) {
         header('Location: https://' . \MailWatch\Sanitize::sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
     }
@@ -52,7 +52,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         }
         $_SESSION['token'] = \MailWatch\Security::generateToken();
 
-        if ($_POST['Submit'] === 'stage1Submit') {
+        if ('stage1Submit' === $_POST['Submit']) {
             //check email add registered user and password reset is allowed
             $email = $link->real_escape_string($_POST['email']);
             if (empty($email)) {
@@ -64,7 +64,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             }
             $sql = "SELECT * FROM users WHERE username = '$email'";
             $result = \MailWatch\Db::query($sql);
-            if ($result->num_rows !== 1) {
+            if (1 !== $result->num_rows) {
                 //user not found
                 $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('usernotfound63') . '</p>
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
@@ -73,7 +73,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             } else {
                 //user found, now check type of user
                 $row = $result->fetch_assoc();
-                if ($row['type'] === 'U') {
+                if ('U' === $row['type']) {
                     //user type is user, password reset allowed
                     $rand = \MailWatch\Security::get_random_string(16);
                     $resetexpire = time() + 60 * 60 * RESET_LINK_EXPIRE;
@@ -117,7 +117,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     //Send email
                     $subject = \MailWatch\Translation::__('passwdresetrequest63');
                     $isSent = \MailWatch\Mailer::send($email, $html, $text, $subject, true);
-                    if ($isSent !== true) {
+                    if (true !== $isSent) {
                         die('Error Sending email: ' . $isSent);
                     }
 
@@ -133,7 +133,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $showpage = true;
                 }
             }
-        } elseif ($_POST['Submit'] === 'stage2Submit') {
+        } elseif ('stage2Submit' === $_POST['Submit']) {
             //check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
             $email = $link->real_escape_string($_POST['email']);
             if (!\MailWatch\Sanitize::validateInput($email, 'email')) {
@@ -214,11 +214,11 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         if (!isset($_SESSION['token'])) {
             $_SESSION['token'] = \MailWatch\Security::generateToken();
         }
-        if ($_GET['stage'] === '1') {
+        if ('1' === $_GET['stage']) {
             //first stage, need to get email address
             $fields = 'stage1';
             $showpage = true;
-        } elseif ($_GET['stage'] === '2') {
+        } elseif ('2' === $_GET['stage']) {
             //need to check if reset allowed, and reset password
             if (isset($_GET['uid'])) {
                 //check that uid is correct
@@ -226,7 +226,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
                 $sql = "SELECT * FROM users WHERE resetid = '$uid'";
                 $result = \MailWatch\Db::query($sql);
-                if ($result->num_rows !== 1) {
+                if (1 !== $result->num_rows) {
                     \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogunf63', true), $uid));
                     $errors = '<p class="pwdreseterror">' . \MailWatch\Translation::__('usernotfound63') . '
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . \MailWatch\Translation::__('login01') . '</a></div>';
@@ -290,11 +290,11 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             <div class="border-rounded">
                 <h1><?php echo \MailWatch\Translation::__('title63'); ?></h1>
                 <?php if (file_exists('conf.php')) {
-            if ($fields !== '') {
+            if ('' !== $fields) {
                 ?>
                         <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo \MailWatch\Sanitize::sanitizeInput($_SERVER['PHP_SELF']); ?>" autocomplete="off">
                             <fieldset>
-                                <?php if (isset($_GET['error']) || $errors !== '') {
+                                <?php if (isset($_GET['error']) || '' !== $errors) {
                     ?>
                                     <p class="pwdreseterror">
                                         <?php echo $errors; ?>
@@ -302,14 +302,14 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <?php
                 }
 
-                if ($fields === 'stage1') {
+                if ('stage1' === $fields) {
                     ?>
                                     <p><label for="email"><?php echo \MailWatch\Translation::__('emailaddress63'); ?></label></p>
                                     <p><input name="email" type="text" id="email" autofocus></p>
                                     <p><button type="submit" name="Submit" value="stage1Submit"><?php echo \MailWatch\Translation::__('requestpwdreset63'); ?></button></p>
                                     <?php
                 }
-                if ($fields === 'stage2') {
+                if ('stage2' === $fields) {
                     ?>
                                     <input type="hidden" name="email" value="<?php echo $email; ?>">
                                     <input type="hidden" name="uid" value="<?php echo $uid; ?>">
@@ -325,9 +325,9 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                             <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
                         </form>
                         <?php
-            } elseif ($message !== '') {
+            } elseif ('' !== $message) {
                 echo $message;
-            } elseif ($errors !== '') {
+            } elseif ('' !== $errors) {
                 echo $errors;
             }
         } else {

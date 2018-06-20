@@ -31,6 +31,7 @@ class Mcp
 {
     /**
      * @param $mcpreport
+     *
      * @return null|string|string[]
      */
     public static function format_report($mcpreport)
@@ -45,7 +46,7 @@ class Mcp
             // Split the array
             $sa_rules = explode(', ', $sa_rules[0]);
             // Check to make sure a check was actually run
-            if ($sa_rules[0] === 'Message larger than max testing size' || $sa_rules[0] === 'timed out') {
+            if ('Message larger than max testing size' === $sa_rules[0] || 'timed out' === $sa_rules[0]) {
                 return $sa_rules[0];
             }
             // Get rid of the 'score=', 'required' and 'autolearn=' lines
@@ -75,6 +76,7 @@ class Mcp
 
     /**
      * @param $rule
+     *
      * @return string
      */
     public static function get_rule_desc($rule)
@@ -95,6 +97,7 @@ class Mcp
 
     /**
      * @param $rule
+     *
      * @return bool
      */
     public static function return_rule_desc($rule)

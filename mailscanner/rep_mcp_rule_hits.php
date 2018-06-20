@@ -71,11 +71,11 @@ while ($row = $result->fetch_object()) {
         if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
             $rule = $regs[1];
         }
-        $sa_array[$rule]['total']++;
-        if ($row->ismcp !== '0') {
-            $sa_array[$rule]['mcp']++;
+        ++$sa_array[$rule]['total'];
+        if ('0' !== $row->ismcp) {
+            ++$sa_array[$rule]['mcp'];
         } else {
-            $sa_array[$rule]['not-mcp']++;
+            ++$sa_array[$rule]['not-mcp'];
         }
         // Initialise the other dimensions of the array
         if (!$sa_array[$rule]['mcp']) {

@@ -38,6 +38,7 @@
 /**
  * @param string $value
  * @param string $type
+ *
  * @return string
  */
 function getHtmlMessage($value, $type)
@@ -62,13 +63,13 @@ function testSameDomainMembership($username, $method)
     $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
     $result = \MailWatch\Db::query($sql);
     $filter_domain = [];
-    for ($i = 0; $i < $result->num_rows; $i++) {
+    for ($i = 0; $i < $result->num_rows; ++$i) {
         $filter = $result->fetch_row();
         $filter_domain[] = $filter[0];
     }
-    if ($_SESSION['user_type'] === 'D' && count($parts) === 1 && $_SESSION['domain'] !== '') {
+    if ('D' === $_SESSION['user_type'] && 1 === count($parts) && '' !== $_SESSION['domain']) {
         return getHtmlMessage(\MailWatch\Translation::__('error' . $method . 'nodomainforbidden12'), 'error');
-    } elseif ($_SESSION['user_type'] === 'D' && count($parts) === 2 && ($parts[1] !== $_SESSION['domain'] && in_array($parts[1], $filter_domain, true) === false)) {
+    } elseif ('D' === $_SESSION['user_type'] && 2 === count($parts) && ($parts[1] !== $_SESSION['domain'] && false === in_array($parts[1], $filter_domain, true))) {
         return getHtmlMessage(sprintf(\MailWatch\Translation::__('error' . $method . 'domainforbidden12'), $parts[1]), 'error');
     }
 
@@ -82,9 +83,9 @@ function testSameDomainMembership($username, $method)
  */
 function testPermissions($username, $userType, $oldUserType)
 {
-    if (($_SESSION['user_type'] !== 'A' && $oldUserType === 'A') || $_SESSION['user_type'] === 'D' && $_SESSION['myusername'] !== $username && $userType !== 'U' && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
+    if (('A' !== $_SESSION['user_type'] && 'A' === $oldUserType) || 'D' === $_SESSION['user_type'] && $_SESSION['myusername'] !== $username && 'U' !== $userType && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false)) {
         return getHtmlMessage(\MailWatch\Translation::__('erroradminforbidden12'), 'error');
-    } elseif ($_SESSION['user_type'] === 'D' && $userType === 'A') {
+    } elseif ('D' === $_SESSION['user_type'] && 'A' === $userType) {
         return getHtmlMessage(\MailWatch\Translation::__('errortypesetforbidden12'), 'error');
     }
 
@@ -98,15 +99,15 @@ function testPermissions($username, $userType, $oldUserType)
  */
 function testValidUser($username, $usertype, $oldUsername)
 {
-    if ($usertype !== 'A' && \MailWatch\Sanitize::validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
+    if ('A' !== $usertype && false === \MailWatch\Sanitize::validateInput($username, 'email') && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
         return getHtmlMessage(\MailWatch\Translation::__('forallusers12'), 'error');
     } elseif (!isset($_POST['password'], $_POST['password1'])) {
         return getHtmlMessage(\MailWatch\Translation::__('dievalidate99'), 'error');
-    } elseif ($_POST['password'] === '') {
+    } elseif ('' === $_POST['password']) {
         return getHtmlMessage(\MailWatch\Translation::__('errorpwdreq12'), 'error');
     } elseif ($_POST['password'] !== $_POST['password1']) {
         return getHtmlMessage(\MailWatch\Translation::__('errorpass12'), 'error');
-    } elseif ($username === '') {
+    } elseif ('' === $username) {
         return getHtmlMessage(\MailWatch\Translation::__('erroruserreq12'), 'error');
     } elseif ($oldUsername !== $username && checkForExistingUser($username)) {
         return getHtmlMessage(sprintf(\MailWatch\Translation::__('userexists12'), \MailWatch\Sanitize::sanitizeInput($username)), 'error');
@@ -142,7 +143,7 @@ function getUserById($additionalFields = false)
     }
     $sql = 'SELECT id, username, type' . ($additionalFields ? ', fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login' : '') . " FROM users WHERE id='" . $uid . "'";
     $result = \MailWatch\Db::query($sql);
-    if ($result->num_rows === 0) {
+    if (0 === $result->num_rows) {
         \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditlogunknownuser12'), $_SESSION['myusername'], $uid));
 
         return getHtmlMessage(\MailWatch\Translation::__('accessunknownuser12'), 'error');
@@ -182,7 +183,7 @@ function printUserFormular(
     echo '<div id="formerror" class="hidden"></div>';
     echo '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . "\n";
     echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "\n";
-    if ($action === 'edit') {
+    if ('edit' === $action) {
         echo '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $uid . '">' . "\n";
         $formheader = \MailWatch\Translation::__('edituser12') . ' ' . $username;
         $password = 'XXXXXXXX';
@@ -197,7 +198,7 @@ function printUserFormular(
     if (!defined('ALLOW_NO_USER_DOMAIN') || !ALLOW_NO_USER_DOMAIN) {
         echo ' <TR><TD CLASS="message" COLSPAN="2" ALIGN="CENTER">' . \MailWatch\Translation::__('forallusers12') . '</TD></TR>' . "\n";
     }
-    if ($action === 'edit') {
+    if ('edit' === $action) {
         echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('lastlogin12') . '</TD><TD>' . $lastlogin . '</TD></TR>' . "\n";
     }
     echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('username0212') . '</TD><TD><INPUT TYPE="TEXT" ID="username" NAME="username" VALUE="' . $username . '"></TD></TR>' . "\n";
@@ -209,17 +210,17 @@ function printUserFormular(
 <OPTION ' . $type['A'] . ' VALUE="A">' . \MailWatch\Translation::__('admin12') . '</OPTION>
 <OPTION ' . $type['D'] . ' VALUE="D">' . \MailWatch\Translation::__('domainadmin12') . '</OPTION>
 <OPTION ' . $type['U'] . ' VALUE="U">' . \MailWatch\Translation::__('user12') . '</OPTION>
-' . ($action === 'edit' ? '<OPTION ' . $type['R'] . ' VALUE="R">' . \MailWatch\Translation::__('userregex12') . '</OPTION>' : '') . '
+' . ('edit' === $action ? '<OPTION ' . $type['R'] . ' VALUE="R">' . \MailWatch\Translation::__('userregex12') . '</OPTION>' : '') . '
 </SELECT></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('usertimeout12') . '</TD><TD><INPUT TYPE="TEXT" NAME="timeout" VALUE="' . $timeout . '" size="5"> <span class="font-1em">' . \MailWatch\Translation::__('empty12') . '=' . \MailWatch\Translation::__('usedefault12') . '</span></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('quarrep12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="quarantine_report" ' . $quarantine_report . '> <span class="font-1em">' . \MailWatch\Translation::__('senddaily12') . '</span>
-' . ($action === 'edit' ? '<button type="submit" name="action" value="sendReportNow">' . \MailWatch\Translation::__('sendReportNow12') . '</button>' : '') . '
+' . ('edit' === $action ? '<button type="submit" name="action" value="sendReportNow">' . \MailWatch\Translation::__('sendReportNow12') . '</button>' : '') . '
  </td></tr>' . "\n";
     echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('quarreprec12') . '</TD><TD><INPUT TYPE="TEXT" NAME="quarantine_rcpt" VALUE="' . $quarantine_rcpt . '"><br><span class="font-1em">' . \MailWatch\Translation::__('overrec12') . '</span></TD>' . "\n";
     echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('scanforspam12') . '</TD><TD><INPUT TYPE="CHECKBOX" NAME="noscan" ' . $noscan . '> <span class="font-1em">' . \MailWatch\Translation::__('scanforspam212') . '</span></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('pontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="spamscore" VALUE="' . $spamscore . '" size="4"> <span class="font-1em">0=' . \MailWatch\Translation::__('usedefault12') . '</span></TD></TR>' . "\n";
     echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('hpontspam12') . '</TD><TD><INPUT TYPE="TEXT" NAME="highspamscore" VALUE="' . $highspamscore . '" size="4"> <span class="font-1em">0=' . \MailWatch\Translation::__('usedefault12') . '</span></TD></TR>' . "\n";
-    echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . \MailWatch\Translation::__('reset12') . '">&nbsp;&nbsp;<button type="submit" name="submit">' . ($action === 'edit' ? \MailWatch\Translation::__('update12') : \MailWatch\Translation::__('create12')) . '</button></TD></TR>' . "\n";
+    echo ' <TR><TD CLASS="heading">' . \MailWatch\Translation::__('action_0212') . '</TD><TD><INPUT TYPE="RESET" VALUE="' . \MailWatch\Translation::__('reset12') . '">&nbsp;&nbsp;<button type="submit" name="submit">' . ('edit' === $action ? \MailWatch\Translation::__('update12') : \MailWatch\Translation::__('create12')) . '</button></TD></TR>' . "\n";
     echo "</TABLE></FORM><BR>\n";
 }
 
@@ -267,7 +268,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
     $type['D'] = \MailWatch\Translation::__('domainadmin12', true);
     $type['U'] = \MailWatch\Translation::__('user12', true);
     $type['R'] = \MailWatch\Translation::__('user12', true);
-    if ($uid === -1) {//new user
+    if (-1 === $uid) {//new user
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
                         VALUES ('$n_username','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','$quarantine_rcpt')";
         \MailWatch\Db::query($sql);
@@ -275,7 +276,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
 
         return getHtmlMessage(sprintf(\MailWatch\Translation::__('usercreated12'), $n_username), 'success');
     }
-    if ($_POST['password'] !== 'XXXXXXXX') {// Password reset required
+    if ('XXXXXXXX' !== $_POST['password']) {// Password reset required
         $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$uid'";
     } else {
         $sql = "UPDATE users SET username='$n_username', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt', login_timeout='$timeout' WHERE id='$uid'";
@@ -308,7 +309,7 @@ function newUser()
     }
     $username = html_entity_decode(\MailWatch\Sanitize::deepSanitizeInput($_POST['username'], 'string'));
     $n_type = \MailWatch\Sanitize::deepSanitizeInput($_POST['type'], 'url');
-    if ($username === false || !\MailWatch\Sanitize::validateInput($username, 'user')) {
+    if (false === $username || !\MailWatch\Sanitize::validateInput($username, 'user')) {
         $username = '';
     }
     if (false === $n_type) {
@@ -338,15 +339,15 @@ function editUser()
         return $membertest;
     } elseif (!isset($_POST['submit'])) {
         $quarantine_report = '';
-        if ((int)$user->quarantine_report === 1) {
+        if (1 === (int)$user->quarantine_report) {
             $quarantine_report = 'checked="checked"';
         }
         $noscan = '';
-        if ((int)$user->noscan === 0) {
+        if (0 === (int)$user->noscan) {
             $noscan = 'checked="checked"';
         }
         $timeout = '';
-        if ($user->login_timeout !== '-1') {
+        if ('-1' !== $user->login_timeout) {
             $timeout = $user->login_timeout;
         }
 
@@ -406,7 +407,7 @@ function deleteUser()
         return $user;
     } elseif (is_string($membertest = testSameDomainMembership($user->username, 'delete'))) {
         return $membertest;
-    } elseif ($_SESSION['user_type'] === 'D' && $user->type !== 'U') {
+    } elseif ('D' === $_SESSION['user_type'] && 'U' !== $user->type) {
         return getHtmlMessage(\MailWatch\Translation::__('erroradminforbidden12'), 'error');
     } elseif ($_SESSION['myusername'] === $user->username) {
         return getHtmlMessage(\MailWatch\Translation::__('errordeleteself12'), 'error');
@@ -441,7 +442,7 @@ function userFilter()
         }
     }
 
-    if (isset($_POST['new']) && $getFilter !== '') {
+    if (isset($_POST['new']) && '' !== $getFilter) {
         $getActive = \MailWatch\Sanitize::deepSanitizeInput($_POST['active'], 'url');
         if (!\MailWatch\Sanitize::validateInput($getActive, 'yn')) {
             return getHtmlMessage(\MailWatch\Translation::__('dievalidate99'), 'error');
@@ -473,7 +474,7 @@ function userFilter()
         $result = \MailWatch\Db::query($sql);
         $row = $result->fetch_row();
         $active = 'Y';
-        if ($row[0] === 'Y') {
+        if ('Y' === $row[0]) {
             $active = 'N';
         }
         $sql = "UPDATE user_filters SET active='" . $active . "' WHERE username='" . \MailWatch\Sanitize::safe_value($user->username) . "' AND filter='" . \MailWatch\Sanitize::safe_value($getFilter) . "'";
@@ -493,14 +494,14 @@ function userFilter()
     echo ' <TR><TH>' . \MailWatch\Translation::__('filter12') . '</TH><TH>' . \MailWatch\Translation::__('active12') . '</TH><TH>' . \MailWatch\Translation::__('action12') . '</TH></TR>' . "\n";
     while ($row = $result->fetch_object()) {
         echo ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD> ';
-        if ($_SESSION['user_type'] === 'D' && $user->username === $_SESSION['myusername']) {
+        if ('D' === $_SESSION['user_type'] && $user->username === $_SESSION['myusername']) {
             echo '<TD>' . \MailWatch\Translation::__('nofilteraction12') . '</TD></TR>' . "\n";
         } else {
             echo '<TD>' . $row->actions . '</TD></TR>' . "\n";
         }
     }
     // Prevent domain admins from altering their own filters
-    if ($_SESSION['user_type'] === 'A' || ($_SESSION['user_type'] === 'D' && $user->username !== $_SESSION['myusername'])) {
+    if ('A' === $_SESSION['user_type'] || ('D' === $_SESSION['user_type'] && $user->username !== $_SESSION['myusername'])) {
         echo ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . \MailWatch\Translation::__('yes12') . '<OPTION VALUE="N">' . \MailWatch\Translation::__('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . \MailWatch\Translation::__('add12') . '"></TD></TR>' . "\n";
     }
     echo '</TABLE><BR>' . "\n";
@@ -511,7 +512,7 @@ function sendReport()
 {
     include_once __DIR__ . '/quarantine_report.inc.php';
     $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
-    if ($requirementsCheck !== true) {
+    if (true !== $requirementsCheck) {
         error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
 
         return getHtmlMessage(\MailWatch\Translation::__('checkReportRequirementsFailed12'), 'error');
@@ -610,7 +611,7 @@ function logoutUser()
 
 </script>
 <?php
-if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
+if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
     ?>
     <script type="text/javascript">
         <!--
@@ -658,7 +659,7 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
         $action = \MailWatch\Sanitize::deepSanitizeInput($_GET['action'], 'url');
     }
     if (isset($action)) {
-        if ($action !== 'sendReportNow' && !\MailWatch\Sanitize::validateInput($action, 'action')) {
+        if ('sendReportNow' !== $action && !\MailWatch\Sanitize::validateInput($action, 'action')) {
             die(getHtmlMessage(\MailWatch\Translation::__('dievalidate99'), 'error'));
         }
         switch ($action) {
@@ -687,15 +688,15 @@ if ($_SESSION['user_type'] === 'A' || $_SESSION['user_type'] === 'D') {
     echo '<br><br>' . "\n";
 
     $domainAdminUserDomainFilter = '';
-    if ($_SESSION['user_type'] === 'D') {
-        if ($_SESSION['domain'] === '') {
+    if ('D' === $_SESSION['user_type']) {
+        if ('' === $_SESSION['domain']) {
             //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
             $sql = "SELECT filter FROM user_filters WHERE username = '" . $_SESSION['myusername'] . "'";
             $result = \MailWatch\Db::query($sql);
             $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
-            for ($i = 0; $i < $result->num_rows; $i++) {
+            for ($i = 0; $i < $result->num_rows; ++$i) {
                 $filter = $result->fetch_row();
                 $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . $filter[0] . '" AND type = "U")';
             }
@@ -743,12 +744,12 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         $result = \MailWatch\Db::query($sql);
         $row = $result->fetch_object();
         $quarantine_report = '';
-        if ((int)$row->quarantine_report === 1) {
+        if (1 === (int)$row->quarantine_report) {
             $quarantine_report = 'checked="checked"';
         }
 
         $noscan = '';
-        if ((int)$row->noscan === 0) {
+        if (0 === (int)$row->noscan) {
             $noscan = 'checked="checked"';
         }
         $s[$row->type] = 'selected';
@@ -763,7 +764,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         echo ' <tr><td class="heading" colspan=2 align="center">' . \MailWatch\Translation::__('edituser12') . ' ' . $row->username . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . \MailWatch\Translation::__('username0212') . '</td><td>' . $_SESSION['myusername'] . '</td></tr>' . "\n";
         echo ' <tr><td class="heading">' . \MailWatch\Translation::__('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . "\n";
-        if ($_SESSION['user_ldap'] !== true && $_SESSION['user_imap'] !== true) {
+        if (true !== $_SESSION['user_ldap'] && true !== $_SESSION['user_imap']) {
             echo ' <tr><td class="heading">' . \MailWatch\Translation::__('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
             echo ' <tr><td class="heading">' . \MailWatch\Translation::__('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . "\n";
         }
@@ -783,10 +784,10 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         }
         if (!isset($_POST['action'])) {
             echo getHtmlMessage(\MailWatch\Translation::__('formerror12'), 'error');
-        } elseif ($_POST['action'] === 'sendReportNow') {
+        } elseif ('sendReportNow' === $_POST['action']) {
             include_once __DIR__ . '/quarantine_report.inc.php';
             $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
-            if ($requirementsCheck !== true) {
+            if (true !== $requirementsCheck) {
                 echo getHtmlMessage(\MailWatch\Translation::__('checkReportRequirementsFailed12'), 'error');
                 error_log('Requirements for sending quarantine reports not met: ' . $requirementsCheck);
             } elseif (!isset($_POST['quarantine_report'])) {
@@ -794,7 +795,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
             } else {
                 $quarantine_report = new Quarantine_Report();
                 $reportResult = $quarantine_report->send_quarantine_reports([$_SESSION['myusername']]);
-                if ($reportResult['succ'] === 1) {
+                if (1 === $reportResult['succ']) {
                     echo getHtmlMessage(\MailWatch\Translation::__('quarantineReportSend12'), 'error');
                 } else {
                     echo getHtmlMessage(\MailWatch\Translation::__('quarantineReportFailed12'), 'error');
@@ -824,11 +825,11 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
                 $noscan = '1';
             }
             $quarantine_rcpt = \MailWatch\Sanitize::deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
-            if ($quarantine_rcpt !== '' && !\MailWatch\Sanitize::validateInput($quarantine_rcpt, 'user')) {
+            if ('' !== $quarantine_rcpt && !\MailWatch\Sanitize::validateInput($quarantine_rcpt, 'user')) {
                 die(getHtmlMessage(\MailWatch\Translation::__('dievalidate99'), 'error'));
             }
 
-            if (isset($_POST['password']) && $_POST['password'] !== 'XXXXXXXX') {
+            if (isset($_POST['password']) && 'XXXXXXXX' !== $_POST['password']) {
                 // Password reset required
                 $password = password_hash($n_password, PASSWORD_DEFAULT);
                 $sql = "UPDATE users SET password='" . $password . "', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";

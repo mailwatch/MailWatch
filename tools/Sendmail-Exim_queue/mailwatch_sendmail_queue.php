@@ -55,7 +55,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         $output = [];
         if ($dh = @opendir($queuedir)) {
             while (false !== ($file = readdir($dh))) {
-                if ($MTA === 'exim') {
+                if ('exim' === $MTA) {
                     if (preg_match('/-H$/', $file)) {
                         // Get rid of the '-H' from the end of the filename to get the msgid
                         $msgid = substr($file, 0, -2);
@@ -132,7 +132,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         }
                                         if (preg_match('/^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) (.*)/', $line, $Regs)) {
                                             if (preg_match('/ (defer|failed) /', $Regs[2])) {
-                                                $output[$msgid]['attempts']++;
+                                                ++$output[$msgid]['attempts'];
                                             }
                                             $output[$msgid]['lastattempttime'] = $Regs[1];
                                             $output[$msgid]['message'] = htmlentities($Regs[2]);
@@ -146,7 +146,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     }
                                 }
                                 fclose($fh);
-                                if ($output[$msgid]['lastattempttime'] !== 'N/A') {
+                                if ('N/A' !== $output[$msgid]['lastattempttime']) {
                                     $output[$msgid]['lastattempttime'] = strtotime($output[$msgid]['lastattempttime']);
                                 }
                             }
@@ -275,7 +275,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     \MailWatch\Sanitize::safe_value($msginfo['ctime']) . "','" .
                     \MailWatch\Sanitize::safe_value($from) . "','" .
                     \MailWatch\Sanitize::safe_value(@implode(',', $msginfo['rcpts'])) . "','" .
-                    \MailWatch\Sanitize::safe_value(isset($msginfo['subject']) ? $msginfo['subject'] : '') . "','" .
+                    \MailWatch\Sanitize::safe_value($msginfo['subject'] ?? '') . "','" .
                     \MailWatch\Sanitize::safe_value($msginfo['message']) . "','" .
                     \MailWatch\Sanitize::safe_value($msginfo['size']) . "','" .
                     \MailWatch\Sanitize::safe_value($msginfo['priority']) . "','" .

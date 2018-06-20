@@ -31,6 +31,7 @@ class Format
 {
     /**
      * @param $number
+     *
      * @return string
      */
     public static function suppress_zeros($number)
@@ -44,6 +45,7 @@ class Format
 
     /**
      * @param $string
+     *
      * @return false|int
      */
     public static function is_utf8($string)
@@ -63,6 +65,7 @@ class Format
 
     /**
      * @param $string
+     *
      * @return string
      */
     public static function getUTF8String($string)
@@ -83,14 +86,15 @@ class Format
     /**
      * @param float $size
      * @param int $precision
+     *
      * @return string
      */
     public static function formatSize($size, $precision = 2)
     {
-        if ($size === null) {
+        if (null === $size) {
             return 'n/a';
         }
-        if ($size === 0 || $size === '0') {
+        if (0 === $size || '0' === $size) {
             return '0';
         }
         $base = log($size) / log(1024);
@@ -154,7 +158,7 @@ class Format
 
         // Modify the original data accordingly
         $num_data_in = count($data_in);
-        for ($i = 0; $i < $num_data_in; $i++) {
+        for ($i = 0; $i < $num_data_in; ++$i) {
             $data_in[$i] /= $info_out['formula'];
         }
     }
@@ -162,6 +166,7 @@ class Format
     /**
      * @param $input
      * @param $maxlen
+     *
      * @return string
      */
     public static function trim_output($input, $maxlen)
@@ -176,6 +181,7 @@ class Format
     /**
      * @param $date
      * @param string $format
+     *
      * @return mixed|string
      */
     public static function translateQuarantineDate($date, $format = 'dmy')
@@ -201,9 +207,10 @@ class Format
     }
 
     /**
-     * Check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+     * Check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found.
      *
      * @param $ip
+     *
      * @return string
      */
     public static function stripPortFromIp($ip)

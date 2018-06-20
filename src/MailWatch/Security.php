@@ -40,6 +40,7 @@ class Security
     /**
      * @param string $action
      * @param string $user
+     *
      * @return bool
      */
     public static function audit_log($action, $user = 'unknown')
@@ -87,7 +88,9 @@ class Security
 
     /**
      * @param int $length
+     *
      * @throws \Exception
+     *
      * @return bool|string
      */
     public static function get_random_string($length)
@@ -97,6 +100,7 @@ class Security
 
     /**
      * @throws \Exception
+     *
      * @return bool|string
      */
     public static function generateToken()
@@ -108,6 +112,7 @@ class Security
 
     /**
      * @param $token
+     *
      * @return bool
      */
     public static function checkToken($token)
@@ -121,6 +126,7 @@ class Security
 
     /**
      * @param string $formstring
+     *
      * @return string
      */
     public static function generateFormToken($formstring)
@@ -137,6 +143,7 @@ class Security
     /**
      * @param string $formstring
      * @param string $formtoken
+     *
      * @return bool
      */
     public static function checkFormToken($formstring, $formtoken)
@@ -150,8 +157,10 @@ class Security
     }
 
     /**
-     * Updates the user login expiry
+     * Updates the user login expiry.
+     *
      * @param string $myusername
+     *
      * @return bool|\mysqli_result
      */
     public static function updateLoginExpiry($myusername)
@@ -159,7 +168,7 @@ class Security
         $sql = "SELECT login_timeout FROM users WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);
 
-        if ($result->num_rows === 0) {
+        if (0 === $result->num_rows) {
             // Something went wrong, or user no longer exists
             return false;
         }
@@ -167,7 +176,7 @@ class Security
         $login_timeout = Db::mysqli_result($result, 0, 'login_timeout');
 
         // Use global if individual value is disabled (-1)
-        if ($login_timeout === '-1') {
+        if ('-1' === $login_timeout) {
             if (defined('SESSION_TIMEOUT')) {
                 if (SESSION_TIMEOUT > 0 && SESSION_TIMEOUT <= 99999) {
                     $expiry_val = (time() + SESSION_TIMEOUT);
@@ -178,7 +187,7 @@ class Security
                 $expiry_val = (time() + 600);
             }
             // If set, use the individual timeout
-        } elseif ($login_timeout === '0') {
+        } elseif ('0' === $login_timeout) {
             $expiry_val = 0;
         } else {
             $expiry_val = (time() + (int)$login_timeout);
@@ -191,8 +200,10 @@ class Security
 
     /**
      * Checks the user login expiry against the current time, if enabled
-     * Returns true if expired
+     * Returns true if expired.
+     *
      * @param string $myusername
+     *
      * @return bool
      */
     public static function checkLoginExpiry($myusername)
@@ -200,19 +211,19 @@ class Security
         $sql = "SELECT login_expiry FROM users WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);
 
-        if ($result->num_rows === 0) {
+        if (0 === $result->num_rows) {
             // Something went wrong, or user no longer exists
             return true;
         }
 
         $login_expiry = Db::mysqli_result($result, 0, 'login_expiry');
 
-        if ($login_expiry === '-1') {
+        if ('-1' === $login_expiry) {
             // User administratively logged out
             return true;
         }
 
-        if ($login_expiry === '0') {
+        if ('0' === $login_expiry) {
             // Login never expires, so just return false
             return false;
         }
@@ -227,8 +238,10 @@ class Security
     }
 
     /**
-     * Checks for a privilege change, returns true if changed
+     * Checks for a privilege change, returns true if changed.
+     *
      * @param string $myusername
+     *
      * @return bool
      */
     public static function checkPrivilegeChange($myusername)
@@ -236,7 +249,7 @@ class Security
         $sql = "SELECT type FROM users WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);
 
-        if ($result->num_rows === 0) {
+        if (0 === $result->num_rows) {
             // Something went wrong, or user does not exist
             return true;
         }

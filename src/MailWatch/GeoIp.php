@@ -47,6 +47,7 @@ class GeoIp
 
     /**
      * @param string $ip
+     *
      * @return bool
      */
     public static function getCountry($ip)
@@ -78,6 +79,7 @@ class GeoIp
      * @param null|string $proxyServer
      * @param string $proxyUser
      * @param string $proxyPassword
+     *
      * @return Client
      */
     public function getDownloadClient($useProxy = false, $proxyServer = null, $proxyUser = '', $proxyPassword = '')
@@ -102,6 +104,7 @@ class GeoIp
 
     /**
      * @param null $extractedFolder
+     *
      * @return bool
      */
     public function cleanupFiles($extractedFolder = null)
@@ -120,13 +123,14 @@ class GeoIp
 
     /**
      * @param Client $client
+     *
      * @return bool
      */
     public function downloadFiles(Client $client)
     {
         foreach ($this->download as $file => $url) {
             $response = $client->request('GET', $url, ['sink' => self::$savePath[$file]]);
-            if ($response->getStatusCode() !== 200) {
+            if (200 !== $response->getStatusCode()) {
                 // download failed
                 return false;
             }
@@ -138,6 +142,7 @@ class GeoIp
     /**
      * @param string $filePath
      * @param string $md5Path
+     *
      * @return bool
      */
     public function verifySignature($filePath, $md5Path)

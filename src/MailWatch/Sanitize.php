@@ -31,6 +31,7 @@ class Sanitize
 {
     /**
      * @param $string
+     *
      * @return mixed
      */
     public static function sanitizeInput($string)
@@ -43,6 +44,7 @@ class Sanitize
 
     /**
      * @param $value
+     *
      * @return string
      */
     public static function quote_smart($value)
@@ -52,6 +54,7 @@ class Sanitize
 
     /**
      * @param $value
+     *
      * @return string
      */
     public static function safe_value($value)
@@ -68,6 +71,7 @@ class Sanitize
     /**
      * @param $input
      * @param $type
+     *
      * @return bool|mixed|string
      */
     public static function deepSanitizeInput($input, $type)
@@ -112,6 +116,7 @@ class Sanitize
     /**
      * @param $input
      * @param $type
+     *
      * @return bool
      */
     public static function validateInput($input, $type)

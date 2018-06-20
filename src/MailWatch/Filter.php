@@ -28,7 +28,7 @@
 namespace MailWatch;
 
 /**
- * Class Filter
+ * Class Filter.
  */
 class Filter
 {
@@ -189,7 +189,7 @@ WHERE
     {
         $sql = '';
         foreach ($this->item as $key => $val) {
-            if ($val[0] === 'date') {
+            if ('date' === $val[0]) {
                 // Change field from timestamp to date format
                 $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
 
@@ -213,19 +213,19 @@ WHERE
     private static function getSqlCondition($val)
     {
         // If LIKE selected - place wildcards either side of the query string
-        if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
+        if ('LIKE' === $val[1] || 'NOT LIKE' === $val[1]) {
             $val[2] = '%' . $val[2] . '%';
         }
         if (is_numeric($val[2])) {
             return "AND\n $val[0] $val[1] $val[2]\n";
         }
 
-        if ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
+        if ('IS NULL' === $val[1] || 'IS NOT NULL' === $val[1]) {
             // Handle NULL and NOT NULL's
             return "AND\n $val[0] $val[1]\n";
         }
 
-        if ($val[2] !== '' && $val[2][0] === '!') {
+        if ('' !== $val[2] && '!' === $val[2][0]) {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
         }
@@ -236,6 +236,7 @@ WHERE
 
     /**
      * @param $column
+     *
      * @return mixed
      */
     public function TranslateColumn($column)
@@ -245,6 +246,7 @@ WHERE
 
     /**
      * @param $operator
+     *
      * @return mixed
      */
     public function TranslateOperator($operator)
@@ -402,6 +404,7 @@ WHERE
 
     /**
      * @param string $operator
+     *
      * @return bool
      */
     private function ValidateOperator($operator)
@@ -413,6 +416,7 @@ WHERE
 
     /**
      * @param string $column
+     *
      * @return bool
      */
     private function ValidateColumn($column)

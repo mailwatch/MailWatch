@@ -31,7 +31,7 @@
 
 \MailWatch\Html::start(\MailWatch\Translation::__('mysqlstatus31'), 0, false, false);
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     echo \MailWatch\Translation::__('notauthorized31') . '\n';
 } else {
     \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog31', true));

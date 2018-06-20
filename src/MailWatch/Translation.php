@@ -36,6 +36,7 @@ class Translation
     /**
      * @param string $string
      * @param bool $useSystemLang
+     *
      * @return string
      */
     public static function __($string, $useSystemLang = false)
@@ -67,7 +68,7 @@ class Translation
     }
 
     /**
-     *  for compatibility with old code
+     *  for compatibility with old code.
      */
     public static function configureLanguage()
     {
@@ -108,15 +109,17 @@ class Translation
     }
 
     /**
-     * Checks if the passed language code is allowed to be used for the users
+     * Checks if the passed language code is allowed to be used for the users.
+     *
      * @param string $langCode
+     *
      * @return bool
      */
     public static function checkLangCode($langCode)
     {
         $validLang = explode(',', USER_SELECTABLE_LANG);
         $found = array_search($langCode, $validLang);
-        if ($found === false || $found === null) {
+        if (false === $found || null === $found) {
             \MailWatch\Security::audit_log(sprintf(\MailWatch\Translation::__('auditundefinedlang12', true), $langCode));
 
             return false;

@@ -33,7 +33,7 @@ use MailWatch\Db;
 // Authentication checking
 //require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
     \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog11', true));
 } else {
@@ -68,7 +68,7 @@ if ($_SESSION['user_type'] !== 'A') {
         foreach ($files as $file) {
             $lines = array_filter(array_map(function ($line) {
                 $parts = explode('=', $line);
-                if (count($parts) !== 2) {
+                if (2 !== count($parts)) {
                     return false;
                 }
                 $parts[1] = str_replace(['"', "'"], '', $parts[1]);
@@ -83,17 +83,17 @@ if ($_SESSION['user_type'] !== 'A') {
         if (isset($vars['ID']) && in_array(strtolower($vars['ID']), ['centos', 'debian'], true)) {
             echo \MailWatch\Translation::__('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
         }
-        if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {
+        if (isset($vars['ID']) && 'ubuntu' === strtolower($vars['ID'])) {
             echo \MailWatch\Translation::__('systemos11') . ' ' . $vars['NAME'] . ' ' . $vars['VERSION'] . '<br>' . "\n";
         }
     }
-    if (strtolower(PHP_OS) === 'freebsd') {
+    if ('freebsd' === strtolower(PHP_OS)) {
         echo \MailWatch\Translation::__('systemos11') . ' ' . PHP_OS . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
     }
 
     // Add test for MTA
     $mta = \MailWatch\MailScanner::getConfVar('mta');
-    if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'postfix') {
+    if ('postfix' === \MailWatch\MailScanner::getConfVar('MTA', true)) {
         echo '<br>' . "\n";
         echo 'Postfix ' . \MailWatch\Translation::__('version11') . ' ';
         exec('which postconf', $postconf);
@@ -104,7 +104,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         echo '<br>' . "\n";
     }
-    if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'exim') {
+    if ('exim' === \MailWatch\MailScanner::getConfVar('MTA', true)) {
         echo '<br>' . "\n";
         echo 'Exim ' . \MailWatch\Translation::__('version11') . ' ';
         exec('which exim', $exim);
@@ -115,7 +115,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         echo '<br>' . "\n";
     }
-    if (\MailWatch\MailScanner::getConfVar('MTA', true) === 'sendmail') {
+    if ('sendmail' === \MailWatch\MailScanner::getConfVar('MTA', true)) {
         echo '<br>' . "\n";
         echo 'Sendmail ' . \MailWatch\Translation::__('version11') . ' ';
         exec('which sendmail', $sendmail);

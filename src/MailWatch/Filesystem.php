@@ -40,7 +40,7 @@ class Filesystem
             $disks = shell_exec('fsutil fsinfo drives');
             $disks = str_word_count($disks, 1);
             //TODO: won't work on non english installation, we need to find an universal command
-            if ($disks[0] !== 'Drives') {
+            if ('Drives' !== $disks[0]) {
                 return [];
             }
             unset($disks[0]);
@@ -60,7 +60,7 @@ class Filesystem
                 $mounted_fs = file('/proc/mounts');
                 foreach ($mounted_fs as $fs_row) {
                     $drive = preg_split("/[\s]+/", $fs_row);
-                    if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
+                    if (('/dev/' === substr($drive[0], 0, 5)) && (false === stripos($drive[1], '/chroot/'))) {
                         $temp_drive['device'] = $drive[0];
                         $temp_drive['mountpoint'] = $drive[1];
                         $disks[] = $temp_drive;
@@ -74,7 +74,7 @@ class Filesystem
                 $data = explode("\n", $data);
                 foreach ($data as $disk) {
                     $drive = preg_split("/[\s]+/", $disk);
-                    if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[2], '/chroot/') === false)) {
+                    if (('/dev/' === substr($drive[0], 0, 5)) && (false === stripos($drive[2], '/chroot/'))) {
                         $temp_drive['device'] = $drive[0];
                         $temp_drive['mountpoint'] = $drive[2];
                         $disks[] = $temp_drive;

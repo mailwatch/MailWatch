@@ -51,7 +51,7 @@ $last = false;
 while ($line = fgets($fp, 2096)) {
     $line = preg_replace("/\n/i", '', $line);
     $line = preg_replace('/</', '&lt;', $line);
-    if ($line !== '' && $line !== ' ') {
+    if ('' !== $line && ' ' !== $line) {
         $timer = get_microtime();
         $linet = $timer - $start;
         if (!$last) {

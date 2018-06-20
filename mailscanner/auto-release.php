@@ -33,7 +33,7 @@ if (file_exists('conf.php')) {
     if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $mid = \MailWatch\Sanitize::deepSanitizeInput($_GET['mid'], 'url');
-        if ($mid === false || !\MailWatch\Sanitize::validateInput($mid, 'msgid')) {
+        if (false === $mid || !\MailWatch\Sanitize::validateInput($mid, 'msgid')) {
             die();
         }
         if (isset($_GET['amp;r'])) {
@@ -50,7 +50,7 @@ if (file_exists('conf.php')) {
             dbg('Error fetching from database' . Db::$link->error);
             $output[] = \MailWatch\Translation::__('dberror59');
         }
-        if ($result->num_rows === 0) {
+        if (0 === $result->num_rows) {
             $output[] = \MailWatch\Translation::__('msgnotfound159');
             $output[] = \MailWatch\Translation::__('msgnotfound259') . htmlentities($mid) . ' ' . \MailWatch\Translation::__('msgnotfound359');
         } else {
@@ -58,12 +58,12 @@ if (file_exists('conf.php')) {
             if ($row['uid'] === $token) {
                 $list = \MailWatch\Quarantine::quarantine_list_items($mid);
                 $result = '';
-                if (count($list) === 1) {
+                if (1 === count($list)) {
                     $to = $list[0]['to'];
                     $result = \MailWatch\Quarantine::quarantine_release($list, [0], $to);
                 } else {
                     $listCount = count($list);
-                    for ($i = 0; $i < $listCount; $i++) {
+                    for ($i = 0; $i < $listCount; ++$i) {
                         if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
                             $result = \MailWatch\Quarantine::quarantine_release($list, [$i], $list[$i]['to']);
                         }

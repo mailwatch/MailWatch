@@ -54,7 +54,7 @@ $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = \MailWatch\Db::query($sqlcheck);
 $mta = \MailWatch\MailScanner::getConfVar('mta');
 $optimize_mtalog_id = '';
-if ($mta === 'postfix' && $tablecheck->num_rows > 0) {
+if ('postfix' === $mta && $tablecheck->num_rows > 0) {
     //version for postfix with mtalog_ids enabled
     \MailWatch\Db::query(
         'DELETE i.*, m.* FROM mtalog AS m

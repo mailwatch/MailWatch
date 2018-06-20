@@ -31,15 +31,16 @@ class SpamAssassin
 {
     /**
      * @param $spamreport
+     *
      * @return bool|string
      */
     public static function autolearn($spamreport)
     {
-        if (preg_match('/autolearn=spam/', $spamreport) === 1) {
+        if (1 === preg_match('/autolearn=spam/', $spamreport)) {
             return Translation::__('saspam03');
         }
 
-        if (preg_match('/autolearn=not spam/', $spamreport) === 1) {
+        if (1 === preg_match('/autolearn=not spam/', $spamreport)) {
             return Translation::__('sanotspam03');
         }
 
@@ -48,6 +49,7 @@ class SpamAssassin
 
     /**
      * @param $rule
+     *
      * @return string
      */
     public static function get_rule_desc($rule)
@@ -69,6 +71,7 @@ class SpamAssassin
 
     /**
      * @param $rule
+     *
      * @return bool|string
      */
     public static function return_rule_desc($rule)
@@ -84,6 +87,7 @@ class SpamAssassin
 
     /**
      * @param $spamreport
+     *
      * @return string
      */
     public static function format_spam_report($spamreport)
@@ -95,7 +99,7 @@ class SpamAssassin
             // Split the array
             $sa_rules = explode(', ', $sa_rules[0]);
             // Check to make sure a check was actually run
-            if ($sa_rules[0] === 'Message larger than max testing size' || $sa_rules[0] === 'timed out') {
+            if ('Message larger than max testing size' === $sa_rules[0] || 'timed out' === $sa_rules[0]) {
                 return $sa_rules[0];
             }
 
@@ -122,7 +126,7 @@ class SpamAssassin
             $notRulesLinesRegex = '(' . implode('|', $notRulesLines) . ')';
 
             $sa_rules = array_filter($sa_rules, function ($val) use ($notRulesLinesRegex) {
-                return preg_match("/$notRulesLinesRegex/i", $val) === 0;
+                return 0 === preg_match("/$notRulesLinesRegex/i", $val);
             });
 
             $output_array = [];

@@ -32,7 +32,7 @@
 //require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrater
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     // If the user isn't an administrater send them back to the index page.
     header('Location: index.php');
     \MailWatch\Security::audit_log(\MailWatch\Translation::__('auditlog19', true));

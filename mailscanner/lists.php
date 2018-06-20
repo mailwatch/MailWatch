@@ -210,7 +210,7 @@ switch (true) {
 }
 
 // Submitted
-if ($url_submit === 'add') {
+if ('add' === $url_submit) {
     if (false === \MailWatch\Security::checkToken($_POST['token'])) {
         die(\MailWatch\Translation::__('dietoken99'));
     }
@@ -253,7 +253,7 @@ if ($url_submit === 'add') {
 }
 
 // Delete
-if ($url_submit === 'delete') {
+if ('delete' === $url_submit) {
     if (false === \MailWatch\Security::checkToken($_GET['token'])) {
         die(\MailWatch\Translation::__('dietoken99'));
     }
@@ -300,6 +300,7 @@ if ($url_submit === 'delete') {
 /**
  * @param string $sql
  * @param string $list
+ *
  * @return array
  */
 function build_table($sql, $list)

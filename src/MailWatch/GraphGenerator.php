@@ -51,11 +51,11 @@ class GraphGenerator
      */
     public function printPieGraph()
     {
-        if ($this->prepareData() === false) {
+        if (false === $this->prepareData()) {
             return;
         }
         $this->runConversions();
-        if (count($this->data[$this->graphColumns['dataNumericColumn']]) === 0) {
+        if (0 === count($this->data[$this->graphColumns['dataNumericColumn']])) {
             echo Translation::__('nodata64');
 
             return;
@@ -82,19 +82,19 @@ class GraphGenerator
     }
 
     /**
-     * Generates a line/bar graph
+     * Generates a line/bar graph.
      *
      * @throws \Exception
      */
     public function printLineGraph()
     {
-        if ($this->types === null) {
+        if (null === $this->types) {
             echo 'No types defined';
 
             return;
         }
 
-        if ($this->prepareData() === false) {
+        if (false === $this->prepareData()) {
             return;
         }
 
@@ -106,14 +106,14 @@ class GraphGenerator
         $graphTypes = '';
         $colors = '';
 
-        for ($i = 0, $iMax = count($this->graphColumns['dataNumericColumns']); $i < $iMax; $i++) {
+        for ($i = 0, $iMax = count($this->graphColumns['dataNumericColumns']); $i < $iMax; ++$i) {
             //foreach yaxis get the column name for numeric and formatted data
             $numericData .= '[' . "\n";
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
             $graphTypes .= '[' . "\n";
             $colors .= isset($this->settings['colors']) ? '["' . implode('", "', $this->settings['colors'][$i]) . '"],' : '';
-            for ($j = 0, $jMax = count($this->graphColumns['dataNumericColumns'][$i]); $j < $jMax; $j++) {
+            for ($j = 0, $jMax = count($this->graphColumns['dataNumericColumns'][$i]); $j < $jMax; ++$j) {
                 if (isset($this->graphColumns['dataLabels'][$i])) {
                     $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] . '",';
                 }
@@ -143,13 +143,13 @@ class GraphGenerator
           xAxeDescription : "' . $this->graphColumns['xAxeDescription'] . '",
           yAxeDescriptions : ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"],
           fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
-          plainGraph : ' . (isset($this->settings['plainGraph']) && $this->settings['plainGraph'] === true ? 'true' : 'false') . ',
+          plainGraph : ' . (isset($this->settings['plainGraph']) && true === $this->settings['plainGraph'] ? 'true' : 'false') . ',
           maxTicks: ' . (isset($this->settings['maxTicks']) ? $this->settings['maxTicks'] : '12') . ',
-          ' . (isset($this->settings['drawLines']) && $this->settings['drawLines'] === true ? 'drawLines : true,' : '') . '
+          ' . (isset($this->settings['drawLines']) && true === $this->settings['drawLines'] ? 'drawLines : true,' : '') . '
           ' . (isset($this->settings['colors']) ? 'colors : [' . $colors . '],' : '') . '
-          ' . (isset($this->settings['valueTypes']) && count($this->settings['valueTypes']) !== 0 ? 'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : '') . '
+          ' . (isset($this->settings['valueTypes']) && 0 !== count($this->settings['valueTypes']) ? 'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : '') . '
           ' . (isset($this->graphColumns['dataLabels']) ? 'chartDataLabels : [' . $dataLabels . '],' : '') . '
-          ' . ($graphTypes === null ? '' : 'types : [' . $graphTypes . '],') . '
+          ' . (null === $graphTypes ? '' : 'types : [' . $graphTypes . '],') . '
         });
       </script>';
 
@@ -157,7 +157,7 @@ class GraphGenerator
     }
 
     /**
-     * Executes the conversion defined by $this->valueConversion
+     * Executes the conversion defined by $this->valueConversion.
      *
      * @throws \Exception
      */
@@ -188,7 +188,7 @@ class GraphGenerator
     }
 
     /**
-     * Gets the data for $this->sqlQuery from db and stores it in $this->data
+     * Gets the data for $this->sqlQuery from db and stores it in $this->data.
      *
      * @return bool true on success, false on error
      */
@@ -197,7 +197,7 @@ class GraphGenerator
         $result = Db::query($this->sqlQuery);
         $this->data = [];
         $this->numResult = $result->num_rows;
-        if ($this->numResult <= 0 && (!isset($this->settings['ignoreEmptyResult']) || $this->settings['ignoreEmptyResult'] === false)) {
+        if ($this->numResult <= 0 && (!isset($this->settings['ignoreEmptyResult']) || false === $this->settings['ignoreEmptyResult'])) {
             echo Translation::__('diemysql99') . "\n";
 
             return false;
@@ -213,7 +213,7 @@ class GraphGenerator
     }
 
     /**
-     * Converts the data from $this->data[$column] to numbers
+     * Converts the data from $this->data[$column] to numbers.
      *
      * @param string $column the data column that shall be converted
      */
@@ -228,7 +228,7 @@ class GraphGenerator
     }
 
     /**
-     * Converts the data from $this->data[$column] so that so that it is scaled in kB, MB, GB etc
+     * Converts the data from $this->data[$column] so that so that it is scaled in kB, MB, GB etc.
      *
      * @param string $column the data column that shall be converted
      */
@@ -244,7 +244,7 @@ class GraphGenerator
     }
 
     /**
-     * Converts the data (ip address) from $this->data[$column] so that the hostname and geoip lookup are generated in $this->data['hostname'] and $this->data['geoip']
+     * Converts the data (ip address) from $this->data[$column] so that the hostname and geoip lookup are generated in $this->data['hostname'] and $this->data['geoip'].
      *
      * @param string $column the data column that shall be converted
      */
@@ -268,7 +268,7 @@ class GraphGenerator
     }
 
     /**
-     * Converts the data from $this->data[$column] so that virus names and counter are inserted in $this->data['virusname'] and $this->data['viruscount']
+     * Converts the data from $this->data[$column] so that virus names and counter are inserted in $this->data['virusname'] and $this->data['viruscount'].
      *
      * @param string $column the data column that shall be converted
      */
@@ -277,9 +277,9 @@ class GraphGenerator
         $viruses = [];
         foreach ($this->data[$column] as $report) {
             $virus = Antivirus::getVirus($report);
-            if ($virus !== null) {
+            if (null !== $virus) {
                 if (isset($viruses[$virus])) {
-                    $viruses[$virus]++;
+                    ++$viruses[$virus];
                 } else {
                     $viruses[$virus] = 1;
                 }
@@ -302,7 +302,7 @@ class GraphGenerator
 
     /**
      * Generates $this->data['time'] with the time beginning with $this->settings['timeInterval'] and
-     * in steps of $this->settings['timeScale']
+     * in steps of $this->settings['timeScale'].
      *
      * @throws \Exception
      */
@@ -325,7 +325,7 @@ class GraphGenerator
             //get the next interval and create the label for it
             $date = $date->add(new \DateInterval($scale));
             $dates[] = $date->format($format);
-            $count++;
+            ++$count;
         }
         //store the time scales and define the result count
         $this->data['time'] = $dates;
@@ -333,7 +333,7 @@ class GraphGenerator
     }
 
     /**
-     * Converts the data from $this->data[$column] so that it is mapped to an time scale
+     * Converts the data from $this->data[$column] so that it is mapped to an time scale.
      *
      * @param string $column the data column that shall be converted
      *
@@ -360,7 +360,7 @@ class GraphGenerator
         }
         //get the values from the sql result and assign them to the correct time scale part
         $count = isset($this->data['xaxis']) ? count($this->data['xaxis']) : 0;
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             // get the value from data and add it to the corresponding hour
             $time = new \DateTime($this->data['xaxis'][$i]);
             //recheck if the entry is inside the value range
@@ -373,11 +373,11 @@ class GraphGenerator
     }
 
     /**
-     * Prints a html table with the columns defined by $this->tableColumns using the data in $this->data if $this->printTable is true
+     * Prints a html table with the columns defined by $this->tableColumns using the data in $this->data if $this->printTable is true.
      */
     public function printTable()
     {
-        if ($this->printTable !== true) {
+        if (true !== $this->printTable) {
             return;
         }
         // HTML to display the table
@@ -388,7 +388,7 @@ class GraphGenerator
         }
         echo '    </tr>' . "\n";
 
-        for ($i = 0; $i < $this->numResult; $i++) {
+        for ($i = 0; $i < $this->numResult; ++$i) {
             echo '    <tr>' . "\n";
             foreach ($this->tableColumns as $columnName => $columnTitle) {
                 echo '     <td>' . $this->data[$columnName][$i] . '</td>' . "\n";

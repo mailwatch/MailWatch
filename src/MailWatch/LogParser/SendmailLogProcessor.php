@@ -41,7 +41,7 @@ class SendmailLogProcessor extends MtaLogProcessor
     public function getRulesets()
     {
         if (isset($this->entries['ruleset'])) {
-            if ($this->entries['ruleset'] === 'check_relay') {
+            if ('check_relay' === $this->entries['ruleset']) {
                 // Listed in RBL(s)
                 return [
                     'type' => Sanitize::safe_value('rbl'),
@@ -49,7 +49,7 @@ class SendmailLogProcessor extends MtaLogProcessor
                     'status' => Sanitize::safe_value($this->entries['reject']),
                 ];
             }
-            if ($this->entries['ruleset'] === 'check_mail') {
+            if ('check_mail' === $this->entries['ruleset']) {
                 // Domain does not resolve
                 return [
                     'type' => Sanitize::safe_value('unresolveable'),

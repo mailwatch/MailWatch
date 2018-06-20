@@ -139,7 +139,7 @@ while ($row = $result->fetch_object()) {
                 $virus_array[$virus]['scanner'] = $vals['name'];
             }
             if (isset($virus_array[$virus]['count'])) {
-                $virus_array[$virus]['count']++;
+                ++$virus_array[$virus]['count'];
             } else {
                 $virus_array[$virus]['count'] = 1;
             }
@@ -161,7 +161,7 @@ foreach ($virus_array as $key => $val) {
     $data_names[] = "$key";
     $data_first_seen[] = $val['first_seen'];
     $data_scanner[] = $val['scanner'];
-    $count++;
+    ++$count;
 }
 
 // HTML Code
@@ -178,7 +178,7 @@ echo '<TH>' . \MailWatch\Translation::__('count50') . '</TH>';
 echo '</TR>';
 
 // Write the data in table
-for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; $i++) {
+for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; ++$i) {
     echo "<TR BGCOLOR=\"#EBEBEB\">
  <TD>$data_names[$i]</TD>
  <TD>$data_scanner[$i]</TD>
