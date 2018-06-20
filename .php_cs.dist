@@ -1,17 +1,56 @@
 <?php
 
+$header = <<<'EOF'
+MailWatch for MailScanner
+Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
+Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
+Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+that use the same license as those files), and distribute linked combinations including the two.
+You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+your version of the program, but you are not obligated to do so.
+If you do not wish to do so, delete this exception statement from your version.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+EOF;
+
 $finder = PhpCsFixer\Finder::create()
-    ->exclude(['vendor', 'mailscanner/lib', '_materiale'])
+    ->exclude(['var', 'vendor', 'mailscanner/lib', '_materiale'])
     ->in(__DIR__);
 
 return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
-    ->setFinder($finder)
     ->setRules(array(
-        //'@PSR2' => true,
-        //'@PHP56Migration' => true,
-        //'array_syntax' => ['syntax' => 'short'],
+        '@PSR2' => true,
+        '@PHP70Migration' => true,
+        '@Symfony' => true,
+        '@Symfony:risky' => true,
 
+        'array_syntax' => ['syntax' => 'short'],
+        'cast_spaces' => false,
+        'concat_space' => ['spacing' => 'one'],
+        'header_comment' => ['header' => $header],
+        'modernize_types_casting' => true,
+        'native_function_casing' => true,
+        'phpdoc_add_missing_param_annotation' => true,
+        'phpdoc_align' => false, // Waste of time
+        'no_empty_phpdoc' => true,
+        'not_operator_with_space' => false, // No we prefer to keep '!' without spaces
+        'not_operator_with_successor_space' => false, // idem
+        'whitespace_after_comma_in_array' => true,
+
+/*
         'array_syntax' => ['syntax' => 'short'],
         'backtick_to_shell_exec' => true,
         'binary_operator_spaces' => ['align_double_arrow' => false],
@@ -50,7 +89,7 @@ return PhpCsFixer\Config::create()
         'method_separation' => true,
         'modernize_types_casting' => true,
         'native_function_casing' => true,
-        'native_function_invocation'=> false, // This is risky and seems to be micro-optimization that make code uglier so not worth it, at least for now
+        'native_function_invocation' => false, // This is risky and seems to be micro-optimization that make code uglier so not worth it, at least for now
         'new_with_braces' => true,
         'no_alias_functions' => true,
         'no_blank_lines_after_class_opening' => true,
@@ -135,7 +174,7 @@ return PhpCsFixer\Config::create()
         'space_after_semicolon' => true,
         'standardize_not_equals' => true,
         'strict_comparison' => false, // No, too dangerous to change that at the moment
-        'strict_param' =>  false, // No, too dangerous to change that at the moment
+        'strict_param' => false, // No, too dangerous to change that at the moment
         'switch_case_semicolon_to_colon' => true,
         'switch_case_space' => true,
         'ternary_operator_spaces' => true,
@@ -145,4 +184,6 @@ return PhpCsFixer\Config::create()
         'unary_operator_spaces' => true,
         'visibility_required' => true,
         'whitespace_after_comma_in_array' => true,
-    ));
+*/
+    ))
+    ->setFinder($finder);
