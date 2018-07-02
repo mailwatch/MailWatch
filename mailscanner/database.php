@@ -53,11 +53,15 @@ class database
                 restore_error_handler();
                 self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
                 $charset = 'utf8';
+                $collation = 'utf8_unicode_ci';
                 if (self::$link->server_version >= 50503) {
                     //mysql version supports utf8mb4
                     $charset = 'utf8mb4';
+                    $collation = 'utf8mb4_unicode_ci';
                 }
-                self::$link->set_charset($charset);
+                if (false === self::$link->set_charset($charset)) {
+                    self::$link->query('SET NAMES ' . $charset . ' COLLATE ' . $collation);
+                }
             } catch (Exception $e) {
                 if (PHP_SAPI !== 'cli') {
                     $output = '
