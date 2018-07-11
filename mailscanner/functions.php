@@ -2821,9 +2821,9 @@ function address_filter_sql($addresses, $type)
         case 'U': // User - show only specific addresses
             foreach ($addresses as $address) {
                 if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
-                    $sqladdr_arr[] = "to_address like '$address%'";
+                    $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%'";
                 } else {
-                    $sqladdr_arr[] = "to_address like '$address%' OR from_address = '$address'";
+                    $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%' OR from_address = '$address'";
                 }
             }
             $sqladdr = implode(' OR ', $sqladdr_arr);
@@ -2832,9 +2832,9 @@ function address_filter_sql($addresses, $type)
             foreach ($addresses as $address) {
                 if (strpos($address, '@')) {
                     if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
-                        $sqladdr_arr[] = "to_address like '%$address%'";
+                        $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%'";
                     } else {
-                        $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
+                        $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%' OR from_address = '$address'";
                     }
                 } else {
                     if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
