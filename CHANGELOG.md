@@ -1,4 +1,4 @@
-1.2.10-dev
+1.2.10
 -----------
 Compatibility
 - Disable geoip for php <5.4 (#1075)
