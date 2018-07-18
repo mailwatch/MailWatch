@@ -1,3 +1,17 @@
+1.2.10-dev
+-----------
+Compatibility
+- Disable geoip for php <5.4 (#1075)
+
+Fixes
+- Fix version display for geoip (#1063)
+- Improve MaxMindDB version detection
+- Fix schema for user table to not allow empty type (#1067
+- Simplify ClamAV version detection (#1060)
+- Detect failed collation change on db connect and set manually (#1078)
+- Fix mail filter for normal users (#1084)
+- Fix missing translation in quarantine report emails (#1090)
+
 1.2.9
 -----------
 Compatibility
