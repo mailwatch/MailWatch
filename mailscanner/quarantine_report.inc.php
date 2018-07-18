@@ -27,6 +27,47 @@
 
 class Quarantine_Report
 {
+    private static $html_content = ' <tr>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+ </tr>
+';
+
+    private static $text_content = 'Received: %s
+From: %s
+Subject: %s
+Reason: %s
+Action:
+%s
+
+';
+
+    private $users_sql = '
+SELECT
+ username,
+ quarantine_rcpt,
+ type
+FROM
+ users
+WHERE
+ quarantine_report=1
+';
+
+    private static $filters_sql = "
+SELECT
+ filter
+FROM
+ user_filters
+WHERE
+ username=%s
+AND
+ active='Y'
+";
+
     /**
      * @return boolean|string true if requirements are met; else missing requirements as string
      */
@@ -61,7 +102,16 @@ class Quarantine_Report
         return $required_constant_missing;
     }
 
-    private static function get_html_template($empty=false)
+    private static function get_text_template($empty = false)
+    {
+        if (true === $empty) {
+            return __('text611') . "\n\n" . __('text613');
+        }
+
+        return __('text611') . "\n\n" . __('text612') . "\n\n%s";
+    }
+
+    private static function get_html_template($empty = false)
     {
         return '<!DOCTYPE html>
 <html>
@@ -87,7 +137,7 @@ class Quarantine_Report
    ' . ($empty ? __('text613') : __('text612')) . '
   </td>
  </tr>
-'. ($empty ? '' : '
+' . ($empty ? '' : '
  <tr>
   <td colspan="2">%s</td>
  </tr>
@@ -111,58 +161,6 @@ class Quarantine_Report
 %s
 </table>';
     }
-
-    private static $html_content = ' <tr>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
- </tr>
-';
-
-    private static $text_template = 'Quarantine Report for %s
-
-In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
-
-%s';
-
-    private static $text_template_empty = 'Quarantine Report for %s
-
-In the last %s day(s) you have received no e-mails that have been quarantined.';
-
-
-    private static $text_content = 'Received: %s
-From: %s
-Subject: %s
-Reason: %s
-Action:
-%s
-
-';
-
-    private $users_sql = '
-SELECT
- username,
- quarantine_rcpt,
- type
-FROM
- users
-WHERE
- quarantine_report=1
-';
-
-    private static $filters_sql = "
-SELECT
- filter
-FROM
- user_filters
-WHERE
- username=%s
-AND
- active='Y'
-";
 
     private static function get_report_sql()
     {
@@ -574,26 +572,19 @@ ORDER BY a.date DESC, a.time DESC';
                 $qitem['reason']
             );
         }
+
         if (count($quarantined) > 0) {
-            // HTML
             $h2 = sprintf(self::get_html_table(), $h1);
             $html_report = sprintf(self::get_html_template(), $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $h2);
-            if (DEBUG === true) {
-                echo '<pre>' . $html_report . '</pre>';
-            }
+            $text_report = sprintf(self::get_text_template(), $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $t1);
 
-            // Text
-            $text_report = sprintf(self::$text_template, $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $t1);
-            if (DEBUG === true) {
-                echo "<pre>$text_report</pre>\n";
-            }
         } else {
             $html_report = sprintf(self::get_html_template(true), $filter, QUARANTINE_REPORT_DAYS);
-            $text_report = sprintf(self::$text_template_empty, $filter, QUARANTINE_REPORT_DAYS);
-            if (DEBUG === true) {
-                echo "<pre>$html_report</pre>\n";
-                echo "<pre>$text_report</pre>\n";
-            }
+            $text_report = sprintf(self::get_text_template(true), $filter, QUARANTINE_REPORT_DAYS);
+        }
+        if (DEBUG === true) {
+            echo "<pre>$html_report</pre>\n";
+            echo "<pre>$text_report</pre>\n";
         }
 
         // Send e-mail
