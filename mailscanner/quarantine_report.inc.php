@@ -247,6 +247,7 @@ ORDER BY a.date DESC, a.time DESC';
 
     /**
      * @param array $usersForReport array containing users for which the reports should be send; if empty reports are send for all users
+     * @param bool $sendEmptyReports
      * @return false|array if requirements not met; else an associative array counting successfull and failed reports for users
      */
     public function send_quarantine_reports($usersForReport = array(), $sendEmptyReports = false)
@@ -346,6 +347,7 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $email
      * @param string $to_address
      * @param string $to_domain
+     * @param bool $sendEmptyReports
      * @return true if all reports were send successfully; false if one or more reports could not be send
      */
     private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain, $sendEmptyReports = false)
@@ -368,7 +370,7 @@ ORDER BY a.date DESC, a.time DESC';
                 $quarantined = self::return_quarantine_list_array($filter, $filter_domain);
 
                 self::dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
-                if (count($quarantined) > 0 || $sendEmptyReports) {
+                if (true === $sendEmptyReports || count($quarantined) > 0) {
                     $sendResult = self::send_quarantine_email($email, $list_for, $quarantined);
                 }
                 unset($quarantined);
@@ -402,12 +404,12 @@ ORDER BY a.date DESC, a.time DESC';
             if (count($quarantined) > 0) {
                 $quarantined = call_user_func_array('array_merge', $quarantined);
             }
-            if (count($quarantined) > 0 || $sendEmptyReports) {
+
+            if (true === $sendEmptyReports || count($quarantined) > 0) {
                 $list = implode(', ', $quarantine_list);
                 return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
-            } else {
-                return 0;
             }
+
             unset($quarantined, $quarantine_list);
 
             return false;
