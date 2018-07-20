@@ -934,7 +934,7 @@ return array(
     'message61' => 'La variable %s est vide. Veuillez définir cette variable dans conf.php.',
     'text611' => 'Rapport de Quarantaine pour %s',
     'text612' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine et dont vous retrouverez la liste ci-dessous. Les messages en Quarantaine sont automatiquement effacés %s jours après la date à laquelle ils ont été reçus.',
-    'text613' => 'Durant le(s) %s dernier(s) jour(s) vous avez reçu %s messages qui ont été mis en Quarantaine.',
+    'text613' => 'Au cours du ou des %s dernier(s) jours, vous n\'avez reçu aucun message mis en quarantaine.',
     'release61' => 'Libérer',
     'virus61' => 'Virus',
     'badcontent61' => 'Contenu dangereux',
