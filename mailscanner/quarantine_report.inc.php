@@ -579,8 +579,6 @@ ORDER BY a.date DESC, a.time DESC';
             $h2 = sprintf(self::get_html_table(), $h1);
             $html_report = sprintf(self::get_html_template(), $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $h2);
             $text_report = sprintf(self::get_text_template(), $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $t1);
-
-
         } else {
             $html_report = sprintf(self::get_html_template(true), $filter, QUARANTINE_REPORT_DAYS);
             $text_report = sprintf(self::get_text_template(true), $filter, QUARANTINE_REPORT_DAYS);
