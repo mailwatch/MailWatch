@@ -268,7 +268,6 @@ if ($is_MCP_enabled === true) {
 }
 echo "  <TH rowspan='2'>" . __('volume49') . '</TH>' . "\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
-    echo '  <TH class="white" rowspan="2">&nbsp;</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('unknoweusers49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('resolve49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('rbl49') . '</TH>' . "\n";
@@ -305,7 +304,6 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
     }
     echo ' <TD ALIGN="RIGHT">' . formatSize($data_total_size[$i] * $size_info['formula']) . '</TD>' . "\n";
     if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
-        echo ' <TD class="white"><BR></TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
