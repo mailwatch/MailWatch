@@ -335,7 +335,6 @@ if ($is_MCP_enabled === true) {
 }
 echo ' <TH ALIGN="RIGHT">' . formatSize(mailwatch_array_sum($data_total_size) * $size_info['formula']) . '</TH>' . "\n";
 if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
-    echo ' <TD class="white"><BR></TD>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unknown_users)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unresolveable)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_rbl)) . '</TH>' . "\n";
