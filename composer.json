@@ -8,7 +8,7 @@
     "issues": "https://github.com/mailwatch/MailWatch/issues"
   },
   "require": {
-    "php": ">=7.0.8",
+    "php": "^7.0.8||^7.1||^7.2",
     "ext-iconv": "*",
     "ext-xml": "*",
     "ezyang/htmlpurifier": "^4.10",
@@ -42,6 +42,7 @@
     "friendsofphp/php-cs-fixer": "^2.12",
     "symfony/dotenv": "^3.4",
     "symfony/profiler-pack": "^1.0",
+    "symfony/test-pack": "^1.0",
     "symfony/thanks": "^1.0",
     "symfony/web-server-bundle": "^3.4"
   },
