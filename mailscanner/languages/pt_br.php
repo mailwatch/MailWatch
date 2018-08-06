@@ -1,4 +1,5 @@
 <?php
+
 /*
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
@@ -23,8 +24,10 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 /* languages/pt_br.php */
 /* v0.3.12 */
+
 return array(
     // 01-login.php
     'username' => 'Usuário:',
@@ -37,6 +40,7 @@ return array(
     'login01' => 'Login',
     'forgottenpwd01' => 'Esqueceu sua senha?',
     'sessiontimeout01' => 'Sua sessão expirou.',
+
     // 03-funtions.php
     'jumpmessage03' => 'Carregar a mensagem:',
     'cuser03' => 'Usuário',
@@ -192,6 +196,7 @@ return array(
     'barvirus03' => 'Vírus',
     'barspam03' => 'Spam',
     'moretopviruses03' => 'e %s outros vírus',
+
     // 04-detail.php
     'receivedon04' => 'Recebido em:',
     'receivedby04' => 'Recebido por:',
@@ -263,12 +268,14 @@ return array(
     'spamassassin04' => 'SpamAssassin',
     'spamassassinmcp04' => 'SpamAssassin MCP',
     'geoipnotsupported04' => 'Não há suporte para o GeoIP',
+
     // 05-status.php
     'recentmsg05' => 'Mensagens Recentes',
     'last05' => 'Últimas',
     'messages05' => 'Mensagens',
     'refevery05' => 'Recarregando a cada',
     'seconds05' => 'segundos',
+
     // 06-viewmail.php
     'msgviewer06' => 'Visualização da Mensagem',
     'releasemsg06' => 'Liberar esta mensagem',
@@ -286,6 +293,7 @@ return array(
     'mymetype06' => 'MIME Type:',
     'auditlog06' => 'Vizualização do copro da mensagem em quarentena (%s)',
     'nonameattachment06' => 'Anexo sem nome',
+
     // 07-lists.php
     'addwlbl07' => 'Adicionar à Lista Branca/Lista Negra',
     'from07' => 'De:',
@@ -306,12 +314,14 @@ return array(
     'noentries07' => 'Nenhuma entrada.',
     'auditlogadded07' => 'Entrada [%s] adicionada para %s na %s',
     'auditlogremoved07' => 'Entrada [%s] removida para %s na %s',
+
     // 08-quarantine.php
     'folder08' => 'Pasta',
     'folder_0208' => 'Pasta',
     'items08' => 'itens',
     'qviewer08' => 'Visualizador da quarantena',
     'dienodir08' => 'Não foram encontrados diretórios de quarentena',
+
     // 09-filter.inc.php
     'activefilters09' => 'Filtros Ativos',
     'addfilter09' => 'Adicionar Filtro',
@@ -370,6 +380,7 @@ return array(
     'hostname09' => 'Hostname do MailScanner',
     'remove09' => 'Remover',
     'reports09' => 'Relatórios',
+
     // 10-other.php
     'tools10' => 'Ferramentas',
     'toolslinks10' => 'Ferramentas e Links',
@@ -387,6 +398,7 @@ return array(
     'updatemcpdesc10' => 'Atualiar as descrições do MCP',
     'updategeoip10' => 'Atualizar Database GeoIP',
     'links10' => 'Links',
+
     // 11-sf_versions.php
     'softver11' => 'Versões dos Software',
     'nodbdown11' => 'Nenhum database baixado',
@@ -395,6 +407,7 @@ return array(
     'mwandmsversion11' => 'Informações de Versão do MailWatch e MailScanner',
     'auditlog11' => 'Tentativa de acesso à página de versões por usuário não administrador.',
     'downloaddate11' => 'data do download',
+
     // 12-user_manager.php
     'usermgnt12' => 'Gerenciamento de Usuários',
     'username12' => 'Usuário',
@@ -494,6 +507,7 @@ return array(
     'errorreportnodomainforbidden12' => 'Erro: Você não tem permissões para enviar relatórios de quarentena de usuários sem domínio',
     'errorreportdomainforbidden12' => 'Erro: Você não tem permissões para enviar relatórios de quarentena de usuários do domínio %s',
     'noReportsEnabled12' => 'Erro: Você precisa habilitar o envio de relatórios diários para solicitar um',
+
     // 13-sa_rules_update.php
     'input13' => 'Rodar agora',
     'updatesadesc13' => 'Descrições das atualizações do SpamAssassin',
@@ -503,6 +517,7 @@ return array(
     'rule13' => 'Regra',
     'description13' => 'Descrição',
     'auditlog13' => 'Atualização das Regras do SpamAssassin executada',
+
     // 14-reports.php
     'messlisting14' => 'Lista de Mensagens',
     'messop14' => 'Operações com Mensagens',
@@ -525,6 +540,7 @@ return array(
     'mcpscoredist14' => 'Distribuição de pontuação MCP',
     'mcprulehit14' => 'MCP Rule Hit',
     'reports14' => 'Relatórios',
+
     // 15-geoip_update.php
     'input15' => 'Rodar agora',
     'updategeoip15' => 'Atualização do banco de dados GeoIP',
@@ -550,11 +566,14 @@ return array(
     'geoipupdate15' => 'Atualização do banco de dados GeoIP',
     'dieproxy15' => 'O tipo de proxy deve ser "HTTP" ou "SOCKS5", verifique sua configuração',
     'auditlog15' => 'Atualização do GeoIP executada',
+
     // 16-rep_message_listing.php
     'messlisting16' => 'Lista de Mensagens',
+
     // 17-rep_message_ops.php
     'messageops17' => 'Operação com Mensagens',
     'messagelisting17' => 'Lista de Mensagens',
+
     // 18-bayes_info.php
     'spamassassinbayesdatabaseinfo18' => 'Informações do SpamAssassin Bayes',
     'bayesdatabaseinfo18' => 'Informação dos dados Bayes',
@@ -573,12 +592,15 @@ return array(
     'auditlogwipe18' => 'Dados existentes do Bayes do SpamAssassin eliminados',
     'error18' => 'Erro:',
     'clearmessage18' => 'Você tem certeza de deseja limpar os dados Bayes?',
+
     // 19-clamav_status.php
     'avclamavstatus19' => 'Status do ClamAV',
     'auditlog19' => 'Tentativa de visualizar o Status do Clamav por usuário não administrador',
+
     // 20-docs.php
     'doc20' => 'Documentação',
     'message20' => 'Esta página exige autenticação, para que você possa colocar links da sua documentação e permitir que os usuário acessem a mesma.',
+
     // 21-do_message_ops.php
     'opresult21' => 'Retultado das Operações',
     'spamlearnresult21' => 'Resultado do aprendizado Spam',
@@ -587,17 +609,22 @@ return array(
     'messageid21' => 'ID da Mensagem',
     'result21' => 'Operação',
     'message21' => 'Mensagem',
+
     // 22-f-prot_status.php
     'fprotstatus22' => 'Status do F-Prot',
+
     // 23-f-secure_status.php
     'fsecurestatus23' => 'Status do F-Secure',
+
     // 24-mailq.php
     'mqviewer24' => 'Visualizados da fila de emails',
     'diemq24' => 'Nenhuma fila informada',
     'inq24' => 'Fila de entrada',
     'outq24' => 'Fila de saída',
+
     // 25-mcafee_status.php
     'mcafeestatus25' => 'Status do McAfee',
+
     // 26-mcp_rules_update.php
     'mcpruledesc26' => 'Atualização das descrições MCP',
     'auditlog26' => 'Atualizações MCP executadas',
@@ -606,10 +633,12 @@ return array(
     'input26' => 'Executar Agura',
     'rule26' => 'Regra',
     'description26' => 'Descrição',
+
     // 27-msconfig.php
     'config27' => 'Configuração',
     'msconfig27' => 'Configuração do MailScanner',
     'auditlog27' => 'Visualização da configuração do MailScanner',
+
     // 28-ms_lint.php
     'mailscannerlint28' => 'Lint do MailScanner',
     'diepipe28' => 'Não é possível abrir o pipe',
@@ -618,23 +647,28 @@ return array(
     'finish28' => 'Finalizado - Tempo total',
     'message28' => 'Mensagem',
     'time28' => 'Hora',
+
     // 29-msre_index.php
     'rulesetedit29' => 'Editor de Regras',
     'auditlog29' => 'Tentativa de Acessar o editor de regras por usuário não administrador',
     'editrule29' => 'Escolha uma regra para editar:',
     'norulefound29' => 'Nenhuma regra encontrada',
+
     // 30-msrule.php
     'rules30' => 'Regras',
     'dirblocked30' => 'Tentativa de transpassar diretorio bloqueada.',
     'unableopenfile30' => 'Não é possível abrir o arquivo.',
     'file30' => 'Arquivo:',
+
     // 31-mysql_status.php
     'mysqlstatus31' => 'Status do MySQL',
     'notauthorized31' => 'Não autorizado',
     'auditlog31' => 'Visualização do Status do MySQL',
+
     // 32-postfixmailq.php
     'mqviewer32' => 'Visualização da fila de email',
     'mqcombined32' => 'Fila de email de entrada e saída',
+
     // 33-rep_audit_log.php
     'auditlog33' => 'Audit Log',
     'datetime33' => 'Data/Hora',
@@ -645,6 +679,7 @@ return array(
     'applyfilter33' => 'aplicar',
     'startdate33' => 'Data inícial:',
     'enddate33' => 'Data final:',
+
     // 34-rep_mcp_rule_hits.php
     'mcprulehits34' => 'MCP Rule Hits',
     'rule34' => 'Regra',
@@ -652,6 +687,7 @@ return array(
     'total34' => 'Total',
     'clean34' => 'Limpo',
     'mcp34' => 'MCP',
+
     // 35-rep_mcp_score_dist.php
     'mcpscoredist35' => 'Distribuição da pontuação MCP',
     'die35' => 'Erro: São necessárias 2 ou mais resultados para coletar do banco de dados',
@@ -659,6 +695,7 @@ return array(
     'nbmessages35' => 'No. de mensagens',
     'score35' => 'Pontuação',
     'count35' => 'Contagem',
+
     // 36-rep_previous_day.php
     'totalmaillasthours36' => 'Número de Mensagens por Hora nas últimas 24 horas',
     'hours36' => 'Hora',
@@ -672,6 +709,7 @@ return array(
     'barsize36' => 'Volume de dados',
     'volume36' => 'Volume de dados',
     'nomessages36' => 'Número de E-mails',
+
     // 37-rep_sa_rule_hits.php
     'sarulehits37' => 'SpamAssassin Rule Hits',
     'rule37' => 'Rule',
@@ -680,12 +718,14 @@ return array(
     'total37' => 'Total',
     'ham37' => 'Ham',
     'spam37' => 'Spam',
+
     // 38-rep_sa_score_dist.php
     'sascoredist38' => 'Distribuição da pontuação SpamAssassin',
     'scorerounded38' => 'Pontuação (arredondada)',
     'nbmessage38' => 'No. de mensagens',
     'score38' => 'Pontuação',
     'count38' => 'Contagem',
+
     // 39-rep_top_mail_relays.php
     'topmailrelays39' => 'Princiais Remetentes',
     'top10mailrelays39' => '10 princiais remetentes',
@@ -696,6 +736,7 @@ return array(
     'viruses39' => 'Vírus',
     'spam39' => 'Spam',
     'volume39' => 'Volume',
+
     // 40-rep_top_recipient_domains_by_quantity.php
     'toprecipdomqt40' => 'Principais domínios de destino por quantidade',
     'top10recipdomqt40' => '10 Principais domínios de destino por quantidade',
@@ -720,6 +761,7 @@ return array(
     'topsenderdomqt44' => 'Principais domínios de envio por quantidade',
     'top10senderdomqt44' => '10 Principais domínios de envio por quantidade',
     'domain44' => 'Domínio',
+
     // 45-rep_top_sender_domains_by_volume.php
     'topsenderdomvol45' => 'Principais domínios de envio por volume de dados',
     'top10senderdomvol45' => '10 Principais domínios de envio por volume de dados',
@@ -740,6 +782,7 @@ return array(
     'top10virus48' => '10 Principais Vírus',
     'virus48' => 'Vírus',
     'count48' => 'Contagem',
+
     // 49-rep_total_mail_by_date.php
     'totalmaildate49' => 'Total de E-mails por data',
     'totalmailprocdate49' => 'Total de E-mails processados por data',
@@ -762,12 +805,14 @@ return array(
     'resolve49' => 'Não é possível<br>Resolver',
     'rbl49' => 'RBL',
     'totals49' => 'Totais',
+
     // 50-rep_víruses.php
     'virusreport50' => 'Relatório de Vírus',
     'virus50' => 'Vírus',
     'scanner50' => 'Scanner',
     'firstseen50' => 'Visto pela 1a vez',
     'count50' => 'Contagem',
+
     // 51-sa_lint.php
     'salint51' => 'Lint do SpamAssassin',
     'diepipe51' => 'Não é possivel abrir pipe',
@@ -775,6 +820,7 @@ return array(
     'auditlog51' => 'Lint do SpamAssassin executado',
     'message51' => 'Mensagem',
     'time51' => 'Tempo',
+
     // 52-mailwatch_geoip_update.php
     'geoipv452' => 'Arquivo de dados GeoIP IPv4',
     'geoipv652' => 'Arquivou de dados GeoIP IPv6',
@@ -795,10 +841,13 @@ return array(
     'nofind52' => 'Impossível encontrar o valor UID do MailWatch UID',
     'nofindowner52' => 'Impossível encontrar arquivos ou alterar o proprietário dos arquivos. Verifique o conteúdo do diretório',
     'auditlog52' => 'Update do GeoIP executado',
+
     // 53-sophos_status.php
     'sophos53' => 'Sophos',
+
     // 54-mailscanner_relay.php
     'diepipe54' => 'Não é possível abrir pipe',
+
     // 55-msre_edit.php
     'diefnf55' => 'Arquivo não encontrado:',
     'auditlog55' => 'Tentativa de acessar a página de edição de regras por usuário não administrador',
@@ -828,8 +877,10 @@ return array(
     'and55' => 'e',
     'delete55' => 'Excluir',
     'newrule55' => 'Adicionar nova regra:',
+
     // 56-mtalogprocessor.inc.php
     'diepipe56' => 'Não é possível abrir pipe',
+
     // 57-quarantine_action.php
     'dienoid57' => 'Erro: Não há ID de Mensagem',
     'dienoaction57' => 'Erro: Nenhuma ação',
@@ -841,6 +892,7 @@ return array(
     'delete57' => 'Excluir: Tem certeza?',
     'yes57' => 'Sim',
     'no57' => 'Não',
+
     // 58-viewpart.php
     'nomessid58' => 'Não foi informado ID de Mensagem',
     'mess58' => 'Mensagem',
@@ -849,6 +901,7 @@ return array(
     'errornfd58' => 'Erro: arquivo não encontrado',
     'part58' => 'Parte',
     'title58' => 'Visualizador dos emails em quarentena',
+
     // 59-auto-release.php
     'msgnotfound159' => 'Mensagem não encontrada. Talvez você já tenha liberado esta mensagem ou o link expirou.',
     'msgnotfound259' => 'Por favor contate o administrador dos Emails e informe este ID de Mensagem: ',
@@ -860,6 +913,7 @@ return array(
     'arview059' => 'Visualizar',
     'arrelease59' => 'Liberar',
     'title59' => 'Liberação da Quarentena',
+
      // 60-rpcserver.php
     'paratype160' => 'Tipo de Parâmetro',
     'paratype260' => 'erro no tipo esperado.',
@@ -867,6 +921,7 @@ return array(
     'permdenied60' => 'permissão negada.',
     'client160' => 'Cliente',
     'client260' => 'não está autorizado a conectar.',
+
     // 61-quarantine_report.php
     'view61' => 'Visualizar',
     'received61' => 'Recebido',
@@ -888,9 +943,11 @@ return array(
     'blacklisted61' => 'Em lista negra',
     'policy61' => 'Política',
     'unknow61' => 'DESCONHECIDO',
+
     // 62-quarantine_maint.php
     'message62' => 'A variável %s está vazia, por favor defina no arquivo conf.php.',
     'errors62' => 'Erro:',
+
     // 63-password_reset.php
     'conferror63' => 'Erro : reinicialização de Senha não está habilitado no conf.php',
     'usernotfound63' => 'Usuário não encontrados',
@@ -922,10 +979,12 @@ return array(
     'auditlogidmismatch63' => 'Falha na solicitação de nova senha para usuário: %s - Erro de mismatch ID.',
     'auditlogexpired63' => 'Falha na solicitação de nova senha para usuário: %s - Link expirou.',
     'auditloglinkerror63' => 'Erro no link de solicitação de nova senha.',
+
     // 64 - graphgenerator.inc.php
     'nodata64' => 'Não há dados suficientes para gerar um gráfico.',
     'geoipfailed64' => '(Falha ao resolver GeoIP)',
     'hostfailed64' => '(Falha ao resolver Hostname)',
+
     // 99 - General
     // Space rule for colon. Change it according to your langage typographical rule.
     'colon99' => ':',
