@@ -465,7 +465,7 @@ return array(
     'auditlog0312' => 'Alteração de tipo de usuário para',
     'auditlogfrom12' => 'de',
     'auditlogto12' => 'para',
-    'auditlog0412' => 'Usuário %s excluído	',
+    'auditlog0412' => 'Usuário %s excluído',
     'auditlog0512' => 'Usuário [%s] alterou sua própria conta',
     'erroreditnodomainforbidden12' => 'Erro: Você não tem permissão para alterar usuários sem domínio',
     'erroreditdomainforbidden12' => 'Erro: Você não tem permissão para editar usuários do domínio %s',
