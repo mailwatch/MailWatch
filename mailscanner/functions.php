@@ -145,6 +145,7 @@ require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
 require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
 
 include __DIR__ . '/postfix.inc.php';
+include __DIR__ . '/msmail.inc.php';
 
 function getVirusRegex($scanner = null)
 {
@@ -455,17 +456,42 @@ function printServiceStatus()
         }
         echo '     <tr><td>' . __('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
+        $output = 0;
         // is MTA running
         $mta = get_conf_var('mta');
-        exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
-        if (count($output) > 0) {
-            $running = $yes;
+        if ($mta == 'msmail') {
+            exec("ps ax | grep postfix | grep -v grep | grep -v php", $output);
+            if (count($output) > 0) {
+                $running = $yes;
+            } else {
+                $running = $no;
+            }
+            $procs = count($output) . ' ' . __('procs03');
+            echo '    <tr><td>' . ucwords('postfix') . __('colon99') . '</td>'
+                . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
+
+            $output = 0;
+            exec("ps ax | grep MSMilter | grep -v grep", $output);
+            if (count($output) > 0) {
+                $running = $yes;
+                $procs = count($output) - 1 . ' ' . __('children03');
+            } else {
+                $running = $no;
+                $procs = count($output) . ' ' . __('procs03');
+            }
+            echo '    <tr><td>' . 'MSMilter' . __('colon99') . '</td>'
+                . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         } else {
-            $running = $no;
+            exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
+            if (count($output) > 0) {
+                $running = $yes;
+            } else {
+                $running = $no;
+            }
+            $procs = count($output) . ' ' . __('procs03');
+            echo '    <tr><td>' . ucwords($mta) . __('colon99') . '</td>'
+                . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
-        $procs = count($output) . ' ' . __('procs03');
-        echo '    <tr><td>' . ucwords($mta) . __('colon99') . '</td>'
-            . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
     }
 }
 
@@ -558,7 +584,51 @@ function printMTAQueue()
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
         }
+    } elseif (get_conf_var('MTA', true) === 'msmail') {
+        $incomingdir = get_conf_var('incomingqueuedir', true);
+        $outgoingdir = get_conf_var('outgoingqueuedir', true);
+        $incomingdir2 = '/var/spool/postfix/incoming';
+        $inq = null;
+        $outq = null;
+        $inq2 = null;
+        $outq2 = null;
+        if (is_readable($incomingdir) || is_readable($outgoingdir)) {
+            $inq = genericqueue($incomingdir);
+            $outq = genericqueue($outgoingdir);
+            $inq2 = genericqueue($incomingdir2);
+            $outq2 = postfixallq() - $inq2;
+        } elseif (!defined('RPC_REMOTE_SERVER')) {
+            echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+        }
 
+        if (defined('RPC_REMOTE_SERVER')) {
+            $pqerror = '';
+            $servers = explode(' ', RPC_REMOTE_SERVER);
+
+            for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
+                if ($servers[$i] !== getHostByName(getHostName())) {
+                    $msg = new xmlrpcmsg('postfix_queues', array());
+                    $rsp = xmlrpc_wrapper($servers[$i], $msg);
+                    if ($rsp->faultCode() === 0) {
+                        $response = php_xmlrpc_decode($rsp->value());
+                        $inq2 += $response['inq'];
+                        $outq2 += $response['outq'];
+                    } else {
+                        $pqerror .= 'XML-RPC Error: ' . $rsp->faultString();
+                    }
+                }
+                if ($pqerror !== '') {
+                    echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                }
+            }
+        }
+        if ($inq !== null && $outq !== null && $inq2 !== null && $outq2 !== null) {
+            echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="msmailq.php">Milter ' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="msmailq.php">Milter ' .  __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('inbound03') . '</a></td><td align="right">' . $inq2 . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('outbound03') . '</a></td><td align="right">' . $outq2 . '</td>' . "\n";
+        }
         // Else use MAILQ from conf.php which is for Sendmail or Exim
     } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
         if (get_conf_var('MTA') === 'exim') {
