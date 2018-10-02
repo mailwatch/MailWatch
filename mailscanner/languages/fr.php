@@ -40,6 +40,7 @@ return array(
     'login01' => 'Connexion',
     'forgottenpwd01' => 'Mot de passe perdu ?',
     'sessiontimeout01' => 'Votre session a expiré.',
+    'pagetimeout01' => 'Login page timed out <br>Please try again',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',

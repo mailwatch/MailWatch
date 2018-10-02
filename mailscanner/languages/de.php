@@ -40,6 +40,7 @@ return array(
     'login01' => 'Login',
     'forgottenpwd01' => 'Passwort vergessen?',
     'sessiontimeout01' => 'Ihre Sitzung ist abgelaufen.',
+    'pagetimeout01' => 'Die Anmelde-Seite ist abgelaufen <br>Bitte versuchen Sie es erneut',
 
     // 03-funtions.php
     'jumpmessage03' => 'Zu Nachricht gehen:',

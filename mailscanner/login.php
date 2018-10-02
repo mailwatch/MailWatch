@@ -90,6 +90,9 @@ if (file_exists('conf.php')) {
             case 'timeout':
                 $error = __('sessiontimeout01');
                 break;
+            case 'pagetimeout':
+                $error = __('pagetimeout01');
+                break;
         }
         echo '
                 <p class="loginerror">' . $error . '</p>';

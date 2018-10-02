@@ -4618,7 +4618,7 @@ function validateInput($input, $type)
             }
             break;
         case 'loginerror':
-            if (preg_match('/^(baduser|emptypassword|timeout)$/', $input)) {
+            if (preg_match('/^(baduser|emptypassword|timeout|pagetimeout)$/', $input)) {
                 return true;
             }
             break;
