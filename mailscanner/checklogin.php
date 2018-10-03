@@ -31,7 +31,11 @@ require_once __DIR__ . '/lib/hash_equals.php';
 disableBrowserCache();
 
 if (isset($_POST['token'])) {
-    if (false === checkToken($_POST['token'])) {
+    if (!isset($_SESSION['token'])) {
+        //login page timed out and session for token is not valid anymore
+        header('Location: login.php?error=pagetimeout');
+        die();
+    } elseif (false === checkToken($_POST['token'])) {
         die(__('dietoken99'));
     }
 }
