@@ -1130,7 +1130,7 @@ function __($string, $useSystemLang = false)
     $debug_message = '';
     $pre_string = '';
     $post_string = '';
-    if (DEBUG === true) {
+    if (defined(DEBUG) && DEBUG === true) {
         $debug_message = ' (' . $string . ')';
         $pre_string = '<span class="error">';
         $post_string = '</span>';

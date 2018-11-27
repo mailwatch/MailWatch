@@ -35,7 +35,7 @@ define('DEBUG', false);
 // Define language (de, en, fr, it, ja, nl, pt_br);
 define('LANG', 'en');
 
-// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown 
+// Optional: If USER_SELECTABLE_LANG is defined and the value contains more than one language then the user gets a dropdown
 // in the gui to change the language of his browser. The selectable languages are defined as a comma separated list.
 define('USER_SELECTABLE_LANG', 'de,en,fr,it,ja,nl,pt_br');
 
