@@ -1823,7 +1823,11 @@ function parse_conf_file($name)
 
     // check if file can be read
     if (!is_file($name) || !is_readable($name)) {
-        die(__('dienomsconf03'));
+        $exitString = __('dienomsconf03');
+        if (defined(DEBUG) && DEBUG === true) {
+            $exitString .= ' (' . $name . ')';
+        }
+        die($exitString);
     }
 
     $array_output = array();
