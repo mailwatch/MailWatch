@@ -1130,7 +1130,7 @@ function __($string, $useSystemLang = false)
     $debug_message = '';
     $pre_string = '';
     $post_string = '';
-    if (defined(DEBUG) && DEBUG === true) {
+    if (defined('DEBUG') && DEBUG === true) {
         $debug_message = ' (' . $string . ')';
         $pre_string = '<span class="error">';
         $post_string = '</span>';
@@ -1824,7 +1824,7 @@ function parse_conf_file($name)
     // check if file can be read
     if (!is_file($name) || !is_readable($name)) {
         $exitString = __('dienomsconf03');
-        if (defined(DEBUG) && DEBUG === true) {
+        if (defined('DEBUG') && DEBUG === true) {
             $exitString .= ' (' . $name . ')';
         }
         die($exitString);
