@@ -121,6 +121,7 @@ class GeoIp
      * @param Client $client
      *
      * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function downloadFiles(Client $client): bool
     {

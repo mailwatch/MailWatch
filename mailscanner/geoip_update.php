@@ -46,7 +46,7 @@ if (!isset($_POST['run'])) {
                <tr>
                    <td>
                     <br>
-                       ' . \MailWatch\Translation::__('message115') . ' <a href="http://dev.maxmind.com/geoip/legacy/geolite/" target="_maxmind">MaxMind</a> ' . \MailWatch\Translation::__('message215') . '<br><br>
+                       ' . \MailWatch\Translation::__('message115') . ' <a href="https://dev.maxmind.com/geoip/geoip2/geolite2/" target="_maxmind">MaxMind</a> ' . \MailWatch\Translation::__('message215') . '<br><br>
                    </td>
                </tr>
                <tr>
