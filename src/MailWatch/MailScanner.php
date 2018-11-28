@@ -29,6 +29,11 @@ namespace MailWatch;
 
 class MailScanner
 {
+    public static function getVersion()
+    {
+        return self::getConfVar('MailScannerVersionNumber');
+    }
+
     /**
      * Parse conf files.
      *
@@ -156,7 +161,7 @@ class MailScanner
      * @param string $name MailScanner config parameter name
      * @param bool $force
      *
-     * @return bool
+     * @return bool|string
      */
     public static function getConfVar($name, $force = false)
     {

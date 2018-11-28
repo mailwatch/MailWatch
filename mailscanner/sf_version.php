@@ -39,7 +39,7 @@ if ('A' !== $_SESSION['user_type']) {
 } else {
     \MailWatch\Html::start(\MailWatch\Translation::__('mwandmsversion11'), 0, false, false);
     $mailwatch_version = mailwatch_version();
-    $mailscanner_version = \MailWatch\MailScanner::getConfVar('MailScannerVersionNumber');
+    $mailscanner_version = \MailWatch\MailScanner::getVersion();
     $php_version = PHP_VERSION;
     $mysql_version = Db::mysqli_result(Db::query('SELECT VERSION()'), 0);
     $geoip_version = false;
