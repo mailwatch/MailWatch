@@ -27,6 +27,47 @@
 
 class Quarantine_Report
 {
+    private static $html_content = ' <tr>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+  <td style="background-color: #EBEBEB">%s</td>
+ </tr>
+';
+
+    private static $text_content = 'Received: %s
+From: %s
+Subject: %s
+Reason: %s
+Action:
+%s
+
+';
+
+    private $users_sql = '
+SELECT
+ username,
+ quarantine_rcpt,
+ type
+FROM
+ users
+WHERE
+ quarantine_report=1
+';
+
+    private static $filters_sql = "
+SELECT
+ filter
+FROM
+ user_filters
+WHERE
+ username=%s
+AND
+ active='Y'
+";
+
     /**
      * @return bool|string true if requirements are met; else missing requirements as string
      */
@@ -61,7 +102,16 @@ class Quarantine_Report
         return $required_constant_missing;
     }
 
-    private static function get_html_template()
+    private static function get_text_template($empty = false)
+    {
+        if (true === $empty) {
+            return \MailWatch\Translation::__('text611') . "\n\n" . \MailWatch\Translation::__('text613');
+        }
+
+        return \MailWatch\Translation::__('text611') . "\n\n" . \MailWatch\Translation::__('text612') . "\n\n%s";
+    }
+
+    private static function get_html_template($empty = false)
     {
         return '<!DOCTYPE html>
 <html>
@@ -84,12 +134,14 @@ class Quarantine_Report
   <td><img src="' . MW_LOGO . '"/></td>
   <td align="center" valign="middle">
    <h2>' . \MailWatch\Translation::__('text611') . '</h2>
-   ' . \MailWatch\Translation::__('text612') . '
+   ' . ($empty ? \MailWatch\Translation::__('text613') : \MailWatch\Translation::__('text612')) . '
   </td>
  </tr>
+' . ($empty ? '' : '
  <tr>
   <td colspan="2">%s</td>
  </tr>
+') . '
 </table>
 </body>
 </html>';
@@ -109,53 +161,6 @@ class Quarantine_Report
 %s
 </table>';
     }
-
-    private static $html_content = ' <tr>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
-  <td style="background-color: #EBEBEB">%s</td>
- </tr>
-';
-
-    private static $text_template = 'Quarantine Report for %s
-
-In the last %s day(s) you have received %s e-mails that have been quarantined and are listed below. All messages in the quarantine are automatically deleted %s days after the date that they were received.
-
-%s';
-
-    private static $text_content = 'Received: %s
-From: %s
-Subject: %s
-Reason: %s
-Action:
-%s
-
-';
-
-    private $users_sql = '
-SELECT
- username,
- quarantine_rcpt,
- type
-FROM
- users
-WHERE
- quarantine_report=1
-';
-
-    private static $filters_sql = "
-SELECT
- filter
-FROM
- user_filters
-WHERE
- username=%s
-AND
- active='Y'
-";
 
     private static function get_report_sql()
     {
@@ -241,10 +246,11 @@ ORDER BY a.date DESC, a.time DESC';
 
     /**
      * @param array $usersForReport array containing users for which the reports should be send; if empty reports are send for all users
-     *
+     * @param bool $sendEmptyReports
      * @return false|array if requirements not met; else an associative array counting successfull and failed reports for users
+     * @throws Exception
      */
-    public function send_quarantine_reports($usersForReport = [])
+    public function send_quarantine_reports($usersForReport = array(), $sendEmptyReports = false)
     {
         if (true !== self::check_quarantine_report_requirements()) {
             return false;
@@ -270,6 +276,7 @@ ORDER BY a.date DESC, a.time DESC';
         $rows = $result->num_rows;
         $num_successfull_reports = 0;
         $num_failed_reports = 0;
+        $num_empty_reports = 0;
         if ($rows > 0) {
             while ($user = $result->fetch_object()) {
                 self::dbg("\n === Generating report for " . $user->username . ' type=' . $user->type);
@@ -304,8 +311,10 @@ ORDER BY a.date DESC, a.time DESC';
                 }
                 // Make sure we have a destination address
                 if (!empty($email) && false !== $email) {
-                    $sendResult = self::send_reports_for_user($user->username, $user->type, $email, $to_address, $to_domain);
-                    if ($sendResult) {
+                    $sendResult = self::send_reports_for_user($user->username, $user->type, $email, $to_address, $to_domain, $sendEmptyReports);
+                    if ($sendResult === 0) {
+                        $num_empty_reports++;
+                    } elseif ($sendResult) {
                         ++$num_successfull_reports;
                     } else {
                         ++$num_failed_reports;
@@ -314,6 +323,8 @@ ORDER BY a.date DESC, a.time DESC';
                     self::dbg(' ==== ' . $user->username . ' has empty e-mail recipient address, skipping...');
                 }
             }
+        } else {
+            return -2;
         }
 
         return [
@@ -328,11 +339,18 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $email
      * @param string $to_address
      * @param string $to_domain
-     *
+     * @param bool $sendEmptyReports
      * @return true if all reports were send successfully; false if one or more reports could not be send
+     * @throws Exception
      */
-    private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain)
-    {
+    private static function send_reports_for_user(
+        $username,
+        $type,
+        $email,
+        $to_address,
+        $to_domain,
+        $sendEmptyReports = false
+    ) {
         self::dbg(" ==== Recipient e-mail address is $email");
         // Get any additional reports required
         $filters = array_merge([$to_address], self::return_user_filters($username));
@@ -351,46 +369,50 @@ ORDER BY a.date DESC, a.time DESC';
                 $quarantined = self::return_quarantine_list_array($filter, $filter_domain);
 
                 self::dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
-                if (count($quarantined) > 0) {
+                if (true === $sendEmptyReports || count($quarantined) > 0) {
                     $sendResult = self::send_quarantine_email($email, $list_for, $quarantined);
                 }
                 unset($quarantined);
             }
 
             return $sendResult;
-        }
+        } else {
+            //combined
+            $quarantine_list = [];
+            $quarantined = [];
 
-        //combined
-        $quarantine_list = [];
-        $quarantined = [];
+            foreach ($filters as $filter) {
+                if ('D' === $type) {
+                    $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
+                    $list_for = $filter_domain;
+                } else {
+                    $filter_domain = $to_domain;
+                    $list_for = $filter;
+                }
 
-        foreach ($filters as $filter) {
-            if ('D' === $type) {
-                $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
-                $list_for = $filter_domain;
-            } else {
-                $filter_domain = $to_domain;
-                $list_for = $filter;
+                $quarantine_list[] = $list_for;
+                self::dbg(" ==== Building list for $list_for");
+                $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
+
+                self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
+                if (count($tmp_quarantined) > 0) {
+                    $quarantined[] = $tmp_quarantined;
+                }
+            }
+            if (count($quarantined) > 0) {
+                $quarantined = array_merge(...$quarantined);
             }
 
-            $quarantine_list[] = $list_for;
-            self::dbg(" ==== Building list for $list_for");
-            $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
+            if (true === $sendEmptyReports || count($quarantined) > 0) {
+                $list = implode(', ', $quarantine_list);
 
-            self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
-            if (count($tmp_quarantined) > 0) {
-                $quarantined[] = $tmp_quarantined;
+                return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
             }
-        }
-        $quarantined = array_merge(...$quarantined);
-        if (count($quarantined) > 0) {
-            $list = implode(', ', $quarantine_list);
 
-            return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
-        }
-        unset($quarantined, $quarantine_list);
+            unset($quarantined, $quarantine_list);
 
-        return false;
+            return false;
+        }
     }
 
     /**
@@ -432,7 +454,8 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_quarantine_list_array($to_address, $to_domain)
     {
-        $result = \MailWatch\Db::query(sprintf(self::get_report_sql(), \MailWatch\Sanitize::quote_smart($to_address), \MailWatch\Sanitize::quote_smart($to_domain)));
+        $result = \MailWatch\Db::query(sprintf(self::get_report_sql(), \MailWatch\Sanitize::quote_smart($to_address),
+            \MailWatch\Sanitize::quote_smart($to_domain)));
         $rows = $result->num_rows;
         $array = [];
         if ($rows > 0) {
@@ -509,6 +532,8 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $filter
      * @param array $quarantined
      *
+     * @throws Exception
+     *
      * @return bool true if mail was send; false if error occured
      */
     private static function send_quarantine_email($email, $filter, $quarantined)
@@ -557,17 +582,20 @@ ORDER BY a.date DESC, a.time DESC';
             );
         }
 
-        // HTML
-        $h2 = sprintf(self::get_html_table(), $h1);
-        $html_report = sprintf(self::get_html_template(), $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $h2);
-        if (DEBUG === true) {
-            echo '<pre>' . $html_report . '</pre>';
+        if (count($quarantined) > 0) {
+            $h2 = sprintf(self::get_html_table(), $h1);
+            $html_report = sprintf(self::get_html_template(), $filter, QUARANTINE_REPORT_DAYS, count($quarantined),
+                QUARANTINE_DAYS_TO_KEEP, $h2);
+            $text_report = sprintf(self::get_text_template(), $filter, QUARANTINE_REPORT_DAYS, count($quarantined),
+                QUARANTINE_DAYS_TO_KEEP, $t1);
+        } else {
+            $html_report = sprintf(self::get_html_template(true), $filter, QUARANTINE_REPORT_DAYS);
+            $text_report = sprintf(self::get_text_template(true), $filter, QUARANTINE_REPORT_DAYS);
         }
 
-        // Text
-        $text_report = sprintf(self::$text_template, $filter, QUARANTINE_REPORT_DAYS, count($quarantined), QUARANTINE_DAYS_TO_KEEP, $t1);
         if (DEBUG === true) {
-            echo "<pre>$text_report</pre>\n";
+            echo '<pre>' . $html_report . '</pre>' . "\n";
+            echo '<pre>' . $text_report . '</pre>' . "\n";
         }
 
         // Send e-mail

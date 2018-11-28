@@ -1087,9 +1087,9 @@ function address_filter_sql($addresses, $type)
         case 'U': // User - show only specific addresses
             foreach ($addresses as $address) {
                 if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
-                    $sqladdr_arr[] = "to_address like '$address%'";
+                    $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%'";
                 } else {
-                    $sqladdr_arr[] = "to_address like '$address%' OR from_address = '$address'";
+                    $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%' OR from_address = '$address'";
                 }
             }
             $sqladdr = implode(' OR ', $sqladdr_arr);
@@ -1098,9 +1098,9 @@ function address_filter_sql($addresses, $type)
             foreach ($addresses as $address) {
                 if (strpos($address, '@')) {
                     if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
-                        $sqladdr_arr[] = "to_address like '%$address%'";
+                        $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%'";
                     } else {
-                        $sqladdr_arr[] = "to_address like '%$address%' OR from_address = '$address'";
+                        $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%' OR from_address = '$address'";
                     }
                 } else {
                     if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
@@ -1123,14 +1123,6 @@ function address_filter_sql($addresses, $type)
 
     return $sqladdr;
 }
-
-/**
- * @param $entry
- * @param mixed $username
- * @param mixed $password
- *
- * @return bool
- */
 
 /**
  * @param string $username
@@ -1196,8 +1188,8 @@ function translate_etoi($name)
         }
     }
     fclose($fh) or die($php_errormsg);
-    if (isset($etoi["$name"])) {
-        return $etoi["$name"];
+    if (isset($etoi[(string)$name])) {
+        return $etoi[(string)$name];
     }
 
     return $name;

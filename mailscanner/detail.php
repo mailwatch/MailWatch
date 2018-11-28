@@ -124,179 +124,186 @@ if (0 === $result->num_rows) {
 $is_MCP_enabled = \MailWatch\MailScanner::getConfTrueFalse('mcpchecks');
 
 echo '<table class="maildetail" border="0" cellspacing="1" cellpadding="1" width="100%">' . "\n";
-while ($row = $result->fetch_array()) {
-    $listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[\MailWatch\Translation::__('receivedfrom04')] . '&amp;from=' . $row[\MailWatch\Translation::__('from04')] . '&amp;to=' . $row[\MailWatch\Translation::__('to04')];
-    for ($f = 0; $f < $result->field_count; ++$f) {
-        $fieldInfo = $result->fetch_field_direct($f);
-        $fieldn = $fieldInfo->name;
-        if ($fieldn === \MailWatch\Translation::__('receivedfrom04')) {
-            $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
-            if (LISTS) {
-                $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=w">' . \MailWatch\Translation::__('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=b">' . \MailWatch\Translation::__('addbl04') . '</a>]</td>';
-            }
-            $output .= "</tr></table>\n";
-            $row[$f] = $output;
+
+$row = $result->fetch_array();
+if ($result->num_rows > 1) {
+    error_log('WARNING: multiple mails existed for id ' . $url_id . ' only first result displayed to user');
+}
+$listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[\MailWatch\Translation::__('receivedfrom04')] . '&amp;from=' . $row[\MailWatch\Translation::__('from04')] . '&amp;to=' . $row[\MailWatch\Translation::__('to04')];
+for ($f = 0; $f < $result->field_count; ++$f) {
+    $fieldInfo = $result->fetch_field_direct($f);
+    $fieldn = $fieldInfo->name;
+    if ($fieldn === \MailWatch\Translation::__('receivedfrom04')) {
+        $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
+        if (LISTS) {
+            $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=w">' . \MailWatch\Translation::__('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=b">' . \MailWatch\Translation::__('addbl04') . '</a>]</td>';
         }
-        if ($fieldn === \MailWatch\Translation::__('receivedvia04')) {
-            // Start Table
-            $output = '<table width="100%" class="sa_rules_report">' . "\n";
-            $output .= ' <tr>' . "\n";
-            $output .= ' <th>' . \MailWatch\Translation::__('ipaddress04') . '</th>' . "\n";
-            $output .= ' <th>' . \MailWatch\Translation::__('hostname04') . '</th>' . "\n";
-            $output .= ' <th>' . \MailWatch\Translation::__('country04') . '</th>' . "\n";
-            $output .= ' <th class="noprint">RBL</th>' . "\n";
-            $output .= ' <th class="noprint">Spam</th>' . "\n";
-            $output .= ' <th class="noprint" >Virus</th>' . "\n";
-            $output .= ' <th class="noprint">' . \MailWatch\Translation::__('all04') . '</th>' . "\n";
-            $output .= ' </tr>' . "\n";
-            if (is_array($relays = get_mail_relays($row[$f]))) {
-                foreach ($relays as $relay) {
-                    $output .= ' <tr>' . "\n";
-                    $output .= ' <td>' . $relay . '</td>' . "\n";
-                    // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
-                    $relay = \MailWatch\Format::stripPortFromIp($relay);
-                    //check if address is in private IP space
-                    $isPrivateNetwork = ip_in_range($relay, false, 'private');
-                    $isLocalNetwork = ip_in_range($relay, false, 'local');
-                    if (true === $isPrivateNetwork) {
-                        $output .= ' <td>' . \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
-                    } elseif (true === $isLocalNetwork) {
-                        $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
-                    }
-                    // Reverse lookup on address. Possibly need to remove it.
-                    elseif (($host = gethostbyaddr($relay)) !== $relay) {
-                        $output .= " <td>$host</td>\n";
-                    } else {
-                        $output .= ' <td>' . \MailWatch\Translation::__('reversefailed04') . "</td>\n";
-                    }
-                    // Do GeoIP lookup on address
-                    if (true === $isPrivateNetwork) {
-                        $output .= ' <td>' . \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
-                    } elseif (true === $isLocalNetwork) {
-                        $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
-                    } elseif ($geoip_country = \MailWatch\GeoIp::getCountry($relay)) {
-                        $output .= ' <td>' . $geoip_country . '</td>' . "\n";
-                    } else {
-                        $output .= ' <td>' . \MailWatch\Translation::__('geoipfailed04') . '</td>' . "\n";
-                    }
-                    // Link to RBL Lookup
-                    $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Link to Spam Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Link to Virus Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Link to All Messages Report for this relay
-                    $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
-                    // Close table
-                    $output .= ' </tr>' . "\n";
+        $output .= "</tr></table>\n";
+        $row[$f] = $output;
+    }
+    if ($fieldn === \MailWatch\Translation::__('receivedvia04')) {
+        // Start Table
+        $output = '<table width="100%" class="sa_rules_report">' . "\n";
+        $output .= ' <tr>' . "\n";
+        $output .= ' <th>' . \MailWatch\Translation::__('ipaddress04') . '</th>' . "\n";
+        $output .= ' <th>' . \MailWatch\Translation::__('hostname04') . '</th>' . "\n";
+        $output .= ' <th>' . \MailWatch\Translation::__('country04') . '</th>' . "\n";
+        $output .= ' <th class="noprint">RBL</th>' . "\n";
+        $output .= ' <th class="noprint">Spam</th>' . "\n";
+        $output .= ' <th class="noprint" >Virus</th>' . "\n";
+        $output .= ' <th class="noprint">' . \MailWatch\Translation::__('all04') . '</th>' . "\n";
+        $output .= ' </tr>' . "\n";
+        if (is_array($relays = get_mail_relays($row[$f]))) {
+            foreach ($relays as $relay) {
+                $output .= ' <tr>' . "\n";
+                $output .= ' <td>' . $relay . '</td>' . "\n";
+                // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+                $relay = \MailWatch\Format::stripPortFromIp($relay);
+                //check if address is in private IP space
+                $isPrivateNetwork = ip_in_range($relay, false, 'private');
+                $isLocalNetwork = ip_in_range($relay, false, 'local');
+                if (true === $isPrivateNetwork) {
+                    $output .= ' <td>' . \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
+                } elseif (true === $isLocalNetwork) {
+                    $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
                 }
-                $output .= '</table>' . "\n";
-                $row[$f] = $output;
-            } else {
-                $row[$f] = '127.0.0.1'; // Must be local mailer (Exim)
+                // Reverse lookup on address. Possibly need to remove it.
+                elseif (($host = gethostbyaddr($relay)) !== $relay) {
+                    $output .= " <td>$host</td>\n";
+                } else {
+                    $output .= ' <td>' . \MailWatch\Translation::__('reversefailed04') . "</td>\n";
+                }
+                // Do GeoIP lookup on address
+                if (true === $isPrivateNetwork) {
+                    $output .= ' <td>' . \MailWatch\Translation::__('privatenetwork04') . "</td>\n";
+                } elseif (true === $isLocalNetwork) {
+                    $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
+                } elseif (!(PHP_VERSION_ID >= 50400)) {
+                    $output .= ' <td>' . \MailWatch\Translation::__('localhost04') . "</td>\n";
+                } elseif ($geoip_country = \MailWatch\GeoIp::getCountry($relay)) {
+                    $output .= ' <td>' . $geoip_country . '</td>' . "\n";
+                } else {
+                    $output .= ' <td>' . \MailWatch\Translation::__('geoipfailed04') . '</td>' . "\n";
+                }
+                // Link to RBL Lookup
+                $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Link to Spam Report for this relay
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Link to Virus Report for this relay
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Link to All Messages Report for this relay
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                // Close table
+                $output .= ' </tr>' . "\n";
             }
-        }
-        if ($fieldn === \MailWatch\Translation::__('report04')) {
-            $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
-            $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
-            $row[$f] = preg_replace('/ <br>/', '<br>', $row[$f]);
-        }
-        if ($fieldn === \MailWatch\Translation::__('from04')) {
-            $row[$f] = htmlentities($row[$f]);
-            $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
-            if (LISTS) {
-                $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=w">' . \MailWatch\Translation::__('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=b">' . \MailWatch\Translation::__('addbl04') . '</a>]</td>' . "\n";
-            }
-            $output .= '</tr></table>' . "\n";
+            $output .= '</table>' . "\n";
             $row[$f] = $output;
+        } else {
+            $row[$f] = '127.0.0.1'; // Must be local mailer (Exim)
         }
-        if ($fieldn === \MailWatch\Translation::__('to04')) {
-            $row[$f] = htmlspecialchars($row[$f]);
-            $row[$f] = str_replace(',', '<br>', $row[$f]);
+    }
+    if ($fieldn === \MailWatch\Translation::__('report04')) {
+        $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
+        $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+        $row[$f] = preg_replace('/ <br>/', '<br>', $row[$f]);
+    }
+    if ($fieldn === \MailWatch\Translation::__('from04')) {
+        $row[$f] = htmlentities($row[$f]);
+        $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
+        if (LISTS) {
+            $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=w">' . \MailWatch\Translation::__('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=b">' . \MailWatch\Translation::__('addbl04') . '</a>]</td>' . "\n";
         }
-        if ($fieldn === \MailWatch\Translation::__('subject04')) {
-            $row[$f] = htmlspecialchars(\MailWatch\Format::getUTF8String(decode_header($row[$f])));
+        $output .= '</tr></table>' . "\n";
+        $row[$f] = $output;
+    }
+    if ($fieldn === \MailWatch\Translation::__('to04')) {
+        $row[$f] = htmlspecialchars($row[$f]);
+        $row[$f] = str_replace(',', '<br>', $row[$f]);
+    }
+    if ($fieldn === \MailWatch\Translation::__('subject04')) {
+        $row[$f] = htmlspecialchars(\MailWatch\Format::getUTF8String(decode_header($row[$f])));
+    }
+    if ($fieldn === \MailWatch\Translation::__('spamrep04')) {
+        $row[$f] = \MailWatch\SpamAssassin::format_spam_report($row[$f]);
+    }
+    if ($fieldn === \MailWatch\Translation::__('size04')) {
+        $row[$f] = \MailWatch\Format::formatSize($row[$f]);
+    }
+    if ($fieldn === \MailWatch\Translation::__('msgheaders04')) {
+        if (\PHP_VERSION_ID >= 50400) {
+            $row[$f] = nl2br(
+                str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'],
+                    htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
+            );
+        } else {
+            $row[$f] = nl2br(
+                str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f]))
+            );
         }
-        if ($fieldn === \MailWatch\Translation::__('spamrep04')) {
-            $row[$f] = \MailWatch\SpamAssassin::format_spam_report($row[$f]);
+        if (function_exists('iconv_mime_decode')) {
+            $row[$f] = iconv_mime_decode(utf8_decode($row[$f]), 2, 'UTF-8');
         }
-        if ($fieldn === \MailWatch\Translation::__('size04')) {
-            $row[$f] = \MailWatch\Format::formatSize($row[$f]);
+        $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+    }
+    if ($fieldn === \MailWatch\Translation::__('saautolearn04')) {
+        if (false !== ($autolearn = \MailWatch\SpamAssassin::autolearn($row[$f]))) {
+            $row[$f] = $yes . " ($autolearn)";
+        } else {
+            $row[$f] = $no;
         }
-        if ($fieldn === \MailWatch\Translation::__('msgheaders04')) {
-            if (\PHP_VERSION_ID >= 50400) {
-                $row[$f] = nl2br(
-                    str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
-                );
-            } else {
-                $row[$f] = nl2br(
-                    str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f]))
-                );
-            }
-            if (function_exists('iconv_mime_decode')) {
-                $row[$f] = iconv_mime_decode(utf8_decode($row[$f]), 2, 'UTF-8');
-            }
-            $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
-        }
-        if ($fieldn === \MailWatch\Translation::__('saautolearn04')) {
-            if (false !== ($autolearn = \MailWatch\SpamAssassin::autolearn($row[$f]))) {
-                $row[$f] = $yes . " ($autolearn)";
-            } else {
-                $row[$f] = $no;
-            }
-        }
-        if ($fieldn === \MailWatch\Translation::__('spam04') && !DISTRIBUTED_SETUP) {
-            // Display actions if spam/not-spam
-            if ($row[$f] === $yes) {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . \MailWatch\Translation::__('actions04') . ' ' . str_replace(' ', ', ', \MailWatch\MailScanner::getConfVar('SpamActions'));
-            } else {
-                $row[$f] = $row[$f] . '&nbsp;&nbsp;' . \MailWatch\Translation::__('actions04') . ' ' . str_replace(
-                        ' ',
-                        ', ',
-                        \MailWatch\MailScanner::getConfVar('NonSpamActions')
-                    );
-            }
-        }
-        if ($row[$f] === $yes && $fieldn === \MailWatch\Translation::__('hscospam04')) {
-            // Display actions if high-scoring
+    }
+    if ($fieldn === \MailWatch\Translation::__('spam04') && !DISTRIBUTED_SETUP) {
+        // Display actions if spam/not-spam
+        if ($row[$f] === $yes) {
+            $row[$f] = $row[$f] . '&nbsp;&nbsp;' . \MailWatch\Translation::__('actions04') . ' ' . str_replace(' ',
+                    ', ', \MailWatch\MailScanner::getConfVar('SpamActions'));
+        } else {
             $row[$f] = $row[$f] . '&nbsp;&nbsp;' . \MailWatch\Translation::__('actions04') . ' ' . str_replace(
                     ' ',
                     ', ',
-                    \MailWatch\MailScanner::getConfVar('HighScoringSpamActions')
+                    \MailWatch\MailScanner::getConfVar('NonSpamActions')
                 );
         }
+    }
+    if ($row[$f] === $yes && $fieldn === \MailWatch\Translation::__('hscospam04')) {
+        // Display actions if high-scoring
+        $row[$f] = $row[$f] . '&nbsp;&nbsp;' . \MailWatch\Translation::__('actions04') . ' ' . str_replace(
+                ' ',
+                ', ',
+                \MailWatch\MailScanner::getConfVar('HighScoringSpamActions')
+            );
+    }
 
-        if (true === $is_MCP_enabled) {
-            if ($fieldn === \MailWatch\Translation::__('mcprep04')) {
-                $row[$f] = \MailWatch\Mcp::format_report($row[$f]);
-            }
-        } else {
-            if ('HEADER' === $fieldn && false !== strpos($row[$f], 'MCP')) {
-                continue;
-            }
-            if (false !== strpos($fieldn, 'MCP')) {
-                continue;
-            }
+    if (true === $is_MCP_enabled) {
+        if ($fieldn === \MailWatch\Translation::__('mcprep04')) {
+            $row[$f] = \MailWatch\Mcp::format_report($row[$f]);
         }
-
-        if ($row[$f] === $yes && $fieldn === \MailWatch\Translation::__('listedrbl04')) {
-            $row[$f] = $row[$f] . ' (' . $row['rblspamreport'] . ')';
-        }
-
-        if ('rblspamreport' === $fieldn) {
+    } else {
+        if ('HEADER' === $fieldn && false !== strpos($row[$f], 'MCP')) {
             continue;
         }
+        if (false !== strpos($fieldn, 'MCP')) {
+            continue;
+        }
+    }
 
-        // Handle dummy header fields
-        if ('HEADER' === $fieldn) {
-            // Display header
-            echo '<tr><td class="heading" align="center" valign="top" colspan="2">' . $row[$f] . '</td></tr>' . "\n";
-        } else {
-            // Actual data
-            if (!empty($row[$f])) {
-                // Skip empty rows (notably Spam Report when SpamAssassin didn't run)
-                echo '<tr><td class="heading-w175">' . $fieldn . '</td><td class="detail">' . $row[$f] . '</td></tr>' . "\n";
-            }
+    if ($row[$f] === $yes && $fieldn === \MailWatch\Translation::__('listedrbl04')) {
+        $row[$f] = $row[$f] . ' (' . $row['rblspamreport'] . ')';
+    }
+
+    if ('rblspamreport' === $fieldn) {
+        continue;
+    }
+
+    // Handle dummy header fields
+    if ('HEADER' === $fieldn) {
+        // Display header
+        echo '<tr><td class="heading" align="center" valign="top" colspan="2">' . $row[$f] . '</td></tr>' . "\n";
+    } else {
+        // Actual data
+        if (!empty($row[$f])) {
+            // Skip empty rows (notably Spam Report when SpamAssassin didn't run)
+            echo '<tr><td class="heading-w175">' . $fieldn . '</td><td class="detail">' . $row[$f] . '</td></tr>' . "\n";
         }
     }
 }
@@ -387,7 +394,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         // Release
         if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (isset($_POST['alt_recpt_yn']) && 'y' === \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt_yn'], 'url')) {
+            if (isset($_POST['alt_recpt_yn']) && 'y' === \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt_yn'],
+                    'url')) {
                 $to = \MailWatch\Sanitize::deepSanitizeInput($_POST['alt_recpt'], 'string');
                 if (!\MailWatch\Sanitize::validateInput($to, 'user')) {
                     die(\MailWatch\Translation::__('error04') . ' ' . $to);
@@ -556,7 +564,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 'D' === $_SESSION['user_type'] &&
                 (
                     0 === $is_dangerous ||
-                ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
+                    ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
                 )
             )
         ) {
