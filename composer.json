@@ -39,6 +39,7 @@
     "wikimedia/ip-set": "^1.2"
   },
   "require-dev": {
+    "roave/security-advisories": "dev-master",
     "friendsofphp/php-cs-fixer": "^2.12",
     "symfony/dotenv": "^3.4",
     "symfony/profiler-pack": "^1.0",

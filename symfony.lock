@@ -167,6 +167,9 @@
     "rmccue/requests": {
         "version": "v1.7.0"
     },
+    "roave/security-advisories": {
+        "version": "dev-master"
+    },
     "sensio/framework-extra-bundle": {
         "version": "4.0",
         "recipe": {
