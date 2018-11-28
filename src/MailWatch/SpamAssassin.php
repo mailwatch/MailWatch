@@ -52,7 +52,7 @@ class SpamAssassin
      *
      * @return string
      */
-    public static function get_rule_desc($rule)
+    public static function get_rule_desc($rule): string
     {
         // Check if SA scoring is enabled
         $rule_score = '';
@@ -90,7 +90,7 @@ class SpamAssassin
      *
      * @return string
      */
-    public static function format_spam_report($spamreport)
+    public static function format_spam_report($spamreport): string
     {
         // Run regex against the MailScanner spamreport picking out the (score=xx, required x, RULES...)
         if (preg_match('/\s\((.+?)\)/i', $spamreport, $sa_rules)) {

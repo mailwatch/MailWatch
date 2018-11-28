@@ -39,7 +39,7 @@ class Translation
      *
      * @return string
      */
-    public static function __($string, $useSystemLang = false)
+    public static function __($string, $useSystemLang = false): string
     {
         if ($useSystemLang) {
             $language = self::$systemLang;
@@ -115,7 +115,7 @@ class Translation
      *
      * @return bool
      */
-    public static function checkLangCode($langCode)
+    public static function checkLangCode($langCode): bool
     {
         $validLang = explode(',', USER_SELECTABLE_LANG);
         $found = array_search($langCode, $validLang);

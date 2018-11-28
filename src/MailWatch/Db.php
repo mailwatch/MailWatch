@@ -44,7 +44,7 @@ class Db
      *
      * @return \mysqli
      */
-    public static function connect($host = '', $username = '', $password = '', $database = '')
+    public static function connect($host = '', $username = '', $password = '', $database = ''): \mysqli
     {
         if (!self::$link instanceof \mysqli) {
             try {
@@ -99,7 +99,7 @@ class Db
     /**
      * @return bool
      */
-    public static function close()
+    public static function close(): bool
     {
         $result = true;
         if (self::$link instanceof \mysqli) {

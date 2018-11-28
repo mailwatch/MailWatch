@@ -50,7 +50,7 @@ class GeoIp
      *
      * @return bool
      */
-    public static function getCountry($ip)
+    public static function getCountry($ip): bool
     {
         if (file_exists(self::$savePath['mmdbFile']) && filesize(self::$savePath['mmdbFile']) > 0) {
             try {
@@ -82,7 +82,7 @@ class GeoIp
      *
      * @return Client
      */
-    public function getDownloadClient($useProxy = false, $proxyServer = null, $proxyUser = '', $proxyPassword = '')
+    public function getDownloadClient($useProxy = false, $proxyServer = null, $proxyUser = '', $proxyPassword = ''): Client
     {
         $clientOptions = [
             'timeout' => 2.0,
@@ -107,7 +107,7 @@ class GeoIp
      *
      * @return bool
      */
-    public function cleanupFiles($extractedFolder = null)
+    public function cleanupFiles($extractedFolder = null): bool
     {
         @unlink(realpath(self::$savePath['md5']));
         @unlink(realpath(self::$savePath['database']));
@@ -126,7 +126,7 @@ class GeoIp
      *
      * @return bool
      */
-    public function downloadFiles(Client $client)
+    public function downloadFiles(Client $client): bool
     {
         foreach ($this->download as $file => $url) {
             $response = $client->request('GET', $url, ['sink' => self::$savePath[$file]]);
@@ -145,7 +145,7 @@ class GeoIp
      *
      * @return bool
      */
-    public function verifySignature($filePath, $md5Path)
+    public function verifySignature($filePath, $md5Path): bool
     {
         return file_get_contents($md5Path) === md5_file($filePath);
     }

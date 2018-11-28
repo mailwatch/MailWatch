@@ -54,7 +54,7 @@ class Sendmail
      *
      * @return string
      */
-    public static function getSUBJECTheader($header)
+    public static function getSUBJECTheader($header): string
     {
         $subject = '';
         if (1 === preg_match('/^\d{3}  Subject:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/iUsm', $header, $match)) {

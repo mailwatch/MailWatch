@@ -79,7 +79,7 @@ class Mcp
      *
      * @return string
      */
-    public static function get_rule_desc($rule)
+    public static function get_rule_desc($rule): string
     {
         // Check if SA scoring is enabled
         $rule_score = '';
@@ -100,7 +100,7 @@ class Mcp
      *
      * @return bool
      */
-    public static function return_rule_desc($rule)
+    public static function return_rule_desc($rule): bool
     {
         $result = Db::query("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
         $row = $result->fetch_object();

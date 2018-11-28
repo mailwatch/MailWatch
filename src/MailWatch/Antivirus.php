@@ -29,7 +29,7 @@ namespace MailWatch;
 
 class Antivirus
 {
-    public static function getAllScanners()
+    public static function getAllScanners(): array
     {
         return explode(' ', MailScanner::getConfVar('VirusScanners'));
     }
@@ -37,7 +37,7 @@ class Antivirus
     /**
      * @return string
      */
-    public static function getPrimaryScanner()
+    public static function getPrimaryScanner(): string
     {
         // Might be more than one scanner defined - pick the first as the primary
         $scanners = static::getAllScanners();
@@ -213,7 +213,7 @@ class Antivirus
      *
      * @return string
      */
-    public static function getVirusLink($virus)
+    public static function getVirusLink($virus): string
     {
         $virus = htmlentities($virus);
         if (\defined('VIRUS_INFO') && VIRUS_INFO !== false) {
@@ -230,7 +230,7 @@ class Antivirus
      *
      * @return string
      */
-    public static function return_todays_top_virus()
+    public static function return_todays_top_virus(): string
     {
         if (null === self::getVirusRegex()) {
             return Translation::__('unknownvirusscanner03');

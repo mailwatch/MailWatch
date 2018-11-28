@@ -185,7 +185,7 @@ WHERE
         echo '</table>' . "\n";
     }
 
-    public function CreateMtalogSQL()
+    public function CreateMtalogSQL(): string
     {
         $sql = '';
         foreach ($this->item as $key => $val) {
@@ -200,7 +200,7 @@ WHERE
         return $sql;
     }
 
-    public function CreateSQL()
+    public function CreateSQL(): string
     {
         $sql = 'AND ' . $_SESSION['global_filter'] . "\n";
         foreach ($this->item as $key => $val) {
@@ -210,7 +210,7 @@ WHERE
         return $sql;
     }
 
-    private static function getSqlCondition($val)
+    private static function getSqlCondition($val): string
     {
         // If LIKE selected - place wildcards either side of the query string
         if ('LIKE' === $val[1] || 'NOT LIKE' === $val[1]) {
@@ -254,7 +254,7 @@ WHERE
         return $this->operators[$operator];
     }
 
-    public function DisplayForm()
+    public function DisplayForm(): string
     {
         // Form
         $return = '<form method="post" action="' . Sanitize::sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
@@ -388,7 +388,7 @@ WHERE
         Db::query($sql);
     }
 
-    public function ListSaved()
+    public function ListSaved(): string
     {
         $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "'";
         $sth = Db::query($sql);
@@ -407,7 +407,7 @@ WHERE
      *
      * @return bool
      */
-    private function ValidateOperator($operator)
+    private function ValidateOperator($operator): bool
     {
         $validKeys = array_keys($this->operators);
 
@@ -419,7 +419,7 @@ WHERE
      *
      * @return bool
      */
-    private function ValidateColumn($column)
+    private function ValidateColumn($column): bool
     {
         $validKeys = array_keys($this->columns);
 

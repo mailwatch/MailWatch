@@ -43,7 +43,7 @@ class Security
      *
      * @return bool
      */
-    public static function audit_log($action, $user = 'unknown')
+    public static function audit_log($action, $user = 'unknown'): bool
     {
         $link = Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (AUDIT) {
@@ -115,7 +115,7 @@ class Security
      *
      * @return bool
      */
-    public static function checkToken($token)
+    public static function checkToken($token): bool
     {
         if (!isset($_SESSION['token'])) {
             return false;
@@ -129,7 +129,7 @@ class Security
      *
      * @return string
      */
-    public static function generateFormToken($formstring)
+    public static function generateFormToken($formstring): string
     {
         if (!isset($_SESSION['token'])) {
             die(Translation::__('dietoken99'));
@@ -146,7 +146,7 @@ class Security
      *
      * @return bool
      */
-    public static function checkFormToken($formstring, $formtoken)
+    public static function checkFormToken($formstring, $formtoken): bool
     {
         if (!isset($_SESSION['token'], $_SESSION['formtoken'])) {
             return false;
@@ -206,7 +206,7 @@ class Security
      *
      * @return bool
      */
-    public static function checkLoginExpiry($myusername)
+    public static function checkLoginExpiry($myusername): bool
     {
         $sql = "SELECT login_expiry FROM users WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);
@@ -244,7 +244,7 @@ class Security
      *
      * @return bool
      */
-    public static function checkPrivilegeChange($myusername)
+    public static function checkPrivilegeChange($myusername): bool
     {
         $sql = "SELECT type FROM users WHERE username='" . Sanitize::safe_value($myusername) . "'";
         $result = Db::query($sql);

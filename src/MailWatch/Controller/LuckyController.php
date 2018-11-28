@@ -40,7 +40,7 @@ class LuckyController
      * @Route("/lucky/number")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A')")
      */
-    public function number()
+    public function number(): Response
     {
         $number = mt_rand(0, 100);
 

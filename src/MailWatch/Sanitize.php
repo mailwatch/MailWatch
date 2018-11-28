@@ -47,7 +47,7 @@ class Sanitize
      *
      * @return string
      */
-    public static function quote_smart($value)
+    public static function quote_smart($value): string
     {
         return "'" . self::safe_value($value) . "'";
     }
@@ -57,7 +57,7 @@ class Sanitize
      *
      * @return string
      */
-    public static function safe_value($value)
+    public static function safe_value($value): string
     {
         $link = Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (\function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
@@ -119,7 +119,7 @@ class Sanitize
      *
      * @return bool
      */
-    public static function validateInput($input, $type)
+    public static function validateInput($input, $type): bool
     {
         switch ($type) {
             case 'email':

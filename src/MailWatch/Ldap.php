@@ -150,7 +150,7 @@ class Ldap
      *
      * @return string
      */
-    public static function print_error($ds)
+    public static function print_error($ds): string
     {
         return sprintf(
             Translation::__('ldapnobind03'),

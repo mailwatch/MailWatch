@@ -34,7 +34,7 @@ class Format
      *
      * @return string
      */
-    public static function suppress_zeros($number)
+    public static function suppress_zeros($number): string
     {
         if (abs($number - 0.0) < 0.1) {
             return '.';
@@ -68,7 +68,7 @@ class Format
      *
      * @return string
      */
-    public static function getUTF8String($string)
+    public static function getUTF8String($string): string
     {
         if (\function_exists('mb_check_encoding')) {
             if (!mb_check_encoding($string, 'UTF-8')) {
@@ -89,7 +89,7 @@ class Format
      *
      * @return string
      */
-    public static function formatSize($size, $precision = 2)
+    public static function formatSize($size, $precision = 2): string
     {
         if (null === $size) {
             return 'n/a';
@@ -169,7 +169,7 @@ class Format
      *
      * @return string
      */
-    public static function trim_output($input, $maxlen)
+    public static function trim_output($input, $maxlen): string
     {
         if ($maxlen > 0 && \strlen($input) >= $maxlen) {
             return substr($input, 0, $maxlen) . '...';
@@ -213,7 +213,7 @@ class Format
      *
      * @return string
      */
-    public static function stripPortFromIp($ip)
+    public static function stripPortFromIp($ip): string
     {
         if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
             $ip = current(\array_slice(explode(':', $ip), 0, 1));

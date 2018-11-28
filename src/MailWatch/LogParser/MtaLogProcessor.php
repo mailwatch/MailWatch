@@ -158,7 +158,7 @@ abstract class MtaLogProcessor
      *
      * @return bool
      */
-    public function parse($line)
+    public function parse($line): bool
     {
         //reset the variables
         $this->id = null;
@@ -212,7 +212,7 @@ abstract class MtaLogProcessor
     /**
      * @return string
      */
-    public function getIp()
+    public function getIp(): string
     {
         if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $this->entries['relay'], $match)) {
             return $match[1];
@@ -226,7 +226,7 @@ abstract class MtaLogProcessor
      *
      * @return string
      */
-    public function getEmail($entry)
+    public function getEmail($entry): string
     {
         if (preg_match('/<(\S+)>/', $entry, $match)) {
             return $match[1];

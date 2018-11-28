@@ -36,7 +36,7 @@ class Quarantine
      *
      * @return array
      */
-    public static function quarantine_list($input = '/')
+    public static function quarantine_list($input = '/'): array
     {
         $quarantinedir = MailScanner::getConfVar('QuarantineDir') . '/';
         $item = [];
@@ -290,7 +290,7 @@ SELECT
      *
      * @return string
      */
-    public static function quarantine_learn($list, $num, $type, $rpc_only = false)
+    public static function quarantine_learn($list, $num, $type, $rpc_only = false): string
     {
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if (!\is_array($list) || !isset($list[0]['msgid'])) {
@@ -458,7 +458,7 @@ SELECT
      *
      * @return string
      */
-    public static function quarantine_delete($list, $num, $rpc_only = false)
+    public static function quarantine_delete($list, $num, $rpc_only = false): string
     {
         if (!\is_array($list) || !isset($list[0]['msgid'])) {
             return 'Invalid argument';
@@ -518,7 +518,7 @@ SELECT
     /**
      * @return array
      */
-    public static function return_quarantine_dates()
+    public static function return_quarantine_dates(): array
     {
         $array = [];
         for ($d = 0; $d < QUARANTINE_DAYS_TO_KEEP; ++$d) {

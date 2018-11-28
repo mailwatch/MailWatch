@@ -71,7 +71,7 @@ class Mailer
     /**
      * @return array
      */
-    public static function getParameters()
+    public static function getParameters(): array
     {
         $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
         if (\defined('MAILWATCH_SMTP_HOSTNAME')) {

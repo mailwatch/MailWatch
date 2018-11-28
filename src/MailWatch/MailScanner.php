@@ -36,7 +36,7 @@ class MailScanner
      *
      * @return array
      */
-    public static function parseConfFile($name)
+    public static function parseConfFile($name): array
     {
         static $conf_file_cache;
         if (null !== $conf_file_cache && isset($conf_file_cache[$name])) {
@@ -100,7 +100,7 @@ class MailScanner
      *
      * @return array
      */
-    public static function parseConfDir($conf_dir)
+    public static function parseConfDir($conf_dir): array
     {
         $array_output1 = [];
         if ($dh = opendir($conf_dir)) {
@@ -194,7 +194,7 @@ class MailScanner
      *
      * @return bool
      */
-    public static function getDefaultRulesetValue($file)
+    public static function getDefaultRulesetValue($file): bool
     {
         $fh = fopen($file, 'rb') or die(Translation::__('dieruleset03') . " $file");
         while (!feof($fh)) {
@@ -216,7 +216,7 @@ class MailScanner
      *
      * @return bool
      */
-    public static function getConfTrueFalse($name, $force = false)
+    public static function getConfTrueFalse($name, $force = false): bool
     {
         if (DISTRIBUTED_SETUP && !$force) {
             return true;

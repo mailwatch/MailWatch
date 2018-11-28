@@ -192,7 +192,7 @@ class GraphGenerator
      *
      * @return bool true on success, false on error
      */
-    protected function prepareData()
+    protected function prepareData(): bool
     {
         $result = Db::query($this->sqlQuery);
         $this->data = [];

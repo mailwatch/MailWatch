@@ -68,7 +68,7 @@ class Debug
      *
      * @return string
      */
-    public static function debug_print_r($input)
+    public static function debug_print_r($input): string
     {
         ob_start();
         print_r($input);

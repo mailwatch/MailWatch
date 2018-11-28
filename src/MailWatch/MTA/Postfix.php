@@ -29,7 +29,7 @@ namespace MailWatch\MTA;
 
 class Postfix
 {
-    public static function postfixinq()
+    public static function postfixinq(): int
     {
         $handle = opendir('/var/spool/postfix/hold/');
         $inq = 0;
@@ -44,7 +44,7 @@ class Postfix
         return $inq;
     }
 
-    public static function postfixallq()
+    public static function postfixallq(): int
     {
         $last_line = exec('mailq');
         $pos = strpos($last_line, 'in ');

@@ -39,7 +39,7 @@ class XXXCompatController extends Controller
      * @Route("/", name="start")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_A') or is_granted('ROLE_D') or is_granted('ROLE_U')")
      */
-    public function compatStatusCall()
+    public function compatStatusCall(): \Symfony\Component\HttpFoundation\Response
     {
         return $this->compatCall('status.php');
     }

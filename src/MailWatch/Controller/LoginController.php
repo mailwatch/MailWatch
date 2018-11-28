@@ -37,7 +37,7 @@ class LoginController extends Controller
     /**
      * @Route("/login", name="login")
      */
-    public function login(Request $request, AuthenticationUtils $authUtils)
+    public function login(Request $request, AuthenticationUtils $authUtils): \Symfony\Component\HttpFoundation\Response
     {
         // get the login error if there is one
         $error = $authUtils->getLastAuthenticationError();
