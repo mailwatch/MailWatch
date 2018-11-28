@@ -61,7 +61,7 @@ class GraphGenerator
             return;
         }
 
-        $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
+        $chartId = ($this->settings['chartId'] ?? 'reportGraph');
         //create canvas graph
         echo '<canvas id="' . $chartId . '" class="reportGraph"></canvas>
       <script src="../../mailscanner/js/Chart.js/Chart.min.js"></script>
@@ -128,7 +128,7 @@ class GraphGenerator
             $dataLabels .= '],' . "\n";
             $graphTypes .= '],' . "\n";
         }
-        $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
+        $chartId = ($this->settings['chartId'] ?? 'reportGraph');
         echo '<canvas id="' . $chartId . '" class="lineGraph"></canvas>
       <script src="js/Chart.js/Chart.bundle.min.js"></script>
       <script src="js/lineConfig.js"></script>
@@ -144,7 +144,7 @@ class GraphGenerator
           yAxeDescriptions : ["' . implode('", "', $this->graphColumns['yAxeDescriptions']) . '"],
           fillBelowLine : [' . implode(', ', $this->graphColumns['fillBelowLine']) . '],
           plainGraph : ' . (isset($this->settings['plainGraph']) && true === $this->settings['plainGraph'] ? 'true' : 'false') . ',
-          maxTicks: ' . (isset($this->settings['maxTicks']) ? $this->settings['maxTicks'] : '12') . ',
+          maxTicks: ' . ($this->settings['maxTicks'] ?? '12') . ',
           ' . (isset($this->settings['drawLines']) && true === $this->settings['drawLines'] ? 'drawLines : true,' : '') . '
           ' . (isset($this->settings['colors']) ? 'colors : [' . $colors . '],' : '') . '
           ' . (isset($this->settings['valueTypes']) && 0 !== \count($this->settings['valueTypes']) ? 'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : '') . '

@@ -59,11 +59,7 @@ class GeoIp
                 $reader = new Reader(self::$savePath['mmdbFile']);
                 $countryData = $reader->get($ip);
                 $reader->close();
-                if (isset($countryData['country']['names'][LANG])) {
-                    return $countryData['country']['names'][LANG];
-                }
-
-                return $countryData['country']['names']['en'];
+                return $countryData['country']['names'][LANG] ?? $countryData['country']['names']['en'];
             } catch (InvalidDatabaseException $e) {
                 return false;
             } catch (\Exception $e) {
