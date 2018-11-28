@@ -482,7 +482,11 @@ function printServiceStatus()
             echo '    <tr><td>' . 'MSMilter' . __('colon99') . '</td>'
                 . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         } else {
-            exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
+            $psExecCommand = "ps ax | grep $mta | grep -v grep | grep -v php";
+            if ($mta === 'postfix') {
+                $psExecCommand = 'ps -U postfix -u postfix | grep -v MailScanner | grep -v "MailWatch SQL"';
+            }
+            exec($psExecCommand, $output);
             if (count($output) > 0) {
                 $running = $yes;
             } else {
