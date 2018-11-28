@@ -26,7 +26,7 @@
  */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+if (PHP_VERSION_ID < 50300) {
     error_reporting(E_ALL);
 } else {
     // E_DEPRECATED added in PHP 5.3
@@ -117,7 +117,7 @@ require_once __DIR__ . '/lib/ForceUTF8/Encoding.php';
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 
 //Enforce SSL if SSL_ONLY=true
-if (PHP_SAPI !== 'cli' && SSL_ONLY && (!empty($_SERVER['PHP_SELF']))) {
+if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
         header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
         exit;
@@ -459,8 +459,8 @@ function printServiceStatus()
         $output = 0;
         // is MTA running
         $mta = get_conf_var('mta');
-        if ($mta == 'msmail') {
-            exec("ps ax | grep postfix | grep -v grep | grep -v php", $output);
+        if ($mta === 'msmail') {
+            exec('ps ax | grep postfix | grep -v grep | grep -v php', $output);
             if (count($output) > 0) {
                 $running = $yes;
             } else {
@@ -471,7 +471,7 @@ function printServiceStatus()
                 . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             $output = 0;
-            exec("ps ax | grep MSMilter | grep -v grep", $output);
+            exec('ps ax | grep MSMilter | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
                 $procs = count($output) - 1 . ' ' . __('children03');
@@ -563,7 +563,7 @@ function printMTAQueue()
             $servers = explode(' ', RPC_REMOTE_SERVER);
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
-                if ($servers[$i] !== getHostByName(getHostName())) {
+                if ($servers[$i] !== gethostbyname(gethostname())) {
                     $msg = new xmlrpcmsg('postfix_queues', array());
                     $rsp = xmlrpc_wrapper($servers[$i], $msg);
                     if ($rsp->faultCode() === 0) {
@@ -606,7 +606,7 @@ function printMTAQueue()
             $servers = explode(' ', RPC_REMOTE_SERVER);
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
-                if ($servers[$i] !== getHostByName(getHostName())) {
+                if ($servers[$i] !== gethostbyname(gethostname())) {
                     $msg = new xmlrpcmsg('postfix_queues', array());
                     $rsp = xmlrpc_wrapper($servers[$i], $msg);
                     if ($rsp->faultCode() === 0) {
@@ -636,10 +636,10 @@ function printMTAQueue()
             $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
         } else {
             $cmd = exec('sudo ' . SENDMAIL_QUEUE_IN . ' 2>&1');
-            preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
+            preg_match('/(Total requests: )(.*)/', $cmd, $output_array);
             $inq = $output_array[2];
             $cmd = exec('sudo ' . SENDMAIL_QUEUE_OUT . ' 2>&1');
-            preg_match("/(Total requests: )(.*)/", $cmd, $output_array);
+            preg_match('/(Total requests: )(.*)/', $cmd, $output_array);
             $outq = $output_array[2];
         }
         echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
@@ -1221,7 +1221,7 @@ function getSUBJECTheader($header)
                 $linePartArr = imap_mime_header_decode($subLines[$i]);
                 for ($j = 0, $countLinePartArr = count($linePartArr); $j < $countLinePartArr; $j++) {
                     if (strtolower($linePartArr[$j]->charset) === 'default') {
-                        if ($linePartArr[$j]->text != ' ') {
+                        if ($linePartArr[$j]->text !== ' ') {
                             $convLine .= $linePartArr[$j]->text;
                         }
                     } else {
@@ -1508,9 +1508,9 @@ AND
 function get_disks()
 {
     $disks = array();
-    if (php_uname('s') === 'Windows NT') {
+    if (PHP_OS === 'Windows NT') {
         // windows
-        $disks = `fsutil fsinfo drives`;
+        $disks = shell_exec('fsutil fsinfo drives');
         $disks = str_word_count($disks, 1);
         //TODO: won't work on non english installation, we need to find an universal command
         if ($disks[0] !== 'Drives') {
@@ -1529,25 +1529,27 @@ function get_disks()
          * http://unix.stackexchange.com/a/12086/33366
          */
         $temp_drive = array();
+        // TODO: list nfs mount (and other relevant fs type) in $disks[]
+        // TODO: remove bind mount
+        // TODO: list MailScanner tmpfs
         if (is_file('/proc/mounts')) {
             $mounted_fs = file('/proc/mounts');
             foreach ($mounted_fs as $fs_row) {
                 $drive = preg_split("/[\s]+/", $fs_row);
-                if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[1], '/chroot/') === false)) {
+                if ((strpos($drive[0], '/dev/') === 0) && (stripos($drive[1], '/chroot/') === false)) {
                     $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[1];
                     $disks[] = $temp_drive;
                     unset($temp_drive);
                 }
-                // TODO: list nfs mount (and other relevant fs type) in $disks[]
             }
         } else {
             // fallback to mount command
-            $data = `mount`;
+            $data = shell_exec('mount');
             $data = explode("\n", $data);
             foreach ($data as $disk) {
                 $drive = preg_split("/[\s]+/", $disk);
-                if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[2], '/chroot/') === false)) {
+                if ((strpos($drive[0], '/dev/') === 0) && (stripos($drive[2], '/chroot/') === false)) {
                     $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[2];
                     $disks[] = $temp_drive;
@@ -1580,8 +1582,8 @@ function formatSize($size, $precision = 2)
 }
 
 /**
- * @param $data_in
- * @param $info_out
+ * @param array $data_in
+ * @param array $info_out
  */
 function format_report_volume(&$data_in, &$info_out)
 {
@@ -1608,28 +1610,22 @@ function format_report_volume(&$data_in, &$info_out)
         $info_out['formula'] = 1;
         $info_out['shortdesc'] = 'b';
         $info_out['longdesc'] = 'Bytes';
+    } elseif ($average < $mb) {
+        $info_out['formula'] = $kb;
+        $info_out['shortdesc'] = 'Kb';
+        $info_out['longdesc'] = 'Kilobytes';
+    } elseif ($average < $gb) {
+        $info_out['formula'] = $mb;
+        $info_out['shortdesc'] = 'Mb';
+        $info_out['longdesc'] = 'Megabytes';
+    } elseif ($average < $tb) {
+        $info_out['formula'] = $gb;
+        $info_out['shortdesc'] = 'Gb';
+        $info_out['longdesc'] = 'Gigabytes';
     } else {
-        if ($average < $mb) {
-            $info_out['formula'] = $kb;
-            $info_out['shortdesc'] = 'Kb';
-            $info_out['longdesc'] = 'Kilobytes';
-        } else {
-            if ($average < $gb) {
-                $info_out['formula'] = $mb;
-                $info_out['shortdesc'] = 'Mb';
-                $info_out['longdesc'] = 'Megabytes';
-            } else {
-                if ($average < $tb) {
-                    $info_out['formula'] = $gb;
-                    $info_out['shortdesc'] = 'Gb';
-                    $info_out['longdesc'] = 'Gigabytes';
-                } else {
-                    $info_out['formula'] = $tb;
-                    $info_out['shortdesc'] = 'Tb';
-                    $info_out['longdesc'] = 'Terabytes';
-                }
-            }
-        }
+        $info_out['formula'] = $tb;
+        $info_out['shortdesc'] = 'Tb';
+        $info_out['longdesc'] = 'Terabytes';
     }
 
     // Modify the original data accordingly
@@ -1640,8 +1636,8 @@ function format_report_volume(&$data_in, &$info_out)
 }
 
 /**
- * @param $input
- * @param $maxlen
+ * @param string $input
+ * @param int $maxlen
  * @return string
  */
 function trim_output($input, $maxlen)
@@ -1654,7 +1650,7 @@ function trim_output($input, $maxlen)
 }
 
 /**
- * @param $file
+ * @param string $file
  * @return bool
  */
 function get_default_ruleset_value($file)
@@ -1710,7 +1706,7 @@ function get_conf_var($name, $force = false)
 }
 
 /**
- * @param $conf_dir
+ * @param string $conf_dir
  * @return array
  */
 function parse_conf_dir($conf_dir)
@@ -3296,8 +3292,8 @@ function translate_etoi($name)
         }
     }
     fclose($fh) or die($php_errormsg);
-    if (isset($etoi["$name"])) {
-        return $etoi["$name"];
+    if (isset($etoi[(string)$name])) {
+        return $etoi[(string)$name];
     }
 
     return $name;
@@ -3350,9 +3346,8 @@ function debug_print_r($input)
 }
 
 /**
- * @param $ip
+ * @param string $ip
  * @return bool
- * @throws \MaxMind\Db\Reader\InvalidDatabaseException
  */
 function return_geoip_country($ip)
 {
@@ -3380,7 +3375,7 @@ function return_geoip_country($ip)
 }
 
 /**
- * @param $ip
+ * @param string $ip
  * @return string
  */
 function stripPortFromIp($ip)
@@ -3519,7 +3514,7 @@ SELECT
                     $quarantined[$count]['to'] = $row->to_address;
                     $quarantined[$count]['file'] = $f;
                     $file = escapeshellarg($quarantine . '/' . $f);
-                    $quarantined[$count]['type'] = ltrim(rtrim(`/usr/bin/file -bi $file`));
+                    $quarantined[$count]['type'] = ltrim(rtrim(shell_exec('/usr/bin/file -bi ' . $file)));
                     $quarantined[$count]['path'] = $quarantine . '/' . $f;
                     $quarantined[$count]['md5'] = md5($quarantine . '/' . $f);
                     $quarantined[$count]['dangerous'] = $infected;
@@ -4321,6 +4316,7 @@ function checkConfVariables()
 /**
  * @param integer $lenght
  * @return string
+ * @throws Exception
  */
 function get_random_string($lenght)
 {
@@ -4645,6 +4641,7 @@ function validateInput($input, $type)
 
 /**
  * @return string
+ * @throws Exception
  */
 function generateToken()
 {
@@ -4716,7 +4713,7 @@ function checkLangCode($langCode)
 /**
  * Updates the user login expiry
  * @param string $myusername
- * @return boolean
+ * @return bool|mysqli_result
  */
 function updateLoginExpiry($myusername)
 {
@@ -4914,8 +4911,8 @@ function getVirus($report)
         $scanners = explode(' ', get_conf_var('VirusScanners'));
         foreach ($scanners as $scanner) {
             $scannerRegex = getVirusRegex($scanner);
-            if ($scannerRegex === null || $scannerRegex === "") {
-                error_log("Could not find regex for virus scanner " . $scanner);
+            if ($scannerRegex === null || $scannerRegex === '') {
+                error_log('Could not find regex for virus scanner ' . $scanner);
                 continue;
             }
             if (preg_match($scannerRegex, $report, $match) === 1) {
