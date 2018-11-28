@@ -1493,6 +1493,12 @@ AND
         // and ... others
         $topvirus .= sprintf(' ' . __('moretopviruses03'), $count-1);
     }
+
+    // Truncate excessively long output (more than 30 characters)
+    if (strlen($topvirus) > 30) {
+        $topvirus = substr($topvirus, 0, 30) . '...';
+    }
+
     return $topvirus;
 }
 
