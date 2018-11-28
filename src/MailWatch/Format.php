@@ -70,7 +70,7 @@ class Format
      */
     public static function getUTF8String($string)
     {
-        if (function_exists('mb_check_encoding')) {
+        if (\function_exists('mb_check_encoding')) {
             if (!mb_check_encoding($string, 'UTF-8')) {
                 $string = mb_convert_encoding($string, 'UTF-8');
             }
@@ -119,7 +119,7 @@ class Format
         $temp = $data_in;
 
         // Work out the average size of values in the array
-        $count = count($temp);
+        $count = \count($temp);
         $sum = array_sum($temp);
         $average = $sum / $count;
 
@@ -157,7 +157,7 @@ class Format
         }
 
         // Modify the original data accordingly
-        $num_data_in = count($data_in);
+        $num_data_in = \count($data_in);
         for ($i = 0; $i < $num_data_in; ++$i) {
             $data_in[$i] /= $info_out['formula'];
         }
@@ -171,7 +171,7 @@ class Format
      */
     public static function trim_output($input, $maxlen)
     {
-        if ($maxlen > 0 && strlen($input) >= $maxlen) {
+        if ($maxlen > 0 && \strlen($input) >= $maxlen) {
             return substr($input, 0, $maxlen) . '...';
         }
 
@@ -216,7 +216,7 @@ class Format
     public static function stripPortFromIp($ip)
     {
         if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}/', $ip)) {
-            $ip = current(array_slice(explode(':', $ip), 0, 1));
+            $ip = current(\array_slice(explode(':', $ip), 0, 1));
         }
 
         return $ip;

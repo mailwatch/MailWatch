@@ -278,9 +278,9 @@ function updateClock() {
             }
         }
 
-        if (defined('USER_SELECTABLE_LANG')) {
+        if (\defined('USER_SELECTABLE_LANG')) {
             $langCodes = explode(',', USER_SELECTABLE_LANG);
-            $langCount = count($langCodes);
+            $langCount = \count($langCodes);
             if ($langCount > 1) {
                 echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
                 echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
@@ -547,15 +547,15 @@ function updateClock() {
             if (is_readable($incomingdir) || is_readable($outgoingdir)) {
                 $inq = MTA\Postfix::postfixinq();
                 $outq = MTA\Postfix::postfixallq() - $inq;
-            } elseif (!defined('RPC_REMOTE_SERVER')) {
+            } elseif (!\defined('RPC_REMOTE_SERVER')) {
                 echo '    <tr><td colspan="3">' . Translation::__('verifyperm03') . ' ' . $incomingdir . ' ' . Translation::__('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
             }
 
-            if (defined('RPC_REMOTE_SERVER')) {
+            if (\defined('RPC_REMOTE_SERVER')) {
                 $pqerror = '';
                 $servers = explode(' ', RPC_REMOTE_SERVER);
 
-                for ($i = 0, $count_servers = count($servers); $i < $count_servers; ++$i) {
+                for ($i = 0, $count_servers = \count($servers); $i < $count_servers; ++$i) {
                     if ($servers[$i] !== gethostbyname(gethostname())) {
                         $msg = new \xmlrpcmsg('postfix_queues', []);
                         $rsp = xmlrpc_wrapper($servers[$i], $msg);
@@ -579,7 +579,7 @@ function updateClock() {
             }
 
             // Else use MAILQ from conf.php which is for Sendmail or Exim
-        } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
+        } elseif (\defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
             if ('exim' === MailScanner::getConfVar('MTA')) {
                 $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
                 $outq = exec('sudo ' . EXIM_QUEUE_OUT . ' 2>&1');
@@ -623,9 +623,9 @@ function updateClock() {
         } elseif (!DISTRIBUTED_SETUP && file_exists('/usr/bin/uptime')) {
             $loadavg = shell_exec('/usr/bin/uptime');
             $loadavg = explode(' ', $loadavg);
-            $la_1m = rtrim($loadavg[count($loadavg) - 3], ',');
-            $la_5m = rtrim($loadavg[count($loadavg) - 2], ',');
-            $la_15m = rtrim($loadavg[count($loadavg) - 1]);
+            $la_1m = rtrim($loadavg[\count($loadavg) - 3], ',');
+            $la_5m = rtrim($loadavg[\count($loadavg) - 2], ',');
+            $la_15m = rtrim($loadavg[\count($loadavg) - 1]);
             echo '
         <tr>
             <td align="left" rowspan="3">' . Translation::__('loadaverage03') . '&nbsp;</td>
@@ -650,24 +650,24 @@ function updateClock() {
             $no = '<span class="yes">&nbsp;' . Translation::__('no03') . '&nbsp;</span>' . "\n";
             $yes = '<span class="no">&nbsp;' . Translation::__('yes03') . '&nbsp;</span>' . "\n";
             exec('ps ax | grep MailScanner | grep -v grep', $output);
-            if (count($output) > 0) {
+            if (\count($output) > 0) {
                 $running = $yes;
-                $procs = count($output) - 1 . ' ' . Translation::__('children03');
+                $procs = \count($output) - 1 . ' ' . Translation::__('children03');
             } else {
                 $running = $no;
-                $procs = count($output) . ' ' . Translation::__('procs03');
+                $procs = \count($output) . ' ' . Translation::__('procs03');
             }
             echo '     <tr><td>' . Translation::__('mailscanner03') . '</td><td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
 
             // is MTA running
             $mta = MailScanner::getConfVar('mta');
             exec("ps ax | grep $mta | grep -v grep | grep -v php", $output);
-            if (count($output) > 0) {
+            if (\count($output) > 0) {
                 $running = $yes;
             } else {
                 $running = $no;
             }
-            $procs = count($output) . ' ' . Translation::__('procs03');
+            $procs = \count($output) . ' ' . Translation::__('procs03');
             echo '    <tr><td>' . ucwords($mta) . Translation::__('colon99') . '</td>'
                 . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
@@ -692,7 +692,7 @@ function updateClock() {
 
     public static function printTrafficGraph()
     {
-        $graphInterval = (defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
+        $graphInterval = (\defined('STATUSGRAPH_INTERVAL') ? STATUSGRAPH_INTERVAL : 60);
 
         echo '<td align="center" valign="top">' . "\n";
         echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";

@@ -73,12 +73,12 @@ class Antivirus
         if (null === $scanner) {
             $scanner = self::getPrimaryScanner();
         }
-        if (!defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
+        if (!\defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
             // Have to set manually as running in DISTRIBUTED_MODE
             throw new \RuntimeException('<B>' . Translation::__('dieerror03') . "</B><BR>\n&nbsp;" . Translation::__('dievirus03') . "\n");
         }
 
-        if (!defined('VIRUS_REGEX')) {
+        if (!\defined('VIRUS_REGEX')) {
             $regex = null;
             switch ($scanner) {
                 case 'none':
@@ -186,7 +186,7 @@ class Antivirus
     public static function getVirus($report)
     {
         $match = null;
-        if (defined('VIRUS_REGEX')) {
+        if (\defined('VIRUS_REGEX')) {
             preg_match(VIRUS_REGEX, $report, $match);
         } else {
             $scanners = explode(' ', MailScanner::getConfVar('VirusScanners'));
@@ -201,7 +201,7 @@ class Antivirus
                 }
             }
         }
-        if (isset($match[2]) && count($match) > 2) {
+        if (isset($match[2]) && \count($match) > 2) {
             return $match[2];
         }
 
@@ -216,7 +216,7 @@ class Antivirus
     public static function getVirusLink($virus)
     {
         $virus = htmlentities($virus);
-        if (defined('VIRUS_INFO') && VIRUS_INFO !== false) {
+        if (\defined('VIRUS_INFO') && VIRUS_INFO !== false) {
             $link = sprintf(VIRUS_INFO, $virus);
 
             return sprintf('<a href="%s">%s</a>', $link, $virus);
@@ -258,7 +258,7 @@ AND
                 }
             }
         }
-        if (0 === count($virus_array)) {
+        if (0 === \count($virus_array)) {
             return Translation::__('none03');
         }
         arsort($virus_array);

@@ -42,11 +42,11 @@ class Ldap
             $ds = ldap_connect(LDAP_HOST, LDAP_PORT) or die(Translation::__('ldpaauth103') . ' ' . LDAP_HOST);
 
             $ldap_protocol_version = 3;
-            if (defined('LDAP_PROTOCOL_VERSION')) {
+            if (\defined('LDAP_PROTOCOL_VERSION')) {
                 $ldap_protocol_version = LDAP_PROTOCOL_VERSION;
             }
             // Check if Microsoft Active Directory compatibility is enabled
-            if (defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
+            if (\defined('LDAP_MS_AD_COMPATIBILITY') && LDAP_MS_AD_COMPATIBILITY === true) {
                 ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
                 $ldap_protocol_version = 3;
             }
@@ -80,7 +80,7 @@ class Ldap
                 $result = ldap_get_entries($ds, $ldap_search_results) or die(Translation::__('ldpaauth303'));
                 ldap_free_result($ldap_search_results);
                 if (isset($result[0])) {
-                    if (in_array('group', array_values($result[0]['objectclass']), true)) {
+                    if (\in_array('group', array_values($result[0]['objectclass']), true)) {
                         // do not login as group
                         return null;
                     }
@@ -92,10 +92,10 @@ class Ldap
                     }
 
                     $user = $result[0][LDAP_USERNAME_FIELD][0];
-                    if (defined('LDAP_BIND_PREFIX')) {
+                    if (\defined('LDAP_BIND_PREFIX')) {
                         $user = LDAP_BIND_PREFIX . $user;
                     }
-                    if (defined('LDAP_BIND_SUFFIX')) {
+                    if (\defined('LDAP_BIND_SUFFIX')) {
                         $user .= LDAP_BIND_SUFFIX;
                     }
 

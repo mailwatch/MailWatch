@@ -177,7 +177,7 @@ class Security
 
         // Use global if individual value is disabled (-1)
         if ('-1' === $login_timeout) {
-            if (defined('SESSION_TIMEOUT')) {
+            if (\defined('SESSION_TIMEOUT')) {
                 if (SESSION_TIMEOUT > 0 && SESSION_TIMEOUT <= 99999) {
                     $expiry_val = (time() + SESSION_TIMEOUT);
                 } else {

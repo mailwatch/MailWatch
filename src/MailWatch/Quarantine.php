@@ -66,7 +66,7 @@ class Quarantine
             }
         }
 
-        if (count($item) > 0) {
+        if (\count($item) > 0) {
             // Sort in reverse chronological order
             arsort($item);
         }
@@ -175,7 +175,7 @@ SELECT
      */
     public static function quarantine_release($list, $num, $to, $rpc_only = false)
     {
-        if (!is_array($list) || !isset($list[0]['msgid'])) {
+        if (!\is_array($list) || !isset($list[0]['msgid'])) {
             return 'Invalid argument';
         }
 
@@ -293,7 +293,7 @@ SELECT
     public static function quarantine_learn($list, $num, $type, $rpc_only = false)
     {
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        if (!is_array($list) || !isset($list[0]['msgid'])) {
+        if (!\is_array($list) || !isset($list[0]['msgid'])) {
             return 'Invalid argument';
         }
         $new = self::quarantine_list_items($list[0]['msgid']);
@@ -375,7 +375,7 @@ SELECT
                 } else {
                     // Only sa-learn required
                     $max_size_option = '';
-                    if (defined('SA_MAXSIZE') && is_int(SA_MAXSIZE) && SA_MAXSIZE > 0) {
+                    if (\defined('SA_MAXSIZE') && \is_int(SA_MAXSIZE) && SA_MAXSIZE > 0) {
                         $max_size_option = ' --max-size ' . SA_MAXSIZE;
                     }
 
@@ -460,7 +460,7 @@ SELECT
      */
     public static function quarantine_delete($list, $num, $rpc_only = false)
     {
-        if (!is_array($list) || !isset($list[0]['msgid'])) {
+        if (!\is_array($list) || !isset($list[0]['msgid'])) {
             return 'Invalid argument';
         }
 

@@ -140,7 +140,7 @@ class Filter
     {
         echo '<table width="600" border="0" class="boxtable">' . "\n";
         echo ' <tr><th colspan="2">' . Translation::__('activefilters09') . '</th></tr>' . "\n";
-        if (count($this->item) > 0) {
+        if (\count($this->item) > 0) {
             foreach ($this->item as $key => $val) {
                 echo '<tr><td>' .
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
@@ -340,7 +340,7 @@ WHERE
         }
 
         Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        if (count($this->item) > 0) {
+        if (\count($this->item) > 0) {
             // Delete the existing first
             $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . $_SESSION['myusername'] . "' AND `name`='$name'";
             Db::query($dsql);
@@ -411,7 +411,7 @@ WHERE
     {
         $validKeys = array_keys($this->operators);
 
-        return in_array($operator, $validKeys, true);
+        return \in_array($operator, $validKeys, true);
     }
 
     /**
@@ -423,6 +423,6 @@ WHERE
     {
         $validKeys = array_keys($this->columns);
 
-        return in_array($column, $validKeys, true);
+        return \in_array($column, $validKeys, true);
     }
 }

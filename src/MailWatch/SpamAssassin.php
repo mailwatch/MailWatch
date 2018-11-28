@@ -135,7 +135,7 @@ class SpamAssassin
             }
 
             // Return the result as an html formatted string
-            if (count($output_array) > 0) {
+            if (\count($output_array) > 0) {
                 return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . Translation::__('score03') . '</th><th>' . Translation::__('matrule03') . '</th><th>' . Translation::__('description03') . '</th></tr>' . implode(
                         "\n",
                         $output_array

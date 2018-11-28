@@ -60,7 +60,7 @@ class Sanitize
     public static function safe_value($value)
     {
         $link = Db::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-        if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
+        if (\function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
             $value = stripslashes($value);
         }
         $value = $link->real_escape_string($value);
@@ -153,7 +153,7 @@ class Sanitize
                 }
                 break;
             case 'float':
-                if (is_float(filter_var($input, FILTER_VALIDATE_FLOAT))) {
+                if (\is_float(filter_var($input, FILTER_VALIDATE_FLOAT))) {
                     return true;
                 }
                 break;

@@ -106,9 +106,9 @@ class MailScanner
         if ($dh = opendir($conf_dir)) {
             while (false !== ($file = readdir($dh))) {
                 // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
-                if (strlen($file) > 0 && 0 !== strpos($file, '.') && is_file($conf_dir . $file)) {
+                if (\strlen($file) > 0 && 0 !== strpos($file, '.') && is_file($conf_dir . $file)) {
                     $file_name = $conf_dir . $file;
-                    if (!is_array($array_output1)) {
+                    if (!\is_array($array_output1)) {
                         $array_output1 = static::parseConfFile($file_name);
                     } else {
                         $array_output2 = static::parseConfFile($file_name);
@@ -170,7 +170,7 @@ class MailScanner
         $array_output2 = static::parseConfDir($conf_dir);
 
         $array_output = $array_output1;
-        if (is_array($array_output2)) {
+        if (\is_array($array_output2)) {
             $array_output = array_merge($array_output1, $array_output2);
         }
 
@@ -229,7 +229,7 @@ class MailScanner
         $array_output2 = static::parseConfDir($conf_dir);
 
         $array_output = $array_output1;
-        if (is_array($array_output2)) {
+        if (\is_array($array_output2)) {
             $array_output = array_merge($array_output1, $array_output2);
         }
 
@@ -253,7 +253,7 @@ class MailScanner
                         // if $parameter_value is a ruleset or a function call return true
                         $parameter_value = trim($parameter_value);
 
-                        return strlen($parameter_value) > 0;
+                        return \strlen($parameter_value) > 0;
                 }
             }
         }

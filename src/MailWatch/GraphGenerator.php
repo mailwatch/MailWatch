@@ -55,7 +55,7 @@ class GraphGenerator
             return;
         }
         $this->runConversions();
-        if (0 === count($this->data[$this->graphColumns['dataNumericColumn']])) {
+        if (0 === \count($this->data[$this->graphColumns['dataNumericColumn']])) {
             echo Translation::__('nodata64');
 
             return;
@@ -106,14 +106,14 @@ class GraphGenerator
         $graphTypes = '';
         $colors = '';
 
-        for ($i = 0, $iMax = count($this->graphColumns['dataNumericColumns']); $i < $iMax; ++$i) {
+        for ($i = 0, $iMax = \count($this->graphColumns['dataNumericColumns']); $i < $iMax; ++$i) {
             //foreach yaxis get the column name for numeric and formatted data
             $numericData .= '[' . "\n";
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
             $graphTypes .= '[' . "\n";
             $colors .= isset($this->settings['colors']) ? '["' . implode('", "', $this->settings['colors'][$i]) . '"],' : '';
-            for ($j = 0, $jMax = count($this->graphColumns['dataNumericColumns'][$i]); $j < $jMax; ++$j) {
+            for ($j = 0, $jMax = \count($this->graphColumns['dataNumericColumns'][$i]); $j < $jMax; ++$j) {
                 if (isset($this->graphColumns['dataLabels'][$i])) {
                     $dataLabels .= '"' . $this->graphColumns['dataLabels'][$i][$j] . '",';
                 }
@@ -147,7 +147,7 @@ class GraphGenerator
           maxTicks: ' . (isset($this->settings['maxTicks']) ? $this->settings['maxTicks'] : '12') . ',
           ' . (isset($this->settings['drawLines']) && true === $this->settings['drawLines'] ? 'drawLines : true,' : '') . '
           ' . (isset($this->settings['colors']) ? 'colors : [' . $colors . '],' : '') . '
-          ' . (isset($this->settings['valueTypes']) && 0 !== count($this->settings['valueTypes']) ? 'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : '') . '
+          ' . (isset($this->settings['valueTypes']) && 0 !== \count($this->settings['valueTypes']) ? 'valueTypes: ["' . implode('","', $this->settings['valueTypes']) . '"],' : '') . '
           ' . (isset($this->graphColumns['dataLabels']) ? 'chartDataLabels : [' . $dataLabels . '],' : '') . '
           ' . (null === $graphTypes ? '' : 'types : [' . $graphTypes . '],') . '
         });
@@ -359,7 +359,7 @@ class GraphGenerator
             $convertedData[$start->add(new \DateInterval($scale))->format($format)] = 0;
         }
         //get the values from the sql result and assign them to the correct time scale part
-        $count = isset($this->data['xaxis']) ? count($this->data['xaxis']) : 0;
+        $count = isset($this->data['xaxis']) ? \count($this->data['xaxis']) : 0;
         for ($i = 0; $i < $count; ++$i) {
             // get the value from data and add it to the corresponding hour
             $time = new \DateTime($this->data['xaxis'][$i]);

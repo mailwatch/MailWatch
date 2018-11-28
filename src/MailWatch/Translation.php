@@ -78,12 +78,12 @@ class Translation
             $session_cookie_secure = true;
         }
 
-        if (!defined('LANG')) {
-            define('LANG', 'en');
+        if (!\defined('LANG')) {
+            \define('LANG', 'en');
         }
         self::$langCode = LANG;
         // If the user is allowed to select the language for the gui check which language he has choosen or create the cookie with the default lang
-        if (defined('USER_SELECTABLE_LANG')) {
+        if (\defined('USER_SELECTABLE_LANG')) {
             if (isset($_COOKIE['MW_LANG']) && self::checkLangCode($_COOKIE['MW_LANG'])) {
                 self::$langCode = $_COOKIE['MW_LANG'];
             } else {

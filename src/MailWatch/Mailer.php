@@ -41,7 +41,7 @@ class Mailer
     public static function send($email, $html, $text, $subject, $pwdreset = false)
     {
         $mime = new \Mail_mime("\n");
-        if (true === $pwdreset && (defined('PWD_RESET_FROM_NAME') && defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
+        if (true === $pwdreset && (\defined('PWD_RESET_FROM_NAME') && \defined('PWD_RESET_FROM_ADDRESS') && PWD_RESET_FROM_NAME !== '' && PWD_RESET_FROM_ADDRESS !== '')) {
             $sender = PWD_RESET_FROM_NAME . '<' . PWD_RESET_FROM_ADDRESS . '>';
         } else {
             $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
@@ -74,7 +74,7 @@ class Mailer
     public static function getParameters()
     {
         $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
-        if (defined('MAILWATCH_SMTP_HOSTNAME')) {
+        if (\defined('MAILWATCH_SMTP_HOSTNAME')) {
             $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
         }
 
