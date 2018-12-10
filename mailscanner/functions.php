@@ -4537,7 +4537,7 @@ function validateInput($input, $type)
             }
             break;
         case 'orderby':
-            if (preg_match('/^(datetime|from_address|to_address|subject|size|sascore)$/', $input)) {
+            if (preg_match('/^(datetime|from_address|to_address|subject|size|sascore|clientip)$/', $input)) {
                 return true;
             }
             break;

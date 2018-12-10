@@ -1,3 +1,8 @@
+1.2.x
+-----------
+Fixes
+- Add client IP in sorting input validation
+
 1.2.11
 -----------
 Improvements
