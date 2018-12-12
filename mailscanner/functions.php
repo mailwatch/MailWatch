@@ -3263,7 +3263,7 @@ function imap_authenticate($username, $password)
                 $sql = sprintf(
                     "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
                     quote_smart($username),
-                    quote_smart($password)
+                    quote_smart($username)
                 );
                 dbquery($sql);
             }
