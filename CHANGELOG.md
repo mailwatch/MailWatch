@@ -1,5 +1,8 @@
-1.2.x
+1.2.12
 -----------
+Security
+- Fix clear password display when user is autocreated by IMAP auth
+
 Fixes
 - Add client IP in sorting input validation
 
