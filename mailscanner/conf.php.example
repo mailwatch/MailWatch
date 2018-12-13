@@ -86,7 +86,7 @@ define('LDAP_MS_AD_COMPATIBILITY', true);
 // IMAP settings for authentication
 define('USE_IMAP', false);
 define('IMAP_HOST', '{imap.example.com:993/imap/ssl}'); //for parameters check http://php.net/manual/en/function.imap-open.php
-define('IMAP_AUTOCREATE_VALID_USER', false); // Set to true to autocerate a valid IMAP user in MailWatch database after sucessful login
+define('IMAP_AUTOCREATE_VALID_USER', false); // Set to true to autocreate a valid IMAP user in MailWatch database after sucessful login
 
 // Set Time Zone
 // See http://php.net/manual/en/timezones.php for a list of usable timezones.

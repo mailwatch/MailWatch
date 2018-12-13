@@ -373,7 +373,7 @@ if ($link) {
     $server_utf8_variant = 'utf8';
 
     // Convert database to utf8 if not already utf8mb4 or if other charset
-    echo pad(' - Convert database to ' . $server_utf8_variant . '');
+    echo pad(' - Convert database to UTF-8');
     if (get_database_charset() === $mysql_utf8_variant['utf8mb4']['charset'] && get_database_collation() === $mysql_utf8_variant['utf8mb4']['collation']) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
@@ -382,6 +382,15 @@ if ($link) {
             '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
             ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
         executeQuery($sql);
+    }
+
+    echo PHP_EOL;
+    echo pad(' - Fix security issues in database');
+    if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
+        $sql = "UPDATE `users` SET `fullname` = `username` WHERE `type`='U' AND `password` IS NULL";
+        executeQuery($sql);
+    } else {
+        echo color(' No known security issues', 'lightgreen') . PHP_EOL;
     }
 
     echo PHP_EOL;
@@ -809,15 +818,13 @@ if ($link) {
         echo pad(' - Convert table `' . $table . '` to ' . $server_utf8_variant . '');
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
+        } elseif (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
+            $sql = 'ALTER TABLE `' . $table .
+                '` CONVERT TO CHARACTER SET ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
+                ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
+            executeQuery($sql);
         } else {
-            if (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
-                $sql = 'ALTER TABLE `' . $table .
-                    '` CONVERT TO CHARACTER SET ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
-                    ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
-                executeQuery($sql);
-            } else {
-                echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
-            }
+            echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
         }
     }
 
@@ -828,13 +835,11 @@ if ($link) {
         echo pad(' - Convert table `' . $table . '` to InnoDB');
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
+        } elseif (is_table_type_innodb(DB_NAME, $table) === false) {
+            $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
+            executeQuery($sql);
         } else {
-            if (is_table_type_innodb(DB_NAME, $table) === false) {
-                $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
-                executeQuery($sql);
-            } else {
-                echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
-            }
+            echo color(' ALREADY CONVERTED', 'lightgreen') . PHP_EOL;
         }
     }
 
@@ -910,9 +915,9 @@ echo PHP_EOL;
 if (file_exists(MAILWATCH_HOME . '/images/cache/')) {
     $result = rmdir(MAILWATCH_HOME . '/images/cache/') . PHP_EOL;
     if ($result === true) {
-        echo pad(' - Cache dir was still present. Removed it') . color(' INFO', 'lightgreen') . PHP_EOL;
+        echo pad(' - Cache dir is still present. Removed it') . color(' INFO', 'lightgreen') . PHP_EOL;
     } else {
-        echo pad(' - Cache dir was still present but removing it failed') . color(' ERROR', 'red') . PHP_EOL;
+        echo pad(' - Cache dir is still present but removing it failed') . color(' ERROR', 'red') . PHP_EOL;
     }
 } else {
     echo pad(' - Cache dir already removed') . color(' OK', 'green') . PHP_EOL;
@@ -1001,7 +1006,7 @@ if (stringEndsWith(MAILWATCH_HOSTURL, '/')) {
 echo PHP_EOL;
 //Check minimal PHP version
 echo pad(' - Checking minimal PHP version >= 5.4');
-if (version_compare(phpversion(), '5.4.0', '>=')) {
+if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
     echo color(' PHP version OK', 'lightgreen') . PHP_EOL;
 } else {
     echo color(' WARNING: PHP version < 5.4 not fully supported (GeoLite2 not working)', 'yellow'). PHP_EOL;
