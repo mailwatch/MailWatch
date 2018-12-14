@@ -69,6 +69,16 @@ echo '
             document.getElementById("mypassword_length").value = len2;
         }
     }, 60000);
+    //if session could be timed out display a message to reload the page and hide login form
+    function enableTimeoutNotice (timeout){
+      setTimeout(function() {
+       timeoutnotice = document.getElementById("sessiontimeout");
+       timeoutnotice.setAttribute("class", timeoutnotice.getAttribute("class").replace("hidden", ""));
+       loginfieldset = document.getElementById("loginfieldset");
+       loginfieldset.setAttribute("class", loginfieldset.getAttribute("class") + " hidden");
+      }, timeout*1000*0.95);
+    };
+    ' . ((defined('SESSION_TIMEOUT') && SESSION_TIMEOUT > 0) ? 'enableTimeoutNotice(' . SESSION_TIMEOUT . ');' : '') . '
 </script>
 <div class="login">
     <div class="center"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mwlogo99') . '"></div>
@@ -77,7 +87,10 @@ echo '
 if (file_exists('conf.php')) {
     echo '
         <form name="loginform" class="loginform" method="post" action="checklogin.php" autocomplete="off">
-            <fieldset>';
+            <fieldset class="hidden" id="sessiontimeout">
+               <p class="loginerror">' . __('pagetimeoutreload01') . '</p>
+            </fieldset>
+            <fieldset id="loginfieldset">';
     if (isset($_GET['error'])) {
         $error = __('errorund01');
         switch ($loginerror) {

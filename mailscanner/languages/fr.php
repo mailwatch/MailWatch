@@ -41,6 +41,7 @@ return array(
     'forgottenpwd01' => 'Mot de passe perdu ?',
     'sessiontimeout01' => 'Votre session a expiré.',
     'pagetimeout01' => 'Login page timed out <br>Please try again',
+    'pagetimeoutreload01' => 'Page timed out<br>Please reload the page',
 
     // 03-functions.php
     'jumpmessage03' => 'Aller au message :',
