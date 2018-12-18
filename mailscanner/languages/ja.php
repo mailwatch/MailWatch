@@ -41,6 +41,7 @@ return array(
     'forgottenpwd01' => 'パスワードを忘れました？',
     'sessiontimeout01' => 'セッションはタイムアウトしました。',
     'pagetimeout01' => 'Login page timed out <br>Please try again',
+    'pagetimeoutreload01' => 'Page timed out<br>Please reload the page',
 
     // 03-functions.php
     'jumpmessage03' => 'メッセージに移動:',
