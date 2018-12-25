@@ -1,0 +1,45 @@
+----------------------------------
+INSTALLATION INSTRUCTIONS
+----------------------------------
+
+Optional files for Postfix MTA when using the MailScanner Milter
+
+Copy the 'mailwatch-milter-relay' cron file into /etc/cron.hourly/
+
+Copy in /usr/local/bin the following files:
+
+mailwatch_postfix_relay.php
+mailwatch_milter_relay.php
+
+Verify if the 2 files are executable. If not, use "chmod +x" to correct this problem.
+
+Note about mailwatch_postfix_relay.php: 
+
+The script have two options, run it once per hour with '--refresh' or tail the log continuously.
+
+The 'mailwatch-postfix-relay' cron use the '--refresh' method.
+
+Example of script for the 'tail' method.
+
+----------------------------------
+#!/bin/bash
+
+# @asuweb
+
+if ps -C php -o args h | grep mailwatch_postfix_relay.php
+then true ## mailwatch_postfix_relay.php running
+else /usr/bin/php -q /usr/local/bin/mailwatch_postfix_relay.php > /dev/null &
+fi
+if ps -C php -o args h | grep mailwatch_milter_relay.php
+then true ## mailwatch_milter_relay.php running
+else /usr/bin/php -q /usr/local/bin/mailwatch_milter_relay.php > /dev/null &
+fi
+----------------------------------
+
+And you run it from cron every hour.
+
+ATTENTION:
+
+Several files have changed their name and location in MailWatch 1.2.0, 
+particularly the PHP files that are launched in cron and the Init script files.
+Please read the documentation carefully to remove old files during the upgrade.

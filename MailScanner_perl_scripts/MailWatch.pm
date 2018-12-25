@@ -139,7 +139,7 @@ sub InitConnection {
         $dbh->do('SET NAMES utf8');
     }
 
-    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
+    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
         MailScanner::Log::WarnLog("MailWatch: Error: %s", $DBI::errstr);
 }
 
@@ -222,7 +222,8 @@ sub ListenForMessages {
             $$message{headers},
             $$message{quarantined},
             $$message{rblspamreport},
-            $$message{token});
+            $$message{token},
+            $$message{messageid});
 
         # This doesn't work in the event we have no connection by now ?
         if (!$sth) {
@@ -354,6 +355,16 @@ sub MailWatchLogging {
     $sha1->add($message->{id}, $timestamp, $message->{size}, $message->{headers});
     $token = $sha1->hexdigest;
     
+    # Extract message id from header
+    my ($messageid);
+    $messageid = "";
+    foreach (@{$message->{headers}}) {
+        if ( $_ =~ /^message-id: (\S+)$/i ) {
+            $messageid = $1;
+            last;
+        }
+    }
+
     # Place all data into %msg
     my %msg;
     $msg{timestamp} = $timestamp;
@@ -392,6 +403,7 @@ sub MailWatchLogging {
     $msg{quarantined} = $quarantined;
     $msg{rblspamreport} = $message->{rblspamreport};
     $msg{token} = $token;
+    $msg{messageid} = $messageid;
 
     # Prepare data for transmission
     my $f = freeze \%msg;
