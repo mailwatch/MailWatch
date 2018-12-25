@@ -122,6 +122,7 @@ SELECT
  mcpwhitelisted,
  mcpblacklisted,
  mcpsascore,
+ released,
  '' as status
 FROM
  maillog
@@ -180,6 +181,7 @@ ORDER BY
    mcpwhitelisted,
    mcpblacklisted,
    mcpsascore,
+   released,
    '' as status
   FROM
    maillog
