@@ -123,6 +123,7 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   `date` date DEFAULT NULL,
   `time` time DEFAULT NULL,
   `headers` mediumtext COLLATE utf8_unicode_ci,
+  `messageid` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `quarantined` tinyint(1) DEFAULT '0',
   `rblspamreport` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL,

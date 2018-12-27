@@ -698,6 +698,15 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Add new messageid column to maillog table
+    echo pad(' - Add messageid field to `maillog` table');
+    if (true === check_column_exists('maillog', 'messageid')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `maillog` ADD `messageid` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL';
+        executeQuery($sql);
+    }
+
     // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
     echo pad(' - Check for missing tokens in `maillog` table');
     if (defined('QUARANTINE_REPORT_DAYS')) {
