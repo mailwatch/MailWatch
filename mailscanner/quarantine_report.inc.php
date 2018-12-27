@@ -248,7 +248,7 @@ ORDER BY a.date DESC, a.time DESC';
     /**
      * @param array $usersForReport array containing users for which the reports should be send; if empty reports are send for all users
      * @param bool $sendEmptyReports
-     * @return false|array if requirements not met; else an associative array counting successfull and failed reports for users
+     * @return false|int|array returns false if requirements not met, -2 in no rows else an associative array counting successfull and failed reports for users
      */
     public function send_quarantine_reports($usersForReport = array(), $sendEmptyReports = false)
     {
@@ -378,7 +378,6 @@ ORDER BY a.date DESC, a.time DESC';
 
             return $sendResult;
         } else {
-
             //combined
             $quarantine_list = array();
             $quarantined = array();
