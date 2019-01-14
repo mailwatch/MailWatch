@@ -833,6 +833,7 @@ return array(
     'directory52' => 'ディレクトリ',
     'nofind52' => 'MailWatch UID 値が見つかりません',
     'nofindowner52' => 'ファイルを見つけたりファイルを変更できません。ディレクトリの内容を確認する ',
+    'nosudoerfile52' => 'MailWatch sudoer /etc/sudoers.d/mailwatch file not found, check and set right permission on GeoLite2 files in',
     'auditlog52' => '実行 GeoIPアップデート',
 
     // 53-sophos_status.php
