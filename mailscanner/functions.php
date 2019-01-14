@@ -178,61 +178,64 @@ function getVirusRegex($scanner = null)
                 $regex = '/^Dummy$/';
                 break;
             case 'sophos':
-                $regex = '/(>>>) Virus \'(\S+)\' found/';
+                $regex = '/>>> Virus \'(?P<virus>\S+)\' found in (?P<file>.*)/';
                 break;
             case 'sophossavi':
-                $regex = '/(\S+) was infected by (\S+)/';
+                $regex = '/(?P<file>\S+) was infected by (?P<virus>\S+)/';
                 break;
             case 'clamav':
-                $regex = '/(.+) contains (\S+)/';
+                $regex = '/(?P<file>.+) contains (?P<virus>\S+)/';
                 break;
             case 'clamd':
-                $regex = '/(.+) was infected: (\S+)/';
+                $regex = '/(?P<file>.+) was infected: (?P<virus>\S+)/';
                 break;
             case 'clamavmodule':
-                $regex = '/(.+) was infected: (\S+)/';
+                $regex = '/(?P<file>.+) was infected: (?P<virus>\S+)/';
                 break;
             case 'f-prot':
-                $regex = '/(.+) Infection: (\S+)/';
+                $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
                 break;
             case 'f-prot-6':
-                $regex = '/(.+) Infection: (\S+)/';
+                $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
                 break;
             case 'f-protd-6':
-                $regex = '/(.+) Infection: (\S+)/';
+                $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
                 break;
             case 'mcafee':
-                $regex = '/(.+) Found the (\S+) virus !!!/';
+                $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
                 break;
             case 'mcafee6':
-                $regex = '/(.+) Found the (\S+) virus !!!/';
+                $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
                 break;
             case 'f-secure':
-                $regex = '/(.+) Infected: (\S+)/';
+                $regex = '/(?P<file>.+) Infected: (?P<virus>\S+)/';
                 break;
             case 'trend':
-                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
                 break;
             case 'bitdefender':
-                $regex = '/(\S+) Found virus (\S+)/';
+                $regex = '/(?P<file>\S+) Found virus (?P<virus>\S+)/';
                 break;
             case 'kaspersky-4.5':
-                $regex = '/(.+) INFECTED (\S+)/';
+                $regex = '/(?P<file>.+) INFECTED (?P<virus>\S+)/';
                 break;
             case 'etrust':
-                $regex = '/(\S+) is infected by virus: (\S+)/';
+                $regex = '/(?P<file>\S+) is infected by virus: (?P<virus>\S+)/';
                 break;
             case 'avg':
-                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
                 break;
             case 'norman':
-                $regex = '/(Found virus) (\S+) in file (\S+)/';
+                $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
                 break;
             case 'nod32-1.99':
-                $regex = '/(Found virus) (\S+) in (\S+)/';
+                $regex = '/Found virus (?P<virus>\S+) in (?P<file>\S+)/';
                 break;
             case 'antivir':
-                $regex = '/(ALERT:) \[(\S+) \S+\]/';
+                $regex = '/ALERT: \[(?P<virus>\S+) \S+\]/';
+                break;
+            case 'avast':
+                $regex = '/Avast: found (?P<virus>\S+) in (?P<file>.*)';
                 break;
             //default:
             // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
@@ -4928,8 +4931,8 @@ function getVirus($report)
             }
         }
     }
-    if (count($match) > 2) {
-        return $match[2];
+    if (isset($match['virus'])) {
+        return $match['virus'];
     }
     return $report;
 }
