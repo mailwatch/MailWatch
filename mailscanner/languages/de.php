@@ -842,6 +842,7 @@ return array(
     'directory52' => 'Verzeichnis',
     'nofind52' => 'Der Wert der MailWatch UID konnte nicht gefunden werden',
     'nofindowner52' => 'Dateien konnten nicht gefunden werden oder haben einen falschen Besitzer. Überprüfen Sie den Inhalt des Verzeichnisses',
+    'nosudoerfile52' => 'MailWatch sudoer /etc/sudoers.d/mailwatch Datei nicht gefunden. Überprüfe und Setze gültige Berechtigungen für die GeoLite2-Dateien in',
     'auditlog52' => 'GeoIP-Update wurde ausgeführt',
 
     // 53-sophos_status.php

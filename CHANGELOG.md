@@ -11,6 +11,7 @@ Improvements
 
 Fixes
 - Fix group by in total_mail_by_date (#1127)
+- Fix php notice on GeoIP update cronjob (#1131)
 
 1.2.12
 -----------
