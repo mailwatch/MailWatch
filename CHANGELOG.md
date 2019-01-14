@@ -1,3 +1,17 @@
+Unreleased
+-----------
+Security
+- Clear password in database on imap auto created users during upgrade
+
+Improvements
+- Add notice if session timed out while on login page (#1120) 
+- Show email release status on quarantine page(#1123)
+- MailScanner milter relay stats support (#1124) 
+- Hide Administrator user type to Domain Admins when creating or editing users (#276)
+
+Fixes
+- Fix group by in total_mail_by_date (#1127)
+
 1.2.12
 -----------
 Security
