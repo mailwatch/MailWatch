@@ -111,7 +111,7 @@ $sql = "
   1=1
 " . $filter->CreateSQL() . '
  GROUP BY
-  xaxis
+  date
  ORDER BY
   date
 ';
@@ -130,7 +130,7 @@ WHERE
 AND
  type<>'relay'
 GROUP BY
- xaxis, type
+ timestamp, type
 ORDER BY
  timestamp
 ";
