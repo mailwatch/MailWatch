@@ -689,7 +689,7 @@ div.table > .caption > input {
 
 .reportGraph {
     text-align: center;
-    height: 600px;
+    height: auto;
     width: 600px;
     margin-left: auto;
     margin-right: auto;
