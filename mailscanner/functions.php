@@ -235,7 +235,7 @@ function getVirusRegex($scanner = null)
                 $regex = '/ALERT: \[(?P<virus>\S+) \S+\]/';
                 break;
             case 'avast':
-                $regex = '/Avast: found (?P<virus>\S+) in (?P<file>.*)';
+                $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)';
                 break;
             //default:
             // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");

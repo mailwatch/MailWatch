@@ -108,7 +108,7 @@ foreach ($scanners as $vscanner) {
             break;
         case('avast'):
             $scanner[$vscanner]['name'] = 'Avast';
-            $scanner[$vscanner]['regexp'] = "/Avast: found (?P<virus>\S+) in (?P<file>.*)/";
+            $scanner[$vscanner]['regexp'] = "/Avast: found (?P<virus>.*) in (?P<file>.*)/";
             break;
     }
 }
