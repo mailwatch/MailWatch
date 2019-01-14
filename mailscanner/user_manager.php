@@ -109,7 +109,7 @@ function testPermissions($username, $userType, $oldUserType)
  */
 function testValidUser($username, $usertype, $oldUsername)
 {
-    if ($usertype !== 'A' && validateInput($username,'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
+    if ($usertype !== 'A' && validateInput($username, 'email') === false && (!defined('ALLOW_NO_USER_DOMAIN') || ALLOW_NO_USER_DOMAIN === false)) {
         return getHtmlMessage(__('forallusers12'), 'error');
     }
 
