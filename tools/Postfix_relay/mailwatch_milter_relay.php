@@ -88,7 +88,7 @@ function doittail($input)
     pclose($fp);
 }
 
-if ($_SERVER['argv'][1] === '--refresh') {
+if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
     doit('cat ' . MS_LOG);
 } else {
     // Refresh first
