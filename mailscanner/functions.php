@@ -1466,7 +1466,7 @@ AND
     while ($row = $result->fetch_object()) {
         $virus = getVirus($row->report);
         if ($virus !== null) {
-            $virus = return_virus_link($virus);
+            $virus = return_virus_link($virus, true);
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus] = 1;
             } else {
@@ -1496,11 +1496,6 @@ AND
     if ($count > 1) {
         // and ... others
         $topvirus .= sprintf(' ' . __('moretopviruses03'), $count-1);
-    }
-
-    // Truncate excessively long output (more than 30 characters)
-    if (strlen($topvirus) > 30) {
-        $topvirus = substr($topvirus, 0, 30) . '...';
     }
 
     return $topvirus;
@@ -4026,16 +4021,23 @@ function return_quarantine_dates()
  * @param string $virus
  * @return string
  */
-function return_virus_link($virus)
+function return_virus_link($virus, $truncateOutput = false)
 {
     $virus = htmlentities($virus);
+    // Truncate excessively long output (more than 30 characters)
+    if ($truncateOutput && strlen($virus) > 30) {
+        $virusText = substr($virus, 0, 30) . '...';
+    } else {
+        $virusText = $virus;
+    }
+
     if (defined('VIRUS_INFO') && VIRUS_INFO !== false) {
         $link = sprintf(VIRUS_INFO, $virus);
 
-        return sprintf('<a href="%s">%s</a>', $link, $virus);
+        return sprintf('<a href="%s">%s</a>', $link, $virusText);
     }
 
-    return $virus;
+    return $virusText;
 }
 
 /**
