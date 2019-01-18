@@ -514,10 +514,11 @@ function printAverageLoad()
             <td align="right">' . __('1minute03') . '&nbsp;</td>
             <td align="right">' . $la_1m . '</td>
         </tr>
-        </tr>
+        <tr>
             <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
             <td align="right">' . $la_5m . '</td>
         </tr>
+        <tr>
             <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
             <td align="right">' . $la_15m . '</td>
         </tr>
