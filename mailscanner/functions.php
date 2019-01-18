@@ -514,10 +514,11 @@ function printAverageLoad()
             <td align="right">' . __('1minute03') . '&nbsp;</td>
             <td align="right">' . $la_1m . '</td>
         </tr>
-        </tr>
+        <tr>
             <td align="right" colspan="1">' . __('5minutes03') . '&nbsp;</td>
             <td align="right">' . $la_5m . '</td>
         </tr>
+        <tr>
             <td align="right" colspan="1">' . __('15minutes03') . '&nbsp;</td>
             <td align="right">' . $la_15m . '</td>
         </tr>
@@ -579,14 +580,14 @@ function printMTAQueue()
                     }
                 }
                 if ($pqerror !== '') {
-                    echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                    echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td></tr>' . "\n";
                 }
             }
         }
         if ($inq !== null && $outq !== null) {
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
-            echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-            echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td></tr>' . "\n";
         }
     } elseif (get_conf_var('MTA', true) === 'msmail') {
         $incomingdir = get_conf_var('incomingqueuedir', true);
@@ -622,16 +623,16 @@ function printMTAQueue()
                     }
                 }
                 if ($pqerror !== '') {
-                    echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td>' . "\n";
+                    echo '    <tr><td colspan="3">' . __('errorWarning03') . ' ' . $pqerror . '</td></tr>' . "\n";
                 }
             }
         }
         if ($inq !== null && $outq !== null && $inq2 !== null && $outq2 !== null) {
             echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
-            echo '    <tr><td colspan="2"><a href="msmailq.php">Milter ' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-            echo '    <tr><td colspan="2"><a href="msmailq.php">Milter ' .  __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
-            echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('inbound03') . '</a></td><td align="right">' . $inq2 . '</td>' . "\n";
-            echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('outbound03') . '</a></td><td align="right">' . $outq2 . '</td>' . "\n";
+            echo '    <tr><td colspan="2"><a href="msmailq.php">Milter ' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="msmailq.php">Milter ' .  __('outbound03') . '</a></td><td align="right">' . $outq . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('inbound03') . '</a></td><td align="right">' . $inq2 . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('outbound03') . '</a></td><td align="right">' . $outq2 . '</td></tr>' . "\n";
         }
         // Else use MAILQ from conf.php which is for Sendmail or Exim
     } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
@@ -647,8 +648,8 @@ function printMTAQueue()
             $outq = $output_array[2];
         }
         echo '    <tr><td colspan="3" class="heading" align="center">' . __('mailqueue03') . '</td></tr>' . "\n";
-        echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td>' . "\n";
-        echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td>' . "\n";
+        echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=inq">' . __('inbound03') . '</a></td><td align="right">' . $inq . '</td></tr>' . "\n";
+        echo '    <tr><td colspan="2"><a href="mailq.php?token=' . $_SESSION['token'] . '&amp;queue=outq">' . __('outbound03') . '</a></td><td align="right">' . $outq . '</td></tr>' . "\n";
     }
 }
 
@@ -668,7 +669,7 @@ function printFreeDiskSpace()
             $percent .= round($free_space / $total_space, 2) * 100;
             $percent .= '%] ';
             $percent .= '</span>';
-            echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td>' . "\n";
+            echo '    <tr><td>' . $disk['mountpoint'] . '</td><td colspan="2" align="right">' . formatSize($free_space) . $percent . '</td></tr>' . "\n";
         }
     }
 }
