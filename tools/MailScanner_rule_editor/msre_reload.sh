@@ -22,9 +22,9 @@
 if [ -e /tmp/msre_reload ];
 then
     if [ -e /etc/init.d/mailscanner ]; then
-        /etc/init.d/mailscanner reload >/dev/null
+        /etc/init.d/mailscanner restart >/dev/null
     else
-        systemctl reload mailscanner
+        systemctl restart mailscanner
     fi
     rm -f /tmp/msre_reload
 fi
