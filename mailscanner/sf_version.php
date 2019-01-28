@@ -91,7 +91,7 @@ if ($_SESSION['user_type'] !== 'A') {
 
     // Add test for MTA
     $mta = get_conf_var('mta');
-    if (get_conf_var('MTA', true) === 'postfix') {
+    if (get_conf_var('MTA', true) === 'postfix' || get_conf_var('MTA', true) === 'msmail') {
         echo '<br>' . "\n";
         echo 'Postfix ' . __('version11') . ' ';
         exec('which postconf', $postconf);
