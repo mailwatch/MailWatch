@@ -1,4 +1,4 @@
-Unreleased
+1.2.13
 -----------
 Security
 - Clear password in database on imap auto created users during upgrade
