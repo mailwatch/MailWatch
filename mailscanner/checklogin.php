@@ -35,7 +35,9 @@ if (isset($_POST['token'])) {
         //login page timed out and session for token is not valid anymore
         header('Location: login.php?error=pagetimeout');
         die();
-    } elseif (false === checkToken($_POST['token'])) {
+    }
+
+    if (false === checkToken($_POST['token'])) {
         die(__('dietoken99'));
     }
 }
@@ -54,7 +56,9 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $mypassword = $_POST['mypassword'];
 }
 
-if (
+$_SESSION['user_ldap'] = false;
+$_SESSION['user_imap'] = false;
+if (defined('USE_LDAP') &&
     (USE_LDAP === true) &&
     (($result = ldap_authenticate($myusername, $mypassword)) !== null)
 ) {
@@ -70,8 +74,6 @@ if (
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
 } else {
-    $_SESSION['user_ldap'] = false;
-    $_SESSION['user_imap'] = false;
     if ($mypassword !== '') {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
