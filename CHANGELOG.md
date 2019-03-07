@@ -8,10 +8,12 @@ Improvements
 - Show email release status on quarantine page(#1123)
 - MailScanner milter relay stats support (#1124) 
 - Hide Administrator user type to Domain Admins when creating or editing users (#276)
+- Add Latin American Spanish translation
 
 Fixes
 - Fix group by in total_mail_by_date (#1127)
 - Fix php notice on GeoIP update cronjob (#1131)
+- Fix PHP notice on checklogin.php when using Imap login
 
 1.2.12
 -----------
