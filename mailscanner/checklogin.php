@@ -145,7 +145,7 @@ switch ($usertype) {
             }
             $global_list = "to_domain='$domainname'";
             foreach ($filter as $to_domain) {
-                if($to_domain !== $myusername) {
+                if ($to_domain !== $myusername) {
                     $global_list .= " OR to_domain='$to_domain'";
                 }
             }
