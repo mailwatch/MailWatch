@@ -144,6 +144,11 @@ switch ($usertype) {
                 $global_filter .= " OR to_domain='$domainname' OR from_domain='$domainname'";
             }
             $global_list = "to_domain='$domainname'";
+            foreach ($filter as $to_domain) {
+                if($to_domain !== $myusername) {
+                    $global_list .= " OR to_domain='$to_domain'";
+                }
+            }
         } else {
             $global_list = "to_address='$myusername'";
             foreach ($filter as $to_address) {
