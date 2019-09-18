@@ -319,6 +319,8 @@ sub MailWatchLogging {
         $text =~ s/\t/ /g;  # and no TAB characters
         $text =~ s/\r/ /g;  # and no CR characters
 
+        utf8::upgrade($text);
+
         # Uncommet the folloging line when debugging MailWatch.pm
         #MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
 
