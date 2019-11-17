@@ -40,7 +40,8 @@ if (file_exists('conf.php')) {
             $token = deepSanitizeInput($_GET['r'], 'url');
         }
         if (!validateInput($token, 'releasetoken')) {
-            die(__('dietoken99'));
+            header('Location: login.php?error=pagetimeout');
+            die();
         }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);

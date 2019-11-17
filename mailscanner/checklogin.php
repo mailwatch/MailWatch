@@ -38,7 +38,8 @@ if (isset($_POST['token'])) {
     }
 
     if (false === checkToken($_POST['token'])) {
-        die(__('dietoken99'));
+        header('Location: login.php?error=pagetimeout');
+        die();
     }
 }
 $_SESSION['token'] = generateToken();

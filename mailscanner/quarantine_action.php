@@ -92,7 +92,8 @@ if (count($list) === 0) {
 switch ($_GET['action']) {
     case 'release':
         if (false === checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            header('Location: login.php?error=pagetimeout');
+            die();
         }
         $result = '';
         if (count($list) === 1) {
@@ -116,7 +117,8 @@ switch ($_GET['action']) {
 
     case 'delete':
         if (false === checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            header('Location: login.php?error=pagetimeout');
+            die();
         }
         $status = array();
         if (isset($_GET['html'])) {
@@ -154,7 +156,8 @@ switch ($_GET['action']) {
             }
         } else {
             if (false === checkToken($_GET['token'])) {
-                die(__('dietoken99'));
+                header('Location: login.php?error=pagetimeout');
+                die();
             }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; $i++) {

@@ -144,7 +144,8 @@ function testToken()
 
     if ((isset($_POST['token']) && (false === checkToken($_POST['token'])))
         || (isset($_GET['token']) && (false === checkToken($_GET['token'])))) {
-        return getHtmlMessage(__('dietoken99'), 'error');
+        header('Location: login.php?error=pagetimeout');
+        die();
     }
 
     return true;
@@ -346,7 +347,8 @@ function newUser($userType)
     }
 
     if (false === checkFormToken('/user_manager.php new token', $_POST['formtoken'])) {
-        return getHtmlMessage(__('dietoken99'), 'error');
+        header('Location: login.php?error=pagetimeout');
+        die();
     }
 
     $username = html_entity_decode(deepSanitizeInput($_POST['username'], 'string'));
@@ -441,7 +443,8 @@ function editUser($userType)
     }
 
     if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
-        return getHtmlMessage(__('dietoken99'), 'error');
+        header('Location: login.php?error=pagetimeout');
+        die();
     }
 
     // Do update
@@ -524,7 +527,8 @@ function userFilter()
     $getFilter = '';
     if (isset($_POST['filter'])) {
         if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
-            return getHtmlMessage(__('dietoken99'), 'error');
+            header('Location: login.php?error=pagetimeout');
+            die();
         }
         $getFilter = deepSanitizeInput($_POST['filter'], 'url');
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
@@ -882,7 +886,8 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
 } else {
     if (false === checkToken($_POST['token'])
         || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
-        die(getHtmlMessage(__('dietoken99'), 'error'));
+        header('Location: login.php?error=pagetimeout');
+        die();    
     }
     if (!isset($_POST['action'])) {
         echo getHtmlMessage(__('formerror12'), 'error');

@@ -39,11 +39,13 @@ if ($_SESSION['user_type'] !== 'A') {
 } else {
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
-            die(__('dietoken99'));
+            header('Location: login.php?error=pagetimeout');
+            die();
         }
     } else {
         if (false === checkToken($_GET['token'])) {
-            die(__('dietoken99'));
+            header('Location: login.php?error=pagetimeout');
+            die();
         }
     }
 
@@ -95,7 +97,8 @@ if ($_SESSION['user_type'] !== 'A') {
     $status_message = '';
     if (isset($_POST['submitted'])) {
         if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
-            die(__('dietoken99'));
+            header('Location: login.php?error=pagetimeout');
+            die();
         }
 
         list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
