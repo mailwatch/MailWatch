@@ -887,7 +887,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     if (false === checkToken($_POST['token'])
         || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
         header('Location: login.php?error=pagetimeout');
-        die();    
+        die();
     }
     if (!isset($_POST['action'])) {
         echo getHtmlMessage(__('formerror12'), 'error');
