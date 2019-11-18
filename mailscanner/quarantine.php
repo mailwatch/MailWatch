@@ -81,7 +81,8 @@ if (!isset($_GET['dir'])) {
     }
 } else {
     if (false === checkToken($_GET['token'])) {
-        die(__('dietoken99'));
+        header('Location: login.php?error=pagetimeout');
+        die();
     }
     $dir = deepSanitizeInput($_GET['dir'], 'url');
     if (!validateInput($dir, 'quardir')) {

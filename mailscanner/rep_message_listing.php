@@ -36,7 +36,8 @@ require __DIR__ . '/login.function.php';
 $filter = html_start(__('messlisting16'), 0, false, false);
 
 if (false === checkToken($_GET['token'])) {
-    die(__('dietoken99'));
+    header('Location: login.php?error=pagetimeout');
+    die();
 }
 
 if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {

@@ -33,10 +33,12 @@ require __DIR__ . '/login.function.php';
 $refresh = html_start(__('opresult21'));
 
 if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
-    die(__('dietoken99'));
+    header('Location: login.php?error=pagetimeout');
+    die();
 }
 if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
-    die(__('dietoken99'));
+    header('Location: login.php?error=pagetimeout');
+    die();
 }
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";

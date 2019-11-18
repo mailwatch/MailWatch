@@ -32,7 +32,8 @@ require __DIR__ . '/login.function.php';
 html_start(__('mqviewer24'), STATUS_REFRESH, false, false);
 
 if (false === checkToken($_GET['token'])) {
-    die(__('dietoken99'));
+    header('Location: login.php?error=pagetimeout');
+    die();
 }
 
 $queue = deepSanitizeInput($_GET['queue'], 'url');

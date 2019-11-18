@@ -4677,7 +4677,8 @@ function checkToken($token)
 function generateFormToken($formstring)
 {
     if (!isset($_SESSION['token'])) {
-        die(__('dietoken99'));
+        header('Location: login.php?error=pagetimeout');
+        die();
     }
 
     $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);

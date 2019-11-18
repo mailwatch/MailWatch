@@ -37,7 +37,8 @@ if (!isset($_GET['id'])) {
 }
 
 if (false === checkToken($_GET['token'])) {
-    die(__('dietoken99'));
+    header('Location: login.php?error=pagetimeout');
+    die();
 }
 
 $message_id = deepSanitizeInput($_GET['id'], 'url');
