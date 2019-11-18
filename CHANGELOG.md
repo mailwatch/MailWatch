@@ -1,3 +1,12 @@
+Unreleased
+-----------
+Fixes
+- Allows domain admins to view black and whitelist for filtered domains (#1154)
+- Allow passing the argument --max-size 0 to sa-learn (#1160) 
+
+Improvements
+- More user friendly way to deal with token failures across the board
+
 1.2.13
 -----------
 Security
