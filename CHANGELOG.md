@@ -1,4 +1,4 @@
-Unreleased
+1.2.14
 -----------
 Fixes
 - Allows domain admins to view black and whitelist for filtered domains (#1154)
