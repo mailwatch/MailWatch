@@ -259,6 +259,7 @@ function rpc_postfix_queues()
     );
     return new xmlrpcresp(new xmlrpcval($result, 'struct'));
 }
+$xmlrpc_internalencoding = 'UTF-8';
 
 $s = new xmlrpc_server(array(
         'get_quarantine' => array(
@@ -289,7 +290,7 @@ $s = new xmlrpc_server(array(
         'quarantine_delete' => array(
             'function' => 'rpc_quarantine_delete',
             'signature' => array(array('string', 'array', 'array')),
-            'docstring' => 'This service deltes one or more items from the quarantine.'
+            'docstring' => 'This service deletes one or more items from the quarantine.'
         ),
         'sophos_status' => array(
             'function' => 'rpc_sophos_status',
@@ -309,7 +310,7 @@ $s = new xmlrpc_server(array(
         'get_bayes_info' => array(
             'function' => 'rpc_bayes_info',
             'signature' => array(array('struct')),
-            'docstring' => 'This service return information about the bayes database.'
+            'docstring' => 'This service returns information about the bayes database.'
         ),
         'postfix_queues' => array(
             'function' => 'rpc_postfix_queues',
@@ -317,6 +318,7 @@ $s = new xmlrpc_server(array(
             'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.'
         ),
     ), false);
+$s->response_charset_encoding = 'UTF-8';
 
 // Check that the client is authorised to connect
 if (is_rpc_client_allowed()) {
