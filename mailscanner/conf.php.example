@@ -49,6 +49,11 @@ define('USER_SELECTABLE_LANG', 'de,en,es-419,fr,it,ja,nl,pt_br');
 // This can also be set individually per user in the MailWatch GUI for greater flexibility.
 define('SESSION_TIMEOUT', 600);
 
+// MaxMind License key
+// A free license key is from MaxMind is required to download GeoLite2 data
+// https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
+// define('MAXMIND_LICENSE_KEY', 'mylicensekey');
+
 // Database settings
 //
 // As this file might be publically readable. It might be very userful to
