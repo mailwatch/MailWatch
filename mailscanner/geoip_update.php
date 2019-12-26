@@ -35,7 +35,7 @@ html_start(__('geoipupdate15'), 0, false, false);
 
 if (!isset(MAXMIND_LICENSE_KEY)) {
     $error_message = __('geoipnokey15') . '<br>' . "\n";
-    die ($error_message);
+    die($error_message);
 } elseif (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">
             <input type="hidden" name="run" value="true">

@@ -40,7 +40,7 @@ ob_start();
 
 if (!isset(MAXMIND_LICENSE_KEY)) {
     $error_message = __('geoipnokey15') . '<br>' . "\n";
-    die ($error_message);
+    die($error_message);
 }
 
 echo 'Downloading file, please wait...' . "\n";
