@@ -4643,6 +4643,10 @@ function validateInput($input, $type)
             if (preg_match('/^[0-9]{1,5}$/', $input)) {
                 return true;
             }
+        case 'maxmind':
+            if (preg_match('/^[0-9A-Za-z]{16}$/', $input)) {
+                return true;
+            }
             break;
         default:
             return false;
