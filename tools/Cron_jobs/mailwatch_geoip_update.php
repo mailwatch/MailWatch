@@ -45,7 +45,7 @@ ob_start();
 
 echo 'Downloading file, please wait...' . "\n";
 
-$files_base_url = 'http://download.maxmind.com';
+$files_base_url = 'https://download.maxmind.com';
 $file = array(
     'description' => __('geoip15'),
     'path' => '/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=' . MAXMIND_LICENSE_KEY,
