@@ -1,3 +1,15 @@
+1.2.15
+-----------
+Compatibility
+- Add MaxMind License Key support (#1166) 
+
+Fixes
+- Adjust avast virus regex (#1133)
+- Set RPC Server internal and response charset encoding to UTF-8 (#1156)
+
+Improvements
+- Added Avast support (#1117)
+
 1.2.14
 -----------
 Fixes
