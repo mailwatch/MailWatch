@@ -559,6 +559,7 @@ return array(
     'geoipupdate15' => 'GeoIPデータベースの更新',
     'dieproxy15' => 'プロキシタイプは "HTTP"か "SOCKS5" のどちらかで、設定ファイルをチェックしてください。',
     'auditlog15' => 'GeoIP アップデートの実行',
+    'geoipnokey15' => 'A license key from www.maxmind.com is needed to download GeoLite2 data',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'メッセージリスト',

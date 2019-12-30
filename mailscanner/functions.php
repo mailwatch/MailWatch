@@ -4289,7 +4289,8 @@ function checkConfVariables()
         'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
         'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
         'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
-        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autorcreate user from valid imap login')
+        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autorcreate user from valid imap login'),
+        'MAXMIND_LICENSE_KEY' => array('description' => 'needed to download MaxMind GeoLite2 data')
     );
 
     $results = array();
@@ -4640,6 +4641,10 @@ function validateInput($input, $type)
             break;
         case 'timeout':
             if (preg_match('/^[0-9]{1,5}$/', $input)) {
+                return true;
+            }
+        case 'maxmind':
+            if (preg_match('/^([0-9A-Za-z]{12}|[0-9A-Za-z]{16})$/', $input)) {
                 return true;
             }
             break;

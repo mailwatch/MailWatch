@@ -33,16 +33,22 @@ if (!@is_file($pathToFunctions)) {
 }
 require $pathToFunctions;
 
+if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxmind")) {
+    $error_message = __('geoipnokey15') . "\n\n";
+    die($error_message);
+}
+
 require_once MAILWATCH_HOME . '/lib/request/Requests.php';
 Requests::register_autoloader();
 
 ob_start();
+
 echo 'Downloading file, please wait...' . "\n";
 
-$files_base_url = 'http://geolite.maxmind.com';
+$files_base_url = 'https://download.maxmind.com';
 $file = array(
     'description' => __('geoip15'),
-    'path' => '/download/geoip/database/GeoLite2-Country.tar.gz',
+    'path' => '/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=' . MAXMIND_LICENSE_KEY,
     'destination' => MAILWATCH_HOME . '/temp/GeoLite2-Country.tar.gz',
     'destinationFileName' => 'GeoLite2-Country.mmdb'
 );

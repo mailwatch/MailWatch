@@ -49,6 +49,12 @@ See the instructions in tools/MailScanner_rule_editor/INSTALL
 GeoIP Update
 --------------------------------------------
 
+MaxMind now requires a free license key to obtain GeoLite2 data.
+
+Visit www.maxmind.com to create an account and generate a license key.  
+MaxMind will ask questions to generate a key, any choice will work.
+Once you have generated a key, place the key in conf.php for MAXMIND_LICENSE_KEY.
+
 Default update is one time per month in /etc/cron.monthly/.
 
 The sudoers file /etc/sudoers.d/mailwatch must be installed.

@@ -33,7 +33,10 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('geoipupdate15'), 0, false, false);
 
-if (!isset($_POST['run'])) {
+if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxmind")) {
+    $error_message = __('geoipnokey15') . '<br>' . "\n";
+    die($error_message);
+} elseif (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">
             <input type="hidden" name="run" value="true">
             <table class="boxtable" width="100%">
@@ -58,9 +61,9 @@ if (!isset($_POST['run'])) {
     ob_start();
     echo __('downfile15') . '<br>' . "\n";
 
-    $files_base_url = 'http://geolite.maxmind.com';
+    $files_base_url = 'https://download.maxmind.com';
     $file['description'] = __('geoip15');
-    $file['path'] = '/download/geoip/database/GeoLite2-Country.tar.gz';
+    $file['path'] = '/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=' . MAXMIND_LICENSE_KEY;
     $file['destination'] = __DIR__ . '/temp/GeoLite2-Country.tar.gz';
     $file['destinationFileName'] = 'GeoLite2-Country.mmdb';
 

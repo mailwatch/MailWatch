@@ -269,7 +269,7 @@ return array(
     'report04' => 'Bericht:',
     'spamassassin04' => 'SpamAssassin',
     'spamassassinmcp04' => 'SpamAssassin MCP',
-    'geoipnotsupported04' => 'GeoIP nicht unterstützt',
+    'notsupported04' => 'GeoIP nicht unterstützt',
 
     // 05-status.php
     'recentmsg05' => 'Aktuelle Nachrichten',
@@ -568,6 +568,7 @@ return array(
     'geoipupdate15' => 'GeoIP Datenbank-Aktualisierung',
     'dieproxy15' => 'Proxy-Typ sollte entweder "HTTP" oder "SOCKS5" sein, überprüfen Sie die Konfigurations-Datei',
     'auditlog15' => 'GeoIP-Update wurde ausgeführt',
+    'geoipnokey15' => 'Es wird ein Lizenz-Schlüssel von www.maxmind.com benötigt, um GeoLite2-Daten herunter zu ladenladen',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Nachrichtenliste',

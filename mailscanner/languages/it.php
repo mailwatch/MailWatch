@@ -568,6 +568,7 @@ return array(
     'geoipupdate15' => 'GeoIP Database Update',
     'dieproxy15' => 'Proxy type should be either "HTTP" or "SOCKS5", check your configuration file',
     'auditlog15' => 'Ran GeoIP update',
+    'geoipnokey15' => 'È necessaria una chiave di licenza ottenibile da www.maxmind.com per scaricare i dati GeoLite2',
 
     // 16-rep_message_listing.php
     'messlisting16' => 'Message Listing',
