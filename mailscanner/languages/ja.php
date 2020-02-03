@@ -995,6 +995,7 @@ return array(
     'missing_conf_entries' => '次の conf.php の必須エントリはありません。あなたの conf.phpをconf.php.example で確認して比較してください。',
     'de' => 'Deutsch',
     'en' => 'English',
+    'es-419' => 'Español',
     'fr' => 'Français',
     'it' => 'Italiano',
     'ja' => '日本語',

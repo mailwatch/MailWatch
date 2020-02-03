@@ -1003,6 +1003,7 @@ return array(
     'missing_conf_entries' => 'Los siguientes parámetros en conf.php son obligatorios, chequee y compare su archivo conf.php con el archivo conf.php.example.',
     'de' => 'Deutsch',
     'en' => 'English',
+    'es-419' => 'Español',
     'fr' => 'Français',
     'it' => 'Italiano',
     'ja' => '日本語',

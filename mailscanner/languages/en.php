@@ -1005,6 +1005,7 @@ return array(
     'missing_conf_entries' => 'The following conf.php mandatory entries are missing, check and compare your conf.php with conf.php.example.',
     'de' => 'Deutsch',
     'en' => 'English',
+    'es-419' => 'Español',
     'fr' => 'Français',
     'it' => 'Italiano',
     'ja' => '日本語',
