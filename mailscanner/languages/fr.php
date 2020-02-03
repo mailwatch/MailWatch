@@ -1004,6 +1004,7 @@ return array(
     'missing_conf_entries' => 'Les entrées suivantes dans conf.php sont manquantes. Comparez votre fichier conf.php avec conf.php.example.',
     'de' => 'Deutsch',
     'en' => 'English',
+    'es-419' => 'Español',
     'fr' => 'Français',
     'it' => 'Italiano',
     'ja' => '日本語',
