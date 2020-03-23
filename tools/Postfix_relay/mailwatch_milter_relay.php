@@ -50,7 +50,7 @@ function doit($input)
     while ($line = fgets($fp, 2096)) {
         if (preg_match('/^.*postfix\/cleanup.*: (\S+): message-id=(\S+)$/', $line, $explode)) {
             $smtp_id = $explode[1];
-            $message_id = $explode[2];
+            $message_id = preg_replace("'", "''", $explode[2]);
             $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
             $smtpd_id = $result->fetch_row()[0];
             if ($smtpd_id !== null && $smtpd_id !== $smtp_id) {
