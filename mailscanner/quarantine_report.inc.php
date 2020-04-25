@@ -361,7 +361,7 @@ ORDER BY a.date DESC, a.time DESC';
                 if ($type === 'D') {
                     $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
                     $list_for = $filter_domain;
-                } else {
+                } elseif ($type !== 'A') {
                     $filter_domain = $to_domain;
                     $list_for = $filter;
                 }
@@ -386,7 +386,7 @@ ORDER BY a.date DESC, a.time DESC';
                 if ($type === 'D') {
                     $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
                     $list_for = $filter_domain;
-                } else {
+                } elseif ($type !== 'A') {
                     $filter_domain = $to_domain;
                     $list_for = $filter;
                 }
