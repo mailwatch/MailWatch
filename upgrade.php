@@ -500,6 +500,16 @@ if ($link) {
     }
     unset($audit_log_user_info);
 
+    echo pad(' - Fix schema for ipv6 support in `audit_log` table');
+    $audit_log_ipaddr_info = getColumnInfo('audit_log', 'ip_address');
+    if ($audit_log_ipaddr_info['Type'] !== 'varchar(39)') {
+        $sql = "ALTER TABLE `audit_log` CHANGE `ip_address` `ip_address` VARCHAR(39) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($audit_log_user_info);
+
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
     $blacklist_id_info = getColumnInfo('blacklist', 'id');
