@@ -162,7 +162,7 @@ AND
 </table>';
     }
 
-    private static function get_report_sql()
+    private static function get_report_sql($useToFilter=true)
     {
         $report_sql = "
 SELECT DISTINCT
@@ -193,7 +193,7 @@ FROM
  maillog a
 WHERE
  a.quarantined = 1
-AND ((to_address =%s) OR (to_domain =%s))
+" . ($useToFilter ? 'AND ((to_address =%s) OR (to_domain =%s)) ' : '') . "
 AND
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . ' DAY)';
 
@@ -361,6 +361,10 @@ ORDER BY a.date DESC, a.time DESC';
                 if ($type === 'D') {
                     $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
                     $list_for = $filter_domain;
+                } elseif ($type === 'A') {
+                    $filter_domain = '';
+                    $filter = '';
+                    $list_for = '';
                 } else {
                     $filter_domain = $to_domain;
                     $list_for = $filter;
@@ -368,7 +372,6 @@ ORDER BY a.date DESC, a.time DESC';
 
                 self::dbg(" ==== Building list for $list_for");
                 $quarantined = self::return_quarantine_list_array($filter, $filter_domain);
-
                 self::dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
                 if (true === $sendEmptyReports || count($quarantined) > 0) {
                     $sendResult = self::send_quarantine_email($email, $list_for, $quarantined);
@@ -386,6 +389,10 @@ ORDER BY a.date DESC, a.time DESC';
                 if ($type === 'D') {
                     $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
                     $list_for = $filter_domain;
+                } elseif ($type === 'A') {
+                    $filter_domain = '';
+                    $filter = '';
+                    $list_for = '';
                 } else {
                     $filter_domain = $to_domain;
                     $list_for = $filter;
@@ -452,7 +459,11 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function return_quarantine_list_array($to_address, $to_domain)
     {
-        $result = dbquery(sprintf(self::get_report_sql(), quote_smart($to_address), quote_smart($to_domain)));
+        if ($to_address != '' || $to_domain != '') {
+            $result = dbquery(sprintf(self::get_report_sql(), quote_smart($to_address), quote_smart($to_domain)));
+        } else {
+            $result = dbquery(sprintf(self::get_report_sql(false)));
+        }
         $rows = $result->num_rows;
         $array = array();
         if ($rows > 0) {
