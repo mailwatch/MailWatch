@@ -206,7 +206,7 @@ sub LookupList {
     #   e.g. me@this.that.example.com generates subdomain/tld list of ('that.example.com', 'example.com', 'com')
     $subdom = $fromdomain;
     @subdomains = ();
-    while ($subdom =~ /.*?\.(.*\.(\w+))$/) {
+    while ($subdom =~ /(?:.*?\.(.*\.(\w+))$|.*\.(\w+)$)/) {
         $subdom = $1;
         push (@subdomains, "*.".$subdom);
     }
