@@ -29,7 +29,7 @@ function genericqueue($queuedir)
 {
     if ($handle = opendir($queuedir)){
         while(($file=readdir($handle)) !== false) {
-            if (!in_array($file,array('.','..')) && !is_dir($dir.$file))
+            if (!in_array($file,array('.','..')) && !is_dir($dir.$file)) {
                 $queue++;
             }
         }
