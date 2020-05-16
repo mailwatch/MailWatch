@@ -27,16 +27,14 @@
 
 function genericqueue($queuedir)
 {
-    $handle = opendir($queuedir);
-    $queue = 0;
-    while (false !== ($file = readdir($handle))) {
-        //evaluate each entry, removing the . & .. entries
-        if ($file !== '.' && $file !== '..') {
-            $queue++;
+    if ($handle = opendir($queuedir)){
+        while(($file=readdir($handle)) !== false) {
+            if (!in_array($file,array('.','..')) && !is_dir($dir.$file))
+                $queue++;
+            }
         }
     }
     closedir($handle);
-
     return $queue;
 }
 
