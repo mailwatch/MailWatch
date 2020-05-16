@@ -2123,11 +2123,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $display[$f] = false;
                     }
                     break;
-                case 'timestamp':
-                    $fieldname[$f] = __('datetime03');
-                    $align[$f] = 'center';
-                    break;
                 case 'datetime':
+                case 'timestamp':
                     $fieldname[$f] = __('datetime03');
                     $align[$f] = 'center';
                     break;
@@ -2160,58 +2157,27 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     }
                     $display[$f] = true;
                     break;
-                case 'archive':
-                    $display[$f] = false;
-                    break;
                 case 'isspam':
-                    $display[$f] = false;
-                    break;
                 case 'ishighspam':
-                    $display[$f] = false;
-                    break;
                 case 'issaspam':
-                    $display[$f] = false;
-                    break;
                 case 'isrblspam':
-                    $display[$f] = false;
-                    break;
                 case 'spamwhitelisted':
-                    $display[$f] = false;
-                    break;
                 case 'spamblacklisted':
-                    $display[$f] = false;
-                    break;
                 case 'spamreport':
-                    $display[$f] = false;
-                    break;
                 case 'virusinfected':
-                    $display[$f] = false;
-                    break;
                 case 'nameinfected':
-                    $display[$f] = false;
-                    break;
                 case 'otherinfected':
-                    $display[$f] = false;
-                    break;
                 case 'report':
-                    $display[$f] = false;
-                    break;
                 case 'ismcp':
-                    $display[$f] = false;
-                    break;
                 case 'ishighmcp':
-                    $display[$f] = false;
-                    break;
                 case 'issamcp':
-                    $display[$f] = false;
-                    break;
                 case 'mcpwhitelisted':
-                    $display[$f] = false;
-                    break;
                 case 'mcpblacklisted':
-                    $display[$f] = false;
-                    break;
                 case 'mcpreport':
+                case 'headers':
+                case 'released':
+                case 'salearn':
+                case 'archive':
                     $display[$f] = false;
                     break;
                 case 'hostname':
@@ -2223,9 +2189,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     break;
                 case 'time':
                     $fieldname[$f] = __('time03');
-                    break;
-                case 'headers':
-                    $display[$f] = false;
                     break;
                 case 'sascore':
                     if (true === get_conf_truefalse('UseSpamAssassin')) {
@@ -2258,12 +2221,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     $fieldname[$f] = __('last03');
                     $align[$f] = 'right';
                     break;
-                case 'released':
-                    $display[$f] = false;
-                    break;
-                case 'salearn':
-                    $display[$f] = false;
-                    break;
             }
         }
         // Table heading
@@ -2280,7 +2237,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo ' </tr>' . "\n";
         }
         // Column headings
-        echo '<tr class="sonoqui nohover">' . "\n";
+        echo '<tr class="nohover">' . "\n";
         for ($f = 0; $f < $fields; $f++) {
             if ($display[$f]) {
                 if ($order && $orderable[$f]) {
@@ -2310,6 +2267,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
             $row = $sth->fetch_row();
+            $tooltips = array();
             if ($operations !== false) {
                 // Prepend operations elements - later on, replace REPLACEME w/ message id
                 array_unshift(
@@ -2357,6 +2315,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'from_address':
                         $row[$f] = htmlentities($row[$f]);
                         if (FROMTO_MAXLEN > 0) {
+                            $tooltips[$f] = $row[$f];
                             $row[$f] = trim_output($row[$f], FROMTO_MAXLEN);
                         }
                         break;
@@ -2374,6 +2333,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'to_address':
                         $row[$f] = htmlentities($row[$f]);
                         if (FROMTO_MAXLEN > 0) {
+                            $tooltips[$f] = $row[$f];
                             // Trim each address to specified size
                             $to_temp = explode(',', $row[$f]);
                             $num_to_temp = count($to_temp);
@@ -2389,6 +2349,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'subject':
                         $row[$f] = htmlspecialchars(getUTF8String(decode_header($row[$f])));
                         if (SUBJECT_MAXLEN > 0) {
+                            $tooltips[$f] = $row[$f];
                             $row[$f] = trim_output($row[$f], SUBJECT_MAXLEN);
                         }
                         break;
@@ -2549,15 +2510,20 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             // Display the rows
             for ($f = 0; $f < $fields; $f++) {
                 if ($display[$f]) {
+                    $alignClassAddon = '';
+
                     if ($align[$f]) {
+                        $alignClassAddon = ' align="' . $align[$f] . '"';
                         if ($f === 0) {
-                            echo ' <td align="' . $align[$f] . '" class="link-transparent">' . $row[$f] . '</td>' . "\n";
-                        } else {
-                            echo ' <td align="' . $align[$f] . '">' . $row[$f] . '</td>' . "\n";
+                            $alignClassAddon .= ' class="link-transparent"';
                         }
-                    } else {
-                        echo ' <td>' . $row[$f] . '</td>' . "\n";
                     }
+                    $tooltipAddon = '';
+                    if ($tooltips[$f]) {
+                        $tooltipAddon = ' title="' . $tooltips[$f] . '"';
+                    }
+
+                    echo ' <td' . $tooltipAddon . $alignClassAddon . '>' . $row[$f] . '</td>' . "\n";
                 }
             }
             echo ' </tr>' . "\n";

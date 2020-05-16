@@ -322,7 +322,6 @@ table.mail, table.maildetail, table.navigation, table.boxtable {
 table.rowhover tr:hover {
     -webkit-filter: invert(0.1);
     filter: invert(0.1);
-
 }
 
 tr.nohover {
