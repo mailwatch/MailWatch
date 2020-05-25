@@ -254,8 +254,8 @@ if (count($graph_labels) > 20) {
 format_report_volume($data_total_size, $size_info);
 
 
-echo '<TABLE class="reportTable">' . "\n";
-echo ' <TR BGCOLOR="#F7CE4A">' . "\n";
+echo '<TABLE class="reportTable rowhover">' . "\n";
+echo ' <TR style="background-color: #F7CE4A">' . "\n";
 echo "  <TH rowspan='2'>" . __('date49') . '</TH>' . "\n";
 echo "  <TH rowspan='2' align='right'>" . __('total49') . '</TH>' . "\n";
 echo "  <TH colspan='2'>" . __('clean49') . '</TH>' . "\n";
@@ -274,7 +274,7 @@ if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
 }
 echo " </TR>\n";
 
-echo "<tr bgcolor='#F7CE4A'>\n";
+echo '<tr style="background-color:#F7CE4A">'."\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
