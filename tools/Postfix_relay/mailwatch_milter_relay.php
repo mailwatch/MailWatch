@@ -61,31 +61,44 @@ function doit($input)
     pclose($fp);
 }
 
-function doittail($input)
+function follow($file)
 {
-    global $fp;
-    if (!$fp = popen($input, 'r')) {
-        die(__('diepipe54'));
-    }
+    $size = filesize($file);
+    while (true) {
+        clearstatcache();
+        $currentSize = filesize($file);
+        if ($size == $currentSize) {
+            sleep(1);
+            continue;
+        }
 
-    while ($line = fgets($fp, 2096)) {
-        if (preg_match('/^.*postfix\/cleanup.*: (\S+): message-id=(\S+)$/', $line, $explode)) {
-            $smtp_id = safe_value($explode[1]);
-            $message_id = safe_value($explode[2]);
-            $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
-            $smtpd_id = $result->fetch_row()[0];
-            if ($smtpd_id === null) {
-                // Add a delay to prevent race condition between mailwatch logger and maillog
-                sleep(10);
+        $fh = fopen($file, "r");
+        if (!$fh) {
+            die(__('diepipe56'));
+        }
+        fseek($fh, $size);
+
+        while ($line = fgets($fh)) {
+            if (preg_match('/^.*postfix\/cleanup.*: (\S+): message-id=(\S+)$/', $line, $explode)) {
+                $smtp_id = safe_value($explode[1]);
+                $message_id = safe_value($explode[2]);
                 $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
                 $smtpd_id = $result->fetch_row()[0];
-            }
-            if ($smtpd_id !== null && $smtpd_id !== $smtp_id) {
-                dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+                if ($smtpd_id === null) {
+                    // Add a delay to prevent race condition between mailwatch logger and maillog
+                    sleep(10);
+                    $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
+                    $smtpd_id = $result->fetch_row()[0];
+                }
+                if ($smtpd_id !== null && $smtpd_id !== $smtp_id) {
+                    dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+                }
             }
         }
+
+        fclose($fh);
+        $size = $currentSize;
     }
-    pclose($fp);
 }
 
 if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
@@ -94,5 +107,5 @@ if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
     // Refresh first
     doit('cat ' . MS_LOG);
     // Start watching the maillog
-    doittail('tail -F -n0 ' . MS_LOG);
+    follow(MS_LOG);
 }

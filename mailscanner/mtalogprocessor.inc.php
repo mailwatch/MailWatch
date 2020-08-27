@@ -60,6 +60,111 @@ abstract class MtaLogProcessor
         return array();
     }
 
+    protected function processLine($line)
+    {
+        // Reset variables
+        unset($parsed, $_timestamp, $_host, $_type, $_msg_id, $_status);
+
+        $parsed = new SyslogParser($line);
+        $_timestamp = safe_value($parsed->timestamp);
+        $_host = safe_value($parsed->host);
+        $_dsn = '';
+        $_delay = '';
+        $_relay = '';
+        $_msg_id = '';
+        $_status = '';
+        
+        if ($parsed->process === $this->mtaprocess) {
+            $this->parse($parsed->entry);
+            if (true === DEBUG) {
+                print_r($this);
+            }
+
+            $_msg_id = safe_value($this->id);
+
+            //apply rulesets if they exist
+            $rulesets = $this->getRulesets();
+            if (isset($rulesets['type'])) {
+                $_type = $rulesets['type'];
+            }
+            if (isset($rulesets['relay'])) {
+                $_relay = $rulesets['relay'];
+            }
+            if (isset($rulesets['status'])) {
+                $_status = $rulesets['status'];
+            }
+
+            // Milter-ahead rejections
+            if (preg_match('/Milter: /i', $this->raw) && preg_match(
+                '/(rejected recipient|user unknown)/i',
+                $this->entries['reject']
+            )
+            ) {
+                $_type = safe_value('unknown_user');
+                $_status = safe_value($this->getEmail());
+            }
+
+            // Unknown users
+            if (preg_match('/user unknown/i', $this->entry)) {
+                // Unknown users
+                $_type = safe_value('unknown_user');
+                $_status = safe_value($this->raw);
+            }
+
+            //apply reject reasons if they exist
+            $rejectReasons = $this->getRejectReasons();
+            if (isset($rejectReasons['type'])) {
+                $_type = $rejectReasons['type'];
+            }
+            if (isset($rejectReasons['status'])) {
+                $_status = $rejectReasons['status'];
+            }
+
+            // Relay lines
+            if (isset($this->entries['relay'], $this->entries[$this->statusField])) {
+                $_type = safe_value('relay');
+                $_delay = safe_value($this->entries[$this->delayField]);
+                $_relay = safe_value($this->getIp());
+                $_dsn = safe_value($this->entries['dsn']);
+                $_status = safe_value($this->entries[$this->statusField]);
+            }
+        }
+        if (isset($_type)) {
+            dbquery(
+                "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
+            );
+        }
+    }
+
+    public function follow($file)
+    {
+        $size = filesize($file);
+        $lines=1;
+        while (true) {
+            dbconn();
+            clearstatcache();
+            $currentSize = filesize($file);
+            if ($size == $currentSize) {
+                sleep(1);
+                continue;
+            }
+
+            $fh = fopen($file, "r");
+            if (!$fh) {
+                die(__('diepipe56'));
+            }
+            fseek($fh, $size);
+
+            while ($line = fgets($fh)) {
+                $this->processLine($line);
+                $lines++;
+            }
+            fclose($fh);
+            dbclose();
+            $size = $currentSize;
+        }
+    }
+
     public function doit($input)
     {
         global $fp;//@todo do we need this?
@@ -70,78 +175,7 @@ abstract class MtaLogProcessor
 
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
-            // Reset variables
-            unset($parsed, $_timestamp, $_host, $_type, $_msg_id, $_status);
-
-            $parsed = new SyslogParser($line);
-            $_timestamp = safe_value($parsed->timestamp);
-            $_host = safe_value($parsed->host);
-            $_dsn = '';
-            $_delay = '';
-            $_relay = '';
-            $_msg_id = '';
-            $_status = '';
-            
-            if ($parsed->process === $this->mtaprocess) {
-                $this->parse($parsed->entry);
-                if (true === DEBUG) {
-                    print_r($this);
-                }
-
-                $_msg_id = safe_value($this->id);
-
-                //apply rulesets if they exist
-                $rulesets = $this->getRulesets();
-                if (isset($rulesets['type'])) {
-                    $_type = $rulesets['type'];
-                }
-                if (isset($rulesets['relay'])) {
-                    $_relay = $rulesets['relay'];
-                }
-                if (isset($rulesets['status'])) {
-                    $_status = $rulesets['status'];
-                }
-
-                // Milter-ahead rejections
-                if (preg_match('/Milter: /i', $this->raw) && preg_match(
-                        '/(rejected recipient|user unknown)/i',
-                        $this->entries['reject']
-                    )
-                ) {
-                    $_type = safe_value('unknown_user');
-                    $_status = safe_value($this->getEmail());
-                }
-
-                // Unknown users
-                if (preg_match('/user unknown/i', $this->entry)) {
-                    // Unknown users
-                    $_type = safe_value('unknown_user');
-                    $_status = safe_value($this->raw);
-                }
-
-                //apply reject reasons if they exist
-                $rejectReasons = $this->getRejectReasons();
-                if (isset($rejectReasons['type'])) {
-                    $_type = $rejectReasons['type'];
-                }
-                if (isset($rejectReasons['status'])) {
-                    $_status = $rejectReasons['status'];
-                }
-
-                // Relay lines
-                if (isset($this->entries['relay'], $this->entries[$this->statusField])) {
-                    $_type = safe_value('relay');
-                    $_delay = safe_value($this->entries[$this->delayField]);
-                    $_relay = safe_value($this->getIp());
-                    $_dsn = safe_value($this->entries['dsn']);
-                    $_status = safe_value($this->entries[$this->statusField]);
-                }
-            }
-            if (isset($_type)) {
-                dbquery(
-                    "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
-                );
-            }
+            $this->processLine($line);
             $lines++;
         }
         dbclose();

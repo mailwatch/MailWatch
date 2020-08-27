@@ -96,5 +96,5 @@ if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
     // Refresh first
     $logprocessor->doit('cat ' . MAIL_LOG);
     // Start watching the maillog
-    $logprocessor->doit('tail -F -n0 ' . MAIL_LOG);
+    $logprocessor->follow(MAIL_LOG);
 }
