@@ -2,7 +2,7 @@
 # MailWatch for MailScanner
 # Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
-# Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+# Copyright (C) 2014-2020  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
 #   Custom Module MailWatch
 #
@@ -37,9 +37,9 @@ use Storable(qw[freeze thaw]);
 use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
-use Digest::SHA1;
+use Digest::SHA;
 
-# Uncommet the folloging line when debugging MailWatch.pm
+# Uncommet the following line when debugging MailWatch.pm
 #use Data::Dumper;
 
 use vars qw($VERSION);
@@ -351,7 +351,7 @@ sub MailWatchLogging {
     
     # Generate token for mail viewing
     my ($token, $sha1);
-    $sha1 = Digest::SHA1->new;
+    $sha1 = Digest::SHA->new(1);
     $sha1->add($message->{id}, $timestamp, $message->{size}, $message->{headers});
     $token = $sha1->hexdigest;
     
