@@ -193,7 +193,7 @@ FROM
  maillog a
 WHERE
  a.quarantined = 1
-" . ($useToFilter ? 'AND ((to_address =%s) OR (to_domain =%s)) ' : '') . "
+" . ($useToFilter ? 'AND ((to_address LIKE %s) OR (to_domain =%s)) ' : '') . "
 AND
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . ' DAY)';
 
@@ -460,7 +460,7 @@ ORDER BY a.date DESC, a.time DESC';
     private static function return_quarantine_list_array($to_address, $to_domain)
     {
         if ($to_address != '' || $to_domain != '') {
-            $result = dbquery(sprintf(self::get_report_sql(), quote_smart($to_address), quote_smart($to_domain)));
+            $result = dbquery(sprintf(self::get_report_sql(), quote_smart('%' . $to_address . '%'), quote_smart($to_domain)));
         } else {
             $result = dbquery(sprintf(self::get_report_sql(false)));
         }
