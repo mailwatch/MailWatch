@@ -1,7 +1,20 @@
 1.2-dev
 -----------
+Compatibility
+- Permit Sendmail 15-chars-long MessageId in input validation (#652)
+
 Fixes
-- Permit Sendmail 15-chars-long MessageId in input validation
+- Fix PHP 7 compatibility in mailwatch_quarantine_report script (#1167)
+- Add missing translation entry for Latin American Spanish
+- Fix quote handling in mailwatch_milter_relay.php (#1170)
+- Use Digest::SHA instead of Digest:SHA1 in MailWatch.pm (#1190)
+
+
+Improvements
+- Add support for IPV6 clients in audit_log table (#1178)
+- Better handling of queuedir (#1173)
+- Add row hover effect in rep_total_mail_by_date report
+- Add tooltips on truncated fields
 
 1.2.15
 -----------
