@@ -1,4 +1,4 @@
-1.2-dev
+1.2.16
 -----------
 Compatibility
 - Permit Sendmail 15-chars-long MessageId in input validation (#652)
