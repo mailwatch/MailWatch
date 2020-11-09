@@ -171,80 +171,71 @@ function getVirusRegex($scanner = null)
     if (!defined('VIRUS_REGEX') && DISTRIBUTED_SETUP === true) {
         // Have to set manually as running in DISTRIBUTED_MODE
         die('<B>' . __('dieerror03') . "</B><BR>\n&nbsp;" . __('dievirus03') . "\n");
-    } elseif (!defined('VIRUS_REGEX')) {
-        $regex = null;
-        switch ($scanner) {
-            case 'none':
-                $regex = '/^Dummy$/';
-                break;
-            case 'sophos':
-                $regex = '/>>> Virus \'(?P<virus>\S+)\' found in (?P<file>.*)/';
-                break;
-            case 'sophossavi':
-                $regex = '/(?P<file>\S+) was infected by (?P<virus>\S+)/';
-                break;
-            case 'clamav':
-                $regex = '/(?P<file>.+) contains (?P<virus>\S+)/';
-                break;
-            case 'clamd':
-                $regex = '/(?P<file>.+) was infected: (?P<virus>\S+)/';
-                break;
-            case 'clamavmodule':
-                $regex = '/(?P<file>.+) was infected: (?P<virus>\S+)/';
-                break;
-            case 'f-prot':
-                $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
-                break;
-            case 'f-prot-6':
-                $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
-                break;
-            case 'f-protd-6':
-                $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
-                break;
-            case 'mcafee':
-                $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
-                break;
-            case 'mcafee6':
-                $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
-                break;
-            case 'f-secure':
-                $regex = '/(?P<file>.+) Infected: (?P<virus>\S+)/';
-                break;
-            case 'trend':
-                $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
-                break;
-            case 'bitdefender':
-                $regex = '/(?P<file>\S+) Found virus (?P<virus>\S+)/';
-                break;
-            case 'kaspersky-4.5':
-                $regex = '/(?P<file>.+) INFECTED (?P<virus>\S+)/';
-                break;
-            case 'etrust':
-                $regex = '/(?P<file>\S+) is infected by virus: (?P<virus>\S+)/';
-                break;
-            case 'avg':
-                $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
-                break;
-            case 'norman':
-                $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
-                break;
-            case 'nod32-1.99':
-                $regex = '/Found virus (?P<virus>\S+) in (?P<file>\S+)/';
-                break;
-            case 'antivir':
-                $regex = '/ALERT: \[(?P<virus>\S+) \S+\]/';
-                break;
-            case 'avast':
-                $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)';
-                break;
-            //default:
-            // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
-            // break;
-        }
-        return $regex;
-    } else {
+    }
+
+    if (defined('VIRUS_REGEX')) {
         return VIRUS_REGEX;
     }
+
+    $regex = null;
+    switch ($scanner) {
+        case 'none':
+            $regex = '/^Dummy$/';
+            break;
+        case 'sophos':
+            $regex = '/>>> Virus \'(?P<virus>\S+)\' found in (?P<file>.*)/';
+            break;
+        case 'sophossavi':
+            $regex = '/(?P<file>\S+) was infected by (?P<virus>\S+)/';
+            break;
+        case 'clamav':
+            $regex = '/(?P<file>.+) contains (?P<virus>\S+)/';
+            break;
+        case 'clamd':
+        case 'clamavmodule':
+            $regex = '/(?P<file>.+) was infected: (?P<virus>\S+)/';
+            break;
+        case 'f-prot':
+        case 'f-prot-6':
+        case 'f-protd-6':
+            $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
+            break;
+        case 'mcafee':
+        case 'mcafee6':
+            $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
+            break;
+        case 'f-secure':
+            $regex = '/(?P<file>.+) Infected: (?P<virus>\S+)/';
+            break;
+        case 'avg':
+        case 'norman':
+        case 'trend':
+            $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
+            break;
+        case 'bitdefender':
+            $regex = '/(?P<file>\S+) Found virus (?P<virus>\S+)/';
+            break;
+        case 'kaspersky-4.5':
+            $regex = '/(?P<file>.+) INFECTED (?P<virus>\S+)/';
+            break;
+        case 'etrust':
+            $regex = '/(?P<file>\S+) is infected by virus: (?P<virus>\S+)/';
+            break;
+        case 'nod32-1.99':
+            $regex = '/Found virus (?P<virus>\S+) in (?P<file>\S+)/';
+            break;
+        case 'antivir':
+            $regex = '/ALERT: \[(?P<virus>\S+) \S+\]/';
+            break;
+        case 'avast':
+            $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)';
+            break;
+        //default:
+        // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
+        // break;
+    }
+
+    return $regex;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
