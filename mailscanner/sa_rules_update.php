@@ -33,7 +33,7 @@ if ($_SESSION['user_type'] !== 'A') {
     header('Location: index.php');
 } else {
     html_start(__('saruldesupdate13'), 0, false, false);
-    echo '<table class="boxtable" width="100%">';
+    echo '<table class="boxtable" style="width: 100%">';
     echo '<tr><th>' . __('updatesadesc13') . '</th></tr>';
     echo '<tr>';
     echo '  <td>';
@@ -43,7 +43,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '  </td>';
     echo '</tr>';
     echo ' <tr>';
-    echo '  <td align="center">
+    echo '  <td style="text-align: center">
     <form method="post" action="sa_rules_update.php">
     <div>' . "\n";
     echo '<input type="submit" value="' . __('input13') . '"><br><br>';
@@ -55,8 +55,8 @@ if ($_SESSION['user_type'] !== 'A') {
     echo "</table>\n";
 
     if (isset($_POST['run'])) {
-        echo '<table width="100%">';
-        echo '<tr><td align="center"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
+        echo '<table style="width: 100%">';
+        echo '<tr><td style="text-align: center"><table class="mail" border="0" cellpadding="1" cellspacing="1"><tr><th>' . __('rule13') . '</th><th>' . __('description13') . "</th></tr>\n";
         $fh = popen(
             "grep -hr '^\s*describe' " . SA_RULES_DIR . ' /usr/share/spamassassin /usr/local/share/spamassassin ' . SA_PREFS . ' /etc/MailScanner/spam.assassin.prefs.conf /opt/MailScanner/etc/spam.assassin.prefs.conf /usr/local/etc/mail/spamassassin /etc/mail/spamassassin /var/lib/spamassassin 2>/dev/null | sed -e \'s/^[ \t]*describe[ \t]*/describe\t/i\' | sort | uniq',
             'r'
@@ -67,9 +67,9 @@ if ($_SESSION['user_type'] !== 'A') {
             // debug("line: ".$line."\n");
             preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1], $regs[2])) {
-                $regs[1] = trim($regs[1]);
-                $regs[2] = trim($regs[2]);
-                echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . "</td></tr>\n";
+                $regs[1] = htmlentities(trim($regs[1]), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
+                $regs[2] = htmlentities(trim($regs[2]), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
+                echo '<tr><td>' . $regs[1] . '</td><td>' . $regs[2] . "</td></tr>\n";
                 $regs[1] = safe_value($regs[1]);
                 $regs[2] = safe_value($regs[2]);
                 dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
