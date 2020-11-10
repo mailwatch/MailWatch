@@ -4600,6 +4600,7 @@ function validateInput($input, $type)
             if (preg_match('/^[0-9]{1,5}$/', $input)) {
                 return true;
             }
+            break;
         case 'maxmind':
             if (preg_match('/^([0-9A-Za-z]{12}|[0-9A-Za-z]{16})$/', $input)) {
                 return true;
@@ -4646,9 +4647,7 @@ function generateFormToken($formstring)
         die();
     }
 
-    $calc = hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
-
-    return $calc;
+    return hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
 }
 
 /**
@@ -4678,9 +4677,9 @@ function checkLangCode($langCode)
     if ($found === false || $found === null) {
         audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
 
 /**
@@ -4744,16 +4743,20 @@ function checkLoginExpiry($myusername)
     if ($login_expiry === '-1') {
         // User administratively logged out
         return true;
-    } elseif ($login_expiry === '0') {
+    }
+
+    if ($login_expiry === '0') {
         // Login never expires, so just return false
         return false;
-    } elseif ((int)$login_expiry > time()) {
+    }
+
+    if ((int)$login_expiry > time()) {
         // User is active
         return false;
-    } else {
-        // User has timed out
-        return true;
     }
+
+    // User has timed out
+    return true;
 }
 
 /**
