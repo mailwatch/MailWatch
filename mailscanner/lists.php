@@ -232,11 +232,11 @@ if ($url_submit === 'add') {
     // Insert the data
     if (!isset($errors)) {
         switch ($url_list) {
-            case 'w': // Whitelist
+            case 'w': // Allowlist
                 $list = 'whitelist';
                 $listi18 = __('wl07');
                 break;
-            case 'b': // Blacklist
+            case 'b': // Blocklist
                 $list = 'blacklist';
                 $listi18 = __('bl07');
                 break;
@@ -431,12 +431,12 @@ echo '</table>
 </tr>
 <tr>
   <td class="blackwhitelist">
-    <!-- Whitelist -->';
+    <!-- Allowlist -->';
 
 echo $whitelist['html'];
 echo '</td>';
 echo '<td class="blackwhitelist">
-<!-- Blacklist -->';
+<!-- Blocklist -->';
 echo $blacklist['html'];
 echo '</td>
 </tr>

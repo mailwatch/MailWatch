@@ -70,7 +70,7 @@ my ($db_pass) = mailwatch_get_db_password();
 
 sub InitMailWatchLogging {
     # Detect if MailScanner Milter is calling this custom function and do not spawn
-    # MSMilter uses the blacklists and whitelists, but not the logger
+    # MSMilter uses the blocklists and allowlists, but not the logger
     if ($0 !~ /MSMilter/) {
         my $pid = fork();
         if ($pid) {
@@ -336,7 +336,7 @@ sub MailWatchLogging {
     my $clientip = $message->{clientip};
     $clientip =~ s/^(\d+\.\d+\.\d+\.\d+)(\.\d+)$/$1/;
 
-    # Integrate SpamAssassin Whitelist/Blacklist reporting
+    # Integrate SpamAssassin Allowlist/Blocklist reporting
     if ($spamreport =~ /USER_IN_WHITELIST/) {
         $message->{spamwhitelisted} = 1;
     }

@@ -259,7 +259,7 @@ define('RPC_ONLY', false);
 // Do you want an audit trail?
 define('AUDIT', false);
 
-// Do you want the whitelist/blacklist functionality enabled?
+// Do you want the allowlist/blocklist functionality enabled?
 // You'll need to configure MailScanner to use it accordingly.
 define('LISTS', true);
 

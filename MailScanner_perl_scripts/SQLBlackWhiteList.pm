@@ -76,29 +76,29 @@ sub CheckSQLVersion {
 }
 
 #
-# Initialise SQL spam whitelist and blacklist
+# Initialise SQL spam allowlist and blocklist
 #
 sub InitSQLWhitelist {
-    MailScanner::Log::InfoLog("MailWatch: Starting up MailWatch SQL Whitelist");
+    MailScanner::Log::InfoLog("MailWatch: Starting up MailWatch SQL Allowlist");
     my $entries = CreateList('whitelist', \%Whitelist);
-    MailScanner::Log::InfoLog("MailWatch: Read %d whitelist entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: Read %d allowlist entries", $entries);
     $wtime = time();
 }
 
 sub InitSQLBlacklist {
-    MailScanner::Log::InfoLog("MailWatch: Starting up MailWatch SQL Blacklist");
+    MailScanner::Log::InfoLog("MailWatch: Starting up MailWatch SQL Blocklist");
     my $entries = CreateList('blacklist', \%Blacklist);
-    MailScanner::Log::InfoLog("MailWatch: Read %d blacklist entries", $entries);
+    MailScanner::Log::InfoLog("MailWatch: Read %d blocklist entries", $entries);
     $btime = time();
 }
 
 #
-# Lookup a message in the by-domain whitelist and blacklist
+# Lookup a message in the by-domain allowlist and blocklist
 #
 sub SQLWhitelist {
     # Do we need to refresh the data?
     if ((time() - $wtime) >= ($bwl_refresh_time * 60)) {
-        MailScanner::Log::InfoLog("MailWatch: Whitelist refresh time reached");
+        MailScanner::Log::InfoLog("MailWatch: Allowlist refresh time reached");
         InitSQLWhitelist();
     }
     my ($message) = @_;
@@ -108,7 +108,7 @@ sub SQLWhitelist {
 sub SQLBlacklist {
     # Do we need to refresh the data?
     if ((time() - $btime) >= ($bwl_refresh_time * 60)) {
-        MailScanner::Log::InfoLog("MailWatch: Blacklist refresh time reached");
+        MailScanner::Log::InfoLog("MailWatch: Blocklist refresh time reached");
         InitSQLBlacklist();
     }
     my ($message) = @_;
@@ -116,14 +116,14 @@ sub SQLBlacklist {
 }
 
 #
-# Close down the SQL whitelist and blacklist
+# Close down the SQL allowlist and blocklist
 #
 sub EndSQLWhitelist {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL Whitelist");
+    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL Allowlist");
 }
 
 sub EndSQLBlacklist {
-    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL Blacklist");
+    MailScanner::Log::InfoLog("MailWatch: Closing down MailWatch SQL Blocklist");
 }
 
 sub CreateList {
@@ -190,8 +190,8 @@ sub CreateList {
 }
 
 #
-# Based on the address it is going to, choose the right spam white/blacklist.
-# Return 1 if the "from" address is white/blacklisted, 0 if not.
+# Based on the address it is going to, choose the right spam allow/blocklist.
+# Return 1 if the "from" address is allow/blocklisted, 0 if not.
 #
 sub LookupList {
     my ($message, $BlackWhite) = @_;

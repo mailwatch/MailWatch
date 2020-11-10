@@ -309,7 +309,7 @@ return array(
     'reset07' => 'Limpa',
     'add07' => 'Adiciona',
     'delete07' => 'Excluir',
-    'wblists07' => 'Whitelist/Blacklist',
+    'wblists07' => 'Allowlist/Blocklist',
     'errors07' => 'Erros:',
     'error071' => 'Você precisa selecionar uma lista para criar esta entrada.',
     'error072' => 'Você deve informar um endereço de remetente (usuário@domínio, domínio ou IP).',
