@@ -847,36 +847,36 @@ function printTodayStatistics()
         echo '<table border="0" cellpadding="1" cellspacing="1" class="mail todaystatistics" width="220">' . "\n";
         echo ' <tr><th align="center" colspan="3">' . __('todaystotals03') . '</th></tr>' . "\n";
         echo ' <tr><td>' . __('processed03') . '</td><td>' . number_format(
-                $row->processed
-            ) . '</td><td>' . formatSize(
-                $row->size
-            ) . '</td></tr>' . "\n";
+            $row->processed
+        ) . '</td><td>' . formatSize(
+            $row->size
+        ) . '</td></tr>' . "\n";
         echo ' <tr><td>' . __('cleans03') . '</td><td>' . number_format(
-                $row->clean
-            ) . '</td><td>' . $row->cleanpercent . '%</td></tr>' . "\n";
+            $row->clean
+        ) . '</td><td>' . $row->cleanpercent . '%</td></tr>' . "\n";
         echo ' <tr><td>' . __('viruses03') . '</td><td>' . number_format(
-                $row->viruses
-            ) . '</td><td>' . $row->viruspercent . '%</tr>' . "\n";
+            $row->viruses
+        ) . '</td><td>' . $row->viruspercent . '%</tr>' . "\n";
         echo ' <tr><td>' . __('topvirus03') . '</td><td colspan="2">' . return_todays_top_virus() . '</td></tr>' . "\n";
         echo ' <tr><td>' . __('blockedfiles03') . '</td><td>' . number_format(
-                $row->blockedfiles
-            ) . '</td><td>' . $row->blockedfilespercent . '%</td></tr>' . "\n";
+            $row->blockedfiles
+        ) . '</td><td>' . $row->blockedfilespercent . '%</td></tr>' . "\n";
         echo ' <tr><td>' . __('others03') . '</td><td>' . number_format(
-                $row->otherinfected
-            ) . '</td><td>' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
+            $row->otherinfected
+        ) . '</td><td>' . $row->otherinfectedpercent . '%</td></tr>' . "\n";
         echo ' <tr><td>' . __('spam03') . '</td><td>' . number_format(
-                $row->spam
-            ) . '</td><td>' . $row->spampercent . '%</td></tr>' . "\n";
+            $row->spam
+        ) . '</td><td>' . $row->spampercent . '%</td></tr>' . "\n";
         echo ' <tr><td>' . __('hscospam03') . '</td><td>' . number_format(
-                $row->highspam
-            ) . '</td><td>' . $row->highspampercent . '%</td></tr>' . "\n";
+            $row->highspam
+        ) . '</td><td>' . $row->highspampercent . '%</td></tr>' . "\n";
         if (get_conf_truefalse('mcpchecks')) {
             echo ' <tr><td>MCP:</td><td>' . number_format(
-                    $row->mcp
-                ) . '</td><td>' . $row->mcppercent . '%</td></tr>' . "\n";
+                $row->mcp
+            ) . '</td><td>' . $row->mcppercent . '%</td></tr>' . "\n";
             echo ' <tr><td>' . __('hscomcp03') . '</td><td>' . number_format(
-                    $row->highmcp
-                ) . '</td><td>' . $row->highmcppercent . '%</td></tr>' . "\n";
+                $row->highmcp
+            ) . '</td><td>' . $row->highmcppercent . '%</td></tr>' . "\n";
         }
         echo '</table>' . "\n";
     }
@@ -1224,8 +1224,11 @@ function getSUBJECTheader($header)
                             $convLine .= $linePartArr[$j]->text;
                         }
                     } else {
-                        $textdecoded = @iconv(strtoupper($linePartArr[$j]->charset), 'UTF-8//TRANSLIT//IGNORE',
-                            $linePartArr[$j]->text);
+                        $textdecoded = @iconv(
+                            strtoupper($linePartArr[$j]->charset),
+                            'UTF-8//TRANSLIT//IGNORE',
+                            $linePartArr[$j]->text
+                        );
                         if (!$textdecoded) {
                             $convLine .= $linePartArr[$j]->text;
                         } else {
@@ -1311,9 +1314,9 @@ function format_spam_report($spamreport)
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                    "\n",
-                    $output_array
-                ) . '</table>' . "\n";
+                "\n",
+                $output_array
+            ) . '</table>' . "\n";
         }
 
         return $spamreport;
@@ -1391,9 +1394,9 @@ function format_mcp_report($mcpreport)
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                    "\n",
-                    $output_array
-                ) . '</table>' . "\n";
+                "\n",
+                $output_array
+            ) . '</table>' . "\n";
         }
 
         return $mcpreport;
@@ -2503,14 +2506,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 if ($display[$f]) {
                     $alignClassAddon = '';
 
-                    if ($align[$f]) {
+                    if (isset($align[$f]) && $align[$f] !== false) {
                         $alignClassAddon = ' align="' . $align[$f] . '"';
                         if ($f === 0) {
                             $alignClassAddon .= ' class="link-transparent"';
                         }
                     }
                     $tooltipAddon = '';
-                    if ($tooltips[$f]) {
+                    if (isset($tooltips[$f]) && $tooltips[$f] !== false) {
                         $tooltipAddon = ' title="' . $tooltips[$f] . '"';
                     }
 
@@ -2683,8 +2686,11 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         while ($row = $sth->fetch_row()) {
             echo ' <tr class="table-background">' . "\n";
             for ($f = 0; $f < $fields; $f++) {
-                echo '  <td>' . preg_replace("/,([^\s])/", ', $1',
-                        $row[$f]) . '</td>' . "\n";
+                echo '  <td>' . preg_replace(
+                    "/,([^\s])/",
+                    ', $1',
+                    $row[$f]
+                ) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
         }
@@ -3586,9 +3592,9 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
                     $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
-                            "\n",
-                            $output_array
-                        );
+                        "\n",
+                        $output_array
+                    );
                     global $error;
                     $error = true;
                 }
@@ -3713,9 +3719,9 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     );
                 } else {
                     $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
-                            "\n",
-                            $output_array
-                        );
+                        "\n",
+                        $output_array
+                    );
                     global $error;
                     $error = true;
                 }
@@ -3742,9 +3748,9 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
                     $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
-                            "\n",
-                            $output_array
-                        );
+                        "\n",
+                        $output_array
+                    );
                     global $error;
                     $error = true;
                 }
@@ -4511,8 +4517,10 @@ function validateInput($input, $type)
             }
             break;
         case 'msgid':
-            if (preg_match('/^([A-F0-9]{7,20}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z]{8,20}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,20}\.[A-F0-9]{5}|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,15})$/',
-                $input)) {
+            if (preg_match(
+                '/^([A-F0-9]{7,20}\.[A-F0-9]{5}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z]{8,20}|[0-9B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z.]{8,20}\.[A-F0-9]{5}|[0-9A-Za-z]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2}|[0-9A-Za-z]{12,15})$/',
+                $input
+            )) {
                 return true;
             }
             break;
