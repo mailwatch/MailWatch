@@ -1394,9 +1394,9 @@ function format_mcp_report($mcpreport)
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
             return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
-                    "\n",
-                    $output_array
-                ) . '</table>' . "\n";
+                "\n",
+                $output_array
+            ) . '</table>' . "\n";
         }
 
         return $mcpreport;
@@ -3748,9 +3748,9 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
                 } else {
                     $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
-                            "\n",
-                            $output_array
-                        );
+                        "\n",
+                        $output_array
+                    );
                     global $error;
                     $error = true;
                 }
