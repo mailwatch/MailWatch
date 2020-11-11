@@ -2503,14 +2503,14 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 if ($display[$f]) {
                     $alignClassAddon = '';
 
-                    if ($align[$f]) {
+                    if (isset($align[$f]) && $align[$f] !== false) {
                         $alignClassAddon = ' align="' . $align[$f] . '"';
                         if ($f === 0) {
                             $alignClassAddon .= ' class="link-transparent"';
                         }
                     }
                     $tooltipAddon = '';
-                    if ($tooltips[$f]) {
+                    if (isset($tooltips[$f]) && $tooltips[$f] !== false) {
                         $tooltipAddon = ' title="' . $tooltips[$f] . '"';
                     }
 
