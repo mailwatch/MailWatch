@@ -110,6 +110,10 @@ define('PROXY_TYPE', 'HTTP');
 define('PROXY_USER', '');
 define('PROXY_PASS', '');
 
+// if MailWatch is behind a reverse proxy you need to add the IP Adress of your reverse proxy to the TRUSTED_PROXIES setting to have failed login attempts be reported correctly
+define('TRUSTED_PROXIES', array());
+define('PROXY_HEADER', 'HTTP_X_FORWARDED_FOR'); //X-Forwarded-For Header
+
 // Paths
 define('MAILWATCH_HOME', '/var/www/html/mailscanner');
 define('MS_CONFIG_DIR', '/etc/MailScanner/');

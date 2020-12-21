@@ -4909,3 +4909,44 @@ function getVirus($report)
     }
     return $report;
 }
+
+/**
+ * @param string $myusername contains username (or empty) used for login attempt
+ */
+function logFailedLogin($myusername = "")
+{
+    error_log("MailWatch failed login attempt from: [".getHTTPClientIP()."] for User: ".$myusername);
+}
+
+/**
+ * @return string HTTP client IP Address
+ */
+function getHTTPClientIP()
+{
+    $remote_addr = $_SERVER['REMOTE_ADDR'];
+
+    if (defined('TRUSTED_PROXIES') && !empty(TRUSTED_PROXIES)) {
+        if (defined('PROXY_HEADER') && (! isset($_SERVER[PROXY_HEADER]) || empty($_SERVER[PROXY_HEADER]))) {
+            return $remote_addr;
+        }
+        
+        //check if remote_addr is a trusted proxy:
+        if (! in_array($remote_addr, TRUSTED_PROXIES)) {
+            return $remote_addr;
+        }
+
+        //remove all trusted proxies from header
+        $ips = explode(',', $_SERVER[PROXY_HEADER]);
+        $ips = array_map('trim', $ips);
+        $ips = array_diff($ips, TRUSTED_PROXIES);
+
+        if (empty($ips)) {
+            return $remote_addr;
+        }
+
+        //the last entry should be the real client ip
+        return array_pop($ips);
+    } else {
+        return $remote_addr;
+    }
+}

@@ -51,6 +51,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     // Define $myusername and $mypassword
     if (!isset($_POST['myusername'], $_POST['mypassword'])) {
         header('Location: login.php?error=baduser');
+        logFailedLogin();
         die();
     }
     $myusername = html_entity_decode($_POST['myusername']);
@@ -80,6 +81,7 @@ if (defined('USE_LDAP') &&
         $mypassword = safe_value($mypassword);
     } else {
         header('Location: login.php?error=emptypassword');
+        logFailedLogin($myusername);
         die();
     }
 }
@@ -93,6 +95,7 @@ if ($usercount === 0) {
     //no user found, redirect to login
     dbclose();
     header('Location: login.php?error=baduser');
+    logFailedLogin($myusername);
     die();
 }
 
@@ -104,6 +107,7 @@ if (
     if (!password_verify($mypassword, $passwordInDb)) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
+            logFailedLogin($myusername);
             die();
         }
 
@@ -188,6 +192,7 @@ if ($usercount === 1) {
     header('Location: ' . str_replace('&amp;', '&', sanitizeInput($redirect_url)));
 } else {
     header('Location: login.php?error=baduser');
+    logFailedLogin($myusername);
 }
 
 // close any DB connections
