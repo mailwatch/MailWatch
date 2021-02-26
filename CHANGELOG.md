@@ -1,76 +1,84 @@
-1.2.16
------------
-Compatibility
+# Changelog
+
+### Improvements
+- Log failed login attempts to php error log with clients ip (#1202)
+
+### Fixes
+- Upgrade rule_desc column length to 512 chars in sa_rules and mcp_rules tables
+- Fix mailwatch_sendmail_relay.php coding problems (#1206)
+- Quarantine reports to include multiple recipients (#1194)
+- Fix undefined offset in reports page (#1200)
+- Convert special html chars to html entities when importing SpamAssassin rules description
+- Improve terminology used
+- Fix SpamAssassin rule descriptions sorting
+- Fix tools/Sendmail-Exim_queue/mailq.crontab and updated related documentation
+
+## 1.2.16
+### Compatibility
 - Permit Sendmail 15-chars-long MessageId in input validation (#652)
 
-Fixes
+### Fixes
 - Fix PHP 7 compatibility in mailwatch_quarantine_report script (#1167)
 - Add missing translation entry for Latin American Spanish
 - Fix quote handling in mailwatch_milter_relay.php (#1170)
 - Use Digest::SHA instead of Digest:SHA1 in MailWatch.pm (#1190)
 
-
-Improvements
+### Improvements
 - Add support for IPV6 clients in audit_log table (#1178)
 - Better handling of queuedir (#1173)
 - Add row hover effect in rep_total_mail_by_date report
 - Add tooltips on truncated fields
 
-1.2.15
------------
-Compatibility
+## 1.2.15
+### Compatibility
 - Add MaxMind License Key support (#1166) 
 
-Fixes
+### Fixes
 - Adjust avast virus regex (#1133)
 - Set RPC Server internal and response charset encoding to UTF-8 (#1156)
 
-Improvements
+### Improvements
 - Added Avast support (#1117)
 
-1.2.14
------------
-Fixes
+## 1.2.14
+### Fixes
 - Allows domain admins to view black and whitelist for filtered domains (#1154)
 - Allow passing the argument --max-size 0 to sa-learn (#1160) 
 
-Improvements
+### Improvements
 - More user friendly way to deal with token failures across the board
 
-1.2.13
------------
-Security
+## 1.2.13
+### Security
 - Clear password in database on imap auto created users during upgrade
 
-Improvements
+### Improvements
 - Add notice if session timed out while on login page (#1120) 
 - Show email release status on quarantine page(#1123)
 - MailScanner milter relay stats support (#1124) 
 - Hide Administrator user type to Domain Admins when creating or editing users (#276)
 - Add Latin American Spanish translation
 
-Fixes
+### Fixes
 - Fix group by in total_mail_by_date (#1127)
 - Fix php notice on GeoIP update cronjob (#1131)
 - Fix PHP notice on checklogin.php when using Imap login
 
-1.2.12
------------
-Security
+## 1.2.12
+### Security
 - Fix clear password display when user is autocreated by IMAP auth
 
-Fixes
+### Fixes
 - Add client IP in sorting input validation
 
-1.2.11
------------
-Improvements
+## 1.2.11
+### Improvements
 - Milter enhancement for MailWatch (#1106)
 - Big update to Brazilian translation
 - Better count of Postfix processes
 - Upgrade pear/Mail_Mime to 1.10.2
 
-Fixes
+### Fixes
 - Fix printing multiple mails on detail.php (#1100)
 - Truncate long Top Virus output (#1112)
 - Fix long queue id validation (#1105)
@@ -78,12 +86,11 @@ Fixes
 - Fix printing multiple mails on detail.php (#1100)
 - Remove empty column on rep_total_mail_by_date.php (#1095, #1096)
 
-1.2.10
------------
-Compatibility
+## 1.2.10
+### Compatibility
 - Disable geoip for php <5.4 (#1075)
 
-Fixes
+### Fixes
 - Fix version display for geoip (#1063)
 - Improve MaxMindDB version detection
 - Fix schema for user table to not allow empty type (#1067
@@ -92,21 +99,19 @@ Fixes
 - Fix mail filter for normal users (#1084)
 - Fix missing translation in quarantine report emails (#1090)
 
-1.2.9
------------
-Compatibility
+## 1.2.9
+### Compatibility
 - Minimal PHP version is now 5.4. Older versions of 5.3.x or lower do not work correctly with GeoLite2 (#1073)
 
-Improvements
+### Improvements
 - Use new GeoLite2 database to replace deprecated GeoLite Legacy databases
 
-Fixes
+### Fixes
 - Parse correctly GPG signed e-mail (#1053)
 - Send empty quarantine reports over user_manager (#1054)
 
-1.2.8
------------
-Improvements
+## 1.2.8
+### Improvements
 - Add ldap debug script
 - Update documentation
 - Improve sudo config to work with Postfix and Exim
@@ -114,20 +119,19 @@ Improvements
 - Use MAILWATCH_SMTP_HOSTNAME if defined on Release from quarantine (#1038)
 - Enable use of dn field as username field (#427, #1029)
 
-Fixes
+### Fixes
 - Fix Postfix log processor (#1021)
 - Make msre reload script work on systemd
 - Fix error on undefined $_SERVER['HTTPS'] index
 - Fix logout process (#1044)
 - Fix email validation for username (#1042)
 
-1.2.7
------------
-Security
+## 1.2.7
+### Security
 - More restricted access to library and public available files (#990)
 - Fix email blacklist bypass when an email with more than 2 normal recipient is processed (#255, #992)
 
-Improvements
+### Improvements
 - Add check for path of postconf, exim and sendmail executables in sf_version.php (#948)
 - Enable use of '&' in username (#964)
 - Add f-prot 6 virus scanner support
@@ -138,7 +142,7 @@ Improvements
 - Updated translations
 - Some code refactoring
 
-Fixes
+### Fixes
 - Uniform use of IMAGES_DIR as a relative path instead of an absolute path (#944)
 - Fix admins editing domain admins
 - Fix LDAP sAMAccountname not being used for login (#955)
@@ -147,27 +151,25 @@ Fixes
 - Fix UTF8 headers in viewmail
 - Update sudoers file to use mailq to match conf.php.example
 
-1.2.6
------------
-Security
+## 1.2.6
+### Security
 - Restrict domain admin permission so that they can only modify/create/delete regular users. Also, emails must be used for all non-admin accounts (#940)
 
-Improvements
+### Improvements
 - Add entries counter on white and black list (#509)
 - Changed character set used in quarantine release email to UTF-8 (#910)
 - Upgrade.php alters tables only if needed
-- Fixes for dangerous content display on detail.php (#939)
+- ### Fixes for dangerous content display on detail.php (#939)
 
-Fixes
-- Fix upgrade script for compatibility with MySQL 5.7 and 8.0 strict SQL mode
+### Fixes
+- Fix upgrade script for ### Compatibility with MySQL 5.7 and 8.0 strict SQL mode
 - Fix PHP header warning for cli scripts
 - Fix invalid colors for multiple y-axes in a line graph (#926)
 - Remove wrong alter table on audit_log.user which revert length to 255 from 191
 - Convert delay from seconds to mysql time format in MTA log processor (#924, #941)
 
-1.2.5
------------
-Improvements
+## 1.2.5
+### Improvements
 - Support for multiple virus scanners and multiple top viruses (#874)
 - Add detection of MySQL or MariaDB in upgrade process (#873)
 - Prevents Mail Queue summary from duplicating mail count when local server is defined in RPC list (#904, #905)
@@ -175,17 +177,16 @@ Improvements
 - Better UI on tables and graphs
 - Improved translations
 
-Fixes
-- Fixes issue when sanitization causes ampersand to be html-ified (#882)
+### Fixes
+- ### Fixes issue when sanitization causes ampersand to be html-ified (#882)
 - Fix mailwatch-sendmail-relay init script (#881)
-- Fix code for php 5.3 compatibility (#889) and php 7.0 compatibility (#897)
+- Fix code for php 5.3 ### Compatibility (#889) and php 7.0 ### Compatibility (#897)
 - Fix path to mtalogprocessor file in senmail_relay (#912)
 - Remove on update/default value for timestamp in maillog table (#915)
 - Permit up to 20 chars in first part of Postfix msgid (#652)
 
-1.2.4
------------
-Improvements
+## 1.2.4
+### Improvements
 - Converted remaining graph to Chart.js and removed JpGraph dependency
 - Add OS detection in Software Version page
 - Add geoip_update cron script
@@ -196,16 +197,15 @@ Improvements
 - Add a comunity code of conduct
 - Localization updates
 
-Fixes
+### Fixes
 - Fix wrong MAILWATCH_SMTP_HOSTNAME defined check
 - Correct some graph generation
 - Fix timestamp field autoupdating in maillog table
 - Fix status mail queues in MailWatch cluster
 
-1.2.3
------------
-Improvements
-- Better compatibility for MySQL 5.7 (ONLY_FULL_GROUP_BY)
+## 1.2.3
+### Improvements
+- Better ### Compatibility for MySQL 5.7 (ONLY_FULL_GROUP_BY)
 - Disable broken VIRUS_INFO per default
 - Better handling of Postfix message ids
 - Allow plus sign in username
@@ -226,7 +226,7 @@ Improvements
 - Localization updates
 - Code refactoring to clean up duplication and code smell
 
-Fixes
+### Fixes
 - Ignores MailScanner config files (conf.d/*) in subfolders and hidden files
 - Options in messages operations do not select all the lines when clicking S/H/F/R
 - Fix issue where Mail Queue on status page displayed intermittently
@@ -239,14 +239,12 @@ Fixes
 - Fix &amp; encoding in links
 - Fix SA-Learn blocking apache server
 
-1.2.2
------------
-Fixes
+## 1.2.2
+### Fixes
 - Regression in SA Learning and Releasing not working in detail page
 
-1.2.1
------------
-Improvements
+## 1.2.1
+### Improvements
 - Show RBL list in Message Detail
 - Better decoding of sender and subject in Mail Queue
 - Disable browser caching to prevent token mismatch
@@ -260,7 +258,7 @@ Improvements
 - Allows domain admins to view,edit,add,delete users in their filter domains
 - Code refactoring to clean up duplication and code smell
 
-Fixes
+### Fixes
 - Fix regression on some input validation (the Bad Dog Biting Bug™)
 - Rename 00MailWatchConf.pm to MailWatchConf.pm, which is failing on some perl versions
 - Fix Audit log access
@@ -271,8 +269,7 @@ Fixes
 - Fix MIME part visualization
 - Fix session loop
 
-1.2.0
------------
+## 1.2.0
 - Multiple vulnerability fixed
 - Fixed invalid mime message parsing
 - Improved upgrade.php script
@@ -281,8 +278,7 @@ Fixes
 - Better support for remote postfix queue count
 - Code refactoring and fixes
 
-1.2.0 - RC5
------------
+## 1.2.0 - RC5
  - Add the ability for domain admins to create/edit/delete users of the same domain
  - Reorganization of Tools directory
  - Add filter on audit report
@@ -301,8 +297,7 @@ Fixes
  - Code cleanup
  - Updated translations
  
-1.2.0 - RC4
------------
+## 1.2.0 - RC4
  - Move to MySQLi PHP extension
  - PHP 7 compatibility
  - Use utf8mb4 on capable systems (MySQL >= 5.5.3)
@@ -318,8 +313,7 @@ Fixes
  - Code cleanup
  - Updated translations
 
-1.2.0 - RC3
------------
+## 1.2.0 - RC3
  - Update postfix relay documentation (GH #320)
  - Update JpGraph to 4.0.1 (GH #289)
  - Fix Reports.php and Lists.php when used in languages other than English (GH #307, GH #288)
@@ -329,8 +323,7 @@ Fixes
  - Add Autorelease feature (one click release of quarantined emails) (GH #260)
  - Fix per user spam score defaults (GH #263)
 
-1.2.0 - RC2
------------
+## 1.2.0 - RC2
  - Fix name collision in queries (GH #243)
  - Fix loading of SpamAssassin rule description if it starts with a space (GH #242)
  - Fix login bypass on LDAP introduced in RC1 (GH #246, GH #248)
@@ -338,8 +331,7 @@ Fixes
  - Fix LDAP search for 'mail' prefix (GH #252)
  - Try to not encode multiple times a string that is already UTF8 (GH #225)
  
-1.2.0 - RC1
------------
+## 1.2.0 - RC1
  - Display load average if /proc/loadavg doesn't exists but /usr/bin/uptime does
  - Improve loggings for connections not coming from 127.0.0.1
  - Add hide High Spam and High MCP options
@@ -377,17 +369,13 @@ Fixes
  - Move luser add-on to another git repository
  - Better logging of UTF8 subjects
 
-1.2.0 - Beta 8
------------
-
+## 1.2.0 - Beta 8
  - Correct unexpected behaviour in viewpart.php if one or more headers are not set
  - Refactor message part viewer
  - Sanitize user input
  - Hide MCP-related fields if MCP is not enabled in MailScanner
 
-1.2.0 - Beta 7
------------
-
+## 1.2.0 - Beta 7
  - Fix documentation regarding magic_quotes_gpc
  - Redirect to original link after login (e.g. from quarantine report)
  - Fix to GPL v2 licensing problems
@@ -396,9 +384,7 @@ Fixes
  - Separate release action in Message Operations from Spam/Ham/Forget radio button
  - Domain Administrator get all domain emails if their username is either an email address or a domain name
 
-1.2.0 - Beta 6
------------
-
+## 1.2.0 - Beta 6
  - Enhanced MailScanner.conf parser to catch variable's value even if there is no space before and/or after = sign
  - Added DISPLAY_IP option to show sender's IP Address in Quarantine listings and message lists
  - Enhanced SQL Black/Whitelist to allow matching 1, 2, or 3 IP address octets
@@ -407,9 +393,7 @@ Fixes
  - Enable UTF-8 subject encoding
  - Fix conflict with GeoIP PHP extension
 
-1.2.0 - Beta 5
------------
-
+## 1.2.0 - Beta 5
  - Reorganized all libraries to lib directory, removed fpdf (which was not used) and removed lib's symlinks
  - Moved to GeoIP binary data file, dropped CSV import to database
  - Added a layer of security to cronjob, which don't execute if needed variables aren't set
@@ -446,9 +430,7 @@ Fixes
  - Fixed spelling mistakes/typos
  - Code cleanup
 
-1.2.0 - Beta 4 patch 4
-----------------------
-
+## 1.2.0 - Beta 4 patch 4
  - Fixed create.sql for some incorrect parts
  - Fixed incorrect word in INSTALL file
  - Fixed deprecated mysql_escape_string for users with newer php versions, files: sa_rules_update.php,mcp_rules_update.php,
@@ -456,25 +438,17 @@ Fixes
    lists.php
  - Updated functions.php
 
-1.2.0 - Beta 4
---------------
-
+## 1.2.0 - Beta 4
  - Fix the mime.php due to a mistype
  - Fix geoip_update.php for a mistype
 
-1.2.0 - Beta 3
--------------
-
+## 1.2.0 - Beta 3
  - Fix for XSS issue
 
-1.2.0 - Beta 2
--------------
-
+## 1.2.0 - Beta 2
  - Fix for CentOS 6 not respecting issues with ./
 
-1.2.0 - Beta 1
--------------
-
+## 1.2.0 - Beta 1
  - Fixed db_clean.php to remove items correctly.
  - Add software version page
  - Added current user and system time table
@@ -487,17 +461,13 @@ Fixes
  - Changed the way the black and white list work
  - Code Cleaned up
 
-1.1.5.1
--------
-
+## 1.1.5.1
  - Fixed viewpart.php to correct multitenancy issues
  - Fixed all pages that use nl2br to be more compatiable with older versions of php
  - Fixed geoip_update.php to use ./temp again and to clean up variables
  - Added IPv6 support to geoip_update.php
 
-1.1.5
------
-
+## 1.1.5
  - Fixed a syntax issue on rep_virus.php and quarantine_action.php
  - Add some checking to detail.php to see if the mtalog_ids are being used with postfix.
  - Permissions check on geoip_update.php were added to verify that it can download and untar the geoip Zip file.
@@ -508,17 +478,13 @@ Fixes
  - Fixed an issue with the db_clean script
  - Navigation bar change
 
-1.1.4
------
-
+## 1.1.4
  - Fixed DB clean to clean the mtalog and mtalog_ids
  - Added better error reporting for the Reports page.
  - Fixed a table issue on reports.php
  - Changed geoip_update.php to curl for security and functionality
 
-1.1.3
------
-
+## 1.1.3
  - Changed login check to required for security reasons
  - Applied fix from Kia for id= on postfix_relay.php, mailscanner_relay.php, and sendmail_relay.php
  - Changed login.function.php to require_once from include.
@@ -530,9 +496,7 @@ Fixes
  - Add drive space left for Admins
  - Added permissions check to Queue Status
 
-1.1.2
------
-
+## 1.1.2
  - Reports update
  - Time Zone variable added conf.php
  - MailScanner log and Mail log variables added to conf.php
@@ -547,9 +511,7 @@ Fixes
  - More files have been Documented
  - Code cleaned up
 
-1.1.1
------
-
+## 1.1.1
  - Cleaning up the code and fixing report bugs
  - Adding documentation to the code
  - Postfix relay support for the detailed page
@@ -562,9 +524,7 @@ Fixes
  - db_clean interval updated with number of days to keep in conf.php
  - Split out install information for tools
 
-1.1
-----
-
+## 1.1
  - MailWatch can now monitor postfix
  - Mailscanner --lint form the MailWatch
  - new jpgraph
@@ -573,17 +533,13 @@ Fixes
  - login page
  - Some code was streamlined
 
-1.0.1
------
-
+## 1.0.1
  - Better error reporting in MailWatch.pm (thanks to Paddy for this).
  - SECURITY UPDATE - updated XMLRPC libraries due to security vulnerability -
    see http://www.gulftech.org/?node=research&article_id=00088-07022005.
  - Bug fixes in the tools
 
-1.0
-----
-
+## 1.0
  - MCP Support
  - User Management (create users GUI) with better filtering to allow per-user/per-domain support.
  - Audit logging
@@ -602,9 +558,7 @@ Fixes
  - GeoIP country lookups in message detail and reports.
  - **Lots** of fixes/updates
 
-0.5
-----
-
+## 0.5
  - Updated indexes for much greater performance (again!).
  - Added preliminary support for per-user filters (see USER_FILTERS file).
  - Added the ability to view quarantined items.
@@ -622,8 +576,7 @@ Fixes
    detection date/time of each virus by each scanner.
  - Integration with Fortress Systems Secure Mail Gateway.
 
- FIXES
- 
+ ### Fixes
  - Multiple clean-ups of mailq.php to make it more robust.
  - Greatly improved debugging of SQL statments.
  - Quarantine now correctly looks in the non-spam quarantine directories.
@@ -631,9 +584,7 @@ Fixes
  - sendmail_relay.php now works across log rotations.
  - Increased memory_limit to 128M for quarantine functions.
 
-0.4
-----
-
+## 0.4
  - Changed index on maillog table for *much* greater performance.
  - Fixed quarantine release where if message was large would cause PHP to display a memory exhausted error.
  - Fixed a bug in mailq.php that caused it not to work on earlier PHP versions.
@@ -655,27 +606,21 @@ Fixes
    information and records it to a new table named 'relay' - this information is then displayed on the Message Detail
    screen and shows the Date/Time, Relayed From, Relayed To and Status of each relay that handled a message - thanks to
    Chris Campbell for the idea (it *very* handy for Helpdesks).
- - Added new quarantine settings - QUARANTINE_FROM_ADDR, QUARANTINE_SUBJECT and QUARANTINE_MSG_BODY for a released
-   quarantine message.
+ - Added new quarantine settings - QUARANTINE_FROM_ADDR, QUARANTINE_SUBJECT and QUARANTINE_MSG_BODY for a released quarantine message.
  - Changed the SA-Learn option in the quarantine to be more verbose when an error is returned.
- - Added the display of Load Average to the page headers - this will work automatically on any system that has
-   /proc/load_avg available.
- - Fixed the regex that picks out the SpamAssassin rules from the spam report to be case-insensitive as this didn't work
-   for some because of this.
+ - Added the display of Load Average to the page headers - this will work automatically on any system that has /proc/load_avg available.
+ - Fixed the regex that picks out the SpamAssassin rules from the spam report to be case-insensitive as this didn't work for some because of this.
  - Fixed the display of the spam report if SpamAssasin timed-out when processing a message (it was not displayed).
  - Fixed msconfig.php to expand MailScanner.conf %var% - thanks to Chris Maynard for the patch for this.
  - Speeded up the display and order of data in quarantine.php.
  - Message Listing report now uses a Google-style pager.
- - Fixed SQL statement in Top Virus Report to speed it up slightly.
+ - Fixed SQL statement in Top Virus Report speeding it up slightly.
  - Fixed the SQL ORDER BY on the Recent Messages page.
  - Removed the display of the Message ID on the Recent Messages page to allow more space for the other fields.
- - Removed the display of Host (the host that processed the message) when not running in DISTRIBUTED_SETUP mode to allow
-   more space for the other fields.
+ - Removed the display of Host (the host that processed the message) when not running in DISTRIBUTED_SETUP mode to allow more space for the other fields.
  - Changed the display colour of High Scoring spam on the Recent Messages page.
 
-0.3beta
-----
-
+## 0.3beta
  - New MailWatch.pm file that contains the MailWatch SQL Logging code.
  - Changed the SQL Logging procedure names from SQLLogging to MailWatchLogging to save confusion as to which versions
    people are using.
@@ -692,15 +637,13 @@ Fixes
  - New Sendmail inbound/outbound queue display.
  - Fixed the display of the 'Blocked Files' percentage in Today's Totals.
  - Fixed the volume display in the reports to use the average over the reporting period e.g. if you receive 500Mb of mail
-   on average per day but you occasionally spike at 1Gb - the reports will display the volume in Mb.
+   on average per day, but you occasionally spike at 1Gb - the reports will display the volume in Mb.
  - Added new 'MySQL status' page to the 'Other' page.
  - Fixed 'SpamAssassin Rule Hits' report not display any data under some installations of MailScanner.
  - New reports 'Top Mail Relays' and 'Top Sender Domains by Quantity/Volume'.
- - Added 'hostname' the the list of available filters to allow people with multiple scanners report only on a specific one.
+ - Added 'hostname' to the list of available filters to allow people with multiple scanners report only on a specific one.
 
-0.2
-----
-
+## 0.2
  - Renamed project to 'MailWatch for MailScanner' - thanks to Ryan Pitt for the new name suggestion.
  - Added FROMTO_MAXLEN and SUBJECT_MAXLEN constants to functions.php to limit the size of the From, To and Subject
    fields on the 'Recent Messages' screen.
@@ -713,7 +656,5 @@ Fixes
  - Fixed hardcoded database connection parameters in functions.php and rep_message_listing.php
  - Fixed INSTALL documentation typos and ommisions.
 
-0.1
-----
-
+## 0.1
  - Initial version
