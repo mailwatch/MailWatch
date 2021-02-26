@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `maillog` (
 
 CREATE TABLE IF NOT EXISTS `mcp_rules` (
   `rule` char(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `rule_desc` char(200) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `rule_desc` char(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`rule`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `saved_filters` (
 
 CREATE TABLE IF NOT EXISTS `sa_rules` (
   `rule` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `rule_desc` varchar(200) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `rule_desc` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`rule`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

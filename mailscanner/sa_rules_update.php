@@ -67,12 +67,12 @@ if ($_SESSION['user_type'] !== 'A') {
             // debug("line: ".$line."\n");
             preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1], $regs[2])) {
-                $regs[1] = htmlentities(trim($regs[1]), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
-                $regs[2] = htmlentities(trim($regs[2]), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
-                echo '<tr><td>' . $regs[1] . '</td><td>' . $regs[2] . "</td></tr>\n";
-                $regs[1] = safe_value($regs[1]);
-                $regs[2] = safe_value($regs[2]);
-                dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
+                $rule_name = htmlentities(trim($regs[1]), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
+                $rule_desc = htmlentities(trim(strip_tags($regs[2])), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
+                echo '<tr><td>' . $rule_name . '</td><td>' . $rule_desc . "</td></tr>\n";
+                $rule_name = safe_value($rule_name);
+                $rule_desc = safe_value(substr($rule_desc, 0, 512));
+                dbquery("REPLACE INTO sa_rules VALUES ('$rule_name','$rule_desc')");
             //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
                 debug("$line - did not match regexp, not inserting into database");

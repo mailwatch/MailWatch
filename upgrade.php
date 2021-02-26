@@ -623,12 +623,25 @@ if ($link) {
     echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
     $mcp_rules_rule_desc_info = getColumnInfo('mcp_rules', 'rule_desc');
     if ($mcp_rules_rule_desc_info['Type'] !== 'varchar(200)') {
-        $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 200 ) NOT NULL DEFAULT ''";
+        $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 512 ) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
     unset($mcp_rules_rule_desc_info);
+
+    echo PHP_EOL;
+
+    // Table sa_rules
+    echo pad(' - Fix schema for rule_desc field in `sa_rules` table');
+    $sa_rules_rule_desc_info = getColumnInfo('sa_rules', 'rule_desc');
+    if ($sa_rules_rule_desc_info['Type'] !== 'varchar(200)') {
+        $sql = "ALTER TABLE `sa_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 512 ) NOT NULL DEFAULT ''";
+        executeQuery($sql);
+    } else {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    }
+    unset($sa_rules_rule_desc_info);
 
     echo PHP_EOL;
 
@@ -1025,7 +1038,7 @@ if (stringEndsWith(MAILWATCH_HOSTURL, '/')) {
 echo PHP_EOL;
 //Check minimal PHP version
 echo pad(' - Checking minimal PHP version >= 5.4');
-if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+if (PHP_VERSION_ID >= 50400) {
     echo color(' PHP version OK', 'lightgreen') . PHP_EOL;
 } else {
     echo color(' WARNING: PHP version < 5.4 not fully supported (GeoLite2 not working)', 'yellow'). PHP_EOL;
