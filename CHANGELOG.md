@@ -1,5 +1,6 @@
 # Changelog
 
+## 1.2.17
 ### Improvements
 - Log failed login attempts to php error log with clients ip (#1202)
 
