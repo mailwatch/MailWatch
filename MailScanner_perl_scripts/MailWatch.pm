@@ -395,7 +395,7 @@ sub MailWatchLogging {
     $msg{virusinfected} = $message->{virusinfected};
     $msg{nameinfected} = $message->{nameinfected};
     $msg{otherinfected} = $message->{otherinfected};
-    $msg{reports} = $reports;
+    $msg{reports} = fix_latin($reports);
     $msg{hostname} = $hostname;
     $msg{date} = $date;
     $msg{"time"} = $time;
@@ -403,7 +403,7 @@ sub MailWatchLogging {
     $msg{quarantined} = $quarantined;
     $msg{rblspamreport} = $message->{rblspamreport};
     $msg{token} = $token;
-    $msg{messageid} = $messageid;
+    $msg{messageid} = fix_latin($messageid);
 
     # Prepare data for transmission
     my $f = freeze \%msg;
