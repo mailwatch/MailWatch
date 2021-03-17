@@ -3206,7 +3206,18 @@ function imap_authenticate($username, $password)
 {
     $username = strtolower($username);
 
-    if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+    if (
+        (
+            !defined('IMAP_USERNAME_FULL_EMAIL') &&
+            !filter_var($username, FILTER_VALIDATE_EMAIL)
+        )
+        ||
+        (
+            defined('IMAP_USERNAME_FULL_EMAIL') &&
+            IMAP_USERNAME_FULL_EMAIL === true &&
+            !filter_var($username, FILTER_VALIDATE_EMAIL)
+        )
+    ) {
         //user has no mail but it is required for mailwatch
         return null;
     }
@@ -4254,7 +4265,8 @@ function checkConfVariables()
         'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
         'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
         'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
-        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autorcreate user from valid imap login'),
+        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autocreate user from valid imap login'),
+        'IMAP_USERNAME_FULL_EMAIL' => array('description' => 'set to fals eto permit imap login without valid email as username'),
         'MAXMIND_LICENSE_KEY' => array('description' => 'needed to download MaxMind GeoLite2 data')
     );
 
