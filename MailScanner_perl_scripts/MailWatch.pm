@@ -384,18 +384,18 @@ sub MailWatchLogging {
     $msg{spamwhitelisted} = $message->{spamwhitelisted};
     $msg{spamblacklisted} = $message->{spamblacklisted};
     $msg{sascore} = $message->{sascore};
-    $msg{spamreport} = $spamreport;
+    $msg{spamreport} = fix_latin($spamreport);
     $msg{ismcp} = $message->{ismcp};
     $msg{ishighmcp} = $message->{ishighmcp};
     $msg{issamcp} = $message->{issamcp};
     $msg{mcpwhitelisted} = $message->{mcpwhitelisted};
     $msg{mcpblacklisted} = $message->{mcpblacklisted};
     $msg{mcpsascore} = $mcpsascore;
-    $msg{mcpreport} = $mcpreport;
+    $msg{mcpreport} = fix_latin($mcpreport);
     $msg{virusinfected} = $message->{virusinfected};
     $msg{nameinfected} = $message->{nameinfected};
     $msg{otherinfected} = $message->{otherinfected};
-    $msg{reports} = $reports;
+    $msg{reports} = fix_latin($reports);
     $msg{hostname} = $hostname;
     $msg{date} = $date;
     $msg{"time"} = $time;
@@ -403,7 +403,7 @@ sub MailWatchLogging {
     $msg{quarantined} = $quarantined;
     $msg{rblspamreport} = $message->{rblspamreport};
     $msg{token} = $token;
-    $msg{messageid} = $messageid;
+    $msg{messageid} = fix_latin($messageid);
 
     # Prepare data for transmission
     my $f = freeze \%msg;
