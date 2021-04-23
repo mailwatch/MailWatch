@@ -3223,7 +3223,14 @@ function imap_authenticate($username, $password)
     }
 
     if ($username !== '' && $password !== '') {
-        $mbox = imap_open(IMAP_HOST, $username, $password, null, 0);
+        $imapUsername = $username;
+        if (
+            defined('IMAP_USERNAME_FULL_EMAIL') &&
+            IMAP_USERNAME_FULL_EMAIL === false
+        ) {
+            $imapUsername = substr($username, 0, strrpos($username, '@'));
+        }
+        $mbox = imap_open(IMAP_HOST, $imapUsername, $password, null, 0);
 
         if (false === $mbox) {
             //auth faild
@@ -4266,7 +4273,7 @@ function checkConfVariables()
         'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
         'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
         'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autocreate user from valid imap login'),
-        'IMAP_USERNAME_FULL_EMAIL' => array('description' => 'set to fals eto permit imap login without valid email as username'),
+        'IMAP_USERNAME_FULL_EMAIL' => array('description' => 'set to false to permit imap login without valid email as username'),
         'MAXMIND_LICENSE_KEY' => array('description' => 'needed to download MaxMind GeoLite2 data')
     );
 
