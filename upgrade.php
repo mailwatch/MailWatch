@@ -544,7 +544,7 @@ if ($link) {
     echo pad(' - Fix schema for username field in `user_filters` table');
     $user_filters_username_info = getColumnInfo('users', 'username');
     if ($user_filters_username_info['Type'] !== 'varchar(191)') {
-        $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR( 191 ) NOT NULL DEFAULT ''";
+        $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -601,7 +601,7 @@ if ($link) {
     echo pad(' - Fix schema for password field in `users` table');
     $users_password_info = getColumnInfo('users', 'password');
     if ($users_password_info['Type'] !== 'varchar(255)') {
-        $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) DEFAULT NULL';
+        $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR(255) DEFAULT NULL';
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -612,7 +612,7 @@ if ($link) {
     echo pad(' - Fix schema for fullname field in `users` table');
     $users_fullname_info = getColumnInfo('users', 'fullname');
     if ($users_fullname_info['Type'] !== 'varchar(255)') {
-        $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+        $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR(255) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -620,10 +620,11 @@ if ($link) {
     unset($users_fullname_info);
 
     // Table mcp_rules
-    echo pad(' - Fix schema for rule_desc field in `mcp_rules` table');
+    echo pad(' - Fix schema for rule and rule_desc field in `mcp_rules` table');
+    $mcp_rules_rule_info = getColumnInfo('mcp_rules', 'rule');
     $mcp_rules_rule_desc_info = getColumnInfo('mcp_rules', 'rule_desc');
-    if ($mcp_rules_rule_desc_info['Type'] !== 'varchar(200)') {
-        $sql = "ALTER TABLE `mcp_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 512 ) NOT NULL DEFAULT ''";
+    if ($mcp_rules_rule_info['Type'] !== 'varchar(255)' || $mcp_rules_rule_desc_info['Type'] !== 'varchar(512)') {
+        $sql = "ALTER TABLE `mcp_rules` CHANGE `rule` `rule` VARCHAR(255) NOT NULL DEFAULT '', CHANGE `rule_desc` `rule_desc` VARCHAR(512) NOT NULL DEFAULT '';";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -633,10 +634,11 @@ if ($link) {
     echo PHP_EOL;
 
     // Table sa_rules
-    echo pad(' - Fix schema for rule_desc field in `sa_rules` table');
+    echo pad(' - Fix schema for rule and rule_desc field in `sa_rules` table');
+    $sa_rules_rule_info = getColumnInfo('sa_rules', 'rule');
     $sa_rules_rule_desc_info = getColumnInfo('sa_rules', 'rule_desc');
-    if ($sa_rules_rule_desc_info['Type'] !== 'varchar(200)') {
-        $sql = "ALTER TABLE `sa_rules` CHANGE `rule_desc` `rule_desc` VARCHAR( 512 ) NOT NULL DEFAULT ''";
+    if ($sa_rules_rule_info['Type'] !== 'varchar(255)' || $sa_rules_rule_desc_info['Type'] !== 'varchar(512)') {
+        $sql = "ALTER TABLE `sa_rules` CHANGE `rule` `rule` VARCHAR(255) NOT NULL DEFAULT '', CHANGE `rule_desc` `rule_desc` VARCHAR(512) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;

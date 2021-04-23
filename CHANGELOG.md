@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+### Fixes
+- Fix errors on importing messages from MailScanner containing UTF8 chars in messageid and reports (#1208)
+- Fix upgrade script
+
 ## 1.2.17
 ### Improvements
 - Log failed login attempts to php error log with clients ip (#1202)
