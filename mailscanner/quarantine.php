@@ -47,9 +47,9 @@ if (!isset($_GET['dir'])) {
                 $rowstr = sprintf('  %02d ' . __('items08'), $rowcnt);
             }
             echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . translateQuarantineDate(
-                    $date,
-                    DATE_FORMAT
-                ) .  '</a></td>' . "\n";
+                $date,
+                DATE_FORMAT
+            ) .  '</a></td>' . "\n";
             echo '<td align="left">' . $rowstr . '</a></td></tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -66,9 +66,9 @@ if (!isset($_GET['dir'])) {
                 if (is_numeric($f)) {
                     // Display the Quarantine folders and create links for them.
                     echo '<tr><td align="center"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $f . '">' . translateQuarantineDate(
-                            $f,
-                            DATE_FORMAT
-                        ) . '</a></td></tr>' . "\n";
+                        $f,
+                        DATE_FORMAT
+                    ) . '</a></td></tr>' . "\n";
                 // Skip any folders that are not dates and
                 } else {
                     continue;

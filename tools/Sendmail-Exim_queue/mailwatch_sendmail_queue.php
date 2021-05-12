@@ -62,8 +62,8 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                         if ($fh = @fopen($queuedir . $file, 'rb')) {
                             // Work out the total size (df+qf) of the mail
                             $output[$msgid]['size'] = (@filesize($queuedir . $msgid . '-D') + filesize(
-                                    $queuedir . $msgid . '-H'
-                                ));
+                                $queuedir . $msgid . '-H'
+                            ));
                             $output[$msgid]['version'] = 'N/A';
                             $output[$msgid]['ctladdr'] = 'N/A';
                             $output[$msgid]['orcpt'] = 'N/A';
@@ -85,17 +85,17 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
                                             $ctime = getdate($match[1]);
                                             $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
-                                                    $ctime['mon'],
-                                                    2,
-                                                    '0',
-                                                    STR_PAD_LEFT
-                                                ) . '-' . str_pad($ctime['mday'], 2, '0', STR_PAD_LEFT);
+                                                $ctime['mon'],
+                                                2,
+                                                '0',
+                                                STR_PAD_LEFT
+                                            ) . '-' . str_pad($ctime['mday'], 2, '0', STR_PAD_LEFT);
                                             $output[$msgid]['ctime'] = str_pad(
-                                                    $ctime['hours'],
-                                                    2,
-                                                    '0',
-                                                    STR_PAD_LEFT
-                                                ) . ':' . str_pad(
+                                                $ctime['hours'],
+                                                2,
+                                                '0',
+                                                STR_PAD_LEFT
+                                            ) . ':' . str_pad(
                                                     $ctime['minutes'],
                                                     2,
                                                     '0',
@@ -159,8 +159,8 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                         if ($fh = @fopen($queuedir . $file, 'rb')) {
                             // Work out the total size (df+qf) of the mail
                             $output[$msgid]['size'] = (@filesize($queuedir . 'df' . $msgid) + @filesize(
-                                    $queuedir . 'qf' . $msgid
-                                ));
+                                $queuedir . 'qf' . $msgid
+                            ));
                             $output[$msgid]['message'] = '';
                             while (!@feof($fh)) {
                                 if ($line = @fgets($fh, 1024)) {
@@ -186,17 +186,17 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^T(.+)$/', $line, $match):
                                             $ctime = getdate($match[1]);
                                             $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
-                                                    $ctime['mon'],
-                                                    2,
-                                                    '0',
-                                                    STR_PAD_LEFT
-                                                ) . '-' . str_pad($ctime['mday'], 2, '0', STR_PAD_LEFT);
+                                                $ctime['mon'],
+                                                2,
+                                                '0',
+                                                STR_PAD_LEFT
+                                            ) . '-' . str_pad($ctime['mday'], 2, '0', STR_PAD_LEFT);
                                             $output[$msgid]['ctime'] = str_pad(
-                                                    $ctime['hours'],
-                                                    2,
-                                                    '0',
-                                                    STR_PAD_LEFT
-                                                ) . ':' . str_pad(
+                                                $ctime['hours'],
+                                                2,
+                                                '0',
+                                                STR_PAD_LEFT
+                                            ) . ':' . str_pad(
                                                     $ctime['minutes'],
                                                     2,
                                                     '0',

@@ -259,19 +259,19 @@ for ($f = 0; $f < $result->field_count; $f++) {
             $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(' ', ', ', get_conf_var('SpamActions'));
         } else {
             $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
-                    ' ',
-                    ', ',
-                    get_conf_var('NonSpamActions')
-                );
+                ' ',
+                ', ',
+                get_conf_var('NonSpamActions')
+            );
         }
     }
     if ($row[$f] === $yes && $fieldn === __('hscospam04')) {
         // Display actions if high-scoring
         $row[$f] = $row[$f] . '&nbsp;&nbsp;' . __('actions04') . ' ' . str_replace(
-                ' ',
-                ', ',
-                get_conf_var('HighScoringSpamActions')
-            );
+            ' ',
+            ', ',
+            get_conf_var('HighScoringSpamActions')
+        );
     }
 
     if ($is_MCP_enabled === true) {
@@ -559,8 +559,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         echo ' <tr class="noprint">' . "\n";
         if ($_SESSION['user_type'] === 'A' ||
-            ($_SESSION['user_type'] === 'D' &&
-                ($is_dangerous === 0 ||
+            (
+                $_SESSION['user_type'] === 'D' &&
+                (
+                    $is_dangerous === 0 ||
                 ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
                 )
             )
