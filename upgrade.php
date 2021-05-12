@@ -916,8 +916,10 @@ if ($link) {
     );
 
     foreach ($indexes as $table => $indexlist) {
-        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(' DONE',
-                'green') . PHP_EOL;
+        echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(
+            ' DONE',
+            'green'
+        ) . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {

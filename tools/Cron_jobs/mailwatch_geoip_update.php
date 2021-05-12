@@ -133,8 +133,11 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
         }
     }
 
-    exec('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
-        $output_wget, $retval_wget);
+    exec(
+        'wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
+        $output_wget,
+        $retval_wget
+    );
     if ($retval_wget > 0) {
         echo __('downbad52') . ' ' . $file['description'] . "\n";
     } else {
@@ -163,8 +166,10 @@ if (class_exists('PharData')) {
 
         if ($item->isDir()) {
             $extractedFolder = $item->getFilename();
-            if (rename($extract_dir . $extractedFolder . '/' . $file['destinationFileName'],
-                $extract_dir . $file['destinationFileName'])) {
+            if (rename(
+                $extract_dir . $extractedFolder . '/' . $file['destinationFileName'],
+                $extract_dir . $file['destinationFileName']
+            )) {
                 array_map('unlink', glob($extract_dir . $extractedFolder . '/*'));
                 rmdir($extract_dir . $extractedFolder);
             }
@@ -178,8 +183,11 @@ if (class_exists('PharData')) {
 
 // Apply MailWatch rights on files from the last run
 if (is_file('/etc/sudoers.d/mailwatch')) {
-    $mwUID = exec('cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"',
-        $output_cat, $retval_cat);
+    $mwUID = exec(
+        'cat /etc/sudoers.d/mailwatch | grep "User_Alias MAILSCANNER" | sed "s/.*= \(.*\).*/\1/"',
+        $output_cat,
+        $retval_cat
+    );
     if ($retval_cat > 0) {
         die(__('nofind52') . '.' . "\n");
     }
