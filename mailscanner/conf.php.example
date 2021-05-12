@@ -66,7 +66,8 @@ define('DB_USER', 'mailwatch');
 define('DB_PASS', 'mailwatch');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'mailscanner');
-define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . '/' . DB_NAME);
+define('DB_PORT', 3306);
+define('DB_DSN', DB_TYPE . '://' . DB_USER . ':' . DB_PASS . '@' . DB_HOST . ':' . DB_PORT . '/' . DB_NAME);
 
 // LDAP settings for authentication
 define('USE_LDAP', false);
