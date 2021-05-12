@@ -74,8 +74,11 @@ function testSameDomainMembership($username, $method)
         return getHtmlMessage(__('error' . $method . 'nodomainforbidden12'), 'error');
     }
 
-    if ($_SESSION['user_type'] === 'D' && count($parts) === 2 && ($parts[1] !== $_SESSION['domain'] && in_array($parts[1],
-                $filter_domain, true) === false)) {
+    if ($_SESSION['user_type'] === 'D' && count($parts) === 2 && ($parts[1] !== $_SESSION['domain'] && in_array(
+        $parts[1],
+        $filter_domain,
+        true
+    ) === false)) {
         return getHtmlMessage(sprintf(__('error' . $method . 'domainforbidden12'), $parts[1]), 'error');
     }
 
@@ -301,9 +304,13 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
                         VALUES ('" . safe_value(stripslashes($n_username)) . "','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','" . safe_value(stripslashes($quarantine_rcpt)) . "')";
         dbquery($sql);
-        audit_log(__('auditlog0112',
-                true) . ' ' . $type[$n_type] . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlog0212',
-                true));
+        audit_log(__(
+            'auditlog0112',
+            true
+        ) . ' ' . $type[$n_type] . " '" . $n_username . "' (" . $n_fullname . ') ' . __(
+                    'auditlog0212',
+                    true
+                ));
         return getHtmlMessage(sprintf(__('usercreated12'), stripslashes($n_username)), 'success');
     }
 
@@ -320,8 +327,10 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
     }
     if ($oldType !== $n_type) {
         audit_log(
-            __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __('auditlogfrom12',
-                true) . ' ' . $type[$oldType] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
+            __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __(
+                'auditlogfrom12',
+                true
+            ) . ' ' . $type[$oldType] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
         );
     }
 
@@ -433,9 +442,21 @@ function editUser($userType)
         }
         $types[$user->type] = 'SELECTED';
 
-        return printUserFormular($userType, 'edit', $user->id, $lastlogin, $user->username, $user->fullname, $types,
+        return printUserFormular(
+            $userType,
+            'edit',
+            $user->id,
+            $lastlogin,
+            $user->username,
+            $user->fullname,
+            $types,
             $timeout,
-            $quarantine_report, $user->quarantine_rcpt, $noscan, $user->spamscore, $user->highspamscore);
+            $quarantine_report,
+            $user->quarantine_rcpt,
+            $noscan,
+            $user->spamscore,
+            $user->highspamscore
+        );
     }
 
     if (!isset($_POST['formtoken'], $_POST['username'], $_POST['type'])) {
