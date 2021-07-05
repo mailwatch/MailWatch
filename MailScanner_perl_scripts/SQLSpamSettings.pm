@@ -2,11 +2,11 @@
 # MailWatch for MailScanner
 # Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
-# Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+# Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
 #   Custom Module SQLSpamSettings
 #
-#   Version 1.5
+#   Version 1.5.1
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -253,8 +253,9 @@ sub CreateNoScanList
 
 # Based on the address it is going to, choose the correct Spam score.
 # If the actual "To:" user is not found, then use the domain defaults
-# as supplied by the domain administrator. If there is no domain default
-# then fallback to the system default as defined in the "admin" user.
+# as supplied by the domain administrator (domain-admin@domain.tld). 
+# If there is no domain default then fallback to the system default 
+# as defined in the "admin" user.
 # If the user has not supplied a value and the domain administrator has
 # not supplied a value and the system administrator has not supplied a
 # value, then return 999 which will effectively let everything through
@@ -269,7 +270,7 @@ sub LookupScoreList
     # Find the first "to" address and the "to domain"
     my (@todomain, $todomain, @to, $to);
     @todomain = @{$message->{todomain}};
-    $todomain = $todomain[0];
+    $todomain = 'domain-admin@' . $todomain[0];
     @to = @{$message->{to}};
     $to = $to[0];
 
