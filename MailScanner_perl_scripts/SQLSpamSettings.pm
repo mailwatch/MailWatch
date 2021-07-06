@@ -192,7 +192,7 @@ sub CreateScoreList
     $sth->execute;
     $sth->bind_columns(undef, \$username, \$type);
     $count = 0;
-    
+
     while($sth->fetch())
     {
         $UserList->{lc($username)} = $type; # Store entry
@@ -253,8 +253,8 @@ sub CreateNoScanList
 
 # Based on the address it is going to, choose the correct Spam score.
 # If the actual "To:" user is not found, then use the domain defaults
-# as supplied by the domain administrator (domain-admin@domain.tld). 
-# If there is no domain default then fallback to the system default 
+# as supplied by the domain administrator (domain-admin@domain.tld).
+# If there is no domain default then fallback to the system default
 # as defined in the "admin" user.
 # If the user has not supplied a value and the domain administrator has
 # not supplied a value and the system administrator has not supplied a
@@ -270,7 +270,7 @@ sub LookupScoreList
     # Find the first "to" address and the "to domain"
     my (@todomain, $todomain, @to, $to);
     @todomain = @{$message->{todomain}};
-    $todomain = 'domain-admin@' . $todomain[0];
+    $todomain = $todomain[0];
     @to = @{$message->{to}};
     $to = $to[0];
 
@@ -279,6 +279,7 @@ sub LookupScoreList
     # value to just let the email through.
     return $LowHigh->{$to} if $LowHigh->{$to};
     return $LowHigh->{$todomain} if $LowHigh->{$todomain};
+    return $LowHigh->{'domain-admin@' . $todomain} if $LowHigh->{'domain-admin@' . $todomain};
     return $LowHigh->{"admin"} if $LowHigh->{"admin"};
 
     # There are no Spam scores to return if we made it this far, so let the email through.
