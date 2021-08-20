@@ -31,7 +31,7 @@ class HTMLPurifier_Filter_YouTube extends HTMLPurifier_Filter
     public function postFilter($html, $config, $context)
     {
         $post_regex = '#<span class="youtube-embed">((?:v|cp)/[A-Za-z0-9\-_=]+)</span>#';
-        return preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
+        return preg_replace_callback($post_regex, [$this, 'postFilterCallback'], $html);
     }
 
     /**

@@ -89,7 +89,7 @@ class Mail_smtp extends Mail {
      *
      * @var array
      */
-    public $_extparams = array();
+    public $_extparams = [];
 
     /**
      * The SMTP host to connect to.
@@ -176,7 +176,7 @@ class Mail_smtp extends Mail {
      *
      * @var array
      */
-    public $socket_options = array();
+    public $socket_options = [];
 
     /**
      * Constructor.

@@ -37,7 +37,7 @@ class PEAR_REST_11
      */
     public $_rest;
 
-    function __construct($config, $options = array())
+    function __construct($config, $options = [])
     {
         $this->_rest = new PEAR_REST($config, $options);
     }
@@ -49,9 +49,9 @@ class PEAR_REST_11
             return $categorylist;
         }
 
-        $ret = array();
+        $ret = [];
         if (!is_array($categorylist['c']) || !isset($categorylist['c'][0])) {
-            $categorylist['c'] = array($categorylist['c']);
+            $categorylist['c'] = [$categorylist['c']];
         }
 
         PEAR::pushErrorHandling(PEAR_ERROR_RETURN);
@@ -70,7 +70,7 @@ class PEAR_REST_11
             }
 
             if (!is_array($packagesinfo['pi']) || !isset($packagesinfo['pi'][0])) {
-                $packagesinfo['pi'] = array($packagesinfo['pi']);
+                $packagesinfo['pi'] = [$packagesinfo['pi']];
             }
 
             foreach ($packagesinfo['pi'] as $packageinfo) {
@@ -88,7 +88,7 @@ class PEAR_REST_11
 
                 if ($releases) {
                     if (!isset($releases['r'][0])) {
-                        $releases['r'] = array($releases['r']);
+                        $releases['r'] = [$releases['r']];
                     }
 
                     foreach ($releases['r'] as $release) {
@@ -133,12 +133,12 @@ class PEAR_REST_11
                     if ($dostable) {
                         // $state is not set if there are no releases
                         if (isset($state) && $state == 'stable') {
-                            $ret[$package] = array('stable' => $latest);
+                            $ret[$package] = ['stable' => $latest];
                         } else {
-                            $ret[$package] = array('stable' => '-n/a-');
+                            $ret[$package] = ['stable' => '-n/a-'];
                         }
                     } else {
-                        $ret[$package] = array('stable' => $latest);
+                        $ret[$package] = ['stable' => $latest];
                     }
 
                     continue;
@@ -159,12 +159,12 @@ class PEAR_REST_11
                     $latest = false;
                 }
 
-                $deps = array();
+                $deps = [];
                 if ($latest && isset($packageinfo['deps'])) {
                     if (!is_array($packageinfo['deps']) ||
                           !isset($packageinfo['deps'][0])
                     ) {
-                        $packageinfo['deps'] = array($packageinfo['deps']);
+                        $packageinfo['deps'] = [$packageinfo['deps']];
                     }
 
                     $d = false;
@@ -200,7 +200,7 @@ class PEAR_REST_11
                     }
                 }
 
-                $info = array(
+                $info = [
                     'stable'      => $latest,
                     'summary'     => $info['s'],
                     'description' => $info['d'],
@@ -208,7 +208,7 @@ class PEAR_REST_11
                     'category'    => $info['ca']['_content'],
                     'unstable'    => $unstable,
                     'state'       => $state
-                );
+                ];
                 $ret[$package] = $info;
             }
         }
@@ -231,12 +231,12 @@ class PEAR_REST_11
         }
 
         if (!is_array($categorylist) || !isset($categorylist['c'])) {
-            return array();
+            return [];
         }
 
         if (isset($categorylist['c']['_content'])) {
             // only 1 category
-            $categorylist['c'] = array($categorylist['c']);
+            $categorylist['c'] = [$categorylist['c']];
         }
 
         return $categorylist['c'];
@@ -267,16 +267,16 @@ class PEAR_REST_11
             return $packagelist;
         }
         if (!is_array($packagelist)) {
-            return array();
+            return [];
         }
 
         if ($info == false) {
             if (!isset($packagelist['p'])) {
-                return array();
+                return [];
             }
             if (!is_array($packagelist['p']) ||
                 !isset($packagelist['p'][0])) { // only 1 pkg
-                $packagelist = array($packagelist['p']);
+                $packagelist = [$packagelist['p']];
             } else {
                 $packagelist = $packagelist['p'];
             }
@@ -285,17 +285,17 @@ class PEAR_REST_11
 
         // info == true
         if (!isset($packagelist['pi'])) {
-            return array();
+            return [];
         }
 
         if (!is_array($packagelist['pi']) ||
             !isset($packagelist['pi'][0])) { // only 1 pkg
-            $packagelist_pre = array($packagelist['pi']);
+            $packagelist_pre = [$packagelist['pi']];
         } else {
             $packagelist_pre = $packagelist['pi'];
         }
 
-        $packagelist = array();
+        $packagelist = [];
         foreach ($packagelist_pre as $i => $item) {
             // compatibility with r/<latest.txt>.xml
             if (isset($item['a']['r'][0])) {
@@ -308,9 +308,9 @@ class PEAR_REST_11
                 $item['p']['st'] = $item['a']['r']['s'];
             }
 
-            $packagelist[$i] = array('attribs' => $item['p']['r'],
+            $packagelist[$i] = ['attribs' => $item['p']['r'],
                                      '_content' => $item['p']['n'],
-                                     'info' => $item['p']);
+                                     'info' => $item['p']];
         }
 
         return $packagelist;
@@ -326,7 +326,7 @@ class PEAR_REST_11
      */
     function betterStates($state, $include = false)
     {
-        static $states = array('snapshot', 'devel', 'alpha', 'beta', 'stable');
+        static $states = ['snapshot', 'devel', 'alpha', 'beta', 'stable'];
         $i = array_search($state, $states);
         if ($i === false) {
             return false;

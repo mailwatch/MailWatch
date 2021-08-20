@@ -16,15 +16,15 @@ class HTMLPurifier_Printer_CSSDefinition extends HTMLPurifier_Printer
         $this->def = $config->getCSSDefinition();
         $ret = '';
 
-        $ret .= $this->start('div', array('class' => 'HTMLPurifier_Printer'));
+        $ret .= $this->start('div', ['class' => 'HTMLPurifier_Printer']);
         $ret .= $this->start('table');
 
         $ret .= $this->element('caption', 'Properties ($info)');
 
         $ret .= $this->start('thead');
         $ret .= $this->start('tr');
-        $ret .= $this->element('th', 'Property', array('class' => 'heavy'));
-        $ret .= $this->element('th', 'Definition', array('class' => 'heavy', 'style' => 'width:auto;'));
+        $ret .= $this->element('th', 'Property', ['class' => 'heavy']);
+        $ret .= $this->element('th', 'Definition', ['class' => 'heavy', 'style' => 'width:auto;']);
         $ret .= $this->end('tr');
         $ret .= $this->end('thead');
 

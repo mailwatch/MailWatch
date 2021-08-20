@@ -57,7 +57,7 @@ class PEAR_PackageFile
      * @var array
      * @access private
      */
-    public $_extractErrors = array();
+    public $_extractErrors = [];
 
     /**
      *
@@ -94,7 +94,7 @@ class PEAR_PackageFile
      */
     function &parserFactory($version)
     {
-        if (!in_array($version[0], array('1', '2'))) {
+        if (!in_array($version[0], ['1', '2'])) {
             $a = false;
             return $a;
         }
@@ -122,7 +122,7 @@ class PEAR_PackageFile
      */
     function &factory($version)
     {
-        if (!in_array($version[0], array('1', '2'))) {
+        if (!in_array($version[0], ['1', '2'])) {
             $a = false;
             return $a;
         }
@@ -186,7 +186,7 @@ class PEAR_PackageFile
     function &fromXmlString($data, $state, $file, $archive = false)
     {
         if (preg_match('/<package[^>]+version=[\'"]([0-9]+\.[0-9]+)[\'"]/', $data, $packageversion)) {
-            if (!in_array($packageversion[1], array('1.0', '2.0', '2.1'))) {
+            if (!in_array($packageversion[1], ['1.0', '2.0', '2.1'])) {
                 return PEAR::raiseError('package.xml version "' . $packageversion[1] .
                     '" is not supported, only 1.0, 2.0, and 2.1 are supported.');
             }
@@ -242,7 +242,7 @@ class PEAR_PackageFile
 
             PEAR_ErrorStack::staticPush('PEAR_PackageFile',
                 PEAR_PACKAGEFILE_ERROR_NO_PACKAGEVERSION,
-                'warning', array('xml' => $data), 'package.xml "' . $file .
+                'warning', ['xml' => $data], 'package.xml "' . $file .
                     '" has no package.xml <package> version');
             $object = &$this->parserFactory('1.0');
             $object->setConfig($this->_config);
@@ -359,9 +359,9 @@ class PEAR_PackageFile
         PEAR_PackageFile::addTempFile($tmpdir);
 
         $this->_extractErrors();
-        PEAR::staticPushErrorHandling(PEAR_ERROR_CALLBACK, array($this, '_extractErrors'));
+        PEAR::staticPushErrorHandling(PEAR_ERROR_CALLBACK, [$this, '_extractErrors']);
 
-        if (!$xml || !$tar->extractList(array($xml), $tmpdir)) {
+        if (!$xml || !$tar->extractList([$xml], $tmpdir)) {
             $extra = implode("\n", $this->_extractErrors());
             if ($extra) {
                 $extra = ' ' . $extra;
@@ -387,10 +387,10 @@ class PEAR_PackageFile
      */
     function _extractErrors($err = null)
     {
-        static $errors = array();
+        static $errors = [];
         if ($err === null) {
             $e = $errors;
-            $errors = array();
+            $errors = [];
             return $e;
         }
         $errors[] = $err->getMessage();

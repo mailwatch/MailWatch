@@ -33,7 +33,7 @@ dbquery($sql);
 dbclose();
 
 // reset session variables
-$_SESSION = array();
+$_SESSION = [];
 
 // delete the session cookie.
 if (ini_get('session.use_cookies')) {

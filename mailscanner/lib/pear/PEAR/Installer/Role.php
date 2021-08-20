@@ -91,16 +91,16 @@ class PEAR_Installer_Role
             PEAR_Installer_Role::registerRoles();
         }
 
-        static $ret = array();
+        static $ret = [];
         if ($clear) {
-            $ret = array();
+            $ret = [];
         }
 
         if (isset($ret[$release])) {
             return $ret[$release];
         }
 
-        $ret[$release] = array();
+        $ret[$release] = [];
         foreach ($GLOBALS['_PEAR_INSTALLER_ROLES'] as $role => $okreleases) {
             if (in_array($release, $okreleases['releasetypes'])) {
                 $ret[$release][] = strtolower(str_replace('PEAR_Installer_Role_', '', $role));
@@ -134,7 +134,7 @@ class PEAR_Installer_Role
             return $ret;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($GLOBALS['_PEAR_INSTALLER_ROLES'] as $role => $okreleases) {
             if ($okreleases['installable']) {
                 $ret[] = strtolower(str_replace('PEAR_Installer_Role_', '', $role));
@@ -168,7 +168,7 @@ class PEAR_Installer_Role
             return $ret;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($GLOBALS['_PEAR_INSTALLER_ROLES'] as $role => $okreleases) {
             if ($okreleases['honorsbaseinstall']) {
                 $ret[] = strtolower(str_replace('PEAR_Installer_Role_', '', $role));
@@ -199,7 +199,7 @@ class PEAR_Installer_Role
             return $ret;
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($GLOBALS['_PEAR_INSTALLER_ROLES'] as $role => $okreleases) {
             if ($okreleases['phpfile']) {
                 $ret[] = strtolower(str_replace('PEAR_Installer_Role_', '', $role));
@@ -221,7 +221,7 @@ class PEAR_Installer_Role
      */
     public static function registerRoles($dir = null)
     {
-        $GLOBALS['_PEAR_INSTALLER_ROLES'] = array();
+        $GLOBALS['_PEAR_INSTALLER_ROLES'] = [];
         $parser = new PEAR_XMLParser;
         if ($dir === null) {
             $dir = __DIR__ . '/Role';
@@ -248,7 +248,7 @@ class PEAR_Installer_Role
                 $parser->parse(file_get_contents($file));
                 $data = $parser->getData();
                 if (!is_array($data['releasetypes'])) {
-                    $data['releasetypes'] = array($data['releasetypes']);
+                    $data['releasetypes'] = [$data['releasetypes']];
                 }
 
                 $GLOBALS['_PEAR_INSTALLER_ROLES'][$class] = $data;

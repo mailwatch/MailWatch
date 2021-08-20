@@ -87,10 +87,10 @@ class Requests_Transport_cURL implements Requests_Transport {
 	 * @param array $options Request options, see {@see Requests::response()} for documentation
 	 * @return string Raw HTTP result
 	 */
-	public function request($url, $headers = array(), $data = array(), $options = array()) {
+	public function request($url, $headers = [], $data = [], $options = []) {
 		$this->setup_handle($url, $headers, $data, $options);
 
-		$options['hooks']->dispatch('curl.before_send', array(&$this->fp));
+		$options['hooks']->dispatch('curl.before_send', [&$this->fp]);
 
 		if ($options['filename'] !== false) {
 			$this->stream_handle = fopen($options['filename'], 'wb');
@@ -113,7 +113,7 @@ class Requests_Transport_cURL implements Requests_Transport {
 
 		$response = curl_exec($this->fp);
 
-		$options['hooks']->dispatch('curl.after_send', array(&$fake_headers));
+		$options['hooks']->dispatch('curl.after_send', [&$fake_headers]);
 
 		if (curl_errno($this->fp) === 23 || curl_errno($this->fp) === 61) {
 			curl_setopt($this->fp, CURLOPT_ENCODING, 'none');
@@ -134,21 +134,21 @@ class Requests_Transport_cURL implements Requests_Transport {
 	 */
 	public function request_multiple($requests, $options) {
 		$multihandle = curl_multi_init();
-		$subrequests = array();
-		$subhandles = array();
+		$subrequests = [];
+		$subhandles = [];
 
 		$class = get_class($this);
 		foreach ($requests as $id => $request) {
 			$subrequests[$id] = new $class();
 			$subhandles[$id] = $subrequests[$id]->get_subrequest_handle($request['url'], $request['headers'], $request['data'], $request['options']);
-			$request['options']['hooks']->dispatch('curl.before_multi_add', array(&$subhandles[$id]));
+			$request['options']['hooks']->dispatch('curl.before_multi_add', [&$subhandles[$id]]);
 			curl_multi_add_handle($multihandle, $subhandles[$id]);
 		}
 
 		$completed = 0;
-		$responses = array();
+		$responses = [];
 
-		$request['options']['hooks']->dispatch('curl.before_multi_exec', array(&$multihandle));
+		$request['options']['hooks']->dispatch('curl.before_multi_exec', [&$multihandle]);
 
 		do {
 			$active = false;
@@ -158,7 +158,7 @@ class Requests_Transport_cURL implements Requests_Transport {
 			}
 			while ($status === CURLM_CALL_MULTI_PERFORM);
 
-			$to_process = array();
+			$to_process = [];
 
 			// Read the information as needed
 			while ($done = curl_multi_info_read($multihandle)) {
@@ -173,20 +173,20 @@ class Requests_Transport_cURL implements Requests_Transport {
 				$options = $requests[$key]['options'];
 				$responses[$key] = $subrequests[$key]->process_response(curl_multi_getcontent($done['handle']), $options);
 
-				$options['hooks']->dispatch('transport.internal.parse_response', array(&$responses[$key], $requests[$key]));
+				$options['hooks']->dispatch('transport.internal.parse_response', [&$responses[$key], $requests[$key]]);
 
 				curl_multi_remove_handle($multihandle, $done['handle']);
 				curl_close($done['handle']);
 
 				if (!is_string($responses[$key])) {
-					$options['hooks']->dispatch('multiple.request.complete', array(&$responses[$key], $key));
+					$options['hooks']->dispatch('multiple.request.complete', [&$responses[$key], $key]);
 				}
 				$completed++;
 			}
 		}
 		while ($active || $completed < count($subrequests));
 
-		$request['options']['hooks']->dispatch('curl.after_multi_exec', array(&$multihandle));
+		$request['options']['hooks']->dispatch('curl.after_multi_exec', [&$multihandle]);
 
 		curl_multi_close($multihandle);
 
@@ -222,10 +222,10 @@ class Requests_Transport_cURL implements Requests_Transport {
 	 * @param array $options Request options, see {@see Requests::response()} for documentation
 	 */
 	protected function setup_handle($url, $headers, $data, $options) {
-		$options['hooks']->dispatch('curl.before_request', array(&$this->fp));
+		$options['hooks']->dispatch('curl.before_request', [&$this->fp]);
 
 		$headers = Requests::flatten($headers);
-		if (in_array($options['type'], array(Requests::HEAD, Requests::GET, Requests::DELETE)) & !empty($data)) {
+		if (in_array($options['type'], [Requests::HEAD, Requests::GET, Requests::DELETE]) & !empty($data)) {
 			$url = self::format_get($url, $data);
 		}
 		elseif (!empty($data) && !is_string($data)) {
@@ -258,14 +258,14 @@ class Requests_Transport_cURL implements Requests_Transport {
 		curl_setopt($this->fp, CURLOPT_HTTPHEADER, $headers);
 
 		if (true === $options['blocking']) {
-			curl_setopt($this->fp, CURLOPT_HEADERFUNCTION, array(&$this, 'stream_headers'));
+			curl_setopt($this->fp, CURLOPT_HEADERFUNCTION, [&$this, 'stream_headers']);
 		}
 	}
 
 	public function process_response($response, $options) {
 		if ($options['blocking'] === false) {
 			$fake_headers = '';
-			$options['hooks']->dispatch('curl.after_request', array(&$fake_headers));
+			$options['hooks']->dispatch('curl.after_request', [&$fake_headers]);
 			return false;
 		}
 		if ($options['filename'] !== false) {
@@ -282,7 +282,7 @@ class Requests_Transport_cURL implements Requests_Transport {
 		}
 		$this->info = curl_getinfo($this->fp);
 
-		$options['hooks']->dispatch('curl.after_request', array(&$this->headers));
+		$options['hooks']->dispatch('curl.after_request', [&$this->headers]);
 		return $this->headers;
 	}
 

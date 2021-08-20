@@ -217,7 +217,7 @@ class PEAR_Frontend extends PEAR
      * @return array input sent by the user
      * @abstract
      */
-    function userDialog($command, $prompts, $types = array(), $defaults = array())
+    function userDialog($command, $prompts, $types = [], $defaults = [])
     {
     }
 }

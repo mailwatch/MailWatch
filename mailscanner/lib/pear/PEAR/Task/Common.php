@@ -179,7 +179,7 @@ class PEAR_Task_Common
     {
         foreach ($GLOBALS['_PEAR_TASK_POSTINSTANCES'] as $class => $tasks) {
             $err = call_user_func(
-                array($class, 'run'),
+                [$class, 'run'],
                 $GLOBALS['_PEAR_TASK_POSTINSTANCES'][$class]
             );
             if ($err) {

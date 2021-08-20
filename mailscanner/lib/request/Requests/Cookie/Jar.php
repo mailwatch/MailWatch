@@ -18,14 +18,14 @@ class Requests_Cookie_Jar implements ArrayAccess, IteratorAggregate {
 	 *
 	 * @var array
 	 */
-	protected $cookies = array();
+	protected $cookies = [];
 
 	/**
 	 * Create a new jar
 	 *
 	 * @param array $cookies Existing cookie values
 	 */
-	public function __construct($cookies = array()) {
+	public function __construct($cookies = []) {
 		$this->cookies = $cookies;
 	}
 
@@ -106,8 +106,8 @@ class Requests_Cookie_Jar implements ArrayAccess, IteratorAggregate {
 	 * @param Requests_Hooker $hooks Hooking system
 	 */
 	public function register(Requests_Hooker $hooks) {
-		$hooks->register('requests.before_request', array($this, 'before_request'));
-		$hooks->register('requests.before_redirect_check', array($this, 'before_redirect_check'));
+		$hooks->register('requests.before_request', [$this, 'before_request']);
+		$hooks->register('requests.before_redirect_check', [$this, 'before_redirect_check']);
 	}
 
 	/**
@@ -123,7 +123,7 @@ class Requests_Cookie_Jar implements ArrayAccess, IteratorAggregate {
 	 */
 	public function before_request(&$url, &$headers, &$data, &$type, &$options) {
 		if (!empty($this->cookies)) {
-			$cookies = array();
+			$cookies = [];
 			foreach ($this->cookies as $key => $cookie) {
 				$cookie = $this->normalizeCookie($cookie, $key);
 				$cookies[] = $cookie->formatForHeader();

@@ -65,7 +65,7 @@ class Pager_Jumping extends Pager_Common
      *
      * @access public
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         $err = $this->setOptions($options);
         if ($err !== PAGER_OK) {
@@ -122,12 +122,12 @@ class Pager_Jumping extends Pager_Common
             // I'm sure I'm missing something here, but this formula works
             // so I'm using it until I find something simpler.
             $start = ((($pageid + (($this->_delta - ($pageid % $this->_delta))) % $this->_delta) / $this->_delta) - 1) * $this->_delta +1;
-            return array(
+            return [
                 max($start, 1),
                 min($start+$this->_delta-1, $this->_totalPages)
-            );
+            ];
         } else {
-            return array(0, 0);
+            return [0, 0];
         }
     }
 
@@ -193,7 +193,7 @@ class Pager_Jumping extends Pager_Common
             $this->_currentPage = $_sav;
         }
 
-        return array(
+        return [
             $back,
             $pages,
             trim($next),
@@ -209,7 +209,7 @@ class Pager_Jumping extends Pager_Common
             'all'         => $all,
             'linktags'    => $linkTags,
             'linkTagsRaw' => $linkTagsRaw,
-        );
+        ];
     }
 
     // }}}

@@ -28,7 +28,7 @@
 /* languages/ja.php */
 /* v0.3.12 */
 
-return array(
+return [
     // 01-login.php
     'username' => 'ユーザ:',
     'password' => 'パスワード:',
@@ -1003,4 +1003,4 @@ return array(
     'pt_br' => 'Português',
     'dbconnecterror99' => '<p>エラー: データベース接続が失敗しました</p><p>これはデータベースが過負荷になっているか、正しく動作していない可能性があります</p><p class="emphasise">システム管理者に連絡してください問題が続く場合は</p>',
     'dbconnecterror99_plain' => 'エラー：データベース接続に失敗しました : データベースが過負荷状態になっているか、正しく動作していない可能性があります。問題が解決しない場合はシステム管理者に連絡してください。',
-);
+];

@@ -72,7 +72,7 @@ class Mail
      *
      * @return object Mail a instance of the driver class or if fails a PEAR Error
      */
-    public static function factory($driver, $params = array())
+    public static function factory($driver, $params = [])
     {
         $driver = strtolower($driver);
         @include_once 'Mail/' . $driver . '.php';
@@ -174,7 +174,7 @@ class Mail
      */
     protected function prepareHeaders($headers)
     {
-        $lines = array();
+        $lines = [];
         $from = null;
 
         foreach ($headers as $key => $value) {
@@ -195,7 +195,7 @@ class Mail
 
                 $lines[] = $key . ': ' . $value;
             } elseif (strcasecmp($key, 'Received') === 0) {
-                $received = array();
+                $received = [];
                 if (is_array($value)) {
                     foreach ($value as $line) {
                         $received[] = $key . ': ' . $line;
@@ -218,7 +218,7 @@ class Mail
             }
         }
 
-        return array($from, join($this->sep, $lines));
+        return [$from, join($this->sep, $lines)];
     }
 
     /**
@@ -254,7 +254,7 @@ class Mail
             return $addresses;
         }
 
-        $recipients = array();
+        $recipients = [];
         if (is_array($addresses)) {
             foreach ($addresses as $ob) {
                 $recipients[] = $ob->mailbox . '@' . $ob->host;

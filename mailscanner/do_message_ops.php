@@ -97,7 +97,7 @@ if (isset($_POST) && !empty($_POST)) {
         } else {
             if (count($items) > 0) {
                 $num = 0;
-                $itemnum = array($num);
+                $itemnum = [$num];
                 echo '<td>';
                 if ($type === 'release') {
                     $quarantined = quarantine_list_items($id, RPC_ONLY);

@@ -93,7 +93,7 @@ class Mail_mimePart
      *
      * @var array
      */
-    protected $subparts = array();
+    protected $subparts = [];
 
     /**
      * The output of this part after being built
@@ -107,7 +107,7 @@ class Mail_mimePart
      *
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * The body of this part (not encoded)
@@ -167,7 +167,7 @@ class Mail_mimePart
      *     body_file         - Location of file with part's body (instead of $body)
      *     preamble          - short text of multipart part preamble (RFC2046 5.1.1)
      */
-    public function __construct($body = '', $params = array())
+    public function __construct($body = '', $params = [])
     {
         if (!empty($params['eol'])) {
             $this->eol = $params['eol'];
@@ -292,7 +292,7 @@ class Mail_mimePart
         }
 
         // Assign stuff to member variables
-        $this->encoded  = array();
+        $this->encoded  = [];
         $this->headers  = $headers;
         $this->body     = $body;
     }
@@ -713,7 +713,7 @@ class Mail_mimePart
         // RFC2231:
         $encValue = preg_replace_callback(
             '/([^\x21\x23\x24\x26\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E-\x7E])/',
-            array($this, 'encodeReplaceCallback'), $value
+            [$this, 'encodeReplaceCallback'], $value
         );
         $value = "$charset'$language'$encValue";
 
@@ -726,10 +726,10 @@ class Mail_mimePart
         $maxLength = max(16, $maxLength - $preLength - 3);
         $maxLengthReg = "|(.{0,$maxLength}[^\%][^\%])|";
 
-        $headers = array();
+        $headers = [];
         $headCount = 0;
         while ($value) {
-            $matches = array();
+            $matches = [];
             $found = preg_match($maxLengthReg, $value, $matches);
             if ($found) {
                 $headers[] = " {$name}*{$headCount}*={$matches[0]}";
@@ -830,16 +830,16 @@ class Mail_mimePart
         $encoding = 'quoted-printable', $eol = "\r\n"
     ) {
         // Structured headers
-        $comma_headers = array(
+        $comma_headers = [
             'from', 'to', 'cc', 'bcc', 'sender', 'reply-to',
             'resent-from', 'resent-to', 'resent-cc', 'resent-bcc',
             'resent-sender', 'resent-reply-to',
             'mail-reply-to', 'mail-followup-to',
             'return-receipt-to', 'disposition-notification-to',
-        );
-        $other_headers = array(
+        ];
+        $other_headers = [
             'references', 'in-reply-to', 'message-id', 'resent-message-id',
-        );
+        ];
 
         $name = strtolower($name);
 
@@ -986,7 +986,7 @@ class Mail_mimePart
      */
     protected static function explodeQuotedString($delimiter, $string)
     {
-        $result = array();
+        $result = [];
         $strlen = strlen($string);
         $quoted_string = '"(?:[^"\\\\]|\\\\.)*"';
 
@@ -1126,7 +1126,7 @@ class Mail_mimePart
         // "=",  "_",  "?" must be encoded
         $regexp = '/([\x22-\x29\x2C\x2E\x3A-\x40\x5B-\x60\x7B-\x7E\x80-\xFF])/';
         $str = preg_replace_callback(
-            $regexp, array('Mail_mimePart', 'qpReplaceCallback'), $str
+            $regexp, ['Mail_mimePart', 'qpReplaceCallback'], $str
         );
 
         return str_replace(' ', '_', $str);
@@ -1210,7 +1210,7 @@ class Mail_mimePart
                     $char_len = 1;
                 } else {
                     $char = preg_replace_callback(
-                        $regexp, array('Mail_mimePart', 'qpReplaceCallback'), $char
+                        $regexp, ['Mail_mimePart', 'qpReplaceCallback'], $char
                     );
                     $char_len = strlen($char);
                 }

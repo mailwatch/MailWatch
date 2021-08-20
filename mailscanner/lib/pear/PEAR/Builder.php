@@ -44,7 +44,7 @@ class PEAR_Builder extends PEAR_Common
     public $zend_module_api_no = 0;
     public $zend_extension_api_no = 0;
 
-    public $extensions_built = array();
+    public $extensions_built = [];
 
     /**
      * @var string Used for reporting when it is not possible to pass function
@@ -89,8 +89,8 @@ class PEAR_Builder extends PEAR_Common
         $parser = xml_parser_create('ISO-8859-1');
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
         xml_set_element_handler(
-            $parser, array($this, '_parseConfigureOptionsStartElement'),
-            array($this, '_parseConfigureOptionsEndElement'));
+            $parser, [$this, '_parseConfigureOptionsStartElement'],
+            [$this, '_parseConfigureOptionsEndElement']);
         xml_parse($parser, $data, true);
         xml_parser_free($parser);
     }
@@ -166,7 +166,7 @@ class PEAR_Builder extends PEAR_Common
         // XXX TODO: make release build type configurable
         $command = 'msdev '.$dsp.' /MAKE "'.$pkg->getPackage(). ' - Release"';
 
-        $err = $this->_runCommand($command, array(&$this, 'msdevCallback'));
+        $err = $this->_runCommand($command, [&$this, 'msdevCallback']);
         if (PEAR::isError($err)) {
             return $err;
         }
@@ -212,12 +212,12 @@ class PEAR_Builder extends PEAR_Common
             $outfile = "$dir/$out";
         }
 
-        $built_files[] = array(
+        $built_files[] = [
             'file' => "$outfile",
             'php_api' => $this->php_api_version,
             'zend_mod_api' => $this->zend_module_api_no,
             'zend_ext_api' => $this->zend_extension_api_no,
-            );
+            ];
 
         return $built_files;
     }
@@ -259,13 +259,13 @@ class PEAR_Builder extends PEAR_Common
                 }
             } else {
                 $dest = $dest_prefix . DIRECTORY_SEPARATOR . $ent;
-                $built_files[] = array(
+                $built_files[] = [
                         'file' => $full,
                         'dest' => $dest,
                         'php_api' => $this->php_api_version,
                         'zend_mod_api' => $this->zend_module_api_no,
                         'zend_ext_api' => $this->zend_extension_api_no,
-                        );
+                        ];
             }
         }
         closedir($d);
@@ -369,7 +369,7 @@ class PEAR_Builder extends PEAR_Common
         $err = $this->_runCommand($this->config->get('php_prefix')
                                 . "phpize" .
                                 $this->config->get('php_suffix'),
-                                array(&$this, 'phpizeCallback'));
+                                [&$this, 'phpizeCallback']);
         if (PEAR::isError($err)) {
             return $err;
         }
@@ -421,27 +421,27 @@ class PEAR_Builder extends PEAR_Common
         $inst_dir = "$build_basedir/install-$vdir";
         $this->log(1, "building in $build_dir");
         if (is_dir($build_dir)) {
-            System::rm(array('-rf', $build_dir));
+            System::rm(['-rf', $build_dir]);
         }
 
-        if (!System::mkDir(array('-p', $build_dir))) {
+        if (!System::mkDir(['-p', $build_dir])) {
             return $this->raiseError("could not create build dir: $build_dir");
         }
 
         self::addTempFile($build_dir);
-        if (!System::mkDir(array('-p', $inst_dir))) {
+        if (!System::mkDir(['-p', $inst_dir])) {
             return $this->raiseError("could not create temporary install dir: $inst_dir");
         }
         self::addTempFile($inst_dir);
 
         $make_command = getenv('MAKE') ?: 'make';
 
-        $to_run = array(
+        $to_run = [
             $configure_command,
             $make_command,
             "$make_command INSTALL_ROOT=\"$inst_dir\" install",
             "find \"$inst_dir\" | xargs ls -dils"
-            );
+            ];
         if (!file_exists($build_dir) || !is_dir($build_dir) || !chdir($build_dir)) {
             return $this->raiseError("could not chdir to $build_dir");
         }
@@ -461,7 +461,7 @@ class PEAR_Builder extends PEAR_Common
             chdir($old_cwd);
             return $this->raiseError("no `modules' directory found");
         }
-        $built_files = array();
+        $built_files = [];
         $prefix = exec($this->config->get('php_prefix')
                         . "php-config" .
                        $this->config->get('php_suffix') . " --prefix");
@@ -491,7 +491,7 @@ class PEAR_Builder extends PEAR_Common
         if (preg_match('/You should update your .aclocal.m4/', $data)) {
             return;
         }
-        $matches = array();
+        $matches = [];
         if (preg_match('/^\s+(\S[^:]+):\s+(\d{8})/', $data, $matches)) {
             $member = preg_replace('/[^a-z]/', '_', strtolower($matches[1]));
             $apino = (int)$matches[2];

@@ -56,7 +56,7 @@ class Net_SMTP
      * List of supported authentication methods, in preferential order.
      * @var array
      */
-    public $auth_methods = array();
+    public $auth_methods = [];
 
     /**
      * Use SMTP command pipelining (specified in RFC 2920) if the SMTP
@@ -117,7 +117,7 @@ class Net_SMTP
      * The most recent server response arguments.
      * @var array
      */
-    protected $arguments = array();
+    protected $arguments = [];
 
     /**
      * Stores the SMTP server's greeting string.
@@ -129,7 +129,7 @@ class Net_SMTP
      * Stores detected features of the SMTP server.
      * @var array
      */
-    protected $esmtp = array();
+    protected $esmtp = [];
 
     /**
      * Instantiates a new Net_SMTP object, overriding any defaults
@@ -172,13 +172,13 @@ class Net_SMTP
         /* Include the Auth_SASL package.  If the package is available, we
          * enable the authentication methods that depend upon it. */
         if (@include_once 'Auth/SASL.php') {
-            $this->setAuthMethod('CRAM-MD5', array($this, 'authCramMD5'));
-            $this->setAuthMethod('DIGEST-MD5', array($this, 'authDigestMD5'));
+            $this->setAuthMethod('CRAM-MD5', [$this, 'authCramMD5']);
+            $this->setAuthMethod('DIGEST-MD5', [$this, 'authDigestMD5']);
         }
 
         /* These standard authentication methods are always available. */
-        $this->setAuthMethod('LOGIN', array($this, 'authLogin'), false);
-        $this->setAuthMethod('PLAIN', array($this, 'authPlain'), false);
+        $this->setAuthMethod('LOGIN', [$this, 'authLogin'], false);
+        $this->setAuthMethod('PLAIN', [$this, 'authPlain'], false);
     }
 
     /**
@@ -220,7 +220,7 @@ class Net_SMTP
         if ($this->debug) {
             if ($this->debug_handler) {
                 call_user_func_array(
-                    $this->debug_handler, array(&$this, $message)
+                    $this->debug_handler, [&$this, $message]
                 );
             } else {
                 echo "DEBUG: $message\n";
@@ -301,7 +301,7 @@ class Net_SMTP
     protected function parseResponse($valid, $later = false)
     {
         $this->code      = -1;
-        $this->arguments = array();
+        $this->arguments = [];
 
         if ($later) {
             $this->pipelined_commands++;
@@ -384,7 +384,7 @@ class Net_SMTP
      */
     public function getResponse()
     {
-        return array($this->code, join("\n", $this->arguments));
+        return [$this->code, join("\n", $this->arguments)];
     }
 
     /**
@@ -667,7 +667,7 @@ class Net_SMTP
 
         if ($prepend) {
             $this->auth_methods = array_merge(
-                array($name => $callback), $this->auth_methods
+                [$name => $callback], $this->auth_methods
             );
         } else {
             $this->auth_methods[$name] = $callback;
@@ -948,7 +948,7 @@ class Net_SMTP
         if (PEAR::isError($error = $this->put('RCPT', $args))) {
             return $error;
         }
-        if (PEAR::isError($error = $this->parseResponse(array(250, 251), $this->pipelining))) {
+        if (PEAR::isError($error = $this->parseResponse([250, 251], $this->pipelining))) {
             return $error;
         }
 
@@ -1214,7 +1214,7 @@ class Net_SMTP
         if (PEAR::isError($error = $this->put('VRFY', $string))) {
             return $error;
         }
-        if (PEAR::isError($error = $this->parseResponse(array(250, 252)))) {
+        if (PEAR::isError($error = $this->parseResponse([250, 252]))) {
             return $error;
         }
 

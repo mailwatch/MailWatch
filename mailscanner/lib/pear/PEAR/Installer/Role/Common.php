@@ -108,11 +108,11 @@ class PEAR_Installer_Role_Common
         // Clean up the DIRECTORY_SEPARATOR mess
         $ds2 = DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR;
         
-        list($dest_dir, $dest_file, $orig_file) = preg_replace(array('!\\\\+!', '!/!', "!$ds2+!"),
-                                                    array(DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR,
-                                                          DIRECTORY_SEPARATOR),
-                                                    array($dest_dir, $dest_file, $orig_file));
-        return array($save_destdir, $dest_dir, $dest_file, $orig_file);
+        list($dest_dir, $dest_file, $orig_file) = preg_replace(['!\\\\+!', '!/!', "!$ds2+!"],
+                                                    [DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR,
+                                                          DIRECTORY_SEPARATOR],
+                                                    [$dest_dir, $dest_file, $orig_file]);
+        return [$save_destdir, $dest_dir, $dest_file, $orig_file];
     }
 
     /**

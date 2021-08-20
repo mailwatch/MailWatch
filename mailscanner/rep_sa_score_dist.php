@@ -52,25 +52,25 @@ $graphgenerator->sqlQuery = '
   score
 ';
 
-$graphgenerator->tableColumns = array(
+$graphgenerator->tableColumns = [
     'score' => __('score38'),
     'count' => __('count38')
-);
-$graphgenerator->sqlColumns = array(
+];
+$graphgenerator->sqlColumns = [
     'score',
     'count'
-);
-$graphgenerator->valueConversion = array(
-);
-$graphgenerator->graphColumns = array(
+];
+$graphgenerator->valueConversion = [
+];
+$graphgenerator->graphColumns = [
     'labelColumn' => 'score',
-    'dataNumericColumns' => array(array('count')),
-    'dataFormattedColumns' => array(array('count')),
+    'dataNumericColumns' => [['count']],
+    'dataFormattedColumns' => [['count']],
     'xAxeDescription' => __('scorerounded38'),
-    'yAxeDescriptions' => array(__('nbmessage38')),
-    'fillBelowLine' => array('true')
-);
-$graphgenerator->types = array(array('line'));
+    'yAxeDescriptions' => [__('nbmessage38')],
+    'fillBelowLine' => ['true']
+];
+$graphgenerator->types = [['line']];
 $graphgenerator->graphTitle = __('sascoredist38');
 $graphgenerator->settings['drawLines'] = true;
 $graphgenerator->settings['maxTicks'] = 24;

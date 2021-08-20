@@ -63,7 +63,7 @@ class Pager_Sliding extends Pager_Common
      *
      * @access public
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         //set default Pager_Sliding options
         $this->_delta                 = 2;
@@ -129,12 +129,12 @@ class Pager_Sliding extends Pager_Common
             } else {
                 $min_surplus = $max_surplus = 0;
             }
-            return array(
+            return [
                 max($pageid - $this->_delta - $max_surplus, 1),
                 min($pageid + $this->_delta + $min_surplus, $this->_totalPages)
-            );
+            ];
         }
-        return array(0, 0);
+        return [0, 0];
     }
 
     // }}}
@@ -182,7 +182,7 @@ class Pager_Sliding extends Pager_Common
             $this->_currentPage = $_sav;
         }
 
-        return array(
+        return [
             $back,
             $pages,
             trim($next),
@@ -198,7 +198,7 @@ class Pager_Sliding extends Pager_Common
             'all'         => $all,
             'linktags'    => $linkTags,
             'linkTagsRaw' => $linkTagsRaw,
-        );
+        ];
     }
 
     // }}}

@@ -44,7 +44,7 @@ class PEAR_Task_Windowseol extends PEAR_Task_Common
     public static function validateXml($pkg, $xml, $config, $fileXml)
     {
         if ($xml != '') {
-            return array(PEAR_TASK_ERROR_INVALID, 'no attributes allowed');
+            return [PEAR_TASK_ERROR_INVALID, 'no attributes allowed'];
         }
 
         return true;

@@ -47,7 +47,7 @@ class Requests_Response_Headers extends Requests_Utility_CaseInsensitiveDictiona
 		$key = strtolower($key);
 
 		if (!isset($this->data[$key])) {
-			$this->data[$key] = array();
+			$this->data[$key] = [];
 		}
 
 		$this->data[$key][] = $value;
@@ -90,6 +90,6 @@ class Requests_Response_Headers extends Requests_Utility_CaseInsensitiveDictiona
 	 * @return ArrayIterator
 	 */
 	public function getIterator() {
-		return new Requests_Utility_FilteredIterator($this->data, array($this, 'flatten'));
+		return new Requests_Utility_FilteredIterator($this->data, [$this, 'flatten']);
 	}
 }

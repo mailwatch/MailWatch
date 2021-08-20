@@ -50,7 +50,7 @@ class PEAR_Task_Postinstallscript_rw extends PEAR_Task_Postinstallscript
         parent::__construct($config, $logger, PEAR_TASK_PACKAGE);
         $this->_contents = $fileXml;
         $this->_pkg = &$pkg;
-        $this->_params = array();
+        $this->_params = [];
     }
 
     public function validate()
@@ -84,9 +84,9 @@ class PEAR_Task_Postinstallscript_rw extends PEAR_Task_Postinstallscript
             $params = $params[0];
         }
         $stuff =
-            array(
+            [
                 $this->_pkg->getTasksNs().':id' => $id,
-            );
+            ];
         if ($instructions) {
             $stuff[$this->_pkg->getTasksNs().':instructions'] = $instructions;
         }
@@ -129,9 +129,9 @@ class PEAR_Task_Postinstallscript_rw extends PEAR_Task_Postinstallscript
         if ($params && isset($params[0]) && !isset($params[1])) {
             $params = $params[0];
         }
-        $stuff = array(
+        $stuff = [
             $this->_pkg->getTasksNs().':id' => $id,
-        );
+        ];
         if ($instructions) {
             $stuff[$this->_pkg->getTasksNs().':instructions'] = $instructions;
         }
@@ -164,19 +164,19 @@ class PEAR_Task_Postinstallscript_rw extends PEAR_Task_Postinstallscript
     ) {
         if ($default !== null) {
             return
-            array(
+            [
                 $this->_pkg->getTasksNs().':name' => $name,
                 $this->_pkg->getTasksNs().':prompt' => $prompt,
                 $this->_pkg->getTasksNs().':type' => $type,
                 $this->_pkg->getTasksNs().':default' => $default,
-            );
+            ];
         }
 
         return
-            array(
+            [
                 $this->_pkg->getTasksNs().':name' => $name,
                 $this->_pkg->getTasksNs().':prompt' => $prompt,
                 $this->_pkg->getTasksNs().':type' => $type,
-            );
+            ];
     }
 }

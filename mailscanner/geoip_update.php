@@ -84,15 +84,15 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxm
                 $requestSession->options['useragent'] = 'MailWatch/' . mailwatch_version();
                 if (USE_PROXY === true) {
                     if (PROXY_USER !== '') {
-                        $requestSession->options['proxy']['authentication'] = array(
+                        $requestSession->options['proxy']['authentication'] = [
                             PROXY_SERVER . ':' . PROXY_PORT,
                             PROXY_USER,
                             PROXY_PASS
-                        );
+                        ];
                     } else {
-                        $requestSession->options['proxy']['authentication'] = array(
+                        $requestSession->options['proxy']['authentication'] = [
                             PROXY_SERVER . ':' . PROXY_PORT
-                        );
+                        ];
                     }
 
                     switch (PROXY_TYPE) {

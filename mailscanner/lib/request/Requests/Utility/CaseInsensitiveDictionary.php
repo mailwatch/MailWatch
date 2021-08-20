@@ -18,7 +18,7 @@ class Requests_Utility_CaseInsensitiveDictionary implements ArrayAccess, Iterato
 	 *
 	 * @var array
 	 */
-	protected $data = array();
+	protected $data = [];
 
 	/**
 	 * Check if the given item exists

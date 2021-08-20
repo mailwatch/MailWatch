@@ -53,7 +53,7 @@ class PEAR_Command_Common extends PEAR
      */
     public $ui;
 
-    public $_deps_rel_trans = array(
+    public $_deps_rel_trans = [
                                  'lt' => '<',
                                  'le' => '<=',
                                  'eq' => '=',
@@ -61,9 +61,9 @@ class PEAR_Command_Common extends PEAR
                                  'gt' => '>',
                                  'ge' => '>=',
                                  'has' => '=='
-                                 );
+                                 ];
 
-    public $_deps_type_trans = array(
+    public $_deps_type_trans = [
                                   'pkg' => 'package',
                                   'ext' => 'extension',
                                   'php' => 'PHP',
@@ -73,7 +73,7 @@ class PEAR_Command_Common extends PEAR
                                   'os' => 'operating system',
                                   'websrv' => 'web server',
                                   'sapi' => 'SAPI backend'
-                                  );
+                                  ];
 
     /**
      * PEAR_Command_Common constructor.
@@ -94,7 +94,7 @@ class PEAR_Command_Common extends PEAR
      */
     function getCommands()
     {
-        $ret = array();
+        $ret = [];
         foreach (array_keys($this->commands) as $command) {
             $ret[$command] = $this->commands[$command]['summary'];
         }
@@ -109,7 +109,7 @@ class PEAR_Command_Common extends PEAR
      */
     function getShortcuts()
     {
-        $ret = array();
+        $ret = [];
         foreach (array_keys($this->commands) as $command) {
             if (isset($this->commands[$command]['shortcut'])) {
                 $ret[$this->commands[$command]['shortcut']] = $command;
@@ -137,7 +137,7 @@ class PEAR_Command_Common extends PEAR
     function getGetoptArgs($command, &$short_args, &$long_args)
     {
         $short_args = '';
-        $long_args = array();
+        $long_args = [];
         if (empty($this->commands[$command]) || empty($this->commands[$command]['options'])) {
             return;
         }
@@ -199,7 +199,7 @@ class PEAR_Command_Common extends PEAR
             }
         }
 
-        return array($help, $this->getHelpArgs($command));
+        return [$help, $this->getHelpArgs($command)];
     }
 
     /**

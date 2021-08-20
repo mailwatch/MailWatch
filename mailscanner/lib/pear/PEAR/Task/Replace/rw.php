@@ -34,7 +34,7 @@ class PEAR_Task_Replace_rw extends PEAR_Task_Replace
         parent::__construct($config, $logger, PEAR_TASK_PACKAGE);
         $this->_contents = $fileXml;
         $this->_pkg = &$pkg;
-        $this->_params = array();
+        $this->_params = [];
     }
 
     public function validate()
@@ -44,7 +44,7 @@ class PEAR_Task_Replace_rw extends PEAR_Task_Replace
 
     public function setInfo($from, $to, $type)
     {
-        $this->_params = array('attribs' => array('from' => $from, 'to' => $to, 'type' => $type));
+        $this->_params = ['attribs' => ['from' => $from, 'to' => $to, 'type' => $type]];
     }
 
     public function getName()

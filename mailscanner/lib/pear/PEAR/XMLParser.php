@@ -44,13 +44,13 @@ class PEAR_XMLParser
      * stack for all data that is found
      * @var array    $_dataStack
      */
-    public $_dataStack = array();
+    public $_dataStack = [];
 
     /**
      * stack for all values that are generated
      * @var array    $_valStack
      */
-    public $_valStack = array();
+    public $_valStack = [];
 
     /**
      * current tag depth
@@ -82,7 +82,7 @@ class PEAR_XMLParser
             include_once 'PEAR.php';
             return PEAR::raiseError("XML Extension not found", 1);
         }
-        $this->_dataStack =  $this->_valStack = array();
+        $this->_dataStack =  $this->_valStack = [];
         $this->_depth = 0;
 
         if (
@@ -124,16 +124,16 @@ class PEAR_XMLParser
         $this->_depth++;
         $this->_dataStack[$this->_depth] = null;
 
-        $val = array(
+        $val = [
             'name'         => $element,
             'value'        => null,
             'type'         => 'string',
-            'childrenKeys' => array(),
-            'aggregKeys'   => array()
-       );
+            'childrenKeys' => [],
+            'aggregKeys'   => []
+       ];
 
         if (count($attribs) > 0) {
-            $val['children'] = array();
+            $val['children'] = [];
             $val['type'] = 'array';
             $val['children']['attribs'] = $attribs;
         }
@@ -173,7 +173,7 @@ class PEAR_XMLParser
                     $value['children']['_content'] = $data;
                 }
 
-                $value['value'] = isset($value['children']) ? $value['children'] : array();
+                $value['value'] = isset($value['children']) ? $value['children'] : [];
                 break;
 
             /*
@@ -201,7 +201,7 @@ class PEAR_XMLParser
 
         // parent has to be an array
         if (!isset($parent['children']) || !is_array($parent['children'])) {
-            $parent['children'] = array();
+            $parent['children'] = [];
             if ($parent['type'] != 'array') {
                 $parent['type'] = 'array';
             }
@@ -213,9 +213,9 @@ class PEAR_XMLParser
                 // no aggregate has been created for this tag
                 if (!in_array($value['name'], $parent['aggregKeys'])) {
                     if (isset($parent['children'][$value['name']])) {
-                        $parent['children'][$value['name']] = array($parent['children'][$value['name']]);
+                        $parent['children'][$value['name']] = [$parent['children'][$value['name']]];
                     } else {
-                        $parent['children'][$value['name']] = array();
+                        $parent['children'][$value['name']] = [];
                     }
                     array_push($parent['aggregKeys'], $value['name']);
                 }

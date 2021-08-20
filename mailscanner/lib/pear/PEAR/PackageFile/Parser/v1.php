@@ -75,13 +75,13 @@ class PEAR_PackageFile_Parser_v1
         xml_set_character_data_handler($xp, '_pkginfo_cdata_1_0');
         xml_parser_set_option($xp, XML_OPTION_CASE_FOLDING, false);
 
-        $this->element_stack = array();
-        $this->_packageInfo = array('provides' => array());
+        $this->element_stack = [];
+        $this->_packageInfo = ['provides' => []];
         $this->current_element = false;
         unset($this->dir_install);
-        $this->_packageInfo['filelist'] = array();
+        $this->_packageInfo['filelist'] = [];
         $this->filelist =& $this->_packageInfo['filelist'];
-        $this->dir_names = array();
+        $this->dir_names = [];
         $this->in_changelog = false;
         $this->d_i = 0;
         $this->cdata = '';
@@ -163,7 +163,7 @@ class PEAR_PackageFile_Parser_v1
                     break;
                 }
                 if (array_key_exists('name', $attribs) && $attribs['name'] != '/') {
-                    $attribs['name'] = preg_replace(array('!\\\\+!', '!/+!'), array('/', '/'),
+                    $attribs['name'] = preg_replace(['!\\\\+!', '!/+!'], ['/', '/'],
                         $attribs['name']);
                     if (strrpos($attribs['name'], '/') === strlen($attribs['name']) - 1) {
                         $attribs['name'] = substr($attribs['name'], 0,
@@ -192,7 +192,7 @@ class PEAR_PackageFile_Parser_v1
                             $path .= $dir . '/';
                         }
                     }
-                    $path .= preg_replace(array('!\\\\+!', '!/+!'), array('/', '/'),
+                    $path .= preg_replace(['!\\\\+!', '!/+!'], ['/', '/'],
                         $attribs['name']);
                     unset($attribs['name']);
                     $this->current_path = $path;
@@ -215,26 +215,26 @@ class PEAR_PackageFile_Parser_v1
                 }
                 break;
             case 'maintainers':
-                $this->_packageInfo['maintainers'] = array();
+                $this->_packageInfo['maintainers'] = [];
                 $this->m_i = 0; // maintainers array index
                 break;
             case 'maintainer':
                 // compatibility check
                 if (!isset($this->_packageInfo['maintainers'])) {
-                    $this->_packageInfo['maintainers'] = array();
+                    $this->_packageInfo['maintainers'] = [];
                     $this->m_i = 0;
                 }
-                $this->_packageInfo['maintainers'][$this->m_i] = array();
+                $this->_packageInfo['maintainers'][$this->m_i] = [];
                 $this->current_maintainer =& $this->_packageInfo['maintainers'][$this->m_i];
                 break;
             case 'changelog':
-                $this->_packageInfo['changelog'] = array();
+                $this->_packageInfo['changelog'] = [];
                 $this->c_i = 0; // changelog array index
                 $this->in_changelog = true;
                 break;
             case 'release':
                 if ($this->in_changelog) {
-                    $this->_packageInfo['changelog'][$this->c_i] = array();
+                    $this->_packageInfo['changelog'][$this->c_i] = [];
                     $this->current_release = &$this->_packageInfo['changelog'][$this->c_i];
                 } else {
                     $this->current_release = &$this->_packageInfo;
@@ -242,7 +242,7 @@ class PEAR_PackageFile_Parser_v1
                 break;
             case 'deps':
                 if (!$this->in_changelog) {
-                    $this->_packageInfo['release_deps'] = array();
+                    $this->_packageInfo['release_deps'] = [];
                 }
                 break;
             case 'dep':
@@ -255,7 +255,7 @@ class PEAR_PackageFile_Parser_v1
                 break;
             case 'configureoptions':
                 if (!$this->in_changelog) {
-                    $this->_packageInfo['configure_options'] = array();
+                    $this->_packageInfo['configure_options'] = [];
                 }
                 break;
             case 'configureoption':

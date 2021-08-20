@@ -58,55 +58,55 @@ define('PEAR_COMMON_CHANNEL_DOWNLOAD_PREG', '/^' . _PEAR_COMMON_CHANNEL_DOWNLOAD
  * PEAR_Common::addTempFile().
  * @var array
  */
-$GLOBALS['_PEAR_Common_tempfiles'] = array();
+$GLOBALS['_PEAR_Common_tempfiles'] = [];
 
 /**
  * Valid maintainer roles
  * @var array
  */
-$GLOBALS['_PEAR_Common_maintainer_roles'] = array('lead','developer','contributor','helper');
+$GLOBALS['_PEAR_Common_maintainer_roles'] = ['lead','developer','contributor','helper'];
 
 /**
  * Valid release states
  * @var array
  */
-$GLOBALS['_PEAR_Common_release_states'] = array('alpha','beta','stable','snapshot','devel');
+$GLOBALS['_PEAR_Common_release_states'] = ['alpha','beta','stable','snapshot','devel'];
 
 /**
  * Valid dependency types
  * @var array
  */
-$GLOBALS['_PEAR_Common_dependency_types'] = array('pkg','ext','php','prog','ldlib','rtlib','os','websrv','sapi');
+$GLOBALS['_PEAR_Common_dependency_types'] = ['pkg','ext','php','prog','ldlib','rtlib','os','websrv','sapi'];
 
 /**
  * Valid dependency relations
  * @var array
  */
-$GLOBALS['_PEAR_Common_dependency_relations'] = array('has','eq','lt','le','gt','ge','not', 'ne');
+$GLOBALS['_PEAR_Common_dependency_relations'] = ['has','eq','lt','le','gt','ge','not', 'ne'];
 
 /**
  * Valid file roles
  * @var array
  */
-$GLOBALS['_PEAR_Common_file_roles'] = array('php','ext','test','doc','data','src','script');
+$GLOBALS['_PEAR_Common_file_roles'] = ['php','ext','test','doc','data','src','script'];
 
 /**
  * Valid replacement types
  * @var array
  */
-$GLOBALS['_PEAR_Common_replacement_types'] = array('php-const', 'pear-config', 'package-info');
+$GLOBALS['_PEAR_Common_replacement_types'] = ['php-const', 'pear-config', 'package-info'];
 
 /**
  * Valid "provide" types
  * @var array
  */
-$GLOBALS['_PEAR_Common_provide_types'] = array('ext', 'prog', 'class', 'function', 'feature', 'api');
+$GLOBALS['_PEAR_Common_provide_types'] = ['ext', 'prog', 'class', 'function', 'feature', 'api'];
 
 /**
  * Valid "provide" types
  * @var array
  */
-$GLOBALS['_PEAR_Common_script_phases'] = array('pre-install', 'post-install', 'pre-uninstall', 'post-uninstall', 'pre-build', 'post-build', 'pre-configure', 'post-configure', 'pre-setup', 'post-setup');
+$GLOBALS['_PEAR_Common_script_phases'] = ['pre-install', 'post-install', 'pre-uninstall', 'post-uninstall', 'pre-build', 'post-build', 'pre-configure', 'post-configure', 'pre-setup', 'post-setup'];
 
 /**
  * Class providing common functionality for PEAR administration classes.
@@ -139,16 +139,16 @@ class PEAR_Common extends PEAR
     public $config = null;
 
     /** stack of elements, gives some sort of XML context */
-    public $element_stack = array();
+    public $element_stack = [];
 
     /** name of currently parsed XML element */
     public $current_element;
 
     /** array of attributes of the currently parsed XML element */
-    public $current_attributes = array();
+    public $current_attributes = [];
 
     /** assoc with information about a package */
-    public $pkginfo = array();
+    public $pkginfo = [];
 
     public $current_path = null;
 
@@ -187,7 +187,7 @@ class PEAR_Common extends PEAR
                     require_once 'System.php';
                 }
 
-                System::rm(array('-rf', $file));
+                System::rm(['-rf', $file]);
             } elseif (file_exists($file)) {
                 unlink($file);
             }
@@ -230,7 +230,7 @@ class PEAR_Common extends PEAR
         if (!class_exists('System')) {
             require_once 'System.php';
         }
-        return System::mkDir(array('-p', $dir));
+        return System::mkDir(['-p', $dir]);
     }
 
     /**
@@ -270,8 +270,8 @@ class PEAR_Common extends PEAR
      */
     function mkTempDir($tmpdir = '')
     {
-        $topt = $tmpdir ? array('-t', $tmpdir) : array();
-        $topt = array_merge($topt, array('-d', 'pear'));
+        $topt = $tmpdir ? ['-t', $tmpdir] : [];
+        $topt = array_merge($topt, ['-d', 'pear']);
         if (!class_exists('System')) {
             require_once 'System.php';
         }
@@ -306,7 +306,7 @@ class PEAR_Common extends PEAR
      */
     static function betterStates($state, $include = false)
     {
-        static $states = array('snapshot', 'devel', 'alpha', 'beta', 'stable');
+        static $states = ['snapshot', 'devel', 'alpha', 'beta', 'stable'];
         $i = array_search($state, $states);
         if ($i === false) {
             return false;
@@ -675,7 +675,7 @@ class PEAR_Common extends PEAR
             }
 
             $this->pkginfo['provides'][$key] =
-                array('file'=> $file, 'type' => 'class', 'name' => $class);
+                ['file'=> $file, 'type' => 'class', 'name' => $class];
             if (isset($srcinfo['inheritance'][$class])) {
                 $this->pkginfo['provides'][$key]['extends'] =
                     $srcinfo['inheritance'][$class];
@@ -692,7 +692,7 @@ class PEAR_Common extends PEAR
                 }
 
                 $this->pkginfo['provides'][$key] =
-                    array('file'=> $file, 'type' => 'function', 'name' => $function);
+                    ['file'=> $file, 'type' => 'function', 'name' => $function];
             }
         }
 
@@ -707,7 +707,7 @@ class PEAR_Common extends PEAR
             }
 
             $this->pkginfo['provides'][$key] =
-                array('file'=> $file, 'type' => 'function', 'name' => $function);
+                ['file'=> $file, 'type' => 'function', 'name' => $function];
         }
     }
 
@@ -742,8 +742,8 @@ class PEAR_Common extends PEAR
             return false;
         }
 
-        $deps = array();
-        $used_c = $decl_c = $decl_f = $decl_m = array();
+        $deps = [];
+        $used_c = $decl_c = $decl_f = $decl_m = [];
         foreach ($info['filelist'] as $file => $fa) {
             $tmp = $this->analyzeSourceCode($file);
             $used_c = @array_merge($used_c, $tmp['used_classes']);
@@ -757,13 +757,13 @@ class PEAR_Common extends PEAR
         $decl_c = array_unique($decl_c);
         $undecl_c = array_diff($used_c, $decl_c);
 
-        return array('used_classes' => $used_c,
+        return ['used_classes' => $used_c,
                      'declared_classes' => $decl_c,
                      'declared_methods' => $decl_m,
                      'declared_functions' => $decl_f,
                      'undeclared_classes' => $undecl_c,
                      'inheritance' => $inheri,
-                     );
+                     ];
     }
 
     /**

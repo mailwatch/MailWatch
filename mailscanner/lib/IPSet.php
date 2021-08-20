@@ -151,9 +151,9 @@ class IPSet {
             } elseif ( $node === false ) {
                 // create new subarray to go deeper
                 if ( !( $curBit & 7 ) && $curBit <= $mask - 8 ) {
-                    $node = array( 'comp' => $rawOrd[$curBit >> 3], 'next' => false );
+                    $node = [ 'comp' => $rawOrd[$curBit >> 3], 'next' => false ];
                 } else {
-                    $node = array( false, false );
+                    $node = [ false, false ];
                 }
             }
 
@@ -170,8 +170,8 @@ class IPSet {
                     $unode = $node['next'];
                     for ( $i = 0; $i < 8; ++$i ) {
                         $unode = ( $comp & ( 1 << $i ) )
-                            ? array( false, $unode )
-                            : array( $unode, false );
+                            ? [ false, $unode ]
+                            : [ $unode, false ];
                     }
                     $node = $unode;
                 }

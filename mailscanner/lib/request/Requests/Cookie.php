@@ -32,7 +32,7 @@ class Requests_Cookie {
 	 *
 	 * @var array
 	 */
-	public $attributes = array();
+	public $attributes = [];
 
 	/**
 	 * Create a new cookie object
@@ -41,7 +41,7 @@ class Requests_Cookie {
 	 * @param string $value
 	 * @param array $attributes Associative array of attribute data
 	 */
-	public function __construct($name, $value, $attributes = array()) {
+	public function __construct($name, $value, $attributes = []) {
 		$this->name = $name;
 		$this->value = $value;
 		$this->attributes = $attributes;
@@ -69,7 +69,7 @@ class Requests_Cookie {
 	public function formatForSetCookie() {
 		$header_value = $this->formatForHeader();
 		if (!empty($this->attributes)) {
-			$parts = array();
+			$parts = [];
 			foreach ($this->attributes as $key => $value) {
 				// Ignore non-associative attributes
 				if (is_numeric($key)) {
@@ -157,10 +157,10 @@ class Requests_Cookie {
 	public static function parseFromHeaders(Requests_Response_Headers $headers) {
 		$cookie_headers = $headers->getValues('Set-Cookie');
 		if (empty($cookie_headers)) {
-			return array();
+			return [];
 		}
 
-		$cookies = array();
+		$cookies = [];
 		foreach ($cookie_headers as $header) {
 			$parsed = self::parse($header);
 			$cookies[$parsed->name] = $parsed;

@@ -37,7 +37,7 @@ class PEAR_REST
     public $config;
     public $_options;
 
-    function __construct(&$config, $options = array())
+    function __construct(&$config, $options = [])
     {
         $this->config   = &$config;
         $this->_options = $options;
@@ -114,7 +114,7 @@ class PEAR_REST
             $lastmodified = $file[1];
             $content      = $file[0];
         } else {
-            $headers      = array();
+            $headers      = [];
             $lastmodified = false;
             $content      = $file;
         }
@@ -230,7 +230,7 @@ class PEAR_REST
         $cachefile   = $d . 'rest.cachefile';
 
         if (!is_dir($cache_dir)) {
-            if (System::mkdir(array('-p', $cache_dir)) === false) {
+            if (System::mkdir(['-p', $cache_dir]) === false) {
               return PEAR::raiseError("The value of config option cache_dir ($cache_dir) is not a directory and attempts to create the directory failed.");
             }
         }
@@ -246,10 +246,10 @@ class PEAR_REST
             $cacheid = unserialize(implode('', file($cacheidfile)));
         }
 
-        $idData = serialize(array(
+        $idData = serialize([
             'age'        => time(),
             'lastChange' => ($nochange ? $cacheid['lastChange'] : $lastmodified),
-        ));
+        ]);
 
         $result = $this->saveCacheFile($cacheidfile, $idData);
         if (PEAR::isError($result)) {
@@ -343,7 +343,7 @@ class PEAR_REST
         $redirect = 0;
 
         $info = parse_url($url);
-        if (!isset($info['scheme']) || !in_array($info['scheme'], array('http', 'https'))) {
+        if (!isset($info['scheme']) || !in_array($info['scheme'], ['http', 'https'])) {
             return PEAR::raiseError('Cannot download non-http URL "' . $url . '"');
         }
 
@@ -415,7 +415,7 @@ class PEAR_REST
 
         fwrite($fp, $request);
 
-        $headers = array();
+        $headers = [];
         $reply   = 0;
         while ($line = trim(fgets($fp, 1024))) {
             if (preg_match('/^([^:]+):\s+(.*)\s*\\z/', $line, $matches)) {
@@ -426,7 +426,7 @@ class PEAR_REST
                     return false;
                 }
 
-                if (!in_array($reply, array(200, 301, 302, 303, 305, 307))) {
+                if (!in_array($reply, [200, 301, 302, 303, 305, 307])) {
                     return PEAR::raiseError("File $schema://$host:$port$path not valid (received: $line)");
                 }
             }
@@ -455,7 +455,7 @@ class PEAR_REST
 
         if ($lastmodified === false || $lastmodified) {
             if (isset($headers['etag'])) {
-                $lastmodified = array('ETag' => $headers['etag']);
+                $lastmodified = ['ETag' => $headers['etag']];
             }
 
             if (isset($headers['last-modified'])) {
@@ -466,7 +466,7 @@ class PEAR_REST
                 }
             }
 
-            return array($data, $lastmodified, $headers);
+            return [$data, $lastmodified, $headers];
         }
 
         return $data;

@@ -563,7 +563,7 @@ function printMTAQueue()
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
                 if ($servers[$i] !== gethostbyname(gethostname())) {
-                    $msg = new xmlrpcmsg('postfix_queues', array());
+                    $msg = new xmlrpcmsg('postfix_queues', []);
                     $rsp = xmlrpc_wrapper($servers[$i], $msg);
                     if ($rsp->faultCode() === 0) {
                         $response = php_xmlrpc_decode($rsp->value());
@@ -606,7 +606,7 @@ function printMTAQueue()
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; $i++) {
                 if ($servers[$i] !== gethostbyname(gethostname())) {
-                    $msg = new xmlrpcmsg('postfix_queues', array());
+                    $msg = new xmlrpcmsg('postfix_queues', []);
                     $rsp = xmlrpc_wrapper($servers[$i], $msg);
                     if ($rsp->faultCode() === 0) {
                         $response = php_xmlrpc_decode($rsp->value());
@@ -886,7 +886,7 @@ function printNavBar()
 {
     // Navigation links - put them into an array to allow them to be switched
     // on or off as necessary and to allow for the table widths to be calculated.
-    $nav = array();
+    $nav = [];
     $nav['status.php'] = __('recentmessages03');
     if (LISTS) {
         $nav['lists.php'] = __('lists03');
@@ -1199,7 +1199,7 @@ function getFROMheader($header)
             $sender = $match[2];
         }
         if (preg_match('/\S+@\S+/', $sender, $match_email) === 1 && isset($match_email[0])) {
-            $sender = str_replace(array('<', '>', '"'), '', $match_email[0]);
+            $sender = str_replace(['<', '>', '"'], '', $match_email[0]);
         }
     }
     return $sender;
@@ -1281,7 +1281,7 @@ function format_spam_report($spamreport)
         }
 
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
-        $notRulesLines = array(
+        $notRulesLines = [
             //english
             'cached',
             'score=',
@@ -1296,7 +1296,7 @@ function format_spam_report($spamreport)
             'gecached',
             //french
             'requis'
-        );
+        ];
         array_walk($notRulesLines, function ($value) {
             return preg_quote($value, '/');
         });
@@ -1306,7 +1306,7 @@ function format_spam_report($spamreport)
             return preg_match("/$notRulesLinesRegex/i", $val) === 0;
         });
 
-        $output_array = array();
+        $output_array = [];
         foreach ($sa_rules as $sa_rule) {
             $output_array[] = get_sa_rule_desc($sa_rule);
         }
@@ -1382,12 +1382,12 @@ function format_mcp_report($mcpreport)
             return $sa_rules[0];
         }
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
-        foreach (array('score=', 'required', 'autolearn=') as $val) {
+        foreach (['score=', 'required', 'autolearn='] as $val) {
             if (preg_match("/$val/", $sa_rules[0])) {
                 array_shift($sa_rules);
             }
         }
-        $output_array = array();
+        $output_array = [];
         foreach ($sa_rules as $val) {
             $output_array[] = get_mcp_rule_desc($val);
         }
@@ -1460,7 +1460,7 @@ AND
  date = CURRENT_DATE()
 ';
     $result = dbquery($sql);
-    $virus_array = array();
+    $virus_array = [];
     while ($row = $result->fetch_object()) {
         $virus = getVirus($row->report);
         if ($virus !== null) {
@@ -1504,14 +1504,14 @@ AND
  */
 function get_disks()
 {
-    $disks = array();
+    $disks = [];
     if (PHP_OS === 'Windows NT') {
         // windows
         $disks = shell_exec('fsutil fsinfo drives');
         $disks = str_word_count($disks, 1);
         //TODO: won't work on non english installation, we need to find an universal command
         if ($disks[0] !== 'Drives') {
-            return array();
+            return [];
         }
         unset($disks[0]);
         foreach ($disks as $disk) {
@@ -1525,7 +1525,7 @@ function get_disks()
          * http://unix.stackexchange.com/a/24230/33366
          * http://unix.stackexchange.com/a/12086/33366
          */
-        $temp_drive = array();
+        $temp_drive = [];
         // TODO: list nfs mount (and other relevant fs type) in $disks[]
         // TODO: remove bind mount
         // TODO: list MailScanner tmpfs
@@ -1573,7 +1573,7 @@ function formatSize($size, $precision = 2)
         return '0';
     }
     $base = log($size) / log(1024);
-    $suffixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
+    $suffixes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
 
     return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
@@ -1708,7 +1708,7 @@ function get_conf_var($name, $force = false)
  */
 function parse_conf_dir($conf_dir)
 {
-    $array_output1 = array();
+    $array_output1 = [];
     if ($dh = opendir($conf_dir)) {
         while (($file = readdir($dh)) !== false) {
             // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
@@ -1829,8 +1829,8 @@ function parse_conf_file($name)
         die($exitString);
     }
 
-    $array_output = array();
-    $var = array();
+    $array_output = [];
+    $var = [];
     // open each file and read it
     $fileContent = array_filter(
         file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
@@ -1921,7 +1921,7 @@ function translateQuarantineDate($date, $format = 'dmy')
 function subtract_get_vars($preserve)
 {
     if (is_array($_GET)) {
-        $output = array();
+        $output = [];
         foreach ($_GET as $k => $v) {
             if (strtolower($k) !== strtolower($preserve)) {
                 $output[] = "$k=$v";
@@ -1945,7 +1945,7 @@ function subtract_get_vars($preserve)
 function subtract_multi_get_vars($preserve)
 {
     if (is_array($_GET)) {
-        $output = array();
+        $output = [];
         foreach ($_GET as $k => $v) {
             if (!in_array($k, $preserve, true)) {
                 $output[] = "$k=$v";
@@ -1986,12 +1986,12 @@ function generatePager($sql)
     $rows = database::mysqli_result($results, 0);
 
     // Build the pager data
-    $pager_options = array(
+    $pager_options = [
         'mode' => 'Sliding',
         'perPage' => MAX_RESULTS,
         'delta' => 2,
         'totalItems' => $rows,
-    );
+    ];
     $pager = Pager::factory($pager_options);
 
     //then we fetch the relevant records for the current page
@@ -2084,10 +2084,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         printColorCodes();
         echo '<table cellspacing="1" width="100%" class="mail rowhover">' . "\n";
         // Work out which columns to display
-        $display = array();
-        $orderable = array();
-        $fieldname = array();
-        $align = array();
+        $display = [];
+        $orderable = [];
+        $fieldname = [];
+        $align = [];
         for ($f = 0; $f < $fields; $f++) {
             if ($f === 0 && $operations !== false) {
                 // Set up display for operations form elements
@@ -2245,9 +2245,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     echo "  <th>\n";
                     echo "  $fieldname[$f] (<a href=\"?orderby=" . $fieldInfo->name
                         . '&amp;orderdir=a' . subtract_multi_get_vars(
-                            array('orderby', 'orderdir')
+                            ['orderby', 'orderdir']
                         ) . '">A</a>/<a href="?orderby=' . $fieldInfo->name
-                        . '&amp;orderdir=d' . subtract_multi_get_vars(array('orderby', 'orderdir')) . "\">D</a>)\n";
+                        . '&amp;orderdir=d' . subtract_multi_get_vars(['orderby', 'orderdir']) . "\">D</a>)\n";
                     echo "  </th>\n";
                 } else {
                     echo '  <th>' . $fieldname[$f] . '</th>' . "\n";
@@ -2261,7 +2261,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         $jsReleaseCheck = '';
         for ($r = 0; $r < $rows; $r++) {
             $row = $sth->fetch_row();
-            $tooltips = array();
+            $tooltips = [];
             if ($operations !== false) {
                 // Prepend operations elements - later on, replace REPLACEME w/ message id
                 array_unshift(
@@ -2271,7 +2271,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             }
             // Work out field colourings and modify the incoming data as necessary
             // and populate the generate an overall 'status' for the mail.
-            $status_array = array();
+            $status_array = [];
             $infected = false;
             $highspam = false;
             $spam = false;
@@ -2622,12 +2622,12 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         $rows = (int)$resultsFirstRow['numrows'];
 
         // Build the pager data
-        $pager_options = array(
+        $pager_options = [
             'mode' => 'Sliding',
             'perPage' => MAX_RESULTS,
             'delta' => 2,
             'totalItems' => $rows,
-        );
+        ];
         $pager = Pager::factory($pager_options);
 
         //then we fetch the relevant records for the current page
@@ -2717,12 +2717,12 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         $rows = database::mysqli_result(dbquery($sqlcount), 0);
 
         // Build the pager data
-        $pager_options = array(
+        $pager_options = [
             'mode' => 'Sliding',
             'perPage' => MAX_RESULTS,
             'delta' => 2,
             'totalItems' => $rows,
-        );
+        ];
         $pager = Pager::factory($pager_options);
 
         //then we fetch the relevant records for the current page
@@ -2855,7 +2855,7 @@ function get_mail_relays($message_headers)
 function address_filter_sql($addresses, $type)
 {
     $sqladdr = '';
-    $sqladdr_arr = array();
+    $sqladdr_arr = [];
     switch ($type) {
         case 'A': // Administrator - show everything
             $sqladdr = '1=1';
@@ -3053,14 +3053,14 @@ if (!function_exists('ldap_escape')) {
      */
     function ldap_escape($subject, $ignore = '', $flags = 0)
     {
-        $charMaps = array(
-            LDAP_ESCAPE_FILTER => array('\\', '*', '(', ')', "\x00"),
-            LDAP_ESCAPE_DN => array('\\', ',', '=', '+', '<', '>', ';', '"', '#')
-        );
+        $charMaps = [
+            LDAP_ESCAPE_FILTER => ['\\', '*', '(', ')', "\x00"],
+            LDAP_ESCAPE_DN => ['\\', ',', '=', '+', '<', '>', ';', '"', '#']
+        ];
 
         // Pre-process the char maps on first call
         if (!isset($charMaps[0])) {
-            $charMaps[0] = array();
+            $charMaps[0] = [];
             for ($i = 0; $i < 256; $i++) {
                 $charMaps[0][chr($i)] = sprintf('\\%02x', $i);
             }
@@ -3080,7 +3080,7 @@ if (!function_exists('ldap_escape')) {
 
         // Create the base char map to escape
         $flags = (int)$flags;
-        $charMap = array();
+        $charMap = [];
         if ($flags & LDAP_ESCAPE_FILTER) {
             $charMap += $charMaps[LDAP_ESCAPE_FILTER];
         }
@@ -3133,7 +3133,7 @@ function ldap_get_conf_var($entry)
     $filter = '(objectClass=mailscannerconfmain)';
     $filter = "(&$filter(mailScannerConfBranch=main))";
 
-    $sh = ldap_search($lh, LDAP_DN, $filter, array($entry));
+    $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
 
     $info = ldap_get_entries($lh, $sh);
     if ($info['count'] > 0 && $info[0]['count'] !== 0) {
@@ -3143,7 +3143,7 @@ function ldap_get_conf_var($entry)
         }
 
         // Multi-value option, build array and return as space delimited
-        $return = array();
+        $return = [];
         for ($n = 0; $n < $info[0][$info[0][0]]['count']; $n++) {
             $return[] = $info[0][$info[0][0]][$n];
         }
@@ -3174,7 +3174,7 @@ function ldap_get_conf_truefalse($entry)
     $filter = '(objectClass=mailscannerconfmain)';
     $filter = "(&$filter(mailScannerConfBranch=main))";
 
-    $sh = ldap_search($lh, LDAP_DN, $filter, array($entry));
+    $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
 
     $info = ldap_get_entries($lh, $sh);
     debug(debug_print_r($info));
@@ -3247,7 +3247,7 @@ function translate_etoi($name)
     $file = MS_SHARE_DIR . 'perl/MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'rb')
     or die(__('dietranslateetoi03') . " $file\n");
-    $etoi = array();
+    $etoi = [];
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, filesize($file)));
         if (preg_match('/^([^#].+)\s=\s([^#].+)/i', $line, $regs)) {
@@ -3360,7 +3360,7 @@ function stripPortFromIp($ip)
 function quarantine_list($input = '/')
 {
     $quarantinedir = get_conf_var('QuarantineDir') . '/';
-    $item = array();
+    $item = [];
     if ($input === '/') {
 
         // Return top-level directory
@@ -3374,7 +3374,7 @@ function quarantine_list($input = '/')
         @closedir($d);
     } else {
         $current_dir = $quarantinedir . $input;
-        $dirs = array($current_dir, $current_dir . '/spam', $current_dir . '/nonspam', $current_dir . '/mcp');
+        $dirs = [$current_dir, $current_dir . '/spam', $current_dir . '/nonspam', $current_dir . '/mcp'];
         foreach ($dirs as $dir) {
             if (is_dir($dir) && is_readable($dir)) {
                 $d = @opendir($dir);
@@ -3452,9 +3452,9 @@ SELECT
         if ($row->virusinfected === 'Y' || $row->nameinfected === 'Y' || $row->otherinfected === 'Y') {
             $infected = 'Y';
         }
-        $quarantined = array();
+        $quarantined = [];
         $count = 0;
-        foreach (array($nonspam, $spam, $mcp) as $category) {
+        foreach ([$nonspam, $spam, $mcp] as $category) {
             if (file_exists($category) && is_readable($category)) {
                 $quarantined[$count]['id'] = $count;
                 $quarantined[$count]['host'] = $row->hostname;
@@ -3500,7 +3500,7 @@ SELECT
     //if(DEBUG) { $client->setDebug(1); }
     //$parameters = array($input);
     //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
-    $msg = new xmlrpcmsg('quarantine_list_items', array(new xmlrpcval($msgid)));
+    $msg = new xmlrpcmsg('quarantine_list_items', [new xmlrpcval($msgid)]);
     $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
     if ($rsp->faultCode() === 0) {
         $response = php_xmlrpc_decode($rsp->value());
@@ -3535,13 +3535,13 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             require_once __DIR__ . '/lib/pear/Mail/mime.php';
             require_once __DIR__ . '/lib/pear/Mail/smtp.php';
 
-            $hdrs = array('From' => MAILWATCH_FROM_ADDR, 'Subject' => \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r'));
-            $mailMimeParams = array(
+            $hdrs = ['From' => MAILWATCH_FROM_ADDR, 'Subject' => \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r')];
+            $mailMimeParams = [
                 'eol' => "\r\n",
                 'html_charset' => 'UTF-8',
                 'text_charset' => 'UTF-8',
                 'head_charset' => 'UTF-8'
-            );
+            ];
             $mime = new Mail_mime($mailMimeParams);
             $mime->setTXTBody(\ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY));
             // Loop through each selected file and attach them to the mail
@@ -3554,7 +3554,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
                     $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
                 }
             }
-            $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+            $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
             if (defined('MAILWATCH_SMTP_HOSTNAME')) {
                 $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
             }
@@ -3607,15 +3607,15 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
         //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
-        $list_output = array();
+        $list_output = [];
         foreach ($list as $list_array) {
-            $list_struct = array();
+            $list_struct = [];
             foreach ($list_array as $key => $val) {
                 $list_struct[$key] = new xmlrpcval($val);
             }
             $list_output[] = new xmlrpcval($list_struct, 'struct');
         }
-        $num_output = array();
+        $num_output = [];
         foreach ($num as $key => $val) {
             $num_output[$key] = new xmlrpcval($val);
         }
@@ -3623,7 +3623,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         $param1 = new xmlrpcval($list_output, 'array');
         $param2 = new xmlrpcval($num_output, 'array');
         $param3 = new xmlrpcval($to, 'string');
-        $parameters = array($param1, $param2, $param3);
+        $parameters = [$param1, $param2, $param3];
         $msg = new xmlrpcmsg('quarantine_release', $parameters);
         $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
         if ($rsp->faultCode() === 0) {
@@ -3651,7 +3651,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     }
     $new = quarantine_list_items($list[0]['msgid']);
     $list =& $new;
-    $status = array();
+    $status = [];
     if (!$rpc_only && is_local($list[0]['host'])) {
         //prevent sa-learn process blocking complete apache server
         session_write_close();
@@ -3776,15 +3776,15 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
     //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
-    $list_output = array();
+    $list_output = [];
     foreach ($list as $list_array) {
-        $list_struct = array();
+        $list_struct = [];
         foreach ($list_array as $key => $val) {
             $list_struct[$key] = new xmlrpcval($val);
         }
         $list_output[] = new xmlrpcval($list_struct, 'struct');
     }
-    $num_output = array();
+    $num_output = [];
     foreach ($num as $key => $val) {
         $num_output[$key] = new xmlrpcval($val);
     }
@@ -3792,7 +3792,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     $param1 = new xmlrpcval($list_output, 'array');
     $param2 = new xmlrpcval($num_output, 'array');
     $param3 = new xmlrpcval($type, 'string');
-    $parameters = array($param1, $param2, $param3);
+    $parameters = [$param1, $param2, $param3];
     $msg = new xmlrpcmsg('quarantine_learn', $parameters);
     $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
     if ($rsp->faultCode() === 0) {
@@ -3820,7 +3820,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
     $list =& $new;
 
     if (!$rpc_only && is_local($list[0]['host'])) {
-        $status = array();
+        $status = [];
         foreach ($num as $key => $val) {
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
@@ -3840,22 +3840,22 @@ function quarantine_delete($list, $num, $rpc_only = false)
     debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
     //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
-    $list_output = array();
+    $list_output = [];
     foreach ($list as $list_array) {
-        $list_struct = array();
+        $list_struct = [];
         foreach ($list_array as $key => $val) {
             $list_struct[$key] = new xmlrpcval($val);
         }
         $list_output[] = new xmlrpcval($list_struct, 'struct');
     }
-    $num_output = array();
+    $num_output = [];
     foreach ($num as $key => $val) {
         $num_output[$key] = new xmlrpcval($val);
     }
     // Build input parameters
     $param1 = new xmlrpcval($list_output, 'array');
     $param2 = new xmlrpcval($num_output, 'array');
-    $parameters = array($param1, $param2);
+    $parameters = [$param1, $param2];
     $msg = new xmlrpcmsg('quarantine_delete', $parameters);
     $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
     if ($rsp->faultCode() === 0) {
@@ -3918,7 +3918,7 @@ function mailwatch_array_sum($array)
 {
     if (!is_array($array)) {
         // Not an array
-        return array();
+        return [];
     }
 
     return array_sum($array);
@@ -3976,7 +3976,7 @@ function get_virus_conf($scanner)
  */
 function return_quarantine_dates()
 {
-    $array = array();
+    $array = [];
     for ($d = 0; $d < QUARANTINE_DAYS_TO_KEEP; $d++) {
         $array[] = date('Ymd', mktime(0, 0, 0, date('m'), date('d') - $d, date('Y')));
     }
@@ -4125,7 +4125,7 @@ function checkForExistingUser($username)
  */
 function checkConfVariables()
 {
-    $needed = array(
+    $needed = [
         'ALLOWED_TAGS',
         'AUDIT',
         'AUDIT_DAYS_TO_KEEP',
@@ -4215,9 +4215,9 @@ function checkConfVariables()
         'USE_PROXY',
         'VIRUS_INFO',
         'DISPLAY_VIRUS_REPORT',
-    );
+    ];
 
-    $obsolete = array(
+    $obsolete = [
         'MS_LOGO',
         'QUARANTINE_MAIL_HOST',
         'QUARANTINE_MAIL_PORT',
@@ -4226,38 +4226,38 @@ function checkConfVariables()
         'CACHE_DIR',
         'LDAP_SSL',
         'TTF_DIR',
-    );
+    ];
 
-    $optional = array(
-        'RPC_PORT' => array('description' => 'needed if RPC_ONLY mode is enabled'),
-        'RPC_SSL' => array('description' => 'needed if RPC_ONLY mode is enabled'),
-        'RPC_REMOTE_SERVER' => array('description' => 'needed to show number of mails in postfix queues on remote server (RPC)'),
-        'VIRUS_REGEX' => array('description' => 'needed in distributed setup'),
-        'LDAP_BIND_PREFIX' => array('description' => 'needed when using LDAP authentication'),
-        'LDAP_BIND_SUFFIX' => array('description' => 'needed when using LDAP authentication'),
-        'EXIM_QUEUE_IN' => array('description' => 'needed only if using Exim as MTA'),
-        'EXIM_QUEUE_OUT' => array('description' => 'needed only if using Exim as MTA'),
-        'PWD_RESET_FROM_NAME' => array('description' => 'needed if Password Reset feature is enabled'),
-        'PWD_RESET_FROM_ADDRESS' => array('description' => 'needed if Password Reset feature is enabled'),
-        'MAILQ' => array('description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'),
-        'MAIL_SENDER'  => array('description' => 'needed if you use Exim or Sendmail Queue'),
-        'SESSION_NAME' => array('description' => 'needed if experiencing session conflicts'),
-        'SENDMAIL_QUEUE_IN' => array('description' => 'needed only if using Sendmail as MTA'),
-        'SENDMAIL_QUEUE_OUT' => array('description' => 'needed only if using Sendmail as MTA'),
-        'USER_SELECTABLE_LANG' => array('description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,ja,nl,pt_br"'),
-        'MAILWATCH_SMTP_HOSTNAME' => array('description' => 'needed only if you use a remote SMTP server to send MailWatch emails'),
-        'SESSION_TIMEOUT' => array('description' => 'needed if you want to override the default session timeout'),
-        'STATUSGRAPH_INTERVAL' => array('description' => 'to change the interval of the status chart (default 60 minutes)'),
-        'ALLOW_NO_USER_DOMAIN' => array('description' => 'allow usernames not in mail format for domain admins and regular users'),
-        'ENABLE_SUPER_DOMAIN_ADMINS' => array('description' => 'allows domain admins to change domain admins from the same domain'),
-        'USE_IMAP' => array('description' => 'use IMAP for user authentication'),
-        'IMAP_HOST' => array('description' => 'IMAP host to be used for user authentication'),
-        'IMAP_AUTOCREATE_VALID_USER' => array('description' => 'enable to autorcreate user from valid imap login'),
-        'MAXMIND_LICENSE_KEY' => array('description' => 'needed to download MaxMind GeoLite2 data')
-    );
+    $optional = [
+        'RPC_PORT' => ['description' => 'needed if RPC_ONLY mode is enabled'],
+        'RPC_SSL' => ['description' => 'needed if RPC_ONLY mode is enabled'],
+        'RPC_REMOTE_SERVER' => ['description' => 'needed to show number of mails in postfix queues on remote server (RPC)'],
+        'VIRUS_REGEX' => ['description' => 'needed in distributed setup'],
+        'LDAP_BIND_PREFIX' => ['description' => 'needed when using LDAP authentication'],
+        'LDAP_BIND_SUFFIX' => ['description' => 'needed when using LDAP authentication'],
+        'EXIM_QUEUE_IN' => ['description' => 'needed only if using Exim as MTA'],
+        'EXIM_QUEUE_OUT' => ['description' => 'needed only if using Exim as MTA'],
+        'PWD_RESET_FROM_NAME' => ['description' => 'needed if Password Reset feature is enabled'],
+        'PWD_RESET_FROM_ADDRESS' => ['description' => 'needed if Password Reset feature is enabled'],
+        'MAILQ' => ['description' => 'needed when using Exim or Sendmail to display the inbound/outbound mail queue lengths'],
+        'MAIL_SENDER'  => ['description' => 'needed if you use Exim or Sendmail Queue'],
+        'SESSION_NAME' => ['description' => 'needed if experiencing session conflicts'],
+        'SENDMAIL_QUEUE_IN' => ['description' => 'needed only if using Sendmail as MTA'],
+        'SENDMAIL_QUEUE_OUT' => ['description' => 'needed only if using Sendmail as MTA'],
+        'USER_SELECTABLE_LANG' => ['description' => 'comma separated list of codes for languages the users can use eg. "de,en,fr,it,ja,nl,pt_br"'],
+        'MAILWATCH_SMTP_HOSTNAME' => ['description' => 'needed only if you use a remote SMTP server to send MailWatch emails'],
+        'SESSION_TIMEOUT' => ['description' => 'needed if you want to override the default session timeout'],
+        'STATUSGRAPH_INTERVAL' => ['description' => 'to change the interval of the status chart (default 60 minutes)'],
+        'ALLOW_NO_USER_DOMAIN' => ['description' => 'allow usernames not in mail format for domain admins and regular users'],
+        'ENABLE_SUPER_DOMAIN_ADMINS' => ['description' => 'allows domain admins to change domain admins from the same domain'],
+        'USE_IMAP' => ['description' => 'use IMAP for user authentication'],
+        'IMAP_HOST' => ['description' => 'IMAP host to be used for user authentication'],
+        'IMAP_AUTOCREATE_VALID_USER' => ['description' => 'enable to autorcreate user from valid imap login'],
+        'MAXMIND_LICENSE_KEY' => ['description' => 'needed to download MaxMind GeoLite2 data']
+    ];
 
-    $results = array();
-    $neededMissing = array();
+    $results = [];
+    $neededMissing = [];
     foreach ($needed as $item) {
         if (!defined($item)) {
             $neededMissing[] = $item;
@@ -4266,7 +4266,7 @@ function checkConfVariables()
     $results['needed']['count'] = count($neededMissing);
     $results['needed']['list'] = $neededMissing;
 
-    $obsoleteStillPresent = array();
+    $obsoleteStillPresent = [];
     foreach ($obsolete as $item) {
         if (defined($item)) {
             $obsoleteStillPresent[] = $item;
@@ -4275,7 +4275,7 @@ function checkConfVariables()
     $results['obsolete']['count'] = count($obsoleteStillPresent);
     $results['obsolete']['list'] = $obsoleteStillPresent;
 
-    $optionalMissing = array();
+    $optionalMissing = [];
     foreach ($optional as $key => $item) {
         if (!defined($key)) {
             $optionalMissing[$key] = $item;
@@ -4349,24 +4349,24 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     } else {
         $sender = QUARANTINE_REPORT_FROM_NAME . ' <' . MAILWATCH_FROM_ADDR . '>';
     }
-    $hdrs = array(
+    $hdrs = [
         'From' => $sender,
         'To' => $email,
         'Subject' => $subject,
         'Date' => date('r')
-    );
-    $mime_params = array(
+    ];
+    $mime_params = [
         'text_encoding' => '7bit',
         'text_charset' => 'UTF-8',
         'html_charset' => 'UTF-8',
         'head_charset' => 'UTF-8'
-    );
+    ];
     $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
     $mime->setTXTBody($text);
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);
     $hdrs = $mime->headers($hdrs);
-    $mail_param = array('host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT);
+    $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
     if (defined('MAILWATCH_SMTP_HOSTNAME')) {
         $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
     }
@@ -4385,30 +4385,30 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 {
     require_once __DIR__ . '/lib/IPSet.php';
     if ($privateLocal === 'private') {
-        $privateIPSet = new \IPSet\IPSet(array(
+        $privateIPSet = new \IPSet\IPSet([
             '10.0.0.0/8',
             '172.16.0.0/12',
             '192.168.0.0/16',
             'fc00::/7',
             'fe80::/10',
-        ));
+        ]);
 
         return $privateIPSet->match($ip);
     }
 
     if ($privateLocal === 'local') {
-        $localIPSet = new \IPSet\IPSet(array(
+        $localIPSet = new \IPSet\IPSet([
             '127.0.0.0/8',
             '::1',
-        ));
+        ]);
 
         return $localIPSet->match($ip);
     }
 
     if ($privateLocal === false && $net !== false) {
-        $network = new \IPSet\IPSet(array(
+        $network = new \IPSet\IPSet([
             $net
-        ));
+        ]);
 
         return $network->match($ip);
     }
@@ -4829,38 +4829,38 @@ function printTrafficGraph()
       timestamp DESC
     ';
 
-    $graphgenerator->sqlColumns = array(
+    $graphgenerator->sqlColumns = [
         'xaxis',
         'total_mail',
         'total_virus',
         'total_spam',
-    );
-    $graphgenerator->valueConversion = array(
+    ];
+    $graphgenerator->valueConversion = [
         'xaxis' => 'generatetimescale',
         'total_mail' => 'timescale',
         'total_virus' => 'timescale',
         'total_spam' => 'timescale',
-    );
-    $graphgenerator->graphColumns = array(
+    ];
+    $graphgenerator->graphColumns = [
         'labelColumn' => 'time',
-        'dataLabels' => array(
-            array(__('barvirus03'), __('barspam03'), __('barmail03')),
-        ),
-        'dataNumericColumns' => array(
-            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
-        ),
-        'dataFormattedColumns' => array(
-            array('total_virusconv', 'total_spamconv', 'total_mailconv'),
-        ),
+        'dataLabels' => [
+            [__('barvirus03'), __('barspam03'), __('barmail03')],
+        ],
+        'dataNumericColumns' => [
+            ['total_virusconv', 'total_spamconv', 'total_mailconv'],
+        ],
+        'dataFormattedColumns' => [
+            ['total_virusconv', 'total_spamconv', 'total_mailconv'],
+        ],
         'xAxeDescription' => '',
-        'yAxeDescriptions' => array(
+        'yAxeDescriptions' => [
             '',
-        ),
-        'fillBelowLine' => array('true')
-    );
-    $graphgenerator->types = array(
-        array('line', 'line', 'line'),
-    );
+        ],
+        'fillBelowLine' => ['true']
+    ];
+    $graphgenerator->types = [
+        ['line', 'line', 'line'],
+    ];
     $graphgenerator->graphTitle = '';
     $graphgenerator->settings['timeInterval'] = 'PT' . $graphInterval . 'M';
     $graphgenerator->settings['timeScale'] = 'PT1M';
@@ -4872,7 +4872,7 @@ function printTrafficGraph()
     $graphgenerator->settings['drawLines'] = true;
     $graphgenerator->settings['chartId'] = 'trafficgraph';
     $graphgenerator->settings['ignoreEmptyResult'] = true;
-    $graphgenerator->settings['colors'] = array(array('virusColor', 'spamColor', 'mailColor'));
+    $graphgenerator->settings['colors'] = [['virusColor', 'spamColor', 'mailColor']];
     $graphgenerator->printTable = false;
     $graphgenerator->printLineGraph();
 

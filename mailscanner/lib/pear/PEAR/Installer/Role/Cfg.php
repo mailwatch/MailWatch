@@ -71,10 +71,10 @@ class PEAR_Installer_Role_Cfg extends PEAR_Installer_Role_Common
                 // backup original and re-install it
                 PEAR::pushErrorHandling(PEAR_ERROR_RETURN);
                 $tmpcfg = $this->config->get('temp_dir');
-                $newloc = System::mkdir(array('-p', $tmpcfg));
+                $newloc = System::mkdir(['-p', $tmpcfg]);
                 if (!$newloc) {
                     // try temp_dir
-                    $newloc = System::mktemp(array('-d'));
+                    $newloc = System::mktemp(['-d']);
                     if (!$newloc || PEAR::isError($newloc)) {
                         PEAR::popErrorHandling();
                         return PEAR::raiseError('Could not save existing configuration file '.
@@ -95,8 +95,8 @@ class PEAR_Installer_Role_Cfg extends PEAR_Installer_Role_Common
 
                 PEAR::popErrorHandling();
                 $this->installer->log(0, "WARNING: configuration file $old is being installed as $test[2], you should manually merge in changes to the existing configuration file");
-                $this->installer->addFileOperation('rename', array($temp_file, $old, false));
-                $this->installer->addFileOperation('delete', array($temp_file));
+                $this->installer->addFileOperation('rename', [$temp_file, $old, false]);
+                $this->installer->addFileOperation('delete', [$temp_file]);
             }
         }
 

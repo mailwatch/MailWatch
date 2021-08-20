@@ -109,15 +109,15 @@ class OS_Guess
 
     function parseSignature($uname = null)
     {
-        static $sysmap = array(
+        static $sysmap = [
             'HP-UX' => 'hpux',
             'IRIX64' => 'irix',
-        );
-        static $cpumap = array(
+        ];
+        static $cpumap = [
             'i586' => 'i386',
             'i686' => 'i386',
             'ppc' => 'powerpc',
-        );
+        ];
         if ($uname === null) {
             $uname = php_uname();
         }
@@ -172,7 +172,7 @@ class OS_Guess
         if (isset($cpumap[$cpu])) {
             $cpu = $cpumap[$cpu];
         }
-        return array($sysname, $release, $cpu, $extra, $nodename);
+        return [$sysname, $release, $cpu, $extra, $nodename];
     }
 
     function _determineIfPowerpc($cpu, $parts)
@@ -194,12 +194,12 @@ class OS_Guess
         include_once "System.php";
 
         // Let's try reading possible libc.so.6 symlinks
-        $libcs = array(
+        $libcs = [
             '/lib64/libc.so.6',
             '/lib/libc.so.6',
             '/lib/i386-linux-gnu/libc.so.6'
-        );
-        $versions = array();
+        ];
+        $versions = [];
         foreach ($libcs as $file) {
             $versions = $this->_readGlibCVersionFromSymlink($file);
             if ($versions != []) {
@@ -226,7 +226,7 @@ class OS_Guess
 
     function _readGlibCVersionFromSymlink($file)
     {
-        $versions = array();
+        $versions = [];
         if (@is_link($file)
             && (preg_match('/^libc-(.*)\.so$/', basename(readlink($file)), $matches))
         ) {
@@ -242,7 +242,7 @@ class OS_Guess
         if (!(@file_exists($features_header_file)
             && @is_readable($features_header_file))
         ) {
-            return array();
+            return [];
         }
         if (!@file_exists('/usr/bin/cpp') || !@is_executable('/usr/bin/cpp')) {
             return $this-_parseFeaturesHeaderFile($features_header_file);
@@ -281,9 +281,9 @@ class OS_Guess
         }
         fclose($features_file);
         if (!isset($glibc_major) || !isset($glibc_minor)) {
-            return array();
+            return [];
         }
-        return array(trim($glibc_major), trim($glibc_minor));
+        return [trim($glibc_major), trim($glibc_minor)];
     }
 
     function _IsADefinition($line)
@@ -377,8 +377,8 @@ class OS_Guess
     {
         if (strcspn($fragment, '*?') < strlen($fragment)) {
             $expression = str_replace(
-                array('*', '?', '/'),
-                array('.*', '.', '\\/'),
+                ['*', '?', '/'],
+                ['.*', '.', '\\/'],
                 $fragment
             );
             $reg = '/^' . $expression . '\\z/';

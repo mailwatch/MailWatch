@@ -53,7 +53,7 @@ class PEAR_Validate
      * @var array
      * @access private
      */
-    public $_failures = array('error' => array(), 'warning' => array());
+    public $_failures = ['error' => [], 'warning' => []];
 
     /**
      * Override this method to handle validation of normal package names
@@ -100,7 +100,7 @@ class PEAR_Validate
      */
     public static function validState($state)
     {
-        return in_array($state, array('snapshot', 'devel', 'alpha', 'beta', 'stable'));
+        return in_array($state, ['snapshot', 'devel', 'alpha', 'beta', 'stable']);
     }
 
     /**
@@ -110,7 +110,7 @@ class PEAR_Validate
      */
     public static function getValidStates()
     {
-        return array('snapshot', 'devel', 'alpha', 'beta', 'stable');
+        return ['snapshot', 'devel', 'alpha', 'beta', 'stable'];
     }
 
     /**
@@ -138,7 +138,7 @@ class PEAR_Validate
      */
     function _addFailure($field, $reason)
     {
-        $this->_failures['errors'][] = array('field' => $field, 'reason' => $reason);
+        $this->_failures['errors'][] = ['field' => $field, 'reason' => $reason];
     }
 
     /**
@@ -146,13 +146,13 @@ class PEAR_Validate
      */
     function _addWarning($field, $reason)
     {
-        $this->_failures['warnings'][] = array('field' => $field, 'reason' => $reason);
+        $this->_failures['warnings'][] = ['field' => $field, 'reason' => $reason];
     }
 
     function getFailures()
     {
         $failures = $this->_failures;
-        $this->_failures = array('warnings' => array(), 'errors' => array());
+        $this->_failures = ['warnings' => [], 'errors' => []];
         return $failures;
     }
 
@@ -167,7 +167,7 @@ class PEAR_Validate
         if ($state !== null) {
             $this->_state = $state;
         }
-        $this->_failures = array('warnings' => array(), 'errors' => array());
+        $this->_failures = ['warnings' => [], 'errors' => []];
         $this->validatePackageName();
         $this->validateVersion();
         $this->validateMaintainers();

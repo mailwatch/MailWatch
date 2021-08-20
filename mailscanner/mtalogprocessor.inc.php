@@ -49,7 +49,7 @@ abstract class MtaLogProcessor
      */
     public function getRejectReasons()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -57,7 +57,7 @@ abstract class MtaLogProcessor
      */
     public function getRulesets()
     {
-        return array();
+        return [];
     }
 
     protected function processLine($line)
@@ -218,7 +218,7 @@ abstract class MtaLogProcessor
         // Extract any key=value pairs
         if (false !== strpos($this->raw, '=')) {
             $items = explode(', ', $this->raw);
-            $entries = array();
+            $entries = [];
             foreach ($items as $item) {
                 $entry = explode('=', $item);
                 // fix for the id= issue 09.12.2011

@@ -34,7 +34,7 @@ class PEAR_Task_Unixeol_rw extends PEAR_Task_Unixeol
         parent::__construct($config, $logger, PEAR_TASK_PACKAGE);
         $this->_contents = $fileXml;
         $this->_pkg = &$pkg;
-        $this->_params = array();
+        $this->_params = [];
     }
 
     public function validate()

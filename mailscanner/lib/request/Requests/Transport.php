@@ -22,7 +22,7 @@ interface Requests_Transport {
 	 * @param array $options Request options, see {@see Requests::response()} for documentation
 	 * @return string Raw HTTP result
 	 */
-	public function request($url, $headers = array(), $data = array(), $options = array());
+	public function request($url, $headers = [], $data = [], $options = []);
 
 	/**
 	 * Send multiple requests simultaneously

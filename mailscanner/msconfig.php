@@ -41,7 +41,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<table border="0" cellpadding="1" cellspacing="1" class="maildetail" width="100%">';
     echo '<tr><th colspan="2">' . __('msconfig27') . '</th></tr>';
 
-    $array_output = array();
+    $array_output = [];
     $array_output1 = parse_conf_file($MailScanner_conf_file);
     $array_output2 = parse_conf_dir($conf_dir);
 

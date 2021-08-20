@@ -28,7 +28,7 @@
 /* languages/de.php */
 /* v0.3.12 */
 
-return array(
+return [
     // 01-login.php
     'username' => 'Benutzername:',
     'password' => 'Passwort:',
@@ -1012,4 +1012,4 @@ return array(
     'pt_br' => 'Português',
     'dbconnecterror99' => '<p>Fehler: Datenbankverbindung fehlgeschlagen</p><p>Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt.</p><p class="emphasise">Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht</p>',
     'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht'
-);
+];

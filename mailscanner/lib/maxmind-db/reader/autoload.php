@@ -23,7 +23,7 @@ function mmdb_autoload($class)
     * to extend in the future if (for example) the test classes
     * begin to use one another.
     */
-    $namespace_map = array('MaxMind\\Db\\' => __DIR__ . '/src/MaxMind/Db/');
+    $namespace_map = ['MaxMind\\Db\\' => __DIR__ . '/src/MaxMind/Db/'];
 
     foreach ($namespace_map as $prefix => $dir)
     {
