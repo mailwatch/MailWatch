@@ -219,7 +219,7 @@ WHERE
         } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
             // Handle NULL and NOT NULL's
             return "AND\n $val[0] $val[1]\n";
-        } elseif ($val[2]!=='' && $val[2]{0} === '!') {
+        } elseif ($val[2]!=='' && $val[2][0] === '!') {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
         } else {
