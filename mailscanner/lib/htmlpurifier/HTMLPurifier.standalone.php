@@ -7,7 +7,7 @@
  * primary concern and you are using an opcode cache. PLEASE DO NOT EDIT THIS
  * FILE, changes will be overwritten the next time the script is run.
  *
- * @version 4.12.0
+ * @version 4.13.0
  *
  * @warning
  *      You must *not* include any other HTML Purifier files before this file,
@@ -39,7 +39,7 @@
  */
 
 /*
-    HTML Purifier 4.12.0 - Standards Compliant HTML Filtering
+    HTML Purifier 4.13.0 - Standards Compliant HTML Filtering
     Copyright (C) 2006-2008 Edward Z. Yang
 
     This library is free software; you can redistribute it and/or
@@ -78,12 +78,12 @@ class HTMLPurifier
      * Version of HTML Purifier.
      * @type string
      */
-    public $version = '4.12.0';
+    public $version = '4.13.0';
 
     /**
      * Constant with version of HTML Purifier.
      */
-    const VERSION = '4.12.0';
+    const VERSION = '4.13.0';
 
     /**
      * Global configuration object.
@@ -260,6 +260,7 @@ class HTMLPurifier
     public function purifyArray($array_of_html, $config = null)
     {
         $context_array = array();
+        $array = array();
         foreach($array_of_html as $key=>$value){
             if (is_array($value)) {
                 $array[$key] = $this->purifyArray($value, $config);
@@ -1810,7 +1811,7 @@ class HTMLPurifier_Config
      * HTML Purifier's version
      * @type string
      */
-    public $version = '4.12.0';
+    public $version = '4.13.0';
 
     /**
      * Whether or not to automatically finalize
@@ -2197,7 +2198,7 @@ class HTMLPurifier_Config
      *             maybeGetRawHTMLDefinition, which is more explicitly
      *             named, instead.
      *
-     * @return HTMLPurifier_HTMLDefinition
+     * @return HTMLPurifier_HTMLDefinition|null
      */
     public function getHTMLDefinition($raw = false, $optimized = false)
     {
@@ -2216,7 +2217,7 @@ class HTMLPurifier_Config
      *             maybeGetRawCSSDefinition, which is more explicitly
      *             named, instead.
      *
-     * @return HTMLPurifier_CSSDefinition
+     * @return HTMLPurifier_CSSDefinition|null
      */
     public function getCSSDefinition($raw = false, $optimized = false)
     {
@@ -2235,7 +2236,7 @@ class HTMLPurifier_Config
      *             maybeGetRawURIDefinition, which is more explicitly
      *             named, instead.
      *
-     * @return HTMLPurifier_URIDefinition
+     * @return HTMLPurifier_URIDefinition|null
      */
     public function getURIDefinition($raw = false, $optimized = false)
     {
@@ -2257,7 +2258,7 @@ class HTMLPurifier_Config
      *        maybe semantics is the "right thing to do."
      *
      * @throws HTMLPurifier_Exception
-     * @return HTMLPurifier_Definition
+     * @return HTMLPurifier_Definition|null
      */
     public function getDefinition($type, $raw = false, $optimized = false)
     {
@@ -2436,7 +2437,7 @@ class HTMLPurifier_Config
     }
 
     /**
-     * @return HTMLPurifier_HTMLDefinition
+     * @return HTMLPurifier_HTMLDefinition|null
      */
     public function maybeGetRawHTMLDefinition()
     {
@@ -2444,7 +2445,7 @@ class HTMLPurifier_Config
     }
     
     /**
-     * @return HTMLPurifier_CSSDefinition
+     * @return HTMLPurifier_CSSDefinition|null
      */
     public function maybeGetRawCSSDefinition()
     {
@@ -2452,7 +2453,7 @@ class HTMLPurifier_Config
     }
     
     /**
-     * @return HTMLPurifier_URIDefinition
+     * @return HTMLPurifier_URIDefinition|null
      */
     public function maybeGetRawURIDefinition()
     {
@@ -10991,7 +10992,13 @@ class HTMLPurifier_AttrDef_CSS_Number extends HTMLPurifier_AttrDef
             return false;
         }
 
-        $left = ltrim($left, '0');
+        // Remove leading zeros until positive number or a zero stays left
+        if (ltrim($left, '0') != '') {
+            $left = ltrim($left, '0');
+        } else {
+            $left = '0';
+        }
+
         $right = rtrim($right, '0');
 
         if ($right === '') {
@@ -16150,6 +16157,10 @@ class HTMLPurifier_HTMLModule_Forms extends HTMLPurifier_HTMLModule
      */
     public function setup($config)
     {
+        if ($config->get('HTML.Forms')) {
+            $this->safe = true;
+        }
+
         $form = $this->addElement(
             'form',
             'Form',
@@ -17885,6 +17896,7 @@ class HTMLPurifier_HTMLModule_Tidy_XHTMLAndHTML4 extends HTMLPurifier_HTMLModule
 
         // @bgcolor for table, tr, td, th ---------------------------------
         $r['table@bgcolor'] =
+        $r['tr@bgcolor'] =
         $r['td@bgcolor'] =
         $r['th@bgcolor'] =
             new HTMLPurifier_AttrTransform_BgColor();
