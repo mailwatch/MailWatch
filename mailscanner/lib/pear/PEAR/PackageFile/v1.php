@@ -1421,7 +1421,7 @@ class PEAR_PackageFile_v1
             }
             switch ($token) {
                 case T_WHITESPACE :
-                    continue;
+                    break;
                 case ';':
                     if ($interface) {
                         $current_function = '';
