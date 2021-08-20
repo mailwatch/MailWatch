@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PEAR_ChannelFile_Parser for parsing channel.xml
  *
@@ -12,7 +13,6 @@
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 1.4.0a1
  */
-
 /**
  * base xml parser class
  */
@@ -31,9 +31,9 @@ require_once 'PEAR/ChannelFile.php';
  */
 class PEAR_ChannelFile_Parser extends PEAR_XMLParser
 {
-    var $_config;
-    var $_logger;
-    var $_registry;
+    public $_config;
+    public $_logger;
+    public $_registry;
 
     function setConfig(&$c)
     {

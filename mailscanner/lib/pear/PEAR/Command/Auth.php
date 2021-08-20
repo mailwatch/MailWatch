@@ -36,7 +36,7 @@ require_once 'PEAR/Command/Channels.php';
  */
 class PEAR_Command_Auth extends PEAR_Command_Channels
 {
-    var $commands = array(
+    public $commands = array(
         'login' => array(
             'summary' => 'Connects and authenticates to remote server [Deprecated in favor of channel-login]',
             'shortcut' => 'li',

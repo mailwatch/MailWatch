@@ -147,7 +147,7 @@ class PEAR_ErrorStack {
      * @var array
      * @access private
      */
-    var $_errors = array();
+    public $_errors = array();
 
     /**
      * Storage of errors by level.
@@ -157,21 +157,21 @@ class PEAR_ErrorStack {
      * @var array
      * @access private
      */
-    var $_errorsByLevel = array();
+    public $_errorsByLevel = array();
 
     /**
      * Package name this error stack represents
      * @var string
      * @access protected
      */
-    var $_package;
+    public $_package;
     
     /**
      * Determines whether a PEAR_Error is thrown upon every error addition
      * @var boolean
      * @access private
      */
-    var $_compat = false;
+    public $_compat = false;
     
     /**
      * If set to a valid callback, this will be used to generate the error
@@ -180,7 +180,7 @@ class PEAR_ErrorStack {
      * @var false|string|array
      * @access private
      */
-    var $_msgCallback = false;
+    public $_msgCallback = false;
     
     /**
      * If set to a valid callback, this will be used to generate the error
@@ -191,7 +191,7 @@ class PEAR_ErrorStack {
      * @var false|string|array
      * @access protected
      */
-    var $_contextCallback = false;
+    public $_contextCallback = false;
 
     /**
      * If set to a valid callback, this will be called every time an error
@@ -203,21 +203,21 @@ class PEAR_ErrorStack {
      * @var false|string|array
      * @access protected
      */
-    var $_errorCallback = array();
+    public $_errorCallback = array();
 
     /**
      * PEAR::Log object for logging errors
      * @var false|Log
      * @access protected
      */
-    var $_logger = false;
+    public $_logger = false;
 
     /**
      * Error messages - designed to be overridden
      * @var array
      * @abstract
      */
-    var $_errorMsgs = array();
+    public $_errorMsgs = array();
 
     /**
      * Set up a new error stack

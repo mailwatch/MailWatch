@@ -37,7 +37,7 @@ define('PEAR_COMMAND_CHANNELS_CHANNEL_EXISTS', -500);
  */
 class PEAR_Command_Channels extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'list-channels' => array(
             'summary' => 'List Available Channels',
             'function' => 'doList',

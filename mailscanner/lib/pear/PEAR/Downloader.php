@@ -48,14 +48,14 @@ class PEAR_Downloader extends PEAR_Common
      * @var PEAR_Registry
      * @access private
      */
-    var $_registry;
+    public $_registry;
 
     /**
      * Preferred Installation State (snapshot, devel, alpha, beta, stable)
      * @var string|null
      * @access private
      */
-    var $_preferredState;
+    public $_preferredState;
 
     /**
      * Options from command-line passed to Install.
@@ -70,7 +70,7 @@ class PEAR_Downloader extends PEAR_Common
      * @access private
      * @var array
      */
-    var $_options;
+    public $_options;
 
     /**
      * Downloaded Packages after a call to download().
@@ -85,7 +85,7 @@ class PEAR_Downloader extends PEAR_Common
      * @access private
      * @var array
      */
-    var $_downloadedPackages = array();
+    public $_downloadedPackages = array();
 
     /**
      * Packages slated for download.
@@ -101,7 +101,7 @@ class PEAR_Downloader extends PEAR_Common
      * @access private
      * @var array
      */
-    var $_toDownload = array();
+    public $_toDownload = array();
 
     /**
      * Array of every package installed, with names lower-cased.
@@ -112,32 +112,32 @@ class PEAR_Downloader extends PEAR_Common
      * </code>
      * @var array
      */
-    var $_installed = array();
+    public $_installed = array();
 
     /**
      * @var array
      * @access private
      */
-    var $_errorStack = array();
+    public $_errorStack = array();
 
     /**
      * @var boolean
      * @access private
      */
-    var $_internalDownload = false;
+    public $_internalDownload = false;
 
     /**
      * Temporary variable used in sorting packages by dependency in {@link sortPkgDeps()}
      * @var array
      * @access private
      */
-    var $_packageSortTree;
+    public $_packageSortTree;
 
     /**
      * Temporary directory, or configuration value where downloads will occur
      * @var string
      */
-    var $_downloadDir;
+    public $_downloadDir;
 
     /**
      * List of methods that can be called both statically and non-statically.

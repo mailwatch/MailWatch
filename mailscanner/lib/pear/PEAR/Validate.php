@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PEAR_Validate
  *
@@ -23,7 +24,6 @@ define('PEAR_VALIDATE_PACKAGING', 7);
 /**#@-*/
 require_once 'PEAR/Common.php';
 require_once 'PEAR/Validator/PECL.php';
-
 /**
  * Validation class for package.xml - channel-level advanced validation
  * @category   pear
@@ -37,21 +37,21 @@ require_once 'PEAR/Validator/PECL.php';
  */
 class PEAR_Validate
 {
-    var $packageregex = _PEAR_COMMON_PACKAGE_NAME_PREG;
+    public $packageregex = _PEAR_COMMON_PACKAGE_NAME_PREG;
     /**
      * @var PEAR_PackageFile_v1|PEAR_PackageFile_v2
      */
-    var $_packagexml;
+    public $_packagexml;
     /**
      * @var int one of the PEAR_VALIDATE_* constants
      */
-    var $_state = PEAR_VALIDATE_NORMAL;
+    public $_state = PEAR_VALIDATE_NORMAL;
     /**
      * Format: ('error' => array('field' => name, 'reason' => reason), 'warning' => same)
      * @var array
      * @access private
      */
-    var $_failures = array('error' => array(), 'warning' => array());
+    public $_failures = array('error' => array(), 'warning' => array());
 
     /**
      * Override this method to handle validation of normal package names

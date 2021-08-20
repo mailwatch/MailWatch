@@ -130,34 +130,34 @@ class PEAR_Common extends PEAR
      * the log() method uses print.
      * @var object
      */
-    var $ui = null;
+    public $ui = null;
 
     /**
      * Configuration object (PEAR_Config).
      * @var PEAR_Config
      */
-    var $config = null;
+    public $config = null;
 
     /** stack of elements, gives some sort of XML context */
-    var $element_stack = array();
+    public $element_stack = array();
 
     /** name of currently parsed XML element */
-    var $current_element;
+    public $current_element;
 
     /** array of attributes of the currently parsed XML element */
-    var $current_attributes = array();
+    public $current_attributes = array();
 
     /** assoc with information about a package */
-    var $pkginfo = array();
+    public $pkginfo = array();
 
-    var $current_path = null;
+    public $current_path = null;
 
     /**
      * Flag variable used to mark a valid package file
      * @var boolean
      * @access private
      */
-    var $_validPackageFile;
+    public $_validPackageFile;
 
     /**
      * PEAR_Common constructor

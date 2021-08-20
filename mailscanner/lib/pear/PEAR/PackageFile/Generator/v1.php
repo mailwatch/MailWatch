@@ -37,7 +37,7 @@ class PEAR_PackageFile_Generator_v1
     /**
      * @var PEAR_PackageFile_v1
      */
-    var $_packagefile;
+    public $_packagefile;
     function __construct(&$packagefile)
     {
         $this->_packagefile = &$packagefile;

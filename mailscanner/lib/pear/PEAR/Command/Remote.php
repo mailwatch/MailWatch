@@ -36,7 +36,7 @@ require_once 'PEAR/REST.php';
  */
 class PEAR_Command_Remote extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'remote-info' => array(
             'summary' => 'Information About Remote Packages',
             'function' => 'doRemoteInfo',

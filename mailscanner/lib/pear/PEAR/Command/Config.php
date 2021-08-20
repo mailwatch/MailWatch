@@ -34,7 +34,7 @@ require_once 'PEAR/Command/Common.php';
  */
 class PEAR_Command_Config extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'config-show' => array(
             'summary' => 'Show All Settings',
             'function' => 'doConfigShow',

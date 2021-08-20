@@ -40,20 +40,20 @@ class PEAR_Command_Common extends PEAR
      *
      * @var PEAR_Config
      */
-    var $config;
+    public $config;
     /**
      * @var PEAR_Registry
      * @access protected
      */
-    var $_registry;
+    public $_registry;
 
     /**
      * User Interface object, for all interaction with the user.
      * @var object
      */
-    var $ui;
+    public $ui;
 
-    var $_deps_rel_trans = array(
+    public $_deps_rel_trans = array(
                                  'lt' => '<',
                                  'le' => '<=',
                                  'eq' => '=',
@@ -63,7 +63,7 @@ class PEAR_Command_Common extends PEAR
                                  'has' => '=='
                                  );
 
-    var $_deps_type_trans = array(
+    public $_deps_type_trans = array(
                                   'pkg' => 'package',
                                   'ext' => 'extension',
                                   'php' => 'PHP',

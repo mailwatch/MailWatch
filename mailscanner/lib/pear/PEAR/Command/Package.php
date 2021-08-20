@@ -38,7 +38,7 @@ require_once 'PEAR/Command/Common.php';
 
 class PEAR_Command_Package extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'package' => array(
             'summary' => 'Build Package',
             'function' => 'doPackage',
@@ -275,7 +275,7 @@ used for automated conversion or learning the format.
             ),
         );
 
-    var $output;
+    public $output;
 
     /**
      * PEAR_Command_Package constructor.

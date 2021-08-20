@@ -34,7 +34,7 @@ require_once 'PEAR/Command/Common.php';
  */
 class PEAR_Command_Registry extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'list' => array(
             'summary' => 'List Installed Packages In The Default Channel',
             'function' => 'doList',

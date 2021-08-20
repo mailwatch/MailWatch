@@ -96,7 +96,7 @@ class Mail_mimeDecode extends PEAR
      * @var    string
      * @access private
      */
-    var $_input;
+    public $_input;
 
     /**
      * The header part of the input
@@ -104,7 +104,7 @@ class Mail_mimeDecode extends PEAR
      * @var    string
      * @access private
      */
-    var $_header;
+    public $_header;
 
     /**
      * The body part of the input
@@ -112,7 +112,7 @@ class Mail_mimeDecode extends PEAR
      * @var    string
      * @access private
      */
-    var $_body;
+    public $_body;
 
     /**
      * If an error occurs, this is used to store the message
@@ -120,7 +120,7 @@ class Mail_mimeDecode extends PEAR
      * @var    string
      * @access private
      */
-    var $_error;
+    public $_error;
 
     /**
      * Flag to determine whether to include bodies in the
@@ -129,7 +129,7 @@ class Mail_mimeDecode extends PEAR
      * @var    boolean
      * @access private
      */
-    var $_include_bodies;
+    public $_include_bodies;
 
     /**
      * Flag to determine whether to decode bodies
@@ -137,7 +137,7 @@ class Mail_mimeDecode extends PEAR
      * @var    boolean
      * @access private
      */
-    var $_decode_bodies;
+    public $_decode_bodies;
 
     /**
      * Flag to determine whether to decode headers
@@ -145,8 +145,8 @@ class Mail_mimeDecode extends PEAR
      * @var    mixed 
      * @access private
      */
-    var $_decode_headers;
-  
+    public $_decode_headers;
+
 
     /**
      * Flag to determine whether to include attached messages
@@ -155,7 +155,7 @@ class Mail_mimeDecode extends PEAR
      * @var    boolean
      * @access private
      */
-    var $_rfc822_bodies;
+    public $_rfc822_bodies;
 
     /**
      * Constructor.
@@ -182,7 +182,7 @@ class Mail_mimeDecode extends PEAR
     {
         $this->__construct($input);
     }
-    
+
 
     /**
      * Begins the decoding process. If called statically
@@ -229,17 +229,17 @@ class Mail_mimeDecode extends PEAR
 	                             $params['decode_headers'] : false;
             $this->_rfc822_bodies  = isset($params['rfc_822bodies']) ?
 	                             $params['rfc_822bodies']  : false;
-                                 
+
             if (is_string($this->_decode_headers) && !function_exists('iconv')) {
                  PEAR::raiseError('header decode conversion requested, however iconv is missing');
             }
-                                 
+
             $structure = $this->_decode($this->_header, $this->_body);
             if ($structure === false) {
                 $structure = $this->raiseError($this->_error);
             }
         }
-    
+
         return $structure;
     }
 
@@ -396,7 +396,7 @@ class Mail_mimeDecode extends PEAR
             }
             for ($i = 0; $i < count($structure->parts); $i++) {
 
-            
+
                 if (!empty($structure->headers['content-type']) AND substr(strtolower($structure->headers['content-type']), 0, 8) == 'message/') {
                     $prepend      = $prepend . $mime_number . '.';
                     $_mime_number = '';
@@ -416,7 +416,7 @@ class Mail_mimeDecode extends PEAR
             $structure->mime_id = $prepend . $mime_number;
             $no_refs ? $return[$prepend . $mime_number] = '' : $return[$prepend . $mime_number] = &$structure;
         }
-        
+
         return $return;
     }
 
@@ -462,7 +462,7 @@ class Mail_mimeDecode extends PEAR
             // encoded character
             $input   = preg_replace("/=\r\n(\t| )+/", '=', $input);
             $input   = preg_replace("/\r\n(\t| )+/", ' ', $input);
-            
+
             $headers = explode("\r\n", trim($input));
             $got_start = false;
             foreach ($headers as $value) {
@@ -477,7 +477,7 @@ class Mail_mimeDecode extends PEAR
                         $got_start = true;
                     }
                 }
-                
+
                 $hdr_name = substr($value, 0, $pos = strpos($value, ':'));
                 $hdr_value = substr($value, $pos+1);
                 if($hdr_value[0] == ' ') {
@@ -546,7 +546,7 @@ class Mail_mimeDecode extends PEAR
         $lq = ''; // last quote..
 
         while ($i < $l) {
-            
+
             $c = $input[$i];
             //var_dump(array('i'=>$i,'c'=>$c,'q'=>$q, 'lq'=>$lq, 'key'=>$key, 'val' =>$val));
 
@@ -580,7 +580,7 @@ class Mail_mimeDecode extends PEAR
                 $i++;
                 continue;
             }
-                     
+
             // state - in value.. (as $val is set..)
 
             if ($q === false) {
@@ -589,10 +589,10 @@ class Mail_mimeDecode extends PEAR
                     $i++;
                     continue; // skip leading spaces after '=' or after '"'
                 }
-                
+
                 // do not de-quote 'xxx*= itesm.. 
                 $key_is_trans = $key[strlen($key)-1] == '*';
-                
+
                 if (!$key_is_trans && !$escaped && ($c == '"' || $c == "'")) {
                     // start quoted area..
                     $q = $c;
@@ -604,7 +604,7 @@ class Mail_mimeDecode extends PEAR
                 }
                 // got end....
                 if (!$escaped && $c == ';') {
-                     
+
                     $return['other'][$key] = trim($val);
                     $val = false;
                     $key = '';
@@ -617,31 +617,31 @@ class Mail_mimeDecode extends PEAR
                 $i++;
                 continue;
             }
-            
+
             // state - in quote..
             if (!$escaped && $c == $q) {  // potential exit state..
-                
+
                 // end of quoted string..
                 $lq = $q;
                 $q = false;
                 $i++;
                 continue;
             }
-                
+
             // normal char inside of quoted string..
             $val.= $c;
             $i++;
         }
-        
+
         // do we have anything left..
         if (strlen(trim($key)) || $val !== false) {
-           
+
             $val = trim($val);
-          
+
             $return['other'][$key] = $val;
         }
-       
-        
+
+
         $clean_others = array();
         // merge added values. eg. *1[*]
         foreach($return['other'] as $key =>$val) {
@@ -651,12 +651,12 @@ class Mail_mimeDecode extends PEAR
                     $clean_others[$key] .= $val;
                     continue;
                 }
-                
+
             }
             $clean_others[$key] = $val;
-            
+
         }
-         
+
         // handle language translation of '*' ending others.
         foreach( $clean_others as $key =>$val) {
             if ( $key[strlen($key)-1] != '*') {
@@ -669,26 +669,26 @@ class Mail_mimeDecode extends PEAR
             //              extended-other-values
             $match = array();
             $info = preg_match("/^([^']+)'([^']*)'(.*)$/", $val, $match);
-             
+
             $clean_others[$key] = urldecode($match[3]);
             $clean_others[strtolower($key)] = $clean_others[$key];
             $clean_others[strtolower($key).'-charset'] = $match[1];
             $clean_others[strtolower($key).'-language'] = $match[2];
-            
-            
+
+
         }
-        
-        
+
+
         $return['other'] = $clean_others;
-        
+
         // decode values.
         foreach($return['other'] as $key =>$val) {
             $charset = isset($return['other'][$key . '-charset']) ?
                 $return['other'][$key . '-charset']  : false;
-            
+
             $return['other'][$key] = $this->_decodeHeader($val, $charset);
         }
-        
+
         return $return;
     }
 
@@ -721,7 +721,7 @@ class Mail_mimeDecode extends PEAR
                 $parts[] = $tmp[$i];
             }
         }
-        
+
         // add the last part on if it does not end with the 'closing indicator'
         if (!empty($tmp[$len]) && strlen(trim($tmp[$len])) && $tmp[$len][0] != '-') {
             $parts[] = $tmp[$len];
@@ -773,12 +773,12 @@ class Mail_mimeDecode extends PEAR
             }
             $input = str_replace($encoded, $text, $input);
         }
-        
+
         if ($default_charset  && is_string($this->_decode_headers)) {
             $conv = @iconv($charset, $this->_decode_headers, $input);
             $input = ($conv === false) ? $input : $conv;
         }
-        
+
         return $input;
     }
 
@@ -825,9 +825,9 @@ class Mail_mimeDecode extends PEAR
         $input = preg_replace("/=\r?\n/", '', $input);
 
         // Replace encoded characters
-		 
+
         $cb = create_function('$matches',  ' return chr(hexdec($matches[0]));');
-         
+
         $input = preg_replace_callback( '/=([a-f0-9]{2})/i', $cb, $input);
 
         return $input;

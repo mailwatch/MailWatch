@@ -1,4 +1,5 @@
 <?php
+
 /**
  * package.xml parsing class, package.xml version 2.0
  *
@@ -30,9 +31,9 @@ require_once 'PEAR/PackageFile/v2.php';
  */
 class PEAR_PackageFile_Parser_v2 extends PEAR_XMLParser
 {
-    var $_config;
-    var $_logger;
-    var $_registry;
+    public $_config;
+    public $_logger;
+    public $_registry;
 
     function setConfig(&$c)
     {

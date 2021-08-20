@@ -46,50 +46,50 @@ class PEAR_Installer extends PEAR_Downloader
     /** name of the package directory, for example Foo-1.0
      * @var string
      */
-    var $pkgdir;
+    public $pkgdir;
 
     /** directory where PHP code files go
      * @var string
      */
-    var $phpdir;
+    public $phpdir;
 
     /** directory where PHP extension files go
      * @var string
      */
-    var $extdir;
+    public $extdir;
 
     /** directory where documentation goes
      * @var string
      */
-    var $docdir;
+    public $docdir;
 
     /** installation root directory (ala PHP's INSTALL_ROOT or
      * automake's DESTDIR
      * @var string
      */
-    var $installroot = '';
+    public $installroot = '';
 
     /** debug level
      * @var int
      */
-    var $debug = 1;
+    public $debug = 1;
 
     /** temporary directory
      * @var string
      */
-    var $tmpdir;
+    public $tmpdir;
 
     /**
      * PEAR_Registry object used by the installer
      * @var PEAR_Registry
      */
-    var $registry;
+    public $registry;
 
     /**
      * array of PEAR_Downloader_Packages
      * @var array
      */
-    var $_downloadedPackages;
+    public $_downloadedPackages;
 
     /** List of file transactions queued for an install/upgrade/uninstall.
      *
@@ -102,7 +102,7 @@ class PEAR_Installer extends PEAR_Downloader
      *
      * @var array
      */
-    var $file_operations = array();
+    public $file_operations = array();
 
     // }}}
 

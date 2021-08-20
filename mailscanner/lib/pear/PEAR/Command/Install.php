@@ -37,7 +37,7 @@ class PEAR_Command_Install extends PEAR_Command_Common
 {
     // {{{ properties
 
-    var $commands = array(
+    public $commands = array(
         'install' => array(
             'summary' => 'Install Package',
             'function' => 'doInstall',

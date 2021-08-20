@@ -34,28 +34,28 @@ class PEAR_PackageFile_v2
      * @var array
      * @access private
      */
-    var $_packageInfo = array();
+    public $_packageInfo = array();
 
     /**
      * path to package .tgz or false if this is a local/extracted package.xml
      * @var string|false
      * @access private
      */
-    var $_archiveFile;
+    public $_archiveFile;
 
     /**
      * path to package .xml or false if this is an abstract parsed-from-string xml
      * @var string|false
      * @access private
      */
-    var $_packageFile;
+    public $_packageFile;
 
     /**
      * This is used by file analysis routines to log progress information
      * @var PEAR_Common
      * @access protected
      */
-    var $_logger;
+    public $_logger;
 
     /**
      * This is set to the highest validation level that has been validated
@@ -69,43 +69,43 @@ class PEAR_PackageFile_v2
      * @var int
      * @access private
      */
-    var $_isValid = 0;
+    public $_isValid = 0;
 
     /**
      * True if the filelist has been validated
      * @param bool
      */
-    var $_filesValid = false;
+    public $_filesValid = false;
 
     /**
      * @var PEAR_Registry
      * @access protected
      */
-    var $_registry;
+    public $_registry;
 
     /**
      * @var PEAR_Config
      * @access protected
      */
-    var $_config;
+    public $_config;
 
     /**
      * Optional Dependency group requested for installation
      * @var string
      * @access private
      */
-    var $_requestedGroup = false;
+    public $_requestedGroup = false;
 
     /**
      * @var PEAR_ErrorStack
      * @access protected
      */
-    var $_stack;
+    public $_stack;
 
     /**
      * Namespace prefix used for tasks in this package.xml - use tasks: whenever possible
      */
-    var $_tasksNs;
+    public $_tasksNs;
 
     /**
      * Determines whether this packagefile was initialized only with partial package info
@@ -118,12 +118,12 @@ class PEAR_PackageFile_v2
      * @var boolean
      * @access private
      */
-    var $_incomplete = true;
+    public $_incomplete = true;
 
     /**
      * @var PEAR_PackageFile_v2_Validator
      */
-    var $_v2Validator;
+    public $_v2Validator;
 
     /**
      * The constructor merely sets up the private error stack

@@ -5,3 +5,7 @@
 #development files
 /_msconfig/
 /vendor/
+
+composer.json
+composer.lock
+rector.php

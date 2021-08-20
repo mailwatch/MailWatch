@@ -42,43 +42,43 @@ class PEAR_DependencyDB
      * @var PEAR_Config
      * @access private
      */
-    var $_config;
+    public $_config;
     /**
      * This is initialized by {@link setConfig()}
      * @var PEAR_Registry
      * @access private
      */
-    var $_registry;
+    public $_registry;
     /**
      * Filename of the dependency DB (usually .depdb)
      * @var string
      * @access private
      */
-    var $_depdb = false;
+    public $_depdb = false;
     /**
      * File name of the lockfile (usually .depdblock)
      * @var string
      * @access private
      */
-    var $_lockfile = false;
+    public $_lockfile = false;
     /**
      * Open file resource for locking the lockfile
      * @var resource|false
      * @access private
      */
-    var $_lockFp = false;
+    public $_lockFp = false;
     /**
      * API version of this class, used to validate a file on-disk
      * @var string
      * @access private
      */
-    var $_version = '1.0';
+    public $_version = '1.0';
     /**
      * Cached dependency database file
      * @var array|null
      * @access private
      */
-    var $_cache;
+    public $_cache;
 
     // }}}
     // {{{ & singleton()

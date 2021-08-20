@@ -30,27 +30,27 @@ class PEAR_PackageFile_v2_Validator
     /**
      * @var array
      */
-    var $_packageInfo;
+    public $_packageInfo;
     /**
      * @var PEAR_PackageFile_v2
      */
-    var $_pf;
+    public $_pf;
     /**
      * @var PEAR_ErrorStack
      */
-    var $_stack;
+    public $_stack;
     /**
      * @var int
      */
-    var $_isValid = 0;
+    public $_isValid = 0;
     /**
      * @var int
      */
-    var $_filesValid = 0;
+    public $_filesValid = 0;
     /**
      * @var int
      */
-    var $_curState = 0;
+    public $_curState = 0;
     /**
      * @param PEAR_PackageFile_v2
      * @param int

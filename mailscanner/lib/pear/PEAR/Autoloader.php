@@ -60,7 +60,7 @@ class PEAR_Autoloader extends PEAR
      *
      * @access private
      */
-    var $_autoload_map = array();
+    public $_autoload_map = array();
 
     /**
      * Map of methods and aggregate objects
@@ -69,7 +69,7 @@ class PEAR_Autoloader extends PEAR
      *
      * @access private
      */
-    var $_method_map = array();
+    public $_method_map = array();
 
     // }}}
     // {{{ addAutoload()

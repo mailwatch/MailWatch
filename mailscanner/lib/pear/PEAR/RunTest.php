@@ -43,20 +43,20 @@ putenv("PHP_PEAR_RUNTESTS=1");
  */
 class PEAR_RunTest
 {
-    var $_headers = array();
-    var $_logger;
-    var $_options;
-    var $_php;
-    var $tests_count;
-    var $xdebug_loaded;
+    public $_headers = array();
+    public $_logger;
+    public $_options;
+    public $_php;
+    public $tests_count;
+    public $xdebug_loaded;
     /**
      * Saved value of php executable, used to reset $_php when we
      * have a test that uses cgi
      *
      * @var unknown_type
      */
-    var $_savephp;
-    var $ini_overwrites = array(
+    public $_savephp;
+    public $ini_overwrites = array(
         'output_handler=',
         'open_basedir=',
         'disable_functions=',

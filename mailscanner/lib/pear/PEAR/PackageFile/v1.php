@@ -285,48 +285,48 @@ class PEAR_PackageFile_v1
      * @var PEAR_ErrorStack
      * @access private
      */
-    var $_stack;
+    public $_stack;
 
     /**
      * A registry object, used to access the package name validation regex for non-standard channels
      * @var PEAR_Registry
      * @access private
      */
-    var $_registry;
+    public $_registry;
 
     /**
      * An object that contains a log method that matches PEAR_Common::log's signature
      * @var object
      * @access private
      */
-    var $_logger;
+    public $_logger;
 
     /**
      * Parsed package information
      * @var array
      * @access private
      */
-    var $_packageInfo;
+    public $_packageInfo;
 
     /**
      * path to package.xml
      * @var string
      * @access private
      */
-    var $_packageFile;
+    public $_packageFile;
 
     /**
      * path to package .tgz or false if this is a local/extracted package.xml
      * @var string
      * @access private
      */
-    var $_archiveFile;
+    public $_archiveFile;
 
     /**
      * @var int
      * @access private
      */
-    var $_isValid = 0;
+    public $_isValid = 0;
 
     /**
      * Determines whether this packagefile was initialized only with partial package info
@@ -339,7 +339,7 @@ class PEAR_PackageFile_v1
      * @var boolean
      * @access private
      */
-    var $_incomplete = true;
+    public $_incomplete = true;
 
     /**
      * @param bool determines whether to return a PEAR_Error object, or use the PEAR_ErrorStack

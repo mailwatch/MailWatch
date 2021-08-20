@@ -40,21 +40,21 @@ require_once 'System.php';
  */
 class PEAR_Builder extends PEAR_Common
 {
-    var $php_api_version = 0;
-    var $zend_module_api_no = 0;
-    var $zend_extension_api_no = 0;
+    public $php_api_version = 0;
+    public $zend_module_api_no = 0;
+    public $zend_extension_api_no = 0;
 
-    var $extensions_built = array();
+    public $extensions_built = array();
 
     /**
      * @var string Used for reporting when it is not possible to pass function
      *             via extra parameter, e.g. log, msdevCallback
      */
-    var $current_callback = null;
+    public $current_callback = null;
 
     // used for msdev builds
-    var $_lastline = null;
-    var $_firstline = null;
+    public $_lastline = null;
+    public $_firstline = null;
 
     /**
      * PEAR_Builder constructor.

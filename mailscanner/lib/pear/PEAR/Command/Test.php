@@ -37,7 +37,7 @@ require_once 'PEAR/Command/Common.php';
 
 class PEAR_Command_Test extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'run-tests' => array(
             'summary' => 'Run Regression Tests',
             'function' => 'doRunTests',
@@ -96,7 +96,7 @@ Run regression tests with PHP\'s regression testing script (run-tests.php).',
             ),
         );
 
-    var $output;
+    public $output;
 
     /**
      * PEAR_Command_Test constructor.

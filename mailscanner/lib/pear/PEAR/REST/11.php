@@ -35,7 +35,7 @@ class PEAR_REST_11
     /**
      * @var PEAR_REST
      */
-    var $_rest;
+    public $_rest;
 
     function __construct($config, $options = array())
     {

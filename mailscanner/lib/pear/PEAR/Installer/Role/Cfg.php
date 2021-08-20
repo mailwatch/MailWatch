@@ -28,14 +28,14 @@ class PEAR_Installer_Role_Cfg extends PEAR_Installer_Role_Common
     /**
      * @var PEAR_Installer
      */
-    var $installer;
+    public $installer;
 
     /**
      * the md5 of the original file
      *
      * @var unknown_type
      */
-    var $md5 = null;
+    public $md5 = null;
 
     /**
      * Do any unusual setup here

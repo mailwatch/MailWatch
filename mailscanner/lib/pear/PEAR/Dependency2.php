@@ -41,39 +41,39 @@ class PEAR_Dependency2
      * @see PEAR_VALIDATE_NORMAL
      * @var integer
      */
-    var $_state;
+    public $_state;
 
     /**
      * Command-line options to install/upgrade/uninstall commands
      * @param array
      */
-    var $_options;
+    public $_options;
 
     /**
      * @var OS_Guess
      */
-    var $_os;
+    public $_os;
 
     /**
      * @var PEAR_Registry
      */
-    var $_registry;
+    public $_registry;
 
     /**
      * @var PEAR_Config
      */
-    var $_config;
+    public $_config;
 
     /**
      * @var PEAR_DependencyDB
      */
-    var $_dependencydb;
+    public $_dependencydb;
 
     /**
      * Output of PEAR_Registry::parsedPackageName()
      * @var array
      */
-    var $_currentPackage;
+    public $_currentPackage;
 
     /**
      * @param PEAR_Config

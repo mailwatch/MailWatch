@@ -43,21 +43,21 @@ class PEAR_PackageFile
     /**
      * @var PEAR_Config
      */
-    var $_config;
-    var $_debug;
+    public $_config;
+    public $_debug;
 
-    var $_logger = false;
+    public $_logger = false;
     /**
      * @var boolean
      */
-    var $_rawReturn = false;
+    public $_rawReturn = false;
 
     /**
      * helper for extracting Archive_Tar errors
      * @var array
      * @access private
      */
-    var $_extractErrors = array();
+    public $_extractErrors = array();
 
     /**
      *

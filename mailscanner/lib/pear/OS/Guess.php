@@ -92,11 +92,11 @@
  */
 class OS_Guess
 {
-    var $sysname;
-    var $nodename;
-    var $cpu;
-    var $release;
-    var $extra;
+    public $sysname;
+    public $nodename;
+    public $cpu;
+    public $release;
+    public $extra;
 
     function __construct($uname = null)
     {

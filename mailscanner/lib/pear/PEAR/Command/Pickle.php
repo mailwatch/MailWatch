@@ -33,7 +33,7 @@ require_once 'PEAR/Command/Common.php';
 
 class PEAR_Command_Pickle extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'pickle' => array(
             'summary' => 'Build PECL Package',
             'function' => 'doPackage',

@@ -37,11 +37,11 @@ class PEAR_Frontend_CLI extends PEAR_Frontend
      * @var string
      * @access public
      */
-    var $type = 'CLI';
-    var $lp = ''; // line prefix
+    public $type = 'CLI';
+    public $lp = ''; // line prefix
 
-    var $params = array();
-    var $term = array(
+    public $params = array();
+    public $term = array(
         'bold'   => '',
         'normal' => '',
     );

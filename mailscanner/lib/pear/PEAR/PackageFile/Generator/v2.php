@@ -41,7 +41,7 @@ class PEAR_PackageFile_Generator_v2
     * @access private
     * @var array $_defaultOptions
     */
-    var $_defaultOptions = array(
+    public $_defaultOptions = array(
         'indent'             => ' ',                    // string used for indentation
         'linebreak'          => "\n",                  // string used for newlines
         'typeHints'          => false,                 // automatically add type hin attributes
@@ -79,23 +79,23 @@ http://pear.php.net/dtd/package-2.0.xsd',
     * @access private
     * @var array $options
     */
-    var $options = array();
+    public $options = array();
 
    /**
     * current tag depth
     * @var integer $_tagDepth
     */
-    var $_tagDepth = 0;
+    public $_tagDepth = 0;
 
    /**
     * serilialized representation of the data
     * @var string $_serializedData
     */
-    var $_serializedData = null;
+    public $_serializedData = null;
     /**
      * @var PEAR_PackageFile_v2
      */
-    var $_packagefile;
+    public $_packagefile;
     /**
      * @param PEAR_PackageFile_v2
      */

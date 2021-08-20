@@ -36,7 +36,7 @@ require_once 'PEAR/Command/Common.php';
  */
 class PEAR_Command_Build extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'build' => array(
             'summary' => 'Build an Extension From C Source',
             'function' => 'doBuild',

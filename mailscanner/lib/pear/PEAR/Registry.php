@@ -46,37 +46,37 @@ class PEAR_Registry extends PEAR
      * File containing all channel information.
      * @var string
      */
-    var $channels = '';
+    public $channels = '';
 
     /** Directory where registry files are stored.
      * @var string
      */
-    var $statedir = '';
+    public $statedir = '';
 
     /** File where the file map is stored
      * @var string
      */
-    var $filemap = '';
+    public $filemap = '';
 
     /** Directory where registry files for channels are stored.
      * @var string
      */
-    var $channelsdir = '';
+    public $channelsdir = '';
 
     /** Name of file used for locking the registry
      * @var string
      */
-    var $lockfile = '';
+    public $lockfile = '';
 
     /** File descriptor used during locking
      * @var resource
      */
-    var $lock_fp = null;
+    public $lock_fp = null;
 
     /** Mode used during locking
      * @var int
      */
-    var $lock_mode = 0; // XXX UNUSED
+    public $lock_mode = 0; // XXX UNUSED
 
     /** Cache of package information.  Structure:
      * array(
@@ -84,38 +84,38 @@ class PEAR_Registry extends PEAR
      *   ... )
      * @var array
      */
-    var $pkginfo_cache = array();
+    public $pkginfo_cache = array();
 
     /** Cache of file map.  Structure:
      * array( '/path/to/file' => 'package', ... )
      * @var array
      */
-    var $filemap_cache = array();
+    public $filemap_cache = array();
 
     /**
      * @var false|PEAR_ChannelFile
      */
-    var $_pearChannel;
+    public $_pearChannel;
 
     /**
      * @var false|PEAR_ChannelFile
      */
-    var $_peclChannel;
+    public $_peclChannel;
 
     /**
      * @var false|PEAR_ChannelFile
      */
-    var $_docChannel;
+    public $_docChannel;
 
     /**
      * @var PEAR_DependencyDB
      */
-    var $_dependencyDB;
+    public $_dependencyDB;
 
     /**
      * @var PEAR_Config
      */
-    var $_config;
+    public $_config;
 
     /**
      * PEAR_Registry constructor.

@@ -33,8 +33,8 @@ require_once 'PEAR/XMLParser.php';
  */
 class PEAR_REST
 {
-    var $config;
-    var $_options;
+    public $config;
+    public $_options;
 
     function __construct(&$config, $options = array())
     {

@@ -32,7 +32,7 @@ require_once 'PEAR/Command/Common.php';
  */
 class PEAR_Command_Mirror extends PEAR_Command_Common
 {
-    var $commands = array(
+    public $commands = array(
         'download-all' => array(
             'summary' => 'Downloads each available package from the default channel',
             'function' => 'doDownloadAll',

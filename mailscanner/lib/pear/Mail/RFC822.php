@@ -75,69 +75,69 @@ class Mail_RFC822 {
      * The address being parsed by the RFC822 object.
      * @var string $address
      */
-    var $address = '';
+    public $address = '';
 
     /**
      * The default domain to use for unqualified addresses.
      * @var string $default_domain
      */
-    var $default_domain = 'localhost';
+    public $default_domain = 'localhost';
 
     /**
      * Should we return a nested array showing groups, or flatten everything?
      * @var boolean $nestGroups
      */
-    var $nestGroups = true;
+    public $nestGroups = true;
 
     /**
      * Whether or not to validate atoms for non-ascii characters.
      * @var boolean $validate
      */
-    var $validate = true;
+    public $validate = true;
 
     /**
      * The array of raw addresses built up as we parse.
      * @var array $addresses
      */
-    var $addresses = array();
+    public $addresses = array();
 
     /**
      * The final array of parsed address information that we build up.
      * @var array $structure
      */
-    var $structure = array();
+    public $structure = array();
 
     /**
      * The current error message, if any.
      * @var string $error
      */
-    var $error = null;
+    public $error = null;
 
     /**
      * An internal counter/pointer.
      * @var integer $index
      */
-    var $index = null;
+    public $index = null;
 
     /**
      * The number of groups that have been found in the address list.
      * @var integer $num_groups
      * @access public
      */
-    var $num_groups = 0;
+    public $num_groups = 0;
 
     /**
      * A variable so that we can tell whether or not we're inside a
      * Mail_RFC822 object.
      * @var boolean $mailRFC822
      */
-    var $mailRFC822 = true;
+    public $mailRFC822 = true;
 
     /**
     * A limit after which processing stops
     * @var int $limit
     */
-    var $limit = null;
+    public $limit = null;
 
     /**
      * Sets up the object. The address must either be set here or when

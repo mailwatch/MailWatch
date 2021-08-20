@@ -1,4 +1,5 @@
 <?php
+
 /**
  * package.xml parsing class, package.xml version 1.0
  *
@@ -29,9 +30,9 @@ require_once 'PEAR/PackageFile/v1.php';
  */
 class PEAR_PackageFile_Parser_v1
 {
-    var $_registry;
-    var $_config;
-    var $_logger;
+    public $_registry;
+    public $_config;
+    public $_logger;
     /**
      * BC hack to allow PEAR_Common::infoFromString() to sort of
      * work with the version 2.0 format - there's no filelist though
@@ -455,4 +456,3 @@ class PEAR_PackageFile_Parser_v1
 
     // }}}
 }
-?>

@@ -33,7 +33,7 @@ class PEAR_Installer_Role_Common
      * @var PEAR_Config
      * @access protected
      */
-    var $config;
+    public $config;
 
     /**
      * @param PEAR_Config

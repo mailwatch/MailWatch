@@ -156,42 +156,42 @@ class PEAR_ChannelFile
      * @var PEAR_ErrorStack
      * @access private
      */
-    var $_stack;
+    public $_stack;
 
     /**
      * Supported channel.xml versions, for parsing
      * @var array
      * @access private
      */
-    var $_supportedVersions = array('1.0');
+    public $_supportedVersions = array('1.0');
 
     /**
      * Parsed channel information
      * @var array
      * @access private
      */
-    var $_channelInfo;
+    public $_channelInfo;
 
     /**
      * index into the subchannels array, used for parsing xml
      * @var int
      * @access private
      */
-    var $_subchannelIndex;
+    public $_subchannelIndex;
 
     /**
      * index into the mirrors array, used for parsing xml
      * @var int
      * @access private
      */
-    var $_mirrorIndex;
+    public $_mirrorIndex;
 
     /**
      * Flag used to determine the validity of parsed content
      * @var boolean
      * @access private
      */
-    var $_isValid = false;
+    public $_isValid = false;
 
     function __construct()
     {

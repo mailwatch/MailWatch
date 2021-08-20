@@ -32,37 +32,37 @@ class PEAR_XMLParser
      * unserilialized data
      * @var string $_serializedData
      */
-    var $_unserializedData = null;
+    public $_unserializedData = null;
 
     /**
      * name of the root tag
      * @var string $_root
      */
-    var $_root = null;
+    public $_root = null;
 
     /**
      * stack for all data that is found
      * @var array    $_dataStack
      */
-    var $_dataStack = array();
+    public $_dataStack = array();
 
     /**
      * stack for all values that are generated
      * @var array    $_valStack
      */
-    var $_valStack = array();
+    public $_valStack = array();
 
     /**
      * current tag depth
      * @var int    $_depth
      */
-    var $_depth = 0;
+    public $_depth = 0;
 
     /**
      * The XML encoding to use
      * @var string $encoding
      */
-    var $encoding = 'ISO-8859-1';
+    public $encoding = 'ISO-8859-1';
 
     /**
      * @return array

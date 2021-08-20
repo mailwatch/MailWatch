@@ -58,44 +58,44 @@ class PEAR_Downloader_Package
     /**
      * @var PEAR_Downloader
      */
-    var $_downloader;
+    public $_downloader;
     /**
      * @var PEAR_Config
      */
-    var $_config;
+    public $_config;
     /**
      * @var PEAR_Registry
      */
-    var $_registry;
+    public $_registry;
     /**
      * Used to implement packagingroot properly
      * @var PEAR_Registry
      */
-    var $_installRegistry;
+    public $_installRegistry;
     /**
      * @var PEAR_PackageFile_v1|PEAR_PackageFile|v2
      */
-    var $_packagefile;
+    public $_packagefile;
     /**
      * @var array
      */
-    var $_parsedname;
+    public $_parsedname;
     /**
      * @var array
      */
-    var $_downloadURL;
+    public $_downloadURL;
     /**
      * @var array
      */
-    var $_downloadDeps = array();
+    public $_downloadDeps = array();
     /**
      * @var boolean
      */
-    var $_valid = false;
+    public $_valid = false;
     /**
      * @var boolean
      */
-    var $_analyzed = false;
+    public $_analyzed = false;
     /**
      * if this or a parent package was invoked with Package-state, this is set to the
      * state variable.
@@ -104,27 +104,27 @@ class PEAR_Downloader_Package
      * its dependencies.
      * @var string|false
      */
-    var $_explicitState = false;
+    public $_explicitState = false;
     /**
      * If this package is invoked with Package#group, this variable will be true
      */
-    var $_explicitGroup = false;
+    public $_explicitGroup = false;
     /**
      * Package type local|url
      * @var string
      */
-    var $_type;
+    public $_type;
     /**
      * Contents of package.xml, if downloaded from a remote channel
      * @var string|false
      * @access private
      */
-    var $_rawpackagefile;
+    public $_rawpackagefile;
     /**
      * @var boolean
      * @access private
      */
-    var $_validated = false;
+    public $_validated = false;
 
     /**
      * @param PEAR_Downloader

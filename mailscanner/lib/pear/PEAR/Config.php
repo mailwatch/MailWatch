@@ -275,12 +275,12 @@ class PEAR_Config extends PEAR
      *
      * @var array layer => config file
      */
-    var $files = array(
+    public $files = array(
         'system' => '',
         'user' => '',
         );
 
-    var $layers = array();
+    public $layers = array();
 
     /**
      * Configuration data, two-dimensional array where the first
@@ -294,7 +294,7 @@ class PEAR_Config extends PEAR
      *
      * @var array layer => array(keyname => value, ...)
      */
-    var $configuration = array(
+    public $configuration = array(
         'user' => array(),
         'system' => array(),
         'default' => array(),
@@ -307,7 +307,7 @@ class PEAR_Config extends PEAR
      * @var array
      * @access private
      */
-    var $_channelConfigInfo = array(
+    public $_channelConfigInfo = array(
         'php_dir', 'ext_dir', 'doc_dir', 'bin_dir', 'data_dir', 'cfg_dir',
         'test_dir', 'www_dir', 'php_bin', 'php_prefix', 'php_suffix', 'username',
         'password', 'verbose', 'preferred_state', 'umask', 'preferred_mirror', 'php_ini'
@@ -319,7 +319,7 @@ class PEAR_Config extends PEAR
      * @var array
      * @access private
      */
-    var $_channels = array('pear.php.net', 'pecl.php.net', '__uri');
+    public $_channels = array('pear.php.net', 'pecl.php.net', '__uri');
 
     /**
      * This variable is used to control the directory values returned
@@ -327,34 +327,34 @@ class PEAR_Config extends PEAR
      * @var string|false
      * @access private
      */
-    var $_installRoot = false;
+    public $_installRoot = false;
 
     /**
      * If requested, this will always refer to the registry
      * contained in php_dir
      * @var PEAR_Registry
      */
-    var $_registry = array();
+    public $_registry = array();
 
     /**
      * @var array
      * @access private
      */
-    var $_regInitialized = array();
+    public $_regInitialized = array();
 
     /**
      * @var bool
      * @access private
      */
-    var $_noRegistry = false;
+    public $_noRegistry = false;
 
     /**
      * amount of errors found while parsing config
      * @var integer
      * @access private
      */
-    var $_errorsFound = 0;
-    var $_lastError = null;
+    public $_errorsFound = 0;
+    public $_lastError = null;
 
     /**
      * Information about the configuration data.  Stores the type,
@@ -363,7 +363,7 @@ class PEAR_Config extends PEAR
      *
      * @var array layer => array(infotype => value, ...)
      */
-    var $configuration_info = array(
+    public $configuration_info = array(
         // Channels/Internet Access
         'default_channel' => array(
             'type' => 'string',
