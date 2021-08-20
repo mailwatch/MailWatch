@@ -28,6 +28,10 @@
     <shortopt>B</shortopt>
     <doc>don&#039;t build C extensions</doc>
    </nobuild>
+   <configureoptions>
+    <shortopt>D</shortopt>
+    <arg>OPTION1=VALUE[ OPTION2=VALUE]</arg>
+   </configureoptions>
    <nocompress>
     <shortopt>Z</shortopt>
     <doc>request uncompressed files when downloading</doc>

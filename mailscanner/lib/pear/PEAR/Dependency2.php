@@ -30,7 +30,7 @@ require_once 'PEAR/Validate.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -110,7 +110,7 @@ class PEAR_Dependency2
         $this->_currentPackage = $package;
     }
 
-    function _getExtraString($dep)
+    static function _getExtraString($dep)
     {
         $extra = ' (';
         if (isset($dep['uri'])) {
@@ -337,7 +337,7 @@ class PEAR_Dependency2
         }
 
         $loaded = $this->extension_loaded($dep['name']);
-        $extra  = $this->_getExtraString($dep);
+        $extra  = self::_getExtraString($dep);
         if (isset($dep['exclude'])) {
             if (!is_array($dep['exclude'])) {
                 $dep['exclude'] = array($dep['exclude']);
@@ -486,7 +486,7 @@ class PEAR_Dependency2
         }
 
         $version = $this->phpversion();
-        $extra   = $this->_getExtraString($dep);
+        $extra   = self::_getExtraString($dep);
         if (isset($dep['exclude'])) {
             if (!is_array($dep['exclude'])) {
                 $dep['exclude'] = array($dep['exclude']);
@@ -540,13 +540,13 @@ class PEAR_Dependency2
      */
     function getPEARVersion()
     {
-        return '1.10.1';
+        return '1.10.13';
     }
 
     function validatePearinstallerDependency($dep)
     {
         $pearversion = $this->getPEARVersion();
-        $extra = $this->_getExtraString($dep);
+        $extra = self::_getExtraString($dep);
         if (isset($dep['exclude'])) {
             if (!is_array($dep['exclude'])) {
                 $dep['exclude'] = array($dep['exclude']);
@@ -700,7 +700,7 @@ class PEAR_Dependency2
             }
         }
 
-        $extra = $this->_getExtraString($dep);
+        $extra = self::_getExtraString($dep);
         if (isset($dep['exclude']) && !is_array($dep['exclude'])) {
             $dep['exclude'] = array($dep['exclude']);
         }
@@ -1098,7 +1098,7 @@ class PEAR_Dependency2
             return true;
         }
 
-        $extra = $this->_getExtraString($dep);
+        $extra = self::_getExtraString($dep);
         if (isset($dep['exclude']) && !is_array($dep['exclude'])) {
             $dep['exclude'] = array($dep['exclude']);
         }
@@ -1232,7 +1232,7 @@ class PEAR_Dependency2
             $dep['optional'] = 'no';
         }
 
-        list($newdep, $type) = $this->normalizeDep($dep);
+        list($newdep, $type) = self::normalizeDep($dep);
         if (!$newdep) {
             return $this->raiseError("Invalid Dependency");
         }
@@ -1246,7 +1246,7 @@ class PEAR_Dependency2
     /**
      * Convert a 1.0 dep into a 2.0 dep
      */
-    function normalizeDep($dep)
+    static function normalizeDep($dep)
     {
         $types = array(
             'pkg' => 'Package',
@@ -1325,7 +1325,7 @@ class PEAR_Dependency2
      * @param  string Operator
      * @return string Sign equivalent
      */
-    function signOperator($operator)
+    static function signOperator($operator)
     {
         switch($operator) {
             case 'lt': return '<';

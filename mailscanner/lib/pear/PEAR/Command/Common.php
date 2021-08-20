@@ -28,7 +28,7 @@ require_once 'PEAR.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
@@ -143,10 +143,10 @@ class PEAR_Command_Common extends PEAR
         }
 
         reset($this->commands[$command]['options']);
-        while (list($option, $info) = each($this->commands[$command]['options'])) {
+        foreach ($this->commands[$command]['options'] as $option => $info) {
             $larg = $sarg = '';
             if (isset($info['arg'])) {
-                if ($info['arg']{0} == '(') {
+                if ($info['arg'][0] == '(') {
                     $larg = '==';
                     $sarg = '::';
                     $arg = substr($info['arg'], 1, -1);
@@ -193,7 +193,7 @@ class PEAR_Command_Common extends PEAR
             $help = $this->commands[$command]['summary'];
         }
 
-        if (preg_match_all('/{config\s+([^\}]+)}/e', $help, $matches)) {
+        if (preg_match_all('/{config\s+([^\}]+)}/', $help, $matches)) {
             foreach($matches[0] as $k => $v) {
                 $help = preg_replace("/$v/", $config->get($matches[1][$k]), $help);
             }

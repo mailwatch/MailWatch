@@ -131,7 +131,7 @@ define('PEAR_ERRORSTACK_ERR_OBJTOSTRING', 2);
  * $local_stack = new PEAR_ErrorStack('MyPackage');
  * </code>
  * @author     Greg Beaver <cellog@php.net>
- * @version    1.10.1
+ * @version    1.10.13
  * @package    PEAR_ErrorStack
  * @category   Debugging
  * @copyright  2004-2008 Greg Beaver
@@ -676,7 +676,7 @@ class PEAR_ErrorStack {
      * @return boolean
      * @since PEAR1.5.0a1
      */
-    function staticPop($package)
+    static function staticPop($package)
     {
         if ($package) {
             if (!isset($GLOBALS['_PEAR_ERRORSTACK_SINGLETON'][$package])) {

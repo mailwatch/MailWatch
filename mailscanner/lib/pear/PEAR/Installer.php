@@ -35,7 +35,7 @@ define('PEAR_INSTALLER_NOBINARY', -240);
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
@@ -225,7 +225,7 @@ class PEAR_Installer extends PEAR_Downloader
                 $os = new OS_Guess();
             }
 
-            if (strlen($atts['platform']) && $atts['platform']{0} == '!') {
+            if (strlen($atts['platform']) && $atts['platform'][0] == '!') {
                 $negate   = true;
                 $platform = substr($atts['platform'], 1);
             } else {
@@ -323,8 +323,9 @@ class PEAR_Installer extends PEAR_Downloader
                 }
 
                 if (!@copy($orig_file, $dest_file)) {
-                    return $this->raiseError("failed to write $dest_file: $php_errormsg",
-                                             PEAR_INSTALLER_FAILED);
+                    return $this->raiseError(
+                        "failed to write $dest_file: " . error_get_last()["message"],
+                        PEAR_INSTALLER_FAILED);
                 }
 
                 $this->log(3, "+ cp $orig_file $dest_file");
@@ -399,13 +400,15 @@ class PEAR_Installer extends PEAR_Downloader
 
                 $wp = @fopen($dest_file, "wb");
                 if (!is_resource($wp)) {
-                    return $this->raiseError("failed to create $dest_file: $php_errormsg",
-                                             PEAR_INSTALLER_FAILED);
+                    return $this->raiseError(
+                        "failed to create $dest_file: " . error_get_last()["message"],
+                        PEAR_INSTALLER_FAILED);
                 }
 
                 if (@fwrite($wp, $contents) === false) {
-                    return $this->raiseError("failed writing to $dest_file: $php_errormsg",
-                                             PEAR_INSTALLER_FAILED);
+                    return $this->raiseError(
+                        "failed writing to $dest_file: " . error_get_last()["message"],
+                        PEAR_INSTALLER_FAILED);
                 }
 
                 fclose($wp);
@@ -452,7 +455,8 @@ class PEAR_Installer extends PEAR_Downloader
                     $this->addFileOperation("chmod", array($mode, $dest_file));
                     if (!@chmod($dest_file, $mode)) {
                         if (!isset($options['soft'])) {
-                            $this->log(0, "failed to change mode of $dest_file: $php_errormsg");
+                            $this->log(0, "failed to change mode of $dest_file: " .
+                                          error_get_last()["message"]);
                         }
                     }
                 }
@@ -562,8 +566,9 @@ class PEAR_Installer extends PEAR_Downloader
                 }
 
                 if (!@copy($orig_file, $dest_file)) {
-                    return $this->raiseError("failed to write $dest_file: $php_errormsg",
-                                             PEAR_INSTALLER_FAILED);
+                    return $this->raiseError(
+                        "failed to write $dest_file: " . error_get_last()["message"],
+                        PEAR_INSTALLER_FAILED);
                 }
 
                 $this->log(3, "+ cp $orig_file $dest_file");
@@ -605,13 +610,15 @@ class PEAR_Installer extends PEAR_Downloader
 
                     $wp = @fopen($dest_file, "wb");
                     if (!is_resource($wp)) {
-                        return $this->raiseError("failed to create $dest_file: $php_errormsg",
-                                                 PEAR_INSTALLER_FAILED);
+                        return $this->raiseError(
+                            "failed to create $dest_file: " . error_get_last()["message"],
+                            PEAR_INSTALLER_FAILED);
                     }
 
                     if (fwrite($wp, $contents) === false) {
-                        return $this->raiseError("failed writing to $dest_file: $php_errormsg",
-                                                 PEAR_INSTALLER_FAILED);
+                        return $this->raiseError(
+                            "failed writing to $dest_file: " . error_get_last()["message"],
+                            PEAR_INSTALLER_FAILED);
                     }
 
                     fclose($wp);
@@ -667,7 +674,8 @@ class PEAR_Installer extends PEAR_Downloader
                     $this->addFileOperation("chmod", array($mode, $dest_file));
                     if (!@chmod($dest_file, $mode)) {
                         if (!isset($options['soft'])) {
-                            $this->log(0, "failed to change mode of $dest_file: $php_errormsg");
+                            $this->log(0, "failed to change mode of $dest_file: " .
+                                          error_get_last()["message"]);
                         }
                     }
                 }
@@ -854,7 +862,7 @@ class PEAR_Installer extends PEAR_Downloader
 
                     if (!@copy($data[0], $data[0] . '.bak')) {
                         $this->log(1, 'Could not copy ' . $data[0] . ' to ' . $data[0] .
-                            '.bak ' . $php_errormsg);
+                            '.bak ' . error_get_last()["message"]);
                         return false;
                     }
                     $this->log(3, "+ backup $data[0] to $data[0].bak");
@@ -889,7 +897,7 @@ class PEAR_Installer extends PEAR_Downloader
                     $perms = @fileperms($data[0]);
                     if (!@copy($data[0], $data[1])) {
                         $this->log(1, 'Could not rename ' . $data[0] . ' to ' . $data[1] .
-                            ' ' . $php_errormsg);
+                            ' ' . error_get_last()["message"]);
                         return false;
                     }
 
@@ -901,7 +909,7 @@ class PEAR_Installer extends PEAR_Downloader
                 case 'chmod':
                     if (!@chmod($data[1], $data[0])) {
                         $this->log(1, 'Could not chmod ' . $data[1] . ' to ' .
-                            decoct($data[0]) . ' ' . $php_errormsg);
+                            decoct($data[0]) . ' ' . error_get_last()["message"]);
                         return false;
                     }
 
@@ -912,7 +920,7 @@ class PEAR_Installer extends PEAR_Downloader
                     if (file_exists($data[0])) {
                         if (!@unlink($data[0])) {
                             $this->log(1, 'Could not delete ' . $data[0] . ' ' .
-                                $php_errormsg);
+                                error_get_last()["message"]);
                             return false;
                         }
                         $this->log(3, "+ rm $data[0]");
@@ -934,7 +942,7 @@ class PEAR_Installer extends PEAR_Downloader
                             closedir($testme);
                             if (!@rmdir($data[0])) {
                                 $this->log(1, 'Could not rmdir ' . $data[0] . ' ' .
-                                    $php_errormsg);
+                                    error_get_last()["message"]);
                                 return false;
                             }
                             $this->log(3, "+ rmdir $data[0]");
@@ -1403,8 +1411,9 @@ class PEAR_Installer extends PEAR_Downloader
 
         // {{{ compile and install source files
         if ($this->source_files > 0 && empty($options['nobuild'])) {
+            $configureoptions = empty($options['configureoptions']) ? '' : $options['configureoptions'];
             if (PEAR::isError($err =
-                  $this->_compileSourceFiles($savechannel, $pkg))) {
+                  $this->_compileSourceFiles($savechannel, $pkg, $configureoptions))) {
                 return $err;
             }
         }
@@ -1501,12 +1510,13 @@ class PEAR_Installer extends PEAR_Downloader
     /**
      * @param string
      * @param PEAR_PackageFile_v1|PEAR_PackageFile_v2
+     * @param mixed[] $configureoptions
      */
-    function _compileSourceFiles($savechannel, &$filelist)
+    function _compileSourceFiles($savechannel, &$filelist, $configureoptions)
     {
         require_once 'PEAR/Builder.php';
         $this->log(1, "$this->source_files source files, building");
-        $bob = new PEAR_Builder($this->ui);
+        $bob = new PEAR_Builder($configureoptions, $this->ui);
         $bob->debug = $this->debug;
         $built = $bob->build($filelist, array(&$this, '_buildCallback'));
         if (PEAR::isError($built)) {
@@ -1553,7 +1563,9 @@ class PEAR_Installer extends PEAR_Downloader
                 }
 
                 if (!@copy($ext['file'], $copyto)) {
-                    return $this->raiseError("failed to write $copyto ($php_errormsg)", PEAR_INSTALLER_FAILED);
+                    return $this->raiseError(
+                        "failed to write $copyto (" . error_get_last()["message"] . ")",
+                        PEAR_INSTALLER_FAILED);
                 }
 
                 $this->log(3, "+ cp $ext[file] $copyto");
@@ -1562,7 +1574,8 @@ class PEAR_Installer extends PEAR_Downloader
                     $mode = 0666 & ~(int)octdec($this->config->get('umask'));
                     $this->addFileOperation('chmod', array($mode, $copyto));
                     if (!@chmod($copyto, $mode)) {
-                        $this->log(0, "failed to change mode of $copyto ($php_errormsg)");
+                        $this->log(0, "failed to change mode of $copyto (" .
+                                      error_get_last()["message"] . ")");
                     }
                 }
             }

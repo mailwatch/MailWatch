@@ -38,7 +38,7 @@ $GLOBALS['_PEAR_FRONTEND_SINGLETON'] = null;
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -160,7 +160,7 @@ class PEAR_Frontend extends PEAR
      * needs to be able to sustain a list over many sessions in order to support
      * user interaction with install scripts
      */
-    function addTempFile($file)
+    static function addTempFile($file)
     {
         $GLOBALS['_PEAR_Common_tempfiles'][] = $file;
     }

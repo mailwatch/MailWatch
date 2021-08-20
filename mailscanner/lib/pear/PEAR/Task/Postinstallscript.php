@@ -27,7 +27,7 @@ require_once 'PEAR/Task/Common.php';
  * @author    Greg Beaver <cellog@php.net>
  * @copyright 1997-2009 The Authors
  * @license   http://opensource.org/licenses/bsd-license.php New BSD License
- * @version   Release: 1.10.1
+ * @version   Release: 1.10.13
  * @link      http://pear.php.net/package/PEAR
  * @since     Class available since Release 1.4.0a1
  */
@@ -292,11 +292,12 @@ class PEAR_Task_Postinstallscript extends PEAR_Task_Common
      *
      * @param mixed  $pkg      PEAR_PackageFile_v1|PEAR_PackageFile_v2
      * @param string $contents file name
+     * @param string $dest     the eventual final file location (informational only)
      *
      * @return bool|PEAR_Error false to skip this file, PEAR_Error to fail
      *                         (use $this->throwError)
      */
-    public function startSession($pkg, $contents)
+    public function startSession($pkg, $contents, $dest)
     {
         if ($this->installphase != PEAR_TASK_INSTALL) {
             return false;
@@ -343,7 +344,7 @@ class PEAR_Task_Postinstallscript extends PEAR_Task_Common
      * @param  string install or upgrade
      * @access protected
      */
-    public static function run()
+    public static function run($tasks)
     {
     }
 }

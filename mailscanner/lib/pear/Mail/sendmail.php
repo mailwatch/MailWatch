@@ -59,14 +59,14 @@ class Mail_sendmail extends Mail {
      * filesystem.
      * @var string
      */
-    var $sendmail_path = '/usr/sbin/sendmail';
+    public $sendmail_path = '/usr/sbin/sendmail';
 
     /**
      * Any extra command-line parameters to pass to the sendmail or
      * sendmail wrapper binary.
      * @var string
      */
-    var $sendmail_args = '-i';
+    public $sendmail_args = '-i';
 
     /**
      * Constructor.

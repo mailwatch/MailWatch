@@ -872,7 +872,6 @@ used for automated conversion or learning the format.
                 $deps = $info->getDependencies();
                 $reg = &$this->config->getRegistry();
                 if (is_array($deps)) {
-                    $d = new PEAR_Dependency2($this->config, array(), '');
                     $data = array(
                         'caption' => 'Dependencies for ' . $info->getPackage(),
                         'border' => true,
@@ -929,7 +928,7 @@ used for automated conversion or learning the format.
                                     if (isset($inf['conflicts'])) {
                                         $ver = 'conflicts';
                                     } else {
-                                        $ver = $d->_getExtraString($inf);
+                                        $ver = PEAR_Dependency2::_getExtraString($inf);
                                     }
 
                                     $data['data'][] = array($req, ucfirst($deptype), $name,

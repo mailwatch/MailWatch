@@ -36,7 +36,7 @@ define('PEAR_REGISTRY_ERROR_CHANNEL_FILE', -6);
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -780,7 +780,8 @@ class PEAR_Registry extends PEAR
 
         $fp = @fopen($this->filemap, 'r');
         if (!$fp) {
-            return $this->raiseError('PEAR_Registry: could not open filemap "' . $this->filemap . '"', PEAR_REGISTRY_ERROR_FILE, null, null, $php_errormsg);
+            $last_errormsg = error_get_last();
+            return $this->raiseError('PEAR_Registry: could not open filemap "' . $this->filemap . '"', PEAR_REGISTRY_ERROR_FILE, null, null, $last_errormsg);
         }
 
         clearstatcache();
@@ -906,7 +907,7 @@ class PEAR_Registry extends PEAR
     }
 
     /**
-     * Determine whether a mirror exists within the deafult channel in the registry
+     * Determine whether a mirror exists within the default channel in the registry
      *
      * @param string Channel name
      * @param string Mirror name
@@ -1008,7 +1009,7 @@ class PEAR_Registry extends PEAR
         if ($lastmodified) {
             $info['_lastmodified'] = $lastmodified;
         } else {
-            $info['_lastmodified'] = date('r');
+            $info['_lastmodified'] = self::getSourceDateEpoch();
         }
 
         fwrite($fp, serialize($info));
@@ -1187,7 +1188,7 @@ class PEAR_Registry extends PEAR
 
         $dp = opendir($this->channelsdir);
         while ($ent = readdir($dp)) {
-            if ($ent{0} == '.' || substr($ent, -4) != '.reg') {
+            if ($ent[0] == '.' || substr($ent, -4) != '.reg') {
                 continue;
             }
 
@@ -1238,13 +1239,14 @@ class PEAR_Registry extends PEAR
         }
 
         while ($ent = readdir($dp)) {
-            if ($ent{0} == '.' || substr($ent, -4) != '.reg') {
+            if ($ent[0] == '.' || substr($ent, -4) != '.reg') {
                 continue;
             }
 
             $pkglist[] = substr($ent, 0, -4);
         }
         closedir($dp);
+        sort($pkglist);
         return $pkglist;
     }
 
@@ -1262,7 +1264,7 @@ class PEAR_Registry extends PEAR
         }
 
         while ($ent = readdir($dp)) {
-            if ($ent{0} == '.' || substr($ent, -4) != '.reg') {
+            if ($ent[0] == '.' || substr($ent, -4) != '.reg') {
                 continue;
             }
             $pkglist[] = substr($ent, 0, -4);
@@ -1300,7 +1302,7 @@ class PEAR_Registry extends PEAR
             return false;
         }
 
-        $info['_lastmodified'] = time();
+        $info['_lastmodified'] = self::getSourceDateEpoch();
         fwrite($fp, serialize($info));
         $this->_closePackageFile($fp);
         if (isset($info['filelist'])) {
@@ -1354,7 +1356,7 @@ class PEAR_Registry extends PEAR
             return false;
         }
 
-        $info['_lastmodified'] = time();
+        $info['_lastmodified'] = self::getSourceDateEpoch();
         fwrite($fp, serialize($info));
         $this->_closePackageFile($fp);
         $this->_rebuildFileMap();
@@ -1382,7 +1384,7 @@ class PEAR_Registry extends PEAR
         if (is_object($info)) {
             $info = $info->toArray();
         }
-        $info['_lastmodified'] = time();
+        $info['_lastmodified'] = self::getSourceDateEpoch();
 
         $newinfo = $info;
         if ($merge) {
@@ -1418,7 +1420,7 @@ class PEAR_Registry extends PEAR
 
         $save = $info;
         $info = $save->getArray(true);
-        $info['_lastmodified'] = time();
+        $info['_lastmodified'] = self::getSourceDateEpoch();
         fwrite($fp, serialize($info));
         $this->_closePackageFile($fp);
         $this->_rebuildFileMap();
@@ -2064,7 +2066,7 @@ class PEAR_Registry extends PEAR
                 if (!class_exists('PEAR_Installer_Role')) {
                     require_once 'PEAR/Installer/Role.php';
                 }
-                $notempty = create_function('$a','return !empty($a);');
+                $notempty = function($a) { return !empty($a); };
             }
             $package = is_array($package) ? array(strtolower($package[0]), strtolower($package[1]))
                 : strtolower($package);
@@ -2204,7 +2206,7 @@ class PEAR_Registry extends PEAR
             }
             if (!isset($components['scheme'])) {
                 if (strpos($components['path'], '/') !== false) {
-                    if ($components['path']{0} == '/') {
+                    if ($components['path'][0] == '/') {
                         return PEAR::raiseError('parsePackageName(): this is not ' .
                             'a package name, it begins with "/" in "' . $param . '"',
                             'invalid', null, null, $param);

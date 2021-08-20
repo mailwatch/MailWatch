@@ -37,7 +37,7 @@ putenv("PHP_PEAR_RUNTESTS=1");
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.3.3
  */
@@ -64,7 +64,6 @@ class PEAR_RunTest
         'display_errors=1',
         'log_errors=0',
         'html_errors=0',
-        'track_errors=1',
         'report_memleaks=0',
         'report_zend_debug=0',
         'docref_root=',
@@ -130,7 +129,8 @@ class PEAR_RunTest
         while (true) {
             /* hide errors from interrupted syscalls */
             $r = $pipes;
-            $e = $w = null;
+            unset($r[0]);
+            $e = $w = [];
             $n = @stream_select($r, $w, $e, 60);
 
             if ($n === 0) {
@@ -343,7 +343,7 @@ class PEAR_RunTest
 
         // Check if test should be skipped.
         $res  = $this->_runSkipIf($section_text, $temp_skipif, $tested, $ini_settings);
-        if (count($res) != 2) {
+        if ($res == 'SKIPPED' || count($res) != 2) {
             return $res;
         }
         $info = $res['info'];

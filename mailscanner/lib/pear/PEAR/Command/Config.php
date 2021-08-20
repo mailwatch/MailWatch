@@ -28,7 +28,7 @@ require_once 'PEAR/Command/Common.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
@@ -315,7 +315,7 @@ and uninstall).
         $root = preg_replace(array('!\\\\+!', '!/+!', "!$ds2+!"),
                              array('/', '/', '/'),
                             $root);
-        if ($root{0} != '/') {
+        if ($root[0] != '/') {
             if (!isset($options['windows'])) {
                 return PEAR::raiseError('Root directory must be an absolute path beginning ' .
                     'with "/", was: "' . $root . '"');
@@ -338,7 +338,7 @@ and uninstall).
 
         $params[1] = realpath($params[1]);
         $config = new PEAR_Config($params[1], '#no#system#config#', false, false);
-        if ($root{strlen($root) - 1} == '/') {
+        if ($root[strlen($root) - 1] == '/') {
             $root = substr($root, 0, strlen($root) - 1);
         }
 

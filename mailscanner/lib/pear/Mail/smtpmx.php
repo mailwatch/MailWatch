@@ -68,14 +68,14 @@ class Mail_smtpmx extends Mail {
      * @var object
      * @access private
      */
-    var $_smtp = null;
+    public $_smtp = null;
 
     /**
      * The port the SMTP server is on.
      * @var integer
      * @see getservicebyname()
      */
-    var $port = 25;
+    public $port = 25;
 
     /**
      * Hostname or domain that will be sent to the remote SMTP server in the
@@ -84,28 +84,28 @@ class Mail_smtpmx extends Mail {
      * @var string
      * @see posix_uname()
      */
-    var $mailname = 'localhost';
+    public $mailname = 'localhost';
 
     /**
      * SMTP connection timeout value.  NULL indicates no timeout.
      *
      * @var integer
      */
-    var $timeout = 10;
+    public $timeout = 10;
 
     /**
      * use either PEAR:Net_DNS or getmxrr
      *
      * @var boolean
      */
-    var $withNetDns = true;
+    public $withNetDns = true;
 
     /**
      * PEAR:Net_DNS_Resolver
      *
      * @var object
      */
-    var $resolver;
+    public $resolver;
 
     /**
      * Whether to use VERP or not. If not a boolean, the string value
@@ -113,28 +113,28 @@ class Mail_smtpmx extends Mail {
      *
      * @var mixed boolean or string
      */
-    var $verp = false;
+    public $verp = false;
 
     /**
      * Whether to use VRFY or not.
      *
      * @var boolean $vrfy
      */
-    var $vrfy = false;
+    public $vrfy = false;
 
     /**
      * Switch to test mode - don't send emails for real
      *
      * @var boolean $debug
      */
-    var $test = false;
+    public $test = false;
 
     /**
      * Turn on Net_SMTP debugging?
      *
      * @var boolean $peardebug
      */
-    var $debug = false;
+    public $debug = false;
 
     /**
      * internal error codes
@@ -148,7 +148,7 @@ class Mail_smtpmx extends Mail {
      *       for each code. This avoids conflicts with error codes from different
      *       classes. How can I use unique error codes and stay conform with PEAR?
      */
-    var $errorCode = array(
+    public $errorCode = array(
         'not_connected' => array(
             'code'  => 1,
             'msg'   => 'Could not connect to any mail server ({HOST}) at port {PORT} to send mail to {RCPT}.'

@@ -20,7 +20,7 @@
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a8
  * @access private
@@ -111,8 +111,8 @@ class PEAR_PackageFile_v2_Validator
               isset($test['dependencies']['required']) &&
               isset($test['dependencies']['required']['pearinstaller']) &&
               isset($test['dependencies']['required']['pearinstaller']['min']) &&
-              '1.10.1' != '@package' . '_version@' &&
-              version_compare('1.10.1',
+              '1.10.13' != '@package' . '_version@' &&
+              version_compare('1.10.13',
                 $test['dependencies']['required']['pearinstaller']['min'], '<')
         ) {
             $this->_pearVersionTooLow($test['dependencies']['required']['pearinstaller']['min']);
@@ -419,7 +419,7 @@ class PEAR_PackageFile_v2_Validator
             foreach ($tags as $i => $tag) {
                 if (!is_array($tag) || !isset($tag['attribs'])) {
                     foreach ($choice['attribs'] as $attrib) {
-                        if ($attrib{0} != '?') {
+                        if ($attrib[0] != '?') {
                             $ret &= $this->_tagHasNoAttribs($choice['tag'],
                                 $context);
                             continue 2;
@@ -427,7 +427,7 @@ class PEAR_PackageFile_v2_Validator
                     }
                 }
                 foreach ($choice['attribs'] as $attrib) {
-                    if ($attrib{0} != '?') {
+                    if ($attrib[0] != '?') {
                         if (!isset($tag['attribs'][$attrib])) {
                             $ret &= $this->_tagMissingAttribute($choice['tag'],
                                 $attrib, $context);
@@ -450,9 +450,9 @@ class PEAR_PackageFile_v2_Validator
             }
             return $ret;
         }
-        $multi = $key{0};
+        $multi = $key[0];
         if ($multi == '+' || $multi == '*') {
-            $ret['multiple'] = $key{0};
+            $ret['multiple'] = $key[0];
             $key = substr($key, 1);
         }
         if (count($attrs = explode('->', $key)) > 1) {
@@ -1080,8 +1080,8 @@ class PEAR_PackageFile_v2_Validator
             foreach ($list['file'] as $i => $file)
             {
                 if (isset($file['attribs']) && isset($file['attribs']['name'])) {
-                    if ($file['attribs']['name']{0} == '.' &&
-                          $file['attribs']['name']{1} == '/') {
+                    if ($file['attribs']['name'][0] == '.' &&
+                          $file['attribs']['name'][1] == '/') {
                         // name is something like "./doc/whatever.txt"
                         $this->_invalidFileName($file['attribs']['name'], $dirname);
                     }
@@ -1350,7 +1350,7 @@ class PEAR_PackageFile_v2_Validator
         $this->_stack->push(__FUNCTION__, 'error',
             array('version' => $version),
             'This package.xml requires PEAR version %version% to parse properly, we are ' .
-            'version 1.10.1');
+            'version 1.10.13');
     }
 
     function _invalidTagOrder($oktags, $actual, $root)
@@ -1930,7 +1930,7 @@ class PEAR_PackageFile_v2_Validator
 
             switch ($token) {
                 case T_WHITESPACE :
-                    break;
+                    continue 2;
                 case ';':
                     if ($interface) {
                         $current_function = '';
@@ -2106,7 +2106,7 @@ class PEAR_PackageFile_v2_Validator
             foreach ($methods as $method) {
                 $function = "$class::$method";
                 $key = "function;$function";
-                if ($method{0} == '_' || !strcasecmp($method, $class) ||
+                if ($method[0] == '_' || !strcasecmp($method, $class) ||
                     isset($providesret[$key])) {
                     continue;
                 }
@@ -2118,7 +2118,7 @@ class PEAR_PackageFile_v2_Validator
 
         foreach ($srcinfo['declared_functions'] as $function) {
             $key = "function;$function";
-            if ($function{0} == '_' || isset($providesret[$key])) {
+            if ($function[0] == '_' || isset($providesret[$key])) {
                 continue;
             }
 

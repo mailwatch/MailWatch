@@ -28,7 +28,7 @@ require_once 'PEAR/Command/Common.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
@@ -585,8 +585,9 @@ installed package.'
                     case 'configure_options' : {
                         foreach ($info[$key] as $i => $p) {
                             $info[$key][$i] = array_map(null, array_keys($p), array_values($p));
-                            $info[$key][$i] = array_map(create_function('$a',
-                                'return join(" = ",$a);'), $info[$key][$i]);
+                            $info[$key][$i] = array_map(
+                                function($a) { return join(" = ", $a); },
+                                $info[$key][$i]);
                             $info[$key][$i] = implode(', ', $info[$key][$i]);
                         }
                         $info[$key] = implode("\n", $info[$key]);

@@ -31,7 +31,7 @@ define('PEAR_COMMAND_CHANNELS_CHANNEL_EXISTS', -500);
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -673,7 +673,7 @@ configuration.',
             return $this->raiseError('No channel alias specified');
         }
 
-        if (count($params) !== 2 || (!empty($params[1]) && $params[1]{0} == '-')) {
+        if (count($params) !== 2 || (!empty($params[1]) && $params[1][0] == '-')) {
             return $this->raiseError(
                 'Invalid format, correct is: channel-alias channel alias');
         }

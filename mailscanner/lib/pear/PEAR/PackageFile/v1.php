@@ -274,7 +274,7 @@ define('PEAR_PACKAGEFILE_ERROR_INVALID_FILENAME', 52);
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -1420,7 +1420,7 @@ class PEAR_PackageFile_v1
                 }
             }
             switch ($token) {
-                case T_WHITESPACE :
+                case T_WHITESPACE:
                     break;
                 case ';':
                     if ($interface) {
@@ -1575,7 +1575,7 @@ class PEAR_PackageFile_v1
             foreach ($methods as $method) {
                 $function = "$class::$method";
                 $key = "function;$function";
-                if ($method{0} == '_' || !strcasecmp($method, $class) ||
+                if ($method[0] == '_' || !strcasecmp($method, $class) ||
                     isset($this->_packageInfo['provides'][$key])) {
                     continue;
                 }
@@ -1586,7 +1586,7 @@ class PEAR_PackageFile_v1
 
         foreach ($srcinfo['declared_functions'] as $function) {
             $key = "function;$function";
-            if ($function{0} == '_' || isset($this->_packageInfo['provides'][$key])) {
+            if ($function[0] == '_' || isset($this->_packageInfo['provides'][$key])) {
                 continue;
             }
             if (!strstr($function, '::') && strncasecmp($function, $pn, $pnl)) {
