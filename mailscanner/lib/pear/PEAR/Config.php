@@ -1522,7 +1522,7 @@ class PEAR_Config extends PEAR
 
             $reg = &$this->getRegistry($layer);
             if (is_object($reg)) {
-                $chan = $reg->getChannel($channel ? $channel : 'pear.php.net');
+                $chan = $reg->getChannel($channel ?: 'pear.php.net');
                 if (PEAR::isError($chan)) {
                     return false;
                 }

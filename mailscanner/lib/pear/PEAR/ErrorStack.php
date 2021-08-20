@@ -362,7 +362,7 @@ class PEAR_ErrorStack {
         if (!is_callable($callback)) {
             $callback = false;
         }
-        $package = $package ? $package : '*';
+        $package = $package ?: '*';
         $GLOBALS['_PEAR_ERRORSTACK_DEFAULT_CALLBACK'][$package] = $callback;
     }
     

@@ -1617,7 +1617,7 @@ class PEAR_Downloader_Package
 
                 ///FIXME need to pass back some error code that we can use to match with to cancel all further operations
                 /// At least stop all deps of this package from being installed
-                $out = $saveparam ? $saveparam : $param;
+                $out = $saveparam ?: $param;
                 $err = PEAR::raiseError('Download of "' . $out . '" succeeded, but it is not a valid package archive');
                 $this->_valid = false;
                 return $err;

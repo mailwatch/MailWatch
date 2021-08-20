@@ -312,7 +312,7 @@ class Mail_mimePart
         $encoded =& $this->encoded;
 
         if (count($this->subparts)) {
-            $boundary = $boundary ? $boundary : '=_' . md5(rand() . microtime());
+            $boundary = $boundary ?: '=_' . md5(rand() . microtime());
             $eol = $this->eol;
 
             $this->headers['Content-Type'] .= ";$eol boundary=\"$boundary\"";
@@ -423,7 +423,7 @@ class Mail_mimePart
         $eol = $this->eol;
 
         if (count($this->subparts)) {
-            $boundary = $boundary ? $boundary : '=_' . md5(rand() . microtime());
+            $boundary = $boundary ?: '=_' . md5(rand() . microtime());
             $this->headers['Content-Type'] .= ";$eol boundary=\"$boundary\"";
         }
 

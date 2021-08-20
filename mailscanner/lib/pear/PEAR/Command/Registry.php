@@ -178,10 +178,10 @@ installed package.'
                                         $package['package'] : $package['name'], $channel);
             if ($channelinfo) {
                 $packageinfo = array($pobj->getChannel(), $pobj->getPackage(), $pobj->getVersion(),
-                                    $pobj->getState() ? $pobj->getState() : null);
+                                    $pobj->getState() ?: null);
             } else {
                 $packageinfo = array($pobj->getPackage(), $pobj->getVersion(),
-                                    $pobj->getState() ? $pobj->getState() : null);
+                                    $pobj->getState() ?: null);
             }
             $data['data'][] = $packageinfo;
         }
@@ -224,7 +224,7 @@ installed package.'
                 $p = isset($package['package']) ? $package['package'] : $package['name'];
                 $pobj = $reg->getPackage($p, $channel);
                 $data['data'][] = array($pobj->getPackage(), $pobj->getVersion(),
-                                        $pobj->getState() ? $pobj->getState() : null);
+                                        $pobj->getState() ?: null);
             }
 
             // Adds a blank line after each section
@@ -604,7 +604,7 @@ installed package.'
                 unset($info[$key]);
                 $info['Last Modified'] = $hdate;
             } elseif ($key == '_lastversion') {
-                $info['Previous Installed Version'] = $info[$key] ? $info[$key] : '- None -';
+                $info['Previous Installed Version'] = $info[$key] ?: '- None -';
                 unset($info[$key]);
             } else {
                 $info[$key] = trim($info[$key]);
@@ -1131,7 +1131,7 @@ installed package.'
             }
 
             $v = $obj->getLastInstalledVersion();
-            $info['Previous Installed Version'] = $v ? $v : '- None -';
+            $info['Previous Installed Version'] = $v ?: '- None -';
         }
 
         foreach ($info as $key => $value) {

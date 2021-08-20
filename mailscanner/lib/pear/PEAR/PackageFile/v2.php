@@ -772,7 +772,7 @@ class PEAR_PackageFile_v2
     function setPackagefile($file, $archive = false)
     {
         $this->_packageFile = $file;
-        $this->_archiveFile = $archive ? $archive : $file;
+        $this->_archiveFile = $archive ?: $file;
     }
 
     /**

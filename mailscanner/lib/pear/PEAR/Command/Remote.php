@@ -222,7 +222,7 @@ parameter.
         }
 
         $installed = $reg->packageInfo($info['name'], null, $channel);
-        $info['installed'] = $installed['version'] ? $installed['version'] : '- no -';
+        $info['installed'] = $installed['version'] ?: '- no -';
         if (is_array($info['installed'])) {
             $info['installed'] = $info['installed']['release'];
         }

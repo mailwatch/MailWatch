@@ -788,7 +788,7 @@ class PEAR_REST_10
                     'releasedate' => $info['da'],
                     'releasenotes' => $info['n'],
                     'state' => $release['s'],
-                    'deps' => $ds ? $ds : array(),
+                    'deps' => $ds ?: array(),
                 );
             }
         } else {

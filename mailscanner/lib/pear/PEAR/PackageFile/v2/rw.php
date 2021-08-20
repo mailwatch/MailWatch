@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PEAR_PackageFile_v2, package.xml version 2.0, read/write version
  *
@@ -1556,7 +1557,7 @@ class PEAR_PackageFile_v2_rw extends PEAR_PackageFile_v2
                 $this->getStability(),
             'date' => $this->getDate(),
             'license' => $this->getLicense(true),
-            'notes' => $notes ? $notes : $this->getNotes()
+            'notes' => $notes ?: $this->getNotes()
             );
     }
 

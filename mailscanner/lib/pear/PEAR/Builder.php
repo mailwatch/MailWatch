@@ -374,7 +374,7 @@ class PEAR_Builder extends PEAR_Common
         }
         $this->addTempFile($inst_dir);
 
-        $make_command = getenv('MAKE') ? getenv('MAKE') : 'make';
+        $make_command = getenv('MAKE') ?: 'make';
 
         $to_run = array(
             $configure_command,

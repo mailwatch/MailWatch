@@ -345,7 +345,7 @@ class Mail_mime
                 }
             }
 
-            $filename = $name ? $name : $file;
+            $filename = $name ?: $file;
         } else {
             $filedata = $file;
             $filename = $name;
@@ -430,7 +430,7 @@ class Mail_mime
                 }
             }
             // Force the name the user supplied, otherwise use $file
-            $filename = ($name ? $name : $this->basename($file));
+            $filename = ($name ?: $this->basename($file));
         } else {
             $filedata = $file;
             $filename = $name;
@@ -792,7 +792,7 @@ class Mail_mime
         // Write the rest of the message into file
         $res = $this->get($params, $filename);
 
-        return $res ? $res : true;
+        return $res ?: true;
     }
 
     /**
@@ -837,7 +837,7 @@ class Mail_mime
             @ini_set('magic_quotes_runtime', $magic_quote_setting);
         }
 
-        return $res ? $res : true;
+        return $res ?: true;
     }
 
     /**

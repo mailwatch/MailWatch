@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PEAR_Installer_Role
  *
@@ -12,7 +13,6 @@
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 1.4.0a1
  */
-
 /**
  * base class for installer roles
  */
@@ -224,7 +224,7 @@ class PEAR_Installer_Role
         $GLOBALS['_PEAR_INSTALLER_ROLES'] = array();
         $parser = new PEAR_XMLParser;
         if ($dir === null) {
-            $dir = dirname(__FILE__) . '/Role';
+            $dir = __DIR__ . '/Role';
         }
 
         if (!file_exists($dir) || !is_dir($dir)) {
