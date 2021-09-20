@@ -1014,8 +1014,10 @@ function html_end($footer = '')
 function dbconn()
 {
     //$link = mysql_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, false, 128);
-
-    return database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    if (!defined('DB_PORT')) {
+        define('DB_PORT', 3306);
+    }
+    return database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 }
 
 /**
@@ -1106,9 +1108,8 @@ function safe_value($value)
     if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
         $value = stripslashes($value);
     }
-    $value = $link->real_escape_string($value);
 
-    return $value;
+    return $link->real_escape_string($value);
 }
 
 /**
@@ -1155,7 +1156,7 @@ function __($string, $useSystemLang = false)
  */
 function is_utf8($string)
 {
-    // From http://w3.org/International/questions/qa-forms-utf-8.html
+    // From https://www.w3.org/International/questions/qa-forms-utf-8.en.html
     return preg_match('%^(?:
           [\x09\x0A\x0D\x20-\x7E]            # ASCII
         | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
@@ -3205,13 +3206,31 @@ function imap_authenticate($username, $password)
 {
     $username = strtolower($username);
 
-    if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+    if (
+        (
+            !defined('IMAP_USERNAME_FULL_EMAIL') &&
+            !filter_var($username, FILTER_VALIDATE_EMAIL)
+        )
+        ||
+        (
+            defined('IMAP_USERNAME_FULL_EMAIL') &&
+            IMAP_USERNAME_FULL_EMAIL === true &&
+            !filter_var($username, FILTER_VALIDATE_EMAIL)
+        )
+    ) {
         //user has no mail but it is required for mailwatch
         return null;
     }
 
     if ($username !== '' && $password !== '') {
-        $mbox = imap_open(IMAP_HOST, $username, $password, null, 0);
+        $imapUsername = $username;
+        if (
+            defined('IMAP_USERNAME_FULL_EMAIL') &&
+            IMAP_USERNAME_FULL_EMAIL === false
+        ) {
+            $imapUsername = substr($username, 0, strrpos($username, '@'));
+        }
+        $mbox = imap_open(IMAP_HOST, $imapUsername, $password, null, 0);
 
         if (false === $mbox) {
             //auth faild
@@ -4137,6 +4156,7 @@ function checkConfVariables()
         'DB_PASS',
         'DB_TYPE',
         'DB_USER',
+        'DB_PORT',
         'DEBUG',
         'DISPLAY_IP',
         'DISTRIBUTED_SETUP',

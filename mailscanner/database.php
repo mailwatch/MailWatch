@@ -41,7 +41,7 @@ class database
      * @param string $database
      * @return mysqli
      */
-    public static function connect($host = '', $username = '', $password = '', $database = '')
+    public static function connect($host = '', $username = '', $password = '', $database = '', $port = 3306)
     {
         if (!self::$link instanceof mysqli) {
             try {
@@ -49,7 +49,7 @@ class database
                 $driver->report_mode = MYSQLI_REPORT_ALL;
                 set_error_handler(function () {
                 });
-                self::$link = new mysqli($host, $username, $password, $database);
+                self::$link = new mysqli($host, $username, $password, $database, $port);
                 restore_error_handler();
                 self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
                 $charset = 'utf8';

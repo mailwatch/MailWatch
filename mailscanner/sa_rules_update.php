@@ -67,7 +67,7 @@ if ($_SESSION['user_type'] !== 'A') {
             // debug("line: ".$line."\n");
             preg_match("/^(?:\s*)describe\s+(\S+)\s+(.+)$/", $line, $regs);
             if (isset($regs[1], $regs[2])) {
-                $rule_name = htmlentities(trim($regs[1]), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
+                $rule_name = trim($regs[1]);
                 $rule_desc = htmlentities(trim(strip_tags($regs[2])), ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
                 echo '<tr><td>' . $rule_name . '</td><td>' . $rule_desc . "</td></tr>\n";
                 $rule_name = safe_value($rule_name);
