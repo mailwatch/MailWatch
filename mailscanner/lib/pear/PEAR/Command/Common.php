@@ -28,7 +28,7 @@ require_once 'PEAR.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
@@ -40,20 +40,20 @@ class PEAR_Command_Common extends PEAR
      *
      * @var PEAR_Config
      */
-    var $config;
+    public $config;
     /**
      * @var PEAR_Registry
      * @access protected
      */
-    var $_registry;
+    public $_registry;
 
     /**
      * User Interface object, for all interaction with the user.
      * @var object
      */
-    var $ui;
+    public $ui;
 
-    var $_deps_rel_trans = array(
+    public $_deps_rel_trans = [
                                  'lt' => '<',
                                  'le' => '<=',
                                  'eq' => '=',
@@ -61,9 +61,9 @@ class PEAR_Command_Common extends PEAR
                                  'gt' => '>',
                                  'ge' => '>=',
                                  'has' => '=='
-                                 );
+                                 ];
 
-    var $_deps_type_trans = array(
+    public $_deps_type_trans = [
                                   'pkg' => 'package',
                                   'ext' => 'extension',
                                   'php' => 'PHP',
@@ -73,7 +73,7 @@ class PEAR_Command_Common extends PEAR
                                   'os' => 'operating system',
                                   'websrv' => 'web server',
                                   'sapi' => 'SAPI backend'
-                                  );
+                                  ];
 
     /**
      * PEAR_Command_Common constructor.
@@ -94,7 +94,7 @@ class PEAR_Command_Common extends PEAR
      */
     function getCommands()
     {
-        $ret = array();
+        $ret = [];
         foreach (array_keys($this->commands) as $command) {
             $ret[$command] = $this->commands[$command]['summary'];
         }
@@ -109,7 +109,7 @@ class PEAR_Command_Common extends PEAR
      */
     function getShortcuts()
     {
-        $ret = array();
+        $ret = [];
         foreach (array_keys($this->commands) as $command) {
             if (isset($this->commands[$command]['shortcut'])) {
                 $ret[$this->commands[$command]['shortcut']] = $command;
@@ -137,16 +137,16 @@ class PEAR_Command_Common extends PEAR
     function getGetoptArgs($command, &$short_args, &$long_args)
     {
         $short_args = '';
-        $long_args = array();
+        $long_args = [];
         if (empty($this->commands[$command]) || empty($this->commands[$command]['options'])) {
             return;
         }
 
         reset($this->commands[$command]['options']);
-        while (list($option, $info) = each($this->commands[$command]['options'])) {
+        foreach ($this->commands[$command]['options'] as $option => $info) {
             $larg = $sarg = '';
             if (isset($info['arg'])) {
-                if ($info['arg']{0} == '(') {
+                if ($info['arg'][0] == '(') {
                     $larg = '==';
                     $sarg = '::';
                     $arg = substr($info['arg'], 1, -1);
@@ -193,13 +193,13 @@ class PEAR_Command_Common extends PEAR
             $help = $this->commands[$command]['summary'];
         }
 
-        if (preg_match_all('/{config\s+([^\}]+)}/e', $help, $matches)) {
+        if (preg_match_all('/{config\s+([^\}]+)}/', $help, $matches)) {
             foreach($matches[0] as $k => $v) {
                 $help = preg_replace("/$v/", $config->get($matches[1][$k]), $help);
             }
         }
 
-        return array($help, $this->getHelpArgs($command));
+        return [$help, $this->getHelpArgs($command)];
     }
 
     /**

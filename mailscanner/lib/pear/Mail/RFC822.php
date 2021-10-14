@@ -75,69 +75,69 @@ class Mail_RFC822 {
      * The address being parsed by the RFC822 object.
      * @var string $address
      */
-    var $address = '';
+    public $address = '';
 
     /**
      * The default domain to use for unqualified addresses.
      * @var string $default_domain
      */
-    var $default_domain = 'localhost';
+    public $default_domain = 'localhost';
 
     /**
      * Should we return a nested array showing groups, or flatten everything?
      * @var boolean $nestGroups
      */
-    var $nestGroups = true;
+    public $nestGroups = true;
 
     /**
      * Whether or not to validate atoms for non-ascii characters.
      * @var boolean $validate
      */
-    var $validate = true;
+    public $validate = true;
 
     /**
      * The array of raw addresses built up as we parse.
      * @var array $addresses
      */
-    var $addresses = array();
+    public $addresses = [];
 
     /**
      * The final array of parsed address information that we build up.
      * @var array $structure
      */
-    var $structure = array();
+    public $structure = [];
 
     /**
      * The current error message, if any.
      * @var string $error
      */
-    var $error = null;
+    public $error = null;
 
     /**
      * An internal counter/pointer.
      * @var integer $index
      */
-    var $index = null;
+    public $index = null;
 
     /**
      * The number of groups that have been found in the address list.
      * @var integer $num_groups
      * @access public
      */
-    var $num_groups = 0;
+    public $num_groups = 0;
 
     /**
      * A variable so that we can tell whether or not we're inside a
      * Mail_RFC822 object.
      * @var boolean $mailRFC822
      */
-    var $mailRFC822 = true;
+    public $mailRFC822 = true;
 
     /**
     * A limit after which processing stops
     * @var int $limit
     */
-    var $limit = null;
+    public $limit = null;
 
     /**
      * Sets up the object. The address must either be set here or when
@@ -183,8 +183,8 @@ class Mail_RFC822 {
         if (isset($validate))       $this->validate       = $validate;
         if (isset($limit))          $this->limit          = $limit;
 
-        $this->structure  = array();
-        $this->addresses  = array();
+        $this->structure  = [];
+        $this->addresses  = [];
         $this->error      = null;
         $this->index      = null;
 
@@ -267,10 +267,10 @@ class Mail_RFC822 {
 
         // $string now contains the first full address/group.
         // Add to the addresses array.
-        $this->addresses[] = array(
+        $this->addresses[] = [
                                    'address' => trim($string),
                                    'group'   => $is_group
-                                   );
+                                   ];
 
         // Remove the now stored address from the initial line, the +1
         // is to account for the explode character.
@@ -438,7 +438,7 @@ class Mail_RFC822 {
     protected function _validateAddress($address)
     {
         $is_group = false;
-        $addresses = array();
+        $addresses = [];
 
         if ($address['group']) {
             $is_group = true;
@@ -446,7 +446,7 @@ class Mail_RFC822 {
             // Get the group part of the name
             $parts     = explode(':', $address['address']);
             $groupname = $this->_splitCheck($parts, ':');
-            $structure = array();
+            $structure = [];
 
             // And validate the group part of the name.
             if (!$this->_validatePhrase($groupname)){
@@ -524,7 +524,7 @@ class Mail_RFC822 {
         // Splits on one or more Tab or space.
         $parts = preg_split('/[ \\x09]+/', $phrase, -1, PREG_SPLIT_NO_EMPTY);
 
-        $phrase_parts = array();
+        $phrase_parts = [];
         while (count($parts) > 0){
             $phrase_parts[] = $this->_splitCheck($parts, ' ');
             for ($i = 0; $i < $this->index + 1; $i++)
@@ -613,7 +613,7 @@ class Mail_RFC822 {
         // A couple of defaults.
         $phrase  = '';
         $comment = '';
-        $comments = array();
+        $comments = [];
 
         // Catch any RFC822 comments and store them separately.
         $_mailbox = $mailbox;
@@ -671,7 +671,7 @@ class Mail_RFC822 {
 
         // Add the phrase (even if empty) and comments
         $mbox->personal = $phrase;
-        $mbox->comment  = isset($comments) ? $comments : array();
+        $mbox->comment  = isset($comments) ? $comments : [];
 
         if (isset($route_addr)) {
             $mbox->mailbox = $route_addr['local_part'];
@@ -846,7 +846,7 @@ class Mail_RFC822 {
         if (($domain     = $this->_validateDomain($domain)) === false) return false;
 
         // Got here so return successful.
-        return array('local_part' => $local_part, 'domain' => $domain);
+        return ['local_part' => $local_part, 'domain' => $domain];
     }
 
     /**
@@ -859,7 +859,7 @@ class Mail_RFC822 {
     protected function _validateLocalPart($local_part)
     {
         $parts = explode('.', $local_part);
-        $words = array();
+        $words = [];
 
         // Split the local_part into words.
         while (count($parts) > 0) {
@@ -920,7 +920,7 @@ class Mail_RFC822 {
     {
         $regex = $strict ? '/^([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})$/i' : '/^([*+!.&#$|\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})$/i';
         if (preg_match($regex, trim($data), $matches)) {
-            return array($matches[1], $matches[2]);
+            return [$matches[1], $matches[2]];
         } else {
             return false;
         }

@@ -36,7 +36,7 @@ class SyslogParser
     public $process;
     public $pid;
     public $entry;
-    public $months = array(
+    public $months = [
         'Jan' => '1',
         'Feb' => '2',
         'Mar' => '3',
@@ -49,7 +49,7 @@ class SyslogParser
         'Oct' => '10',
         'Nov' => '11',
         'Dec' => '12'
-    );
+    ];
 
     /**
      * @param string $line

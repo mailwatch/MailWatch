@@ -77,7 +77,7 @@ class Requests {
 	 *
 	 * @var array
 	 */
-	protected static $transports = array();
+	protected static $transports = [];
 
 	/**
 	 * Selected transport name
@@ -114,8 +114,8 @@ class Requests {
 		}
 
 		$file = str_replace('_', '/', $class);
-		if (file_exists(dirname(__FILE__) . '/' . $file . '.php')) {
-			require_once(dirname(__FILE__) . '/' . $file . '.php');
+		if (file_exists(__DIR__ . '/' . $file . '.php')) {
+			require_once(__DIR__ . '/' . $file . '.php');
 		}
 	}
 
@@ -125,7 +125,7 @@ class Requests {
 	 * @codeCoverageIgnore
 	 */
 	public static function register_autoloader() {
-		spl_autoload_register(array('Requests', 'autoloader'));
+		spl_autoload_register(['Requests', 'autoloader']);
 	}
 
 	/**
@@ -135,13 +135,13 @@ class Requests {
 	 */
 	public static function add_transport($transport) {
 		if (empty(self::$transports)) {
-			self::$transports = array(
+			self::$transports = [
 				'Requests_Transport_cURL',
 				'Requests_Transport_fsockopen',
-			);
+			];
 		}
 
-		self::$transports = array_merge(self::$transports, array($transport));
+		self::$transports = array_merge(self::$transports, [$transport]);
 	}
 
 	/**
@@ -159,10 +159,10 @@ class Requests {
 		// @codeCoverageIgnoreEnd
 
 		if (empty(self::$transports)) {
-			self::$transports = array(
+			self::$transports = [
 				'Requests_Transport_cURL',
 				'Requests_Transport_fsockopen',
-			);
+			];
 		}
 
 		// Find us a working transport
@@ -170,7 +170,7 @@ class Requests {
 			if (!class_exists($class))
 				continue;
 
-			$result = call_user_func(array($class, 'test'));
+			$result = call_user_func([$class, 'test']);
 			if ($result) {
 				self::$transport = $class;
 				break;
@@ -193,21 +193,21 @@ class Requests {
 	/**
 	 * Send a GET request
 	 */
-	public static function get($url, $headers = array(), $options = array()) {
+	public static function get($url, $headers = [], $options = []) {
 		return self::request($url, $headers, null, self::GET, $options);
 	}
 
 	/**
 	 * Send a HEAD request
 	 */
-	public static function head($url, $headers = array(), $options = array()) {
+	public static function head($url, $headers = [], $options = []) {
 		return self::request($url, $headers, null, self::HEAD, $options);
 	}
 
 	/**
 	 * Send a DELETE request
 	 */
-	public static function delete($url, $headers = array(), $options = array()) {
+	public static function delete($url, $headers = [], $options = []) {
 		return self::request($url, $headers, null, self::DELETE, $options);
 	}
 	/**#@-*/
@@ -223,13 +223,13 @@ class Requests {
 	/**
 	 * Send a POST request
 	 */
-	public static function post($url, $headers = array(), $data = array(), $options = array()) {
+	public static function post($url, $headers = [], $data = [], $options = []) {
 		return self::request($url, $headers, $data, self::POST, $options);
 	}
 	/**
 	 * Send a PUT request
 	 */
-	public static function put($url, $headers = array(), $data = array(), $options = array()) {
+	public static function put($url, $headers = [], $data = [], $options = []) {
 		return self::request($url, $headers, $data, self::PUT, $options);
 	}
 
@@ -241,7 +241,7 @@ class Requests {
 	 *
 	 * @link http://tools.ietf.org/html/rfc5789
 	 */
-	public static function patch($url, $headers, $data = array(), $options = array()) {
+	public static function patch($url, $headers, $data = [], $options = []) {
 		return self::request($url, $headers, $data, self::PATCH, $options);
 	}
 	/**#@-*/
@@ -297,7 +297,7 @@ class Requests {
 	 * @param array $options Options for the request (see description for more information)
 	 * @return Requests_Response
 	 */
-	public static function request($url, $headers = array(), $data = array(), $type = self::GET, $options = array()) {
+	public static function request($url, $headers = [], $data = [], $type = self::GET, $options = []) {
 		if (empty($options['type'])) {
 			$options['type'] = $type;
 		}
@@ -305,7 +305,7 @@ class Requests {
 
 		self::set_defaults($url, $headers, $data, $type, $options);
 
-		$options['hooks']->dispatch('requests.before_request', array(&$url, &$headers, &$data, &$type, &$options));
+		$options['hooks']->dispatch('requests.before_request', [&$url, &$headers, &$data, &$type, &$options]);
 
 		if (!empty($options['transport'])) {
 			$transport = $options['transport'];
@@ -319,7 +319,7 @@ class Requests {
 		}
 		$response = $transport->request($url, $headers, $data, $options);
 
-		$options['hooks']->dispatch('requests.before_parse', array(&$response, $url, $headers, $data, $type, $options));
+		$options['hooks']->dispatch('requests.before_parse', [&$response, $url, $headers, $data, $type, $options]);
 
 		return self::parse_response($response, $url, $headers, $data, $options);
 	}
@@ -368,11 +368,11 @@ class Requests {
 	 * @param array $options Global and default options (see {@see Requests::request})
 	 * @return array Responses (either Requests_Response or a Requests_Exception object)
 	 */
-	public static function request_multiple($requests, $options = array()) {
+	public static function request_multiple($requests, $options = []) {
 		$options = array_merge(self::get_default_options(true), $options);
 
 		if (!empty($options['hooks'])) {
-			$options['hooks']->register('transport.internal.parse_response', array('Requests', 'parse_multiple'));
+			$options['hooks']->register('transport.internal.parse_response', ['Requests', 'parse_multiple']);
 			if (!empty($options['complete'])) {
 				$options['hooks']->register('multiple.request.complete', $options['complete']);
 			}
@@ -380,10 +380,10 @@ class Requests {
 
 		foreach ($requests as $id => &$request) {
 			if (!isset($request['headers'])) {
-				$request['headers'] = array();
+				$request['headers'] = [];
 			}
 			if (!isset($request['data'])) {
-				$request['data'] = array();
+				$request['data'] = [];
 			}
 			if (!isset($request['type'])) {
 				$request['type'] = self::GET;
@@ -403,7 +403,7 @@ class Requests {
 
 			// Ensure we only hook in once
 			if ($request['options']['hooks'] !== $options['hooks']) {
-				$request['options']['hooks']->register('transport.internal.parse_response', array('Requests', 'parse_multiple'));
+				$request['options']['hooks']->register('transport.internal.parse_response', ['Requests', 'parse_multiple']);
 				if (!empty($request['options']['complete'])) {
 					$request['options']['hooks']->register('multiple.request.complete', $request['options']['complete']);
 				}
@@ -429,7 +429,7 @@ class Requests {
 			if (is_string($response)) {
 				$request = $requests[$id];
 				self::parse_multiple($response, $request);
-				$request['options']['hooks']->dispatch('multiple.request.complete', array(&$response, $id));
+				$request['options']['hooks']->dispatch('multiple.request.complete', [&$response, $id]);
 			}
 		}
 
@@ -444,7 +444,7 @@ class Requests {
 	 * @return array Default option values
 	 */
 	protected static function get_default_options($multirequest = false) {
-		$defaults = array(
+		$defaults = [
 			'timeout' => 10,
 			'useragent' => 'php-requests/' . self::VERSION,
 			'redirected' => 0,
@@ -459,9 +459,9 @@ class Requests {
 			'idn' => true,
 			'hooks' => null,
 			'transport' => null,
-			'verify' => dirname( __FILE__ ) . '/Requests/Transport/cacert.pem',
+			'verify' => __DIR__ . '/Requests/Transport/cacert.pem',
 			'verifyname' => true,
-		);
+		];
 		if ($multirequest !== false) {
 			$defaults['complete'] = null;
 		}
@@ -597,9 +597,9 @@ class Requests {
 			unset($return->headers['connection']);
 		}
 
-		$options['hooks']->dispatch('requests.before_redirect_check', array(&$return, $req_headers, $req_data, $options));
+		$options['hooks']->dispatch('requests.before_redirect_check', [&$return, $req_headers, $req_data, $options]);
 
-		if ((in_array($return->status_code, array(300, 301, 302, 303, 307)) || $return->status_code > 307 && $return->status_code < 400) && $options['follow_redirects'] === true) {
+		if ((in_array($return->status_code, [300, 301, 302, 303, 307]) || $return->status_code > 307 && $return->status_code < 400) && $options['follow_redirects'] === true) {
 			if (isset($return->headers['location']) && $options['redirected'] < $options['redirects']) {
 				if ($return->status_code === 303) {
 					$options['type'] = Requests::GET;
@@ -622,7 +622,7 @@ class Requests {
 
 		$return->redirects = $options['redirected'];
 
-		$options['hooks']->dispatch('requests.after_request', array(&$return, $req_headers, $req_data, $options));
+		$options['hooks']->dispatch('requests.after_request', [&$return, $req_headers, $req_data, $options]);
 		return $return;
 	}
 
@@ -694,7 +694,7 @@ class Requests {
 	 * @return array List of headers
 	 */
 	public static function flatten($array) {
-		$return = array();
+		$return = [];
 		foreach ($array as $key => $value) {
 			$return[] = "$key: $value";
 		}

@@ -26,31 +26,31 @@ require_once 'PEAR/Command/Common.php';
  * @author     Alexander Merz <alexmerz@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.2.0
  */
 class PEAR_Command_Mirror extends PEAR_Command_Common
 {
-    var $commands = array(
-        'download-all' => array(
+    public $commands = [
+        'download-all' => [
             'summary' => 'Downloads each available package from the default channel',
             'function' => 'doDownloadAll',
             'shortcut' => 'da',
-            'options' => array(
+            'options' => [
                 'channel' =>
-                    array(
+                    [
                     'shortopt' => 'c',
                     'doc' => 'specify a channel other than the default channel',
                     'arg' => 'CHAN',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '
 Requests a list of available packages from the default channel ({config default_channel})
 and downloads them to current working directory.  Note: only
 packages within preferred_state ({config preferred_state}) will be downloaded'
-            ),
-        );
+            ],
+        ];
 
     /**
      * PEAR_Command_Mirror constructor.
@@ -104,7 +104,7 @@ packages within preferred_state ({config preferred_state}) will be downloaded'
 
         if ($chan->supportsREST($this->config->get('preferred_mirror')) &&
               $base = $chan->getBaseURL('REST1.0', $this->config->get('preferred_mirror'))) {
-            $rest = &$this->config->getREST('1.0', array());
+            $rest = &$this->config->getREST('1.0', []);
             $remoteInfo = array_flip($rest->listPackages($base, $channel));
         }
 
@@ -126,7 +126,7 @@ packages within preferred_state ({config preferred_state}) will be downloaded'
          * the download command
          */
         PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
-        $err = $cmd->run('download', array('downloadonly' => true), array_keys($remoteInfo));
+        $err = $cmd->run('download', ['downloadonly' => true], array_keys($remoteInfo));
         PEAR::staticPopErrorHandling();
         $this->config->set('default_channel', $savechannel);
         if (PEAR::isError($err)) {

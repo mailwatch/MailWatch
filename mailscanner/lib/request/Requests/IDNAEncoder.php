@@ -136,7 +136,7 @@ class Requests_IDNAEncoder {
 	 * @return array Unicode code points
 	 */
 	protected static function utf8_to_codepoints($input) {
-		$codepoints = array();
+		$codepoints = [];
 
 		// Get number of bytes
 		$strlen = strlen($input);

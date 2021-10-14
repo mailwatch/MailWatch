@@ -31,10 +31,10 @@
 class Filter
 {
     /** @var array */
-    public $item = array();
-    public $operators = array();
-    public $columns = array();
-    public $reports = array();
+    public $item = [];
+    public $operators = [];
+    public $columns = [];
+    public $reports = [];
     public $last_operator;
     public $last_column;
     public $last_value;
@@ -45,7 +45,7 @@ class Filter
      */
     public function __construct()
     {
-        $this->operators = array(
+        $this->operators = [
             '=' => __('equal09'),
             '<>' => __('notequal09'),
             '>' => __('greater09'),
@@ -58,8 +58,8 @@ class Filter
             'NOT REGEXP' => __('notregexp09'),
             'IS NULL' => __('isnull09'),
             'IS NOT NULL' => __('isnotnull09')
-        );
-        $this->columns = array(
+        ];
+        $this->columns = [
             'date' => __('date09'),
             'headers' => __('headers09'),
             'id' => __('id09'),
@@ -90,7 +90,7 @@ class Filter
             'otherinfected' => __('otherinfected09'),
             'report' => __('report09'),
             'hostname' => __('hostname09')
-        );
+        ];
     }
 
     /**
@@ -115,7 +115,7 @@ class Filter
             }
         }
 
-        $this->item[] = array($column, $operator, $value);
+        $this->item[] = [$column, $operator, $value];
     }
 
     /**
@@ -219,7 +219,7 @@ WHERE
         } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
             // Handle NULL and NOT NULL's
             return "AND\n $val[0] $val[1]\n";
-        } elseif ($val[2]!=='' && $val[2]{0} === '!') {
+        } elseif ($val[2]!=='' && $val[2][0] === '!') {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
         } else {
@@ -318,7 +318,7 @@ WHERE
                 unset($this->reports[$key]);
             }
         }
-        $this->reports[] = array('url' => $url, 'description' => $description, 'useToken' => $useToken);
+        $this->reports[] = ['url' => $url, 'description' => $description, 'useToken' => $useToken];
     }
 
     /**

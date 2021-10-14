@@ -37,26 +37,26 @@ putenv("PHP_PEAR_RUNTESTS=1");
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.3.3
  */
 class PEAR_RunTest
 {
-    var $_headers = array();
-    var $_logger;
-    var $_options;
-    var $_php;
-    var $tests_count;
-    var $xdebug_loaded;
+    public $_headers = [];
+    public $_logger;
+    public $_options;
+    public $_php;
+    public $tests_count;
+    public $xdebug_loaded;
     /**
      * Saved value of php executable, used to reset $_php when we
      * have a test that uses cgi
      *
      * @var unknown_type
      */
-    var $_savephp;
-    var $ini_overwrites = array(
+    public $_savephp;
+    public $ini_overwrites = [
         'output_handler=',
         'open_basedir=',
         'disable_functions=',
@@ -64,7 +64,6 @@ class PEAR_RunTest
         'display_errors=1',
         'log_errors=0',
         'html_errors=0',
-        'track_errors=1',
         'report_memleaks=0',
         'report_zend_debug=0',
         'docref_root=',
@@ -75,13 +74,13 @@ class PEAR_RunTest
         'auto_append_file=',
         'xdebug.default_enable=0',
         'allow_url_fopen=1',
-    );
+    ];
 
     /**
      * An object that supports the PEAR_Common->log() signature, or null
      * @param PEAR_Common|null
      */
-    function __construct($logger = null, $options = array())
+    function __construct($logger = null, $options = [])
     {
         if (!defined('E_DEPRECATED')) {
             define('E_DEPRECATED', 0);
@@ -112,11 +111,11 @@ class PEAR_RunTest
     function system_with_timeout($commandline, $env = null, $stdin = null)
     {
         $data = '';
-        $proc = proc_open($commandline, array(
-            0 => array('pipe', 'r'),
-            1 => array('pipe', 'w'),
-            2 => array('pipe', 'w')
-        ), $pipes, null, $env, array('suppress_errors' => true));
+        $proc = proc_open($commandline, [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w']
+        ], $pipes, null, $env, ['suppress_errors' => true]);
 
         if (!$proc) {
             return false;
@@ -130,14 +129,15 @@ class PEAR_RunTest
         while (true) {
             /* hide errors from interrupted syscalls */
             $r = $pipes;
-            $e = $w = null;
+            unset($r[0]);
+            $e = $w = [];
             $n = @stream_select($r, $w, $e, 60);
 
             if ($n === 0) {
                 /* timed out */
                 $data .= "\n ** ERROR: process timed out **\n";
                 proc_terminate($proc);
-                return array(1234567890, $data);
+                return [1234567890, $data];
             } else if ($n > 0) {
                 $line = fread($pipes[1], 8192);
                 if (strlen($line) == 0) {
@@ -157,7 +157,7 @@ class PEAR_RunTest
         if (function_exists('proc_get_status')) {
             $code = $stat['exitcode'];
         }
-        return array($code, $data);
+        return [$code, $data];
     }
 
     /**
@@ -178,13 +178,13 @@ class PEAR_RunTest
     function iniString2array($ini_string)
     {
         if (!$ini_string) {
-            return array();
+            return [];
         }
         $split = preg_split('/[\s]|=/', $ini_string, -1, PREG_SPLIT_NO_EMPTY);
         $key   = $split[1][0] == '"'                     ? substr($split[1], 1)     : $split[1];
         $value = $split[2][strlen($split[2]) - 1] == '"' ? substr($split[2], 0, -1) : $split[2];
         // FIXME review if this is really the struct to go with
-        $array = array($key => array('operator' => $split[0], 'value' => $value));
+        $array = [$key => ['operator' => $split[0], 'value' => $value]];
         return $array;
     }
 
@@ -257,14 +257,14 @@ class PEAR_RunTest
      *                       test came out.
      *                       PEAR Error when the tester it self fails
      */
-    function run($file, $ini_settings = array(), $test_number = 1)
+    function run($file, $ini_settings = [], $test_number = 1)
     {
         $this->_restorePHPBinary();
 
         if (empty($this->_options['cgi'])) {
             // try to see if php-cgi is in the path
             $res = $this->system_with_timeout('php-cgi -v');
-            if (false !== $res && !(is_array($res) && in_array($res[0], array(-1, 127)))) {
+            if (false !== $res && !(is_array($res) && in_array($res[0], [-1, 127]))) {
                 $this->_options['cgi'] = 'php-cgi';
             }
         }
@@ -318,7 +318,7 @@ class PEAR_RunTest
                     $this->_logger->log(0, "SKIP $test_nr$tested (reason: --cgi option needed for this test, type 'pear help run-tests')");
                 }
                 if (isset($this->_options['tapoutput'])) {
-                    return array('ok', ' # skip --cgi option needed for this test, "pear help run-tests" for info');
+                    return ['ok', ' # skip --cgi option needed for this test, "pear help run-tests" for info'];
                 }
                 return 'SKIPPED';
             }
@@ -343,7 +343,7 @@ class PEAR_RunTest
 
         // Check if test should be skipped.
         $res  = $this->_runSkipIf($section_text, $temp_skipif, $tested, $ini_settings);
-        if (count($res) != 2) {
+        if ($res == 'SKIPPED' || count($res) != 2) {
             return $res;
         }
         $info = $res['info'];
@@ -536,7 +536,7 @@ class PEAR_RunTest
                         $this->_logger->log(0, "PASS $test_nr$tested$info");
                     }
                     if (isset($this->_options['tapoutput'])) {
-                        return array('ok', ' - ' . $tested);
+                        return ['ok', ' - ' . $tested];
                     }
                     return 'PASSED';
                 }
@@ -569,7 +569,7 @@ class PEAR_RunTest
                         $this->_logger->log(0, "PASS $test_nr$tested$info");
                     }
                     if (isset($this->_options['tapoutput'])) {
-                        return array('ok', ' - ' . $tested);
+                        return ['ok', ' - ' . $tested];
                     }
                     return 'PASSED';
                 }
@@ -588,7 +588,7 @@ class PEAR_RunTest
                     $this->_logger->log(0, "PASS $test_nr$tested$info");
                 }
                 if (isset($this->_options['tapoutput'])) {
-                    return array('ok', ' - ' . $tested);
+                    return ['ok', ' - ' . $tested];
                 }
                 return 'PASSED';
             }
@@ -618,7 +618,7 @@ class PEAR_RunTest
 
         // write .diff
         $returns = isset($section_text['RETURNS']) ?
-                        array(trim($section_text['RETURNS']), $return_value) : null;
+                        [trim($section_text['RETURNS']), $return_value] : null;
         $expectf = isset($section_text['EXPECTF']) ? $wanted_re : null;
         $data = $this->generate_diff($wanted, $output, $returns, $expectf);
         $res  = $this->_writeLog($diff_filename, $data);
@@ -659,7 +659,7 @@ $return_value
             $wanted = "# Expected output:\n#\n#" . implode("\n#", $wanted);
             $output = explode("\n", $output);
             $output = "#\n#\n# Actual output:\n#\n#" . implode("\n#", $output);
-            return array($wanted . $output . 'not ok', ' - ' . $tested);
+            return [$wanted . $output . 'not ok', ' - ' . $tested];
         }
         return $warn ? 'WARNED' : 'FAILED';
     }
@@ -671,7 +671,7 @@ $return_value
         $wr = explode("\n", $wanted_re);
         $w1 = array_diff_assoc($w, $o);
         $o1 = array_diff_assoc($o, $w);
-        $o2 = $w2 = array();
+        $o2 = $w2 = [];
         foreach ($w1 as $idx => $val) {
             if (!$wanted_re || !isset($wr[$idx]) || !isset($o1[$idx]) ||
                   !preg_match('/^' . $wr[$idx] . '\\z/', $o1[$idx])) {
@@ -750,7 +750,7 @@ $text
                     $this->_logger->log(0, $skipreason);
                 }
                 if (isset($this->_options['tapoutput'])) {
-                    return array('ok', ' # skip ' . $reason);
+                    return ['ok', ' # skip ' . $reason];
                 }
                 return 'SKIPPED';
             }
@@ -767,12 +767,12 @@ $text
             }
         }
 
-        return array('warn' => $warn, 'info' => $info);
+        return ['warn' => $warn, 'info' => $info];
     }
 
     function _stripHeadersCGI($output)
     {
-        $this->headers = array();
+        $this->headers = [];
         if (!empty($this->_options['cgi']) &&
               $this->_php == $this->_options['cgi'] &&
               preg_match("/^(.*?)(?:\n\n(.*)|\\z)/s", $output, $match)) {
@@ -790,7 +790,7 @@ $text
      */
     function _processHeaders($text)
     {
-        $headers = array();
+        $headers = [];
         $rh = preg_split("/[\n\r]+/", $text);
         foreach ($rh as $line) {
             if (strpos($line, ':')!== false) {
@@ -804,7 +804,7 @@ $text
     function _readFile($file)
     {
         // Load the sections of the test file.
-        $section_text = array(
+        $section_text = [
             'TEST'   => '(unnamed test)',
             'SKIPIF' => '',
             'GET'    => '',
@@ -813,7 +813,7 @@ $text
             'ARGS'   => '',
             'INI'    => '',
             'CLEAN'  => '',
-        );
+        ];
 
         if (!is_file($file) || !$fp = fopen($file, "r")) {
             return PEAR::raiseError("Cannot open test file: $file");

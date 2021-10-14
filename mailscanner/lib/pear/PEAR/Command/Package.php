@@ -38,21 +38,21 @@ require_once 'PEAR/Command/Common.php';
 
 class PEAR_Command_Package extends PEAR_Command_Common
 {
-    var $commands = array(
-        'package' => array(
+    public $commands = [
+        'package' => [
             'summary' => 'Build Package',
             'function' => 'doPackage',
             'shortcut' => 'p',
-            'options' => array(
-                'nocompress' => array(
+            'options' => [
+                'nocompress' => [
                     'shortopt' => 'Z',
                     'doc' => 'Do not gzip the package file'
-                    ),
-                'showname' => array(
+                    ],
+                'showname' => [
                     'shortopt' => 'n',
                     'doc' => 'Print the name of the packaged file.',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '[descfile] [descfile2]
 Creates a PEAR package from its description file (usually called
 package.xml).  If a second packagefile is passed in, then
@@ -61,100 +61,100 @@ version 1.0, and the other is a package.xml version 2.0.  The
 package.xml version 1.0 will be saved as "package.xml" in the archive,
 and the other as "package2.xml" in the archive"
 '
-            ),
-        'package-validate' => array(
+            ],
+        'package-validate' => [
             'summary' => 'Validate Package Consistency',
             'function' => 'doPackageValidate',
             'shortcut' => 'pv',
-            'options' => array(),
+            'options' => [],
             'doc' => '
 ',
-            ),
-        'cvsdiff' => array(
+            ],
+        'cvsdiff' => [
             'summary' => 'Run a "cvs diff" for all files in a package',
             'function' => 'doCvsDiff',
             'shortcut' => 'cd',
-            'options' => array(
-                'quiet' => array(
+            'options' => [
+                'quiet' => [
                     'shortopt' => 'q',
                     'doc' => 'Be quiet',
-                    ),
-                'reallyquiet' => array(
+                    ],
+                'reallyquiet' => [
                     'shortopt' => 'Q',
                     'doc' => 'Be really quiet',
-                    ),
-                'date' => array(
+                    ],
+                'date' => [
                     'shortopt' => 'D',
                     'doc' => 'Diff against revision of DATE',
                     'arg' => 'DATE',
-                    ),
-                'release' => array(
+                    ],
+                'release' => [
                     'shortopt' => 'R',
                     'doc' => 'Diff against tag for package release REL',
                     'arg' => 'REL',
-                    ),
-                'revision' => array(
+                    ],
+                'revision' => [
                     'shortopt' => 'r',
                     'doc' => 'Diff against revision REV',
                     'arg' => 'REV',
-                    ),
-                'context' => array(
+                    ],
+                'context' => [
                     'shortopt' => 'c',
                     'doc' => 'Generate context diff',
-                    ),
-                'unified' => array(
+                    ],
+                'unified' => [
                     'shortopt' => 'u',
                     'doc' => 'Generate unified diff',
-                    ),
-                'ignore-case' => array(
+                    ],
+                'ignore-case' => [
                     'shortopt' => 'i',
                     'doc' => 'Ignore case, consider upper- and lower-case letters equivalent',
-                    ),
-                'ignore-whitespace' => array(
+                    ],
+                'ignore-whitespace' => [
                     'shortopt' => 'b',
                     'doc' => 'Ignore changes in amount of white space',
-                    ),
-                'ignore-blank-lines' => array(
+                    ],
+                'ignore-blank-lines' => [
                     'shortopt' => 'B',
                     'doc' => 'Ignore changes that insert or delete blank lines',
-                    ),
-                'brief' => array(
+                    ],
+                'brief' => [
                     'doc' => 'Report only whether the files differ, no details',
-                    ),
-                'dry-run' => array(
+                    ],
+                'dry-run' => [
                     'shortopt' => 'n',
                     'doc' => 'Don\'t do anything, just pretend',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '<package.xml>
 Compares all the files in a package.  Without any options, this
 command will compare the current code with the last checked-in code.
 Using the -r or -R option you may compare the current code with that
 of a specific release.
 ',
-            ),
-         'svntag' => array(
+            ],
+         'svntag' => [
              'summary' => 'Set SVN Release Tag',
              'function' => 'doSvnTag',
              'shortcut' => 'sv',
-             'options' => array(
-                 'quiet' => array(
+             'options' => [
+                 'quiet' => [
                      'shortopt' => 'q',
                      'doc' => 'Be quiet',
-                     ),
-                 'slide' => array(
+                     ],
+                 'slide' => [
                      'shortopt' => 'F',
                      'doc' => 'Move (slide) tag if it exists',
-                     ),
-                 'delete' => array(
+                     ],
+                 'delete' => [
                      'shortopt' => 'd',
                      'doc' => 'Remove tag',
-                     ),
-                 'dry-run' => array(
+                     ],
+                 'dry-run' => [
                      'shortopt' => 'n',
                      'doc' => 'Don\'t do anything, just pretend',
-                     ),
-                 ),
+                     ],
+                 ],
              'doc' => '<package.xml> [files...]
  Sets a SVN tag on all files in a package.  Use this command after you have
  packaged a distribution tarball with the "package" command to tag what
@@ -165,33 +165,33 @@ of a specific release.
  to include files (such as a second package.xml, or tests not included in the
  release), pass them as additional parameters.
  ',
-             ),
-        'cvstag' => array(
+             ],
+        'cvstag' => [
             'summary' => 'Set CVS Release Tag',
             'function' => 'doCvsTag',
             'shortcut' => 'ct',
-            'options' => array(
-                'quiet' => array(
+            'options' => [
+                'quiet' => [
                     'shortopt' => 'q',
                     'doc' => 'Be quiet',
-                    ),
-                'reallyquiet' => array(
+                    ],
+                'reallyquiet' => [
                     'shortopt' => 'Q',
                     'doc' => 'Be really quiet',
-                    ),
-                'slide' => array(
+                    ],
+                'slide' => [
                     'shortopt' => 'F',
                     'doc' => 'Move (slide) tag if it exists',
-                    ),
-                'delete' => array(
+                    ],
+                'delete' => [
                     'shortopt' => 'd',
                     'doc' => 'Remove tag',
-                    ),
-                'dry-run' => array(
+                    ],
+                'dry-run' => [
                     'shortopt' => 'n',
                     'doc' => 'Don\'t do anything, just pretend',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '<package.xml> [files...]
 Sets a CVS tag on all files in a package.  Use this command after you have
 packaged a distribution tarball with the "package" command to tag what
@@ -202,46 +202,46 @@ use the "slide" option to move the release tag.
 to include files (such as a second package.xml, or tests not included in the
 release), pass them as additional parameters.
 ',
-            ),
-        'package-dependencies' => array(
+            ],
+        'package-dependencies' => [
             'summary' => 'Show package dependencies',
             'function' => 'doPackageDependencies',
             'shortcut' => 'pd',
-            'options' => array(),
+            'options' => [],
             'doc' => '<package-file> or <package.xml> or <install-package-name>
 List all dependencies the package has.
 Can take a tgz / tar file, package.xml or a package name of an installed package.'
-            ),
-        'sign' => array(
+            ],
+        'sign' => [
             'summary' => 'Sign a package distribution file',
             'function' => 'doSign',
             'shortcut' => 'si',
-            'options' => array(
-                'verbose' => array(
+            'options' => [
+                'verbose' => [
                     'shortopt' => 'v',
                     'doc' => 'Display GnuPG output',
-                    ),
-            ),
+                    ],
+            ],
             'doc' => '<package-file>
 Signs a package distribution (.tar or .tgz) file with GnuPG.',
-            ),
-        'makerpm' => array(
+            ],
+        'makerpm' => [
             'summary' => 'Builds an RPM spec file from a PEAR package',
             'function' => 'doMakeRPM',
             'shortcut' => 'rpm',
-            'options' => array(
-                'spec-template' => array(
+            'options' => [
+                'spec-template' => [
                     'shortopt' => 't',
                     'arg' => 'FILE',
                     'doc' => 'Use FILE as RPM spec file template'
-                    ),
-                'rpm-pkgname' => array(
+                    ],
+                'rpm-pkgname' => [
                     'shortopt' => 'p',
                     'arg' => 'FORMAT',
                     'doc' => 'Use FORMAT as format string for RPM package name, %s is replaced
 by the PEAR package name, defaults to "PEAR::%s".',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '<package-file>
 
 Creates an RPM .spec file for wrapping a PEAR package inside an RPM
@@ -254,17 +254,17 @@ $ rpm -bb PEAR::Net_Socket-1.0.spec
 ...
 Wrote: /usr/src/redhat/RPMS/i386/PEAR::Net_Socket-1.0-1.i386.rpm
 ',
-            ),
-        'convert' => array(
+            ],
+        'convert' => [
             'summary' => 'Convert a package.xml 1.0 to package.xml 2.0 format',
             'function' => 'doConvert',
             'shortcut' => 'c2',
-            'options' => array(
-                'flat' => array(
+            'options' => [
+                'flat' => [
                     'shortopt' => 'f',
                     'doc' => 'do not beautify the filelist.',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '[descfile] [descfile2]
 Converts a package.xml in 1.0 format into a package.xml
 in 2.0 format.  The new file will be named package2.xml by default,
@@ -272,10 +272,10 @@ and package.xml will be used as the old file by default.
 This is not the most intelligent conversion, and should only be
 used for automated conversion or learning the format.
 '
-            ),
-        );
+            ],
+        ];
 
-    var $output;
+    public $output;
 
     /**
      * PEAR_Command_Package constructor.
@@ -393,7 +393,7 @@ used for automated conversion or learning the format.
             $valid = $info->validate(PEAR_VALIDATE_PACKAGING);
         }
 
-        $err = $warn = array();
+        $err = $warn = [];
         if ($errors = $info->getValidationWarnings()) {
             foreach ($errors as $error) {
                 if ($error['level'] == 'warning') {
@@ -427,7 +427,7 @@ used for automated conversion or learning the format.
             return $this->raiseError($info);
         }
 
-        $err = $warn = array();
+        $err = $warn = [];
         if (!$info->validate()) {
             foreach ($info->getValidationWarnings() as $error) {
                 if ($error['level'] == 'warning') {
@@ -462,15 +462,15 @@ used for automated conversion or learning the format.
         pclose($fp);
 
         if (!isset($options['quiet']) && strpos($out, 'item="modified"')) {
-            $params = array(array(
+            $params = [[
                 'name' => 'modified',
                 'type' => 'yesno',
                 'default' => 'no',
                 'prompt' => 'You have files in your SVN checkout (' . $path['from']  . ') that have been modified but not committed, do you still want to tag ' . $version . '?',
-            ));
+            ]];
             $answers = $this->ui->confirmDialog($params);
 
-            if (!in_array($answers['modified'], array('y', 'yes', 'on', '1'))) {
+            if (!in_array($answers['modified'], ['y', 'yes', 'on', '1'])) {
                 return true;
             }
         }
@@ -532,7 +532,7 @@ used for automated conversion or learning the format.
             $files = array_merge($files, $params);
         }
 
-        $commands = array();
+        $commands = [];
         foreach ($files as $file) {
             if (!file_exists($file)) {
                 $file = $dir . DIRECTORY_SEPARATOR . $file;
@@ -578,7 +578,7 @@ used for automated conversion or learning the format.
         $url_tag = strpos($xml, '<url>');
         $url = substr($xml, $url_tag + 5, strpos($xml, '</url>', $url_tag + 5) - ($url_tag + 5));
 
-        $path = array();
+        $path = [];
         $path['from'] = substr($url, 0, strrpos($url, '/'));
         $path['base'] = substr($path['from'], 0, strrpos($path['from'], '/') + 1);
 
@@ -640,7 +640,7 @@ used for automated conversion or learning the format.
             return $this->raiseError($info);
         }
 
-        $err = $warn = array();
+        $err = $warn = [];
         if (!$info->validate()) {
             foreach ($info->getValidationWarnings() as $error) {
                 if ($error['level'] == 'warning') {
@@ -726,7 +726,7 @@ used for automated conversion or learning the format.
             return $this->raiseError($info);
         }
 
-        $err = $warn = array();
+        $err = $warn = [];
         if (!$info->validate()) {
             foreach ($info->getValidationWarnings() as $error) {
                 if ($error['level'] == 'warning') {
@@ -824,11 +824,11 @@ used for automated conversion or learning the format.
         $deps = $info->getDeps();
         if (is_array($deps)) {
             if ($info->getPackagexmlVersion() == '1.0') {
-                $data = array(
+                $data = [
                     'caption' => 'Dependencies for pear/' . $info->getPackage(),
                     'border' => true,
-                    'headline' => array("Required?", "Type", "Name", "Relation", "Version"),
-                    );
+                    'headline' => ["Required?", "Type", "Name", "Relation", "Version"],
+                    ];
 
                 foreach ($deps as $d) {
                     if (isset($d['optional'])) {
@@ -865,19 +865,18 @@ used for automated conversion or learning the format.
                         $version = '';
                     }
 
-                    $data['data'][] = array($req, $type, $name, $rel, $version);
+                    $data['data'][] = [$req, $type, $name, $rel, $version];
                 }
             } else { // package.xml 2.0 dependencies display
                 require_once 'PEAR/Dependency2.php';
                 $deps = $info->getDependencies();
                 $reg = &$this->config->getRegistry();
                 if (is_array($deps)) {
-                    $d = new PEAR_Dependency2($this->config, array(), '');
-                    $data = array(
+                    $data = [
                         'caption' => 'Dependencies for ' . $info->getPackage(),
                         'border' => true,
-                        'headline' => array("Required?", "Type", "Name", 'Versioning', 'Group'),
-                        );
+                        'headline' => ["Required?", "Type", "Name", 'Versioning', 'Group'],
+                        ];
                     foreach ($deps as $type => $subd) {
                         $req = ($type == 'required') ? 'Yes' : 'No';
                         if ($type == 'group' && isset($subd['attribs']['name'])) {
@@ -887,7 +886,7 @@ used for automated conversion or learning the format.
                         }
 
                         if (!isset($subd[0])) {
-                            $subd = array($subd);
+                            $subd = [$subd];
                         }
 
                         foreach ($subd as $groupa) {
@@ -901,7 +900,7 @@ used for automated conversion or learning the format.
                                 }
 
                                 if (!isset($depinfo[0])) {
-                                    $depinfo = array($depinfo);
+                                    $depinfo = [$depinfo];
                                 }
 
                                 foreach ($depinfo as $inf) {
@@ -929,11 +928,11 @@ used for automated conversion or learning the format.
                                     if (isset($inf['conflicts'])) {
                                         $ver = 'conflicts';
                                     } else {
-                                        $ver = $d->_getExtraString($inf);
+                                        $ver = PEAR_Dependency2::_getExtraString($inf);
                                     }
 
-                                    $data['data'][] = array($req, ucfirst($deptype), $name,
-                                        $ver, $group);
+                                    $data['data'][] = [$req, ucfirst($deptype), $name,
+                                        $ver, $group];
                                 }
                             }
                         }
@@ -996,8 +995,8 @@ used for automated conversion or learning the format.
         }
 
         $input = $this->ui->userDialog($command,
-                                       array('GnuPG Passphrase'),
-                                       array('password'));
+                                       ['GnuPG Passphrase'],
+                                       ['password']);
         if (!isset($input[0])) {
             //use empty passphrase
             $input[0] = '';

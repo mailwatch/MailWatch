@@ -56,25 +56,25 @@ $graphgenerator->sqlQuery = '
  LIMIT 10
 ';
 
-$graphgenerator->tableColumns = array(
+$graphgenerator->tableColumns = [
     'name' => __('domain45'),
     'countconv' => __('count03'),
     'sizeconv' => __('size03')
-);
-$graphgenerator->sqlColumns = array(
+];
+$graphgenerator->sqlColumns = [
     'name',
     'count',
     'size'
-);
-$graphgenerator->valueConversion = array(
+];
+$graphgenerator->valueConversion = [
     'size' => 'scale',
     'count' => 'number'
-);
-$graphgenerator->graphColumns = array(
+];
+$graphgenerator->graphColumns = [
     'labelColumn' => 'name',
     'dataNumericColumn' => 'size',
     'dataFormattedColumn' => 'sizeconv'
-);
+];
 $graphgenerator->graphTitle = __('top10senderdomvol45');
 $graphgenerator->printPieGraph();
 

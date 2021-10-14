@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PEAR_Command, command pattern class
  *
@@ -13,38 +14,32 @@
  * @link       http://pear.php.net/package/PEAR
  * @since      File available since Release 0.1
  */
-
 /**
  * Needed for error handling
  */
 require_once 'PEAR.php';
 require_once 'PEAR/Frontend.php';
 require_once 'PEAR/XMLParser.php';
-
 /**
  * List of commands and what classes they are implemented in.
  * @var array command => implementing class
  */
-$GLOBALS['_PEAR_Command_commandlist'] = array();
-
+$GLOBALS['_PEAR_Command_commandlist'] = [];
 /**
  * List of commands and their descriptions
  * @var array command => description
  */
-$GLOBALS['_PEAR_Command_commanddesc'] = array();
-
+$GLOBALS['_PEAR_Command_commanddesc'] = [];
 /**
  * List of shortcuts to common commands.
  * @var array shortcut => command
  */
-$GLOBALS['_PEAR_Command_shortcuts'] = array();
-
+$GLOBALS['_PEAR_Command_shortcuts'] = [];
 /**
  * Array of command objects
  * @var array class => object
  */
-$GLOBALS['_PEAR_Command_objects'] = array();
-
+$GLOBALS['_PEAR_Command_objects'] = [];
 /**
  * PEAR command class, a simple factory class for administrative
  * commands.
@@ -93,7 +88,7 @@ $GLOBALS['_PEAR_Command_objects'] = array();
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
@@ -219,7 +214,7 @@ class PEAR_Command
     {
         $parser = new PEAR_XMLParser;
         if ($dir === null) {
-            $dir = dirname(__FILE__) . '/Command';
+            $dir = __DIR__ . '/Command';
         }
         if (!is_dir($dir)) {
             return PEAR::raiseError("registerCommands: opendir($dir) '$dir' does not exist or is not a directory");
@@ -229,11 +224,11 @@ class PEAR_Command
             return PEAR::raiseError("registerCommands: opendir($dir) failed");
         }
         if (!$merge) {
-            $GLOBALS['_PEAR_Command_commandlist'] = array();
+            $GLOBALS['_PEAR_Command_commandlist'] = [];
         }
 
         while ($file = readdir($dp)) {
-            if ($file{0} == '.' || substr($file, -4) != '.xml') {
+            if ($file[0] == '.' || substr($file, -4) != '.xml') {
                 continue;
             }
 

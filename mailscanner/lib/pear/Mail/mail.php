@@ -56,7 +56,7 @@ class Mail_mail extends Mail {
      * Any arguments to pass to the mail() function.
      * @var string
      */
-    var $_params = '';
+    public $_params = '';
 
     /**
      * Constructor.

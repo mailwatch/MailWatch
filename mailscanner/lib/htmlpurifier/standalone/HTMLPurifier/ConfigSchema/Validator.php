@@ -25,7 +25,7 @@ class HTMLPurifier_ConfigSchema_Validator
      * Context-stack to provide easy to read error messages.
      * @type array
      */
-    protected $context = array();
+    protected $context = [];
 
     /**
      * to test default's type.
@@ -46,7 +46,7 @@ class HTMLPurifier_ConfigSchema_Validator
     public function validate($interchange)
     {
         $this->interchange = $interchange;
-        $this->aliases = array();
+        $this->aliases = [];
         // PHP is a bit lax with integer <=> string conversions in
         // arrays, so we don't use the identical !== comparison
         foreach ($interchange->directives as $i => $directive) {

@@ -81,7 +81,7 @@ class Mail_smtp extends Mail {
      * @var object
      * @access private
      */
-    var $_smtp = null;
+    public $_smtp = null;
 
     /**
      * The list of service extension parameters to pass to the Net_SMTP
@@ -89,21 +89,21 @@ class Mail_smtp extends Mail {
      *
      * @var array
      */
-    var $_extparams = array();
+    public $_extparams = [];
 
     /**
      * The SMTP host to connect to.
      *
      * @var string
      */
-    var $host = 'localhost';
+    public $host = 'localhost';
 
     /**
      * The port the SMTP server is on.
      *
      * @var integer
      */
-    var $port = 25;
+    public $port = 25;
 
     /**
      * Should SMTP authentication be used?
@@ -116,21 +116,21 @@ class Mail_smtp extends Mail {
      *
      * @var mixed
      */
-    var $auth = false;
+    public $auth = false;
 
     /**
      * The username to use if the SMTP server requires authentication.
      *
      * @var string
      */
-    var $username = '';
+    public $username = '';
 
     /**
      * The password to use if the SMTP server requires authentication.
      *
      * @var string
      */
-    var $password = '';
+    public $password = '';
 
     /**
      * Hostname or domain that will be sent to the remote SMTP server in the
@@ -138,21 +138,21 @@ class Mail_smtp extends Mail {
      *
      * @var string
      */
-    var $localhost = 'localhost';
+    public $localhost = 'localhost';
 
     /**
      * SMTP connection timeout value.  NULL indicates no timeout.
      *
      * @var integer
      */
-    var $timeout = null;
+    public $timeout = null;
 
     /**
      * Turn on Net_SMTP debugging?
      *
      * @var boolean $debug
      */
-    var $debug = false;
+    public $debug = false;
 
     /**
      * Indicates whether or not the SMTP connection should persist over
@@ -160,7 +160,7 @@ class Mail_smtp extends Mail {
      *
      * @var boolean
      */
-    var $persist = false;
+    public $persist = false;
 
     /**
      * Use SMTP command pipelining (specified in RFC 2920) if the SMTP server
@@ -169,14 +169,14 @@ class Mail_smtp extends Mail {
      *
      * @var boolean
      */
-    var $pipelining;
+    public $pipelining;
 
     /**
      * The list of socket options
      *
      * @var array
      */
-    var $socket_options = array();
+    public $socket_options = [];
 
     /**
      * Constructor.

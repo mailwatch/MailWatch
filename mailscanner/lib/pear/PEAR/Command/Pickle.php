@@ -26,28 +26,28 @@ require_once 'PEAR/Command/Common.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  2005-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.1
  */
 
 class PEAR_Command_Pickle extends PEAR_Command_Common
 {
-    var $commands = array(
-        'pickle' => array(
+    public $commands = [
+        'pickle' => [
             'summary' => 'Build PECL Package',
             'function' => 'doPackage',
             'shortcut' => 'pi',
-            'options' => array(
-                'nocompress' => array(
+            'options' => [
+                'nocompress' => [
                     'shortopt' => 'Z',
                     'doc' => 'Do not gzip the package file'
-                    ),
-                'showname' => array(
+                    ],
+                'showname' => [
                     'shortopt' => 'n',
                     'doc' => 'Print the name of the packaged file.',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '[descfile]
 Creates a PECL package from its package2.xml file.
 
@@ -67,8 +67,8 @@ will cause pickle to fail, and output an error message.  If your package2.xml
 uses any of these features, you are best off using PEAR_PackageFileManager to
 generate both package.xml.
 '
-            ),
-        );
+            ],
+        ];
 
     /**
      * PEAR_Command_Package constructor.
@@ -219,7 +219,7 @@ generate both package.xml.
 
         if (isset($deps['required']['package'])) {
             if (!isset($deps['required']['package'][0])) {
-                $deps['required']['package'] = array($deps['required']['package']);
+                $deps['required']['package'] = [$deps['required']['package']];
             }
 
             foreach ($deps['required']['package'] as $dep) {
@@ -259,7 +259,7 @@ generate both package.xml.
 
         if (isset($deps['required']['extension'])) {
             if (!isset($deps['required']['extension'][0])) {
-                $deps['required']['extension'] = array($deps['required']['extension']);
+                $deps['required']['extension'] = [$deps['required']['extension']];
             }
 
             foreach ($deps['required']['extension'] as $dep) {
@@ -285,7 +285,7 @@ generate both package.xml.
 
         if (isset($deps['optional']['package'])) {
             if (!isset($deps['optional']['package'][0])) {
-                $deps['optional']['package'] = array($deps['optional']['package']);
+                $deps['optional']['package'] = [$deps['optional']['package']];
             }
 
             foreach ($deps['optional']['package'] as $dep) {
@@ -319,7 +319,7 @@ generate both package.xml.
 
         if (isset($deps['optional']['extension'])) {
             if (!isset($deps['optional']['extension'][0])) {
-                $deps['optional']['extension'] = array($deps['optional']['extension']);
+                $deps['optional']['extension'] = [$deps['optional']['extension']];
             }
 
             foreach ($deps['optional']['extension'] as $dep) {
@@ -360,7 +360,7 @@ generate both package.xml.
 
         if (isset($release['filelist']['install']) &&
               !isset($release['filelist']['install'][0])) {
-            $release['filelist']['install'] = array($release['filelist']['install']);
+            $release['filelist']['install'] = [$release['filelist']['install']];
         }
 
         if (isset($contents['dir']['attribs']['baseinstalldir'])) {
@@ -370,7 +370,7 @@ generate both package.xml.
         }
 
         if (!isset($contents['dir']['file'][0])) {
-            $contents['dir']['file'] = array($contents['dir']['file']);
+            $contents['dir']['file'] = [$contents['dir']['file']];
         }
 
         foreach ($contents['dir']['file'] as $file) {

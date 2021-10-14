@@ -26,7 +26,7 @@ require_once 'PEAR/REST.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a12
  */
@@ -35,8 +35,8 @@ class PEAR_REST_10
     /**
      * @var PEAR_REST
      */
-    var $_rest;
-    function __construct($config, $options = array())
+    public $_rest;
+    function __construct($config, $options = [])
     {
         $this->_rest = new PEAR_REST($config, $options);
     }
@@ -83,7 +83,7 @@ class PEAR_REST_10
 
         $release = $found = false;
         if (!is_array($info['r']) || !isset($info['r'][0])) {
-            $info['r'] = array($info['r']);
+            $info['r'] = [$info['r']];
         }
 
         foreach ($info['r'] as $release) {
@@ -144,7 +144,7 @@ class PEAR_REST_10
             return false;
         }
 
-        $exclude = array();
+        $exclude = [];
         $min = $max = $recommended = false;
         if ($xsdversion == '1.0') {
             switch ($dependency['rel']) {
@@ -153,20 +153,20 @@ class PEAR_REST_10
                 break;
                 case 'gt' :
                     $min = $dependency['version'];
-                    $exclude = array($dependency['version']);
+                    $exclude = [$dependency['version']];
                 break;
                 case 'eq' :
                     $recommended = $dependency['version'];
                 break;
                 case 'lt' :
                     $max = $dependency['version'];
-                    $exclude = array($dependency['version']);
+                    $exclude = [$dependency['version']];
                 break;
                 case 'le' :
                     $max = $dependency['version'];
                 break;
                 case 'ne' :
-                    $exclude = array($dependency['version']);
+                    $exclude = [$dependency['version']];
                 break;
             }
         } else {
@@ -176,13 +176,13 @@ class PEAR_REST_10
                 $dependency['recommended'] : false;
             if (isset($dependency['exclude'])) {
                 if (!isset($dependency['exclude'][0])) {
-                    $exclude = array($dependency['exclude']);
+                    $exclude = [$dependency['exclude']];
                 }
             }
         }
         $release = $found = false;
         if (!is_array($info['r']) || !isset($info['r'][0])) {
-            $info['r'] = array($info['r']);
+            $info['r'] = [$info['r']];
         }
         foreach ($info['r'] as $release) {
             if (!isset($this->_rest->_options['force']) && ($installed &&
@@ -195,13 +195,13 @@ class PEAR_REST_10
             // allow newer releases to say "I'm OK with the dependent package"
             if ($xsdversion == '2.0' && isset($release['co'])) {
                 if (!is_array($release['co']) || !isset($release['co'][0])) {
-                    $release['co'] = array($release['co']);
+                    $release['co'] = [$release['co']];
                 }
                 foreach ($release['co'] as $entry) {
                     if (isset($entry['x']) && !is_array($entry['x'])) {
-                        $entry['x'] = array($entry['x']);
+                        $entry['x'] = [$entry['x']];
                     } elseif (!isset($entry['x'])) {
-                        $entry['x'] = array();
+                        $entry['x'] = [];
                     }
                     if ($entry['c'] == $deppackage['channel'] &&
                           strtolower($entry['p']) == strtolower($deppackage['package']) &&
@@ -286,7 +286,7 @@ class PEAR_REST_10
 
         $packagexml = unserialize($packagexml);
         if (!$packagexml) {
-            $packagexml = array();
+            $packagexml = [];
         }
 
         $allinfo = $this->_rest->retrieveData($base . 'r/' . $packageLower .
@@ -296,7 +296,7 @@ class PEAR_REST_10
         }
 
         if (!is_array($allinfo['r']) || !isset($allinfo['r'][0])) {
-            $allinfo['r'] = array($allinfo['r']);
+            $allinfo['r'] = [$allinfo['r']];
         }
 
         $compatible = false;
@@ -309,13 +309,13 @@ class PEAR_REST_10
                 break;
             }
 
-            $compatible = array();
+            $compatible = [];
             if (!is_array($release['co']) || !isset($release['co'][0])) {
-                $release['co'] = array($release['co']);
+                $release['co'] = [$release['co']];
             }
 
             foreach ($release['co'] as $entry) {
-                $comp = array();
+                $comp = [];
                 $comp['name']    = $entry['p'];
                 $comp['channel'] = $entry['c'];
                 $comp['min']     = $entry['min'];
@@ -337,22 +337,22 @@ class PEAR_REST_10
         $deprecated = false;
         if (isset($pinfo['dc']) && isset($pinfo['dp'])) {
             if (is_array($pinfo['dp'])) {
-                $deprecated = array('channel' => (string) $pinfo['dc'],
-                                    'package' => trim($pinfo['dp']['_content']));
+                $deprecated = ['channel' => (string) $pinfo['dc'],
+                                    'package' => trim($pinfo['dp']['_content'])];
             } else {
-                $deprecated = array('channel' => (string) $pinfo['dc'],
-                                    'package' => trim($pinfo['dp']));
+                $deprecated = ['channel' => (string) $pinfo['dc'],
+                                    'package' => trim($pinfo['dp'])];
             }
         }
 
-        $return = array(
+        $return = [
             'version'    => $releaseinfo['v'],
             'info'       => $packagexml,
             'package'    => $releaseinfo['p']['_content'],
             'stability'  => $releaseinfo['st'],
             'compatible' => $compatible,
             'deprecated' => $deprecated,
-        );
+        ];
 
         if ($found) {
             $return['url'] = $releaseinfo['g'];
@@ -371,11 +371,11 @@ class PEAR_REST_10
         }
 
         if (!is_array($packagelist) || !isset($packagelist['p'])) {
-            return array();
+            return [];
         }
 
         if (!is_array($packagelist['p'])) {
-            $packagelist['p'] = array($packagelist['p']);
+            $packagelist['p'] = [$packagelist['p']];
         }
 
         return $packagelist['p'];
@@ -389,7 +389,7 @@ class PEAR_REST_10
      */
     function listCategories($base, $channel = false)
     {
-        $categories = array();
+        $categories = [];
 
         // c/categories.xml does not exist;
         // check for every package its category manually
@@ -400,12 +400,12 @@ class PEAR_REST_10
         }
 
         if (!is_array($packagelist) || !isset($packagelist['p'])) {
-            $ret = array();
+            $ret = [];
             return $ret;
         }
 
         if (!is_array($packagelist['p'])) {
-            $packagelist['p'] = array($packagelist['p']);
+            $packagelist['p'] = [$packagelist['p']];
         }
 
         PEAR::pushErrorHandling(PEAR_ERROR_RETURN);
@@ -441,12 +441,12 @@ class PEAR_REST_10
         }
 
         if (!is_array($packagelist) || !isset($packagelist['p'])) {
-            return array();
+            return [];
         }
 
         if (!is_array($packagelist['p']) ||
             !isset($packagelist['p'][0])) { // only 1 pkg
-            $packagelist = array($packagelist['p']);
+            $packagelist = [$packagelist['p']];
         } else {
             $packagelist = $packagelist['p'];
         }
@@ -489,17 +489,17 @@ class PEAR_REST_10
             $ui = &PEAR_Frontend::singleton();
             $ui->log('Retrieving data...0%', true);
         }
-        $ret = array();
+        $ret = [];
         if (!is_array($packagelist) || !isset($packagelist['p'])) {
             return $ret;
         }
         if (!is_array($packagelist['p'])) {
-            $packagelist['p'] = array($packagelist['p']);
+            $packagelist['p'] = [$packagelist['p']];
         }
 
         // only search-packagename = quicksearch !
         if ($searchpackage && (!$searchsummary || empty($searchpackage))) {
-            $newpackagelist = array();
+            $newpackagelist = [];
             foreach ($packagelist['p'] as $package) {
                 if (!empty($searchpackage) && stristr($package, $searchpackage) !== false) {
                     $newpackagelist[] = $package;
@@ -532,7 +532,7 @@ class PEAR_REST_10
                 if (PEAR::isError($latest)) {
                     $latest = false;
                 }
-                $info = array('stable' => $latest);
+                $info = ['stable' => $latest];
             } else { // list-all command
                 $inf = $this->_rest->retrieveData($base . 'p/' . strtolower($package) . '/info.xml', false, false, $channel);
                 if (PEAR::isError($inf)) {
@@ -554,7 +554,7 @@ class PEAR_REST_10
                     continue;
                 }
                 if (!isset($releases['r'][0])) {
-                    $releases['r'] = array($releases['r']);
+                    $releases['r'] = [$releases['r']];
                 }
                 unset($latest);
                 unset($unstable);
@@ -588,7 +588,7 @@ class PEAR_REST_10
                         break;
                     }
                 }
-                $deps = array();
+                $deps = [];
                 if (!isset($unstable)) {
                     $unstable = false;
                     $state = 'stable';
@@ -632,13 +632,13 @@ class PEAR_REST_10
                     $stable = '-n/a-';
                 }
                 if (!$searchpackage) {
-                    $info = array('stable' => $latest, 'summary' => $inf['s'], 'description' =>
+                    $info = ['stable' => $latest, 'summary' => $inf['s'], 'description' =>
                         $inf['d'], 'deps' => $deps, 'category' => $inf['ca']['_content'],
-                        'unstable' => $unstable, 'state' => $state);
+                        'unstable' => $unstable, 'state' => $state];
                 } else {
-                    $info = array('stable' => $stable, 'summary' => $inf['s'], 'description' =>
+                    $info = ['stable' => $stable, 'summary' => $inf['s'], 'description' =>
                         $inf['d'], 'deps' => $deps, 'category' => $inf['ca']['_content'],
-                        'unstable' => $unstable, 'state' => $state);
+                        'unstable' => $unstable, 'state' => $state];
                 }
             }
             $ret[$package] = $info;
@@ -654,13 +654,13 @@ class PEAR_REST_10
             return $packagelist;
         }
 
-        $ret = array();
+        $ret = [];
         if (!is_array($packagelist) || !isset($packagelist['p'])) {
             return $ret;
         }
 
         if (!is_array($packagelist['p'])) {
-            $packagelist['p'] = array($packagelist['p']);
+            $packagelist['p'] = [$packagelist['p']];
         }
 
         foreach ($packagelist['p'] as $package) {
@@ -684,11 +684,11 @@ class PEAR_REST_10
 
             $release = $found = false;
             if (!is_array($info['r']) || !isset($info['r'][0])) {
-                $info['r'] = array($info['r']);
+                $info['r'] = [$info['r']];
             }
 
             // $info['r'] is sorted by version number
-            usort($info['r'], array($this, '_sortReleasesByVersionNumber'));
+            usort($info['r'], [$this, '_sortReleasesByVersionNumber']);
             foreach ($info['r'] as $release) {
                 if ($inst_version && version_compare($release['v'], $inst_version, '<=')) {
                     // not newer than the one installed
@@ -727,11 +727,11 @@ class PEAR_REST_10
                 return $relinfo;
             }
 
-            $ret[$package] = array(
+            $ret[$package] = [
                 'version'  => $release['v'],
                 'state'    => $release['s'],
                 'filesize' => $relinfo['f'],
-            );
+            ];
         }
 
         return $ret;
@@ -747,7 +747,7 @@ class PEAR_REST_10
                 $pinfo->getMessage());
         }
 
-        $releases = array();
+        $releases = [];
         $allreleases = $this->_rest->retrieveData($base . 'r/' . strtolower($package) .
             '/allreleases.xml', false, false, $channel);
         if (!PEAR::isError($allreleases)) {
@@ -756,7 +756,7 @@ class PEAR_REST_10
             }
 
             if (!is_array($allreleases['r']) || !isset($allreleases['r'][0])) {
-                $allreleases['r'] = array($allreleases['r']);
+                $allreleases['r'] = [$allreleases['r']];
             }
 
             $pf = new PEAR_PackageFile_v2;
@@ -780,7 +780,7 @@ class PEAR_REST_10
                     continue;
                 }
 
-                $releases[$release['v']] = array(
+                $releases[$release['v']] = [
                     'doneby' => $info['m'],
                     'license' => $info['l'],
                     'summary' => $info['s'],
@@ -788,8 +788,8 @@ class PEAR_REST_10
                     'releasedate' => $info['da'],
                     'releasenotes' => $info['n'],
                     'state' => $release['s'],
-                    'deps' => $ds ? $ds : array(),
-                );
+                    'deps' => $ds ?: [],
+                ];
             }
         } else {
             $latest = '';
@@ -798,11 +798,11 @@ class PEAR_REST_10
         PEAR::popErrorHandling();
         if (isset($pinfo['dc']) && isset($pinfo['dp'])) {
             if (is_array($pinfo['dp'])) {
-                $deprecated = array('channel' => (string) $pinfo['dc'],
-                                    'package' => trim($pinfo['dp']['_content']));
+                $deprecated = ['channel' => (string) $pinfo['dc'],
+                                    'package' => trim($pinfo['dp']['_content'])];
             } else {
-                $deprecated = array('channel' => (string) $pinfo['dc'],
-                                    'package' => trim($pinfo['dp']));
+                $deprecated = ['channel' => (string) $pinfo['dc'],
+                                    'package' => trim($pinfo['dp'])];
             }
         } else {
             $deprecated = false;
@@ -812,7 +812,7 @@ class PEAR_REST_10
             $latest = '';
         }
 
-        return array(
+        return [
             'name' => $pinfo['n'],
             'channel' => $pinfo['c'],
             'category' => $pinfo['ca']['_content'],
@@ -822,7 +822,7 @@ class PEAR_REST_10
             'description' => $pinfo['d'],
             'releases' => $releases,
             'deprecated' => $deprecated,
-            );
+            ];
     }
 
     /**
@@ -835,7 +835,7 @@ class PEAR_REST_10
      */
     function betterStates($state, $include = false)
     {
-        static $states = array('snapshot', 'devel', 'alpha', 'beta', 'stable');
+        static $states = ['snapshot', 'devel', 'alpha', 'beta', 'stable'];
         $i = array_search($state, $states);
         if ($i === false) {
             return false;

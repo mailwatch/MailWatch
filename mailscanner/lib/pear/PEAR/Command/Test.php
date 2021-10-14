@@ -30,73 +30,73 @@ require_once 'PEAR/Command/Common.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
 
 class PEAR_Command_Test extends PEAR_Command_Common
 {
-    var $commands = array(
-        'run-tests' => array(
+    public $commands = [
+        'run-tests' => [
             'summary' => 'Run Regression Tests',
             'function' => 'doRunTests',
             'shortcut' => 'rt',
-            'options' => array(
-                'recur' => array(
+            'options' => [
+                'recur' => [
                     'shortopt' => 'r',
                     'doc' => 'Run tests in child directories, recursively.  4 dirs deep maximum',
-                ),
-                'ini' => array(
+                ],
+                'ini' => [
                     'shortopt' => 'i',
                     'doc' => 'actual string of settings to pass to php in format " -d setting=blah"',
                     'arg' => 'SETTINGS'
-                ),
-                'realtimelog' => array(
+                ],
+                'realtimelog' => [
                     'shortopt' => 'l',
                     'doc' => 'Log test runs/results as they are run',
-                ),
-                'quiet' => array(
+                ],
+                'quiet' => [
                     'shortopt' => 'q',
                     'doc' => 'Only display detail for failed tests',
-                ),
-                'simple' => array(
+                ],
+                'simple' => [
                     'shortopt' => 's',
                     'doc' => 'Display simple output for all tests',
-                ),
-                'package' => array(
+                ],
+                'package' => [
                     'shortopt' => 'p',
                     'doc' => 'Treat parameters as installed packages from which to run tests',
-                ),
-                'phpunit' => array(
+                ],
+                'phpunit' => [
                     'shortopt' => 'u',
                     'doc' => 'Search parameters for AllTests.php, and use that to run phpunit-based tests
 If none is found, all .phpt tests will be tried instead.',
-                ),
-                'tapoutput' => array(
+                ],
+                'tapoutput' => [
                     'shortopt' => 't',
                     'doc' => 'Output run-tests.log in TAP-compliant format',
-                ),
-                'cgi' => array(
+                ],
+                'cgi' => [
                     'shortopt' => 'c',
                     'doc' => 'CGI php executable (needed for tests with POST/GET section)',
                     'arg' => 'PHPCGI',
-                ),
-                'coverage' => array(
+                ],
+                'coverage' => [
                     'shortopt' => 'x',
                     'doc'      => 'Generate a code coverage report (requires Xdebug 2.0.0+)',
-                ),
-                'showdiff' => array(
+                ],
+                'showdiff' => [
                     'shortopt' => 'd',
                     'doc' => 'Output diff on test failure',
-                ),
-            ),
+                ],
+            ],
             'doc' => '[testfile|dir ...]
 Run regression tests with PHP\'s regression testing script (run-tests.php).',
-            ),
-        );
+            ],
+        ];
 
-    var $output;
+    public $output;
 
     /**
      * PEAR_Command_Test constructor.
@@ -118,7 +118,7 @@ Run regression tests with PHP\'s regression testing script (run-tests.php).',
         require_once 'System.php';
         $log = new PEAR_Common;
         $log->ui = &$this->ui; // slightly hacky, but it will work
-        $tests = array();
+        $tests = [];
         $depth = isset($options['recur']) ? 14 : 1;
 
         if (!count($params)) {
@@ -127,7 +127,7 @@ Run regression tests with PHP\'s regression testing script (run-tests.php).',
 
         if (isset($options['package'])) {
             $oldparams = $params;
-            $params = array();
+            $params = [];
             $reg = &$this->config->getRegistry();
             foreach ($oldparams as $param) {
                 $pname = $reg->parsePackageName($param, $this->config->get('default_channel'));
@@ -161,23 +161,23 @@ Run regression tests with PHP\'s regression testing script (run-tests.php).',
         foreach ($params as $p) {
             if (is_dir($p)) {
                 if (isset($options['phpunit'])) {
-                    $dir = System::find(array($p, '-type', 'f',
+                    $dir = System::find([$p, '-type', 'f',
                                                 '-maxdepth', $depth,
-                                                '-name', 'AllTests.php'));
+                                                '-name', 'AllTests.php']);
                     if (count($dir)) {
                         foreach ($dir as $p) {
                             $p = realpath($p);
                             if (!count($tests) ||
                                   (count($tests) && strlen($p) < strlen($tests[0]))) {
                                 // this is in a higher-level directory, use this one instead.
-                                $tests = array($p);
+                                $tests = [$p];
                             }
                         }
                     }
                     continue;
                 }
 
-                $args  = array($p, '-type', 'f', '-name', '*.phpt');
+                $args  = [$p, '-type', 'f', '-name', '*.phpt'];
             } else {
                 if (isset($options['phpunit'])) {
                     if (preg_match('/AllTests\.php\\z/i', $p)) {
@@ -185,7 +185,7 @@ Run regression tests with PHP\'s regression testing script (run-tests.php).',
                         if (!count($tests) ||
                               (count($tests) && strlen($p) < strlen($tests[0]))) {
                             // this is in a higher-level directory, use this one instead.
-                            $tests = array($p);
+                            $tests = [$p];
                         }
                     }
                     continue;
@@ -200,7 +200,7 @@ Run regression tests with PHP\'s regression testing script (run-tests.php).',
                     $p .= '.phpt';
                 }
 
-                $args  = array(dirname($p), '-type', 'f', '-name', $p);
+                $args  = [dirname($p), '-type', 'f', '-name', $p];
             }
 
             if (!isset($options['recur'])) {
@@ -225,7 +225,7 @@ Run regression tests with PHP\'s regression testing script (run-tests.php).',
             $this->ui->outputData('Using INI settings: "' . $ini_settings . '"');
         }
 
-        $skipped = $passed = $failed = array();
+        $skipped = $passed = $failed = [];
         $tests_count = count($tests);
         $this->ui->outputData('Running ' . $tests_count . ' tests', $command);
         $start = time();

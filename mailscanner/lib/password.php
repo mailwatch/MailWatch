@@ -32,7 +32,7 @@ namespace {
          *
          * @return string|false The hashed password, or false on error.
          */
-        function password_hash($password, $algo, array $options = array()) {
+        function password_hash($password, $algo, array $options = []) {
             if (!function_exists('crypt')) {
                 trigger_error("Crypt must be loaded for password_hash to function", E_USER_WARNING);
                 return null;
@@ -178,11 +178,11 @@ namespace {
          * @return array The array of information about the hash.
          */
         function password_get_info($hash) {
-            $return = array(
+            $return = [
                 'algo' => 0,
                 'algoName' => 'unknown',
-                'options' => array(),
-            );
+                'options' => [],
+            ];
             if (PasswordCompat\binary\_substr($hash, 0, 4) == '$2y$' && PasswordCompat\binary\_strlen($hash) == 60) {
                 $return['algo'] = PASSWORD_BCRYPT;
                 $return['algoName'] = 'bcrypt';
@@ -203,7 +203,7 @@ namespace {
          *
          * @return boolean True if the password needs to be rehashed.
          */
-        function password_needs_rehash($hash, $algo, array $options = array()) {
+        function password_needs_rehash($hash, $algo, array $options = []) {
             $info = password_get_info($hash);
             if ($info['algo'] !== (int) $algo) {
                 return true;

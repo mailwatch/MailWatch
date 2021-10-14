@@ -29,5 +29,5 @@ interface Requests_Hooker {
 	 * @param array $parameters Parameters to pass to callbacks
 	 * @return boolean Successfulness
 	 */
-	public function dispatch($hook, $parameters = array());
+	public function dispatch($hook, $parameters = []);
 }

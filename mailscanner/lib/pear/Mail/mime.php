@@ -108,28 +108,28 @@ class Mail_mime
      *
      * @var array
      */
-    protected $html_images = array();
+    protected $html_images = [];
 
     /**
      * List of the attachements
      *
      * @var array
      */
-    protected $parts = array();
+    protected $parts = [];
 
     /**
      * Headers for the mail
      *
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * Build parameters
      *
      * @var array
      */
-    protected $build_params = array(
+    protected $build_params = [
         // What encoding to use for the headers
         // Options: quoted-printable or base64
         'head_encoding' => 'quoted-printable',
@@ -158,7 +158,7 @@ class Mail_mime
         'calendar_method' => 'request',
         // multipart part preamble (RFC2046 5.1.1)
         'preamble' => '',
-    );
+    ];
 
 
     /**
@@ -170,7 +170,7 @@ class Mail_mime
      *
      * @return void
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         // Backward-compatible EOL setting
         if (is_string($params)) {
@@ -345,7 +345,7 @@ class Mail_mime
                 }
             }
 
-            $filename = $name ? $name : $file;
+            $filename = $name ?: $file;
         } else {
             $filedata = $file;
             $filename = $name;
@@ -355,13 +355,13 @@ class Mail_mime
             $content_id = preg_replace('/[^0-9a-zA-Z]/', '', uniqid(time(), true));
         }
 
-        $this->html_images[] = array(
+        $this->html_images[] = [
             'body'      => $filedata,
             'body_file' => $bodyfile,
             'name'      => $filename,
             'c_type'    => $c_type,
             'cid'       => $content_id
-        );
+        ];
 
         return true;
     }
@@ -410,7 +410,7 @@ class Mail_mime
         $f_encoding  = null,
         $description = '',
         $h_charset   = null,
-        $add_headers = array()
+        $add_headers = []
     ) {
         if ($file instanceof Mail_mimePart) {
             $this->parts[] = $file;
@@ -430,7 +430,7 @@ class Mail_mime
                 }
             }
             // Force the name the user supplied, otherwise use $file
-            $filename = ($name ? $name : $this->basename($file));
+            $filename = ($name ?: $this->basename($file));
         } else {
             $filedata = $file;
             $filename = $name;
@@ -441,7 +441,7 @@ class Mail_mime
             return self::raiseError($msg);
         }
 
-        $this->parts[] = array(
+        $this->parts[] = [
             'body'        => $filedata,
             'body_file'   => $bodyfile,
             'name'        => $filename,
@@ -456,7 +456,7 @@ class Mail_mime
             'name_encoding'     => $n_encoding,
             'filename_encoding' => $f_encoding,
             'headers_charset'   => $h_charset,
-        );
+        ];
 
         return true;
     }
@@ -560,7 +560,7 @@ class Mail_mime
      *
      * @return object The multipart/mixed mimePart object
      */
-    protected function addMixedPart($params = array())
+    protected function addMixedPart($params = [])
     {
         $params['content_type'] = 'multipart/mixed';
         $params['eol']          = $this->build_params['eol'];
@@ -792,7 +792,7 @@ class Mail_mime
         // Write the rest of the message into file
         $res = $this->get($params, $filename);
 
-        return $res ? $res : true;
+        return $res ?: true;
     }
 
     /**
@@ -837,7 +837,7 @@ class Mail_mime
             @ini_set('magic_quotes_runtime', $magic_quote_setting);
         }
 
-        return $res ? $res : true;
+        return $res ?: true;
     }
 
     /**
@@ -878,15 +878,15 @@ class Mail_mime
         if (count($this->html_images) && isset($this->htmlbody)) {
             foreach ($this->html_images as $key => $value) {
                 $rval  = preg_quote($value['name'], '#');
-                $regex = array(
+                $regex = [
                     '#(\s)((?i)src|background|href(?-i))\s*=\s*(["\']?)' . $rval . '\3#',
                     '#(?i)url(?-i)\(\s*(["\']?)' . $rval . '\1\s*\)#',
-                );
+                ];
 
-                $rep = array(
+                $rep = [
                     '\1\2=\3cid:' . $value['cid'] .'\3',
                     'url(\1cid:' . $value['cid'] . '\1)',
-                );
+                ];
 
                 $this->htmlbody = preg_replace($regex, $rep, $this->htmlbody);
                 $this->html_images[$key]['name']
@@ -902,7 +902,7 @@ class Mail_mime
         $calendar    = strlen($this->calbody) > 0;
         $has_text    = strlen($this->txtbody) > 0;
         $text        = !$html && $has_text;
-        $mixed_params = array('preamble' => $this->build_params['preamble']);
+        $mixed_params = ['preamble' => $this->build_params['preamble']];
 
         switch (true) {
         case $calendar && !$attachments && !$text && !$html:
@@ -1129,7 +1129,7 @@ class Mail_mime
         if (isset($headers['Received'])) {
             $received = $headers['Received'];
             unset($headers['Received']);
-            $headers = array('Received' => $received) + $headers;
+            $headers = ['Received' => $received] + $headers;
         }
 
         $ret = '';
@@ -1159,7 +1159,7 @@ class Mail_mime
      * @return void
      * @since  1.7.0
      */
-    public function setContentType($type, $params = array())
+    public function setContentType($type, $params = [])
     {
         $header = $type;
 
@@ -1281,7 +1281,7 @@ class Mail_mime
      */
     public function encodeRecipients($recipients)
     {
-        $input  = array('To' => $recipients);
+        $input  = ['To' => $recipients];
         $retval = $this->encodeHeaders($input);
 
         return $retval['To'] ;
@@ -1295,7 +1295,7 @@ class Mail_mime
      *
      * @return array Encoded data
      */
-    protected function encodeHeaders($input, $params = array())
+    protected function encodeHeaders($input, $params = [])
     {
         $build_params = $this->build_params;
 
@@ -1372,7 +1372,7 @@ class Mail_mime
         $calendar    = strlen($this->calbody) > 0;
         $has_text    = strlen($this->txtbody) > 0;
         $text        = !$html && $has_text;
-        $headers     = array();
+        $headers     = [];
 
         // See get()
         switch (true) {
@@ -1479,7 +1479,7 @@ class Mail_mime
      */
     protected function checkParams()
     {
-        $encodings = array('7bit', '8bit', 'base64', 'quoted-printable');
+        $encodings = ['7bit', '8bit', 'base64', 'quoted-printable'];
 
         $this->build_params['text_encoding']
             = strtolower($this->build_params['text_encoding']);

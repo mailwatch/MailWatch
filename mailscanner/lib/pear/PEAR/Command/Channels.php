@@ -31,100 +31,100 @@ define('PEAR_COMMAND_CHANNELS_CHANNEL_EXISTS', -500);
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
 class PEAR_Command_Channels extends PEAR_Command_Common
 {
-    var $commands = array(
-        'list-channels' => array(
+    public $commands = [
+        'list-channels' => [
             'summary' => 'List Available Channels',
             'function' => 'doList',
             'shortcut' => 'lc',
-            'options' => array(),
+            'options' => [],
             'doc' => '
 List all available channels for installation.
 ',
-            ),
-        'update-channels' => array(
+            ],
+        'update-channels' => [
             'summary' => 'Update the Channel List',
             'function' => 'doUpdateAll',
             'shortcut' => 'uc',
-            'options' => array(),
+            'options' => [],
             'doc' => '
 List all installed packages in all channels.
 '
-            ),
-        'channel-delete' => array(
+            ],
+        'channel-delete' => [
             'summary' => 'Remove a Channel From the List',
             'function' => 'doDelete',
             'shortcut' => 'cde',
-            'options' => array(),
+            'options' => [],
             'doc' => '<channel name>
 Delete a channel from the registry.  You may not
 remove any channel that has installed packages.
 '
-            ),
-        'channel-add' => array(
+            ],
+        'channel-add' => [
             'summary' => 'Add a Channel',
             'function' => 'doAdd',
             'shortcut' => 'ca',
-            'options' => array(),
+            'options' => [],
             'doc' => '<channel.xml>
 Add a private channel to the channel list.  Note that all
 public channels should be synced using "update-channels".
 Parameter may be either a local file or remote URL to a
 channel.xml.
 '
-            ),
-        'channel-update' => array(
+            ],
+        'channel-update' => [
             'summary' => 'Update an Existing Channel',
             'function' => 'doUpdate',
             'shortcut' => 'cu',
-            'options' => array(
-                'force' => array(
+            'options' => [
+                'force' => [
                     'shortopt' => 'f',
                     'doc' => 'will force download of new channel.xml if an existing channel name is used',
-                    ),
-                'channel' => array(
+                    ],
+                'channel' => [
                     'shortopt' => 'c',
                     'arg' => 'CHANNEL',
                     'doc' => 'will force download of new channel.xml if an existing channel name is used',
-                    ),
-),
+                    ],
+],
             'doc' => '[<channel.xml>|<channel name>]
 Update a channel in the channel list directly.  Note that all
 public channels can be synced using "update-channels".
 Parameter may be a local or remote channel.xml, or the name of
 an existing channel.
 '
-            ),
-        'channel-info' => array(
+            ],
+        'channel-info' => [
             'summary' => 'Retrieve Information on a Channel',
             'function' => 'doInfo',
             'shortcut' => 'ci',
-            'options' => array(),
+            'options' => [],
             'doc' => '<package>
 List the files in an installed package.
 '
-            ),
-        'channel-alias' => array(
+            ],
+        'channel-alias' => [
             'summary' => 'Specify an alias to a channel name',
             'function' => 'doAlias',
             'shortcut' => 'cha',
-            'options' => array(),
+            'options' => [],
             'doc' => '<channel> <alias>
 Specify a specific alias to use for a channel name.
 The alias may not be an existing channel name or
 alias.
 '
-            ),
-        'channel-discover' => array(
+            ],
+        'channel-discover' => [
             'summary' => 'Initialize a Channel from its server',
             'function' => 'doDiscover',
             'shortcut' => 'di',
-            'options' => array(),
+            'options' => [],
             'doc' => '[<channel.xml>|<channel name>]
 Initialize a channel from its server and create a local channel.xml.
 If <channel name> is in the format "<username>:<password>@<channel>" then
@@ -133,12 +133,12 @@ If <channel name> is in the format "<username>:<password>@<channel>" then
 it may allow other users on your computer to briefly view your username/
 password via the system\'s process list.
 '
-            ),
-        'channel-login' => array(
+            ],
+        'channel-login' => [
             'summary' => 'Connects and authenticates to remote channel server',
             'shortcut' => 'cli',
             'function' => 'doLogin',
-            'options' => array(),
+            'options' => [],
             'doc' => '<channel name>
 Log in to a remote channel server.  If <channel name> is not supplied,
 the default channel is used. To use remote functions in the installer
@@ -147,19 +147,19 @@ username and password you enter here will be stored in your per-user
 PEAR configuration (~/.pearrc on Unix-like systems).  After logging
 in, your username and password will be sent along in subsequent
 operations on the remote server.',
-            ),
-        'channel-logout' => array(
+            ],
+        'channel-logout' => [
             'summary' => 'Logs out from the remote channel server',
             'shortcut' => 'clo',
             'function' => 'doLogout',
-            'options' => array(),
+            'options' => [],
             'doc' => '<channel name>
 Logs out from a remote channel server.  If <channel name> is not supplied,
 the default channel is used. This command does not actually connect to the
 remote server, it only deletes the stored username and password from your user
 configuration.',
-            ),
-        );
+            ],
+        ];
 
     /**
      * PEAR_Command_Registry constructor.
@@ -180,17 +180,17 @@ configuration.',
     {
         $reg = &$this->config->getRegistry();
         $registered = $reg->getChannels();
-        usort($registered, array(&$this, '_sortchannels'));
+        usort($registered, [&$this, '_sortchannels']);
         $i = $j = 0;
-        $data = array(
+        $data = [
             'caption' => 'Registered Channels:',
             'border' => true,
-            'headline' => array('Channel', 'Alias', 'Summary')
-            );
+            'headline' => ['Channel', 'Alias', 'Summary']
+            ];
         foreach ($registered as $channel) {
-            $data['data'][] = array($channel->getName(),
+            $data['data'][] = [$channel->getName(),
                                     $channel->getAlias(),
-                                    $channel->getSummary());
+                                    $channel->getSummary()];
         }
 
         if (count($registered) === 0) {
@@ -211,7 +211,7 @@ configuration.',
                 PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
                 $err = $this->doUpdate('channel-update',
                                           $options,
-                                          array($channel->getName()));
+                                          [$channel->getName()]);
                 if (PEAR::isError($err)) {
                     $this->ui->outputData($err->getMessage(), $command);
                     $success = false;
@@ -288,69 +288,69 @@ configuration.',
 
         $channel = $chan->getName();
         $caption = 'Channel ' . $channel . ' Information:';
-        $data1 = array(
+        $data1 = [
             'caption' => $caption,
-            'border' => true);
-        $data1['data']['server'] = array('Name and Server', $chan->getName());
+            'border' => true];
+        $data1['data']['server'] = ['Name and Server', $chan->getName()];
         if ($chan->getAlias() != $chan->getName()) {
-            $data1['data']['alias'] = array('Alias', $chan->getAlias());
+            $data1['data']['alias'] = ['Alias', $chan->getAlias()];
         }
 
-        $data1['data']['summary'] = array('Summary', $chan->getSummary());
+        $data1['data']['summary'] = ['Summary', $chan->getSummary()];
         $validate = $chan->getValidationPackage();
-        $data1['data']['vpackage'] = array('Validation Package Name', $validate['_content']);
+        $data1['data']['vpackage'] = ['Validation Package Name', $validate['_content']];
         $data1['data']['vpackageversion'] =
-            array('Validation Package Version', $validate['attribs']['version']);
-        $d = array();
+            ['Validation Package Version', $validate['attribs']['version']];
+        $d = [];
         $d['main'] = $data1;
 
-        $data['data'] = array();
+        $data['data'] = [];
         $data['caption'] = 'Server Capabilities';
-        $data['headline'] = array('Type', 'Version/REST type', 'Function Name/REST base');
+        $data['headline'] = ['Type', 'Version/REST type', 'Function Name/REST base'];
         if ($chan->supportsREST()) {
             if ($chan->supportsREST()) {
                 $funcs = $chan->getFunctions('rest');
                 if (!isset($funcs[0])) {
-                    $funcs = array($funcs);
+                    $funcs = [$funcs];
                 }
                 foreach ($funcs as $protocol) {
-                    $data['data'][] = array('rest', $protocol['attribs']['type'],
-                        $protocol['_content']);
+                    $data['data'][] = ['rest', $protocol['attribs']['type'],
+                        $protocol['_content']];
                 }
             }
         } else {
-            $data['data'][] = array('No supported protocols');
+            $data['data'][] = ['No supported protocols'];
         }
 
         $d['protocols'] = $data;
-        $data['data'] = array();
+        $data['data'] = [];
         $mirrors = $chan->getMirrors();
         if ($mirrors) {
             $data['caption'] = 'Channel ' . $channel . ' Mirrors:';
             unset($data['headline']);
             foreach ($mirrors as $mirror) {
-                $data['data'][] = array($mirror['attribs']['host']);
+                $data['data'][] = [$mirror['attribs']['host']];
                 $d['mirrors'] = $data;
             }
 
             foreach ($mirrors as $i => $mirror) {
-                $data['data'] = array();
+                $data['data'] = [];
                 $data['caption'] = 'Mirror ' . $mirror['attribs']['host'] . ' Capabilities';
-                $data['headline'] = array('Type', 'Version/REST type', 'Function Name/REST base');
+                $data['headline'] = ['Type', 'Version/REST type', 'Function Name/REST base'];
                 if ($chan->supportsREST($mirror['attribs']['host'])) {
                     if ($chan->supportsREST($mirror['attribs']['host'])) {
                         $funcs = $chan->getFunctions('rest', $mirror['attribs']['host']);
                         if (!isset($funcs[0])) {
-                            $funcs = array($funcs);
+                            $funcs = [$funcs];
                         }
 
                         foreach ($funcs as $protocol) {
-                            $data['data'][] = array('rest', $protocol['attribs']['type'],
-                                $protocol['_content']);
+                            $data['data'][] = ['rest', $protocol['attribs']['type'],
+                                $protocol['_content']];
                         }
                     }
                 } else {
-                    $data['data'][] = array('No supported protocols');
+                    $data['data'][] = ['No supported protocols'];
                 }
                 $d['mirrorprotocols' . $i] = $data;
             }
@@ -417,7 +417,7 @@ configuration.',
             if (!file_exists($tmpdir)) {
                 require_once 'System.php';
                 PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
-                $err = System::mkdir(array('-p', $tmpdir));
+                $err = System::mkdir(['-p', $tmpdir]);
                 PEAR::staticPopErrorHandling();
                 if (PEAR::isError($err)) {
                     return $this->raiseError('channel-add: temp_dir does not exist: "' .
@@ -513,7 +513,7 @@ configuration.',
         if (!file_exists($tmpdir)) {
             require_once 'System.php';
             PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
-            $err = System::mkdir(array('-p', $tmpdir));
+            $err = System::mkdir(['-p', $tmpdir]);
             PEAR::staticPopErrorHandling();
             if (PEAR::isError($err)) {
                 return $this->raiseError('channel-add: temp_dir does not exist: "' .
@@ -538,7 +538,7 @@ configuration.',
             }
 
             $this->ui->outputData("Updating channel \"$params[0]\"", $command);
-            $dl = &$this->getDownloader(array());
+            $dl = &$this->getDownloader([]);
             // if force is specified, use a timestamp of "1" to force retrieval
             $lastmodified = isset($options['force']) ? false : $c->lastModified();
             PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
@@ -663,7 +663,7 @@ configuration.',
         if (!class_exists('PEAR_Downloader')) {
             require_once 'PEAR/Downloader.php';
         }
-        $a = new PEAR_Downloader($this->ui, array(), $this->config);
+        $a = new PEAR_Downloader($this->ui, [], $this->config);
         return $a;
     }
 
@@ -673,7 +673,7 @@ configuration.',
             return $this->raiseError('No channel alias specified');
         }
 
-        if (count($params) !== 2 || (!empty($params[1]) && $params[1]{0} == '-')) {
+        if (count($params) !== 2 || (!empty($params[1]) && $params[1][0] == '-')) {
             return $this->raiseError(
                 'Invalid format, correct is: channel-alias channel alias');
         }
@@ -749,7 +749,7 @@ configuration.',
         }
 
         $this->pushErrorHandling(PEAR_ERROR_RETURN);
-        $err = $this->doAdd($command, $options, array('http://' . $channel . '/channel.xml'));
+        $err = $this->doAdd($command, $options, ['http://' . $channel . '/channel.xml']);
         $this->popErrorHandling();
         if (PEAR::isError($err)) {
             if ($err->getCode() === PEAR_COMMAND_CHANNELS_CHANNEL_EXISTS) {
@@ -760,7 +760,7 @@ configuration.',
             $this->ui->outputData("Discovering channel $channel over http:// failed with message: " . $err->getMessage());
             $this->ui->outputData("Trying to discover channel $channel over https:// instead");
             $this->pushErrorHandling(PEAR_ERROR_RETURN);
-            $err = $this->doAdd($command, $options, array('https://' . $channel . '/channel.xml'));
+            $err = $this->doAdd($command, $options, ['https://' . $channel . '/channel.xml']);
             $this->popErrorHandling();
             if (PEAR::isError($err)) {
                 return $this->raiseError("Discovery of channel \"$channel\" failed (" .
@@ -815,9 +815,9 @@ configuration.',
 
         list($username, $password) = $this->ui->userDialog(
             $command,
-            array('Username', 'Password'),
-            array('text',     'password'),
-            array($username,  '')
+            ['Username', 'Password'],
+            ['text',     'password'],
+            [$username,  '']
             );
         $username = trim($username);
         $password = trim($password);

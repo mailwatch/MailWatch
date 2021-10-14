@@ -30,22 +30,28 @@ require_once 'PEAR/Command/Common.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
 class PEAR_Command_Build extends PEAR_Command_Common
 {
-    var $commands = array(
-        'build' => array(
+    public $commands = [
+        'build' => [
             'summary' => 'Build an Extension From C Source',
             'function' => 'doBuild',
             'shortcut' => 'b',
-            'options' => array(),
+            'options' => [
+                'configureoptions' => [
+                    'shortopt' => 'D',
+                    'arg' => 'OPTION1=VALUE[ OPTION2=VALUE]',
+                    'doc' => 'space-delimited list of configure options',
+                    ],
+                ],
             'doc' => '[package.xml]
 Builds one or more extensions contained in a package.'
-            ),
-        );
+            ],
+        ];
 
     /**
      * PEAR_Command_Build constructor.
@@ -64,9 +70,10 @@ Builds one or more extensions contained in a package.'
             $params[0] = 'package.xml';
         }
 
-        $builder = new PEAR_Builder($this->ui);
+        $configureoptions = empty($options['configureoptions']) ? '' : $options['configureoptions'];
+        $builder = new PEAR_Builder($configureoptions, $this->ui);
         $this->debug = $this->config->get('verbose');
-        $err = $builder->build($params[0], array(&$this, 'buildCallback'));
+        $err = $builder->build($params[0], [&$this, 'buildCallback']);
         if (PEAR::isError($err)) {
             return $err;
         }

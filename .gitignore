@@ -5,3 +5,9 @@
 #development files
 /_msconfig/
 /vendor/
+
+composer.json
+composer.lock
+rector.php
+.php-cs-fixer-dist.php
+.php-cs-fixer.cache

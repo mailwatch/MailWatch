@@ -29,15 +29,15 @@ class GraphGenerator
 {
     public $sqlQuery;
     public $graphTitle;
-    public $sqlColumns = array();
-    public $tableColumns = array();
-    public $graphColumns = array();
-    public $valueConversion = array();
+    public $sqlColumns = [];
+    public $tableColumns = [];
+    public $graphColumns = [];
+    public $valueConversion = [];
     public $types = null;
     public $printTable = true;
-    public $settings = array();
+    public $settings = [];
 
-    private $data = array();
+    private $data = [];
     private $numResult;
 
 
@@ -192,7 +192,7 @@ class GraphGenerator
     protected function prepareData()
     {
         $result = dbquery($this->sqlQuery);
-        $this->data = array();
+        $this->data = [];
         $this->numResult = $result->num_rows;
         if ($this->numResult <= 0 && (!isset($this->settings['ignoreEmptyResult']) || $this->settings['ignoreEmptyResult'] === false)) {
             echo __('diemysql99') . "\n";
@@ -248,8 +248,8 @@ class GraphGenerator
      */
     protected function convertHostnameGeoip($column)
     {
-        $this->data['hostname'] = array();
-        $this->data['geoip'] = array();
+        $this->data['hostname'] = [];
+        $this->data['geoip'] = [];
         foreach ($this->data[$column] as $ipval) {
             $hostname = gethostbyaddr($ipval);
             if ($hostname === $ipval) {
@@ -273,7 +273,7 @@ class GraphGenerator
      */
     protected function convertViruses($column)
     {
-        $viruses = array();
+        $viruses = [];
         foreach ($this->data[$column] as $report) {
             $virus = getVirus($report);
             if ($virus !== null) {
@@ -287,8 +287,8 @@ class GraphGenerator
         arsort($viruses);
         reset($viruses);
         $count = 0;
-        $this->data['virusname'] = array();
-        $this->data['viruscount'] = array();
+        $this->data['virusname'] = [];
+        $this->data['viruscount'] = [];
         foreach ($viruses as $key => $val) {
             $this->data['virusname'][] = $key;
             $this->data['viruscount'][] = $val;
@@ -319,7 +319,7 @@ class GraphGenerator
         $this->settings['now'] = $now;
         $date = clone $now;
         $date = $date->sub(new DateInterval($interval));
-        $dates = array($date->format($format));
+        $dates = [$date->format($format)];
         $count = 1;
         while ($date < $now) {
             //get the next interval and create the label for it
@@ -352,7 +352,7 @@ class GraphGenerator
         $start = $start->sub(new DateInterval($interval));
         $oldest = clone $start;
         //initialize the time scales with zeros
-        $convertedData = array(($start->format($format)) => 0);
+        $convertedData = [($start->format($format)) => 0];
         while ($start < $now) {
             $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
         }

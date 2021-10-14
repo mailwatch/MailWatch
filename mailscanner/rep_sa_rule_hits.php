@@ -52,7 +52,7 @@ if (!$result->num_rows > 0) {
 }
 
 // Initialise the array
-$sa_array = array();
+$sa_array = [];
 
 // Retrieve rows and insert into array
 while ($row = $result->fetch_object()) {
@@ -72,7 +72,7 @@ while ($row = $result->fetch_object()) {
     if (isset($sa_rules[0])) {
         $sa_rules = explode(', ', $sa_rules[0]);
     } else {
-        $sa_rules = array();
+        $sa_rules = [];
     }
     $junk = array_shift($sa_rules); // score=
     $junk = array_shift($sa_rules); // required

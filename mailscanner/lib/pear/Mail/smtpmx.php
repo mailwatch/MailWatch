@@ -68,14 +68,14 @@ class Mail_smtpmx extends Mail {
      * @var object
      * @access private
      */
-    var $_smtp = null;
+    public $_smtp = null;
 
     /**
      * The port the SMTP server is on.
      * @var integer
      * @see getservicebyname()
      */
-    var $port = 25;
+    public $port = 25;
 
     /**
      * Hostname or domain that will be sent to the remote SMTP server in the
@@ -84,28 +84,28 @@ class Mail_smtpmx extends Mail {
      * @var string
      * @see posix_uname()
      */
-    var $mailname = 'localhost';
+    public $mailname = 'localhost';
 
     /**
      * SMTP connection timeout value.  NULL indicates no timeout.
      *
      * @var integer
      */
-    var $timeout = 10;
+    public $timeout = 10;
 
     /**
      * use either PEAR:Net_DNS or getmxrr
      *
      * @var boolean
      */
-    var $withNetDns = true;
+    public $withNetDns = true;
 
     /**
      * PEAR:Net_DNS_Resolver
      *
      * @var object
      */
-    var $resolver;
+    public $resolver;
 
     /**
      * Whether to use VERP or not. If not a boolean, the string value
@@ -113,28 +113,28 @@ class Mail_smtpmx extends Mail {
      *
      * @var mixed boolean or string
      */
-    var $verp = false;
+    public $verp = false;
 
     /**
      * Whether to use VRFY or not.
      *
      * @var boolean $vrfy
      */
-    var $vrfy = false;
+    public $vrfy = false;
 
     /**
      * Switch to test mode - don't send emails for real
      *
      * @var boolean $debug
      */
-    var $test = false;
+    public $test = false;
 
     /**
      * Turn on Net_SMTP debugging?
      *
      * @var boolean $peardebug
      */
-    var $debug = false;
+    public $debug = false;
 
     /**
      * internal error codes
@@ -148,48 +148,48 @@ class Mail_smtpmx extends Mail {
      *       for each code. This avoids conflicts with error codes from different
      *       classes. How can I use unique error codes and stay conform with PEAR?
      */
-    var $errorCode = array(
-        'not_connected' => array(
+    public $errorCode = [
+        'not_connected' => [
             'code'  => 1,
             'msg'   => 'Could not connect to any mail server ({HOST}) at port {PORT} to send mail to {RCPT}.'
-        ),
-        'failed_vrfy_rcpt' => array(
+        ],
+        'failed_vrfy_rcpt' => [
             'code'  => 2,
             'msg'   => 'Recipient "{RCPT}" could not be veryfied.'
-        ),
-        'failed_set_from' => array(
+        ],
+        'failed_set_from' => [
             'code'  => 3,
             'msg'   => 'Failed to set sender: {FROM}.'
-        ),
-        'failed_set_rcpt' => array(
+        ],
+        'failed_set_rcpt' => [
             'code'  => 4,
             'msg'   => 'Failed to set recipient: {RCPT}.'
-        ),
-        'failed_send_data' => array(
+        ],
+        'failed_send_data' => [
             'code'  => 5,
             'msg'   => 'Failed to send mail to: {RCPT}.'
-        ),
-        'no_from' => array(
+        ],
+        'no_from' => [
             'code'  => 5,
             'msg'   => 'No from address has be provided.'
-        ),
-        'send_data' => array(
+        ],
+        'send_data' => [
             'code'  => 7,
             'msg'   => 'Failed to create Net_SMTP object.'
-        ),
-        'no_mx' => array(
+        ],
+        'no_mx' => [
             'code'  => 8,
             'msg'   => 'No MX-record for {RCPT} found.'
-        ),
-        'no_resolver' => array(
+        ],
+        'no_resolver' => [
             'code'  => 9,
             'msg'   => 'Could not start resolver! Install PEAR:Net_DNS or switch off "netdns"'
-        ),
-        'failed_rset' => array(
+        ],
+        'failed_rset' => [
             'code'  => 10,
             'msg'   => 'RSET command failed, SMTP-connection corrupt.'
-        ),
-    );
+        ],
+    ];
 
     /**
      * Constructor.
@@ -249,7 +249,7 @@ class Mail_smtpmx extends Mail {
     function Mail_smtpmx($params)
     {
         $this->__construct($params);
-        register_shutdown_function(array(&$this, '__destruct'));
+        register_shutdown_function([&$this, '__destruct']);
     }
 
     /**
@@ -314,7 +314,7 @@ class Mail_smtpmx extends Mail {
             }
 
             if (empty($mx)) {
-                $info = array('rcpt' => $rcpt);
+                $info = ['rcpt' => $rcpt];
                 return $this->_raiseError('no_mx', $info);
             }
 
@@ -342,11 +342,11 @@ class Mail_smtpmx extends Mail {
             }
 
             if (!$connected) {
-                $info = array(
+                $info = [
                     'host' => implode(', ', array_keys($mx)),
                     'port' => $this->port,
                     'rcpt' => $rcpt,
-                );
+                ];
                 return $this->_raiseError('not_connected', $info);
             }
 
@@ -354,7 +354,7 @@ class Mail_smtpmx extends Mail {
             if ($this->vrfy) {
                 $res = $this->_smtp->vrfy($rcpt);
                 if (is_a($res, 'PEAR_Error')) {
-                    $info = array('rcpt' => $rcpt);
+                    $info = ['rcpt' => $rcpt];
                     return $this->_raiseError('failed_vrfy_rcpt', $info);
                 }
             }
@@ -363,14 +363,14 @@ class Mail_smtpmx extends Mail {
             $args['verp'] = $this->verp;
             $res = $this->_smtp->mailFrom($from, $args);
             if (is_a($res, 'PEAR_Error')) {
-                $info = array('from' => $from);
+                $info = ['from' => $from];
                 return $this->_raiseError('failed_set_from', $info);
             }
 
             // rcpt to:
             $res = $this->_smtp->rcptTo($rcpt);
             if (is_a($res, 'PEAR_Error')) {
-                $info = array('rcpt' => $rcpt);
+                $info = ['rcpt' => $rcpt];
                 return $this->_raiseError('failed_set_rcpt', $info);
             }
 
@@ -390,7 +390,7 @@ class Mail_smtpmx extends Mail {
             // Send data
             $res = $this->_smtp->data($body, $textHeaders);
             if (is_a($res, 'PEAR_Error')) {
-                $info = array('rcpt' => $rcpt);
+                $info = ['rcpt' => $rcpt];
                 return $this->_raiseError('failed_send_data', $info);
             }
 
@@ -412,7 +412,7 @@ class Mail_smtpmx extends Mail {
      */
     function _getMx($host)
     {
-        $mx = array();
+        $mx = [];
 
         if ($this->withNetDns) {
             $res = $this->_loadNetDns();
@@ -431,8 +431,8 @@ class Mail_smtpmx extends Mail {
                 }
             }
         } else {
-            $mxHost = array();
-            $mxWeight = array();
+            $mxHost = [];
+            $mxWeight = [];
 
             if (!getmxrr($host, $mxHost, $mxWeight)) {
                 return false;
@@ -480,15 +480,15 @@ class Mail_smtpmx extends Mail {
      * @param array $info optional information in associative array
      * @see _errorCode
      */
-    function _raiseError($id, $info = array())
+    function _raiseError($id, $info = [])
     {
         $code = $this->errorCode[$id]['code'];
         $msg = $this->errorCode[$id]['msg'];
 
         // include info to messages
         if (!empty($info)) {
-            $search = array();
-            $replace = array();
+            $search = [];
+            $replace = [];
 
             foreach ($info as $key => $value) {
                 array_push($search, '{' . strtoupper($key) . '}');

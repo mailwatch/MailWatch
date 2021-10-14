@@ -28,7 +28,7 @@
 /* languages/pt_br.php */
 /* v0.3.12 */
 
-return array(
+return [
     // 01-login.php
     'username' => 'Usuário:',
     'password' => 'Senha:',
@@ -1012,4 +1012,4 @@ return array(
     'pt_br' => 'Português',
     'dbconnecterror99' => '<p>Erro: Falha na conexão com o Banco de Dados</p><p>É possível que esteja sobrecarregado ou não está rodando de forma adequada</p><p class="emphasise">Se o problema persistir, contate o administrador do sistema</p>',
     'dbconnecterror99_plain' => 'Erro: Falha na conexão com o Banco de Dados. É possível que esteja sobrecarregado ou não está rodando de forma adequada. Se o problema persistir, contate o administrador do sistema',
-);
+];

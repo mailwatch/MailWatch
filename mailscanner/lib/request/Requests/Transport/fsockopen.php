@@ -41,7 +41,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 	 * @param array $options Request options, see {@see Requests::response()} for documentation
 	 * @return string Raw HTTP result
 	 */
-	public function request($url, $headers = array(), $data = array(), $options = array()) {
+	public function request($url, $headers = [], $data = [], $options = []) {
 		$options['hooks']->dispatch('fsockopen.before_request');
 
 		$url_parts = parse_url($url);
@@ -54,11 +54,11 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 			$remote_socket = 'ssl://' . $host;
 			$url_parts['port'] = 443;
 
-			$context_options = array(
+			$context_options = [
 				'verify_peer' => true,
 				// 'CN_match' => $host,
 				'capture_peer_cert' => true
-			);
+			];
 			$verifyname = true;
 
 			// SNI, if enabled (OpenSSL >=0.9.8j)
@@ -81,7 +81,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 				$verifyname = false;
 			}
 
-			stream_context_set_option($context, array('ssl' => $context_options));
+			stream_context_set_option($context, ['ssl' => $context_options]);
 		}
 		else {
 			$remote_socket = 'tcp://' . $host;
@@ -95,9 +95,9 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 		}
 		$remote_socket .= ':' . $url_parts['port'];
 
-		set_error_handler(array($this, 'connect_error_handler'), E_WARNING | E_NOTICE);
+		set_error_handler([$this, 'connect_error_handler'], E_WARNING | E_NOTICE);
 
-		$options['hooks']->dispatch('fsockopen.remote_socket', array(&$remote_socket));
+		$options['hooks']->dispatch('fsockopen.remote_socket', [&$remote_socket]);
 
 		$fp = stream_socket_client($remote_socket, $errno, $errstr, $options['timeout'], STREAM_CLIENT_CONNECT, $context);
 
@@ -136,7 +136,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 					$path = '/';
 				}
 
-				$options['hooks']->dispatch( 'fsockopen.remote_host_path', array( &$path, $url ) );
+				$options['hooks']->dispatch( 'fsockopen.remote_host_path', [ &$path, $url ] );
 				$out = $options['type'] . " $path HTTP/1.0\r\n";
 
 				if (is_array($data)) {
@@ -156,7 +156,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 			case Requests::GET:
 			case Requests::DELETE:
 				$path = self::format_get($url_parts, $data);
-				$options['hooks']->dispatch('fsockopen.remote_host_path', array(&$path, $url));
+				$options['hooks']->dispatch('fsockopen.remote_host_path', [&$path, $url]);
 				$out = $options['type'] . " $path HTTP/1.0\r\n";
 				break;
 		}
@@ -179,7 +179,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 			$out .= implode($headers, "\r\n") . "\r\n";
 		}
 
-		$options['hooks']->dispatch('fsockopen.after_headers', array(&$out));
+		$options['hooks']->dispatch('fsockopen.after_headers', [&$out]);
 
 		if (substr($out, -2) !== "\r\n") {
 			$out .= "\r\n";
@@ -187,15 +187,15 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 
 		$out .= "Connection: Close\r\n\r\n" . $request_body;
 
-		$options['hooks']->dispatch('fsockopen.before_send', array(&$out));
+		$options['hooks']->dispatch('fsockopen.before_send', [&$out]);
 
 		fwrite($fp, $out);
-		$options['hooks']->dispatch('fsockopen.after_send', array(&$fake_headers));
+		$options['hooks']->dispatch('fsockopen.after_send', [&$fake_headers]);
 
 		if (!$options['blocking']) {
 			fclose($fp);
 			$fake_headers = '';
-			$options['hooks']->dispatch('fsockopen.after_request', array(&$fake_headers));
+			$options['hooks']->dispatch('fsockopen.after_request', [&$fake_headers]);
 			return '';
 		}
 		stream_set_timeout($fp, $options['timeout']);
@@ -241,7 +241,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 		}
 		fclose($fp);
 
-		$options['hooks']->dispatch('fsockopen.after_request', array(&$this->headers));
+		$options['hooks']->dispatch('fsockopen.after_request', [&$this->headers]);
 		return $this->headers;
 	}
 
@@ -253,21 +253,21 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 	 * @return array Array of Requests_Response objects (may contain Requests_Exception or string responses as well)
 	 */
 	public function request_multiple($requests, $options) {
-		$responses = array();
+		$responses = [];
 		$class = get_class($this);
 		foreach ($requests as $id => $request) {
 			try {
 				$handler = new $class();
 				$responses[$id] = $handler->request($request['url'], $request['headers'], $request['data'], $request['options']);
 
-				$request['options']['hooks']->dispatch('transport.internal.parse_response', array(&$responses[$id], $request));
+				$request['options']['hooks']->dispatch('transport.internal.parse_response', [&$responses[$id], $request]);
 			}
 			catch (Requests_Exception $e) {
 				$responses[$id] = $e;
 			}
 
 			if (!is_string($responses[$id])) {
-				$request['options']['hooks']->dispatch('multiple.request.complete', array(&$responses[$id], $id));
+				$request['options']['hooks']->dispatch('multiple.request.complete', [&$responses[$id], $id]);
 			}
 		}
 
@@ -280,7 +280,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 	 * @return string Accept-Encoding header value
 	 */
 	protected static function accept_encoding() {
-		$type = array();
+		$type = [];
 		if (function_exists('gzinflate')) {
 			$type[] = 'deflate;q=1.0';
 		}
@@ -376,7 +376,7 @@ class Requests_Transport_fsockopen implements Requests_Transport {
 	 * @codeCoverageIgnore
 	 * @return boolean True if the transport is valid, false otherwise.
 	 */
-	public static function test($capabilities = array()) {
+	public static function test($capabilities = []) {
 		if (!function_exists('fsockopen'))
 			return false;
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PEAR_Validate
  *
@@ -16,14 +17,15 @@
  * Constants for install stage
  */
 define('PEAR_VALIDATE_INSTALLING', 1);
-define('PEAR_VALIDATE_UNINSTALLING', 2); // this is not bit-mapped like the others
+define('PEAR_VALIDATE_UNINSTALLING', 2);
+// this is not bit-mapped like the others
 define('PEAR_VALIDATE_NORMAL', 3);
-define('PEAR_VALIDATE_DOWNLOADING', 4); // this is not bit-mapped like the others
+define('PEAR_VALIDATE_DOWNLOADING', 4);
+// this is not bit-mapped like the others
 define('PEAR_VALIDATE_PACKAGING', 7);
 /**#@-*/
 require_once 'PEAR/Common.php';
 require_once 'PEAR/Validator/PECL.php';
-
 /**
  * Validation class for package.xml - channel-level advanced validation
  * @category   pear
@@ -31,27 +33,27 @@ require_once 'PEAR/Validator/PECL.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
 class PEAR_Validate
 {
-    var $packageregex = _PEAR_COMMON_PACKAGE_NAME_PREG;
+    public $packageregex = _PEAR_COMMON_PACKAGE_NAME_PREG;
     /**
      * @var PEAR_PackageFile_v1|PEAR_PackageFile_v2
      */
-    var $_packagexml;
+    public $_packagexml;
     /**
      * @var int one of the PEAR_VALIDATE_* constants
      */
-    var $_state = PEAR_VALIDATE_NORMAL;
+    public $_state = PEAR_VALIDATE_NORMAL;
     /**
      * Format: ('error' => array('field' => name, 'reason' => reason), 'warning' => same)
      * @var array
      * @access private
      */
-    var $_failures = array('error' => array(), 'warning' => array());
+    public $_failures = ['error' => [], 'warning' => []];
 
     /**
      * Override this method to handle validation of normal package names
@@ -98,7 +100,7 @@ class PEAR_Validate
      */
     public static function validState($state)
     {
-        return in_array($state, array('snapshot', 'devel', 'alpha', 'beta', 'stable'));
+        return in_array($state, ['snapshot', 'devel', 'alpha', 'beta', 'stable']);
     }
 
     /**
@@ -108,7 +110,7 @@ class PEAR_Validate
      */
     public static function getValidStates()
     {
-        return array('snapshot', 'devel', 'alpha', 'beta', 'stable');
+        return ['snapshot', 'devel', 'alpha', 'beta', 'stable'];
     }
 
     /**
@@ -136,7 +138,7 @@ class PEAR_Validate
      */
     function _addFailure($field, $reason)
     {
-        $this->_failures['errors'][] = array('field' => $field, 'reason' => $reason);
+        $this->_failures['errors'][] = ['field' => $field, 'reason' => $reason];
     }
 
     /**
@@ -144,13 +146,13 @@ class PEAR_Validate
      */
     function _addWarning($field, $reason)
     {
-        $this->_failures['warnings'][] = array('field' => $field, 'reason' => $reason);
+        $this->_failures['warnings'][] = ['field' => $field, 'reason' => $reason];
     }
 
     function getFailures()
     {
         $failures = $this->_failures;
-        $this->_failures = array('warnings' => array(), 'errors' => array());
+        $this->_failures = ['warnings' => [], 'errors' => []];
         return $failures;
     }
 
@@ -165,7 +167,7 @@ class PEAR_Validate
         if ($state !== null) {
             $this->_state = $state;
         }
-        $this->_failures = array('warnings' => array(), 'errors' => array());
+        $this->_failures = ['warnings' => [], 'errors' => []];
         $this->validatePackageName();
         $this->validateVersion();
         $this->validateMaintainers();
@@ -209,7 +211,7 @@ class PEAR_Validate
                 }
                 $vlen = strlen($test);
                 $majver = substr($name, strlen($name) - $vlen);
-                while ($majver && !is_numeric($majver{0})) {
+                while ($majver && !is_numeric($majver[0])) {
                     $majver = substr($majver, 1);
                 }
                 if ($majver != $test) {
@@ -287,7 +289,7 @@ class PEAR_Validate
                 }
                 if (!$this->_packagexml->getExtends()) {
                     if ($versioncomponents[0] == '1') {
-                        if ($versioncomponents[2]{0} == '0') {
+                        if ($versioncomponents[2][0] == '0') {
                             if ($versioncomponents[2] == '0') {
                                 // version 1.*.0000
                                 $this->_addWarning('version',
@@ -328,7 +330,7 @@ class PEAR_Validate
                 } else {
                     $vlen = strlen($versioncomponents[0] . '');
                     $majver = substr($name, strlen($name) - $vlen);
-                    while ($majver && !is_numeric($majver{0})) {
+                    while ($majver && !is_numeric($majver[0])) {
                         $majver = substr($majver, 1);
                     }
                     if (($versioncomponents[0] != 0) && $majver != $versioncomponents[0]) {
@@ -339,7 +341,7 @@ class PEAR_Validate
                         return true;
                     }
                     if ($versioncomponents[0] == $majver) {
-                        if ($versioncomponents[2]{0} == '0') {
+                        if ($versioncomponents[2][0] == '0') {
                             if ($versioncomponents[2] == '0') {
                                 // version 2.*.0000
                                 $this->_addWarning('version',
@@ -398,7 +400,7 @@ class PEAR_Validate
                 if ($this->_packagexml->getExtends()) {
                     $vlen = strlen($versioncomponents[0] . '');
                     $majver = substr($name, strlen($name) - $vlen);
-                    while ($majver && !is_numeric($majver{0})) {
+                    while ($majver && !is_numeric($majver[0])) {
                         $majver = substr($majver, 1);
                     }
                     if (($versioncomponents[0] != 0) && $majver != $versioncomponents[0]) {

@@ -90,7 +90,7 @@ class Pager_HtmlWidgets
      * @return string xhtml select box
      * @access public
      */
-    public function getPerPageSelectBox($start = 5, $end = 30, $step = 5, $showAllData = false, $extraParams = array())
+    public function getPerPageSelectBox($start = 5, $end = 30, $step = 5, $showAllData = false, $extraParams = [])
     {
         // FIXME: needs POST support
         $optionText = '%d';
@@ -218,7 +218,7 @@ class Pager_HtmlWidgets
      * @return string xhtml select box
      * @access public
      */
-    public function getPageSelectBox($params = array(), $extraAttributes = '')
+    public function getPageSelectBox($params = [], $extraAttributes = '')
     {
         $optionText = '%d';
         if (array_key_exists('optionText', $params)) {

@@ -30,7 +30,7 @@ require_once 'PEAR/Validate.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.4.0a1
  */
@@ -41,39 +41,39 @@ class PEAR_Dependency2
      * @see PEAR_VALIDATE_NORMAL
      * @var integer
      */
-    var $_state;
+    public $_state;
 
     /**
      * Command-line options to install/upgrade/uninstall commands
      * @param array
      */
-    var $_options;
+    public $_options;
 
     /**
      * @var OS_Guess
      */
-    var $_os;
+    public $_os;
 
     /**
      * @var PEAR_Registry
      */
-    var $_registry;
+    public $_registry;
 
     /**
      * @var PEAR_Config
      */
-    var $_config;
+    public $_config;
 
     /**
      * @var PEAR_DependencyDB
      */
-    var $_dependencydb;
+    public $_dependencydb;
 
     /**
      * Output of PEAR_Registry::parsedPackageName()
      * @var array
      */
-    var $_currentPackage;
+    public $_currentPackage;
 
     /**
      * @param PEAR_Config
@@ -110,7 +110,7 @@ class PEAR_Dependency2
         $this->_currentPackage = $package;
     }
 
-    function _getExtraString($dep)
+    static function _getExtraString($dep)
     {
         $extra = ' (';
         if (isset($dep['uri'])) {
@@ -133,7 +133,7 @@ class PEAR_Dependency2
 
             if (isset($dep['exclude'])) {
                 if (!is_array($dep['exclude'])) {
-                    $dep['exclude'] = array($dep['exclude']);
+                    $dep['exclude'] = [$dep['exclude']];
                 }
 
                 if ($extra != ' (') {
@@ -212,7 +212,7 @@ class PEAR_Dependency2
                 }
             break;
             case 'unix' :
-                $unices = array('linux', 'freebsd', 'darwin', 'sunos', 'irix', 'hpux', 'aix');
+                $unices = ['linux', 'freebsd', 'darwin', 'sunos', 'irix', 'hpux', 'aix'];
                 if ($not) {
                     if (in_array($this->getSysname(), $unices)) {
                         if (!isset($this->_options['nodeps']) && !isset($this->_options['force'])) {
@@ -337,10 +337,10 @@ class PEAR_Dependency2
         }
 
         $loaded = $this->extension_loaded($dep['name']);
-        $extra  = $this->_getExtraString($dep);
+        $extra  = self::_getExtraString($dep);
         if (isset($dep['exclude'])) {
             if (!is_array($dep['exclude'])) {
-                $dep['exclude'] = array($dep['exclude']);
+                $dep['exclude'] = [$dep['exclude']];
             }
         }
 
@@ -486,10 +486,10 @@ class PEAR_Dependency2
         }
 
         $version = $this->phpversion();
-        $extra   = $this->_getExtraString($dep);
+        $extra   = self::_getExtraString($dep);
         if (isset($dep['exclude'])) {
             if (!is_array($dep['exclude'])) {
-                $dep['exclude'] = array($dep['exclude']);
+                $dep['exclude'] = [$dep['exclude']];
             }
         }
 
@@ -540,16 +540,16 @@ class PEAR_Dependency2
      */
     function getPEARVersion()
     {
-        return '1.10.1';
+        return '1.10.13';
     }
 
     function validatePearinstallerDependency($dep)
     {
         $pearversion = $this->getPEARVersion();
-        $extra = $this->_getExtraString($dep);
+        $extra = self::_getExtraString($dep);
         if (isset($dep['exclude'])) {
             if (!is_array($dep['exclude'])) {
-                $dep['exclude'] = array($dep['exclude']);
+                $dep['exclude'] = [$dep['exclude']];
             }
         }
 
@@ -577,7 +577,7 @@ class PEAR_Dependency2
 
         if (isset($dep['exclude'])) {
             if (!isset($dep['exclude'][0])) {
-                $dep['exclude'] = array($dep['exclude']);
+                $dep['exclude'] = [$dep['exclude']];
             }
 
             foreach ($dep['exclude'] as $exclude) {
@@ -650,16 +650,16 @@ class PEAR_Dependency2
         $found = false;
         foreach ($params as $param) {
             if ($param->isEqual(
-                  array('package' => $dep['name'],
-                        'channel' => $dep['channel']))) {
+                  ['package' => $dep['name'],
+                        'channel' => $dep['channel']])) {
                 $found = true;
                 break;
             }
 
             if ($depv1 && $dep['channel'] == 'pear.php.net') {
                 if ($param->isEqual(
-                  array('package' => $dep['name'],
-                        'channel' => 'pecl.php.net'))) {
+                  ['package' => $dep['name'],
+                        'channel' => 'pecl.php.net'])) {
                     $found = true;
                     break;
                 }
@@ -700,9 +700,9 @@ class PEAR_Dependency2
             }
         }
 
-        $extra = $this->_getExtraString($dep);
+        $extra = self::_getExtraString($dep);
         if (isset($dep['exclude']) && !is_array($dep['exclude'])) {
-            $dep['exclude'] = array($dep['exclude']);
+            $dep['exclude'] = [$dep['exclude']];
         }
 
         if (!isset($dep['min']) && !isset($dep['max']) &&
@@ -870,7 +870,7 @@ class PEAR_Dependency2
 
     function _validatePackageInstall($dep, $required, $depv1 = false)
     {
-        return $this->_validatePackageDownload($dep, $required, array(), $depv1);
+        return $this->_validatePackageDownload($dep, $required, [], $depv1);
     }
 
     /**
@@ -885,7 +885,7 @@ class PEAR_Dependency2
             return $this->_dependencydb;
         }
 
-        $params = array();
+        $params = [];
         // construct an array of "downloaded" packages to fool the package dependency checker
         // into using these to validate uninstalls of circular dependencies
         $downloaded = &$dl->getUninstallPackages();
@@ -932,13 +932,13 @@ class PEAR_Dependency2
         }
 
         // first, list the immediate parents of each package to be uninstalled
-        $perpackagelist = array();
-        $allparents = array();
+        $perpackagelist = [];
+        $allparents = [];
         foreach ($params as $i => $param) {
-            $a = array(
+            $a = [
                 'channel' => strtolower($param->getChannel()),
                 'package' => strtolower($param->getPackage())
-            );
+            ];
 
             $deps = $this->_dependencydb->getDependentPackages($a);
             if ($deps) {
@@ -948,19 +948,19 @@ class PEAR_Dependency2
                         if (strtolower($dep['dep']['channel']) == $a['channel'] &&
                               strtolower($dep['dep']['name']) == $a['package']) {
                             if (!isset($perpackagelist[$a['channel'] . '/' . $a['package']])) {
-                                $perpackagelist[$a['channel'] . '/' . $a['package']] = array();
+                                $perpackagelist[$a['channel'] . '/' . $a['package']] = [];
                             }
                             $perpackagelist[$a['channel'] . '/' . $a['package']][]
-                                = array($d['channel'] . '/' . $d['package'], $dep);
+                                = [$d['channel'] . '/' . $d['package'], $dep];
                             if (!isset($allparents[$d['channel'] . '/' . $d['package']])) {
-                                $allparents[$d['channel'] . '/' . $d['package']] = array();
+                                $allparents[$d['channel'] . '/' . $d['package']] = [];
                             }
                             if (!isset($allparents[$d['channel'] . '/' . $d['package']][$a['channel'] . '/' . $a['package']])) {
-                                $allparents[$d['channel'] . '/' . $d['package']][$a['channel'] . '/' . $a['package']] = array();
+                                $allparents[$d['channel'] . '/' . $d['package']][$a['channel'] . '/' . $a['package']] = [];
                             }
                             $allparents[$d['channel'] . '/' . $d['package']]
                                        [$a['channel'] . '/' . $a['package']][]
-                                = array($d, $dep);
+                                = [$d, $dep];
                         }
                     }
                 }
@@ -968,7 +968,7 @@ class PEAR_Dependency2
         }
 
         // next, remove any packages from the parents list that are not installed
-        $remove = array();
+        $remove = [];
         foreach ($allparents as $parent => $d1) {
             foreach ($d1 as $d) {
                 if ($this->_registry->packageExists($d[0][0]['package'], $d[0][0]['channel'])) {
@@ -995,7 +995,7 @@ class PEAR_Dependency2
 
         // remove all packages whose dependencies fail
         // save which ones failed for error reporting
-        $badchildren = array();
+        $badchildren = [];
         do {
             $fail = false;
             foreach ($remove as $package => $unused) {
@@ -1024,7 +1024,7 @@ class PEAR_Dependency2
         } while ($fail);
 
         // next, construct the list of packages that can't be uninstalled
-        $badpackages = array();
+        $badpackages = [];
         $save = $this->_currentPackage;
         foreach ($perpackagelist as $package => $packagedeps) {
             foreach ($packagedeps as $parent) {
@@ -1098,9 +1098,9 @@ class PEAR_Dependency2
             return true;
         }
 
-        $extra = $this->_getExtraString($dep);
+        $extra = self::_getExtraString($dep);
         if (isset($dep['exclude']) && !is_array($dep['exclude'])) {
-            $dep['exclude'] = array($dep['exclude']);
+            $dep['exclude'] = [$dep['exclude']];
         }
 
         if (isset($dep['conflicts'])) {
@@ -1160,7 +1160,7 @@ class PEAR_Dependency2
      * @param array $params full list of packages to install
      * @return true|PEAR_Error
      */
-    function validatePackage($pkg, &$dl, $params = array())
+    function validatePackage($pkg, &$dl, $params = [])
     {
         if (is_array($pkg) && isset($pkg['info'])) {
             $deps = $this->_dependencydb->getDependentPackageDependencies($pkg['info']);
@@ -1189,7 +1189,7 @@ class PEAR_Dependency2
                               $packd->getChannel() == $channel) {
                             $dl->log(3, 'skipping installed package check of "' .
                                         $this->_registry->parsedPackageNameToString(
-                                            array('channel' => $channel, 'package' => $package),
+                                            ['channel' => $channel, 'package' => $package],
                                             true) .
                                         '", version "' . $packd->getVersion() . '" will be ' .
                                         'downloaded and installed');
@@ -1199,10 +1199,10 @@ class PEAR_Dependency2
 
                     foreach ($ds as $d) {
                         $checker = new PEAR_Dependency2($this->_config, $this->_options,
-                            array('channel' => $channel, 'package' => $package), $this->_state);
+                            ['channel' => $channel, 'package' => $package], $this->_state);
                         $dep = $d['dep'];
                         $required = $d['type'] == 'required';
-                        $ret = $checker->_validatePackageDownload($dep, $required, array(&$dp));
+                        $ret = $checker->_validatePackageDownload($dep, $required, [&$dp]);
                         if (is_array($ret)) {
                             $dl->log(0, $ret[0]);
                         } elseif (PEAR::isError($ret)) {
@@ -1226,13 +1226,13 @@ class PEAR_Dependency2
     /**
      * validate a package.xml 1.0 dependency
      */
-    function validateDependency1($dep, $params = array())
+    function validateDependency1($dep, $params = [])
     {
         if (!isset($dep['optional'])) {
             $dep['optional'] = 'no';
         }
 
-        list($newdep, $type) = $this->normalizeDep($dep);
+        list($newdep, $type) = self::normalizeDep($dep);
         if (!$newdep) {
             return $this->raiseError("Invalid Dependency");
         }
@@ -1246,22 +1246,22 @@ class PEAR_Dependency2
     /**
      * Convert a 1.0 dep into a 2.0 dep
      */
-    function normalizeDep($dep)
+    static function normalizeDep($dep)
     {
-        $types = array(
+        $types = [
             'pkg' => 'Package',
             'ext' => 'Extension',
             'os' => 'Os',
             'php' => 'Php'
-        );
+        ];
 
         if (!isset($types[$dep['type']])) {
-            return array(false, false);
+            return [false, false];
         }
 
         $type = $types[$dep['type']];
 
-        $newdep = array();
+        $newdep = [];
         switch ($type) {
             case 'Package' :
                 $newdep['channel'] = 'pear.php.net';
@@ -1274,7 +1274,7 @@ class PEAR_Dependency2
         $dep['rel'] = PEAR_Dependency2::signOperator($dep['rel']);
         switch ($dep['rel']) {
             case 'has' :
-                return array($newdep, $type);
+                return [$newdep, $type];
             break;
             case 'not' :
                 $newdep['conflicts'] = true;
@@ -1313,7 +1313,7 @@ class PEAR_Dependency2
                 $newdep['max'] = '6.0.0';
             }
         }
-        return array($newdep, $type);
+        return [$newdep, $type];
     }
 
     /**
@@ -1325,7 +1325,7 @@ class PEAR_Dependency2
      * @param  string Operator
      * @return string Sign equivalent
      */
-    function signOperator($operator)
+    static function signOperator($operator)
     {
         switch($operator) {
             case 'lt': return '<';
@@ -1351,7 +1351,7 @@ class PEAR_Dependency2
 
     function warning($msg)
     {
-        return array(sprintf($msg, $this->_registry->parsedPackageNameToString(
-            $this->_currentPackage, true)));
+        return [sprintf($msg, $this->_registry->parsedPackageNameToString(
+            $this->_currentPackage, true))];
     }
 }

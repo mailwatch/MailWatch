@@ -28,69 +28,69 @@ require_once 'PEAR/Command/Common.php';
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 0.1
  */
 class PEAR_Command_Registry extends PEAR_Command_Common
 {
-    var $commands = array(
-        'list' => array(
+    public $commands = [
+        'list' => [
             'summary' => 'List Installed Packages In The Default Channel',
             'function' => 'doList',
             'shortcut' => 'l',
-            'options' => array(
-                'channel' => array(
+            'options' => [
+                'channel' => [
                     'shortopt' => 'c',
                     'doc' => 'list installed packages from this channel',
                     'arg' => 'CHAN',
-                    ),
-                'allchannels' => array(
+                    ],
+                'allchannels' => [
                     'shortopt' => 'a',
                     'doc' => 'list installed packages from all channels',
-                    ),
-                'channelinfo' => array(
+                    ],
+                'channelinfo' => [
                     'shortopt' => 'i',
                     'doc' => 'output fully channel-aware data, even on failure',
-                    ),
-                ),
+                    ],
+                ],
             'doc' => '<package>
 If invoked without parameters, this command lists the PEAR packages
 installed in your php_dir ({config php_dir}).  With a parameter, it
 lists the files in a package.
 ',
-            ),
-        'list-files' => array(
+            ],
+        'list-files' => [
             'summary' => 'List Files In Installed Package',
             'function' => 'doFileList',
             'shortcut' => 'fl',
-            'options' => array(),
+            'options' => [],
             'doc' => '<package>
 List the files in an installed package.
 '
-            ),
-        'shell-test' => array(
+            ],
+        'shell-test' => [
             'summary' => 'Shell Script Test',
             'function' => 'doShellTest',
             'shortcut' => 'st',
-            'options' => array(),
+            'options' => [],
             'doc' => '<package> [[relation] version]
 Tests if a package is installed in the system. Will exit(1) if it is not.
    <relation>   The version comparison operator. One of:
                 <, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne
    <version>    The version to compare with
-'),
-        'info' => array(
+'],
+        'info' => [
             'summary'  => 'Display information about a package',
             'function' => 'doInfo',
             'shortcut' => 'in',
-            'options'  => array(),
+            'options'  => [],
             'doc'      => '<package>
 Displays information about a package. The package argument may be a
 local package file, an URL to a package file, or the name of an
 installed package.'
-            )
-        );
+            ]
+        ];
 
     /**
      * PEAR_Command_Registry constructor.
@@ -114,14 +114,14 @@ installed package.'
         $reg = &$this->config->getRegistry();
         $channelinfo = isset($options['channelinfo']);
         if (isset($options['allchannels']) && !$channelinfo) {
-            return $this->doListAll($command, array(), $params);
+            return $this->doListAll($command, [], $params);
         }
 
         if (isset($options['allchannels']) && $channelinfo) {
             // allchannels with $channelinfo
             unset($options['allchannels']);
             $channels = $reg->getChannels();
-            $errors = array();
+            $errors = [];
             PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
             foreach ($channels as $channel) {
                 $options['channel'] = $channel->getName();
@@ -156,32 +156,32 @@ installed package.'
         }
 
         $installed = $reg->packageInfo(null, null, $channel);
-        usort($installed, array(&$this, '_sortinfo'));
+        usort($installed, [&$this, '_sortinfo']);
 
-        $data = array(
+        $data = [
             'caption' => 'Installed packages, channel ' .
                 $channel . ':',
             'border' => true,
-            'headline' => array('Package', 'Version', 'State'),
+            'headline' => ['Package', 'Version', 'State'],
             'channel' => $channel,
-            );
+            ];
         if ($channelinfo) {
-            $data['headline'] = array('Channel', 'Package', 'Version', 'State');
+            $data['headline'] = ['Channel', 'Package', 'Version', 'State'];
         }
 
         if (count($installed) && !isset($data['data'])) {
-            $data['data'] = array();
+            $data['data'] = [];
         }
 
         foreach ($installed as $package) {
             $pobj = $reg->getPackage(isset($package['package']) ?
                                         $package['package'] : $package['name'], $channel);
             if ($channelinfo) {
-                $packageinfo = array($pobj->getChannel(), $pobj->getPackage(), $pobj->getVersion(),
-                                    $pobj->getState() ? $pobj->getState() : null);
+                $packageinfo = [$pobj->getChannel(), $pobj->getPackage(), $pobj->getVersion(),
+                                    $pobj->getState() ?: null];
             } else {
-                $packageinfo = array($pobj->getPackage(), $pobj->getVersion(),
-                                    $pobj->getState() ? $pobj->getState() : null);
+                $packageinfo = [$pobj->getPackage(), $pobj->getVersion(),
+                                    $pobj->getState() ?: null];
             }
             $data['data'][] = $packageinfo;
         }
@@ -190,13 +190,13 @@ installed package.'
             if (!$channelinfo) {
                 $data = '(no packages installed from channel ' . $channel . ')';
             } else {
-                $data = array(
+                $data = [
                     'caption' => 'Installed packages, channel ' .
                         $channel . ':',
                     'border' => true,
                     'channel' => $channel,
-                    'data' => array(array('(no packages installed)')),
-                );
+                    'data' => [['(no packages installed)']],
+                ];
             }
         }
 
@@ -212,31 +212,31 @@ installed package.'
         $reg = &$this->config->getRegistry();
         $installed = $reg->packageInfo(null, null, null);
         foreach ($installed as $channel => $packages) {
-            usort($packages, array($this, '_sortinfo'));
-            $data = array(
+            usort($packages, [$this, '_sortinfo']);
+            $data = [
                 'caption'  => 'Installed packages, channel ' . $channel . ':',
                 'border'   => true,
-                'headline' => array('Package', 'Version', 'State'),
+                'headline' => ['Package', 'Version', 'State'],
                 'channel'  => $channel
-            );
+            ];
 
             foreach ($packages as $package) {
                 $p = isset($package['package']) ? $package['package'] : $package['name'];
                 $pobj = $reg->getPackage($p, $channel);
-                $data['data'][] = array($pobj->getPackage(), $pobj->getVersion(),
-                                        $pobj->getState() ? $pobj->getState() : null);
+                $data['data'][] = [$pobj->getPackage(), $pobj->getVersion(),
+                                        $pobj->getState() ?: null];
             }
 
             // Adds a blank line after each section
-            $data['data'][] = array();
+            $data['data'][] = [];
 
             if (count($packages) === 0) {
-                $data = array(
+                $data = [
                     'caption' => 'Installed packages, channel ' . $channel . ':',
                     'border' => true,
-                    'data' => array(array('(no packages installed)'), array()),
+                    'data' => [['(no packages installed)'], []],
                     'channel' => $channel
-                    );
+                    ];
             }
             $this->ui->outputData($data, $command);
         }
@@ -264,7 +264,7 @@ installed package.'
             PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
             $info = &$pkg->fromAnyFile($params[0], PEAR_VALIDATE_NORMAL);
             PEAR::staticPopErrorHandling();
-            $headings = array('Package File', 'Install Path');
+            $headings = ['Package File', 'Install Path'];
             $installed = false;
         } else {
             PEAR::staticPushErrorHandling(PEAR_ERROR_RETURN);
@@ -275,7 +275,7 @@ installed package.'
             }
 
             $info = &$reg->getPackage($parsed['package'], $parsed['channel']);
-            $headings = array('Type', 'Install Path');
+            $headings = ['Type', 'Install Path'];
             $installed = true;
         }
 
@@ -295,20 +295,20 @@ installed package.'
             $caption = 'Contents of ' . basename($params[0]);
         }
 
-        $data = array(
+        $data = [
             'caption' => $caption,
             'border' => true,
-            'headline' => $headings);
+            'headline' => $headings];
         if ($info->getPackagexmlVersion() == '1.0' || $installed) {
             foreach ($list as $file => $att) {
                 if ($installed) {
                     if (empty($att['installed_as'])) {
                         continue;
                     }
-                    $data['data'][] = array($att['role'], $att['installed_as']);
+                    $data['data'][] = [$att['role'], $att['installed_as']];
                 } else {
                     if (isset($att['baseinstalldir']) && !in_array($att['role'],
-                          array('test', 'data', 'doc'))) {
+                          ['test', 'data', 'doc'])) {
                         $dest = $att['baseinstalldir'] . DIRECTORY_SEPARATOR .
                             $file;
                     } else {
@@ -331,18 +331,18 @@ installed package.'
                                 $dest;
                     }
                     $ds2 = DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR;
-                    $dest = preg_replace(array('!\\\\+!', '!/!', "!$ds2+!"),
-                                                    array(DIRECTORY_SEPARATOR,
+                    $dest = preg_replace(['!\\\\+!', '!/!', "!$ds2+!"],
+                                                    [DIRECTORY_SEPARATOR,
                                                           DIRECTORY_SEPARATOR,
-                                                          DIRECTORY_SEPARATOR),
+                                                          DIRECTORY_SEPARATOR],
                                                     $dest);
                     $file = preg_replace('!/+!', '/', $file);
-                    $data['data'][] = array($file, $dest);
+                    $data['data'][] = [$file, $dest];
                 }
             }
         } else { // package.xml 2.0, not installed
             if (!isset($list['dir']['file'][0])) {
-                $list['dir']['file'] = array($list['dir']['file']);
+                $list['dir']['file'] = [$list['dir']['file']];
             }
 
             foreach ($list['dir']['file'] as $att) {
@@ -360,7 +360,7 @@ installed package.'
                         list(,, $dest) = $dest;
                     }
                 }
-                $data['data'][] = array($file, $dest);
+                $data['data'][] = [$file, $dest];
             }
         }
 
@@ -495,7 +495,7 @@ installed package.'
         }
 
         $keys = array_keys($info);
-        $longtext = array('description', 'summary');
+        $longtext = ['description', 'summary'];
         foreach ($keys as $key) {
             if (is_array($info[$key])) {
                 switch ($key) {
@@ -585,8 +585,9 @@ installed package.'
                     case 'configure_options' : {
                         foreach ($info[$key] as $i => $p) {
                             $info[$key][$i] = array_map(null, array_keys($p), array_values($p));
-                            $info[$key][$i] = array_map(create_function('$a',
-                                'return join(" = ",$a);'), $info[$key][$i]);
+                            $info[$key][$i] = array_map(
+                                function($a) { return join(" = ", $a); },
+                                $info[$key][$i]);
                             $info[$key][$i] = implode(', ', $info[$key][$i]);
                         }
                         $info[$key] = implode("\n", $info[$key]);
@@ -604,7 +605,7 @@ installed package.'
                 unset($info[$key]);
                 $info['Last Modified'] = $hdate;
             } elseif ($key == '_lastversion') {
-                $info['Previous Installed Version'] = $info[$key] ? $info[$key] : '- None -';
+                $info['Previous Installed Version'] = $info[$key] ?: '- None -';
                 unset($info[$key]);
             } else {
                 $info[$key] = trim($info[$key]);
@@ -615,12 +616,12 @@ installed package.'
         }
 
         $caption = 'About ' . $info['package'] . '-' . $info['version'];
-        $data = array(
+        $data = [
             'caption' => $caption,
-            'border' => true);
+            'border' => true];
         foreach ($info as $key => $value) {
             $key = ucwords(trim(str_replace('_', ' ', $key)));
-            $data['data'][] = array($key, $value);
+            $data['data'][] = [$key, $value];
         }
         $data['raw'] = $info;
 
@@ -635,9 +636,9 @@ installed package.'
         $reg = &$this->config->getRegistry();
         $caption = 'About ' . $obj->getChannel() . '/' .$obj->getPackage() . '-' .
             $obj->getVersion();
-        $data = array(
+        $data = [
             'caption' => $caption,
-            'border' => true);
+            'border' => true];
         switch ($obj->getPackageType()) {
             case 'php' :
                 $release = 'PEAR-style PHP-based Package';
@@ -665,22 +666,22 @@ installed package.'
             $extends .= ' (source package ' . $src['channel'] . '/' . $src['package'] . ')';
         }
 
-        $info = array(
+        $info = [
             'Release Type' => $release,
             'Name' => $extends,
             'Channel' => $obj->getChannel(),
             'Summary' => preg_replace('/  +/', ' ', $obj->getSummary()),
             'Description' => preg_replace('/  +/', ' ', $obj->getDescription()),
-            );
+            ];
         $info['Maintainers'] = '';
-        foreach (array('lead', 'developer', 'contributor', 'helper') as $role) {
+        foreach (['lead', 'developer', 'contributor', 'helper'] as $role) {
             $leads = $obj->{"get{$role}s"}();
             if (!$leads) {
                 continue;
             }
 
             if (isset($leads['active'])) {
-                $leads = array($leads);
+                $leads = [$leads];
             }
 
             foreach ($leads as $lead) {
@@ -717,7 +718,7 @@ installed package.'
         $info['Release Notes'] = $obj->getNotes();
         if ($compat = $obj->getCompatible()) {
             if (!isset($compat[0])) {
-                $compat = array($compat);
+                $compat = [$compat];
             }
 
             $info['Compatible with'] = '';
@@ -743,7 +744,7 @@ installed package.'
         $usesrole = $obj->getUsesrole();
         if ($usesrole) {
             if (!isset($usesrole[0])) {
-                $usesrole = array($usesrole);
+                $usesrole = [$usesrole];
             }
 
             foreach ($usesrole as $roledata) {
@@ -765,7 +766,7 @@ installed package.'
         $usestask = $obj->getUsestask();
         if ($usestask) {
             if (!isset($usestask[0])) {
-                $usestask = array($usestask);
+                $usestask = [$usestask];
             }
 
             foreach ($usestask as $taskdata) {
@@ -832,11 +833,11 @@ installed package.'
                 $deps['required']['pearinstaller']['exclude'];
         }
 
-        foreach (array('Package', 'Extension') as $type) {
+        foreach (['Package', 'Extension'] as $type) {
             $index = strtolower($type);
             if (isset($deps['required'][$index])) {
                 if (isset($deps['required'][$index]['name'])) {
-                    $deps['required'][$index] = array($deps['required'][$index]);
+                    $deps['required'][$index] = [$deps['required'][$index]];
                 }
 
                 foreach ($deps['required'][$index] as $package) {
@@ -908,7 +909,7 @@ installed package.'
 
         if (isset($deps['required']['os'])) {
             if (isset($deps['required']['os']['name'])) {
-                $dep['required']['os']['name'] = array($dep['required']['os']['name']);
+                $dep['required']['os']['name'] = [$dep['required']['os']['name']];
             }
 
             foreach ($dep['required']['os'] as $os) {
@@ -928,7 +929,7 @@ installed package.'
 
         if (isset($deps['required']['arch'])) {
             if (isset($deps['required']['arch']['pattern'])) {
-                $dep['required']['arch']['pattern'] = array($dep['required']['os']['pattern']);
+                $dep['required']['arch']['pattern'] = [$dep['required']['os']['pattern']];
             }
 
             foreach ($dep['required']['arch'] as $os) {
@@ -947,11 +948,11 @@ installed package.'
         }
 
         if (isset($deps['optional'])) {
-            foreach (array('Package', 'Extension') as $type) {
+            foreach (['Package', 'Extension'] as $type) {
                 $index = strtolower($type);
                 if (isset($deps['optional'][$index])) {
                     if (isset($deps['optional'][$index]['name'])) {
-                        $deps['optional'][$index] = array($deps['optional'][$index]);
+                        $deps['optional'][$index] = [$deps['optional'][$index]];
                     }
 
                     foreach ($deps['optional'][$index] as $package) {
@@ -1028,18 +1029,18 @@ installed package.'
 
         if (isset($deps['group'])) {
             if (!isset($deps['group'][0])) {
-                $deps['group'] = array($deps['group']);
+                $deps['group'] = [$deps['group']];
             }
 
             foreach ($deps['group'] as $group) {
                 $info['Dependency Group ' . $group['attribs']['name']] = $group['attribs']['hint'];
                 $groupindex = $group['attribs']['name'] . ' Contents';
                 $info[$groupindex] = '';
-                foreach (array('Package', 'Extension') as $type) {
+                foreach (['Package', 'Extension'] as $type) {
                     $index = strtolower($type);
                     if (isset($group[$index])) {
                         if (isset($group[$index]['name'])) {
-                            $group[$index] = array($group[$index]);
+                            $group[$index] = [$group[$index]];
                         }
 
                         foreach ($group[$index] as $package) {
@@ -1131,11 +1132,11 @@ installed package.'
             }
 
             $v = $obj->getLastInstalledVersion();
-            $info['Previous Installed Version'] = $v ? $v : '- None -';
+            $info['Previous Installed Version'] = $v ?: '- None -';
         }
 
         foreach ($info as $key => $value) {
-            $data['data'][] = array($key, $value);
+            $data['data'][] = [$key, $value];
         }
 
         $data['raw'] = $obj->getArray(); // no validation needed

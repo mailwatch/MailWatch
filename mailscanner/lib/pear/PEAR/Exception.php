@@ -88,7 +88,7 @@
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2009 The Authors
  * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
+ * @version    Release: 1.10.13
  * @link       http://pear.php.net/package/PEAR
  * @since      Class available since Release 1.3.3
  *
@@ -99,7 +99,7 @@ class PEAR_Exception extends Exception
     const OBSERVER_TRIGGER = -4;
     const OBSERVER_DIE = -8;
     protected $cause;
-    private static $_observers = array();
+    private static $_observers = [];
     private static $_uniqueid = 0;
     private $_trace;
 
@@ -133,7 +133,7 @@ class PEAR_Exception extends Exception
             $code = $p3;
             if (is_array($p2) && isset($p2['message'])) {
                 // fix potential problem of passing in a single warning
-                $p2 = array($p2);
+                $p2 = [$p2];
             }
             $this->cause = $p2;
         } else {
@@ -213,7 +213,7 @@ class PEAR_Exception extends Exception
      */
     public function getErrorData()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -233,10 +233,10 @@ class PEAR_Exception extends Exception
     public function getCauseMessage(&$causes)
     {
         $trace = $this->getTraceSafe();
-        $cause = array('class'   => get_class($this),
+        $cause = ['class'   => get_class($this),
                        'message' => $this->message,
                        'file' => 'unknown',
-                       'line' => 'unknown');
+                       'line' => 'unknown'];
         if (isset($trace[0])) {
             if (isset($trace[0]['file'])) {
                 $cause['file'] = $trace[0]['file'];
@@ -247,32 +247,32 @@ class PEAR_Exception extends Exception
         if ($this->cause instanceof PEAR_Exception) {
             $this->cause->getCauseMessage($causes);
         } elseif ($this->cause instanceof Exception) {
-            $causes[] = array('class'   => get_class($this->cause),
+            $causes[] = ['class'   => get_class($this->cause),
                               'message' => $this->cause->getMessage(),
                               'file' => $this->cause->getFile(),
-                              'line' => $this->cause->getLine());
+                              'line' => $this->cause->getLine()];
         } elseif (class_exists('PEAR_Error') && $this->cause instanceof PEAR_Error) {
-            $causes[] = array('class' => get_class($this->cause),
+            $causes[] = ['class' => get_class($this->cause),
                               'message' => $this->cause->getMessage(),
                               'file' => 'unknown',
-                              'line' => 'unknown');
+                              'line' => 'unknown'];
         } elseif (is_array($this->cause)) {
             foreach ($this->cause as $cause) {
                 if ($cause instanceof PEAR_Exception) {
                     $cause->getCauseMessage($causes);
                 } elseif ($cause instanceof Exception) {
-                    $causes[] = array('class'   => get_class($cause),
+                    $causes[] = ['class'   => get_class($cause),
                                    'message' => $cause->getMessage(),
                                    'file' => $cause->getFile(),
-                                   'line' => $cause->getLine());
+                                   'line' => $cause->getLine()];
                 } elseif (class_exists('PEAR_Error') && $cause instanceof PEAR_Error) {
-                    $causes[] = array('class' => get_class($cause),
+                    $causes[] = ['class' => get_class($cause),
                                       'message' => $cause->getMessage(),
                                       'file' => 'unknown',
-                                      'line' => 'unknown');
+                                      'line' => 'unknown'];
                 } elseif (is_array($cause) && isset($cause['message'])) {
                     // PEAR_ErrorStack warning
-                    $causes[] = array(
+                    $causes[] = [
                         'class' => $cause['package'],
                         'message' => $cause['message'],
                         'file' => isset($cause['context']['file']) ?
@@ -281,7 +281,7 @@ class PEAR_Exception extends Exception
                         'line' => isset($cause['context']['line']) ?
                                             $cause['context']['line'] :
                                             'unknown',
-                    );
+                    ];
                 }
             }
         }
@@ -293,7 +293,7 @@ class PEAR_Exception extends Exception
             $this->_trace = $this->getTrace();
             if (empty($this->_trace)) {
                 $backtrace = debug_backtrace();
-                $this->_trace = array($backtrace[count($backtrace)-1]);
+                $this->_trace = [$backtrace[count($backtrace)-1]];
             }
         }
         return $this->_trace;
@@ -322,7 +322,7 @@ class PEAR_Exception extends Exception
     public function toHtml()
     {
         $trace = $this->getTraceSafe();
-        $causes = array();
+        $causes = [];
         $this->getCauseMessage($causes);
         $html =  '<table style="border: 1px" cellspacing="0">' . "\n";
         foreach ($causes as $i => $cause) {
@@ -344,7 +344,7 @@ class PEAR_Exception extends Exception
                 $html .= $v['class'] . $v['type'];
             }
             $html .= $v['function'];
-            $args = array();
+            $args = [];
             if (!empty($v['args'])) {
                 foreach ($v['args'] as $arg) {
                     if (is_null($arg)) $args[] = 'null';
@@ -375,7 +375,7 @@ class PEAR_Exception extends Exception
 
     public function toText()
     {
-        $causes = array();
+        $causes = [];
         $this->getCauseMessage($causes);
         $causeMsg = '';
         foreach ($causes as $i => $cause) {

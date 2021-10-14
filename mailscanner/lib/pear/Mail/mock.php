@@ -58,7 +58,7 @@ class Mail_mock extends Mail {
      *
      * @var array
      */
-    public $sentMessages = array();
+    public $sentMessages = [];
 
     /**
      * Callback before sending mail.
@@ -125,15 +125,15 @@ class Mail_mock extends Mail {
     {
         if ($this->_preSendCallback) {
             call_user_func_array($this->_preSendCallback,
-                                 array(&$this, $recipients, $headers, $body));
+                                 [&$this, $recipients, $headers, $body]);
         }
 
-        $entry = array('recipients' => $recipients, 'headers' => $headers, 'body' => $body);
+        $entry = ['recipients' => $recipients, 'headers' => $headers, 'body' => $body];
         $this->sentMessages[] = $entry;
 
         if ($this->_postSendCallback) {
             call_user_func_array($this->_postSendCallback,
-                                 array(&$this, $recipients, $headers, $body));
+                                 [&$this, $recipients, $headers, $body]);
         }
 
         return true;
