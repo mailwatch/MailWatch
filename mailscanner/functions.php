@@ -205,6 +205,7 @@ function getVirusRegex($scanner = null)
             $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
             break;
         case 'f-secure':
+        case 'f-secure-12':
             $regex = '/(?P<file>.+) Infected: (?P<virus>\S+)/';
             break;
         case 'avg':
@@ -228,7 +229,11 @@ function getVirusRegex($scanner = null)
             $regex = '/ALERT: \[(?P<virus>\S+) \S+\]/';
             break;
         case 'avast':
-            $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)';
+            $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)/';
+            break;
+        case 'esets':
+        case 'esetsefs':
+            $regex = '/Esets: found (?P<virus>\S+) in (?P<file>\S+)/';
             break;
         //default:
         // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
