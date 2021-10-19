@@ -251,7 +251,7 @@ function getVirusRegex($scanner = null)
  */
 function mailwatch_version()
 {
-    return '1.2.17';
+    return '1.2.18';
 }
 
 /**
@@ -405,7 +405,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<td align="center" valign="top">' . "\n";
     printTodayStatistics();
     echo '  </td>' . "\n";
-    
+
     echo ' </tr>' . "\n";
 
     printNavBar();
@@ -2996,7 +2996,7 @@ function ldap_authenticate($username, $password)
                             break;
                         }
                     }
-                    
+
                     if (!isset($email)) {
                         //user has no mail but it is required for mailwatch
                         return null;
@@ -4954,7 +4954,7 @@ function getHTTPClientIP()
         if (defined('PROXY_HEADER') && (! isset($_SERVER[PROXY_HEADER]) || empty($_SERVER[PROXY_HEADER]))) {
             return $remote_addr;
         }
-        
+
         //check if remote_addr is a trusted proxy:
         if (! in_array($remote_addr, TRUSTED_PROXIES)) {
             return $remote_addr;

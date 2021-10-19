@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.18
 ### Improvements
 - Add DB_PORT config value to specify a non-standard MySQL server port (#1213)
 - Add new config flag to permit IMAP login without full email as username (#1211)
