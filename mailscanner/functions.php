@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+ * Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -205,6 +205,7 @@ function getVirusRegex($scanner = null)
             $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
             break;
         case 'f-secure':
+        case 'f-secure-12':
             $regex = '/(?P<file>.+) Infected: (?P<virus>\S+)/';
             break;
         case 'avg':
@@ -228,7 +229,11 @@ function getVirusRegex($scanner = null)
             $regex = '/ALERT: \[(?P<virus>\S+) \S+\]/';
             break;
         case 'avast':
-            $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)';
+            $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)/';
+            break;
+        case 'esets':
+        case 'esetsefs':
+            $regex = '/Esets: found (?P<virus>\S+) in (?P<file>\S+)/';
             break;
         //default:
         // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
