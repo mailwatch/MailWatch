@@ -4,7 +4,7 @@
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
- * Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+ * Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -39,6 +39,9 @@ require $pathToFunctions;
 
 // Set-up environment
 set_time_limit(0);
+// Limit to how long a queue id remains in queue before dropping
+define('QUEUETIMEOUT', '300');
+define('QUERYTIMEOUT', '60');
 
 function doit($input)
 {
@@ -64,6 +67,7 @@ function doit($input)
 function follow($file)
 {
     $size = filesize($file);
+    $idqueue = [];
     while (true) {
         clearstatcache();
         $currentSize = filesize($file);
@@ -80,18 +84,53 @@ function follow($file)
 
         while ($line = fgets($fh)) {
             if (preg_match('/^.*postfix\/cleanup.*: (\S+): message-id=(\S+)$/', $line, $explode)) {
-                $smtp_id = safe_value($explode[1]);
-                $message_id = safe_value($explode[2]);
-                $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
-                $smtpd_id = $result->fetch_row()[0];
-                if ($smtpd_id === null) {
-                    // Add a delay to prevent race condition between mailwatch logger and maillog
-                    sleep(10);
-                    $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
-                    $smtpd_id = $result->fetch_row()[0];
+                // Add to queue and timestamp it
+                array_push($explode, time());
+                array_push($idqueue, $explode);
+            } elseif (preg_match('/^.*postfix\/cleanup.*: (\S+): milter/', $line, $id)) {
+                // Search queue for id
+                for ($i = 0; $i < count($idqueue); $i++) {
+                    if (time() > $idqueue[$i][3] + QUEUETIMEOUT) {
+                        // Drop expired entry from queue
+                        array_splice($idqueue, $i, 1);
+                        continue;
+                    }
+                    $smtp_id = safe_value($idqueue[$i][1]);
+                    $smtp_id2 = safe_value($id[1]);
+                    if ($smtp_id === $smtp_id2) {
+                        // Drop id from array (milter connection)
+                        array_splice($idqueue, $i, 1);
+                        break;
+                    }
                 }
-                if ($smtpd_id !== null && $smtpd_id !== $smtp_id) {
-                    dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+            } elseif (preg_match('/^.*postfix\/qmgr.*: (\S+): removed$/', $line, $id)) {
+                // Search queue for id
+                for ($i = 0; $i < count($idqueue); $i++) {
+                    if (time() > $idqueue[$i][3] + QUEUETIMEOUT) {
+                        // Drop expired entry from queue
+                        array_splice($idqueue, $i, 1);
+                        continue;
+                    }
+                    $smtp_id = safe_value($idqueue[$i][1]);
+                    $smtp_id2 = safe_value($id[1]);
+                    if ($smtp_id === $smtp_id2) {
+                        $message_id = safe_value($idqueue[$i][2]);
+                        for ($j = 0; $j < QUERYTIMEOUT; $j++) {
+                            $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
+                            $smtpd_id = $result->fetch_row()[0];
+                            if ($smtpd_id === null) {
+                                // Add a small delay to prevent race condition between mailwatch logger db and maillog
+                                sleep(1);
+                            } else {
+                                break;
+                            }
+                        }
+                        if ($smtpd_id !== null && $smtpd_id !== $smtp_id) {
+                            dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+                            array_splice($idqueue, $i, 1);
+                            break;
+                        }
+                    }
                 }
             }
         }
