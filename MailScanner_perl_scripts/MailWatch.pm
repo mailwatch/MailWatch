@@ -2,11 +2,11 @@
 # MailWatch for MailScanner
 # Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
-# Copyright (C) 2014-2020  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+# Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
 #   Custom Module MailWatch
 #
-#   Version 1.5
+#   Version 1.6
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -85,8 +85,9 @@ sub InitMailWatchLogging {
                 $SIG{HUP} = $SIG{INT} = $SIG{PIPE} = $SIG{TERM} = $SIG{ALRM} = \&ExitLogging;
                 alarm $timeout;
                 $0 = "MailWatch SQL";
-                InitConnection();
-                ListenForMessages();
+
+                # Listen for messages unless connection can't be initialized
+                ListenForMessages() unless InitConnection() == 1;
             }
         exit;
         }
@@ -94,19 +95,25 @@ sub InitMailWatchLogging {
 }
 
 sub CheckSQLVersion {
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-    );
-    if (!$dbh) {
+    # Prevent Logger from dying if connection fails
+    eval {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+    };
+    if ($@ || !$dbh) {
         MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        close(SERVER);
+        return 1;
     }
     $SQLversion = $dbh->{mysql_serverversion};
     $dbh->disconnect;
-    return $SQLversion
+    return $SQLversion;
+
 }
 
-sub InitConnection {
+sub BindPort {
     # Set up TCP/IP socket.  We will start one server per MailScanner
     # child, but only one child will actually be able to get the socket.
     # The rest will die silently.  When one of the MailScanner children
@@ -115,32 +122,72 @@ sub InitConnection {
     socket(SERVER, PF_INET, SOCK_STREAM, getprotobyname("tcp"));
     setsockopt(SERVER, SOL_SOCKET, SO_REUSEADDR, 1);
     my $addr = sockaddr_in($server_port, $loop);
-    bind(SERVER, $addr) or exit;
-    listen(SERVER, SOMAXCONN) or exit;
+    bind(SERVER, $addr) or return 1;
 
+    return 0;
+}
+
+sub ListenPort {
+    # Start listening
+    listen(SERVER, SOMAXCONN) or return 1;
+
+    return 0;
+}
+
+sub InitDB {
     # Our reason for existence - the persistent connection to the database
+    my $version = CheckSQLVersion();
+
+    if ($version == 1) {
+       return 1;
+    }
+
     if (CheckSQLVersion() >= 50503 ) {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        eval { $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
         );
-        if (!$dbh) {
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            return 1;
         }
         $dbh->do('SET NAMES utf8mb4');
     } else {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+        eval { $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
             $db_user, $db_pass,
             { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
         );
-        if (!$dbh) {
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            return 1;
         }
         $dbh->do('SET NAMES utf8');
     }
-
-    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or
+    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    if (!$sth) {
         MailScanner::Log::WarnLog("MailWatch: Error: %s", $DBI::errstr);
+        return 1;
+    }
+
+    return 0;
+}
+
+sub InitConnection {
+    # Fail to bind, we'll just exit, port in use
+    if (BindPort() == 1) { return 1; }
+    if (InitDB() == 1) {
+        # We are bound, but couldn't connect to DB, so close it all down
+        close(SERVER);
+        return 1;
+    }
+    if (ListenPort() == 1) {
+        # We are bound, connected to DB but can't listen, so close it all down
+        close(SERVER);
+        return 1;
+    }
+    return 0;
 }
 
 sub ExitLogging {
@@ -182,54 +229,70 @@ sub ListenForMessages {
 
         next unless defined $$message{id};
 
-        # Check to make sure DB connection is still valid
-        InitConnection unless $dbh->ping;
+        # Set up a loop to prevent loss of logging, up to $timeout
+        # Prevents loss of logging to database due to temporary failure
+        while(1) {
 
-        # Log message
-        $sth->execute(
-            $$message{timestamp},
-            $$message{id},
-            $$message{size},
-            $$message{from},
-            $$message{from_domain},
-            $$message{to},
-            $$message{to_domain},
-            $$message{subject},
-            $$message{clientip},
-            $$message{archiveplaces},
-            $$message{isspam},
-            $$message{ishigh},
-            $$message{issaspam},
-            $$message{isrblspam},
-            $$message{spamwhitelisted},
-            $$message{spamblacklisted},
-            $$message{sascore},
-            $$message{spamreport},
-            $$message{virusinfected},
-            $$message{nameinfected},
-            $$message{otherinfected},
-            $$message{reports},
-            $$message{ismcp},
-            $$message{ishighmcp},
-            $$message{issamcp},
-            $$message{mcpwhitelisted},
-            $$message{mcpblacklisted},
-            $$message{mcpsascore},
-            $$message{mcpreport},
-            $$message{hostname},
-            $$message{date},
-            $$message{"time"},
-            $$message{headers},
-            $$message{quarantined},
-            $$message{rblspamreport},
-            $$message{token},
-            $$message{messageid});
+            # Log message
+            eval {$sth->execute(
+                $$message{timestamp},
+                $$message{id},
+                $$message{size},
+                $$message{from},
+                $$message{from_domain},
+                $$message{to},
+                $$message{to_domain},
+                $$message{subject},
+                $$message{clientip},
+                $$message{archiveplaces},
+                $$message{isspam},
+                $$message{ishigh},
+                $$message{issaspam},
+                $$message{isrblspam},
+                $$message{spamwhitelisted},
+                $$message{spamblacklisted},
+                $$message{sascore},
+                $$message{spamreport},
+                $$message{virusinfected},
+                $$message{nameinfected},
+                $$message{otherinfected},
+                $$message{reports},
+                $$message{ismcp},
+                $$message{ishighmcp},
+                $$message{issamcp},
+                $$message{mcpwhitelisted},
+                $$message{mcpblacklisted},
+                $$message{mcpsascore},
+                $$message{mcpreport},
+                $$message{hostname},
+                $$message{date},
+                $$message{"time"},
+                $$message{headers},
+                $$message{quarantined},
+                $$message{rblspamreport},
+                $$message{token},
+                $$message{messageid});
+            };
 
-        # This doesn't work in the event we have no connection by now ?
-        if (!$sth) {
-            MailScanner::Log::WarnLog("MailWatch: $$message{id}: MailWatch SQL Cannot insert row: %s", $sth->errstr);
-        } else {
-            MailScanner::Log::InfoLog("MailWatch: $$message{id}: Logged to MailWatch SQL");
+            # Something went wrong
+            if ($@ || !$sth) {
+                MailScanner::Log::WarnLog("MailWatch: $$message{id}: MailWatch SQL Cannot insert row: %s", $sth->errstr);
+                close(SERVER);
+                # Bind the port so another instance can't spawn
+                if (BindPort() == 1) {
+                    # Can't bind, unexpected, bail out
+                    last;
+                }
+                while(InitDB() == 1) { sleep(2); };
+                # Start listening once all is well
+                if (ListenPort() == 1) {
+                    # Can't listen, unexpected, bail out
+                    last;
+                }
+            } else {
+                MailScanner::Log::InfoLog("MailWatch: $$message{id}: Logged to MailWatch SQL");
+                last;
+            }
         }
 
         # Unset
