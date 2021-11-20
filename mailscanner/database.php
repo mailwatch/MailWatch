@@ -47,8 +47,7 @@ class database
             try {
                 $driver = new mysqli_driver();
                 $driver->report_mode = MYSQLI_REPORT_ALL;
-                set_error_handler(function () {
-                });
+                set_error_handler(static function ($errno, $errstr, $errfile, $errline, $errcontext = []) {});
                 self::$link = new mysqli($host, $username, $password, $database, $port);
                 restore_error_handler();
                 self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
