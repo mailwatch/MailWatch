@@ -79,6 +79,8 @@ class SendmailLogProcessor extends MtaLogProcessor
                 ];
             }
         }
+
+        return [];
     }
 
     public function extractKeyValuePairs($match)
