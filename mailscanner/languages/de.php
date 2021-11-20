@@ -744,22 +744,22 @@ return [
     'toprecipdomqt40' => 'Top Empfänger Domänen nach Anzahl',
     'top10recipdomqt40' => 'Top 10 Empfänger Domänen nach Anzahl',
     'domain40' => 'Domäne',
-  
+
     // 41-rep_top_recipient_domains_by_volume.php
     'toprecipdomvol41' => 'Top Empfänger Domänen nach Größe',
     'top10recipdomvol41' => 'Top 10 Empfänger Domänen nach Größe',
     'domain41' => 'Domäne',
-  
+
     // 42-rep_top_recipients_by_quantity.php
     'toprecipqt42' => 'Top Empfänger nach Anzahl',
     'top10recipqt42' => 'Top 10 Empfänger nach Anzahl',
     'email42' => 'E-Mail-Adresse',
-  
+
     // 43-rep_top_recipients_by_volume.php
     'toprecipvol43' => 'Top Empfänger nach Größe',
     'top10recipvol43' => 'Top 10 Empfänger nach Größe',
     'email43' => 'E-Mail-Adresse',
-  
+
     // 44-rep_top_sender_domains_by_quantity.php
     'topsenderdomqt44' => 'Top Absender-Domänen nach Anzahl',
     'top10senderdomqt44' => 'Top 10 Absender-Domänen nach Anzahl',
@@ -774,12 +774,12 @@ return [
     'topsendersqt46' => 'Top Absender nach Anzahl',
     'top10sendersqt46' => 'Top 10 Absender nach Anzahl',
     'email46' => 'E-Mail-Adresse',
-  
+
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Top Absender nach Größe',
     'top10sendersvol47' => 'Top 10 Absender nach Größe',
     'email47' => 'E-Mail-Adresse',
-  
+
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viren',
     'top10virus48' => 'Top 10 Viren',
@@ -1011,5 +1011,5 @@ return [
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
     'dbconnecterror99' => '<p>Fehler: Datenbankverbindung fehlgeschlagen</p><p>Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt.</p><p class="emphasise">Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht</p>',
-    'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht'
+    'dbconnecterror99_plain' => 'Fehler: Datenbankverbindung fehlgeschlagen. Die Datenbank ist möglicherweise überlastet oder funktioniert aus einem anderen Grund nicht korrekt. Kontaktieren Sie den Systemadministrator wenn das Problem weiterhin besteht',
 ];

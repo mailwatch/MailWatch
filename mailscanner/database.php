@@ -27,7 +27,7 @@
 
 class database
 {
-    /** @var mysqli $link */
+    /** @var mysqli */
     public static $link;
 
     private function __construct()
@@ -39,6 +39,7 @@ class database
      * @param string $username
      * @param string $password
      * @param string $database
+     *
      * @return mysqli
      */
     public static function connect($host = '', $username = '', $password = '', $database = '', $port = 3306)
@@ -47,7 +48,8 @@ class database
             try {
                 $driver = new mysqli_driver();
                 $driver->report_mode = MYSQLI_REPORT_ALL;
-                set_error_handler(static function ($errno, $errstr, $errfile, $errline, $errcontext = []) {});
+                set_error_handler(static function ($errno, $errstr, $errfile, $errline, $errcontext = []) {
+                });
                 self::$link = new mysqli($host, $username, $password, $database, $port);
                 restore_error_handler();
                 self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
@@ -89,9 +91,10 @@ class database
                 } else {
                     $output = __('dbconnecterror99_plain') . PHP_EOL;
                 }
-                die($output);
+                exit($output);
             }
         }
+
         return self::$link;
     }
 
@@ -105,13 +108,14 @@ class database
             $result = self::$link->close();
             self::$link = null;
         }
+
         return $result;
     }
 
     /**
-     * @param mysqli_result $result
-     * @param int $row
+     * @param int        $row
      * @param int|string $col
+     *
      * @return bool|mixed
      */
     public static function mysqli_result(mysqli_result $result, $row = 0, $col = 0)
@@ -124,6 +128,7 @@ class database
                 return $resrow[$col];
             }
         }
+
         return false;
     }
 }

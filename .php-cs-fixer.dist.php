@@ -1,8 +1,9 @@
 <?php
 
 $finder = (new PhpCsFixer\Finder())
-    ->in(['mailscanner'])
-    ->exclude(['lib'])
+    ->in('mailscanner')->exclude('lib')
+    ->in('tools')
+
 ;
 
 return (new PhpCsFixer\Config())

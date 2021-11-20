@@ -45,7 +45,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     </tr>';
 } else {
     if (!$fp = popen('sudo ' . MS_EXECUTABLE_PATH . ' --lint 2>&1', 'r')) {
-        die(__('diepipe28'));
+        exit(__('diepipe28'));
     }
 
     audit_log(__('auditlog28', true));
@@ -55,7 +55,7 @@ if (!defined('MS_EXECUTABLE_PATH')) {
     $last = false;
     while ($line = fgets($fp, 2096)) {
         $line = preg_replace("/\n/i", '', $line);
-        if ($line !== '' && $line !== ' ') {
+        if ('' !== $line && ' ' !== $line) {
             $timer = get_microtime();
             $linet = $timer - $start;
             if (!$last) {

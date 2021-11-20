@@ -770,7 +770,7 @@ return [
     'topsendersvol47' => 'トップの送付先別名',
     'top10sendersvol47' => '「ボリューム別上位10名」',
     'email47' => 'E-mailアドレス',
-    
+
     // 48-rep_top_viruses.php
     'topvirus48' => 'トップウイルス',
     'top10virus48' => '「トップ10ウィルス」',

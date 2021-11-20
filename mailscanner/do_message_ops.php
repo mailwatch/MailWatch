@@ -34,11 +34,11 @@ $refresh = html_start(__('opresult21'));
 
 if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
     header('Location: login.php?error=pagetimeout');
-    die();
+    exit();
 }
 if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
     header('Location: login.php?error=pagetimeout');
-    die();
+    exit();
 }
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
@@ -59,13 +59,13 @@ if (isset($_POST) && !empty($_POST)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {
-                die();
+                exit();
             }
         } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {
-                die();
+                exit();
             }
         } else {
             continue;
@@ -99,7 +99,7 @@ if (isset($_POST) && !empty($_POST)) {
                 $num = 0;
                 $itemnum = [$num];
                 echo '<td>';
-                if ($type === 'release') {
+                if ('release' === $type) {
                     $quarantined = quarantine_list_items($id, RPC_ONLY);
                     if (is_array($quarantined)) {
                         $to = $quarantined[0]['to'];

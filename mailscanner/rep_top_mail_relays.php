@@ -62,14 +62,14 @@ $graphgenerator->tableColumns = [
     'countconv' => __('messages39'),
     'total_virusesconv' => __('viruses39'),
     'total_spamconv' => __('spam39'),
-    'sizeconv'=> __('volume39'),
+    'sizeconv' => __('volume39'),
 ];
 $graphgenerator->sqlColumns = [
     'clientip',
     'count',
     'total_viruses',
     'total_spam',
-    'size'
+    'size',
 ];
 $graphgenerator->valueConversion = [
     'clientip' => 'hostnamegeoip',

@@ -69,7 +69,7 @@ AND
 ";
 
     /**
-     * @return boolean|string true if requirements are met; else missing requirements as string
+     * @return bool|string true if requirements are met; else missing requirements as string
      */
     public static function check_quarantine_report_requirements()
     {
@@ -87,7 +87,7 @@ AND
             'TIME_ZONE',
             'DATE_FORMAT',
             'TIME_FORMAT',
-            'QUARANTINE_FILTERS_COMBINED'
+            'QUARANTINE_FILTERS_COMBINED',
         ];
         $required_constant_missing = '';
         foreach ($required_constant as $constant) {
@@ -95,7 +95,7 @@ AND
                 $required_constant_missing .= sprintf(__('message61'), $constant) . "\n";
             }
         }
-        if ($required_constant_missing === '') {
+        if ('' === $required_constant_missing) {
             return true;
         }
 
@@ -162,7 +162,7 @@ AND
 </table>';
     }
 
-    private static function get_report_sql($useToFilter=true)
+    private static function get_report_sql($useToFilter = true)
     {
         $report_sql = "
 SELECT DISTINCT
@@ -193,9 +193,9 @@ FROM
  maillog a
 WHERE
  a.quarantined = 1
-" . ($useToFilter ? 'AND ((to_address RLIKE %s) OR (to_domain =%s)) ' : '') . "
+" . ($useToFilter ? 'AND ((to_address RLIKE %s) OR (to_domain =%s)) ' : '') . '
 AND
- a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL " . QUARANTINE_REPORT_DAYS . ' DAY)';
+ a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . QUARANTINE_REPORT_DAYS . ' DAY)';
 
         // Hide high spam/mcp from users if enabled
         if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
@@ -244,15 +244,15 @@ ORDER BY a.date DESC, a.time DESC';
         return $report_sql;
     }
 
-
     /**
-     * @param array $usersForReport array containing users for which the reports should be send; if empty reports are send for all users
-     * @param bool $sendEmptyReports
+     * @param array $usersForReport   array containing users for which the reports should be send; if empty reports are send for all users
+     * @param bool  $sendEmptyReports
+     *
      * @return false|int|array returns false if requirements not met, -2 in no rows else an associative array counting successfull and failed reports for users
      */
     public function send_quarantine_reports($usersForReport = [], $sendEmptyReports = false)
     {
-        if (self::check_quarantine_report_requirements() !== true) {
+        if (true !== self::check_quarantine_report_requirements()) {
             return false;
         }
         if (PHP_SAPI === 'cli') {
@@ -319,12 +319,12 @@ ORDER BY a.date DESC, a.time DESC';
                 // Make sure we have a destination address
                 if (!empty($email) && false !== $email) {
                     $sendResult = self::send_reports_for_user($user->username, $user->type, $email, $to_address, $to_domain, $sendEmptyReports);
-                    if ($sendResult === 0) {
-                        $num_empty_reports++;
+                    if (0 === $sendResult) {
+                        ++$num_empty_reports;
                     } elseif ($sendResult) {
-                        $num_successfull_reports++;
+                        ++$num_successfull_reports;
                     } else {
-                        $num_failed_reports++;
+                        ++$num_failed_reports;
                     }
                 } else {
                     self::dbg(' ==== ' . $user->username . ' has empty e-mail recipient address, skipping...');
@@ -337,7 +337,7 @@ ORDER BY a.date DESC, a.time DESC';
         return [
             'succ' => $num_successfull_reports,
             'failed' => $num_failed_reports,
-            'empty' => $num_empty_reports
+            'empty' => $num_empty_reports,
         ];
     }
 
@@ -347,7 +347,8 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $email
      * @param string $to_address
      * @param string $to_domain
-     * @param bool $sendEmptyReports
+     * @param bool   $sendEmptyReports
+     *
      * @return true if all reports were send successfully; false if one or more reports could not be send
      */
     private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain, $sendEmptyReports = false)
@@ -358,10 +359,10 @@ ORDER BY a.date DESC, a.time DESC';
         if (QUARANTINE_FILTERS_COMBINED === false) {
             $sendResult = false;
             foreach ($filters as $filter) {
-                if ($type === 'D') {
+                if ('D' === $type) {
                     $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
                     $list_for = $filter_domain;
-                } elseif ($type === 'A') {
+                } elseif ('A' === $type) {
                     $filter_domain = '';
                     $filter = '';
                     $list_for = '';
@@ -386,10 +387,10 @@ ORDER BY a.date DESC, a.time DESC';
             $quarantined = [];
 
             foreach ($filters as $filter) {
-                if ($type === 'D') {
+                if ('D' === $type) {
                     $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
                     $list_for = $filter_domain;
-                } elseif ($type === 'A') {
+                } elseif ('A' === $type) {
                     $filter_domain = '';
                     $filter = '';
                     $list_for = '';
@@ -413,6 +414,7 @@ ORDER BY a.date DESC, a.time DESC';
 
             if (true === $sendEmptyReports || count($quarantined) > 0) {
                 $list = implode(', ', $quarantine_list);
+
                 return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
             }
 
@@ -436,6 +438,7 @@ ORDER BY a.date DESC, a.time DESC';
 
     /**
      * @param string $user
+     *
      * @return array
      */
     private static function return_user_filters($user)
@@ -455,12 +458,13 @@ ORDER BY a.date DESC, a.time DESC';
     /**
      * @param string $to_address
      * @param string $to_domain
+     *
      * @return array
      */
     private static function return_quarantine_list_array($to_address, $to_domain)
     {
-        if ($to_address != '' || $to_domain != '') {
-            # Qualify to email addresses only search among multiple recipients
+        if ('' != $to_address || '' != $to_domain) {
+            // Qualify to email addresses only search among multiple recipients
             if (preg_match('/\S+@\S+/', $to_address)) {
                 $result = dbquery(sprintf(self::get_report_sql(), quote_smart('(^|,)' . $to_address . '(,|$)'), quote_smart($to_domain)));
             } else {
@@ -481,7 +485,7 @@ ORDER BY a.date DESC, a.time DESC';
                     'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
                     'reason' => trim($row->reason),
                     'timestamp' => trim($row->timestamp),
-                    'token' => trim($row->token)
+                    'token' => trim($row->token),
                 ];
             }
         }
@@ -491,6 +495,7 @@ ORDER BY a.date DESC, a.time DESC';
 
     /**
      * @param array $qitem
+     *
      * @return bool
      */
     private static function store_auto_release($qitem)
@@ -510,6 +515,7 @@ ORDER BY a.date DESC, a.time DESC';
 
     /**
      * @param array $qitem
+     *
      * @return string|bool stored uid or false if not found or found too many
      */
     private static function check_auto_release($qitem)
@@ -520,11 +526,11 @@ ORDER BY a.date DESC, a.time DESC';
         if (!$result) {
             self::dbg(' === Error checking if msg_id already exists.....skipping....');
         } else {
-            if ($result->num_rows === 0) {
-                return false;//msg_id not found,
+            if (0 === $result->num_rows) {
+                return false; //msg_id not found,
             }
 
-            if ($result->num_rows === 1) {
+            if (1 === $result->num_rows) {
                 $row = $result->fetch_array();
 
                 return $row['uid']; //return the stored uid
@@ -541,8 +547,9 @@ ORDER BY a.date DESC, a.time DESC';
     /**
      * @param string $email
      * @param string $filter
-     * @param array $quarantined
-     * @return boolean true if mail was send; false if error occured
+     * @param array  $quarantined
+     *
+     * @return bool true if mail was send; false if error occured
      */
     private static function send_quarantine_email($email, $filter, $quarantined)
     {
@@ -605,7 +612,7 @@ ORDER BY a.date DESC, a.time DESC';
 
         // Send e-mail
         $isSent = send_email($email, $html_report, $text_report, QUARANTINE_REPORT_SUBJECT);
-        if ($isSent === true) {
+        if (true === $isSent) {
             self::dbg(" ==== Sent e-mail to $email");
 
             return true;
@@ -618,6 +625,7 @@ ORDER BY a.date DESC, a.time DESC';
 
     /**
      * @param array $q
+     *
      * @return array
      */
     private static function quarantine_sort($q)

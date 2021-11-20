@@ -33,7 +33,7 @@ include __DIR__ . '/msre_table_functions.php';
 require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrator
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
     audit_log(__('auditlog29', true));
@@ -62,7 +62,7 @@ if ($_SESSION['user_type'] !== 'A') {
         // Display it in a sorted table with links
         asort($ruleset_file);
         foreach ($ruleset_file as $this_ruleset_file) {
-            TR(['<a href="msre_edit.php?token=' . $_SESSION['token'] .'&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>']);
+            TR(['<a href="msre_edit.php?token=' . $_SESSION['token'] . '&amp;file=' . $this_ruleset_file . '">' . $this_ruleset_file . '</a>']);
         }
         // Put a blank header line on the bottom. It just looks nicer that way to me.
         TRH(['']);

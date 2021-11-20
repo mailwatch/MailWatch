@@ -29,7 +29,7 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
 } else {
     html_start(__('config27'));
@@ -64,7 +64,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
 
         // Change newline charactors to <br />
-        $value = nl2br(str_replace("\\n", "\n", $value));
+        $value = nl2br(str_replace('\\n', "\n", $value));
 
         // change <br /> to <br> to keep with html 4.01 and above
         $value = preg_replace("/<br \/>/i", '<br>', $value);

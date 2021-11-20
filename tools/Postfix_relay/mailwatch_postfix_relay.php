@@ -36,16 +36,16 @@ $pathToMailscannerDir = '/var/www/html/mailscanner/';
 $pathToFunctions = $pathToMailscannerDir . 'functions.php';
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 5) . "\n");
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 5) . "\n");
 }
 
 require_once $pathToFunctions;
 
 // Edit if you changed webapp directory from default
-$pathToMTALogProcessor = $pathToMailscannerDir .'mtalogprocessor.inc.php';
+$pathToMTALogProcessor = $pathToMailscannerDir . 'mtalogprocessor.inc.php';
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 14) . "\n");
+    exit('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 14) . "\n");
 }
 
 require_once $pathToMTALogProcessor;
@@ -66,7 +66,7 @@ class PostfixLogProcessor extends MtaLogProcessor
     {
         // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
         // example
-        $rejectReasons = array();
+        $rejectReasons = [];
         if (false !== stripos($this->entry, 'NOQUEUE')) {
             if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
                 $rejectReasons['type'] = safe_value('unknown_hostname');
@@ -81,7 +81,7 @@ class PostfixLogProcessor extends MtaLogProcessor
 
     public function extractKeyValuePairs($match)
     {
-        $entries = array();
+        $entries = [];
         $pattern = '/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/';
         preg_match($pattern, $match[2], $entries);
 
@@ -90,7 +90,7 @@ class PostfixLogProcessor extends MtaLogProcessor
 }
 
 $logprocessor = new PostfixLogProcessor();
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
+if (isset($_SERVER['argv'][1]) && '--refresh' === $_SERVER['argv'][1]) {
     $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first

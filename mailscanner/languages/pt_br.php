@@ -769,17 +769,17 @@ return [
     'topsenderdomvol45' => 'Principais domínios de envio por volume de dados',
     'top10senderdomvol45' => '10 Principais domínios de envio por volume de dados',
     'domain45' => 'Domínio',
-  
+
     // 46-rep_top_senders_by_quantity.php
     'topsendersqt46' => 'Principais remetentes por quantidade',
     'top10sendersqt46' => '10 Principais remetentes por quantidade',
     'email46' => 'Endereço de E-mail',
-  
+
     // 47-rep_top_senders_by_volume.php
     'topsendersvol47' => 'Principais remetentes por volume de dados',
     'top10sendersvol47' => '10 Principais remetentes por volume de dados',
     'email47' => 'Endereço de E-mail',
-  
+
     // 48-rep_top_víruses.php
     'topvirus48' => 'Principais Vírus',
     'top10virus48' => '10 Principais Vírus',

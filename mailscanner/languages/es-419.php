@@ -508,7 +508,6 @@ return [
     'errorreportnodomainforbidden12' => 'Error: No tiene permiso para enviar reportes de spam de usuarios sin dominio',
     'errorreportdomainforbidden12' => 'Error: No tiene permiso para enviar reportes de spam de usuarios del dominio %s',
     'noReportsEnabled12' => 'Error: Debe habilitar los reportes diarios para requerir uno',
-    
 
     // 13-sa_rules_update.php
     'input13' => 'Ejecutar ahora',
@@ -779,7 +778,7 @@ return [
     'topsendersvol47' => 'Ranking de Remitentes por Volumen',
     'top10sendersvol47' => 'Top 10 Remitentes por Volumen',
     'email47' => 'Direcciń E-mail',
-    
+
     // 48-rep_top_viruses.php
     'topvirus48' => 'Ranking de Virus',
     'top10virus48' => 'Top 10 Virus',

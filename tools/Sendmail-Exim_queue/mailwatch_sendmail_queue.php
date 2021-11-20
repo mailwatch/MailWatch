@@ -29,7 +29,7 @@
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 
 ini_set('error_log', 'syslog');
@@ -52,13 +52,13 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
 
     foreach ($queue as $table_name => $queuedir) {
         // Clear the output array
-        $output = array();
+        $output = [];
         if ($dh = @opendir($queuedir)) {
             while (false !== ($file = readdir($dh))) {
-                if ($MTA === 'exim') {
+                if ('exim' === $MTA) {
                     if (preg_match('/-H$/', $file)) {
                         // Get rid of the '-H' from the end of the filename to get the msgid
-                        $msgid = substr($file, 0, - 2);
+                        $msgid = substr($file, 0, -2);
                         if ($fh = @fopen($queuedir . $file, 'rb')) {
                             // Work out the total size (df+qf) of the mail
                             $output[$msgid]['size'] = (@filesize($queuedir . $msgid . '-D') + filesize(
@@ -132,7 +132,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         }
                                         if (preg_match('/^(\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d) (.*)/', $line, $Regs)) {
                                             if (preg_match('/ (defer|failed) /', $Regs[2])) {
-                                                $output[$msgid]['attempts']++;
+                                                ++$output[$msgid]['attempts'];
                                             }
                                             $output[$msgid]['lastattempttime'] = $Regs[1];
                                             $output[$msgid]['message'] = htmlentities($Regs[2]);
@@ -146,7 +146,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                     }
                                 }
                                 fclose($fh);
-                                if ($output[$msgid]['lastattempttime'] !== 'N/A') {
+                                if ('N/A' !== $output[$msgid]['lastattempttime']) {
                                     $output[$msgid]['lastattempttime'] = strtotime($output[$msgid]['lastattempttime']);
                                 }
                             }

@@ -40,6 +40,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param array $match
+     *
      * @return array
      */
     abstract public function extractKeyValuePairs($match);
@@ -73,7 +74,7 @@ abstract class MtaLogProcessor
         $_relay = '';
         $_msg_id = '';
         $_status = '';
-        
+
         if ($parsed->process === $this->mtaprocess) {
             $this->parse($parsed->entry);
             if (true === DEBUG) {
@@ -139,7 +140,7 @@ abstract class MtaLogProcessor
     public function follow($file)
     {
         $size = filesize($file);
-        $lines=1;
+        $lines = 1;
         while (true) {
             dbconn();
             clearstatcache();
@@ -149,15 +150,15 @@ abstract class MtaLogProcessor
                 continue;
             }
 
-            $fh = fopen($file, "r");
+            $fh = fopen($file, 'r');
             if (!$fh) {
-                die(__('diepipe56'));
+                exit(__('diepipe56'));
             }
             fseek($fh, $size);
 
             while ($line = fgets($fh)) {
                 $this->processLine($line);
-                $lines++;
+                ++$lines;
             }
             fclose($fh);
             dbclose();
@@ -167,16 +168,16 @@ abstract class MtaLogProcessor
 
     public function doit($input)
     {
-        global $fp;//@todo do we need this?
+        global $fp; //@todo do we need this?
         if (!$fp = popen($input, 'r')) {
-            die(__('diepipe56'));
+            exit(__('diepipe56'));
         }
         dbconn();
 
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
             $this->processLine($line);
-            $lines++;
+            ++$lines;
         }
         dbclose();
         pclose($fp);
@@ -184,6 +185,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param string $line
+     *
      * @return bool
      */
     public function parse($line)

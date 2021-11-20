@@ -37,12 +37,12 @@ ini_set('memory_limit', MEMORY_LIMIT);
 if (isset($_POST['token'])) {
     if (false === checkToken($_POST['token'])) {
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
 } else {
     if (false === checkToken($_GET['token'])) {
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
 }
 
@@ -53,7 +53,7 @@ if (isset($_POST['id'])) {
 }
 
 if (!validateInput($url_id, 'msgid')) {
-    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n");
+    exit(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n");
 }
 
 // Start the header code and Title
@@ -116,8 +116,8 @@ $sql = "
 $result = dbquery($sql);
 
 // Check to make sure something was returned
-if ($result->num_rows === 0) {
-    die(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
+if (0 === $result->num_rows) {
+    exit(__('dieid04') . " '" . $url_id . "' " . __('dienotfound04') . "\n </TABLE>");
 }
 
 audit_log(__('auditlog04', true) . ' (id=' . $url_id . ')');
@@ -131,8 +131,8 @@ $row = $result->fetch_array();
 if ($result->num_rows > 1) {
     error_log('WARNING: multiple mails existed for id ' . $url_id . ' only first result displayed to user');
 }
-$listurl = 'lists.php?token=' . $_SESSION['token'] .'&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
-for ($f = 0; $f < $result->field_count; $f++) {
+$listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
+for ($f = 0; $f < $result->field_count; ++$f) {
     $fieldInfo = $result->fetch_field_direct($f);
     $fieldn = $fieldInfo->name;
     if ($fieldn === __('receivedfrom04')) {
@@ -164,9 +164,9 @@ for ($f = 0; $f < $result->field_count; $f++) {
                 //check if address is in private IP space
                 $isPrivateNetwork = ip_in_range($relay, false, 'private');
                 $isLocalNetwork = ip_in_range($relay, false, 'local');
-                if ($isPrivateNetwork === true) {
+                if (true === $isPrivateNetwork) {
                     $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
-                } elseif ($isLocalNetwork === true) {
+                } elseif (true === $isLocalNetwork) {
                     $output .= ' <td>' . __('localhost04') . "</td>\n";
                 }
                 // Reverse lookup on address. Possibly need to remove it.
@@ -177,8 +177,8 @@ for ($f = 0; $f < $result->field_count; $f++) {
                 }
                 // Do GeoIP lookup on address
                 if (true === $isPrivateNetwork) {
-                    $output .= ' <td>' .  __('privatenetwork04') . "</td>\n";
-                } elseif ($isLocalNetwork === true) {
+                    $output .= ' <td>' . __('privatenetwork04') . "</td>\n";
+                } elseif (true === $isLocalNetwork) {
                     $output .= ' <td>' . __('localhost04') . "</td>\n";
                 } elseif (!version_compare(phpversion(), '5.4.0', '>=')) {
                     $output .= ' <td>' . __('geoipnotsupported04') . "</td>\n";
@@ -190,11 +190,11 @@ for ($f = 0; $f < $result->field_count; $f++) {
                 // Link to RBL Lookup
                 $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Link to Spam Report for this relay
-                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Link to Virus Report for this relay
-                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isvirus=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Link to All Messages Report for this relay
-                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] .'&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
+                $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Close table
                 $output .= ' </tr>' . "\n";
             }
@@ -274,15 +274,15 @@ for ($f = 0; $f < $result->field_count; $f++) {
         );
     }
 
-    if ($is_MCP_enabled === true) {
+    if (true === $is_MCP_enabled) {
         if ($fieldn === __('mcprep04')) {
             $row[$f] = format_mcp_report($row[$f]);
         }
     } else {
-        if ($fieldn === 'HEADER' && strpos($row[$f], 'MCP') !== false) {
+        if ('HEADER' === $fieldn && false !== strpos($row[$f], 'MCP')) {
             continue;
         }
-        if (strpos($fieldn, 'MCP') !== false) {
+        if (false !== strpos($fieldn, 'MCP')) {
             continue;
         }
     }
@@ -291,12 +291,12 @@ for ($f = 0; $f < $result->field_count; $f++) {
         $row[$f] = $row[$f] . ' (' . $row['rblspamreport'] . ')';
     }
 
-    if ($fieldn === 'rblspamreport') {
+    if ('rblspamreport' === $fieldn) {
         continue;
     }
 
     // Handle dummy header fields
-    if ($fieldn === 'HEADER') {
+    if ('HEADER' === $fieldn) {
         // Display header
         echo '<tr><td class="heading" align="center" valign="top" colspan="2">' . $row[$f] . '</td></tr>' . "\n";
     } else {
@@ -312,7 +312,7 @@ for ($f = 0; $f < $result->field_count; $f++) {
 // rows in the relay table (maillog.id = relay.msg_id)...
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
-if (($mta === 'postfix' || $mta === 'msmail') && $tablecheck->num_rows > 0) { //version for postfix
+if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) { //version for postfix
     $sql1 = "
  SELECT
   DATE_FORMAT(m.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS 'Date/Time',
@@ -350,10 +350,10 @@ if (($mta === 'postfix' || $mta === 'msmail') && $tablecheck->num_rows > 0) { //
 $sth1 = dbquery($sql1);
 if (false !== $sth1 && $sth1->num_rows > 0) {
     // Display the relay table entries
-    echo ' <tr><td class="heading-w175">' .  __('relayinfo04') . '</td><td class="detail">' . "\n";
+    echo ' <tr><td class="heading-w175">' . __('relayinfo04') . '</td><td class="detail">' . "\n";
     echo '  <table class="sa_rules_report" width="100%">' . "\n";
     echo '   <tr>' . "\n";
-    for ($f = 0; $f < $sth1->field_count; $f++) {
+    for ($f = 0; $f < $sth1->field_count; ++$f) {
         $fieldInfo1 = $sth1->fetch_field_direct($f);
         echo '   <th>' . $fieldInfo1->name . '</th>' . "\n";
     }
@@ -383,9 +383,9 @@ $quarantined = quarantine_list_items($url_id, RPC_ONLY);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     echo "<br>\n";
 
-    if (isset($_POST['submit']) && deepSanitizeInput($_POST['submit'], 'url') === 'submit') {
+    if (isset($_POST['submit']) && 'submit' === deepSanitizeInput($_POST['submit'], 'url')) {
         if (false === checkFormToken('/detail.php ops token', $_POST['formtoken'])) {
-            die(__('error04'));
+            exit(__('error04'));
         }
         debug('submit branch taken');
         // Reset error status
@@ -394,10 +394,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         // Release
         if (isset($_POST['release'])) {
             // Send to the original recipient(s) or to an alternate address
-            if (isset($_POST['alt_recpt_yn']) && deepSanitizeInput($_POST['alt_recpt_yn'], 'url') === 'y') {
+            if (isset($_POST['alt_recpt_yn']) && 'y' === deepSanitizeInput($_POST['alt_recpt_yn'], 'url')) {
                 $to = deepSanitizeInput($_POST['alt_recpt'], 'string');
                 if (!validateInput($to, 'user')) {
-                    die(__('error04') . ' ' . $to);
+                    exit(__('error04') . ' ' . $to);
                 }
             } else {
                 $to = $quarantined[0]['to'];
@@ -405,13 +405,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
 
             $arrid = $_POST['release'];
             if (!is_array($arrid)) {
-                die();
+                exit();
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
-                    die();
+                    exit();
                 }
                 $arrid2[] = $id2;
             }
@@ -421,19 +421,19 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         if (isset($_POST['learn'])) {
             $arrid = $_POST['learn'];
             if (!is_array($arrid)) {
-                die();
+                exit();
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
-                    die(__('dievalidate99'));
+                    exit(__('dievalidate99'));
                 }
                 $arrid2[] = $id2;
             }
             $type = deepSanitizeInput($_POST['learn_type'], 'url');
             if (!validateInput($type, 'salearnops')) {
-                die(__('dievalidate99'));
+                exit(__('dievalidate99'));
             }
             $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY);
         }
@@ -441,13 +441,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         if (isset($_POST['delete'])) {
             $arrid = $_POST['delete'];
             if (!is_array($arrid)) {
-                die();
+                exit();
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
-                    die(__('dievalidate99'));
+                    exit(__('dievalidate99'));
                 }
                 $arrid2[] = $id2;
             }
@@ -503,18 +503,18 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         echo ' </tr>' . "\n";
         $is_dangerous = 0;
         foreach ($quarantined as $item) {
-            $tdclass='';
-            if ($row['released'] > 0 && $item['file'] === 'message') {
-                $tdclass='released';
+            $tdclass = '';
+            if ($row['released'] > 0 && 'message' === $item['file']) {
+                $tdclass = 'released';
             }
             echo " <tr>\n";
             // Don't allow message to be released if it is marked as 'dangerous'
             // Currently this only applies to messages that contain viruses.
             // visible only to Administrators and Domain Admin only if DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS is enabled
             if (
-                $_SESSION['user_type'] === 'A' ||
-                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D') ||
-                $item['dangerous'] !== 'Y'
+                'A' === $_SESSION['user_type'] ||
+                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type']) ||
+                'Y' !== $item['dangerous']
             ) {
                 echo '  <td align="center" class="' . $tdclass . '"><input class="noprint" type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
@@ -524,8 +524,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // If the file is an rfc822 message then allow the file to be learnt
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
-                (preg_match('/message\/rfc822/', $item['type']) || $item['file'] === 'message') &&
-                (strtoupper(get_conf_var('UseSpamAssassin')) !== 'NO')
+                (preg_match('/message\/rfc822/', $item['type']) || 'message' === $item['file']) &&
+                ('NO' !== strtoupper(get_conf_var('UseSpamAssassin')))
             ) {
                 echo '   <td align="center" class="salearn-' . $row['salearn'] . '"><input class="noprint" type="checkbox" name="learn[]" value="' . $item['id'] . '"><select class="noprint" name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
@@ -537,20 +537,20 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Domain admins can view the file only if enabled
             if (
                 (
-                    $item['dangerous'] === 'N' ||
-                    $_SESSION['user_type'] === 'A' ||
-                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D' && $item['dangerous'] === 'Y')
+                    'N' === $item['dangerous'] ||
+                    'A' === $_SESSION['user_type'] ||
+                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'] && 'Y' === $item['dangerous'])
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
-                echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] .'&amp;id=' . $item['msgid'] . '">' .
+                echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
                     substr($item['path'], strlen($quarantinedir) + 1) .
                     '</a></td>' . "\n";
             } else {
                 echo '  <td>' . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
             }
-            if ($item['dangerous'] === 'Y') {
+            if ('Y' === $item['dangerous']) {
                 $dangerous = $yes;
-                $is_dangerous++;
+                ++$is_dangerous;
             } else {
                 $dangerous = $no;
             }
@@ -558,11 +558,11 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr class="noprint">' . "\n";
-        if ($_SESSION['user_type'] === 'A' ||
+        if ('A' === $_SESSION['user_type'] ||
             (
-                $_SESSION['user_type'] === 'D' &&
+                'D' === $_SESSION['user_type'] &&
                 (
-                    $is_dangerous === 0 ||
+                    0 === $is_dangerous ||
                 ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
                 )
             )

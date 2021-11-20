@@ -139,5 +139,6 @@ function TR_Extended($row_data, $tr_param)
     }
 
     echo '</tr>' . "\n";
+
     return 0;
 }

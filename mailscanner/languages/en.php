@@ -509,7 +509,6 @@ return [
     'errorreportnodomainforbidden12' => 'Error: You don\'t have the permissions, to send spam reports for users without domain',
     'errorreportdomainforbidden12' => 'Error: You don\'t have the permissions, to send spam reports for users of domain %s',
     'noReportsEnabled12' => 'Error: You have to enable daily reports to request one',
-    
 
     // 13-sa_rules_update.php
     'input13' => 'Run Now',
@@ -780,7 +779,7 @@ return [
     'topsendersvol47' => 'Top Senders by Volume',
     'top10sendersvol47' => 'Top 10 Senders by Volume',
     'email47' => 'E-mail Address',
-    
+
     // 48-rep_top_viruses.php
     'topvirus48' => 'Top Viruses',
     'top10virus48' => 'Top 10 Viruses',

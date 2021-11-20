@@ -35,7 +35,7 @@ ini_set('implicit_flush', 'false');
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
 }
 
 require $pathToFunctions;
@@ -44,7 +44,7 @@ require $pathToFunctions;
 $pathToMtaLogProc = MAILWATCH_HOME . '/mtalogprocessor.inc.php';
 
 if (!@is_file($pathToMtaLogProc)) {
-    die('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToMtaLogProc . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
+    exit('Error: Cannot find mtalogprocessor.inc.php file in "' . $pathToMtaLogProc . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . "\n");
 }
 require_once $pathToMtaLogProc;
 
@@ -59,32 +59,32 @@ class SendmailLogProcessor extends MtaLogProcessor
         $this->delayField = 'xdelay';
         $this->statusField = 'stat';
     }
-    
+
     public function getRulesets()
     {
         if (isset($this->entries['ruleset'])) {
-            if ($this->entries['ruleset'] === 'check_relay') {
+            if ('check_relay' === $this->entries['ruleset']) {
                 // Listed in RBL(s)
-                return array(
+                return [
                     'type' => safe_value('rbl'),
                     'relay' => safe_value($this->entries['relay']),
-                    'status' => safe_value($this->entries['status'])
-                );
+                    'status' => safe_value($this->entries['status']),
+                ];
             }
-            if ($this->entries['ruleset'] === 'check_mail') {
+            if ('check_mail' === $this->entries['ruleset']) {
                 // Domain does not resolve
-                return array(
+                return [
                     'type' => safe_value('unresolveable'),
-                    'status' => safe_value($this->entries['status'])
-                );
+                    'status' => safe_value($this->entries['status']),
+                ];
             }
         }
     }
-    
+
     public function extractKeyValuePairs($match)
     {
         $items = explode(', ', $match[2]);
-        $entries = array();
+        $entries = [];
         foreach ($items as $item) {
             $entry = explode('=', $item);
             if (isset($entry[1])) {
@@ -97,12 +97,13 @@ class SendmailLogProcessor extends MtaLogProcessor
                 }
             }
         }
+
         return $entries;
     }
 }
 
 $logprocessor = new SendmailLogProcessor();
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
+if (isset($_SERVER['argv'][1]) && '--refresh' === $_SERVER['argv'][1]) {
     $logprocessor->doit('cat ' . MAIL_LOG);
 } else {
     // Refresh first

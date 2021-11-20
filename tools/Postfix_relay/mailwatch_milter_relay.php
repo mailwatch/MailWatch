@@ -33,7 +33,7 @@ ini_set('implicit_flush', 'false');
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 
@@ -47,7 +47,7 @@ function doit($input)
 {
     global $fp;
     if (!$fp = popen($input, 'r')) {
-        die(__('diepipe54'));
+        exit(__('diepipe54'));
     }
 
     while ($line = fgets($fp, 2096)) {
@@ -56,7 +56,7 @@ function doit($input)
             $message_id = safe_value($explode[2]);
             $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
             $smtpd_id = $result->fetch_row()[0];
-            if ($smtpd_id !== null && $smtpd_id !== $smtp_id) {
+            if (null !== $smtpd_id && $smtpd_id !== $smtp_id) {
                 dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
             }
         }
@@ -76,9 +76,9 @@ function follow($file)
             continue;
         }
 
-        $fh = fopen($file, "r");
+        $fh = fopen($file, 'r');
         if (!$fh) {
-            die(__('diepipe56'));
+            exit(__('diepipe56'));
         }
         fseek($fh, $size);
 
@@ -89,7 +89,7 @@ function follow($file)
                 array_push($idqueue, $explode);
             } elseif (preg_match('/^.*postfix\/cleanup.*: (\S+): milter/', $line, $id)) {
                 // Search queue for id
-                for ($i = 0; $i < count($idqueue); $i++) {
+                for ($i = 0; $i < count($idqueue); ++$i) {
                     if (time() > $idqueue[$i][3] + QUEUETIMEOUT) {
                         // Drop expired entry from queue
                         array_splice($idqueue, $i, 1);
@@ -105,7 +105,7 @@ function follow($file)
                 }
             } elseif (preg_match('/^.*postfix\/qmgr.*: (\S+): removed$/', $line, $id)) {
                 // Search queue for id
-                for ($i = 0; $i < count($idqueue); $i++) {
+                for ($i = 0; $i < count($idqueue); ++$i) {
                     if (time() > $idqueue[$i][3] + QUEUETIMEOUT) {
                         // Drop expired entry from queue
                         array_splice($idqueue, $i, 1);
@@ -115,17 +115,17 @@ function follow($file)
                     $smtp_id2 = safe_value($id[1]);
                     if ($smtp_id === $smtp_id2) {
                         $message_id = safe_value($idqueue[$i][2]);
-                        for ($j = 0; $j < QUERYTIMEOUT; $j++) {
+                        for ($j = 0; $j < QUERYTIMEOUT; ++$j) {
                             $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' LIMIT 1;");
                             $smtpd_id = $result->fetch_row()[0];
-                            if ($smtpd_id === null) {
+                            if (null === $smtpd_id) {
                                 // Add a small delay to prevent race condition between mailwatch logger db and maillog
                                 sleep(1);
                             } else {
                                 break;
                             }
                         }
-                        if ($smtpd_id !== null && $smtpd_id !== $smtp_id) {
+                        if (null !== $smtpd_id && $smtpd_id !== $smtp_id) {
                             dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
                             array_splice($idqueue, $i, 1);
                             break;
@@ -140,7 +140,7 @@ function follow($file)
     }
 }
 
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
+if (isset($_SERVER['argv'][1]) && '--refresh' === $_SERVER['argv'][1]) {
     doit('cat ' . MS_LOG);
 } else {
     // Refresh first

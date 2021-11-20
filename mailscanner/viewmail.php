@@ -44,7 +44,7 @@ html_start(__('msgviewer06'), 0, false, false);
 <?php
 dbconn();
 if (!isset($_GET['id']) && !isset($_GET['amp;id'])) {
-    die(__('nomessid06'));
+    exit(__('nomessid06'));
 }
 if (isset($_GET['amp;id'])) {
     $message_id = deepSanitizeInput($_GET['amp;id'], 'url');
@@ -52,21 +52,21 @@ if (isset($_GET['amp;id'])) {
     $message_id = deepSanitizeInput($_GET['id'], 'url');
 }
 if (!validateInput($message_id, 'msgid')) {
-    die();
+    exit();
 }
 $sql = "SELECT * FROM maillog WHERE id='" . $message_id . "' AND " . $_SESSION['global_filter'];
 $result = dbquery($sql);
 $message = $result->fetch_object();
 // See if message is local
 if (empty($message)) {
-    die(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
+    exit(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
 }
 
 audit_log(sprintf(__('auditlog06', true), $message_id));
 
 if ($message->token !== deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    die();
+    exit();
 }
 
 $using_rpc = false;
@@ -79,10 +79,10 @@ if (RPC_ONLY || !is_local($message->hostname)) {
     $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
     //$rsp = $client->send($msg);
     $rsp = xmlrpc_wrapper($message->hostname, $msg);
-    if ($rsp->faultCode() === 0) {
+    if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
-        die(__('error06') . ' ' . $rsp->faultString());
+        exit(__('error06') . ' ' . $rsp->faultString());
     }
     $file = base64_decode($response);
 } else {
@@ -91,22 +91,22 @@ if (RPC_ONLY || !is_local($message->hostname)) {
     $quarantine_dir = get_conf_var('QuarantineDir');
     $filename = '';
     switch (true) {
-        case (file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id):
             $filename = $date . '/nonspam/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $date . '/spam/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $date . '/spam/' . $message_id):
             $filename = $date . '/spam/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $date . '/mcp/' . $message_id)):
+        case file_exists($quarantine_dir . '/' . $date . '/mcp/' . $message_id):
             $filename = $date . '/mcp/' . $message_id;
             break;
-        case (file_exists($quarantine_dir . '/' . $date . '/' . $message_id . '/message')):
+        case file_exists($quarantine_dir . '/' . $date . '/' . $message_id . '/message'):
             $filename = $date . '/' . $message_id . '/message';
             break;
     }
 
     if (!@file_exists($quarantine_dir . '/' . $filename)) {
-        die(__('errornfd06') . "\n");
+        exit(__('errornfd06') . "\n");
     }
     $file = file_get_contents($quarantine_dir . '/' . $filename);
 }
@@ -182,9 +182,9 @@ foreach ($header_fields as $field) {
 }
 
 if (
-        ($message->virusinfected === '0' && $message->nameinfected === '0' && $message->otherinfected === '0') ||
-        $_SESSION['user_type'] === 'A' ||
-        (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
+        ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected) ||
+        'A' === $_SESSION['user_type'] ||
+        (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
 ) {
     lazy(
         __('actions06'),
@@ -197,7 +197,7 @@ foreach ($mime_struct as $key => $part) {
     $type = isset($part->ctype_primary) ? $part->ctype_primary : 'undefined';
     $type .= '/';
     $type .= isset($part->ctype_secondary) ? $part->ctype_secondary : 'undefined';
-    
+
     echo ' <tr>' . "\n";
     echo '  <td colspan=2 class="heading">' . __('mymetype06') . ' ' . $type . '</td>' . "\n";
 
@@ -206,7 +206,7 @@ foreach ($mime_struct as $key => $part) {
         case 'text/html':
             echo ' <tr>' . "\n";
             echo '  <td colspan="2">' . "\n";
-            echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?token=' . $_SESSION['token'] .'&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
+            echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
             echo '  </td>' . "\n";
             echo ' </tr>' . "\n";
             break;
@@ -245,9 +245,9 @@ foreach ($mime_struct as $key => $part) {
             }
 
             if (
-                ($message->virusinfected === '0' && $message->nameinfected === '0' && $message->otherinfected === '0') ||
-                $_SESSION['user_type'] === 'A' ||
-                (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && $_SESSION['user_type'] === 'D')
+                ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected) ||
+                'A' === $_SESSION['user_type'] ||
+                (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
             ) {
                 echo ' <a href="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }

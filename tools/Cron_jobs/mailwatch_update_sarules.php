@@ -29,7 +29,7 @@
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 
@@ -61,7 +61,7 @@ while (!feof($fh)) {
         $regs[1] = safe_value($regs[1]);
         $regs[2] = safe_value($regs[2]);
         dbquery("REPLACE INTO sa_rules VALUES ('$regs[1]','$regs[2]')");
-        dbg("\t\tinsert: ".$regs[1]. ', ' .$regs[2]);
+        dbg("\t\tinsert: " . $regs[1] . ', ' . $regs[2]);
     } else {
         dbg("$line - did not match regexp, not inserting into database");
     }

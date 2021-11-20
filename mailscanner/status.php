@@ -65,7 +65,7 @@ FROM
 WHERE
  " . $_SESSION['global_filter'];
 // Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
     $sql .= '
     AND
      ishighspam=0

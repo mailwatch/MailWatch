@@ -42,7 +42,6 @@ $date_format = "'" . DATE_FORMAT . "'";
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
-
 $graphgenerator = new GraphGenerator();
 // SQL query to pull the data from maillog
 $sql = "
@@ -143,7 +142,7 @@ $sqlColumns = [
     'total_spam',
 ];
 $valueConversion = [
-    'total_size' => 'scale'
+    'total_size' => 'scale',
 ];
 $graphColumns = [
     'labelColumn' => 'xaxis',
@@ -153,25 +152,25 @@ $graphColumns = [
     ],
     'dataNumericColumns' => [
         ['total_mail', 'total_virus', 'total_spam'],
-        ['total_size']
+        ['total_size'],
     ],
     'dataFormattedColumns' => [
         ['total_mail', 'total_virus', 'total_spam'],
-        ['total_sizeconv']
+        ['total_sizeconv'],
     ],
     'xAxeDescription' => __('date49'),
     'yAxeDescriptions' => [
         __('nomessages49'),
-        __('volume49')
+        __('volume49'),
     ],
-    'fillBelowLine' => ['false', 'true']
+    'fillBelowLine' => ['false', 'true'],
 ];
 $types = [
     ['bar', 'bar', 'bar'],
-    ['line']
+    ['line'],
 ];
 
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     $sqlColumns[] = 'total_mcp';
     $types[0][] = 'bar';
     $graphColumns['dataLabels'][0][] = __('barmcp49');
@@ -179,18 +178,18 @@ if ($is_MCP_enabled === true) {
     $graphColumns['dataFormattedColumns'][0][] = 'total_mcp';
     $graphgenerator->settings['colors'] = [
         ['mailColor', 'virusColor', 'spamColor', 'mcpColor'],
-        ['volumeColor']
+        ['volumeColor'],
     ];
 }
 
 $graphgenerator->sqlQuery = $sql;
-$graphgenerator->sqlColumns = $sqlColumns ;
+$graphgenerator->sqlColumns = $sqlColumns;
 $graphgenerator->graphColumns = $graphColumns;
 $graphgenerator->valueConversion = $valueConversion;
 $graphgenerator->types = $types;
 $graphgenerator->graphTitle = __('totalmailprocdate49');
 $graphgenerator->printTable = false;
-$graphgenerator->settings['valueTypes'] = ['plain','volume'];
+$graphgenerator->settings['valueTypes'] = ['plain', 'volume'];
 $graphgenerator->settings['maxTicks'] = 10;
 $graphgenerator->printLineGraph();
 
@@ -198,7 +197,7 @@ $graphgenerator->printLineGraph();
 // Must be one or more row
 $result = dbquery($sql);
 if (!$result->num_rows > 0) {
-    die(__('diemysql99') . "\n");
+    exit(__('diemysql99') . "\n");
 }
 
 // Connecting to the DB and running the query
@@ -225,13 +224,13 @@ $data_total_unresolveable = [];
 while ($row1 = $result1->fetch_object()) {
     if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
         switch (true) {
-            case($row1->type === 'unknown_user'):
+            case 'unknown_user' === $row1->type:
                 $data_total_unknown_users[$key] = $row1->count;
                 break;
-            case($row1->type === 'rbl'):
+            case 'rbl' === $row1->type:
                 $data_total_rbl[$key] = $row1->count;
                 break;
-            case($row1->type === 'unresolveable'):
+            case 'unresolveable' === $row1->type:
                 $data_total_unresolveable[$key] = $row1->count;
                 break;
         }
@@ -244,7 +243,7 @@ $graph_labels = $data_labels;
 // Reduce the number of labels on the graph to prevent them being sqashed.
 if (count($graph_labels) > 20) {
     $b = substr(count($graph_labels), 0, 1);
-    for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; $a++) {
+    for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; ++$a) {
         if ($a % $b) {
             $graph_labels[$a] = '';
         }
@@ -252,7 +251,6 @@ if (count($graph_labels) > 20) {
 }
 
 format_report_volume($data_total_size, $size_info);
-
 
 echo '<TABLE class="reportTable rowhover">' . "\n";
 echo ' <TR style="background-color: #F7CE4A">' . "\n";
@@ -263,7 +261,7 @@ echo "  <TH nowrap colspan='2'>" . __('lowespam49') . '</TH>' . "\n";
 echo "  <TH nowrap colspan='2'>" . __('highspam49') . '</TH>' . "\n";
 echo "  <TH nowrap colspan='2'>" . __('blocked49') . '</TH>' . "\n";
 echo "  <TH colspan='2'>" . __('virus49') . '</TH>' . "\n";
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     echo "  <TH colspan='2'>" . __('mcp49') . '</TH>' . "\n";
 }
 echo "  <TH rowspan='2'>" . __('volume49') . '</TH>' . "\n";
@@ -274,17 +272,17 @@ if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
 }
 echo " </TR>\n";
 
-echo '<tr style="background-color:#F7CE4A">'."\n";
+echo '<tr style="background-color:#F7CE4A">' . "\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     echo "<th width='50' align='right'>#</th><th width='40' align='right'>%</th>\n";
 }
 echo "</tr>\n";
-for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; $i++) {
+for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_total_mail; ++$i) {
     echo "<TR BGCOLOR=\"#EBEBEB\">\n";
     echo " <TD ALIGN=\"CENTER\">$data_labels[$i]</TD>\n";
     echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . number_format($data_total_mail[$i]) . '</TD>' . "\n";
@@ -298,7 +296,7 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
     echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_blocked[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     echo ' <TD ALIGN="RIGHT">' . suppress_zeros(number_format($data_total_virii[$i])) . '</TD>' . "\n";
     echo ' <TD ALIGN="RIGHT">' . suppress_zeros(number_format($data_total_virii[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
-    if ($is_MCP_enabled === true) {
+    if (true === $is_MCP_enabled) {
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i])) . '</TD>' . "\n";
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     }
@@ -329,7 +327,7 @@ echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_tota
 
 echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_virii)) . '</TH>' . "\n";
 echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_virii) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
-if ($is_MCP_enabled === true) {
+if (true === $is_MCP_enabled) {
     echo ' <TH ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp)) . '</TH>' . "\n";
     echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }

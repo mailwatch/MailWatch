@@ -57,23 +57,23 @@ $graphgenerator->sqlQuery = '
 ';
 
 $graphgenerator->tableColumns = [
-    'name' =>__('email47'),
+    'name' => __('email47'),
     'countconv' => __('count03'),
-    'sizeconv' =>__('size03')
+    'sizeconv' => __('size03'),
 ];
 $graphgenerator->sqlColumns = [
     'name',
     'count',
-    'size'
+    'size',
 ];
 $graphgenerator->valueConversion = [
     'size' => 'scale',
-    'count' => 'number'
+    'count' => 'number',
 ];
 $graphgenerator->graphColumns = [
     'labelColumn' => 'name',
     'dataNumericColumn' => 'size',
-    'dataFormattedColumn' => 'sizeconv'
+    'dataFormattedColumn' => 'sizeconv',
 ];
 $graphgenerator->graphTitle = __('top10sendersvol47');
 $graphgenerator->printPieGraph();

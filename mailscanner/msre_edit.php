@@ -32,7 +32,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrator
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     // If the user isn't an administrator send them back to the index page.
     header('Location: index.php');
     audit_log(__('auditlog55', true));
@@ -40,12 +40,12 @@ if ($_SESSION['user_type'] !== 'A') {
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
     } else {
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
     }
 
@@ -56,7 +56,7 @@ if ($_SESSION['user_type'] !== 'A') {
         $short_filename = deepSanitizeInput($_GET['file'], 'url');
     }
     if (!validateInput($short_filename, 'file')) {
-        die(__('dievalidate99'));
+        exit(__('dievalidate99'));
     }
     $short_filename = basename($short_filename);
     $pageheader = __('msreedit55') . ' ' . $short_filename;
@@ -74,7 +74,7 @@ if ($_SESSION['user_type'] !== 'A') {
         'To:',
         'FromOrTo:',
         'FromAndTo:',
-        'Virus:'
+        'Virus:',
     ];
 
     define('MSRE_COLUMNS', 6);
@@ -83,13 +83,13 @@ if ($_SESSION['user_type'] !== 'A') {
     $full_filename = MSRE_RULESET_DIR . '/' . $short_filename;
 
     if (!file_exists($full_filename)) {
-        die(__('diefnf55') . ' ' . $full_filename);
+        exit(__('diefnf55') . ' ' . $full_filename);
     }
 
     // Read the file into a variable, so that each function doesn't
     // need to do it themselves.
     $file_contents = Read_File($full_filename, filesize($full_filename));
-    
+
     // This will get populated later by a function (I need it to find
     // the end of the comments @ the top of the file)
 
@@ -98,7 +98,7 @@ if ($_SESSION['user_type'] !== 'A') {
     if (isset($_POST['submitted'])) {
         if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
 
         list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
@@ -109,7 +109,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // The form always gets displayed, even if it was submitted, so
     // display the form now
     Show_Form($status_message, $short_filename, $file_contents, $CONF_ruleset_keyword);
-    
+
     // Clear status message
     $status_message = '';
     echo '</table><tr><td>' . "\n";
@@ -120,6 +120,7 @@ if ($_SESSION['user_type'] !== 'A') {
 
 /**
  * @param string status_msg
+ *
  * @return displays the form
  */
 function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_keyword)
@@ -131,13 +132,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
     echo '<input type="hidden" name="formtoken" value="' . generateformtoken('/msre_edit.php form token') . '">' . "\n";
     echo '<input type="hidden" name="submitted" value="1">' . "\n";
-    
+
     // Check for status message, and append it to the end of the header
     $my_header = '';
     if ($status_msg) {
         $my_header .= '<br>' . "\n" . $status_msg;
     }
-    
+
     // Show page header
     if ($my_header) {
         TR_Single($my_header, 'colspan="' . MSRE_COLUMNS . '" class="header"');
@@ -145,7 +146,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
 
     // Write out the table header(s)
     TRH_Single(sprintf(__('contentsof55'), $short_filename), 'colspan="' . MSRE_COLUMNS . '"');
-    
+
     // Display the file contents
     TR_Single("<pre>$file_contents</pre>", 'colspan="' . MSRE_COLUMNS . '"');
 
@@ -158,15 +159,15 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // this should find lines w/out comments, or lines that
         // start with #DISABLED#.
         // Treat empty lines as comments
-        if ($line === '') {
+        if ('' === $line) {
             $line = '#';
         }
-        if ((substr($line, 0, 1) !== '#')
+        if (('#' !== substr($line, 0, 1))
             || preg_match('/^#DISABLED#/', $line)
         ) {
             // Check for a description on the previous line
             $desc = '';
-            if (substr($previous_line, 0, 1) === '#') {
+            if ('#' === substr($previous_line, 0, 1)) {
                 $desc = $previous_line;
             }
             $ruleset[] = [$desc, $line];
@@ -190,7 +191,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         $old_rule_part = $rule_part;
         $rule_part = [];
         foreach ($old_rule_part as $current_part) {
-            if ($current_part !== '') {
+            if ('' !== $current_part) {
                 $rule_part[] = $current_part;
             }
         }
@@ -236,7 +237,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         $last_old_rule_part = array_pop($old_rule_part);
         // Need two differnt while loops I think, based on
         // if there was an and or not.
-        if (strtolower($rule_part['2and']) === 'and') {
+        if ('and' === strtolower($rule_part['2and'])) {
             // If there's an and, grab up to the 4and_target.
             $grab_to_field = '4and_target';
         } else {
@@ -249,7 +250,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // Now grab shit.
         while ($last_old_rule_part !== $rule_part[$grab_to_field]) {
             //echo "lorp$rule_count: $last_old_rule_part<br>\n";
-            if ($last_old_rule_part !== null) {
+            if (null !== $last_old_rule_part) {
                 $rule_part['99action'] = $last_old_rule_part . ' ' . $rule_part['99action'];
             }
             $last_old_rule_part = array_pop($old_rule_part);
@@ -260,7 +261,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // leading up to the action. But only if the rule
         // isn't supposed to have an "and".  w/an "and", it already
         // has the proper data thx to the above code.
-        if ($rule_part['2and'] && strtolower($rule_part['2and']) !== 'and') {
+        if ($rule_part['2and'] && 'and' !== strtolower($rule_part['2and'])) {
             // clean shit out
             $rule_part['2and'] = null;
             $rule_part['3and_direction'] = null;
@@ -271,10 +272,10 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // sort by keys first
         ksort($rule_part);
         $rule_text = [];
-        
+
         // Description line (and action select box)
         $rule_action_select = 'rule' . $rule_count . '_rule_action';
-        
+
         // Need to create the select box now too, but the options
         // that are available to us depend on if the rule is
         // disabled or not.
@@ -290,23 +291,23 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                 preg_replace('/_disabled$/', '', $desc_field) . "\" value=\"$desc_value\">";
         } else {
             $rule_disabled = 0;
-            $rule_action_select_options = '<option value="Disable">' . __('disable55') .'</option>' . "\n";
+            $rule_action_select_options = '<option value="Disable">' . __('disable55') . '</option>' . "\n";
             $disable_desc_text = '';
             $desc_field = 'rule' . $rule_count . '_description';
             $hidden_field_code = '';
         }
         $rule_action_select_html = '<select name="' . $rule_action_select . '"';
-        
+
         // If this is the default rule, the select box is disabled,
         // because you can't delete, disable, or enable the default
         // rule, only change it.  Originally I had it not there at
         // all, but w/the new way i'm writing the rules (w/the border),
         // each one is in a seperate table, and they don't line up
         // w/out the select box.
-        if (strtolower($rule_part['1target'] === 'default')) {
+        if (strtolower('default' === $rule_part['1target'])) {
             $rule_action_select_html .= ' disabled';
         }
-        
+
         // Now continue on.
         $rule_action_select_html .= '>' . "\n" .
             '  <option value="" selected>----</option>' . "\n" .
@@ -316,8 +317,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             $rule_action_select_html => 'rowspan="3"',
             '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" ' .
             'name="' . $desc_field . '" size="95" value="' . $desc_value . '"' .
-            $disable_desc_text . '>' . $hidden_field_code
-            => 'colspan="' . (MSRE_COLUMNS - 1) . '"'
+            $disable_desc_text . '>' . $hidden_field_code => 'colspan="' . (MSRE_COLUMNS - 1) . '"',
         ];
 
         foreach ($rule_part as $key => $value) {
@@ -397,20 +397,20 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     if ($rule_disabled) {
                         $field_name .= '_disabled';
                     }
-                    if (strtolower($key) === '99action') {
+                    if ('99action' === strtolower($key)) {
                         $temp_text = '</td></tr><tr><td colspan="' . (MSRE_COLUMNS - 1) . '"><b>' . __('action55')
                         . '</b>&nbsp;&nbsp;<input type="text" name="' . $field_name . '" value="' . $value . '" size="100"';
                     } else {
                         $temp_text = '<input type="text" name="' . $field_name . '" value="' . $value . '"';
                     }
-                    if ($rule_disabled || (strtolower($key) === '1target' && strtolower($value) === 'default')) {
+                    if ($rule_disabled || ('1target' === strtolower($key) && 'default' === strtolower($value))) {
                         $temp_text .= ' disabled ';
                     }
                     $temp_text .= '>';
                     if ($rule_disabled) {
                         $temp_text .= "\n" . '<input type="hidden" name="' . $part_name . '" value="' . $value . '">' . "\n";
                     }
-                    $rule_text [] = $temp_text;
+                    $rule_text[] = $temp_text;
                     break;
             }
         }
@@ -435,11 +435,11 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         echo '</table>' . "\n" .
             '</td>' . "\n" .
             '</tr>' . "\n";
-            
+
         // And a blank space too to break them up a li'l more
         //echo "<tr><td colspan=\"" . MSRE_COLUMNS . "\" bgcolor=\"white\">&nbsp;</td></tr>\n";
 
-        $rule_count++;
+        ++$rule_count;
     }
 
     // Write the rule count as a hidden field, so that I have it
@@ -449,15 +449,14 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // Now put a blank one on the bottom, so the user can add a new one.
     $add_rule_text = [];
     $add_prefix = 'rule' . $rule_count . '_';
-    
+
     // Description
     $desc_text = [
         '' => 'rowspan="3"',
         '<b>' . __('description55') . '</b>&nbsp;&nbsp;<input type="text" name="' .
-        $add_prefix . 'description" value="" size="95">' =>
-            'colspan="' . (MSRE_COLUMNS - 1) . '"'
+        $add_prefix . 'description" value="" size="95">' => 'colspan="' . (MSRE_COLUMNS - 1) . '"',
     ];
-    
+
     // Direction
     $temp_html = '<b>' . __('conditions55') . '</b>&nbsp;&nbsp;<select name="' . $add_prefix .
         'direction"><option value=""></option>';
@@ -466,7 +465,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     }
     $temp_html .= '</select>' . "\n";
     $add_rule_text[] = $temp_html;
-    
+
     // Target
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'target" value="">';
@@ -479,7 +478,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     }
     $temp_html .= '</select>' . "\n";
     $add_rule_text[] = $temp_html;
-    
+
     // And target
     $add_rule_text[] = '<input type="text" name="' . $add_prefix .
         'and_target" value="">';
@@ -532,9 +531,8 @@ function Process_Form($file_contents, $short_filename)
     $previous_line = '';
     $first_line = true;
     foreach (preg_split("/\n/", $file_contents) as $line) {
-        if ($line === '' ||
-             (substr($line, 0, 1) === '#' && !preg_match('/#DISABLED#/', $line))
-
+        if ('' === $line ||
+             ('#' === substr($line, 0, 1) && !preg_match('/#DISABLED#/', $line))
         ) {
             if (!$first_line) {
                 $new_file[] = $previous_line . "\n";
@@ -563,9 +561,9 @@ function Process_Form($file_contents, $short_filename)
     $default_desc = '';
     $count = deepSanitizeInput($_POST['rule_count'], 'num');
     if (!validateInput($count, 'num')) {
-        die(__('dievalidate99'));
+        exit(__('dievalidate99'));
     }
-    for ($i = -1; $i <= $count; $i++) {
+    for ($i = -1; $i <= $count; ++$i) {
         $rule_prefix = 'rule' . $i . '_';
         $description = $rule_prefix . 'description';
         $direction = $rule_prefix . 'direction';
@@ -611,12 +609,12 @@ function Process_Form($file_contents, $short_filename)
         // On no account allow invalid rule
         // Target and Action must both have values
         // delete rule if they don't
-        if ($_POST[$target] === '' || $_POST[$action] === '') {
+        if ('' === $_POST[$target] || '' === $_POST[$action]) {
             continue;
         }
-        if (strtolower($_POST[$target]) === 'default') {
+        if ('default' === strtolower($_POST[$target])) {
             // Default 'direction' can only be "Virus:" or "FromOrTo:"
-            if ($_POST[$direction] === 'Virus:') {
+            if ('Virus:' === $_POST[$direction]) {
                 $default_direction = 'Virus:';
             } else {
                 $default_direction = 'FromOrTo:';
@@ -657,7 +655,7 @@ function Process_Form($file_contents, $short_filename)
             $_POST[$and] = '';
         }
         // If any of the "and" parts are missing, clear the whole and part
-        if ($_POST[$and] === '' || $_POST[$and_direction] === '' || $_POST[$and_target] === '') {
+        if ('' === $_POST[$and] || '' === $_POST[$and_direction] || '' === $_POST[$and_target]) {
             $_POST[$and] = '';
             $_POST[$and_direction] = '';
             $_POST[$and_target] = '';
@@ -672,14 +670,14 @@ function Process_Form($file_contents, $short_filename)
                 'and' => $_POST[$and],
                 'and_direction' => $_POST[$and_direction],
                 'and_target' => $_POST[$and_target],
-                'action' => $_POST[$action]
+                'action' => $_POST[$action],
             ];
         }
     }
 
     // Ok, at this point I think we can finish assembling the new file.
     foreach ($new_ruleset as $new_rule) {
-        $new_file [] =
+        $new_file[] =
             '#' . $new_rule['description'] . "\n" .
             $new_rule['direction'] . "\t" .
             $new_rule['target'] . "\t" .
@@ -689,9 +687,9 @@ function Process_Form($file_contents, $short_filename)
             $new_rule['action'] . "\n";
     }
     // And add on the default rule if there is one.
-    if ($default_action !== '') {
+    if ('' !== $default_action) {
         $new_file[] = '#' . sanitizeInput($default_desc) . "\n";
-        $new_file[] = sanitizeInput($default_direction) . "\tdefault\t\t\t" . sanitizeInput($default_action) ."\n";
+        $new_file[] = sanitizeInput($default_direction) . "\tdefault\t\t\t" . sanitizeInput($default_action) . "\n";
     }
 
     // ### ---> Debugging
@@ -744,7 +742,8 @@ function Read_File($filename, $size)
 
 /**
  * @param string $filename
- * @param array $content
+ * @param array  $content
+ *
  * @return array
  */
 function Write_File($filename, $content)
@@ -752,14 +751,14 @@ function Write_File($filename, $content)
     // Writes a file to $filename (which must include the full path!)
     // and fills it with $content (array)
     // Returns the number of bytes written and status messages
-    
+
     // Return the number of bytes written
     $bytes = 0;
     $status_msg = '';
 
     // We will print some status messages as we're doing it.
     $status_msg .= '<span class="status">' . "\n";
-    
+
     // Make a backup copy of the file first, in case anything goes wrong.
     $status_msg .= __('backupfile55');
     $backup_name = $filename . '.bak';
@@ -796,8 +795,9 @@ function Fix_Quotes($stuff)
 {
     // Gets rid of any backslashed quotes in the stuff given to it.
     // Also gets rid of any multiple backslashes.
-    $stuff = str_replace("\\\\", "\\", $stuff);
+    $stuff = str_replace('\\\\', '\\', $stuff);
     $stuff = str_replace("\\'", "'", $stuff);
     $stuff = str_replace('\"', '"', $stuff);
+
     return $stuff;
 }

@@ -30,19 +30,19 @@
 
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 require_once MAILWATCH_HOME . '/quarantine_report.inc.php';
 
-$usersForReport = array();
+$usersForReport = [];
 if (isset($argv) && count($argv) > 1) {
     //get path from command line argument if set
     $usersForReport = explode(',', $argv[1]);
 }
 $report = new Quarantine_Report();
 $requirements_met = Quarantine_Report::check_quarantine_report_requirements();
-if ($requirements_met === true) {
+if (true === $requirements_met) {
     $report->send_quarantine_reports($usersForReport);
 } else {
     echo $requirements_met;
