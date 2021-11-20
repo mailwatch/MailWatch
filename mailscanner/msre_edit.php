@@ -119,9 +119,10 @@ if ('A' !== $_SESSION['user_type']) {
 // Functions
 
 /**
- * @param string status_msg
- *
- * @return displays the form
+ * @param string       $status_msg
+ * @param string       $short_filename
+ * @param string|false $file_contents
+ * @param array        $CONF_ruleset_keyword
  */
 function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_keyword)
 {
