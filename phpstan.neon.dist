@@ -12,10 +12,12 @@ parameters:
 	    - mailscanner/lib/ForceUTF8/Encoding.php
 	    - mailscanner/lib/htmlpurifier/HTMLPurifier.standalone.php
 	    - mailscanner/lib/maxmind-db/reader/src/MaxMind/Db/Reader.php
+	    - mailscanner/lib/maxmind-db/reader/src/MaxMind/Db/Reader/Metadata.php
 	    - mailscanner/lib/pear/Mail/mimeDecode.php
 	    - mailscanner/lib/pear/Mail/mime.php
 	    - mailscanner/lib/pear/Mail/smtp.php
 	    - mailscanner/lib/pear/Pager.php
+	    - mailscanner/lib/pear/PEAR.php
 	    - mailscanner/lib/request/Requests.php
 	    - mailscanner/lib/request/Requests/Session.php
 	    - mailscanner/lib/request/Requests/Exception.php
