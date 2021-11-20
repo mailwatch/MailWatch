@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `audit_log` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user` varchar(191) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `ip_address` varchar(15) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `ip_address` varchar(45) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `action` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `maillog` (
 --
 
 CREATE TABLE IF NOT EXISTS `mcp_rules` (
-  `rule` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `rule` varchar(191) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `rule_desc` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`rule`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `saved_filters` (
 --
 
 CREATE TABLE IF NOT EXISTS `sa_rules` (
-  `rule` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `rule` varchar(191) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `rule_desc` varchar(512) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`rule`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

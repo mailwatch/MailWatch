@@ -76,7 +76,7 @@ function pad($input)
 
 /**
  * @param string $sql
- * @param bool $beSilent
+ * @param bool   $beSilent
  */
 function executeQuery($sql, $beSilent = false)
 {
@@ -387,7 +387,7 @@ if ($link) {
     echo PHP_EOL;
     echo pad(' - Fix security issues in database');
     if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
-        $sql = "UPDATE `users` SET `fullname` = `username` WHERE `type`='U' AND `password` IS NULL";
+        $sql = "UPDATE users SET fullname = username WHERE type='U' AND password IS NULL";
         executeQuery($sql);
     } else {
         echo color(' No known security issues', 'lightgreen') . PHP_EOL;
@@ -400,7 +400,7 @@ if ($link) {
     if (false === check_table_exists('geoip_country')) {
         echo color(' ALREADY DROPPED', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'DROP TABLE IF EXISTS `geoip_country`';
+        $sql = 'DROP TABLE IF EXISTS geoip_country';
         executeQuery($sql);
     }
 
@@ -409,7 +409,7 @@ if ($link) {
     if (false === check_table_exists('spamscores')) {
         echo color(' ALREADY DROPPED', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'DROP TABLE IF EXISTS `spamscores`';
+        $sql = 'DROP TABLE IF EXISTS spamscores';
         executeQuery($sql);
     }
 
@@ -418,11 +418,11 @@ if ($link) {
     if (true === check_table_exists('autorelease')) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'CREATE TABLE IF NOT EXISTS `autorelease` (
-            `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-            `msg_id` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
-            `uid` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
-            PRIMARY KEY (`id`)
+        $sql = 'CREATE TABLE IF NOT EXISTS autorelease (
+            id BIGINT(20) NOT NULL AUTO_INCREMENT,
+            msg_id VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+            uid VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+            PRIMARY KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
         executeQuery($sql);
     }
@@ -432,11 +432,11 @@ if ($link) {
     if (true === check_table_exists('mtalog_ids')) {
         echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'CREATE TABLE IF NOT EXISTS `mtalog_ids` (
-            `smtpd_id` VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
-            `smtp_id` VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
-            UNIQUE KEY `mtalog_ids_idx` (`smtpd_id`,`smtp_id`),
-            KEY `smtpd_id` (`smtpd_id`)
+        $sql = 'CREATE TABLE IF NOT EXISTS mtalog_ids (
+            smtpd_id VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
+            smtp_id VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
+            UNIQUE KEY mtalog_ids_idx (smtpd_id,smtp_id),
+            KEY smtpd_id (smtpd_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
         executeQuery($sql);
     }
@@ -444,10 +444,10 @@ if ($link) {
     // Update users table schema for password-reset feature
     echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
     if (false === check_column_exists('users', 'resetid')) {
-        $sql = 'ALTER TABLE `users` ADD COLUMN (
-            `resetid` VARCHAR(32),
-            `resetexpire` BIGINT(20),
-            `lastreset` BIGINT(20)
+        $sql = 'ALTER TABLE users ADD COLUMN (
+            resetid VARCHAR(32),
+            resetexpire BIGINT(20),
+            lastreset BIGINT(20)
             );';
         executeQuery($sql);
     } else {
@@ -457,10 +457,10 @@ if ($link) {
     // Update users table schema for login_expiry, last_login and individual login_timeout feature
     echo pad(' - Add login_expiry and login_timeout fields in `users` table');
     if (false === check_column_exists('users', 'login_expiry')) {
-        $sql = "ALTER TABLE `users` ADD COLUMN (
-            `login_expiry` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
-            `last_login` BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
-            `login_timeout` SMALLINT(5) COLLATE utf8_unicode_ci DEFAULT '-1'
+        $sql = "ALTER TABLE users ADD COLUMN (
+            login_expiry BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+            last_login BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
+            login_timeout SMALLINT(5) COLLATE utf8_unicode_ci DEFAULT '-1'
             );";
         executeQuery($sql);
     } else {
@@ -480,7 +480,7 @@ if ($link) {
     echo pad(' - Fix schema for type field in `users` table');
     $user_type_info = getColumnInfo('users', 'type');
     if ($user_type_info['Null'] !== 'No') {
-        $sql = "ALTER TABLE `users` CHANGE `type` `type` enum('A','D','U','R','H') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'U';";
+        $sql = "ALTER TABLE users CHANGE type type enum('A','D','U','R','H') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'U';";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -493,7 +493,7 @@ if ($link) {
     echo pad(' - Fix schema for username field in `audit_log` table');
     $audit_log_user_info = getColumnInfo('audit_log', 'user');
     if ($audit_log_user_info['Type'] !== 'varchar(191)') {
-        $sql = "ALTER TABLE `audit_log` CHANGE `user` `user` VARCHAR(191) NOT NULL DEFAULT ''";
+        $sql = "ALTER TABLE audit_log CHANGE user user VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -502,8 +502,8 @@ if ($link) {
 
     echo pad(' - Fix schema for ipv6 support in `audit_log` table');
     $audit_log_ipaddr_info = getColumnInfo('audit_log', 'ip_address');
-    if ($audit_log_ipaddr_info['Type'] !== 'varchar(39)') {
-        $sql = "ALTER TABLE `audit_log` CHANGE `ip_address` `ip_address` VARCHAR(39) NOT NULL DEFAULT ''";
+    if ($audit_log_ipaddr_info['Type'] !== 'varchar(45)') {
+        $sql = "ALTER TABLE audit_log CHANGE ip_address ip_address VARCHAR(45) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -514,7 +514,7 @@ if ($link) {
     echo pad(' - Fix schema for id field in `blacklist` table');
     $blacklist_id_info = getColumnInfo('blacklist', 'id');
     if (strtolower($blacklist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($blacklist_id_info['Null']) !== 'NO' || strtolower($blacklist_id_info['Extra']) !== 'auto_increment') {
-        $sql = 'ALTER TABLE `blacklist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+        $sql = 'ALTER TABLE blacklist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -525,17 +525,17 @@ if ($link) {
     echo pad(' - Fix schema for id field in `whitelist` table');
     $whitelist_id_info = getColumnInfo('whitelist', 'id');
     if (strtolower($whitelist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($whitelist_id_info['Null']) !== 'NO' || strtolower($whitelist_id_info['Extra']) !== 'auto_increment') {
-        $sql = 'ALTER TABLE `whitelist` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+        $sql = 'ALTER TABLE whitelist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
 
-    // user name lenght to 191
+    // username lenght to 191
     echo pad(' - Fix schema for username field in `users` table');
     $users_username_info = getColumnInfo('users', 'username');
     if ($users_username_info['Type'] !== 'varchar(191)') {
-        $sql = "ALTER TABLE `users` CHANGE `username` `username` VARCHAR(191) NOT NULL DEFAULT ''";
+        $sql = "ALTER TABLE users CHANGE username username VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -544,7 +544,7 @@ if ($link) {
     echo pad(' - Fix schema for username field in `user_filters` table');
     $user_filters_username_info = getColumnInfo('users', 'username');
     if ($user_filters_username_info['Type'] !== 'varchar(191)') {
-        $sql = "ALTER TABLE `user_filters` CHANGE `username` `username` VARCHAR(191) NOT NULL DEFAULT ''";
+        $sql = "ALTER TABLE user_filters CHANGE username username VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -554,7 +554,7 @@ if ($link) {
     echo pad(' - Fix schema for spamscore field in `users` table');
     $users_spamscore_info = getColumnInfo('users', 'spamscore');
     if ($users_spamscore_info['Type'] !== 'float') {
-        $sql = "ALTER TABLE `users` CHANGE `spamscore` `spamscore` FLOAT DEFAULT '0'";
+        $sql = "ALTER TABLE users CHANGE spamscore spamscore FLOAT DEFAULT '0'";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -563,7 +563,7 @@ if ($link) {
     echo pad(' - Fix schema for highspamscore field in `users` table');
     $users_highspamscore_info = getColumnInfo('users', 'highspamscore');
     if ($users_highspamscore_info['Type'] !== 'float') {
-        $sql = "ALTER TABLE `users` CHANGE `highspamscore` `highspamscore` FLOAT DEFAULT '0'";
+        $sql = "ALTER TABLE users CHANGE highspamscore highspamscore FLOAT DEFAULT '0'";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -577,7 +577,7 @@ if ($link) {
     $maillog_timestamp_info = getColumnInfo('maillog', 'timestamp');
     if (null !== $maillog_timestamp_info['Default'] || '' !== $maillog_timestamp_info['Extra']) {
         //Set NULL default on timestamp column
-        $sql = 'ALTER TABLE `maillog` CHANGE `timestamp` `timestamp` TIMESTAMP NULL DEFAULT NULL;';
+        $sql = 'ALTER TABLE maillog CHANGE timestamp timestamp TIMESTAMP NULL DEFAULT NULL;';
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -588,7 +588,7 @@ if ($link) {
     echo pad(' - Fix schema for nameinfected in `maillog` table');
     $maillog_nameinfected = getColumnInfo('maillog', 'nameinfected');
     if ($maillog_nameinfected['Type'] !== 'tinyint(2)') {
-        $sql = 'ALTER TABLE `maillog` CHANGE `nameinfected` `nameinfected` TINYINT(2) DEFAULT 0';
+        $sql = 'ALTER TABLE maillog CHANGE nameinfected nameinfected TINYINT(2) DEFAULT 0';
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -623,8 +623,8 @@ if ($link) {
     echo pad(' - Fix schema for rule and rule_desc field in `mcp_rules` table');
     $mcp_rules_rule_info = getColumnInfo('mcp_rules', 'rule');
     $mcp_rules_rule_desc_info = getColumnInfo('mcp_rules', 'rule_desc');
-    if ($mcp_rules_rule_info['Type'] !== 'varchar(255)' || $mcp_rules_rule_desc_info['Type'] !== 'varchar(512)') {
-        $sql = "ALTER TABLE `mcp_rules` CHANGE `rule` `rule` VARCHAR(255) NOT NULL DEFAULT '', CHANGE `rule_desc` `rule_desc` VARCHAR(512) NOT NULL DEFAULT '';";
+    if ($mcp_rules_rule_info['Type'] !== 'varchar(191)' || $mcp_rules_rule_desc_info['Type'] !== 'varchar(512)') {
+        $sql = "ALTER TABLE mcp_rules CHANGE rule rule VARCHAR(191) NOT NULL DEFAULT '', CHANGE rule_desc rule_desc VARCHAR(512) NOT NULL DEFAULT '';";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -637,8 +637,8 @@ if ($link) {
     echo pad(' - Fix schema for rule and rule_desc field in `sa_rules` table');
     $sa_rules_rule_info = getColumnInfo('sa_rules', 'rule');
     $sa_rules_rule_desc_info = getColumnInfo('sa_rules', 'rule_desc');
-    if ($sa_rules_rule_info['Type'] !== 'varchar(255)' || $sa_rules_rule_desc_info['Type'] !== 'varchar(512)') {
-        $sql = "ALTER TABLE `sa_rules` CHANGE `rule` `rule` VARCHAR(255) NOT NULL DEFAULT '', CHANGE `rule_desc` `rule_desc` VARCHAR(512) NOT NULL DEFAULT ''";
+    if ($sa_rules_rule_info['Type'] !== 'varchar(191)' || $sa_rules_rule_desc_info['Type'] !== 'varchar(512)') {
+        $sql = "ALTER TABLE sa_rules CHANGE rule rule VARCHAR(191) NOT NULL DEFAULT '', CHANGE rule_desc rule_desc VARCHAR(512) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -649,7 +649,7 @@ if ($link) {
 
     // Cleanup orphaned user_filters
     echo pad(' - Cleanup orphaned user_filters');
-    $sql = 'DELETE FROM `user_filters` WHERE `username` NOT IN (SELECT `username` FROM `users`)';
+    $sql = 'DELETE FROM user_filters WHERE username NOT IN (SELECT username FROM users)';
     executeQuery($sql);
 
     // Add new column and index to audit_log table
@@ -657,7 +657,7 @@ if ($link) {
     if (true === check_column_exists('audit_log', 'id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `audit_log` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        $sql = 'ALTER TABLE audit_log ADD id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (id)';
         executeQuery($sql);
     }
 
@@ -666,7 +666,7 @@ if ($link) {
     if (true === check_column_exists('inq', 'inq_id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `inq` ADD `inq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`inq_id`)';
+        $sql = 'ALTER TABLE inq ADD inq_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (inq_id)';
         executeQuery($sql);
     }
 
@@ -675,7 +675,7 @@ if ($link) {
     if (true === check_column_exists('maillog', 'maillog_id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `maillog_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`maillog_id`)';
+        $sql = 'ALTER TABLE maillog ADD maillog_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (maillog_id)';
         executeQuery($sql);
     }
 
@@ -693,7 +693,7 @@ if ($link) {
     if (true === check_column_exists('maillog', 'token')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `token` CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
+        $sql = 'ALTER TABLE maillog ADD token CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
 
@@ -728,7 +728,7 @@ if ($link) {
     if (true === check_column_exists('maillog', 'messageid')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `messageid` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL';
+        $sql = 'ALTER TABLE maillog ADD messageid MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL';
         executeQuery($sql);
     }
 
@@ -772,7 +772,7 @@ if ($link) {
     if (true === check_column_exists('outq', 'outq_id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `outq` ADD `outq_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`outq_id`)';
+        $sql = 'ALTER TABLE outq ADD outq_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (outq_id)';
         executeQuery($sql);
     }
 
@@ -781,7 +781,7 @@ if ($link) {
     if (true === check_column_exists('saved_filters', 'id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `saved_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        $sql = 'ALTER TABLE saved_filters ADD id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (id)';
         executeQuery($sql);
     }
 
@@ -790,7 +790,7 @@ if ($link) {
     if (true === check_column_exists('user_filters', 'id')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `user_filters` ADD `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)';
+        $sql = 'ALTER TABLE user_filters ADD id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (id)';
         executeQuery($sql);
     }
 
@@ -917,9 +917,9 @@ if ($link) {
 
     foreach ($indexes as $table => $indexlist) {
         echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(
-            ' DONE',
-            'green'
-        ) . PHP_EOL;
+                ' DONE',
+                'green'
+            ) . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
@@ -1045,7 +1045,7 @@ echo pad(' - Checking minimal PHP version >= 5.4');
 if (PHP_VERSION_ID >= 50400) {
     echo color(' PHP version OK', 'lightgreen') . PHP_EOL;
 } else {
-    echo color(' WARNING: PHP version < 5.4 not fully supported (GeoLite2 not working)', 'yellow'). PHP_EOL;
+    echo color(' WARNING: PHP version < 5.4 not fully supported (GeoLite2 not working)', 'yellow') . PHP_EOL;
 }
 
 echo PHP_EOL;
