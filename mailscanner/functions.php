@@ -317,7 +317,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
     }
 
-    echo page_creation_timer();
+    if (DEBUG) {
+        echo page_creation_timer();
+    }
     echo '<!DOCTYPE HTML>' . "\n";
     echo '<html>' . "\n";
     echo '<head>' . "\n";
@@ -2823,12 +2825,14 @@ function page_creation_timer()
 {
     if (!isset($GLOBALS['pc_start_time'])) {
         $GLOBALS['pc_start_time'] = get_microtime();
-    } else {
-        $pc_end_time = get_microtime();
-        $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
 
-        return sprintf(__('pggen03') . ' %f ' . __('seconds03') . "\n", $pc_total_time);
+        return '';
     }
+
+    $pc_end_time = get_microtime();
+    $pc_total_time = $pc_end_time - $GLOBALS['pc_start_time'];
+
+    return sprintf(__('pggen03') . ' %f ' . __('seconds03') . "\n", $pc_total_time);
 }
 
 /**
