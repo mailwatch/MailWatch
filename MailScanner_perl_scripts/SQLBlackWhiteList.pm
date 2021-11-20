@@ -2,11 +2,11 @@
 # MailWatch for MailScanner
 # Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
-# Copyright (C) 2014-2018  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
+# Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 #
 #   Custom Module SQLBlackWhiteList
 #
-#   Version 1.5
+#   Version 1.6
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -63,16 +63,21 @@ my ($bwl_refresh_time) =  mailwatch_get_BWL_refresh_time();
 
 # Check MySQL version
 sub CheckSQLVersion {
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-    );
-    if (!$dbh) {
+    # Prevent dying from failed db connection
+    eval { 
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+    };
+    if ($@ || !$dbh) {
         MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList:: Unable to initialise database connection: %s", $DBI::errstr);
+        return 1;
     }
     $SQLversion = $dbh->{mysql_serverversion};
     $dbh->disconnect;
-    return $SQLversion
+    return $SQLversion;
+
 }
 
 #
@@ -131,22 +136,35 @@ sub CreateList {
     my ($sql, $to_address, $from_address, $count, $filter);
 
     # Check if MySQL is >= 5.3.3
-    if (CheckSQLVersion() >= 50503 ) {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
-        );
-        if (!$dbh) {
+    my $version = CheckSQLVersion();
+
+    # Database connection failed, so return 0 (count) and exit early
+    if ($version == 1) {
+        return 0;
+    }
+
+    if ($version >= 50503 ) {
+        eval {
+            $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+                $db_user, $db_pass,
+                { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+            );
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList::CreateList::: Unable to initialise database connection: %s", $DBI::errstr);
+            return 0;
         }
         $dbh->do('SET NAMES utf8mb4');
     } else {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-        );
-        if (!$dbh) {
+        eval {
+            $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+                $db_user, $db_pass,
+                { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+            );
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: SQLBlackWhiteList::CreateList::: Unable to initialise database connection: %s", $DBI::errstr);
+            return 0;
         }
         $dbh->do('SET NAMES utf8');
     }

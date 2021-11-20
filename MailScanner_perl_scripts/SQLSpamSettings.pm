@@ -6,7 +6,7 @@
 #
 #   Custom Module SQLSpamSettings
 #
-#   Version 1.5.1
+#   Version 1.6
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -66,16 +66,19 @@ my ($ss_refresh_time) =  mailwatch_get_SS_refresh_time();
 
 # Check MySQL version
 sub CheckSQLVersion {
-    $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-        $db_user, $db_pass,
-        { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-    );
-    if (!$dbh) {
+    eval {
+        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+            $db_user, $db_pass,
+            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+        );
+    };
+    if ($@ || !$dbh) {
         MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: Unable to initialise database connection: %s", $DBI::errstr);
+        return 1;
     }
     $SQLversion = $dbh->{mysql_serverversion};
     $dbh->disconnect;
-    return $SQLversion
+    return $SQLversion;
 }
 
 #
@@ -167,22 +170,35 @@ sub CreateScoreList
     my ($sql, $username, $count);
 
     # Check if MySQL is >= 5.3.3
-    if (CheckSQLVersion() >= 50503 ) {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
-        );
-        if (!$dbh) {
+    my $version = CheckSQLVersion();
+
+    # Cannot get SQL version, bail out with count of 0
+    if ($version == 1) {
+        return 0;
+    }
+
+    if ($version >= 50503 ) {
+        eval {
+            $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+                $db_user, $db_pass,
+                { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+            );
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: CreateScoreList::: Unable to initialise database connection: %s", $DBI::errstr);
+            return 0;
         }
         $dbh->do('SET NAMES utf8mb4');
     } else {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-        );
-        if (!$dbh) {
+        eval {
+            $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+                $db_user, $db_pass,
+                { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+            );
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateScoreList::: Unable to initialise database connection: %s", $DBI::errstr);
+            return 0;
         }
         $dbh->do('SET NAMES utf8');
     }
@@ -214,21 +230,27 @@ sub CreateNoScanList
 
     # Check if MySQL is >= 5.3.3
     if (CheckSQLVersion() >= 50503 ) {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
-        );
-        if (!$dbh) {
+        eval {
+            $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+                $db_user, $db_pass,
+                { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8mb4 => 1 }
+            );
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateNoScanList::: Unable to initialise database connection: %s", $DBI::errstr);
+            return 0;
         }
         $dbh->do('SET NAMES utf8mb4');
     } else {
-        $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
-        );
-        if (!$dbh) {
+        eval {
+            $dbh = DBI->connect("DBI:mysql:database=$db_name;host=$db_host",
+                $db_user, $db_pass,
+                { PrintError => 0, AutoCommit => 1, RaiseError => 1, mysql_enable_utf8 => 1 }
+            );
+        };
+        if ($@ || !$dbh) {
             MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateNoScanList::: Unable to initialise database connection: %s", $DBI::errstr);
+            return 0;
         }
         $dbh->do('SET NAMES utf8');
     }
