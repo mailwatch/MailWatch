@@ -1,6 +1,17 @@
 # Changelog
 
 ## Unreleased
+### Improvements
+- More performant and reliable milter queue relay parsing
+- Permit IPv4-mapped IPv6 address in audit_log table
+
+### Fixes
+- Fix missing Serializer directory
+- Prevent Logging failure in MailWatch.pm
+- Prevent MailWatch.pm from dying prematurely
+- Prevent SQLBlackWhiteList.pm from dying prematurely
+- Prevent SQLSpamSettings.pm from dying prematurely
+- Revert rule column to 191 chars (#1125)
 
 ## 1.2.18
 ### Improvements
