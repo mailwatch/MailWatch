@@ -64,19 +64,18 @@ abstract class MtaLogProcessor
     protected function processLine($line)
     {
         // Reset variables
-        unset($parsed, $_timestamp, $_host, $_type, $_msg_id, $_status);
-
-        $parsed = new SyslogParser($line);
-        $_timestamp = safe_value($parsed->timestamp);
-        $_host = safe_value($parsed->host);
+        $parser = new SyslogParser($line);
+        $_timestamp = safe_value($parser->timestamp);
+        $_host = safe_value($parser->host);
         $_dsn = '';
         $_delay = '';
         $_relay = '';
         $_msg_id = '';
         $_status = '';
+        $_type = null;
 
-        if ($parsed->process === $this->mtaprocess) {
-            $this->parse($parsed->entry);
+        if ($parser->process === $this->mtaprocess) {
+            $this->parse($parser->entry);
             if (true === DEBUG) {
                 print_r($this);
             }
@@ -130,7 +129,8 @@ abstract class MtaLogProcessor
                 $_status = safe_value($this->entries[$this->statusField]);
             }
         }
-        if (isset($_type)) {
+
+        if (null !== $_type) {
             dbquery(
                 "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
             );
@@ -145,12 +145,12 @@ abstract class MtaLogProcessor
             dbconn();
             clearstatcache();
             $currentSize = filesize($file);
-            if ($size == $currentSize) {
+            if ($size === $currentSize) {
                 sleep(1);
                 continue;
             }
 
-            $fh = fopen($file, 'r');
+            $fh = fopen($file, 'rb');
             if (!$fh) {
                 exit(__('diepipe56'));
             }
