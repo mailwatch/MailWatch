@@ -30,7 +30,7 @@ function genericqueue($queuedir)
     $queue = 0;
     if ($handle = opendir($queuedir)) {
         while (($file = readdir($handle)) !== false) {
-            if (!in_array($file, ['.', '..']) && !is_dir($dir . $file)) {
+            if (!in_array($file, ['.', '..']) && !is_dir($queuedir . $file)) {
                 ++$queue;
             }
         }
@@ -51,7 +51,7 @@ function msmailq()
             echo $row . "\n";
         }
     }
-    $output = '';
+    $output = [];
     exec('ls -l1 ' . $outgoingdir, $output);
     if (null !== $output && '' !== $output) {
         echo "\nMilter " . __('outbound03') . "\n";
