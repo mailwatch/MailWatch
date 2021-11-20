@@ -30,7 +30,6 @@
  */
 class Filter
 {
-    /** @var array */
     public $item = [];
     public $operators = [];
     public $columns = [];
@@ -94,9 +93,9 @@ class Filter
     }
 
     /**
-     * @param $column
-     * @param $operator
-     * @param $value
+     * @param string $column
+     * @param string $operator
+     * @param string $value
      */
     public function Add($column, $operator, $value)
     {
@@ -229,7 +228,7 @@ WHERE
     }
 
     /**
-     * @param $column
+     * @param string $column
      */
     public function TranslateColumn($column)
     {
@@ -237,7 +236,7 @@ WHERE
     }
 
     /**
-     * @param $operator
+     * @param string $operator
      */
     public function TranslateOperator($operator)
     {
