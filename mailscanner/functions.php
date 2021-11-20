@@ -2846,6 +2846,19 @@ function debug($text)
 }
 
 /**
+ * @return string|null
+ */
+function php_errormsg()
+{
+    $e = error_get_last();
+    if (null === $e) {
+        return null;
+    }
+
+    return $e['message'];
+}
+
+/**
  * @param $dir
  *
  * @return bool|int
@@ -3328,7 +3341,7 @@ function translate_etoi($name)
             $etoi[rtrim($regs[2])] = rtrim($regs[1]);
         }
     }
-    fclose($fh) or exit($php_errormsg);
+    fclose($fh) or exit(php_errormsg());
     if (isset($etoi[(string)$name])) {
         return $etoi[(string)$name];
     }

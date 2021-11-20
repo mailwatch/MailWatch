@@ -52,7 +52,7 @@ if (0 === $required_constant_missing_count) {
     function quarantine_reconcile()
     {
         $quarantine = get_conf_var('QuarantineDir');
-        $d = dir($quarantine) or exit($php_errormsg);
+        $d = dir($quarantine) or exit(php_errormsg());
         while (false !== ($f = $d->read())) {
             if (preg_match('/^\d{8}$/', $f) && is_array($array = quarantine_list_dir($f))) {
                 foreach ($array as $id) {
@@ -69,7 +69,7 @@ if (0 === $required_constant_missing_count) {
         $oldest = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
         $quarantine = get_conf_var('QuarantineDir');
 
-        $d = dir($quarantine) or exit($php_errormsg);
+        $d = dir($quarantine) or exit(php_errormsg());
         while (false !== ($f = $d->read())) {
             // Only interested in quarantine directories (yyyymmdd)
             if (preg_match('/^\d{8}$/', $f)) {
@@ -125,7 +125,7 @@ if (0 === $required_constant_missing_count) {
 
         if (is_dir($dir)) {
             // Main quarantine
-            $d = dir($dir) or exit($php_errormsg);
+            $d = dir($dir) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $dir/$f");
@@ -137,7 +137,7 @@ if (0 === $required_constant_missing_count) {
 
         if (is_dir($spam)) {
             // Spam folder
-            $d = dir($spam) or exit($php_errormsg);
+            $d = dir($spam) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $spam/$f");
@@ -148,7 +148,7 @@ if (0 === $required_constant_missing_count) {
         }
 
         if (is_dir($nonspam)) {
-            $d = dir($nonspam) or exit($php_errormsg);
+            $d = dir($nonspam) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $nonspam/$f");
@@ -159,7 +159,7 @@ if (0 === $required_constant_missing_count) {
         }
 
         if (is_dir($mcp)) {
-            $d = dir($mcp) or exit($php_errormsg);
+            $d = dir($mcp) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $mcp/$f");
