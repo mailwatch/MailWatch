@@ -3,14 +3,17 @@ name: Format (PHP)
 on:
   push:
     branches:
-      - 'master'
+      - '1.2'
   pull_request:
     paths:
       - '**.php'
+  # Allow manually triggering the workflow.
+  workflow_dispatch:
 
 jobs:
   php-cs-fixer:
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-latest"
+
     steps:
       - uses: actions/checkout@v2
         with:
