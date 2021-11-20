@@ -419,13 +419,27 @@ sub MailWatchLogging {
     $token = $sha1->hexdigest;
     
     # Extract message id from header
-    my ($messageid);
+    my ($messageid, $inmessageid, $messageidbuffer);
     $messageid = "";
+    $messageidbuffer = "";
+    $inmessageid = 0;
     foreach (@{$message->{headers}}) {
-        if ( $_ =~ /^message-id: (\S+)$/i ) {
-            $messageid = $1;
-            last;
-        }
+        if ( $_ =~ /^message-id: /i ) {
+            # RFC 822 unfold message-id
+            $messageidbuffer = $_;
+            $inmessageid = 1;
+            next;
+        } elsif ($inmessageid) {
+            if ($_ =~ /^\s/) {
+                # In continuation line
+                $messageidbuffer .= $_;
+            } else {
+                # End of message-id field
+                $messageid = $messageidbuffer;
+                $messageid =~ s/^message-id: //i;
+                last;
+            }
+        } 
     }
 
     # Place all data into %msg
