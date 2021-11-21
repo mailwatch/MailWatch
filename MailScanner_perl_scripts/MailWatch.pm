@@ -423,8 +423,10 @@ sub MailWatchLogging {
     $messageid = "";
     $messageidbuffer = "";
     $inmessageid = 0;
+
+    # Extract message id from header (unfold header if needed)
     foreach (@{$message->{headers}}) {
-        if ( $_ =~ /^message-id: /i ) {
+        if ( $_ =~ /^message-id:\s/i ) {
             # RFC 822 unfold message-id
             $messageidbuffer = $_;
             $inmessageid = 1;
@@ -435,11 +437,18 @@ sub MailWatchLogging {
                 $messageidbuffer .= $_;
             } else {
                 # End of message-id field
-                $messageid = $messageidbuffer;
-                $messageid =~ s/^message-id: //i;
                 last;
             }
-        } 
+        }
+    }
+
+    # Set the re-formatted message-id and trim it
+    ($messageid = $messageidbuffer) =~ s/^message-id:\s+//i;
+    $messageid =~ s/^\s+|\s+$//g;
+
+    # Warn if Message-ID was not found
+    if ($messageid eq "") {
+      MailScanner::Log::WarnLog("MailWatch: Could not extract Message-ID for %s", $message->{id});
     }
 
     # Place all data into %msg
