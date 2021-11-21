@@ -41,7 +41,7 @@ echo '<tr>
       <ul>';
 
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     $virusScanner = get_conf_var('VirusScanners');
     if (preg_match('/sophos/i', $virusScanner)) {
         echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
@@ -59,26 +59,26 @@ if ($_SESSION['user_type'] === 'A') {
         echo '<li><a href="f-prot_status.php">' . __('avfprotstatus10') . '</a>';
     }
 
-    echo '<li><a href="mysql_status.php">'.__('mysqldatabasestatus10').'</a>';
+    echo '<li><a href="mysql_status.php">' . __('mysqldatabasestatus10') . '</a>';
     echo '<li><a href="msconfig.php">' . __('viewconfms10') . '</a>';
     if (defined('MSRE') && MSRE === true) {
         echo '<li><a href="msre_index.php">' . __('editmsrules10') . '</a>';
     }
-    if (!DISTRIBUTED_SETUP && get_conf_truefalse('UseSpamAssassin') === true) {
+    if (!DISTRIBUTED_SETUP && true === get_conf_truefalse('UseSpamAssassin')) {
         echo '
-     <li><a href="bayes_info.php">'.__('spamassassinbayesdatabaseinfo10').'</a>
+     <li><a href="bayes_info.php">' . __('spamassassinbayesdatabaseinfo10') . '</a>
      <li><a href="sa_lint.php">SpamAssassin Lint (Test)</a>
      <li><a href="ms_lint.php">MailScanner Lint (Test)</a>
      <li><a href="sa_rules_update.php">' . __('updatesadesc10') . '</a>';
     }
-    if (!DISTRIBUTED_SETUP && get_conf_truefalse('MCPChecks') === true) {
+    if (!DISTRIBUTED_SETUP && true === get_conf_truefalse('MCPChecks')) {
         echo '<li><a href="mcp_rules_update.php">' . __('updatemcpdesc10') . '</a>';
     }
     echo '<li><a href="geoip_update.php">' . __('updategeoip10') . '</a>';
 }
 echo '</ul>';
 
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     echo '
    <p>' . __('links10') . '</p>
    <ul>

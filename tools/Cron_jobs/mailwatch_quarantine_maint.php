@@ -29,19 +29,19 @@
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 
-$required_constant = array('TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP');
+$required_constant = ['TIME_ZONE', 'QUARANTINE_DAYS_TO_KEEP'];
 $required_constant_missing_count = 0;
 foreach ($required_constant as $constant) {
     if (!defined($constant)) {
         echo sprintf(__('message62'), $constant) . "\n";
-        $required_constant_missing_count++;
+        ++$required_constant_missing_count;
     }
 }
-if ($required_constant_missing_count === 0) {
+if (0 === $required_constant_missing_count) {
     date_default_timezone_set(TIME_ZONE);
 
     ini_set('error_log', 'syslog');
@@ -52,7 +52,7 @@ if ($required_constant_missing_count === 0) {
     function quarantine_reconcile()
     {
         $quarantine = get_conf_var('QuarantineDir');
-        $d = dir($quarantine) or die($php_errormsg);
+        $d = dir($quarantine) or exit(php_errormsg());
         while (false !== ($f = $d->read())) {
             if (preg_match('/^\d{8}$/', $f) && is_array($array = quarantine_list_dir($f))) {
                 foreach ($array as $id) {
@@ -69,7 +69,7 @@ if ($required_constant_missing_count === 0) {
         $oldest = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
         $quarantine = get_conf_var('QuarantineDir');
 
-        $d = dir($quarantine) or die($php_errormsg);
+        $d = dir($quarantine) or exit(php_errormsg());
         while (false !== ($f = $d->read())) {
             // Only interested in quarantine directories (yyyymmdd)
             if (preg_match('/^\d{8}$/', $f)) {
@@ -121,13 +121,13 @@ if ($required_constant_missing_count === 0) {
         $spam = "$dir/spam";
         $nonspam = "$dir/nonspam";
         $mcp = "$dir/mcp";
-        $array = array();
+        $array = [];
 
         if (is_dir($dir)) {
             // Main quarantine
-            $d = dir($dir) or die($php_errormsg);
+            $d = dir($dir) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $dir/$f");
                     $array[] = $f;
                 }
@@ -137,9 +137,9 @@ if ($required_constant_missing_count === 0) {
 
         if (is_dir($spam)) {
             // Spam folder
-            $d = dir($spam) or die($php_errormsg);
+            $d = dir($spam) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $spam/$f");
                     $array[] = $f;
                 }
@@ -148,9 +148,9 @@ if ($required_constant_missing_count === 0) {
         }
 
         if (is_dir($nonspam)) {
-            $d = dir($nonspam) or die($php_errormsg);
+            $d = dir($nonspam) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $nonspam/$f");
                     $array[] = $f;
                 }
@@ -159,9 +159,9 @@ if ($required_constant_missing_count === 0) {
         }
 
         if (is_dir($mcp)) {
-            $d = dir($mcp) or die($php_errormsg);
+            $d = dir($mcp) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
-                if ($f !== '.' && $f !== '..' && $f !== 'spam' && $f !== 'nonspam' && $f !== 'mcp') {
+                if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
                     //dbg("Found $mcp/$f");
                     $array[] = $f;
                 }
@@ -172,7 +172,7 @@ if ($required_constant_missing_count === 0) {
         return $array;
     }
 
-    if ($_SERVER['argc'] !== 1 && $_SERVER['argc'] <= 2) {
+    if (1 !== $_SERVER['argc'] && $_SERVER['argc'] <= 2) {
         switch ($_SERVER['argv'][1]) {
             case '--clean':
                 quarantine_clean();
@@ -182,9 +182,9 @@ if ($required_constant_missing_count === 0) {
                 quarantine_reconcile();
                 break;
             default:
-                die('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
+                exit('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
         }
     } else {
-        die('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
+        exit('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
     }
 }

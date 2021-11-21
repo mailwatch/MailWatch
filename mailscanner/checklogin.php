@@ -34,12 +34,12 @@ if (isset($_POST['token'])) {
     if (!isset($_SESSION['token'])) {
         //login page timed out and session for token is not valid anymore
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
 
     if (false === checkToken($_POST['token'])) {
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
 }
 $_SESSION['token'] = generateToken();
@@ -52,7 +52,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     if (!isset($_POST['myusername'], $_POST['mypassword'])) {
         header('Location: login.php?error=baduser');
         logFailedLogin();
-        die();
+        exit();
     }
     $myusername = html_entity_decode($_POST['myusername']);
     $mypassword = $_POST['mypassword'];
@@ -76,13 +76,13 @@ if (defined('USE_LDAP') &&
     $myusername = safe_value($myusername);
     $mypassword = safe_value($mypassword);
 } else {
-    if ($mypassword !== '') {
+    if ('' !== $mypassword) {
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
     } else {
         header('Location: login.php?error=emptypassword');
         logFailedLogin($myusername);
-        die();
+        exit();
     }
 }
 
@@ -91,24 +91,24 @@ $result = dbquery($sql);
 
 // mysql_num_row is counting table row
 $usercount = $result->num_rows;
-if ($usercount === 0) {
+if (0 === $usercount) {
     //no user found, redirect to login
     dbclose();
     header('Location: login.php?error=baduser');
     logFailedLogin($myusername);
-    die();
+    exit();
 }
 
 if (
-    ($_SESSION['user_ldap'] === false) &&
-    ($_SESSION['user_imap'] === false)
+    (false === $_SESSION['user_ldap']) &&
+    (false === $_SESSION['user_imap'])
 ) {
     $passwordInDb = database::mysqli_result($result, 0, 'password');
     if (!password_verify($mypassword, $passwordInDb)) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
             logFailedLogin($myusername);
-            die();
+            exit();
         }
 
         $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
@@ -170,7 +170,7 @@ switch ($usertype) {
 }
 
 // If result matched $myusername and $mypassword, table row must be 1 row
-if ($usercount === 1) {
+if (1 === $usercount) {
     session_regenerate_id(true);
     // Register $myusername, $mypassword and redirect to file "login_success.php"
     $_SESSION['myusername'] = $myusername;

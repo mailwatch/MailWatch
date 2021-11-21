@@ -32,7 +32,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // Check to see if the user is an administrater
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     // If the user isn't an administrater send them back to the index page.
     header('Location: index.php');
     audit_log(__('auditlog19', true));
@@ -45,7 +45,7 @@ if ($_SESSION['user_type'] !== 'A') {
     echo '<td align="center">';
 
     // Obtain ClamAV and pattern versions from clamscan
-    exec("which clamscan", $clamscan);
+    exec('which clamscan', $clamscan);
     if (isset($clamscan[0])) {
         passthru("$clamscan[0] -V | awk -f " . __DIR__ . '/clamav.awk');
     }

@@ -43,7 +43,7 @@ echo '<table align="center" class="boxtable" border="0" cellspacing="1" cellpadd
 echo '<tr><th colspan="2">' . __('bayesdatabaseinfo18') . '</th></tr>' . "\n";
 
 // Clear Bayes database
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     $return = 0;
     if (isset($_POST['clear'])) {
         if (!is_file(SA_DIR . 'sa-learn')) {
@@ -53,7 +53,7 @@ if ($_SESSION['user_type'] === 'A') {
         } else {
             // You can use --force-expire instead of --clear to test the routine
             passthru(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --clear', $return);
-            if ($return === 0) {
+            if (0 === $return) {
                 audit_log(__('auditlogwipe18', true));
             } else {
                 echo '<div class="error center">' . "\n";
@@ -67,7 +67,7 @@ if ($_SESSION['user_type'] === 'A') {
 
 // Open the spamassassin file
 if (!is_file(SA_DIR . 'sa-learn')) {
-    die(__('cannotfind18') . ' ' . SA_DIR . 'sa-learn');
+    exit(__('cannotfind18') . ' ' . SA_DIR . 'sa-learn');
 }
 $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
 
@@ -124,7 +124,7 @@ while (!feof($fh)) {
             case 'last expire reduction count':
                 echo '<tr><td class="heading">' . __('lastexpirycount18') . '</td><td align="right">' . number_format(
                     $regs[3]
-                ) . ' ' . __('tokens18') .'</td></tr>' . "\n";
+                ) . ' ' . __('tokens18') . '</td></tr>' . "\n";
                 break;
         }
     }
@@ -137,7 +137,7 @@ pclose($fh);
 echo '</table>' . "\n";
 
 // Clear button
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     echo '<br>' . "\n";
     echo '<div class="center">' . "\n";
     echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >' . "\n";

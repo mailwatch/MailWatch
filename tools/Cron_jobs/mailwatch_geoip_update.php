@@ -29,13 +29,13 @@
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 
-if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxmind")) {
+if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxmind')) {
     $error_message = __('geoipnokey15') . "\n\n";
-    die($error_message);
+    exit($error_message);
 }
 
 require_once MAILWATCH_HOME . '/lib/request/Requests.php';
@@ -46,12 +46,12 @@ ob_start();
 echo 'Downloading file, please wait...' . "\n";
 
 $files_base_url = 'https://download.maxmind.com';
-$file = array(
+$file = [
     'description' => __('geoip15'),
     'path' => '/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=' . MAXMIND_LICENSE_KEY,
     'destination' => MAILWATCH_HOME . '/temp/GeoLite2-Country.tar.gz',
-    'destinationFileName' => 'GeoLite2-Country.mmdb'
-);
+    'destinationFileName' => 'GeoLite2-Country.mmdb',
+];
 
 $extract_dir = MAILWATCH_HOME . '/temp/';
 
@@ -66,12 +66,12 @@ flush();
 if (file_exists($file['destination'])) {
     $error_message = __('message752') . "\n";
     $error_message .= __('message852') . " $extract_dir" . '.';
-    die($error_message);
+    exit($error_message);
 }
 
 if (!is_writable($extract_dir) || !is_readable($extract_dir)) {
     // Unable to read or write to the directory
-    die(__('norread52') . ' ' . $extract_dir . ' ' . __('directory52') . ".\n");
+    exit(__('norread52') . ' ' . $extract_dir . ' ' . __('directory52') . ".\n");
 }
 
 if (function_exists('fsockopen') || extension_loaded('curl')) {
@@ -80,15 +80,15 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
 
     if (USE_PROXY === true) {
         if (PROXY_USER !== '') {
-            $requestSession->options['proxy']['authentication'] = array(
+            $requestSession->options['proxy']['authentication'] = [
                 PROXY_SERVER . ':' . PROXY_PORT,
                 PROXY_USER,
-                PROXY_PASS
-            );
+                PROXY_PASS,
+            ];
         } else {
-            $requestSession->options['proxy']['authentication'] = array(
-                PROXY_SERVER . ':' . PROXY_PORT
-            );
+            $requestSession->options['proxy']['authentication'] = [
+                PROXY_SERVER . ':' . PROXY_PORT,
+            ];
         }
 
         switch (PROXY_TYPE) {
@@ -102,14 +102,14 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
                 $requestSession->options['proxy']['type'] = 'SOCKS5';
                 break;
             default:
-                die(__('dieproxy52'));
+                exit(__('dieproxy52'));
         }
     }
 
     try {
         $requestSession->options['filename'] = $file['destination'];
         $result = $requestSession->get($file['path']);
-        if ($result->success === true) {
+        if (true === $result->success) {
             echo $file['description'] . ' ' . __('downok52') . "\n";
         }
     } catch (Requests_Exception $e) {
@@ -145,7 +145,7 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
     }
 } else {
     $error_message = __('message352') . "\n" . __('message452');
-    die($error_message);
+    exit($error_message);
 }
 
 // Extract files
@@ -178,7 +178,7 @@ if (class_exists('PharData')) {
 } else {
     // Unable to extract the file correctly
     $error_message = __('message552') . "\n" . $error_message .= __('message652');
-    die($error_message);
+    exit($error_message);
 }
 
 // Apply MailWatch rights on files from the last run
@@ -189,13 +189,13 @@ if (is_file('/etc/sudoers.d/mailwatch')) {
         $retval_cat
     );
     if ($retval_cat > 0) {
-        die(__('nofind52') . '.' . "\n");
+        exit(__('nofind52') . '.' . "\n");
     }
 
     $path = $extract_dir . $file['destinationFileName'];
     passthru("chown $mwUID.$mwUID $path", $retval_chown);
     if ($retval_chown > 0) {
-        die(__('nofindowner52') . ' ' . $extract_dir . "\n");
+        exit(__('nofindowner52') . ' ' . $extract_dir . "\n");
     }
 } else {
     echo __('nosudoerfile52') . ' ' . $extract_dir . "\n";

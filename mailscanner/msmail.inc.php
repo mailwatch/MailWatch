@@ -29,13 +29,14 @@ function genericqueue($queuedir)
 {
     $queue = 0;
     if ($handle = opendir($queuedir)) {
-        while (($file=readdir($handle)) !== false) {
-            if (!in_array($file, ['.','..']) && !is_dir($dir.$file)) {
-                $queue++;
+        while (($file = readdir($handle)) !== false) {
+            if (!in_array($file, ['.', '..']) && !is_dir($queuedir . $file)) {
+                ++$queue;
             }
         }
     }
     closedir($handle);
+
     return $queue;
 }
 
@@ -44,15 +45,15 @@ function msmailq()
     $incomingdir = get_conf_var('incomingqueuedir', true);
     $outgoingdir = get_conf_var('outgoingqueuedir', true);
     exec('ls -l1 ' . $incomingdir, $output);
-    if ($output !== null && $output !== '') {
+    if (null !== $output && '' !== $output) {
         echo 'Milter ' . __('inbound03') . "\n";
         foreach ($output as $row) {
             echo $row . "\n";
         }
     }
-    $output = '';
+    $output = [];
     exec('ls -l1 ' . $outgoingdir, $output);
-    if ($output !== null && $output !== '') {
+    if (null !== $output && '' !== $output) {
         echo "\nMilter " . __('outbound03') . "\n";
         foreach ($output as $row) {
             echo $row . "\n";

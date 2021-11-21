@@ -31,8 +31,8 @@ function postfixinq()
     $inq = 0;
     while (false !== ($file = readdir($handle))) {
         //evaluate each entry, removing the . & .. entries
-        if ($file !== '.' && $file !== '..') {
-            $inq++;
+        if ('.' !== $file && '..' !== $file) {
+            ++$inq;
         }
     }
     closedir($handle);
@@ -52,7 +52,7 @@ function postfixallq()
 function postfixmailq()
 {
     exec('mailq', $output);
-    if ($output !== null && $output !== '') {
+    if (null !== $output && '' !== $output) {
         foreach ($output as $row) {
             echo $row . "\n";
         }

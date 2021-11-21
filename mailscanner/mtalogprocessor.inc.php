@@ -40,6 +40,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param array $match
+     *
      * @return array
      */
     abstract public function extractKeyValuePairs($match);
@@ -63,19 +64,18 @@ abstract class MtaLogProcessor
     protected function processLine($line)
     {
         // Reset variables
-        unset($parsed, $_timestamp, $_host, $_type, $_msg_id, $_status);
-
-        $parsed = new SyslogParser($line);
-        $_timestamp = safe_value($parsed->timestamp);
-        $_host = safe_value($parsed->host);
+        $parser = new SyslogParser($line);
+        $_timestamp = safe_value($parser->timestamp);
+        $_host = safe_value($parser->host);
         $_dsn = '';
         $_delay = '';
         $_relay = '';
         $_msg_id = '';
         $_status = '';
-        
-        if ($parsed->process === $this->mtaprocess) {
-            $this->parse($parsed->entry);
+        $_type = null;
+
+        if ($parser->process === $this->mtaprocess) {
+            $this->parse($parser->entry);
             if (true === DEBUG) {
                 print_r($this);
             }
@@ -129,7 +129,8 @@ abstract class MtaLogProcessor
                 $_status = safe_value($this->entries[$this->statusField]);
             }
         }
-        if (isset($_type)) {
+
+        if (null !== $_type) {
             dbquery(
                 "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
             );
@@ -139,25 +140,25 @@ abstract class MtaLogProcessor
     public function follow($file)
     {
         $size = filesize($file);
-        $lines=1;
+        $lines = 1;
         while (true) {
             dbconn();
             clearstatcache();
             $currentSize = filesize($file);
-            if ($size == $currentSize) {
+            if ($size === $currentSize) {
                 sleep(1);
                 continue;
             }
 
-            $fh = fopen($file, "r");
+            $fh = fopen($file, 'rb');
             if (!$fh) {
-                die(__('diepipe56'));
+                exit(__('diepipe56'));
             }
             fseek($fh, $size);
 
             while ($line = fgets($fh)) {
                 $this->processLine($line);
-                $lines++;
+                ++$lines;
             }
             fclose($fh);
             dbclose();
@@ -167,16 +168,16 @@ abstract class MtaLogProcessor
 
     public function doit($input)
     {
-        global $fp;//@todo do we need this?
+        global $fp; //@todo do we need this?
         if (!$fp = popen($input, 'r')) {
-            die(__('diepipe56'));
+            exit(__('diepipe56'));
         }
         dbconn();
 
         $lines = 1;
         while ($line = fgets($fp, 2096)) {
             $this->processLine($line);
-            $lines++;
+            ++$lines;
         }
         dbclose();
         pclose($fp);
@@ -184,6 +185,7 @@ abstract class MtaLogProcessor
 
     /**
      * @param string $line
+     *
      * @return bool
      */
     public function parse($line)

@@ -26,11 +26,10 @@
  */
 
 /**
- * Class Filter
+ * Class Filter.
  */
 class Filter
 {
-    /** @var array */
     public $item = [];
     public $operators = [];
     public $columns = [];
@@ -57,7 +56,7 @@ class Filter
             'REGEXP' => __('regexp09'),
             'NOT REGEXP' => __('notregexp09'),
             'IS NULL' => __('isnull09'),
-            'IS NOT NULL' => __('isnotnull09')
+            'IS NOT NULL' => __('isnotnull09'),
         ];
         $this->columns = [
             'date' => __('date09'),
@@ -89,14 +88,14 @@ class Filter
             'nameinfected' => __('nameinfected09'),
             'otherinfected' => __('otherinfected09'),
             'report' => __('report09'),
-            'hostname' => __('hostname09')
+            'hostname' => __('hostname09'),
         ];
     }
 
     /**
-     * @param $column
-     * @param $operator
-     * @param $value
+     * @param string $column
+     * @param string $operator
+     * @param string $value
      */
     public function Add($column, $operator, $value)
     {
@@ -187,10 +186,10 @@ WHERE
     {
         $sql = '';
         foreach ($this->item as $key => $val) {
-            if ($val[0] === 'date') {
+            if ('date' === $val[0]) {
                 // Change field from timestamp to date format
                 $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
-                
+
                 $sql .= self::getSqlCondition($val);
             }
         }
@@ -207,19 +206,19 @@ WHERE
 
         return $sql;
     }
-    
+
     private static function getSqlCondition($val)
     {
         // If LIKE selected - place wildcards either side of the query string
-        if ($val[1] === 'LIKE' || $val[1] === 'NOT LIKE') {
+        if ('LIKE' === $val[1] || 'NOT LIKE' === $val[1]) {
             $val[2] = '%' . $val[2] . '%';
         }
         if (is_numeric($val[2])) {
             return "AND\n $val[0] $val[1] $val[2]\n";
-        } elseif ($val[1] === 'IS NULL' || $val[1] === 'IS NOT NULL') {
+        } elseif ('IS NULL' === $val[1] || 'IS NOT NULL' === $val[1]) {
             // Handle NULL and NOT NULL's
             return "AND\n $val[0] $val[1]\n";
-        } elseif ($val[2]!=='' && $val[2][0] === '!') {
+        } elseif ('' !== $val[2] && '!' === $val[2][0]) {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
         } else {
@@ -229,8 +228,7 @@ WHERE
     }
 
     /**
-     * @param $column
-     * @return mixed
+     * @param string $column
      */
     public function TranslateColumn($column)
     {
@@ -238,8 +236,7 @@ WHERE
     }
 
     /**
-     * @param $operator
-     * @return mixed
+     * @param string $operator
      */
     public function TranslateOperator($operator)
     {
@@ -308,7 +305,7 @@ WHERE
     /**
      * @param string $url
      * @param string $description
-     * @param bool $useToken
+     * @param bool   $useToken
      */
     public function AddReport($url, $description, $useToken = false)
     {
@@ -356,7 +353,7 @@ WHERE
         if (!validateInput($name, 'general')) {
             return;
         }
-        
+
         dbconn();
         $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
         $sth = dbquery($sql);
@@ -374,7 +371,7 @@ WHERE
         if (!validateInput($name, 'general')) {
             return;
         }
-        
+
         dbconn();
         $sql = "DELETE FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes($_SESSION['myusername'])) . "' AND `name`='$name'";
         dbquery($sql);
@@ -396,6 +393,7 @@ WHERE
 
     /**
      * @param string $operator
+     *
      * @return bool
      */
     private function ValidateOperator($operator)
@@ -404,9 +402,10 @@ WHERE
 
         return in_array($operator, $validKeys, true);
     }
-    
+
     /**
      * @param string $column
+     *
      * @return bool
      */
     private function ValidateColumn($column)

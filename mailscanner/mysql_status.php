@@ -31,7 +31,7 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('mysqlstatus31'), 0, false, false);
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     echo __('notauthorized31') . '\n';
 } else {
     audit_log(__('auditlog31', true));

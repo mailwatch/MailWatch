@@ -49,7 +49,7 @@ if (!isset($_GET['dir'])) {
             echo '<tr><td align="right"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $date . '">' . translateQuarantineDate(
                 $date,
                 DATE_FORMAT
-            ) .  '</a></td>' . "\n";
+            ) . '</a></td>' . "\n";
             echo '<td align="left">' . $rowstr . '</a></td></tr>' . "\n";
         }
         echo '</table>' . "\n";
@@ -76,23 +76,23 @@ if (!isset($_GET['dir'])) {
             }
             echo '</table>' . "\n";
         } else {
-            die(__('dienodir08') . "\n");
+            exit(__('dienodir08') . "\n");
         }
     }
 } else {
     if (false === checkToken($_GET['token'])) {
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
     $dir = deepSanitizeInput($_GET['dir'], 'url');
     if (!validateInput($dir, 'quardir')) {
-        die(__('dievalidate99'));
+        exit(__('dievalidate99'));
     }
 
     if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-        die(__('dievalidate99'));
+        exit(__('dievalidate99'));
     }
-    
+
     if (QUARANTINE_USE_FLAG) {
         dbconn();
         $date = translateQuarantineDate($dir, 'sql');
@@ -135,7 +135,7 @@ AND
  quarantined = 1";
 
         // Hide high spam/mcp from regular users if enabled
-        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
             $sql .= '
     AND
      ishighspam=0
@@ -194,7 +194,7 @@ ORDER BY
    BINARY id IN ($msg_ids)";
 
             // Hide high spam/mcp from regular users if enabled
-            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
                 $sql .= '
     AND
      ishighspam=0

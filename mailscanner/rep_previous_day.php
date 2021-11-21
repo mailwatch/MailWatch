@@ -37,7 +37,7 @@ require __DIR__ . '/login.function.php';
 $filter = html_start(__('totalmaillasthours36'), 0, false, true);
 
 $graphgenerator = new GraphGenerator();
-$graphgenerator->sqlQuery = "
+$graphgenerator->sqlQuery = '
  SELECT
   timestamp AS xaxis,
   1 as total_mail,
@@ -50,7 +50,7 @@ $graphgenerator->sqlQuery = "
   1=1
  AND
   timestamp BETWEEN (NOW() - INTERVAL 24 HOUR) AND NOW()
-" . $filter->CreateSQL() . '
+' . $filter->CreateSQL() . '
  ORDER BY
   timestamp DESC
 ';
@@ -85,22 +85,22 @@ $graphgenerator->graphColumns = [
     ],
     'dataNumericColumns' => [
         ['total_mailconv', 'total_virusconv', 'total_spamconv'],
-        ['total_sizeconv']
+        ['total_sizeconv'],
     ],
     'dataFormattedColumns' => [
         ['total_mailconv', 'total_virusconv', 'total_spamconv'],
-        ['total_sizeconvconv']
+        ['total_sizeconvconv'],
     ],
     'xAxeDescription' => __('hours36'),
     'yAxeDescriptions' => [
         __('nomessages36'),
-        __('volume36')
+        __('volume36'),
     ],
-    'fillBelowLine' => ['false', 'true']
+    'fillBelowLine' => ['false', 'true'],
 ];
 $graphgenerator->types = [
     ['bar', 'bar', 'bar'],
-    ['line']
+    ['line'],
 ];
 $graphgenerator->graphTitle = __('totalmaillasthours36');
 $graphgenerator->settings['timeInterval'] = 'P1D';

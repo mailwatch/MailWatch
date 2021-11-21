@@ -6,8 +6,7 @@
 /_msconfig/
 /vendor/
 
-composer.json
-composer.lock
 rector.php
 .php-cs-fixer-dist.php
 .php-cs-fixer.cache
+/phpstan.neon

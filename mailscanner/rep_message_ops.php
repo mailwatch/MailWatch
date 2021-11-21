@@ -37,19 +37,19 @@ $filter = html_start(__('messagelisting17'), 0, false, true);
 
 if (false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    die();
+    exit();
 }
 
 if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-    die(__('dievalidate99'));
+    exit(__('dievalidate99'));
 }
 
 if (isset($_GET['orderby']) && !validateInput(deepSanitizeInput($_GET['orderby'], 'url'), 'orderby')) {
-    die(__('dievalidate99'));
+    exit(__('dievalidate99'));
 }
 
 if (isset($_GET['orderdir']) && !validateInput(deepSanitizeInput($_GET['orderdir'], 'url'), 'orderdir')) {
-    die(__('dievalidate99'));
+    exit(__('dievalidate99'));
 }
 
 // Checks to see if you are looking for quarantined files only
@@ -97,7 +97,7 @@ $sql .= "
 " . $_SESSION['filter']->CreateSQL();
 
 // Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
     $sql .= '
     AND
      ishighspam=0

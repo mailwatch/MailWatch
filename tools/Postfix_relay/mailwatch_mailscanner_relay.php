@@ -33,7 +33,7 @@ ini_set('implicit_flush', 'false');
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 
@@ -44,7 +44,7 @@ function doit($input)
 {
     global $fp;
     if (!$fp = popen($input, 'r')) {
-        die(__('diepipe54'));
+        exit(__('diepipe54'));
     }
 
     $lines = 1;
@@ -54,12 +54,12 @@ function doit($input)
             $smtp_id = $explode[2];
             dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
         }
-        $lines++;
+        ++$lines;
     }
     pclose($fp);
 }
 
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--refresh') {
+if (isset($_SERVER['argv'][1]) && '--refresh' === $_SERVER['argv'][1]) {
     doit('cat ' . MS_LOG);
 } else {
     // Refresh first

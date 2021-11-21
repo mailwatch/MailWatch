@@ -33,9 +33,9 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('geoipupdate15'), 0, false, false);
 
-if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxmind")) {
+if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxmind')) {
     $error_message = __('geoipnokey15') . '<br>' . "\n";
-    die($error_message);
+    exit($error_message);
 } elseif (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">
             <input type="hidden" name="run" value="true">
@@ -87,11 +87,11 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxm
                         $requestSession->options['proxy']['authentication'] = [
                             PROXY_SERVER . ':' . PROXY_PORT,
                             PROXY_USER,
-                            PROXY_PASS
+                            PROXY_PASS,
                         ];
                     } else {
                         $requestSession->options['proxy']['authentication'] = [
-                            PROXY_SERVER . ':' . PROXY_PORT
+                            PROXY_SERVER . ':' . PROXY_PORT,
                         ];
                     }
 
@@ -106,14 +106,14 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxm
                             $requestSession->options['proxy']['type'] = 'SOCKS5';
                             break;
                         default:
-                            die(__('dieproxy15'));
+                            exit(__('dieproxy15'));
                     }
                 }
 
                 try {
                     $requestSession->options['filename'] = $file['destination'];
                     $result = $requestSession->get($file['path']);
-                    if ($result->success === true) {
+                    if (true === $result->success) {
                         echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                     }
                 } catch (Requests_Exception $e) {
@@ -149,7 +149,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxm
                 }
             } else {
                 $error_message = __('message315') . '<br>' . "\n" . __('message415');
-                die($error_message);
+                exit($error_message);
             }
 
             // Extract files
@@ -170,7 +170,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxm
 
                     if ($item->isDir()) {
                         $extractedFolder = $item->getFilename();
-                        if (rename($extract_dir . $extractedFolder . '/' . $file['destinationFileName'], $extract_dir.$file['destinationFileName'])) {
+                        if (rename($extract_dir . $extractedFolder . '/' . $file['destinationFileName'], $extract_dir . $file['destinationFileName'])) {
                             array_map('unlink', glob($extract_dir . $extractedFolder . '/*'));
                             rmdir($extract_dir . $extractedFolder);
                         }
@@ -179,7 +179,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxm
             } else {
                 // Unable to extract the file correctly
                 $error_message = __('message515') . "<br>\n" . __('message615');
-                die($error_message);
+                exit($error_message);
             }
 
             echo __('processok15') . "\n";
@@ -188,12 +188,12 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, "maxm
             audit_log(__('auditlog15', true));
         } else {
             // Unable to read or write to the directory
-            die(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");
+            exit(__('norread15') . ' ' . $extract_dir . ' ' . __('directory15') . ".\n");
         }
     } else {
         $error_message = __('message715') . "<br>\n";
         $error_message .= __('message815') . " $extract_dir" . '.';
-        die($error_message);
+        exit($error_message);
     }
 }
 

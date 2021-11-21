@@ -31,7 +31,7 @@ require_once __DIR__ . '/functions.php';
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
-if ($_SESSION['user_type'] !== 'A') {
+if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
     audit_log(__('auditlog11', true));
 } else {
@@ -67,11 +67,12 @@ if ($_SESSION['user_type'] !== 'A') {
         foreach ($files as $file) {
             $lines = array_filter(array_map(function ($line) {
                 $parts = explode('=', $line);
-                if (count($parts) !== 2) {
+                if (2 !== count($parts)) {
                     return false;
                 }
                 $parts[1] = str_replace(['"', "'"], '', $parts[1]);
                 $parts[1] = trim($parts[1]);
+
                 return $parts;
             }, file($file)));
             foreach ($lines as $line) {
@@ -81,17 +82,17 @@ if ($_SESSION['user_type'] !== 'A') {
         if (isset($vars['ID']) && in_array(strtolower($vars['ID']), ['centos', 'debian'], true)) {
             echo __('systemos11') . ' ' . $vars['PRETTY_NAME'] . '<br>' . "\n";
         }
-        if (isset($vars['ID']) && strtolower($vars['ID']) === 'ubuntu') {
+        if (isset($vars['ID']) && 'ubuntu' === strtolower($vars['ID'])) {
             echo __('systemos11') . ' ' . $vars['NAME'] . ' ' . $vars['VERSION'] . '<br>' . "\n";
         }
     }
-    if (strtolower(PHP_OS) === 'freebsd') {
+    if ('freebsd' === strtolower(PHP_OS)) {
         echo __('systemos11') . ' ' . PHP_OS . ' ' . php_uname('r') . ' ' . php_uname('m') . '<br>' . "\n";
     }
 
     // Add test for MTA
     $mta = get_conf_var('mta');
-    if (get_conf_var('MTA', true) === 'postfix' || get_conf_var('MTA', true) === 'msmail') {
+    if ('postfix' === get_conf_var('MTA', true) || 'msmail' === get_conf_var('MTA', true)) {
         echo '<br>' . "\n";
         echo 'Postfix ' . __('version11') . ' ';
         exec('which postconf', $postconf);
@@ -102,7 +103,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         echo '<br>' . "\n";
     }
-    if (get_conf_var('MTA', true) === 'exim') {
+    if ('exim' === get_conf_var('MTA', true)) {
         echo '<br>' . "\n";
         echo 'Exim ' . __('version11') . ' ';
         exec('which exim', $exim);
@@ -113,7 +114,7 @@ if ($_SESSION['user_type'] !== 'A') {
         }
         echo '<br>' . "\n";
     }
-    if (get_conf_var('MTA', true) === 'sendmail') {
+    if ('sendmail' === get_conf_var('MTA', true)) {
         echo '<br>' . "\n";
         echo 'Sendmail ' . __('version11') . ' ';
         exec('which sendmail', $sendmail);
@@ -133,7 +134,7 @@ if ($_SESSION['user_type'] !== 'A') {
     // Add test for other virus scanners.
     if (false !== stripos($virusScanner, 'clam')) {
         echo 'ClamAV ' . __('version11') . ' ';
-        exec("which clamscan", $clamscan);
+        exec('which clamscan', $clamscan);
         if (isset($clamscan[0])) {
             passthru("$clamscan[0] -V | cut -d/ -f1 | cut -d' ' -f2");
         }

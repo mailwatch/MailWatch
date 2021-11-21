@@ -48,12 +48,12 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
     } else {
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
     }
 
@@ -62,12 +62,12 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     } else {
         $action = deepSanitizeInput($_GET['action'], 'url');
     }
-    
+
     switch (strtolower($action)) {
         case 'add':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                die();
+                exit();
             }
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], sanitizeInput($_POST['value']));
             break;
@@ -81,12 +81,12 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
         case 'save':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                die();
+                exit();
             }
             if (isset($_POST['save_as'])) {
                 $name = sanitizeInput($_POST['save_as']);
             }
-            if (isset($_POST['filter']) && $_POST['filter'] !== '_none_') {
+            if (isset($_POST['filter']) && '_none_' !== $_POST['filter']) {
                 $name = sanitizeInput($_POST['filter']);
             }
             if (!empty($name)) {
@@ -96,14 +96,14 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
         case 'load':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                die();
+                exit();
             }
             $filter->Load(sanitizeInput($_POST['filter']));
             break;
         case 'delete':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                die();
+                exit();
             }
             $filter->Delete(sanitizeInput($_POST['filter']));
             break;
@@ -133,15 +133,15 @@ $filter->AddReport('rep_top_sender_domains_by_volume.php', __('topsendersdomvol1
 $filter->AddReport('rep_top_recipient_domains_by_quantity.php', __('toprecipdomqt14'));
 $filter->AddReport('rep_top_recipient_domains_by_volume.php', __('toprecipdomvol14'));
 
-if (get_conf_truefalse('UseSpamAssassin') === true) {
+if (true === get_conf_truefalse('UseSpamAssassin')) {
     $filter->AddReport('rep_sa_score_dist.php', __('assassinscoredist14'));
     $filter->AddReport('rep_sa_rule_hits.php', __('assassinrulhit14'));
 }
-if (get_conf_truefalse('MCPChecks') === true) {
+if (true === get_conf_truefalse('MCPChecks')) {
     $filter->AddReport('rep_mcp_score_dist.php', __('mcpscoredist14'));
     $filter->AddReport('rep_mcp_rule_hits.php', __('mcprulehit14'));
 }
-if ($_SESSION['user_type'] === 'A') {
+if ('A' === $_SESSION['user_type']) {
     $filter->AddReport('rep_audit_log.php', __('auditlog14'), true);
 }
 $filter->Display($_SESSION['token']);

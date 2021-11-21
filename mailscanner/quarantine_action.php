@@ -57,13 +57,13 @@ function simple_html_result($status)
             <td valign="middle" align="center">
                 <table border=0>
                     <tr>
-                        <th><?php echo __('result57') ?></th>
+                        <th><?php echo __('result57'); ?></th>
                     </tr>
                     <tr>
                         <td><?php echo $status; ?></td>
                     </tr>
                     <tr>
-                        <td align="center"><b><a href="javascript:window.close()"><?php echo __('closewindow57') ?></a></td>
+                        <td align="center"><b><a href="javascript:window.close()"><?php echo __('closewindow57'); ?></a></td>
                     </tr>
                 </table>
             </td>
@@ -73,34 +73,34 @@ function simple_html_result($status)
 }
 
 if (!isset($_GET['id'])) {
-    die(__('dienoid57'));
+    exit(__('dienoid57'));
 }
 if (!isset($_GET['action'])) {
-    die(__('dienoaction57'));
+    exit(__('dienoaction57'));
 }
 
 $id = deepSanitizeInput($_GET['id'], 'url');
-if ($id === false || !validateInput($id, 'msgid')) {
-    die();
+if (false === $id || !validateInput($id, 'msgid')) {
+    exit();
 }
 
 $list = quarantine_list_items($id);
-if (count($list) === 0) {
-    die(__('diemnf57'));
+if (0 === count($list)) {
+    exit(__('diemnf57'));
 }
 
 switch ($_GET['action']) {
     case 'release':
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
         $result = '';
-        if (count($list) === 1) {
+        if (1 === count($list)) {
             $to = $list[0]['to'];
             $result = quarantine_release($list, [0], $to);
         } else {
-            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                 if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
                     $result = quarantine_release($list, [$i], $list[$i]['to']);
                 }
@@ -118,7 +118,7 @@ switch ($_GET['action']) {
     case 'delete':
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
         $status = [];
         if (isset($_GET['html'])) {
@@ -130,13 +130,13 @@ switch ($_GET['action']) {
                         <td align="center" valign="middle">
                             <table>
                                 <tr>
-                                    <th><?php echo __('delete57') ?></th>
+                                    <th><?php echo __('delete57'); ?></th>
                                 </tr>
                                 <tr>
                                     <td align="center">
-                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo __('yes57') ?></a>
+                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo __('yes57'); ?></a>
                                         &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo __('no57') ?></a>
+                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo __('no57'); ?></a>
                                     </td>
                                 </tr>
                             </table>
@@ -147,7 +147,7 @@ switch ($_GET['action']) {
                 simple_html_end();
             } else {
                 simple_html_start();
-                for ($i = 0, $countList = count($list); $i < $countList; $i++) {
+                for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                     $status[] = quarantine_delete($list, [$i]);
                 }
                 $status = implode('<br/>', $status);
@@ -157,10 +157,10 @@ switch ($_GET['action']) {
         } else {
             if (false === checkToken($_GET['token'])) {
                 header('Location: login.php?error=pagetimeout');
-                die();
+                exit();
             }
             // Delete
-            for ($i = 0, $countList = count($list); $i < $countList; $i++) {
+            for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                 $status[] = quarantine_delete($list, [$i]);
             }
         }
@@ -170,7 +170,7 @@ switch ($_GET['action']) {
         break;
 
     default:
-        die(__('dieuaction57') . ' ' . sanitizeInput($_GET['action']));
+        exit(__('dieuaction57') . ' ' . sanitizeInput($_GET['action']));
 }
 
 dbclose();

@@ -54,11 +54,11 @@ $graphgenerator->sqlQuery = '
 
 $graphgenerator->tableColumns = [
     'score' => __('score38'),
-    'count' => __('count38')
+    'count' => __('count38'),
 ];
 $graphgenerator->sqlColumns = [
     'score',
-    'count'
+    'count',
 ];
 $graphgenerator->valueConversion = [
 ];
@@ -68,7 +68,7 @@ $graphgenerator->graphColumns = [
     'dataFormattedColumns' => [['count']],
     'xAxeDescription' => __('scorerounded38'),
     'yAxeDescriptions' => [__('nbmessage38')],
-    'fillBelowLine' => ['true']
+    'fillBelowLine' => ['true'],
 ];
 $graphgenerator->types = [['line']];
 $graphgenerator->graphTitle = __('sascoredist38');

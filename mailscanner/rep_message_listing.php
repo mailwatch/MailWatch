@@ -37,19 +37,19 @@ $filter = html_start(__('messlisting16'), 0, false, false);
 
 if (false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    die();
+    exit();
 }
 
 if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {
-    die(__('dievalidate99'));
+    exit(__('dievalidate99'));
 }
 
 if (isset($_GET['orderby']) && !validateInput(deepSanitizeInput($_GET['orderby'], 'url'), 'orderby')) {
-    die(__('dievalidate99'));
+    exit(__('dievalidate99'));
 }
 
 if (isset($_GET['orderdir']) && !validateInput(deepSanitizeInput($_GET['orderdir'], 'url'), 'orderdir')) {
-    die(__('dievalidate99'));
+    exit(__('dievalidate99'));
 }
 
 $sql = "
@@ -88,7 +88,7 @@ $sql .= "
 " . $_SESSION['global_filter'];
 
 // Hide high spam/mcp from regular users if enabled
-if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && $_SESSION['user_type'] === 'U') {
+if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
     $sql .= '
     AND
      ishighspam=0

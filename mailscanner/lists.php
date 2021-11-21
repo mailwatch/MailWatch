@@ -198,26 +198,26 @@ switch ($_SESSION['user_type']) {
         break;
 }
 switch (true) {
-    case(!empty($url_to)):
+    case !empty($url_to):
         $to_address = $url_to;
         if (!empty($url_domain)) {
             $to_address .= '@' . $url_domain;
         }
         break;
-    case(!empty($url_domain)):
+    case !empty($url_domain):
         $to_address = $url_domain;
         break;
 }
 
 // Submitted
-if ($url_submit === 'add') {
+if ('add' === $url_submit) {
     if (false === checkToken($_POST['token'])) {
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
     if (false === checkFormToken('/lists.php list token', $_POST['formtoken'])) {
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
 
     // Check input is valid
@@ -255,10 +255,10 @@ if ($url_submit === 'add') {
 }
 
 // Delete
-if ($url_submit === 'delete') {
+if ('delete' === $url_submit) {
     if (false === checkToken($_GET['token'])) {
         header('Location: login.php?error=pagetimeout');
-        die();
+        exit();
     }
     $id = $url_id;
     switch ($url_list) {
@@ -303,6 +303,7 @@ if ($url_submit === 'delete') {
 /**
  * @param string $sql
  * @param string $list
+ *
  * @return array
  */
 function build_table($sql, $list)
@@ -348,7 +349,7 @@ echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "
 echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token') . '">' . "\n";
 switch ($_SESSION['user_type']) {
     case 'A':
-        echo '<td><input type="text" name="to" size=22 value="' .  stripslashes($touser) . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
+        echo '<td><input type="text" name="to" size=22 value="' . stripslashes($touser) . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
         break;
     case 'U':
         echo '<td> <select name="to">';

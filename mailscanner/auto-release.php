@@ -31,8 +31,8 @@ if (file_exists('conf.php')) {
     if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {
         dbconn();
         $mid = deepSanitizeInput($_GET['mid'], 'url');
-        if ($mid === false || !validateInput($mid, 'msgid')) {
-            die();
+        if (false === $mid || !validateInput($mid, 'msgid')) {
+            exit();
         }
         if (isset($_GET['amp;r'])) {
             $token = deepSanitizeInput($_GET['amp;r'], 'url');
@@ -41,7 +41,7 @@ if (file_exists('conf.php')) {
         }
         if (!validateInput($token, 'releasetoken')) {
             header('Location: login.php?error=pagetimeout');
-            die();
+            exit();
         }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);
@@ -49,7 +49,7 @@ if (file_exists('conf.php')) {
             dbg('Error fetching from database' . database::$link->error);
             $output[] = __('dberror59');
         }
-        if ($result->num_rows === 0) {
+        if (0 === $result->num_rows) {
             $output[] = __('msgnotfound159');
             $output[] = __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359');
         } else {
@@ -57,12 +57,12 @@ if (file_exists('conf.php')) {
             if ($row['uid'] === $token) {
                 $list = quarantine_list_items($mid);
                 $result = '';
-                if (count($list) === 1) {
+                if (1 === count($list)) {
                     $to = $list[0]['to'];
                     $result = quarantine_release($list, [0], $to);
                 } else {
                     $listCount = count($list);
-                    for ($i = 0; $i < $listCount; $i++) {
+                    for ($i = 0; $i < $listCount; ++$i) {
                         if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
                             $result = quarantine_release($list, [$i], $list[$i]['to']);
                         }

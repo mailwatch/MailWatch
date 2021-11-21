@@ -33,12 +33,12 @@ html_start(__('mqviewer24'), STATUS_REFRESH, false, false);
 
 if (false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    die();
+    exit();
 }
 
 $queue = deepSanitizeInput($_GET['queue'], 'url');
 if (!validateInput($queue, 'mailq')) {
-    die(__('dievalidate99'));
+    exit(__('dievalidate99'));
 }
 
 switch ($queue) {
@@ -51,7 +51,7 @@ switch ($queue) {
         $display = __('outq24');
         break;
     default:
-        die(__('diemq24') . "\n");
+        exit(__('diemq24') . "\n");
 }
 
 db_colorised_table(

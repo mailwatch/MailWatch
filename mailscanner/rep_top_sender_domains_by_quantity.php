@@ -59,21 +59,21 @@ $graphgenerator->sqlQuery = '
 $graphgenerator->tableColumns = [
     'name' => __('domain44'),
     'countconv' => __('count03'),
-    'sizeconv' => __('size03')
+    'sizeconv' => __('size03'),
 ];
 $graphgenerator->sqlColumns = [
     'name',
     'count',
-    'size'
+    'size',
 ];
 $graphgenerator->valueConversion = [
     'size' => 'scale',
-    'count' => 'number'
+    'count' => 'number',
 ];
 $graphgenerator->graphColumns = [
     'labelColumn' => 'name',
     'dataNumericColumn' => 'count',
-    'dataFormattedColumn' => 'countconv'
+    'dataFormattedColumn' => 'countconv',
 ];
 $graphgenerator->graphTitle = __('top10senderdomqt44');
 $graphgenerator->printPieGraph();

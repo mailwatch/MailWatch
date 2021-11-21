@@ -29,7 +29,7 @@
 // Edit if you changed webapp directory from default
 $pathToFunctions = '/var/www/html/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;
 
@@ -39,11 +39,11 @@ ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
 if (!defined('RECORD_DAYS_TO_KEEP') || RECORD_DAYS_TO_KEEP < 1) {
-    die('The variable RECORD_DAYS_TO_KEEP is empty, please set a value in conf.php.');
+    exit('The variable RECORD_DAYS_TO_KEEP is empty, please set a value in conf.php.');
 }
 
 if (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
-    die('The variable AUDIT_DAYS_TO_KEEP is empty, please set a value in conf.php.');
+    exit('The variable AUDIT_DAYS_TO_KEEP is empty, please set a value in conf.php.');
 }
 
 // Cleaning the maillog table
@@ -54,7 +54,7 @@ $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
 $mta = get_conf_var('mta');
 $optimize_mtalog_id = '';
-if ($mta === 'postfix' && $tablecheck->num_rows > 0) {
+if ('postfix' === $mta && $tablecheck->num_rows > 0) {
     //version for postfix with mtalog_ids enabled
     dbquery(
         'DELETE i.*, m.* FROM mtalog AS m
