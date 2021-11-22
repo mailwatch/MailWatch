@@ -767,6 +767,15 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Add new column and add to unique key in mtalog table
+    echo pad(' - Add to_address field to `mtalog` table and add to unique key');
+    if (true === check_column_exists('mtalog', 'to_address')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE `mtalog` ADD `to_address` MEDIUMTEXT DEFAULT NULL, DROP KEY `mtalog_uniq`, ADD UNIQUE KEY `mtalog_uniq` (`timestamp`,`host`(10),`type`(10),`msg_id`,`relay`(20),`to_address`(64))';
+        executeQuery($sql);
+    }
+
     // Add new column and index to outq table
     echo pad(' - Add mtalog_id field and primary key to `outq` table');
     if (true === check_column_exists('outq', 'outq_id')) {

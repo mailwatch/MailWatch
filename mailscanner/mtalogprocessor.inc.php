@@ -73,6 +73,7 @@ abstract class MtaLogProcessor
         $_msg_id = '';
         $_status = '';
         $_type = null;
+        $_to = '';
 
         if ($parser->process === $this->mtaprocess) {
             $this->parse($parser->entry);
@@ -122,6 +123,7 @@ abstract class MtaLogProcessor
 
             // Relay lines
             if (isset($this->entries['relay'], $this->entries[$this->statusField])) {
+                $_to = safe_value($this->entries['to']);
                 $_type = safe_value('relay');
                 $_delay = safe_value($this->entries[$this->delayField]);
                 $_relay = safe_value($this->getIp());
@@ -132,7 +134,7 @@ abstract class MtaLogProcessor
 
         if (null !== $_type) {
             dbquery(
-                "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'))"
+                "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'),'$_to')"
             );
         }
     }
