@@ -172,8 +172,9 @@ CREATE TABLE IF NOT EXISTS `mtalog` (
   `dsn` mediumtext COLLATE utf8_unicode_ci,
   `status` mediumtext COLLATE utf8_unicode_ci,
   `delay` time DEFAULT NULL,
+  `to_address` mediumtext COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`mtalog_id`),
-  UNIQUE KEY `mtalog_uniq` (`timestamp`,`host`(10),`type`(10),`msg_id`,`relay`(20)),
+  UNIQUE KEY `mtalog_uniq` (`timestamp`,`host`(10),`type`(10),`msg_id`,`relay`(20),`to_address`(64)),
   KEY `mtalog_timestamp` (`timestamp`),
   KEY `mtalog_type` (`type`(10)),
   KEY `msg_id` (`msg_id`)
