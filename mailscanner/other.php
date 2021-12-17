@@ -43,10 +43,14 @@ echo '<tr>
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
 if ('A' === $_SESSION['user_type']) {
     $virusScanner = get_conf_var('VirusScanners');
+
     if (preg_match('/sophos/i', $virusScanner)) {
         echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
     }
-    if (preg_match('/f-secure/i', $virusScanner)) {
+    if (preg_match('/f-secure-12/i', $virusScanner)) {
+        echo '<li><a href="f-secure12_status.php">' . __('avfsecure12status10') . '</a>';
+    }
+    if (preg_match('/f-secured?(?!-12)/i', $virusScanner)) {
         echo '<li><a href="f-secure_status.php">' . __('avfsecurestatus10') . '</a>';
     }
     if (preg_match('/clam/i', $virusScanner)) {

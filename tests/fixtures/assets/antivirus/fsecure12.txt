@@ -1,0 +1,6 @@
+fsanalyze: failed to process './notexistingfile.txt' (No such file or directory)
+
+Engine versions: F-Secure Corporation Aquarius/18.0.790/2021-12-15_10 F-Secure Corporation Hydra/6.0.425/2021-12-14_01 F-Secure Corporation FMLib/17.11.62.513 (8a526f1)/2021-12-02_01 fsicapd/2.0.217
+
+0 files scanned
+1 files could not be scanned
