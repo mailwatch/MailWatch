@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    ports:
+      - "33306:3306"
+    volumes:
+      - ./create.sql:/docker-entrypoint-initdb.d/create.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mailscanner
+      MYSQL_USER: mailwatch
+      MYSQL_PASSWORD: mailwatch
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

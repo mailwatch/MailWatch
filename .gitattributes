@@ -1,0 +1,9 @@
+.github/ export-ignore
+tests/ export-ignore
+.php-cs-fixer.dist.php export-ignore
+.styleci.yml export-ignore
+composer.json export-ignore
+composer.lock export-ignore
+docker-compose.yaml export-ignore
+phpstan.neon.dist export-ignore
+rector.php export-ignore
