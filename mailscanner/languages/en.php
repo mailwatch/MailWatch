@@ -389,6 +389,7 @@ return [
     'usermgnt10' => 'User Management',
     'avsophosstatus10' => 'Sophos Status',
     'avfsecurestatus10' => 'F-Secure Status',
+    'avfsecure12status10' => 'F-Secure 12 Status',
     'avclamavstatus10' => 'ClamAV Status',
     'avmcafeestatus10' => 'McAfee Status',
     'avfprotstatus10' => 'F-Prot Status',
