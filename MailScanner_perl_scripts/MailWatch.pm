@@ -6,7 +6,7 @@
 #
 #   Custom Module MailWatch
 #
-#   Version 1.6
+#   Version 1.61
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -38,8 +38,9 @@ use POSIX;
 use Socket;
 use Encoding::FixLatin qw(fix_latin);
 use Digest::SHA;
+use Sys::Syslog;
 
-# Uncommet the following line when debugging MailWatch.pm
+# Uncomment the following line when debugging MailWatch.pm
 #use Data::Dumper;
 
 use vars qw($VERSION);
@@ -68,15 +69,24 @@ my ($db_host) = mailwatch_get_db_host();
 my ($db_user) = mailwatch_get_db_user();
 my ($db_pass) = mailwatch_get_db_password();
 
+my $RunInForeground;
+
 sub InitMailWatchLogging {
     # Detect if MailScanner Milter is calling this custom function and do not spawn
     # MSMilter uses the blocklists and allowlists, but not the logger
     if ($0 !~ /MSMilter/) {
+        # Grab values from config prior to fork, after which MailScanner methods become
+        # inaccessible to descendant
+        my $facility = MailScanner::Config::Value('logfacility');
+        my $logsock  = MailScanner::Config::Value('logsock');
+        $RunInForeground = MailScanner::Config::Value('runinforeground');
+
+        $| = 1 if $RunInForeground;
+
         my $pid = fork();
         if ($pid) {
             # MailScanner child process
             waitpid $pid, 0;
-            MailScanner::Log::InfoLog("MailWatch: Started MailWatch SQL Logging child");
         } else {
             # New process
             # Detach from parent, make connections, and listen for requests
@@ -86,6 +96,18 @@ sub InitMailWatchLogging {
                 alarm $timeout;
                 $0 = "MailWatch SQL";
 
+                # Reinitialize logging (cannot use MailScanner::Log due to detach)
+                if ($logsock eq '') {
+                    if ($^O =~ /solaris|sunos|irix/i) {
+                        $logsock = 'udp';
+                    } else {
+                        $logsock = 'unix';
+                    }
+                }
+
+                eval { Sys::Syslog::setlogsock($logsock) unless $RunInForeground; };
+                eval { Sys::Syslog::openlog($0, 'pid, nowait', $facility) unless $RunInForeground; };
+                
                 # Listen for messages unless connection can't be initialized
                 ListenForMessages() unless InitConnection() == 1;
             }
@@ -103,7 +125,7 @@ sub CheckSQLVersion {
         );
     };
     if ($@ || !$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+        LogMessage("warn", "Unable to initialise database connection: $DBI::errstr");
         close(SERVER);
         return 1;
     }
@@ -111,6 +133,19 @@ sub CheckSQLVersion {
     $dbh->disconnect;
     return $SQLversion;
 
+}
+
+sub LogMessage {
+    my $level = shift;
+    my $msg = shift;
+
+    eval {
+        if (!$RunInForeground) {
+            Sys::Syslog::syslog($level, $msg);
+        } else {
+            print STDOUT "$0: $level: $msg\n";
+        }
+    };
 }
 
 sub BindPort {
@@ -149,7 +184,7 @@ sub InitDB {
         );
         };
         if ($@ || !$dbh) {
-            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            LogMessage('warn', "Unable to initialise database connection: $DBI::errstr");
             return 1;
         }
         $dbh->do('SET NAMES utf8mb4');
@@ -160,14 +195,14 @@ sub InitDB {
         );
         };
         if ($@ || !$dbh) {
-            MailScanner::Log::WarnLog("MailWatch: Unable to initialise database connection: %s", $DBI::errstr);
+            LogMessage('warn', "Unable to initialise database connection: $DBI::errstr");
             return 1;
         }
         $dbh->do('SET NAMES utf8');
     }
     $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     if (!$sth) {
-        MailScanner::Log::WarnLog("MailWatch: Error: %s", $DBI::errstr);
+        LogMessage('warn', "Error: $DBI::errstr" );
         return 1;
     }
 
@@ -199,6 +234,7 @@ sub ExitLogging {
 
 sub ListenForMessages {
     my $message;
+    LogMessage('info', "Started MailWatch SQL Logging child");
     # Wait for messages
     while (my $cli = accept(CLIENT, SERVER)) {
         my ($port, $packed_ip) = sockaddr_in($cli);
@@ -210,7 +246,7 @@ sub ListenForMessages {
         alarm $timeout;
         # Make sure we"re only receiving local connections
         if ($dotted_quad ne "127.0.0.1") {
-            MailScanner::Log::WarnLog("MailWatch: Error: unexpected connection from %s", $dotted_quad);
+            LogMessage('warn', "Error: unexpected connection from $dotted_quad");
             close CLIENT;
             next;
         }
@@ -276,7 +312,7 @@ sub ListenForMessages {
 
             # Something went wrong
             if ($@ || !$sth) {
-                MailScanner::Log::WarnLog("MailWatch: $$message{id}: MailWatch SQL Cannot insert row: %s", $sth->errstr);
+                LogMessage('warn', "$$message{id}: Cannot insert row: $sth->errstr");
                 close(SERVER);
                 # Bind the port so another instance can't spawn
                 if (BindPort() == 1) {
@@ -290,7 +326,7 @@ sub ListenForMessages {
                     last;
                 }
             } else {
-                MailScanner::Log::InfoLog("MailWatch: $$message{id}: Logged to MailWatch SQL");
+                LogMessage('info', "$$message{id}: Logged to MailWatch SQL");
                 last;
             }
         }
