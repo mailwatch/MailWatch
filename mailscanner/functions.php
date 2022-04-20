@@ -38,6 +38,7 @@ if (!is_readable(__DIR__ . '/conf.php')) {
     exit(__('cannot_read_conf'));
 }
 require_once __DIR__ . '/conf.php';
+require_once __DIR__ . '/database.php';
 
 // more secure session cookies
 ini_set('session.use_cookies', 1);
@@ -99,8 +100,6 @@ if (0 !== $missingConfigEntries['needed']['count']) {
     }
     exit();
 }
-
-require_once __DIR__ . '/database.php';
 
 // Set PHP path to use local PEAR modules only
 set_include_path(
