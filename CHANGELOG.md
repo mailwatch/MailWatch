@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.19
 ### Improvements
 - More performant and reliable milter queue relay parsing
 - Permit IPv4-mapped IPv6 address in audit_log table
