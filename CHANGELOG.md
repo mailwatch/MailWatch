@@ -4,6 +4,8 @@
 ### Improvements
 - More performant and reliable milter queue relay parsing
 - Permit IPv4-mapped IPv6 address in audit_log table
+- Add support for F-Secure 12 antivirus status (#1239)
+- Better compatibility with PHP 8
 
 ### Fixes
 - Fix missing Serializer directory
@@ -12,6 +14,9 @@
 - Prevent SQLBlackWhiteList.pm from dying prematurely
 - Prevent SQLSpamSettings.pm from dying prematurely
 - Revert rule column to 191 chars (#1125)
+- Remove some deprecated php functions and variables
+- Correct directory check in msmail genericqueue()
+- Require database class earlier to prevent fatal error on calling audit_log function (#1247)
 
 ## 1.2.18
 ### Improvements
