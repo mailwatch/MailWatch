@@ -41,7 +41,7 @@ require $pathToFunctions;
 set_time_limit(0);
 // Limit to how long a queue id remains in queue before dropping
 define('QUEUETIMEOUT', '300');
-define('QUERYTIMEOUT', '60');
+define('DEBUG_MILTER', false);
 
 $idqueue = [];
 
@@ -85,13 +85,15 @@ function follow($file)
     }
 }
 
-// Loop through log, looking for message-ids and matching to addresses
-// Populates $idqueue 2 dimensional array,
-// first element is entry for a queue id
-// second element are properties of the entry
-// [0] -- queue id
-// [1] -- message-id
-// [2] -- timestamp in epoch
+/* Loop through log, looking for message-ids and matching to addresses
+ * Populates $idqueue 2 dimensional array, 
+ * first element is entry for a queue id
+ * second element are properties of the entry
+ * [0] -- queue id
+ * [1] -- message-id
+ * [2] -- timestamp in epoch
+ * [3] -- delivery attempt (to address)
+ */
 function process_entries($line)
 {
     global $idqueue;
@@ -103,52 +105,59 @@ function process_entries($line)
         array_push($arrEntry, $explode[1]);
         array_push($arrEntry, $explode[2]);
         array_push($arrEntry, time());
+        array_push($arrEntry, null);
         array_push($idqueue, $arrEntry);
+        if (DEBUG_MILTER === true) { 
+            syslog(LOG_MAIL | LOG_DEBUG, "milter_relay: Added smtpid " . $explode[1] . " to relay queue"); 
+        }
 
     // Watch for verifications
     } elseif (preg_match('/^.*postfix\/smtp.*: (\S+):.*status=(?:deliverable|undeliverable)/', $line, $id)) {
         remove_entry($id[1]);
+        if (DEBUG_MILTER === true) {
+            syslog(LOG_MAIL | LOG_DEBUG, "milter_relay: Removed smtpid " . $id[1] . " from relay queue (delivery verification)");
+        }
 
     // Watch for milter connections
     } elseif (preg_match('/^.*postfix\/cleanup.*: (\S+): milter/', $line, $id)) {
         remove_entry($id[1]);
-
-    // Watch for entries removed from queue
-    } elseif (preg_match('/^.*postfix\/qmgr.*: (\S+): removed$/', $line, $id)) {
-        remove_entry($id[1]);
-
+        if (DEBUG_MILTER === true) {
+            syslog(LOG_MAIL | LOG_DEBUG, "milter_relay: Removed smtpid " . $id[1] . " from relay queue (milter activity)");
+        }
     // Watch for deliver attempts (after verification check above)
     } elseif (preg_match('/^.*postfix\/smtp.*: (\S+): to=\<(\S+)\>,/', $line, $explode)) {
-        for ($i = 0; $i < count($idqueue); ++$i) {
-            if (time() > $idqueue[$i][2] + QUEUETIMEOUT) {
-                // Drop expired entry from queue
-                array_splice($idqueue, $i, 1);
-                continue;
-            }
-
-            $smtp_id = safe_value($idqueue[$i][0]);
-            $smtp_id2 = safe_value($explode[1]);
-
-            if ($smtp_id === $smtp_id2) {
-                $message_id = safe_value($idqueue[$i][1]);
-                $to = safe_value($explode[2]);
-                $smtpd_id = null;
-
-                for ($j = 0; $j < QUERYTIMEOUT; ++$j) {
-                    $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' and to_address LIKE '%" . $to . "%' LIMIT 1;");
-                    @$smtpd_id = $result->fetch_row()[0];
-
-                    if (null === $smtpd_id) {
-                        // Add a small delay to prevent race condition between mailwatch logger db and maillog
-                        sleep(1);
-                    } else {
-                        break;
-                    }
+        // Scan queue for matching id
+        $idcount = count($idqueue);
+        for ($i = 0; $i < $idcount; ++$i) {
+            if ($idqueue[$i][0] === $explode[1]) {
+                // Delivery attempt found
+                $idqueue[$i][3] = $explode[2];
+                if (DEBUG_MILTER === true) {
+                    syslog(LOG_MAIL | LOG_DEBUG, "milter_relay: delivery attempt for smtpid " . $explode[1] . " detected and updated in queue");
                 }
-                if (null !== $smtpd_id && $smtpd_id !== $smtp_id) {
-                    dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
-                    array_splice($idqueue, $i, 1);
-                    break;
+                break;
+            }
+        }
+    }
+
+    // Scan queue for delivery attempts in queue and matching maillog entries
+    $idcount = count($idqueue);
+    for ($i = 0; $i < $idcount; ++$i) {
+        if ($idqueue[$i][3] !== null) {
+            $message_id = safe_value($idqueue[$i][1]);
+            $to = safe_value($idqueue[$i][3]);
+            $smtp_id = safe_value($idqueue[$i][0]);
+
+            $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' and to_address LIKE '%". $to . "%' LIMIT 1;");
+            @$smtpd_id = $result->fetch_row()[0];
+
+            // Find correllating ids and update table, drop from queue
+            if (isset($smtpd_id) && $smtpd_id !== $smtp_id) {
+                dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+                array_splice($idqueue, $i, 1);
+                $idcount = count($idqueue);
+                if (DEBUG_MILTER === true) {
+                    syslog(LOG_MAIL | LOG_DEBUG, "milter_relay: maillog hit for " . $smtp_id . " entry logged and removed from queue");
                 }
             }
         }
@@ -160,16 +169,20 @@ function remove_entry($id)
     global $idqueue;
 
     // Search queue for id
-    for ($i = 0; $i < count($idqueue); ++$i) {
+    $idcount = count($idqueue);
+    for ($i = 0; $i < $idcount; ++$i) {
         if (time() > $idqueue[$i][2] + QUEUETIMEOUT) {
             // Drop expired entry from queue
+            if (DEBUG_MILTER === true) {
+                syslog(LOG_MAIL | LOG_DEBUG, "milter_relay: Expiring smtpid " . $idqueue[$i][1] . " after " . QUEUETIMEOUT . " seconds");
+            }
             array_splice($idqueue, $i, 1);
+            $idcount = count($idqueue);
             continue;
         }
-        $smtp_id = safe_value($idqueue[$i][0]);
-        $smtp_id2 = safe_value($id);
-        if ($smtp_id === $smtp_id2) {
-            // Drop id from array (milter connection)
+        
+        if ($idqueue[$i][0] === $id) {
+            // Drop id from array
             array_splice($idqueue, $i, 1);
             break;
         }
