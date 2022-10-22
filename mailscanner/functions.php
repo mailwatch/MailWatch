@@ -485,7 +485,7 @@ function printServiceStatus()
         } else {
             $psExecCommand = "ps ax | grep $mta | grep -v grep | grep -v php";
             if ('postfix' === $mta) {
-                $psExecCommand = 'ps -U postfix -u postfix | grep -v MailScanner | grep -v "MailWatch SQL"';
+                $psExecCommand = 'ps -U postfix -u postfix | grep -v MailScanner | grep -v "MailWatch SQL" | grep -v PID';
             }
             exec($psExecCommand, $output);
             if (count($output) > 0) {
