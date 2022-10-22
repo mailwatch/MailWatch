@@ -461,7 +461,7 @@ function printServiceStatus()
         // is MTA running
         $mta = get_conf_var('mta');
         if ('msmail' === $mta) {
-            exec('ps ax | grep postfix | grep -v grep | grep -v php', $output);
+            exec('ps -U postfix -u postfix | grep -v MailScanner | grep -v "MailWatch SQL" | grep -v MSMilter | grep -v PID', $output);
             if (count($output) > 0) {
                 $running = $yes;
             } else {
