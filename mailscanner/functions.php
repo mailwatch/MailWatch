@@ -475,9 +475,12 @@ function printServiceStatus()
             exec('ps ax | grep MSMilter | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
-                $procs = count($output) - 1 . ' ' . __('children03');
             } else {
                 $running = $no;
+            }
+            if (count($output) > 1) {
+                $procs = count($output) - 1 . ' ' . __('children03');
+            } else {
                 $procs = count($output) . ' ' . __('procs03');
             }
             echo '    <tr><td>' . 'MSMilter' . __('colon99') . '</td>'
