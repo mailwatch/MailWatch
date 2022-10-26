@@ -461,7 +461,7 @@ function printServiceStatus()
         // is MTA running
         $mta = get_conf_var('mta');
         if ('msmail' === $mta) {
-            exec('ps -U postfix -u postfix | grep -v MailScanner | grep -v "MailWatch SQL" | grep -v MSMilter | grep -v PID', $output);
+            exec('ps ax | grep postfix | grep -v grep | grep -v php', $output);
             if (count($output) > 0) {
                 $running = $yes;
             } else {
@@ -475,12 +475,9 @@ function printServiceStatus()
             exec('ps ax | grep MSMilter | grep -v grep', $output);
             if (count($output) > 0) {
                 $running = $yes;
-            } else {
-                $running = $no;
-            }
-            if (count($output) > 1) {
                 $procs = count($output) - 1 . ' ' . __('children03');
             } else {
+                $running = $no;
                 $procs = count($output) . ' ' . __('procs03');
             }
             echo '    <tr><td>' . 'MSMilter' . __('colon99') . '</td>'
@@ -488,7 +485,7 @@ function printServiceStatus()
         } else {
             $psExecCommand = "ps ax | grep $mta | grep -v grep | grep -v php";
             if ('postfix' === $mta) {
-                $psExecCommand = 'ps -U postfix -u postfix | grep -v MailScanner | grep -v "MailWatch SQL" | grep -v PID';
+                $psExecCommand = 'ps -U postfix -u postfix | grep -v MailScanner | grep -v "MailWatch SQL"';
             }
             exec($psExecCommand, $output);
             if (count($output) > 0) {
