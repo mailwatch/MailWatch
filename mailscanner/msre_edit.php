@@ -722,7 +722,7 @@ function Process_Form($file_contents, $short_filename)
     if (!$fh) {
         $status_msg .= '<span class="error">' . __('error0155') . '</span><br>' . "\n";
     } else {
-        $status_msg .= __('error55') . '<br>' . "\n" . sprintf(__('message55'), MSRE_RELOAD_INTERVAL) . '<br>' . "\n";
+        $status_msg .= __('ok55') . '<br>' . "\n" . sprintf(__('message55'), MSRE_RELOAD_INTERVAL) . '<br>' . "\n";
     }
     $status_msg .= "</span>\n";
 
