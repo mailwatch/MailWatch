@@ -56,6 +56,8 @@ function doit($input)
         process_entries($line);
     }
 
+    process_sql();
+
     pclose($fp);
 }
 
@@ -79,6 +81,8 @@ function follow($file)
         while ($line = fgets($fh)) {
             process_entries($line);
         }
+
+        process_sql();
 
         fclose($fh);
         $size = $currentSize;
@@ -139,6 +143,11 @@ function process_entries($line)
             }
         }
     }
+}
+
+function process_sql()
+{
+    global $idqueue;
 
     // Scan queue for delivery attempts in queue and matching maillog entries
     $idcount = count($idqueue);
@@ -150,6 +159,10 @@ function process_entries($line)
 
             $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' and to_address LIKE '%" . $to . "%' LIMIT 1;");
             @$smtpd_id = $result->fetch_row()[0];
+
+            if (DEBUG_MILTER === true) {
+                syslog(LOG_MAIL | LOG_DEBUG, 'milter_relay: '.$i.' / '.$smtp_id.' / '.$message_id.' / '.$to.' => '.$smtpd_id);
+            }
 
             // Find correllating ids and update table, drop from queue
             if (isset($smtpd_id) && $smtpd_id !== $smtp_id) {
