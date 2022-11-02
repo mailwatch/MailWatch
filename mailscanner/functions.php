@@ -3965,7 +3965,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
 function fixMessageId($id)
 {
     $mta = get_conf_var('mta');
-    if ('postfix' === $mta) {
+    if (('postfix' === $mta) || ('msmail' === $mta)) {
         $id = str_replace('_', '.', $id);
     }
 
