@@ -382,6 +382,8 @@ return [
     'hostname09' => 'MailScanner Hostname',
     'remove09' => 'Remove',
     'reports09' => 'Reports',
+    'released09' => 'has been released (>0 = TRUE)',
+    'learned09' => 'has been learned (>0 = TRUE)',	
 
     // 10-other.php
     'tools10' => 'Tools',
