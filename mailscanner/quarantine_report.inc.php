@@ -358,8 +358,8 @@ ORDER BY a.date DESC, a.time DESC';
         $filters = array_merge([$to_address], self::return_user_filters($username));
         if (QUARANTINE_FILTERS_COMBINED === false) {
             $sendResult = false;
-			
-			if ('A' === $type) {
+
+            if ('A' === $type) {
                 $list_for = gethostname();
 
                 self::dbg(" ==== Building list for $list_for");
@@ -390,7 +390,7 @@ ORDER BY a.date DESC, a.time DESC';
                     }
                     unset($quarantined);
                 }
-			}
+            }
 
             return $sendResult;
         } else {
