@@ -402,10 +402,10 @@ ORDER BY a.date DESC, a.time DESC';
                 $list_for = gethostname();
 
                 self::dbg(" ==== Building list for $list_for");
-                $quarantined = self::return_quarantine_list_array('', '');
+                $quarantined[] = self::return_quarantine_list_array('', '');
                 $quarantine_list[] = $list_for;
 
-                self::dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
+                self::dbg(' ==== Found ' . count($quarantined[0]) . ' quarantined e-mails');
             }
             else {
                 foreach ($filters as $filter) {
