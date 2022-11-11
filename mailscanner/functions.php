@@ -463,7 +463,7 @@ function printServiceStatus()
                 $running = $yes;
                 $masterpid = explode(" ", trim($masterproc[0]));
                 $childproc = [];
-                exec('ps ax -j | grep '.$masterpid[0].' | grep -v grep', $childproc);
+                exec(sprintf('ps ax -j | grep %s | grep -v grep', $masterpid[0]), $childproc);
                 $procs = count($childproc) . ' ' . __('procs03');
             } else {
                 $running = $no;
