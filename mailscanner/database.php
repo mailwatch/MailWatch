@@ -56,7 +56,7 @@ class database
                 $charset = 'utf8';
                 $collation = 'utf8_unicode_ci';
                 if (self::$link->server_version >= 50503) {
-                    //mysql version supports utf8mb4
+                    // mysql version supports utf8mb4
                     $charset = 'utf8mb4';
                     $collation = 'utf8mb4_unicode_ci';
                 }

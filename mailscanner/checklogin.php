@@ -32,14 +32,14 @@ disableBrowserCache();
 
 if (isset($_POST['token'])) {
     if (!isset($_SESSION['token'])) {
-        //login page timed out and session for token is not valid anymore
+        // login page timed out and session for token is not valid anymore
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 
     if (false === checkToken($_POST['token'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 }
 $_SESSION['token'] = generateToken();
@@ -52,7 +52,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     if (!isset($_POST['myusername'], $_POST['mypassword'])) {
         header('Location: login.php?error=baduser');
         logFailedLogin();
-        exit();
+        exit;
     }
     $myusername = html_entity_decode($_POST['myusername']);
     $mypassword = $_POST['mypassword'];
@@ -82,7 +82,7 @@ if (defined('USE_LDAP') &&
     } else {
         header('Location: login.php?error=emptypassword');
         logFailedLogin($myusername);
-        exit();
+        exit;
     }
 }
 
@@ -92,11 +92,11 @@ $result = dbquery($sql);
 // mysql_num_row is counting table row
 $usercount = $result->num_rows;
 if (0 === $usercount) {
-    //no user found, redirect to login
+    // no user found, redirect to login
     dbclose();
     header('Location: login.php?error=baduser');
     logFailedLogin($myusername);
-    exit();
+    exit;
 }
 
 if (
@@ -108,7 +108,7 @@ if (
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
             logFailedLogin($myusername);
-            exit();
+            exit;
         }
 
         $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);

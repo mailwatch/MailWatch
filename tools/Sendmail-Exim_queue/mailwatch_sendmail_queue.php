@@ -96,11 +96,11 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                                 '0',
                                                 STR_PAD_LEFT
                                             ) . ':' . str_pad(
-                                                    $ctime['minutes'],
-                                                    2,
-                                                    '0',
-                                                    STR_PAD_LEFT
-                                                ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
+                                                $ctime['minutes'],
+                                                2,
+                                                '0',
+                                                STR_PAD_LEFT
+                                            ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
                                         case preg_match('/^\d{3}I Message-ID: <(.+)>$/', $line, $match):
                                             $output[$msgid]['messageid'] = $match[1];
@@ -197,11 +197,11 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                                 '0',
                                                 STR_PAD_LEFT
                                             ) . ':' . str_pad(
-                                                    $ctime['minutes'],
-                                                    2,
-                                                    '0',
-                                                    STR_PAD_LEFT
-                                                ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
+                                                $ctime['minutes'],
+                                                2,
+                                                '0',
+                                                STR_PAD_LEFT
+                                            ) . ':' . str_pad($ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
                                         case preg_match('/^P(.+)$/', $line, $match):
                                             $output[$msgid]['priority'] = $match[1];

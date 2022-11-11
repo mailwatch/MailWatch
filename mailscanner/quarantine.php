@@ -62,7 +62,7 @@ if (!isset($_GET['dir'])) {
             echo '<tr><th colspan=2>' . __('folder_0308') . '</th></tr>' . "\n";
             $count = 0;
             foreach ($items as $f) {
-                //To look and see if any of the folders in the quarantine folder are strings and not numbers.
+                // To look and see if any of the folders in the quarantine folder are strings and not numbers.
                 if (is_numeric($f)) {
                     // Display the Quarantine folders and create links for them.
                     echo '<tr><td align="center"><a href="quarantine.php?token=' . $_SESSION['token'] . '&amp;dir=' . $f . '">' . translateQuarantineDate(
@@ -82,7 +82,7 @@ if (!isset($_GET['dir'])) {
 } else {
     if (false === checkToken($_GET['token'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
     $dir = deepSanitizeInput($_GET['dir'], 'url');
     if (!validateInput($dir, 'quardir')) {

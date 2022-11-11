@@ -193,7 +193,7 @@ $graphgenerator->settings['valueTypes'] = ['plain', 'volume'];
 $graphgenerator->settings['maxTicks'] = 10;
 $graphgenerator->printLineGraph();
 
-/////////////////////////////////////////Generate Table //////////////////////////////////
+// ///////////////////////////////////////Generate Table //////////////////////////////////
 // Must be one or more row
 $result = dbquery($sql);
 if (!$result->num_rows > 0) {

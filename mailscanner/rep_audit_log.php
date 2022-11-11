@@ -41,12 +41,12 @@ if ('A' !== $_SESSION['user_type']) {
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
     } else {
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
     }
 
@@ -63,7 +63,7 @@ if ('A' !== $_SESSION['user_type']) {
     if (isset($_POST['formtoken'])) {
         if (false === checkFormToken('/rep_audit_log.php form token', $_POST['formtoken'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
         if (isset($_POST['startDate'])) {
             $startDate = deepSanitizeInput($_POST['startDate'], 'url');

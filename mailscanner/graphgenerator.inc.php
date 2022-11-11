@@ -60,7 +60,7 @@ class GraphGenerator
         }
 
         $chartId = (isset($this->settings['chartId']) ? $this->settings['chartId'] : 'reportGraph');
-        //create canvas graph
+        // create canvas graph
         echo '<canvas id="' . $chartId . '" class="reportGraph"></canvas>
       <script src="js/Chart.js/Chart.min.js"></script>
       <script src="js/pieConfig.js"></script>
@@ -105,7 +105,7 @@ class GraphGenerator
         $colors = '';
 
         for ($i = 0; $i < count($this->graphColumns['dataNumericColumns']); ++$i) {
-            //foreach yaxis get the column name for numeric and formatted data
+            // foreach yaxis get the column name for numeric and formatted data
             $numericData .= '[' . "\n";
             $formattedData .= '[' . "\n";
             $dataLabels .= '[' . "\n";
@@ -200,7 +200,7 @@ class GraphGenerator
 
             return false;
         }
-        //store data in format $data[columnname][rowid]
+        // store data in format $data[columnname][rowid]
         while ($row = $result->fetch_assoc()) {
             foreach ($this->sqlColumns as $columnName) {
                 $this->data[$columnName][] = $row[$columnName];
@@ -329,12 +329,12 @@ class GraphGenerator
         $dates = [$date->format($format)];
         $count = 1;
         while ($date < $now) {
-            //get the next interval and create the label for it
+            // get the next interval and create the label for it
             $date = $date->add(new DateInterval($scale));
             $dates[] = $date->format($format);
             ++$count;
         }
-        //store the time scales and define the result count
+        // store the time scales and define the result count
         $this->data['time'] = $dates;
         $this->numResult = $count;
     }
@@ -359,22 +359,22 @@ class GraphGenerator
         $start = clone $now;
         $start = $start->sub(new DateInterval($interval));
         $oldest = clone $start;
-        //initialize the time scales with zeros
-        $convertedData = [($start->format($format)) => 0];
+        // initialize the time scales with zeros
+        $convertedData = [$start->format($format) => 0];
         while ($start < $now) {
             $convertedData[$start->add(new DateInterval($scale))->format($format)] = 0;
         }
-        //get the values from the sql result and assign them to the correct time scale part
+        // get the values from the sql result and assign them to the correct time scale part
         $count = isset($this->data['xaxis']) ? count($this->data['xaxis']) : 0;
         for ($i = 0; $i < $count; ++$i) {
             // get the value from data and add it to the corresponding hour
             $time = new DateTime($this->data['xaxis'][$i]);
-            //recheck if the entry is inside the value range
+            // recheck if the entry is inside the value range
             if ($time >= $oldest && $time < $now) {
                 $convertedData[$time->format($format)] += $this->data[$column][$i];
             }
         }
-        //we only need the value and not the keys
+        // we only need the value and not the keys
         $this->data[$column . 'conv'] = array_values($convertedData);
     }
 

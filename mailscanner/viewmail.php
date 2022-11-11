@@ -52,7 +52,7 @@ if (isset($_GET['amp;id'])) {
     $message_id = deepSanitizeInput($_GET['id'], 'url');
 }
 if (!validateInput($message_id, 'msgid')) {
-    exit();
+    exit;
 }
 $sql = "SELECT * FROM maillog WHERE id='" . $message_id . "' AND " . $_SESSION['global_filter'];
 $result = dbquery($sql);
@@ -66,18 +66,18 @@ audit_log(sprintf(__('auditlog06', true), $message_id));
 
 if ($message->token !== deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    exit();
+    exit;
 }
 
 $using_rpc = false;
 if (RPC_ONLY || !is_local($message->hostname)) {
     // Host is remote - use XML-RPC
     $using_rpc = true;
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
+    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
     $input = new xmlrpcval($message_id);
     $parameters = [$input];
     $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
-    //$rsp = $client->send($msg);
+    // $rsp = $client->send($msg);
     $rsp = xmlrpc_wrapper($message->hostname, $msg);
     if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
@@ -86,7 +86,7 @@ if (RPC_ONLY || !is_local($message->hostname)) {
     }
     $file = base64_decode($response);
 } else {
-    //build filename path
+    // build filename path
     $date = DateTime::createFromFormat('Y-m-d', $message->date)->format('Ymd');
     $quarantine_dir = get_conf_var('QuarantineDir');
     $filename = '';
@@ -182,9 +182,9 @@ foreach ($header_fields as $field) {
 }
 
 if (
-        ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected) ||
-        'A' === $_SESSION['user_type'] ||
-        (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
+    ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected) ||
+    'A' === $_SESSION['user_type'] ||
+    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
 ) {
     lazy(
         __('actions06'),

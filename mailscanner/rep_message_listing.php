@@ -37,7 +37,7 @@ $filter = html_start(__('messlisting16'), 0, false, false);
 
 if (false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    exit();
+    exit;
 }
 
 if (isset($_GET['pageID']) && !validateInput(deepSanitizeInput($_GET['pageID'], 'num'), 'num')) {

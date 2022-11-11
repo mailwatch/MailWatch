@@ -213,11 +213,11 @@ switch (true) {
 if ('add' === $url_submit) {
     if (false === checkToken($_POST['token'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
     if (false === checkFormToken('/lists.php list token', $_POST['formtoken'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 
     // Check input is valid
@@ -258,7 +258,7 @@ if ('add' === $url_submit) {
 if ('delete' === $url_submit) {
     if (false === checkToken($_GET['token'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
     $id = $url_id;
     switch ($url_list) {

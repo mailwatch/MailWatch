@@ -54,7 +54,7 @@ foreach ($scanners as $vscanner) {
             break;
         case 'clamd':
             $scanner[$vscanner]['name'] = 'ClamD';
-            //ORIG#$scanner[$vscanner]['regexp'] = "/(?P<file>.+) contains (?P<virus>\S+)/";
+            // ORIG#$scanner[$vscanner]['regexp'] = "/(?P<file>.+) contains (?P<virus>\S+)/";
             $scanner[$vscanner]['regexp'] = "/(?P<file>.+) was infected: (?P<virus>\S+)/";
             break;
         case 'clamavmodule':

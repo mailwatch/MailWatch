@@ -52,7 +52,7 @@ if (SSL_ONLY === true) {
     $session_cookie_secure = true;
 }
 
-//enforce session cookie security
+// enforce session cookie security
 $params = session_get_cookie_params();
 if (defined('SESSION_NAME')) {
     session_name(SESSION_NAME);
@@ -98,7 +98,7 @@ if (0 !== $missingConfigEntries['needed']['count']) {
     foreach ($missingConfigEntries['needed']['list'] as $missingConfigEntry) {
         echo '- ' . $missingConfigEntry . $br . PHP_EOL;
     }
-    exit();
+    exit;
 }
 
 // Set PHP path to use local PEAR modules only
@@ -108,13 +108,13 @@ set_include_path(
     MAILWATCH_HOME . '/lib/xmlrpc'
 );
 
-//ForceUTF8
+// ForceUTF8
 require_once __DIR__ . '/lib/ForceUTF8/Encoding.php';
 
-//HTLMPurifier
+// HTLMPurifier
 require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 
-//Enforce SSL if SSL_ONLY=true
+// Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     if (!isset($_SERVER['HTTPS']) || 'on' !== $_SERVER['HTTPS']) {
         header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
@@ -122,7 +122,7 @@ if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     }
 }
 
-//security headers
+// security headers
 if (PHP_SAPI !== 'cli') {
     header('X-XSS-Protection: 1; mode=block');
     header('X-Frame-Options: SAMEORIGIN');
@@ -233,17 +233,17 @@ function getVirusRegex($scanner = null)
         case 'esetsefs':
             $regex = '/Esets: found (?P<virus>\S+) in (?P<file>\S+)/';
             break;
-        //default:
-        // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
-        // break;
+            // default:
+            // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
+            // break;
     }
 
     return $regex;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // Functions
-///////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 /**
  * @return string
  */
@@ -253,8 +253,6 @@ function mailwatch_version()
 }
 
 /**
- * @param $number
- *
  * @return string
  */
 function suppress_zeros($number)
@@ -275,7 +273,6 @@ function disableBrowserCache()
 }
 
 /**
- * @param $title
  * @param int        $refresh
  * @param bool|true  $cacheable
  * @param bool|false $report
@@ -293,7 +290,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
             $offset = 3600 * 48;
             // calc the string in GMT not localtime and add the offset
             $expire = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
-            //output the HTTP header
+            // output the HTTP header
             header($expire);
             header('Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1');
             header('Pragma: cache');
@@ -303,12 +300,12 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     // Check for a privilege change
     if (true === checkPrivilegeChange($_SESSION['myusername'])) {
         header('Location: logout.php?error=timeout');
-        exit();
+        exit;
     }
 
     if (true === checkLoginExpiry($_SESSION['myusername'])) {
         header('Location: logout.php?error=timeout');
-        exit();
+        exit;
     } else {
         if (0 === $refresh) {
             // User is moving about on non-refreshing pages, keep session alive
@@ -326,8 +323,8 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '<link rel="shortcut icon" href="images/favicon.png" >' . "\n";
     echo '<script type="text/javascript">';
     echo '' . java_time() . '';
-    //$current_url = "".MAILWATCH_HOME."/status.php";
-    //if($_SERVER['SCRIPT_FILENAME'] === $active_url){
+    // $current_url = "".MAILWATCH_HOME."/status.php";
+    // if($_SERVER['SCRIPT_FILENAME'] === $active_url){
     echo '</script>';
     if ($report) {
         echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
@@ -480,7 +477,7 @@ function printServiceStatus()
                 $running = $no;
                 $procs = count($output) . ' ' . __('procs03');
             }
-            echo '    <tr><td>' . 'MSMilter' . __('colon99') . '</td>'
+            echo '    <tr><td>MSMilter' . __('colon99') . '</td>'
                 . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         } else {
             $psExecCommand = "ps ax | grep $mta | grep -v grep | grep -v php";
@@ -635,7 +632,7 @@ function printMTAQueue()
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('inbound03') . '</a></td><td align="right">' . $inq2 . '</td></tr>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('outbound03') . '</a></td><td align="right">' . $outq2 . '</td></tr>' . "\n";
         }
-        // Else use MAILQ from conf.php which is for Sendmail or Exim
+    // Else use MAILQ from conf.php which is for Sendmail or Exim
     } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
         if ('exim' === get_conf_var('MTA')) {
             $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
@@ -912,9 +909,9 @@ function printNavBar()
         $nav['docs.php'] = __('documentation03');
     }
     $nav['logout.php'] = __('logout03');
-    //$table_width = round(100 / count($nav));
+    // $table_width = round(100 / count($nav));
 
-    //Navigation table
+    // Navigation table
     echo '<tr class="noprint">' . "\n";
     echo '<td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">' . "\n";
 
@@ -1020,7 +1017,7 @@ function html_end($footer = '')
  */
 function dbconn()
 {
-    //$link = mysql_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, false, 128);
+    // $link = mysql_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, false, 128);
     if (!defined('DB_PORT')) {
         define('DB_PORT', 3306);
     }
@@ -1087,8 +1084,6 @@ function dbquerydebug($link, $sql)
 }
 
 /**
- * @param $string
- *
  * @return string
  */
 function sanitizeInput($string)
@@ -1100,8 +1095,6 @@ function sanitizeInput($string)
 }
 
 /**
- * @param $value
- *
  * @return string
  */
 function quote_smart($value)
@@ -1110,8 +1103,6 @@ function quote_smart($value)
 }
 
 /**
- * @param $value
- *
  * @return string
  */
 function safe_value($value)
@@ -1284,8 +1275,6 @@ function sa_autolearn($spamreport)
 }
 
 /**
- * @param $spamreport
- *
  * @return string
  */
 function format_spam_report($spamreport)
@@ -1303,19 +1292,19 @@ function format_spam_report($spamreport)
 
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
         $notRulesLines = [
-            //english
+            // english
             'cached',
             'score=',
             'required',
             'autolearn=',
-            //italian
+            // italian
             'punteggio=',
             'necessario',
-            //german
+            // german
             'benoetigt',
             'Wertung=',
             'gecached',
-            //french
+            // french
             'requis',
         ];
         array_walk($notRulesLines, function ($value) {
@@ -1431,8 +1420,6 @@ function format_mcp_report($mcpreport)
 }
 
 /**
- * @param $rule
- *
  * @return string
  */
 function get_mcp_rule_desc($rule)
@@ -1452,8 +1439,6 @@ function get_mcp_rule_desc($rule)
 }
 
 /**
- * @param $rule
- *
  * @return bool
  */
 function return_mcp_rule_desc($rule)
@@ -1535,7 +1520,7 @@ function get_disks()
         // windows
         $disks = shell_exec('fsutil fsinfo drives');
         $disks = str_word_count($disks, 1);
-        //TODO: won't work on non english installation, we need to find an universal command
+        // TODO: won't work on non english installation, we need to find an universal command
         if ('Drives' !== $disks[0]) {
             return [];
         }
@@ -1874,7 +1859,7 @@ function parse_conf_file($name)
     );
 
     foreach ($fileContent as $line) {
-        //echo "line: ".$line."\n"; // only use for troubleshooting lines
+        // echo "line: ".$line."\n"; // only use for troubleshooting lines
 
         // find all lines that match
         if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
@@ -1896,7 +1881,7 @@ function parse_conf_file($name)
 
             // Remove any html entities from the code
             $key = htmlentities($regs['name']);
-            //$string = htmlentities($regs['value']);
+            // $string = htmlentities($regs['value']);
             $string = $regs['value'];
 
             // Stuff all of the data to an array
@@ -1919,7 +1904,6 @@ function get_primary_scanner()
 }
 
 /**
- * @param $date
  * @param string $format
  *
  * @return mixed|string
@@ -1947,8 +1931,6 @@ function translateQuarantineDate($date, $format = 'dmy')
 }
 
 /**
- * @param $preserve
- *
  * @return string|false
  */
 function subtract_get_vars($preserve)
@@ -2031,7 +2013,7 @@ function generatePager($sql)
     ];
     $pager = Pager::factory($pager_options);
 
-    //then we fetch the relevant records for the current page
+    // then we fetch the relevant records for the current page
     list($from, $to) = $pager->getOffsetByPageId();
 
     echo '<table cellspacing="1" class="mail" >
@@ -2040,7 +2022,7 @@ function generatePager($sql)
 </tr>
 <tr>
 <td align="center">' . "\n";
-    //show the links
+    // show the links
     echo $pager->links;
     echo '</td>
             </tr>
@@ -2053,7 +2035,6 @@ function generatePager($sql)
 }
 
 /**
- * @param $sql
  * @param bool|string $table_heading
  * @param bool        $pager
  * @param bool        $order
@@ -2618,7 +2599,6 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
 /**
  * Function to display data as a table.
  *
- * @param $sql
  * @param string|null $title
  * @param bool|false  $pager
  * @param bool|false  $operations
@@ -2667,7 +2647,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         ];
         $pager = Pager::factory($pager_options);
 
-        //then we fetch the relevant records for the current page
+        // then we fetch the relevant records for the current page
         list($from, $to) = $pager->getOffsetByPageId();
 
         echo '<table cellspacing="1" class="mail" >
@@ -2676,7 +2656,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
   </tr>
   <tr>
   <td align="center">' . "\n";
-        //show the links
+        // show the links
         echo $pager->links;
         echo '</td>
                 </tr>
@@ -2762,7 +2742,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         ];
         $pager = Pager::factory($pager_options);
 
-        //then we fetch the relevant records for the current page
+        // then we fetch the relevant records for the current page
         list($from, $to) = $pager->getOffsetByPageId();
 
         echo '<table cellspacing="1" class="mail" >
@@ -2771,7 +2751,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
   </tr>
   <tr>
   <td align="center">' . "\n";
-        //show the links
+        // show the links
         echo $pager->links;
         echo '</td>
                 </tr>
@@ -2781,33 +2761,6 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
   <td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">';
     }
 }
-
-/**
- * @param $sql
-
-function db_vertical_table($sql)
- * {
- * $sth = dbquery($sql);
- * $rows = $sth->num_rows;
- * $fields = $sth->field_count;
- *
- * if ($rows > 0) {
- * echo '<table border="1" class="mail">' . "\n";
- * while ($row = $sth->fetch_row()) {
- * for ($f = 0; $f < $fields; $f++) {
- * $fieldInfo = $sth->fetch_field_direct($f);
- * echo " <tr>\n";
- * echo "  <td>" . $fieldInfo->name . "</td>\n";
- * echo "  <td>" . $row[$f] . "</td>\n";
- * echo " </tr>\n";
- * }
- * }
- * echo "</table>\n";
- * } else {
- * echo "No rows retrieved\n";
- * }
- * }
- */
 
 /**
  * @return float
@@ -2834,9 +2787,6 @@ function page_creation_timer()
     return sprintf(__('pggen03') . ' %f ' . __('seconds03') . "\n", $pc_total_time);
 }
 
-/**
- * @param $text
- */
 function debug($text)
 {
     if (true === DEBUG && headers_sent()) {
@@ -2858,8 +2808,6 @@ function php_errormsg()
 }
 
 /**
- * @param $dir
- *
  * @return bool|int
  *
  * @todo rewrite using SPL
@@ -2871,7 +2819,7 @@ function count_files_in_dir($dir)
         return false;
     }
 
-    //there is always . and .. so reduce the count
+    // there is always . and .. so reduce the count
     return count($file_list_array) - 2;
 }
 
@@ -2983,7 +2931,7 @@ function ldap_authenticate($username, $password)
             exit(ldap_print_error($ds));
         }
 
-        //search for $user in LDAP directory
+        // search for $user in LDAP directory
         $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $username)) or exit(__('ldpaauth203'));
 
         if (false === $ldap_search_results) {
@@ -3049,7 +2997,7 @@ function ldap_authenticate($username, $password)
                     }
 
                     if (!isset($email)) {
-                        //user has no mail but it is required for mailwatch
+                        // user has no mail but it is required for mailwatch
                         return null;
                     }
 
@@ -3068,7 +3016,7 @@ function ldap_authenticate($username, $password)
                 }
 
                 if (49 === ldap_errno($ds)) {
-                    //LDAP_INVALID_CREDENTIALS
+                    // LDAP_INVALID_CREDENTIALS
                     return null;
                 }
                 exit(ldap_print_error($ds));
@@ -3176,8 +3124,6 @@ if (!function_exists('ldap_escape')) {
 }
 
 /**
- * @param $entry
- *
  * @return string
  */
 function ldap_get_conf_var($entry)
@@ -3218,8 +3164,6 @@ function ldap_get_conf_var($entry)
 }
 
 /**
- * @param $entry
- *
  * @return bool
  */
 function ldap_get_conf_truefalse($entry)
@@ -3254,7 +3198,7 @@ function ldap_get_conf_truefalse($entry)
         }
     } else {
         // No results
-        //die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
+        // die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
         return false;
     }
 }
@@ -3281,7 +3225,7 @@ function imap_authenticate($username, $password)
             !filter_var($username, FILTER_VALIDATE_EMAIL)
         )
     ) {
-        //user has no mail but it is required for mailwatch
+        // user has no mail but it is required for mailwatch
         return null;
     }
 
@@ -3296,7 +3240,7 @@ function imap_authenticate($username, $password)
         $mbox = imap_open(IMAP_HOST, $imapUsername, $password, null, 0);
 
         if (false === $mbox) {
-            //auth faild
+            // auth faild
             return null;
         }
 
@@ -3320,8 +3264,6 @@ function imap_authenticate($username, $password)
 }
 
 /**
- * @param $name
- *
  * @return string
  */
 function translate_etoi($name)
@@ -3349,8 +3291,6 @@ function translate_etoi($name)
 }
 
 /**
- * @param $input
- *
  * @return string
  */
 function decode_header($input)
@@ -3360,7 +3300,7 @@ function decode_header($input)
     // For each encoded-word...
     while (preg_match('/(=\?([^?]+)\?(q|b)\?([^?]*)\?=)/i', $input, $matches)) {
         $encoded = $matches[1];
-        //$charset = $matches[2];
+        // $charset = $matches[2];
         $encoding = $matches[3];
         $text = $matches[4];
         switch (strtolower($encoding)) {
@@ -3382,8 +3322,6 @@ function decode_header($input)
 }
 
 /**
- * @param $input
- *
  * @return string
  */
 function debug_print_r($input)
@@ -3408,7 +3346,7 @@ function return_geoip_country($ip)
     $geoLite2File = __DIR__ . '/temp/GeoLite2-Country.mmdb';
     if (file_exists($geoLite2File) && filesize($geoLite2File) > 0) {
         try {
-            //check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
+            // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
             $ip = stripPortFromIp($ip);
             $reader = new \MaxMind\Db\Reader($geoLite2File);
             $countryData = $reader->get($ip);
@@ -3484,8 +3422,6 @@ function quarantine_list($input = '/')
 }
 
 /**
- * @param $host
- *
  * @return bool
  */
 function is_local($host)
@@ -3585,12 +3521,12 @@ SELECT
 
     // Host is remote call quarantine_list_items by RPC
     debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
-    //if(DEBUG) { $client->setDebug(1); }
-    //$parameters = array($input);
-    //$msg = new xmlrpcmsg('quarantine_list_items',$parameters);
+    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
+    // if(DEBUG) { $client->setDebug(1); }
+    // $parameters = array($input);
+    // $msg = new xmlrpcmsg('quarantine_list_items',$parameters);
     $msg = new xmlrpcmsg('quarantine_list_items', [new xmlrpcval($msgid)]);
-    $rsp = xmlrpc_wrapper($row->hostname, $msg); //$client->send($msg);
+    $rsp = xmlrpc_wrapper($row->hostname, $msg); // $client->send($msg);
     if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
@@ -3695,7 +3631,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
     } else {
         // Host is remote - handle by RPC
         debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
-        //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+        // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
         // Convert input parameters
         $list_output = [];
         foreach ($list as $list_array) {
@@ -3715,7 +3651,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         $param3 = new xmlrpcval($to, 'string');
         $parameters = [$param1, $param2, $param3];
         $msg = new xmlrpcmsg('quarantine_release', $parameters);
-        $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
+        $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
         if (0 === $rsp->faultCode()) {
             $response = php_xmlrpc_decode($rsp->value());
         } else {
@@ -3727,9 +3663,6 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 }
 
 /**
- * @param $list
- * @param $num
- * @param $type
  * @param bool|false $rpc_only
  *
  * @return string
@@ -3744,7 +3677,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     $list = &$new;
     $status = [];
     if (!$rpc_only && is_local($list[0]['host'])) {
-        //prevent sa-learn process blocking complete apache server
+        // prevent sa-learn process blocking complete apache server
         session_write_close();
         foreach ($num as $key => $val) {
             $use_spamassassin = false;
@@ -3775,7 +3708,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
                     $isfp = '1';
                     break;
                 default:
-                    //TODO handle this case
+                    // TODO handle this case
                     $isfp = null;
             }
             if (null !== $isfp) {
@@ -3865,7 +3798,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
 
     // Call by RPC
     debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
     $list_output = [];
     foreach ($list as $list_array) {
@@ -3885,7 +3818,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     $param3 = new xmlrpcval($type, 'string');
     $parameters = [$param1, $param2, $param3];
     $msg = new xmlrpcmsg('quarantine_learn', $parameters);
-    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
+    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
     if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
@@ -3896,8 +3829,6 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
 }
 
 /**
- * @param $list
- * @param $num
  * @param bool|false $rpc_only
  *
  * @return string
@@ -3930,7 +3861,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
 
     // Call by RPC
     debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
     // Convert input parameters
     $list_output = [];
     foreach ($list as $list_array) {
@@ -3949,7 +3880,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
     $param2 = new xmlrpcval($num_output, 'array');
     $parameters = [$param1, $param2];
     $msg = new xmlrpcmsg('quarantine_delete', $parameters);
-    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); //$client->send($msg);
+    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
     if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
@@ -3959,9 +3890,6 @@ function quarantine_delete($list, $num, $rpc_only = false)
     return $response . ' (RPC)';
 }
 
-/**
- * @param $id
- */
 function fixMessageId($id)
 {
     $mta = get_conf_var('mta');
@@ -4003,8 +3931,6 @@ function audit_log($action, $user = 'unknown')
 }
 
 /**
- * @param $array
- *
  * @return array|number
  */
 function mailwatch_array_sum($array)
@@ -4017,9 +3943,6 @@ function mailwatch_array_sum($array)
     return array_sum($array);
 }
 
-/**
- * @param $file
- */
 function read_ruleset_default($file)
 {
     $fh = fopen($file, 'rb') or exit(__('diereadruleset03') . " ($file)");
@@ -4041,8 +3964,6 @@ function read_ruleset_default($file)
 }
 
 /**
- * @param $scanner
- *
  * @return string|false
  */
 function get_virus_conf($scanner)
@@ -4149,9 +4070,6 @@ function is_rpc_client_allowed()
 }
 
 /**
- * @param $host
- * @param $msg
- *
  * @return xmlrpcresp
  */
 function xmlrpc_wrapper($host, $msg)
@@ -4182,10 +4100,6 @@ function xmlrpc_wrapper($host, $msg)
     return $client->send($msg, 0, $method);
 }
 
-/**
- * @param $user
- * @param $hash
- */
 function updateUserPasswordHash($user, $hash)
 {
     $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
@@ -4474,7 +4388,6 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
 }
 
 /**
- * @param $ip
  * @param bool|string $net
  * @param bool|string $privateLocal
  *
@@ -4512,7 +4425,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
         return $network->match($ip);
     }
 
-    //return false to fail gracefully
+    // return false to fail gracefully
     return false;
 }
 
@@ -4757,7 +4670,7 @@ function generateFormToken($formstring)
 {
     if (!isset($_SESSION['token'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 
     return hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
@@ -4829,7 +4742,7 @@ function updateLoginExpiry($myusername)
         } else {
             $expiry_val = (time() + 600);
         }
-        // If set, use the individual timeout
+    // If set, use the individual timeout
     } elseif ('0' === $login_timeout) {
         $expiry_val = 0;
     } else {
@@ -5047,12 +4960,12 @@ function getHTTPClientIP()
             return $remote_addr;
         }
 
-        //check if remote_addr is a trusted proxy:
+        // check if remote_addr is a trusted proxy:
         if (!in_array($remote_addr, TRUSTED_PROXIES)) {
             return $remote_addr;
         }
 
-        //remove all trusted proxies from header
+        // remove all trusted proxies from header
         $ips = explode(',', $_SERVER[PROXY_HEADER]);
         $ips = array_map('trim', $ips);
         $ips = array_diff($ips, TRUSTED_PROXIES);
@@ -5061,7 +4974,7 @@ function getHTTPClientIP()
             return $remote_addr;
         }
 
-        //the last entry should be the real client ip
+        // the last entry should be the real client ip
         return array_pop($ips);
     } else {
         return $remote_addr;

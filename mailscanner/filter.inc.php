@@ -309,7 +309,7 @@ WHERE
      */
     public function AddReport($url, $description, $useToken = false)
     {
-        //test if url exists if it is remove the old one. This fixes double shown urls for the reports
+        // test if url exists if it is remove the old one. This fixes double shown urls for the reports
         foreach ($this->reports as $key => $report) {
             if ($report['url'] === $url) {
                 unset($this->reports[$key]);

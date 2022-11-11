@@ -38,7 +38,7 @@ if (!isset($_GET['id'])) {
 
 if (false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    exit();
+    exit;
 }
 
 $message_id = deepSanitizeInput($_GET['id'], 'url');
@@ -60,11 +60,11 @@ if (!$message_data) {
 
 if (RPC_ONLY || !is_local($message_data->hostname)) {
     // Host is remote - use XML-RPC
-    //$client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php', $host, 80);
+    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php', $host, 80);
     $input = new xmlrpcval($message_id);
     $parameters = [$input];
     $msg = new xmlrpcmsg('return_quarantined_file', $parameters);
-    //$rsp = $client->send($msg);
+    // $rsp = $client->send($msg);
     $rsp = xmlrpc_wrapper($message_data->hostname, $msg);
     if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
@@ -73,7 +73,7 @@ if (RPC_ONLY || !is_local($message_data->hostname)) {
     }
     $file = base64_decode($response);
 } else {
-    //build filename path
+    // build filename path
     $quarantine_dir = get_conf_var('QuarantineDir');
     $filename = '';
     switch (true) {
@@ -174,14 +174,14 @@ function decode_structure($structure)
         case 'message/partial':
             // @link https://tools.ietf.org/html/rfc2046#section-5.2.2
             header('Content-Type: application/octet-stream');
-            //get message id
+            // get message id
             preg_match('/.*id="?([^";]*)"?.*/', $structure->headers['content-type'], $identifier);
-            //get part number
+            // get part number
             preg_match("/.*number=([\d]*).*/", $structure->headers['content-type'], $partNumber);
-            //get total parts
+            // get total parts
             preg_match("/.*total=([\d]*).*/", $structure->headers['content-type'], $totalParts);
 
-            //build filename
+            // build filename
             $filename = isset($identifier[1]) ? $identifier[1] : 'partialMessage';
             if (isset($partNumber[1])) {
                 $filename .= ' - Part ' . $partNumber[1];

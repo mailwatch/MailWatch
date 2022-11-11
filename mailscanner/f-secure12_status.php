@@ -45,8 +45,8 @@ if ('A' !== $_SESSION['user_type']) {
 
     $output = shell_exec('/opt/f-secure/linuxsecurity/bin/fsanalyze ' . escapeshellarg(__DIR__ . '/notexistingfile.txt'));
 
-    //--FOR TESTING--
-    //$output = shell_exec('cat ' . escapeshellarg(__DIR__ . '/../tests/fixtures/assets/antivirus/fsecure12.txt'));
+    // --FOR TESTING--
+    // $output = shell_exec('cat ' . escapeshellarg(__DIR__ . '/../tests/fixtures/assets/antivirus/fsecure12.txt'));
 
     preg_match_all($re, $output, $matches, PREG_SET_ORDER, 0);
 

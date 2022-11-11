@@ -71,7 +71,7 @@ if ('A' !== $_SESSION['user_type']) {
                 $regs[2] = safe_value(ltrim(rtrim($regs[2])));
                 echo '<tr><td>' . htmlentities($regs[1]) . '</td><td>' . htmlentities($regs[2]) . '</td></tr>' . "\n";
                 dbquery("REPLACE INTO mcp_rules VALUES ('$regs[1]','$regs[2]')");
-            //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
+            // debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
                 debug("$line - did not match regexp, not inserting into database");
             }
