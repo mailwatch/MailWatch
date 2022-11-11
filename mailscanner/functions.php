@@ -461,12 +461,12 @@ function printServiceStatus()
         $mta = get_conf_var('mta');
         if (('msmail' === $mta) || ('postfix' === $mta)) {
             $masterproc = [];
-            exec('ps ax | grep postfix.*master | grep -v grep',$masterproc);
+            exec('ps ax | grep postfix.*master | grep -v grep', $masterproc);
             if (count($masterproc) > 0) {
                 $running = $yes;
-                $masterpid = explode(" ",trim($masterproc[0]));
+                $masterpid = explode(" ", trim($masterproc[0]));
                 $childproc = [];
-                exec('ps ax -j | grep '.$masterpid[0].' | grep -v grep',$childproc);
+                exec('ps ax -j | grep '.$masterpid[0].' | grep -v grep', $childproc);
                 $procs = count($childproc) . ' ' . __('procs03');
             } else {
                 $running = $no;
@@ -489,7 +489,7 @@ function printServiceStatus()
         }
         if (('msmail' !== $mta) && ('postfix' !== $mta)) {
             $output = [];
-            exec('ps ax | grep $mta | grep -v grep | grep -v php', $output);
+            exec(sprintf('ps ax | grep %s | grep -v grep | grep -v php', $mta), $output);
             if (count($output) > 0) {
                 $running = $yes;
             } else {
