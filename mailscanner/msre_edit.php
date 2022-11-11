@@ -40,12 +40,12 @@ if ('A' !== $_SESSION['user_type']) {
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
     } else {
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
     }
 
@@ -98,7 +98,7 @@ if ('A' !== $_SESSION['user_type']) {
     if (isset($_POST['submitted'])) {
         if (false === checkFormToken('/msre_edit.php form token', $_POST['formtoken'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
 
         list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
@@ -155,8 +155,8 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     $ruleset = [];
     $previous_line = '';
     foreach (preg_split("/\n/", $file_contents) as $line) {
-        //echo "$i: $line<br>\n";
-        //$i++;
+        // echo "$i: $line<br>\n";
+        // $i++;
         // this should find lines w/out comments, or lines that
         // start with #DISABLED#.
         // Treat empty lines as comments
@@ -217,7 +217,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             $rule_part['2and'],
             $rule_part['3and_direction'],
             $rule_part['4and_target']
-            ) = $old_rule_part;
+        ) = $old_rule_part;
 
         // Clean out whitespace from the rule parts
         foreach ($rule_part as &$a_part) {
@@ -250,7 +250,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
 
         // Now grab shit.
         while ($last_old_rule_part !== $rule_part[$grab_to_field]) {
-            //echo "lorp$rule_count: $last_old_rule_part<br>\n";
+            // echo "lorp$rule_count: $last_old_rule_part<br>\n";
             if (null !== $last_old_rule_part) {
                 $rule_part['99action'] = $last_old_rule_part . ' ' . $rule_part['99action'];
             }
@@ -416,12 +416,12 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             }
         }
         if ($colorpicker) {
-            //echo "colorpicker 1<br>\n";
+            // echo "colorpicker 1<br>\n";
             $tr_param = ' class="alt"';
             $colorpicker = 0;
             $boxclass = 'dashblackbox';
         } else {
-            //echo "colorpicker 0<br>\n";
+            // echo "colorpicker 0<br>\n";
             $tr_param = '';
             $colorpicker = 1;
             $boxclass = 'dashgreybox';
@@ -438,7 +438,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             '</tr>' . "\n";
 
         // And a blank space too to break them up a li'l more
-        //echo "<tr><td colspan=\"" . MSRE_COLUMNS . "\" bgcolor=\"white\">&nbsp;</td></tr>\n";
+        // echo "<tr><td colspan=\"" . MSRE_COLUMNS . "\" bgcolor=\"white\">&nbsp;</td></tr>\n";
 
         ++$rule_count;
     }
@@ -581,7 +581,7 @@ function Process_Form($file_contents, $short_filename)
         } else {
             $_POST[$description] = '';
         }
-        //echo "$description: " . $_POST[$description] . "<br>\n";
+        // echo "$description: " . $_POST[$description] . "<br>\n";
         // Check for "default" rule
         if (isset($_POST[$target])) {
             $_POST[$target] = Fix_Quotes($_POST[$target]);
@@ -628,14 +628,14 @@ function Process_Form($file_contents, $short_filename)
         // Check to see if any rule action was specified, like delete,
         // disable, enable.
         // If so, we need to do something here.
-        //echo "$rule_action: |" . $_POST[$rule_action] . "|<br>\n";
+        // echo "$rule_action: |" . $_POST[$rule_action] . "|<br>\n";
         if (isset($_POST[$rule_action])) {
             switch ($_POST[$rule_action]) {
                 case 'Delete':
                     // Deletions are simple, just ignore this rule and
                     // go to the next one (and it won't get written to
                     // the new file)
-                    //echo "rule$i: $rule_action says delete<br>\n";
+                    // echo "rule$i: $rule_action says delete<br>\n";
                     continue 2;
                 case 'Disable':
                     // To disable a rule, we simply add "#DISABLED" to the
@@ -650,7 +650,7 @@ function Process_Form($file_contents, $short_filename)
             }
         }
 
-        //echo "after case, rule $i<br>\n";
+        // echo "after case, rule $i<br>\n";
         // Make sure there's something there... direction is required
         if (!isset($_POST[$and])) {
             $_POST[$and] = '';
@@ -663,7 +663,7 @@ function Process_Form($file_contents, $short_filename)
         }
 
         if (isset($_POST[$direction]) && $_POST[$direction]) {
-            //echo "$direction: $_POST[$direction]<br>\n";
+            // echo "$direction: $_POST[$direction]<br>\n";
             $new_ruleset[] = [
                 'description' => $_POST[$description],
                 'direction' => $_POST[$direction],
@@ -722,7 +722,7 @@ function Process_Form($file_contents, $short_filename)
     if (!$fh) {
         $status_msg .= '<span class="error">' . __('error0155') . '</span><br>' . "\n";
     } else {
-        $status_msg .= __('error55') . '<br>' . "\n" . sprintf(__('message55'), MSRE_RELOAD_INTERVAL) . '<br>' . "\n";
+        $status_msg .= __('ok55') . '<br>' . "\n" . sprintf(__('message55'), MSRE_RELOAD_INTERVAL) . '<br>' . "\n";
     }
     $status_msg .= "</span>\n";
 

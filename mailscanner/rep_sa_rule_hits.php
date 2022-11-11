@@ -56,15 +56,15 @@ $sa_array = [];
 
 // Retrieve rows and insert into array
 while ($row = $result->fetch_object()) {
-    //##### TODEL/TODO #
-    //##### TODEL/TODO # stdClass Object
-    //##### TODEL/TODO # (
-    //##### TODEL/TODO # [spamreport] => not spam (too large)
-    //##### TODEL/TODO # [isspam] => 0
-    //##### TODEL/TODO #)
-    //##### TODEL/TODO #
-    //##### TODEL/TODO # printf("<pre>\n");print_r($row);printf("</pre>\n");
-    //##### TODEL/TODO #
+    // ##### TODEL/TODO #
+    // ##### TODEL/TODO # stdClass Object
+    // ##### TODEL/TODO # (
+    // ##### TODEL/TODO # [spamreport] => not spam (too large)
+    // ##### TODEL/TODO # [isspam] => 0
+    // ##### TODEL/TODO #)
+    // ##### TODEL/TODO #
+    // ##### TODEL/TODO # printf("<pre>\n");print_r($row);printf("</pre>\n");
+    // ##### TODEL/TODO #
     preg_match('/SpamAssassin \((.+?)\)/i', $row->spamreport, $sa_rules);
     // Get rid of first match from the array
     $junk = array_shift($sa_rules);

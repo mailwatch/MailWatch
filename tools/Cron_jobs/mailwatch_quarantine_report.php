@@ -37,7 +37,7 @@ require_once MAILWATCH_HOME . '/quarantine_report.inc.php';
 
 $usersForReport = [];
 if (isset($argv) && count($argv) > 1) {
-    //get path from command line argument if set
+    // get path from command line argument if set
     $usersForReport = explode(',', $argv[1]);
 }
 $report = new Quarantine_Report();

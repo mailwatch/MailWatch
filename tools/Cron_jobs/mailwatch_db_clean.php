@@ -55,7 +55,7 @@ $tablecheck = dbquery($sqlcheck);
 $mta = get_conf_var('mta');
 $optimize_mtalog_id = '';
 if ('postfix' === $mta && $tablecheck->num_rows > 0) {
-    //version for postfix with mtalog_ids enabled
+    // version for postfix with mtalog_ids enabled
     dbquery(
         'DELETE i.*, m.* FROM mtalog AS m
          LEFT OUTER JOIN mtalog_ids AS i ON i.smtp_id = m.msg_id

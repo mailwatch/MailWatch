@@ -382,7 +382,7 @@ ORDER BY a.date DESC, a.time DESC';
 
             return $sendResult;
         } else {
-            //combined
+            // combined
             $quarantine_list = [];
             $quarantined = [];
 
@@ -520,20 +520,20 @@ ORDER BY a.date DESC, a.time DESC';
      */
     private static function check_auto_release($qitem)
     {
-        //function checks if message already has an autorelease entry
+        // function checks if message already has an autorelease entry
         $id = $qitem['id'];
         $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'", false);
         if (!$result) {
             self::dbg(' === Error checking if msg_id already exists.....skipping....');
         } else {
             if (0 === $result->num_rows) {
-                return false; //msg_id not found,
+                return false; // msg_id not found,
             }
 
             if (1 === $result->num_rows) {
                 $row = $result->fetch_array();
 
-                return $row['uid']; //return the stored uid
+                return $row['uid']; // return the stored uid
             }
 
             self::dbg('=== Error, msg_id exists more than once....generating new one...');
@@ -558,10 +558,10 @@ ORDER BY a.date DESC, a.time DESC';
         $t1 = '';
         // Build the quarantine list for this recipient
         foreach ($quarantined as $qitem) {
-            //Check if auto-release is enabled
+            // Check if auto-release is enabled
             $links = '<a href="' . MAILWATCH_HOSTURL . '/viewmail.php?token=' . $qitem['token'] . '&id=' . $qitem['id'] . '">' . __('view61') . '</a>';
             if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
-                //Check if email already has an autorelease entry
+                // Check if email already has an autorelease entry
                 $exists = self::check_auto_release($qitem);
                 if (!$exists) {
                     $qitem['rand'] = get_random_string(10);

@@ -37,12 +37,12 @@ ini_set('memory_limit', MEMORY_LIMIT);
 if (isset($_POST['token'])) {
     if (false === checkToken($_POST['token'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 } else {
     if (false === checkToken($_GET['token'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 }
 
@@ -161,7 +161,7 @@ for ($f = 0; $f < $result->field_count; ++$f) {
                 $output .= ' <td>' . $relay . '</td>' . "\n";
                 // check if ipv4 has a port specified (e.g. 10.0.0.10:1025), strip it if found
                 $relay = stripPortFromIp($relay);
-                //check if address is in private IP space
+                // check if address is in private IP space
                 $isPrivateNetwork = ip_in_range($relay, false, 'private');
                 $isLocalNetwork = ip_in_range($relay, false, 'local');
                 if (true === $isPrivateNetwork) {
@@ -188,7 +188,7 @@ for ($f = 0; $f < $result->field_count; ++$f) {
                     $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
                 }
                 // Link to RBL Lookup
-                $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
+                $output .= ' <td class="noprint" align="center">[<a href="https://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Link to Spam Report for this relay
                 $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Link to Virus Report for this relay
@@ -312,7 +312,7 @@ for ($f = 0; $f < $result->field_count; ++$f) {
 // rows in the relay table (maillog.id = relay.msg_id)...
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
 $tablecheck = dbquery($sqlcheck);
-if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) { //version for postfix
+if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) { // version for postfix
     $sql1 = "
  SELECT
   DATE_FORMAT(m.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS 'Date/Time',
@@ -329,7 +329,7 @@ if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) { //
   m.type='relay'
  ORDER BY
   m.timestamp DESC";
-} else { //version for sendmail
+} else { // version for sendmail
     $sql1 = "
  SELECT
   DATE_FORMAT(timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS 'Date/Time',
@@ -405,13 +405,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
 
             $arrid = $_POST['release'];
             if (!is_array($arrid)) {
-                exit();
+                exit;
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
                 $id2 = deepSanitizeInput($id, 'num');
                 if (!validateInput($id2, 'num')) {
-                    exit();
+                    exit;
                 }
                 $arrid2[] = $id2;
             }
@@ -421,7 +421,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         if (isset($_POST['learn'])) {
             $arrid = $_POST['learn'];
             if (!is_array($arrid)) {
-                exit();
+                exit;
             }
             $arrid2 = [];
             foreach ($arrid as $id) {
@@ -441,7 +441,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         if (isset($_POST['delete'])) {
             $arrid = $_POST['delete'];
             if (!is_array($arrid)) {
-                exit();
+                exit;
             }
             $arrid2 = [];
             foreach ($arrid as $id) {

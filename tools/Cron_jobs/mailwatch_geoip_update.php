@@ -98,7 +98,7 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
                 $requestSession->options['proxy']['type'] = 'HTTP';
                 break;
             case 'SOCKS5':
-            case 'CURLPROXY_SOCKS5': //BC for old constant name
+            case 'CURLPROXY_SOCKS5': // BC for old constant name
                 $requestSession->options['proxy']['type'] = 'SOCKS5';
                 break;
             default:

@@ -120,7 +120,7 @@ function TR_Extended($row_data, $tr_param)
     // Start out by making the initial <tr>
     $my_tr = '<tr';
     if ($tr_param) {
-        //echo "tr param: $tr_param<br>\n";
+        // echo "tr param: $tr_param<br>\n";
         $my_tr .= ' ' . $tr_param;
     }
     $my_tr .= '>' . "\n";
@@ -131,7 +131,7 @@ function TR_Extended($row_data, $tr_param)
     foreach ($row_data as $td_text => $td_param) {
         $my_td = "\t" . '<td';
         if ($td_param) {
-            //echo "td_param: $td_param<br>\n";
+            // echo "td_param: $td_param<br>\n";
             $my_td .= ' ' . $td_param;
         }
         $my_td .= '>' . $td_text . '</td>' . "\n";

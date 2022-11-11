@@ -152,7 +152,7 @@ function testToken()
     if ((isset($_POST['token']) && (false === checkToken($_POST['token'])))
         || (isset($_GET['token']) && (false === checkToken($_GET['token'])))) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 
     return true;
@@ -305,7 +305,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
     $type['D'] = __('domainadmin12', true);
     $type['U'] = __('user12', true);
     $type['R'] = __('user12', true);
-    if (-1 === $uid) {//new user
+    if (-1 === $uid) {// new user
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
                         VALUES ('" . safe_value(stripslashes($n_username)) . "','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','" . safe_value(stripslashes($quarantine_rcpt)) . "')";
         dbquery($sql);
@@ -364,7 +364,7 @@ function newUser($userType)
 
     if (false === checkFormToken('/user_manager.php new token', $_POST['formtoken'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 
     $username = html_entity_decode(deepSanitizeInput($_POST['username'], 'string'));
@@ -473,7 +473,7 @@ function editUser($userType)
 
     if (false === checkFormToken('/user_manager.php edit token', $_POST['formtoken'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
 
     // Do update
@@ -558,7 +558,7 @@ function userFilter()
     if (isset($_POST['filter'])) {
         if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
         $getFilter = deepSanitizeInput($_POST['filter'], 'url');
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
@@ -828,7 +828,7 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
     $domainAdminUserDomainFilter = '';
     if ('D' === $_SESSION['user_type']) {
         if ('' === $_SESSION['domain']) {
-            //if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
+            // if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
             $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
@@ -918,7 +918,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     if (false === checkToken($_POST['token'])
         || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
         header('Location: login.php?error=pagetimeout');
-        exit();
+        exit;
     }
     if (!isset($_POST['action'])) {
         echo getHtmlMessage(__('formerror12'), 'error');

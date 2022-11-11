@@ -140,7 +140,7 @@ function rpc_quarantine_list_items($msg)
         }
         $output[] = new xmlrpcval($struct, 'struct');
     }
-    //var_dump($output);
+    // var_dump($output);
     return new xmlrpcresp(new xmlrpcval($output, 'array'));
 }
 

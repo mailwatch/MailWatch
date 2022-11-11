@@ -32,7 +32,7 @@ if (file_exists('conf.php')) {
         dbconn();
         $mid = deepSanitizeInput($_GET['mid'], 'url');
         if (false === $mid || !validateInput($mid, 'msgid')) {
-            exit();
+            exit;
         }
         if (isset($_GET['amp;r'])) {
             $token = deepSanitizeInput($_GET['amp;r'], 'url');
@@ -41,7 +41,7 @@ if (file_exists('conf.php')) {
         }
         if (!validateInput($token, 'releasetoken')) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);
@@ -68,9 +68,9 @@ if (file_exists('conf.php')) {
                         }
                     }
                 }
-                //success
+                // success
                 $output[] = __('msgreleased59');
-                //cleanup
+                // cleanup
                 $releaseID = $row['id'];
                 $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
                 $result = dbquery($query, false);

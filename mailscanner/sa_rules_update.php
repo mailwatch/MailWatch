@@ -73,7 +73,7 @@ if ('A' !== $_SESSION['user_type']) {
                 $rule_name = safe_value($rule_name);
                 $rule_desc = safe_value(substr($rule_desc, 0, 512));
                 dbquery("REPLACE INTO sa_rules VALUES ('$rule_name','$rule_desc')");
-            //debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
+            // debug("\t\tinsert: ".$regs[1].", ".$regs[2]);
             } else {
                 debug("$line - did not match regexp, not inserting into database");
             }

@@ -81,7 +81,7 @@ if (!isset($_GET['action'])) {
 
 $id = deepSanitizeInput($_GET['id'], 'url');
 if (false === $id || !validateInput($id, 'msgid')) {
-    exit();
+    exit;
 }
 
 $list = quarantine_list_items($id);
@@ -93,7 +93,7 @@ switch ($_GET['action']) {
     case 'release':
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
         $result = '';
         if (1 === count($list)) {
@@ -118,7 +118,7 @@ switch ($_GET['action']) {
     case 'delete':
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
         $status = [];
         if (isset($_GET['html'])) {
@@ -157,7 +157,7 @@ switch ($_GET['action']) {
         } else {
             if (false === checkToken($_GET['token'])) {
                 header('Location: login.php?error=pagetimeout');
-                exit();
+                exit;
             }
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; ++$i) {

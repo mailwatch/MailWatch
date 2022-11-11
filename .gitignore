@@ -1,10 +1,11 @@
 #files
 /mailscanner/conf.php
 /mailscanner/skin.css
+/mailscanner/lib/htmlpurifier/standalone/HTMLPurifier/DefinitionCache/Serializer/HTML/
 
 #development files
 /_msconfig/
 /vendor/
 
 .php-cs-fixer.cache
-
+.composer.lock

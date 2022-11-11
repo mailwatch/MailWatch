@@ -82,7 +82,7 @@ if (0 === $required_constant_missing_count) {
                         // Update the quarantine flag
                         $sql = "UPDATE maillog SET quarantined = NULL WHERE id='$id'";
                         dbquery($sql);
-                        //If auto quarantine release is enabled, remove from autorelease table when quarantined email expires
+                        // If auto quarantine release is enabled, remove from autorelease table when quarantined email expires
                         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
                             $sql = "DELETE FROM autorelease WHERE msg_id = '$id'";
                             dbquery($sql);
@@ -128,7 +128,7 @@ if (0 === $required_constant_missing_count) {
             $d = dir($dir) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
-                    //dbg("Found $dir/$f");
+                    // dbg("Found $dir/$f");
                     $array[] = $f;
                 }
             }
@@ -140,7 +140,7 @@ if (0 === $required_constant_missing_count) {
             $d = dir($spam) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
-                    //dbg("Found $spam/$f");
+                    // dbg("Found $spam/$f");
                     $array[] = $f;
                 }
             }
@@ -151,7 +151,7 @@ if (0 === $required_constant_missing_count) {
             $d = dir($nonspam) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
-                    //dbg("Found $nonspam/$f");
+                    // dbg("Found $nonspam/$f");
                     $array[] = $f;
                 }
             }
@@ -162,7 +162,7 @@ if (0 === $required_constant_missing_count) {
             $d = dir($mcp) or exit(php_errormsg());
             while (false !== ($f = $d->read())) {
                 if ('.' !== $f && '..' !== $f && 'spam' !== $f && 'nonspam' !== $f && 'mcp' !== $f) {
-                    //dbg("Found $mcp/$f");
+                    // dbg("Found $mcp/$f");
                     $array[] = $f;
                 }
             }
@@ -177,7 +177,7 @@ if (0 === $required_constant_missing_count) {
             case '--clean':
                 quarantine_clean();
                 break;
-            case '--reconsile': //deprecated option
+            case '--reconsile': // deprecated option
             case '--reconcile':
                 quarantine_reconcile();
                 break;

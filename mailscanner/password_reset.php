@@ -26,7 +26,7 @@
 
 require_once __DIR__ . '/functions.php';
 
-//Check if LDAP is enabled, if so, prevent usage
+// Check if LDAP is enabled, if so, prevent usage
 if (USE_LDAP === true) {
     exit(__('pwdresetldap63'));
 }
@@ -52,33 +52,33 @@ $link = dbconn();
 if (defined('PWD_RESET') && PWD_RESET === true) {
     if (isset($_POST['Submit'])) {
         if (false === checkToken($_POST['token'])) {
-            exit();
+            exit;
         }
         $_SESSION['token'] = generateToken();
 
         if ('stage1Submit' === $_POST['Submit']) {
-            //check email add registered user and password reset is allowed
+            // check email add registered user and password reset is allowed
             $email = $link->real_escape_string($_POST['email']);
             if (empty($email)) {
                 header('Location: password_reset.php?stage=1');
-                exit();
+                exit;
             }
             if (!validateInput($email, 'email')) {
-                exit();
+                exit;
             }
             $sql = "SELECT * FROM users WHERE username = '$email'";
             $result = dbquery($sql);
             if (1 !== $result->num_rows) {
-                //user not found
+                // user not found
                 $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '</p>
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                 audit_log(sprintf(__('auditlogunf63', true), $email));
                 $showpage = true;
             } else {
-                //user found, now check type of user
+                // user found, now check type of user
                 $row = $result->fetch_assoc();
                 if ('U' === $row['type']) {
-                    //user type is user, password reset allowed
+                    // user type is user, password reset allowed
                     $rand = get_random_string(16);
                     $resetexpire = time() + 60 * 60 * RESET_LINK_EXPIRE;
                     $sql = "UPDATE users SET resetid = '$rand', resetexpire = '$resetexpire' WHERE username = '$email'";
@@ -118,7 +118,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
     </html>';
                     $text = sprintf(__('01emailplaintxt63'), $email) . MAILWATCH_HOSTURL . '/password_reset.php?stage=2&uid=' . $rand;
 
-                    //Send email
+                    // Send email
                     $subject = __('passwdresetrequest63');
                     $isSent = send_email($email, $html, $text, $subject, true);
                     if (true !== $isSent) {
@@ -130,7 +130,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     audit_log(sprintf(__('auditlogreserreqested63', true), $email));
                     $showpage = true;
                 } else {
-                    //password reset not allowed
+                    // password reset not allowed
                     audit_log(sprintf(__('auditlogresetdenied63', true), $email));
                     $errors = '<p class="pwdreseterror">' . __('resetnotallowed63') . '</p>';
                     $errors .= '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
@@ -138,19 +138,19 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 }
             }
         } elseif ('stage2Submit' === $_POST['Submit']) {
-            //check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
+            // check passwords match, update password in database, update password last changed date, increase password reset counter, email user to inform of password reset
             $email = $link->real_escape_string($_POST['email']);
             if (!validateInput($email, 'email')) {
-                exit();
+                exit;
             }
             $uid = $link->real_escape_string($_POST['uid']);
-            //var_dump($_POST, $email, $uid, validateInput($uid, 'resetid'));
+            // var_dump($_POST, $email, $uid, validateInput($uid, 'resetid'));
             if (!validateInput($uid, 'resetid')) {
-                exit();
+                exit;
             }
             if ($_POST['pwd1'] === $_POST['pwd2']) {
-                //passwords match, now we need to store them
-                //first, check form hasn't been modified
+                // passwords match, now we need to store them
+                // first, check form hasn't been modified
                 $sql = "SELECT resetid FROM users WHERE username = '$email'";
                 $result = dbquery($sql);
                 $row = $result->fetch_array();
@@ -161,7 +161,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $sql = "UPDATE users SET password = '$password', resetid = '', resetexpire = '0', lastreset ='$lastreset' WHERE username ='$email'";
                     $result = dbquery($sql);
 
-                    //now send email telling user password has been updated.
+                    // now send email telling user password has been updated.
                     $html = '<!DOCTYPE html>
     <html>
     <head>
@@ -193,7 +193,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
     </html>';
                     $text = sprintf(__('04pwdresetemail63'), $email);
 
-                    //Send email
+                    // Send email
                     $subject = __('pwdresetsuccess63');
                     send_email($email, $html, $text, $subject, true);
                     audit_log(sprintf(__('auditlogresetsuccess63', true), $email));
@@ -213,20 +213,20 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             }
         } else {
             header('Location: login.php?error=baduser');
-            exit();
+            exit;
         }
     } elseif (isset($_GET['stage'])) {
         if (!isset($_SESSION['token'])) {
             $_SESSION['token'] = generateToken();
         }
         if ('1' === $_GET['stage']) {
-            //first stage, need to get email address
+            // first stage, need to get email address
             $fields = 'stage1';
             $showpage = true;
         } elseif ('2' === $_GET['stage']) {
-            //need to check if reset allowed, and reset password
+            // need to check if reset allowed, and reset password
             if (isset($_GET['uid'])) {
-                //check that uid is correct
+                // check that uid is correct
                 $uid = $link->real_escape_string($_GET['uid']);
 
                 $sql = "SELECT * FROM users WHERE resetid = '$uid'";
@@ -240,7 +240,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $row = $result->fetch_array();
                     $email = $row['username'];
                     if ($row['resetid'] === $uid) {
-                        //reset id matches - check if link expired
+                        // reset id matches - check if link expired
                         if ($row['resetexpire'] < time()) {
                             audit_log(sprintf(__('auditlogexpired63', true), $row['username']));
                             $errors = '<p class="pwdreseterror">' . __('resetexpired63') . '
@@ -258,18 +258,18 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     }
                 }
             } else {
-                //no matches - deny
+                // no matches - deny
                 audit_log(__('auditloglinkerror63', true));
                 $errors = __('brokenlink63') . '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                 $showpage = true;
             }
         } else {
             header('Location: login.php?error=baduser');
-            exit();
+            exit;
         }
     } else {
         header('Location: login.php?error=baduser');
-        exit();
+        exit;
     }
 
     if ($showpage) {
@@ -284,8 +284,8 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             <link rel="shortcut icon" href="images/favicon.png">
             <link rel="stylesheet" href="style.css" type="text/css">
             <?php if (is_file(__DIR__ . '/skin.css')) {
-            echo '<link rel="stylesheet" href="skin.css" type="text/css">';
-        } ?>
+                echo '<link rel="stylesheet" href="skin.css" type="text/css">';
+            } ?>
         </head>
         <body class="pwdreset">
         <div class="pwdreset">
@@ -295,27 +295,27 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             <div class="border-rounded">
                 <h1><?php echo __('title63'); ?></h1>
                 <?php if (file_exists('conf.php')) {
-            if ('' !== $fields) {
-                ?>
+                    if ('' !== $fields) {
+                        ?>
                         <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo sanitizeInput($_SERVER['PHP_SELF']); ?>" autocomplete="off">
                             <fieldset>
                                 <?php if (isset($_GET['error']) || '' !== $errors) {
-                    ?>
+                                    ?>
                                     <p class="pwdreseterror">
                                         <?php echo $errors; ?>
                                     </p>
                                     <?php
-                }
+                                }
 
-                if ('stage1' === $fields) {
-                    ?>
+                        if ('stage1' === $fields) {
+                            ?>
                                     <p><label for="email"><?php echo __('emailaddress63'); ?></label></p>
                                     <p><input name="email" type="text" id="email" autofocus></p>
                                     <p><button type="submit" name="Submit" value="stage1Submit"><?php echo __('requestpwdreset63'); ?></button></p>
                                     <?php
-                }
-                if ('stage2' === $fields) {
-                    ?>
+                        }
+                        if ('stage2' === $fields) {
+                            ?>
                                     <input type="hidden" name="email" value="<?php echo $email; ?>">
                                     <input type="hidden" name="uid" value="<?php echo $uid; ?>">
                                     <p><label for="pwd1"><?php echo __('01pwd63'); ?></label></p>
@@ -324,24 +324,24 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                                     <p><input name="pwd2" type="password" id="pwd2" autocomplete="off"></p>
                                     <p><button type="submit" name="Submit" value="stage2Submit"><?php echo __('button63'); ?></button></p>
                                     <?php
-                } ?>
+                        } ?>
 
                             </fieldset>
                             <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
                         </form>
                         <?php
-            } elseif ('' !== $message) {
-                echo $message;
-            } elseif ('' !== $errors) {
-                echo $errors;
-            }
-        } else {
-            ?>
+                    } elseif ('' !== $message) {
+                        echo $message;
+                    } elseif ('' !== $errors) {
+                        echo $errors;
+                    }
+                } else {
+                    ?>
                     <p class="error">
                         <?php echo __('cannot_read_conf'); ?>
                     </p>
                     <?php
-        } ?>
+                } ?>
             </div>
         </div>
 
@@ -349,7 +349,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         </html>
         <?php
     } else {
-        exit();
+        exit;
     }
 } else {
     exit(__('conferror63'));

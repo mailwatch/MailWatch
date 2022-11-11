@@ -83,7 +83,7 @@ abstract class MtaLogProcessor
 
             $_msg_id = safe_value($this->id);
 
-            //apply rulesets if they exist
+            // apply rulesets if they exist
             $rulesets = $this->getRulesets();
             if (isset($rulesets['type'])) {
                 $_type = $rulesets['type'];
@@ -112,7 +112,7 @@ abstract class MtaLogProcessor
                 $_status = safe_value($this->raw);
             }
 
-            //apply reject reasons if they exist
+            // apply reject reasons if they exist
             $rejectReasons = $this->getRejectReasons();
             if (isset($rejectReasons['type'])) {
                 $_type = $rejectReasons['type'];
@@ -170,7 +170,7 @@ abstract class MtaLogProcessor
 
     public function doit($input)
     {
-        global $fp; //@todo do we need this?
+        global $fp; // @todo do we need this?
         if (!$fp = popen($input, 'r')) {
             exit(__('diepipe56'));
         }
@@ -192,13 +192,13 @@ abstract class MtaLogProcessor
      */
     public function parse($line)
     {
-        //reset the variables
+        // reset the variables
         $this->id = null;
         $this->entry = null;
         $this->entries = null;
         $this->raw = $line;
 
-        //do the parse
+        // do the parse
         if (preg_match('/^(\S+):\s(.+)$/', $line, $match)) {
             $this->id = $match[1];
 
@@ -209,7 +209,7 @@ abstract class MtaLogProcessor
 
             // Extract any key=value pairs
             if (false !== strpos($match[2], '=')) {
-                //calls the function passed as argument
+                // calls the function passed as argument
                 $this->entries = $this->extractKeyValuePairs($match);
             } else {
                 $this->entry = $match[2];

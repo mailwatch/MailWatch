@@ -30,7 +30,7 @@ function postfixinq()
     $handle = opendir('/var/spool/postfix/hold/');
     $inq = 0;
     while (false !== ($file = readdir($handle))) {
-        //evaluate each entry, removing the . & .. entries
+        // evaluate each entry, removing the . & .. entries
         if ('.' !== $file && '..' !== $file) {
             ++$inq;
         }

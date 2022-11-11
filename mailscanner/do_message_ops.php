@@ -34,11 +34,11 @@ $refresh = html_start(__('opresult21'));
 
 if ($_SESSION['token'] !== deepSanitizeInput($_POST['token'], 'url')) {
     header('Location: login.php?error=pagetimeout');
-    exit();
+    exit;
 }
 if (false === checkFormToken('/do_message_ops.php form token', $_POST['formtoken'])) {
     header('Location: login.php?error=pagetimeout');
-    exit();
+    exit;
 }
 
 echo '<table border="0" width="100%" class="mail" cellspacing="2" align="center">' . "\n";
@@ -59,13 +59,13 @@ if (isset($_POST) && !empty($_POST)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {
-                exit();
+                exit;
             }
         } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {
-                exit();
+                exit;
             }
         } else {
             continue;
@@ -84,7 +84,7 @@ if (isset($_POST) && !empty($_POST)) {
                 $type = 'release';
                 break;
             default:
-                continue 2; //continue with next foreach loop
+                continue 2; // continue with next foreach loop
         }
         $items = quarantine_list_items($id, RPC_ONLY);
         echo '<tr>' . "\n";
@@ -131,7 +131,7 @@ if (isset($_POST) && !empty($_POST)) {
 echo ' </table>' . "\n";
 echo '<p class="center"><a href="javascript:history.back(1)">' . __('back21') . '</a></p><br>' . "\n";
 
-//Add footer
+// Add footer
 html_end();
-//Close database connection
+// Close database connection
 dbclose();

@@ -33,7 +33,7 @@ html_start(__('mqviewer24'), STATUS_REFRESH, false, false);
 
 if (false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
-    exit();
+    exit;
 }
 
 $queue = deepSanitizeInput($_GET['queue'], 'url');

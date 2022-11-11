@@ -25,7 +25,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//Require files
+// Require files
 require_once __DIR__ . '/filter.inc.php';
 require_once __DIR__ . '/functions.php';
 
@@ -48,12 +48,12 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
     if (isset($_POST['token'])) {
         if (false === checkToken($_POST['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
     } else {
         if (false === checkToken($_GET['token'])) {
             header('Location: login.php?error=pagetimeout');
-            exit();
+            exit;
         }
     }
 
@@ -67,7 +67,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
         case 'add':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                exit();
+                exit;
             }
             $filter->Add(sanitizeInput($_POST['column']), $_POST['operator'], sanitizeInput($_POST['value']));
             break;
@@ -81,7 +81,7 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
         case 'save':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                exit();
+                exit;
             }
             if (isset($_POST['save_as'])) {
                 $name = sanitizeInput($_POST['save_as']);
@@ -96,14 +96,14 @@ if (isset($_POST['action']) || isset($_GET['action'])) {
         case 'load':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                exit();
+                exit;
             }
             $filter->Load(sanitizeInput($_POST['filter']));
             break;
         case 'delete':
             if (false === checkFormToken('/filter.inc.php form token', $_POST['formtoken'])) {
                 header('Location: login.php?error=pagetimeout');
-                exit();
+                exit;
             }
             $filter->Delete(sanitizeInput($_POST['filter']));
             break;
