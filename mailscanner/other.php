@@ -86,25 +86,24 @@ if ('A' === $_SESSION['user_type']) {
     echo '
    <p>' . __('links10') . '</p>
    <ul>
-    <li><a href="http://mailwatch.org">MailWatch for MailScanner</a>
-    <li><a href="http://www.mailscanner.info">MailScanner</a>';
+    <li><a href="https://mailwatch.org">MailWatch for MailScanner</a>
+    <li><a href="https://www.mailscanner.info">MailScanner</a>';
 
     if (true === get_conf_truefalse('UseSpamAssassin')) {
-        echo '<li><a href="http://spamassassin.apache.org/">SpamAssassin</a>';
+        echo '<li><a href="https://spamassassin.apache.org/">SpamAssassin</a>';
     }
 
     if (preg_match('/sophos/i', $virusScanner)) {
-        echo '<li><a href="http://www.sophos.com">Sophos</a>';
+        echo '<li><a href="https://www.sophos.com">Sophos</a>';
     }
 
     if (preg_match('/clam/i', $virusScanner)) {
-        echo '<li><a href="http://clamav.net">ClamAV</A>';
+        echo '<li><a href="https://clamav.net">ClamAV</A>';
     }
 
     echo '
-    <li><a href="http://www.dnsstuff.com">DNSstuff</a>
-    <li><a href="http://mxtoolbox.com/NetworkTools.aspx">MXToolbox Network Tools</a>
-    <li><a href="http://www.anti-abuse.org/multi-rbl-check/">Multi-RBL Check</a>
+    <li><a href="https://mxtoolbox.com/NetworkTools.aspx">MXToolbox Network Tools</a>
+    <li><a href="https://multirbl.valli.org/">Multi-RBL Check</a>
    </ul>';
 }
 
