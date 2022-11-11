@@ -19,15 +19,17 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      # Install dependencies and handle caching in one go.
-      # Dependencies need to be installed to make sure the PHPUnit classes are recognized.
-      # @link https://github.com/marketplace/actions/install-composer-dependencies
-      - name: Install Composer dependencies
-        uses: "ramsey/composer-install@v2"
+      - uses: actions/cache@v3
+        with:
+          path: .php-cs-fixer.cache
+          key: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-
 
-      - name: Run php-cs-fixer
-        run: ./vendor/bin/php-cs-fixer fix
+      - name: PHP-CS-Fixer
+        uses: docker://oskarstark/php-cs-fixer-ga
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Apply php-cs-fixer changes
+          file_pattern: '*.php'
