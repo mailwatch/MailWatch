@@ -89,6 +89,8 @@ class Filter
             'otherinfected' => __('otherinfected09'),
             'report' => __('report09'),
             'hostname' => __('hostname09'),
+            'released' => __('released09'),
+            'salearn' => __('learned09'),
         ];
     }
 
