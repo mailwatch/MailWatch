@@ -1533,8 +1533,8 @@ function get_disks()
         /*
          * Using /proc/mounts as it seem to be standard on unix
          *
-         * http://unix.stackexchange.com/a/24230/33366
-         * http://unix.stackexchange.com/a/12086/33366
+         * https://unix.stackexchange.com/a/24230/33366
+         * https://unix.stackexchange.com/a/12086/33366
          */
         $temp_drive = [];
         // TODO: list nfs mount (and other relevant fs type) in $disks[]
@@ -3049,7 +3049,7 @@ if (!function_exists('ldap_escape')) {
     /**
      * function ldap_escape.
      *
-     * @source http://stackoverflow.com/questions/8560874/php-ldap-add-function-to-escape-ldap-special-characters-in-dn-syntax#answer-8561604
+     * @source https://stackoverflow.com/questions/8560874/php-ldap-add-function-to-escape-ldap-special-characters-in-dn-syntax#answer-8561604
      *
      * @author Chris Wright
      *

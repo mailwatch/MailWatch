@@ -188,7 +188,7 @@ for ($f = 0; $f < $result->field_count; ++$f) {
                     $output .= ' <td>' . __('geoipfailed04') . '</td>' . "\n";
                 }
                 // Link to RBL Lookup
-                $output .= ' <td class="noprint" align="center">[<a href="http://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
+                $output .= ' <td class="noprint" align="center">[<a href="https://multirbl.valli.org/lookup/' . $relay . '.html">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Link to Spam Report for this relay
                 $output .= ' <td class="noprint" align="center">[<a href="rep_message_listing.php?token=' . $_SESSION['token'] . '&amp;relay=' . $relay . '&amp;isspam=1">&nbsp;&nbsp;</a>]</td>' . "\n";
                 // Link to Virus Report for this relay

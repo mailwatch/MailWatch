@@ -173,7 +173,7 @@ define('MAILWATCH_MAIL_PORT', '25');
 // Change with a fully qualified email address
 define('MAILWATCH_FROM_ADDR', 'postmaster@domain.tld');
 // Don't add trailing slash
-define('MAILWATCH_HOSTURL', 'http://' . rtrim(gethostname()) . '/mailscanner');
+define('MAILWATCH_HOSTURL', 'https://' . rtrim(gethostname()) . '/mailscanner');
 
 /* Quarantine settings */
 // The quarantine flag is available from MailScanner 4.43.
@@ -203,7 +203,7 @@ define('QUARANTINE_SENDMAIL_PATH', '/usr/sbin/sendmail');
 // As of release 1.2.3 there is no reliable multivendor sources:
 // if you still want to enable this feature remember to substitute the url param containing the virus name with %s
 // look at the commented example below
-//define('VIRUS_INFO', 'http://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1');
+//define('VIRUS_INFO', 'https://www.securelist.com/en/descriptions?words=%s&amp;behavior=&amp;Search=Search&amp;search_type=1');
 define('VIRUS_INFO', false);
 
 // Display Virus on message listing
