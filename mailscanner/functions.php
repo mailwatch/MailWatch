@@ -597,13 +597,13 @@ function printMTAQueue()
         $outq = null;
         $inq2 = null;
         $outq2 = null;
-        if (is_readable($incomingdir) || is_readable($outgoingdir)) {
+        if (is_readable($incomingdir) || is_readable($incomingdir2) || is_readable($outgoingdir)) {
             $inq = genericqueue($incomingdir);
             $outq = genericqueue($outgoingdir);
             $inq2 = genericqueue($incomingdir2);
             $outq2 = postfixallq() - $inq2;
         } elseif (!defined('RPC_REMOTE_SERVER')) {
-            echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
+            echo '    <tr><td colspan="3">' . __('verifyperm03') . ' ' . $incomingdir . ', ' . $incomingdir2 . ' ' . __('and03') . ' ' . $outgoingdir . '</td></tr>' . "\n";
         }
 
         if (defined('RPC_REMOTE_SERVER')) {
