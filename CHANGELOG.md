@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.20
 ### Improvements
 - Better compatibility with MailScanner milter relay (#1267, #1271)
 - Added filters to search for released and learned mails (#1269)
