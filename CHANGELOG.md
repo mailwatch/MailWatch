@@ -6,6 +6,7 @@
 - Added filters to search for released and learned mails (#1269)
 - Improved quarantine report (#1270)
 - Improved service status display (#1263)
+- Better compatibility with PHP 8.1
 
 ### Fixes
 - Wrap words in the message details, message headers row (#1258)
