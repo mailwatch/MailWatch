@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+### Fixes
+- Wrap words in the message details, message headers row (#1258)
 
 ## 1.2.19
 ### Improvements

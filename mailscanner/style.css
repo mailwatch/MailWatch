@@ -413,6 +413,7 @@ td.heading-w175 {
 table.maildetail td.detail {
     background-color: #EBEBEB;
     font-size: 8pt;
+    word-break: break-all;
 }
 
 span.yes {
