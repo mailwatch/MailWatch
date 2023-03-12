@@ -133,9 +133,15 @@ abstract class MtaLogProcessor
         }
 
         if (null !== $_type) {
-            dbquery(
-                "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'),'$_to')"
-            );
+            if (preg_match('/^\d+$/', $_delay)) {
+                dbquery(
+                    "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'),'$_to')"
+                );
+            } else {
+                dbquery(
+                    "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status','$_delay','$_to')"
+                );
+            }
         }
     }
 
