@@ -153,7 +153,7 @@ ORDER BY
         $items = quarantine_list($dir);
         // Build list of message id's to be used in SQL statement
         if (count($items) > 0) {
-            $msg_ids = implode($items, ',');
+            $msg_ids = implode(',', $items);
             $date = safe_value(translateQuarantineDate($dir, 'sql'));
             $sql = "
   SELECT
