@@ -42,7 +42,7 @@ if (!isset($_GET['dir'])) {
             $sql = 'SELECT id FROM maillog WHERE ' . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
 
             // Hide high spam/mcp from regular users if enabled
-            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
+            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
                 $sql .= '
     AND
      ishighspam=0
@@ -51,14 +51,14 @@ if (!isset($_GET['dir'])) {
             }
 
             // Hide non-spam from regular users if enabled
-            if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && 'U' === $_SESSION['user_type']) {
+            if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
                 $sql .= '
     AND 
      isspam>0';
             }
 
             // Hide unknown (clean) messages if enabled
-            if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
+            if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true) {
                 $sql .= '
     AND
     (
@@ -179,7 +179,7 @@ AND
  quarantined = 1";
 
         // Hide high spam/mcp from regular users if enabled
-        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
+        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
             $sql .= '
     AND
      ishighspam=0
@@ -188,14 +188,14 @@ AND
         }
 
         // Hide non-spam from regular users if enabled
-        if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && 'U' === $_SESSION['user_type']) {
+        if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
             $sql .= '
     AND 
      isspam>0';
         }
 
         // Hide unknown (clean) messages if enabled
-        if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
+        if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true) {
             $sql .= '
     AND
     (
@@ -272,7 +272,7 @@ ORDER BY
    BINARY id IN ($msg_ids)";
 
             // Hide high spam/mcp from regular users if enabled
-            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['user_type']) {
+            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
                 $sql .= '
     AND
      ishighspam=0
@@ -281,14 +281,14 @@ ORDER BY
             }
 
             // Hide non-spam from regular users if enabled
-            if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && 'U' === $_SESSION['user_type']) {
+            if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
                 $sql .= '
     AND 
      isspam>0';
             }
 
             // Hide unknown (clean) messages if enabled
-            if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
+            if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true) {
                 $sql .= '
     AND
     (

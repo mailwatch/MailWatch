@@ -298,6 +298,9 @@ define('HIDE_NON_SPAM', false);
 // Hide Unknown Mail from quarantine reports
 define('HIDE_UNKNOWN', false);
 
+// Apply hide options above also to quarantine page
+define('HIDE_APPLY_QUARANTINE', false);
+
 // Quarantine Auto Release
 // Set true to allow auto release of quarantined items from quarantine report.
 define('AUTO_RELEASE', false);
