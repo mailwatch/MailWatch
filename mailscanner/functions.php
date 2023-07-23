@@ -1559,7 +1559,7 @@ function get_disks()
             $data = explode("\n", $data);
             foreach ($data as $disk) {
                 $drive = preg_split("/[\s]+/", $disk);
-                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[1], '/chroot/')) && (false === stripos($drive[1], '/snap/'))){
+                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[2], '/chroot/')) && (false === stripos($drive[2], '/snap/'))){
                     $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[2];
                     $disks[] = $temp_drive;
