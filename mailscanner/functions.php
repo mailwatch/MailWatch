@@ -1546,7 +1546,7 @@ function get_disks()
             $mounted_fs = file('/proc/mounts');
             foreach ($mounted_fs as $fs_row) {
                 $drive = preg_split("/[\s]+/", $fs_row);
-                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[1], '/chroot/'))) {
+                if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[0], '/chroot/') === FALSE) && (stripos($drive[1], '/snapd/') === false)) {
                     $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[1];
                     $disks[] = $temp_drive;
@@ -1559,7 +1559,7 @@ function get_disks()
             $data = explode("\n", $data);
             foreach ($data as $disk) {
                 $drive = preg_split("/[\s]+/", $disk);
-                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[2], '/chroot/'))) {
+                if ((substr($drive[0], 0, 5) === '/dev/') && (stripos($drive[0], '/chroot/') === FALSE) && (stripos($drive[1], '/snapd/') === false)) {
                     $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[2];
                     $disks[] = $temp_drive;
