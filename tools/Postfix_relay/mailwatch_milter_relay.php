@@ -47,7 +47,6 @@ $idqueue = [];
 
 function doit($input)
 {
-    global $fp;
     if (!$fp = popen($input, 'r')) {
         exit(__('diepipe54'));
     }
@@ -55,6 +54,8 @@ function doit($input)
     while ($line = fgets($fp, 2096)) {
         process_entries($line);
     }
+
+    process_sql();
 
     pclose($fp);
 }
@@ -66,7 +67,7 @@ function follow($file)
         clearstatcache();
         $currentSize = filesize($file);
         if ($size == $currentSize) {
-            sleep(1);
+            sleep(5);
             continue;
         }
 
@@ -79,6 +80,8 @@ function follow($file)
         while ($line = fgets($fh)) {
             process_entries($line);
         }
+
+        process_sql();
 
         fclose($fh);
         $size = $currentSize;
@@ -139,6 +142,11 @@ function process_entries($line)
             }
         }
     }
+}
+
+function process_sql()
+{
+    global $idqueue;
 
     // Scan queue for delivery attempts in queue and matching maillog entries
     $idcount = count($idqueue);
@@ -151,10 +159,15 @@ function process_entries($line)
             $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' and to_address LIKE '%" . $to . "%' LIMIT 1;");
             @$smtpd_id = $result->fetch_row()[0];
 
+            if (DEBUG_MILTER === true) {
+                syslog(LOG_MAIL | LOG_DEBUG, 'milter_relay: idqueue '.$i.' of '.($idcount - 1).' / '.$smtp_id.' / '.$message_id.' / '.$to.' => '.$smtpd_id);
+            }
+
             // Find correllating ids and update table, drop from queue
             if (isset($smtpd_id) && $smtpd_id !== $smtp_id) {
                 dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
                 array_splice($idqueue, $i, 1);
+                --$i;
                 $idcount = count($idqueue);
                 if (DEBUG_MILTER === true) {
                     syslog(LOG_MAIL | LOG_DEBUG, 'milter_relay: maillog hit for ' . $smtp_id . ' entry logged and removed from queue');
@@ -174,9 +187,10 @@ function remove_entry($id)
         if (time() > $idqueue[$i][2] + QUEUETIMEOUT) {
             // Drop expired entry from queue
             if (DEBUG_MILTER === true) {
-                syslog(LOG_MAIL | LOG_DEBUG, 'milter_relay: Expiring smtpid ' . $idqueue[$i][1] . ' after ' . QUEUETIMEOUT . ' seconds');
+                syslog(LOG_MAIL | LOG_DEBUG, 'milter_relay: Expiring smtpid ' . $idqueue[$i][0] . ' after ' . QUEUETIMEOUT . ' seconds');
             }
             array_splice($idqueue, $i, 1);
+            --$i;
             $idcount = count($idqueue);
             continue;
         }
