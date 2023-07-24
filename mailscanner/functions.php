@@ -461,7 +461,7 @@ function printServiceStatus()
             exec('ps ax | grep postfix.*master | grep -v grep', $masterproc);
             if (count($masterproc) > 0) {
                 $running = $yes;
-                $masterpid = explode(" ", trim($masterproc[0]));
+                $masterpid = explode(' ', trim($masterproc[0]));
                 $childproc = [];
                 exec(sprintf('ps ax -j | grep %s | grep -v grep', $masterpid[0]), $childproc);
                 $procs = count($childproc) . ' ' . __('procs03');
@@ -634,7 +634,7 @@ function printMTAQueue()
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('inbound03') . '</a></td><td align="right">' . $inq2 . '</td></tr>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('outbound03') . '</a></td><td align="right">' . $outq2 . '</td></tr>' . "\n";
         }
-    // Else use MAILQ from conf.php which is for Sendmail or Exim
+        // Else use MAILQ from conf.php which is for Sendmail or Exim
     } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
         if ('exim' === get_conf_var('MTA')) {
             $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
@@ -1546,7 +1546,7 @@ function get_disks()
             $mounted_fs = file('/proc/mounts');
             foreach ($mounted_fs as $fs_row) {
                 $drive = preg_split("/[\s]+/", $fs_row);
-                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[1], '/chroot/')) && (false === stripos($drive[1], '/snapd/'))){
+                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[1], '/chroot/')) && (false === stripos($drive[1], '/snapd/'))) {
                     $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[1];
                     $disks[] = $temp_drive;
@@ -1559,7 +1559,7 @@ function get_disks()
             $data = explode("\n", $data);
             foreach ($data as $disk) {
                 $drive = preg_split("/[\s]+/", $disk);
-                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[2], '/chroot/')) && (false === stripos($drive[2], '/snap/'))){
+                if ((0 === strpos($drive[0], '/dev/')) && (false === stripos($drive[2], '/chroot/')) && (false === stripos($drive[2], '/snap/'))) {
                     $temp_drive['device'] = $drive[0];
                     $temp_drive['mountpoint'] = $drive[2];
                     $disks[] = $temp_drive;
@@ -3217,14 +3217,13 @@ function imap_authenticate($username, $password)
 
     if (
         (
-            !defined('IMAP_USERNAME_FULL_EMAIL') &&
-            !filter_var($username, FILTER_VALIDATE_EMAIL)
+            !defined('IMAP_USERNAME_FULL_EMAIL')
+            && !filter_var($username, FILTER_VALIDATE_EMAIL)
         )
-        ||
-        (
-            defined('IMAP_USERNAME_FULL_EMAIL') &&
-            IMAP_USERNAME_FULL_EMAIL === true &&
-            !filter_var($username, FILTER_VALIDATE_EMAIL)
+        || (
+            defined('IMAP_USERNAME_FULL_EMAIL')
+            && IMAP_USERNAME_FULL_EMAIL === true
+            && !filter_var($username, FILTER_VALIDATE_EMAIL)
         )
     ) {
         // user has no mail but it is required for mailwatch
@@ -3234,8 +3233,8 @@ function imap_authenticate($username, $password)
     if ('' !== $username && '' !== $password) {
         $imapUsername = $username;
         if (
-            defined('IMAP_USERNAME_FULL_EMAIL') &&
-            IMAP_USERNAME_FULL_EMAIL === false
+            defined('IMAP_USERNAME_FULL_EMAIL')
+            && IMAP_USERNAME_FULL_EMAIL === false
         ) {
             $imapUsername = substr($username, 0, strrpos($username, '@'));
         }
@@ -4744,7 +4743,7 @@ function updateLoginExpiry($myusername)
         } else {
             $expiry_val = (time() + 600);
         }
-    // If set, use the individual timeout
+        // If set, use the individual timeout
     } elseif ('0' === $login_timeout) {
         $expiry_val = 0;
     } else {

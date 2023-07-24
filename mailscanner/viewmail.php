@@ -182,9 +182,9 @@ foreach ($header_fields as $field) {
 }
 
 if (
-    ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected) ||
-    'A' === $_SESSION['user_type'] ||
-    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
+    ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected)
+    || 'A' === $_SESSION['user_type']
+    || (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
 ) {
     lazy(
         __('actions06'),
@@ -245,9 +245,9 @@ foreach ($mime_struct as $key => $part) {
             }
 
             if (
-                ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected) ||
-                'A' === $_SESSION['user_type'] ||
-                (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
+                ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected)
+                || 'A' === $_SESSION['user_type']
+                || (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
             ) {
                 echo ' <a href="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
             }

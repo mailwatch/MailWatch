@@ -113,7 +113,7 @@ if (!isset($_GET['dir'])) {
                         $f,
                         DATE_FORMAT
                     ) . '</a></td></tr>' . "\n";
-                // Skip any folders that are not dates and
+                    // Skip any folders that are not dates and
                 } else {
                     continue;
                 }

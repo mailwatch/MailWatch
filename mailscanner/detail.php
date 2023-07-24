@@ -512,9 +512,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Currently this only applies to messages that contain viruses.
             // visible only to Administrators and Domain Admin only if DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS is enabled
             if (
-                'A' === $_SESSION['user_type'] ||
-                (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type']) ||
-                'Y' !== $item['dangerous']
+                'A' === $_SESSION['user_type']
+                || (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
+                || 'Y' !== $item['dangerous']
             ) {
                 echo '  <td align="center" class="' . $tdclass . '"><input class="noprint" type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
@@ -524,8 +524,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // If the file is an rfc822 message then allow the file to be learnt
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
-                (preg_match('/message\/rfc822/', $item['type']) || 'message' === $item['file']) &&
-                ('NO' !== strtoupper(get_conf_var('UseSpamAssassin')))
+                (preg_match('/message\/rfc822/', $item['type']) || 'message' === $item['file'])
+                && ('NO' !== strtoupper(get_conf_var('UseSpamAssassin')))
             ) {
                 echo '   <td align="center" class="salearn-' . $row['salearn'] . '"><input class="noprint" type="checkbox" name="learn[]" value="' . $item['id'] . '"><select class="noprint" name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
@@ -537,9 +537,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Domain admins can view the file only if enabled
             if (
                 (
-                    'N' === $item['dangerous'] ||
-                    'A' === $_SESSION['user_type'] ||
-                    (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'] && 'Y' === $item['dangerous'])
+                    'N' === $item['dangerous']
+                    || 'A' === $_SESSION['user_type']
+                    || (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'] && 'Y' === $item['dangerous'])
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
@@ -558,12 +558,12 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr class="noprint">' . "\n";
-        if ('A' === $_SESSION['user_type'] ||
-            (
-                'D' === $_SESSION['user_type'] &&
-                (
-                    0 === $is_dangerous ||
-                ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
+        if ('A' === $_SESSION['user_type']
+            || (
+                'D' === $_SESSION['user_type']
+                && (
+                    0 === $is_dangerous
+                || ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
                 )
             )
         ) {

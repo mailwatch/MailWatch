@@ -60,17 +60,17 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 
 $_SESSION['user_ldap'] = false;
 $_SESSION['user_imap'] = false;
-if (defined('USE_LDAP') &&
-    (USE_LDAP === true) &&
-    (($result = ldap_authenticate($myusername, $mypassword)) !== null)
+if (defined('USE_LDAP')
+    && (USE_LDAP === true)
+    && (($result = ldap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_ldap'] = true;
     $myusername = safe_value($result);
     $mypassword = safe_value($mypassword);
 } elseif (
-    defined('USE_IMAP') &&
-    (USE_IMAP === true) &&
-    (($result = imap_authenticate($myusername, $mypassword)) !== null)
+    defined('USE_IMAP')
+    && (USE_IMAP === true)
+    && (($result = imap_authenticate($myusername, $mypassword)) !== null)
 ) {
     $_SESSION['user_imap'] = true;
     $myusername = safe_value($myusername);
@@ -100,8 +100,8 @@ if (0 === $usercount) {
 }
 
 if (
-    (false === $_SESSION['user_ldap']) &&
-    (false === $_SESSION['user_imap'])
+    (false === $_SESSION['user_ldap'])
+    && (false === $_SESSION['user_imap'])
 ) {
     $passwordInDb = database::mysqli_result($result, 0, 'password');
     if (!password_verify($mypassword, $passwordInDb)) {

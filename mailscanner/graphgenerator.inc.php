@@ -33,7 +33,7 @@ class GraphGenerator
     public $tableColumns = [];
     public $graphColumns = [];
     public $valueConversion = [];
-    public $types = null;
+    public $types;
     public $printTable = true;
     public $settings = [];
 
