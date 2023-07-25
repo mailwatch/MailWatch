@@ -182,6 +182,7 @@ define('MAILWATCH_HOSTURL', 'https://' . rtrim(gethostname()) . '/mailscanner');
 // the clean.quarantine script provided with MailScanner.
 define('QUARANTINE_USE_FLAG', true);
 define('QUARANTINE_DAYS_TO_KEEP', 30);
+define('QUARANTINE_DAYS_TO_KEEP_NONSPAM', 30);
 //Set QUARANTINE_FILTERS_COMBINED to true to combine quarantine report into a single report when user filters are present
 define('QUARANTINE_FILTERS_COMBINED', false);
 define('QUARANTINE_REPORT_FROM_NAME', 'MailWatch for MailScanner');

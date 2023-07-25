@@ -66,7 +66,14 @@ if (0 === $required_constant_missing_count) {
 
     function quarantine_clean()
     {
-        $oldest = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
+        $oldestspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
+        if (defined('QUARANTINE_DAYS_TO_KEEP_NONSPAM')) {
+            $oldestnonspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP_NONSPAM . ' days'));
+        }
+        else {
+            // if QUARANTINE_DAYS_TO_KEEP_NONSPAM not defined: fallback to QUARANTINE_DAYS_TO_KEEP
+            $oldestnonspam = $oldestspam;            
+        }
         $quarantine = get_conf_var('QuarantineDir');
 
         $d = dir($quarantine) or exit(php_errormsg());
@@ -74,8 +81,17 @@ if (0 === $required_constant_missing_count) {
             // Only interested in quarantine directories (yyyymmdd)
             if (preg_match('/^\d{8}$/', $f)) {
                 $unixtime = quarantine_date_to_unixtime($f);
-                if ($unixtime < $oldest) {
+                if ((($oldestnonspam > $oldestspam) && ($unixtime < $oldestnonspam)) || (($oldestnonspam <= $oldestspam) && ($unixtime < $oldestspam))) {
                     // Needs to be deleted
+                    if (($oldestnonspam > $oldestspam) && (!($unixtime < $oldestspam))) {
+                        // delete only nonspam
+                        $f = $f.'/nonspam';
+                    }
+                    elseif (($oldestnonspam <= $oldestspam) && (!($unixtime < $oldestnonspam))) {
+                        // delete only spam
+                        $f = $f.'/spam';
+                    }
+                    // otherwise delete whole day
                     $array = quarantine_list_dir($f);
                     dbg("Processing directory $f: found " . count($array) . ' records to delete');
                     foreach ($array as $id) {
