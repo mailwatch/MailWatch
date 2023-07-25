@@ -67,7 +67,13 @@ if (0 === $required_constant_missing_count) {
     function quarantine_clean()
     {
         $oldestspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
-        $oldestnonspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP_NONSPAM . ' days'));
+        if (defined('QUARANTINE_DAYS_TO_KEEP_NONSPAM')) {
+            $oldestnonspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP_NONSPAM . ' days'));
+        }
+        else {
+            // if QUARANTINE_DAYS_TO_KEEP_NONSPAM not defined: fallback to QUARANTINE_DAYS_TO_KEEP
+            $oldestnonspam = $oldestspam;            
+        }
         $quarantine = get_conf_var('QuarantineDir');
 
         $d = dir($quarantine) or exit(php_errormsg());
