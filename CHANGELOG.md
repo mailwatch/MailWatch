@@ -1,6 +1,15 @@
 # Changelog
 
 ## Unreleased
+### Improvements
+- Enhance quarantine display to regard all HIDE configuration options like quarantine_report does (#1268)
+- Hide snapd mount point (#1283)
+- Improve performance of mailwatch_milter_relay.php (#1266)
+- Added the ability to independently configure quarantine durations for spam and non-spam emails, allowing for greater flexibility and potential performance and storage improvements (#1281).
+
+### Fixes
+- Fix for sendmail relay script (#1276)
+- Fix syntax for implode function in quarantine.php (#1277)
 
 ## 1.2.20
 ### Improvements
