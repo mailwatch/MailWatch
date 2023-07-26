@@ -4004,12 +4004,21 @@ function get_virus_conf($scanner)
  */
 function return_quarantine_dates()
 {
-    $array = [];
-    for ($d = 0; $d < QUARANTINE_DAYS_TO_KEEP; ++$d) {
-        $array[] = date('Ymd', mktime(0, 0, 0, date('m'), date('d') - $d, date('Y')));
+    // If QUARANTINE_DAYS_TO_KEEP_NONSPAM is defined, use the larger of the two constants.
+    // Otherwise, just use QUARANTINE_DAYS_TO_KEEP.
+    $days = defined('QUARANTINE_DAYS_TO_KEEP_NONSPAM') && QUARANTINE_DAYS_TO_KEEP_NONSPAM > QUARANTINE_DAYS_TO_KEEP
+        ? QUARANTINE_DAYS_TO_KEEP_NONSPAM
+        : QUARANTINE_DAYS_TO_KEEP;
+
+    $dates = [];
+    $now = new DateTime();
+    for ($d = 0; $d < $days; ++$d) {
+        $date = clone $now;  // Clone is used to prevent modifying original DateTime
+        $date->sub(new DateInterval("P{$d}D"));
+        $dates[] = $date->format('Ymd');
     }
 
-    return $array;
+    return $dates;
 }
 
 /**
@@ -4279,6 +4288,7 @@ function checkConfVariables()
         'IMAP_HOST' => ['description' => 'IMAP host to be used for user authentication'],
         'IMAP_AUTOCREATE_VALID_USER' => ['description' => 'enable to autorcreate user from valid imap login'],
         'MAXMIND_LICENSE_KEY' => ['description' => 'needed to download MaxMind GeoLite2 data'],
+        'QUARANTINE_DAYS_TO_KEEP_NONSPAM' => ['description' => 'to have quarantine keeping days independently configured for nonspam mails'],
     ];
 
     $results = [];

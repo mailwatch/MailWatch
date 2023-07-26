@@ -34,7 +34,7 @@ html_start(__('qviewer08'), 0, false, false);
 if (!isset($_GET['dir'])) {
     // Get the top-level list
     if (QUARANTINE_USE_FLAG) {
-        // Don't use the database any more - it's too slow on big datasets
+        // Don't use the database anymore - it's too slow on big datasets
         $dates = return_quarantine_dates();
         echo '<table class="mail" cellspacing="2" align="center">' . "\n";
         echo '<tr><th colspan=2>' . __('folder08') . '</th></tr>' . "\n";
