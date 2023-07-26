@@ -69,10 +69,9 @@ if (0 === $required_constant_missing_count) {
         $oldestspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
         if (defined('QUARANTINE_DAYS_TO_KEEP_NONSPAM')) {
             $oldestnonspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP_NONSPAM . ' days'));
-        }
-        else {
+        } else {
             // if QUARANTINE_DAYS_TO_KEEP_NONSPAM not defined: fallback to QUARANTINE_DAYS_TO_KEEP
-            $oldestnonspam = $oldestspam;            
+            $oldestnonspam = $oldestspam;
         }
         $quarantine = get_conf_var('QuarantineDir');
 
@@ -85,11 +84,10 @@ if (0 === $required_constant_missing_count) {
                     // Needs to be deleted
                     if (($oldestnonspam > $oldestspam) && (!($unixtime < $oldestspam))) {
                         // delete only nonspam
-                        $f = $f.'/nonspam';
-                    }
-                    elseif (($oldestnonspam <= $oldestspam) && (!($unixtime < $oldestnonspam))) {
+                        $f = $f . '/nonspam';
+                    } elseif (($oldestnonspam <= $oldestspam) && (!($unixtime < $oldestnonspam))) {
                         // delete only spam
-                        $f = $f.'/spam';
+                        $f = $f . '/spam';
                     }
                     // otherwise delete whole day
                     $array = quarantine_list_dir($f);
