@@ -13,7 +13,7 @@
 - Fix for sendmail relay script (#1276)
 - Fix syntax for implode function in quarantine.php (#1277)
 - Add support for new 40 chars MaxMind apikey format (#1286)
-- Fix download of MaxMind geoip database on HTTP/2 connection
+- Fix download of MaxMind geoip database on HTTP/2 connection (#1287)
 
 ## 1.2.20
 ### Improvements
