@@ -8,7 +8,7 @@
  *
  * @package Requests
  *
- * Patched version for MailWatch.  
+ * Patched version for MailWatch.
  * v1.6.1-MailWatch
  */
 
@@ -569,8 +569,8 @@ class Requests {
 		// Unfold headers (replace [CRLF] 1*( SP | HT ) with SP) as per RFC 2616 (section 2.2)
 		$headers = preg_replace('/\n[ \t]/', ' ', $headers);
 		$headers = explode("\n", $headers);
-		preg_match('#^HTTP/1\.\d[ \t]+(\d+)#i', array_shift($headers), $matches);
-		if (empty($matches)) {
+        preg_match('#^HTTP/(1\.0|1\.1|2)[ \t][1-5]\d{2}(?:[ \t][A-Za-z ]+)?$#i', array_shift($headers), $matches);
+        if (empty($matches)) {
 			throw new Requests_Exception('Response could not be parsed', 'noversion', $headers);
 		}
 		$return->status_code = (int) $matches[1];
