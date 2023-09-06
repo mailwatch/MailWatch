@@ -96,7 +96,7 @@ define('IMAP_AUTOCREATE_VALID_USER', false); // Set to true to autocreate a vali
 define('IMAP_USERNAME_FULL_EMAIL', true); // Set to false to login to imap server using any kind of username
 
 // Set Time Zone
-// See http://php.net/manual/en/timezones.php for a list of usable timezones.
+// See https://php.net/manual/en/timezones.php for a list of usable timezones.
 define('TIME_ZONE', 'America/New_York');
 // Date/Time settings
 define('DATE_FORMAT', '%d/%m/%y');
@@ -329,4 +329,3 @@ define('STATUSGRAPH_INTERVAL', 60);
 //define('ENABLE_SUPER_DOMAIN_ADMINS',true);
 //Allow the username of domain admins and normal users to not be in mail format (not recommended, only for backward compatibility)
 //define('ALLOW_NO_USER_DOMAIN',true);
-
