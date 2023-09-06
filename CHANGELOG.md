@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.21
 ### Improvements
 - Enhance quarantine display to regard all HIDE configuration options like quarantine_report does (#1268)
 - Hide snapd mount point (#1283)
