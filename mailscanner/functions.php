@@ -4648,7 +4648,7 @@ function validateInput($input, $type)
             }
             break;
         case 'maxmind':
-            if (preg_match('/^([0-9A-Za-z]{12}|[0-9A-Za-z]{16})$/', $input)) {
+            if (preg_match('/^([0-9A-Za-z]{12}|[0-9A-Za-z]{16}|[0-9A-Za-z_]{40})$/', $input)) {
                 return true;
             }
             break;
