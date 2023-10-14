@@ -63,7 +63,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
 
     $files_base_url = 'https://download.maxmind.com';
     $file['description'] = __('geoip15');
-    $file['path'] = '/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=' . MAXMIND_LICENSE_KEY;
+    $file['path'] = '/app/geoip_download?edition_id=GeoLite2-Country&license_key=' . MAXMIND_LICENSE_KEY . '&suffix=tar.gz';
     $file['destination'] = __DIR__ . '/temp/GeoLite2-Country.tar.gz';
     $file['destinationFileName'] = 'GeoLite2-Country.mmdb';
 
