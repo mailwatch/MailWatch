@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+### Fixes
+- More relaxed regex for MaxMind geoip database download on HTTP/2 connection (#1289)
 
 ## 1.2.21
 ### Improvements
