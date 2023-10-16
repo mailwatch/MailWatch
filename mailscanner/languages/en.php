@@ -77,7 +77,7 @@ return [
     'hscospam03' => 'High Score Spam:',
     'hscomcp03' => 'High Score MCP:',
     'recentmessages03' => 'Recent Messages',
-    'lists03' => 'Black and White Lists',
+    'lists03' => 'Block and Allow Lists',
     'quarantine03' => 'Quarantine',
     'datetime03' => 'Date/Time',
     'from03' => 'From',
