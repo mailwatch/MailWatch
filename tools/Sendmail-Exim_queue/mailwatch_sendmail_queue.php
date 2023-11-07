@@ -79,7 +79,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^-ident (.+)$/', $line, $match):
                                             $output[$msgid]['auth'] = $match[1];
                                             break;
-                                        case preg_match('/^([-\.\w]+@[-\.\w]+)$/', $line, $match):
+                                        case preg_match('/^([-=+.\w]+@[-.\w]+)$/', $line, $match):
                                             $output[$msgid]['rcpts'][] = $match[1];
                                             break;
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
