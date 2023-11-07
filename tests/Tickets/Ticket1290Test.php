@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 class Ticket1290Test extends TestCase
 {
     private $eximPattern = '/^([-=+.\w]+@[-.\w]+)$/';
-    private $sendmailPattern = '/^R.+<(.+)>$/';
+    private $sendmailPattern = '/^R[^:]*:(.+)$/';
 
     /**
      * @dataProvider provideValidEmailsForEximQueue
@@ -63,7 +63,7 @@ class Ticket1290Test extends TestCase
             $email = $emailArray[0];
             foreach ($flags as $flag) {
                 // Create an entry for each flag combination with the email.
-                $sendmailEmails[] = ["R{$flag}:<{$email}>", $email];
+                $sendmailEmails[] = ["R{$flag}:{$email}", $email];
             }
         }
 
