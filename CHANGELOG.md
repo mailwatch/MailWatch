@@ -3,6 +3,9 @@
 ## Unreleased
 ### Fixes
 - More relaxed regex for MaxMind geoip database download on HTTP/2 connection (#1289)
+- Fix report email (#1209)
+- Validate on new exim id format (#1294)
+- Permit + and = chars in email for sendmail (#1291)
 
 ## 1.2.21
 ### Improvements

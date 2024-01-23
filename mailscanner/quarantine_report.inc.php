@@ -165,7 +165,7 @@ AND
     private static function get_report_sql($useToFilter = true)
     {
         $report_sql = "
-SELECT DISTINCT
+SELECT
 a.id AS id,
 DATE_FORMAT(timestamp,'" . str_replace('%', '%%', DATE_FORMAT) . ' <br/>' . str_replace('%', '%%', TIME_FORMAT) . "') AS datetime,
 a.timestamp AS timestamp,
