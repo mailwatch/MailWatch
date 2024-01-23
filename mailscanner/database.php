@@ -131,4 +131,35 @@ class database
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public static function getDatabaseVersion()
+    {
+        if (self::$link instanceof mysqli) {
+            return self::$link->server_info;
+        }
+
+        return '';
+    }
+
+    /**
+     * Checks if the database uses ICU regex syntax.
+     *
+     * @return bool True if ICU syntax is used, False otherwise.
+     */
+    public static function isUsingICURegexSyntax()
+    {
+        $version = self::getDatabaseVersion();
+
+        // Check for MySQL >= 8.0
+        if (preg_match('/^8\.\d+/', $version)) {
+            // MySQL 8.0+ uses ICU for regex
+            return true;
+        } else {
+            // MySQL < 8.0 and MariaDB use POSIX regex syntax
+            return false;
+        }
+    }
 }

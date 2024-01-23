@@ -39,7 +39,7 @@ if ('A' !== $_SESSION['user_type']) {
     $mailwatch_version = mailwatch_version();
     $mailscanner_version = get_conf_var('MailScannerVersionNumber');
     $php_version = PHP_VERSION;
-    $mysql_version = database::mysqli_result(dbquery('SELECT VERSION()'), 0);
+    $mysql_version = database::getDatabaseVersion();
     $geoip_version = false;
     $geoip_database_file = __DIR__ . '/temp/GeoLite2-Country.mmdb';
     if (file_exists($geoip_database_file)) {

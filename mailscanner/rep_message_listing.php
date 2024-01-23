@@ -99,8 +99,15 @@ if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $_SESSION['u
 // Check if we've passed in a relay that we want to check the headers for, this is from detail.php
 $relay_regex = '';
 if (isset($_GET['relay']) && preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', deepSanitizeInput($_GET['relay'], 'url'))) {
-    $relay_regex = '[[:<:]]' . str_replace('.', '\.', deepSanitizeInput($_GET['relay'], 'url')) . '[[:>:]]';
+    $sql_prefix = '[[:<:]]';
+    $sql_suffix = '[[:>:]]';
+    if (database::isUsingICURegexSyntax()) {
+        $sql_prefix = '\\b';
+        $sql_suffix = '\\b';
+    }
+    $relay_regex = $sql_prefix . str_replace('.', '\.', deepSanitizeInput($_GET['relay'], 'url')) . $sql_suffix;
 }
+
 if (strlen($relay_regex) > 0) {
     $sql .= " AND headers REGEXP '$relay_regex'";
     if (isset($_GET['isspam'])) {
