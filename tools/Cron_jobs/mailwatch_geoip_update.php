@@ -133,8 +133,9 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
         }
     }
 
+    $command = escapeshellcmd('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination']);
     exec(
-        'wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
+        $command,
         $output_wget,
         $retval_wget
     );

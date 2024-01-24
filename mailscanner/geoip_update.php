@@ -137,11 +137,13 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
                     }
                 }
 
-                exec(
-                    'wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination'],
+                $command = escapeshellcmd('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination']);
+                $result = exec(
+                    $command,
                     $output_wget,
                     $retval_wget
                 );
+
                 if ($retval_wget > 0) {
                     echo __('downbad15') . ' ' . $file['description'] . "<br>\n";
                 } else {
