@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.22
 ### Fixes
 - More relaxed regex for MaxMind geoip database download on HTTP/2 connection (#1289)
 - Fix report email (#1209)
@@ -8,6 +10,7 @@
 - Permit + and = chars in email for sendmail (#1291)
 - Fix Message Listing on Mysql 8+ (#1295)
 - Fix MaxMind database download when curl extension is not available (#1297)
+- Update certificate data
 
 ## 1.2.21
 ### Improvements
