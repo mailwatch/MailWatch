@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.23
 ### Added
 - Support for handling the `uopz` extension to prevent the application from breaking due to disabled `exit` calls by `uopz`.
 
