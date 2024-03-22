@@ -33,6 +33,15 @@ if (PHP_VERSION_ID < 50300) {
     error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
 }
 
+if (extension_loaded('uopz') && !(ini_get('uopz.disable') || ini_get('uopz.exit'))) {
+    // uopz works at opcode level and disables exit calls
+    if (function_exists('uopz_allow_exit')) {
+        @uopz_allow_exit(true);
+    } else {
+        throw new \RuntimeException('The uopz extension ignores exit calls and breaks this application. Disable the extension or set "uopz.exit" to TRUE');
+    }
+}
+
 // Read in MailWatch configuration file
 if (!is_readable(__DIR__ . '/conf.php')) {
     exit(__('cannot_read_conf'));
