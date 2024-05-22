@@ -6,7 +6,7 @@
 #
 #   Custom Module MailWatch
 #
-#   Version 1.8
+#   Version 2.0
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -30,8 +30,7 @@
 package MailScanner::CustomConfig;
 
 use strict;
-use DBI;
-use DBD::MariaDB;
+use warnings;
 use utf8;
 use Sys::Hostname;
 use Storable(qw[freeze thaw]);
@@ -40,6 +39,11 @@ use Socket;
 use Encoding::FixLatin qw(fix_latin);
 use Digest::SHA;
 use Sys::Syslog;
+use Socket;
+use LWP::UserAgent;
+use JSON;
+use MailWatchConf;
+# use Data::Dumper; # Uncomment this for debugging
 
 # Uncomment the following line when debugging MailWatch.pm
 #use Data::Dumper;
@@ -47,30 +51,30 @@ use Sys::Syslog;
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = '1.8';
+$VERSION = substr q$Revision: 2.0 $, 10;
 
-# Trace settings - uncomment this to debug
-#DBI->trace(2,'/tmp/dbitrace.log');
-
-my ($dbh);
-my ($sth);
 my ($hostname) = hostname;
 my $loop = inet_aton("127.0.0.1");
 my $server_port = 11553;
 my $timeout = 3600;
-my ($SQLversion);
 
-# Get database information from 00MailWatchConf.pm
+# Get HTTP endpoint information from MailWatchConf.pm
 use File::Basename;
 my $dirname = dirname(__FILE__);
-require $dirname.'/MailWatchConf.pm';
-
-my ($db_name) = mailwatch_get_db_name();
-my ($db_host) = mailwatch_get_db_host();
-my ($db_user) = mailwatch_get_db_user();
-my ($db_pass) = mailwatch_get_db_password();
+require $dirname . '/MailWatchConf.pm';
+my $api_base_url = mailwatch_get_api_base_url();
+my $api_endpoint = $api_base_url . '/api/mailscanner.php';
+my $api_key = mailwatch_get_api_key();
+my $api_max_retries = mailwatch_get_api_max_retries();
+my $api_retry_delay = mailwatch_get_api_retry_delay();
 
 my $RunInForeground;
+
+my $httpClient = LWP::UserAgent->new(
+    protocols_allowed => [ 'http', 'https' ],
+    timeout           => 10, # Set a 10 seconds timeout for HTTP requests
+    agent             => "MailWatchAPIPerlClient/$VERSION"
+);
 
 sub InitMailWatchLogging {
     # Detect if MailScanner Milter is calling this custom function and do not spawn
@@ -95,7 +99,7 @@ sub InitMailWatchLogging {
             if (!fork()) {
                 $SIG{HUP} = $SIG{INT} = $SIG{PIPE} = $SIG{TERM} = $SIG{ALRM} = \&ExitLogging;
                 alarm $timeout;
-                $0 = "MailWatch SQL";
+                $0 = "MailWatch API";
 
                 # Reinitialize logging (cannot use MailScanner::Log due to detach)
                 if ($logsock eq '') {
@@ -117,25 +121,6 @@ sub InitMailWatchLogging {
     }
 }
 
-sub CheckSQLVersion {
-    # Prevent Logger from dying if connection fails
-    eval {
-        $dbh = DBI->connect("DBI:MariaDB:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1 }
-        );
-    };
-    if ($@ || !$dbh) {
-        LogMessage("warn", "Unable to initialise database connection: $DBI::errstr");
-        close(SERVER);
-        return 1;
-    }
-    $SQLversion = $dbh->{mariadb_serverversion};
-    $dbh->disconnect;
-
-    return $SQLversion;
-}
-
 sub LogMessage {
     my $level = shift;
     my $msg = shift;
@@ -150,9 +135,9 @@ sub LogMessage {
 }
 
 sub BindPort {
-    # Set up TCP/IP socket.  We will start one server per MailScanner
+    # Set up TCP/IP socket. We will start one server per MailScanner
     # child, but only one child will actually be able to get the socket.
-    # The rest will die silently.  When one of the MailScanner children
+    # The rest will die silently. When one of the MailScanner children
     # tries to log a message and fails to connect, it will start a new
     # server.
     socket(SERVER, PF_INET, SOCK_STREAM, getprotobyname("tcp"));
@@ -170,44 +155,11 @@ sub ListenPort {
     return 0;
 }
 
-sub InitDB {
-    # Our reason for existence - the persistent connection to the database
-    my $version = CheckSQLVersion();
-
-    if ($version == 1) {
-       return 1;
-    }
-
-    eval { $dbh = DBI->connect("DBI:MariaDB:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1 }
-        );
-    };
-    if ($@ || !$dbh) {
-        LogMessage('warn', "Unable to initialise database connection: $DBI::errstr");
-        return 1;
-    }
-    $dbh->do('SET NAMES utf8mb4');
-
-    $sth = $dbh->prepare("INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-    if (!$sth) {
-        LogMessage('warn', "Error: $DBI::errstr" );
-        return 1;
-    }
-
-    return 0;
-}
-
 sub InitConnection {
     # Fail to bind, we'll just exit, port in use
     if (BindPort() == 1) { return 1; }
-    if (InitDB() == 1) {
-        # We are bound, but couldn't connect to DB, so close it all down
-        close(SERVER);
-        return 1;
-    }
     if (ListenPort() == 1) {
-        # We are bound, connected to DB but can't listen, so close it all down
+        # We are bound, but couldn't listen, so close it all down
         close(SERVER);
         return 1;
     }
@@ -215,15 +167,15 @@ sub InitConnection {
 }
 
 sub ExitLogging {
-    # Server exit - commit changes, close socket, and exit gracefully.
+    # Server exit - close socket, and exit gracefully.
     close(SERVER);
-    $dbh->disconnect;
     exit;
 }
 
 sub ListenForMessages {
     my $message;
-    LogMessage('info', "Started MailWatch SQL Logging child");
+    LogMessage('info', "Started MailWatch API Logging child");
+
     # Wait for messages
     while (my $cli = accept(CLIENT, SERVER)) {
         my ($port, $packed_ip) = sockaddr_in($cli);
@@ -233,7 +185,8 @@ sub ListenForMessages {
         # seconds, there is probably something wrong, so we should clean up
         # and let another process try.
         alarm $timeout;
-        # Make sure we"re only receiving local connections
+
+        # Make sure we're only receiving local connections
         if ($dotted_quad ne "127.0.0.1") {
             LogMessage('warn', "Error: unexpected connection from $dotted_quad");
             close CLIENT;
@@ -254,80 +207,41 @@ sub ListenForMessages {
 
         next unless defined $$message{id};
 
-        # Set up a loop to prevent loss of logging, up to $timeout
-        # Prevents loss of logging to database due to temporary failure
-        while(1) {
+        # Set up a loop to prevent loss of logging, up to $api_max_retries
+        # Prevents loss of logging to API due to temporary failure
+        my $retry_count = 0;
+        while ($retry_count < $api_max_retries) {
+            # Encode message as JSON
+            my $json_data = encode_json($message);
+            my $req = HTTP::Request->new(POST => $api_endpoint);
+            $req->content_type('application/json');
+            $req->header('x-mailwatch-api-key' => $api_key);
+            $req->content($json_data);
+            my $res = $httpClient->request($req);
 
-            # Log message
-            eval {$sth->execute(
-                $$message{timestamp},
-                $$message{id},
-                $$message{size},
-                $$message{from},
-                $$message{from_domain},
-                $$message{to},
-                $$message{to_domain},
-                $$message{subject},
-                $$message{clientip},
-                $$message{archiveplaces},
-                $$message{isspam},
-                $$message{ishigh},
-                $$message{issaspam},
-                $$message{isrblspam},
-                $$message{spamwhitelisted},
-                $$message{spamblacklisted},
-                $$message{sascore},
-                $$message{spamreport},
-                $$message{virusinfected},
-                $$message{nameinfected},
-                $$message{otherinfected},
-                $$message{reports},
-                $$message{ismcp},
-                $$message{ishighmcp},
-                $$message{issamcp},
-                $$message{mcpwhitelisted},
-                $$message{mcpblacklisted},
-                $$message{mcpsascore},
-                $$message{mcpreport},
-                $$message{hostname},
-                $$message{date},
-                $$message{"time"},
-                $$message{headers},
-                $$message{quarantined},
-                $$message{rblspamreport},
-                $$message{token},
-                $$message{messageid});
-            };
-
-            # Something went wrong
-            if ($@ || !$sth) {
-                LogMessage('warn', "$$message{id}: Cannot insert row: $sth->errstr");
-                close(SERVER);
-                # Bind the port so another instance can't spawn
-                if (BindPort() == 1) {
-                    # Can't bind, unexpected, bail out
-                    last;
-                }
-                while(InitDB() == 1) { sleep(2); };
-                # Start listening once all is well
-                if (ListenPort() == 1) {
-                    # Can't listen, unexpected, bail out
-                    last;
-                }
-            } else {
-                LogMessage('info', "$$message{id}: Logged to MailWatch SQL");
+            # Send request to API
+            if ($res->is_success) {
+                LogMessage('info', "$$message{id}: Logged to MailWatch API");
                 last;
+            } else {
+                LogMessage('warn', "$$message{id}: Failed to log to MailWatch API: " . $res->status_line);
+                $retry_count++;
+                if ($retry_count < $api_max_retries) {
+                    LogMessage('warn', "$$message{id}: Retrying in $api_retry_delay seconds...");
+                    sleep $api_retry_delay;
+                } else {
+                    LogMessage('error', "$$message{id}: Failed to log to MailWatch API after $api_max_retries attempts.");
+                }
             }
         }
 
         # Unset
         $message = undef;
-
     }
 }
 
 sub EndMailWatchLogging {
-    # Tell server to shut down.  Another child will start a new server
+    # Tell server to shut down. Another child will start a new server
     # if we are here due to old age instead of administrative intervention
     socket(TO_SERVER, PF_INET, SOCK_STREAM, getprotobyname("tcp"));
     my $addr = sockaddr_in($server_port, $loop);
@@ -340,7 +254,7 @@ sub EndMailWatchLogging {
 sub MailWatchLogging {
     my ($message) = @_;
 
-    # Don't bother trying to do an insert if  no message is passed-in
+    # Don't bother trying to do an insert if no message is passed-in
     return unless $message;
 
     # Fix duplicate 'to' addresses for Postfix users
@@ -551,7 +465,7 @@ sub MailWatchLogging {
     }
 
     # Pass data to server process
-    MailScanner::Log::InfoLog("MailWatch: Logging message $msg{id} to SQL");
+    MailScanner::Log::InfoLog("MailWatch: Logging message $msg{id} to API");
     print TO_SERVER $p;
     print TO_SERVER "END\n";
     close TO_SERVER;
