@@ -1,0 +1,140 @@
+<?php
+
+// all response are JSON encoded
+header('Content-Type: application/json; charset=UTF-8');
+
+require_once __DIR__ . '/../conf.php';
+
+if (!defined('API_KEY')) {
+    http_response_code(401); // Unauthorized
+    echo json_encode(['error' => 'Unauthorized - Set an API KEY to use this API']);
+    exit;
+}
+
+require_once __DIR__ . '/../database.php';
+require_once __DIR__ . '/MailLogEntry.php';
+
+/**
+ * @param ?string $apiKey
+ *
+ * @return bool
+ */
+function isValidApiKey($apiKey)
+{
+    if (null === $apiKey) {
+        return false;
+    }
+
+    if (!defined('API_KEY')) {
+        return false;
+    }
+
+    return API_KEY === $apiKey;
+}
+
+/**
+ * @return ?string
+ */
+function getApiKeyToken()
+{
+    if (isset($_SERVER['HTTP_X_MAILWATCH_API_KEY'])) {
+        return $_SERVER['HTTP_X_MAILWATCH_API_KEY'];
+    }
+
+    return null;
+}
+
+// Check if is POST request
+if ('POST' !== $_SERVER['REQUEST_METHOD']) {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(['error' => 'Method Not Allowed']);
+    exit;
+}
+
+// Verify API key
+$apiKeyToken = getApiKeyToken();
+if (null === $apiKeyToken || !isValidApiKey($apiKeyToken)) {
+    http_response_code(401); // Unauthorized
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
+// Get JSON payload
+$json = file_get_contents('php://input');
+$data = json_decode($json, true);
+
+if (JSON_ERROR_NONE !== json_last_error()) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['error' => 'Invalid JSON']);
+    exit;
+}
+$mailLogEntry = new MailLogEntry($data);
+if (!$mailLogEntry->isValid()) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['error' => 'Invalid data']);
+    exit;
+}
+
+// Prepare insert query
+$dbLink = Database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+
+$query = 'INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+$stmt = $dbLink->prepare($query);
+if (!$stmt) {
+    http_response_code(500); // Internal Server Error
+    echo json_encode(['error' => 'Failed to prepare statement']);
+    exit;
+}
+$stmt->bind_param(
+    'ssisssssssiiiiiiiiiiiissiiiissssssss',
+    $mailLogEntry->timestamp,
+    $mailLogEntry->id,
+    $mailLogEntry->size,
+    $mailLogEntry->from,
+    $mailLogEntry->from_domain,
+    $mailLogEntry->to,
+    $mailLogEntry->to_domain,
+    $mailLogEntry->subject,
+    $mailLogEntry->clientip,
+    $mailLogEntry->archiveplaces,
+    $mailLogEntry->isspam,
+    $mailLogEntry->ishigh,
+    $mailLogEntry->issaspam,
+    $mailLogEntry->isrblspam,
+    $mailLogEntry->spamwhitelisted,
+    $mailLogEntry->spamblacklisted,
+    $mailLogEntry->sascore,
+    $mailLogEntry->spamreport,
+    $mailLogEntry->virusinfected,
+    $mailLogEntry->nameinfected,
+    $mailLogEntry->otherinfected,
+    $mailLogEntry->reports,
+    $mailLogEntry->ismcp,
+    $mailLogEntry->ishighmcp,
+    $mailLogEntry->issamcp,
+    $mailLogEntry->mcpwhitelisted,
+    $mailLogEntry->mcpblacklisted,
+    $mailLogEntry->mcpsascore,
+    $mailLogEntry->mcpreport,
+    $mailLogEntry->hostname,
+    $mailLogEntry->date,
+    $mailLogEntry->time,
+    $mailLogEntry->headers,
+    $mailLogEntry->quarantined,
+    $mailLogEntry->rblspamreport,
+    $mailLogEntry->token,
+    $mailLogEntry->messageid
+);
+
+if ($stmt->execute()) {
+    http_response_code(201); // Created
+    echo json_encode(['success' => 'Data inserted successfully']);
+} else {
+    http_response_code(500); // Internal Server Error
+    echo json_encode(['error' => 'Failed to insert data']);
+}
+
+$stmt->close();
+$dbLink->close();

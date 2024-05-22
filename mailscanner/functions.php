@@ -83,7 +83,7 @@ if (defined('USER_SELECTABLE_LANG')) {
     }
 }
 
-// Load the lang file or en if the spicified language is not available
+// Load the lang file or en if the specified language is not available
 if (!is_file(__DIR__ . '/languages/' . $langCode . '.php')) {
     $lang = require __DIR__ . '/languages/en.php';
 } else {

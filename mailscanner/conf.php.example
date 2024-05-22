@@ -55,6 +55,10 @@ define('SESSION_TIMEOUT', 600);
 // define('MAXMIND_LICENSE_KEY', 'mylicensekey');
 // define('MAXMIND_ACCOUNT_ID', 'myaccountid');
 
+// API KEY - Allow autentication for MailScanner perl module
+// generate a secure unique key, like an UUID or a complex password
+// define('API_KEY', 'change-me-api-key');
+
 // Database settings
 //
 // As this file might be publically readable. It might be very userful to
@@ -327,6 +331,6 @@ define('RESET_LINK_EXPIRE', 1);
 define('STATUSGRAPH_INTERVAL', 60);
 
 //Allow domain admins to create/edit/delete other domain admins from the same domain (not recommended, only for backward compatibility)
-//define('ENABLE_SUPER_DOMAIN_ADMINS',true);
+//define('ENABLE_SUPER_DOMAIN_ADMINS', true);
 //Allow the username of domain admins and normal users to not be in mail format (not recommended, only for backward compatibility)
-//define('ALLOW_NO_USER_DOMAIN',true);
+//define('ALLOW_NO_USER_DOMAIN', true);

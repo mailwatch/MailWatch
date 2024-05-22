@@ -5,6 +5,6 @@ tests/ export-ignore
 composer.json export-ignore
 composer.lock export-ignore
 docker-compose.yaml export-ignore
-phpstan.neon.dist export-ignore
+phpstan.dist.neon export-ignore
 rector.php export-ignore
 phpunit.xml export-ignore
