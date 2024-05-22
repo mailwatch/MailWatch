@@ -10,4 +10,5 @@
 /composer.lock
 /.php-cs-fixer.cache
 /.phpunit.cache
+/.phpstan-cache
 /phpstan.neon
