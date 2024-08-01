@@ -53,6 +53,7 @@ define('SESSION_TIMEOUT', 600);
 // A free license key from MaxMind is required to download GeoLite2 data
 // https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
 // define('MAXMIND_LICENSE_KEY', 'mylicensekey');
+// define('MAXMIND_ACCOUNT_ID', 'myaccountid');
 
 // Database settings
 //

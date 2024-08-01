@@ -4297,6 +4297,7 @@ function checkConfVariables()
         'IMAP_HOST' => ['description' => 'IMAP host to be used for user authentication'],
         'IMAP_AUTOCREATE_VALID_USER' => ['description' => 'enable to autorcreate user from valid imap login'],
         'MAXMIND_LICENSE_KEY' => ['description' => 'needed to download MaxMind GeoLite2 data'],
+        'MAXMIND_ACCOUNT_ID' => ['description' => 'needed to download MaxMind GeoLite2 data'],
         'QUARANTINE_DAYS_TO_KEEP_NONSPAM' => ['description' => 'to have quarantine keeping days independently configured for nonspam mails'],
     ];
 

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
@@ -33,7 +33,7 @@ require __DIR__ . '/login.function.php';
 
 html_start(__('geoipupdate15'), 0, false, false);
 
-if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxmind')) {
+if (!defined('MAXMIND_LICENSE_KEY') || !defined('MAXMIND_ACCOUNT_ID') || !validateInput(MAXMIND_LICENSE_KEY, 'maxmind')) {
     $error_message = __('geoipnokey15') . '<br>' . "\n";
     exit($error_message);
 } elseif (!isset($_POST['run'])) {
@@ -55,15 +55,13 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
             </table>
             </form>' . "\n";
 } else {
-    require_once __DIR__ . '/lib/request/Requests.php';
-    Requests::register_autoloader();
-
     ob_start();
     echo __('downfile15') . '<br>' . "\n";
 
-    $files_base_url = 'https://download.maxmind.com';
+    $urlSchema = 'https://';
+    $downloadServer = 'download.maxmind.com';
     $file['description'] = __('geoip15');
-    $file['path'] = '/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=' . MAXMIND_LICENSE_KEY;
+    $file['path'] = '/geoip/databases/GeoLite2-Country/download?suffix=tar.gz';
     $file['destination'] = __DIR__ . '/temp/GeoLite2-Country.tar.gz';
     $file['destinationFileName'] = 'GeoLite2-Country.mmdb';
 
@@ -80,30 +78,27 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
     if (!file_exists($file['destination'])) {
         if (is_writable($extract_dir) && is_readable($extract_dir)) {
             if (function_exists('fsockopen') || extension_loaded('curl')) {
-                $requestSession = new Requests_Session($files_base_url . '/');
-                $requestSession->options['useragent'] = 'MailWatch/' . mailwatch_version();
-                if (USE_PROXY === true) {
+                $ch = curl_init($urlSchema . $downloadServer . $file['path']);
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_USERNAME, MAXMIND_ACCOUNT_ID);
+                curl_setopt($ch, CURLOPT_PASSWORD, MAXMIND_LICENSE_KEY);
+                curl_setopt($ch, CURLOPT_USERAGENT, 'MailWatch/' . mailwatch_version());
+                if (defined('USE_PROXY') && USE_PROXY === true) {
+                    curl_setopt($ch, CURLOPT_PROXY, PROXY_SERVER);
+                    curl_setopt($ch, CURLOPT_PROXYPORT, PROXY_PORT);
                     if (PROXY_USER !== '') {
-                        $requestSession->options['proxy']['authentication'] = [
-                            PROXY_SERVER . ':' . PROXY_PORT,
-                            PROXY_USER,
-                            PROXY_PASS,
-                        ];
-                    } else {
-                        $requestSession->options['proxy']['authentication'] = [
-                            PROXY_SERVER . ':' . PROXY_PORT,
-                        ];
+                        curl_setopt($ch, CURLOPT_PROXYUSERPWD, PROXY_USER . ':' . PROXY_PASS);
                     }
 
                     switch (PROXY_TYPE) {
                         case 'HTTP':
                         case 'CURLPROXY_HTTP': // BC for old constant name
-                            // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
-                            $requestSession->options['proxy']['type'] = 'HTTP';
+                            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
                             break;
                         case 'SOCKS5':
                         case 'CURLPROXY_SOCKS5': // BC for old constant name
-                            $requestSession->options['proxy']['type'] = 'SOCKS5';
+                            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
                             break;
                         default:
                             exit(__('dieproxy15'));
@@ -111,13 +106,18 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
                 }
 
                 try {
-                    $requestSession->options['filename'] = $file['destination'];
-                    $result = $requestSession->get($file['path']);
-                    if (true === $result->success) {
+                    $fpDestinationFile = fopen($file['destination'], 'w');
+                    curl_setopt($ch, CURLOPT_FILE, $fpDestinationFile);
+                    curl_exec($ch);
+                    if (empty(curl_error($ch))) {
                         echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
+                    } else {
+                        echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . curl_error($ch) . "<br>\n";
                     }
-                } catch (Requests_Exception $e) {
-                    echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . $e->getMessage() . "<br>\n";
+                } catch (Exception $e) {
+                    echo __('downbad15') . ' ' . $file['description'] . __('colon99') . ' ' . curl_error($ch) . "<br>\n";
+                } finally {
+                    fclose($fpDestinationFile);
                 }
 
                 ob_flush();
@@ -137,7 +137,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
                     }
                 }
 
-                $command = escapeshellcmd('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination']);
+                $command = escapeshellcmd('wget ' . $proxyString . ' -N ' . $urlSchema . MAXMIND_ACCOUNT_ID . ':' . MAXMIND_LICENSE_KEY . '@' . $downloadServer . $file['path'] . ' -O ' . $file['destination']);
                 $result = exec(
                     $command,
                     $output_wget,
