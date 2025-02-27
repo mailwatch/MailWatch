@@ -2326,7 +2326,7 @@ class xmlrpcmsg
         xml_set_default_handler($parser, 'xmlrpc_dh');
 
         // first error check: xml not well formed
-        if (!xml_parse($parser, $data, count($data))) {
+        if (!xml_parse($parser, $data, true)) {
             // thanks to Peter Kocks <peter.kocks@baygate.com>
             if ((xml_get_current_line_number($parser)) == 1) {
                 $errstr = 'XML error at line 1, check URL';
@@ -3179,7 +3179,7 @@ function php_xmlrpc_decode_xml($xml_val, $options = array())
     xml_set_element_handler($parser, 'xmlrpc_se_any', 'xmlrpc_ee');
     xml_set_character_data_handler($parser, 'xmlrpc_cd');
     xml_set_default_handler($parser, 'xmlrpc_dh');
-    if (!xml_parse($parser, $xml_val, 1)) {
+    if (!xml_parse($parser, $xml_val, true)) {
         $errstr = sprintf('XML error: %s at line %d, column %d',
             xml_error_string(xml_get_error_code($parser)),
             xml_get_current_line_number($parser), xml_get_current_column_number($parser));
