@@ -43,16 +43,11 @@ html_start(__('usermgnt12'), 0, false, false);
  */
 function getHtmlMessage($value, $type)
 {
-    switch ($type) {
-        case 'error':
-            return '<h1 class="center error">' . $value . '</h1>';
-
-        case 'success':
-            return '<h1 class="center success">' . $value . '</h1>';
-
-        default:
-            return $value;
-    }
+    return match ($type) {
+        'error' => '<h1 class="center error">' . $value . '</h1>',
+        'success' => '<h1 class="center success">' . $value . '</h1>',
+        default => $value,
+    };
 }
 
 /**
@@ -64,7 +59,7 @@ function getHtmlMessage($value, $type)
 function testSameDomainMembership($username, $method)
 {
     $parts = explode('@', $username);
-    $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+    $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
     $result = dbquery($sql);
     $filter_domain = [];
     for ($i = 0; $i < $result->num_rows; ++$i) {
@@ -95,7 +90,7 @@ function testSameDomainMembership($username, $method)
  */
 function testPermissions($username, $userType, $oldUserType)
 {
-    if (('A' !== $_SESSION['user_type'] && 'A' === $oldUserType) || ('D' === $_SESSION['user_type'] && stripslashes($_SESSION['myusername']) !== stripslashes($username) && 'U' !== $userType && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
+    if (('A' !== $_SESSION['user_type'] && 'A' === $oldUserType) || ('D' === $_SESSION['user_type'] && stripslashes((string)$_SESSION['myusername']) !== stripslashes($username) && 'U' !== $userType && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
         return getHtmlMessage(__('erroradminforbidden12'), 'error');
     }
 
@@ -269,7 +264,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
     if (!validateInput($n_fullname, 'general')) {
         $n_fullname = '';
     }
-    $n_password = safe_value(password_hash($_POST['password'], PASSWORD_DEFAULT));
+    $n_password = safe_value(password_hash((string)$_POST['password'], PASSWORD_DEFAULT));
 
     if (!validateInput($n_type, 'type')) {
         $n_type = 'U';
@@ -306,7 +301,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
     $type['R'] = __('user12', true);
     if (-1 === $uid) {// new user
         $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
-                        VALUES ('" . safe_value(stripslashes($n_username)) . "','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','" . safe_value(stripslashes($quarantine_rcpt)) . "')";
+                        VALUES ('" . safe_value(stripslashes((string)$n_username)) . "','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','" . safe_value(stripslashes($quarantine_rcpt)) . "')";
         dbquery($sql);
         audit_log(__(
             'auditlog0112',
@@ -316,18 +311,18 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
             true
         ));
 
-        return getHtmlMessage(sprintf(__('usercreated12'), stripslashes($n_username)), 'success');
+        return getHtmlMessage(sprintf(__('usercreated12'), stripslashes((string)$n_username)), 'success');
     }
 
     if ('XXXXXXXX' !== $_POST['password']) {// Password reset required
-        $sql = "UPDATE users SET username='" . safe_value(stripslashes($n_username)) . "', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
+        $sql = "UPDATE users SET username='" . safe_value(stripslashes((string)$n_username)) . "', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
     } else {
-        $sql = "UPDATE users SET username='" . safe_value(stripslashes($n_username)) . "', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
+        $sql = "UPDATE users SET username='" . safe_value(stripslashes((string)$n_username)) . "', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
     }
     dbquery($sql);
     // Update user_filters if username was changed
-    if (stripslashes($oldUsername) !== stripslashes($n_username)) {
-        $sql = "UPDATE user_filters SET username='" . safe_value(stripslashes($n_username)) . "' WHERE username = '" . safe_value(stripslashes($oldUsername)) . "'";
+    if (stripslashes((string)$oldUsername) !== stripslashes((string)$n_username)) {
+        $sql = "UPDATE user_filters SET username='" . safe_value(stripslashes((string)$n_username)) . "' WHERE username = '" . safe_value(stripslashes((string)$oldUsername)) . "'";
         dbquery($sql);
     }
     if ($oldType !== $n_type) {
@@ -339,7 +334,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         );
     }
 
-    return getHtmlMessage(sprintf(__('useredited12'), stripslashes($oldUsername)), 'success');
+    return getHtmlMessage(sprintf(__('useredited12'), stripslashes((string)$oldUsername)), 'success');
 }
 
 /**
@@ -525,7 +520,7 @@ function deleteUser()
         return getHtmlMessage(__('errordeleteself12'), 'error');
     }
 
-    $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value(stripslashes($user->username)) . "'";
+    $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value(stripslashes((string)$user->username)) . "'";
     dbquery($sql);
     audit_log(sprintf(__('auditlog0412', true), $user->username));
 
@@ -570,7 +565,7 @@ function userFilter()
         if (!validateInput($getActive, 'yn')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
-        $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value(stripslashes($user->username)) . "','" . safe_value(stripslashes($getFilter)) . "','" . safe_value($getActive) . "')";
+        $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value(stripslashes((string)$user->username)) . "','" . safe_value(stripslashes($getFilter)) . "','" . safe_value($getActive) . "')";
         dbquery($sql);
         if (DEBUG === true) {
             echo $sql;
@@ -582,7 +577,7 @@ function userFilter()
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
-        $sql = "DELETE FROM user_filters WHERE username='" . safe_value(stripslashes($user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
+        $sql = "DELETE FROM user_filters WHERE username='" . safe_value(stripslashes((string)$user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
         dbquery($sql);
         if (DEBUG === true) {
             echo $sql;
@@ -593,17 +588,17 @@ function userFilter()
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
         }
-        $sql = "SELECT active FROM user_filters WHERE username='" . safe_value(stripslashes($user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
+        $sql = "SELECT active FROM user_filters WHERE username='" . safe_value(stripslashes((string)$user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
         $result = dbquery($sql);
         $row = $result->fetch_row();
         $active = 'Y';
         if ('Y' === $row[0]) {
             $active = 'N';
         }
-        $sql = "UPDATE user_filters SET active='" . $active . "' WHERE username='" . safe_value(stripslashes($user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
+        $sql = "UPDATE user_filters SET active='" . $active . "' WHERE username='" . safe_value(stripslashes((string)$user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
         dbquery($sql);
     }
-    $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($user->id) . "\',',QUOTE(filter),'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($user->id) . "\',',QUOTE(filter),')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value(stripslashes($user->username)) . "'";
+    $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($user->id) . "\',',QUOTE(filter),'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($user->id) . "\',',QUOTE(filter),')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value(stripslashes((string)$user->username)) . "'";
     $result = dbquery($sql);
     $returnString = '<FORM METHOD="POST" ACTION="user_manager.php">' . PHP_EOL;
     $returnString .= '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . PHP_EOL;
@@ -617,14 +612,14 @@ function userFilter()
     $returnString .= ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . '</TH></TR>' . PHP_EOL;
     while ($row = $result->fetch_object()) {
         $returnString .= ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD> ';
-        if ('D' === $_SESSION['user_type'] && stripslashes($user->username) === stripslashes($_SESSION['myusername'])) {
+        if ('D' === $_SESSION['user_type'] && stripslashes((string)$user->username) === stripslashes((string)$_SESSION['myusername'])) {
             $returnString .= '<TD>' . __('nofilteraction12') . '</TD></TR>' . PHP_EOL;
         } else {
             $returnString .= '<TD>' . $row->actions . '</TD></TR>' . PHP_EOL;
         }
     }
     // Prevent domain admins from altering their own filters
-    if ('A' === $_SESSION['user_type'] || ('D' === $_SESSION['user_type'] && stripslashes($user->username) !== stripslashes($_SESSION['myusername']))) {
+    if ('A' === $_SESSION['user_type'] || ('D' === $_SESSION['user_type'] && stripslashes((string)$user->username) !== stripslashes((string)$_SESSION['myusername']))) {
         $returnString .= ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . __('add12') . '"></TD></TR>' . PHP_EOL;
     }
     $returnString .= '</TABLE><BR>' . PHP_EOL;
@@ -688,7 +683,7 @@ function logoutUser()
         echo $sql;
     }
 
-    return getHtmlMessage(sprintf(__('userloggedout12'), stripslashes($user->username)), 'success');
+    return getHtmlMessage(sprintf(__('userloggedout12'), stripslashes((string)$user->username)), 'success');
 }
 
 ?>
@@ -830,12 +825,12 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
             // if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
-            $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+            $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
             $result = dbquery($sql);
             $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
             for ($i = 0; $i < $result->num_rows; ++$i) {
                 $filter = $result->fetch_row();
-                $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . safe_value(stripslashes($filter[0])) . '" AND type = "U")';
+                $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . safe_value(stripslashes((string)$filter[0])) . '" AND type = "U")';
             }
         }
     }
@@ -876,7 +871,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
           username';
     dbtable($sql, __('usermgnt12'));
 } elseif (!isset($_POST['submit'])) {
-    $sql = "SELECT id, username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+    $sql = "SELECT id, username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
     $result = dbquery($sql);
     $row = $result->fetch_object();
     $quarantine_report = '';
@@ -898,7 +893,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token') . '">' . PHP_EOL;
     echo '<table class="mail useredit" border="0" cellpadding="1" cellspacing="1">' . PHP_EOL;
     echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . stripslashes($_SESSION['myusername']) . '</td></tr>' . PHP_EOL;
+    echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . stripslashes((string)$_SESSION['myusername']) . '</td></tr>' . PHP_EOL;
     echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . PHP_EOL;
     if (true !== $_SESSION['user_ldap'] && true !== $_SESSION['user_imap']) {
         echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
@@ -941,7 +936,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     } elseif (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
         echo getHtmlMessage(__('errorpass12'), 'error');
     } else {
-        $username = safe_value(stripslashes($_SESSION['myusername']));
+        $username = safe_value(stripslashes((string)$_SESSION['myusername']));
         if (isset($_POST['password'])) {
             $n_password = safe_value($_POST['password']);
         }
@@ -968,7 +963,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
 
         if (isset($_POST['password']) && 'XXXXXXXX' !== $_POST['password']) {
             // Password reset required
-            $password = password_hash($n_password, PASSWORD_DEFAULT);
+            $password = password_hash((string)$n_password, PASSWORD_DEFAULT);
             $sql = "UPDATE users SET password='" . $password . "', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
             dbquery($sql);
         } else {

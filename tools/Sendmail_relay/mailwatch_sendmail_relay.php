@@ -85,7 +85,7 @@ class SendmailLogProcessor extends MtaLogProcessor
 
     public function extractKeyValuePairs($match)
     {
-        $items = explode(', ', $match[2]);
+        $items = explode(', ', (string)$match[2]);
         $entries = [];
         foreach ($items as $item) {
             $entry = explode('=', $item);

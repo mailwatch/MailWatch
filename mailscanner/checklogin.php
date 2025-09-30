@@ -53,7 +53,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
         logFailedLogin();
         exit;
     }
-    $myusername = html_entity_decode($_POST['myusername']);
+    $myusername = html_entity_decode((string)$_POST['myusername']);
     $mypassword = $_POST['mypassword'];
 }
 
@@ -103,7 +103,7 @@ if (
     && (false === $_SESSION['user_imap'])
 ) {
     $passwordInDb = database::mysqli_result($result, 0, 'password');
-    if (!password_verify($mypassword, $passwordInDb)) {
+    if (!password_verify($mypassword, (string)$passwordInDb)) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
             logFailedLogin($myusername);

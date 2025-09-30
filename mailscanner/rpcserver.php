@@ -207,8 +207,8 @@ function rpc_dump_mailscanner_conf()
                 $var[$regs[1]] = $regs[2];
             }
             // expand %var% variables
-            if (preg_match('/(%.+%)/', $regs[2], $match)) {
-                $regs[2] = preg_replace('/%.+%/', $var[$match[1]], $regs[2]);
+            if (preg_match('/(%.+%)/', (string)$regs[2], $match)) {
+                $regs[2] = preg_replace('/%.+%/', (string)$var[$match[1]], (string)$regs[2]);
             }
             $output[$regs[1]] = new xmlrpcval($regs[2]);
         }

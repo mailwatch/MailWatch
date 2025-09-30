@@ -39,7 +39,7 @@ if ('A' !== $_SESSION['user_type']) {
  <tr>
   <td align="center">';
 
-    if (false !== strpos(get_conf_var('VirusScanners'), '/-6/')) {
+    if (str_contains((string)get_conf_var('VirusScanners'), '/-6/')) {
         passthru(get_virus_conf('f-prot') . ' -virno | awk -f ' . __DIR__ . '/f-prot.awk');
     } else {
         passthru(get_virus_conf('f-prot') . ' -verno | awk -f ' . __DIR__ . '/f-prot.awk');

@@ -26,7 +26,7 @@ class Ticket1290Test extends TestCase
      */
     public function testSendmailQueuePattern($line, $expectedEmail)
     {
-        preg_match($this->sendmailPattern, $line, $matches);
+        preg_match($this->sendmailPattern, (string) $line, $matches);
         $this->assertNotEmpty($matches, "The pattern should match the line: $line");
         $this->assertEquals($expectedEmail, $matches[1], "The extracted email should be $expectedEmail");
     }

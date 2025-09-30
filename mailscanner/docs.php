@@ -32,7 +32,7 @@ require __DIR__ . '/login.function.php';
 html_start(__('doc20'));
 
 if (isset($_GET['doc'])) {
-    $file = preg_replace('/[^-a-zA-Z0-9_]/', '', $_GET['doc']);
+    $file = preg_replace('/[^-a-zA-Z0-9_]/', '', (string)$_GET['doc']);
     include_once 'docs/' . $file . '.html';
 } else {
     echo '<table width="100%" class="boxtable">' . "\n";

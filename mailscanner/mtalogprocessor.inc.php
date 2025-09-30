@@ -96,9 +96,9 @@ abstract class MtaLogProcessor
             }
 
             // Milter-ahead rejections
-            if (preg_match('/Milter: /i', $this->raw) && preg_match(
+            if (preg_match('/Milter: /i', (string)$this->raw) && preg_match(
                 '/(rejected recipient|user unknown)/i',
-                $this->entries['reject']
+                (string)$this->entries['reject']
             )
             ) {
                 $_type = safe_value('unknown_user');
@@ -106,7 +106,7 @@ abstract class MtaLogProcessor
             }
 
             // Unknown users
-            if (preg_match('/user unknown/i', $this->entry)) {
+            if (preg_match('/user unknown/i', (string)$this->entry)) {
                 // Unknown users
                 $_type = safe_value('unknown_user');
                 $_status = safe_value($this->raw);
@@ -214,7 +214,7 @@ abstract class MtaLogProcessor
             }
 
             // Extract any key=value pairs
-            if (false !== strpos($match[2], '=')) {
+            if (str_contains($match[2], '=')) {
                 // calls the function passed as argument
                 $this->entries = $this->extractKeyValuePairs($match);
             } else {
@@ -226,7 +226,7 @@ abstract class MtaLogProcessor
 
         // No message ID found
         // Extract any key=value pairs
-        if (false !== strpos($this->raw, '=')) {
+        if (str_contains($this->raw, '=')) {
             $items = explode(', ', $this->raw);
             $entries = [];
             foreach ($items as $item) {
@@ -252,7 +252,7 @@ abstract class MtaLogProcessor
      */
     public function getIp()
     {
-        if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', $this->entries['relay'], $match)) {
+        if (preg_match('/\[(\d+\.\d+\.\d+\.\d+)\]/', (string)$this->entries['relay'], $match)) {
             return $match[1];
         }
 
@@ -264,7 +264,7 @@ abstract class MtaLogProcessor
      */
     public function getEmail()
     {
-        if (preg_match('/<(\S+)>/', $this->entries['to'], $match)) {
+        if (preg_match('/<(\S+)>/', (string)$this->entries['to'], $match)) {
             return $match[1];
         }
 

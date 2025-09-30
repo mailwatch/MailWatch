@@ -119,8 +119,8 @@ if ($ldap_search_results) {
         if (false !== $bindResult) {
             echo 'authentication success' . PHP_EOL;
             foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
-                if (0 === strpos($email, 'SMTP')) {
-                    $email = strtolower(substr($email, 5));
+                if (str_starts_with((string)$email, 'SMTP')) {
+                    $email = strtolower(substr((string)$email, 5));
                     echo 'found mail: ' . $email . PHP_EOL;
                 }
             }

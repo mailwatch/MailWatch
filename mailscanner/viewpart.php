@@ -152,7 +152,7 @@ function decode_structure($structure)
  <title>' . __('title58') . '</title>
  </head>
  <body>
- <pre>' . htmlspecialchars(wordwrap($structure->body)) . '</pre>
+ <pre>' . htmlspecialchars(wordwrap((string)$structure->body)) . '</pre>
  </body>
  </html>' . "\n";
             break;
@@ -181,11 +181,11 @@ function decode_structure($structure)
             // @link https://tools.ietf.org/html/rfc2046#section-5.2.2
             header('Content-Type: application/octet-stream');
             // get message id
-            preg_match('/.*id="?([^";]*)"?.*/', $structure->headers['content-type'], $identifier);
+            preg_match('/.*id="?([^";]*)"?.*/', (string)$structure->headers['content-type'], $identifier);
             // get part number
-            preg_match("/.*number=([\d]*).*/", $structure->headers['content-type'], $partNumber);
+            preg_match("/.*number=([\d]*).*/", (string)$structure->headers['content-type'], $partNumber);
             // get total parts
-            preg_match("/.*total=([\d]*).*/", $structure->headers['content-type'], $totalParts);
+            preg_match("/.*total=([\d]*).*/", (string)$structure->headers['content-type'], $totalParts);
 
             // build filename
             $filename = $identifier[1] ?? 'partialMessage';

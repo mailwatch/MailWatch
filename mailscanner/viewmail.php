@@ -136,7 +136,7 @@ function lazy($title, $val, $dohtmlentities = true)
 {
     $v = $val;
     if ($dohtmlentities) {
-        $v = htmlentities($v);
+        $v = htmlentities((string)$v);
     }
     $titleintl = $title;
     switch ($title) {
@@ -193,7 +193,7 @@ if (
     );
 }
 
-foreach ($mime_struct as $key => $part) {
+foreach ($mime_struct as $part) {
     $type = $part->ctype_primary ?? 'undefined';
     $type .= '/';
     $type .= $part->ctype_secondary ?? 'undefined';

@@ -133,18 +133,13 @@ if (preg_match('/(\S+)@(\S+)/', $url_to, $split)) {
 }
 
 // Type
-switch ($url_type) {
-    case 'h':
-        $from = $url_host;
-        break;
-    case 'f':
-        $from = $url_from;
-        break;
-    default:
-        $from = $url_from;
-}
+$from = match ($url_type) {
+    'h' => $url_host,
+    'f' => $url_from,
+    default => $url_from,
+};
 
-$myusername = safe_value(stripslashes($_SESSION['myusername']));
+$myusername = safe_value(stripslashes((string)$_SESSION['myusername']));
 // Validate input against the user type
 $to_user_filter = [];
 $to_domain_filter = [];
@@ -184,8 +179,8 @@ switch ($_SESSION['user_type']) {
         while ($row = $result1->fetch_assoc()) {
             $to_domain_filter[] = $row['filter'];
         }
-        if (strpos($_SESSION['myusername'], '@')) {
-            $ar = explode('@', $_SESSION['myusername']);
+        if (strpos((string)$_SESSION['myusername'], '@')) {
+            $ar = explode('@', (string)$_SESSION['myusername']);
             $domainname = $ar[1];
             $to_domain_filter[] = $domainname;
         } else {

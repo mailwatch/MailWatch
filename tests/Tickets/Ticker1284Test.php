@@ -17,7 +17,7 @@ class Ticker1284Test extends TestCase
             foreach ($mounted_fs as $fs_row) {
                 $drive = preg_split("/[\s]+/", $fs_row);
                 if (
-                    (0 === strpos($drive[0], '/dev/'))
+                    (str_starts_with($drive[0], '/dev/'))
                     && (
                         false === stripos($drive[1], '/chroot/')
                         && false === stripos($drive[1], '/snap/')
@@ -34,9 +34,7 @@ class Ticker1284Test extends TestCase
             $this->assertNotEmpty($disks);
 
             // Assert that no device matches /dev/loop*
-            $loopDevices = array_filter($disks, function ($disk) {
-                return false !== stripos($disk['mountpoint'], 'snap');
-            });
+            $loopDevices = array_filter($disks, fn($disk) => false !== stripos((string) $disk['mountpoint'], 'snap'));
             $this->assertEmpty(
                 $loopDevices,
                 'There should be no /dev/loop* devices in the disks array (' . $fixtureFile . ').'
@@ -59,7 +57,7 @@ class Ticker1284Test extends TestCase
             foreach ($data as $disk) {
                 $drive = preg_split("/[\s]+/", $disk);
                 if (
-                    (0 === strpos($drive[0], '/dev/'))
+                    (str_starts_with($drive[0], '/dev/'))
                     && (
                         false === stripos($drive[2], '/chroot/')
                         && (false === stripos($drive[2], '/snapd/')
@@ -77,9 +75,7 @@ class Ticker1284Test extends TestCase
             $this->assertNotEmpty($disks);
 
             // Assert that no device matches /dev/loop*
-            $loopDevices = array_filter($disks, function ($disk) {
-                return false !== stripos($disk['mountpoint'], 'snapd');
-            });
+            $loopDevices = array_filter($disks, fn($disk) => false !== stripos((string) $disk['mountpoint'], 'snapd'));
             $this->assertEmpty(
                 $loopDevices,
                 'There should be no /dev/loop* devices in the disks array (' . $fixtureFile . ').'

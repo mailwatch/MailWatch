@@ -54,8 +54,8 @@ if ('A' !== $_SESSION['user_type']) {
     // Display the information from the configuration files
     foreach ($array_output as $out_key => $value) {
         // expand %var% variables
-        if (preg_match('/(%.+%)/', $value, $match)) {
-            $value = preg_replace('/%.+%/', $var[$match[1]], $value);
+        if (preg_match('/(%.+%)/', (string)$value, $match)) {
+            $value = preg_replace('/%.+%/', (string)$var[$match[1]], (string)$value);
         }
 
         // See if parameter is a rules file

@@ -119,7 +119,7 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
                 &$req_headers,
                 &$req_data,
                 &$options
-            ) {
+            ): void {
                 $options['auth'] = false;
                 $options['hooks'] = new Requests_Hooks();
             });

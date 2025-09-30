@@ -63,7 +63,7 @@ if (file_exists(__DIR__ . '/conf.php')) {
                 } else {
                     $listCount = count($list);
                     for ($i = 0; $i < $listCount; ++$i) {
-                        if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
+                        if (preg_match('/message\/rfc822/', (string)$list[$i]['type'])) {
                             $result = quarantine_release($list, [$i], $list[$i]['to']);
                         }
                     }

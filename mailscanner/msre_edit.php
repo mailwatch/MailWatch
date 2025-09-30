@@ -163,12 +163,12 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         if ('' === $line) {
             $line = '#';
         }
-        if (('#' !== substr($line, 0, 1))
+        if ((!str_starts_with($line, '#'))
             || preg_match('/^#DISABLED#/', $line)
         ) {
             // Check for a description on the previous line
             $desc = '';
-            if ('#' === substr($previous_line, 0, 1)) {
+            if (str_starts_with($previous_line, '#')) {
                 $desc = $previous_line;
             }
             $ruleset[] = [$desc, $line];
@@ -221,7 +221,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
 
         // Clean out whitespace from the rule parts
         foreach ($rule_part as &$a_part) {
-            trim($a_part);
+            trim((string)$a_part);
         }
         // I need to check
         // for "missing pieces" of the rule, that may
@@ -238,7 +238,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         $last_old_rule_part = array_pop($old_rule_part);
         // Need two differnt while loops I think, based on
         // if there was an and or not.
-        if ('and' === strtolower($rule_part['2and'])) {
+        if ('and' === strtolower((string)$rule_part['2and'])) {
             // If there's an and, grab up to the 4and_target.
             $grab_to_field = '4and_target';
         } else {
@@ -283,7 +283,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // To find out if the rule is disabled, we look @ the
         // direction field for #DISABLED# on the beginning.
         $desc_value = htmlentities($desc, ENT_QUOTES);
-        if (preg_match('/#DISABLED#/', $rule_part['0direction'])) {
+        if (preg_match('/#DISABLED#/', (string)$rule_part['0direction'])) {
             $rule_disabled = 1;
             $rule_action_select_options = '<option value="Enable">' . __('enable55') . '</option>' . "\n";
             $disable_desc_text = ' disabled ';
@@ -305,7 +305,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // all, but w/the new way i'm writing the rules (w/the border),
         // each one is in a seperate table, and they don't line up
         // w/out the select box.
-        if ('default' === strtolower($rule_part['1target'])) {
+        if ('default' === strtolower((string)$rule_part['1target'])) {
             $rule_action_select_html .= ' disabled';
         }
 
@@ -365,7 +365,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     $select_html .= '>' . "\n" . '<option value=""></option>';
                     foreach ($CONF_ruleset_keyword as $current_kw) {
                         $select_html .= '<option value="' . $current_kw . '"';
-                        $match = strtolower(preg_replace('/#DISABLED#/', '', $value));
+                        $match = strtolower((string)preg_replace('/#DISABLED#/', '', (string)$value));
                         $kw = '';
                         // Use MailScanner's direction-matching rules
                         if (preg_match('/and/', $match)) {
@@ -379,7 +379,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                         } elseif (preg_match('/virus/', $match)) {
                             $kw = 'virus:';
                         }
-                        if (strtolower($current_kw) === $kw) {
+                        if (strtolower((string)$current_kw) === $kw) {
                             $select_html .= ' selected';
                         }
                         $select_html .= '>' . $current_kw . '</option>';
@@ -404,7 +404,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     } else {
                         $temp_text = '<input type="text" name="' . $field_name . '" value="' . $value . '"';
                     }
-                    if ($rule_disabled || ('1target' === strtolower($key) && 'default' === strtolower($value))) {
+                    if ($rule_disabled || ('1target' === strtolower($key) && 'default' === strtolower((string)$value))) {
                         $temp_text .= ' disabled ';
                     }
                     $temp_text .= '>';
@@ -531,9 +531,9 @@ function Process_Form($file_contents, $short_filename)
     // stopping when we have reached a non-comment line
     $previous_line = '';
     $first_line = true;
-    foreach (preg_split("/\n/", $file_contents) as $line) {
+    foreach (preg_split("/\n/", (string)$file_contents) as $line) {
         if ('' === $line
-             || ('#' === substr($line, 0, 1) && !preg_match('/#DISABLED#/', $line))
+             || (str_starts_with($line, '#') && !preg_match('/#DISABLED#/', $line))
         ) {
             if (!$first_line) {
                 $new_file[] = $previous_line . "\n";
@@ -613,7 +613,7 @@ function Process_Form($file_contents, $short_filename)
         if ('' === $_POST[$target] || '' === $_POST[$action]) {
             continue;
         }
-        if ('default' === strtolower($_POST[$target])) {
+        if ('default' === strtolower((string)$_POST[$target])) {
             // Default 'direction' can only be "Virus:" or "FromOrTo:"
             if ('Virus:' === $_POST[$direction]) {
                 $default_direction = 'Virus:';
@@ -645,7 +645,7 @@ function Process_Form($file_contents, $short_filename)
                     break;
                 case 'Enable':
                     // enable is the opposite of disable..
-                    $_POST[$direction] = preg_replace('/^#DISABLED#/', '', $_POST[$direction]);
+                    $_POST[$direction] = preg_replace('/^#DISABLED#/', '', (string)$_POST[$direction]);
                     break;
             }
         }
@@ -777,7 +777,7 @@ function Write_File($filename, $content)
             // Write contents
             $status_msg .= __('writefile55');
             foreach ($content as $line) {
-                $bytes += fwrite($fh, $line);
+                $bytes += fwrite($fh, (string)$line);
             }
             $status_msg .= sprintf(__('writebytes55'), $bytes) . '<br>' . "\n";
             // Close file

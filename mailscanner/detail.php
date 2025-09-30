@@ -203,12 +203,12 @@ for ($f = 0; $f < $result->field_count; ++$f) {
         }
     }
     if ($fieldn === __('report04')) {
-        $row[$f] = nl2br(str_replace(',', '<br>', htmlentities($row[$f])));
+        $row[$f] = nl2br(str_replace(',', '<br>', htmlentities((string)$row[$f])));
         $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
-        $row[$f] = preg_replace('/ <br>/', '<br>', $row[$f]);
+        $row[$f] = preg_replace('/ <br>/', '<br>', (string)$row[$f]);
     }
     if ($fieldn === __('from04')) {
-        $row[$f] = htmlentities($row[$f]);
+        $row[$f] = htmlentities((string)$row[$f]);
         $output = '<table class="sa_rules_report" cellspacing="0"><tr><td>' . $row[$f] . '</td>' . "\n";
         if (LISTS) {
             $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=f&amp;list=b">' . __('addbl04') . '</a>]</td>' . "\n";
@@ -217,7 +217,7 @@ for ($f = 0; $f < $result->field_count; ++$f) {
         $row[$f] = $output;
     }
     if ($fieldn === __('to04')) {
-        $row[$f] = htmlspecialchars($row[$f]);
+        $row[$f] = htmlspecialchars((string)$row[$f]);
         $row[$f] = str_replace(',', '<br>', $row[$f]);
     }
     if ($fieldn === __('subject04')) {
@@ -231,7 +231,7 @@ for ($f = 0; $f < $result->field_count; ++$f) {
     }
     if ($fieldn === __('msgheaders04')) {
         $row[$f] = nl2br(
-            str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
+            str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities((string)$row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
         );
         if (function_exists('iconv_mime_decode')) {
             $row[$f] = iconv_mime_decode(utf8_decode($row[$f]), 2, 'UTF-8');
@@ -271,10 +271,10 @@ for ($f = 0; $f < $result->field_count; ++$f) {
             $row[$f] = format_mcp_report($row[$f]);
         }
     } else {
-        if ('HEADER' === $fieldn && false !== strpos($row[$f], 'MCP')) {
+        if ('HEADER' === $fieldn && str_contains((string)$row[$f], 'MCP')) {
             continue;
         }
-        if (false !== strpos($fieldn, 'MCP')) {
+        if (str_contains($fieldn, 'MCP')) {
             continue;
         }
     }
@@ -453,7 +453,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo '  <tr>' . "\n";
             echo '  <td class="heading" width="150" align="right" valign="top">' . __('resultmsg04') . ':</td>' . "\n";
             echo '  <td class="detail">' . "\n";
-            foreach ($status as $key => $val) {
+            foreach ($status as $val) {
                 echo "  $val<br>\n";
             }
             echo "  </td>\n";
@@ -463,7 +463,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo " <tr>\n";
             echo '  <td class="heading" width="150" align="right" valign="top">' . __('errormess04') . '</td>' . "\n";
             echo '  <td class="detail">' . "\n";
-            foreach ($errors as $key => $val) {
+            foreach ($errors as $val) {
                 echo "  $val<br>\n";
             }
             echo "  </td>\n";
@@ -516,8 +516,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // If the file is an rfc822 message then allow the file to be learnt
             // by SpamAssassin Bayesian learner as either spam or ham (sa-learn).
             if (
-                (preg_match('/message\/rfc822/', $item['type']) || 'message' === $item['file'])
-                && ('NO' !== strtoupper(get_conf_var('UseSpamAssassin')))
+                (preg_match('/message\/rfc822/', (string)$item['type']) || 'message' === $item['file'])
+                && ('NO' !== strtoupper((string)get_conf_var('UseSpamAssassin')))
             ) {
                 echo '   <td align="center" class="salearn-' . $row['salearn'] . '"><input class="noprint" type="checkbox" name="learn[]" value="' . $item['id'] . '"><select class="noprint" name="learn_type"><option value="ham">' . __('asham04') . '</option><option value="spam">' . __('aspam04') . '</option><option value="forget">' . __('forget04') . '</option><option value="report">' . __('spamreport04') . '</option><option value="revoke">' . __('spamrevoke04') . '</option></select></td>' . "\n";
             } else {
@@ -532,13 +532,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                     'N' === $item['dangerous']
                     || 'A' === $_SESSION['user_type']
                     || (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'] && 'Y' === $item['dangerous'])
-                ) && preg_match('!message/rfc822!', $item['type'])
+                ) && preg_match('!message/rfc822!', (string)$item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
-                    substr($item['path'], strlen($quarantinedir) + 1) .
+                    substr((string)$item['path'], strlen((string)$quarantinedir) + 1) .
                     '</a></td>' . "\n";
             } else {
-                echo '  <td>' . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
+                echo '  <td>' . substr((string)$item['path'], strlen((string)$quarantinedir) + 1) . "</td>\n";
             }
             if ('Y' === $item['dangerous']) {
                 $dangerous = $yes;

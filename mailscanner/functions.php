@@ -79,7 +79,7 @@ if (defined('USER_SELECTABLE_LANG')) {
     if (isset($_COOKIE['MW_LANG']) && checkLangCode($_COOKIE['MW_LANG'])) {
         $langCode = $_COOKIE['MW_LANG'];
     } else {
-        setcookie('MW_LANG', LANG, 0, $params['path'], $params['domain'], $session_cookie_secure, false);
+        setcookie('MW_LANG', LANG, ['expires' => 0, 'path' => $params['path'], 'domain' => $params['domain'], 'secure' => $session_cookie_secure, 'httponly' => false]);
     }
 }
 
@@ -187,74 +187,27 @@ function getVirusRegex($scanner = null)
     }
 
     $regex = null;
-    switch ($scanner) {
-        case 'antivir':
-            $regex = '/ALERT: \[(?P<virus>\S+) \S+\]/';
-            break;
-        case 'avast':
-        case 'avastd':
-            $regex = '/Avast: found (?P<virus>.+) in (?P<file>.*)/';
-            break;
-        case 'avg':
-            $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
-            break;
-        case 'bitdefender':
-            $regex = '/(?P<file>\S+) Found virus (?P<virus>\S+)/';
-            break;
-        case 'clamav':
-            $regex = '/(?P<file>.+) contains (?P<virus>\S+)/';
-            break;
-        case 'clamd':
-        case 'clamavmodule':
-            $regex = '/(?P<file>.+) was infected: (?P<virus>\S+)/';
-            break;
-        case 'esets':
-        case 'esetsefs':
-            $regex = '/Esets: found (?P<virus>\S+) in (?P<file>\S+)/';
-            break;
-        case 'etrust':
-            $regex = '/(?P<file>\S+) is infected by virus: (?P<virus>\S+)/';
-            break;
-        case 'f-prot':
-        case 'f-prot-6':
-        case 'f-protd-6':
-            $regex = '/(?P<file>.+) Infection: (?P<virus>\S+)/';
-            break;
-        case 'f-secure':
-        case 'f-secure-12':
-            $regex = '/(?P<file>.+) Infected: (?P<virus>\S+)/';
-            break;
-        case 'kaspersky-4.5':
-        case 'kaspersky':
-        case 'kse':
-            $regex = '/(?P<file>.+) INFECTED (?P<virus>\S+)/';
-            break;
-        case 'mcafee':
-        case 'mcafee6':
-            $regex = '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/';
-            break;
-        case 'none':
-            $regex = '/^Dummy$/';
-            break;
-        case 'norman':
-            $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
-            break;
-        case 'nod32-1.99':
-            $regex = '/Found virus (?P<virus>\S+) in (?P<file>\S+)/';
-            break;
-        case 'sophos':
-            $regex = '/>>> Virus \'(?P<virus>\S+)\' found in (?P<file>.*)/';
-            break;
-        case 'sophossavi':
-            $regex = '/(?P<file>\S+) was infected by (?P<virus>\S+)/';
-            break;
-        case 'trend':
-            $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
-            break;
-            // default:
-            // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
-            // break;
-    }
+    $regex = match ($scanner) {
+        'antivir' => '/ALERT: \[(?P<virus>\S+) \S+\]/',
+        'avast', 'avastd' => '/Avast: found (?P<virus>.+) in (?P<file>.*)/',
+        'avg' => '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/',
+        'bitdefender' => '/(?P<file>\S+) Found virus (?P<virus>\S+)/',
+        'clamav' => '/(?P<file>.+) contains (?P<virus>\S+)/',
+        'clamd', 'clamavmodule' => '/(?P<file>.+) was infected: (?P<virus>\S+)/',
+        'esets', 'esetsefs' => '/Esets: found (?P<virus>\S+) in (?P<file>\S+)/',
+        'etrust' => '/(?P<file>\S+) is infected by virus: (?P<virus>\S+)/',
+        'f-prot', 'f-prot-6', 'f-protd-6' => '/(?P<file>.+) Infection: (?P<virus>\S+)/',
+        'f-secure', 'f-secure-12' => '/(?P<file>.+) Infected: (?P<virus>\S+)/',
+        'kaspersky-4.5', 'kaspersky', 'kse' => '/(?P<file>.+) INFECTED (?P<virus>\S+)/',
+        'mcafee', 'mcafee6' => '/(?P<file>.+) Found the (?P<virus>\S+) virus !!!/',
+        'none' => '/^Dummy$/',
+        'norman' => '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/',
+        'nod32-1.99' => '/Found virus (?P<virus>\S+) in (?P<file>\S+)/',
+        'sophos' => '/>>> Virus \'(?P<virus>\S+)\' found in (?P<file>.*)/',
+        'sophossavi' => '/(?P<file>\S+) was infected by (?P<virus>\S+)/',
+        'trend' => '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/',
+        default => $regex,
+    };
 
     return $regex;
 }
@@ -511,7 +464,7 @@ function printServiceStatus()
                 $running = $no;
             }
             $procs = count($output) . ' ' . __('procs03');
-            echo '    <tr><td>' . ucwords($mta) . __('colon99') . '</td>'
+            echo '    <tr><td>' . ucwords((string)$mta) . __('colon99') . '</td>'
                 . '<td align="center">' . $running . '</td><td align="right">' . $procs . '</td></tr>' . "\n";
         }
     }
@@ -583,7 +536,7 @@ function printMTAQueue()
 
         if (defined('RPC_REMOTE_SERVER')) {
             $pqerror = '';
-            $servers = explode(' ', RPC_REMOTE_SERVER);
+            $servers = explode(' ', (string)RPC_REMOTE_SERVER);
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; ++$i) {
                 if ($servers[$i] !== gethostbyname(gethostname())) {
@@ -626,7 +579,7 @@ function printMTAQueue()
 
         if (defined('RPC_REMOTE_SERVER')) {
             $pqerror = '';
-            $servers = explode(' ', RPC_REMOTE_SERVER);
+            $servers = explode(' ', (string)RPC_REMOTE_SERVER);
 
             for ($i = 0, $count_servers = count($servers); $i < $count_servers; ++$i) {
                 if ($servers[$i] !== gethostbyname(gethostname())) {
@@ -1133,7 +1086,7 @@ function safe_value($value)
 {
     $link = dbconn();
     if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-        $value = stripslashes($value);
+        $value = stripslashes((string)$value);
     }
 
     return $link->real_escape_string($value);
@@ -1253,15 +1206,15 @@ function getSUBJECTheader($header)
             if (function_exists('imap_mime_header_decode')) {
                 $linePartArr = imap_mime_header_decode($subLines[$i]);
                 for ($j = 0, $countLinePartArr = count($linePartArr); $j < $countLinePartArr; ++$j) {
-                    if ('default' === strtolower($linePartArr[$j]->charset)) {
+                    if ('default' === strtolower((string)$linePartArr[$j]->charset)) {
                         if (' ' !== $linePartArr[$j]->text) {
                             $convLine .= $linePartArr[$j]->text;
                         }
                     } else {
                         $textdecoded = @iconv(
-                            strtoupper($linePartArr[$j]->charset),
+                            strtoupper((string)$linePartArr[$j]->charset),
                             'UTF-8//TRANSLIT//IGNORE',
-                            $linePartArr[$j]->text
+                            (string)$linePartArr[$j]->text
                         );
                         if (!$textdecoded) {
                             $convLine .= $linePartArr[$j]->text;
@@ -1304,7 +1257,7 @@ function sa_autolearn($spamreport)
 function format_spam_report($spamreport)
 {
     // Run regex against the MailScanner spamreport picking out the (score=xx, required x, RULES...)
-    if (preg_match('/\s\((.+?)\)/i', $spamreport, $sa_rules)) {
+    if (preg_match('/\s\((.+?)\)/i', (string)$spamreport, $sa_rules)) {
         // Get rid of the first match from the array
         array_shift($sa_rules);
         // Split the array
@@ -1331,14 +1284,10 @@ function format_spam_report($spamreport)
             // french
             'requis',
         ];
-        array_walk($notRulesLines, function($value) {
-            return preg_quote($value, '/');
-        });
+        array_walk($notRulesLines, fn($value) => preg_quote((string)$value, '/'));
         $notRulesLinesRegex = '(' . implode('|', $notRulesLines) . ')';
 
-        $sa_rules = array_filter($sa_rules, function($val) use ($notRulesLinesRegex) {
-            return 0 === preg_match("/$notRulesLinesRegex/i", $val);
-        });
+        $sa_rules = array_filter($sa_rules, fn($val) => 0 === preg_match("/$notRulesLinesRegex/i", (string)$val));
 
         $output_array = [];
         foreach ($sa_rules as $sa_rule) {
@@ -1392,7 +1341,7 @@ function return_sa_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
     if ($row) {
-        return htmlentities($row->rule_desc);
+        return htmlentities((string)$row->rule_desc);
     }
 
     return false;
@@ -1407,9 +1356,9 @@ function format_mcp_report($mcpreport)
 {
     // Clean-up input
     $mcpreport = preg_replace('/\n/', '', $mcpreport);
-    $mcpreport = preg_replace('/\t/', ' ', $mcpreport);
+    $mcpreport = preg_replace('/\t/', ' ', (string)$mcpreport);
     // Run regex against the MailScanner mcpreport picking out the (score=xx, required x, RULES...)
-    if (preg_match('/ \((.+?)\)/i', $mcpreport, $sa_rules)) {
+    if (preg_match('/ \((.+?)\)/i', (string)$mcpreport, $sa_rules)) {
         // Get rid of the first match from the array
         array_shift($sa_rules);
         // Split the array
@@ -1450,7 +1399,7 @@ function get_mcp_rule_desc($rule)
 {
     // Check if SA scoring is enabled
     $rule_score = '';
-    if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
+    if (preg_match('/^(.+) (.+)$/', (string)$rule, $regs)) {
         [$rule, $rule_score] = $regs;
     }
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
@@ -1516,7 +1465,7 @@ AND
     // Get the topmost entry from the array
     $top = null;
     $count = 0;
-    foreach ($virus_array as $key => $val) {
+    foreach ($virus_array as $val) {
         if (null === $top) {
             $top = $val;
         } elseif ($val !== $top) {
@@ -1569,7 +1518,7 @@ function get_disks()
             foreach ($mounted_fs as $fs_row) {
                 $drive = preg_split("/[\s]+/", $fs_row);
                 if (
-                    (0 === strpos($drive[0], '/dev/'))
+                    str_starts_with($drive[0], '/dev/')
                     && (
                         false === stripos($drive[1], '/chroot/')
                         && false === stripos($drive[1], '/snap/')
@@ -1588,7 +1537,7 @@ function get_disks()
             foreach ($data as $disk) {
                 $drive = preg_split("/[\s]+/", $disk);
                 if (
-                    (0 === strpos($drive[0], '/dev/'))
+                    str_starts_with($drive[0], '/dev/')
                     && (
                         false === stripos($drive[2], '/chroot/')
                         && (
@@ -1625,7 +1574,7 @@ function formatSize($size, $precision = 2)
     $base = log($size) / log(1024);
     $suffixes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
 
-    return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
+    return round(1024 ** ($base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
 
 /**
@@ -1741,9 +1690,9 @@ function get_conf_var($name, $force = false)
     }
 
     foreach ($array_output as $parameter_name => $parameter_value) {
-        $parameter_name = preg_replace('/ */', '', $parameter_name);
+        $parameter_name = preg_replace('/ */', '', (string)$parameter_name);
 
-        if (strtolower($parameter_name) === strtolower($name)) {
+        if (strtolower((string)$parameter_name) === strtolower($name)) {
             if (is_file($parameter_value)) {
                 return read_ruleset_default($parameter_value);
             }
@@ -1770,7 +1719,7 @@ function parse_conf_dir($conf_dir)
     if ($dh = opendir($conf_dir)) {
         while (($file = readdir($dh)) !== false) {
             // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
-            if (strlen($file) > 0 && '.' !== substr($file, 0, 1) && is_file($conf_dir . $file)) {
+            if (strlen($file) > 0 && !str_starts_with($file, '.') && is_file($conf_dir . $file)) {
                 $file_name = $conf_dir . $file;
                 if (!is_array($array_output1)) {
                     $array_output1 = parse_conf_file($file_name);
@@ -1810,14 +1759,14 @@ function get_conf_truefalse($name, $force = false)
     }
 
     foreach ($array_output as $parameter_name => $parameter_value) {
-        $parameter_name = preg_replace('/ */', '', $parameter_name);
+        $parameter_name = preg_replace('/ */', '', (string)$parameter_name);
 
-        if (strtolower($parameter_name) === strtolower($name)) {
+        if (strtolower((string)$parameter_name) === strtolower($name)) {
             // Is it a ruleset?
             if (is_readable($parameter_value)) {
                 $parameter_value = get_default_ruleset_value($parameter_value);
             }
-            $parameter_value = strtolower($parameter_value);
+            $parameter_value = strtolower((string)$parameter_value);
             switch ($parameter_value) {
                 case 'yes':
                 case '1':
@@ -1895,9 +1844,7 @@ function parse_conf_file($name)
     // open each file and read it
     $fileContent = array_filter(
         file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
-        function($value) {
-            return !('#' === $value[0]);
-        }
+        fn($value) => !('#' === $value[0])
     );
 
     foreach ($fileContent as $line) {
@@ -1914,7 +1861,7 @@ function parse_conf_file($name)
             }
 
             // expand %var% variables
-            if (preg_match('/(%[^%]+%)/', $regs['value'], $matches)) {
+            if (preg_match('/(%[^%]+%)/', (string)$regs['value'], $matches)) {
                 array_shift($matches);
                 foreach ($matches as $varname) {
                     $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
@@ -1940,7 +1887,7 @@ function parse_conf_file($name)
 function get_primary_scanner()
 {
     // Might be more than one scanner defined - pick the first as the primary
-    $scanners = explode(' ', get_conf_var('VirusScanners'));
+    $scanners = explode(' ', (string)get_conf_var('VirusScanners'));
 
     return $scanners[0];
 }
@@ -1952,9 +1899,9 @@ function get_primary_scanner()
  */
 function translateQuarantineDate($date, $format = 'dmy')
 {
-    $y = substr($date, 0, 4);
-    $m = substr($date, 4, 2);
-    $d = substr($date, 6, 2);
+    $y = substr((string)$date, 0, 4);
+    $m = substr((string)$date, 4, 2);
+    $d = substr((string)$date, 6, 2);
 
     $format = strtolower($format);
 
@@ -1965,8 +1912,8 @@ function translateQuarantineDate($date, $format = 'dmy')
             return "$y-$m-$d";
         default:
             $format = preg_replace('/%y/', $y, $format);
-            $format = preg_replace('/%m/', $m, $format);
-            $format = preg_replace('/%d/', $d, $format);
+            $format = preg_replace('/%m/', $m, (string)$format);
+            $format = preg_replace('/%d/', $d, (string)$format);
 
             return $format;
     }
@@ -1980,7 +1927,7 @@ function subtract_get_vars($preserve)
     if (is_array($_GET)) {
         $output = [];
         foreach ($_GET as $k => $v) {
-            if (strtolower($k) !== strtolower($preserve)) {
+            if (strtolower((string)$k) !== strtolower((string)$preserve)) {
                 $output[] = "$k=$v";
             }
         }
@@ -2091,7 +2038,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     $orderdir = '';
     if (isset($_GET['orderby'])) {
         $orderby = sanitizeInput($_GET['orderby']);
-        switch (strtoupper($_GET['orderdir'])) {
+        switch (strtoupper((string)$_GET['orderdir'])) {
             case 'A':
                 $orderdir = 'ASC';
                 break;
@@ -2101,10 +2048,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
         }
     }
     if (!empty($orderby)) {
-        if (($p = stristr($sql, 'ORDER BY')) !== false) {
+        if (($p = stristr((string)$sql, 'ORDER BY')) !== false) {
             // We already have an existing ORDER BY clause
             $p = "ORDER BY\n  " . $orderby . ' ' . $orderdir . ',' . substr($p, strlen('ORDER BY') + 2);
-            $sql = substr($sql, 0, strpos($sql, 'ORDER BY')) . $p;
+            $sql = substr((string)$sql, 0, strpos((string)$sql, 'ORDER BY')) . $p;
         } else {
             // No existing ORDER BY - disable feature
             $order = false;
@@ -2367,7 +2314,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = '<a href="detail.php?token=' . $_SESSION['token'] . "&amp;id=$row[$f]\" ><i class=\"mw-icon mw-info-circle\" aria-hidden=\"true\"></i></a>";
                         break;
                     case 'from_address':
-                        $row[$f] = htmlentities($row[$f]);
+                        $row[$f] = htmlentities((string)$row[$f]);
                         if (FROMTO_MAXLEN > 0) {
                             $tooltips[$f] = $row[$f];
                             $row[$f] = trim_output($row[$f], FROMTO_MAXLEN);
@@ -2385,7 +2332,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         }
                         break;
                     case 'to_address':
-                        $row[$f] = htmlentities($row[$f]);
+                        $row[$f] = htmlentities((string)$row[$f]);
                         if (FROMTO_MAXLEN > 0) {
                             $tooltips[$f] = $row[$f];
                             // Trim each address to specified size
@@ -2667,14 +2614,14 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         }
 
         // Remove any ORDER BY clauses as this will slow the count considerably
-        if ($pos = strpos($sql, 'ORDER BY')) {
-            $sqlcount = substr($sql, 0, $pos);
+        if ($pos = strpos((string)$sql, 'ORDER BY')) {
+            $sqlcount = substr((string)$sql, 0, $pos);
         } else {
             $sqlcount = $sql;
         }
 
         // Count the number of rows that would be returned by the query
-        $sqlcount = 'SELECT COUNT(*) AS numrows ' . strstr($sqlcount, 'FROM');
+        $sqlcount = 'SELECT COUNT(*) AS numrows ' . strstr((string)$sqlcount, 'FROM');
 
         $results = dbquery($sqlcount);
         $resultsFirstRow = $results->fetch_array();
@@ -2748,7 +2695,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
                 echo '  <td>' . preg_replace(
                     "/,([^\s])/",
                     ', $1',
-                    $row[$f]
+                    (string)$row[$f]
                 ) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";
@@ -2767,8 +2714,8 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
         // Remove any ORDER BY clauses as this will slow the count considerably
         $sqlcount = '';
-        if ($pos = strpos($sql, 'ORDER BY')) {
-            $sqlcount = substr($sql, 0, $pos);
+        if ($pos = strpos((string)$sql, 'ORDER BY')) {
+            $sqlcount = substr((string)$sql, 0, $pos);
         }
 
         // Count the number of rows that would be returned by the query
@@ -2876,7 +2823,7 @@ function get_mail_relays($message_headers)
     $relays = null;
     foreach ($headers as $header) {
         $header = preg_replace('/IPv6\:/', '', $header);
-        if (preg_match_all('/Received.+\[(?P<ip>[\dabcdef.:]+)\]/', $header, $regs)) {
+        if (preg_match_all('/Received.+\[(?P<ip>[\dabcdef.:]+)\]/', (string)$header, $regs)) {
             foreach ($regs['ip'] as $relay) {
                 if (false !== filter_var($relay, FILTER_VALIDATE_IP)) {
                     $relays[] = $relay;
@@ -2917,7 +2864,7 @@ function address_filter_sql($addresses, $type)
             break;
         case 'D': // Domain administrator
             foreach ($addresses as $address) {
-                if (strpos($address, '@')) {
+                if (strpos((string)$address, '@')) {
                     if (defined('FILTER_TO_ONLY') && FILTER_TO_ONLY) {
                         $sqladdr_arr[] = "to_address = '$address' OR to_address like '$address,%' OR to_address like '%,$address' OR to_address like '%,$address,%'";
                     } else {
@@ -3067,8 +3014,8 @@ function ldap_authenticate($username, $password)
                 $bindResult = @ldap_bind($ds, $user, $password);
                 if (false !== $bindResult) {
                     foreach ($result[0][LDAP_EMAIL_FIELD] as $email) {
-                        if (0 === strpos($email, 'SMTP')) {
-                            $email = strtolower(substr($email, 5));
+                        if (str_starts_with((string)$email, 'SMTP')) {
+                            $email = strtolower(substr((string)$email, 5));
                             break;
                         }
                     }
@@ -3266,15 +3213,11 @@ function ldap_get_conf_truefalse($entry)
     debug(debug_print_r($info));
     if ($info['count'] > 0) {
         debug('Entry: ' . debug_print_r($info[0][$info[0][0]][0]));
-        switch ($info[0][$info[0][0]][0]) {
-            case 'yes':
-            case '1':
-                return true;
-            case 'no':
-            case '0':
-            default:
-                return false;
-        }
+
+        return match ($info[0][$info[0][0]][0]) {
+            'yes', '1' => true,
+            default => false,
+        };
     } else {
         // No results
         // die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
@@ -3346,7 +3289,7 @@ function imap_authenticate($username, $password)
  */
 function translate_etoi($name)
 {
-    $name = strtolower($name);
+    $name = strtolower((string)$name);
     $file = MS_SHARE_DIR . 'perl/MailScanner/ConfigDefs.pl';
     $fh = fopen($file, 'rb')
     or exit(__('dietranslateetoi03') . " $file\n");
@@ -3361,11 +3304,8 @@ function translate_etoi($name)
         }
     }
     fclose($fh) or exit(php_errormsg());
-    if (isset($etoi[(string)$name])) {
-        return $etoi[(string)$name];
-    }
 
-    return $name;
+    return $etoi[(string)$name] ?? $name;
 }
 
 /**
@@ -3374,7 +3314,7 @@ function translate_etoi($name)
 function decode_header($input)
 {
     // Remove white space between encoded-words
-    $input = preg_replace('/(=\?[^?]+\?(q|b)\?[^?]*\?=)(\s)+=\?/i', '\1=?', $input);
+    $input = preg_replace('/(=\?[^?]+\?(q|b)\?[^?]*\?=)(\s)+=\?/i', '\1=?', (string)$input);
     // For each encoded-word...
     while (preg_match('/(=\?([^?]+)\?(q|b)\?([^?]*)\?=)/i', $input, $matches)) {
         $encoded = $matches[1];
@@ -3429,12 +3369,9 @@ function return_geoip_country($ip)
             $reader = new \MaxMind\Db\Reader($geoLite2File);
             $countryData = $reader->get($ip);
             $reader->close();
-            if (isset($countryData['country']['names'][LANG])) {
-                return $countryData['country']['names'][LANG];
-            }
 
-            return $countryData['country']['names']['en'];
-        } catch (Exception $e) {
+            return $countryData['country']['names'][LANG] ?? $countryData['country']['names']['en'];
+        } catch (Exception) {
             return false;
         }
     } else {
@@ -3504,7 +3441,7 @@ function quarantine_list($input = '/')
  */
 function is_local($host)
 {
-    $host = strtolower($host);
+    $host = strtolower((string)$host);
     // Is RPC required to look-up??
     $sys_hostname = strtolower(rtrim(gethostname()));
     switch ($host) {
@@ -3641,7 +3578,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         $num = [0];
         // Locate message in items
         for ($index = 0; $index < count($list); ++$index) {
-            if (preg_match('/message\/rfc822/', $list[$index]['type'])) {
+            if (preg_match('/message\/rfc822/', (string)$list[$index]['type'])) {
                 $num = [$index];
                 break;
             }
@@ -3666,9 +3603,9 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
             $mime = new Mail_mime($mailMimeParams);
             $mime->setTXTBody(\ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY));
             // Loop through each selected file and attach them to the mail
-            foreach ($num as $key => $val) {
+            foreach ($num as $val) {
                 // If the message is of rfc822 type then set it as Quoted printable
-                if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
+                if (preg_match('/message\/rfc822/', (string)$list[$val]['type'])) {
                     $mime->addAttachment($list[$val]['path'], 'message/rfc822', 'Original Message', true, '');
                 } else {
                     // Default is base64 encoded
@@ -3702,8 +3639,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
         // Use sendmail to release message
         // We can only release message/rfc822 files in this way.
         $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg(stripslashes($to)) . ' < ';
-        foreach ($num as $key => $val) {
-            if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
+        foreach ($num as $val) {
+            if (preg_match('/message\/rfc822/', (string)$list[$val]['type'])) {
                 debug($cmd . $list[$val]['path']);
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if (0 === $retval) {
@@ -3776,7 +3713,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         $num = [0];
         // Locate message in items
         for ($index = 0; $index < count($list); ++$index) {
-            if (preg_match('/message\/rfc822/', $list[$index]['type'])) {
+            if (preg_match('/message\/rfc822/', (string)$list[$index]['type'])) {
                 $num = [$index];
                 break;
             }
@@ -3787,7 +3724,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     if (!$rpc_only && is_local($list[0]['host'])) {
         // prevent sa-learn process blocking complete apache server
         session_write_close();
-        foreach ($num as $key => $val) {
+        foreach ($num as $val) {
             $use_spamassassin = false;
             $isfn = '0';
             $isfp = '0';
@@ -3952,7 +3889,7 @@ function quarantine_delete($list, $num, $rpc_only = false)
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         $status = [];
-        foreach ($num as $key => $val) {
+        foreach ($num as $val) {
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                 dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
@@ -4019,7 +3956,7 @@ function audit_log($action, $user = 'unknown')
     $link = dbconn();
     if (AUDIT) {
         if (isset($_SESSION['myusername'])) {
-            $user = $link->real_escape_string(stripslashes($_SESSION['myusername']));
+            $user = $link->real_escape_string(stripslashes((string)$_SESSION['myusername']));
         }
 
         $action = safe_value(stripslashes($action));
@@ -4416,23 +4353,12 @@ function checkConfVariables()
 }
 
 /**
- * @param int $lenght
- *
- * @return string
- *
  * @throws Exception
  */
-function get_random_string($lenght)
+function get_random_string(int $lenght): string
 {
     if (function_exists('random_bytes')) {
         return bin2hex(random_bytes($lenght));
-    }
-
-    if (function_exists('mcrypt_create_iv')) {
-        $random = mcrypt_create_iv($lenght, MCRYPT_DEV_URANDOM);
-        if (false !== $random) {
-            return bin2hex($random);
-        }
     }
 
     if (DIRECTORY_SEPARATOR === '/' && @is_readable('/dev/urandom')) {
@@ -4445,9 +4371,11 @@ function get_random_string($lenght)
     }
 
     if (function_exists('openssl_random_pseudo_bytes')) {
-        $random = openssl_random_pseudo_bytes($lenght);
-        if (false !== $random) {
+        try {
+            $random = openssl_random_pseudo_bytes($lenght);
+
             return bin2hex($random);
+        } catch (\Exception) {
         }
     }
 
@@ -4457,7 +4385,7 @@ function get_random_string($lenght)
     $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $max = mb_strlen($keyspace, '8bit') - 1;
     for ($i = 0; $i < $lenght; ++$i) {
-        $random .= $keyspace[mt_rand(0, $max)];
+        $random .= $keyspace[random_int(0, $max)];
     }
 
     return $random;
@@ -4499,9 +4427,8 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
     if (defined('MAILWATCH_SMTP_HOSTNAME')) {
         $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
     }
-    $mail = new Mail_smtp($mail_param);
 
-    return $mail->send($email, $hdrs, $body);
+    return (new Mail_smtp($mail_param))->send($email, $hdrs, $body);
 }
 
 /**
@@ -4745,11 +4672,9 @@ function validateInput($input, $type)
 }
 
 /**
- * @return string
- *
  * @throws Exception
  */
-function generateToken()
+function generateToken(): string
 {
     $tokenLenght = 32;
 
@@ -4782,7 +4707,7 @@ function generateFormToken($formstring)
         exit;
     }
 
-    return hash_hmac('sha256', $formstring . $_SESSION['token'], $_SESSION['formtoken']);
+    return hash_hmac('sha256', $formstring . $_SESSION['token'], (string)$_SESSION['formtoken']);
 }
 
 /**
@@ -4858,9 +4783,8 @@ function updateLoginExpiry($myusername)
         $expiry_val = (time() + (int)$login_timeout);
     }
     $sql = "UPDATE users SET login_expiry='" . $expiry_val . "', last_login='" . time() . "' WHERE username='" . safe_value(stripslashes($myusername)) . "'";
-    $result = dbquery($sql);
 
-    return $result;
+    return dbquery($sql);
 }
 
 /**
@@ -5030,7 +4954,7 @@ function getVirus($report)
     if (defined('VIRUS_REGEX')) {
         preg_match(VIRUS_REGEX, $report, $match);
     } else {
-        $scanners = explode(' ', get_conf_var('VirusScanners'));
+        $scanners = explode(' ', (string)get_conf_var('VirusScanners'));
         foreach ($scanners as $scanner) {
             $scannerRegex = getVirusRegex($scanner);
             if (null === $scannerRegex || '' === $scannerRegex) {
@@ -5042,11 +4966,8 @@ function getVirus($report)
             }
         }
     }
-    if (isset($match['virus'])) {
-        return $match['virus'];
-    }
 
-    return $report;
+    return $match['virus'] ?? $report;
 }
 
 /**
@@ -5060,22 +4981,22 @@ function logFailedLogin($myusername = '')
 /**
  * @return string HTTP client IP Address
  */
-function getHTTPClientIP()
+function getHTTPClientIP(): string
 {
     $remote_addr = $_SERVER['REMOTE_ADDR'];
 
     if (defined('TRUSTED_PROXIES') && !empty(TRUSTED_PROXIES)) {
-        if (defined('PROXY_HEADER') && (!isset($_SERVER[PROXY_HEADER]) || empty($_SERVER[PROXY_HEADER]))) {
+        if (defined('PROXY_HEADER') && (empty($_SERVER[PROXY_HEADER]))) {
             return $remote_addr;
         }
 
         // check if remote_addr is a trusted proxy:
-        if (!in_array($remote_addr, TRUSTED_PROXIES)) {
+        if (!in_array($remote_addr, TRUSTED_PROXIES, true)) {
             return $remote_addr;
         }
 
-        // remove all trusted proxies from header
-        $ips = explode(',', $_SERVER[PROXY_HEADER]);
+        // remove all trusted proxies from the header
+        $ips = explode(',', (string)$_SERVER[PROXY_HEADER]);
         $ips = array_map('trim', $ips);
         $ips = array_diff($ips, TRUSTED_PROXIES);
 
@@ -5085,7 +5006,7 @@ function getHTTPClientIP()
 
         // the last entry should be the real client ip
         return array_pop($ips);
-    } else {
-        return $remote_addr;
     }
+
+    return $remote_addr;
 }

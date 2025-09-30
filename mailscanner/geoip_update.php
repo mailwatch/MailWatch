@@ -73,7 +73,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
     // Clean-up from last run
     if (file_exists($file['destination'])) {
         unlink($file['destination']);
-        @unlink(substr($file['destination'], 0, -3));
+        @unlink(substr((string)$file['destination'], 0, -3));
     }
     ob_flush();
     flush();
@@ -124,7 +124,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
                             &$req_headers,
                             &$req_data,
                             &$options
-                        ) {
+                        ): void {
                             $options['auth'] = false;
                             $options['hooks'] = new Requests_Hooks();
                         });
@@ -191,11 +191,11 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
             if (class_exists('PharData')) {
                 $p = new PharData($file['destination']);
                 $p->decompress();
-                $phar = new PharData(substr($file['destination'], 0, -3));
+                $phar = new PharData(substr((string)$file['destination'], 0, -3));
                 $phar->extractTo($extract_dir, null, true);
                 echo $file['description'] . ' ' . __('unpackok15') . '<br>' . "\n";
                 unlink($file['destination']);
-                unlink(substr($file['destination'], 0, -3));
+                unlink(substr((string)$file['destination'], 0, -3));
 
                 foreach (new DirectoryIterator($extract_dir) as $item) {
                     if ($item->isDot()) {

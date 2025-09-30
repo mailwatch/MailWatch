@@ -137,7 +137,7 @@ if ('A' !== $_SESSION['user_type']) {
     $virusScanner = get_conf_var('VirusScanners');
 
     // Add test for other virus scanners.
-    if (false !== stripos($virusScanner, 'clam')) {
+    if (false !== stripos((string)$virusScanner, 'clam')) {
         echo 'ClamAV ' . __('version11') . ' ';
         exec('which clamscan', $clamscan);
         if (isset($clamscan[0])) {

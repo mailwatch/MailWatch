@@ -275,7 +275,7 @@ ORDER BY a.date DESC, a.time DESC';
         if (count($usersForReport) > 0) {
             $userConditions = [];
             foreach ($usersForReport as $item) {
-                $userConditions[] = ' username=' . quote_smart(stripslashes($item));
+                $userConditions[] = ' username=' . quote_smart(stripslashes((string)$item));
             }
             $this->users_sql .= ' AND ( ' . implode(' OR ', $userConditions) . ' ) ';
         }
@@ -286,18 +286,18 @@ ORDER BY a.date DESC, a.time DESC';
         $num_empty_reports = 0;
         if ($rows > 0) {
             while ($user = $result->fetch_object()) {
-                self::dbg("\n === Generating report for " . stripslashes($user->username) . ' type=' . $user->type);
+                self::dbg("\n === Generating report for " . stripslashes((string)$user->username) . ' type=' . $user->type);
                 // Work out destination e-mail address
                 switch ($user->type) {
                     case 'D':
                         // Type: domain admin - this must be overridden
                         if (!empty($user->quarantine_rcpt)) {
-                            $email = stripslashes($user->quarantine_rcpt);
+                            $email = stripslashes((string)$user->quarantine_rcpt);
                         } else {
-                            $email = filter_var(stripslashes($user->username), FILTER_VALIDATE_EMAIL);
+                            $email = filter_var(stripslashes((string)$user->username), FILTER_VALIDATE_EMAIL);
                         }
                         $to_address = $user->username;
-                        if (preg_match('/(\S+)@(\S+)/', $user->username, $split)) {
+                        if (preg_match('/(\S+)@(\S+)/', (string)$user->username, $split)) {
                             $to_domain = $split[2];
                         } else {
                             $to_domain = $user->username;
@@ -308,9 +308,9 @@ ORDER BY a.date DESC, a.time DESC';
                     default:
                         // Type 'A'dministrator, 'U'ser and everything else just in case...
                         if (!empty($user->quarantine_rcpt)) {
-                            $email = stripslashes($user->quarantine_rcpt);
+                            $email = stripslashes((string)$user->quarantine_rcpt);
                         } else {
-                            $email = filter_var(stripslashes($user->username), FILTER_VALIDATE_EMAIL);
+                            $email = filter_var(stripslashes((string)$user->username), FILTER_VALIDATE_EMAIL);
                         }
                         $to_address = $user->username;
                         $to_domain = $user->username;
@@ -373,7 +373,7 @@ ORDER BY a.date DESC, a.time DESC';
             } else {
                 foreach ($filters as $filter) {
                     if ('D' === $type) {
-                        $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
+                        $filter_domain = preg_match('/(\S+)@(\S+)/', (string)$filter, $split) ? $split[2] : $filter;
                         $list_for = $filter_domain;
                     } else {
                         $filter_domain = $to_domain;
@@ -408,7 +408,7 @@ ORDER BY a.date DESC, a.time DESC';
             } else {
                 foreach ($filters as $filter) {
                     if ('D' === $type) {
-                        $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
+                        $filter_domain = preg_match('/(\S+)@(\S+)/', (string)$filter, $split) ? $split[2] : $filter;
                         $list_for = $filter_domain;
                     } else {
                         $filter_domain = $to_domain;
@@ -495,14 +495,14 @@ ORDER BY a.date DESC, a.time DESC';
         if ($rows > 0) {
             while ($row = $result->fetch_object()) {
                 $array[] = [
-                    'id' => trim($row->id),
-                    'datetime' => trim($row->datetime),
+                    'id' => trim((string)$row->id),
+                    'datetime' => trim((string)$row->datetime),
                     'to' => trim_output($row->to_address, FROMTO_MAXLEN),
                     'from' => trim_output($row->from_address, FROMTO_MAXLEN),
                     'subject' => trim_output($row->subject, SUBJECT_MAXLEN),
-                    'reason' => trim($row->reason),
-                    'timestamp' => trim($row->timestamp),
-                    'token' => trim($row->token),
+                    'reason' => trim((string)$row->reason),
+                    'timestamp' => trim((string)$row->timestamp),
+                    'token' => trim((string)$row->token),
                 ];
             }
         }
@@ -606,7 +606,7 @@ ORDER BY a.date DESC, a.time DESC';
             // Text Version
             $t1 .= sprintf(
                 self::$text_content,
-                strip_tags($qitem['datetime']),
+                strip_tags((string)$qitem['datetime']),
                 $qitem['to'],
                 $qitem['from'],
                 $qitem['subject'],
@@ -649,7 +649,7 @@ ORDER BY a.date DESC, a.time DESC';
     {
         $key = 'timestamp';
         usort($q, function($a, $b) use (&$key) {
-            return strtotime($a[$key]) - strtotime($b[$key]);
+            return strtotime((string)$a[$key]) - strtotime((string)$b[$key]);
         });
 
         return array_reverse($q);

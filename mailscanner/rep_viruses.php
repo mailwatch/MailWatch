@@ -37,7 +37,7 @@ $filter = html_start(__('virusreport50'), 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
 $scanner = [];
-$scanners = explode(' ', get_conf_var('virusscanners'));
+$scanners = explode(' ', (string)get_conf_var('virusscanners'));
 foreach ($scanners as $vscanner) {
     switch ($vscanner) {
         case 'antivir':
@@ -145,8 +145,8 @@ if (!$result->num_rows > 0) {
 $virus_array = [];
 
 while ($row = $result->fetch_object()) {
-    foreach ($scanner as $scan => $vals) {
-        if (preg_match($vals['regexp'], $row->report, $virus_report)) {
+    foreach ($scanner as $vals) {
+        if (preg_match($vals['regexp'], (string)$row->report, $virus_report)) {
             $virus = $virus_report['virus'];
             if (!isset($virus_array[$virus])) {
                 $virus_array[$virus]['first_seen'] = $row->timestamp;

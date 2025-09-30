@@ -144,7 +144,7 @@ class Filter
                 echo '<tr><td>' .
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
-                        $val[2]
+                        (string)$val[2]
                     ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
@@ -187,7 +187,7 @@ WHERE
     public function CreateMtalogSQL()
     {
         $sql = '';
-        foreach ($this->item as $key => $val) {
+        foreach ($this->item as $val) {
             if ('date' === $val[0]) {
                 // Change field from timestamp to date format
                 $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
@@ -202,7 +202,7 @@ WHERE
     public function CreateSQL()
     {
         $sql = 'AND ' . $_SESSION['global_filter'] . "\n";
-        foreach ($this->item as $key => $val) {
+        foreach ($this->item as $val) {
             $sql .= self::getSqlCondition($val);
         }
 
@@ -222,7 +222,7 @@ WHERE
             return "AND\n $val[0] $val[1]\n";
         } elseif ('' !== $val[2] && '!' === $val[2][0]) {
             // Allow !<sql_function>
-            return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
+            return "AND\n $val[0] $val[1] " . substr((string)$val[2], 1) . "\n";
         } else {
             // Regular string
             return "AND\n $val[0] $val[1] '$val[2]'\n";
@@ -286,7 +286,7 @@ WHERE
         $return .= '<input type="text" size="50" name="value"';
         if ($this->display_last) {
             //  Use the last value as the default
-            $return .= ' value="' . htmlentities(stripslashes($this->last_value)) . '"';
+            $return .= ' value="' . htmlentities(stripslashes((string)$this->last_value)) . '"';
         }
         $return .= ">\n";
         $return .= '</td><td align="right"><button type="submit" name="action" value="add">' . __('add09') . '</button></td></tr>' . "\n";
@@ -333,14 +333,14 @@ WHERE
         dbconn();
         if (count($this->item) > 0) {
             // Delete the existing first
-            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes($_SESSION['myusername'])) . "' AND `name`='$name'";
+            $dsql = "DELETE FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "' AND `name`='$name'";
             dbquery($dsql);
-            foreach ($this->item as $key => $val) {
+            foreach ($this->item as $val) {
                 $sql = "REPLACE INTO `saved_filters` (`name`, `col`, `operator`, `value`, `username`)  VALUES ('$name',";
                 foreach ($val as $value) {
                     $sql .= "'" . safe_value($value) . "',";
                 }
-                $sql .= "'" . safe_value(stripslashes($_SESSION['myusername'])) . "')";
+                $sql .= "'" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "')";
                 dbquery($sql);
             }
         }
@@ -357,7 +357,7 @@ WHERE
         }
 
         dbconn();
-        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+        $sql = "SELECT `col`, `operator`, `value` FROM `saved_filters` WHERE `name`='$name' AND username='" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
         $sth = dbquery($sql);
         while ($row = $sth->fetch_row()) {
             $this->item[] = $row;
@@ -375,13 +375,13 @@ WHERE
         }
 
         dbconn();
-        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes($_SESSION['myusername'])) . "' AND `name`='$name'";
+        $sql = "DELETE FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "' AND `name`='$name'";
         dbquery($sql);
     }
 
     public function ListSaved()
     {
-        $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+        $sql = "SELECT DISTINCT `name` FROM `saved_filters` WHERE `username`='" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
         $sth = dbquery($sql);
         $return = '<select name="filter">' . "\n";
         $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";

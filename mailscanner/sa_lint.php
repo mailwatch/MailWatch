@@ -50,7 +50,7 @@ $start = get_microtime();
 $last = false;
 while ($line = fgets($fp, 2096)) {
     $line = preg_replace("/\n/i", '', $line);
-    $line = preg_replace('/</', '&lt;', $line);
+    $line = preg_replace('/</', '&lt;', (string)$line);
     if ('' !== $line && ' ' !== $line) {
         $timer = get_microtime();
         $linet = $timer - $start;
@@ -58,7 +58,7 @@ while ($line = fgets($fp, 2096)) {
             $last = $linet;
         }
         // Check for 'subtests=' to add space after comma (to fit the screen)
-        if (preg_match('/subtests=/i', $line)) {
+        if (preg_match('/subtests=/i', (string)$line)) {
             $line = str_replace(',', ', ', $line);
         }
         echo "<!-- Timer: $timer, Line Start: $linet -->\n";

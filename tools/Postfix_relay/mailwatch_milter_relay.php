@@ -102,7 +102,7 @@ function process_entries($line)
     global $idqueue;
 
     // Watch for message-id's
-    if (preg_match('/^.*postfix\/cleanup.*: (\S+): message-id=(\S+)$/', $line, $explode)) {
+    if (preg_match('/^.*postfix\/cleanup.*: (\S+): message-id=(\S+)$/', (string)$line, $explode)) {
         // Add to queue and timestamp it
         $arrEntry = [];
         array_push($arrEntry, $explode[1]);
@@ -115,20 +115,20 @@ function process_entries($line)
         }
 
     // Watch for verifications
-    } elseif (preg_match('/^.*postfix\/smtp.*: (\S+):.*status=(?:deliverable|undeliverable)/', $line, $id)) {
+    } elseif (preg_match('/^.*postfix\/smtp.*: (\S+):.*status=(?:deliverable|undeliverable)/', (string)$line, $id)) {
         remove_entry($id[1]);
         if (DEBUG_MILTER === true) {
             syslog(LOG_MAIL | LOG_DEBUG, 'milter_relay: Removed smtpid ' . $id[1] . ' from relay queue (delivery verification)');
         }
 
     // Watch for milter connections
-    } elseif (preg_match('/^.*postfix\/cleanup.*: (\S+): milter/', $line, $id)) {
+    } elseif (preg_match('/^.*postfix\/cleanup.*: (\S+): milter/', (string)$line, $id)) {
         remove_entry($id[1]);
         if (DEBUG_MILTER === true) {
             syslog(LOG_MAIL | LOG_DEBUG, 'milter_relay: Removed smtpid ' . $id[1] . ' from relay queue (milter activity)');
         }
     // Watch for deliver attempts (after verification check above)
-    } elseif (preg_match('/^.*postfix\/smtp.*: (\S+): to=\<(\S+)\>,/', $line, $explode)) {
+    } elseif (preg_match('/^.*postfix\/smtp.*: (\S+): to=\<(\S+)\>,/', (string)$line, $explode)) {
         // Scan queue for matching id
         $idcount = count($idqueue);
         for ($i = 0; $i < $idcount; ++$i) {

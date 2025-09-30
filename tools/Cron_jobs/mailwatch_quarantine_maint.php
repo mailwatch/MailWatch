@@ -84,10 +84,10 @@ if (0 === $required_constant_missing_count) {
                     // Needs to be deleted
                     if (($oldestnonspam > $oldestspam) && (!($unixtime < $oldestspam))) {
                         // delete only nonspam
-                        $f = $f . '/nonspam';
+                        $f .= '/nonspam';
                     } elseif (($oldestnonspam <= $oldestspam) && (!($unixtime < $oldestnonspam))) {
                         // delete only spam
-                        $f = $f . '/spam';
+                        $f .= '/spam';
                     }
                     // otherwise delete whole day
                     $array = quarantine_list_dir($f);
@@ -115,9 +115,9 @@ if (0 === $required_constant_missing_count) {
 
     function quarantine_date_to_unixtime($dirname)
     {
-        $y = substr($dirname, 0, 4);
-        $m = substr($dirname, 4, 2);
-        $d = substr($dirname, 6, 2);
+        $y = substr((string)$dirname, 0, 4);
+        $m = substr((string)$dirname, 4, 2);
+        $d = substr((string)$dirname, 6, 2);
 
         return mktime(0, 0, 0, $m, $d, $y);
     }
@@ -187,17 +187,11 @@ if (0 === $required_constant_missing_count) {
     }
 
     if (1 !== $_SERVER['argc'] && $_SERVER['argc'] <= 2) {
-        switch ($_SERVER['argv'][1]) {
-            case '--clean':
-                quarantine_clean();
-                break;
-            case '--reconsile': // deprecated option
-            case '--reconcile':
-                quarantine_reconcile();
-                break;
-            default:
-                exit('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
-        }
+        match ($_SERVER['argv'][1]) {
+            '--clean' => quarantine_clean(),
+            '--reconcile' => quarantine_reconcile(),
+            default => exit('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n"),
+        };
     } else {
         exit('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
     }

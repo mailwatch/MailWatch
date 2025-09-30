@@ -65,7 +65,7 @@ while ($row = $result->fetch_object()) {
     // ##### TODEL/TODO #
     // ##### TODEL/TODO # printf("<pre>\n");print_r($row);printf("</pre>\n");
     // ##### TODEL/TODO #
-    preg_match('/SpamAssassin \((.+?)\)/i', $row->spamreport, $sa_rules);
+    preg_match('/SpamAssassin \((.+?)\)/i', (string)$row->spamreport, $sa_rules);
     // Get rid of first match from the array
     $junk = array_shift($sa_rules);
     // Split the array, and get rid of the score and required values

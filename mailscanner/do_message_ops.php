@@ -55,13 +55,13 @@ echo ' </tr>' . "\n";
 unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
 if (isset($_POST) && !empty($_POST)) {
     foreach ($_POST as $k => $v) {
-        if (preg_match('/^OPT-(.+)$/', $k, $Regs)) {
+        if (preg_match('/^OPT-(.+)$/', (string)$k, $Regs)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {
                 exit;
             }
-        } elseif (preg_match('/^OPTRELEASE-(.+)$/', $k, $Regs)) {
+        } elseif (preg_match('/^OPTRELEASE-(.+)$/', (string)$k, $Regs)) {
             $id = deepSanitizeInput($Regs[1], 'url');
             $id = fixMessageId($id);
             if (!validateInput($id, 'msgid')) {

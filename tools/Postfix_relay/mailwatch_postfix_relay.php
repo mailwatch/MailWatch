@@ -67,8 +67,8 @@ class PostfixLogProcessor extends MtaLogProcessor
         // you can use these matches to populate your table with all the various reject reasons etc., so one could get stats about MTA rejects as well
         // example
         $rejectReasons = [];
-        if (false !== stripos($this->entry, 'NOQUEUE')) {
-            if (preg_match('/Client host rejected: cannot find your hostname/i', $this->entry)) {
+        if (false !== stripos((string)$this->entry, 'NOQUEUE')) {
+            if (preg_match('/Client host rejected: cannot find your hostname/i', (string)$this->entry)) {
                 $rejectReasons['type'] = safe_value('unknown_hostname');
             } else {
                 $rejectReasons['type'] = safe_value('NOQUEUE');
@@ -83,7 +83,7 @@ class PostfixLogProcessor extends MtaLogProcessor
     {
         $entries = [];
         $pattern = '/to=<(?<to>[^>]*)>, (?:orig_to=<(?<orig_to>[^>]*)>, )?relay=(?<relay>[^,]+), (?:conn_use=(?<conn_use>[^,])+, )?delay=(?<delay>[^,]+), (?:delays=(?<delays>[^,]+), )?(?:dsn=(?<dsn>[^,]+), )?status=(?<status>.*)$/';
-        preg_match($pattern, $match[2], $entries);
+        preg_match($pattern, (string)$match[2], $entries);
 
         return $entries;
     }
