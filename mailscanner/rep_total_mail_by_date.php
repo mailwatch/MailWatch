@@ -253,7 +253,7 @@ $graph_labels = $data_labels;
 
 // Reduce the number of labels on the graph to prevent them being sqashed.
 if (count($graph_labels) > 20) {
-    $b = substr(count($graph_labels), 0, 1);
+    $b = (int)substr((string)count($graph_labels), 0, 1);
     for ($a = 0, $graphLabelsCount = count($graph_labels); $a < $graphLabelsCount; ++$a) {
         if ($a % $b) {
             $graph_labels[$a] = '';
