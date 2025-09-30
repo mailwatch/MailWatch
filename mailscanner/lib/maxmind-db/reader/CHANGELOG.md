@@ -1,6 +1,135 @@
 CHANGELOG
 =========
 
+1.12.1 (2025-05-05)
+-------------------
+
+* The C extension now checks that the database metadata lookup was
+  successful.
+
+1.12.0 (2024-11-14)
+-------------------
+
+* Improve the error handling when the user tries to open a directory
+  with the pure PHP reader.
+* Improve the typehints on arrays in the PHPDocs.
+
+1.11.1 (2023-12-01)
+-------------------
+
+* Resolve warnings when compiling the C extension.
+* Fix various type issues detected by PHPStan level. Pull request by
+  LauraTaylorUK. GitHub #160.
+
+1.11.0 (2021-10-18)
+-------------------
+
+* Replace runtime define of a constant to facilitate opcache preloading.
+  Reported by vedadkajtaz. GitHub #134.
+* Resolve minor issue found by the Clang static analyzer in the C
+  extension.
+
+1.10.1 (2021-04-14)
+-------------------
+
+* Fix a `TypeError` exception in the pure PHP reader when using large
+  databases on 32-bit PHP builds with the `bcmath` extension. Reported
+  by dodo1708. GitHub #124.
+
+1.10.0 (2021-02-09)
+-------------------
+
+* When using the pure PHP reader, unsigned integers up to PHP_MAX_INT
+  will now be integers in PHP rather than strings. Previously integers
+  greater than 2^24 on 32-bit platforms and 2^56 on 64-bit platforms
+  would be strings due to the use of `gmp` or `bcmath` to decode them.
+  Reported by Alejandro Celaya. GitHub #119.
+
+1.9.0 (2021-01-07)
+------------------
+
+* The `maxminddb` extension is now buildable on Windows. Pull request
+  by Jan Ehrhardt. GitHub #115.
+
+1.8.0 (2020-10-01)
+------------------
+
+* Fixes for PHP 8.0. Pull Request by Remi Collet. GitHub #108.
+
+1.7.0 (2020-08-07)
+------------------
+
+* IMPORTANT: PHP 7.2 or greater is now required.
+* The extension no longer depends on the pure PHP classes in
+  `maxmind-db/reader`. You can use it independently.
+* Type hints have been added to both the pure PHP implementation
+  and the extension.
+* The `metadata` method on the reader now returns a new copy of the
+  metadata object rather than the actual object used by the reader.
+* Work around PHP `is_readable()` bug. Reported by Ben Roberts. GitHub
+  #92.
+* This is the first release of the extension as a PECL package.
+  GitHub #34.
+
+1.6.0 (2019-12-19)
+------------------
+
+* 1.5.0 and 1.5.1 contained a possible memory corruptions when using
+  `getWithPrefixLen`. This has been fixed. Reported by proton-ab.
+  GitHub #96.
+* The `composer.json` file now conflicts with all versions of the
+  `maxminddb` C extension less than the Composer version. This is to
+  reduce the chance of having an older, conflicting version of the
+  extension installed. You will need to upgrade the extension before
+  running `composer update`. Pull request by Benoît Burnichon. GitHub
+  #97.
+
+1.5.1 (2019-12-12)
+------------------
+
+* Minor performance improvements.
+* Make tests pass with older versions of libmaxminddb. PR by Remi
+  Collet. GitHub #90.
+* Test enhancements. PR by Chun-Sheng, Li. GitHub #91.
+
+1.5.0 (2019-09-30)
+------------------
+
+* PHP 5.6 or greater is now required.
+* The C extension now supports PHP 8. Pull request by John Boehr.
+  GitHub #87.
+* A new method, `getWithPrefixLen`, was added to the `Reader` class.
+  This method returns an array containing the record and the prefix
+  length for that record. GitHub #89.
+
+1.4.1 (2019-01-04)
+------------------
+
+* The `maxminddb` extension now returns a string when a `uint32`
+  value is greater than `LONG_MAX`. Previously, the value would
+  overflow. This generally only affects 32-bit machines.  Reported
+  by Remi Collet. GitHub #79.
+* For `uint64` values, the `maxminddb` extension now returns an
+  integer rather than a string when the value is less than or equal
+  to `LONG_MAX`. This more closely matches the behavior of the pure
+  PHP reader.
+
+1.4.0 (2018-11-20)
+------------------
+
+* The `maxminddb` extension now has the arginfo when using reflection.
+  PR by Remi Collet. GitHub #75.
+* The `maxminddb` extension now provides `MINFO()` function that
+  displays the extension version and the libmaxminddb version. PR by
+  Remi Collet. GitHub #74.
+* The `maxminddb` `configure` script now uses `pkg-config` when
+  available to get libmaxmindb build info. PR by Remi Collet.
+  GitHub #73.
+* The pure PHP reader now correctly decodes integers on 32-bit platforms.
+  Previously, large integers would overflow. Reported by Remi Collet.
+  GitHub #77.
+* There are small performance improvements for the pure PHP reader.
+
 1.3.0 (2018-02-21)
 ------------------
 
