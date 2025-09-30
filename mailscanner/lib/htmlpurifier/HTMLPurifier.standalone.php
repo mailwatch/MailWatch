@@ -7,7 +7,7 @@
  * primary concern and you are using an opcode cache. PLEASE DO NOT EDIT THIS
  * FILE, changes will be overwritten the next time the script is run.
  *
- * @version 4.17.0
+ * @version 4.18.0
  *
  * @warning
  *      You must *not* include any other HTML Purifier files before this file,
@@ -39,7 +39,7 @@
  */
 
 /*
-    HTML Purifier 4.17.0 - Standards Compliant HTML Filtering
+    HTML Purifier 4.18.0 - Standards Compliant HTML Filtering
     Copyright (C) 2006-2008 Edward Z. Yang
 
     This library is free software; you can redistribute it and/or
@@ -78,12 +78,12 @@ class HTMLPurifier
      * Version of HTML Purifier.
      * @type string
      */
-    public $version = '4.17.0';
+    public $version = '4.18.0';
 
     /**
      * Constant with version of HTML Purifier.
      */
-    const VERSION = '4.17.0';
+    const VERSION = '4.18.0';
 
     /**
      * Global configuration object.
@@ -1287,8 +1287,6 @@ class HTMLPurifier_CSSDefinition extends HTMLPurifier_Definition
                         'auto',
                         'cover',
                         'contain',
-                        'initial',
-                        'inherit',
                     ]
                 ),
                 new HTMLPurifier_AttrDef_CSS_Percentage(),
@@ -1407,21 +1405,20 @@ class HTMLPurifier_CSSDefinition extends HTMLPurifier_Definition
             [
                 new HTMLPurifier_AttrDef_CSS_Length('0'),
                 new HTMLPurifier_AttrDef_CSS_Percentage(true),
-                new HTMLPurifier_AttrDef_Enum(['auto', 'initial', 'inherit'])
+                new HTMLPurifier_AttrDef_Enum(['auto'])
             ]
         );
         $trusted_min_wh = new HTMLPurifier_AttrDef_CSS_Composite(
             [
                 new HTMLPurifier_AttrDef_CSS_Length('0'),
                 new HTMLPurifier_AttrDef_CSS_Percentage(true),
-                new HTMLPurifier_AttrDef_Enum(['initial', 'inherit'])
             ]
         );
         $trusted_max_wh = new HTMLPurifier_AttrDef_CSS_Composite(
             [
                 new HTMLPurifier_AttrDef_CSS_Length('0'),
                 new HTMLPurifier_AttrDef_CSS_Percentage(true),
-                new HTMLPurifier_AttrDef_Enum(['none', 'initial', 'inherit'])
+                new HTMLPurifier_AttrDef_Enum(['none'])
             ]
         );
         $max = $config->get('CSS.MaxImgLength');
@@ -1449,12 +1446,7 @@ class HTMLPurifier_CSSDefinition extends HTMLPurifier_Definition
                 new HTMLPurifier_AttrDef_Switch(
                     'img',
                     // For img tags:
-                    new HTMLPurifier_AttrDef_CSS_Composite(
-                        [
-                            new HTMLPurifier_AttrDef_CSS_Length('0', $max),
-                            new HTMLPurifier_AttrDef_Enum(['initial', 'inherit'])
-                        ]
-                    ),
+                    new HTMLPurifier_AttrDef_CSS_Length('0', $max),
                     // For everyone else:
                     $trusted_min_wh
                 );
@@ -1468,22 +1460,29 @@ class HTMLPurifier_CSSDefinition extends HTMLPurifier_Definition
                     new HTMLPurifier_AttrDef_CSS_Composite(
                         [
                             new HTMLPurifier_AttrDef_CSS_Length('0', $max),
-                            new HTMLPurifier_AttrDef_Enum(['none', 'initial', 'inherit'])
+                            new HTMLPurifier_AttrDef_Enum(['none'])
                         ]
                     ),
                     // For everyone else:
                     $trusted_max_wh
                 );
 
+        $this->info['aspect-ratio'] = new HTMLPurifier_AttrDef_CSS_Multiple(
+            new HTMLPurifier_AttrDef_CSS_Composite([
+                new HTMLPurifier_AttrDef_CSS_Ratio(),
+                new HTMLPurifier_AttrDef_Enum(['auto']),
+            ])
+        );
+
         // text-decoration and related shorthands
         $this->info['text-decoration'] = new HTMLPurifier_AttrDef_CSS_TextDecoration();
 
         $this->info['text-decoration-line'] = new HTMLPurifier_AttrDef_Enum(
-            ['none', 'underline', 'overline', 'line-through', 'initial', 'inherit']
+            ['none', 'underline', 'overline', 'line-through']
         );
 
         $this->info['text-decoration-style'] = new HTMLPurifier_AttrDef_Enum(
-            ['solid', 'double', 'dotted', 'dashed', 'wavy', 'initial', 'inherit']
+            ['solid', 'double', 'dotted', 'dashed', 'wavy']
         );
 
         $this->info['text-decoration-color'] = new HTMLPurifier_AttrDef_CSS_Color();
@@ -1491,7 +1490,7 @@ class HTMLPurifier_CSSDefinition extends HTMLPurifier_Definition
         $this->info['text-decoration-thickness'] = new HTMLPurifier_AttrDef_CSS_Composite([
             new HTMLPurifier_AttrDef_CSS_Length(),
             new HTMLPurifier_AttrDef_CSS_Percentage(),
-            new HTMLPurifier_AttrDef_Enum(['auto', 'from-font', 'initial', 'inherit'])
+            new HTMLPurifier_AttrDef_Enum(['auto', 'from-font'])
         ]);
 
         $this->info['font-family'] = new HTMLPurifier_AttrDef_CSS_FontFamily();
@@ -1812,7 +1811,7 @@ class HTMLPurifier_Config
      * HTML Purifier's version
      * @type string
      */
-    public $version = '4.17.0';
+    public $version = '4.18.0';
 
     /**
      * Whether or not to automatically finalize
@@ -4610,8 +4609,8 @@ class HTMLPurifier_EntityParser
     protected function entityCallback($matches)
     {
         $entity = $matches[0];
-        $hex_part = @$matches[1];
-        $dec_part = @$matches[2];
+        $hex_part = isset($matches[1]) ? $matches[1] : null;
+        $dec_part = isset($matches[2]) ? $matches[2] : null;
         $named_part = empty($matches[3]) ? (empty($matches[4]) ? "" : $matches[4]) : $matches[3];
         if ($hex_part !== NULL && $hex_part !== "") {
             return HTMLPurifier_Encoder::unichr(hexdec($hex_part));
@@ -10320,6 +10319,13 @@ class HTMLPurifier_AttrDef_CSS extends HTMLPurifier_AttrDef
         $definition = $config->getCSSDefinition();
         $allow_duplicates = $config->get("CSS.AllowDuplicates");
 
+        $universal_attrdef = new HTMLPurifier_AttrDef_Enum(
+            array(
+                'initial',
+                'inherit',
+                'unset',
+            )
+        );
 
         // According to the CSS2.1 spec, the places where a
         // non-delimiting semicolon can appear are in strings
@@ -10389,16 +10395,13 @@ class HTMLPurifier_AttrDef_CSS extends HTMLPurifier_AttrDef
             if (!$ok) {
                 continue;
             }
-            // inefficient call, since the validator will do this again
-            if (strtolower(trim($value)) !== 'inherit') {
-                // inherit works for everything (but only on the base property)
+            $result = $universal_attrdef->validate($value, $config, $context);
+            if ($result === false) {
                 $result = $definition->info[$property]->validate(
                     $value,
                     $config,
                     $context
                 );
-            } else {
-                $result = 'inherit';
             }
             if ($result === false) {
                 continue;
@@ -12501,6 +12504,53 @@ class HTMLPurifier_AttrDef_CSS_Percentage extends HTMLPurifier_AttrDef
             return false;
         }
         return "$number%";
+    }
+}
+
+
+
+
+
+/**
+ * Validates a ratio as defined by the CSS spec.
+ */
+class HTMLPurifier_AttrDef_CSS_Ratio extends HTMLPurifier_AttrDef
+{
+    /**
+     * @param   string               $ratio   Ratio to validate
+     * @param   HTMLPurifier_Config  $config  Configuration options
+     * @param   HTMLPurifier_Context $context Context
+     *
+     * @return  string|boolean
+     *
+     * @warning Some contexts do not pass $config, $context. These
+     *          variables should not be used without checking HTMLPurifier_Length
+     */
+    public function validate($ratio, $config, $context)
+    {
+        $ratio = $this->parseCDATA($ratio);
+
+        $parts = explode('/', $ratio, 2);
+        $length = count($parts);
+
+        if ($length < 1 || $length > 2) {
+            return false;
+        }
+
+        $num = new \HTMLPurifier_AttrDef_CSS_Number();
+
+        if ($length === 1) {
+            return $num->validate($parts[0], $config, $context);
+        }
+
+        $num1 = $num->validate($parts[0], $config, $context);
+        $num2 = $num->validate($parts[1], $config, $context);
+
+        if ($num1 === false || $num2 === false) {
+            return false;
+        }
+
+        return $num1 . '/' . $num2;
     }
 }
 
@@ -16418,22 +16468,28 @@ class HTMLPurifier_HTMLModule_Iframe extends HTMLPurifier_HTMLModule
         if ($config->get('HTML.SafeIframe')) {
             $this->safe = true;
         }
+        $attrs = array(
+            'src' => 'URI#embedded',
+            'width' => 'Length',
+            'height' => 'Length',
+            'name' => 'ID',
+            'scrolling' => 'Enum#yes,no,auto',
+            'frameborder' => 'Enum#0,1',
+            'longdesc' => 'URI',
+            'marginheight' => 'Pixels',
+            'marginwidth' => 'Pixels',
+        );
+
+        if ($config->get('HTML.Trusted')) {
+            $attrs['allowfullscreen'] = 'Bool#allowfullscreen';
+        }
+
         $this->addElement(
             'iframe',
             'Inline',
             'Flow',
             'Common',
-            array(
-                'src' => 'URI#embedded',
-                'width' => 'Length',
-                'height' => 'Length',
-                'name' => 'ID',
-                'scrolling' => 'Enum#yes,no,auto',
-                'frameborder' => 'Enum#0,1',
-                'longdesc' => 'URI',
-                'marginheight' => 'Pixels',
-                'marginwidth' => 'Pixels',
-            )
+            $attrs
         );
     }
 }
@@ -21387,7 +21443,7 @@ abstract class HTMLPurifier_Token_Tag extends HTMLPurifier_Token
         $this->name = ctype_lower($name) ? $name : strtolower($name);
         foreach ($attr as $key => $value) {
             // normalization only necessary when key is not lowercase
-            if (!ctype_lower($key)) {
+            if (!ctype_lower((string)$key)) {
                 $new_key = strtolower($key);
                 if (!isset($attr[$new_key])) {
                     $attr[$new_key] = $attr[$key];
