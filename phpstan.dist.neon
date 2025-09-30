@@ -1,5 +1,8 @@
+includes:
+    - phpstan-baseline.php
+
 parameters:
-	level: 0
+	level: 1
 	phpVersion: 80100
 	paths:
 	    - mailscanner

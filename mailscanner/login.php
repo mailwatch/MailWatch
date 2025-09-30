@@ -31,7 +31,7 @@ disableBrowserCache();
 session_regenerate_id(true);
 
 $_SESSION['token'] = generateToken();
-
+$loginerror = null;
 if (file_exists(__DIR__ . '/conf.php') && isset($_GET['error'])) {
     $loginerror = deepSanitizeInput($_GET['error'], 'url');
     if (false === validateInput($loginerror, 'loginerror')) {

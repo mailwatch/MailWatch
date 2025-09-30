@@ -982,6 +982,7 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
         echo getHtmlMessage(__('errorpass12'), 'error');
     } else {
         $username = safe_value(stripslashes((string)$_SESSION['myusername']));
+        $n_password = null;
         if (isset($_POST['password'])) {
             $n_password = $_POST['password'];
         }

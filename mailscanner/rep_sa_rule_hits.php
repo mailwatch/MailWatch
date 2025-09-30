@@ -50,7 +50,7 @@ $sql = '
   spamreport, isspam';
 
 $result = dbquery($sql);
-if (!$result->num_rows > 0) {
+if (!($result->num_rows > 0)) {
     exit(__('diemysql99') . "\n");
 }
 
@@ -80,6 +80,7 @@ while ($row = $result->fetch_object()) {
     $junk = array_shift($sa_rules); // score=
     $junk = array_shift($sa_rules); // required
     foreach ($sa_rules as $rule) {
+        $score = null;
         // Check if SA scoring is present
         if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
             $rule = $regs[1];
@@ -135,7 +136,7 @@ foreach ($sa_array as $key => $val) {
 <TR BGCOLOR=\"#EBEBEB\">
  <TD>$key</TD>
  <TD>" . return_sa_rule_desc(strtoupper($key)) . '</TD>
- <TD ALIGN="RIGHT">' . sprintf('%0.2f', $val['score']) . '</TD>
+ <TD ALIGN="RIGHT">' . (null !== $val['score'] ? sprintf('%0.2f', $val['score']) : '--') . '</TD>
  <TD ALIGN="RIGHT">' . number_format($val['total']) . '</TD>
  <TD ALIGN="RIGHT">' . number_format($val['not-spam']) . '</TD>
  <TD ALIGN="RIGHT">' . round(($val['not-spam'] / $val['total']) * 100, 1) . '</TD>

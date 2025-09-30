@@ -257,6 +257,8 @@ if ('add' === $url_submit) {
                 $list = 'blacklist';
                 $listi18 = __('bl07');
                 break;
+            default:
+                throw new \RuntimeException('Invalid list case');
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
             . "('" . safe_value(stripslashes($to_address)) . "',"
@@ -287,6 +289,8 @@ if ('delete' === $url_submit) {
             $list = 'blacklist';
             $listi18 = __('bl07');
             break;
+        default:
+            throw new \RuntimeException('Invalid list case');
     }
 
     $sqlfrom = "SELECT from_address, to_address FROM $list WHERE id='$id'";

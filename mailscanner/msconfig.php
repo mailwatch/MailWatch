@@ -60,12 +60,12 @@ if ('A' !== $_SESSION['user_type']) {
             (string)$value
         );
 
-        // See if parameter is a rules file
+        // See if the parameter is a rules file
         if (@is_file($value) && @is_readable($value) && !@is_executable($value)) {
             $value = '<a href="msrule.php?file=' . $value . '">' . $value . '</A>';
         }
 
-        // Change newline charactors to <br />
+        // Change newline characters to <br />
         $value = nl2br(str_replace('\\n', "\n", $value));
 
         // change <br /> to <br> to keep with html 4.01 and above
