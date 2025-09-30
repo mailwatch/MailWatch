@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+### Compatibility
+- The minimal PHP version is now 8.1.
 
 ## 1.2.24
 ### Added

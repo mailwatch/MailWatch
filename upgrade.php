@@ -1050,11 +1050,11 @@ if (stringEndsWith(MAILWATCH_HOSTURL, '/')) {
 
 echo PHP_EOL;
 //Check minimal PHP version
-echo pad(' - Checking minimal PHP version >= 5.6');
-if (PHP_VERSION_ID >= 50600) {
+echo pad(' - Checking minimal PHP version >= 8.1');
+if (PHP_VERSION_ID >= 80100) {
     echo color(' PHP version OK', 'lightgreen') . PHP_EOL;
 } else {
-    echo color(' WARNING: PHP version < 5.6 not supported (GeoLite2 not working)', 'yellow') . PHP_EOL;
+    echo color(' WARNING: PHP version < 8.1 not supported', 'red') . PHP_EOL;
 }
 
 echo PHP_EOL;
