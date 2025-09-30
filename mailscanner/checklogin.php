@@ -54,7 +54,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
         logFailedLogin();
         exit;
     }
-    $myusername = html_entity_decode($_POST['myusername']);
+    $myusername = html_entity_decode((string)$_POST['myusername']);
     $mypassword = $_POST['mypassword'];
 }
 $plainPassword = $mypassword;

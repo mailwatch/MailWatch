@@ -28,7 +28,7 @@
 require_once __DIR__ . '/functions.php';
 
 // Clear the login expiry timestamp
-$sql = "UPDATE users SET login_expiry='-1' WHERE username='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+$sql = "UPDATE users SET login_expiry='-1' WHERE username='" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
 dbquery($sql);
 dbclose();
 
@@ -41,11 +41,13 @@ if (ini_get('session.use_cookies')) {
     setcookie(
         session_name(),
         '',
-        time() - 42000,
-        $params['path'],
-        $params['domain'],
-        true,
-        true
+        [
+            'expires' => time() - 42000,
+            'path' => $params['path'],
+            'domain' => $params['domain'],
+            'secure' => true,
+            'httponly' => true,
+        ]
     );
 }
 

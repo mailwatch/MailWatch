@@ -57,7 +57,7 @@ $sa_array = [];
 // Retrieve rows and insert into array
 while ($row = $result->fetch_object()) {
     // Clean-up input
-    $row->mcpreport = preg_replace('/\n/', '', $row->mcpreport);
+    $row->mcpreport = preg_replace('/\n/', '', (string)$row->mcpreport);
     $row->mcpreport = preg_replace('/\t/', ' ', $row->mcpreport);
     preg_match('/ \((.+?)\)/i', $row->mcpreport, $sa_rules);
     // Get rid of first match from the array

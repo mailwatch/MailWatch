@@ -43,7 +43,7 @@ if ('A' !== $_SESSION['user_type']) {
         $FilePath = realpath(sanitizeInput($_GET['file']));
     }
 
-    if (false === $FilePath || (0 !== strpos($FilePath, $MailscannerEtcDir) && 0 !== strpos($FilePath, $MailscannerRepDir))) {
+    if (false === $FilePath || (!str_starts_with($FilePath, $MailscannerEtcDir) && !str_starts_with($FilePath, $MailscannerRepDir))) {
         // Directory Traversal
         echo __('dirblocked30') . "\n";
     } else {

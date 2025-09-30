@@ -48,7 +48,7 @@ class database
             try {
                 $driver = new mysqli_driver();
                 $driver->report_mode = MYSQLI_REPORT_ALL;
-                set_error_handler(static function($errno, $errstr, $errfile, $errline, $errcontext = []) {
+                set_error_handler(static function($errno, $errstr, $errfile, $errline, $errcontext = []): void {
                 });
                 self::$link = new mysqli($host, $username, $password, $database, $port);
                 restore_error_handler();
@@ -63,7 +63,7 @@ class database
                 if (false === self::$link->set_charset($charset)) {
                     self::$link->query('SET NAMES ' . $charset . ' COLLATE ' . $collation);
                 }
-            } catch (Exception $e) {
+            } catch (Exception) {
                 if (PHP_SAPI !== 'cli') {
                     $output = '
 <style>

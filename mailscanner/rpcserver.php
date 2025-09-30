@@ -157,8 +157,8 @@ function rpc_dump_mailscanner_conf()
                 $var[$regs[1]] = $regs[2];
             }
             // expand %var% variables
-            if (preg_match('/(%.+%)/', $regs[2], $match)) {
-                $regs[2] = preg_replace('/%.+%/', $var[$match[1]], $regs[2]);
+            if (preg_match('/(%.+%)/', (string)$regs[2], $match)) {
+                $regs[2] = preg_replace('/%.+%/', (string)$var[$match[1]], (string)$regs[2]);
             }
             $output[$regs[1]] = new xmlrpcval($regs[2]);
         }
@@ -280,7 +280,7 @@ if (is_rpc_client_allowed()) {
     $s->service();
 } else {
     global $xmlrpcerruser;
-    $client_addr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+    $client_addr = $_SERVER['REMOTE_ADDR'] ?? '';
     $output = new xmlrpcresp(0, $xmlrpcerruser + 1, __('client160') . " {$client_addr} " . __('client260'));
     echo $output->serialize();
 }

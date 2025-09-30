@@ -44,22 +44,22 @@ echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
 if ('A' === $_SESSION['user_type']) {
     $virusScanner = get_conf_var('VirusScanners');
 
-    if (preg_match('/sophos/i', $virusScanner)) {
+    if (preg_match('/sophos/i', (string)$virusScanner)) {
         echo '<li><a href="sophos_status.php">' . __('avsophosstatus10') . '</a>';
     }
-    if (preg_match('/f-secure-12/i', $virusScanner)) {
+    if (preg_match('/f-secure-12/i', (string)$virusScanner)) {
         echo '<li><a href="f-secure12_status.php">' . __('avfsecure12status10') . '</a>';
     }
-    if (preg_match('/f-secured?(?!-12)/i', $virusScanner)) {
+    if (preg_match('/f-secured?(?!-12)/i', (string)$virusScanner)) {
         echo '<li><a href="f-secure_status.php">' . __('avfsecurestatus10') . '</a>';
     }
-    if (preg_match('/clam/i', $virusScanner)) {
+    if (preg_match('/clam/i', (string)$virusScanner)) {
         echo '<li><a href="clamav_status.php">' . __('avclamavstatus10') . '</a>';
     }
-    if (preg_match('/mcafee/i', $virusScanner)) {
+    if (preg_match('/mcafee/i', (string)$virusScanner)) {
         echo '<li><a href="mcafee_status.php">' . __('avmcafeestatus10') . '</a>';
     }
-    if (preg_match('/f-prot/i', $virusScanner)) {
+    if (preg_match('/f-prot/i', (string)$virusScanner)) {
         echo '<li><a href="f-prot_status.php">' . __('avfprotstatus10') . '</a>';
     }
 
@@ -93,11 +93,11 @@ if ('A' === $_SESSION['user_type']) {
         echo '<li><a href="https://spamassassin.apache.org/">SpamAssassin</a>';
     }
 
-    if (preg_match('/sophos/i', $virusScanner)) {
+    if (preg_match('/sophos/i', (string)$virusScanner)) {
         echo '<li><a href="https://www.sophos.com">Sophos</a>';
     }
 
-    if (preg_match('/clam/i', $virusScanner)) {
+    if (preg_match('/clam/i', (string)$virusScanner)) {
         echo '<li><a href="https://clamav.net">ClamAV</A>';
     }
 

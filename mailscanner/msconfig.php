@@ -56,10 +56,8 @@ if ('A' !== $_SESSION['user_type']) {
         // %var% definitions are ordinary entries, the conf dir files can use those of MailScanner.conf
         $value = preg_replace_callback(
             '/%[^%\s]+%/',
-            function($match) use ($array_output) {
-                return isset($array_output[$match[0]]) ? $array_output[$match[0]] : $match[0];
-            },
-            $value
+            fn($match) => $array_output[$match[0]] ?? $match[0],
+            (string)$value
         );
 
         // See if parameter is a rules file

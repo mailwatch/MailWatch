@@ -65,7 +65,7 @@ while ($line = fgets($fp, 2096)) {
             $last = $linet;
         }
         // Check for 'subtests=' to add space after comma (to fit the screen)
-        if (preg_match('/subtests=/i', $line)) {
+        if (preg_match('/subtests=/i', (string)$line)) {
             $line = str_replace(',', ', ', $line);
         }
         $line = htmlspecialchars($line, ENT_QUOTES, 'UTF-8');

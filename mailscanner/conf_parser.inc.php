@@ -45,7 +45,7 @@ function parse_conf_dir($conf_dir)
     if (false !== ($files = scandir($conf_dir))) {
         foreach ($files as $file) {
             // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
-            if (strlen($file) > 0 && '.' !== substr($file, 0, 1) && is_file($conf_dir . $file)) {
+            if (strlen($file) > 0 && !str_starts_with($file, '.') && is_file($conf_dir . $file)) {
                 $array_output1 = array_merge($array_output1, parse_conf_file($conf_dir . $file));
             }
         }
@@ -84,9 +84,7 @@ function parse_conf_file($name)
     // open each file and read it
     $fileContent = array_filter(
         file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
-        function($value) {
-            return !('#' === $value[0]);
-        }
+        fn($value) => !('#' === $value[0])
     );
 
     foreach ($fileContent as $line) {
@@ -103,9 +101,7 @@ function parse_conf_file($name)
             }
 
             // expand %var% variables, leave the undefined ones as they are
-            $regs['value'] = preg_replace_callback('/%[^%]+%/', function($matches) use ($var) {
-                return isset($var[$matches[0]]) ? $var[$matches[0]] : $matches[0];
-            }, $regs['value']);
+            $regs['value'] = preg_replace_callback('/%[^%]+%/', fn($matches) => $var[$matches[0]] ?? $matches[0], $regs['value']);
 
             // Remove any html entities from the code
             $key = htmlentities($regs['name']);

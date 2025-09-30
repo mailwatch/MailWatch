@@ -32,7 +32,6 @@
 ### Fixed
 - Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 - tools/LDAP/mailwatch_ldap_sync.sh no longer deletes the imported users when the directory cannot be reached
-- rpcserver.php runs again on PHP 5.6
 - An auto-release link that fails to release the message reports the error and stays usable
 - Passwords that contain quotes or backslashes work the same whether an administrator or the user sets them
 - Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures

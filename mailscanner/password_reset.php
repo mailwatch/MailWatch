@@ -171,7 +171,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     $showpage = true;
                 } elseif ($row['resetid'] === $uid) {
                     require_once MAILWATCH_HOME . '/lib/password.php';
-                    $password = $link->real_escape_string(password_hash($_POST['pwd1'], PASSWORD_DEFAULT));
+                    $password = $link->real_escape_string(password_hash((string)$_POST['pwd1'], PASSWORD_DEFAULT));
                     $lastreset = time();
                     $sql = "UPDATE users SET password = '$password', resetid = '', resetexpire = '0', lastreset ='$lastreset' WHERE username ='$email'";
                     $result = dbquery($sql);

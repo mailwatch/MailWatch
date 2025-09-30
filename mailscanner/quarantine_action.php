@@ -104,7 +104,7 @@ switch ($_GET['action']) {
             $result = quarantine_release($list, [0], $to, false, $_SESSION['global_filter']);
         } else {
             for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                if (preg_match('/message\/rfc822/', $list[$i]['type'])) {
+                if (preg_match('/message\/rfc822/', (string)$list[$i]['type'])) {
                     $result = quarantine_release($list, [$i], $list[$i]['to'], false, $_SESSION['global_filter']);
                 }
             }
