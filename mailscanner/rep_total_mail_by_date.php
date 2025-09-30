@@ -200,6 +200,17 @@ if (!$result->num_rows > 0) {
     exit(__('diemysql99') . "\n");
 }
 
+$data_labels = [];
+$data_total_mail = [];
+$data_total_virii = [];
+$data_total_blocked = [];
+$data_total_spam = [];
+$data_total_lowspam = [];
+$data_total_highspam = [];
+$data_total_mcp = [];
+$data_total_clean = [];
+$data_total_size = [];
+
 // Connecting to the DB and running the query
 $result1 = dbquery($sql1);
 
