@@ -20,19 +20,22 @@
  * @file
  * @author Brandon Black <blblack@gmail.com>
  */
-namespace IPSet;
+namespace Wikimedia;
+
+use JsonSerializable;
 
 /**
  * Matches IP addresses against a set of CIDR specifications
  *
  * Usage:
  *
+ *     use Wikimedia\IPSet;
  *     // At startup, calculate the optimized data structure for the set:
- *     $ipset = new IPSet( array(
+ *     $ipset = new IPSet( [
  *         '208.80.154.0/26',
  *         '2620:0:861:1::/64',
  *         '10.64.0.0/22',
- *     ) );
+ *     ] );
  *
  *     // Runtime check against cached set (returns bool):
  *     $allowme = $ipset->match( $ip );
@@ -44,7 +47,7 @@ namespace IPSet;
  * much larger.
  *
  * For mixed-family CIDR sets, however, this code gives well over
- * 100x speedup vs iterating IP::isInRange() over an array
+ * 100x speedup vs iterating Wikimedia\IPUtils::isInRange() over an array
  * of CIDR specs.
  *
  * The basic implementation is two separate binary trees
@@ -65,25 +68,25 @@ namespace IPSet;
  *
  * The v4 tree would look like:
  *
- *     root4 => array(
+ *     root4 => [
  *         'comp' => 25,
- *         'next' => array(
+ *         'next' => [
  *             0 => true,
- *             1 => array(
+ *             1 => [
  *                 0 => false,
  *                 1 => true,
- *             ),
- *         ),
- *     );
+ *             ],
+ *         ],
+ *     ];
  *
  * (multi-byte compression nodes were attempted as well, but were
  * a net loss in my test scenarios due to additional match complexity)
  */
-class IPSet {
-    /** @var array|bool $root4 The root of the IPv4 matching tree */
+class IPSet implements JsonSerializable {
+    /** @var array|bool The root of the IPv4 matching tree */
     private $root4 = false;
 
-    /** @var array|bool $root6 The root of the IPv6 matching tree */
+    /** @var array|bool The root of the IPv6 matching tree */
     private $root6 = false;
 
     /**
@@ -104,10 +107,11 @@ class IPSet {
      * Add a single CIDR spec to the internal matching trees
      *
      * @param string $cidr String CIDR spec, IPv[46], optional /mask (def all-1's)
+     * @return bool Returns true on success, false on failure
      */
-    private function addCidr( $cidr ) {
+    private function addCidr( $cidr ): bool {
         // v4 or v6 check
-        if ( strpos( $cidr, ':' ) === false ) {
+        if ( !str_contains( $cidr, ':' ) ) {
             $node =& $this->root4;
             $defMask = '32';
         } else {
@@ -116,22 +120,24 @@ class IPSet {
         }
 
         // Default to all-1's mask if no netmask in the input
-        if ( strpos( $cidr, '/' ) === false ) {
+        if ( !str_contains( $cidr, '/' ) ) {
             $net = $cidr;
             $mask = $defMask;
         } else {
-            list( $net, $mask ) = explode( '/', $cidr, 2 );
-            if ( !ctype_digit( $mask ) || intval( $mask ) > $defMask ) {
+            [ $net, $mask ] = explode( '/', $cidr, 2 );
+            if ( (int)$mask > $defMask || !ctype_digit( $mask ) ) {
                 trigger_error( "IPSet: Bad mask '$mask' from '$cidr', ignored", E_USER_WARNING );
-                return;
+                return false;
             }
         }
-        $mask = intval( $mask ); // explicit integer convert, checked above
+        // explicit integer convert, checked above
+        $mask = (int)$mask;
 
-        // convert $net to an array of integer bytes, length 4 or 16:
-        $raw = inet_pton( $net );
+        // convert $net to an array of integer bytes, length 4 or 16
+        // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+        $raw = @inet_pton( $net );
         if ( $raw === false ) {
-            return; // inet_pton() sends an E_WARNING for us
+            return false;
         }
         $rawOrd = array_map( 'ord', str_split( $raw ) );
 
@@ -143,12 +149,16 @@ class IPSet {
         while ( 1 ) {
             if ( $node === true ) {
                 // already added a larger supernet, no need to go deeper
-                return;
-            } elseif ( $curBit == $mask ) {
+                return true;
+            }
+
+            if ( $curBit === $mask ) {
                 // this may wipe out deeper subnets from earlier
                 $snode = true;
-                return;
-            } elseif ( $node === false ) {
+                return true;
+            }
+
+            if ( $node === false ) {
                 // create new subarray to go deeper
                 if ( !( $curBit & 7 ) && $curBit <= $mask - 8 ) {
                     $node = [ 'comp' => $rawOrd[$curBit >> 3], 'next' => false ];
@@ -159,22 +169,22 @@ class IPSet {
 
             if ( isset( $node['comp'] ) ) {
                 $comp = $node['comp'];
-                if ( $rawOrd[$curBit >> 3] == $comp && $curBit <= $mask - 8 ) {
+                if ( $rawOrd[$curBit >> 3] === $comp && $curBit <= $mask - 8 ) {
                     // whole byte matches, skip over the compressed node
                     $node =& $node['next'];
                     $snode =& $node;
                     $curBit += 8;
                     continue;
-                } else {
-                    // have to decompress the node and check individual bits
-                    $unode = $node['next'];
-                    for ( $i = 0; $i < 8; ++$i ) {
-                        $unode = ( $comp & ( 1 << $i ) )
-                            ? [ false, $unode ]
-                            : [ $unode, false ];
-                    }
-                    $node = $unode;
                 }
+
+                // have to decompress the node and check individual bits
+                $unode = $node['next'];
+                for ( $i = 0; $i < 8; ++$i ) {
+                    $unode = ( $comp & ( 1 << $i ) )
+                        ? [ false, $unode ]
+                        : [ $unode, false ];
+                }
+                $node = $unode;
             }
 
             $maskShift = 7 - ( $curBit & 7 );
@@ -196,14 +206,15 @@ class IPSet {
      * @param string $ip string IPv[46] address
      * @return bool True is match success, false is match failure
      */
-    public function match( $ip ) {
-        $raw = inet_pton( $ip );
+    public function match( $ip ): bool {
+        // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+        $raw = @inet_pton( $ip );
         if ( $raw === false ) {
-            return false; // inet_pton() sends an E_WARNING for us
+            return false;
         }
 
         $rawOrd = array_map( 'ord', str_split( $raw ) );
-        if ( count( $rawOrd ) == 4 ) {
+        if ( count( $rawOrd ) === 4 ) {
             $node =& $this->root4;
         } else {
             $node =& $this->root6;
@@ -213,7 +224,7 @@ class IPSet {
         while ( $node !== true && $node !== false ) {
             if ( isset( $node['comp'] ) ) {
                 // compressed node, matches 1 whole byte on a byte boundary
-                if ( $rawOrd[$curBit >> 3] != $node['comp'] ) {
+                if ( $rawOrd[$curBit >> 3] !== $node['comp'] ) {
                     return false;
                 }
                 $curBit += 8;
@@ -227,5 +238,26 @@ class IPSet {
         }
 
         return $node;
+    }
+
+    /**
+     * @param string $json
+     *
+     * @return IPSet
+     */
+    public static function newFromJson( string $json ): IPSet {
+        $ipset = new IPSet( [] );
+        $decoded = json_decode( $json, true );
+        $ipset->root4 = $decoded['ipv4'] ?? false;
+        $ipset->root6 = $decoded['ipv6'] ?? false;
+
+        return $ipset;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'ipv4' => $this->root4,
+            'ipv6' => $this->root6,
+        ];
     }
 }

@@ -4507,39 +4507,31 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
 /**
  * @param bool|string $net
  * @param bool|string $privateLocal
- *
- * @return bool
  */
-function ip_in_range($ip, $net = false, $privateLocal = false)
+function ip_in_range($ip, $net = false, $privateLocal = false): bool
 {
     require_once __DIR__ . '/lib/IPSet.php';
     if ('private' === $privateLocal) {
-        $privateIPSet = new \IPSet\IPSet([
+        return (new \Wikimedia\IPSet([
             '10.0.0.0/8',
             '172.16.0.0/12',
             '192.168.0.0/16',
             'fc00::/7',
             'fe80::/10',
-        ]);
-
-        return $privateIPSet->match($ip);
+        ]))->match($ip);
     }
 
     if ('local' === $privateLocal) {
-        $localIPSet = new \IPSet\IPSet([
+        return (new \Wikimedia\IPSet([
             '127.0.0.0/8',
             '::1',
-        ]);
-
-        return $localIPSet->match($ip);
+        ]))->match($ip);
     }
 
     if (false === $privateLocal && false !== $net) {
-        $network = new \IPSet\IPSet([
+        return (new \Wikimedia\IPSet([
             $net,
-        ]);
-
-        return $network->match($ip);
+        ]))->match($ip);
     }
 
     // return false to fail gracefully
