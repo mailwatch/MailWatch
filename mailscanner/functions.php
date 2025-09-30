@@ -1490,7 +1490,7 @@ function get_mcp_rule_desc($rule)
     // Check if SA scoring is enabled
     $rule_score = '';
     if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
-        list($rule, $rule_score) = $regs;
+        [$rule, $rule_score] = $regs;
     }
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
     $row = $result->fetch_object();
@@ -1630,7 +1630,8 @@ function get_disks()
                     (0 === strpos($drive[0], '/dev/'))
                     && (
                         false === stripos($drive[2], '/chroot/')
-                        && (false === stripos($drive[2], '/snapd/')
+                        && (
+                            false === stripos($drive[2], '/snapd/')
                         )
                     )
                 ) {
@@ -1939,7 +1940,7 @@ function generatePager($sql)
     $pager = Pager::factory($pager_options);
 
     // then we fetch the relevant records for the current page
-    list($from, $to) = $pager->getOffsetByPageId();
+    [$from, $to] = $pager->getOffsetByPageId();
 
     echo '<table cellspacing="1" class="mail" >
 <tr>
@@ -2578,7 +2579,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         $pager = Pager::factory($pager_options);
 
         // then we fetch the relevant records for the current page
-        list($from, $to) = $pager->getOffsetByPageId();
+        [$from, $to] = $pager->getOffsetByPageId();
 
         echo '<table cellspacing="1" class="mail" >
     <tr>
@@ -2674,7 +2675,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         $pager = Pager::factory($pager_options);
 
         // then we fetch the relevant records for the current page
-        list($from, $to) = $pager->getOffsetByPageId();
+        [$from, $to] = $pager->getOffsetByPageId();
 
         echo '<table cellspacing="1" class="mail" >
     <tr>

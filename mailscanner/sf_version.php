@@ -46,7 +46,7 @@ if ('A' !== $_SESSION['user_type']) {
         require_once __DIR__ . '/lib/maxmind-db/reader/autoload.php';
         $geoIpDbReader = new \MaxMind\Db\Reader($geoip_database_file);
         $GeoIPDbMetadata = $geoIpDbReader->metadata();
-        $geoip_version = (isset($GeoIPDbMetadata->description['en']) ? $GeoIPDbMetadata->description['en'] : '') . ' ' . date('Y-m-d H:i:s', $GeoIPDbMetadata->buildEpoch);
+        $geoip_version = ($GeoIPDbMetadata->description['en'] ?? '') . ' ' . date('Y-m-d H:i:s', $GeoIPDbMetadata->buildEpoch);
         $geoip_version = trim($geoip_version);
     }
 

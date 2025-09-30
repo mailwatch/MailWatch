@@ -40,7 +40,7 @@ function TR()
     $arg = func_get_args();
 
     if (count($arg) > 1) {
-        list($row_data, $tr_param) = $arg;
+        [$row_data, $tr_param] = $arg;
     } else {
         $row_data = $arg[0];
         $tr_param = null;

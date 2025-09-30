@@ -196,7 +196,7 @@ function decode_structure($structure)
             preg_match("/.*total=([\d]*).*/", $structure->headers['content-type'], $totalParts);
 
             // build filename
-            $filename = isset($identifier[1]) ? $identifier[1] : 'partialMessage';
+            $filename = $identifier[1] ?? 'partialMessage';
             if (isset($partNumber[1])) {
                 $filename .= ' - Part ' . $partNumber[1];
             }

@@ -292,9 +292,9 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
     }
     echo ' <TD ALIGN="RIGHT">' . formatSize($data_total_size[$i]) . '</TD>' . "\n";
     if ($showMtaColumns) {
-        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
-        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format($data_total_unknown_users[$i] ?? 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format($data_total_unresolveable[$i] ?? 0)) . '</TD>' . "\n";
+        echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format($data_total_rbl[$i] ?? 0)) . '</TD>' . "\n";
     }
     echo '</TR>' . "\n";
 }
