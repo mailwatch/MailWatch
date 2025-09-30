@@ -30,7 +30,6 @@
 */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/lib/password.php';
 
 require __DIR__ . '/login.function.php';
 
