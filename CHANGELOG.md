@@ -15,6 +15,9 @@
 - The Postfix process count on the status page counts only the master and its children (#1036)
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
 
+### Compatibility
+- The minimal PHP version is now 8.1.
+
 ## 1.2.29
 ### Security
 - Fix SQL injection in message table sorting and report filters, enforce domain admin filter scope, allow/block list recipients and dangerous content rules on the server, and stop the own settings form from setting the password to "xxxxxxxx"; upgrade.php lists the users with that password; quote values and stop evaluating database output in the LDAP sync; validate message ids in the RPC server (GHSA-fx6j-399x-49w7)
