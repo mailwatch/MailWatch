@@ -32,7 +32,7 @@ require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
 // Set the Memory usage
-ini_set('memory_limit', (string) MEMORY_LIMIT);
+ini_set('memory_limit', (string)MEMORY_LIMIT);
 
 if (isset($_POST['token'])) {
     if (false === checkToken($_POST['token'])) {

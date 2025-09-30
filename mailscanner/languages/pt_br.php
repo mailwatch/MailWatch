@@ -918,7 +918,7 @@ return [
     'arrelease59' => 'Liberar',
     'title59' => 'Liberação da Quarentena',
 
-     // 60-rpcserver.php
+    // 60-rpcserver.php
     'paratype160' => 'Tipo de Parâmetro',
     'paratype260' => 'erro no tipo esperado.',
     'notfile60' => 'não é um arquivo.',

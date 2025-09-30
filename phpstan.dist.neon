@@ -1,6 +1,6 @@
 parameters:
 	level: 0
-	phpversion: 80100
+	phpVersion: 80100
 	paths:
 	    - mailscanner
 	    - tools

@@ -262,7 +262,7 @@ ORDER BY a.date DESC, a.time DESC';
             ini_set('html_errors', 'off');
             ini_set('display_errors', 'on');
             ini_set('implicit_flush', 'false');
-            ini_set('error_reporting', (string) E_ALL);
+            ini_set('error_reporting', (string)E_ALL);
         } else {
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/smtp.php';
@@ -648,7 +648,7 @@ ORDER BY a.date DESC, a.time DESC';
     private static function quarantine_sort($q)
     {
         $key = 'timestamp';
-        usort($q, function ($a, $b) use (&$key) {
+        usort($q, function($a, $b) use (&$key) {
             return strtotime($a[$key]) - strtotime($b[$key]);
         });
 

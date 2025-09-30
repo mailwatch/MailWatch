@@ -11,7 +11,7 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR2' => true,
         '@Symfony' => true,
-        '@PHP54Migration' => true,
+        '@PHP8x1Migration' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],
         'cast_spaces' => ['space' => 'none'],

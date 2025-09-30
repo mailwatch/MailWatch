@@ -633,7 +633,7 @@ return [
     'auditlog26' => 'MCP Regelbeschreibungen wurden aktualisiert',
     'message0126' => 'Dieses Programm wird benutzt, um die aktuellen SpamAssassin Regeln, die auf der Nachrichten-Detail-Seite angezeigt werden, in der SQL-Datenbank zu aktualieren.',
     'message0226' => 'Dieses Programm sollte generell nach einem SpamAssassin-Update ausgeführt werden. Es kann aber auch zu jeder anderen Zeit gestartet werden, da es lediglich aktualisierte Regeln ersetzt und neue Regeln hinzufügt. Dadurch werden Beschreibungen von veralteten oder entfernten Regeln erhalten.',
-     'input26' => 'Jetzt ausführen',
+    'input26' => 'Jetzt ausführen',
     'rule26' => 'Regel',
     'description26' => 'Beschreibung',
 
@@ -918,7 +918,7 @@ return [
     'arrelease59' => 'Freigeben',
     'title59' => 'Quarantine Release',
 
-     // 60-rpcserver.php
+    // 60-rpcserver.php
     'paratype160' => 'Parameter-Typ',
     'paratype260' => 'entspricht nicht dem erwarteten Typ.',
     'notfile60' => 'ist keine Datei.',

@@ -101,7 +101,7 @@ if ('A' !== $_SESSION['user_type']) {
             exit;
         }
 
-        list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
+        [$bytes_written, $status_message] = Process_Form($file_contents, $short_filename);
         // Re-read the file after processing
         $file_contents = Read_File($full_filename, $bytes_written);
     }
@@ -211,13 +211,13 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         if (count($old_rule_part) < 5) {
             array_push($old_rule_part, null, null, null, null);
         }
-        list(
+        [
             $rule_part['0direction'],
             $rule_part['1target'],
             $rule_part['2and'],
             $rule_part['3and_direction'],
             $rule_part['4and_target']
-        ) = $old_rule_part;
+        ] = $old_rule_part;
 
         // Clean out whitespace from the rule parts
         foreach ($rule_part as &$a_part) {
@@ -709,7 +709,7 @@ function Process_Form($file_contents, $short_filename)
     // mmmkay, now we should be able to write the new file
     $getFile = basename(sanitizeInput($short_filename));
     $filename = MSRE_RULESET_DIR . '/' . $getFile;
-    list($bytes, $status_msg) = Write_File($filename, $new_file);
+    [$bytes, $status_msg] = Write_File($filename, $new_file);
 
     // Schedule a reload of mailscanner's stuff. We can't do an immediate
     // reload w/out giving the apache user rights to run the MailScanner

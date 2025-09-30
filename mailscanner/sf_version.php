@@ -46,7 +46,7 @@ if ('A' !== $_SESSION['user_type']) {
         require_once __DIR__ . '/lib/maxmind-db/reader/autoload.php';
         $geoIpDbReader = new \MaxMind\Db\Reader($geoip_database_file);
         $GeoIPDbMetadata = $geoIpDbReader->metadata();
-        $geoip_version = (isset($GeoIPDbMetadata->description['en']) ? $GeoIPDbMetadata->description['en'] : '') . ' ' . date('Y-m-d H:i:s', $GeoIPDbMetadata->buildEpoch);
+        $geoip_version = ($GeoIPDbMetadata->description['en'] ?? '') . ' ' . date('Y-m-d H:i:s', $GeoIPDbMetadata->buildEpoch);
         $geoip_version = trim($geoip_version);
     }
 
@@ -65,7 +65,7 @@ if ('A' !== $_SESSION['user_type']) {
         $vars = [];
         $files = glob('/etc/*-release');
         foreach ($files as $file) {
-            $lines = array_filter(array_map(function ($line) {
+            $lines = array_filter(array_map(function($line) {
                 $parts = explode('=', $line);
                 if (2 !== count($parts)) {
                     return false;
@@ -84,11 +84,9 @@ if ('A' !== $_SESSION['user_type']) {
         $systemos = 'unknown linux';
         if (isset($vars['ID']) && in_array(strtolower($vars['ID']), ['centos', 'debian'], true)) {
             $systemos = $vars['PRETTY_NAME'];
-        }
-        else if (isset($vars['ID']) && 'ubuntu' === strtolower($vars['ID'])) {
+        } elseif (isset($vars['ID']) && 'ubuntu' === strtolower($vars['ID'])) {
             $systemos = $vars['NAME'] . ' ' . $vars['VERSION'];
-        }
-        else if (isset($vars['ID'])) {
+        } elseif (isset($vars['ID'])) {
             $systemos = $vars['ID'];
         }
         echo $systemos . '<br>' . "\n";

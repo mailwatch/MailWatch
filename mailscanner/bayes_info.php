@@ -80,50 +80,50 @@ while (!feof($fh)) {
         switch ($regs[5]) {
             case 'nspam':
                 echo '<tr><td class="heading">' . __('nbrspammessage18') . '</td><td align="right">' . number_format(
-                    (float) $regs[3]
+                    (float)$regs[3]
                 ) . '</td></tr>' . "\n";
                 break;
 
             case 'nham':
                 echo '<tr><td class="heading">' . __('nbrhammessage18') . '</td><td align="right">' . number_format(
-                    (float) $regs[3]
+                    (float)$regs[3]
                 ) . '</td></tr>' . "\n";
                 break;
 
             case 'ntokens':
                 echo '<tr><td class="heading">' . __('nbrtoken18') . '</td><td align="right">' . number_format(
-                    (float) $regs[3]
+                    (float)$regs[3]
                 ) . '</td></tr>' . "\n";
                 break;
 
             case 'oldest atime':
                 echo '<tr><td class="heading">' . __('oldesttoken18') . '</td><td align="right">' . date(
                     'r',
-                    (int) $regs[3]
+                    (int)$regs[3]
                 ) . '</td></tr>' . "\n";
                 break;
 
             case 'newest atime':
                 echo '<tr><td class="heading">' . __('newesttoken18') . '</td><td align="right">' . date(
                     'r',
-                    (int) $regs[3]
+                    (int)$regs[3]
                 ) . '</td></tr>' . "\n";
                 break;
 
             case 'last journal sync atime':
                 echo '<tr><td class="heading">' . __('lastjournalsync18') . '</td><td align="right">' . date(
                     'r',
-                    (int) $regs[3]
+                    (int)$regs[3]
                 ) . '</td></tr>' . "\n";
                 break;
 
             case 'last expiry atime':
-                echo '<tr><td class="heading">' . __('lastexpiry18') . '</td><td align="right">' . date('r', (int) $regs[3]) . '</td></tr>' . "\n";
+                echo '<tr><td class="heading">' . __('lastexpiry18') . '</td><td align="right">' . date('r', (int)$regs[3]) . '</td></tr>' . "\n";
                 break;
 
             case 'last expire reduction count':
                 echo '<tr><td class="heading">' . __('lastexpirycount18') . '</td><td align="right">' . number_format(
-                    (float) $regs[3]
+                    (float)$regs[3]
                 ) . ' ' . __('tokens18') . '</td></tr>' . "\n";
                 break;
         }

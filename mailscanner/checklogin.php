@@ -175,10 +175,10 @@ if (1 === $usercount) {
     // Register $myusername, $mypassword and redirect to file "login_success.php"
     $_SESSION['myusername'] = $myusername;
     $_SESSION['fullname'] = $fullname;
-    $_SESSION['user_type'] = (isset($usertype) ? $usertype : '');
-    $_SESSION['domain'] = (isset($domainname) ? $domainname : '');
+    $_SESSION['user_type'] = ($usertype ?? '');
+    $_SESSION['domain'] = ($domainname ?? '');
     $_SESSION['global_filter'] = '(' . $global_filter . ')';
-    $_SESSION['global_list'] = (isset($global_list) ? $global_list : '');
+    $_SESSION['global_list'] = ($global_list ?? '');
     $_SESSION['global_array'] = $filter;
     $_SESSION['token'] = generateToken();
     $_SESSION['formtoken'] = generateToken();

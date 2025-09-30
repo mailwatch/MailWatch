@@ -918,7 +918,7 @@ return [
     'arrelease59' => 'Release',
     'title59' => 'Quarantine Release',
 
-     // 60-rpcserver.php
+    // 60-rpcserver.php
     'paratype160' => 'Parameter type',
     'paratype260' => 'mismatch expected type.',
     'notfile60' => 'is not a file.',

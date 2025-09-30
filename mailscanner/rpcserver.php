@@ -26,7 +26,7 @@
  */
 
 require_once __DIR__ . '/functions.php';
-ini_set('memory_limit', (string) MEMORY_LIMIT);
+ini_set('memory_limit', (string)MEMORY_LIMIT);
 
 function rpc_get_quarantine($msg)
 {
@@ -140,6 +140,7 @@ function rpc_quarantine_list_items($msg)
         }
         $output[] = new xmlrpcval($struct, 'struct');
     }
+
     // var_dump($output);
     return new xmlrpcresp(new xmlrpcval($output, 'array'));
 }
@@ -226,28 +227,28 @@ function rpc_bayes_info()
         if (preg_match('/\S+\s+\S+\s+(\S+)\s+\S+\s+non-token data: (.+)/', $line, $regs)) {
             switch ($regs[2]) {
                 case 'nspam':
-                    $output['Number of Spam Messages:'] = new xmlrpcval(number_format((float) $regs[1]));
+                    $output['Number of Spam Messages:'] = new xmlrpcval(number_format((float)$regs[1]));
                     break;
                 case 'nham':
-                    $output['Number of Ham Messages:'] = new xmlrpcval(number_format((float) $regs[1]));
+                    $output['Number of Ham Messages:'] = new xmlrpcval(number_format((float)$regs[1]));
                     break;
                 case 'ntokens':
-                    $output['Number of Tokens:'] = new xmlrpcval(number_format((float) $regs[1]));
+                    $output['Number of Tokens:'] = new xmlrpcval(number_format((float)$regs[1]));
                     break;
                 case 'oldest atime':
-                    $output['Oldest Token:'] = new xmlrpcval(date('r', (int) $regs[1]));
+                    $output['Oldest Token:'] = new xmlrpcval(date('r', (int)$regs[1]));
                     break;
                 case 'newest atime':
-                    $output['Newest Token:'] = new xmlrpcval(date('r', (int) $regs[1]));
+                    $output['Newest Token:'] = new xmlrpcval(date('r', (int)$regs[1]));
                     break;
                 case 'last journal sync atime':
-                    $output['Last Journal Sync:'] = new xmlrpcval(date('r', (int) $regs[1]));
+                    $output['Last Journal Sync:'] = new xmlrpcval(date('r', (int)$regs[1]));
                     break;
                 case 'last expiry atime':
-                    $output['Last Expiry:'] = new xmlrpcval(date('r', (int) $regs[1]));
+                    $output['Last Expiry:'] = new xmlrpcval(date('r', (int)$regs[1]));
                     break;
                 case 'last expire reduction count':
-                    $output['Last Expiry Reduction Count:'] = new xmlrpcval(number_format((float) $regs[1]));
+                    $output['Last Expiry Reduction Count:'] = new xmlrpcval(number_format((float)$regs[1]));
                     break;
             }
         }
@@ -270,62 +271,62 @@ function rpc_postfix_queues()
 $xmlrpc_internalencoding = 'UTF-8';
 
 $s = new xmlrpc_server([
-        'get_quarantine' => [
-            'function' => 'rpc_get_quarantine',
-            'signature' => [['array', 'string']],
-            'docstring' => 'This service returns a listing of files in the relative quarantine directory.',
-        ],
-        'return_quarantined_file' => [
-            'function' => 'rpc_return_quarantined_file',
-            'signature' => [['base64', 'string']],
-            'docstring' => 'This service returns the contents of a quarantined file.',
-        ],
-        'quarantine_list_items' => [
-            'function' => 'rpc_quarantine_list_items',
-            'signature' => [['array', 'string']],
-            'docstring' => 'This service lists the files quarantined for a given message.',
-        ],
-        'quarantine_release' => [
-            'function' => 'rpc_quarantine_release',
-            'signature' => [['string', 'array', 'array', 'string']],
-            'docstring' => 'This service release a message from the quarantine.',
-        ],
-        'quarantine_learn' => [
-            'function' => 'rpc_quarantine_learn',
-            'signature' => [['string', 'array', 'array', 'string']],
-            'docstring' => 'This service runs sa-learn on a message in the quarantine.',
-        ],
-        'quarantine_delete' => [
-            'function' => 'rpc_quarantine_delete',
-            'signature' => [['string', 'array', 'array']],
-            'docstring' => 'This service deletes one or more items from the quarantine.',
-        ],
-        'sophos_status' => [
-            'function' => 'rpc_sophos_status',
-            'signature' => [['string']],
-            'docstring' => 'This service returns the Sophos version and IDE information.',
-        ],
-        'get_conf_var' => [
-            'function' => 'rpc_get_conf_var',
-            'signature' => [['string', 'string']],
-            'docstring' => 'This service returns a named configuration value from MailScanner.conf.',
-        ],
-        'dump_mailscanner_conf' => [
-            'function' => 'rpc_dump_mailscanner_conf',
-            'signature' => [['struct']],
-            'docstring' => 'This service returns all configuration values and settings from MailScanner.conf.',
-        ],
-        'get_bayes_info' => [
-            'function' => 'rpc_bayes_info',
-            'signature' => [['struct']],
-            'docstring' => 'This service returns information about the bayes database.',
-        ],
-        'postfix_queues' => [
-            'function' => 'rpc_postfix_queues',
-            'signature' => [['array']],
-            'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.',
-        ],
-    ], false);
+    'get_quarantine' => [
+        'function' => 'rpc_get_quarantine',
+        'signature' => [['array', 'string']],
+        'docstring' => 'This service returns a listing of files in the relative quarantine directory.',
+    ],
+    'return_quarantined_file' => [
+        'function' => 'rpc_return_quarantined_file',
+        'signature' => [['base64', 'string']],
+        'docstring' => 'This service returns the contents of a quarantined file.',
+    ],
+    'quarantine_list_items' => [
+        'function' => 'rpc_quarantine_list_items',
+        'signature' => [['array', 'string']],
+        'docstring' => 'This service lists the files quarantined for a given message.',
+    ],
+    'quarantine_release' => [
+        'function' => 'rpc_quarantine_release',
+        'signature' => [['string', 'array', 'array', 'string']],
+        'docstring' => 'This service release a message from the quarantine.',
+    ],
+    'quarantine_learn' => [
+        'function' => 'rpc_quarantine_learn',
+        'signature' => [['string', 'array', 'array', 'string']],
+        'docstring' => 'This service runs sa-learn on a message in the quarantine.',
+    ],
+    'quarantine_delete' => [
+        'function' => 'rpc_quarantine_delete',
+        'signature' => [['string', 'array', 'array']],
+        'docstring' => 'This service deletes one or more items from the quarantine.',
+    ],
+    'sophos_status' => [
+        'function' => 'rpc_sophos_status',
+        'signature' => [['string']],
+        'docstring' => 'This service returns the Sophos version and IDE information.',
+    ],
+    'get_conf_var' => [
+        'function' => 'rpc_get_conf_var',
+        'signature' => [['string', 'string']],
+        'docstring' => 'This service returns a named configuration value from MailScanner.conf.',
+    ],
+    'dump_mailscanner_conf' => [
+        'function' => 'rpc_dump_mailscanner_conf',
+        'signature' => [['struct']],
+        'docstring' => 'This service returns all configuration values and settings from MailScanner.conf.',
+    ],
+    'get_bayes_info' => [
+        'function' => 'rpc_bayes_info',
+        'signature' => [['struct']],
+        'docstring' => 'This service returns information about the bayes database.',
+    ],
+    'postfix_queues' => [
+        'function' => 'rpc_postfix_queues',
+        'signature' => [['array']],
+        'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.',
+    ],
+], false);
 $s->response_charset_encoding = 'UTF-8';
 
 // Check that the client is authorised to connect

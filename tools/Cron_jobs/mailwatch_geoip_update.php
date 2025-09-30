@@ -114,7 +114,7 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
 
             // remove auth and hooks from redirect request
             $hooks = new Requests_Hooks();
-            $hooks->register('requests.before_redirect', function (
+            $hooks->register('requests.before_redirect', function(
                 &$location,
                 &$req_headers,
                 &$req_data,
