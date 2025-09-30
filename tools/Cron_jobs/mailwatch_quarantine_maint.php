@@ -105,7 +105,7 @@ if (0 === $required_constant_missing_count) {
                     dbg('Deleting: ' . escapeshellarg($quarantine . '/' . $f));
                     exec('rm -rf ' . escapeshellarg($quarantine . '/' . $f), $output, $return);
                     if ($return > 0) {
-                        echo __('error62') . " $output\n";
+                        echo __('error62') . ' ' . implode("\n", $output) . "\n";
                     }
                 }
             }
