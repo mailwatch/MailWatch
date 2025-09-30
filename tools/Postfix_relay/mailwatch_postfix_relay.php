@@ -30,16 +30,12 @@ ini_set('html_errors', 'off');
 ini_set('display_errors', 'on');
 ini_set('implicit_flush', 'false');
 
-// Auto-detect mailscanner directory relative to this script, with fallback to default path
-$pathToMailscannerDir = dirname(dirname(__DIR__)) . '/mailscanner/';
-if (!@is_dir($pathToMailscannerDir)) {
-    // Edit if you changed webapp directory from default
-    $pathToMailscannerDir = '/var/www/html/mailscanner/';
-}
-
+// Edit if you changed webapp directory from default
+$pathToMailscannerDir = __DIR__ . '/../../mailscanner/';
 $pathToFunctions = $pathToMailscannerDir . 'functions.php';
+
 if (!@is_file($pathToFunctions)) {
-    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path' . "\n");
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 5) . "\n");
 }
 
 require_once $pathToFunctions;
