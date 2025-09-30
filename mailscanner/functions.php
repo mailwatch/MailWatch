@@ -909,8 +909,8 @@ function printNavBar()
             echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
             for ($i = 0; $i < $langCount; ++$i) {
                 echo '<option value="' . $langCodes[$i] . '"'
-                . ($langCodes[$i] === $langCode ? ' selected' : '')
-                . '>' . __($langCodes[$i]) . '</option>' . "\n";
+                    . ($langCodes[$i] === $langCode ? ' selected' : '')
+                    . '>' . __($langCodes[$i]) . '</option>' . "\n";
             }
             echo '</select></li>' . "\n";
         }
@@ -3075,14 +3075,14 @@ if (!function_exists('ldap_escape')) {
      *
      * @source https://stackoverflow.com/questions/8560874/php-ldap-add-function-to-escape-ldap-special-characters-in-dn-syntax#answer-8561604
      *
-     * @author Chris Wright
-     *
      * @param string $subject The subject string
      * @param string $ignore  Set of characters to leave untouched
      * @param int    $flags   any combination of LDAP_ESCAPE_* flags to indicate the
      *                        set(s) of characters to escape
      *
      * @return string The escaped string
+     *
+     * @author Chris Wright
      */
     function ldap_escape($subject, $ignore = '', $flags = 0)
     {
@@ -3695,11 +3695,9 @@ function quarantine_release($list, $num, $to, $rpc_only = false)
 }
 
 /**
- * @param bool|false $rpc_only
- *
  * @return string
  */
-function quarantine_learn($list, $num, $type, $rpc_only = false)
+function quarantine_learn($list, $num, $type, bool $rpc_only = false)
 {
     dbconn();
     if (!is_array($list) || !isset($list[0]['msgid'])) {
@@ -3712,7 +3710,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
     if (-1 === $num[0]) {
         $num = [0];
         // Locate message in items
-        for ($index = 0; $index < count($list); ++$index) {
+        for ($index = 0, $indexMax = count($list); $index < $indexMax; ++$index) {
             if (preg_match('/message\/rfc822/', (string)$list[$index]['type'])) {
                 $num = [$index];
                 break;
@@ -3726,6 +3724,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false)
         session_write_close();
         foreach ($num as $val) {
             $use_spamassassin = false;
+            $learn_type = null;
             $isfn = '0';
             $isfp = '0';
             switch ($type) {

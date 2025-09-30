@@ -170,6 +170,9 @@ array_multisort($virus_count, SORT_DESC, $virus_array);
 
 $count = 0;
 $data_names = [];
+$data_first_seen = [];
+$data_scanner = [];
+$data = [];
 foreach ($virus_array as $key => $val) {
     $data[] = $val['count'];
     $data_names[] = "$key";

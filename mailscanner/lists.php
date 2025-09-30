@@ -235,6 +235,8 @@ if ('add' === $url_submit) {
                 $list = 'blacklist';
                 $listi18 = __('bl07');
                 break;
+            default:
+                throw new \RuntimeException('Invalid list case');
         }
         $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
             . "('" . safe_value(stripslashes($to_address)) . "',"
@@ -265,6 +267,8 @@ if ('delete' === $url_submit) {
             $list = 'blacklist';
             $listi18 = __('bl07');
             break;
+        default:
+            throw new \RuntimeException('Invalid list case');
     }
 
     $sqlfrom = "SELECT from_address FROM $list WHERE id='$id'";
@@ -285,6 +289,8 @@ if ('delete' === $url_submit) {
             $sql = "DELETE FROM $list WHERE id='$id'";
             audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
             break;
+        default:
+            throw new \RuntimeException('Invalid User type');
     }
 
     $id = safe_value($url_id);

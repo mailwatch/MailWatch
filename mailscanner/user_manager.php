@@ -937,6 +937,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         echo getHtmlMessage(__('errorpass12'), 'error');
     } else {
         $username = safe_value(stripslashes((string)$_SESSION['myusername']));
+        $n_password = null;
         if (isset($_POST['password'])) {
             $n_password = safe_value($_POST['password']);
         }

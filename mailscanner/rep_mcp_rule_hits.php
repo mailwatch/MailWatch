@@ -47,7 +47,7 @@ $sql = '
 ' . $filter->CreateSQL();
 
 $result = dbquery($sql);
-if (!$result->num_rows > 0) {
+if (!($result->num_rows > 0)) {
     exit(__('diemysql99') . "\n");
 }
 
@@ -60,9 +60,9 @@ while ($row = $result->fetch_object()) {
     $row->mcpreport = preg_replace('/\n/', '', (string)$row->mcpreport);
     $row->mcpreport = preg_replace('/\t/', ' ', $row->mcpreport);
     preg_match('/ \((.+?)\)/i', $row->mcpreport, $sa_rules);
-    // Get rid of first match from the array
+    // Get rid of the first match from the array
     $junk = array_shift($sa_rules);
-    // Split the array, and get rid of the score and required values
+    // Split the array and get rid of the score and required values
     $sa_rules = explode(', ', $sa_rules[0]);
     $junk = array_shift($sa_rules); // score=
     $junk = array_shift($sa_rules); // required
@@ -87,7 +87,6 @@ while ($row = $result->fetch_object()) {
     }
 }
 
-reset($sa_array);
 arsort($sa_array);
 
 echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
@@ -103,16 +102,16 @@ echo '<table border="0" cellpadding="10" cellspacing="0" width="100%">
  <th>%</th>
  </tr>' . "\n";
 foreach ($sa_array as $key => $val) {
-    if ($count >= 10) {
-        break;
-    }
+    //    if ($count >= 10) {
+    //        break;
+    //    }
     echo '
 <tr bgcolor="#ebebeb">
  <td>' . $key . '</td>
  <td>' . return_mcp_rule_desc(strtoupper($key)) . '</td>
  <td align="right">' . number_format($val['total']) . '</td>
  <td align="right">' . number_format($val['not-mcp']) . '</td>
- <td align="right">' . round(($val['not-mcp'] / $val['total']) * 100, 1) . '</td>
+ <td align="right">' . round(((int)$val['not-mcp'] / (int)$val['total']) * 100, 1) . '</td>
  <td align="right">' . number_format($val['mcp']) . '</td>
  <td align="right">' . round(($val['mcp'] / $val['total']) * 100, 1) . '</td>
  </tr>' . "\n";

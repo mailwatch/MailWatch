@@ -53,7 +53,7 @@ echo ' </tr>' . "\n";
 
 // Iterate through the POST variables
 unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
-if (isset($_POST) && !empty($_POST)) {
+if (!empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', (string)$k, $Regs)) {
             $id = deepSanitizeInput($Regs[1], 'url');

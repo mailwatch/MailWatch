@@ -319,8 +319,8 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                         }
                         if ('stage2' === $fields) {
                             ?>
-                                    <input type="hidden" name="email" value="<?php echo $email; ?>">
-                                    <input type="hidden" name="uid" value="<?php echo $uid; ?>">
+                                    <input type="hidden" name="email" value="<?php echo $email ?? ''; ?>">
+                                    <input type="hidden" name="uid" value="<?php echo $uid ?? ''; ?>">
                                     <p><label for="pwd1"><?php echo __('01pwd63'); ?></label></p>
                                     <p><input name="pwd1" type="password" id="pwd1" autocomplete="off" autofocus></p>
                                     <p><label for="pwd2"><?php echo __('02pwd63'); ?></label></p>
