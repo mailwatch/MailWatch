@@ -6,9 +6,9 @@
 # Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
 test -x /usr/local/bin/mailwatch_postfix_relay.php || exit 0
-/usr/bin/php -q /usr/local/bin/mailwatch_postfix_relay.php --refresh
+/usr/bin/php /usr/local/bin/mailwatch_postfix_relay.php --refresh
 
 test -x /usr/local/bin/mailwatch_milter_relay.php || exit 0
-/usr/bin/php -q /usr/local/bin/mailwatch_milter_relay.php --refresh
+/usr/bin/php /usr/local/bin/mailwatch_milter_relay.php --refresh
 
 exit 0
