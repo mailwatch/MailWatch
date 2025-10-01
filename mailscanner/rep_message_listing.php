@@ -101,7 +101,7 @@ $relay_regex = '';
 if (isset($_GET['relay']) && preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', deepSanitizeInput($_GET['relay'], 'url'))) {
     $sql_prefix = '[[:<:]]';
     $sql_suffix = '[[:>:]]';
-    if (database::isUsingICURegexSyntax()) {
+    if (Database::isUsingICURegexSyntax()) {
         $sql_prefix = '\\b';
         $sql_suffix = '\\b';
     }

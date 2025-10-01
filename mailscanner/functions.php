@@ -1000,7 +1000,7 @@ function dbconn()
         define('DB_PORT', 3306);
     }
     try {
-        return database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+        return Database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
     } catch (Exception) {
         if (PHP_SAPI !== 'cli') {
             $output = '
@@ -1038,7 +1038,7 @@ function dbconn()
  */
 function dbclose()
 {
-    return database::close();
+    return Database::close();
 }
 
 /**
@@ -1058,7 +1058,7 @@ function dbquery($sql, $printError = true)
 
     if (true === $printError && false === $result) {
         // stop on query error
-        $message = '<strong>Invalid query</strong>: ' . database::$link->errno . ': ' . database::$link->error . "<br>\n";
+        $message = '<strong>Invalid query</strong>: ' . Database::$link->errno . ': ' . Database::$link->error . "<br>\n";
         $message .= '<strong>Whole query</strong>: <pre>' . $sql . '</pre>';
         exit($message);
     }
@@ -1084,7 +1084,7 @@ function dbquery_reconnect($sql)
                 throw $e;
             }
             // drop the dead link and wait until a new one can be opened, dbconn() would exit
-            database::$link = null;
+            Database::$link = null;
             mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
             while (true) {
                 sleep(5);
@@ -1906,7 +1906,7 @@ function generatePager($sql)
     // Count the number of rows that would be returned by the query
     $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
     $results = dbquery($sqlcount);
-    $rows = database::mysqli_result($results, 0);
+    $rows = Database::mysqli_result($results, 0);
 
     // Build the pager data
     $pager_options = [
@@ -2620,7 +2620,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
 
         // Count the number of rows that would be returned by the query
         $sqlcount = 'SELECT COUNT(*) ' . strstr($sqlcount, 'FROM');
-        $rows = database::mysqli_result(dbquery($sqlcount), 0);
+        $rows = Database::mysqli_result(dbquery($sqlcount), 0);
 
         // Build the pager data
         $pager_options = [
@@ -4047,7 +4047,7 @@ function updateUserPasswordHash($user, $hash)
 {
     $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
     $passwordFiledLengthResult = dbquery($sqlCheckLenght);
-    $passwordFiledLength = (int)database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
+    $passwordFiledLength = (int)Database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
 
     if ($passwordFiledLength < 255) {
         $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
@@ -4655,7 +4655,7 @@ function updateLoginExpiry($myusername)
         return false;
     }
 
-    $login_timeout = database::mysqli_result($result, 0, 'login_timeout');
+    $login_timeout = Database::mysqli_result($result, 0, 'login_timeout');
 
     // Use global if individual value is disabled (-1)
     if ('-1' === $login_timeout) {
@@ -4697,7 +4697,7 @@ function checkLoginExpiry($myusername)
         return true;
     }
 
-    $login_expiry = database::mysqli_result($result, 0, 'login_expiry');
+    $login_expiry = Database::mysqli_result($result, 0, 'login_expiry');
 
     if ('-1' === $login_expiry) {
         // User administratively logged out
@@ -4735,7 +4735,7 @@ function checkPrivilegeChange($myusername)
         return true;
     }
 
-    $user_type = database::mysqli_result($result, 0, 'type');
+    $user_type = Database::mysqli_result($result, 0, 'type');
 
     if ($_SESSION['user_type'] !== $user_type) {
         // Privilege change detected

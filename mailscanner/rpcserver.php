@@ -37,7 +37,7 @@ function rpc_return_quarantined_file($msg)
     if (!is_string($input) || !validateInput($input, 'msgid')) {
         return new xmlrpcresp(0, $xmlrpcerruser + 1, __('dievalidate99'));
     }
-    $date = @database::mysqli_result(
+    $date = @Database::mysqli_result(
         dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . safe_value($input) . "'"),
         0
     );
