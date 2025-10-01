@@ -52,11 +52,14 @@ function postfixallq()
 
 function postfixmailq()
 {
+    $output = null;
     exec('mailq', $output);
-    if (null !== $output && '' !== $output) {
+    if (!empty($output)) {
         foreach ($output as $row) {
-            // the queue listing carries envelope senders and remote SMTP replies
-            echo htmlspecialchars($row, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "\n";
+            if (!empty($row)) {
+                // the queue listing carries envelope senders and remote SMTP replies
+                echo htmlspecialchars($row, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "\n";
+            }
         }
     }
 }

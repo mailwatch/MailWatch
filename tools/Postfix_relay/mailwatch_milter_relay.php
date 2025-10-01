@@ -32,7 +32,7 @@ ini_set('implicit_flush', 'false');
 
 // Edit if you changed webapp directory from default
 $pathToFunctions = __DIR__ . '/../../mailscanner/functions.php';
-if (!@is_file($pathToFunctions)) {
+if (false === @is_file($pathToFunctions)) {
     exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
 }
 require $pathToFunctions;

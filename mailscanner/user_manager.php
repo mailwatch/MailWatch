@@ -368,7 +368,7 @@ function newUser($userType)
         exit;
     }
 
-    $username = html_entity_decode(deepSanitizeInput($_POST['username'], 'string'));
+    $username = deepSanitizeInput(html_entity_decode($_POST['username']), 'string');
     $n_type = deepSanitizeInput($_POST['type'], 'url');
     if (false === $username || !validateInput($username, 'user')) {
         $username = '';
@@ -503,7 +503,7 @@ function editUser($userType)
 }
 
 /**
- * @return bool|object|stdClass|string
+ * @return string
  */
 function deleteUser()
 {

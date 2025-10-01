@@ -2,7 +2,7 @@ includes:
     - phpstan-baseline.php
 
 parameters:
-	level: 3
+	level: 4
 	phpVersion: 80100
 	paths:
 	    - mailscanner
@@ -33,3 +33,128 @@ parameters:
 	    - mailscanner/lib/IPSet.php
 	bootstrapFiles:
 	    - mailscanner/conf.php.example
+	dynamicConstantNames:
+	    # Boolean constants
+	    ALLOW_NO_USER_DOMAIN: bool
+	    AUDIT: bool
+	    AUTO_RELEASE: bool
+	    DEBUG: bool
+	    DEBUG_MILTER: bool
+	    DISPLAY_IP: bool
+	    DISPLAY_VIRUS_REPORT: bool
+	    DISTRIBUTED_SETUP: bool
+	    DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS: bool
+	    DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS: bool
+	    ENABLE_SUPER_DOMAIN_ADMINS: bool
+	    FILTER_TO_ONLY: bool
+	    HIDE_APPLY_QUARANTINE: bool
+	    HIDE_HIGH_SPAM: bool
+	    HIDE_NON_SPAM: bool
+	    HIDE_UNKNOWN: bool
+	    IMAP_AUTOCREATE_VALID_USER: bool
+	    IMAP_USERNAME_FULL_EMAIL: bool
+	    LDAP_MS_AD_COMPATIBILITY: bool
+	    LISTS: bool
+	    MAILQ: bool
+	    MSRE: bool
+	    PWD_RESET: bool
+	    QUARANTINE_FILTERS_COMBINED: bool
+	    QUARANTINE_USE_FLAG: bool
+	    QUARANTINE_USE_SENDMAIL: bool
+	    RESOLVE_IP_ON_DISPLAY: bool
+	    RPC_ONLY: bool
+	    RPC_SSL: bool
+	    SHOW_DOC: bool
+	    SHOW_MORE_INFO_ON_REPORT_GRAPH: bool
+	    SHOW_SFVERSION: bool
+	    SSL_ONLY: bool
+	    STRIP_HTML: bool
+	    USE_IMAP: bool
+	    USE_LDAP: bool
+	    USE_PROXY: bool
+	    VIRUS_INFO: string|false
+	    # String constants
+	    ALLOWED_TAGS: string
+	    DATE_FORMAT: string
+	    DB_DSN: string
+	    DB_HOST: string
+	    DB_NAME: string
+	    DB_PASS: string
+	    DB_TYPE: string
+	    DB_USER: string
+	    EXIM_QUEUE_IN: string
+	    EXIM_QUEUE_OUT: string
+	    IMAGES_DIR: string
+	    IMAP_HOST: string
+	    LANG: string
+	    LDAP_DN: string
+	    LDAP_EMAIL_FIELD: string
+	    LDAP_FILTER: string
+	    LDAP_HOST: string
+	    LDAP_PASS: string
+	    LDAP_PORT: string
+	    LDAP_USER: string
+	    LDAP_USERNAME_FIELD: string
+	    MAILWATCH_FROM_ADDR: string
+	    MAILWATCH_HOME: string
+	    MAILWATCH_HOSTURL: string
+	    MAILWATCH_MAIL_HOST: string
+	    MAILWATCH_MAIL_PORT: string
+	    MAILWATCH_SMTP_HOSTNAME: string
+	    MAIL_LOG: string
+	    MAIL_SENDER: string
+	    MEMORY_LIMIT: string
+	    MSRE_RULESET_DIR: string
+	    MS_CONFIG_DIR: string
+	    MS_EXECUTABLE_PATH: string
+	    MS_LIB_DIR: string
+	    MS_LOG: string
+	    MS_SHARE_DIR: string
+	    MW_LOGO: string
+	    PROXY_HEADER: string
+	    PROXY_PASS: string
+	    PROXY_PORT: string
+	    PROXY_SERVER: string
+	    PROXY_TYPE: string
+	    PROXY_USER: string
+	    PWD_RESET_FROM_NAME: string
+	    PWD_RESET_FROM_ADDRESS: string
+	    QUARANTINE_MSG_BODY: string
+	    QUARANTINE_REPORT_FROM_NAME: string
+	    QUARANTINE_REPORT_SUBJECT: string
+	    QUARANTINE_SENDMAIL_PATH: string
+	    QUARANTINE_SUBJECT: string
+	    RPC_ALLOWED_CLIENTS: string
+	    RPC_RELATIVE_PATH: string
+	    RPC_REMOTE_SERVER: string
+	    SA_DIR: string
+	    SA_PREFS: string
+	    SA_RULES_DIR: string
+	    SENDMAIL_QUEUE_IN: string
+	    SENDMAIL_QUEUE_OUT: string
+	    SESSION_NAME: string
+	    TEMP_DIR: string
+	    TIME_FORMAT: string
+	    TIME_ZONE: string
+	    USER_SELECTABLE_LANG: string
+	    VIRUS_REGEX: string
+	    # Integer constants
+	    AUDIT_DAYS_TO_KEEP: int
+	    DB_PORT: int
+	    FROMTO_MAXLEN: int
+	    LDAP_PROTOCOL_VERSION: int
+	    MAX_RESULTS: int
+	    MSRE_RELOAD_INTERVAL: int
+	    QUARANTINE_DAYS_TO_KEEP: int
+	    QUARANTINE_DAYS_TO_KEEP_NONSPAM: int
+	    QUARANTINE_REPORT_DAYS: int
+	    RECORD_DAYS_TO_KEEP: int
+	    RESET_LINK_EXPIRE: int
+	    RPC_PORT: int
+	    SA_MAXSIZE: int
+	    SESSION_TIMEOUT: int
+	    STATUSGRAPH_INTERVAL: int
+	    STATUS_REFRESH: int
+	    SUBJECT_MAXLEN: int
+	    # Array constants
+	    TRUSTED_PROXIES: array

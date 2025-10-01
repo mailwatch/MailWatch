@@ -1102,12 +1102,11 @@ function sanitizeInput($string)
 {
     $config = HTMLPurifier_Config::createDefault();
     $cachePath = rtrim(sys_get_temp_dir(), '/') . '/MailWatch';
-    if (is_dir($cachePath) || mkdir($cachePath)) {
+    if (mkdir($cachePath) || is_dir($cachePath)) {
         $config->set('Cache.SerializerPath', $cachePath);
     }
-    $purifier = new HTMLPurifier($config);
 
-    return $purifier->purify($string);
+    return (new HTMLPurifier($config))->purify($string);
 }
 
 /**
@@ -1219,10 +1218,8 @@ function getFROMheader($header)
 {
     $sender = '';
     if (1 === preg_match('/From:([ ]|\n)(.*(?=((\d{3}[A-Z]?[ ]+(\w|[-])+:.*)|(\s*\z))))/sUi', $header, $match)) {
-        if (isset($match[2])) {
-            $sender = $match[2];
-        }
-        if (1 === preg_match('/\S+@\S+/', $sender, $match_email) && isset($match_email[0])) {
+        $sender = $match[2];
+        if (1 === preg_match('/\S+@\S+/', $sender, $match_email)) {
             $sender = str_replace(['<', '>', '"'], '', $match_email[0]);
         }
     }
@@ -1806,11 +1803,13 @@ function translateQuarantineDate($date, $format = 'dmy')
 }
 
 /**
+ * @param string $preserve
+ *
  * @return string|false
  */
 function subtract_get_vars($preserve)
 {
-    if (is_array($_GET)) {
+    if (!empty($_GET)) {
         $output = [];
         foreach ($_GET as $k => $v) {
             if (strtolower((string)$k) !== strtolower((string)$preserve)) {
@@ -1836,7 +1835,7 @@ function subtract_get_vars($preserve)
  */
 function subtract_multi_get_vars($preserve)
 {
-    if (is_array($_GET)) {
+    if (!empty($_GET)) {
         $output = [];
         foreach ($_GET as $k => $v) {
             if (!in_array($k, $preserve, true)) {
@@ -2222,11 +2221,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         $row[$f] = htmlentities((string)$row[$f]);
                         if (FROMTO_MAXLEN > 0) {
                             $tooltips[$f] = $row[$f];
-                            // Trim each address to specified size
+                            // Trim each address to a specified size
                             $to_temp = explode(',', $row[$f]);
-                            $num_to_temp = count($to_temp);
-                            for ($t = 0; $t < $num_to_temp; ++$t) {
-                                $to_temp[$t] = trim_output($to_temp[$t], FROMTO_MAXLEN);
+                            foreach ($to_temp as $t => $tValue) {
+                                $to_temp[$t] = trim_output($tValue, FROMTO_MAXLEN);
                             }
                             // Return the data
                             $row[$f] = implode(',', $to_temp);
@@ -2369,36 +2367,16 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 $jsReleaseCheck .= "  document.operations.elements[\"OPTRELEASE-$id\"].checked = true;\n";
             }
             // Colorise the row
-            switch (true) {
-                case $infected:
-                    echo '<tr class="infected">' . "\n";
-                    break;
-                case $whitelisted:
-                    echo '<tr class="whitelisted">' . "\n";
-                    break;
-                case $blacklisted:
-                    echo '<tr class="blacklisted">' . "\n";
-                    break;
-                case $highspam:
-                    echo '<tr class="highspam">' . "\n";
-                    break;
-                case $spam:
-                    echo '<tr class="spam">' . "\n";
-                    break;
-                case $highmcp:
-                    echo '<tr class="highmcp">' . "\n";
-                    break;
-                case $mcp:
-                    echo '<tr class="mcp">' . "\n";
-                    break;
-                default:
-                    if (isset($fieldname['mcpsascore']) && '' !== $fieldname['mcpsascore']) {
-                        echo '<tr class="mcp">' . "\n";
-                    } else {
-                        echo '<tr >' . "\n";
-                    }
-                    break;
-            }
+            echo match (true) {
+                $infected => '<tr class="infected">' . "\n",
+                $whitelisted => '<tr class="whitelisted">' . "\n",
+                $blacklisted => '<tr class="blacklisted">' . "\n",
+                $highspam => '<tr class="highspam">' . "\n",
+                $spam => '<tr class="spam">' . "\n",
+                $highmcp => '<tr class="highmcp">' . "\n",
+                $mcp => '<tr class="mcp">' . "\n",
+                default => '<tr>' . "\n",
+            };
             // Display the rows
             for ($f = 0; $f < $fields; ++$f) {
                 if ($display[$f]) {
@@ -2411,7 +2389,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         }
                     }
                     $tooltipAddon = '';
-                    if (isset($tooltips[$f]) && false !== $tooltips[$f]) {
+                    if (isset($tooltips[$f]) && '' !== $tooltips[$f]) {
                         $tooltipAddon = ' title="' . $tooltips[$f] . '"';
                     }
 
@@ -2421,7 +2399,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             echo ' </tr>' . "\n";
         }
         echo '</table>' . "\n";
-        // Javascript function to clear radio buttons
+        // JavaScript function to clear radio buttons
         if (false !== $operations) {
             echo "
 <script type='text/javascript'>
@@ -2480,8 +2458,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
  * Function to display data as a table.
  *
  * @param string|null $title
- * @param bool|false  $pager
- * @param bool|false  $operations
+ * @param bool        $pager
+ * @param bool        $operations
  */
 function dbtable($sql, $title = null, $pager = false, $operations = false)
 {
@@ -2492,7 +2470,7 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
     // Count the number of rows in a table
     $rows = $sth->num_rows;
 
-    // Count the nubmer of fields
+    // Count the number of fields
     $fields = $sth->field_count;
     */
 
@@ -2845,12 +2823,12 @@ function ldap_authenticate($username, $password)
         }
 
         // search for $user in LDAP directory
-        $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $username)) or exit(__('ldpaauth203'));
+        $ldap_search_results = ldap_search($ds, LDAP_DN, sprintf(LDAP_FILTER, $username));
 
         if (false === $ldap_search_results) {
             @trigger_error(__('ldapnoresult03') . ' "' . $username . '"');
 
-            return null;
+            exit(__('ldpaauth203'));
         }
         if (1 > ldap_count_entries($ds, $ldap_search_results)) {
             @trigger_error(__('ldapresultnodata03') . ' "' . $username . '"');
@@ -2978,14 +2956,14 @@ if (!function_exists('ldap_escape')) {
      */
     function ldap_escape($subject, $ignore = '', $flags = 0)
     {
-        $charMaps = [
+        static $charMaps = [
+            0 => [],
             LDAP_ESCAPE_FILTER => ['\\', '*', '(', ')', "\x00"],
             LDAP_ESCAPE_DN => ['\\', ',', '=', '+', '<', '>', ';', '"', '#'],
         ];
 
         // Pre-process the char maps on first call
-        if (!isset($charMaps[0])) {
-            $charMaps[0] = [];
+        if ([] === $charMaps[0]) {
             for ($i = 0; $i < 256; ++$i) {
                 $charMaps[0][chr($i)] = sprintf('\\%02x', $i);
             }
@@ -3061,13 +3039,17 @@ function ldap_get_conf_var($entry)
     $sh = ldap_search($lh, LDAP_DN, $filter, [$entry]);
 
     $info = ldap_get_entries($lh, $sh);
-    if ($info['count'] > 0 && 0 !== $info[0]['count']) {
+    if (
+        false !== $info
+        && $info['count'] > 0
+        // && 0 !== $info[0]['count']
+    ) {
         if (0 === $info[0]['count']) {
-            // Return single value
+            // Return a single value
             return $info[0][$info[0][0]][0];
         }
 
-        // Multi-value option, build array and return as space delimited
+        // Multi-value option, build an array and return as space delimited
         $return = [];
         for ($n = 0; $n < $info[0][$info[0][0]]['count']; ++$n) {
             $return[] = $info[0][$info[0][0]][$n];
@@ -3110,11 +3092,11 @@ function ldap_get_conf_truefalse($entry)
             'yes', '1' => true,
             default => false,
         };
-    } else {
-        // No results
-        // die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
-        return false;
     }
+
+    // No results
+    // die(__('ldapgetconfvar303') . " '$entry' " . __('ldapgetconfvar403') . "\n");
+    return false;
 }
 
 /**
@@ -3287,10 +3269,8 @@ function stripPortFromIp($ip)
 
 /**
  * @param string $input
- *
- * @return array
  */
-function quarantine_list($input = '/')
+function quarantine_list($input = '/'): array
 {
     $quarantinedir = get_conf_var('QuarantineDir') . '/';
     $item = [];
@@ -3328,22 +3308,16 @@ function quarantine_list($input = '/')
     return $item;
 }
 
-/**
- * @return bool
- */
-function is_local($host)
+function is_local($host): bool
 {
     $host = strtolower((string)$host);
-    // Is RPC required to look-up??
+    // Is RPC required to look up??
     $sys_hostname = strtolower(rtrim(gethostname()));
-    switch ($host) {
-        case $sys_hostname:
-        case gethostbyaddr('127.0.0.1'):
-            return true;
-        default:
-            // Remote - RPC needed
-            return false;
-    }
+
+    return match ($host) {
+        $sys_hostname, gethostbyaddr('127.0.0.1') => true,
+        default => false,
+    };
 }
 
 /**
@@ -3527,10 +3501,8 @@ function quarantine_release_allowed($list)
  * @param string      $to
  * @param bool|false  $rpc_only
  * @param string|null $global_filter
- *
- * @return string
  */
-function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter = null)
+function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter = null): string
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
@@ -3543,8 +3515,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
     if (-1 === $num[0]) {
         $num = [0];
         // Locate message in items
-        for ($index = 0; $index < count($list); ++$index) {
-            if (preg_match('/message\/rfc822/', (string)$list[$index]['type'])) {
+        foreach ($list as $index => $indexValue) {
+            if (preg_match('/message\/rfc822/', (string)$indexValue['type'])) {
                 $num = [$index];
                 break;
             }
@@ -3587,7 +3559,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
             $mail = new Mail_smtp($mail_param);
 
             $m_result = $mail->send(stripslashes($to), $hdrs, $body);
-            if (is_a($m_result, 'PEAR_Error')) {
+            if ($m_result instanceof \PEAR_Error) {
                 // Error
                 $status = __('releaseerror03') . ' (' . $m_result->getMessage() . ')';
                 global $error;
@@ -3626,38 +3598,39 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
                 return $status;
             }
         }
-    } else {
-        // Host is remote - handle by RPC
-        debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
-        // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-        // Convert input parameters
-        $list_output = [];
-        foreach ($list as $list_array) {
-            $list_struct = [];
-            foreach ($list_array as $key => $val) {
-                $list_struct[$key] = new xmlrpcval($val);
-            }
-            $list_output[] = new xmlrpcval($list_struct, 'struct');
-        }
-        $num_output = [];
-        foreach ($num as $key => $val) {
-            $num_output[$key] = new xmlrpcval($val);
-        }
-        // Build input parameters
-        $param1 = new xmlrpcval($list_output, 'array');
-        $param2 = new xmlrpcval($num_output, 'array');
-        $param3 = new xmlrpcval($to, 'string');
-        $parameters = [$param1, $param2, $param3];
-        $msg = new xmlrpcmsg('quarantine_release', $parameters);
-        $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
-        if (0 === $rsp->faultCode()) {
-            $response = php_xmlrpc_decode($rsp->value());
-        } else {
-            $response = 'XML-RPC Error: ' . $rsp->faultString();
-        }
 
-        return $response . ' (RPC)';
+        // No message/rfc822 type found
+        return __('releaseerror03') . ' (No valid message found)';
     }
+
+    // Host is remote - handle by RPC
+    debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
+    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
+    // Convert input parameters
+    $list_output = [];
+    foreach ($list as $list_array) {
+        $list_struct = array_map(static function($val) {
+            return new xmlrpcval($val);
+        }, $list_array);
+        $list_output[] = new xmlrpcval($list_struct, 'struct');
+    }
+    $num_output = array_map(static function($val) {
+        return new xmlrpcval($val);
+    }, $num);
+    // Build input parameters
+    $param1 = new xmlrpcval($list_output, 'array');
+    $param2 = new xmlrpcval($num_output, 'array');
+    $param3 = new xmlrpcval($to, 'string');
+    $parameters = [$param1, $param2, $param3];
+    $msg = new xmlrpcmsg('quarantine_release', $parameters);
+    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
+    if (0 === $rsp->faultCode()) {
+        $response = php_xmlrpc_decode($rsp->value());
+    } else {
+        $response = 'XML-RPC Error: ' . $rsp->faultString();
+    }
+
+    return $response . ' (RPC)';
 }
 
 /**
@@ -4471,7 +4444,13 @@ function deepSanitizeInput($input, $type)
 
             return $string;
         case 'string':
-            $string = filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
+            $string = strip_tags($input);
+            // FILTER_FLAG_STRIP_LOW: removes characters with ASCII < 32 (except \t \r \n)
+            $string = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $string);
+            // FILTER_FLAG_STRIP_BACKTICK: removes backtick
+            $string = str_replace('`', '', $string);
+            // Encode HTML entities (replaces deprecated FILTER_SANITIZE_STRING)
+            $string = htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $string = sanitizeInput($string);
             $string = safe_value($string);
 
@@ -4654,10 +4633,8 @@ function generateToken(): string
 
 /**
  * @param string $token
- *
- * @return bool
  */
-function checkToken($token)
+function checkToken($token): bool
 {
     if (!isset($_SESSION['token'])) {
         return false;
@@ -4701,20 +4678,17 @@ function checkFormToken($formstring, $formtoken)
  * Checks if the passed language code is allowed to be used for the users.
  *
  * @param string $langCode
- *
- * @return bool
  */
-function checkLangCode($langCode)
+function checkLangCode($langCode): bool
 {
     $validLang = explode(',', USER_SELECTABLE_LANG);
-    $found = array_search($langCode, $validLang);
-    if (false === $found || null === $found) {
-        audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
-
-        return false;
+    if (in_array($langCode, $validLang)) {
+        return true;
     }
 
-    return true;
+    audit_log(sprintf(__('auditundefinedlang12', true), $langCode));
+
+    return false;
 }
 
 /**
@@ -4917,7 +4891,7 @@ function printTrafficGraph()
 /**
  * @param string $report virus report message
  *
- * @return string|null
+ * @return string
  */
 function getVirus($report)
 {

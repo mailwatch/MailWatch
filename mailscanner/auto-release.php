@@ -26,6 +26,14 @@
  */
 
 require_once __DIR__ . '/functions.php';
+
+function dbg($text)
+{
+    if (DEBUG) {
+        echo $text . "\n";
+    }
+}
+
 if (file_exists(__DIR__ . '/conf.php')) {
     $output = [];
     if (isset($_GET['mid']) && (isset($_GET['r']) || isset($_GET['amp;r']))) {

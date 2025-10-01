@@ -157,10 +157,6 @@ switch ($_GET['action']) {
                 simple_html_end();
             }
         } else {
-            if (false === checkToken($_GET['token'])) {
-                header('Location: login.php?error=pagetimeout');
-                exit;
-            }
             // Delete
             $status[] = quarantine_delete($list, array_keys($list), false, $_SESSION['global_filter']);
         }
