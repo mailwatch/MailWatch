@@ -27,8 +27,7 @@
 
 class database
 {
-    /** @var mysqli */
-    public static $link;
+    public static ?mysqli $link = null;
 
     private function __construct()
     {

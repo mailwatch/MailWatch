@@ -1649,7 +1649,7 @@ function trim_output($input, $maxlen)
 /**
  * @param string $file
  *
- * @return bool
+ * @return false|string
  */
 function get_default_ruleset_value($file)
 {

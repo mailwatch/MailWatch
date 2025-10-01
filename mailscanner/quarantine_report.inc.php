@@ -347,11 +347,10 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $email
      * @param string $to_address
      * @param string $to_domain
-     * @param bool   $sendEmptyReports
      *
-     * @return true if all reports were send successfully; false if one or more reports could not be send
+     * @return bool true if all reports were sent successfully; false if one or more reports could not be sent
      */
-    private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain, $sendEmptyReports = false)
+    private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain, bool $sendEmptyReports = false)
     {
         self::dbg(" ==== Recipient e-mail address is $email");
         // Get any additional reports required
@@ -392,53 +391,53 @@ ORDER BY a.date DESC, a.time DESC';
             }
 
             return $sendResult;
-        } else {
-            // combined
-            $quarantine_list = [];
-            $quarantined = [];
+        }
 
-            if ('A' === $type) {
-                $list_for = gethostname();
+        // combined
+        $quarantine_list = [];
+        $quarantined = [];
+
+        if ('A' === $type) {
+            $list_for = gethostname();
+
+            self::dbg(" ==== Building list for $list_for");
+            $quarantined[] = self::return_quarantine_list_array('', '');
+            $quarantine_list[] = $list_for;
+
+            self::dbg(' ==== Found ' . count($quarantined[0]) . ' quarantined e-mails');
+        } else {
+            foreach ($filters as $filter) {
+                if ('D' === $type) {
+                    $filter_domain = preg_match('/(\S+)@(\S+)/', (string)$filter, $split) ? $split[2] : $filter;
+                    $list_for = $filter_domain;
+                } else {
+                    $filter_domain = $to_domain;
+                    $list_for = $filter;
+                }
 
                 self::dbg(" ==== Building list for $list_for");
-                $quarantined[] = self::return_quarantine_list_array('', '');
-                $quarantine_list[] = $list_for;
+                $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
 
-                self::dbg(' ==== Found ' . count($quarantined[0]) . ' quarantined e-mails');
-            } else {
-                foreach ($filters as $filter) {
-                    if ('D' === $type) {
-                        $filter_domain = preg_match('/(\S+)@(\S+)/', (string)$filter, $split) ? $split[2] : $filter;
-                        $list_for = $filter_domain;
-                    } else {
-                        $filter_domain = $to_domain;
-                        $list_for = $filter;
-                    }
-
-                    self::dbg(" ==== Building list for $list_for");
-                    $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
-
-                    self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
-                    if (count($tmp_quarantined) > 0) {
-                        $quarantined[] = $tmp_quarantined;
-                        $quarantine_list[] = $list_for;
-                    }
+                self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
+                if (count($tmp_quarantined) > 0) {
+                    $quarantined[] = $tmp_quarantined;
+                    $quarantine_list[] = $list_for;
                 }
             }
-            if (count($quarantined) > 0) {
-                $quarantined = call_user_func_array('array_merge', $quarantined);
-            }
-
-            if (true === $sendEmptyReports || count($quarantined) > 0) {
-                $list = implode(', ', $quarantine_list);
-
-                return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
-            }
-
-            unset($quarantined, $quarantine_list);
-
-            return false;
         }
+        if (count($quarantined) > 0) {
+            $quarantined = array_merge(...$quarantined);
+        }
+
+        if (true === $sendEmptyReports || count($quarantined) > 0) {
+            $list = implode(', ', $quarantine_list);
+
+            return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
+        }
+
+        unset($quarantined, $quarantine_list);
+
+        return false;
     }
 
     /**
