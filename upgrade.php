@@ -31,10 +31,10 @@ if (PHP_SAPI !== 'cli') {
 }
 
 // Edit if you changed webapp directory from default and not using command line argument to define it
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
-//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+// $pathToFunctions = '/opt/mailscanner/functions.php';
+$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
 
-$cli_options = getopt('', array('skip-user-confirm'));
+$cli_options = getopt('', ['skip-user-confirm']);
 
 if (isset($argv) && count($argv) > 1) {
     if (empty($cli_options)) {
@@ -42,43 +42,34 @@ if (isset($argv) && count($argv) > 1) {
     } else {
         $args = array_search('--', $argv, true);
         $args = array_splice($argv, $args ? ++$args : (count($argv) - count($cli_options)));
-        //get path from command line argument if set
+        // get path from command line argument if set
         $pathToFunctions = $args[0];
     }
 }
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 17) . PHP_EOL);
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 17) . PHP_EOL);
 }
 
 require_once $pathToFunctions;
 
 $link = dbconn();
 
-$mysql_utf8_variant = array(
-    'utf8' => array('charset' => 'utf8', 'collation' => 'utf8_unicode_ci'),
-    'utf8mb4' => array('charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci')
-);
-
+$mysql_utf8_variant = [
+    'utf8' => ['charset' => 'utf8', 'collation' => 'utf8_unicode_ci'],
+    'utf8mb4' => ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci'],
+];
 
 /*****************************************************************
  * Start helper functions
  *****************************************************************/
 
-/**
- * @param string $input
- * @return string
- */
-function pad($input)
+function pad(string $input): string
 {
     return str_pad($input, 70, '.', STR_PAD_RIGHT);
 }
 
-/**
- * @param string $sql
- * @param bool   $beSilent
- */
-function executeQuery($sql, $beSilent = false)
+function executeQuery(string $sql, bool $beSilent = false): void
 {
     global $link;
     try {
@@ -88,37 +79,34 @@ function executeQuery($sql, $beSilent = false)
             }
         } else {
             echo color(' ERROR', 'red') . PHP_EOL;
-            die('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
+            exit('Database error: ' . $link->error . " - SQL = '$sql'" . PHP_EOL);
         }
     } catch (Exception $e) {
         echo color(' ERROR', 'red') . PHP_EOL;
-        die('Database error: ' . $e->getMessage() . " - SQL = '$sql'" . PHP_EOL);
+        exit('Database error: ' . $e->getMessage() . " - SQL = '$sql'" . PHP_EOL);
     }
 }
 
 /**
- * @param string $table
- * @return bool|mysqli_result
+ * @return bool
  */
-function check_table_exists($table)
+function check_table_exists(string $table)
 {
     global $link;
     $sql = 'SHOW TABLES LIKE "' . $table . '"';
 
-    return ($link->query($sql)->num_rows > 0);
+    return $link->query($sql)->num_rows > 0;
 }
 
 /**
- * @param string $table
- * @param string $column
- * @return bool|mysqli_result
+ * @return bool
  */
-function check_column_exists($table, $column)
+function check_column_exists(string $table, string $column)
 {
     global $link;
     $sql = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $column . '"';
 
-    return ($link->query($sql)->num_rows > 0);
+    return $link->query($sql)->num_rows > 0;
 }
 
 /**
@@ -158,13 +146,7 @@ function get_database_collation()
     return false;
 }
 
-/**
- * @param string $db
- * @param string $table
- * @param string $utf8variant
- * @return bool
- */
-function check_utf8_table($db, $table, $utf8variant = 'utf8')
+function check_utf8_table(string $db, string $table, string $utf8variant = 'utf8'): bool
 {
     global $link;
     global $mysql_utf8_variant;
@@ -179,18 +161,13 @@ function check_utf8_table($db, $table, $utf8variant = 'utf8')
     $table_charset = database::mysqli_result($result, 0, 0);
     $table_collation = database::mysqli_result($result, 0, 1);
 
-    return (
-        strtolower($table_charset) === $mysql_utf8_variant[$utf8variant]['charset'] &&
-        strtolower($table_collation) === $mysql_utf8_variant[$utf8variant]['collation']
-    );
+    return
+        strtolower($table_charset) === $mysql_utf8_variant[$utf8variant]['charset']
+        && strtolower($table_collation) === $mysql_utf8_variant[$utf8variant]['collation']
+    ;
 }
 
-/**
- * @param string $db
- * @param string $table
- * @return bool
- */
-function is_table_type_innodb($db, $table)
+function is_table_type_innodb(string $db, string $table): bool
 {
     global $link;
     $sql = 'SELECT t.engine 
@@ -203,12 +180,9 @@ function is_table_type_innodb($db, $table)
 }
 
 /**
- * @param string $db
- * @param string $table
- * @param string $index
  * @return int|null
  */
-function get_index_size($db, $table, $index)
+function get_index_size(string $db, string $table, string $index)
 {
     global $link;
     $sql = 'SHOW INDEX FROM ' . $db . '.' . $table . ' WHERE Key_name = "' . $index . '"';
@@ -221,18 +195,14 @@ function get_index_size($db, $table, $index)
     return (int)$row['Sub_part'];
 }
 
-/**
- * @param string $table
- * @return array
- */
-function getTableIndexes($table)
+function getTableIndexes(string $table): array
 {
     global $link;
     $sql = 'SHOW INDEX FROM `' . $table . '`';
     $result = $link->query($sql);
 
-    $indexes = array();
-    if (false === $result || $result->num_rows === 0) {
+    $indexes = [];
+    if (false === $result || 0 === $result->num_rows) {
         return $indexes;
     }
 
@@ -243,39 +213,30 @@ function getTableIndexes($table)
     return $indexes;
 }
 
-/**
- * @return string
- */
-function getSqlServer()
+function getSqlServer(): string
 {
     global $link;
-    //test if mysql or mariadb is used.
+    // test if mysql or mariadb is used.
     $sql = 'SELECT VERSION() as version';
     $result = $link->query($sql);
     $fetch = $result->fetch_array();
-    if (false === strpos($fetch['version'], 'MariaDB')) {
-        //mysql does not support aria storage engine
+    if (!str_contains($fetch['version'], 'MariaDB')) {
+        // mysql does not support aria storage engine
         return 'mysql';
     }
 
     return 'mariadb';
 }
 
-function getColumnInfo($table, $column)
+function getColumnInfo(string $table, string $column)
 {
     global $link;
     $sql = 'SHOW COLUMNS FROM ' . $table . " LIKE '" . $column . "'";
-    $result = $link->query($sql);
 
-    return $result->fetch_array();
+    return $link->query($sql)->fetch_array();
 }
 
-/**
- * @param string $string
- * @param string $color
- * @return string
- */
-function color($string, $color = '')
+function color(string $string, string $color = ''): string
 {
     $after = "\033[0m";
     switch ($color) {
@@ -300,43 +261,11 @@ function color($string, $color = '')
     return $before . $string . $after;
 }
 
-/**
- * @param string $haystack
- * @param string $needles
- * @return bool
- */
-function stringStartsWith($haystack, $needles)
-{
-    foreach ((array)$needles as $needle) {
-        if ($needle !== '' && 0 === strpos($haystack, (string)$needle)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/**
- * @param string $haystack
- * @param string $needles
- * @return bool
- */
-function stringEndsWith($haystack, $needles)
-{
-    foreach ((array)$needles as $needle) {
-        if (substr($haystack, -strlen($needle)) === (string)$needle) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 /*****************************************************************
  * End helper functions
  *****************************************************************/
 
-$errors = false;
+$errors = [];
 
 // Upgrade mailwatch database
 echo PHP_EOL;
@@ -347,7 +276,7 @@ if (!array_key_exists('skip-user-confirm', $cli_options)) {
     echo "Have you done a full backup of your database? Type 'yes' to continue: ";
     $handle = fopen('php://stdin', 'rb');
     $line = fgets($handle);
-    if (strtolower(trim($line)) !== 'yes') {
+    if ('yes' !== strtolower(trim($line))) {
         echo 'ABORTING!' . PHP_EOL;
         exit(1);
     }
@@ -479,7 +408,7 @@ if ($link) {
     // Update users table schema to prevent empty user type
     echo pad(' - Fix schema for type field in `users` table');
     $user_type_info = getColumnInfo('users', 'type');
-    if ($user_type_info['Null'] !== 'No') {
+    if ('No' !== $user_type_info['Null']) {
         $sql = "ALTER TABLE users CHANGE type type enum('A','D','U','R','H') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'U';";
         executeQuery($sql);
     } else {
@@ -492,7 +421,7 @@ if ($link) {
     // Table audit_log
     echo pad(' - Fix schema for username field in `audit_log` table');
     $audit_log_user_info = getColumnInfo('audit_log', 'user');
-    if ($audit_log_user_info['Type'] !== 'varchar(191)') {
+    if ('varchar(191)' !== $audit_log_user_info['Type']) {
         $sql = "ALTER TABLE audit_log CHANGE user user VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -502,7 +431,7 @@ if ($link) {
 
     echo pad(' - Fix schema for ipv6 support in `audit_log` table');
     $audit_log_ipaddr_info = getColumnInfo('audit_log', 'ip_address');
-    if ($audit_log_ipaddr_info['Type'] !== 'varchar(45)') {
+    if ('varchar(45)' !== $audit_log_ipaddr_info['Type']) {
         $sql = "ALTER TABLE audit_log CHANGE ip_address ip_address VARCHAR(45) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -513,7 +442,7 @@ if ($link) {
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
     $blacklist_id_info = getColumnInfo('blacklist', 'id');
-    if (strtolower($blacklist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($blacklist_id_info['Null']) !== 'NO' || strtolower($blacklist_id_info['Extra']) !== 'auto_increment') {
+    if ('bigint(20) unsigned' !== strtolower($blacklist_id_info['Type']) || 'NO' !== strtoupper($blacklist_id_info['Null']) || 'auto_increment' !== strtolower($blacklist_id_info['Extra'])) {
         $sql = 'ALTER TABLE blacklist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
         executeQuery($sql);
     } else {
@@ -524,7 +453,7 @@ if ($link) {
     // Table whitelist
     echo pad(' - Fix schema for id field in `whitelist` table');
     $whitelist_id_info = getColumnInfo('whitelist', 'id');
-    if (strtolower($whitelist_id_info['Type']) !== 'bigint(20) unsigned' || strtoupper($whitelist_id_info['Null']) !== 'NO' || strtolower($whitelist_id_info['Extra']) !== 'auto_increment') {
+    if ('bigint(20) unsigned' !== strtolower($whitelist_id_info['Type']) || 'NO' !== strtoupper($whitelist_id_info['Null']) || 'auto_increment' !== strtolower($whitelist_id_info['Extra'])) {
         $sql = 'ALTER TABLE whitelist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
         executeQuery($sql);
     } else {
@@ -534,7 +463,7 @@ if ($link) {
     // username lenght to 191
     echo pad(' - Fix schema for username field in `users` table');
     $users_username_info = getColumnInfo('users', 'username');
-    if ($users_username_info['Type'] !== 'varchar(191)') {
+    if ('varchar(191)' !== $users_username_info['Type']) {
         $sql = "ALTER TABLE users CHANGE username username VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -543,7 +472,7 @@ if ($link) {
 
     echo pad(' - Fix schema for username field in `user_filters` table');
     $user_filters_username_info = getColumnInfo('users', 'username');
-    if ($user_filters_username_info['Type'] !== 'varchar(191)') {
+    if ('varchar(191)' !== $user_filters_username_info['Type']) {
         $sql = "ALTER TABLE user_filters CHANGE username username VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -553,7 +482,7 @@ if ($link) {
     // Table user_filters spam score to float
     echo pad(' - Fix schema for spamscore field in `users` table');
     $users_spamscore_info = getColumnInfo('users', 'spamscore');
-    if ($users_spamscore_info['Type'] !== 'float') {
+    if ('float' !== $users_spamscore_info['Type']) {
         $sql = "ALTER TABLE users CHANGE spamscore spamscore FLOAT DEFAULT '0'";
         executeQuery($sql);
     } else {
@@ -562,7 +491,7 @@ if ($link) {
 
     echo pad(' - Fix schema for highspamscore field in `users` table');
     $users_highspamscore_info = getColumnInfo('users', 'highspamscore');
-    if ($users_highspamscore_info['Type'] !== 'float') {
+    if ('float' !== $users_highspamscore_info['Type']) {
         $sql = "ALTER TABLE users CHANGE highspamscore highspamscore FLOAT DEFAULT '0'";
         executeQuery($sql);
     } else {
@@ -576,7 +505,7 @@ if ($link) {
     echo pad(' - Fix schema for timestamp field in `maillog` table');
     $maillog_timestamp_info = getColumnInfo('maillog', 'timestamp');
     if (null !== $maillog_timestamp_info['Default'] || '' !== $maillog_timestamp_info['Extra']) {
-        //Set NULL default on timestamp column
+        // Set NULL default on timestamp column
         $sql = 'ALTER TABLE maillog CHANGE timestamp timestamp TIMESTAMP NULL DEFAULT NULL;';
         executeQuery($sql);
     } else {
@@ -587,7 +516,7 @@ if ($link) {
     // Fix schema for nameinfected to allow for >9 entries.  #981
     echo pad(' - Fix schema for nameinfected in `maillog` table');
     $maillog_nameinfected = getColumnInfo('maillog', 'nameinfected');
-    if ($maillog_nameinfected['Type'] !== 'tinyint(2)') {
+    if ('tinyint(2)' !== $maillog_nameinfected['Type']) {
         $sql = 'ALTER TABLE maillog CHANGE nameinfected nameinfected TINYINT(2) DEFAULT 0';
         executeQuery($sql);
     } else {
@@ -600,7 +529,7 @@ if ($link) {
     // Table users password to 255
     echo pad(' - Fix schema for password field in `users` table');
     $users_password_info = getColumnInfo('users', 'password');
-    if ($users_password_info['Type'] !== 'varchar(255)') {
+    if ('varchar(255)' !== $users_password_info['Type']) {
         $sql = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR(255) DEFAULT NULL';
         executeQuery($sql);
     } else {
@@ -611,7 +540,7 @@ if ($link) {
     // Table users fullname to 255
     echo pad(' - Fix schema for fullname field in `users` table');
     $users_fullname_info = getColumnInfo('users', 'fullname');
-    if ($users_fullname_info['Type'] !== 'varchar(255)') {
+    if ('varchar(255)' !== $users_fullname_info['Type']) {
         $sql = "ALTER TABLE `users` CHANGE `fullname` `fullname` VARCHAR(255) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -623,7 +552,7 @@ if ($link) {
     echo pad(' - Fix schema for rule and rule_desc field in `mcp_rules` table');
     $mcp_rules_rule_info = getColumnInfo('mcp_rules', 'rule');
     $mcp_rules_rule_desc_info = getColumnInfo('mcp_rules', 'rule_desc');
-    if ($mcp_rules_rule_info['Type'] !== 'varchar(191)' || $mcp_rules_rule_desc_info['Type'] !== 'varchar(512)') {
+    if ('varchar(191)' !== $mcp_rules_rule_info['Type'] || 'varchar(512)' !== $mcp_rules_rule_desc_info['Type']) {
         $sql = "ALTER TABLE mcp_rules CHANGE rule rule VARCHAR(191) NOT NULL DEFAULT '', CHANGE rule_desc rule_desc VARCHAR(512) NOT NULL DEFAULT '';";
         executeQuery($sql);
     } else {
@@ -637,7 +566,7 @@ if ($link) {
     echo pad(' - Fix schema for rule and rule_desc field in `sa_rules` table');
     $sa_rules_rule_info = getColumnInfo('sa_rules', 'rule');
     $sa_rules_rule_desc_info = getColumnInfo('sa_rules', 'rule_desc');
-    if ($sa_rules_rule_info['Type'] !== 'varchar(191)' || $sa_rules_rule_desc_info['Type'] !== 'varchar(512)') {
+    if ('varchar(191)' !== $sa_rules_rule_info['Type'] || 'varchar(512)' !== $sa_rules_rule_desc_info['Type']) {
         $sql = "ALTER TABLE sa_rules CHANGE rule rule VARCHAR(191) NOT NULL DEFAULT '', CHANGE rule_desc rule_desc VARCHAR(512) NOT NULL DEFAULT ''";
         executeQuery($sql);
     } else {
@@ -707,7 +636,7 @@ if ($link) {
     }
 
     echo pad(' - Add last_update field to `maillog` table');
-    if (check_column_exists('maillog', 'last_update') === false) {
+    if (false === check_column_exists('maillog', 'last_update')) {
         $sql = 'ALTER TABLE `maillog` ADD `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
         executeQuery($sql);
     } else {
@@ -746,10 +675,10 @@ if ($link) {
     $countTokenGenerated = 0;
     if ($rows > 0) {
         while ($row = $result->fetch_object()) {
-            if ($row->token === null) {
+            if (null === $row->token) {
                 $sql = 'UPDATE `maillog` SET `token`=\'' . generateToken() . '\' WHERE `id`=\'' . trim($row->id) . '\'';
                 executeQuery($sql, true);
-                $countTokenGenerated++;
+                ++$countTokenGenerated;
             }
         }
         echo color(' DONE', 'lightgreen') . PHP_EOL;
@@ -806,10 +735,10 @@ if ($link) {
     echo PHP_EOL;
 
     // Fix existing index size for utf8mb4 conversion
-    $too_big_indexes = array(
+    $too_big_indexes = [
         'maillog_from_idx',
         'maillog_to_idx',
-    );
+    ];
 
     foreach ($too_big_indexes as $item) {
         echo pad(' - Dropping too big index `' . $item . '` on table `maillog`');
@@ -839,7 +768,7 @@ if ($link) {
 
     echo PHP_EOL;
 
-    $utf8_tables = array(
+    $utf8_tables = [
         'audit_log',
         'autorelease',
         'blacklist',
@@ -854,14 +783,14 @@ if ($link) {
         'users',
         'user_filters',
         'whitelist',
-    );
+    ];
 
     // Convert tables to utf8 using $utf8_tables array
     foreach ($utf8_tables as $table) {
         echo pad(' - Convert table `' . $table . '` to ' . $server_utf8_variant . '');
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
-        } elseif (check_utf8_table(DB_NAME, $table, $server_utf8_variant) === false) {
+        } elseif (false === check_utf8_table(DB_NAME, $table, $server_utf8_variant)) {
             $sql = 'ALTER TABLE `' . $table .
                 '` CONVERT TO CHARACTER SET ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
                 ' COLLATE ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
@@ -878,7 +807,7 @@ if ($link) {
         echo pad(' - Convert table `' . $table . '` to InnoDB');
         if (false === check_table_exists($table)) {
             echo ' DO NOT EXISTS' . PHP_EOL;
-        } elseif (is_table_type_innodb(DB_NAME, $table) === false) {
+        } elseif (false === is_table_type_innodb(DB_NAME, $table)) {
             $sql = 'ALTER TABLE `' . $table . '` ENGINE = InnoDB';
             executeQuery($sql);
         } else {
@@ -887,48 +816,48 @@ if ($link) {
     }
 
     // check for missing indexes
-    $indexes = array(
-        'maillog' => array(
-            'maillog_datetime_idx' => array(
+    $indexes = [
+        'maillog' => [
+            'maillog_datetime_idx' => [
                 'fields' => '(`date`,`time`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
-            ),
-            'maillog_id_idx' => array('fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_clientip_idx' => array(
+                'minMysqlVersion' => '50100',
+            ],
+            'maillog_id_idx' => ['fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_clientip_idx' => [
                 'fields' => '(`clientip`(20))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
-            ),
-            'maillog_from_idx' => array(
+                'minMysqlVersion' => '50100',
+            ],
+            'maillog_from_idx' => [
                 'fields' => '(`from_address`(191))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
-            ),
-            'maillog_to_idx' => array('fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_host' => array('fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'from_domain_idx' => array(
+                'minMysqlVersion' => '50100',
+            ],
+            'maillog_to_idx' => ['fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_host' => ['fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'from_domain_idx' => [
                 'fields' => '(`from_domain`(50))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
-            ),
-            'to_domain_idx' => array('fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
-            'maillog_quarantined' => array(
+                'minMysqlVersion' => '50100',
+            ],
+            'to_domain_idx' => ['fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_quarantined' => [
                 'fields' => '(`quarantined`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100'
-            ),
-            'timestamp_idx' => array('fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'),
+                'minMysqlVersion' => '50100',
+            ],
+            'timestamp_idx' => ['fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
             // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
-            'subject_idx' => array('fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'),
-        )
-    );
+            'subject_idx' => ['fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'],
+        ],
+    ];
 
     foreach ($indexes as $table => $indexlist) {
         echo PHP_EOL . pad(' - Search for missing indexes on table `' . $table . '`') . color(
-                ' DONE',
-                'green'
-            ) . PHP_EOL;
+            ' DONE',
+            'green'
+        ) . PHP_EOL;
         $existingIndexes = getTableIndexes($table);
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
@@ -958,8 +887,8 @@ echo 'Checking for obsolete files: ' . PHP_EOL;
 echo PHP_EOL;
 
 if (file_exists(MAILWATCH_HOME . '/images/cache/')) {
-    $result = rmdir(MAILWATCH_HOME . '/images/cache/') . PHP_EOL;
-    if ($result === true) {
+    $result = rmdir(MAILWATCH_HOME . '/images/cache/');
+    if (true === $result) {
         echo pad(' - Cache dir is still present. Removed it') . color(' INFO', 'lightgreen') . PHP_EOL;
     } else {
         echo pad(' - Cache dir is still present but removing it failed') . color(' ERROR', 'red') . PHP_EOL;
@@ -975,19 +904,19 @@ echo 'Checking MailScanner.conf settings: ' . PHP_EOL;
 echo PHP_EOL;
 
 if (!is_file(MS_CONFIG_DIR . 'MailScanner.conf')) {
-    $err_msg = 'MailScanner.conf: cannot find file on path "' . MS_CONFIG_DIR . 'MailScanner.conf' . '"';
+    $err_msg = 'MailScanner.conf: cannot find file on path "' . MS_CONFIG_DIR . 'MailScanner.conf"';
     echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
     $errors[] = $err_msg;
 } else {
-    $check_settings = array(
+    $check_settings = [
         'QuarantineWholeMessage' => 'yes',
         'QuarantineWholeMessagesAsQueueFiles' => 'no',
         'DetailedSpamReport' => 'yes',
         'IncludeScoresInSpamAssassinReport' => 'yes',
         'SpamActions' => 'store',
         'HighScoringSpamActions' => 'store',
-        'AlwaysLookedUpLast' => '&MailWatchLogging'
-    );
+        'AlwaysLookedUpLast' => '&MailWatchLogging',
+    ];
 
     foreach ($check_settings as $setting => $value) {
         echo pad(" - $setting ");
@@ -1005,7 +934,7 @@ echo PHP_EOL;
 echo 'Checking conf.php configuration entry: ' . PHP_EOL;
 echo PHP_EOL;
 $checkConfigEntries = checkConfVariables();
-if ($checkConfigEntries['needed']['count'] === 0) {
+if (0 === $checkConfigEntries['needed']['count']) {
     echo pad(' - All mandatory entries are present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['needed']['list'] as $missingConfigEntry) {
@@ -1014,7 +943,7 @@ if ($checkConfigEntries['needed']['count'] === 0) {
     }
 }
 
-if ($checkConfigEntries['obsolete']['count'] === 0) {
+if (0 === $checkConfigEntries['obsolete']['count']) {
     echo pad(' - All obsolete entries are already removed') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['obsolete']['list'] as $obsoleteConfigEntry) {
@@ -1023,7 +952,7 @@ if ($checkConfigEntries['obsolete']['count'] === 0) {
     }
 }
 
-if ($checkConfigEntries['optional']['count'] === 0) {
+if (0 === $checkConfigEntries['optional']['count']) {
     echo pad(' - All optional entries are already present') . color(' OK', 'green') . PHP_EOL;
 } else {
     foreach ($checkConfigEntries['optional']['list'] as $optionalConfigEntry => $detail) {
@@ -1036,20 +965,20 @@ echo PHP_EOL;
 
 /* Check configuration for syntactically wrong entries */
 // IMAGES_DIR need both leading and trailing slash
-if (!stringStartsWith(IMAGES_DIR, '/') || !stringEndsWith(IMAGES_DIR, '/')) {
+if (!str_starts_with(IMAGES_DIR, '/') || !str_ends_with(IMAGES_DIR, '/')) {
     $err_msg = 'conf.php: IMAGES_DIR must start and end with a slash';
     echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
     $errors[] = $err_msg;
 }
 // MAILWATCH_HOSTURL don't need trailing slash
-if (stringEndsWith(MAILWATCH_HOSTURL, '/')) {
+if (str_ends_with(MAILWATCH_HOSTURL, '/')) {
     $err_msg = 'conf.php: MAILWATCH_HOSTURL must not end with a slash';
     echo pad(' - ' . $err_msg) . color(' ERROR', 'red') . PHP_EOL;
     $errors[] = $err_msg;
 }
 
 echo PHP_EOL;
-//Check minimal PHP version
+// Check minimal PHP version
 echo pad(' - Checking minimal PHP version >= 8.1');
 if (PHP_VERSION_ID >= 80100) {
     echo color(' PHP version OK', 'lightgreen') . PHP_EOL;
@@ -1060,7 +989,7 @@ if (PHP_VERSION_ID >= 80100) {
 echo PHP_EOL;
 
 // Error messages
-if (is_array($errors)) {
+if (!empty($errors)) {
     echo '*** ERROR/WARNING SUMMARY ***' . PHP_EOL;
     foreach ($errors as $error) {
         echo $error . PHP_EOL;
