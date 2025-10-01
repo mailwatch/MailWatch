@@ -8,11 +8,11 @@
 # Both scripts tail the log continuously; this hourly run only restarts them if they are not running.
 
 if [ -x /usr/local/bin/mailwatch_postfix_relay.php ] && ! ps -C php -o args h | grep -q mailwatch_postfix_relay.php; then
-    /usr/bin/php -q /usr/local/bin/mailwatch_postfix_relay.php > /dev/null 2>&1 &
+    /usr/bin/php /usr/local/bin/mailwatch_postfix_relay.php > /dev/null 2>&1 &
 fi
 
 if [ -x /usr/local/bin/mailwatch_milter_relay.php ] && ! ps -C php -o args h | grep -q mailwatch_milter_relay.php; then
-    /usr/bin/php -q /usr/local/bin/mailwatch_milter_relay.php > /dev/null 2>&1 &
+    /usr/bin/php /usr/local/bin/mailwatch_milter_relay.php > /dev/null 2>&1 &
 fi
 
 exit 0
