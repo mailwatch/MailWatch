@@ -750,7 +750,7 @@ class xmlrpc_client
     public $key = '';
     public $keypass = '';
     public $verifypeer = true;
-    public $verifyhost = 1;
+    public $verifyhost = 2;
     public $no_multicall = false;
     public $proxy = '';
     public $proxyport = 0;
@@ -1429,7 +1429,7 @@ class xmlrpc_client
             }
         }
 
-        if ($method == 'https') {
+        if ($method === 'https') {
             // set cert file
             if ($cert) {
                 curl_setopt($curl, CURLOPT_SSLCERT, $cert);
