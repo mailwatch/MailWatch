@@ -154,7 +154,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     // Now grab any lines in the file that aren't comments.
     $ruleset = [];
     $previous_line = '';
-    foreach (preg_split("/\n/", $file_contents) as $line) {
+    foreach (explode("\n", $file_contents) as $line) {
         // echo "$i: $line<br>\n";
         // $i++;
         // this should find lines w/out comments, or lines that
@@ -163,8 +163,9 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         if ('' === $line) {
             $line = '#';
         }
-        if ((!str_starts_with($line, '#'))
-            || preg_match('/^#DISABLED#/', $line)
+        if (
+            (!str_starts_with($line, '#'))
+            || str_starts_with($line, '#DISABLED#')
         ) {
             // Check for a description on the previous line
             $desc = '';
@@ -220,9 +221,8 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         ] = $old_rule_part;
 
         // Clean out whitespace from the rule parts
-        foreach ($rule_part as &$a_part) {
-            trim((string)$a_part);
-        }
+        $rule_part = array_map('trim', $rule_part);
+
         // I need to check
         // for "missing pieces" of the rule, that may
         // exist in the old_rule_part array in between
@@ -236,7 +236,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         // is if there isn't an "and", and there are multiple actions.
         // Not positive, but I'll know more as I test.
         $last_old_rule_part = array_pop($old_rule_part);
-        // Need two differnt while loops I think, based on
+        // Need two different while loops, I think, based on
         // if there was an and or not.
         if ('and' === strtolower((string)$rule_part['2and'])) {
             // If there's an and, grab up to the 4and_target.
@@ -531,9 +531,9 @@ function Process_Form($file_contents, $short_filename)
     // stopping when we have reached a non-comment line
     $previous_line = '';
     $first_line = true;
-    foreach (preg_split("/\n/", (string)$file_contents) as $line) {
+    foreach (explode("\n", (string)$file_contents) as $line) {
         if ('' === $line
-             || (str_starts_with($line, '#') && !preg_match('/#DISABLED#/', $line))
+             || (str_starts_with($line, '#') && !str_contains($line, '#DISABLED#'))
         ) {
             if (!$first_line) {
                 $new_file[] = $previous_line . "\n";

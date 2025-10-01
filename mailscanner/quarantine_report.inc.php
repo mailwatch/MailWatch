@@ -317,9 +317,9 @@ ORDER BY a.date DESC, a.time DESC';
                         break;
                 }
                 // Make sure we have a destination address
-                if (!empty($email) && false !== $email) {
+                if (false !== $email && '' !== $email) {
                     $sendResult = self::send_reports_for_user($user->username, $user->type, $email, $to_address, $to_domain, $sendEmptyReports);
-                    if (0 === $sendResult) {
+                    if (false === $sendResult) {
                         ++$num_empty_reports;
                     } elseif ($sendResult) {
                         ++$num_successfull_reports;
@@ -565,9 +565,9 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $filter
      * @param array  $quarantined
      *
-     * @return bool true if mail was send; false if error occured
+     * @return bool true if mail was sent; false if error occured
      */
-    private static function send_quarantine_email($email, $filter, $quarantined)
+    private static function send_quarantine_email($email, $filter, $quarantined): bool
     {
         // Setup variables to prevent warnings
         $h1 = '';

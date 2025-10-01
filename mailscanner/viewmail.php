@@ -210,9 +210,9 @@ foreach ($mime_struct as $part) {
             echo '  </td>' . "\n";
             echo ' </tr>' . "\n";
             break;
-        case 'message/rfc822':
         case 'multipart/related':
         case 'multipart/alternative':
+        case 'message/rfc822':
             break;
         default:
             echo ' <tr>' . "\n";

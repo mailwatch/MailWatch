@@ -381,7 +381,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         }
         debug('submit branch taken');
         // Reset error status
-        $error = 0;
+        $error = false;
         $status = [];
         // Release
         if (isset($_POST['release'])) {
@@ -531,8 +531,13 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 (
                     'N' === $item['dangerous']
                     || 'A' === $_SESSION['user_type']
-                    || (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'] && 'Y' === $item['dangerous'])
-                ) && preg_match('!message/rfc822!', (string)$item['type'])
+                    || (
+                        defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS')
+                        && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS
+                        && 'D' === $_SESSION['user_type']
+                        && 'Y' === $item['dangerous']
+                    )
+                ) && str_contains((string)$item['type'], 'message/rfc822')
             ) {
                 echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
                     substr((string)$item['path'], strlen((string)$quarantinedir) + 1) .
@@ -555,7 +560,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 'D' === $_SESSION['user_type']
                 && (
                     0 === $is_dangerous
-                || ($is_dangerous > 0 && defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS)
+                    || (
+                        defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS')
+                        && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS
+                    )
                 )
             )
         ) {

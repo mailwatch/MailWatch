@@ -45,7 +45,7 @@ function msmailq()
     $incomingdir = get_conf_var('incomingqueuedir', true);
     $outgoingdir = get_conf_var('outgoingqueuedir', true);
     exec('ls -l1 ' . $incomingdir, $output);
-    if (null !== $output && '' !== $output) {
+    if (!empty($output)) {
         echo 'Milter ' . __('inbound03') . "\n";
         foreach ($output as $row) {
             echo $row . "\n";
@@ -53,7 +53,7 @@ function msmailq()
     }
     $output = [];
     exec('ls -l1 ' . $outgoingdir, $output);
-    if (null !== $output && '' !== $output) {
+    if (!empty($output)) {
         echo "\nMilter " . __('outbound03') . "\n";
         foreach ($output as $row) {
             echo $row . "\n";

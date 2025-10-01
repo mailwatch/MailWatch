@@ -275,8 +275,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
         exit;
     }
 
-    if ($showpage) {
-        ?>
+    ?>
         <!doctype html>
         <html>
         <head>
@@ -350,10 +349,8 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
 
         </body>
         </html>
-        <?php
-    } else {
-        exit;
-    }
+<?php
+    dbclose();
 } else {
     exit(__('conferror63'));
 }
