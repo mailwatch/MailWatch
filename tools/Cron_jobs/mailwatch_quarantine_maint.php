@@ -113,11 +113,16 @@ if (0 === $required_constant_missing_count) {
         $d->close();
     }
 
+    /**
+     * @param string $dirname
+     *
+     * @return false|int
+     */
     function quarantine_date_to_unixtime($dirname)
     {
-        $y = substr((string)$dirname, 0, 4);
-        $m = substr((string)$dirname, 4, 2);
-        $d = substr((string)$dirname, 6, 2);
+        $y = (int)substr((string)$dirname, 0, 4);
+        $m = (int)substr((string)$dirname, 4, 2);
+        $d = (int)substr((string)$dirname, 6, 2);
 
         return mktime(0, 0, 0, $m, $d, $y);
     }

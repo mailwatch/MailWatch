@@ -33,64 +33,31 @@ class database
     {
     }
 
-    /**
-     * @param string $host
-     * @param string $username
-     * @param string $password
-     * @param string $database
-     *
-     * @return mysqli
-     */
-    public static function connect($host = '', $username = '', $password = '', $database = '', $port = 3306)
-    {
+    public static function connect(
+        string $host = '',
+        string $username = '',
+        string $password = '',
+        string $database = '',
+        int $port = 3306
+    ): ?mysqli {
         if (!self::$link instanceof mysqli) {
-            try {
-                $driver = new mysqli_driver();
-                $driver->report_mode = MYSQLI_REPORT_ALL;
-                set_error_handler(static function($errno, $errstr, $errfile, $errline, $errcontext = []): void {
-                });
-                self::$link = new mysqli($host, $username, $password, $database, $port);
-                restore_error_handler();
-                self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
-                $charset = 'utf8';
-                $collation = 'utf8_unicode_ci';
-                if (self::$link->server_version >= 50503) {
-                    // mysql version supports utf8mb4
-                    $charset = 'utf8mb4';
-                    $collation = 'utf8mb4_unicode_ci';
-                }
-                if (false === self::$link->set_charset($charset)) {
-                    self::$link->query('SET NAMES ' . $charset . ' COLLATE ' . $collation);
-                }
-            } catch (Exception) {
-                if (PHP_SAPI !== 'cli') {
-                    $output = '
-<style>
-.db-error {
-    width: 40%;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 100px;
-    border: solid 3px #ebcccc;
-    -webkit-border-radius:20px;
-    -moz-border-radius:20px;
-    border-radius:20px;
-    background-color: #f2dede;
-    color: #a94442;
-}
-
-.db-error .emphasise {
-    font-weight:bold;
-    font-size:larger;
-}
-</style>
-                <div class="db-error">';
-                    $output .= __('dbconnecterror99');
-                    $output .= '</div>';
-                } else {
-                    $output = __('dbconnecterror99_plain') . PHP_EOL;
-                }
-                exit($output);
+            $driver = new mysqli_driver();
+            $driver->report_mode = MYSQLI_REPORT_ALL;
+            set_error_handler(static function(int $errno, string $errstr, string $errfile, int $errline): bool {
+                return false;
+            });
+            self::$link = new mysqli($host, $username, $password, $database, $port);
+            restore_error_handler();
+            self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
+            $charset = 'utf8';
+            $collation = 'utf8_unicode_ci';
+            if (self::$link->server_version >= 50503) {
+                // mysql version supports utf8mb4
+                $charset = 'utf8mb4';
+                $collation = 'utf8mb4_unicode_ci';
+            }
+            if (false === self::$link->set_charset($charset)) {
+                self::$link->query('SET NAMES ' . $charset . ' COLLATE ' . $collation);
             }
         }
 
