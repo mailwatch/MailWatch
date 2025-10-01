@@ -308,11 +308,10 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $email
      * @param string $to_address
      * @param string $to_domain
-     * @param bool   $sendEmptyReports
      *
      * @return int|bool 0 if there was nothing to send, true if all reports were sent, false if one or more failed
      */
-    private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain, $sendEmptyReports = false)
+    private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain, bool $sendEmptyReports = false)
     {
         self::dbg(" ==== Recipient e-mail address is $email");
         // Get any additional reports required
@@ -356,6 +355,7 @@ ORDER BY a.date DESC, a.time DESC';
 
             return $sendResult;
         }
+
         // combined
         $quarantine_list = [];
         $quarantined = [];
@@ -389,7 +389,7 @@ ORDER BY a.date DESC, a.time DESC';
             }
         }
         if (count($quarantined) > 0) {
-            $quarantined = call_user_func_array('array_merge', $quarantined);
+            $quarantined = array_merge(...$quarantined);
         }
 
         if (true === $sendEmptyReports || count($quarantined) > 0) {
