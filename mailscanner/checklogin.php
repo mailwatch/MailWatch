@@ -102,7 +102,7 @@ if (
     (false === $_SESSION['user_ldap'])
     && (false === $_SESSION['user_imap'])
 ) {
-    $passwordInDb = database::mysqli_result($result, 0, 'password');
+    $passwordInDb = Database::mysqli_result($result, 0, 'password');
     if (!password_verify($mypassword, (string)$passwordInDb)) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
@@ -121,8 +121,8 @@ if (
     }
 }
 
-$fullname = database::mysqli_result($result, 0, 'fullname');
-$usertype = database::mysqli_result($result, 0, 'type');
+$fullname = Database::mysqli_result($result, 0, 'fullname');
+$usertype = Database::mysqli_result($result, 0, 'type');
 
 $sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
 $result_userfilter = dbquery($sql_userfilter);

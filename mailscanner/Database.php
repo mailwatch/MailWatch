@@ -25,7 +25,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-class database
+class Database
 {
     public static ?mysqli $link = null;
 
@@ -39,7 +39,7 @@ class database
         string $password = '',
         string $database = '',
         int $port = 3306
-    ): ?mysqli {
+    ): mysqli {
         if (!self::$link instanceof mysqli) {
             $driver = new mysqli_driver();
             $driver->report_mode = MYSQLI_REPORT_ALL;
@@ -49,13 +49,11 @@ class database
             self::$link = new mysqli($host, $username, $password, $database, $port);
             restore_error_handler();
             self::$link->options(MYSQLI_INIT_COMMAND, "SET sql_mode=(SELECT TRIM(BOTH ',' FROM REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')))");
-            $charset = 'utf8';
-            $collation = 'utf8_unicode_ci';
-            if (self::$link->server_version >= 50503) {
-                // mysql version supports utf8mb4
-                $charset = 'utf8mb4';
-                $collation = 'utf8mb4_unicode_ci';
-            }
+
+            // mysql version 5.7+ supports utf8mb4
+            $charset = 'utf8mb4';
+            $collation = 'utf8mb4_unicode_ci';
+
             if (false === self::$link->set_charset($charset)) {
                 self::$link->query('SET NAMES ' . $charset . ' COLLATE ' . $collation);
             }
@@ -64,10 +62,7 @@ class database
         return self::$link;
     }
 
-    /**
-     * @return bool
-     */
-    public static function close()
+    public static function close(): bool
     {
         $result = true;
         if (self::$link instanceof mysqli) {
@@ -78,14 +73,11 @@ class database
         return $result;
     }
 
-    /**
-     * @param int        $row
-     * @param int|string $col
-     *
-     * @return bool|mixed
-     */
-    public static function mysqli_result(mysqli_result $result, $row = 0, $col = 0)
-    {
+    public static function mysqli_result(
+        mysqli_result $result,
+        int $row = 0,
+        int|string $col = 0
+    ): mixed {
         $numrows = $result->num_rows;
         if ($numrows && $row <= ($numrows - 1) && $row >= 0) {
             mysqli_data_seek($result, $row);
@@ -98,10 +90,7 @@ class database
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public static function getDatabaseVersion()
+    public static function getDatabaseVersion(): string
     {
         if (self::$link instanceof mysqli) {
             return self::$link->server_info;
@@ -113,9 +102,9 @@ class database
     /**
      * Checks if the database uses ICU regex syntax.
      *
-     * @return bool true if ICU syntax is used, False otherwise
+     * @return bool true if ICU syntax is used, false otherwise
      */
-    public static function isUsingICURegexSyntax()
+    public static function isUsingICURegexSyntax(): bool
     {
         $version = self::getDatabaseVersion();
 
@@ -123,9 +112,9 @@ class database
         if (preg_match('/^8\.\d+/', $version)) {
             // MySQL 8.0+ uses ICU for regex
             return true;
-        } else {
-            // MySQL < 8.0 and MariaDB use POSIX regex syntax
-            return false;
         }
+
+        // MySQL < 8.0 and MariaDB use POSIX regex syntax
+        return false;
     }
 }

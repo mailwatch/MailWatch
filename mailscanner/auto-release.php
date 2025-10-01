@@ -54,7 +54,7 @@ if (file_exists(__DIR__ . '/conf.php')) {
         $sql = "SELECT * FROM autorelease WHERE msg_id = '$mid'";
         $result = dbquery($sql, false);
         if (!$result) {
-            dbg('Error fetching from database' . database::$link->error);
+            dbg('Error fetching from database' . Database::$link->error);
             $output[] = __('dberror59');
         }
         if (0 === $result->num_rows) {
@@ -83,7 +83,7 @@ if (file_exists(__DIR__ . '/conf.php')) {
                 $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
                 $result = dbquery($query, false);
                 if (!$result) {
-                    dbg('ERROR cleaning up database... ' . database::$link->error);
+                    dbg('ERROR cleaning up database... ' . Database::$link->error);
                 }
             } else {
                 $output[] = __('tokenmismatch59');
