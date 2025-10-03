@@ -44,7 +44,7 @@ $graphgenerator->sqlQuery = '
  FROM
   maillog
  WHERE
-  spamwhitelisted=0
+  spamallowlisted=0
 ' . $filter->CreateSQL() . '
  GROUP BY
   score

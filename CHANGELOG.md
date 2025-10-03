@@ -8,6 +8,7 @@
 - The message detail page resolves the relay and MTA log addresses only when `RESOLVE_IP_ON_DISPLAY` is true, as the message listing already did: with the default false it no longer waits for addresses that do not resolve (#1039)
 - The milter relay cron tails the mail log and restarts the relay scripts only when they are not running, instead of rereading the whole log every hour (#1265)
 - The tools INSTALL files link the scripts in /usr/local/bin instead of copying them, so that they find functions.php in the MailWatch directory without editing
+- Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
 
 ### Fixed
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
@@ -16,6 +17,7 @@
 
 ### Compatibility
 - The minimal PHP version is now 8.1.
+- The minimal supported MySQL version is now 5.7.42
 
 ## 1.2.29
 ### Security

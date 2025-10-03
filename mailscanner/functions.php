@@ -402,8 +402,8 @@ function printColorCodes()
         echo '    <td class="mcp"></td> <td>' . __('mcp03') . '</td>' . "\n";
         echo '    <td class="highmcp"></td> <td>' . __('highmcp03') . '</td>' . "\n";
     }
-    echo '    <td class="whitelisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
-    echo '    <td class="blacklisted"></td> <td>' . __('blacklisted03') . '</td>' . "\n";
+    echo '    <td class="allowlisted"></td> <td>' . __('whitelisted03') . '</td>' . "\n";
+    echo '    <td class="blocklisted"></td> <td>' . __('blacklisted03') . '</td>' . "\n";
     echo '    <td class="notscanned"></td> <td>' . __('notverified03') . '</td>' . "\n";
     echo '    <td class="clean"></td> <td>' . __('clean03') . '</td></tr>' . "\n";
     echo '   </table><br>' . "\n";
@@ -2081,8 +2081,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 case 'ishighspam':
                 case 'issaspam':
                 case 'isrblspam':
-                case 'spamwhitelisted':
-                case 'spamblacklisted':
+                case 'spamallowlisted':
+                case 'spamblocklisted':
                 case 'spamreport':
                 case 'virusinfected':
                 case 'nameinfected':
@@ -2091,8 +2091,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 case 'ismcp':
                 case 'ishighmcp':
                 case 'issamcp':
-                case 'mcpwhitelisted':
-                case 'mcpblacklisted':
+                case 'mcpallowlisted':
+                case 'mcpblocklisted':
                 case 'mcpreport':
                 case 'headers':
                 case 'released':
@@ -2328,13 +2328,13 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                     case 'size':
                         $row[$f] = formatSize($row[$f]);
                         break;
-                    case 'spamwhitelisted':
+                    case 'spamallowlisted':
                         if ('Y' === $row[$f] || $row[$f] > 0) {
                             $whitelisted = true;
                             $status_array[] = __('whitelisted03');
                         }
                         break;
-                    case 'spamblacklisted':
+                    case 'spamblocklisted':
                         if ('Y' === $row[$f] || $row[$f] > 0) {
                             $blacklisted = true;
                             $status_array[] = __('blacklisted03');
@@ -2403,8 +2403,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
             // Colorise the row
             echo match (true) {
                 $infected => '<tr class="infected">' . "\n",
-                $whitelisted => '<tr class="whitelisted">' . "\n",
-                $blacklisted => '<tr class="blacklisted">' . "\n",
+                $whitelisted => '<tr class="allowlisted">' . "\n",
+                $blacklisted => '<tr class="blocklisted">' . "\n",
                 $highspam => '<tr class="highspam">' . "\n",
                 $spam => '<tr class="spam">' . "\n",
                 $highmcp => '<tr class="highmcp">' . "\n",
@@ -3297,7 +3297,7 @@ function hide_options_sql($quarantinePage, $userType)
     // Hide unknown (clean) messages from everyone
     if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
         $sql .= ' AND (virusinfected>0 OR nameinfected>0 OR otherinfected>0 OR ishighspam>0 OR isrblspam>0'
-            . ' OR spamblacklisted>0 OR ismcp>0 OR ishighmcp>0 OR issamcp>0 OR isspam>0)';
+            . ' OR spamblocklisted>0 OR ismcp>0 OR ishighmcp>0 OR issamcp>0 OR isspam>0)';
     }
 
     return $sql;
