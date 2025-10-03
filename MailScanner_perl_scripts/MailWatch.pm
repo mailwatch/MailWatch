@@ -354,7 +354,7 @@ sub MailWatchLogging {
     $subject =~ s/\t/ /g;  # and no TAB characters
     $subject =~ s/\r/ /g;  # and no CR characters
 
-    # Uncommet the folloging line when debugging SQLBlackWhiteList.pm
+    # Uncommet the folloging line when debugging SQLAllowBlockList.pm
     #MailScanner::Log::WarnLog("MailWatch: Debug: var subject: %s", Dumper($subject));
 
     # Get rid of control chars and tidy-up SpamAssassin report

@@ -44,16 +44,16 @@ CREATE TABLE IF NOT EXISTS `autorelease` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `blacklist`
+-- Table structure for table `blocklist`
 --
 
-CREATE TABLE IF NOT EXISTS `blacklist` (
+CREATE TABLE IF NOT EXISTS `blocklist` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `to_address` text COLLATE utf8_unicode_ci,
   `to_domain` text COLLATE utf8_unicode_ci,
   `from_address` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `blacklist_uniq` (`to_address`(100),`from_address`(100))
+  UNIQUE KEY `blocklist_uniq` (`to_address`(100),`from_address`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   `isrblspam` tinyint(1) DEFAULT '0',
   `isfp` tinyint(1) DEFAULT '0',
   `isfn` tinyint(1) DEFAULT '0',
-  `spamwhitelisted` tinyint(1) DEFAULT '0',
-  `spamblacklisted` tinyint(1) DEFAULT '0',
+  `spamallowlisted` tinyint(1) DEFAULT '0',
+  `spamblocklisted` tinyint(1) DEFAULT '0',
   `sascore` decimal(7,2) DEFAULT '0.00',
   `spamreport` mediumtext COLLATE utf8_unicode_ci,
   `virusinfected` tinyint(1) DEFAULT '0',
@@ -115,8 +115,8 @@ CREATE TABLE IF NOT EXISTS `maillog` (
   `ismcp` tinyint(1) DEFAULT '0',
   `ishighmcp` tinyint(1) DEFAULT '0',
   `issamcp` tinyint(1) DEFAULT '0',
-  `mcpwhitelisted` tinyint(1) DEFAULT '0',
-  `mcpblacklisted` tinyint(1) DEFAULT '0',
+  `mcpallowlisted` tinyint(1) DEFAULT '0',
+  `mcpblocklisted` tinyint(1) DEFAULT '0',
   `mcpsascore` decimal(7,2) DEFAULT '0.00',
   `mcpreport` mediumtext COLLATE utf8_unicode_ci,
   `hostname` mediumtext COLLATE utf8_unicode_ci,
@@ -291,16 +291,16 @@ CREATE TABLE IF NOT EXISTS `user_filters` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `whitelist`
+-- Table structure for table `allowlist`
 --
 
-CREATE TABLE IF NOT EXISTS `whitelist` (
+CREATE TABLE IF NOT EXISTS `allowlist` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `to_address` mediumtext COLLATE utf8_unicode_ci,
   `to_domain` mediumtext COLLATE utf8_unicode_ci,
   `from_address` mediumtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `whitelist_uniq` (`to_address`(100),`from_address`(100))
+  UNIQUE KEY `allowlist_uniq` (`to_address`(100),`from_address`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

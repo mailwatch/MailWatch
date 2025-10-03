@@ -439,25 +439,56 @@ if ($link) {
     }
     unset($audit_log_user_info);
 
-    // Table blacklist
-    echo pad(' - Fix schema for id field in `blacklist` table');
-    $blacklist_id_info = getColumnInfo('blacklist', 'id');
-    if ('bigint(20) unsigned' !== strtolower($blacklist_id_info['Type']) || 'NO' !== strtoupper($blacklist_id_info['Null']) || 'auto_increment' !== strtolower($blacklist_id_info['Extra'])) {
-        $sql = 'ALTER TABLE blacklist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+    // Migrate blacklist to blocklist (terminology change)
+    echo pad(' - Rename `blacklist` table to `blocklist`');
+    if (check_table_exists('blacklist') && !check_table_exists('blocklist')) {
+        $sql = 'RENAME TABLE blacklist TO blocklist';
         executeQuery($sql);
-    } else {
+    } elseif (check_table_exists('blocklist')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
     }
-    unset($blacklist_id_info);
 
-    // Table whitelist
-    echo pad(' - Fix schema for id field in `whitelist` table');
-    $whitelist_id_info = getColumnInfo('whitelist', 'id');
-    if ('bigint(20) unsigned' !== strtolower($whitelist_id_info['Type']) || 'NO' !== strtoupper($whitelist_id_info['Null']) || 'auto_increment' !== strtolower($whitelist_id_info['Extra'])) {
-        $sql = 'ALTER TABLE whitelist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
-        executeQuery($sql);
+    // Table blocklist
+    echo pad(' - Fix schema for id field in `blocklist` table');
+    if (check_table_exists('blocklist')) {
+        $blocklist_id_info = getColumnInfo('blocklist', 'id');
+        if ('bigint(20) unsigned' !== strtolower($blocklist_id_info['Type']) || 'NO' !== strtoupper($blocklist_id_info['Null']) || 'auto_increment' !== strtolower($blocklist_id_info['Extra'])) {
+            $sql = 'ALTER TABLE blocklist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+            executeQuery($sql);
+        } else {
+            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+        }
+        unset($blocklist_id_info);
     } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
+    }
+
+    // Migrate whitelist to allowlist (terminology change)
+    echo pad(' - Rename `whitelist` table to `allowlist`');
+    if (check_table_exists('whitelist') && !check_table_exists('allowlist')) {
+        $sql = 'RENAME TABLE whitelist TO allowlist';
+        executeQuery($sql);
+    } elseif (check_table_exists('allowlist')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
+    }
+
+    // Table allowlist
+    echo pad(' - Fix schema for id field in `allowlist` table');
+    if (check_table_exists('allowlist')) {
+        $allowlist_id_info = getColumnInfo('allowlist', 'id');
+        if ('bigint(20) unsigned' !== strtolower($allowlist_id_info['Type']) || 'NO' !== strtoupper($allowlist_id_info['Null']) || 'auto_increment' !== strtolower($allowlist_id_info['Extra'])) {
+            $sql = 'ALTER TABLE allowlist CHANGE id id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT';
+            executeQuery($sql);
+        } else {
+            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+        }
+        unset($allowlist_id_info);
+    } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
     }
 
     // username lenght to 191
@@ -661,6 +692,47 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Rename columns from whitelist/blacklist to allowlist/blocklist terminology
+    echo pad(' - Rename spamwhitelisted to spamallowlisted in `maillog` table');
+    if (check_column_exists('maillog', 'spamwhitelisted') && !check_column_exists('maillog', 'spamallowlisted')) {
+        $sql = 'ALTER TABLE maillog CHANGE spamwhitelisted spamallowlisted TINYINT(1) DEFAULT 0';
+        executeQuery($sql);
+    } elseif (check_column_exists('maillog', 'spamallowlisted')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
+    }
+
+    echo pad(' - Rename spamblacklisted to spamblocklisted in `maillog` table');
+    if (check_column_exists('maillog', 'spamblacklisted') && !check_column_exists('maillog', 'spamblocklisted')) {
+        $sql = 'ALTER TABLE maillog CHANGE spamblacklisted spamblocklisted TINYINT(1) DEFAULT 0';
+        executeQuery($sql);
+    } elseif (check_column_exists('maillog', 'spamblocklisted')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
+    }
+
+    echo pad(' - Rename mcpwhitelisted to mcpallowlisted in `maillog` table');
+    if (check_column_exists('maillog', 'mcpwhitelisted') && !check_column_exists('maillog', 'mcpallowlisted')) {
+        $sql = 'ALTER TABLE maillog CHANGE mcpwhitelisted mcpallowlisted TINYINT(1) DEFAULT 0';
+        executeQuery($sql);
+    } elseif (check_column_exists('maillog', 'mcpallowlisted')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
+    }
+
+    echo pad(' - Rename mcpblacklisted to mcpblocklisted in `maillog` table');
+    if (check_column_exists('maillog', 'mcpblacklisted') && !check_column_exists('maillog', 'mcpblocklisted')) {
+        $sql = 'ALTER TABLE maillog CHANGE mcpblacklisted mcpblocklisted TINYINT(1) DEFAULT 0';
+        executeQuery($sql);
+    } elseif (check_column_exists('maillog', 'mcpblocklisted')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        echo color(' N/A', 'yellow') . PHP_EOL;
+    }
+
     // Check for missing tokens in maillog table and add them back QUARANTINE_REPORT_DAYS
     echo pad(' - Check for missing tokens in `maillog` table');
     if (defined('QUARANTINE_REPORT_DAYS')) {
@@ -771,7 +843,7 @@ if ($link) {
     $utf8_tables = [
         'audit_log',
         'autorelease',
-        'blacklist',
+        'blocklist',
         'inq',
         'maillog',
         'mcp_rules',
@@ -782,7 +854,7 @@ if ($link) {
         'sa_rules',
         'users',
         'user_filters',
-        'whitelist',
+        'allowlist',
     ];
 
     // Convert tables to utf8 using $utf8_tables array

@@ -5,7 +5,7 @@ INSTALLATION INSTRUCTIONS
 Copy the following files in /etc/MailScanner/custom:
 
 MailWatch.pm
-SQLBlackWhiteList.pm
+SQLAllowBlockList.pm
 SQLSpamSettings.pm
 MailWatchConf.pm
 

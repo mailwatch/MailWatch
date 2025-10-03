@@ -187,12 +187,12 @@ table.mail TH, table.boxtable TH, table.maildetail TH {
     background-color: #F7CE4A;
 }
 
-table.blackwhitelist {
+table.allowblocklist {
     width: 100%;
     border: 0;
 }
 
-td.blackwhitelist {
+td.allowblocklist {
     width: 50%;
     vertical-align: text-top;
 }
@@ -292,23 +292,23 @@ table.mail td.highmcp {
     width: 15px;
 }
 
-table.mail tr.whitelisted {
+table.mail tr.allowlisted {
     background-color: #90EE90;
     color: #000;
 }
 
-table.mail td.whitelisted {
+table.mail td.allowlisted {
     background-color: #90EE90;
     border: 1px solid #000;
     width: 15px;
 }
 
-table.mail tr.blacklisted {
+table.mail tr.blocklisted {
     color: #FFF;
     background-color: #000;
 }
 
-table.mail td.blacklisted {
+table.mail td.blocklisted {
     background-color: #000;
     border: 1px solid #000;
     width: 15px;
@@ -890,12 +890,12 @@ td.message {
 /* dbtable */
 
 .table-background:nth-child(even),
-.blackwhitelist>tbody>tr:nth-child(even) {
+.allowblocklist>tbody>tr:nth-child(even) {
     background-color: #EBEBEB;
 }
 
 .table-background:nth-child(odd),
-.blackwhitelist>tbody>tr:nth-child(odd) {
+.allowblocklist>tbody>tr:nth-child(odd) {
     background-color: #D8D8D8;
 }
 

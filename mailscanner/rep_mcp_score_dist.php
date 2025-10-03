@@ -44,7 +44,7 @@ $graphgenerator->sqlQuery = '
  FROM
   maillog
  WHERE
-  mcpwhitelisted=0
+  mcpallowlisted=0
 ' . $filter->CreateSQL() . '
  GROUP BY
   score

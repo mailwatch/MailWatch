@@ -228,11 +228,11 @@ if ('add' === $url_submit) {
     if (!isset($errors)) {
         switch ($url_list) {
             case 'w': // Allowlist
-                $list = 'whitelist';
+                $list = 'allowlist';
                 $listi18 = __('wl07');
                 break;
             case 'b': // Blocklist
-                $list = 'blacklist';
+                $list = 'blocklist';
                 $listi18 = __('bl07');
                 break;
             default:
@@ -260,11 +260,11 @@ if ('delete' === $url_submit) {
     $id = $url_id;
     switch ($url_list) {
         case 'w':
-            $list = 'whitelist';
+            $list = 'allowlist';
             $listi18 = __('wl07');
             break;
         case 'b':
-            $list = 'blacklist';
+            $list = 'blocklist';
             $listi18 = __('bl07');
             break;
         default:
@@ -313,7 +313,7 @@ function build_table($sql, $list)
     $table_html = '';
     $entries = $sth->num_rows;
     if ($sth->num_rows > 0) {
-        $table_html .= '<table class="blackwhitelist rowhover">' . "\n";
+        $table_html .= '<table class="allowblocklist rowhover">' . "\n";
         $table_html .= ' <tr>' . "\n";
         $table_html .= '  <th>' . __('from07') . '</th>' . "\n";
         $table_html .= '  <th>' . __('to07') . '</th>' . "\n";
@@ -416,11 +416,11 @@ if (isset($errors)) {
 }
 
 $whitelist = build_table(
-    'SELECT id, from_address, to_address FROM whitelist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
+    'SELECT id, from_address, to_address FROM allowlist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
     'w'
 );
 $blacklist = build_table(
-    'SELECT id, from_address, to_address FROM blacklist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
+    'SELECT id, from_address, to_address FROM blocklist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
     'b'
 );
 echo '</table>
@@ -432,12 +432,12 @@ echo '</table>
   <th class="blacklist">' . sprintf(__('blentries07'), $blacklist['entry_number']) . '</th>
 </tr>
 <tr>
-  <td class="blackwhitelist">
+  <td class="allowblocklist">
     <!-- Allowlist -->';
 
 echo $whitelist['html'];
 echo '</td>';
-echo '<td class="blackwhitelist">
+echo '<td class="allowblocklist">
 <!-- Blocklist -->';
 echo $blacklist['html'];
 echo '</td>

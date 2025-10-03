@@ -72,7 +72,7 @@ if (!isset($_GET['dir'])) {
      OR
      isrblspam>0
      OR
-     spamblacklisted>0
+     spamblocklisted>0
      OR
      ismcp>0
      OR
@@ -155,8 +155,8 @@ SELECT
  sascore,
  isspam,
  ishighspam,
- spamwhitelisted,
- spamblacklisted,
+ spamallowlisted,
+ spamblocklisted,
  virusinfected,
  nameinfected,
  otherinfected,
@@ -164,8 +164,8 @@ SELECT
  ismcp,
  ishighmcp,
  issamcp,
- mcpwhitelisted,
- mcpblacklisted,
+ mcpallowlisted,
+ mcpblocklisted,
  mcpsascore,
  released,
  '' as status
@@ -209,7 +209,7 @@ AND
      OR
      isrblspam>0
      OR
-     spamblacklisted>0
+     spamblocklisted>0
      OR
      ismcp>0
      OR
@@ -248,8 +248,8 @@ ORDER BY
    sascore,
    isspam,
    ishighspam,
-   spamwhitelisted,
-   spamblacklisted,
+   spamallowlisted,
+   spamblocklisted,
    virusinfected,
    nameinfected,
    otherinfected,
@@ -257,8 +257,8 @@ ORDER BY
    ismcp,
    ishighmcp,
    issamcp,
-   mcpwhitelisted,
-   mcpblacklisted,
+   mcpallowlisted,
+   mcpblocklisted,
    mcpsascore,
    released,
    '' as status
@@ -302,7 +302,7 @@ ORDER BY
      OR
      isrblspam>0
      OR
-     spamblacklisted>0
+     spamblocklisted>0
      OR
      ismcp>0
      OR

@@ -180,12 +180,12 @@ CASE
  WHEN a.ishighspam>0 THEN '" . __('spam61') . "'
  WHEN a.issaspam>0 THEN '" . __('spam61') . "'
  WHEN a.isrblspam>0 THEN '" . __('spam61') . "'
- WHEN a.spamblacklisted>0 THEN '" . __('blacklisted61') . "'
+ WHEN a.spamblocklisted>0 THEN '" . __('blacklisted61') . "'
  WHEN a.isspam THEN '" . __('spam61') . "'
  WHEN a.ismcp>0 THEN '" . __('policy61') . "'
  WHEN a.ishighmcp>0 THEN '" . __('policy61') . "'
  WHEN a.issamcp>0 THEN '" . __('policy61') . "'
- WHEN a.mcpblacklisted>0 THEN '" . __('policy61') . "'
+ WHEN a.mcpblocklisted>0 THEN '" . __('policy61') . "'
  WHEN a.isspam>0 THEN '" . __('spam61') . "'
  ELSE '" . __('unknow61') . "'
 END AS reason
@@ -226,7 +226,7 @@ AND
     OR
     isrblspam>0
     OR
-    spamblacklisted>0
+    spamblocklisted>0
     OR
     ismcp>0
     OR

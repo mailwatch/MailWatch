@@ -1,8 +1,12 @@
 # Changelog
 
 ## Unreleased
+### Changed
+- Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
+
 ### Compatibility
 - The minimal PHP version is now 8.1.
+- The minimal supported MySQL version is now 5.7.42
 
 ## 1.2.24
 ### Added
