@@ -9,6 +9,7 @@
 - The milter relay cron tails the mail log and restarts the relay scripts only when they are not running, instead of rereading the whole log every hour (#1265)
 - The tools INSTALL files link the scripts in /usr/local/bin instead of copying them, so that they find functions.php in the MailWatch directory without editing
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
+- Standardised database charset to utf8mb4 with unicode_520_ci collation
 
 ### Fixed
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
@@ -18,6 +19,7 @@
 ### Compatibility
 - The minimal PHP version is now 8.1.
 - The minimal supported MySQL version is now 5.7.42
+- The minimal supported MariaDB version is now 10.4.34
 
 ## 1.2.29
 ### Security
