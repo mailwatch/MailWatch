@@ -56,8 +56,7 @@ require_once $pathToFunctions;
 $link = dbconn();
 
 $mysql_utf8_variant = [
-    'utf8' => ['charset' => 'utf8', 'collation' => 'utf8_unicode_ci'],
-    'utf8mb4' => ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_ci'],
+    'utf8mb4' => ['charset' => 'utf8mb4', 'collation' => 'utf8mb4_unicode_520_ci'],
 ];
 
 /*****************************************************************
@@ -87,10 +86,7 @@ function executeQuery(string $sql, bool $beSilent = false): void
     }
 }
 
-/**
- * @return bool
- */
-function check_table_exists(string $table)
+function check_table_exists(string $table): bool
 {
     global $link;
     $sql = 'SHOW TABLES LIKE "' . $table . '"';
@@ -98,10 +94,7 @@ function check_table_exists(string $table)
     return $link->query($sql)->num_rows > 0;
 }
 
-/**
- * @return bool
- */
-function check_column_exists(string $table, string $column)
+function check_column_exists(string $table, string $column): bool
 {
     global $link;
     $sql = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $column . '"';
@@ -109,10 +102,7 @@ function check_column_exists(string $table, string $column)
     return $link->query($sql)->num_rows > 0;
 }
 
-/**
- * @return string|bool
- */
-function get_database_charset()
+function get_database_charset(): bool|string
 {
     global $link;
     $sql = 'SELECT default_character_set_name
@@ -128,10 +118,7 @@ function get_database_charset()
     return false;
 }
 
-/**
- * @return string|bool
- */
-function get_database_collation()
+function get_database_collation(): bool|string
 {
     global $link;
     $sql = 'SELECT default_collation_name
@@ -146,7 +133,7 @@ function get_database_collation()
     return false;
 }
 
-function check_utf8_table(string $db, string $table, string $utf8variant = 'utf8'): bool
+function check_utf8_table(string $db, string $table, string $utf8variant = 'utf8mb4'): bool
 {
     global $link;
     global $mysql_utf8_variant;
@@ -179,10 +166,7 @@ function is_table_type_innodb(string $db, string $table): bool
     return 'innodb' === strtolower(Database::mysqli_result($result, 0, 0));
 }
 
-/**
- * @return int|null
- */
-function get_index_size(string $db, string $table, string $index)
+function get_index_size(string $db, string $table, string $index): ?int
 {
     global $link;
     $sql = 'SHOW INDEX FROM ' . $db . '.' . $table . ' WHERE Key_name = "' . $index . '"';
@@ -228,7 +212,7 @@ function getSqlServer(): string
     return 'mariadb';
 }
 
-function getColumnInfo(string $table, string $column)
+function getColumnInfo(string $table, string $column): bool|array|null
 {
     global $link;
     $sql = 'SHOW COLUMNS FROM ' . $table . " LIKE '" . $column . "'";
@@ -285,28 +269,73 @@ if (!array_key_exists('skip-user-confirm', $cli_options)) {
     echo PHP_EOL;
 }
 
+// Minimal PHP version check (placed after banner)
+echo pad('Checking minimal PHP version >= 8.1');
+if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 80100) {
+    echo color(' OK', 'green') . PHP_EOL;
+} else {
+    echo color(' ERROR', 'red') . PHP_EOL;
+    echo 'ERROR: PHP version ' . PHP_VERSION . ' detected. Minimum required is 8.1. Upgrade aborted.' . PHP_EOL;
+    exit(1);
+}
+
+echo PHP_EOL;
+
 // Test connectivity to the database
-echo pad('Testing connectivity to the database ');
+echo pad('Testing connectivity to the database');
 
 if ($link) {
     echo color(' OK', 'green') . PHP_EOL;
+
+    // Check minimal MySQL/MariaDB version
+    echo pad(' - Checking minimal database version');
+    $server_type = getSqlServer();
+    $server_version = $link->server_version;
+
+    // MySQL requires 5.7.42 (version 50742) or higher
+    // MariaDB 10.4.34 (version 100434) is equivalent
+    if ('mysql' === $server_type) {
+        if ($server_version >= 50742) {
+            echo color(' MySQL version OK', 'lightgreen') . PHP_EOL;
+        } else {
+            echo color(' WARNING: MySQL version < 5.7.42 not supported', 'red') . PHP_EOL;
+            $errors[] = 'MySQL version ' . $link->server_info . ' is not supported. Minimum required: 5.7.42';
+        }
+    } else {
+        // MariaDB
+        if ($server_version >= 100434) {
+            echo color(' MariaDB version OK', 'lightgreen') . PHP_EOL;
+        } else {
+            echo color(' WARNING: MariaDB version < 10.4.34 not supported', 'red') . PHP_EOL;
+            $errors[] = 'MariaDB version ' . $link->server_info . ' is not supported. Minimum required: 10.4.34';
+        }
+    }
+
+    // Stop if database version is not compatible
+    if (!empty($errors)) {
+        echo PHP_EOL;
+        echo color('ERROR: Incompatible database version. Upgrade aborted.', 'red') . PHP_EOL;
+        foreach ($errors as $error) {
+            echo ' - ' . $error . PHP_EOL;
+        }
+        exit(1);
+    }
+
     // Update schema at this point
     echo PHP_EOL;
     echo 'Updating database schema: ' . PHP_EOL;
     echo PHP_EOL;
 
     /*
-    ** Updates to the schema for 1.2.0
+    ** Updates to the schema for 1.3.0
     */
-
-    $server_utf8_variant = 'utf8';
+    $server_utf8_variant = 'utf8mb4';
 
     // Convert database to utf8 if not already utf8mb4 or if other charset
     echo pad(' - Convert database to UTF-8');
     if (get_database_charset() === $mysql_utf8_variant['utf8mb4']['charset'] && get_database_collation() === $mysql_utf8_variant['utf8mb4']['collation']) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $server_utf8_variant = 'utf8';
         $sql = 'ALTER DATABASE `' . DB_NAME .
             '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
             ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
@@ -349,10 +378,10 @@ if ($link) {
     } else {
         $sql = 'CREATE TABLE IF NOT EXISTS autorelease (
             id BIGINT(20) NOT NULL AUTO_INCREMENT,
-            msg_id VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
-            uid VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+            msg_id VARCHAR(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+            uid VARCHAR(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
             PRIMARY KEY (id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci';
         executeQuery($sql);
     }
 
@@ -366,7 +395,7 @@ if ($link) {
             smtp_id VARCHAR(20) CHARACTER SET ascii DEFAULT NULL,
             UNIQUE KEY mtalog_ids_idx (smtpd_id,smtp_id),
             KEY smtpd_id (smtpd_id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci';
         executeQuery($sql);
     }
 
@@ -387,9 +416,9 @@ if ($link) {
     echo pad(' - Add login_expiry and login_timeout fields in `users` table');
     if (false === check_column_exists('users', 'login_expiry')) {
         $sql = "ALTER TABLE users ADD COLUMN (
-            login_expiry BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
-            last_login BIGINT(20) COLLATE utf8_unicode_ci DEFAULT '-1',
-            login_timeout SMALLINT(5) COLLATE utf8_unicode_ci DEFAULT '-1'
+            login_expiry BIGINT(20) COLLATE utf8mb4_unicode_520_ci DEFAULT '-1',
+            last_login BIGINT(20) COLLATE utf8mb4_unicode_520_ci DEFAULT '-1',
+            login_timeout SMALLINT(5) COLLATE utf8mb4_unicode_520_ci DEFAULT '-1'
             );";
         executeQuery($sql);
     } else {
@@ -409,7 +438,7 @@ if ($link) {
     echo pad(' - Fix schema for type field in `users` table');
     $user_type_info = getColumnInfo('users', 'type');
     if ('No' !== $user_type_info['Null']) {
-        $sql = "ALTER TABLE users CHANGE type type enum('A','D','U','R','H') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'U';";
+        $sql = "ALTER TABLE users CHANGE type type enum('A','D','U','R','H') COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'U';";
         executeQuery($sql);
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
@@ -529,10 +558,10 @@ if ($link) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
 
-    // Change timestamp to only be updated on creation to fix messages not beeing deleted from maillog
+    // Change timestamp to only be updated on creation to fix messages not being deleted from maillog.
     // We don't need a default / on update value for the timestamp field in the maillog table because we only change it in mailwatch.pm
-    // where we use the current system time from perl (not mysql function) as value. So we can remove it. Initial remove because MySQL
-    // in version < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
+    // where we use the current system time from perl (not mysql function) as value. So we can remove it.
+    // Initial remove because MySQL in version < 5.6 cannot handle two columns with CURRENT_TIMESTAMP in DEFAULT
     echo pad(' - Fix schema for timestamp field in `maillog` table');
     $maillog_timestamp_info = getColumnInfo('maillog', 'timestamp');
     if (null !== $maillog_timestamp_info['Default'] || '' !== $maillog_timestamp_info['Extra']) {
@@ -644,7 +673,7 @@ if ($link) {
     if (true === check_column_exists('maillog', 'rblspamreport')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL';
+        $sql = 'ALTER TABLE `maillog` ADD `rblspamreport` MEDIUMTEXT COLLATE utf8mb4_unicode_520_ci DEFAULT NULL';
         executeQuery($sql);
     }
 
@@ -653,7 +682,7 @@ if ($link) {
     if (true === check_column_exists('maillog', 'token')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE maillog ADD token CHAR(64) COLLATE utf8_unicode_ci DEFAULT NULL';
+        $sql = 'ALTER TABLE maillog ADD token CHAR(64) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL';
         executeQuery($sql);
     }
 
@@ -671,7 +700,7 @@ if ($link) {
         $sql = 'ALTER TABLE `maillog` ADD `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
         executeQuery($sql);
     } else {
-        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
 
     // Add new salearn column to maillog table
@@ -688,7 +717,7 @@ if ($link) {
     if (true === check_column_exists('maillog', 'messageid')) {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     } else {
-        $sql = 'ALTER TABLE maillog ADD messageid MEDIUMTEXT COLLATE utf8_unicode_ci DEFAULT NULL';
+        $sql = 'ALTER TABLE maillog ADD messageid MEDIUMTEXT COLLATE utf8mb4_unicode_520_ci DEFAULT NULL';
         executeQuery($sql);
     }
 
@@ -824,22 +853,6 @@ if ($link) {
 
     echo PHP_EOL;
 
-    // Convert database to utf8mb4 if MySQL ≥ 5.5.3
-    if ($link->server_version >= 50503) {
-        $server_utf8_variant = 'utf8mb4';
-        echo pad(' - Convert database to ' . $server_utf8_variant . '');
-        if (get_database_charset() === $mysql_utf8_variant[$server_utf8_variant]['charset'] && get_database_collation() === $mysql_utf8_variant[$server_utf8_variant]['collation']) {
-            echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
-        } else {
-            $sql = 'ALTER DATABASE `' . DB_NAME .
-                '` CHARACTER SET = ' . $mysql_utf8_variant[$server_utf8_variant]['charset'] .
-                ' COLLATE = ' . $mysql_utf8_variant[$server_utf8_variant]['collation'];
-            executeQuery($sql);
-        }
-    }
-
-    echo PHP_EOL;
-
     $utf8_tables = [
         'audit_log',
         'autorelease',
@@ -893,35 +906,47 @@ if ($link) {
             'maillog_datetime_idx' => [
                 'fields' => '(`date`,`time`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100',
             ],
-            'maillog_id_idx' => ['fields' => '(`id`(20))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_id_idx' => [
+                'fields' => '(`id`(20))',
+                'type' => 'KEY',
+            ],
             'maillog_clientip_idx' => [
                 'fields' => '(`clientip`(20))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100',
             ],
             'maillog_from_idx' => [
                 'fields' => '(`from_address`(191))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100',
             ],
-            'maillog_to_idx' => ['fields' => '(`to_address`(191))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
-            'maillog_host' => ['fields' => '(`hostname`(30))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'maillog_to_idx' => [
+                'fields' => '(`to_address`(191))',
+                'type' => 'KEY',
+            ],
+            'maillog_host' => [
+                'fields' => '(`hostname`(30))',
+                'type' => 'KEY',
+            ],
             'from_domain_idx' => [
                 'fields' => '(`from_domain`(50))',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100',
             ],
-            'to_domain_idx' => ['fields' => '(`to_domain`(50))', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
+            'to_domain_idx' => [
+                'fields' => '(`to_domain`(50))',
+                'type' => 'KEY',
+            ],
             'maillog_quarantined' => [
                 'fields' => '(`quarantined`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100',
             ],
-            'timestamp_idx' => ['fields' => '(`timestamp`)', 'type' => 'KEY', 'minMysqlVersion' => '50100'],
-            // can't use FULLTEXT index on InnoDB table in MySQL < 5.6.4
-            'subject_idx' => ['fields' => '(`subject`)', 'type' => 'FULLTEXT', 'minMysqlVersion' => '50604'],
+            'timestamp_idx' => [
+                'fields' => '(`timestamp`)',
+                'type' => 'KEY',
+            ],
+            'subject_idx' => [
+                'fields' => '(`subject`)',
+                'type' => 'FULLTEXT',
+            ],
         ],
     ];
 
@@ -934,17 +959,11 @@ if ($link) {
         foreach ($indexlist as $indexname => $indexValue) {
             if (!in_array($indexname, $existingIndexes, true)) {
                 echo pad(' - Adding missing index `' . $indexname . '` on table `' . $table . '`');
-                if ($link->server_version >= $indexValue['minMysqlVersion']) {
-                    $sql = 'ALTER TABLE `' . $table .
-                        '` ADD ' . $indexValue['type'] . ' `' . $indexname . '` ' .
-                        $indexValue['fields'] .
-                        ';';
-                    executeQuery($sql);
-                } else {
-                    echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
-                    $errors[] = 'Table Index: MySQL version unsupported for index `' . $indexname . '` on table `' . $table . '`, ' .
-                        'upgrade to version >= ' . $indexValue['minMysqlVersion'] . ' (you have version ' . $link->server_version . ')';
-                }
+                $sql = 'ALTER TABLE `' . $table .
+                    '` ADD ' . $indexValue['type'] . ' `' . $indexname . '` ' .
+                    $indexValue['fields'] .
+                    ';';
+                executeQuery($sql);
             }
         }
     }
@@ -1049,20 +1068,9 @@ if (str_ends_with(MAILWATCH_HOSTURL, '/')) {
     $errors[] = $err_msg;
 }
 
-echo PHP_EOL;
-// Check minimal PHP version
-echo pad(' - Checking minimal PHP version >= 8.1');
-if (PHP_VERSION_ID >= 80100) {
-    echo color(' PHP version OK', 'lightgreen') . PHP_EOL;
-} else {
-    echo color(' WARNING: PHP version < 8.1 not supported', 'red') . PHP_EOL;
-}
-
-echo PHP_EOL;
-
 // Error messages
 if (!empty($errors)) {
-    echo '*** ERROR/WARNING SUMMARY ***' . PHP_EOL;
+    echo color('*** ERROR/WARNING SUMMARY ***', 'yellow') . PHP_EOL;
     foreach ($errors as $error) {
         echo $error . PHP_EOL;
     }

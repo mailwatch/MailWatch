@@ -7,6 +7,7 @@ parameters:
 	paths:
 	    - mailscanner
 	    - tools
+	    - upgrade.php
 	excludePaths:
 	    - mailscanner/lib/*
 	fileExtensions:

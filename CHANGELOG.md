@@ -3,10 +3,12 @@
 ## Unreleased
 ### Changed
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
+- Standardised database charset to utf8mb4 with unicode_520_ci collation
 
 ### Compatibility
 - The minimal PHP version is now 8.1.
 - The minimal supported MySQL version is now 5.7.42
+- The minimal supported MariaDB version is now 10.4.34
 
 ## 1.2.24
 ### Added

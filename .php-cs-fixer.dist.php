@@ -3,6 +3,7 @@
 $finder = (new PhpCsFixer\Finder())
     ->in('mailscanner')->exclude('lib')
     ->in('tools')
+    ->append([__DIR__ . '/upgrade.php'])
 ;
 
 return (new PhpCsFixer\Config())

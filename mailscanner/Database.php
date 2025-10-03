@@ -52,7 +52,7 @@ class Database
 
             // mysql version 5.7+ supports utf8mb4
             $charset = 'utf8mb4';
-            $collation = 'utf8mb4_unicode_ci';
+            $collation = 'utf8mb4_unicode_520_ci';
 
             if (false === self::$link->set_charset($charset)) {
                 self::$link->query('SET NAMES ' . $charset . ' COLLATE ' . $collation);

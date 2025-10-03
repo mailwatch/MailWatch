@@ -186,8 +186,7 @@ function getVirusRegex($scanner = null)
         return VIRUS_REGEX;
     }
 
-    $regex = null;
-    $regex = match ($scanner) {
+    return match ($scanner) {
         'antivir' => '/ALERT: \[(?P<virus>\S+) \S+\]/',
         'avast', 'avastd' => '/Avast: found (?P<virus>.+) in (?P<file>.*)/',
         'avg' => '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/',
@@ -206,21 +205,16 @@ function getVirusRegex($scanner = null)
         'sophos' => '/>>> Virus \'(?P<virus>\S+)\' found in (?P<file>.*)/',
         'sophossavi' => '/(?P<file>\S+) was infected by (?P<virus>\S+)/',
         'trend' => '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/',
-        default => $regex,
+        default => null,
     };
-
-    return $regex;
 }
 
 // /////////////////////////////////////////////////////////////////////////////
 // Functions
 // /////////////////////////////////////////////////////////////////////////////
-/**
- * @return string
- */
-function mailwatch_version()
+function mailwatch_version(): string
 {
-    return '1.2.24';
+    return '1.3.0-dev';
 }
 
 /**
@@ -235,7 +229,7 @@ function suppress_zeros($number)
     return $number;
 }
 
-function disableBrowserCache()
+function disableBrowserCache(): void
 {
     header('Expires: Sat, 10 May 2003 00:00:00 GMT');
     header('Last-Modified: ' . gmdate('D, M d Y H:i:s') . ' GMT');
@@ -1093,7 +1087,7 @@ function sanitizeInput($string)
 {
     $config = HTMLPurifier_Config::createDefault();
     $cachePath = rtrim(sys_get_temp_dir(), '/') . '/MailWatch';
-    if (mkdir($cachePath) || is_dir($cachePath)) {
+    if (@mkdir($cachePath) || is_dir($cachePath)) {
         $config->set('Cache.SerializerPath', $cachePath);
     }
 
