@@ -1279,6 +1279,8 @@ function sa_autolearn($spamreport)
 }
 
 /**
+ * @param string $spamreport
+ *
  * @return string
  */
 function format_spam_report($spamreport)
@@ -1308,6 +1310,8 @@ function format_spam_report($spamreport)
             'benoetigt',
             'Wertung=',
             'gecached',
+            'gespeichert',
+            'nicht zwischen',
             // french
             'requis',
         ];
