@@ -2,11 +2,11 @@
 # MailWatch for MailScanner
 # Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
-# Copyright (C) 2014-2024  MailWatch Team (https://github.com/mailwatch/MailWatch/graphs/contributors)
+# Copyright (C) 2014-2026  MailWatch Team (https://github.com/mailwatch/MailWatch/graphs/contributors)
 #
 #   Custom Module MailWatch
 #
-#   Version 1.7
+#   Version 1.8
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -47,7 +47,7 @@ use Sys::Syslog;
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = '1.7';
+$VERSION = '1.8';
 
 # Trace settings - uncomment this to debug
 #DBI->trace(2,'/tmp/dbitrace.log');
@@ -108,7 +108,7 @@ sub InitMailWatchLogging {
 
                 eval { Sys::Syslog::setlogsock($logsock) unless $RunInForeground; };
                 eval { Sys::Syslog::openlog($0, 'pid, nowait', $facility) unless $RunInForeground; };
-                
+
                 # Listen for messages unless connection can't be initialized
                 ListenForMessages() unless InitConnection() == 1;
             }
@@ -354,7 +354,7 @@ sub MailWatchLogging {
     $subject =~ s/\t/ /g;  # and no TAB characters
     $subject =~ s/\r/ /g;  # and no CR characters
 
-    # Uncommet the folloging line when debugging SQLAllowBlockList.pm
+    # Uncomment the following line when debugging SQLAllowBlockList.pm
     #MailScanner::Log::WarnLog("MailWatch: Debug: var subject: %s", Dumper($subject));
 
     # Get rid of control chars and tidy-up SpamAssassin report
@@ -407,7 +407,7 @@ sub MailWatchLogging {
         $text =~ s/\t/ /g;  # and no TAB characters
         $text =~ s/\r/ /g;  # and no CR characters
 
-        # Uncommet the folloging line when debugging MailWatch.pm
+        # Uncomment the following line when debugging MailWatch.pm
         #MailScanner::Log::WarnLog("MailWatch: Debug: VAR text: %s", Dumper($text));
 
         push (@report_array, $text);
@@ -416,7 +416,7 @@ sub MailWatchLogging {
     # Sanitize reports
     my $reports = join(",", @report_array);
 
-    # Uncommet the folloging line when debugging MailWatch.pm
+    # Uncomment the following line when debugging MailWatch.pm
     #MailScanner::Log::WarnLog("MailWatch: DEBUG: var reports: %s", Dumper($reports));
 
     # Fix the $message->{clientip} for later versions of Exim
@@ -436,40 +436,60 @@ sub MailWatchLogging {
     my ($todomain, @todomain);
     @todomain = @{$message->{todomain}};
     $todomain = $todomain[0];
-    
+
     # Generate token for mail viewing
     my ($token, $sha1);
     $sha1 = Digest::SHA->new(1);
     $sha1->add($message->{id}, $timestamp, $message->{size}, $message->{headers});
     $token = $sha1->hexdigest;
-    
-    # Extract message id from header
+
+    # Extract Message-ID from header
     my ($messageid, $inmessageid, $messageidbuffer);
     $messageid = "";
     $messageidbuffer = "";
     $inmessageid = 0;
 
-    # Extract message id from header (unfold header if needed)
-    foreach (@{$message->{headers}}) {
-        if ( $_ =~ /^message-id:\s/i ) {
-            # RFC 822 unfold message-id
-            $messageidbuffer = $_;
+    # Extract Message-ID from header (unfold if needed)
+    foreach my $line (@{$message->{headers}}) {
+        chomp $line;
+
+        if ($line =~ /^message-id:\s*(.*)/i) {
+            # Start Message-ID (value may be empty due to folding)
+            $messageidbuffer = $1;
             $inmessageid = 1;
+
+            # Uncomment the following line when debugging MailWatch.pm
+            # MailScanner::Log::DebugLog("MailWatch: Found Message-ID header start: [%s]", $line);
             next;
-        } elsif ($inmessageid) {
-            if ($_ =~ /^\s/) {
-                # In continuation line
-                $messageidbuffer .= $_;
+        }
+        elsif ($inmessageid) {
+            if ($line =~ /^\s+(.*)/) {
+                # RFC 5322 unfolding (MailScanner-safe)
+                $messageidbuffer .= ' ' . $1;
+
+                # Uncomment the following line when debugging MailWatch.pm
+                # MailScanner::Log::DebugLog("MailWatch: Message-ID continuation line: [%s]", $line);
             } else {
-                # End of message-id field
+                # Uncomment the following line when debugging MailWatch.pm
+                #MailScanner::Log::DebugLog("MailWatch: End of Message-ID header");
+
+                # End of Message-ID header
                 last;
             }
         }
     }
 
-    # Set the re-formatted message-id and trim it
-    ($messageid = $messageidbuffer) =~ s/^message-id:\s+//i;
-    $messageid =~ s/^\s+|\s+$//g;
+    # Uncomment the following line when debugging MailWatch.pm
+    # MailScanner::Log::DebugLog("MailWatch: Raw unfolded Message-ID buffer: [%s]", $messageidbuffer);
+
+    # Normalize and extract the Message-ID value
+    if ($messageidbuffer =~ /<([^>]+)>/) {
+        $messageid = $1;
+        $messageid =~ s/^\s+|\s+$//g;
+
+        # Uncomment the following line when debugging MailWatch.pm
+        # MailScanner::Log::DebugLog("MailWatch: Extracted Message-ID value: [%s]", $messageid);
+    }
 
     # Warn if Message-ID was not found
     if ($messageid eq "") {
