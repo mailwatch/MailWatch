@@ -36,6 +36,7 @@ require __DIR__ . '/login.function.php';
 $filter = html_start(__('virusreport50'), 0, false, true);
 
 // Get a list of virus scanners from MailScanner.conf
+/** @var array<string, array{name: string, regexp: string}> $scanner */
 $scanner = [];
 $scanners = explode(' ', (string)get_conf_var('virusscanners'));
 foreach ($scanners as $vscanner) {
@@ -110,7 +111,7 @@ foreach ($scanners as $vscanner) {
             break;
         case 'sophos':
             $scanner[$vscanner]['name'] = 'Sophos';
-            $scanner[$vscanner]['regexp'] = '/>>> Virus \\\'(?P<virus>\S+)\\\' found in (?P<file>\S+)/';
+            $scanner[$vscanner]['regexp'] = '/>>> Virus \'(?P<virus>\S+)\' found in (?P<file>\S+)/';
             break;
         case 'sophossavi':
             $scanner[$vscanner]['name'] = 'Sophos SAVI';
