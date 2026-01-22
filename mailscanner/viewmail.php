@@ -230,7 +230,7 @@ foreach ($mime_struct as $part) {
             } else {
                 $filename = __('nonameattachment06');
                 if ('message/partial' === $type && property_exists($part, 'ctype_parameters')) {
-                    $filename = isset($part->ctype_parameters['id']) ? $part->ctype_parameters['id'] : 'partialMessage';
+                    $filename = $part->ctype_parameters['id'] ?? 'partialMessage';
                     if (isset($part->ctype_parameters['number'])) {
                         $filename .= ' - Part ' . $part->ctype_parameters['number'];
                     }
