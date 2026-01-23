@@ -7,19 +7,14 @@ require_once __DIR__ . '/../conf.php';
 
 if (!defined('API_KEY')) {
     http_response_code(401); // Unauthorized
-    echo json_encode(['error' => 'Unauthorized - Set an API KEY to use this API']);
+    echo json_encode(['error' => 'Unauthorized - Set an API KEY to use this API'], JSON_THROW_ON_ERROR);
     exit;
 }
 
 require_once __DIR__ . '/../database.php';
 require_once __DIR__ . '/MailLogEntry.php';
 
-/**
- * @param ?string $apiKey
- *
- * @return bool
- */
-function isValidApiKey($apiKey)
+function isValidApiKey(?string $apiKey): bool
 {
     if (null === $apiKey) {
         return false;
@@ -32,10 +27,7 @@ function isValidApiKey($apiKey)
     return API_KEY === $apiKey;
 }
 
-/**
- * @return ?string
- */
-function getApiKeyToken()
+function getApiKeyToken(): ?string
 {
     if (isset($_SERVER['HTTP_X_MAILWATCH_API_KEY'])) {
         return $_SERVER['HTTP_X_MAILWATCH_API_KEY'];
