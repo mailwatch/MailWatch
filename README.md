@@ -2,7 +2,14 @@
 
 # MailWatch for MailScanner
 
-MailWatch for MailScanner is a web-based front-end to MailScanner written in PHP, MySQL, Chart.js and other useful libraries 
+> [!WARNING]
+> **Branch 1.3 - Experimental Version**
+>
+> This branch contains features under active development and may have bugs or unexpected behavior. Use at your own risk.
+>
+> Everyone is welcome to test this version and provide feedback, preferably in the form of Pull Requests. Your contributions are valuable to improve MailWatch!
+
+MailWatch for MailScanner is a web-based front-end to MailScanner written in PHP, MySQL, Chart.js and other useful libraries
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
