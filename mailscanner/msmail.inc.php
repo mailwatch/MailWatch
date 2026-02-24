@@ -34,8 +34,8 @@ function genericqueue($queuedir)
                 ++$queue;
             }
         }
+        closedir($handle);
     }
-    closedir($handle);
 
     return $queue;
 }

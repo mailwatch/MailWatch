@@ -1754,8 +1754,8 @@ function parse_conf_dir($conf_dir)
                 }
             }
         }
+        closedir($dh);
     }
-    closedir($dh);
 
     return $array_output1;
 }

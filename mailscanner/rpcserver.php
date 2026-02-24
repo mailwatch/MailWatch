@@ -39,17 +39,18 @@ function rpc_get_quarantine($msg)
         $output = [];
         if ('/' === $input) {
             // Return top-level directory
-            $d = @opendir($quarantinedir);
-            while (false !== ($f = readdir($d))) {
-                if ('.' !== $f && '..' !== $f) {
-                    $item[] = $f;
+            if ($d = @opendir($quarantinedir)) {
+                while (false !== ($f = readdir($d))) {
+                    if ('.' !== $f && '..' !== $f) {
+                        $item[] = $f;
+                    }
                 }
+                if (count($item) > 0) {
+                    // Sort in reverse chronological order
+                    arsort($item);
+                }
+                closedir($d);
             }
-            if (count($item) > 0) {
-                // Sort in reverse chronological order
-                arsort($item);
-            }
-            closedir($d);
             foreach ($item as $items) {
                 $output[] = new xmlrpcval($items);
             }
@@ -253,6 +254,7 @@ function rpc_bayes_info()
             }
         }
     }
+    pclose($fh);
 
     return new xmlrpcresp(new xmlrpcval($output, 'struct'));
 }
