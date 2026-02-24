@@ -1007,14 +1007,12 @@ if ($link) {
             'audit_log_timestamp' => [
                 'fields' => '(`timestamp`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100',
             ],
         ],
         'mtalog_ids' => [
             'mtalog_ids_smtp_id' => [
                 'fields' => '(`smtp_id`)',
                 'type' => 'KEY',
-                'minMysqlVersion' => '50100',
             ],
         ],
         'maillog' => [

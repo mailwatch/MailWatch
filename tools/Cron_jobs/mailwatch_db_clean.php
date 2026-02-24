@@ -61,7 +61,7 @@ $runOptimize = defined('DB_CLEAN_OPTIMIZE') && true === DB_CLEAN_OPTIMIZE;
  *
  * @return int Total number of deleted rows
  */
-function deleteInBatches($table, $whereClause, $batchSize)
+function deleteInBatches(string $table, string $whereClause, int $batchSize): int
 {
     $totalDeleted = 0;
 
