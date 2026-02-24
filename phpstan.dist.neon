@@ -43,6 +43,7 @@ parameters:
 	    ALLOW_NO_USER_DOMAIN: bool
 	    AUDIT: bool
 	    AUTO_RELEASE: bool
+	    DB_CLEAN_OPTIMIZE: bool
 	    DEBUG: bool
 	    DEBUG_MILTER: bool
 	    DISPLAY_IP: bool
@@ -145,6 +146,7 @@ parameters:
 	    VIRUS_REGEX: string
 	    # Integer constants
 	    AUDIT_DAYS_TO_KEEP: int
+	    DB_CLEAN_BATCH_SIZE: int
 	    DB_PORT: int
 	    FROMTO_MAXLEN: int
 	    LDAP_PROTOCOL_VERSION: int

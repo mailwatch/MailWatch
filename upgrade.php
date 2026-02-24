@@ -902,6 +902,18 @@ if ($link) {
 
     // check for missing indexes
     $indexes = [
+        'audit_log' => [
+            'audit_log_timestamp' => [
+                'fields' => '(`timestamp`)',
+                'type' => 'KEY',
+            ],
+        ],
+        'mtalog_ids' => [
+            'mtalog_ids_smtp_id' => [
+                'fields' => '(`smtp_id`)',
+                'type' => 'KEY',
+            ],
+        ],
         'maillog' => [
             'maillog_datetime_idx' => [
                 'fields' => '(`date`,`time`)',

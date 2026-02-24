@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS `audit_log` (
   `user` varchar(191) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `ip_address` varchar(45) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `action` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `audit_log_timestamp` (`timestamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 -- --------------------------------------------------------
@@ -190,7 +191,8 @@ CREATE TABLE IF NOT EXISTS `mtalog_ids` (
   `smtpd_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
   `smtp_id` varchar(20) CHARACTER SET ascii DEFAULT NULL,
   UNIQUE KEY `mtalog_ids_idx` (`smtpd_id`,`smtp_id`),
-  KEY `smtpd_id` (`smtpd_id`)
+  KEY `smtpd_id` (`smtpd_id`),
+  KEY `mtalog_ids_smtp_id` (`smtp_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 -- --------------------------------------------------------

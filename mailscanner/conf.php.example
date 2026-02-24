@@ -161,6 +161,14 @@ define('RECORD_DAYS_TO_KEEP', 60);
 // Define how many days to audit logs to keep.
 define('AUDIT_DAYS_TO_KEEP', 60);
 
+// Database cleanup settings (used by mailwatch_db_clean.php)
+// Number of rows to delete per batch (reduces table locking on large databases)
+// Set to 0 to disable batching and delete all rows in a single query
+define('DB_CLEAN_BATCH_SIZE', 10000);
+// Run OPTIMIZE TABLE after cleanup (can be slow on large InnoDB tables)
+// Set to false if you run OPTIMIZE separately or don't need it
+define('DB_CLEAN_OPTIMIZE', true);
+
 // Show Software Version tab (only Admins can see it).
 define('SHOW_SFVERSION', true);
 
