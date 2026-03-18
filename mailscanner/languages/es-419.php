@@ -1008,6 +1008,7 @@ return [
     'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
+    'tr' => 'Türkçe',
     'dbconnecterror99' => '<p>Error: Falló la conexión a la Base de Datos</p><p>Es posible que esté sobrecargada o no esté funcionando correctamente</p><p class="emphasise">Si el problema persiste contacte al Administrador del sistema</p>',
     'dbconnecterror99_plain' => 'Error: Falló la conexión a la Base de Datos: es posible que esté sobrecargada o no esté funcionando correctamente; si el problema persiste contacte al Administrador del sistema',
 ];

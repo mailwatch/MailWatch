@@ -1013,6 +1013,7 @@ return [
     'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
+    'tr' => 'Türkçe',
     'dbconnecterror99' => '<p>Error: Database connection failed</p><p>It is possible that the database is overloaded or otherwise not running properly</p><p class="emphasise">Contact the system administrator if the problem persists</p>',
     'dbconnecterror99_plain' => 'Error: Database connection failed: it is possible that the database is overloaded or otherwise not running properly; contact the system administrator if the problem persists',
 ];

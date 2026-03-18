@@ -1010,6 +1010,7 @@ return [
     'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
+    'tr' => 'Türkçe',
     'dbconnecterror99' => '<p>Errore: Connessione al database fallita</p><p>È possibile che il database sia sovraccarico o non funzioni correttamente</p><p class="emphasise">Contatta l\'amministratore di sistema se il problema persiste</p>',
     'dbconnecterror99_plain' => 'Errore: Connessione al database fallita: è possibile che il database sia sovraccarico o non funzioni correttamente; contatta l\'amministratore di sistema se il problema persiste',
 ];
