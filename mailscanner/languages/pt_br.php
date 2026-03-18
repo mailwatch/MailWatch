@@ -1010,6 +1010,7 @@ return [
     'ja' => '日本語',
     'nl' => 'Nederlands',
     'pt_br' => 'Português',
+    'tr' => 'Türkçe',
     'dbconnecterror99' => '<p>Erro: Falha na conexão com o Banco de Dados</p><p>É possível que esteja sobrecarregado ou não está rodando de forma adequada</p><p class="emphasise">Se o problema persistir, contate o administrador do sistema</p>',
     'dbconnecterror99_plain' => 'Erro: Falha na conexão com o Banco de Dados. É possível que esteja sobrecarregado ou não está rodando de forma adequada. Se o problema persistir, contate o administrador do sistema',
 ];
