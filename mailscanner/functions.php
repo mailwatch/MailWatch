@@ -925,26 +925,31 @@ function updateClock() {
   var currentHours = currentTime.getHours();
   var currentMinutes = currentTime.getMinutes();
   var currentSeconds = currentTime.getSeconds();
+  var timeOfDay = "";
 
   // Pad the minutes and seconds with leading zeros, if required
   currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
   currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
-
-  // Choose either "AM" or "PM" as appropriate
-  var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
 ';
-
     if (TIME_FORMAT === '%h:%i:%s') {
         echo '
+  // Choose either "AM" or "PM" as appropriate
+  timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+
   // Convert the hours component to 12-hour format if needed
   currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
 
   // Convert an hours component of "0" to "12"
-  currentHours = ( currentHours === 0 ) ? 12 : currentHours;';
+  currentHours = ( currentHours === 0 ) ? 12 : currentHours;
+';
     }
-
+    else {
+        echo '
+  // also pad the hours with leading zeros, if required (24h time format)
+  currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
+';
+    }
     echo '
-
   // Compose the string for display
   var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
 
