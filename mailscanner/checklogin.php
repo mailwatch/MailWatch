@@ -103,7 +103,13 @@ if (
     && (false === $_SESSION['user_imap'])
 ) {
     $passwordInDb = Database::mysqli_result($result, 0, 'password');
-    if (!password_verify($mypassword, (string)$passwordInDb)) {
+    if (!is_string($passwordInDb)) {
+        header('Location: login.php?error=baduser');
+        logFailedLogin($myusername);
+        exit;
+    }
+
+    if (!password_verify($mypassword, $passwordInDb)) {
         if (!hash_equals(md5($mypassword), $passwordInDb)) {
             header('Location: login.php?error=baduser');
             logFailedLogin($myusername);
