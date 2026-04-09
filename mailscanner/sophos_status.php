@@ -29,6 +29,11 @@ require_once __DIR__ . '/functions.php';
 
 include __DIR__ . '/login.function.php';
 
+if ('A' !== $_SESSION['user_type']) {
+    header('Location: login.php');
+    exit;
+}
+
 html_start(__('sophos53'), 0, false, false);
 
 echo '<table class="boxtable" width="100%">';

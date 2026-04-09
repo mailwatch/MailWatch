@@ -31,6 +31,11 @@ require_once __DIR__ . '/functions.php';
 // Authentication verification
 require __DIR__ . '/login.function.php';
 
+if ('A' !== $_SESSION['user_type']) {
+    header('Location: login.php');
+    exit;
+}
+
 html_start(__('geoipupdate15'), 0, false, false);
 
 if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxmind')) {

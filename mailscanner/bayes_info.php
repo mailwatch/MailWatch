@@ -31,6 +31,11 @@ require_once __DIR__ . '/functions.php';
 // Require the login function code
 require __DIR__ . '/login.function.php';
 
+if ('A' !== $_SESSION['user_type']) {
+    header('Location: login.php');
+    exit;
+}
+
 // Start the header code and Title
 html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 

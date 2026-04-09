@@ -29,6 +29,11 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
+if ('A' !== $_SESSION['user_type']) {
+    header('Location: login.php');
+    exit;
+}
+
 html_start(__('mailscannerlint28'), 0, false, false);
 echo '<table class="mail" cellspacing="1" width="100%">' . "\n";
 echo ' <tr>' . "\n";

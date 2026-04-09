@@ -28,6 +28,11 @@
 require_once __DIR__ . '/functions.php';
 require __DIR__ . '/login.function.php';
 
+if ('A' !== $_SESSION['user_type']) {
+    header('Location: login.php');
+    exit;
+}
+
 html_start(__('salint51'), 0, false, false);
 
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {

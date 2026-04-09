@@ -29,22 +29,23 @@ require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
 
+if ('A' !== $_SESSION['user_type']) {
+    header('Location: login.php');
+    exit;
+}
+
 html_start(__('mysqlstatus31'), 0, false, false);
 
-if ('A' !== $_SESSION['user_type']) {
-    echo __('notauthorized31') . '\n';
-} else {
-    audit_log(__('auditlog31', true));
-    dbtable('SHOW TABLE STATUS');
-    echo "<BR>\n";
-    dbtable('SHOW FULL PROCESSLIST');
-    echo "<BR>\n";
-    echo '<div class="tableWithLineBreaksWrapper">' . "\n";
-    dbtable('SHOW VARIABLES');
-    echo '</div>' . "\n";
+audit_log(__('auditlog31', true));
+dbtable('SHOW TABLE STATUS');
+echo "<BR>\n";
+dbtable('SHOW FULL PROCESSLIST');
+echo "<BR>\n";
+echo '<div class="tableWithLineBreaksWrapper">' . "\n";
+dbtable('SHOW VARIABLES');
+echo '</div>' . "\n";
 
-    // Add footer
-    html_end();
-    // Close any open db connections
-    dbclose();
-}
+// Add footer
+html_end();
+// Close any open db connections
+dbclose();

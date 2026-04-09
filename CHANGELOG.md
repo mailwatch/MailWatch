@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Security
+- Add missing admin role authorization check on sa_lint.php, ms_lint.php, sophos_status.php, geoip_update.php, bayes_info.php and mysql_status.php
+
 ### Fixed
 - Fixed Message-ID extraction stripping angle brackets required by RFC 5322
 
