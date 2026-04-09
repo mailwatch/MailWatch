@@ -31,7 +31,7 @@ class Ticket1290Test extends TestCase
         $this->assertEquals($expectedEmail, $matches[1], "The extracted email should be $expectedEmail");
     }
 
-    public function provideValidEmailsForEximQueue()
+    public static function provideValidEmailsForEximQueue()
     {
         return [
             ['test@example.com'],
@@ -53,9 +53,9 @@ class Ticket1290Test extends TestCase
         ];
     }
 
-    public function provideValidEmailsForSendmailQueue()
+    public static function provideValidEmailsForSendmailQueue()
     {
-        $eximEmails = $this->provideValidEmailsForEximQueue();
+        $eximEmails = self::provideValidEmailsForEximQueue();
         $sendmailEmails = [];
         $flags = ['', 'N', 'S', 'F', 'D', 'P', 'A', 'B']; // Are there other sendmail mqueue/qf* flags?
 
