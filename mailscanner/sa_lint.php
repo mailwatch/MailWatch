@@ -31,7 +31,10 @@ require __DIR__ . '/login.function.php';
 html_start(__('salint51'), 0, false, false);
 
 if (!$fp = popen(SA_DIR . 'spamassassin -x -D -p ' . SA_PREFS . ' --lint 2>&1', 'r')) {
-    exit(__('diepipe51'));
+    echo '<div class="error">' . __('diepipe51') . '</div>' . "\n";
+    html_end();
+    dbclose();
+    exit;
 }
 
 audit_log(__('auditlog51', true));
@@ -50,7 +53,6 @@ $start = get_microtime();
 $last = false;
 while ($line = fgets($fp, 2096)) {
     $line = preg_replace("/\n/i", '', $line);
-    $line = preg_replace('/</', '&lt;', (string)$line);
     if ('' !== $line && ' ' !== $line) {
         $timer = get_microtime();
         $linet = $timer - $start;
@@ -61,6 +63,7 @@ while ($line = fgets($fp, 2096)) {
         if (preg_match('/subtests=/i', (string)$line)) {
             $line = str_replace(',', ', ', $line);
         }
+        $line = htmlspecialchars($line, ENT_QUOTES, 'UTF-8');
         echo "<!-- Timer: $timer, Line Start: $linet -->\n";
         echo "    <TR>\n";
         echo "     <TD>$line</TD>\n";
