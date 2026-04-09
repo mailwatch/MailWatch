@@ -3,25 +3,44 @@ name: PHPUnit
 on:
   push:
     branches: [ "1.2" ]
+    paths-ignore:
+      - '**/*.md'
+      - 'data/**'
+      - 'MailScanner_perl_scripts/**'
+      - 'tools/MailScanner_config/**'
+      - 'tools/sudo/**'
   pull_request:
     branches: [ "1.2" ]
+    paths-ignore:
+      - '**/*.md'
+      - 'data/**'
+      - 'MailScanner_perl_scripts/**'
+      - 'tools/MailScanner_config/**'
+      - 'tools/sudo/**'
+  workflow_dispatch:
 
 jobs:
   test:
+    name: "PHP: ${{ matrix.php-version }} | PHPUnit"
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['7.4', '8.4']
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: ${{ matrix.php-version }}
+          extensions: mysqli
           coverage: none
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install Composer dependencies
+        uses: "ramsey/composer-install@v4"
 
       - name: Run tests
         run: ./vendor/bin/phpunit

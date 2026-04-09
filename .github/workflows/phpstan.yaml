@@ -4,19 +4,21 @@ on:
   # Run on all pushes and on all pull requests.
   # Prevent the build from running when there are only irrelevant changes.
   push:
+    branches: [ "1.2" ]
     paths-ignore:
-      - '**.md'
-      - 'data'
-      - 'MailScanner_perl_scripts'
-      - 'tools/MailScanner_config'
-      - 'tools/sudo'
+      - '**/*.md'
+      - 'data/**'
+      - 'MailScanner_perl_scripts/**'
+      - 'tools/MailScanner_config/**'
+      - 'tools/sudo/**'
   pull_request:
+    branches: [ "1.2" ]
     paths-ignore:
-      - '**.md'
-      - 'data'
-      - 'MailScanner_perl_scripts'
-      - 'tools/MailScanner_config'
-      - 'tools/sudo'
+      - '**/*.md'
+      - 'data/**'
+      - 'MailScanner_perl_scripts/**'
+      - 'tools/MailScanner_config/**'
+      - 'tools/sudo/**'
   # Allow manually triggering the workflow.
   workflow_dispatch:
 
@@ -28,20 +30,22 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
           coverage: none
-          tools: phpstan
 
       # Install dependencies and handle caching in one go.
       # Dependencies need to be installed to make sure the PHPUnit classes are recognized.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       - name: Install Composer dependencies
-        uses: "ramsey/composer-install@v3"
+        uses: "ramsey/composer-install@v4"
+
+      - name: Fix MAILWATCH_HOME for CI
+        run: sed -i "s|define('MAILWATCH_HOME', '/var/www/html/mailscanner')|define('MAILWATCH_HOME', __DIR__)|" mailscanner/conf.php.example
 
       - name: Run PHPStan
-        run: phpstan analyse --configuration=phpstan.dist.neon --error-format=github
+        run: ./vendor/bin/phpstan analyse --configuration=phpstan.dist.neon --error-format=github
