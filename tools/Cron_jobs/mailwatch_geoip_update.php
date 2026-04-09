@@ -172,9 +172,8 @@ if (function_exists('fsockopen') || extension_loaded('curl')) {
     if ($retval_wget > 0) {
         echo __('downbad52') . ' ' . $file['description'] . "\n";
         exit;
-    } else {
-        echo $file['description'] . ' ' . __('downok52') . "\n";
     }
+    echo $file['description'] . ' ' . __('downok52') . "\n";
 } else {
     $error_message = __('message352') . "\n" . __('message452');
     exit($error_message);

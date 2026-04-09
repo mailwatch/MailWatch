@@ -183,9 +183,8 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
                 if ($retval_wget > 0) {
                     echo __('downbad15') . ' ' . $file['description'] . "<br>\n";
                     exit;
-                } else {
-                    echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
                 }
+                echo $file['description'] . ' ' . __('downok15') . '<br>' . "\n";
             } else {
                 $error_message = __('message315') . '<br>' . "\n" . __('message415');
                 exit($error_message);

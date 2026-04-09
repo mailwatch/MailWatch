@@ -271,11 +271,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     if (true === checkLoginExpiry($_SESSION['myusername'])) {
         header('Location: logout.php?error=timeout');
         exit;
-    } else {
-        if (0 === $refresh) {
-            // User is moving about on non-refreshing pages, keep session alive
-            updateLoginExpiry($_SESSION['myusername']);
-        }
+    }
+    if (0 === $refresh) {
+        // User is moving about on non-refreshing pages, keep session alive
+        updateLoginExpiry($_SESSION['myusername']);
     }
 
     if (DEBUG) {
@@ -942,8 +941,7 @@ function updateClock() {
   // Convert an hours component of "0" to "12"
   currentHours = ( currentHours === 0 ) ? 12 : currentHours;
 ';
-    }
-    else {
+    } else {
         echo '
   // also pad the hours with leading zeros, if required (24h time format)
   currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
