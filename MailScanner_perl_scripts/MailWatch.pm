@@ -397,7 +397,7 @@ sub MailWatchLogging {
     # MailScanner::Log::DebugLog("MailWatch: Raw unfolded Message-ID buffer: [%s]", $messageidbuffer);
 
     # Normalize and extract the Message-ID value
-    if ($messageidbuffer =~ /<([^>]+)>/) {
+    if ($messageidbuffer =~ /(<[^>]+>)/) {
         $messageid = $1;
         $messageid =~ s/^\s+|\s+$//g;
 

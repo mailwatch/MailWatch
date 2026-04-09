@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Fixed
+- Fixed Message-ID extraction stripping angle brackets required by RFC 5322
+
 ### Changed
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
 - Standardised database charset to utf8mb4 with unicode_520_ci collation
