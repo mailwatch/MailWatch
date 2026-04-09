@@ -1,21 +1,42 @@
 # Changelog
 
 ## Unreleased
-### Security
-- Add missing admin role authorization check on sa_lint.php, ms_lint.php, sophos_status.php, geoip_update.php, bayes_info.php and mysql_status.php
-
-### Fixed
-- Fixed Message-ID extraction stripping angle brackets required by RFC 5322
+### Added
+- Add `logmail` API endpoint for programmatic mail log ingestion
+- Add HTTP client support in `MailWatch.pm` for sending data to the MailWatch API
 
 ### Changed
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
 - Standardised database charset to utf8mb4 with unicode_520_ci collation
-- Improve db_clean script performance for large databases
 
 ### Compatibility
 - The minimal PHP version is now 8.1.
 - The minimal supported MySQL version is now 5.7.42
 - The minimal supported MariaDB version is now 10.4.34
+
+## 1.2.26
+### Security
+- Add missing admin role authorization check on sa_lint.php, ms_lint.php, sophos_status.php, geoip_update.php, bayes_info.php and mysql_status.php
+- Improve output escaping in SpamAssassin Lint tool
+
+### Added
+- Turkish translation (#1321)
+
+### Changed
+- Tools scripts now auto-detect functions.php path relative to their location, with fallback to the default `/var/www/html/mailscanner/` path
+
+### Fixed
+- Fixed Message-ID extraction stripping angle brackets required by RFC 5322
+- Fixed the wrong variable check for mtalogprocessor.inc.php in mailwatch_postfix_relay.php
+- Fix broken HTML page on popen failure in SpamAssassin Lint tool
+
+## 1.2.25
+### Changed
+- Improve db_clean script performance for large databases
+
+### Fixed
+- Fix Message-ID extraction for RFC 5322 folded headers (#1305)
+- Fix fatal errors on PHP 8.4 (#1320)
 
 ## 1.2.24
 ### Added
