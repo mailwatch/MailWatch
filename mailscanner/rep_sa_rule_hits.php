@@ -83,22 +83,19 @@ while ($row = $result->fetch_object()) {
             $rule = $regs[1];
             $score = $regs[2];
         }
-        if (isset($sa_array[$rule]['total'])) {
-            ++$sa_array[$rule]['total'];
-        } else {
-            $sa_array[$rule]['total'] = 1;
+        if (!isset($sa_array[$rule])) {
+            $sa_array[$rule] = [
+                'total' => 0,
+                'score' => null,
+                'spam' => 0,
+                'not-spam' => 0,
+            ];
         }
 
-        if (!isset($sa_array[$rule]['score'])) {
+        ++$sa_array[$rule]['total'];
+
+        if (null === $sa_array[$rule]['score']) {
             $sa_array[$rule]['score'] = $score;
-        }
-
-        // Initialise the other dimensions of the array
-        if (!isset($sa_array[$rule]['spam'])) {
-            $sa_array[$rule]['spam'] = 0;
-        }
-        if (!isset($sa_array[$rule]['not-spam'])) {
-            $sa_array[$rule]['not-spam'] = 0;
         }
 
         if ('0' !== $row->isspam) {
