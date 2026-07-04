@@ -11,7 +11,7 @@ if (!defined('API_KEY')) {
     exit;
 }
 
-require_once __DIR__ . '/../database.php';
+require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/MailLogEntry.php';
 
 function isValidApiKey(?string $apiKey): bool
