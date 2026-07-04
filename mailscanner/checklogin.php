@@ -26,7 +26,6 @@
  */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/lib/hash_equals.php';
 disableBrowserCache();
 
 if (isset($_POST['token'])) {
