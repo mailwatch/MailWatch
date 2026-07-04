@@ -47,7 +47,7 @@ if (!file_exists(__DIR__ . '/conf.php') || !is_readable(__DIR__ . '/conf.php')) 
     exit(__('cannot_read_conf'));
 }
 require_once __DIR__ . '/conf.php';
-require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/conf_parser.inc.php';
 
 // more secure session cookies
