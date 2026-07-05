@@ -16,8 +16,8 @@ class MailLogEntry
     public $ishigh;
     public $issaspam;
     public $isrblspam;
-    public $spamwhitelisted;
-    public $spamblacklisted;
+    public $spamallowlisted;
+    public $spamblocklisted;
     public $sascore;
     public $spamreport;
     public $virusinfected;
@@ -27,8 +27,8 @@ class MailLogEntry
     public $ismcp;
     public $ishighmcp;
     public $issamcp;
-    public $mcpwhitelisted;
-    public $mcpblacklisted;
+    public $mcpallowlisted;
+    public $mcpblocklisted;
     public $mcpsascore;
     public $mcpreport;
     public $hostname;
@@ -56,8 +56,8 @@ class MailLogEntry
         $this->ishigh = $data['ishigh'] ?? 0;
         $this->issaspam = $data['issaspam'] ?? 0;
         $this->isrblspam = $data['isrblspam'] ?? 0;
-        $this->spamwhitelisted = $data['spamwhitelisted'] ?? 0;
-        $this->spamblacklisted = $data['spamblacklisted'] ?? 0;
+        $this->spamallowlisted = $data['spamallowlisted'] ?? 0;
+        $this->spamblocklisted = $data['spamblocklisted'] ?? 0;
         $this->sascore = $data['sascore'] ?? 0.00;
         $this->spamreport = $data['spamreport'] ?? '';
         $this->virusinfected = $data['virusinfected'] ?? 0;
@@ -67,8 +67,8 @@ class MailLogEntry
         $this->ismcp = $data['ismcp'] ?? 0;
         $this->ishighmcp = $data['ishighmcp'] ?? 0;
         $this->issamcp = $data['issamcp'] ?? 0;
-        $this->mcpwhitelisted = $data['mcpwhitelisted'] ?? 0;
-        $this->mcpblacklisted = $data['mcpblacklisted'] ?? 0;
+        $this->mcpallowlisted = $data['mcpallowlisted'] ?? 0;
+        $this->mcpblocklisted = $data['mcpblocklisted'] ?? 0;
         $this->mcpsascore = $data['mcpsascore'] ?? 0.00;
         $this->mcpreport = $data['mcpreport'] ?? '';
         $this->hostname = $data['hostname'] ?? '';
