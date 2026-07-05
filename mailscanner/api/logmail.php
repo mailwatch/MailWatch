@@ -60,6 +60,21 @@ if (JSON_ERROR_NONE !== json_last_error()) {
     echo json_encode(['error' => 'Invalid JSON']);
     exit;
 }
+if (is_array($data)) {
+    $legacyFields = [
+        'spamwhitelisted' => 'spamallowlisted',
+        'spamblacklisted' => 'spamblocklisted',
+        'mcpwhitelisted' => 'mcpallowlisted',
+        'mcpblacklisted' => 'mcpblocklisted',
+    ];
+
+    foreach ($legacyFields as $legacyField => $currentField) {
+        if (array_key_exists($legacyField, $data) && !array_key_exists($currentField, $data)) {
+            $data[$currentField] = $data[$legacyField];
+        }
+    }
+}
+
 $mailLogEntry = new MailLogEntry($data);
 if (!$mailLogEntry->isValid()) {
     http_response_code(400); // Bad Request
@@ -70,7 +85,7 @@ if (!$mailLogEntry->isValid()) {
 // Prepare insert query
 $dbLink = Database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 
-$query = 'INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamwhitelisted, spamblacklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpwhitelisted, mcpblacklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid)
+$query = 'INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamallowlisted, spamblocklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpallowlisted, mcpblocklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 $stmt = $dbLink->prepare($query);
@@ -95,8 +110,8 @@ $stmt->bind_param(
     $mailLogEntry->ishigh,
     $mailLogEntry->issaspam,
     $mailLogEntry->isrblspam,
-    $mailLogEntry->spamwhitelisted,
-    $mailLogEntry->spamblacklisted,
+    $mailLogEntry->spamallowlisted,
+    $mailLogEntry->spamblocklisted,
     $mailLogEntry->sascore,
     $mailLogEntry->spamreport,
     $mailLogEntry->virusinfected,
@@ -106,8 +121,8 @@ $stmt->bind_param(
     $mailLogEntry->ismcp,
     $mailLogEntry->ishighmcp,
     $mailLogEntry->issamcp,
-    $mailLogEntry->mcpwhitelisted,
-    $mailLogEntry->mcpblacklisted,
+    $mailLogEntry->mcpallowlisted,
+    $mailLogEntry->mcpblocklisted,
     $mailLogEntry->mcpsascore,
     $mailLogEntry->mcpreport,
     $mailLogEntry->hostname,
