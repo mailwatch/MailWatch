@@ -41,8 +41,8 @@ use Digest::SHA;
 use Sys::Syslog;
 use Socket;
 use LWP::UserAgent;
-use JSON;
 use MailWatchConf;
+use MailWatchClient;
 # use Data::Dumper; # Uncomment this for debugging
 
 # Uncomment the following line when debugging MailWatch.pm
@@ -67,6 +67,15 @@ my $api_endpoint = $api_base_url . '/api/logmail.php';
 my $api_key = mailwatch_get_api_key();
 my $api_max_retries = mailwatch_get_api_max_retries();
 my $api_retry_delay = mailwatch_get_api_retry_delay();
+my $api_max_retry_delay = defined &mailwatch_get_api_max_retry_delay
+    ? mailwatch_get_api_max_retry_delay()
+    : 60;
+my $local_logger_max_retries = defined &mailwatch_get_local_logger_max_retries
+    ? mailwatch_get_local_logger_max_retries()
+    : 3;
+my $local_logger_retry_delay = defined &mailwatch_get_local_logger_retry_delay
+    ? mailwatch_get_local_logger_retry_delay()
+    : 5;
 
 my $RunInForeground;
 
@@ -74,6 +83,21 @@ my $httpClient = LWP::UserAgent->new(
     protocols_allowed => [ 'http', 'https' ],
     timeout           => 10, # Set a 10 seconds timeout for HTTP requests
     agent             => "MailWatchAPIPerlClient/$VERSION"
+);
+
+my $mailWatchClient = MailWatchClient->new(
+    user_agent         => $httpClient,
+    api_endpoint       => $api_endpoint,
+    api_key            => $api_key,
+    api_max_retries    => $api_max_retries,
+    api_retry_delay    => $api_retry_delay,
+    api_max_retry_delay => $api_max_retry_delay,
+    api_logger         => \&LogMessage,
+    local_sender       => \&_send_to_logging_child,
+    local_starter      => \&InitMailWatchLogging,
+    local_max_retries  => $local_logger_max_retries,
+    local_retry_delay  => $local_logger_retry_delay,
+    local_logger       => \&_log_local_delivery,
 );
 
 sub InitMailWatchLogging {
@@ -132,6 +156,33 @@ sub LogMessage {
             print STDOUT "$0: $level: $msg\n";
         }
     };
+}
+
+sub _log_local_delivery {
+    my ($level, $message) = @_;
+
+    if ($level eq 'info') {
+        MailScanner::Log::InfoLog("MailWatch: $message");
+    } else {
+        MailScanner::Log::WarnLog("MailWatch: $message");
+    }
+}
+
+sub _send_to_logging_child {
+    my ($payload) = @_;
+
+    socket(my $socket, PF_INET, SOCK_STREAM, getprotobyname("tcp")) or return 0;
+    my $addr = sockaddr_in($server_port, $loop);
+    unless (connect($socket, $addr)) {
+        close $socket;
+
+        return 0;
+    }
+
+    my $sent = print {$socket} $payload;
+    close $socket;
+
+    return $sent ? 1 : 0;
 }
 
 sub BindPort {
@@ -207,33 +258,7 @@ sub ListenForMessages {
 
         next unless defined $$message{id};
 
-        # Set up a loop to prevent loss of logging, up to $api_max_retries
-        # Prevents loss of logging to API due to temporary failure
-        my $retry_count = 0;
-        while ($retry_count < $api_max_retries) {
-            # Encode message as JSON
-            my $json_data = encode_json($message);
-            my $req = HTTP::Request->new(POST => $api_endpoint);
-            $req->content_type('application/json');
-            $req->header('x-mailwatch-api-key' => $api_key);
-            $req->content($json_data);
-            my $res = $httpClient->request($req);
-
-            # Send request to API
-            if ($res->is_success) {
-                LogMessage('info', "$$message{id}: Logged to MailWatch API");
-                last;
-            } else {
-                LogMessage('warn', "$$message{id}: Failed to log to MailWatch API: " . $res->status_line);
-                $retry_count++;
-                if ($retry_count < $api_max_retries) {
-                    LogMessage('warn', "$$message{id}: Retrying in $api_retry_delay seconds...");
-                    sleep $api_retry_delay;
-                } else {
-                    LogMessage('error', "$$message{id}: Failed to log to MailWatch API after $api_max_retries attempts.");
-                }
-            }
-        }
+        $mailWatchClient->send_api_message($message);
 
         # Unset
         $message = undef;
@@ -316,7 +341,8 @@ sub MailWatchLogging {
         $file = "the entire message" if $file eq "";
         # Use the sanitised filename to avoid problems caused by people forcing
         # logging of attachment filenames which contain nasty SQL instructions.
-        $file = $message->{file2safefile}{$file} or $file;
+        $file = $message->{file2safefile}{$file}
+            if defined $message->{file2safefile}{$file};
         $text =~ s/\n/ /g;  # Make sure text report only contains 1 line (LF)
         $text =~ s/\t/ /g;  # and no TAB characters
         $text =~ s/\r/ /g;  # and no CR characters
@@ -454,21 +480,7 @@ sub MailWatchLogging {
     my $f = freeze \%msg;
     my $p = pack("u", $f);
 
-    # Connect to server
-    while (1) {
-        socket(TO_SERVER, PF_INET, SOCK_STREAM, getprotobyname("tcp"));
-        my $addr = sockaddr_in($server_port, $loop);
-        connect(TO_SERVER, $addr) and last;
-        # Failed to connect - kick off new child, wait, and try again
-        InitMailWatchLogging();
-        sleep 5;
-    }
-
-    # Pass data to server process
-    MailScanner::Log::InfoLog("MailWatch: Logging message $msg{id} to API");
-    print TO_SERVER $p;
-    print TO_SERVER "END\n";
-    close TO_SERVER;
+    $mailWatchClient->send_local_message($p, $msg{id});
 }
 
 1;

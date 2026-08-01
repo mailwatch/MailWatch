@@ -1,0 +1,10 @@
+requires 'Encoding::FixLatin';
+requires 'Digest::SHA';
+requires 'HTTP::Request';
+requires 'JSON';
+requires 'LWP::UserAgent';
+
+on test => sub {
+    requires 'HTTP::Response';
+    requires 'Test::More';
+};

@@ -686,6 +686,23 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Add idempotency column and unique index to maillog table
+    echo pad(' - Add ingestion_id field to `maillog` table');
+    if (true === check_column_exists('maillog', 'ingestion_id')) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE maillog ADD ingestion_id CHAR(64) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL';
+        executeQuery($sql);
+    }
+
+    echo pad(' - Add unique ingestion_id index to `maillog` table');
+    if (in_array('maillog_ingestion_id_uniq', getTableIndexes('maillog'), true)) {
+        echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'ALTER TABLE maillog ADD UNIQUE KEY maillog_ingestion_id_uniq (ingestion_id)';
+        executeQuery($sql);
+    }
+
     // Add new released column to maillog table
     echo pad(' - Add released field to `maillog` table');
     if (true === check_column_exists('maillog', 'released')) {

@@ -24,13 +24,22 @@ function isValidApiKey(?string $apiKey): bool
         return false;
     }
 
-    return API_KEY === $apiKey;
+    return hash_equals(API_KEY, $apiKey);
 }
 
 function getApiKeyToken(): ?string
 {
     if (isset($_SERVER['HTTP_X_MAILWATCH_API_KEY'])) {
         return $_SERVER['HTTP_X_MAILWATCH_API_KEY'];
+    }
+
+    return null;
+}
+
+function getIdempotencyKey(): ?string
+{
+    if (isset($_SERVER['HTTP_IDEMPOTENCY_KEY'])) {
+        return strtolower(trim($_SERVER['HTTP_IDEMPOTENCY_KEY']));
     }
 
     return null;
@@ -82,11 +91,29 @@ if (!$mailLogEntry->isValid()) {
     exit;
 }
 
+$idempotencyKey = getIdempotencyKey();
+if (null !== $idempotencyKey) {
+    $expectedIdempotencyKey = hash(
+        'sha256',
+        $mailLogEntry->hostname . "\0" . $mailLogEntry->id . "\0" . $mailLogEntry->token
+    );
+    if (
+        1 !== preg_match('/^[a-f0-9]{64}$/', $idempotencyKey)
+        || '' === $mailLogEntry->hostname
+        || '' === $mailLogEntry->token
+        || !hash_equals($expectedIdempotencyKey, $idempotencyKey)
+    ) {
+        http_response_code(400); // Bad Request
+        echo json_encode(['error' => 'Invalid idempotency key']);
+        exit;
+    }
+}
+
 // Prepare insert query
 $dbLink = Database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 
-$query = 'INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamallowlisted, spamblocklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpallowlisted, mcpblocklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+$query = 'INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamallowlisted, spamblocklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpallowlisted, mcpblocklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid, ingestion_id)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 $stmt = $dbLink->prepare($query);
 if (!$stmt) {
@@ -95,7 +122,7 @@ if (!$stmt) {
     exit;
 }
 $stmt->bind_param(
-    'ssisssssssiiiiiiiiiiiissiiiissssssss',
+    'ssisssssssiiiiiidsiiisiiiiidsssssissss',
     $mailLogEntry->timestamp,
     $mailLogEntry->id,
     $mailLogEntry->size,
@@ -132,13 +159,27 @@ $stmt->bind_param(
     $mailLogEntry->quarantined,
     $mailLogEntry->rblspamreport,
     $mailLogEntry->token,
-    $mailLogEntry->messageid
+    $mailLogEntry->messageid,
+    $idempotencyKey
 );
 
-if ($stmt->execute()) {
-    http_response_code(201); // Created
-    echo json_encode(['success' => 'Data inserted successfully']);
-} else {
+try {
+    if ($stmt->execute()) {
+        http_response_code(201); // Created
+        echo json_encode(['success' => 'Data inserted successfully']);
+    } else {
+        http_response_code(500); // Internal Server Error
+        echo json_encode(['error' => 'Failed to insert data']);
+    }
+} catch (mysqli_sql_exception $exception) {
+    if (1062 === $exception->getCode() && null !== $idempotencyKey) {
+        http_response_code(200); // Existing request already completed
+        echo json_encode(['success' => 'Data already inserted', 'duplicate' => true]);
+    } else {
+        http_response_code(500); // Internal Server Error
+        echo json_encode(['error' => 'Failed to insert data']);
+    }
+} catch (Throwable) {
     http_response_code(500); // Internal Server Error
     echo json_encode(['error' => 'Failed to insert data']);
 }

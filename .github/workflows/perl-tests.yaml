@@ -1,0 +1,44 @@
+name: Perl tests
+
+on:
+  push:
+    branches: [ "1.3" ]
+    paths:
+      - 'MailScanner_perl_scripts/**'
+      - 'tests/perl/**'
+      - 'tests/fixtures/api/**'
+      - '.github/workflows/perl-tests.yaml'
+  pull_request:
+    branches: [ "1.3" ]
+    paths:
+      - 'MailScanner_perl_scripts/**'
+      - 'tests/perl/**'
+      - 'tests/fixtures/api/**'
+      - '.github/workflows/perl-tests.yaml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Perl contract tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install cpanminus
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends cpanminus
+
+      - name: Install Perl dependencies
+        working-directory: MailScanner_perl_scripts
+        run: sudo cpanm --notest --installdeps .
+
+      - name: Compile MailWatch modules
+        run: |
+          perl -I MailScanner_perl_scripts -c MailScanner_perl_scripts/MailWatchClient.pm
+          perl -I MailScanner_perl_scripts -c MailScanner_perl_scripts/MailWatch.pm
+
+      - name: Run Perl contract tests
+        run: prove -I MailScanner_perl_scripts tests/perl
