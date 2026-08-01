@@ -14,6 +14,10 @@ my ($api_key) = 'my-api-key';
 my ($api_max_retries) = 5;
 my ($api_retry_delay) = 5;
 my ($api_max_retry_delay) = 60;
+# Failed API deliveries are persisted here and replayed in bounded batches
+my ($api_spool_directory) = '/var/spool/MailScanner/mailwatch';
+my ($api_spool_max_messages) = 10000;
+my ($api_spool_replay_limit) = 10;
 # Change the values below for the connection to the local MailWatch logging child
 my ($local_logger_max_retries) = 3;
 my ($local_logger_retry_delay) = 5;
@@ -40,6 +44,9 @@ sub mailwatch_get_api_key { return $api_key };
 sub mailwatch_get_api_max_retries { return $api_max_retries };
 sub mailwatch_get_api_retry_delay { return $api_retry_delay };
 sub mailwatch_get_api_max_retry_delay { return $api_max_retry_delay };
+sub mailwatch_get_api_spool_directory { return $api_spool_directory };
+sub mailwatch_get_api_spool_max_messages { return $api_spool_max_messages };
+sub mailwatch_get_api_spool_replay_limit { return $api_spool_replay_limit };
 sub mailwatch_get_local_logger_max_retries { return $local_logger_max_retries };
 sub mailwatch_get_local_logger_retry_delay { return $local_logger_retry_delay };
 

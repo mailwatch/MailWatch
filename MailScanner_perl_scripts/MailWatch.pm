@@ -70,6 +70,15 @@ my $api_retry_delay = mailwatch_get_api_retry_delay();
 my $api_max_retry_delay = defined &mailwatch_get_api_max_retry_delay
     ? mailwatch_get_api_max_retry_delay()
     : 60;
+my $api_spool_directory = defined &mailwatch_get_api_spool_directory
+    ? mailwatch_get_api_spool_directory()
+    : '/var/spool/MailScanner/mailwatch';
+my $api_spool_max_messages = defined &mailwatch_get_api_spool_max_messages
+    ? mailwatch_get_api_spool_max_messages()
+    : 10_000;
+my $api_spool_replay_limit = defined &mailwatch_get_api_spool_replay_limit
+    ? mailwatch_get_api_spool_replay_limit()
+    : 10;
 my $local_logger_max_retries = defined &mailwatch_get_local_logger_max_retries
     ? mailwatch_get_local_logger_max_retries()
     : 3;
@@ -86,18 +95,21 @@ my $httpClient = LWP::UserAgent->new(
 );
 
 my $mailWatchClient = MailWatchClient->new(
-    user_agent         => $httpClient,
-    api_endpoint       => $api_endpoint,
-    api_key            => $api_key,
-    api_max_retries    => $api_max_retries,
-    api_retry_delay    => $api_retry_delay,
-    api_max_retry_delay => $api_max_retry_delay,
-    api_logger         => \&LogMessage,
-    local_sender       => \&_send_to_logging_child,
-    local_starter      => \&InitMailWatchLogging,
-    local_max_retries  => $local_logger_max_retries,
-    local_retry_delay  => $local_logger_retry_delay,
-    local_logger       => \&_log_local_delivery,
+    user_agent             => $httpClient,
+    api_endpoint           => $api_endpoint,
+    api_key                => $api_key,
+    api_max_retries        => $api_max_retries,
+    api_retry_delay        => $api_retry_delay,
+    api_max_retry_delay    => $api_max_retry_delay,
+    api_spool_directory    => $api_spool_directory,
+    api_spool_max_messages => $api_spool_max_messages,
+    api_spool_replay_limit => $api_spool_replay_limit,
+    api_logger             => \&LogMessage,
+    local_sender           => \&_send_to_logging_child,
+    local_starter          => \&InitMailWatchLogging,
+    local_max_retries      => $local_logger_max_retries,
+    local_retry_delay      => $local_logger_retry_delay,
+    local_logger           => \&_log_local_delivery,
 );
 
 sub InitMailWatchLogging {
@@ -226,6 +238,7 @@ sub ExitLogging {
 sub ListenForMessages {
     my $message;
     LogMessage('info', "Started MailWatch API Logging child");
+    $mailWatchClient->replay_api_spool();
 
     # Wait for messages
     while (my $cli = accept(CLIENT, SERVER)) {

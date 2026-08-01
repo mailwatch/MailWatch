@@ -11,3 +11,7 @@ SQLSpamSettings.pm
 MailWatchConf.pm
 
 Set database connection settings in MailWatchConf.pm.
+
+The API spool defaults to /var/spool/MailScanner/mailwatch. Its parent directory
+must be writable by the MailScanner runtime user. MailWatch creates the spool
+with mode 0700 and queued messages with mode 0600.
