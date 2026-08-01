@@ -416,9 +416,9 @@ if ($link) {
     echo pad(' - Add login_expiry and login_timeout fields in `users` table');
     if (false === check_column_exists('users', 'login_expiry')) {
         $sql = "ALTER TABLE users ADD COLUMN (
-            login_expiry BIGINT(20) COLLATE utf8mb4_unicode_520_ci DEFAULT '-1',
-            last_login BIGINT(20) COLLATE utf8mb4_unicode_520_ci DEFAULT '-1',
-            login_timeout SMALLINT(5) COLLATE utf8mb4_unicode_520_ci DEFAULT '-1'
+            login_expiry BIGINT(20) DEFAULT '-1',
+            last_login BIGINT(20) DEFAULT '-1',
+            login_timeout SMALLINT(5) DEFAULT '-1'
             );";
         executeQuery($sql);
     } else {
