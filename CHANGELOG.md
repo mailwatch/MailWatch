@@ -19,7 +19,7 @@
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
 
 ### Compatibility
-- The minimal PHP version is now 8.1.
+- The minimal PHP version is now 8.3.
 - The minimal supported MySQL version is now 5.7.42
 - The minimal supported MariaDB version is now 10.4.34
 

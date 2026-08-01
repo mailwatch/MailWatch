@@ -2,14 +2,14 @@ name: Format (PHP)
 
 on:
   pull_request:
-    branches: [ "1.2" ]
+    branches: [ "1.3" ]
     paths:
       - '**/*.php'
   # Allow manually triggering the workflow.
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   php-cs-fixer:
@@ -18,24 +18,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.3'
           coverage: none
 
       - name: Install Composer dependencies
         uses: "ramsey/composer-install@v4"
 
       - name: Run php-cs-fixer
-        run: ./vendor/bin/php-cs-fixer fix --allow-risky=yes
-
-      - name: Commit changes
-        if: github.event_name == 'pull_request'
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: Apply php-cs-fixer changes
-          file_pattern: '*.php'
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes

@@ -4,7 +4,7 @@ on:
   # Run on all pushes and on all pull requests.
   # Prevent the build from running when there are only irrelevant changes.
   push:
-    branches: [ "1.2" ]
+    branches: [ "1.3" ]
     paths-ignore:
       - '**/*.md'
       - 'data/**'
@@ -12,7 +12,7 @@ on:
       - 'tools/MailScanner_config/**'
       - 'tools/sudo/**'
   pull_request:
-    branches: [ "1.2" ]
+    branches: [ "1.3" ]
     paths-ignore:
       - '**/*.md'
       - 'data/**'
@@ -24,7 +24,7 @@ on:
 
 jobs:
   phpstan:
-    name: "PHP: 8.1 | PHPStan"
+    name: "PHP: 8.3 | PHPStan"
 
     runs-on: "ubuntu-latest"
 
@@ -35,7 +35,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.3'
           coverage: none
 
       # Install dependencies and handle caching in one go.
