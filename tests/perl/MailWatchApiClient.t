@@ -5,6 +5,7 @@ use FindBin;
 use lib "$FindBin::Bin/../../MailScanner_perl_scripts";
 
 use Digest::SHA qw(sha256_hex);
+use File::Temp qw(tempdir);
 use HTTP::Response;
 use JSON qw(decode_json);
 use Test::More;
@@ -54,6 +55,14 @@ sub client_with {
     my @logs;
     my @sleeps;
     my $user_agent = Local::FakeUserAgent->new(@{$args{responses}});
+    my %spool_options;
+    if (defined $args{spool_directory}) {
+        %spool_options = (
+            api_spool_directory    => $args{spool_directory},
+            api_spool_max_messages => $args{spool_max_messages} // 10,
+            api_spool_replay_limit => $args{spool_replay_limit} // 10,
+        );
+    }
 
     my $client = MailWatchClient->new(
         user_agent          => $user_agent,
@@ -69,6 +78,7 @@ sub client_with {
         local_retry_delay   => 0,
         local_logger        => sub { die 'Local logger must not be used by API tests' },
         sleeper             => sub { push @sleeps, $_[0] },
+        %spool_options,
     );
 
     return ($client, $user_agent, \@logs, \@sleeps);
@@ -247,6 +257,81 @@ subtest 'the API key is not included in failure logs' => sub {
     $client->send_api_message(fixture());
     my $combined_logs = join "\n", map { join ' ', @{$_} } @{$logs};
     unlike($combined_logs, qr/perl-characterisation-api-key/, 'API key is redacted');
+};
+
+subtest 'an undelivered message is persisted and replayed' => sub {
+    my $spool_directory = tempdir(CLEANUP => 1);
+    my ($client, $user_agent, $logs) = client_with(
+        responses => [
+            response(503, 'Service Unavailable'),
+            response(201, 'Created'),
+        ],
+        max_retries     => 1,
+        spool_directory => $spool_directory,
+    );
+
+    ok(!$client->send_api_message(fixture()), 'failed delivery is reported to the caller');
+    my @queued = glob "$spool_directory/*.json";
+    is(scalar @queued, 1, 'one message is persisted');
+    is((stat($queued[0]))[2] & 07777, 0600, 'queued message is private');
+    is((stat($spool_directory))[2] & 07777, 0700, 'spool directory is private');
+    like(join("\n", map { $_->[1] } @{$logs}), qr/Queued in the MailWatch API spool/, 'queueing is logged');
+
+    ok($client->replay_api_spool(), 'queued delivery is replayed');
+    is(scalar @{$user_agent->{requests}}, 2, 'replay makes a second HTTP request');
+    my @remaining = glob "$spool_directory/*.json";
+    is(scalar @remaining, 0, 'message is removed after successful replay');
+    like(join("\n", map { $_->[1] } @{$logs}), qr/Replayed from the MailWatch API spool/, 'replay is logged');
+};
+
+subtest 'the spool message limit is enforced' => sub {
+    my $spool_directory = tempdir(CLEANUP => 1);
+    my ($client, undef, $logs) = client_with(
+        responses => [
+            response(503, 'Service Unavailable'),
+            response(503, 'Service Unavailable'),
+        ],
+        max_retries        => 1,
+        spool_directory    => $spool_directory,
+        spool_max_messages => 1,
+    );
+
+    ok(!$client->send_api_message(fixture()), 'first failed message is queued');
+    my $second_message = fixture();
+    $second_message->{id} = 'fixture-message-002';
+    $second_message->{token} = '1111111111111111111111111111111111111111';
+    ok(!$client->send_api_message($second_message), 'second failed message remains undelivered');
+
+    my @queued = glob "$spool_directory/*.json";
+    is(scalar @queued, 1, 'spool does not grow past its configured limit');
+    like(join("\n", map { $_->[1] } @{$logs}), qr/spool limit reached/, 'full spool is logged');
+};
+
+subtest 'spool replay is bounded per run' => sub {
+    my $spool_directory = tempdir(CLEANUP => 1);
+    my ($client) = client_with(
+        responses => [
+            response(503, 'Service Unavailable'),
+            response(503, 'Service Unavailable'),
+            response(201, 'Created'),
+        ],
+        max_retries        => 1,
+        spool_directory    => $spool_directory,
+        spool_replay_limit => 1,
+    );
+
+    my $first_message = fixture();
+    my $second_message = fixture();
+    $second_message->{id} = 'fixture-message-002';
+    $second_message->{token} = '1111111111111111111111111111111111111111';
+    $client->send_api_message($first_message);
+    $client->send_api_message($second_message);
+
+    my @before_replay = glob "$spool_directory/*.json";
+    is(scalar @before_replay, 2, 'two messages are waiting');
+    ok($client->replay_api_spool(), 'bounded replay succeeds');
+    my @after_replay = glob "$spool_directory/*.json";
+    is(scalar @after_replay, 1, 'only one message is replayed in this run');
 };
 
 done_testing;
