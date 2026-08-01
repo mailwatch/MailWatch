@@ -3,7 +3,7 @@ includes:
 
 parameters:
 	level: 5
-	phpVersion: 80100
+	phpVersion: 80300
 	tmpDir: %currentWorkingDirectory%/.phpstan-cache
 	paths:
 	    - mailscanner
