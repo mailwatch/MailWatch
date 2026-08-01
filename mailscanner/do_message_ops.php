@@ -86,7 +86,7 @@ if (!empty($_POST)) {
             default:
                 continue 2; // continue with next foreach loop
         }
-        $items = quarantine_list_items($id, RPC_ONLY);
+        $items = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
         echo '<tr>' . "\n";
         echo '<td><a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
@@ -103,14 +103,15 @@ if (!empty($_POST)) {
                 $itemnum = [$num];
                 echo '<td>';
                 if ('release' === $type) {
-                    $quarantined = quarantine_list_items($id, RPC_ONLY);
+                    $quarantined = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
                     if (is_array($quarantined)) {
                         $to = $quarantined[0]['to'];
                         echo quarantine_release(
                             $quarantined,
                             $itemnum,
                             $to,
-                            RPC_ONLY
+                            RPC_ONLY,
+                            $_SESSION['global_filter']
                         );
                     } else {
                         echo $quarantined;
@@ -120,7 +121,8 @@ if (!empty($_POST)) {
                         $items,
                         $itemnum,
                         $type,
-                        RPC_ONLY
+                        RPC_ONLY,
+                        $_SESSION['global_filter']
                     );
                 }
                 echo '</td>' . "\n";

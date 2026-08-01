@@ -84,7 +84,7 @@ if (false === $id || !validateInput($id, 'msgid')) {
     exit;
 }
 
-$list = quarantine_list_items($id);
+$list = quarantine_list_items($id, false, $_SESSION['global_filter']);
 if (0 === count($list)) {
     exit(__('diemnf57'));
 }
@@ -98,11 +98,11 @@ switch ($_GET['action']) {
         $result = '';
         if (1 === count($list)) {
             $to = $list[0]['to'];
-            $result = quarantine_release($list, [0], $to);
+            $result = quarantine_release($list, [0], $to, false, $_SESSION['global_filter']);
         } else {
             for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                 if (preg_match('/message\/rfc822/', (string)$list[$i]['type'])) {
-                    $result = quarantine_release($list, [$i], $list[$i]['to']);
+                    $result = quarantine_release($list, [$i], $list[$i]['to'], false, $_SESSION['global_filter']);
                 }
             }
         }
@@ -148,7 +148,7 @@ switch ($_GET['action']) {
             } else {
                 simple_html_start();
                 for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                    $status[] = quarantine_delete($list, [$i]);
+                    $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
                 }
                 $status = implode('<br/>', $status);
                 simple_html_result($status);
@@ -157,7 +157,7 @@ switch ($_GET['action']) {
         } else {
             // Delete
             for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                $status[] = quarantine_delete($list, [$i]);
+                $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
             }
         }
         break;

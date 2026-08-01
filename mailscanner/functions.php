@@ -3377,12 +3377,13 @@ function is_local($host): bool
 }
 
 /**
- * @param string     $msgid
- * @param bool|false $rpc_only
+ * @param string      $msgid
+ * @param bool|false  $rpc_only
+ * @param string|null $global_filter
  *
  * @return array|mixed|string
  */
-function quarantine_list_items($msgid, $rpc_only = false)
+function quarantine_list_items($msgid, $rpc_only = false, $global_filter = null)
 {
     $sql = "
 SELECT
@@ -3398,6 +3399,11 @@ SELECT
   maillog
  WHERE
   id = '$msgid'";
+    if (null !== $global_filter) {
+        $sql .= "
+ AND
+ ($global_filter)";
+    }
     $sth = dbquery($sql);
     $rows = $sth->num_rows;
     if ($rows <= 0) {
@@ -3479,18 +3485,19 @@ SELECT
 }
 
 /**
- * @param array      $list
- * @param array      $num
- * @param string     $to
- * @param bool|false $rpc_only
+ * @param array       $list
+ * @param array       $num
+ * @param string      $to
+ * @param bool|false  $rpc_only
+ * @param string|null $global_filter
  */
-function quarantine_release($list, $num, $to, $rpc_only = false): string
+function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter = null): string
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
 
-    $new = quarantine_list_items($list[0]['msgid']);
+    $new = quarantine_list_items($list[0]['msgid'], false, $global_filter);
     $list = &$new;
 
     // Check for [-1], indicating just to release message itself, regardless of its item position
@@ -3616,15 +3623,18 @@ function quarantine_release($list, $num, $to, $rpc_only = false): string
 }
 
 /**
+ * @param bool|false  $rpc_only
+ * @param string|null $global_filter
+ *
  * @return string
  */
-function quarantine_learn($list, $num, $type, bool $rpc_only = false)
+function quarantine_learn($list, $num, $type, bool $rpc_only = false, $global_filter = null)
 {
     dbconn();
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
-    $new = quarantine_list_items($list[0]['msgid']);
+    $new = quarantine_list_items($list[0]['msgid'], false, $global_filter);
     $list = &$new;
 
     // Check for [-1], indicating just to release message itself, regardless of its item position
@@ -3794,17 +3804,18 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false)
 }
 
 /**
- * @param bool|false $rpc_only
+ * @param bool|false  $rpc_only
+ * @param string|null $global_filter
  *
  * @return string
  */
-function quarantine_delete($list, $num, $rpc_only = false)
+function quarantine_delete($list, $num, $rpc_only = false, $global_filter = null)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
 
-    $new = quarantine_list_items($list[0]['msgid']);
+    $new = quarantine_list_items($list[0]['msgid'], false, $global_filter);
     $list = &$new;
 
     if (!$rpc_only && is_local($list[0]['host'])) {
@@ -4001,9 +4012,9 @@ function return_virus_link($virus, $truncateOutput = false)
  */
 function is_rpc_client_allowed()
 {
-    // If no server address supplied
-    if (!isset($_SERVER['SERVER_ADDR']) || empty($_SERVER['SERVER_ADDR'])) {
-        return true;
+    // If no client address supplied
+    if (!isset($_SERVER['REMOTE_ADDR']) || empty($_SERVER['REMOTE_ADDR'])) {
+        return false;
     }
     // Get list of allowed clients
     if (defined('RPC_ALLOWED_CLIENTS') && (false === !RPC_ALLOWED_CLIENTS)) {
@@ -4011,7 +4022,7 @@ function is_rpc_client_allowed()
         $clients = explode(' ', constant('RPC_ALLOWED_CLIENTS'));
         // Validate each client type
         foreach ($clients as $client) {
-            if ('allprivate' === $client && ip_in_range($_SERVER['SERVER_ADDR'], false, 'private')) {
+            if ('allprivate' === $client && ip_in_range($_SERVER['REMOTE_ADDR'], false, 'private')) {
                 return true;
             }
             if ('local24' === $client) {
@@ -4021,17 +4032,17 @@ function is_rpc_client_allowed()
                 $ipsplit = explode('.', $ip);
                 $ipsplit[3] = '0';
                 $ip = implode('.', $ipsplit);
-                if (ip_in_range($_SERVER['SERVER_ADDR'], "{$ip}/24")) {
+                if (ip_in_range($_SERVER['REMOTE_ADDR'], "{$ip}/24")) {
                     return true;
                 }
             }
             // All any others
-            if (ip_in_range($_SERVER['SERVER_ADDR'], $client)) {
+            if (ip_in_range($_SERVER['REMOTE_ADDR'], $client)) {
                 return true;
             }
             // Try hostname
             $iplookup = gethostbyname($client);
-            if ($client !== $iplookup && ip_in_range($_SERVER['SERVER_ADDR'], $iplookup)) {
+            if ($client !== $iplookup && ip_in_range($_SERVER['REMOTE_ADDR'], $iplookup)) {
                 return true;
             }
         }

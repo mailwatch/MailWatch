@@ -468,8 +468,8 @@ class Mail_mimeDecode extends PEAR
             foreach ($headers as $value) {
                 if (!$got_start) {
                     // munge headers for mbox style from
-                    if ($value[0] == '>') {
-                        $value = substring($value, 1); // remove mbox >
+                    if (!empty($value) && $value[0] == '>') {
+                        $value = substr($value, 1); // remove mbox >
                     }
                     if (substr($value,0,5) == 'From ') {
                         $value = 'Return-Path: ' . substr($value, 5);
@@ -480,7 +480,7 @@ class Mail_mimeDecode extends PEAR
 
                 $hdr_name = substr($value, 0, $pos = strpos($value, ':'));
                 $hdr_value = substr($value, $pos+1);
-                if($hdr_value[0] == ' ') {
+                if (!empty($hdr_value) && $hdr_value[0] == ' ') {
                     $hdr_value = substr($hdr_value, 1);
                 }
 

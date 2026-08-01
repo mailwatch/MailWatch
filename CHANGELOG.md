@@ -38,6 +38,38 @@
 - Fix Message-ID extraction for RFC 5322 folded headers (#1305)
 - Fix fatal errors on PHP 8.4 (#1320)
 
+## 1.2.27
+### Security
+- Apply session filter consistently in quarantine operations
+- Check RPC client allow-list against the connecting client address
+
+### Fixed
+- Fix uninitialized string offset warning in mimeDecode (#1325)
+
+## 1.2.26
+### Security
+- Add missing admin role authorization check on sa_lint.php, ms_lint.php, sophos_status.php, geoip_update.php, bayes_info.php and mysql_status.php
+- Improve output escaping in SpamAssassin Lint tool
+
+### Added
+- Turkish translation (#1321)
+
+### Changed
+- Tools scripts now auto-detect functions.php path relative to their location, with fallback to the default `/var/www/html/mailscanner/` path
+
+### Fixed
+- Fixed Message-ID extraction stripping angle brackets required by RFC 5322
+- Fixed the wrong variable check for mtalogprocessor.inc.php in mailwatch_postfix_relay.php
+- Fixed broken HTML page on failure to run SpamAssassin Lint tool
+
+## 1.2.25
+### Changed
+- Improve db_clean script performance for large databases
+
+### Fixed
+- Fix Message-ID extraction for RFC 5322 folded headers (#1305)
+- Fix fatal errors on PHP 8.4 (#1320)
+
 ## 1.2.24
 ### Added
 - Add support for new AV engine supported by MailScanner (avastd, eset, esetsefs, f-secure, f-prot, kaspersky, kse)
