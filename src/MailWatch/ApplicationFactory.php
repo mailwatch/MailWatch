@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace MailWatch;
 
+use MailWatch\Api\AllowBlockListController;
+use MailWatch\Api\MessageController;
+use MailWatch\Api\SpamSettingsController;
 use MailWatch\Configuration\ApiConfiguration;
 use MailWatch\Configuration\ApiConfigurationLoader;
 use MailWatch\Security\ApiKeyAuthenticator;
@@ -28,5 +31,40 @@ final readonly class ApplicationFactory
     public function apiKeyAuthenticator(): ApiKeyAuthenticator
     {
         return new ApiKeyAuthenticator($this->apiConfiguration);
+    }
+
+    public function messageController(): MessageController
+    {
+        return new MessageController(
+            $this->apiConfiguration,
+            $this->apiKeyAuthenticator(),
+            $this->databaseConnector(),
+        );
+    }
+
+    public function allowBlockListController(): AllowBlockListController
+    {
+        return new AllowBlockListController(
+            $this->apiConfiguration,
+            $this->apiKeyAuthenticator(),
+            $this->databaseConnector(),
+        );
+    }
+
+    public function spamSettingsController(): SpamSettingsController
+    {
+        return new SpamSettingsController(
+            $this->apiConfiguration,
+            $this->apiKeyAuthenticator(),
+            $this->databaseConnector(),
+        );
+    }
+
+    /**
+     * @return \Closure(): object
+     */
+    private function databaseConnector(): \Closure
+    {
+        return static fn(): object => \Database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
     }
 }

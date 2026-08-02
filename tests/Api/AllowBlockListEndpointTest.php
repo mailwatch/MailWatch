@@ -20,9 +20,8 @@ final class AllowBlockListEndpointTest extends TestCase
 
         self::$temporaryDirectory = sys_get_temp_dir() . '/mailwatch-list-snapshot-' . bin2hex(random_bytes(8));
         $mailScannerDirectory = self::$temporaryDirectory . '/mailscanner';
-        $apiDirectory = $mailScannerDirectory . '/api';
         $publicDirectory = self::$temporaryDirectory . '/public_html';
-        if (!mkdir($apiDirectory, 0o700, true) && !is_dir($apiDirectory)) {
+        if (!mkdir($mailScannerDirectory, 0o700, true) && !is_dir($mailScannerDirectory)) {
             throw new \RuntimeException('Unable to create the list snapshot test directory');
         }
         if (!mkdir($publicDirectory, 0o700) && !is_dir($publicDirectory)) {
@@ -39,8 +38,6 @@ final class AllowBlockListEndpointTest extends TestCase
             sprintf("<?php\nrequire %s;\n", var_export($projectRoot . '/vendor/autoload.php', true))
         );
         copy($projectRoot . '/public_html/index.php', $publicDirectory . '/index.php');
-        copy($projectRoot . '/mailscanner/api/allow-block-list.php', $apiDirectory . '/allow-block-list.php');
-        copy($projectRoot . '/mailscanner/api/MailWatchApi.php', $apiDirectory . '/MailWatchApi.php');
         copy($projectRoot . '/tests/fixtures/api/allow-block-list-v1.json', self::$temporaryDirectory . '/fixture.json');
         file_put_contents(
             $mailScannerDirectory . '/conf.php',

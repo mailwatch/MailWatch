@@ -22,10 +22,9 @@ final class LogMailEndpointTest extends TestCase
 
         self::$temporaryDirectory = sys_get_temp_dir() . '/mailwatch-logmail-' . bin2hex(random_bytes(8));
         $mailScannerDirectory = self::$temporaryDirectory . '/mailscanner';
-        $apiDirectory = $mailScannerDirectory . '/api';
         $publicDirectory = self::$temporaryDirectory . '/public_html';
 
-        if (!mkdir($apiDirectory, 0o700, true) && !is_dir($apiDirectory)) {
+        if (!mkdir($mailScannerDirectory, 0o700, true) && !is_dir($mailScannerDirectory)) {
             throw new \RuntimeException('Unable to create the logmail test directory');
         }
         if (!mkdir($publicDirectory, 0o700) && !is_dir($publicDirectory)) {
@@ -42,10 +41,6 @@ final class LogMailEndpointTest extends TestCase
             sprintf("<?php\nrequire %s;\n", var_export($projectRoot . '/vendor/autoload.php', true))
         );
         copy($projectRoot . '/public_html/index.php', $publicDirectory . '/index.php');
-        copy($projectRoot . '/mailscanner/bootstrap.php', $mailScannerDirectory . '/bootstrap.php');
-        copy($projectRoot . '/mailscanner/api/logmail.php', $apiDirectory . '/logmail.php');
-        copy($projectRoot . '/mailscanner/api/MailLogEntry.php', $apiDirectory . '/MailLogEntry.php');
-        copy($projectRoot . '/mailscanner/api/MailWatchApi.php', $apiDirectory . '/MailWatchApi.php');
         file_put_contents($mailScannerDirectory . '/index.php', "<?php\necho 'dispatched-home-page';\n");
         file_put_contents($mailScannerDirectory . '/login.php', "<?php\necho 'dispatched-login-page';\n");
         file_put_contents($publicDirectory . '/.htaccess', "private-server-configuration\n");

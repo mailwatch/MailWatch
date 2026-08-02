@@ -1,6 +1,10 @@
 <?php
 
-class MailLogEntry
+declare(strict_types=1);
+
+namespace MailWatch\Api;
+
+final class MailLogEntry
 {
     private const BOOLEAN_FIELDS = [
         'isspam',
@@ -122,7 +126,7 @@ class MailLogEntry
     {
         foreach (self::KNOWN_FIELDS as $field) {
             if (array_key_exists($field, $data) && null !== $data[$field] && !is_scalar($data[$field])) {
-                throw new InvalidArgumentException("Field $field must be scalar");
+                throw new \InvalidArgumentException("Field $field must be scalar");
             }
         }
     }

@@ -39,16 +39,35 @@ if ('' !== $_mailWatchBasePath && str_starts_with($_mailWatchRequestPath, $_mail
 }
 
 $_mailWatchApplicationRoot = dirname(__DIR__);
-$_mailWatchApiRoutes = [
-    '/api/messages' => $_mailWatchApplicationRoot . '/mailscanner/api/logmail.php',
-    '/api/allow-block-list' => $_mailWatchApplicationRoot . '/mailscanner/api/allow-block-list.php',
-    '/api/spam-settings' => $_mailWatchApplicationRoot . '/mailscanner/api/spam-settings.php',
-];
+if (in_array($_mailWatchRequestPath, ['/api/messages', '/api/allow-block-list', '/api/spam-settings'], true)) {
+    require_once $_mailWatchApplicationRoot . '/mailscanner/conf.php';
+    require_once $_mailWatchApplicationRoot . '/mailscanner/Database.php';
 
-$_mailWatchHandler = $_mailWatchApiRoutes[$_mailWatchRequestPath] ?? null;
-if (null !== $_mailWatchHandler) {
-    require $_mailWatchHandler;
-    exit;
+    if (!defined('API_KEY') || !is_string(API_KEY) || '' === API_KEY) {
+        if ('/api/messages' === $_mailWatchRequestPath) {
+            $_mailWatchMessage = defined('API_KEY') ? 'Unauthorized' : 'Unauthorized - Set an API KEY to use this API';
+            \MailWatch\Api\JsonResponse::send(401, ['error' => $_mailWatchMessage]);
+        }
+
+        \MailWatch\Api\JsonResponse::error(401, 'unauthorized', 'Unauthorized');
+    }
+
+    try {
+        $_mailWatchApplicationFactory = \MailWatch\ApplicationFactory::create();
+    } catch (\MailWatch\Configuration\InvalidConfiguration) {
+        if ('/api/messages' === $_mailWatchRequestPath) {
+            \MailWatch\Api\JsonResponse::send(500, ['error' => 'Invalid API configuration']);
+        }
+
+        \MailWatch\Api\JsonResponse::error(500, 'invalid_configuration', 'Invalid API configuration');
+    }
+
+    $_mailWatchController = match ($_mailWatchRequestPath) {
+        '/api/messages' => $_mailWatchApplicationFactory->messageController(),
+        '/api/allow-block-list' => $_mailWatchApplicationFactory->allowBlockListController(),
+        '/api/spam-settings' => $_mailWatchApplicationFactory->spamSettingsController(),
+    };
+    $_mailWatchController->handle();
 }
 
 $_mailWatchPage = (new \MailWatch\Routing\PageRouteRegistry())->pageForPath($_mailWatchRequestPath);
