@@ -238,6 +238,48 @@ function disableBrowserCache(): void
 }
 
 /**
+ * The renderer used by the page layout.
+ *
+ * Page scripts are reached through the front controller, which has already
+ * registered the Composer autoloader; the command-line tools that include this
+ * file have not, so it is loaded here when missing.
+ */
+function mailwatch_template_renderer(): \MailWatch\Presentation\TemplateRenderer
+{
+    static $renderer = null;
+
+    if (null === $renderer) {
+        if (!class_exists(\MailWatch\ApplicationFactory::class)) {
+            require_once \dirname(__DIR__) . '/vendor/autoload.php';
+        }
+
+        $renderer = \MailWatch\ApplicationFactory::templateRenderer();
+    }
+
+    return $renderer;
+}
+
+/**
+ * Collects the markup written by a function that echoes.
+ *
+ * The status panels around the page still print directly. Capturing them lets
+ * the surrounding layout become a template now, and each panel become one on
+ * its own schedule.
+ */
+function mailwatch_capture(callable $printer): string
+{
+    ob_start();
+
+    try {
+        $printer();
+    } finally {
+        $output = ob_get_clean();
+    }
+
+    return false === $output ? '' : $output;
+}
+
+/**
  * @param int        $refresh
  * @param bool|true  $cacheable
  * @param bool|false $report
@@ -280,18 +322,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     if (DEBUG) {
         echo page_creation_timer();
     }
-    echo '<!DOCTYPE HTML>' . "\n";
-    echo '<html>' . "\n";
-    echo '<head>' . "\n";
-    echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">' . "\n";
-    echo '<link rel="shortcut icon" href="images/favicon.png" >' . "\n";
-    echo '<script type="text/javascript">';
-    echo '' . java_time() . '';
-    // $current_url = "".MAILWATCH_HOME."/status.php";
-    // if($_SERVER['SCRIPT_FILENAME'] === $active_url){
-    echo '</script>';
+
+    $filter = null;
     if ($report) {
-        echo '<title>' . __('mwfilterreport03') . ' ' . $title . ' </title>' . "\n";
+        $page_title = __('mwfilterreport03') . ' ' . $title . ' ';
         if (!isset($_SESSION['filter'])) {
             require_once __DIR__ . '/filter.inc.php';
             $filter = new Filter();
@@ -302,79 +336,61 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
         audit_log(__('auditlogreport03', true) . ' ' . $title);
     } else {
-        echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
-    }
-    echo '<link rel="stylesheet" type="text/css" href="./style.css">' . "\n";
-    if (is_file(dirname(__DIR__) . '/public_html/skin.css')) {
-        echo '<link rel="stylesheet" href="./skin.css" type="text/css">';
+        $page_title = __('mwforms03') . $title;
     }
 
-    if ($refresh > 0) {
-        echo '<meta http-equiv="refresh" content="' . $refresh . '">' . "\n";
-    }
-
+    // The template escapes the identifier, so it is validated here in the form
+    // the user typed rather than an escaped copy of it.
+    $message_id = '';
     if (isset($_GET['id'])) {
-        $message_id = trim(htmlentities(safe_value(sanitizeInput($_GET['id']))), ' ');
-        if (!validateInput($message_id, 'msgid')) {
-            $message_id = '';
+        $requested_id = trim((string)sanitizeInput($_GET['id']), ' ');
+        if (validateInput($requested_id, 'msgid')) {
+            $message_id = $requested_id;
         }
-    } else {
-        $message_id = '';
-    }
-    echo '</head>' . "\n";
-    echo '<body onload="updateClock(); setInterval(\'updateClock()\', 1000 )">' . "\n";
-    echo '<table border="0" cellpadding="5" width="100%">' . "\n";
-    echo '<tr class="noprint">' . "\n";
-    echo '<td>' . "\n";
-    echo '<table border="0" cellpadding="0" cellspacing="0">' . "\n";
-    echo '<tr>' . "\n";
-    echo '<td align="left"><a href="index.php" class="logo"><img src=".' . IMAGES_DIR . MW_LOGO . '" alt="' . __('mailwatchtitle03') . '"></a></td>' . "\n";
-    echo '</tr>' . "\n";
-    echo '<tr>' . "\n";
-    echo '<td valign="bottom" align="left" class="jump">' . "\n";
-    echo '<form action="./detail.php">' . "\n";
-    echo '<p>' . __('jumpmessage03') . '<input type="text" name="id" value="' . $message_id . '"></p>' . "\n";
-    echo '<input type="hidden" name="token" value="' . $_SESSION['token'] . '">' . "\n";
-    echo '</form>' . "\n";
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>' . "\n";
-    echo '<table cellspacing="1" class="mail">' . "\n";
-    echo '<tr><td class="heading" align="center">' . __('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
-    echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
-    echo '</table>' . "\n";
-    echo '</td>' . "\n";
-
-    if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
-        echo '  <td align="center" valign="top">' . "\n";
-
-        // Status table
-        echo '   <table border="0" cellpadding="1" cellspacing="1" class="mail">' . "\n";
-        echo '    <tr><th colspan="3">' . __('status03') . '</th></tr>' . "\n";
-
-        printServiceStatus();
-        printAverageLoad();
-
-        if ('A' === $_SESSION['user_type']) {
-            printMTAQueue();
-            printFreeDiskSpace();
-        }
-        echo '  </table>' . "\n";
-        echo '  </td>' . "\n";
-
-        printTrafficGraph();
     }
 
-    echo '<td align="center" valign="top">' . "\n";
-    printTodayStatistics();
-    echo '  </td>' . "\n";
+    $renderer = mailwatch_template_renderer();
 
-    echo ' </tr>' . "\n";
+    $renderer->display('partials/_head.html.twig', [
+        'clock_script' => mailwatch_capture('java_time'),
+        'title' => $page_title,
+        'has_skin' => is_file(dirname(__DIR__) . '/public_html/skin.css'),
+        'refresh' => (int)$refresh,
+    ]);
 
-    printNavBar();
-    echo '
- <tr>
-  <td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">';
+    $is_admin = 'A' === $_SESSION['user_type'];
+    $status_panels = null;
+    $traffic_graph = '';
+
+    if ($is_admin || 'D' === $_SESSION['user_type']) {
+        $status_panels = mailwatch_capture(static function() use ($is_admin): void {
+            printServiceStatus();
+            printAverageLoad();
+
+            if ($is_admin) {
+                printMTAQueue();
+                printFreeDiskSpace();
+            }
+        });
+        $traffic_graph = mailwatch_capture('printTrafficGraph');
+    }
+
+    $renderer->display('partials/_page_header.html.twig', [
+        'logo_src' => '.' . IMAGES_DIR . MW_LOGO,
+        'logo_alt' => __('mailwatchtitle03'),
+        'jump_label' => __('jumpmessage03'),
+        'message_id' => $message_id,
+        'token' => $_SESSION['token'],
+        'user_heading' => __('cuser03'),
+        'clock_heading' => __('cst03'),
+        'full_name' => $_SESSION['fullname'],
+        'status_heading' => __('status03'),
+        'status_panels' => $status_panels,
+        'traffic_graph' => $traffic_graph,
+        'today_statistics' => mailwatch_capture('printTodayStatistics'),
+        'navigation' => mailwatch_capture('printNavBar'),
+        'colspan' => $is_admin ? '5' : '4',
+    ]);
 
     if ($report) {
         $return_items = $filter;
@@ -875,44 +891,36 @@ function printNavBar()
         $nav['docs.php'] = __('documentation03');
     }
     $nav['logout.php'] = __('logout03');
-    // $table_width = round(100 / count($nav));
 
-    // Navigation table
-    echo '<tr class="noprint">' . "\n";
-    echo '<td colspan="' . ('A' === $_SESSION['user_type'] ? '5' : '4') . '">' . "\n";
-
-    echo '<ul id="menu" class="yellow">' . "\n";
-
-    // Display the different words
+    $items = [];
     foreach ($nav as $url => $desc) {
-        $active_url = MAILWATCH_HOME . '/' . $url;
-        if ($_SERVER['SCRIPT_FILENAME'] === $active_url) {
-            echo "<li class=\"active\"><a href=\"$url\">$desc</a></li>\n";
-        } else {
-            echo "<li><a href=\"$url\">$desc</a></li>\n";
-        }
+        $items[] = [
+            'url' => $url,
+            'label' => $desc,
+            'active' => $_SERVER['SCRIPT_FILENAME'] === MAILWATCH_HOME . '/' . $url,
+        ];
     }
 
+    $languages = [];
     if (defined('USER_SELECTABLE_LANG')) {
         $langCodes = explode(',', USER_SELECTABLE_LANG);
-        $langCount = count($langCodes);
-        if ($langCount > 1) {
+        if (count($langCodes) > 1) {
             global $langCode;
-            echo '<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>';
-            echo '<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">' . "\n";
-            for ($i = 0; $i < $langCount; ++$i) {
-                echo '<option value="' . $langCodes[$i] . '"'
-                    . ($langCodes[$i] === $langCode ? ' selected' : '')
-                    . '>' . __($langCodes[$i]) . '</option>' . "\n";
+            foreach ($langCodes as $code) {
+                $languages[] = [
+                    'code' => $code,
+                    'label' => __($code),
+                    'selected' => $code === $langCode,
+                ];
             }
-            echo '</select></li>' . "\n";
         }
     }
 
-    echo '
- </ul>
- </td>
- </tr>';
+    mailwatch_template_renderer()->display('partials/_navigation.html.twig', [
+        'items' => $items,
+        'languages' => $languages,
+        'colspan' => 'A' === $_SESSION['user_type'] ? '5' : '4',
+    ]);
 }
 
 function java_time()
@@ -964,22 +972,13 @@ function updateClock() {
  */
 function html_end($footer = '')
 {
-    echo '</td>' . "\n";
-    echo '</tr>' . "\n";
-    echo '</table>' . "\n";
-    echo $footer;
-    if (DEBUG) {
-        echo '<p class="center footer"><i>' . "\n";
-        echo page_creation_timer();
-        echo '</i></p>' . "\n";
-    }
-    echo '<p class="center footer noprint">' . "\n";
-    echo __('footer03');
-    echo mailwatch_version();
-    echo ' - &copy; 2006-' . date('Y');
-    echo '</p>' . "\n";
-    echo '</body>' . "\n";
-    echo '</html>' . "\n";
+    mailwatch_template_renderer()->display('partials/_footer.html.twig', [
+        'extra' => $footer,
+        'timer' => DEBUG ? page_creation_timer() : null,
+        'footer_text' => __('footer03'),
+        'version' => mailwatch_version(),
+        'year' => date('Y'),
+    ]);
 }
 
 /**

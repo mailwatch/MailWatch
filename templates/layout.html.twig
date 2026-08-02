@@ -1,0 +1,9 @@
+{#
+  The page frame for controllers. A template extending it provides the content
+  block and nothing else; everything around it is the same markup the page
+  scripts still produce through html_start() and html_end().
+#}
+{% include 'partials/_head.html.twig' %}
+{% include 'partials/_page_header.html.twig' %}
+{% block content %}{% endblock %}
+{% include 'partials/_footer.html.twig' %}
