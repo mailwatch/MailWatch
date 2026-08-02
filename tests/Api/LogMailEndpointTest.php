@@ -14,6 +14,7 @@ final class LogMailEndpointTest extends TestCase
     private static string $temporaryDirectory;
     private static string $baseUrl;
     private static string $capturePath;
+    private static string $serverLogPath;
 
     public static function setUpBeforeClass(): void
     {
@@ -35,7 +36,7 @@ final class LogMailEndpointTest extends TestCase
         file_put_contents(
             $mailScannerDirectory . '/conf.php',
             sprintf(
-                "<?php\ndefine('API_KEY', %s);\ndefine('TEST_CAPTURE_PATH', %s);\ndefine('DB_HOST', 'test');\ndefine('DB_USER', 'test');\ndefine('DB_PASS', 'test');\ndefine('DB_NAME', 'test');\ndefine('DB_PORT', 3306);\n",
+                "<?php\ndefine('API_KEY', %s);\ndefine('API_MAX_PAYLOAD_BYTES', 4096);\ndefine('TEST_CAPTURE_PATH', %s);\ndefine('DB_HOST', 'test');\ndefine('DB_USER', 'test');\ndefine('DB_PASS', 'test');\ndefine('DB_NAME', 'test');\ndefine('DB_PORT', 3306);\n",
                 var_export(self::API_KEY, true),
                 var_export(self::$capturePath, true)
             )
@@ -55,13 +56,13 @@ final class LogMailEndpointTest extends TestCase
 
         $port = (int)substr(strrchr($address, ':'), 1);
         self::$baseUrl = "http://127.0.0.1:{$port}";
-        $logPath = self::$temporaryDirectory . '/server.log';
+        self::$serverLogPath = self::$temporaryDirectory . '/server.log';
         self::$serverProcess = proc_open(
             [PHP_BINARY, '-S', "127.0.0.1:{$port}", '-t', $mailScannerDirectory],
             [
                 0 => ['pipe', 'r'],
-                1 => ['file', $logPath, 'a'],
-                2 => ['file', $logPath, 'a'],
+                1 => ['file', self::$serverLogPath, 'a'],
+                2 => ['file', self::$serverLogPath, 'a'],
             ],
             $pipes
         );
@@ -123,6 +124,81 @@ final class LogMailEndpointTest extends TestCase
 
         self::assertSame(400, $response['status']);
         self::assertSame(['error' => 'Invalid data'], $response['json']);
+    }
+
+    public function testItRejectsAnOversizedPayload(): void
+    {
+        $response = $this->request(
+            'POST',
+            json_encode(['id' => 'oversized', 'future_field' => str_repeat('x', 5000)], JSON_THROW_ON_ERROR),
+            self::API_KEY
+        );
+
+        self::assertSame(413, $response['status']);
+        self::assertSame(['error' => 'Payload Too Large'], $response['json']);
+    }
+
+    public function testItRejectsNestedDataInAKnownScalarField(): void
+    {
+        $fixture = $this->fixturePayload();
+        $fixture['subject'] = ['unexpected' => 'nested value'];
+
+        $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
+
+        self::assertSame(400, $response['status']);
+        self::assertSame(['error' => 'Invalid data'], $response['json']);
+    }
+
+    public function testItToleratesUnknownStructuredFields(): void
+    {
+        $fixture = $this->fixturePayload();
+        $fixture['future_extension'] = ['version' => 2, 'values' => ['one', 'two']];
+
+        $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
+
+        self::assertSame(201, $response['status']);
+    }
+
+    public function testItNormalizesHistoricalScalarRepresentationsWithoutRejectingEmptyMailFields(): void
+    {
+        $fixture = $this->fixturePayload();
+        $fixture['size'] = '0';
+        $fixture['from'] = '';
+        $fixture['subject'] = '';
+        $fixture['clientip'] = '';
+        $fixture['isspam'] = 'Y';
+        $fixture['ishigh'] = 'false';
+        $fixture['nameinfected'] = '12';
+        $fixture['sascore'] = '6.50';
+        $fixture['mcpsascore'] = '-1.25';
+
+        $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
+
+        self::assertSame(201, $response['status']);
+        $insert = $this->capturedInsert();
+        self::assertSame(0, $insert['size']);
+        self::assertSame('', $insert['from']);
+        self::assertSame('', $insert['subject']);
+        self::assertSame('', $insert['clientip']);
+        self::assertSame(1, $insert['isspam']);
+        self::assertSame(0, $insert['ishigh']);
+        self::assertSame(12, $insert['nameinfected']);
+        self::assertSame(6.5, $insert['sascore']);
+        self::assertSame(-1.25, $insert['mcpsascore']);
+    }
+
+    public function testCompatibilityObservationsAreLoggedWithoutTheReceivedValue(): void
+    {
+        $fixture = $this->fixturePayload();
+        $fixture['sascore'] = 'sensitive-invalid-score';
+
+        $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
+
+        self::assertSame(201, $response['status']);
+        self::assertSame(0.0, $this->capturedInsert()['sascore']);
+        $serverLog = (string)file_get_contents(self::$serverLogPath);
+        self::assertStringContainsString('sascore contained a non-numeric scalar', $serverLog);
+        self::assertStringNotContainsString('sensitive-invalid-score', $serverLog);
     }
 
     public function testItAcceptsTheCurrentPerlPayloadAndMapsLegacyListNames(): void
@@ -253,6 +329,19 @@ final class LogMailEndpointTest extends TestCase
     {
         return json_decode(
             (string)file_get_contents(self::$capturePath),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function fixturePayload(): array
+    {
+        return json_decode(
+            (string)file_get_contents(dirname(__DIR__) . '/fixtures/api/logmail-v1.json'),
             true,
             512,
             JSON_THROW_ON_ERROR

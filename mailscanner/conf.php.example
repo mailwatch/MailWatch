@@ -58,6 +58,8 @@ define('SESSION_TIMEOUT', 600);
 // API KEY - Allow autentication for MailScanner perl module
 // generate a secure unique key, like an UUID or a complex password
 // define('API_KEY', 'change-me-api-key');
+// Maximum accepted logmail API payload (default: 10 MiB)
+define('API_MAX_PAYLOAD_BYTES', 10 * 1024 * 1024);
 
 // Database settings
 //

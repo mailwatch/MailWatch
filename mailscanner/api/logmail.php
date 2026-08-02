@@ -61,7 +61,20 @@ if (null === $apiKeyToken || !isValidApiKey($apiKeyToken)) {
 }
 
 // Get JSON payload
-$json = file_get_contents('php://input');
+$maxPayloadBytes = defined('API_MAX_PAYLOAD_BYTES')
+    ? (int)API_MAX_PAYLOAD_BYTES
+    : 10 * 1024 * 1024;
+if (isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > $maxPayloadBytes) {
+    http_response_code(413); // Payload Too Large
+    echo json_encode(['error' => 'Payload Too Large']);
+    exit;
+}
+$json = file_get_contents('php://input', false, null, 0, $maxPayloadBytes + 1);
+if (false === $json || strlen($json) > $maxPayloadBytes) {
+    http_response_code(413); // Payload Too Large
+    echo json_encode(['error' => 'Payload Too Large']);
+    exit;
+}
 $data = json_decode($json, true);
 
 if (JSON_ERROR_NONE !== json_last_error()) {
@@ -69,26 +82,38 @@ if (JSON_ERROR_NONE !== json_last_error()) {
     echo json_encode(['error' => 'Invalid JSON']);
     exit;
 }
-if (is_array($data)) {
-    $legacyFields = [
-        'spamwhitelisted' => 'spamallowlisted',
-        'spamblacklisted' => 'spamblocklisted',
-        'mcpwhitelisted' => 'mcpallowlisted',
-        'mcpblacklisted' => 'mcpblocklisted',
-    ];
+if (!is_array($data) || array_is_list($data)) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['error' => 'Invalid data']);
+    exit;
+}
+$legacyFields = [
+    'spamwhitelisted' => 'spamallowlisted',
+    'spamblacklisted' => 'spamblocklisted',
+    'mcpwhitelisted' => 'mcpallowlisted',
+    'mcpblacklisted' => 'mcpblocklisted',
+];
 
-    foreach ($legacyFields as $legacyField => $currentField) {
-        if (array_key_exists($legacyField, $data) && !array_key_exists($currentField, $data)) {
-            $data[$currentField] = $data[$legacyField];
-        }
+foreach ($legacyFields as $legacyField => $currentField) {
+    if (array_key_exists($legacyField, $data) && !array_key_exists($currentField, $data)) {
+        $data[$currentField] = $data[$legacyField];
     }
 }
 
-$mailLogEntry = new MailLogEntry($data);
+try {
+    $mailLogEntry = new MailLogEntry($data);
+} catch (InvalidArgumentException) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['error' => 'Invalid data']);
+    exit;
+}
 if (!$mailLogEntry->isValid()) {
     http_response_code(400); // Bad Request
     echo json_encode(['error' => 'Invalid data']);
     exit;
+}
+foreach ($mailLogEntry->observations() as $observation) {
+    error_log('MailWatch logmail compatibility observation: ' . $observation);
 }
 
 $idempotencyKey = getIdempotencyKey();
