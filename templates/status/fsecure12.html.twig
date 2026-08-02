@@ -1,0 +1,29 @@
+{#
+  The F-Secure 12 status page.
+
+  available is false when the product is not installed here. engines is empty
+  when it is installed but reported its versions in a wording the parser does
+  not recognise; the page then shows the frame and no table, which is a
+  different situation and deliberately says nothing about installation.
+#}
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<table class="boxtable" style="width: 100%">
+<tr>
+<td style="text-align: center">
+{% if not available %}
+<p class="error">{{ __('avnotavailable19') }}</p>
+{% elseif engines is not empty %}
+<table class="sophos" cellpadding="1" cellspacing="1">
+<tr><th colspan="3">F-Secure 12 Information</th></tr>
+<tr><th>Engine</th><th>Version</th><th>Date</th></tr>
+{% for engine in engines %}
+<tr><td>{{ engine.name }}</td><td>{{ engine.version }}</td><td>{{ engine.date is null ? '&nbsp;'|raw : engine.date }}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+</td>
+</tr>
+</table>
+{% endblock %}

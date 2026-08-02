@@ -25,36 +25,16 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Require the functions page
 require_once __DIR__ . '/functions.php';
 
-// Require the login function code
+// Authentication checking
 require __DIR__ . '/login.function.php';
 
-// Check to see if the user is an administrater
-if ('A' !== $_SESSION['user_type']) {
-    // If the user isn't an administrater send them back to the index page.
-    header('Location: index.php');
-    audit_log(__('auditlog19', true));
-} else {
-    // Start the header code and Title
-    html_start(__('avclamavstatus19'), 0, false, false);
-    // Create the table
-    echo '<table class="boxtable" width="100%">';
-    echo '<tr>';
-    echo '<td align="center">';
+mailwatch_autoload();
 
-    // Obtain ClamAV and pattern versions from clamscan
-    exec('which clamscan', $clamscan);
-    if (isset($clamscan[0])) {
-        passthru("$clamscan[0] -V | awk -f " . __DIR__ . '/clamav.awk');
-    }
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
+\MailWatch\ApplicationFactory::antivirusStatusController()
+    ->handle(\MailWatch\ApplicationFactory::antivirusScanner('clamav'))
+    ->send();
 
-    // Add footer
-    html_end();
-    // Close any open db connections
-    dbclose();
-}
+// Close any open db connections
+dbclose();

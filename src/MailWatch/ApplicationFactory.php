@@ -4,13 +4,22 @@ declare(strict_types=1);
 
 namespace MailWatch;
 
-use MailWatch\Api\AllowBlockListController;
-use MailWatch\Api\MessageController;
-use MailWatch\Api\SpamSettingsController;
-use MailWatch\Configuration\ApiConfiguration;
-use MailWatch\Configuration\ApiConfigurationLoader;
-use MailWatch\Presentation\TemplateRenderer;
-use MailWatch\Security\ApiKeyAuthenticator;
+use MailWatch\Antivirus\Domain\AntivirusScanner;
+use MailWatch\Antivirus\Domain\FSecureReportParser;
+use MailWatch\Antivirus\Http\AntivirusStatusController;
+use MailWatch\Antivirus\Http\FSecureStatusController;
+use MailWatch\Antivirus\Infrastructure\AntivirusScannerRegistry;
+use MailWatch\Lists\Http\AllowBlockListController;
+use MailWatch\MailLog\Http\MessageController;
+use MailWatch\Shared\Application\Port\CommandRunner;
+use MailWatch\Shared\Http\PageGuard;
+use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
+use MailWatch\Shared\Infrastructure\Configuration\ApiConfigurationLoader;
+use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
+use MailWatch\Shared\Infrastructure\System\ShellCommandRunner;
+use MailWatch\Shared\Presentation\PageLayout;
+use MailWatch\Shared\Presentation\TemplateRenderer;
+use MailWatch\SpamSettings\Http\SpamSettingsController;
 
 final readonly class ApplicationFactory
 {
@@ -72,6 +81,52 @@ final readonly class ApplicationFactory
             self::templateCacheDirectory(),
             \defined('DEBUG') && true === DEBUG
         );
+    }
+
+    /**
+     * The antivirus status page, wired for one product.
+     *
+     * Static for the same reason as the renderer: the page scripts reach it
+     * without an API configuration.
+     */
+    public static function antivirusStatusController(): AntivirusStatusController
+    {
+        return new AntivirusStatusController(
+            self::templateRenderer(),
+            new PageLayout($_SESSION ?? [], self::projectDirectory()),
+            new PageGuard($_SESSION ?? []),
+            self::commandRunner(),
+            static function(string $message): void {
+                audit_log($message);
+            }
+        );
+    }
+
+    public static function fSecureStatusController(): FSecureStatusController
+    {
+        return new FSecureStatusController(
+            self::templateRenderer(),
+            new PageLayout($_SESSION ?? [], self::projectDirectory()),
+            new PageGuard($_SESSION ?? []),
+            self::commandRunner(),
+            new FSecureReportParser(),
+            static function(string $message): void {
+                audit_log($message);
+            }
+        );
+    }
+
+    public static function antivirusScanner(string $id): AntivirusScanner
+    {
+        return (new AntivirusScannerRegistry(
+            self::commandRunner(),
+            self::projectDirectory() . '/mailscanner'
+        ))->get($id);
+    }
+
+    private static function commandRunner(): CommandRunner
+    {
+        return new ShellCommandRunner();
     }
 
     /**

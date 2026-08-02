@@ -25,31 +25,16 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Include of necessary functions
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
-if ('A' !== $_SESSION['user_type']) {
-    header('Location: index.php');
-} else {
-    html_start(__('fsecurestatus23'));
+mailwatch_autoload();
 
-    echo '
-<table class="boxtable" width="100%">
- <tr>
-  <td align="center">';
-    passthru('/opt/f-secure/fsav/bin/fsav --version | awk -f ' . __DIR__ . '/f-secure.awk');
-    // --FOR TESTING-- passthru("cat " . __DIR__ . "/f-sec_output.txt | awk -f " . __DIR__ . "/f-secure.awk");
+\MailWatch\ApplicationFactory::antivirusStatusController()
+    ->handle(\MailWatch\ApplicationFactory::antivirusScanner('f-secure'))
+    ->send();
 
-    echo '
- </td>
- </tr>
-</table>';
-
-    // Add footer
-    html_end();
-    // Close any open db connections
-    dbclose();
-}
+// Close any open db connections
+dbclose();

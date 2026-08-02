@@ -1,0 +1,25 @@
+{#
+  The antivirus status page.
+
+  report is the table produced by the product's awk script and is inserted
+  unescaped, because it is markup rather than data.
+
+  When available is false nothing was run: the awk scripts print their header
+  whatever they are fed, so an empty table would look like a working page with
+  no findings rather than a product that is not there.
+#}
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<table class="boxtable" width="100%">
+<tr>
+<td align="center">
+{% if available %}
+{{ report|raw }}
+{% else %}
+<p class="error">{{ __('avnotavailable19') }}</p>
+{% endif %}
+</td>
+</tr>
+</table>
+{% endblock %}
