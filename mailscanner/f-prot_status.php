@@ -25,32 +25,16 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Include of necessary functions
 require_once __DIR__ . '/functions.php';
 
+// Authentication checking
 require __DIR__ . '/login.function.php';
 
-if ('A' !== $_SESSION['user_type']) {
-    header('Location: index.php');
-} else {
-    html_start(__('fprotstatus22'), 0, false, false);
-    echo '
-<table class="boxtable" width="100%">
- <tr>
-  <td align="center">';
+mailwatch_autoload();
 
-    if (str_contains((string)get_conf_var('VirusScanners'), '/-6/')) {
-        passthru(get_virus_conf('f-prot') . ' -virno | awk -f ' . __DIR__ . '/f-prot.awk');
-    } else {
-        passthru(get_virus_conf('f-prot') . ' -verno | awk -f ' . __DIR__ . '/f-prot.awk');
-    }
-    echo '
-</td>
- </tr>
-</table>';
+\MailWatch\ApplicationFactory::antivirusStatusController()
+    ->handle(\MailWatch\ApplicationFactory::antivirusScanner('f-prot'))
+    ->send();
 
-    // Add footer
-    html_end();
-    // Close any open db connections
-    dbclose();
-}
+// Close any open db connections
+dbclose();

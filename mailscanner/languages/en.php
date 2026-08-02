@@ -602,6 +602,7 @@ return [
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Status',
     'auditlog19' => 'Non-admin user attemped to view ClamAV Status page',
+    'avnotavailable19' => 'This scanner is not installed on this host, or the web server user cannot run it.',
 
     // 20-docs.php
     'doc20' => 'Documentation',

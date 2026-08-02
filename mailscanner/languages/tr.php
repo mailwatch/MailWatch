@@ -604,6 +604,7 @@ return [
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV Durumu',
     'auditlog19' => 'Yönetici olmayan kullanıcı ClamAV Durum sayfasını görüntülemeye çalıştı',
+    'avnotavailable19' => 'Bu tarayıcı bu sunucuda kurulu değil veya web sunucusu kullanıcısı çalıştıramıyor.',
 
     // 20-docs.php
     'doc20' => 'Dokümantasyon',

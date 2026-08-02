@@ -25,27 +25,16 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Include of necessary functions
 require_once __DIR__ . '/functions.php';
 
 // Authentication checking
 require __DIR__ . '/login.function.php';
 
-if ('A' !== $_SESSION['user_type']) {
-    header('Location: index.php');
-} else {
-    html_start(__('mcafeestatus25'), 0, false, false);
+mailwatch_autoload();
 
-    echo '<table class="boxtable" width="100%">' . "\n";
-    echo '<tr>' . "\n";
-    echo '<td align="center">' . "\n";
-    passthru(get_virus_conf('mcafee') . ' --version | awk -f ' . __DIR__ . '/mcafee.awk');
-    echo '</td>' . "\n";
-    echo '</tr>' . "\n";
-    echo '</table>' . "\n";
+\MailWatch\ApplicationFactory::antivirusStatusController()
+    ->handle(\MailWatch\ApplicationFactory::antivirusScanner('mcafee'))
+    ->send();
 
-    // Add footer
-    html_end();
-    // Close any open db connections
-    dbclose();
-}
+// Close any open db connections
+dbclose();

@@ -3901,6 +3901,11 @@ function read_ruleset_default($file)
 function get_virus_conf($scanner)
 {
     $fh = fopen(MS_CONFIG_DIR . 'virus.scanners.conf', 'rb');
+    if (false === $fh) {
+        // Unreadable is the same answer as absent: no scanner is configured.
+        return false;
+    }
+
     while (!feof($fh)) {
         $line = rtrim(fgets($fh, 1048576));
         if (preg_match("/(^[^#]\S+)\s+(\S+)\s+(\S+)/", $line, $regs)) {

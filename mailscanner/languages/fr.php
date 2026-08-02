@@ -599,6 +599,7 @@ return [
     // 19-clamav_status.php
     'avclamavstatus19' => 'Statut ClamAV',
     'auditlog19' => 'Un Utilisateur non administrateur a tenté d\'afficher la page de Statut ClamAV',
+    'avnotavailable19' => 'Cet antivirus n\'est pas installé sur cet hôte, ou l\'utilisateur du serveur web ne peut pas l\'exécuter.',
 
     // 20-docs.php
     'doc20' => 'Documentation',

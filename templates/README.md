@@ -19,6 +19,9 @@ yet, because `html_start()` and `html_end()` render the partials directly:
 | `partials/_navigation.html.twig` | the navigation row and the language selector |
 | `partials/_footer.html.twig` | closes what the page header opened, then the page footer |
 
+Feature templates sit beside them in their own directory and extend the layout;
+`status/antivirus.html.twig` is the first of them.
+
 `_page_header.html.twig` receives the status panels, the traffic graph and
 today's statistics as markup already produced by the `print*` functions in
 `functions.php`. Each becomes a template of its own when its feature is

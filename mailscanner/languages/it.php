@@ -599,6 +599,7 @@ return [
     // 19-clamav_status.php
     'avclamavstatus19' => 'Stato ClamAV',
     'auditlog19' => 'Utente non amministratore ha tentato di visualizzare la pagina Stato ClamAV',
+    'avnotavailable19' => 'Questo scanner non è installato su questo host, oppure l\'utente del server web non può eseguirlo.',
 
     // 20-docs.php
     'doc20' => 'Documentazione',

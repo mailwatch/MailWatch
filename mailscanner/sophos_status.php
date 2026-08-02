@@ -27,24 +27,14 @@
 
 require_once __DIR__ . '/functions.php';
 
-include __DIR__ . '/login.function.php';
+// Authentication checking
+require __DIR__ . '/login.function.php';
 
-if ('A' !== $_SESSION['user_type']) {
-    header('Location: login.php');
-    exit;
-}
+mailwatch_autoload();
 
-html_start(__('sophos53'), 0, false, false);
+\MailWatch\ApplicationFactory::antivirusStatusController()
+    ->handle(\MailWatch\ApplicationFactory::antivirusScanner('sophos'))
+    ->send();
 
-echo '<table class="boxtable" width="100%">';
-echo '<tr>';
-echo '<td align="center">';
-passthru(get_virus_conf('sophos') . ' -v | awk -f ' . __DIR__ . '/sophos.awk');
-echo '</td>';
-echo '</tr>';
-echo '</table>';
-
-// Add footer
-html_end();
 // Close any open db connections
 dbclose();

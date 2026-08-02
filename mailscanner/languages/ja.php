@@ -590,6 +590,7 @@ return [
     // 19-clamav_status.php
     'avclamavstatus19' => 'ClamAV 状態',
     'auditlog19' => '非管理者が ClamAV のステータスページを表示しようとしました',
+    'avnotavailable19' => 'このスキャナーはこのホストにインストールされていないか、Web サーバーのユーザーが実行できません。',
 
     // 20-docs.php
     'doc20' => 'ドキュメント',
