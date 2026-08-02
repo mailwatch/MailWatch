@@ -244,19 +244,56 @@ function disableBrowserCache(): void
  * registered the Composer autoloader; the command-line tools that include this
  * file have not, so it is loaded here when missing.
  */
-function mailwatch_template_renderer(): \MailWatch\Presentation\TemplateRenderer
+function mailwatch_template_renderer(): \MailWatch\Shared\Presentation\TemplateRenderer
 {
     static $renderer = null;
 
     if (null === $renderer) {
-        if (!class_exists(\MailWatch\ApplicationFactory::class)) {
-            require_once \dirname(__DIR__) . '/vendor/autoload.php';
-        }
-
+        mailwatch_autoload();
         $renderer = \MailWatch\ApplicationFactory::templateRenderer();
     }
 
     return $renderer;
+}
+
+/**
+ * Registers the Composer autoloader when it is not already registered.
+ */
+function mailwatch_autoload(): void
+{
+    if (!class_exists(\MailWatch\ApplicationFactory::class)) {
+        require_once \dirname(__DIR__) . '/vendor/autoload.php';
+    }
+}
+
+/**
+ * The shared page frame, built from the current session.
+ */
+function mailwatch_page_layout(): \MailWatch\Shared\Presentation\PageLayout
+{
+    static $layout = null;
+
+    if (null === $layout) {
+        mailwatch_autoload();
+        $layout = new \MailWatch\Shared\Presentation\PageLayout($_SESSION ?? [], \dirname(__DIR__));
+    }
+
+    return $layout;
+}
+
+/**
+ * The session and cache decisions every page makes before it writes anything.
+ */
+function mailwatch_page_guard(): \MailWatch\Shared\Http\PageGuard
+{
+    static $guard = null;
+
+    if (null === $guard) {
+        mailwatch_autoload();
+        $guard = new \MailWatch\Shared\Http\PageGuard($_SESSION ?? []);
+    }
+
+    return $guard;
 }
 
 /**
@@ -288,36 +325,8 @@ function mailwatch_capture(callable $printer): string
  */
 function html_start($title, $refresh = 0, $cacheable = true, $report = false)
 {
-    if (PHP_SAPI !== 'cli') {
-        if (!$cacheable) {
-            // Cache control (as per PHP website)
-            disableBrowserCache();
-        } else {
-            // calc an offset of 24 hours
-            $offset = 3600 * 48;
-            // calc the string in GMT not localtime and add the offset
-            $expire = 'Expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
-            // output the HTTP header
-            header($expire);
-            header('Cache-Control: store, cache, must-revalidate, post-check=0, pre-check=1');
-            header('Pragma: cache');
-        }
-    }
-
-    // Check for a privilege change
-    if (true === checkPrivilegeChange($_SESSION['myusername'])) {
-        header('Location: logout.php?error=timeout');
-        exit;
-    }
-
-    if (true === checkLoginExpiry($_SESSION['myusername'])) {
-        header('Location: logout.php?error=timeout');
-        exit;
-    }
-    if (0 === $refresh) {
-        // User is moving about on non-refreshing pages, keep session alive
-        updateLoginExpiry($_SESSION['myusername']);
-    }
+    mailwatch_page_guard()->enforce($cacheable, (int)$refresh);
+    $layout = mailwatch_page_layout();
 
     if (DEBUG) {
         echo page_creation_timer();
@@ -339,58 +348,9 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         $page_title = __('mwforms03') . $title;
     }
 
-    // The template escapes the identifier, so it is validated here in the form
-    // the user typed rather than an escaped copy of it.
-    $message_id = '';
-    if (isset($_GET['id'])) {
-        $requested_id = trim((string)sanitizeInput($_GET['id']), ' ');
-        if (validateInput($requested_id, 'msgid')) {
-            $message_id = $requested_id;
-        }
-    }
-
     $renderer = mailwatch_template_renderer();
-
-    $renderer->display('partials/_head.html.twig', [
-        'clock_script' => mailwatch_capture('java_time'),
-        'title' => $page_title,
-        'has_skin' => is_file(dirname(__DIR__) . '/public_html/skin.css'),
-        'refresh' => (int)$refresh,
-    ]);
-
-    $is_admin = 'A' === $_SESSION['user_type'];
-    $status_panels = null;
-    $traffic_graph = '';
-
-    if ($is_admin || 'D' === $_SESSION['user_type']) {
-        $status_panels = mailwatch_capture(static function() use ($is_admin): void {
-            printServiceStatus();
-            printAverageLoad();
-
-            if ($is_admin) {
-                printMTAQueue();
-                printFreeDiskSpace();
-            }
-        });
-        $traffic_graph = mailwatch_capture('printTrafficGraph');
-    }
-
-    $renderer->display('partials/_page_header.html.twig', [
-        'logo_src' => '.' . IMAGES_DIR . MW_LOGO,
-        'logo_alt' => __('mailwatchtitle03'),
-        'jump_label' => __('jumpmessage03'),
-        'message_id' => $message_id,
-        'token' => $_SESSION['token'],
-        'user_heading' => __('cuser03'),
-        'clock_heading' => __('cst03'),
-        'full_name' => $_SESSION['fullname'],
-        'status_heading' => __('status03'),
-        'status_panels' => $status_panels,
-        'traffic_graph' => $traffic_graph,
-        'today_statistics' => mailwatch_capture('printTodayStatistics'),
-        'navigation' => mailwatch_capture('printNavBar'),
-        'colspan' => $is_admin ? '5' : '4',
-    ]);
+    $renderer->display('partials/_head.html.twig', $layout->headContext($page_title, (int)$refresh));
+    $renderer->display('partials/_page_header.html.twig', $layout->pageHeaderContext());
 
     if ($report) {
         $return_items = $filter;
@@ -972,13 +932,10 @@ function updateClock() {
  */
 function html_end($footer = '')
 {
-    mailwatch_template_renderer()->display('partials/_footer.html.twig', [
-        'extra' => $footer,
-        'timer' => DEBUG ? page_creation_timer() : null,
-        'footer_text' => __('footer03'),
-        'version' => mailwatch_version(),
-        'year' => date('Y'),
-    ]);
+    mailwatch_template_renderer()->display(
+        'partials/_footer.html.twig',
+        mailwatch_page_layout()->footerContext($footer)
+    );
 }
 
 /**
