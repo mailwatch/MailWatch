@@ -46,20 +46,20 @@ if (in_array($_mailWatchRequestPath, ['/api/messages', '/api/allow-block-list', 
     if (!defined('API_KEY') || !is_string(API_KEY) || '' === API_KEY) {
         if ('/api/messages' === $_mailWatchRequestPath) {
             $_mailWatchMessage = defined('API_KEY') ? 'Unauthorized' : 'Unauthorized - Set an API KEY to use this API';
-            \MailWatch\Api\JsonResponse::send(401, ['error' => $_mailWatchMessage]);
+            \MailWatch\Shared\Http\JsonResponse::send(401, ['error' => $_mailWatchMessage]);
         }
 
-        \MailWatch\Api\JsonResponse::error(401, 'unauthorized', 'Unauthorized');
+        \MailWatch\Shared\Http\JsonResponse::error(401, 'unauthorized', 'Unauthorized');
     }
 
     try {
         $_mailWatchApplicationFactory = \MailWatch\ApplicationFactory::create();
-    } catch (\MailWatch\Configuration\InvalidConfiguration) {
+    } catch (\MailWatch\Shared\Infrastructure\Configuration\InvalidConfiguration) {
         if ('/api/messages' === $_mailWatchRequestPath) {
-            \MailWatch\Api\JsonResponse::send(500, ['error' => 'Invalid API configuration']);
+            \MailWatch\Shared\Http\JsonResponse::send(500, ['error' => 'Invalid API configuration']);
         }
 
-        \MailWatch\Api\JsonResponse::error(500, 'invalid_configuration', 'Invalid API configuration');
+        \MailWatch\Shared\Http\JsonResponse::error(500, 'invalid_configuration', 'Invalid API configuration');
     }
 
     $_mailWatchController = match ($_mailWatchRequestPath) {
@@ -70,7 +70,7 @@ if (in_array($_mailWatchRequestPath, ['/api/messages', '/api/allow-block-list', 
     $_mailWatchController->handle();
 }
 
-$_mailWatchPage = (new \MailWatch\Routing\PageRouteRegistry())->pageForPath($_mailWatchRequestPath);
+$_mailWatchPage = (new \MailWatch\Shared\Http\PageRouteRegistry())->pageForPath($_mailWatchRequestPath);
 if (null !== $_mailWatchPage) {
     $_mailWatchHandler = $_mailWatchApplicationRoot . '/mailscanner/' . $_mailWatchPage;
     $_mailWatchPublicPath = '/' === $_mailWatchRequestPath ? '/index.php' : $_mailWatchRequestPath;

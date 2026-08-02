@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MailWatch\Api;
+namespace MailWatch\MailLog\Http;
 
-use MailWatch\Configuration\ApiConfiguration;
-use MailWatch\Security\ApiKeyAuthenticator;
+use MailWatch\MailLog\Domain\MailLogEntry;
+use MailWatch\Shared\Http\JsonResponse;
+use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
+use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 
 final readonly class MessageController
 {

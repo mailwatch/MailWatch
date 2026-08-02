@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Routing;
+namespace App\Tests\Unit\Shared\Http;
 
-use MailWatch\Routing\PageRouteRegistry;
+use MailWatch\Shared\Http\PageRouteRegistry;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

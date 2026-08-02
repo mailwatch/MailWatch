@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MailWatch\Api;
+namespace MailWatch\MailLog\Domain;
 
 final class MailLogEntry
 {
