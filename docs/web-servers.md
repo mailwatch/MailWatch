@@ -5,14 +5,35 @@ web server document root as the repository's `public_html` directory. Source
 code, configuration, Composer packages, tests and command-line tools remain
 outside the document root.
 
-The front controller dispatches the web interface through an explicit list of
-page routes and exposes these API routes:
+MailWatch must be served from the root of a host or virtual host. It emits
+absolute paths, so serving it from a subdirectory — an Apache `Alias
+/mailwatch`, or a document root above `public_html` — does not work. Give it a
+name of its own.
+
+Every request is resolved against one explicit list of routes. These are the API
+routes used by the MailScanner modules:
 
 | Method | Path | Purpose |
 |---|---|---|
 | `POST` | `/api/messages` | Store a message processed by MailScanner |
 | `GET` | `/api/allow-block-list` | Download the allow/block list snapshot |
 | `GET` | `/api/spam-settings` | Download SpamAssassin and no-scan settings |
+
+The web interface is a mixture of pages still addressed by their script name and
+pages that have been extracted and given a path of their own. The antivirus
+status pages are the first of the second kind:
+
+| Path | Was |
+|---|---|
+| `/status/antivirus/clamav` | `/clamav_status.php` |
+| `/status/antivirus/sophos` | `/sophos_status.php` |
+| `/status/antivirus/mcafee` | `/mcafee_status.php` |
+| `/status/antivirus/f-prot` | `/f-prot_status.php` |
+| `/status/antivirus/f-secure` | `/f-secure_status.php` |
+| `/status/antivirus/f-secure-12` | `/f-secure12_status.php` |
+
+The old paths answer with a permanent redirect, so existing bookmarks keep
+working. Nothing else needs changing in the web server configuration.
 
 Only `index.php` and static assets are stored inside `public_html`. Application
 code and configuration remain outside the document root and cannot be selected

@@ -45,7 +45,7 @@ final readonly class PageGuard
         $username = $this->session['myusername'] ?? null;
 
         if (true === checkPrivilegeChange($username) || true === checkLoginExpiry($username)) {
-            header('Location: logout.php?error=timeout');
+            header('Location: /logout.php?error=timeout');
 
             exit;
         }

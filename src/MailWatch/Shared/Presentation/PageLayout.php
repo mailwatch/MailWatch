@@ -79,7 +79,7 @@ final readonly class PageLayout implements PageFrame
         }
 
         return [
-            'logo_src' => '.' . IMAGES_DIR . MW_LOGO,
+            'logo_src' => IMAGES_DIR . MW_LOGO,
             'logo_alt' => __('mailwatchtitle03'),
             'jump_label' => __('jumpmessage03'),
             'message_id' => $this->requestedMessageId(),

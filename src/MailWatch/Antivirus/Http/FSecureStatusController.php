@@ -19,7 +19,7 @@ use MailWatch\Shared\Presentation\TemplateRenderer;
  * its engines as prose rather than through an awk script: the output is parsed
  * here and the table is a template.
  */
-final readonly class FSecureStatusController
+final readonly class FSecureStatusController implements StatusController
 {
     /**
      * @param \Closure(string): void $auditLog
@@ -39,7 +39,7 @@ final readonly class FSecureStatusController
         if (!$this->guard->isAdministrator()) {
             ($this->auditLog)(__('auditlog19', true));
 
-            return Response::redirect('index.php');
+            return Response::redirect('/');
         }
 
         $this->guard->enforce(false, 0);

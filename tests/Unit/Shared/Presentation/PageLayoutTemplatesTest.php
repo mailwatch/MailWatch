@@ -28,7 +28,7 @@ final class PageLayoutTemplatesTest extends TestCase
         self::assertStringStartsWith('<!DOCTYPE HTML>', $head);
         self::assertStringContainsString('<title>MailWatch - Quarantine</title>', $head);
         self::assertStringContainsString('<script type="text/javascript">function updateClock() {}</script>', $head);
-        self::assertStringContainsString('href="./style.css"', $head);
+        self::assertStringContainsString('href="/style.css"', $head);
         self::assertStringContainsString("<body onload=\"updateClock(); setInterval('updateClock()', 1000 )\">", $head);
 
         self::assertStringNotContainsString('skin.css', $head);
@@ -44,7 +44,7 @@ final class PageLayoutTemplatesTest extends TestCase
             'refresh' => 30,
         ]);
 
-        self::assertStringContainsString('<link rel="stylesheet" href="./skin.css" type="text/css">', $head);
+        self::assertStringContainsString('<link rel="stylesheet" href="/skin.css" type="text/css">', $head);
         self::assertStringContainsString('<meta http-equiv="refresh" content="30">', $head);
     }
 

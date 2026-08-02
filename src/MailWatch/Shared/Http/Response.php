@@ -33,6 +33,17 @@ final readonly class Response
         return new self(302, '', $location);
     }
 
+    /**
+     * For a path that has moved for good, so a bookmark is corrected rather
+     * than followed again on every visit.
+     *
+     * @param string $location a fixed path within the application; never a value taken from the request
+     */
+    public static function movedPermanently(string $location): self
+    {
+        return new self(301, '', $location);
+    }
+
     public function statusCode(): int
     {
         return $this->statusCode;
