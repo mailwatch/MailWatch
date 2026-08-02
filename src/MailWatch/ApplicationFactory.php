@@ -9,6 +9,7 @@ use MailWatch\Api\MessageController;
 use MailWatch\Api\SpamSettingsController;
 use MailWatch\Configuration\ApiConfiguration;
 use MailWatch\Configuration\ApiConfigurationLoader;
+use MailWatch\Presentation\TemplateRenderer;
 use MailWatch\Security\ApiKeyAuthenticator;
 
 final readonly class ApplicationFactory
@@ -58,6 +59,36 @@ final readonly class ApplicationFactory
             $this->apiKeyAuthenticator(),
             $this->databaseConnector(),
         );
+    }
+
+    public function templateRenderer(): TemplateRenderer
+    {
+        return TemplateRenderer::create(
+            self::projectDirectory() . '/templates',
+            self::templateCacheDirectory(),
+            \defined('DEBUG') && true === DEBUG
+        );
+    }
+
+    /**
+     * The compiled template cache is an optimisation, not a requirement: an
+     * installation unpacked into a read-only directory still renders, it just
+     * compiles the templates on every request.
+     */
+    private static function templateCacheDirectory(): string|false
+    {
+        $cacheDirectory = self::projectDirectory() . '/var/cache/twig';
+
+        if (!is_dir($cacheDirectory) && !@mkdir($cacheDirectory, 0o750, true) && !is_dir($cacheDirectory)) {
+            return false;
+        }
+
+        return is_writable($cacheDirectory) ? $cacheDirectory : false;
+    }
+
+    private static function projectDirectory(): string
+    {
+        return \dirname(__DIR__, 2);
     }
 
     /**

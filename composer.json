@@ -5,7 +5,8 @@
     "license": "GPL-2.0-only",
     "require": {
         "php": "8.3.* || 8.4.* || 8.5.*",
-        "ext-mysqli": "*"
+        "ext-mysqli": "*",
+        "twig/twig": "^3"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3",

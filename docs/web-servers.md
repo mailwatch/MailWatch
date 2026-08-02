@@ -18,6 +18,22 @@ Only `index.php` and static assets are stored inside `public_html`. Application
 code and configuration remain outside the document root and cannot be selected
 by turning an arbitrary URL into a PHP filename.
 
+## Writable directories
+
+MailWatch compiles its templates into `var/cache/twig`, beside `public_html`
+rather than inside it. Making that directory writable by the PHP-FPM user is
+worth doing:
+
+```bash
+install -d -o www-data -g www-data -m 750 /var/www/mailwatch/var/cache/twig
+```
+
+It is an optimisation, not a requirement. If the directory cannot be created or
+written, MailWatch compiles the templates on every request instead — slower, but
+working, and nothing needs to be changed for a read-only installation.
+
+Do not move this directory inside the document root: compiled templates are PHP.
+
 ## Static files
 
 Stylesheets, JavaScript, images, `favicon.ico` and `robots.txt` are stored under
