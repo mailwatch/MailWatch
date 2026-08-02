@@ -10,10 +10,9 @@ SQLAllowBlockList.pm
 SQLSpamSettings.pm
 MailWatchConf.pm
 
-Set the API URL and key in MailWatchConf.pm. SQLAllowBlockList.pm uses the REST
-snapshot and no longer requires database credentials or a MariaDB Perl driver.
-SQLSpamSettings.pm still requires the database settings until its own REST
-migration is complete.
+Set the API URL and key in MailWatchConf.pm. SQLAllowBlockList.pm and
+SQLSpamSettings.pm use REST snapshots and no longer require database credentials
+or a MariaDB Perl driver.
 
 The API spool defaults to /var/spool/MailScanner/mailwatch. Its parent directory
 must be writable by the MailScanner runtime user. MailWatch creates the spool

@@ -2,72 +2,34 @@ use strict;
 use warnings;
 
 use FindBin;
+use lib "$FindBin::Bin/../../MailScanner_perl_scripts";
 use JSON qw(decode_json);
 use Test::More;
 
-BEGIN {
-    package DBI;
-
-    our $errstr = 'fixture database unavailable';
-    our $fail = 0;
-    our %rows;
-
-    sub connect {
-        return if $fail;
-
-        return bless {mariadb_serverversion => 10_011_000}, 'Local::SpamSettingsDatabase';
-    }
-
-    package DBD::MariaDB;
-
-    package Local::SpamSettingsDatabase;
-
-    sub disconnect { return 1 }
-    sub do { return 1 }
-
-    sub prepare {
-        my ($self, $query) = @_;
-        my ($column) = $query =~ /SELECT username, (\w+)/;
-
-        return bless {
-            rows => [map { [@{$_}] } @{$DBI::rows{$column} // []}],
-        }, 'Local::SpamSettingsStatement';
-    }
-
-    package Local::SpamSettingsStatement;
-
-    sub execute { return 1 }
-
-    sub bind_columns {
-        my ($self, undef, $username, $value) = @_;
-        $self->{username} = $username;
-        $self->{value} = $value;
-
-        return 1;
-    }
-
-    sub fetch {
-        my ($self) = @_;
-        my $row = shift @{$self->{rows}};
-        return unless defined $row;
-
-        ${$self->{username}} = $row->[0];
-        ${$self->{value}} = $row->[1];
-
-        return 1;
-    }
-
-    sub finish { return 1 }
-
+{
     package MailScanner::Log;
 
     our @messages;
 
     sub InfoLog { push @messages, ['info', @_] }
     sub WarnLog { push @messages, ['warn', @_] }
+}
 
-    $INC{'DBI.pm'} = __FILE__;
-    $INC{'DBD/MariaDB.pm'} = __FILE__;
+{
+    package Local::SpamSettingsClient;
+
+    sub new {
+        my ($class, @results) = @_;
+
+        return bless {results => \@results, requests => []}, $class;
+    }
+
+    sub fetch_api_snapshot {
+        my ($self, @arguments) = @_;
+        push @{$self->{requests}}, \@arguments;
+
+        return shift @{$self->{results}};
+    }
 }
 
 require "$FindBin::Bin/../../MailScanner_perl_scripts/SQLSpamSettings.pm";
@@ -105,6 +67,16 @@ my $fixture = fixture();
 my $spam_scores = positive_map($fixture->{users}, 'spamscore');
 my $high_spam_scores = positive_map($fixture->{users}, 'highspamscore');
 my $no_scan = positive_map($fixture->{users}, 'noscan');
+
+sub snapshot {
+    return {
+        contract         => 'mailwatch.spam-settings.v1',
+        snapshot_version => 'a' x 64,
+        spam_scores      => {%{$spam_scores}},
+        high_spam_scores => {%{$high_spam_scores}},
+        no_scan          => [sort keys %{$no_scan}],
+    };
+}
 
 subtest 'spam scores use the historical precedence order' => sub {
     is(
@@ -221,27 +193,58 @@ subtest 'no-scan rules apply only to exact users and domain usernames' => sub {
     );
 };
 
-subtest 'refresh keeps entries that disappeared or became unset' => sub {
-    local $DBI::fail = 0;
-    local %DBI::rows = (
-        spamscore => [['new@example.test', 6.0]],
-        noscan    => [['new@example.test', 1]],
-    );
-    my %scores = ('removed@example.test' => 3.0);
-    my %scan = ('removed@example.test' => 1);
+subtest 'snapshot validation builds all three setting maps atomically' => sub {
+    my ($spam, $high_spam, $validated_no_scan) =
+        MailScanner::CustomConfig::ValidateSpamSettingsSnapshot(snapshot());
 
-    is(MailScanner::CustomConfig::CreateScoreList('spamscore', \%scores), 1, 'one score row is refreshed');
-    is(MailScanner::CustomConfig::CreateNoScanList('noscan', \%scan), 1, 'one no-scan row is refreshed');
-    ok(exists $scores{'removed@example.test'}, 'a removed score remains in memory');
-    ok(exists $scan{'removed@example.test'}, 'a removed no-scan value remains in memory');
+    is($spam->{'recipient@example.com'}, 3.5, 'the Spam score map is built');
+    is($high_spam->{'recipient@example.com'}, 7.0, 'the high-Spam score map is built');
+    ok($validated_no_scan->{'recipient@example.com'}, 'the no-scan map is built');
+
+    my $invalid = snapshot();
+    $invalid->{high_spam_scores}{'recipient@example.com'} = 'not-a-score';
+    my @invalid_result = MailScanner::CustomConfig::ValidateSpamSettingsSnapshot($invalid);
+    is(scalar @invalid_result, 0, 'one invalid setting rejects the complete snapshot');
 };
 
-subtest 'database failure retains the existing in-memory values' => sub {
-    local $DBI::fail = 1;
-    my %scores = ('known@example.test' => 4.0);
+subtest 'successful replacement removes old values and failure retains the last valid snapshot' => sub {
+    my $replacement = snapshot();
+    $replacement->{snapshot_version} = 'b' x 64;
+    $replacement->{spam_scores} = {admin => 6.0};
+    $replacement->{high_spam_scores} = {admin => 11.0};
+    $replacement->{no_scan} = [];
+    my $client = Local::SpamSettingsClient->new(
+        {not_modified => 0, etag => '"snapshot-a"', snapshot => snapshot()},
+        {not_modified => 0, etag => '"snapshot-b"', snapshot => $replacement},
+        undef,
+    );
+    no warnings 'once';
+    local $MailScanner::CustomConfig::mailWatchSpamSettingsClient = $client;
 
-    is(MailScanner::CustomConfig::CreateScoreList('spamscore', \%scores), 0, 'the failed refresh reports no rows');
-    is($scores{'known@example.test'}, 4.0, 'the existing score remains available');
+    ok(MailScanner::CustomConfig::RefreshSpamSettings(), 'the first valid snapshot is activated');
+    is(
+        MailScanner::CustomConfig::SQLSpamScores(
+            message(to => ['recipient@example.com'], todomain => ['example.com']),
+        ),
+        3.5,
+        'the first snapshot supplies the recipient score',
+    );
+    ok(MailScanner::CustomConfig::RefreshSpamSettings(), 'the replacement snapshot is activated');
+    is(
+        MailScanner::CustomConfig::SQLSpamScores(
+            message(to => ['recipient@example.com'], todomain => ['example.com']),
+        ),
+        6.0,
+        'a removed recipient score no longer remains in memory',
+    );
+    ok(!MailScanner::CustomConfig::RefreshSpamSettings(), 'the failed refresh is reported');
+    is(
+        MailScanner::CustomConfig::SQLSpamScores(message()),
+        6.0,
+        'the replacement remains active after failure',
+    );
+    is($client->{requests}[1][1], '"snapshot-a"', 'the first ETag is sent for replacement');
+    is($client->{requests}[2][1], '"snapshot-b"', 'the replacement ETag is sent after failure');
 };
 
 done_testing();
