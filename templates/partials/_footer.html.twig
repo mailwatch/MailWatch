@@ -1,0 +1,20 @@
+{#
+  Closes the cell, row and table opened by _page_header.html.twig, then writes
+  the page footer.
+
+  extra is markup supplied by the calling page and timer is the page creation
+  time, shown only when DEBUG is enabled.
+#}
+</td>
+</tr>
+</table>
+{{ extra|raw }}
+{% if timer is not null %}
+<p class="center footer"><i>
+{{ timer|raw }}
+</i></p>
+{% endif %}
+<p class="center footer noprint">
+{{ footer_text|raw }}{{ version }} - &copy; 2006-{{ year }}</p>
+</body>
+</html>

@@ -61,7 +61,11 @@ final readonly class ApplicationFactory
         );
     }
 
-    public function templateRenderer(): TemplateRenderer
+    /**
+     * Static because rendering depends on nothing the factory is constructed
+     * with: the page scripts need a renderer without a valid API configuration.
+     */
+    public static function templateRenderer(): TemplateRenderer
     {
         return TemplateRenderer::create(
             self::projectDirectory() . '/templates',

@@ -1,0 +1,20 @@
+{#
+  Everything from the doctype to the opening <body> tag.
+
+  clock_script holds the generated updateClock() function and is inserted
+  unescaped because it is JavaScript built by the application, not data.
+#}
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="shortcut icon" href="images/favicon.png" >
+<script type="text/javascript">{{ clock_script|raw }}</script>
+<title>{{ title }}</title>
+<link rel="stylesheet" type="text/css" href="./style.css">
+{% if has_skin %}<link rel="stylesheet" href="./skin.css" type="text/css">{% endif %}
+{% if refresh > 0 %}
+<meta http-equiv="refresh" content="{{ refresh }}">
+{% endif %}
+</head>
+<body onload="updateClock(); setInterval('updateClock()', 1000 )">

@@ -1,0 +1,25 @@
+{#
+  The navigation row.
+
+  items:     [{ url, label, active }]
+  languages: [{ code, label, selected }] - empty unless more than one language
+             is selectable
+  colspan:   width of the surrounding layout table
+#}
+<tr class="noprint">
+<td colspan="{{ colspan }}">
+<ul id="menu" class="yellow">
+{% for item in items %}
+<li{% if item.active %} class="active"{% endif %}><a href="{{ item.url }}">{{ item.label|raw }}</a></li>
+{% endfor %}
+{% if languages is not empty %}
+<script>function changeLang() { document.cookie = "MW_LANG="+document.getElementById("langSelect").selectedOptions[0].value; location.reload();} </script>
+<li class="lang"><select id="langSelect" class="lang" onChange="changeLang()">
+{% for language in languages %}
+<option value="{{ language.code }}"{% if language.selected %} selected{% endif %}>{{ language.label|raw }}</option>
+{% endfor %}
+</select></li>
+{% endif %}
+</ul>
+</td>
+</tr>
