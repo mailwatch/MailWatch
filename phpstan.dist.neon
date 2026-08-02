@@ -6,6 +6,7 @@ parameters:
 	phpVersion: 80300
 	tmpDir: %currentWorkingDirectory%/.phpstan-cache
 	paths:
+	    - src
 	    - mailscanner
 	    - tools
 	    - upgrade.php
