@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MailWatch\Security;
+namespace MailWatch\Shared\Infrastructure\Security;
 
-use MailWatch\Configuration\ApiConfiguration;
+use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
 
 final readonly class ApiKeyAuthenticator
 {

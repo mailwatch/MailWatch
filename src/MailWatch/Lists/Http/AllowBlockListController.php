@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace MailWatch\Api;
+namespace MailWatch\Lists\Http;
 
-use MailWatch\Configuration\ApiConfiguration;
-use MailWatch\Security\ApiKeyAuthenticator;
+use MailWatch\Shared\Http\JsonResponse;
+use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
+use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 
-final readonly class SpamSettingsController
+final readonly class AllowBlockListController
 {
-    private const CONTRACT = 'mailwatch.spam-settings.v1';
+    private const CONTRACT = 'mailwatch.allow-block-list.v1';
 
     /**
      * @param \Closure(): object $connectDatabase
@@ -40,47 +41,16 @@ final readonly class SpamSettingsController
 
         try {
             $database = ($this->connectDatabase)();
-            $result = $database->query(
-                'SELECT username, spamscore, highspamscore, noscan
-                 FROM users
-                 WHERE spamscore > 0 OR highspamscore > 0 OR noscan > 0',
-            );
-            if (false === $result) {
-                throw new \RuntimeException('Unable to read spam settings snapshot');
-            }
-
-            $spamScores = [];
-            $highSpamScores = [];
-            $noScan = [];
-            while ($row = $result->fetch_assoc()) {
-                $username = strtolower((string)($row['username'] ?? ''));
-                $spamScore = (float)($row['spamscore'] ?? 0);
-                $highSpamScore = (float)($row['highspamscore'] ?? 0);
-                $noScanValue = (int)($row['noscan'] ?? 0);
-
-                if ($spamScore > 0) {
-                    $spamScores[$username] = $spamScore;
-                }
-                if ($highSpamScore > 0) {
-                    $highSpamScores[$username] = $highSpamScore;
-                }
-                if ($noScanValue > 0) {
-                    $noScan[] = $username;
-                }
-            }
-            $result->free();
+            $allowlist = $this->loadSnapshot($database, 'allowlist');
+            $blocklist = $this->loadSnapshot($database, 'blocklist');
             $database->close();
         } catch (\Throwable) {
             JsonResponse::error(500, 'snapshot_unavailable', 'Snapshot unavailable', $headers);
         }
 
-        ksort($spamScores, SORT_STRING);
-        ksort($highSpamScores, SORT_STRING);
-        sort($noScan, SORT_STRING);
         $snapshotData = [
-            'spam_scores' => (object)$spamScores,
-            'high_spam_scores' => (object)$highSpamScores,
-            'no_scan' => $noScan,
+            'allowlist' => $allowlist,
+            'blocklist' => $blocklist,
         ];
         $snapshotVersion = hash(
             'sha256',
@@ -113,5 +83,38 @@ final readonly class SpamSettingsController
         }
 
         JsonResponse::send(200, $response, $headers);
+    }
+
+    /**
+     * @return list<array{to_address: string, from_address: string}>
+     */
+    private function loadSnapshot(object $database, string $table): array
+    {
+        $query = "SELECT to_address, from_address FROM {$table}
+                  UNION ALL
+                  SELECT user_filters.filter AS to_address, {$table}.from_address
+                  FROM {$table}
+                  INNER JOIN user_filters ON {$table}.to_address = user_filters.username";
+        $result = $database->query($query);
+        if (false === $result) {
+            throw new \RuntimeException('Unable to read list snapshot');
+        }
+
+        $entries = [];
+        while ($row = $result->fetch_assoc()) {
+            $entries[] = [
+                'to_address' => strtolower((string)($row['to_address'] ?? '')),
+                'from_address' => strtolower((string)($row['from_address'] ?? '')),
+            ];
+        }
+        $result->free();
+
+        usort(
+            $entries,
+            static fn(array $left, array $right): int => [$left['to_address'], $left['from_address']]
+                <=> [$right['to_address'], $right['from_address']],
+        );
+
+        return $entries;
     }
 }

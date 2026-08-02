@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MailWatch\Api;
+namespace MailWatch\Shared\Http;
 
 final class JsonResponse
 {

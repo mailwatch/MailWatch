@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Security;
+namespace App\Tests\Unit\Shared\Infrastructure\Security;
 
-use MailWatch\Configuration\ApiConfiguration;
-use MailWatch\Security\ApiKeyAuthenticator;
+use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
+use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

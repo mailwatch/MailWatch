@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Configuration;
+namespace App\Tests\Unit\Shared\Infrastructure\Configuration;
 
 use MailWatch\ApplicationFactory;
-use MailWatch\Configuration\ApiConfiguration;
-use MailWatch\Configuration\InvalidConfiguration;
+use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
+use MailWatch\Shared\Infrastructure\Configuration\InvalidConfiguration;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
