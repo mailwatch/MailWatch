@@ -1,0 +1,19 @@
+{
+    "allowlist": [
+        {"to_address": "default", "from_address": "sender@example.com"},
+        {"to_address": "recipient@example.net", "from_address": "trusted.example.org"},
+        {"to_address": "example.net", "from_address": "@partner.example.org"},
+        {"to_address": "default", "from_address": "192.0.2."},
+        {"to_address": "default", "from_address": "*.example.org"},
+        {"to_address": "default", "from_address": "bounce@*.example.org"},
+        {"to_address": "mailwatch-user", "from_address": "filtered-sender@example.com"}
+    ],
+    "blocklist": [
+        {"to_address": "default", "from_address": "blocked@example.com"},
+        {"to_address": "recipient@example.net", "from_address": "198.51.100.23"}
+    ],
+    "user_filters": [
+        {"username": "mailwatch-user", "filter": "filtered.example.net", "active": "Y"},
+        {"username": "mailwatch-user", "filter": "historically-inactive.example.net", "active": "N"}
+    ]
+}
