@@ -32,12 +32,12 @@ disableBrowserCache();
 if (isset($_POST['token'])) {
     if (!isset($_SESSION['token'])) {
         // login page timed out and session for token is not valid anymore
-        header('Location: login.php?error=pagetimeout');
+        header('Location: /login.php?error=pagetimeout');
         exit;
     }
 
     if (false === checkToken($_POST['token'])) {
-        header('Location: login.php?error=pagetimeout');
+        header('Location: /login.php?error=pagetimeout');
         exit;
     }
 }
@@ -49,7 +49,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 } else {
     // Define $myusername and $mypassword
     if (!isset($_POST['myusername'], $_POST['mypassword'])) {
-        header('Location: login.php?error=baduser');
+        header('Location: /login.php?error=baduser');
         logFailedLogin();
         exit;
     }
@@ -60,7 +60,7 @@ $plainPassword = $mypassword;
 // checked before LDAP and IMAP too, so that the directory servers do not get the guesses either
 $throttleUsername = $myusername;
 if (login_throttle_is_locked($throttleUsername)) {
-    header('Location: login.php?error=toomanyattempts');
+    header('Location: /login.php?error=toomanyattempts');
     logFailedLogin($myusername);
     exit;
 }
@@ -87,7 +87,7 @@ if (defined('USE_LDAP')
         $myusername = safe_value($myusername);
         $mypassword = safe_value($mypassword);
     } else {
-        header('Location: login.php?error=emptypassword');
+        header('Location: /login.php?error=emptypassword');
         logFailedLogin($myusername);
         login_throttle_record_failure($throttleUsername);
         exit;
@@ -102,7 +102,7 @@ $usercount = $result->num_rows;
 if (0 === $usercount) {
     // no user found, redirect to login
     dbclose();
-    header('Location: login.php?error=baduser');
+    header('Location: /login.php?error=baduser');
     logFailedLogin($myusername);
     login_throttle_record_failure($throttleUsername);
     exit;
@@ -114,7 +114,7 @@ if (
 ) {
     $passwordInDb = Database::mysqli_result($result, 0, 'password');
     if (!is_string($passwordInDb)) {
-        header('Location: login.php?error=baduser');
+        header('Location: /login.php?error=baduser');
         logFailedLogin($myusername);
         login_throttle_record_failure($throttleUsername);
         exit;
@@ -129,7 +129,7 @@ if (
         }
     }
     if (null === $matchedPassword) {
-        header('Location: login.php?error=baduser');
+        header('Location: /login.php?error=baduser');
         logFailedLogin($myusername);
         login_throttle_record_failure($throttleUsername);
         exit;
@@ -211,7 +211,7 @@ if (1 === $usercount) {
     }
     header('Location: ' . str_replace('&amp;', '&', sanitizeInput($redirect_url)));
 } else {
-    header('Location: login.php?error=baduser');
+    header('Location: /login.php?error=baduser');
     logFailedLogin($myusername);
     login_throttle_record_failure($throttleUsername);
 }

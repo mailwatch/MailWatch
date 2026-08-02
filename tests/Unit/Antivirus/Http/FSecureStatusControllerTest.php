@@ -81,7 +81,7 @@ final class FSecureStatusControllerTest extends TestCase
         $response = $this->controller($commands, isAdministrator: false)->handle($this->scanner());
 
         self::assertSame(302, $response->statusCode());
-        self::assertSame('index.php', $response->location());
+        self::assertSame('/', $response->location());
         self::assertSame(['auditlog19'], $this->auditLog);
         self::assertSame([], $commands->commands);
     }

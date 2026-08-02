@@ -857,7 +857,7 @@ function printNavBar()
     $items = [];
     foreach ($nav as $url => $desc) {
         $items[] = [
-            'url' => $url,
+            'url' => '/' . $url,
             'label' => $desc,
             'active' => $_SERVER['SCRIPT_FILENAME'] === MAILWATCH_HOME . '/' . $url,
         ];

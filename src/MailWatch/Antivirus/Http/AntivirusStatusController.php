@@ -17,7 +17,7 @@ use MailWatch\Shared\Presentation\TemplateRenderer;
  * Five page scripts used to hold a copy of this, differing only in the command
  * they ran and the title they showed.
  */
-final readonly class AntivirusStatusController
+final readonly class AntivirusStatusController implements StatusController
 {
     /**
      * @param \Closure(string): void $auditLog
@@ -36,7 +36,7 @@ final readonly class AntivirusStatusController
         if (!$this->guard->isAdministrator()) {
             ($this->auditLog)(__('auditlog19', true));
 
-            return Response::redirect('index.php');
+            return Response::redirect('/');
         }
 
         $this->guard->enforce(false, 0);

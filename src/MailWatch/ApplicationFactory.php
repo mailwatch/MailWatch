@@ -8,6 +8,7 @@ use MailWatch\Antivirus\Domain\AntivirusScanner;
 use MailWatch\Antivirus\Domain\FSecureReportParser;
 use MailWatch\Antivirus\Http\AntivirusStatusController;
 use MailWatch\Antivirus\Http\FSecureStatusController;
+use MailWatch\Antivirus\Http\StatusController;
 use MailWatch\Antivirus\Infrastructure\AntivirusScannerRegistry;
 use MailWatch\Lists\Http\AllowBlockListController;
 use MailWatch\MailLog\Http\MessageController;
@@ -84,13 +85,21 @@ final readonly class ApplicationFactory
     }
 
     /**
-     * The antivirus status page, wired for one product.
+     * The status page for one antivirus product.
      *
-     * Static for the same reason as the renderer: the page scripts reach it
-     * without an API configuration.
+     * Which implementation serves it is wiring, not a decision the entry point
+     * should make: F-Secure 12 parses its own output, the rest are formatted by
+     * an awk script.
+     *
+     * Static for the same reason as the renderer: it is reached without an API
+     * configuration.
      */
-    public static function antivirusStatusController(): AntivirusStatusController
+    public static function antivirusStatusController(string $scanner): StatusController
     {
+        if ('f-secure12' === $scanner) {
+            return self::fSecureStatusController();
+        }
+
         return new AntivirusStatusController(
             self::templateRenderer(),
             new PageLayout($_SESSION ?? [], self::projectDirectory()),
@@ -102,7 +111,7 @@ final readonly class ApplicationFactory
         );
     }
 
-    public static function fSecureStatusController(): FSecureStatusController
+    private static function fSecureStatusController(): FSecureStatusController
     {
         return new FSecureStatusController(
             self::templateRenderer(),

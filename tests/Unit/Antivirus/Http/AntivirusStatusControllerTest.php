@@ -82,7 +82,7 @@ final class AntivirusStatusControllerTest extends TestCase
         );
 
         self::assertSame(302, $response->statusCode());
-        self::assertSame('index.php', $response->location());
+        self::assertSame('/', $response->location());
         self::assertSame('', $response->body());
         self::assertSame(['auditlog19'], $this->auditLog);
 
