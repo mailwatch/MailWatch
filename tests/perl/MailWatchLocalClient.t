@@ -18,7 +18,7 @@ sub client_with {
 
     my $client = MailWatchClient->new(
         user_agent          => bless({}, 'Local::UnusedUserAgent'),
-        api_endpoint        => 'https://unused.example.test/api/logmail.php',
+        api_endpoint        => 'https://unused.example.test/api/messages',
         api_key             => 'unused-api-key',
         api_max_retries     => 1,
         api_retry_delay     => 0,

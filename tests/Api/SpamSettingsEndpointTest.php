@@ -21,11 +21,24 @@ final class SpamSettingsEndpointTest extends TestCase
         self::$temporaryDirectory = sys_get_temp_dir() . '/mailwatch-spam-settings-' . bin2hex(random_bytes(8));
         $mailScannerDirectory = self::$temporaryDirectory . '/mailscanner';
         $apiDirectory = $mailScannerDirectory . '/api';
+        $publicDirectory = self::$temporaryDirectory . '/public_html';
         if (!mkdir($apiDirectory, 0o700, true) && !is_dir($apiDirectory)) {
             throw new \RuntimeException('Unable to create the spam settings test directory');
         }
+        if (!mkdir($publicDirectory, 0o700) && !is_dir($publicDirectory)) {
+            throw new \RuntimeException('Unable to create the public test directory');
+        }
 
         $projectRoot = dirname(__DIR__, 2);
+        $vendorDirectory = self::$temporaryDirectory . '/vendor';
+        if (!mkdir($vendorDirectory, 0o700) && !is_dir($vendorDirectory)) {
+            throw new \RuntimeException('Unable to create the Composer test directory');
+        }
+        file_put_contents(
+            $vendorDirectory . '/autoload.php',
+            sprintf("<?php\nrequire %s;\n", var_export($projectRoot . '/vendor/autoload.php', true))
+        );
+        copy($projectRoot . '/public_html/index.php', $publicDirectory . '/index.php');
         copy($projectRoot . '/mailscanner/api/spam-settings.php', $apiDirectory . '/spam-settings.php');
         copy($projectRoot . '/mailscanner/api/MailWatchApi.php', $apiDirectory . '/MailWatchApi.php');
         copy($projectRoot . '/tests/fixtures/api/spam-settings-v1.json', self::$temporaryDirectory . '/fixture.json');
@@ -52,7 +65,7 @@ final class SpamSettingsEndpointTest extends TestCase
         $port = (int)substr(strrchr($address, ':'), 1);
         self::$baseUrl = "http://127.0.0.1:{$port}";
         self::$serverProcess = proc_open(
-            [PHP_BINARY, '-S', "127.0.0.1:{$port}", '-t', $mailScannerDirectory],
+            [PHP_BINARY, '-S', "127.0.0.1:{$port}", '-t', $publicDirectory, $publicDirectory . '/index.php'],
             [
                 0 => ['pipe', 'r'],
                 1 => ['file', self::$temporaryDirectory . '/server.log', 'a'],
@@ -152,7 +165,7 @@ final class SpamSettingsEndpointTest extends TestCase
                 'timeout' => 5,
             ],
         ]);
-        $body = file_get_contents(self::$baseUrl . '/api/spam-settings.php', false, $context);
+        $body = file_get_contents(self::$baseUrl . '/api/spam-settings', false, $context);
         self::assertNotFalse($body);
         $responseHeaders = $http_response_header ?? [];
         self::assertNotEmpty($responseHeaders);

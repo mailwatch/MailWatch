@@ -23,15 +23,33 @@ final class LogMailEndpointTest extends TestCase
         self::$temporaryDirectory = sys_get_temp_dir() . '/mailwatch-logmail-' . bin2hex(random_bytes(8));
         $mailScannerDirectory = self::$temporaryDirectory . '/mailscanner';
         $apiDirectory = $mailScannerDirectory . '/api';
+        $publicDirectory = self::$temporaryDirectory . '/public_html';
 
         if (!mkdir($apiDirectory, 0o700, true) && !is_dir($apiDirectory)) {
             throw new \RuntimeException('Unable to create the logmail test directory');
         }
+        if (!mkdir($publicDirectory, 0o700) && !is_dir($publicDirectory)) {
+            throw new \RuntimeException('Unable to create the public test directory');
+        }
 
         $projectRoot = dirname(__DIR__, 2);
+        $vendorDirectory = self::$temporaryDirectory . '/vendor';
+        if (!mkdir($vendorDirectory, 0o700) && !is_dir($vendorDirectory)) {
+            throw new \RuntimeException('Unable to create the Composer test directory');
+        }
+        file_put_contents(
+            $vendorDirectory . '/autoload.php',
+            sprintf("<?php\nrequire %s;\n", var_export($projectRoot . '/vendor/autoload.php', true))
+        );
+        copy($projectRoot . '/public_html/index.php', $publicDirectory . '/index.php');
+        copy($projectRoot . '/mailscanner/bootstrap.php', $mailScannerDirectory . '/bootstrap.php');
         copy($projectRoot . '/mailscanner/api/logmail.php', $apiDirectory . '/logmail.php');
         copy($projectRoot . '/mailscanner/api/MailLogEntry.php', $apiDirectory . '/MailLogEntry.php');
         copy($projectRoot . '/mailscanner/api/MailWatchApi.php', $apiDirectory . '/MailWatchApi.php');
+        file_put_contents($mailScannerDirectory . '/index.php', "<?php\necho 'dispatched-home-page';\n");
+        file_put_contents($mailScannerDirectory . '/login.php', "<?php\necho 'dispatched-login-page';\n");
+        file_put_contents($publicDirectory . '/.htaccess', "private-server-configuration\n");
+        file_put_contents($publicDirectory . '/style.css', "/* directly-served-static-file */\n");
 
         self::$capturePath = self::$temporaryDirectory . '/insert.json';
         file_put_contents(
@@ -59,7 +77,7 @@ final class LogMailEndpointTest extends TestCase
         self::$baseUrl = "http://127.0.0.1:{$port}";
         self::$serverLogPath = self::$temporaryDirectory . '/server.log';
         self::$serverProcess = proc_open(
-            [PHP_BINARY, '-S', "127.0.0.1:{$port}", '-t', $mailScannerDirectory],
+            [PHP_BINARY, '-S', "127.0.0.1:{$port}", '-t', $publicDirectory, $publicDirectory . '/index.php'],
             [
                 0 => ['pipe', 'r'],
                 1 => ['file', self::$serverLogPath, 'a'],
@@ -93,6 +111,47 @@ final class LogMailEndpointTest extends TestCase
 
         self::assertSame(405, $response['status']);
         self::assertSame(['error' => 'Method Not Allowed'], $response['json']);
+    }
+
+    public function testTheFrontControllerRejectsAnUnknownRoute(): void
+    {
+        $response = $this->request('GET', path: '/api/not-found');
+
+        self::assertSame(404, $response['status']);
+        self::assertSame('mailwatch.api.error.v1', $response['json']['contract']);
+        self::assertSame('route_not_found', $response['json']['error']['code']);
+    }
+
+    public function testTheFrontControllerDispatchesAnAllowlistedPage(): void
+    {
+        $response = $this->rawRequest('GET', '/login.php');
+
+        self::assertSame(200, $response['status']);
+        self::assertSame('dispatched-login-page', $response['body']);
+    }
+
+    public function testThePublicIndexPathIsDispatchedAsTheHomePage(): void
+    {
+        $response = $this->rawRequest('GET', '/index.php');
+
+        self::assertSame(200, $response['status']);
+        self::assertSame('dispatched-home-page', $response['body']);
+    }
+
+    public function testTheDevelopmentServerServesExistingStaticFilesDirectly(): void
+    {
+        $response = $this->rawRequest('GET', '/style.css');
+
+        self::assertSame(200, $response['status']);
+        self::assertSame("/* directly-served-static-file */\n", $response['body']);
+    }
+
+    public function testTheDevelopmentServerDoesNotServeHiddenFiles(): void
+    {
+        $response = $this->request('GET', path: '/.htaccess');
+
+        self::assertSame(404, $response['status']);
+        self::assertSame('route_not_found', $response['json']['error']['code']);
     }
 
     public function testItRejectsRequestsWithoutAnApiKey(): void
@@ -284,7 +343,8 @@ final class LogMailEndpointTest extends TestCase
         string $method,
         string $body = '',
         ?string $apiKey = null,
-        ?string $idempotencyKey = null
+        ?string $idempotencyKey = null,
+        string $path = '/api/messages',
     ): array {
         $headers = ['Content-Type: application/json'];
         if (null !== $apiKey) {
@@ -294,6 +354,27 @@ final class LogMailEndpointTest extends TestCase
             $headers[] = 'Idempotency-Key: ' . $idempotencyKey;
         }
 
+        $response = $this->rawRequest($method, $path, $headers, $body);
+
+        try {
+            $json = json_decode($response['body'], true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new \RuntimeException('Endpoint returned invalid JSON: ' . $response['body'], 0, $exception);
+        }
+
+        return [
+            'status' => $response['status'],
+            'json' => $json,
+        ];
+    }
+
+    /**
+     * @param list<string> $headers
+     *
+     * @return array{status: int, body: string}
+     */
+    private function rawRequest(string $method, string $path, array $headers = [], string $body = ''): array
+    {
         $context = stream_context_create([
             'http' => [
                 'method' => $method,
@@ -303,7 +384,7 @@ final class LogMailEndpointTest extends TestCase
                 'timeout' => 5,
             ],
         ]);
-        $responseBody = file_get_contents(self::$baseUrl . '/api/logmail.php', false, $context);
+        $responseBody = file_get_contents(self::$baseUrl . $path, false, $context);
         self::assertNotFalse($responseBody);
 
         $responseHeaders = $http_response_header ?? [];
@@ -311,15 +392,9 @@ final class LogMailEndpointTest extends TestCase
         self::assertMatchesRegularExpression('/^HTTP\/\S+ (\d{3})/', $responseHeaders[0]);
         preg_match('/^HTTP\/\S+ (\d{3})/', $responseHeaders[0], $matches);
 
-        try {
-            $json = json_decode($responseBody, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $exception) {
-            throw new \RuntimeException('Endpoint returned invalid JSON: ' . $responseBody, 0, $exception);
-        }
-
         return [
             'status' => (int)$matches[1],
-            'json' => $json,
+            'body' => $responseBody,
         ];
     }
 

@@ -305,7 +305,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         echo '<title>' . __('mwforms03') . $title . '</title>' . "\n";
     }
     echo '<link rel="stylesheet" type="text/css" href="./style.css">' . "\n";
-    if (is_file(__DIR__ . '/skin.css')) {
+    if (is_file(dirname(__DIR__) . '/public_html/skin.css')) {
         echo '<link rel="stylesheet" href="./skin.css" type="text/css">';
     }
 
@@ -4349,7 +4349,7 @@ function send_email($email, $html, $text, $subject, $pwdreset = false)
         'html_charset' => 'UTF-8',
         'head_charset' => 'UTF-8',
     ];
-    $mime->addHTMLImage(MAILWATCH_HOME . '/' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
+    $mime->addHTMLImage(dirname(MAILWATCH_HOME) . '/public_html' . IMAGES_DIR . MW_LOGO, 'image/png', MW_LOGO, true);
     $mime->setTXTBody($text);
     $mime->setHTMLBody($html);
     $body = $mime->get($mime_params);

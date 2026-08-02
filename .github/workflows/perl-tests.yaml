@@ -6,6 +6,7 @@ on:
     paths:
       - 'MailScanner_perl_scripts/**'
       - 'mailscanner/api/**'
+      - 'public_html/**'
       - 'tests/perl/**'
       - 'tests/fixtures/api/**'
       - '.github/workflows/perl-tests.yaml'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'MailScanner_perl_scripts/**'
       - 'mailscanner/api/**'
+      - 'public_html/**'
       - 'tests/perl/**'
       - 'tests/fixtures/api/**'
       - '.github/workflows/perl-tests.yaml'

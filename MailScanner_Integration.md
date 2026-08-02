@@ -45,12 +45,12 @@ Set the public MailWatch base URL and the same key in `MailWatchConf.pm` on ever
 MailScanner gateway:
 
 ```perl
-my ($api_base_url) = 'https://mailwatch.example.com/mailscanner'; # no trailing slash
+my ($api_base_url) = 'https://mailwatch.example.com'; # no trailing slash
 my ($api_key) = 'replace-with-a-long-random-value';
 ```
 
-The base URL is the URL that publishes the MailWatch `mailscanner` directory. The
-custom modules append the appropriate `/api/...` path automatically.
+The base URL is the public URL configured for MailWatch. The custom modules append
+the appropriate `/api/...` path automatically.
 
 Keep the API key private and use HTTPS to protect it in transit.
 
@@ -71,9 +71,9 @@ then restart MailScanner.
 
 Each gateway makes HTTPS requests to these paths below the configured base URL:
 
-- `/api/logmail.php`
-- `/api/allow-block-list.php`
-- `/api/spam-settings.php`
+- `/api/messages`
+- `/api/allow-block-list`
+- `/api/spam-settings`
 
 The PHP application handles database access. MailScanner needs network access to
 the MailWatch web server, while the database can remain isolated from the gateways.
