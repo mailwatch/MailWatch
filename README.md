@@ -13,7 +13,9 @@ MailWatch for MailScanner is a web-based front-end to MailScanner written in PHP
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
-It comes with a CustomConfig module for MailScanner which causes MailScanner to log all message data (excluding body text email) to a MySQL database which is then queried by MailWatch for reporting and statistics.
+It comes with CustomConfig modules that send message data (excluding email body text) to authenticated MailWatch REST APIs and retrieve allow/block lists and SpamAssassin settings. Database access is handled by the PHP application.
+
+See the [MailScanner integration guide](MailScanner_Integration.md) for requirements and configuration.
 
 ## Features
 
