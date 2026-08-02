@@ -91,6 +91,11 @@ Failed logging deliveries are stored in the spool configured by
 `mailwatch_get_api_spool_directory()` and retried automatically. The default path
 is `/var/spool/MailScanner/mailwatch`.
 
+Once the integration is running, [MailScanner API operations](docs/mailscanner-api-operations.md)
+covers what happens during a MailWatch outage, how the spool drains, how stale the
+downloaded snapshots can become, how to replace the API key, and how to read the
+messages the modules write to the MailScanner log.
+
 ## Upgrading from MailWatch 1.2
 
 MailWatch 1.3 replaces direct database access from the supported Perl modules with
