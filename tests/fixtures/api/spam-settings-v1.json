@@ -1,0 +1,11 @@
+{
+    "users": [
+        {"username": "admin", "spamscore": 5.0, "highspamscore": 10.0, "noscan": 1},
+        {"username": "domain-admin@example.com", "spamscore": 4.5, "highspamscore": 9.0, "noscan": 0},
+        {"username": "example.com", "spamscore": 4.0, "highspamscore": 8.0, "noscan": 1},
+        {"username": "recipient@example.com", "spamscore": 3.5, "highspamscore": 7.0, "noscan": 1},
+        {"username": "second@example.net", "spamscore": 2.5, "highspamscore": 6.0, "noscan": 1},
+        {"username": "zero@example.net", "spamscore": 0, "highspamscore": 0, "noscan": 0},
+        {"username": "negative@example.net", "spamscore": -1.0, "highspamscore": -2.0, "noscan": -1}
+    ]
+}
