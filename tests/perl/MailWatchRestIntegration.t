@@ -78,16 +78,7 @@ my $port_socket = IO::Socket::INET->new(
 my $port = $port_socket->sockport();
 close $port_socket;
 
-$server_pid = fork();
-die "Unable to fork the PHP test server: $!" unless defined $server_pid;
-if ($server_pid == 0) {
-    open STDOUT, '>>', $server_log_path or die "Unable to open the PHP server log: $!";
-    open STDERR, '>&', STDOUT or die "Unable to redirect the PHP server error log: $!";
-    exec(($ENV{PHP_BINARY} // 'php'), '-S', "127.0.0.1:$port", '-t', $mailwatch_directory);
-    die "Unable to start the PHP test server: $!";
-}
-
-wait_for_server($port, $server_log_path);
+$server_pid = start_php_server($port, $mailwatch_directory, $server_log_path);
 my $base_url = "http://127.0.0.1:$port/api";
 my @logs;
 my $client = integration_client($api_key, "$base_url/logmail.php", \@logs);
@@ -151,6 +142,48 @@ subtest 'one shared API key protects ingestion and snapshots' => sub {
     );
 };
 
+subtest 'a message is spooled during an outage and replayed after recovery' => sub {
+    stop_php_server($server_pid);
+    $server_pid = undef;
+
+    my $spool_directory = File::Spec->catdir($temporary_directory, 'spool');
+    my @outage_logs;
+    my $outage_client = integration_client(
+        $api_key,
+        "$base_url/logmail.php",
+        \@outage_logs,
+        api_spool_directory   => $spool_directory,
+        api_spool_max_messages => 10,
+        api_spool_replay_limit => 10,
+    );
+    my $message = read_json_fixture('logmail-v1.json');
+    $message->{id} = 'fixture-outage-message-001';
+
+    ok(!$outage_client->send_api_message($message), 'delivery fails while the PHP API is offline');
+    my @queued = queued_messages($spool_directory);
+    is(scalar @queued, 1, 'the undelivered message is queued once');
+    is((stat $spool_directory)[2] & 07777, 0700, 'the spool directory is private');
+    is(
+        (stat File::Spec->catfile($spool_directory, $queued[0]))[2] & 07777,
+        0600,
+        'the queued message is private',
+    );
+
+    $server_pid = start_php_server($port, $mailwatch_directory, $server_log_path);
+
+    ok($outage_client->replay_api_spool(), 'the queue is replayed after the API recovers');
+    is(scalar queued_messages($spool_directory), 0, 'the delivered message is removed from the queue');
+    is(
+        decode_json(read_file($capture_path))->{id},
+        'fixture-outage-message-001',
+        'the recovered endpoint receives the queued message',
+    );
+    ok(
+        (grep { $_->[1] =~ /Replayed from the MailWatch API spool/ } @outage_logs) > 0,
+        'successful recovery is recorded in the Perl log',
+    );
+};
+
 subtest 'supported Perl integration contains no database access' => sub {
     for my $file (qw(MailWatch.pm MailWatchClient.pm SQLAllowBlockList.pm SQLSpamSettings.pm)) {
         my $source = read_file(File::Spec->catfile($project_root, 'MailScanner_perl_scripts', $file));
@@ -166,7 +199,7 @@ subtest 'supported Perl integration contains no database access' => sub {
 done_testing();
 
 sub integration_client {
-    my ($key, $endpoint, $logs) = @_;
+    my ($key, $endpoint, $logs, %options) = @_;
 
     return MailWatchClient->new(
         user_agent          => LWP::UserAgent->new(timeout => 5),
@@ -177,7 +210,18 @@ sub integration_client {
         api_max_retry_delay => 0,
         api_logger          => sub { push @{$logs}, [@_] },
         sleeper             => sub { },
+        %options,
     );
+}
+
+sub queued_messages {
+    my ($directory) = @_;
+
+    opendir my $handle, $directory or die "Unable to read $directory: $!";
+    my @queued = grep { /\A[a-f0-9]{64}\.json\z/ } readdir $handle;
+    closedir $handle;
+
+    return @queued;
 }
 
 sub read_json_fixture {
@@ -216,8 +260,33 @@ sub php_string {
     return "'$value'";
 }
 
+sub start_php_server {
+    my ($server_port, $document_root, $log_path) = @_;
+
+    my $pid = fork();
+    die "Unable to fork the PHP test server: $!" unless defined $pid;
+    if ($pid == 0) {
+        open STDOUT, '>>', $log_path or die "Unable to open the PHP server log: $!";
+        open STDERR, '>&', STDOUT or die "Unable to redirect the PHP server error log: $!";
+        exec(($ENV{PHP_BINARY} // 'php'), '-S', "127.0.0.1:$server_port", '-t', $document_root);
+        die "Unable to start the PHP test server: $!";
+    }
+
+    wait_for_server($server_port, $log_path, $pid);
+
+    return $pid;
+}
+
+sub stop_php_server {
+    my ($pid) = @_;
+
+    return unless defined $pid && $pid > 0;
+    kill 'TERM', $pid;
+    waitpid $pid, 0;
+}
+
 sub wait_for_server {
-    my ($server_port, $log_path) = @_;
+    my ($server_port, $log_path, $pid) = @_;
 
     for (1 .. 250) {
         my $socket = IO::Socket::INET->new(
@@ -231,7 +300,7 @@ sub wait_for_server {
 
             return;
         }
-        last if waitpid($server_pid, WNOHANG) == $server_pid;
+        last if waitpid($pid, WNOHANG) == $pid;
         select undef, undef, undef, 0.02;
     }
 
