@@ -48,10 +48,7 @@ use MailWatchClient;
 # Uncomment the following line when debugging MailWatch.pm
 #use Data::Dumper;
 
-use vars qw($VERSION);
-
-### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = substr q$Revision: 2.0 $, 10;
+our $VERSION = '2.0';
 
 my ($hostname) = hostname;
 my $loop = inet_aton("127.0.0.1");

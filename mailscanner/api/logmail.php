@@ -4,6 +4,7 @@
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/../conf.php';
+require_once __DIR__ . '/MailWatchApi.php';
 
 if (!defined('API_KEY')) {
     http_response_code(401); // Unauthorized
@@ -13,28 +14,6 @@ if (!defined('API_KEY')) {
 
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/MailLogEntry.php';
-
-function isValidApiKey(?string $apiKey): bool
-{
-    if (null === $apiKey) {
-        return false;
-    }
-
-    if (!defined('API_KEY')) {
-        return false;
-    }
-
-    return hash_equals(API_KEY, $apiKey);
-}
-
-function getApiKeyToken(): ?string
-{
-    if (isset($_SERVER['HTTP_X_MAILWATCH_API_KEY'])) {
-        return $_SERVER['HTTP_X_MAILWATCH_API_KEY'];
-    }
-
-    return null;
-}
 
 function getIdempotencyKey(): ?string
 {
@@ -53,8 +32,7 @@ if ('POST' !== $_SERVER['REQUEST_METHOD']) {
 }
 
 // Verify API key
-$apiKeyToken = getApiKeyToken();
-if (null === $apiKeyToken || !isValidApiKey($apiKeyToken)) {
+if (!MailWatchApi::isAuthorized()) {
     http_response_code(401); // Unauthorized
     echo json_encode(['error' => 'Unauthorized']);
     exit;

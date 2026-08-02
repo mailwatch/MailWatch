@@ -97,7 +97,7 @@ subtest 'a successful request is sent once with the current contract' => sub {
     is($request->method, 'POST', 'uses POST');
     is($request->uri->as_string, 'https://mailwatch.example.test/api/logmail.php', 'uses the configured endpoint');
     is($request->header('Content-Type'), 'application/json', 'uses the JSON content type');
-    is($request->header('x-mailwatch-api-key'), 'perl-characterisation-api-key', 'sends the API key header');
+    is($request->header('X-MailWatch-API-Key'), 'perl-characterisation-api-key', 'sends the API key header');
     is(
         $request->header('Idempotency-Key'),
         sha256_hex(join "\0", 'mx.example.test', 'fixture-message-001', '0000000000000000000000000000000000000000'),
@@ -109,6 +109,65 @@ subtest 'a successful request is sent once with the current contract' => sub {
         [['info', 'fixture-message-001: Logged to MailWatch API']],
         'logs successful delivery'
     );
+};
+
+subtest 'a snapshot request sends the read contract and returns its ETag' => sub {
+    my $snapshot = {
+        contract         => 'mailwatch.allow-block-list.v1',
+        snapshot_version => 'a' x 64,
+        allowlist        => [],
+        blocklist        => [],
+    };
+    my $response = response(200, 'OK');
+    $response->header('ETag' => '"snapshot-a"');
+    $response->content(JSON::encode_json($snapshot));
+    my ($client, $user_agent) = client_with(responses => [$response]);
+
+    my $result = $client->fetch_api_snapshot(
+        'https://mailwatch.example.test/api/allow-block-list.php',
+        '"snapshot-before"',
+    );
+
+    is_deeply($result->{snapshot}, $snapshot, 'the decoded snapshot is returned');
+    is($result->{etag}, '"snapshot-a"', 'the response ETag is returned');
+    my $request = $user_agent->{requests}[0];
+    is($request->method, 'GET', 'uses GET');
+    is($request->header('X-MailWatch-Contract-Version'), '1', 'requests contract version 1');
+    is($request->header('If-None-Match'), '"snapshot-before"', 'sends the previous ETag');
+    is($request->header('X-MailWatch-API-Key'), 'perl-characterisation-api-key', 'uses the configured API key');
+};
+
+subtest 'an unchanged snapshot is reported without decoding a body' => sub {
+    my ($client) = client_with(responses => [response(304, 'Not Modified')]);
+
+    my $result = $client->fetch_api_snapshot(
+        'https://mailwatch.example.test/api/allow-block-list.php',
+        '"snapshot-a"',
+    );
+
+    is_deeply(
+        $result,
+        {not_modified => 1, etag => '"snapshot-a"'},
+        '304 retains the active snapshot and ETag',
+    );
+};
+
+subtest 'invalid and oversized snapshots are rejected' => sub {
+    for my $case (
+        [response(200, 'OK'), 1024, 'invalid JSON'],
+        [response(200, 'OK'), 4, 'oversized JSON'],
+    ) {
+        my ($response, $maximum, $label) = @{$case};
+        $response->content('not-json');
+        my ($client, undef, $logs) = client_with(responses => [$response]);
+        $client->{api_snapshot_max_bytes} = $maximum;
+
+        ok(
+            !defined $client->fetch_api_snapshot('https://mailwatch.example.test/api/allow-block-list.php'),
+            "$label is rejected",
+        );
+        is($logs->[-1][0], 'error', "$label is logged as an error");
+    }
 };
 
 subtest 'a temporary server failure is retried until success' => sub {

@@ -60,6 +60,8 @@ define('SESSION_TIMEOUT', 600);
 // define('API_KEY', 'change-me-api-key');
 // Maximum accepted logmail API payload (default: 10 MiB)
 define('API_MAX_PAYLOAD_BYTES', 10 * 1024 * 1024);
+// Maximum generated allow/block list snapshot (default: 5 MiB)
+define('API_MAX_SNAPSHOT_BYTES', 5 * 1024 * 1024);
 
 // Database settings
 //

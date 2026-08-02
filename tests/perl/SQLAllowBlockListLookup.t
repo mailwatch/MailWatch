@@ -2,17 +2,39 @@ use strict;
 use warnings;
 
 use FindBin;
+use lib "$FindBin::Bin/../../MailScanner_perl_scripts";
 use JSON qw(decode_json);
 use Test::More;
 
-BEGIN {
-    # LookupList does not use DBI. Stub the database modules so its historical
-    # matching behaviour can be characterised without a MariaDB client driver.
-    $INC{'DBI.pm'} = __FILE__;
-    $INC{'DBD/MariaDB.pm'} = __FILE__;
+{
+    package MailScanner::Log;
+
+    our @messages;
+
+    sub InfoLog { push @messages, ['info', @_] }
+    sub WarnLog { push @messages, ['warn', @_] }
+}
+
+{
+    package Local::SnapshotClient;
+
+    sub new {
+        my ($class, @results) = @_;
+
+        return bless {results => \@results, requests => []}, $class;
+    }
+
+    sub fetch_api_snapshot {
+        my ($self, @arguments) = @_;
+        push @{$self->{requests}}, \@arguments;
+
+        return shift @{$self->{results}};
+    }
 }
 
 require "$FindBin::Bin/../../MailScanner_perl_scripts/SQLAllowBlockList.pm";
+
+my $fixture;
 
 sub fixture {
     my $path = "$FindBin::Bin/../fixtures/api/allow-block-list-v1.json";
@@ -45,6 +67,35 @@ sub lookup_map {
     return \%list;
 }
 
+sub effective_entries {
+    my ($rows, $filters) = @_;
+    my @entries = map {
+        {to_address => lc $_->{to_address}, from_address => lc $_->{from_address}}
+    } @{$rows};
+
+    for my $row (@{$rows}) {
+        for my $filter (@{$filters}) {
+            next unless lc $row->{to_address} eq lc $filter->{username};
+
+            push @entries, {
+                to_address   => lc $filter->{filter},
+                from_address => lc $row->{from_address},
+            };
+        }
+    }
+
+    return \@entries;
+}
+
+sub snapshot {
+    return {
+        contract         => 'mailwatch.allow-block-list.v1',
+        snapshot_version => 'a' x 64,
+        allowlist        => effective_entries($fixture->{allowlist}, $fixture->{user_filters}),
+        blocklist        => effective_entries($fixture->{blocklist}, $fixture->{user_filters}),
+    };
+}
+
 sub message {
     my (%overrides) = @_;
 
@@ -58,7 +109,7 @@ sub message {
     };
 }
 
-my $fixture = fixture();
+$fixture = fixture();
 my $allowlist = lookup_map($fixture->{allowlist}, $fixture->{user_filters});
 my $blocklist = lookup_map($fixture->{blocklist}, $fixture->{user_filters});
 
@@ -169,6 +220,47 @@ subtest 'IPv4 rules match exact addresses and historical octet prefixes' => sub 
 subtest 'missing messages and unrelated senders do not match' => sub {
     is(MailScanner::CustomConfig::LookupList(undef, $allowlist), 0, 'an absent message is rejected safely');
     is(MailScanner::CustomConfig::LookupList(message(), $allowlist), 0, 'an unrelated message does not match');
+};
+
+subtest 'snapshot validation builds both lookup maps atomically' => sub {
+    my ($allow, $block) = MailScanner::CustomConfig::ValidateAllowBlockSnapshot(snapshot());
+
+    ok($allow->{'filtered.example.net'}{'filtered-sender@example.com'}, 'expanded allowlist filter is loaded');
+    ok($block->{default}{'blocked@example.com'}, 'blocklist entry is loaded');
+
+    my $invalid = snapshot();
+    $invalid->{blocklist}[0]{from_address} = ['not', 'scalar'];
+    my @invalid_result = MailScanner::CustomConfig::ValidateAllowBlockSnapshot($invalid);
+    is(scalar @invalid_result, 0, 'one invalid list rejects the complete snapshot');
+};
+
+subtest 'a failed refresh retains the last known valid snapshot' => sub {
+    my $client = Local::SnapshotClient->new(
+        {
+            not_modified => 0,
+            etag         => '"snapshot-a"',
+            snapshot     => snapshot(),
+        },
+        undef,
+    );
+    no warnings 'once';
+    local $MailScanner::CustomConfig::mailWatchListClient = $client;
+
+    ok(MailScanner::CustomConfig::RefreshAllowBlockLists(), 'the valid snapshot is activated');
+    ok(
+        MailScanner::CustomConfig::SQLAllowlist(
+            message(from => 'sender@example.com', fromdomain => 'example.com'),
+        ),
+        'the active snapshot is used for lookup',
+    );
+    ok(!MailScanner::CustomConfig::RefreshAllowBlockLists(), 'the failed refresh is reported');
+    ok(
+        MailScanner::CustomConfig::SQLAllowlist(
+            message(from => 'sender@example.com', fromdomain => 'example.com'),
+        ),
+        'the previous valid snapshot remains active',
+    );
+    is($client->{requests}[1][1], '"snapshot-a"', 'the active ETag is sent during refresh');
 };
 
 done_testing();

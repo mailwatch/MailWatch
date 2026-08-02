@@ -2,6 +2,28 @@
 # MailWatch for MailScanner
 # Copyright (C) 2014-2026 MailWatch Team
 #
+#   Shared MailWatch HTTP client
+#
+#   Version 1.0
+#
+# This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# In addition, as a special exception, the copyright holder gives permission to link the code of this program with
+# those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
+# that use the same license as those files), and distribute linked combinations including the two.
+# You must obey the GNU General Public License in all respects for all of the code used other than those files in the
+# PEAR library that are licensed under the PHP License. If you modify this program, you may extend this exception to
+# your version of the program, but you are not obligated to do so.
+# If you do not wish to do so, delete this exception statement from your version.
+#
+# You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
+# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
 
 package MailWatchClient;
 
@@ -17,13 +39,14 @@ use HTTP::Request;
 use IO::Handle;
 use JSON qw(decode_json encode_json);
 
+our $VERSION = '1.0';
+
 sub new {
     my ($class, %args) = @_;
 
     for my $required (
         qw(
-            user_agent api_endpoint api_key api_max_retries api_retry_delay api_logger
-            local_sender local_starter local_max_retries local_retry_delay local_logger
+            user_agent api_key api_max_retries api_retry_delay api_logger
         )
     ) {
         die "Missing required MailWatchClient argument: $required"
@@ -34,8 +57,70 @@ sub new {
     $args{api_max_retry_delay} = 60 unless defined $args{api_max_retry_delay};
     $args{api_spool_max_messages} = 10_000 unless defined $args{api_spool_max_messages};
     $args{api_spool_replay_limit} = 10 unless defined $args{api_spool_replay_limit};
+    $args{api_snapshot_max_bytes} = 5 * 1024 * 1024 unless defined $args{api_snapshot_max_bytes};
+    $args{local_sender} = sub { 0 } unless defined $args{local_sender};
+    $args{local_starter} = sub { 0 } unless defined $args{local_starter};
+    $args{local_max_retries} = 1 unless defined $args{local_max_retries};
+    $args{local_retry_delay} = 0 unless defined $args{local_retry_delay};
+    $args{local_logger} = $args{api_logger} unless defined $args{local_logger};
 
     return bless \%args, $class;
+}
+
+sub fetch_api_snapshot {
+    my ($self, $endpoint, $etag) = @_;
+
+    for my $attempt (1 .. $self->{api_max_retries}) {
+        my $request = HTTP::Request->new(GET => $endpoint);
+        $request->header('Accept' => 'application/json');
+        $request->header('X-MailWatch-API-Key' => $self->{api_key});
+        $request->header('X-MailWatch-Contract-Version' => '1');
+        $request->header('If-None-Match' => $etag) if defined $etag && $etag ne '';
+
+        my $response = $self->{user_agent}->request($request);
+        if ($response->code == 304) {
+            return {
+                not_modified => 1,
+                etag         => $etag,
+            };
+        }
+        if ($response->is_success) {
+            if (length($response->content) > $self->{api_snapshot_max_bytes}) {
+                $self->{api_logger}->('error', 'MailWatch API snapshot exceeded the configured response limit.');
+
+                return;
+            }
+
+            my $snapshot = eval { decode_json($response->content) };
+            unless (ref $snapshot eq 'HASH') {
+                $self->{api_logger}->('error', 'MailWatch API returned an invalid JSON snapshot.');
+
+                return;
+            }
+
+            return {
+                not_modified => 0,
+                etag         => $response->header('ETag'),
+                snapshot     => $snapshot,
+            };
+        }
+
+        unless (_is_retryable_status($response->code)) {
+            $self->{api_logger}->('error', 'MailWatch API rejected the snapshot request: ' . $response->status_line . '.');
+
+            return;
+        }
+
+        $self->{api_logger}->('warn', 'MailWatch API snapshot request failed: ' . $response->status_line . '.');
+        if ($attempt < $self->{api_max_retries}) {
+            my $delay = _api_retry_delay($self, $attempt);
+            $self->{sleeper}->($delay);
+        }
+    }
+
+    $self->{api_logger}->('error', "MailWatch API snapshot request failed after $self->{api_max_retries} attempts.");
+
+    return;
 }
 
 sub send_api_message {
@@ -111,12 +196,14 @@ sub replay_api_spool {
 sub _send_api_message {
     my ($self, $message) = @_;
 
+    die 'Missing MailWatch API ingestion endpoint' unless defined $self->{api_endpoint};
+
     my $retry_count = 0;
     while ($retry_count < $self->{api_max_retries}) {
         my $json_data = encode_json($message);
         my $request = HTTP::Request->new(POST => $self->{api_endpoint});
         $request->content_type('application/json');
-        $request->header('x-mailwatch-api-key' => $self->{api_key});
+        $request->header('X-MailWatch-API-Key' => $self->{api_key});
         my $idempotency_key = _idempotency_key($message);
         $request->header('Idempotency-Key' => $idempotency_key)
             if defined $idempotency_key;
