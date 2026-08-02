@@ -41,6 +41,7 @@ echo '<tr>
       <ul>';
 
 echo '<li><a href="user_manager.php">' . __('usermgnt10') . '</a>';
+$virusScanner = '';
 if ('A' === $_SESSION['user_type']) {
     $virusScanner = get_conf_var('VirusScanners');
 
