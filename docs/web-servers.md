@@ -32,6 +32,10 @@ It is an optimisation, not a requirement. If the directory cannot be created or
 written, MailWatch compiles the templates on every request instead — slower, but
 working, and nothing needs to be changed for a read-only installation.
 
+MailWatch recompiles a template whenever the file behind it changes, so an
+upgrade needs no cache clearing. Deleting the contents of the directory is
+always safe.
+
 Do not move this directory inside the document root: compiled templates are PHP.
 
 ## Static files
