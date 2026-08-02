@@ -6,6 +6,7 @@ namespace MailWatch;
 
 use MailWatch\Configuration\ApiConfiguration;
 use MailWatch\Configuration\ApiConfigurationLoader;
+use MailWatch\Security\ApiKeyAuthenticator;
 
 final readonly class ApplicationFactory
 {
@@ -22,5 +23,10 @@ final readonly class ApplicationFactory
     public function apiConfiguration(): ApiConfiguration
     {
         return $this->apiConfiguration;
+    }
+
+    public function apiKeyAuthenticator(): ApiKeyAuthenticator
+    {
+        return new ApiKeyAuthenticator($this->apiConfiguration);
     }
 }

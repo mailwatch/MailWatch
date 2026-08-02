@@ -4,13 +4,28 @@
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/../conf.php';
-require_once __DIR__ . '/MailWatchApi.php';
 
 if (!defined('API_KEY')) {
     http_response_code(401); // Unauthorized
     echo json_encode(['error' => 'Unauthorized - Set an API KEY to use this API'], JSON_THROW_ON_ERROR);
     exit;
 }
+
+if (!is_string(API_KEY) || '' === API_KEY) {
+    http_response_code(401); // Unauthorized
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
+try {
+    /** @var \MailWatch\ApplicationFactory $applicationFactory */
+    $applicationFactory = require __DIR__ . '/../bootstrap.php';
+} catch (\MailWatch\Configuration\InvalidConfiguration) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Invalid API configuration']);
+    exit;
+}
+$apiConfiguration = $applicationFactory->apiConfiguration();
 
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/MailLogEntry.php';
@@ -32,16 +47,14 @@ if ('POST' !== $_SERVER['REQUEST_METHOD']) {
 }
 
 // Verify API key
-if (!MailWatchApi::isAuthorized()) {
+if (!$applicationFactory->apiKeyAuthenticator()->isAuthorized($_SERVER['HTTP_X_MAILWATCH_API_KEY'] ?? null)) {
     http_response_code(401); // Unauthorized
     echo json_encode(['error' => 'Unauthorized']);
     exit;
 }
 
 // Get JSON payload
-$maxPayloadBytes = defined('API_MAX_PAYLOAD_BYTES')
-    ? (int)API_MAX_PAYLOAD_BYTES
-    : 10 * 1024 * 1024;
+$maxPayloadBytes = $apiConfiguration->maxPayloadBytes();
 if (isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > $maxPayloadBytes) {
     http_response_code(413); // Payload Too Large
     echo json_encode(['error' => 'Payload Too Large']);

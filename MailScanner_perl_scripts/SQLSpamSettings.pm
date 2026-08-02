@@ -48,7 +48,7 @@ my $dirname = dirname(__FILE__);
 require $dirname . '/MailWatchConf.pm';
 
 my $api_base_url = mailwatch_get_api_base_url();
-my $snapshot_endpoint = $api_base_url . '/api/spam-settings.php';
+my $snapshot_endpoint = $api_base_url . '/api/spam-settings';
 my $api_key = mailwatch_get_api_key();
 my $api_max_retries = mailwatch_get_api_max_retries();
 my $api_retry_delay = mailwatch_get_api_retry_delay();

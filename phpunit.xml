@@ -7,6 +7,8 @@
   </testsuites>
   <source>
     <include>
+      <directory suffix=".php">src</directory>
+      <directory suffix=".php">public_html</directory>
       <directory suffix=".php">mailscanner</directory>
     </include>
   </source>

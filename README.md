@@ -1,4 +1,4 @@
-![](/mailscanner/images/mailwatch-logo.png?raw=true)
+![](/public_html/images/mailwatch-logo.png?raw=true)
 
 # MailWatch for MailScanner
 
@@ -16,6 +16,7 @@ This program is free software; you can redistribute it and/or modify it under th
 It comes with CustomConfig modules that send message data (excluding email body text) to authenticated MailWatch REST APIs and retrieve allow/block lists and SpamAssassin settings. Database access is handled by the PHP application.
 
 See the [MailScanner integration guide](MailScanner_Integration.md) for requirements and configuration.
+See the [web server guide](docs/web-servers.md) for Apache, Nginx and Caddy configuration.
 
 ## Features
 

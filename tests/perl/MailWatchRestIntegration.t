@@ -20,6 +20,8 @@ my $project_root = File::Spec->rel2abs("$FindBin::Bin/../..");
 my $temporary_directory = tempdir('mailwatch-rest-integration-XXXXXXXX', TMPDIR => 1, CLEANUP => 1);
 my $mailwatch_directory = File::Spec->catdir($temporary_directory, 'mailscanner');
 my $api_directory = File::Spec->catdir($mailwatch_directory, 'api');
+my $vendor_directory = File::Spec->catdir($temporary_directory, 'vendor');
+my $public_directory = File::Spec->catdir($temporary_directory, 'public_html');
 my $fixture_path = File::Spec->catfile($temporary_directory, 'fixture.json');
 my $capture_path = File::Spec->catfile($temporary_directory, 'insert.json');
 my $server_log_path = File::Spec->catfile($temporary_directory, 'server.log');
@@ -35,7 +37,19 @@ END {
     $? = $exit_status;
 }
 
-make_path($api_directory, {mode => 0700});
+make_path($api_directory, $vendor_directory, $public_directory, {mode => 0700});
+copy(
+    File::Spec->catfile($project_root, 'public_html', 'index.php'),
+    File::Spec->catfile($public_directory, 'index.php'),
+) or die "Unable to copy the public front controller: $!";
+copy(
+    File::Spec->catfile($project_root, 'mailscanner', 'bootstrap.php'),
+    File::Spec->catfile($mailwatch_directory, 'bootstrap.php'),
+) or die "Unable to copy the application bootstrap: $!";
+write_file(
+    File::Spec->catfile($vendor_directory, 'autoload.php'),
+    "<?php\nrequire " . php_string(File::Spec->catfile($project_root, 'vendor', 'autoload.php')) . ";\n",
+);
 for my $file (qw(logmail.php allow-block-list.php spam-settings.php MailWatchApi.php MailLogEntry.php)) {
     copy(
         File::Spec->catfile($project_root, 'mailscanner', 'api', $file),
@@ -78,10 +92,10 @@ my $port_socket = IO::Socket::INET->new(
 my $port = $port_socket->sockport();
 close $port_socket;
 
-$server_pid = start_php_server($port, $mailwatch_directory, $server_log_path);
+$server_pid = start_php_server($port, $public_directory, $server_log_path);
 my $base_url = "http://127.0.0.1:$port/api";
 my @logs;
-my $client = integration_client($api_key, "$base_url/logmail.php", \@logs);
+my $client = integration_client($api_key, "$base_url/messages", \@logs);
 
 subtest 'the Perl client delivers a message to the PHP ingestion endpoint' => sub {
     my $message = read_json_fixture('logmail-v1.json');
@@ -100,7 +114,7 @@ subtest 'the Perl client delivers a message to the PHP ingestion endpoint' => su
 };
 
 subtest 'the Perl client consumes both PHP snapshot contracts' => sub {
-    my $list_result = $client->fetch_api_snapshot("$base_url/allow-block-list.php");
+    my $list_result = $client->fetch_api_snapshot("$base_url/allow-block-list");
     is($list_result->{snapshot}{contract}, 'mailwatch.allow-block-list.v1', 'allow/block contract is decoded');
     ok(
         (grep { $_->{from_address} eq 'blocked@example.com' } @{$list_result->{snapshot}{blocklist}}) > 0,
@@ -108,12 +122,12 @@ subtest 'the Perl client consumes both PHP snapshot contracts' => sub {
     );
     like($list_result->{etag}, qr/\A"[a-f0-9]{64}"\z/, 'the list ETag is retained');
     is_deeply(
-        $client->fetch_api_snapshot("$base_url/allow-block-list.php", $list_result->{etag}),
+        $client->fetch_api_snapshot("$base_url/allow-block-list", $list_result->{etag}),
         {not_modified => 1, etag => $list_result->{etag}},
         'the real endpoint and client agree on conditional refresh',
     );
 
-    my $spam_result = $client->fetch_api_snapshot("$base_url/spam-settings.php");
+    my $spam_result = $client->fetch_api_snapshot("$base_url/spam-settings");
     is($spam_result->{snapshot}{contract}, 'mailwatch.spam-settings.v1', 'spam settings contract is decoded');
     is(
         $spam_result->{snapshot}{spam_scores}{'recipient@example.com'},
@@ -128,12 +142,12 @@ subtest 'the Perl client consumes both PHP snapshot contracts' => sub {
 
 subtest 'one shared API key protects ingestion and snapshots' => sub {
     my @rejected_logs;
-    my $rejected_client = integration_client('incorrect-api-key', "$base_url/logmail.php", \@rejected_logs);
+    my $rejected_client = integration_client('incorrect-api-key', "$base_url/messages", \@rejected_logs);
     my $message = read_json_fixture('logmail-v1.json');
 
     ok(!$rejected_client->send_api_message($message), 'PHP rejects ingestion with another key');
     ok(
-        !defined $rejected_client->fetch_api_snapshot("$base_url/allow-block-list.php"),
+        !defined $rejected_client->fetch_api_snapshot("$base_url/allow-block-list"),
         'PHP rejects snapshot access with another key',
     );
     ok(
@@ -150,7 +164,7 @@ subtest 'a message is spooled during an outage and replayed after recovery' => s
     my @outage_logs;
     my $outage_client = integration_client(
         $api_key,
-        "$base_url/logmail.php",
+        "$base_url/messages",
         \@outage_logs,
         api_spool_directory   => $spool_directory,
         api_spool_max_messages => 10,
@@ -169,7 +183,7 @@ subtest 'a message is spooled during an outage and replayed after recovery' => s
         'the queued message is private',
     );
 
-    $server_pid = start_php_server($port, $mailwatch_directory, $server_log_path);
+    $server_pid = start_php_server($port, $public_directory, $server_log_path);
 
     ok($outage_client->replay_api_spool(), 'the queue is replayed after the API recovers');
     is(scalar queued_messages($spool_directory), 0, 'the delivered message is removed from the queue');
@@ -268,7 +282,14 @@ sub start_php_server {
     if ($pid == 0) {
         open STDOUT, '>>', $log_path or die "Unable to open the PHP server log: $!";
         open STDERR, '>&', STDOUT or die "Unable to redirect the PHP server error log: $!";
-        exec(($ENV{PHP_BINARY} // 'php'), '-S', "127.0.0.1:$server_port", '-t', $document_root);
+        exec(
+            ($ENV{PHP_BINARY} // 'php'),
+            '-S',
+            "127.0.0.1:$server_port",
+            '-t',
+            $document_root,
+            File::Spec->catfile($document_root, 'index.php'),
+        );
         die "Unable to start the PHP test server: $!";
     }
 

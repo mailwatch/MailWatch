@@ -66,7 +66,7 @@ sub client_with {
 
     my $client = MailWatchClient->new(
         user_agent          => $user_agent,
-        api_endpoint        => 'https://mailwatch.example.test/api/logmail.php',
+        api_endpoint        => 'https://mailwatch.example.test/api/messages',
         api_key             => 'perl-characterisation-api-key',
         api_max_retries     => $args{max_retries} // 3,
         api_retry_delay     => $args{retry_delay} // 5,
@@ -95,7 +95,7 @@ subtest 'a successful request is sent once with the current contract' => sub {
 
     my $request = $user_agent->{requests}[0];
     is($request->method, 'POST', 'uses POST');
-    is($request->uri->as_string, 'https://mailwatch.example.test/api/logmail.php', 'uses the configured endpoint');
+    is($request->uri->as_string, 'https://mailwatch.example.test/api/messages', 'uses the configured endpoint');
     is($request->header('Content-Type'), 'application/json', 'uses the JSON content type');
     is($request->header('X-MailWatch-API-Key'), 'perl-characterisation-api-key', 'sends the API key header');
     is(
@@ -124,7 +124,7 @@ subtest 'a snapshot request sends the read contract and returns its ETag' => sub
     my ($client, $user_agent) = client_with(responses => [$response]);
 
     my $result = $client->fetch_api_snapshot(
-        'https://mailwatch.example.test/api/allow-block-list.php',
+        'https://mailwatch.example.test/api/allow-block-list',
         '"snapshot-before"',
     );
 
@@ -141,7 +141,7 @@ subtest 'an unchanged snapshot is reported without decoding a body' => sub {
     my ($client) = client_with(responses => [response(304, 'Not Modified')]);
 
     my $result = $client->fetch_api_snapshot(
-        'https://mailwatch.example.test/api/allow-block-list.php',
+        'https://mailwatch.example.test/api/allow-block-list',
         '"snapshot-a"',
     );
 
@@ -163,7 +163,7 @@ subtest 'invalid and oversized snapshots are rejected' => sub {
         $client->{api_snapshot_max_bytes} = $maximum;
 
         ok(
-            !defined $client->fetch_api_snapshot('https://mailwatch.example.test/api/allow-block-list.php'),
+            !defined $client->fetch_api_snapshot('https://mailwatch.example.test/api/allow-block-list'),
             "$label is rejected",
         );
         is($logs->[-1][0], 'error', "$label is logged as an error");
