@@ -53,3 +53,7 @@ enabled. Never pass request data through it.
 Compiled templates are written to `var/cache/twig`, which is not part of the
 repository. If that directory cannot be created or written, templates are
 compiled on each request instead — slower, but working.
+
+A template that changes on disk is recompiled, whether or not `DEBUG` is
+enabled. Editing a template here, or upgrading an installation, needs no cache
+clearing.

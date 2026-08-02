@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MailWatch\Presentation;
+namespace MailWatch\Shared\Presentation;
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -35,7 +35,11 @@ final readonly class TemplateRenderer
         $twig = new Environment(new FilesystemLoader($templateDirectory), [
             'cache' => $cacheDirectory,
             'debug' => $debug,
-            'auto_reload' => $debug,
+            // Always, not only when debugging: an upgrade copies new templates
+            // over an existing installation, and a cache that never rechecks
+            // would go on serving the markup of the previous release with
+            // nothing to indicate it.
+            'auto_reload' => true,
             'strict_variables' => true,
         ]);
 

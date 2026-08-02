@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Presentation;
+namespace App\Tests\Unit\Shared\Presentation;
 
-use MailWatch\Presentation\TemplateRenderer;
+use MailWatch\Shared\Presentation\TemplateRenderer;
 use PHPUnit\Framework\TestCase;
 use Twig\Error\RuntimeError;
 
@@ -22,11 +22,16 @@ final class TemplateRendererTest extends TestCase
 
     protected function tearDown(): void
     {
-        foreach (glob($this->templateDirectory . '/*') ?: [] as $file) {
-            unlink($file);
+        $this->removeDirectory($this->templateDirectory);
+    }
+
+    private function removeDirectory(string $directory): void
+    {
+        foreach (glob($directory . '/*') ?: [] as $entry) {
+            is_dir($entry) ? $this->removeDirectory($entry) : unlink($entry);
         }
 
-        rmdir($this->templateDirectory);
+        rmdir($directory);
     }
 
     public function testItRendersATemplateWithItsContext(): void
@@ -62,12 +67,31 @@ final class TemplateRendererTest extends TestCase
     {
         $this->writeTemplate('page.html.twig', '<title>{{ __(\'mwforms03\') }}</title>');
 
-        // Without the page bootstrap there is no __() to call, and the renderer
-        // falls back to the key itself rather than failing.
+        // A key no language file defines renders as the key itself, and a
+        // template rendered without the page bootstrap does the same rather
+        // than failing.
         self::assertSame(
             '<title>mwforms03</title>',
             $this->renderer()->render('page.html.twig')
         );
+    }
+
+    /**
+     * Twig only rechecks a cached template when auto_reload is on, and it must
+     * be on even outside debugging: an upgrade copies new templates over an
+     * existing installation, and a cache that never rechecks would go on
+     * serving the previous release's markup.
+     *
+     * This asserts the setting rather than the behaviour, because Twig reuses a
+     * compiled class already declared in the process whatever its age, so a
+     * stale render cannot be reproduced in a single test run.
+     */
+    public function testItRechecksTemplatesEvenWhenNotDebugging(): void
+    {
+        $renderer = TemplateRenderer::create($this->templateDirectory, false, false);
+
+        self::assertTrue($renderer->environment()->isAutoReload());
+        self::assertFalse($renderer->environment()->isDebug());
     }
 
     public function testItCompilesWithoutACacheDirectory(): void
