@@ -31,6 +31,7 @@ final class LogMailEndpointTest extends TestCase
         $projectRoot = dirname(__DIR__, 2);
         copy($projectRoot . '/mailscanner/api/logmail.php', $apiDirectory . '/logmail.php');
         copy($projectRoot . '/mailscanner/api/MailLogEntry.php', $apiDirectory . '/MailLogEntry.php');
+        copy($projectRoot . '/mailscanner/api/MailWatchApi.php', $apiDirectory . '/MailWatchApi.php');
 
         self::$capturePath = self::$temporaryDirectory . '/insert.json';
         file_put_contents(
@@ -195,7 +196,7 @@ final class LogMailEndpointTest extends TestCase
         $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
 
         self::assertSame(201, $response['status']);
-        self::assertSame(0.0, $this->capturedInsert()['sascore']);
+        self::assertSame(0.0, (float)$this->capturedInsert()['sascore']);
         $serverLog = (string)file_get_contents(self::$serverLogPath);
         self::assertStringContainsString('sascore contained a non-numeric scalar', $serverLog);
         self::assertStringNotContainsString('sensitive-invalid-score', $serverLog);
@@ -287,7 +288,7 @@ final class LogMailEndpointTest extends TestCase
     ): array {
         $headers = ['Content-Type: application/json'];
         if (null !== $apiKey) {
-            $headers[] = 'x-mailwatch-api-key: ' . $apiKey;
+            $headers[] = 'X-MailWatch-API-Key: ' . $apiKey;
         }
         if (null !== $idempotencyKey) {
             $headers[] = 'Idempotency-Key: ' . $idempotencyKey;

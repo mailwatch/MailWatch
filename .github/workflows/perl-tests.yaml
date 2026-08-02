@@ -39,6 +39,7 @@ jobs:
         run: |
           perl -I MailScanner_perl_scripts -c MailScanner_perl_scripts/MailWatchClient.pm
           perl -I MailScanner_perl_scripts -c MailScanner_perl_scripts/MailWatch.pm
+          perl -I MailScanner_perl_scripts -c MailScanner_perl_scripts/SQLAllowBlockList.pm
 
       - name: Run Perl contract tests
         run: prove -I MailScanner_perl_scripts tests/perl
