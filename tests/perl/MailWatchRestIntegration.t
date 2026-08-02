@@ -19,7 +19,6 @@ use LWP::UserAgent;
 my $project_root = File::Spec->rel2abs("$FindBin::Bin/../..");
 my $temporary_directory = tempdir('mailwatch-rest-integration-XXXXXXXX', TMPDIR => 1, CLEANUP => 1);
 my $mailwatch_directory = File::Spec->catdir($temporary_directory, 'mailscanner');
-my $api_directory = File::Spec->catdir($mailwatch_directory, 'api');
 my $vendor_directory = File::Spec->catdir($temporary_directory, 'vendor');
 my $public_directory = File::Spec->catdir($temporary_directory, 'public_html');
 my $fixture_path = File::Spec->catfile($temporary_directory, 'fixture.json');
@@ -37,25 +36,15 @@ END {
     $? = $exit_status;
 }
 
-make_path($api_directory, $vendor_directory, $public_directory, {mode => 0700});
+make_path($mailwatch_directory, $vendor_directory, $public_directory, {mode => 0700});
 copy(
     File::Spec->catfile($project_root, 'public_html', 'index.php'),
     File::Spec->catfile($public_directory, 'index.php'),
 ) or die "Unable to copy the public front controller: $!";
-copy(
-    File::Spec->catfile($project_root, 'mailscanner', 'bootstrap.php'),
-    File::Spec->catfile($mailwatch_directory, 'bootstrap.php'),
-) or die "Unable to copy the application bootstrap: $!";
 write_file(
     File::Spec->catfile($vendor_directory, 'autoload.php'),
     "<?php\nrequire " . php_string(File::Spec->catfile($project_root, 'vendor', 'autoload.php')) . ";\n",
 );
-for my $file (qw(logmail.php allow-block-list.php spam-settings.php MailWatchApi.php MailLogEntry.php)) {
-    copy(
-        File::Spec->catfile($project_root, 'mailscanner', 'api', $file),
-        File::Spec->catfile($api_directory, $file),
-    ) or die "Unable to copy $file: $!";
-}
 copy(
     File::Spec->catfile($project_root, 'tests', 'fixtures', 'api', 'IntegrationDatabase.php'),
     File::Spec->catfile($mailwatch_directory, 'Database.php'),

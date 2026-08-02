@@ -5,8 +5,8 @@ on:
     branches: [ "1.3" ]
     paths:
       - 'MailScanner_perl_scripts/**'
-      - 'mailscanner/api/**'
       - 'public_html/**'
+      - 'src/MailWatch/**'
       - 'tests/perl/**'
       - 'tests/fixtures/api/**'
       - '.github/workflows/perl-tests.yaml'
@@ -14,8 +14,8 @@ on:
     branches: [ "1.3" ]
     paths:
       - 'MailScanner_perl_scripts/**'
-      - 'mailscanner/api/**'
       - 'public_html/**'
+      - 'src/MailWatch/**'
       - 'tests/perl/**'
       - 'tests/fixtures/api/**'
       - '.github/workflows/perl-tests.yaml'
