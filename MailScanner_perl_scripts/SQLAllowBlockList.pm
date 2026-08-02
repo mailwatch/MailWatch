@@ -27,6 +27,9 @@
 # Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
+# This module downloads complete allowlist and blocklist snapshots from
+# MailWatch and keeps the active lookup tables in memory for MailScanner.
+
 package MailScanner::CustomConfig;
 
 use strict 'vars';
@@ -72,6 +75,8 @@ $mailWatchListClient = MailWatchClient->new(
     api_logger          => \&_log_api,
 );
 
+# Convert the shared client's log levels to MailScanner log calls without
+# including the endpoint API key in messages.
 sub _log_api {
     my ($level, $message) = @_;
 
@@ -82,6 +87,8 @@ sub _log_api {
     }
 }
 
+# Initialise both callbacks from the same snapshot. MailScanner invokes the
+# allowlist and blocklist initialisers separately, but only one refresh is made.
 sub InitSQLAllowlist {
     MailScanner::Log::InfoLog('MailWatch: Starting up MailWatch REST Allowlist');
     RefreshAllowBlockLists() if _refresh_due();
@@ -94,6 +101,8 @@ sub InitSQLBlocklist {
     MailScanner::Log::InfoLog('MailWatch: Read %d blocklist entries', _entry_count(\%Blocklist));
 }
 
+# Refresh on the configured interval, then apply the existing in-memory lookup
+# semantics to the current message.
 sub SQLAllowlist {
     RefreshAllowBlockLists() if _refresh_due();
     my ($message) = @_;
@@ -108,6 +117,8 @@ sub SQLBlocklist {
     return LookupList($message, \%Blocklist);
 }
 
+# MailScanner shutdown callbacks. There is no persistent HTTP connection or
+# database handle to close.
 sub EndSQLAllowlist {
     MailScanner::Log::InfoLog('MailWatch: Closing down MailWatch REST Allowlist');
 }
@@ -122,6 +133,10 @@ sub _refresh_due {
     return (time() - $refresh_time) >= ($abl_refresh_time * 60);
 }
 
+# Fetch and replace both lists as one operation. A transport error, incompatible
+# contract or invalid entry leaves the last known valid snapshot untouched. If
+# startup has never succeeded, empty lists preserve the historical fail-open
+# behaviour.
 sub RefreshAllowBlockLists {
     MailScanner::Log::InfoLog('MailWatch: Allow/block list refresh started') if $snapshot_loaded;
     $refresh_time = time();
@@ -164,6 +179,8 @@ sub RefreshAllowBlockLists {
     return 1;
 }
 
+# Validate the complete response into temporary lookup maps before either live
+# list is replaced. Unknown top-level fields are tolerated for future contracts.
 sub ValidateAllowBlockSnapshot {
     my ($snapshot) = @_;
 
@@ -201,6 +218,10 @@ sub _entry_count {
 }
 
 # Based on the recipients, sender and client IP, choose the applicable list.
+# Recipient scopes are checked in this order: "default", every exact recipient,
+# then every recipient domain. Within each scope the sender can match by exact
+# address, domain, @domain, client IP, shortened IPv4 prefix or wildcard domain.
+# Return 1 for a match and 0 when no rule applies.
 sub LookupList {
     my ($message, $AllowBlock) = @_;
 
@@ -210,6 +231,8 @@ sub LookupList {
     my $fromdomain = $message->{fromdomain};
     my $subdom = $fromdomain;
     my @subdomains;
+    # news.example.org produces *.example.org and *.org candidates. Combining
+    # these with the sender local part also supports bounce@*.example.org.
     while ($subdom =~ /.*?\.(.*)/) {
         $subdom = $1;
         push @subdomains, '*.' . $subdom;
@@ -217,6 +240,8 @@ sub LookupList {
 
     my @keys = ('default', @{$message->{to}}, @{$message->{todomain}});
     my $ip = $message->{clientip};
+    # Preserve historical matching of the first three, two or one IPv4 octets,
+    # both with and without the trailing dot.
     $ip =~ /(\d{1,3}\.)(\d{1,3}\.)(\d{1,3}\.)/;
     my $ip3 = "$1$2$3";
     my $ip3c = substr($ip3, 0, -1);

@@ -1,19 +1,19 @@
 #
 # MailWatch for MailScanner
-# Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
-# Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
-# Copyright (C) 2014-2024  MailWatch Team (https://github.com/mailwatch/MailWatch/graphs/contributors)
+# Copyright (C) 2003-2011 Steve Freegard (steve@freegard.name)
+# Copyright (C) 2011 Garrod Alwood (garrod.alwood@lorodoes.com)
+# Copyright (C) 2014-2026 MailWatch Team (https://github.com/mailwatch/MailWatch/graphs/contributors)
 #
 #   Custom Module SQLSpamSettings
 #
-#   Version 1.7
+#   Version 2.0
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
 # version.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
 # In addition, as a special exception, the copyright holder gives permission to link the code of this program with
 # those files in the PEAR library that are licensed under the PHP License (or with modified versions of those files
@@ -24,285 +24,249 @@
 # If you do not wish to do so, delete this exception statement from your version.
 #
 # You should have received a copy of the GNU General Public License along with this program; if not, write to the Free
-# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-#
-# This module uses entries in the user table to determine the Spam Settings
-# for each user.
-#
+# This module downloads SpamAssassin score and no-scan settings from MailWatch
+# and keeps the three active lookup tables in memory for MailScanner.
 
 package MailScanner::CustomConfig;
 
 use strict 'vars';
 use strict 'refs';
-no  strict 'subs'; # Allow bare words for parameter %'s
+no strict 'subs'; # Allow bare words for MailScanner parameter hashes
 
-use vars qw($VERSION);
-
-### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = '1.7';
-
-use DBI;
-use DBD::MariaDB;
-my ($dbh);
-my ($sth);
-my ($SQLversion);
-my (%LowSpamScores, %HighSpamScores);
-my (%ScanList);
-my ($sstime, $hstime, $nstime);
-
-# Get database information from 00MailWatchConf.pm
 use File::Basename;
+use LWP::UserAgent;
+use MailWatchClient;
+use Scalar::Util qw(looks_like_number);
+
+our $VERSION = '2.0';
+our $mailWatchSpamSettingsClient;
+
 my $dirname = dirname(__FILE__);
-require $dirname.'/MailWatchConf.pm';
+require $dirname . '/MailWatchConf.pm';
 
-my ($db_name) = mailwatch_get_db_name();
-my ($db_host) = mailwatch_get_db_host();
-my ($db_user) = mailwatch_get_db_user();
-my ($db_pass) = mailwatch_get_db_password();
+my $api_base_url = mailwatch_get_api_base_url();
+my $snapshot_endpoint = $api_base_url . '/api/spam-settings.php';
+my $api_key = mailwatch_get_api_key();
+my $api_max_retries = mailwatch_get_api_max_retries();
+my $api_retry_delay = mailwatch_get_api_retry_delay();
+my $api_max_retry_delay = defined &mailwatch_get_api_max_retry_delay
+    ? mailwatch_get_api_max_retry_delay()
+    : 60;
+my $ss_refresh_time = mailwatch_get_SS_refresh_time();
 
-# Get refresh time from from 00MailWatchConf.pm
-my ($ss_refresh_time) =  mailwatch_get_SS_refresh_time();
+my (%LowSpamScores, %HighSpamScores, %ScanList);
+my ($refresh_time, $snapshot_etag, $snapshot_loaded);
 
-# Check MySQL/MariaDB version
-sub CheckSQLVersion {
-    # Prevent dying from failed db connection
-    eval {
-        $dbh = DBI->connect("DBI:MariaDB:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1 }
+my $http_client = LWP::UserAgent->new(
+    protocols_allowed => ['http', 'https'],
+    timeout           => 10,
+    max_size          => 5 * 1024 * 1024,
+    agent             => "MailWatchSpamSettings/$VERSION",
+);
+
+$mailWatchSpamSettingsClient = MailWatchClient->new(
+    user_agent          => $http_client,
+    api_key             => $api_key,
+    api_max_retries     => $api_max_retries,
+    api_retry_delay     => $api_retry_delay,
+    api_max_retry_delay => $api_max_retry_delay,
+    api_logger          => \&_log_api,
+);
+
+# Convert the shared client's log levels to MailScanner log calls without
+# including the endpoint API key in messages.
+sub _log_api {
+    my ($level, $message) = @_;
+
+    if ($level eq 'error' || $level eq 'warn') {
+        MailScanner::Log::WarnLog('MailWatch: SQLSpamSettings:: %s', $message);
+    } else {
+        MailScanner::Log::InfoLog('MailWatch: SQLSpamSettings:: %s', $message);
+    }
+}
+
+# MailScanner initialises the three callbacks separately. They share one REST
+# snapshot, so a successful first call supplies all three lookup tables.
+sub InitSQLSpamScores {
+    RefreshSpamSettings() if _spam_settings_refresh_due();
+    MailScanner::Log::InfoLog('MailWatch: SQLSpamSettings:: Read %d Spam entries', scalar keys %LowSpamScores);
+}
+
+sub InitSQLHighSpamScores {
+    RefreshSpamSettings() if _spam_settings_refresh_due();
+    MailScanner::Log::InfoLog('MailWatch: SQLSpamSettings:: Read %d high Spam entries', scalar keys %HighSpamScores);
+}
+
+sub InitSQLNoScan {
+    RefreshSpamSettings() if _spam_settings_refresh_due();
+    MailScanner::Log::InfoLog('MailWatch: SQLSpamSettings:: Read %d No Spam Scan entries', scalar keys %ScanList);
+}
+
+# Refresh on the configured interval before resolving the current message.
+sub SQLSpamScores {
+    RefreshSpamSettings() if _spam_settings_refresh_due();
+    my ($message) = @_;
+
+    return LookupScoreList($message, \%LowSpamScores);
+}
+
+sub SQLHighSpamScores {
+    RefreshSpamSettings() if _spam_settings_refresh_due();
+    my ($message) = @_;
+
+    return LookupScoreList($message, \%HighSpamScores);
+}
+
+sub SQLNoScan {
+    RefreshSpamSettings() if _spam_settings_refresh_due();
+    my ($message) = @_;
+
+    return LookupNoScanList($message, \%ScanList);
+}
+
+# MailScanner shutdown callbacks. There is no persistent HTTP connection or
+# database handle to close.
+sub EndSQLSpamScores {
+    MailScanner::Log::InfoLog('MailWatch: SQLSpamSettings:: Closing down MailWatch REST Spam Scores');
+}
+
+sub EndSQLHighSpamScores {
+    MailScanner::Log::InfoLog('MailWatch: SQLSpamSettings:: Closing down MailWatch REST High Spam Scores');
+}
+
+sub EndSQLNoScan {
+    MailScanner::Log::InfoLog('MailWatch: SQLSpamSettings:: Closing down MailWatch REST No Scan');
+}
+
+sub _spam_settings_refresh_due {
+    return 1 unless defined $refresh_time;
+
+    return (time() - $refresh_time) >= ($ss_refresh_time * 60);
+}
+
+# Fetch and replace low scores, high scores and no-scan values atomically. Any
+# transport or validation failure retains the last known valid snapshot. Before
+# the first success, empty maps preserve the historical safe defaults: score
+# 999 and Spam scanning enabled.
+sub RefreshSpamSettings {
+    MailScanner::Log::InfoLog('MailWatch: Spam settings refresh started') if $snapshot_loaded;
+    $refresh_time = time();
+
+    my $result = $mailWatchSpamSettingsClient->fetch_api_snapshot($snapshot_endpoint, $snapshot_etag);
+    unless (defined $result) {
+        MailScanner::Log::WarnLog(
+            'MailWatch: SQLSpamSettings:: Snapshot refresh failed; retaining %s settings',
+            $snapshot_loaded ? 'last known valid' : 'empty fail-open',
         );
-    };
-    if ($@ || !$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: Unable to initialise database connection: %s", $DBI::errstr);
+
+        return 0;
+    }
+    if ($result->{not_modified}) {
+        MailScanner::Log::InfoLog('MailWatch: Spam settings snapshot is unchanged');
+
         return 1;
     }
-    $SQLversion = $dbh->{mariadb_serverversion};
-    $dbh->disconnect;
 
-    return $SQLversion;
-}
-
-#
-# Initialise the arrays with the users Spam settings
-#
-sub InitSQLSpamScores
-{
-    my ($entries) = CreateScoreList('spamscore', \%LowSpamScores);
-    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d Spam entries", $entries);
-    $sstime = time();
-}
-
-sub InitSQLHighSpamScores
-{
-    my $entries = CreateScoreList('highspamscore', \%HighSpamScores);
-    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d high Spam entries", $entries);
-    $hstime = time();
-}
-
-sub InitSQLNoScan
-{
-    my $entries = CreateNoScanList('noscan', \%ScanList);
-    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Read %d No Spam Scan entries", $entries);
-    $nstime = time();
-}
-
-#
-# Lookup a users Spam settings
-#
-sub SQLSpamScores
-{
-    # Do we need to refresh the data?
-    if ((time() - $sstime) >= ($ss_refresh_time * 60)) {
-        MailScanner::Log::InfoLog("MailWatch: SQLSpamScores refresh time reached");
-        InitSQLSpamScores();
-    }
-    my ($message) = @_;
-    my ($score) = LookupScoreList($message, \%LowSpamScores);
-    return $score;
-}
-
-sub SQLHighSpamScores
-{
-    # Do we need to refresh the data?
-    if ((time() - $hstime) >= ($ss_refresh_time * 60)) {
-        MailScanner::Log::InfoLog("MailWatch: SQLHighSpamScores refresh time reached");
-        InitSQLHighSpamScores();
-    }
-    my ($message) = @_;
-    my ($score) = LookupScoreList($message, \%HighSpamScores);
-    return $score;
-}
-
-sub SQLNoScan
-{
-    # Do we need to refresh the data?
-    if ((time() - $nstime) >= ($ss_refresh_time * 60)) {
-        MailScanner::Log::InfoLog("MailWatch: SQLNoScan refresh time reached");
-        InitSQLNoScan();
-    }
-    my ($message) = @_;
-    my ($noscan) = LookupNoScanList($message, \%ScanList);
-    return $noscan;
-}
-
-#
-# Close down Spam Settings lists
-#
-sub EndSQLSpamScores
-{
-    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL Spam Scores");
-}
-
-sub EndSQLHighSpamScores
-{
-    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL High Spam Scores");
-}
-
-sub EndSQLNoScan
-{
-    MailScanner::Log::InfoLog("MailWatch: SQLSpamSettings:: Closing down MailWatch SQL No Scan");
-}
-
-# Read the list of users that have defined their own Spam Score value. Also
-# read the domain defaults and the system defaults (defined by the admin user).
-sub CreateScoreList
-{
-    my ($type, $UserList) = @_;
-    my ($sql, $username, $count);
-
-    # Check if MySQL/MariaDB is >= 5.3.3
-    my $version = CheckSQLVersion();
-
-    # Cannot get SQL version, bail out with count of 0
-    if ($version == 1) {
-        return 0;
-    }
-
-    eval {
-        $dbh = DBI->connect("DBI:MariaDB:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1 }
+    my ($spam_scores, $high_spam_scores, $no_scan) = ValidateSpamSettingsSnapshot($result->{snapshot});
+    unless (defined $spam_scores && defined $high_spam_scores && defined $no_scan) {
+        MailScanner::Log::WarnLog(
+            'MailWatch: SQLSpamSettings:: Invalid snapshot; retaining %s settings',
+            $snapshot_loaded ? 'last known valid' : 'empty fail-open',
         );
-    };
-    if ($@ || !$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings:: CreateScoreList::: Unable to initialise database connection: %s", $DBI::errstr);
+
         return 0;
     }
-    $dbh->do('SET NAMES utf8mb4');
 
-    $sql = "SELECT username, $type FROM users WHERE $type > 0";
-    $sth = $dbh->prepare($sql);
-    $sth->execute;
-    $sth->bind_columns(undef, \$username, \$type);
-    $count = 0;
+    %LowSpamScores = %{$spam_scores};
+    %HighSpamScores = %{$high_spam_scores};
+    %ScanList = %{$no_scan};
+    $snapshot_etag = $result->{etag} if defined $result->{etag};
+    $snapshot_loaded = 1;
+    MailScanner::Log::InfoLog(
+        'MailWatch: Loaded spam settings snapshot (%d Spam, %d high Spam, %d No Scan entries)',
+        scalar keys %LowSpamScores,
+        scalar keys %HighSpamScores,
+        scalar keys %ScanList,
+    );
 
-    while($sth->fetch())
-    {
-        $UserList->{lc($username)} = $type; # Store entry
-        $count++;
-    }
-
-    # Close connections
-    $sth->finish();
-    $dbh->disconnect();
-
-    return $count;
+    return 1;
 }
 
-# Read the list of users that have defined that don't want Spam scanning.
-sub CreateNoScanList
-{
-    my ($type, $NoScanList) = @_;
-    my ($sql, $username, $count);
+# Validate the complete response into temporary maps before changing live
+# settings. Scores must be positive numbers because zero and negative database
+# values historically mean "not configured".
+sub ValidateSpamSettingsSnapshot {
+    my ($snapshot) = @_;
 
-    eval {
-        $dbh = DBI->connect("DBI:MariaDB:database=$db_name;host=$db_host",
-            $db_user, $db_pass,
-            { PrintError => 0, AutoCommit => 1, RaiseError => 1 }
-        );
-    };
-    if ($@ || !$dbh) {
-        MailScanner::Log::WarnLog("MailWatch: SQLSpamSettings::CreateNoScanList::: Unable to initialise database connection: %s", $DBI::errstr);
-        return 0;
-    }
-    $dbh->do('SET NAMES utf8mb4');
+    return unless ref $snapshot eq 'HASH';
+    return unless defined $snapshot->{contract}
+        && $snapshot->{contract} eq 'mailwatch.spam-settings.v1';
+    return unless defined $snapshot->{snapshot_version}
+        && !ref $snapshot->{snapshot_version}
+        && $snapshot->{snapshot_version} =~ /\A[a-f0-9]{64}\z/;
 
-    $sql = "SELECT username, $type FROM users WHERE $type > 0";
-    $sth = $dbh->prepare($sql);
-    $sth->execute;
-    $sth->bind_columns(undef, \$username, \$type);
-    $count = 0;
-    while($sth->fetch())
-    {
-        $NoScanList->{lc($username)} = 1; # Store entry
-        $count++;
+    my @score_maps;
+    for my $name (qw(spam_scores high_spam_scores)) {
+        return unless ref $snapshot->{$name} eq 'HASH';
+
+        my %scores;
+        for my $username (keys %{$snapshot->{$name}}) {
+            my $score = $snapshot->{$name}{$username};
+            return if ref $score || !looks_like_number($score) || $score <= 0;
+
+            $scores{lc $username} = 0 + $score;
+        }
+        push @score_maps, \%scores;
     }
 
-    # Close connections
-    $sth->finish();
-    $dbh->disconnect();
+    return unless ref $snapshot->{no_scan} eq 'ARRAY';
+    my %no_scan;
+    for my $username (@{$snapshot->{no_scan}}) {
+        return if !defined $username || ref $username;
 
-    return $count;
+        $no_scan{lc $username} = 1;
+    }
+
+    return (@score_maps, \%no_scan);
 }
 
-# Based on the address it is going to, choose the correct Spam score.
-# If the actual "To:" user is not found, then use the domain defaults
-# as supplied by the domain administrator (domain-admin@domain.tld).
-# If there is no domain default then fallback to the system default
-# as defined in the "admin" user.
-# If the user has not supplied a value and the domain administrator has
-# not supplied a value and the system administrator has not supplied a
-# value, then return 999 which will effectively let everything through
-# and nothing will be considered Spam.
-#
-sub LookupScoreList
-{
+# Choose the score using the historical precedence for the first recipient:
+# exact address, recipient domain, domain-admin@recipient-domain, then admin.
+# Return 999 when nothing is configured so the message is allowed through, and
+# return 0 for an absent message to preserve the MailScanner callback contract.
+sub LookupScoreList {
     my ($message, $LowHigh) = @_;
 
-    return 0 unless $message; # Sanity check the input
+    return 0 unless $message;
 
-    # Find the first "to" address and the "to domain"
-    my (@todomain, $todomain, @to, $to);
-    @todomain = @{$message->{todomain}};
-    $todomain = $todomain[0];
-    @to = @{$message->{to}};
-    $to = $to[0];
+    my $todomain = $message->{todomain}[0];
+    my $to = $message->{to}[0];
 
-    # It is in the list with the exact address? if not found, get the domain,
-    # if that's not found,  get the system default otherwise return a high
-    # value to just let the email through.
     return $LowHigh->{$to} if $LowHigh->{$to};
     return $LowHigh->{$todomain} if $LowHigh->{$todomain};
     return $LowHigh->{'domain-admin@' . $todomain} if $LowHigh->{'domain-admin@' . $todomain};
-    return $LowHigh->{"admin"} if $LowHigh->{"admin"};
+    return $LowHigh->{admin} if $LowHigh->{admin};
 
-    # There are no Spam scores to return if we made it this far, so let the email through.
     return 999;
 }
 
-# Based on the address it is going to, decide whether or not to scan.
-# the users email for Spam.
-sub LookupNoScanList
-{
+# Decide whether the first recipient should be scanned for Spam. A no-scan rule
+# on the exact address or recipient domain returns 0; otherwise return 1 so
+# scanning remains enabled. Unlike scores, there is no admin fallback.
+sub LookupNoScanList {
     my ($message, $NoScan) = @_;
 
-    return 0 unless $message; # Sanity check the input
+    return 0 unless $message;
 
-    # Find the first "to" address and the "to domain"
-    my (@todomain, $todomain, @to, $to);
-    @todomain = @{$message->{todomain}};
-    $todomain = $todomain[0];
-    @to = @{$message->{to}};
-    $to = $to[0];
+    my $todomain = $message->{todomain}[0];
+    my $to = $message->{to}[0];
 
-    # It is in the list with the exact address? if not found, get the domain,
-    # if that's not found, return 0
     return 0 if $NoScan->{$to};
     return 0 if $NoScan->{$todomain};
 
-    # There is no setting, then go ahead and scan for Spam, be on the safe side.
     return 1;
 }
 
