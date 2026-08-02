@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Presentation;
+namespace App\Tests\Unit\Shared\Presentation;
 
-use MailWatch\Presentation\TemplateRenderer;
+use MailWatch\Shared\Presentation\TemplateRenderer;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -209,6 +209,6 @@ final class PageLayoutTemplatesTest extends TestCase
 
     private function renderer(): TemplateRenderer
     {
-        return TemplateRenderer::create(\dirname(__DIR__, 3) . '/templates');
+        return TemplateRenderer::create(\dirname(__DIR__, 4) . '/templates');
     }
 }
