@@ -19,6 +19,7 @@
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
 - The Postfix process count on the status page counts only the master and its children (#1036)
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
+- Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
