@@ -83,6 +83,7 @@ parameters:
 	    VIRUS_INFO: string|false
 	    # String constants
 	    ALLOWED_TAGS: string
+	    API_KEY: string
 	    DATE_FORMAT: string
 	    DB_DSN: string
 	    DB_HOST: string
