@@ -9,6 +9,8 @@ on:
       - 'src/MailWatch/**'
       - 'tests/perl/**'
       - 'tests/fixtures/api/**'
+      - 'composer.json'
+      - 'composer.lock'
       - '.github/workflows/perl-tests.yaml'
   pull_request:
     branches: [ "1.3" ]
@@ -18,6 +20,8 @@ on:
       - 'src/MailWatch/**'
       - 'tests/perl/**'
       - 'tests/fixtures/api/**'
+      - 'composer.json'
+      - 'composer.lock'
       - '.github/workflows/perl-tests.yaml'
   workflow_dispatch:
 
@@ -36,6 +40,12 @@ jobs:
           php-version: '8.3'
           extensions: mysqli
           coverage: none
+
+      # The integration test drives public_html/index.php, which loads the
+      # Composer autoloader. Without this step the front controller dies before
+      # it routes, and every assertion about the PHP side fails for one reason.
+      - name: Install Composer dependencies
+        uses: "ramsey/composer-install@v4"
 
       - name: Install cpanminus
         run: |
