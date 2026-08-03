@@ -7,6 +7,8 @@ parameters:
 	tmpDir: %currentWorkingDirectory%/.phpstan-cache
 	paths:
 	    - src
+	    - config
+	    - migrations
 	    - public_html
 	    - mailscanner
 	    - tools

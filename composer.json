@@ -33,7 +33,8 @@
     },
     "autoload": {
         "psr-4": {
-            "MailWatch\\": "src/MailWatch/"
+            "MailWatch\\": "src/MailWatch/",
+            "MailWatch\\Migrations\\": "migrations/"
         }
     },
     "autoload-dev": {
