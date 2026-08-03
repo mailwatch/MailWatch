@@ -71,8 +71,10 @@ final class LogMailEndpointTest extends TestCase
         $port = (int)substr(strrchr($address, ':'), 1);
         self::$baseUrl = "http://127.0.0.1:{$port}";
         self::$serverLogPath = self::$temporaryDirectory . '/server.log';
+        // error_log= keeps the endpoint's log on stderr, captured below; a
+        // php.ini that sets a path would swallow what the assertions read.
         self::$serverProcess = proc_open(
-            [PHP_BINARY, '-S', "127.0.0.1:{$port}", '-t', $publicDirectory, $publicDirectory . '/index.php'],
+            [PHP_BINARY, '-d', 'error_log=', '-S', "127.0.0.1:{$port}", '-t', $publicDirectory, $publicDirectory . '/index.php'],
             [
                 0 => ['pipe', 'r'],
                 1 => ['file', self::$serverLogPath, 'a'],
