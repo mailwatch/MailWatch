@@ -225,13 +225,13 @@ while ($row1 = $result1->fetch_object()) {
     if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
         switch (true) {
             case 'unknown_user' === $row1->type:
-                $data_total_unknown_users[$key] = $row1->count;
+                $data_total_unknown_users[$key] = (isset($data_total_unknown_users[$key]) ? $data_total_unknown_users[$key] : 0) + $row1->count;
                 break;
             case 'rbl' === $row1->type:
-                $data_total_rbl[$key] = $row1->count;
+                $data_total_rbl[$key] = (isset($data_total_rbl[$key]) ? $data_total_rbl[$key] : 0) + $row1->count;
                 break;
             case 'unresolveable' === $row1->type:
-                $data_total_unresolveable[$key] = $row1->count;
+                $data_total_unresolveable[$key] = (isset($data_total_unresolveable[$key]) ? $data_total_unresolveable[$key] : 0) + $row1->count;
                 break;
         }
     }
