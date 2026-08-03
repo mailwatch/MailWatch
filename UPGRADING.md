@@ -13,6 +13,23 @@ host of its own with the document root set to `public_html`.
 
 See [web server configuration](docs/web-servers.md).
 
+### The PDO MySQL extension is now required
+
+MailWatch 2.0 moves its database access onto Doctrine DBAL, which reaches
+MySQL and MariaDB through PDO rather than through `mysqli`. Both extensions
+are required during the transition: `mysqli` still serves the pages that have
+not been migrated.
+
+Install `php-pdo` and `php-mysql` (Debian and Ubuntu: `php-mysql` provides
+both drivers; RHEL and derivatives: `php-mysqlnd`) before upgrading, or
+`composer install` stops with an unsatisfied platform requirement.
+
+Verify with:
+
+```
+php -m | grep pdo_mysql
+```
+
 ### The antivirus status pages have new paths
 
 | Now | Was |

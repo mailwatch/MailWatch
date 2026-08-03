@@ -8,7 +8,6 @@
 /vendor/
 /var/
 
-/composer.lock
 /.php-cs-fixer.cache
 /.phpunit.cache
 /.phpstan-cache

@@ -6,6 +6,9 @@
     "require": {
         "php": "8.3.* || 8.4.* || 8.5.*",
         "ext-mysqli": "*",
+        "ext-pdo_mysql": "*",
+        "doctrine/dbal": "^4.4",
+        "doctrine/migrations": "^3.9",
         "twig/twig": "^3"
     },
     "require-dev": {
@@ -16,6 +19,12 @@
         "rector/rector": "^2",
         "phpunit/phpunit": "^10.5",
         "symfony/var-dumper": "^6|^7|^8"
+    },
+    "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
+        "sort-packages": true
     },
     "suggest": {
         "ext-ldap": "For LDAP support",
