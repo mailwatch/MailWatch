@@ -167,7 +167,6 @@ AND
         $report_sql = "
 SELECT
 a.id AS id,
-DATE_FORMAT(timestamp,'" . str_replace('%', '%%', DATE_FORMAT) . ' <br/>' . str_replace('%', '%%', TIME_FORMAT) . "') AS datetime,
 a.timestamp AS timestamp,
 a.to_address AS to_address,
 a.from_address AS from_address,
@@ -495,7 +494,7 @@ ORDER BY a.date DESC, a.time DESC';
             while ($row = $result->fetch_object()) {
                 $array[] = [
                     'id' => trim((string)$row->id),
-                    'datetime' => trim((string)$row->datetime),
+                    'datetime' => mailwatch_datetime_formatter()->dateTime($row->timestamp, ' <br/>'),
                     'to' => trim_output($row->to_address, FROMTO_MAXLEN),
                     'from' => trim_output($row->from_address, FROMTO_MAXLEN),
                     'subject' => trim_output($row->subject, SUBJECT_MAXLEN),

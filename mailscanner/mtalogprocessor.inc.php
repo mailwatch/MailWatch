@@ -133,13 +133,18 @@ abstract class MtaLogProcessor
         }
 
         if (null !== $_type) {
+            // The parser already resolved the syslog line to an epoch, which is
+            // an absolute instant; gmdate writes it as the UTC the column holds,
+            // instead of letting FROM_UNIXTIME() render it in whatever zone the
+            // session happens to carry.
+            $_utc = gmdate('Y-m-d H:i:s', (int)$_timestamp);
             if (preg_match('/^\d+$/', $_delay)) {
                 dbquery(
-                    "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'),'$_to')"
+                    "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES ('$_utc','$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'),'$_to')"
                 );
             } else {
                 dbquery(
-                    "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status','$_delay','$_to')"
+                    "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES ('$_utc','$_host','$_type','$_msg_id','$_relay','$_dsn','$_status','$_delay','$_to')"
                 );
             }
         }

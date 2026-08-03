@@ -8,6 +8,8 @@
 ### Changed
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
 - Standardised database charset to utf8mb4 with unicode_520_ci collation
+- Points in time are stored as UTC and converted for display; the database session is pinned to `+00:00` and dates are formatted in PHP rather than by SQL
+- `MailWatch.pm` sends the message timestamp as an ISO 8601 instant, and no longer sends `date` and `time`: both are derived from its offset
 
 ### Compatibility
 - The minimal PHP version is now 8.3.

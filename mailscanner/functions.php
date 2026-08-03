@@ -282,6 +282,21 @@ function mailwatch_page_layout(): \MailWatch\Shared\Presentation\PageLayout
 }
 
 /**
+ * Formats the UTC values the database returns, in the configured TIME_ZONE.
+ */
+function mailwatch_datetime_formatter(): \MailWatch\Shared\Presentation\DateTimeFormatter
+{
+    static $formatter = null;
+
+    if (null === $formatter) {
+        mailwatch_autoload();
+        $formatter = \MailWatch\Shared\Presentation\DateTimeFormatter::fromConfiguration();
+    }
+
+    return $formatter;
+}
+
+/**
  * The session and cache decisions every page makes before it writes anything.
  */
 function mailwatch_page_guard(): \MailWatch\Shared\Http\PageGuard
@@ -2287,6 +2302,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                 }
                 $field = $sth->fetch_field_direct($fieldNumber);
                 switch ($field->name) {
+                    case 'timestamp':
+                        // Selected raw and rendered here, in the display zone.
+                        $row[$f] = mailwatch_datetime_formatter()->dateTime($row[$f]);
+                        break;
                     case 'id':
                         // Store the id for later use
                         $id = $row[$f];
@@ -2556,8 +2575,9 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
  * @param string|null $title
  * @param bool        $pager
  * @param bool        $operations
+ * @param array       $formatters callables keyed by column name, applied to the value before it is printed
  */
-function dbtable($sql, $title = null, $pager = false, $operations = false)
+function dbtable($sql, $title = null, $pager = false, $operations = false, $formatters = [])
 {
     /*
     // Query the data
@@ -2649,7 +2669,9 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
             echo '<td></td>';
         }
 
+        $fieldNames = [];
         foreach ($sth->fetch_fields() as $field) {
+            $fieldNames[] = $field->name;
             echo '  <th>' . $field->name . '</th>' . "\n";
         }
         echo ' </tr>' . "\n";
@@ -2657,10 +2679,14 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         while ($row = $sth->fetch_row()) {
             echo ' <tr class="table-background">' . "\n";
             for ($f = 0; $f < $fields; ++$f) {
+                $value = $row[$f];
+                if (isset($fieldNames[$f], $formatters[$fieldNames[$f]])) {
+                    $value = $formatters[$fieldNames[$f]]($value);
+                }
                 echo '  <td>' . preg_replace(
                     "/,([^\s])/",
                     ', $1',
-                    (string)$row[$f]
+                    (string)$value
                 ) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";

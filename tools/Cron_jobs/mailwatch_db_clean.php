@@ -83,7 +83,9 @@ function deleteInBatches(string $table, string $whereClause, int $batchSize): in
 }
 
 // Cleaning the maillog table
-deleteInBatches('maillog', 'timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)', $batchSize);
+// maillog.timestamp is UTC, so the cut-off says so rather than relying on the
+// session zone being what it should be.
+deleteInBatches('maillog', 'timestamp < (UTC_TIMESTAMP() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)', $batchSize);
 
 // Cleaning the mta_log and optionally the mta_log_id table
 $sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";

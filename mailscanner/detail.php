@@ -69,7 +69,7 @@ $mta = get_conf_var('mta');
 // The sql command to pull the data
 $sql = "
  SELECT
-  DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS '" . __('receivedon04') . "',
+  timestamp AS '" . __('receivedon04') . "',
   hostname AS '" . __('receivedby04') . "',
   clientip AS '" . __('receivedfrom04') . "',
   headers '" . __('receivedvia04') . "',
@@ -135,6 +135,9 @@ $listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[__('rec
 for ($f = 0; $f < $result->field_count; ++$f) {
     $fieldInfo = $result->fetch_field_direct($f);
     $fieldn = $fieldInfo->name;
+    if ($fieldn === __('receivedon04')) {
+        $row[$f] = mailwatch_datetime_formatter()->dateTime($row[$f]);
+    }
     if ($fieldn === __('receivedfrom04')) {
         $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
         if (LISTS) {
@@ -307,7 +310,7 @@ $tablecheck = dbquery($sqlcheck);
 if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) { // version for postfix
     $sql1 = "
  SELECT
-  DATE_FORMAT(m.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS 'Date/Time',
+  m.timestamp AS 'Date/Time',
   m.host AS 'Relayed by',
   m.relay AS 'Relayed to',
   m.delay AS 'Delay',
@@ -324,7 +327,7 @@ if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) { //
 } else { // version for sendmail
     $sql1 = "
  SELECT
-  DATE_FORMAT(timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS 'Date/Time',
+  timestamp AS 'Date/Time',
   host AS 'Relayed by',
   relay AS 'Relayed to',
   delay AS 'Delay',
@@ -352,7 +355,7 @@ if (false !== $sth1 && $sth1->num_rows > 0) {
     echo "   </tr>\n";
     while ($row = $sth1->fetch_row()) {
         echo '    <tr>' . "\n";
-        echo '     <td class="detail" align="left">' . $row[0] . '</td>' . "\n"; // Date/Time
+        echo '     <td class="detail" align="left">' . mailwatch_datetime_formatter()->dateTime($row[0]) . '</td>' . "\n"; // Date/Time
         echo '     <td class="detail" align="left">' . $row[1] . '</td>' . "\n"; // Relayed by
         if (($lhost = @gethostbyaddr($row[2])) !== $row[2]) {
             echo '     <td class="detail" align="left">' . $lhost . '</td>' . "\n"; // Relayed to

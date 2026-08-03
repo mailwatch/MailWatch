@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-08-01 12:34:56",
+    "timestamp": "2026-08-01T12:34:56+02:00",
     "id": "fixture-message-001",
     "size": 2048,
     "from": "sender@example.test",
@@ -29,8 +29,6 @@
     "mcpsascore": 0,
     "mcpreport": "",
     "hostname": "mx.example.test",
-    "date": "2026-08-01",
-    "time": "12:34:56",
     "headers": "Message-ID: <fixture-message-001@example.test>",
     "quarantined": 0,
     "rblspamreport": "",

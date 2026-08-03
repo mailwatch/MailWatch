@@ -140,11 +140,11 @@ if (!isset($_GET['dir'])) {
     if (QUARANTINE_USE_FLAG) {
         dbconn();
         $date = translateQuarantineDate($dir, 'sql');
-        $sql = "
+        $sql = '
 SELECT
  id AS id2,
- DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
- from_address,";
+ timestamp,
+ from_address,';
         if (defined('DISPLAY_IP') && DISPLAY_IP) {
             $sql .= 'clientip,';
         }
@@ -233,11 +233,11 @@ ORDER BY
         if (count($items) > 0) {
             $msg_ids = implode(',', $items);
             $date = safe_value(translateQuarantineDate($dir, 'sql'));
-            $sql = "
+            $sql = '
   SELECT
    id AS id2,
-   DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
-   from_address,";
+   timestamp,
+   from_address,';
             if (defined('DISPLAY_IP') && DISPLAY_IP) {
                 $sql .= 'clientip,';
             }

@@ -335,13 +335,13 @@ sub MailWatchLogging {
         $quarantined = 1;
     }
 
-    # Get timestamp, and format it so it is suitable to use with MySQL
-    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime();
-    my ($timestamp) = sprintf("%d-%02d-%02d %02d:%02d:%02d",
-        $year + 1900, $mon + 1, $mday, $hour, $min, $sec);
-
-    my ($date) = sprintf("%d-%02d-%02d", $year + 1900, $mon + 1, $mday);
-    my ($time) = sprintf("%02d:%02d:%02d", $hour, $min, $sec);
+    # Get the timestamp as an ISO 8601 instant. The offset is what makes it a
+    # point in time rather than a wall clock, so the receiving end reads it
+    # without having to know this host's time zone, and derives the local
+    # calendar date and time from it. strftime writes the offset as +0200;
+    # the substitution puts it in the extended form.
+    my ($timestamp) = POSIX::strftime("%Y-%m-%dT%H:%M:%S%z", localtime());
+    $timestamp =~ s/([+-]\d{2})(\d{2})$/$1:$2/;
 
     # Also print 1 line for each report about this message. These lines
     # contain all the info above, + the attachment filename and text of
@@ -478,8 +478,6 @@ sub MailWatchLogging {
     $msg{otherinfected} = $message->{otherinfected};
     $msg{reports} = fix_latin($reports);
     $msg{hostname} = $hostname;
-    $msg{date} = $date;
-    $msg{"time"} = $time;
     $msg{headers} = join("\n", map { fix_latin($_)} @{$message->{headers}});
     $msg{quarantined} = $quarantined;
     $msg{rblspamreport} = $message->{rblspamreport};

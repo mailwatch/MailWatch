@@ -189,14 +189,56 @@ WHERE
         $sql = '';
         foreach ($this->item as $val) {
             if ('date' === $val[0]) {
-                // Change field from timestamp to date format
-                $val[0] = "DATE_FORMAT(timestamp,'%Y-%m-%d')";
-
-                $sql .= self::getSqlCondition($val);
+                $sql .= self::mtalogDateCondition($val[1], $val[2]);
             }
         }
 
         return $sql;
+    }
+
+    /**
+     * mtalog stores an instant in UTC, while the filter names a calendar day in
+     * the display zone. The day becomes the half-open UTC interval that
+     * contains it, so the comparison is between instants and needs neither
+     * CONVERT_TZ() nor MySQL's time zone tables - which most installations
+     * have never loaded.
+     *
+     * The pattern operators are dropped: they used to match the digits of a
+     * formatted date, and against an instant they mean nothing.
+     *
+     * @param string $operator
+     * @param string $day
+     *
+     * @return string
+     */
+    private static function mtalogDateCondition($operator, $day)
+    {
+        try {
+            $start = new DateTimeImmutable($day . ' 00:00:00', new DateTimeZone(TIME_ZONE));
+        } catch (Exception) {
+            return '';
+        }
+
+        $utc = new DateTimeZone('UTC');
+        $from = $start->setTimezone($utc)->format('Y-m-d H:i:s');
+        $to = $start->modify('+1 day')->setTimezone($utc)->format('Y-m-d H:i:s');
+
+        switch ($operator) {
+            case '=':
+                return "AND\n timestamp >= '$from' AND timestamp < '$to'\n";
+            case '<>':
+                return "AND\n (timestamp < '$from' OR timestamp >= '$to')\n";
+            case '<':
+                return "AND\n timestamp < '$from'\n";
+            case '<=':
+                return "AND\n timestamp < '$to'\n";
+            case '>':
+                return "AND\n timestamp >= '$to'\n";
+            case '>=':
+                return "AND\n timestamp >= '$from'\n";
+        }
+
+        return '';
     }
 
     public function CreateSQL()

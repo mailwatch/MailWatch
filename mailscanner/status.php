@@ -31,12 +31,12 @@ require __DIR__ . '/login.function.php';
 
 $refresh = html_start(__('recentmsg05'), STATUS_REFRESH, false, false);
 
-$sql = "
+$sql = '
 SELECT
  id AS id2,
  hostname AS host,
- DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS datetime,
- from_address,";
+ timestamp,
+ from_address,';
 if (defined('DISPLAY_IP') && DISPLAY_IP) {
     $sql .= 'clientip,';
 }
