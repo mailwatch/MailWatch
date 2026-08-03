@@ -271,8 +271,11 @@ sub start_php_server {
     if ($pid == 0) {
         open STDOUT, '>>', $log_path or die "Unable to open the PHP server log: $!";
         open STDERR, '>&', STDOUT or die "Unable to redirect the PHP server error log: $!";
+        # error_log= keeps the endpoint's log on the stderr redirected above.
         exec(
             ($ENV{PHP_BINARY} // 'php'),
+            '-d',
+            'error_log=',
             '-S',
             "127.0.0.1:$server_port",
             '-t',
