@@ -115,7 +115,7 @@ if ('A' !== $_SESSION['user_type']) {
     // SQL query for the audit log
     $sql = "
  SELECT
-  DATE_FORMAT(a.timestamp,'" . DATE_FORMAT . ' ' . TIME_FORMAT . "') AS '" . __('datetime33') . "',
+  a.timestamp AS '" . __('datetime33') . "',
   b.fullname AS '" . __('user33') . "',
   a.ip_address AS '" . __('ipaddress33') . "',
   a.action AS '" . __('action33') . "'
@@ -146,7 +146,9 @@ if ('A' !== $_SESSION['user_type']) {
 <tr><td>' . "\n";
 
     // Function to to query and display the data
-    dbtable($sql, __('auditlog33'), true);
+    dbtable($sql, __('auditlog33'), true, false, [
+        __('datetime33') => static fn($value) => mailwatch_datetime_formatter()->dateTime($value),
+    ]);
 
     // close off the table
     echo '</td></tr>

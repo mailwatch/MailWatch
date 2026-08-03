@@ -57,6 +57,11 @@ class Database
             if (false === self::$link->set_charset($charset)) {
                 self::$link->query('SET NAMES ' . $charset . ' COLLATE ' . $collation);
             }
+
+            // Stored points in time are UTC. Pinning the session keeps NOW() and
+            // any TIMESTAMP column on the same clock as the data, whatever zone
+            // the database server happens to be set to.
+            self::$link->query("SET time_zone = '+00:00'");
         }
 
         return self::$link;

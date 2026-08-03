@@ -28,9 +28,16 @@ final class MailLogEntry
         'archiveplaces', 'isspam', 'ishigh', 'issaspam', 'isrblspam', 'spamallowlisted',
         'spamblocklisted', 'sascore', 'spamreport', 'virusinfected', 'nameinfected', 'otherinfected',
         'reports', 'ismcp', 'ishighmcp', 'issamcp', 'mcpallowlisted', 'mcpblocklisted', 'mcpsascore',
-        'mcpreport', 'hostname', 'date', 'time', 'headers', 'quarantined', 'rblspamreport', 'token',
+        'mcpreport', 'hostname', 'headers', 'quarantined', 'rblspamreport', 'token',
         'messageid',
     ];
+
+    /**
+     * The instant the sender reports, in ISO 8601 extended form. The offset is
+     * required: without it the string is a wall clock, and the reader would
+     * have to guess whose.
+     */
+    private const INSTANT = '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/';
 
     public $timestamp;
     public $id;
@@ -99,13 +106,12 @@ final class MailLogEntry
         $this->mcpsascore = $this->numericValue($data, 'mcpsascore', 0.0);
         $this->mcpreport = $this->stringValue($data, 'mcpreport', '');
         $this->hostname = $this->stringValue($data, 'hostname', '');
-        $this->date = $this->stringValue($data, 'date', null);
-        $this->time = $this->stringValue($data, 'time', null);
         $this->headers = $this->stringValue($data, 'headers', '');
         $this->rblspamreport = $this->stringValue($data, 'rblspamreport', '');
         $this->token = $this->stringValue($data, 'token', '');
         $this->messageid = $this->stringValue($data, 'messageid', '');
 
+        $this->readInstant();
         $this->observeNonCanonicalFormats();
     }
 
@@ -188,17 +194,36 @@ final class MailLogEntry
         return 0;
     }
 
+    /**
+     * Splits the reported instant into what the two halves of the schema mean.
+     *
+     * timestamp is the instant, stored as UTC. date and time are the calendar
+     * day and clock of the host that received the message, which is a different
+     * question and not a derived formatting of the first: the quarantine
+     * directories on disk are named after that local day, so they are read back
+     * from the offset the sender supplied rather than recomputed anywhere else.
+     */
+    private function readInstant(): void
+    {
+        if (null === $this->timestamp) {
+            return;
+        }
+
+        if (1 !== preg_match(self::INSTANT, $this->timestamp)) {
+            $this->observations[] = 'timestamp was not an ISO 8601 instant and was discarded';
+            $this->timestamp = null;
+
+            return;
+        }
+
+        $moment = new \DateTimeImmutable($this->timestamp);
+        $this->date = $moment->format('Y-m-d');
+        $this->time = $moment->format('H:i:s');
+        $this->timestamp = $moment->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+    }
+
     private function observeNonCanonicalFormats(): void
     {
-        if (null !== $this->timestamp && 1 !== preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $this->timestamp)) {
-            $this->observations[] = 'timestamp used a non-canonical format';
-        }
-        if (null !== $this->date && 1 !== preg_match('/^\d{4}-\d{2}-\d{2}$/', $this->date)) {
-            $this->observations[] = 'date used a non-canonical format';
-        }
-        if (null !== $this->time && 1 !== preg_match('/^\d{2}:\d{2}:\d{2}$/', $this->time)) {
-            $this->observations[] = 'time used a non-canonical format';
-        }
         if ('' !== $this->clientip && false === filter_var($this->clientip, FILTER_VALIDATE_IP)) {
             $this->observations[] = 'clientip used a non-canonical format';
         }

@@ -124,9 +124,9 @@ foreach ($scanners as $vscanner) {
     }
 }
 
-$sql = "
+$sql = '
 SELECT
- DATE_FORMAT(MIN(timestamp), '" . DATE_FORMAT . ' ' . TIME_FORMAT . '\') as first_seen,
+ MIN(timestamp) AS timestamp,
  report,
  COUNT(*) AS reportcount
 FROM
@@ -153,7 +153,7 @@ while ($row = $result->fetch_object()) {
         if (preg_match($vals['regexp'], (string)$row->report, $virus_report)) {
             $virus = $virus_report['virus'];
             if (!isset($virus_array[$virus])) {
-                $virus_array[$virus]['first_seen'] = $row->first_seen;
+                $virus_array[$virus]['first_seen'] = mailwatch_datetime_formatter()->dateTime($row->timestamp);
                 $virus_array[$virus]['scanner'] = $vals['name'];
             }
             if (isset($virus_array[$virus]['count'])) {

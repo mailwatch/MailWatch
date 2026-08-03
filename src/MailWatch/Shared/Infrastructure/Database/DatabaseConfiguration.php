@@ -57,6 +57,18 @@ final readonly class DatabaseConfiguration
             ));
         }
 
+        // Stored points in time are UTC, and the session says so from the first
+        // statement rather than inheriting the database server's own zone.
+        if ('pdo_mysql' === $driver) {
+            // Named through constant() because the two spellings of the same
+            // option exist on different PHP versions: PDO::MYSQL_ATTR_INIT_COMMAND
+            // is deprecated from 8.4, and Pdo\Mysql does not exist before it.
+            $option = \defined('Pdo\Mysql::ATTR_INIT_COMMAND')
+                ? \constant('Pdo\Mysql::ATTR_INIT_COMMAND')
+                : \constant('PDO::MYSQL_ATTR_INIT_COMMAND');
+            $parameters['driverOptions'][(int)$option] = "SET time_zone = '+00:00'";
+        }
+
         return new self($parameters);
     }
 

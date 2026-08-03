@@ -123,20 +123,20 @@ $sql = "
 ';
 
 // Fetch MTA stats
-$sql1 = "
+$sql1 = '
 SELECT
- DATE_FORMAT(timestamp, $date_format) AS xaxis,
+ timestamp,
  type,
  count(*) as count
 FROM
  mtalog
 WHERE
  1=1
-" . $filter->CreateMtalogSQL() . "
+' . $filter->CreateMtalogSQL() . "
 AND
  type<>'relay'
 GROUP BY
- xaxis, type
+ timestamp, type
 ";
 
 $sqlColumns = [
@@ -227,16 +227,19 @@ $data_total_rbl = [];
 $data_total_unresolveable = [];
 $result1 = $showMtaColumns ? dbquery($sql1) : false;
 while ($result1 && $row1 = $result1->fetch_object()) {
-    if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
+    // mtalog holds an instant per second, so a day is many rows: the label is
+    // the local day it falls in, and the counts of that day are added up.
+    $label = mailwatch_datetime_formatter()->date($row1->timestamp);
+    if (is_numeric($key = array_search($label, $data_labels, true))) {
         switch (true) {
             case 'unknown_user' === $row1->type:
-                $data_total_unknown_users[$key] = (isset($data_total_unknown_users[$key]) ? $data_total_unknown_users[$key] : 0) + $row1->count;
+                $data_total_unknown_users[$key] = ($data_total_unknown_users[$key] ?? 0) + $row1->count;
                 break;
             case 'rbl' === $row1->type:
-                $data_total_rbl[$key] = (isset($data_total_rbl[$key]) ? $data_total_rbl[$key] : 0) + $row1->count;
+                $data_total_rbl[$key] = ($data_total_rbl[$key] ?? 0) + $row1->count;
                 break;
             case 'unresolveable' === $row1->type:
-                $data_total_unresolveable[$key] = (isset($data_total_unresolveable[$key]) ? $data_total_unresolveable[$key] : 0) + $row1->count;
+                $data_total_unresolveable[$key] = ($data_total_unresolveable[$key] ?? 0) + $row1->count;
                 break;
         }
     }

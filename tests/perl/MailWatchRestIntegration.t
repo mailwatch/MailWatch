@@ -95,6 +95,13 @@ subtest 'the Perl client delivers a message to the PHP ingestion endpoint' => su
     my $insert = decode_json(read_file($capture_path));
     is($insert->{id}, 'fixture-message-001', 'the message id crosses the Perl/PHP boundary');
     is($insert->{spamallowlisted}, 1, 'the endpoint maps the legacy allowlist field');
+    like(
+        $message->{timestamp},
+        qr/\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})\z/,
+        'the fixture reports an ISO 8601 instant',
+    );
+    is($insert->{timestamp}, '2026-08-01 10:34:56', 'PHP stores the reported instant as UTC');
+    is($insert->{date}, '2026-08-01', "PHP keeps the sender's calendar day");
     is(
         $insert->{ingestion_id},
         sha256_hex(join "\0", @{$message}{qw(hostname id token)}),

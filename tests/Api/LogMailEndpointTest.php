@@ -277,6 +277,68 @@ final class LogMailEndpointTest extends TestCase
         self::assertSame('<fixture-message-001@example.test>', $insert['messageid']);
     }
 
+    public function testItStoresTheReportedInstantAsUtcAndKeepsTheSendersCalendarDay(): void
+    {
+        $fixture = file_get_contents(dirname(__DIR__) . '/fixtures/api/logmail-v1.json');
+        self::assertNotFalse($fixture);
+
+        $response = $this->request('POST', $fixture, self::API_KEY);
+
+        self::assertSame(201, $response['status']);
+        $insert = $this->capturedInsert();
+        // The fixture reports 12:34:56+02:00.
+        self::assertSame('2026-08-01 10:34:56', $insert['timestamp']);
+        self::assertSame('2026-08-01', $insert['date']);
+        self::assertSame('12:34:56', $insert['time']);
+    }
+
+    public function testItReadsTheCalendarDayFromTheOffsetRatherThanTheServerZone(): void
+    {
+        $fixture = $this->fixturePayload();
+        // Just after midnight in Auckland is still the previous day in UTC.
+        $fixture['timestamp'] = '2026-08-02T00:30:00+12:00';
+
+        $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
+
+        self::assertSame(201, $response['status']);
+        $insert = $this->capturedInsert();
+        self::assertSame('2026-08-01 12:30:00', $insert['timestamp']);
+        self::assertSame('2026-08-02', $insert['date']);
+        self::assertSame('00:30:00', $insert['time']);
+    }
+
+    public function testItDiscardsATimestampThatCarriesNoOffset(): void
+    {
+        $fixture = $this->fixturePayload();
+        $fixture['timestamp'] = '2026-08-01 12:34:56';
+
+        $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
+
+        self::assertSame(201, $response['status']);
+        $insert = $this->capturedInsert();
+        self::assertNull($insert['timestamp']);
+        self::assertNull($insert['date']);
+        self::assertNull($insert['time']);
+        self::assertStringContainsString(
+            'timestamp was not an ISO 8601 instant',
+            (string)file_get_contents(self::$serverLogPath)
+        );
+    }
+
+    public function testItIgnoresACalendarDaySuppliedAlongsideTheInstant(): void
+    {
+        $fixture = $this->fixturePayload();
+        $fixture['date'] = '1999-12-31';
+        $fixture['time'] = '23:59:59';
+
+        $response = $this->request('POST', json_encode($fixture, JSON_THROW_ON_ERROR), self::API_KEY);
+
+        self::assertSame(201, $response['status']);
+        $insert = $this->capturedInsert();
+        self::assertSame('2026-08-01', $insert['date']);
+        self::assertSame('12:34:56', $insert['time']);
+    }
+
     public function testCanonicalListNamesTakePrecedenceOverLegacyNames(): void
     {
         $fixture = json_decode(
