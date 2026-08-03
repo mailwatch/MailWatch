@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace MailWatch;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\Migrations\Configuration\Connection\ExistingConnection;
+use Doctrine\Migrations\Configuration\Migration\ConfigurationArray;
+use Doctrine\Migrations\DependencyFactory;
 use MailWatch\Antivirus\Domain\AntivirusScanner;
 use MailWatch\Antivirus\Domain\FSecureReportParser;
 use MailWatch\Antivirus\Http\AntivirusStatusController;
@@ -16,6 +21,7 @@ use MailWatch\Shared\Application\Port\CommandRunner;
 use MailWatch\Shared\Http\PageGuard;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfigurationLoader;
+use MailWatch\Shared\Infrastructure\Database\DatabaseConfigurationLoader;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 use MailWatch\Shared\Infrastructure\System\ShellCommandRunner;
 use MailWatch\Shared\Presentation\PageLayout;
@@ -122,6 +128,39 @@ final readonly class ApplicationFactory
             static function(string $message): void {
                 audit_log($message);
             }
+        );
+    }
+
+    /**
+     * The DBAL connection, built from the constants conf.php already defines.
+     *
+     * Nothing serves a request through it yet: the gateways arrive next, and
+     * for now it exists so the migrator can reach the configured database.
+     */
+    public static function databaseConnection(): Connection
+    {
+        return DriverManager::getConnection(
+            (new DatabaseConfigurationLoader())->load()->parameters()
+        );
+    }
+
+    /**
+     * Migrations are wired here rather than in a configuration file so that the
+     * connection comes from the same loader the application uses, instead of a
+     * second copy of the credentials living beside conf.php.
+     */
+    public static function migrations(Connection $connection): DependencyFactory
+    {
+        return DependencyFactory::fromConnection(
+            new ConfigurationArray([
+                'migrations_paths' => [
+                    'MailWatch\Migrations' => self::projectDirectory() . '/migrations',
+                ],
+                'table_storage' => [
+                    'table_name' => 'mailwatch_migrations',
+                ],
+            ]),
+            new ExistingConnection($connection)
         );
     }
 

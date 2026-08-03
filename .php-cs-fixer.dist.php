@@ -2,6 +2,8 @@
 
 $finder = (new PhpCsFixer\Finder())
     ->in('src')
+    ->in('config')
+    ->in('migrations')
     ->in('public_html')
     ->in('mailscanner')->exclude('lib')->notPath('conf.php')
     ->in('tools')
