@@ -11,6 +11,9 @@
 - Points in time are stored as UTC and converted for display; the database session is pinned to `+00:00` and dates are formatted in PHP rather than by SQL
 - `MailWatch.pm` sends the message timestamp as an ISO 8601 instant, and no longer sends `date` and `time`: both are derived from its offset
 
+### Fixed
+- Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
+
 ### Compatibility
 - The minimal PHP version is now 8.3.
 - The minimal supported MySQL version is now 5.7.42
