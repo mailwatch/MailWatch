@@ -81,11 +81,6 @@ if (isset($_POST['submit'])) {
     if (!validateInput($url_submit, 'listsubmit')) {
         $url_submit = '';
     }
-} elseif (isset($_GET['submit'])) {
-    $url_submit = deepSanitizeInput($_GET['submit'], 'url');
-    if (!validateInput($url_submit, 'listsubmit')) {
-        $url_submit = '';
-    }
 } else {
     $url_submit = '';
 }
@@ -113,8 +108,8 @@ if (isset($_POST['domain'])) {
     $url_domain = '';
 }
 
-if (isset($_GET['listid'])) {
-    $url_id = deepSanitizeInput($_GET['listid'], 'num');
+if (isset($_POST['listid'])) {
+    $url_id = deepSanitizeInput($_POST['listid'], 'num');
     if (!validateInput($url_id, 'num')) {
         $url_id = '';
     }
@@ -139,58 +134,12 @@ $from = match ($url_type) {
     default => $url_from,
 };
 
-$myusername = safe_value(stripslashes((string)$_SESSION['myusername']));
-// Validate input against the user type
-$to_user_filter = [];
-$to_domain_filter = [];
+$myusername = stripslashes((string)$_SESSION['myusername']);
+$userType = (string)($_SESSION['user_type'] ?? '');
+$listAdministration = \MailWatch\ApplicationFactory::listAdministration();
 $to_address = '';
-switch ($_SESSION['user_type']) {
-    case 'U': // User
-        $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-        $result1 = dbquery($sql1);
-
-        $filter = [];
-        while ($row = $result1->fetch_assoc()) {
-            $filter[] = $row['filter'];
-        }
-        $user_filter = [];
-        foreach ($filter as $user_filter_check) {
-            if (preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $user_filter_check)) {
-                $user_filter[] = $user_filter_check;
-            }
-        }
-        $user_filter[] = $myusername;
-        foreach ($user_filter as $tempvar) {
-            if (strpos($tempvar, '@')) {
-                $ar = explode('@', $tempvar);
-                $username = $ar[0];
-                $domainname = $ar[1];
-                $to_user_filter[] = $username;
-                $to_domain_filter[] = $domainname;
-            }
-        }
-        $to_user_filter = array_unique($to_user_filter);
-        $to_domain_filter = array_unique($to_domain_filter);
-        break;
-    case 'D': // Domain Admin
-        $sql1 = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-        $result1 = dbquery($sql1);
-
-        while ($row = $result1->fetch_assoc()) {
-            $to_domain_filter[] = $row['filter'];
-        }
-        if (strpos((string)$_SESSION['myusername'], '@')) {
-            $ar = explode('@', (string)$_SESSION['myusername']);
-            $domainname = $ar[1];
-            $to_domain_filter[] = $domainname;
-        } else {
-            $to_domain_filter[] = $_SESSION['myusername'];
-        }
-        $to_domain_filter = array_unique($to_domain_filter);
-        break;
-    case 'A': // Administrator
-        $to_address = 'default';
-        break;
+if ('A' === $userType) {
+    $to_address = 'default';
 }
 switch (true) {
     case !empty($url_to):
@@ -206,17 +155,18 @@ switch (true) {
 
 // Submitted
 if ('add' === $url_submit) {
-    if (false === checkToken($_POST['token'])) {
+    if (false === checkToken($_POST['token'] ?? '')) {
         header('Location: login.php?error=pagetimeout');
         exit;
     }
-    if (false === checkFormToken('/lists.php list token', $_POST['formtoken'])) {
+    if (false === checkFormToken('/lists.php list token', $_POST['formtoken'] ?? '')) {
         header('Location: login.php?error=pagetimeout');
         exit;
     }
 
     // Check input is valid
-    if (empty($url_list)) {
+    $kind = \MailWatch\Lists\Domain\ListKind::fromLegacyCode($url_list);
+    if (null === $kind) {
         $errors[] = __('error071');
     }
     if (empty($from)) {
@@ -224,26 +174,23 @@ if ('add' === $url_submit) {
     }
 
     $to_domain = strtolower($url_domain);
-    // Insert the data
-    if (!isset($errors)) {
-        switch ($url_list) {
-            case 'w': // Allowlist
-                $list = 'allowlist';
-                $listi18 = __('wl07');
-                break;
-            case 'b': // Blocklist
-                $list = 'blocklist';
-                $listi18 = __('bl07');
-                break;
-            default:
-                throw new \RuntimeException('Invalid list case');
+    if ('' === $to_domain && str_contains($to_address, '@')) {
+        $to_domain = strtolower(substr($to_address, (int)strrpos($to_address, '@') + 1));
+    }
+    if (!isset($errors) && null !== $kind) {
+        if (!$listAdministration->add(
+            $myusername,
+            $userType,
+            $kind,
+            stripslashes($from),
+            stripslashes($to_address),
+            $to_domain,
+        )) {
+            $errors[] = __('dievalidate99');
+        } else {
+            $listi18 = \MailWatch\Lists\Domain\ListKind::Allowlist === $kind ? __('wl07') : __('bl07');
+            audit_log(sprintf(__('auditlogadded07', true), $from, $to_address, $listi18));
         }
-        $sql = 'REPLACE INTO ' . $list . ' (to_address, to_domain, from_address) VALUES '
-            . "('" . safe_value(stripslashes($to_address)) . "',"
-            . "'" . safe_value($to_domain) . "',"
-            . "'" . safe_value(stripslashes($from)) . "')";
-        dbquery($sql);
-        audit_log(sprintf(__('auditlogadded07', true), $from, $to_address, $listi18));
     }
     $to_domain = '';
     $touser = '';
@@ -253,77 +200,70 @@ if ('add' === $url_submit) {
 
 // Delete
 if ('delete' === $url_submit) {
-    if (false === checkToken($_GET['token'])) {
+    if (false === checkToken($_POST['token'] ?? '')) {
         header('Location: login.php?error=pagetimeout');
         exit;
     }
-    $id = $url_id;
-    switch ($url_list) {
-        case 'w':
-            $list = 'allowlist';
-            $listi18 = __('wl07');
-            break;
-        case 'b':
-            $list = 'blocklist';
-            $listi18 = __('bl07');
-            break;
-        default:
-            throw new \RuntimeException('Invalid list case');
+    if (false === checkFormToken('/lists.php list token', $_POST['formtoken'] ?? '')) {
+        header('Location: login.php?error=pagetimeout');
+        exit;
     }
 
-    $sqlfrom = "SELECT from_address FROM $list WHERE id='$id'";
-    $result = dbquery($sqlfrom);
-    $row = $result->fetch_array();
-    $from_address = $row['from_address'];
-
-    switch ($_SESSION['user_type']) {
-        case 'U':
-            $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
-            break;
-        case 'D':
-            $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
-            break;
-        case 'A':
-            $sql = "DELETE FROM $list WHERE id='$id'";
-            audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
-            break;
-        default:
-            throw new \RuntimeException('Invalid User type');
+    $kind = \MailWatch\Lists\Domain\ListKind::fromLegacyCode($url_list);
+    if (null === $kind || '' === $url_id) {
+        $errors[] = __('dievalidate99');
+    } else {
+        $removed = $listAdministration->delete($myusername, $userType, $kind, (int)$url_id);
+        if (null === $removed) {
+            $errors[] = __('dievalidate99');
+        } else {
+            $listi18 = \MailWatch\Lists\Domain\ListKind::Allowlist === $kind ? __('wl07') : __('bl07');
+            audit_log(sprintf(
+                __('auditlogremoved07', true),
+                $removed->fromAddress,
+                $removed->toAddress,
+                $listi18,
+            ));
+        }
     }
 
-    $id = safe_value($url_id);
-    dbquery($sql);
     $to_domain = '';
     $touser = '';
     $from = '';
     $url_list = '';
 }
 
+$overview = $listAdministration->overview($myusername, $userType);
+$to_user_filter = $overview->access->selectableAddresses();
+$to_domain_filter = $overview->access->domains();
+
 /**
- * @param string $sql
- * @param string $list
- *
- * @return array
+ * @param list<\MailWatch\Lists\Domain\ListEntry> $entries
  */
-function build_table($sql, $list)
+function build_table(array $entries, string $list, string $token, string $formToken): array
 {
-    $sth = dbquery($sql);
     $table_html = '';
-    $entries = $sth->num_rows;
-    if ($sth->num_rows > 0) {
+    $entryNumber = count($entries);
+    if ($entryNumber > 0) {
         $table_html .= '<table class="allowblocklist rowhover">' . "\n";
         $table_html .= ' <tr>' . "\n";
         $table_html .= '  <th>' . __('from07') . '</th>' . "\n";
         $table_html .= '  <th>' . __('to07') . '</th>' . "\n";
         $table_html .= '  <th>' . __('action07') . '</th>' . "\n";
         $table_html .= ' </tr>' . "\n";
-        while ($row = $sth->fetch_row()) {
+        foreach ($entries as $entry) {
+            $fromAddress = htmlspecialchars($entry->fromAddress, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $toAddress = htmlspecialchars($entry->toAddress, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             $table_html .= ' <tr>' . "\n";
-            $table_html .= '  <td>' . $row[1] . '</td>' . "\n";
-            $table_html .= '  <td>' . $row[2] . '</td>' . "\n";
-            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a></td>' . "\n";
+            $table_html .= '  <td>' . $fromAddress . '</td>' . "\n";
+            $table_html .= '  <td>' . $toAddress . '</td>' . "\n";
+            $table_html .= '  <td><form action="lists.php" method="post">'
+                . '<input type="hidden" name="token" value="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">'
+                . '<input type="hidden" name="formtoken" value="' . htmlspecialchars($formToken, ENT_QUOTES, 'UTF-8') . '">'
+                . '<input type="hidden" name="submit" value="delete">'
+                . '<input type="hidden" name="listid" value="' . $entry->id . '">'
+                . '<input type="hidden" name="list" value="' . $list . '">'
+                . '<button type="submit">' . __('delete07') . '</button></form></td>' . "\n";
             $table_html .= ' </tr>' . "\n";
         }
         $table_html .= '</table>' . "\n";
@@ -331,7 +271,7 @@ function build_table($sql, $list)
         $table_html = __('noentries07') . "\n";
     }
 
-    return ['html' => $table_html, 'entry_number' => $entries];
+    return ['html' => $table_html, 'entry_number' => $entryNumber];
 }
 
 echo '
@@ -342,7 +282,7 @@ echo '
  </tr>
  <tr>
   <td class="heading">' . __('from07') . '</td>
-  <td><input type="text" name="from" size=50 value="' . $from . '"></td>
+  <td><input type="text" name="from" size=50 value="' . htmlspecialchars($from, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"></td>
  </tr>
  <tr>
   <td class="heading">' . __('to07') . '</td>';
@@ -350,36 +290,34 @@ echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "
 echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token') . '">' . "\n";
 switch ($_SESSION['user_type']) {
     case 'A':
-        echo '<td><input type="text" name="to" size=22 value="' . stripslashes($touser) . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
+        echo '<td><input type="text" name="to" size=22 value="' . htmlspecialchars(stripslashes($touser), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">@<input type="text" name="domain" size=25 value="' . htmlspecialchars($to_domain, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"></td>';
         break;
     case 'U':
         echo '<td> <select name="to">';
         foreach ($to_user_filter as $to_user_selection) {
-            if ($touser === $to_user_selection) {
-                echo '<option selected>' . stripslashes($to_user_selection) . '</option>';
+            $escapedSelection = htmlspecialchars(stripslashes($to_user_selection), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            if ($url_to === $to_user_selection) {
+                echo '<option selected>' . $escapedSelection . '</option>';
             } else {
-                echo '<option>' . stripslashes($to_user_selection) . '</option>';
+                echo '<option>' . $escapedSelection . '</option>';
             }
         }
-        echo '</select>@<select name="domain">';
-        foreach ($to_domain_filter as $to_domain_selection) {
-            if ($to_domain === $to_domain_selection) {
-                echo '<option selected>' . $to_domain_selection . '</option>';
-            } else {
-                echo '<option>' . $to_domain_selection . '</option>';
-            }
-        }
-        echo '</td>';
+        echo '</select></td>';
         break;
     case 'D':
-        echo '<td><input type="text" name="to" size=22 value="' . stripslashes($touser) . '">@<select name="domain">';
+        echo '<td><input type="text" name="to" size=22 value="' . htmlspecialchars(stripslashes($touser), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
+            $escapedSelection = htmlspecialchars($to_domain_selection, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             if ($to_domain === $to_domain_selection) {
-                echo '<option selected>' . $to_domain_selection . '</option>';
+                echo '<option selected>' . $escapedSelection . '</option>';
             } else {
-                echo '<option>' . $to_domain_selection . '</option>';
+                echo '<option>' . $escapedSelection . '</option>';
             }
         }
+        echo '</select></td>';
+        break;
+    default:
+        echo '<td></td>';
         break;
 }
 
@@ -415,14 +353,9 @@ if (isset($errors)) {
  </tr>';
 }
 
-$whitelist = build_table(
-    'SELECT id, from_address, to_address FROM allowlist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
-    'w'
-);
-$blacklist = build_table(
-    'SELECT id, from_address, to_address FROM blocklist WHERE ' . $_SESSION['global_list'] . ' ORDER BY from_address',
-    'b'
-);
+$formToken = generateFormToken('/lists.php list token');
+$whitelist = build_table($overview->allowlist, 'w', (string)$_SESSION['token'], $formToken);
+$blacklist = build_table($overview->blocklist, 'b', (string)$_SESSION['token'], $formToken);
 echo '</table>
    </form>
    <br>

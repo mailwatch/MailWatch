@@ -130,6 +130,14 @@ MailWatch interface reaches a gateway within one refresh interval, not
 immediately** — allow up to 15 minutes with the defaults before concluding that a
 list change had no effect.
 
+The web interface applies the local MailWatch account scope before reading or
+changing an entry. Administrators can manage every recipient. Domain
+administrators can manage their own domain plus active domain filters. Users can
+manage their own address plus active address filters. LDAP and IMAP authenticate
+the account but do not widen this local role and filter policy. Additions and
+deletions are POST operations protected by both the session token and the form
+token; a copied deletion URL no longer changes a list.
+
 Refreshes use `If-None-Match`. When nothing has changed MailWatch answers `304`
 and no body is transferred, so a short interval is cheap.
 
