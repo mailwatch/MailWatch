@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use MailWatch\Users\Application\AccountAdministrationGateway;
 use MailWatch\Users\Domain\AccountProfile;
+use MailWatch\Users\Domain\AccountSummary;
 use MailWatch\Users\Domain\ManagedAccount;
 
 final readonly class DbalAccountAdministrationGateway implements AccountAdministrationGateway
@@ -39,6 +40,25 @@ final readonly class DbalAccountAdministrationGateway implements AccountAdminist
             (string)($row['quarantine_rcpt'] ?? ''),
             (int)($row['login_timeout'] ?? -1),
             (int)($row['last_login'] ?? -1),
+        );
+    }
+
+    public function accountSummaries(): array
+    {
+        return array_map(
+            static fn(array $row): AccountSummary => new AccountSummary(
+                (int)($row['id'] ?? 0),
+                (string)($row['username'] ?? ''),
+                (string)($row['fullname'] ?? ''),
+                (string)($row['type'] ?? ''),
+                !(bool)($row['noscan'] ?? false),
+                (float)($row['spamscore'] ?? 0),
+                (float)($row['highspamscore'] ?? 0),
+                (int)($row['login_expiry'] ?? -1),
+            ),
+            $this->connection->fetchAllAssociative(
+                'SELECT id, username, fullname, type, noscan, spamscore, highspamscore, login_expiry FROM users ORDER BY username',
+            ),
         );
     }
 
@@ -101,6 +121,11 @@ final readonly class DbalAccountAdministrationGateway implements AccountAdminist
             $connection->delete('user_filters', ['username' => $target->username]);
             $connection->delete('users', ['id' => $target->id]);
         });
+    }
+
+    public function forceLogout(ManagedAccount $target): void
+    {
+        $this->connection->update('users', ['login_expiry' => -1], ['id' => $target->id]);
     }
 
     /** @return array<string, bool|float|int|string> */
