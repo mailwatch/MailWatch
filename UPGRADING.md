@@ -43,7 +43,15 @@ to the first 2.0 migration:
 php upgrade.php
 ```
 
-Then record that baseline migration. Do this only after `upgrade.php` has
+Initialise Doctrine's migration metadata storage. This creates or updates only
+the `mailwatch_migrations` tracking table; it does not change the application
+schema:
+
+```bash
+vendor/bin/doctrine-migrations migrations:sync-metadata-storage --no-interaction
+```
+
+Then record the baseline migration. Do this only after `upgrade.php` has
 completed successfully; the baseline command records existing schema and does
 not create it:
 
