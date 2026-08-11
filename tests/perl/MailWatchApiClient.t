@@ -78,6 +78,7 @@ sub client_with {
         local_retry_delay   => 0,
         local_logger        => sub { die 'Local logger must not be used by API tests' },
         sleeper             => sub { push @sleeps, $_[0] },
+        request_id_generator => sub { 'perl-request-id' },
         %spool_options,
     );
 
@@ -98,6 +99,7 @@ subtest 'a successful request is sent once with the current contract' => sub {
     is($request->uri->as_string, 'https://mailwatch.example.test/api/messages', 'uses the configured endpoint');
     is($request->header('Content-Type'), 'application/json', 'uses the JSON content type');
     is($request->header('X-MailWatch-API-Key'), 'perl-characterisation-api-key', 'sends the API key header');
+    is($request->header('X-Request-ID'), 'perl-request-id', 'sends a correlation identifier');
     is(
         $request->header('Idempotency-Key'),
         sha256_hex(join "\0", 'mx.example.test', 'fixture-message-001', '0000000000000000000000000000000000000000'),
@@ -106,7 +108,7 @@ subtest 'a successful request is sent once with the current contract' => sub {
     is_deeply(decode_json($request->content), fixture(), 'sends the complete Perl payload');
     is_deeply(
         $logs,
-        [['info', 'fixture-message-001: Logged to MailWatch API']],
+        [['info', 'fixture-message-001: Logged to MailWatch API [request_id=perl-request-id]']],
         'logs successful delivery'
     );
 };
@@ -135,6 +137,7 @@ subtest 'a snapshot request sends the read contract and returns its ETag' => sub
     is($request->header('X-MailWatch-Contract-Version'), '1', 'requests contract version 1');
     is($request->header('If-None-Match'), '"snapshot-before"', 'sends the previous ETag');
     is($request->header('X-MailWatch-API-Key'), 'perl-characterisation-api-key', 'uses the configured API key');
+    is($request->header('X-Request-ID'), 'perl-request-id', 'correlates the snapshot request');
 };
 
 subtest 'an unchanged snapshot is reported without decoding a body' => sub {
@@ -209,7 +212,11 @@ subtest 'an authentication failure is not retried' => sub {
     is_deeply($sleeps, [], 'the client does not wait after a permanent failure');
     is_deeply(
         $logs,
-        [['error', 'fixture-message-001: MailWatch API rejected message: 401 Unauthorized; not retrying.']],
+        [[
+            'error',
+            'fixture-message-001: MailWatch API rejected message: 401 Unauthorized; not retrying. '
+                . '[request_id=perl-request-id]'
+        ]],
         'the permanent failure is logged as an error'
     );
 };
@@ -302,7 +309,11 @@ subtest 'a message is abandoned after all attempts fail' => sub {
     is_deeply($sleeps, [7], 'there is no delay after the final attempt');
     is_deeply(
         $logs->[-1],
-        ['error', 'fixture-message-001: Failed to log to MailWatch API after 2 attempts.'],
+        [
+            'error',
+            'fixture-message-001: Failed to log to MailWatch API after 2 attempts. '
+                . '[request_id=perl-request-id]'
+        ],
         'the abandoned message is visible in the error log'
     );
 };

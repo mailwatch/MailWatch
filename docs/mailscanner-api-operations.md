@@ -23,7 +23,9 @@ down is working as designed.
 
 Every request carries the shared key in the `X-MailWatch-API-Key` header. Snapshot
 requests also send `X-MailWatch-Contract-Version: 1`, and `If-None-Match` once a
-snapshot has been downloaded. Errors come back as `mailwatch.api.error.v1`.
+snapshot has been downloaded. The shared client sends an `X-Request-ID`, which
+MailWatch returns unchanged on every response. Errors come back as
+`mailwatch.api.error.v1`.
 
 Mail flow never waits on MailWatch. If logging fails, the message is queued and
 MailScanner carries on delivering.
@@ -197,6 +199,29 @@ A future release will accept several keys at once, one per installation, which
 removes the coordinated window and allows a compromised gateway to be revoked on
 its own.
 
+## Correlating requests and logs
+
+Every API response contains `X-Request-ID`. The MailScanner client supplies a
+safe identifier and includes it in its success and failure messages. If another
+client omits the header, MailWatch generates a 32-character hexadecimal value;
+an unsafe value is replaced rather than reflected into a response header.
+
+MailWatch writes one JSON record per API event through the PHP error log. The
+line starts with `MailWatch API` and contains only operational metadata:
+
+```text
+MailWatch API {"timestamp":"2026-08-11T12:00:00Z","level":"info","event":"mailwatch.api.request.completed","request_id":"example-request","endpoint":"messages","status":201,"outcome":"inserted","duration_ms":4.217}
+```
+
+Search the MailScanner and MailWatch logs for the same request ID to follow one
+delivery across the HTTP boundary. Completed requests record duration in
+milliseconds; rejected and failed requests record a stable reason code.
+
+API keys, request payloads, SQL, exception messages and stack traces are never
+part of these records. Only the exception class is retained for an unexpected
+server failure. Treat a credential or message payload appearing in an API log as
+a defect.
+
 ## Troubleshooting
 
 | Symptom in the MailScanner log | Cause | Action |
@@ -223,9 +248,9 @@ worth reporting.
 curl -sS -i -H 'X-MailWatch-API-Key: your-key' -H 'X-MailWatch-Contract-Version: 1' https://mailwatch.example.com/api/allow-block-list
 ```
 
-A healthy response is `200` with an `ETag` header and a body whose `contract`
-field is `mailwatch.allow-block-list.v1`. Run this from a gateway rather than from
-a workstation, so it exercises the same network path.
+A healthy response is `200` with `ETag` and `X-Request-ID` headers and a body
+whose `contract` field is `mailwatch.allow-block-list.v1`. Run this from a gateway
+rather than from a workstation, so it exercises the same network path.
 
 ## Defaults reference
 

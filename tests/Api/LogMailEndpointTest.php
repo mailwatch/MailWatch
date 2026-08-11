@@ -178,6 +178,43 @@ final class LogMailEndpointTest extends TestCase
         self::assertSame(['error' => 'Unauthorized'], $response['json']);
     }
 
+    public function testItReturnsASafeCorrelationIdOnEveryApiResponse(): void
+    {
+        $response = $this->request(
+            'POST',
+            '{}',
+            'incorrect-api-key',
+            requestId: 'caller-request-123',
+        );
+
+        self::assertSame(401, $response['status']);
+        self::assertSame('caller-request-123', $response['headers']['x-request-id']);
+
+        $unsafe = $this->request(
+            'POST',
+            '{}',
+            'incorrect-api-key',
+            requestId: 'unsafe request id',
+        );
+        self::assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $unsafe['headers']['x-request-id']);
+    }
+
+    public function testStructuredLogsExcludeCredentialsAndPayloads(): void
+    {
+        $before = is_file(self::$serverLogPath) ? filesize(self::$serverLogPath) : 0;
+        self::assertIsInt($before);
+
+        $this->request('POST', '{}', 'api-key-never-log-this', requestId: 'secrecy-check');
+        $this->request('POST', '{"payload":"never-log-this-payload"', self::API_KEY, requestId: 'secrecy-check');
+
+        clearstatcache(true, self::$serverLogPath);
+        $log = (string)file_get_contents(self::$serverLogPath, false, null, $before);
+        self::assertStringContainsString('"request_id":"secrecy-check"', $log);
+        self::assertStringContainsString('"event":"mailwatch.api.request.rejected"', $log);
+        self::assertStringNotContainsString('api-key-never-log-this', $log);
+        self::assertStringNotContainsString('never-log-this-payload', $log);
+    }
+
     public function testItRejectsMalformedJson(): void
     {
         $response = $this->request('POST', '{', self::API_KEY);
@@ -408,7 +445,7 @@ final class LogMailEndpointTest extends TestCase
     }
 
     /**
-     * @return array{status: int, json: array<string, mixed>}
+     * @return array{status: int, json: array<string, mixed>, headers: array<string, string>}
      */
     private function request(
         string $method,
@@ -416,6 +453,7 @@ final class LogMailEndpointTest extends TestCase
         ?string $apiKey = null,
         ?string $idempotencyKey = null,
         string $path = '/api/messages',
+        ?string $requestId = null,
     ): array {
         $headers = ['Content-Type: application/json'];
         if (null !== $apiKey) {
@@ -423,6 +461,9 @@ final class LogMailEndpointTest extends TestCase
         }
         if (null !== $idempotencyKey) {
             $headers[] = 'Idempotency-Key: ' . $idempotencyKey;
+        }
+        if (null !== $requestId) {
+            $headers[] = 'X-Request-ID: ' . $requestId;
         }
 
         $response = $this->rawRequest($method, $path, $headers, $body);
@@ -436,13 +477,14 @@ final class LogMailEndpointTest extends TestCase
         return [
             'status' => $response['status'],
             'json' => $json,
+            'headers' => $response['headers'],
         ];
     }
 
     /**
      * @param list<string> $headers
      *
-     * @return array{status: int, body: string}
+     * @return array{status: int, body: string, headers: array<string, string>}
      */
     private function rawRequest(string $method, string $path, array $headers = [], string $body = ''): array
     {
@@ -463,9 +505,19 @@ final class LogMailEndpointTest extends TestCase
         self::assertMatchesRegularExpression('/^HTTP\/\S+ (\d{3})/', $responseHeaders[0]);
         preg_match('/^HTTP\/\S+ (\d{3})/', $responseHeaders[0], $matches);
 
+        $normalizedHeaders = [];
+        foreach (array_slice($responseHeaders, 1) as $header) {
+            if (!str_contains($header, ':')) {
+                continue;
+            }
+            [$name, $value] = explode(':', $header, 2);
+            $normalizedHeaders[strtolower(trim($name))] = trim($value);
+        }
+
         return [
             'status' => (int)$matches[1],
             'body' => $responseBody,
+            'headers' => $normalizedHeaders,
         ];
     }
 

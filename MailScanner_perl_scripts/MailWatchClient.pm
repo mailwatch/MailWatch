@@ -63,18 +63,23 @@ sub new {
     $args{local_max_retries} = 1 unless defined $args{local_max_retries};
     $args{local_retry_delay} = 0 unless defined $args{local_retry_delay};
     $args{local_logger} = $args{api_logger} unless defined $args{local_logger};
+    $args{request_id_generator} = sub {
+        return sha256_hex(join "\0", time, $$, rand(), {});
+    } unless defined $args{request_id_generator};
 
     return bless \%args, $class;
 }
 
 sub fetch_api_snapshot {
     my ($self, $endpoint, $etag) = @_;
+    my $request_id = _request_id($self);
 
     for my $attempt (1 .. $self->{api_max_retries}) {
         my $request = HTTP::Request->new(GET => $endpoint);
         $request->header('Accept' => 'application/json');
         $request->header('X-MailWatch-API-Key' => $self->{api_key});
         $request->header('X-MailWatch-Contract-Version' => '1');
+        $request->header('X-Request-ID' => $request_id);
         $request->header('If-None-Match' => $etag) if defined $etag && $etag ne '';
 
         my $response = $self->{user_agent}->request($request);
@@ -86,14 +91,20 @@ sub fetch_api_snapshot {
         }
         if ($response->is_success) {
             if (length($response->content) > $self->{api_snapshot_max_bytes}) {
-                $self->{api_logger}->('error', 'MailWatch API snapshot exceeded the configured response limit.');
+                $self->{api_logger}->(
+                    'error',
+                    "MailWatch API snapshot exceeded the configured response limit. [request_id=$request_id]"
+                );
 
                 return;
             }
 
             my $snapshot = eval { decode_json($response->content) };
             unless (ref $snapshot eq 'HASH') {
-                $self->{api_logger}->('error', 'MailWatch API returned an invalid JSON snapshot.');
+                $self->{api_logger}->(
+                    'error',
+                    "MailWatch API returned an invalid JSON snapshot. [request_id=$request_id]"
+                );
 
                 return;
             }
@@ -106,19 +117,30 @@ sub fetch_api_snapshot {
         }
 
         unless (_is_retryable_status($response->code)) {
-            $self->{api_logger}->('error', 'MailWatch API rejected the snapshot request: ' . $response->status_line . '.');
+            $self->{api_logger}->(
+                'error',
+                'MailWatch API rejected the snapshot request: ' . $response->status_line
+                    . ". [request_id=$request_id]"
+            );
 
             return;
         }
 
-        $self->{api_logger}->('warn', 'MailWatch API snapshot request failed: ' . $response->status_line . '.');
+        $self->{api_logger}->(
+            'warn',
+            'MailWatch API snapshot request failed: ' . $response->status_line
+                . ". [request_id=$request_id]"
+        );
         if ($attempt < $self->{api_max_retries}) {
             my $delay = _api_retry_delay($self, $attempt);
             $self->{sleeper}->($delay);
         }
     }
 
-    $self->{api_logger}->('error', "MailWatch API snapshot request failed after $self->{api_max_retries} attempts.");
+    $self->{api_logger}->(
+        'error',
+        "MailWatch API snapshot request failed after $self->{api_max_retries} attempts. [request_id=$request_id]"
+    );
 
     return;
 }
@@ -198,12 +220,14 @@ sub _send_api_message {
 
     die 'Missing MailWatch API ingestion endpoint' unless defined $self->{api_endpoint};
 
+    my $request_id = _request_id($self);
     my $retry_count = 0;
     while ($retry_count < $self->{api_max_retries}) {
         my $json_data = encode_json($message);
         my $request = HTTP::Request->new(POST => $self->{api_endpoint});
         $request->content_type('application/json');
         $request->header('X-MailWatch-API-Key' => $self->{api_key});
+        $request->header('X-Request-ID' => $request_id);
         my $idempotency_key = _idempotency_key($message);
         $request->header('Idempotency-Key' => $idempotency_key)
             if defined $idempotency_key;
@@ -211,7 +235,10 @@ sub _send_api_message {
 
         my $response = $self->{user_agent}->request($request);
         if ($response->is_success) {
-            $self->{api_logger}->('info', "$$message{id}: Logged to MailWatch API");
+            $self->{api_logger}->(
+                'info',
+                "$$message{id}: Logged to MailWatch API [request_id=$request_id]"
+            );
 
             return 1;
         }
@@ -219,13 +246,18 @@ sub _send_api_message {
         unless (_is_retryable_status($response->code)) {
             $self->{api_logger}->(
                 'error',
-                "$$message{id}: MailWatch API rejected message: " . $response->status_line . '; not retrying.'
+                "$$message{id}: MailWatch API rejected message: " . $response->status_line
+                    . "; not retrying. [request_id=$request_id]"
             );
 
             return 0;
         }
 
-        $self->{api_logger}->('warn', "$$message{id}: Failed to log to MailWatch API: " . $response->status_line);
+        $self->{api_logger}->(
+            'warn',
+            "$$message{id}: Failed to log to MailWatch API: " . $response->status_line
+                . " [request_id=$request_id]"
+        );
         ++$retry_count;
         if ($retry_count < $self->{api_max_retries}) {
             my $delay = _api_retry_delay($self, $retry_count);
@@ -234,12 +266,23 @@ sub _send_api_message {
         } else {
             $self->{api_logger}->(
                 'error',
-                "$$message{id}: Failed to log to MailWatch API after $self->{api_max_retries} attempts."
+                "$$message{id}: Failed to log to MailWatch API after $self->{api_max_retries} attempts. "
+                    . "[request_id=$request_id]"
             );
         }
     }
 
     return 0;
+}
+
+sub _request_id {
+    my ($self) = @_;
+
+    my $request_id = $self->{request_id_generator}->();
+    die 'MailWatch request ID generator returned an unsafe value'
+        unless defined $request_id && $request_id =~ /\A[A-Za-z0-9][A-Za-z0-9._-]{0,127}\z/;
+
+    return $request_id;
 }
 
 sub _spool_api_message {

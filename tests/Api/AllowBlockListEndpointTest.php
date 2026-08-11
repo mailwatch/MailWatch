@@ -119,12 +119,13 @@ final class AllowBlockListEndpointTest extends TestCase
 
     public function testItReturnsTheCompleteEffectiveSnapshot(): void
     {
-        $response = $this->request('GET', self::API_KEY);
+        $response = $this->request('GET', self::API_KEY, requestId: 'allow-list-request-123');
 
         self::assertSame(200, $response['status']);
         self::assertSame('mailwatch.allow-block-list.v1', $response['json']['contract']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $response['json']['snapshot_version']);
         self::assertSame('mailwatch.allow-block-list.v1', $response['headers']['x-mailwatch-contract']);
+        self::assertSame('allow-list-request-123', $response['headers']['x-request-id']);
         self::assertSame('"' . $response['json']['snapshot_version'] . '"', $response['headers']['etag']);
 
         self::assertContains(
@@ -159,7 +160,8 @@ final class AllowBlockListEndpointTest extends TestCase
         string $method,
         ?string $apiKey = null,
         ?string $etag = null,
-        string $contractVersion = '1'
+        string $contractVersion = '1',
+        ?string $requestId = null,
     ): array {
         $headers = ['X-MailWatch-Contract-Version: ' . $contractVersion];
         if (null !== $apiKey) {
@@ -167,6 +169,9 @@ final class AllowBlockListEndpointTest extends TestCase
         }
         if (null !== $etag) {
             $headers[] = 'If-None-Match: ' . $etag;
+        }
+        if (null !== $requestId) {
+            $headers[] = 'X-Request-ID: ' . $requestId;
         }
         $context = stream_context_create([
             'http' => [
