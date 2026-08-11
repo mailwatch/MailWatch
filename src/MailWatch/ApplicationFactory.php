@@ -24,9 +24,13 @@ use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Http\MessageController;
 use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
 use MailWatch\Quarantine\Application\QuarantineMessageGateway;
+use MailWatch\Quarantine\Application\QuarantineStorage;
+use MailWatch\Quarantine\Application\SpamLearner;
 use MailWatch\Quarantine\Domain\MessageScope;
 use MailWatch\Quarantine\Domain\QuarantineAccess;
 use MailWatch\Quarantine\Infrastructure\Database\DbalQuarantineMessageGateway;
+use MailWatch\Quarantine\Infrastructure\Storage\FilesystemQuarantineStorage;
+use MailWatch\Quarantine\Infrastructure\System\CommandLineSpamLearner;
 use MailWatch\Shared\Application\Port\CommandRunner;
 use MailWatch\Shared\Http\ApiRequestContext;
 use MailWatch\Shared\Http\ApiTelemetry;
@@ -38,6 +42,7 @@ use MailWatch\Shared\Infrastructure\Logging\ErrorLogLogger;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 use MailWatch\Shared\Infrastructure\Security\NativePasswordHasher;
 use MailWatch\Shared\Infrastructure\System\ShellCommandRunner;
+use MailWatch\Shared\Infrastructure\System\SymfonyProcessRunner;
 use MailWatch\Shared\Presentation\PageLayout;
 use MailWatch\Shared\Presentation\TemplateRenderer;
 use MailWatch\SpamSettings\Application\GetSpamSettingsSnapshot;
@@ -174,6 +179,31 @@ final readonly class ApplicationFactory
         static $gateway = null;
 
         return $gateway ??= new DbalQuarantineMessageGateway(self::databaseConnection());
+    }
+
+    /**
+     * The quarantine tree, which MailScanner writes and MailWatch only reads
+     * and prunes. Its location comes from the MailScanner configuration, so
+     * the caller passes it rather than the factory reading it.
+     */
+    public static function quarantineStorage(string $quarantineDirectory): QuarantineStorage
+    {
+        return new FilesystemQuarantineStorage($quarantineDirectory, self::commandRunner());
+    }
+
+    /**
+     * The SpamAssassin learner, with the paths and the size limit the
+     * installation configured. A limit is only passed on when it is a
+     * meaningful one, which is the condition the page script applied.
+     */
+    public static function quarantineLearner(): SpamLearner
+    {
+        return new CommandLineSpamLearner(
+            new SymfonyProcessRunner(),
+            \defined('SA_DIR') ? (string)SA_DIR : '',
+            \defined('SA_PREFS') ? (string)SA_PREFS : '',
+            \defined('SA_MAXSIZE') && SA_MAXSIZE >= 0 ? (int)SA_MAXSIZE : null,
+        );
     }
 
     /**

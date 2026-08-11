@@ -3306,32 +3306,16 @@ function stripPortFromIp($ip)
  */
 function quarantine_list($input = '/'): array
 {
-    $quarantinedir = get_conf_var('QuarantineDir') . '/';
-    $item = [];
-    if ('/' === $input) {
-        // Return top-level directory
-        $d = @opendir($quarantinedir);
+    $storage = quarantine_storage();
 
-        while (false !== ($f = @readdir($d))) {
-            if ('.' !== $f && '..' !== $f) {
-                $item[] = $f;
-            }
-        }
-        @closedir($d);
+    if ('/' === $input) {
+        $item = $storage->folders();
     } else {
-        $current_dir = $quarantinedir . $input;
-        $dirs = [$current_dir, $current_dir . '/spam', $current_dir . '/nonspam', $current_dir . '/mcp'];
-        foreach ($dirs as $dir) {
-            if (is_dir($dir) && is_readable($dir)) {
-                $d = @opendir($dir);
-                while (false !== ($f = readdir($d))) {
-                    if ('.' !== $f && '..' !== $f) {
-                        $item[] = "'$f'";
-                    }
-                }
-                closedir($d);
-            }
-        }
+        // Quoted because the calling page still builds a SQL list out of them.
+        $item = array_map(
+            static fn(string $name): string => "'" . $name . "'",
+            $storage->entries($input)
+        );
     }
 
     if (count($item) > 0) {
@@ -3340,6 +3324,14 @@ function quarantine_list($input = '/'): array
     }
 
     return $item;
+}
+
+/**
+ * The quarantine tree, at the location MailScanner is configured with.
+ */
+function quarantine_storage(): \MailWatch\Quarantine\Application\QuarantineStorage
+{
+    return \MailWatch\ApplicationFactory::quarantineStorage((string)get_conf_var('QuarantineDir'));
 }
 
 function is_local($host): bool
@@ -3370,55 +3362,22 @@ function quarantine_list_items($msgid, $rpc_only = false, ?\MailWatch\Quarantine
         exit(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
     }
     if (!$rpc_only && is_local($message->hostname)) {
-        $quarantinedir = get_conf_var('QuarantineDir');
-        $quarantine = $quarantinedir . '/' . $message->storageDate . '/' . $message->id;
-        $spam = $quarantinedir . '/' . $message->storageDate . '/spam/' . $message->id;
-        $nonspam = $quarantinedir . '/' . $message->storageDate . '/nonspam/' . $message->id;
-        $mcp = $quarantinedir . '/' . $message->storageDate . '/mcp/' . $message->id;
         $infected = $message->dangerous ? 'Y' : 'N';
         $isspam = $message->spam ? 'Y' : 'N';
         $quarantined = [];
-        $count = 0;
-        foreach ([$nonspam, $spam, $mcp] as $category) {
-            if (file_exists($category) && is_readable($category)) {
-                $quarantined[$count]['id'] = $count;
-                $quarantined[$count]['host'] = $message->hostname;
-                $quarantined[$count]['msgid'] = $message->id;
-                $quarantined[$count]['to'] = $message->recipients;
-                $quarantined[$count]['file'] = 'message';
-                $quarantined[$count]['type'] = 'message/rfc822';
-                $quarantined[$count]['path'] = $category;
-                $quarantined[$count]['md5'] = md5($category);
-                $quarantined[$count]['dangerous'] = $infected;
-                $quarantined[$count]['isspam'] = $isspam;
-                ++$count;
-            }
-        }
-        // Check the main quarantine
-        if (is_dir($quarantine) && is_readable($quarantine)) {
-            $d = opendir($quarantine) or exit(__('diequarantine303') . " $quarantine\n");
-            while (false !== ($f = readdir($d))) {
-                if ('..' !== $f && '.' !== $f) {
-                    $quarantined[$count]['id'] = $count;
-                    $quarantined[$count]['host'] = $message->hostname;
-                    $quarantined[$count]['msgid'] = $message->id;
-                    $quarantined[$count]['to'] = $message->recipients;
-                    $quarantined[$count]['file'] = $f;
-                    $file = escapeshellarg($quarantine . '/' . $f);
-                    $type = ltrim(rtrim(shell_exec('/usr/bin/file -bi ' . $file)));
-                    // In some cases file returns text/x-mail instead of message/rfc822
-                    if (preg_match('!^text/x-mail!', $type)) {
-                        $type = 'message/rfc822';
-                    }
-                    $quarantined[$count]['type'] = $type;
-                    $quarantined[$count]['path'] = $quarantine . '/' . $f;
-                    $quarantined[$count]['md5'] = md5($quarantine . '/' . $f);
-                    $quarantined[$count]['dangerous'] = $infected;
-                    $quarantined[$count]['isspam'] = $isspam;
-                    ++$count;
-                }
-            }
-            closedir($d);
+        foreach (quarantine_storage()->items($message->storageDate, $message->id) as $count => $item) {
+            $quarantined[$count] = [
+                'id' => $count,
+                'host' => $message->hostname,
+                'msgid' => $message->id,
+                'to' => $message->recipients,
+                'file' => $item->file,
+                'type' => $item->type,
+                'path' => $item->path,
+                'md5' => md5($item->path),
+                'dangerous' => $infected,
+                'isspam' => $isspam,
+            ];
         }
 
         return $quarantined;
@@ -3601,129 +3560,48 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, ?\MailWatc
         }
     }
 
+    $action = \MailWatch\Quarantine\Domain\LearnAction::tryFrom((string)$type);
+    if (null === $action) {
+        return 'Invalid argument';
+    }
+
     $status = [];
     if (!$rpc_only && is_local($list[0]['host'])) {
         // prevent sa-learn process blocking complete apache server
         session_write_close();
+        $learner = \MailWatch\ApplicationFactory::quarantineLearner();
+        $messages = \MailWatch\ApplicationFactory::quarantineMessages();
+
         foreach ($num as $val) {
-            $use_spamassassin = false;
-            $learn_type = null;
-            $isfn = '0';
-            $isfp = '0';
-            switch ($type) {
-                case 'ham':
-                    $learn_type = 'ham';
-                    // Learning SPAM as HAM - this is a false-positive
-                    $isfp = ('Y' === $list[$val]['isspam'] ? '1' : '0');
-                    break;
-                case 'spam':
-                    $learn_type = 'spam';
-                    // Learning HAM as SPAM - this is a false-negative
-                    $isfn = ('N' === $list[$val]['isspam'] ? '1' : '0');
-                    break;
-                case 'forget':
-                    $learn_type = 'forget';
-                    break;
-                case 'report':
-                    $use_spamassassin = true;
-                    $learn_type = '-r';
-                    $isfn = '1';
-                    break;
-                case 'revoke':
-                    $use_spamassassin = true;
-                    $learn_type = '-k';
-                    $isfp = '1';
-                    break;
-                default:
-                    // TODO handle this case
-                    $isfp = null;
-            }
-            // Recorded only once the learner has actually run, and only for a
-            // type that carries a verdict.
-            $recordVerdict = null !== $isfp;
+            $msgid = (string)$list[$val]['msgid'];
+            $result = $learner->learn($action, (string)$list[$val]['path']);
 
-            if (true === $use_spamassassin) {
-                // Run SpamAssassin to report or revoke spam/ham
-                exec(
-                    SA_DIR . 'spamassassin -p ' . SA_PREFS . ' ' . $learn_type . ' < ' . $list[$val]['path'] . ' 2>&1',
-                    $output_array,
-                    $retval
-                );
-                if (0 === $retval) {
-                    // Command succeeded - update the database accordingly
-                    if ($recordVerdict) {
-                        \MailWatch\ApplicationFactory::quarantineMessages()->recordLearningVerdict(
-                            (string)$list[$val]['msgid'],
-                            '1' === $isfp,
-                            '1' === $isfn
-                        );
-                    }
-                    $status[] = __('spamassassin03') . ' ' . implode(', ', $output_array);
-                    switch ($learn_type) {
-                        case '-r':
-                            $learn_type = 'spam';
-                            break;
-                        case '-k':
-                            $learn_type = 'ham';
-                            break;
-                    }
-                    audit_log(
-                        sprintf(__('auditlogquareleased03', true) . ' ', $list[$val]['msgid']) . ' ' . $learn_type
-                    );
-                } else {
-                    $status[] = __('spamerrorcode0103') . ' ' . $retval . __('spamerrorcode0203') . "\n" . implode(
-                        "\n",
-                        $output_array
-                    );
-                    global $error;
-                    $error = true;
-                }
+            if (!$result->succeeded()) {
+                $status[] = $action->usesSpamAssassin()
+                    ? __('spamerrorcode0103') . ' ' . $result->exitCode . __('spamerrorcode0203') . "\n"
+                        . implode("\n", $result->output)
+                    : __('salearnerror03') . ' ' . $result->exitCode . ' ' . __('salearnreturn03') . "\n"
+                        . implode("\n", $result->output);
+                global $error;
+                $error = true;
+
+                continue;
+            }
+
+            $verdict = \MailWatch\Quarantine\Domain\LearningVerdict::of($action, 'Y' === $list[$val]['isspam']);
+            $messages->recordLearningVerdict($msgid, $verdict->falsePositive, $verdict->falseNegative);
+
+            if ($action->usesSpamAssassin()) {
+                $status[] = __('spamassassin03') . ' ' . implode(', ', $result->output);
+                audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $msgid) . ' ' . $action->auditLabel());
             } else {
-                // Only sa-learn required
-                $max_size_option = '';
-                if (defined('SA_MAXSIZE') && is_int(SA_MAXSIZE) && SA_MAXSIZE >= 0) {
-                    $max_size_option = ' --max-size ' . SA_MAXSIZE;
-                }
-
-                exec(
-                    SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . $max_size_option . ' 2>&1',
-                    $output_array,
-                    $retval
-                );
-
-                if (0 === $retval) {
-                    // Command succeeded - update the database accordingly
-                    if ($recordVerdict) {
-                        \MailWatch\ApplicationFactory::quarantineMessages()->recordLearningVerdict(
-                            (string)$list[$val]['msgid'],
-                            '1' === $isfp,
-                            '1' === $isfn
-                        );
-                    }
-                    $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
-                    audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
-                } else {
-                    $status[] = __('salearnerror03') . ' ' . $retval . ' ' . __('salearnreturn03') . "\n" . implode(
-                        "\n",
-                        $output_array
-                    );
-                    global $error;
-                    $error = true;
-                }
+                $status[] = __('salearn03') . ' ' . implode(', ', $result->output);
+                audit_log(sprintf(__('auditlogspamtrained03', true), $msgid) . ' ' . $action->auditLabel());
             }
-            if (!isset($error)) {
-                if ('spam' === $learn_type) {
-                    $numeric_type = 2;
-                }
-                if ('ham' === $learn_type) {
-                    $numeric_type = 1;
-                }
-                if (isset($numeric_type)) {
-                    \MailWatch\ApplicationFactory::quarantineMessages()->recordLearnedClass(
-                        (string)$list[$val]['msgid'],
-                        $numeric_type
-                    );
-                }
+
+            $learnedClass = $action->learnedClass();
+            if (null !== $learnedClass) {
+                $messages->recordLearnedClass($msgid, $learnedClass);
             }
         }
 
@@ -3778,8 +3656,9 @@ function quarantine_delete($list, $num, $rpc_only = false, ?\MailWatch\Quarantin
 
     if (!$rpc_only && is_local($list[0]['host'])) {
         $status = [];
+        $storage = quarantine_storage();
         foreach ($num as $val) {
-            if (@unlink($list[$val]['path'])) {
+            if ($storage->delete($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
                 \MailWatch\ApplicationFactory::quarantineMessages()->clearQuarantineLocation(
                     (string)$list[$val]['msgid']
