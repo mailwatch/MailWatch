@@ -29,6 +29,8 @@ final class RestApiSchemaTest extends TestCase
         self::assertTrue($users->getColumn('id')->getAutoincrement());
         self::assertTrue($users->getColumn('id')->getUnsigned());
         self::assertSame(Types::STRING, Type::lookupName($users->getColumn('type')->getType()));
+        self::assertSame(Types::SMALLFLOAT, Type::lookupName($users->getColumn('spamscore')->getType()));
+        self::assertSame(Types::SMALLFLOAT, Type::lookupName($users->getColumn('highspamscore')->getType()));
         self::assertTrue($this->hasIndex($users->getIndexes(), ['username'], true));
 
         $filters = $schema->getTable('user_filters');
