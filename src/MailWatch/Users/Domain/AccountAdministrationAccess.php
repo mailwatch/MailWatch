@@ -37,6 +37,33 @@ final readonly class AccountAdministrationAccess
         );
     }
 
+    public function canList(AccountSummary $target): bool
+    {
+        if ('A' === $this->actorRole) {
+            return true;
+        }
+        if ('D' !== $this->actorRole || 'A' === $target->role) {
+            return false;
+        }
+
+        $domain = $this->domainOf($target->username);
+        if ('' === $this->actorDomain) {
+            return null === $domain;
+        }
+        if (null === $domain) {
+            return false;
+        }
+        if (0 === strcasecmp($domain, $this->actorDomain)) {
+            return true;
+        }
+
+        return 'U' === $target->role && in_array(
+            strtolower($domain),
+            array_map('strtolower', $this->delegatedDomains),
+            true,
+        );
+    }
+
     public function canEditTarget(ManagedAccount $target): bool
     {
         return 'A' === $this->actorRole

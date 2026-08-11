@@ -7,6 +7,7 @@ namespace MailWatch\Users\Application;
 use MailWatch\Shared\Application\Port\PasswordHasher;
 use MailWatch\Users\Domain\AccountAdministrationAccess;
 use MailWatch\Users\Domain\AccountProfile;
+use MailWatch\Users\Domain\AccountSummary;
 use MailWatch\Users\Domain\ManagedAccount;
 
 final readonly class ManageLocalAccounts
@@ -32,6 +33,21 @@ final readonly class ManageLocalAccounts
         }
 
         return $target;
+    }
+
+    /** @return list<AccountSummary> */
+    public function overview(
+        string $actorUsername,
+        string $actorRole,
+        string $actorDomain,
+        bool $superDomainAdministrators,
+    ): array {
+        $access = $this->access($actorUsername, $actorRole, $actorDomain, $superDomainAdministrators);
+
+        return array_values(array_filter(
+            $this->gateway->accountSummaries(),
+            static fn(AccountSummary $account): bool => $access->canList($account),
+        ));
     }
 
     public function create(
@@ -97,6 +113,48 @@ final readonly class ManageLocalAccounts
         }
 
         $this->gateway->delete($target);
+
+        return $target;
+    }
+
+    public function accountForReport(
+        string $actorUsername,
+        string $actorRole,
+        string $actorDomain,
+        bool $superDomainAdministrators,
+        int $id,
+    ): ManagedAccount {
+        $target = $this->target($id);
+        $access = $this->access($actorUsername, $actorRole, $actorDomain, $superDomainAdministrators);
+        if (!$access->sameAccount($target->username)) {
+            $this->assertDomainAccess($access, $target->username, 'report');
+        }
+
+        return $target;
+    }
+
+    public function forceLogout(
+        string $actorUsername,
+        string $actorRole,
+        string $actorDomain,
+        bool $superDomainAdministrators,
+        int $id,
+    ): ManagedAccount {
+        $target = $this->target($id);
+        $access = $this->access($actorUsername, $actorRole, $actorDomain, $superDomainAdministrators);
+        $this->assertDomainAccess($access, $target->username, 'logout');
+        if (!$access->canEditTarget($target)) {
+            if ('A' === $target->role) {
+                throw new AccountRoleAssignmentDenied();
+            }
+
+            throw new AccountAccessDenied();
+        }
+        if (!$access->canAssign($target->username, $target->role)) {
+            throw new AccountAccessDenied();
+        }
+
+        $this->gateway->forceLogout($target);
 
         return $target;
     }

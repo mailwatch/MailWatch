@@ -31,4 +31,19 @@ final class LegacyAccountAdministrationBoundaryTest extends TestCase
         self::assertStringContainsString('/user_manager.php delete token', $adapter);
         self::assertStringNotContainsString('XXXXXXXX', $source);
     }
+
+    public function testTheWholePageContainsNoDirectDatabaseAccess(): void
+    {
+        $source = file_get_contents(dirname(__DIR__, 3) . '/mailscanner/user_manager.php');
+        self::assertIsString($source);
+
+        self::assertStringNotContainsString('dbquery' . '(', $source);
+        self::assertStringNotContainsString('dbtable' . '(', $source);
+        self::assertStringNotContainsString('Database' . '::', $source);
+        self::assertStringContainsString('->overview(', $source);
+        self::assertStringContainsString('->accountForReport(', $source);
+        self::assertStringContainsString('->forceLogout(', $source);
+        self::assertStringContainsString('/user_manager.php logout token', $source);
+        self::assertStringContainsString('/user_manager.php user token', $source);
+    }
 }

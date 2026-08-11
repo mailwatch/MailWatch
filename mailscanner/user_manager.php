@@ -52,57 +52,6 @@ function getHtmlMessage($value, $type)
 
 /**
  * @param string $username
- * @param string $method
- *
- * @return bool|string
- */
-function testSameDomainMembership($username, $method)
-{
-    $parts = explode('@', $username);
-    $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
-    $result = dbquery($sql);
-    $filter_domain = [];
-    for ($i = 0; $i < $result->num_rows; ++$i) {
-        $filter = $result->fetch_row();
-        $filter_domain[] = $filter[0];
-    }
-    if ('D' === $_SESSION['user_type'] && 1 === count($parts) && '' !== $_SESSION['domain']) {
-        return getHtmlMessage(__('error' . $method . 'nodomainforbidden12'), 'error');
-    }
-
-    if ('D' === $_SESSION['user_type'] && 2 === count($parts) && ($parts[1] !== $_SESSION['domain'] && false === in_array(
-        $parts[1],
-        $filter_domain,
-        true
-    ))) {
-        return getHtmlMessage(sprintf(__('error' . $method . 'domainforbidden12'), $parts[1]), 'error');
-    }
-
-    return true;
-}
-
-/**
- * @param string $username
- * @param string $userType
- * @param string $oldUserType
- *
- * @return bool|string
- */
-function testPermissions($username, $userType, $oldUserType)
-{
-    if (('A' !== $_SESSION['user_type'] && 'A' === $oldUserType) || ('D' === $_SESSION['user_type'] && stripslashes((string)$_SESSION['myusername']) !== stripslashes($username) && 'U' !== $userType && (!defined('ENABLE_SUPER_DOMAIN_ADMINS') || ENABLE_SUPER_DOMAIN_ADMINS === false))) {
-        return getHtmlMessage(__('erroradminforbidden12'), 'error');
-    }
-
-    if ('D' === $_SESSION['user_type'] && 'A' === $userType) {
-        return getHtmlMessage(__('errortypesetforbidden12'), 'error');
-    }
-
-    return true;
-}
-
-/**
- * @param string $username
  * @param string $usertype
  * @param string $oldUsername
  *
@@ -259,29 +208,6 @@ function accountTypeLabels()
         'R' => __('user12', true),
         'H' => __('user12', true),
     ];
-}
-
-function getUserById($additionalFields = false)
-{
-    if (isset($_POST['id'])) {
-        $uid = (int)$_POST['id'];
-    } elseif (isset($_GET['id'])) {
-        $uid = (int)$_GET['id'];
-    } else {
-        return getHtmlMessage(__('dievalidate99'), 'error');
-    }
-    if (($uid = deepSanitizeInput($uid, 'num')) < -1) {
-        return getHtmlMessage(__('dievalidate99'), 'error');
-    }
-    $sql = 'SELECT id, username, type' . ($additionalFields ? ', fullname, quarantine_report, quarantine_rcpt, spamscore, highspamscore, noscan, login_timeout, last_login' : '') . " FROM users WHERE id='" . $uid . "'";
-    $result = dbquery($sql);
-    if (0 === $result->num_rows) {
-        audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $uid));
-
-        return getHtmlMessage(__('accessunknownuser12'), 'error');
-    }
-
-    return $result->fetch_object();
 }
 
 /**
@@ -752,6 +678,17 @@ function userFilter()
 
 function sendReport()
 {
+    if (is_string($tokentest = testToken())) {
+        return $tokentest;
+    }
+    $formTokenPurpose = in_array((string)$_SESSION['user_type'], ['A', 'D'], true)
+        ? '/user_manager.php edit token'
+        : '/user_manager.php user token';
+    if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? '')
+        || false === checkFormToken($formTokenPurpose, $_POST['formtoken'] ?? '')) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    }
+
     include_once __DIR__ . '/quarantine_report.inc.php';
     $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
     if (true !== $requirementsCheck) {
@@ -760,12 +697,23 @@ function sendReport()
         return getHtmlMessage(__('checkReportRequirementsFailed12'), 'error');
     }
 
-    if (is_string($user = getUserById())) {
-        return $user;
+    $uid = requestedUserId();
+    if (is_string($uid)) {
+        return $uid;
     }
 
-    if (is_string($membertest = testSameDomainMembership($user->username, 'report'))) {
-        return $membertest;
+    try {
+        $user = \MailWatch\ApplicationFactory::localAccountAdministration()->accountForReport(
+            stripslashes((string)$_SESSION['myusername']),
+            (string)$_SESSION['user_type'],
+            (string)($_SESSION['domain'] ?? ''),
+            defined('ENABLE_SUPER_DOMAIN_ADMINS') && true === ENABLE_SUPER_DOMAIN_ADMINS,
+            $uid,
+        );
+    } catch (\MailWatch\Users\Application\UnknownLocalAccount $exception) {
+        return accountAdministrationError($exception, $uid);
+    } catch (\MailWatch\Users\Application\AccountAdministrationException $exception) {
+        return accountAdministrationError($exception, $uid);
     }
 
     $quarantine_report = new Quarantine_Report();
@@ -787,25 +735,79 @@ function logoutUser()
         return $tokentest;
     }
 
-    if (is_string($user = getUserById())) {
-        return $user;
+    if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? '')
+        || false === checkFormToken('/user_manager.php logout token', $_POST['formtoken'] ?? '')) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
     }
 
-    if (is_string($membertest = testSameDomainMembership($user->username, 'logout'))) {
-        return $membertest;
+    $uid = requestedUserId();
+    if (is_string($uid)) {
+        return $uid;
     }
 
-    if (is_string($permissiontest = testPermissions($user->username, $user->type, ''))) {
-        return $permissiontest;
-    }
-
-    $sql = "UPDATE users SET login_expiry='-1' WHERE id='$user->id'";
-    dbquery($sql);
-    if (DEBUG === true) {
-        echo $sql;
+    try {
+        $user = \MailWatch\ApplicationFactory::localAccountAdministration()->forceLogout(
+            stripslashes((string)$_SESSION['myusername']),
+            (string)$_SESSION['user_type'],
+            (string)($_SESSION['domain'] ?? ''),
+            defined('ENABLE_SUPER_DOMAIN_ADMINS') && true === ENABLE_SUPER_DOMAIN_ADMINS,
+            $uid,
+        );
+    } catch (\MailWatch\Users\Application\UnknownLocalAccount $exception) {
+        return accountAdministrationError($exception, $uid);
+    } catch (\MailWatch\Users\Application\AccountAdministrationException $exception) {
+        return accountAdministrationError($exception, $uid);
     }
 
     return getHtmlMessage(sprintf(__('userloggedout12'), stripslashes((string)$user->username)), 'success');
+}
+
+/**
+ * @param list<\MailWatch\Users\Domain\AccountSummary> $accounts
+ */
+function printAccountOverview(array $accounts)
+{
+    if ([] === $accounts) {
+        return __('norowfound03') . '<br>' . PHP_EOL;
+    }
+
+    $escape = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $token = rawurlencode((string)$_SESSION['token']);
+    $now = time();
+    $html = '<table cellspacing="1" width="100%" class="mail">' . PHP_EOL;
+    $html .= '<tr><th colspan="8">' . __('usermgnt12') . '</th></tr>' . PHP_EOL;
+    $html .= '<tr><th>' . __('username12') . '</th><th>' . __('fullname12') . '</th><th>' . __('type12')
+        . '</th><th>' . __('spamcheck12') . '</th><th>' . __('spamscore12') . '</th><th>' . __('spamhscore12')
+        . '</th><th>' . __('loggedin12') . '</th><th>' . __('action12') . '</th></tr>' . PHP_EOL;
+
+    foreach ($accounts as $account) {
+        $loggedIn = $account->isLoggedIn($now);
+        $role = match ($account->role) {
+            'A' => __('admin12'),
+            'D' => __('domainadmin12'),
+            'U' => __('user12'),
+            'R' => __('userregex12'),
+            default => __('unknowtype12'),
+        };
+        $editUrl = '?token=' . $token . '&amp;action=edit&amp;id=' . $account->id;
+        $filterUrl = '?token=' . $token . '&amp;action=filters&amp;id=' . $account->id;
+        $actions = '<a href="' . $editUrl . '">' . __('edit12') . '</a>&nbsp;&nbsp;'
+            . '<button type="button" class="delete-user" data-user-id="' . $account->id . '" data-user-name="'
+            . $escape($account->username) . '">' . __('delete12') . '</button>&nbsp;&nbsp;'
+            . '<a href="' . $filterUrl . '">' . __('filters12') . '</a>';
+        if ($loggedIn) {
+            $actions .= '&nbsp;&nbsp;<button type="button" class="logout-user" data-user-id="' . $account->id
+                . '" data-user-name="' . $escape($account->username) . '">' . __('logout12') . '</button>';
+        }
+
+        $html .= '<tr class="table-background"><td>' . $escape($account->username) . '</td><td>'
+            . $escape($account->fullName) . '</td><td>' . $role . '</td><td>'
+            . ($account->scanForSpam ? __('yesshort12') : __('noshort12')) . '</td><td>'
+            . $escape($account->spamScore) . '</td><td>' . $escape($account->highSpamScore) . '</td><td>'
+            . ($loggedIn ? __('yes12') : __('no12')) . '</td><td>' . $actions . '</td></tr>' . PHP_EOL;
+    }
+
+    return $html . '</table><br>' . PHP_EOL;
 }
 
 ?>
@@ -872,38 +874,55 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
     ?>
     <script type="text/javascript">
         <!--
+        function submit_user_action(action, id, formToken) {
+            var form = document.createElement("form");
+            form.method = "post";
+            form.action = "user_manager.php";
+            var values = {
+                token: <?php echo json_encode((string)$_SESSION['token']); ?>,
+                formtoken: formToken,
+                action: action,
+                id: id
+            };
+            Object.keys(values).forEach(function (key) {
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = key;
+                input.value = values[key];
+                form.appendChild(input);
+            });
+            document.body.appendChild(form);
+            form.submit();
+        }
+
         function delete_user(id, name) {
-            var yesno = confirm("<?php echo ' ' . __('areusuredel12') . ' '; ?>" + name + "<?php echo __('questionmark12'); ?>");
+            var yesno = confirm(<?php echo json_encode(' ' . __('areusuredel12') . ' '); ?> + name + <?php echo json_encode(__('questionmark12')); ?>);
             if (yesno === true) {
-                var form = document.createElement("form");
-                form.method = "post";
-                form.action = "user_manager.php";
-                var values = {
-                    token: <?php echo json_encode((string)$_SESSION['token']); ?>,
-                    formtoken: <?php echo json_encode(generateFormToken('/user_manager.php delete token')); ?>,
-                    action: "delete",
-                    id: id
-                };
-                Object.keys(values).forEach(function (key) {
-                    var input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = key;
-                    input.value = values[key];
-                    form.appendChild(input);
-                });
-                document.body.appendChild(form);
-                form.submit();
+                submit_user_action("delete", id, <?php echo json_encode(generateFormToken('/user_manager.php delete token')); ?>);
             }
         }
 
         function logout_user(id, name) {
-            var yesno = confirm("<?php echo ' ' . __('logout12') . ' '; ?>" + name + "<?php echo __('questionmark12'); ?>");
+            var yesno = confirm(<?php echo json_encode(' ' . __('logout12') . ' '); ?> + name + <?php echo json_encode(__('questionmark12')); ?>);
             if (yesno === true) {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=logout&id=" + id;
-            } else {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>";
+                submit_user_action("logout", id, <?php echo json_encode(generateFormToken('/user_manager.php logout token')); ?>);
             }
         }
+
+        document.addEventListener("click", function (event) {
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+            var deleteButton = event.target.closest(".delete-user");
+            if (deleteButton !== null) {
+                delete_user(deleteButton.dataset.userId, deleteButton.dataset.userName);
+                return;
+            }
+            var logoutButton = event.target.closest(".logout-user");
+            if (logoutButton !== null) {
+                logout_user(logoutButton.dataset.userId, logoutButton.dataset.userName);
+            }
+        });
 
         -->
     </script>
@@ -942,57 +961,13 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
     echo '<a href="?token=' . $_SESSION['token'] . '&amp;action=new">' . __('newuser12') . '</a>' . PHP_EOL;
     echo '<br><br>' . PHP_EOL;
 
-    $domainAdminUserDomainFilter = '';
-    if ('D' === $_SESSION['user_type']) {
-        if ('' === $_SESSION['domain']) {
-            // if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
-            $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
-        } else {
-            $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
-            $result = dbquery($sql);
-            $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
-            for ($i = 0; $i < $result->num_rows; ++$i) {
-                $filter = $result->fetch_row();
-                $domainAdminUserDomainFilter .= ' OR (username LIKE "%@' . safe_value(stripslashes((string)$filter[0])) . '" AND type = "U")';
-            }
-        }
-    }
-
-    $sql = "
-        SELECT
-          username AS '" . safe_value(__('username12')) . "',
-          fullname AS '" . safe_value(__('fullname12')) . "',
-        CASE
-          WHEN type = 'A' THEN '" . __('admin12') . "'
-          WHEN type = 'D' THEN '" . __('domainadmin12') . "'
-          WHEN type = 'U' THEN '" . __('user12') . "'
-          WHEN type = 'R' THEN '" . __('userregex12') . "'
-        ELSE
-          '" . __('unknowtype12') . "'
-        END AS '" . safe_value(__('type12')) . "',
-        CASE
-          WHEN noscan = 1 THEN '" . __('noshort12') . "'
-          WHEN noscan = 0 THEN '" . __('yesshort12') . "'
-        ELSE
-          '" . __('yesshort12') . "'
-        END AS '" . safe_value(__('spamcheck12')) . "',
-          spamscore AS '" . safe_value(__('spamscore12')) . "',
-          highspamscore AS '" . safe_value(__('spamhscore12')) . "',
-        CASE
-          WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN '" . safe_value(__('yes12')) . "'
-        ELSE 
-          '" . safe_value(__('no12')) . "'
-        END AS '" . safe_value(__('loggedin12')) . "',
-        CASE
-WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:logout_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('logout12')) . "</a>')
-        ELSE
-          CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>')
-        END AS '" . safe_value(__('action12')) . "'
-        FROM
-          users " . $domainAdminUserDomainFilter . ' 
-        ORDER BY
-          username';
-    dbtable($sql, __('usermgnt12'));
+    $accounts = \MailWatch\ApplicationFactory::localAccountAdministration()->overview(
+        stripslashes((string)$_SESSION['myusername']),
+        (string)$_SESSION['user_type'],
+        (string)($_SESSION['domain'] ?? ''),
+        defined('ENABLE_SUPER_DOMAIN_ADMINS') && true === ENABLE_SUPER_DOMAIN_ADMINS,
+    );
+    echo printAccountOverview($accounts);
 } elseif (!isset($_POST['submit'])) {
     $authenticationSource = \MailWatch\Users\Domain\AuthenticationSource::fromSession(
         true === ($_SESSION['user_ldap'] ?? false),
