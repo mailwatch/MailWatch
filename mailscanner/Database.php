@@ -113,13 +113,21 @@ class Database
     {
         $version = self::getDatabaseVersion();
 
-        // Check for MySQL >= 8.0
-        if (preg_match('/^8\.\d+/', $version)) {
-            // MySQL 8.0+ uses ICU for regex
-            return true;
+        // MariaDB uses POSIX regex syntax at every version, and names itself in
+        // the version string, sometimes behind the historical 5.5.5- prefix it
+        // still sends for the benefit of old clients.
+        if (str_contains($version, 'MariaDB')) {
+            return false;
         }
 
-        // MySQL < 8.0 and MariaDB use POSIX regex syntax
+        // MySQL moved REGEXP to ICU in 8.0 and has not gone back, so the test
+        // is the major version rather than a single release: matching 8.x
+        // alone put MySQL 9 back on the POSIX branch.
+        if (preg_match('/^(\d+)\./', $version, $matches)) {
+            return (int)$matches[1] >= 8;
+        }
+
+        // MySQL < 8.0, and anything that does not announce a version.
         return false;
     }
 }
