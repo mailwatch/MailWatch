@@ -57,10 +57,11 @@ $message_data = $result->fetch_object();
 if (!$message_data) {
     exit(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
 }
-
-if (($message_data->virusinfected > 0 || $message_data->nameinfected > 0 || $message_data->otherinfected > 0)
-    && !dangerous_content_allowed('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS')) {
-    exit(__('dievalidate99'));
+$dangerous = 0 < (int)$message_data->virusinfected
+    || 0 < (int)$message_data->nameinfected
+    || 0 < (int)$message_data->otherinfected;
+if (!\MailWatch\ApplicationFactory::quarantineAccess((string)$_SESSION['user_type'])->canView($dangerous)) {
+    exit(__('permdenied60'));
 }
 
 if (RPC_ONLY || !is_local($message_data->hostname)) {
