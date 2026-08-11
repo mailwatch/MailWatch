@@ -56,86 +56,38 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $mypassword = $_POST['mypassword'];
 }
 
-$_SESSION['user_ldap'] = false;
-$_SESSION['user_imap'] = false;
-if (defined('USE_LDAP')
-    && (USE_LDAP === true)
-    && (($result = ldap_authenticate($myusername, $mypassword)) !== null)
-) {
-    $_SESSION['user_ldap'] = true;
-    $myusername = safe_value($result);
-    $mypassword = safe_value($mypassword);
-} elseif (
-    defined('USE_IMAP')
-    && (USE_IMAP === true)
-    && (($result = imap_authenticate($myusername, $mypassword)) !== null)
-) {
-    $_SESSION['user_imap'] = true;
-    $myusername = safe_value($myusername);
-    $mypassword = safe_value($mypassword);
-} else {
-    if ('' !== $mypassword) {
-        $myusername = safe_value($myusername);
-        $mypassword = safe_value($mypassword);
-    } else {
-        header('Location: /login.php?error=emptypassword');
-        logFailedLogin($myusername);
-        exit;
-    }
-}
-
-$sql = "SELECT * FROM users WHERE username='$myusername'";
-$result = dbquery($sql);
-
-// mysql_num_row is counting table row
-$usercount = $result->num_rows;
-if (0 === $usercount) {
-    // no user found, redirect to login
-    dbclose();
+try {
+    $authenticated = \MailWatch\ApplicationFactory::userAuthentication()->authenticate(
+        (string)$myusername,
+        (string)$mypassword,
+        time(),
+    );
+} catch (\MailWatch\Users\Application\EmptyPassword) {
+    header('Location: /login.php?error=emptypassword');
+    logFailedLogin($myusername);
+    exit;
+} catch (\MailWatch\Users\Application\InvalidCredentials) {
     header('Location: /login.php?error=baduser');
     logFailedLogin($myusername);
     exit;
+} catch (\MailWatch\Users\Application\AuthenticationProviderUnavailable $exception) {
+    exit($exception->getMessage());
 }
 
-if (
-    (false === $_SESSION['user_ldap'])
-    && (false === $_SESSION['user_imap'])
-) {
-    $passwordInDb = Database::mysqli_result($result, 0, 'password');
-    if (!is_string($passwordInDb)) {
-        header('Location: /login.php?error=baduser');
-        logFailedLogin($myusername);
-        exit;
-    }
-
-    if (!password_verify($mypassword, $passwordInDb)) {
-        if (!hash_equals(md5($mypassword), $passwordInDb)) {
-            header('Location: /login.php?error=baduser');
-            logFailedLogin($myusername);
-            exit;
-        }
-
-        $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-        updateUserPasswordHash($myusername, $newPasswordHash);
-    } else {
-        // upgraded password is valid, continue as normal
-        if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
-            $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-            updateUserPasswordHash($myusername, $newPasswordHash);
-        }
-    }
+$account = $authenticated->account;
+$myusername = $account->username;
+$fullname = $account->fullName;
+$usertype = $account->role;
+$_SESSION['user_ldap'] = \MailWatch\Users\Domain\AuthenticationSource::Ldap === $authenticated->source;
+$_SESSION['user_imap'] = \MailWatch\Users\Domain\AuthenticationSource::Imap === $authenticated->source;
+if ($authenticated->passwordHashUpgraded) {
+    audit_log(__('auditlogupdateuser03', true) . ' ' . $myusername);
 }
 
-$fullname = Database::mysqli_result($result, 0, 'fullname');
-$usertype = Database::mysqli_result($result, 0, 'type');
-
-$sql_userfilter = "SELECT filter FROM user_filters WHERE username='$myusername' AND active='Y'";
-$result_userfilter = dbquery($sql_userfilter);
-
-$filter[] = $myusername;
-while ($row = $result_userfilter->fetch_array()) {
-    $filter[] = $row['filter'];
-}
+$filter = array_map(
+    static fn(string $value): string => safe_value($value),
+    [$myusername, ...$account->activeFilters],
+);
 
 $global_filter = address_filter_sql($filter, $usertype);
 
@@ -173,31 +125,22 @@ switch ($usertype) {
         break;
 }
 
-// If result matched $myusername and $mypassword, table row must be 1 row
-if (1 === $usercount) {
-    session_regenerate_id(true);
-    // Register $myusername, $mypassword and redirect to file "login_success.php"
-    $_SESSION['myusername'] = $myusername;
-    $_SESSION['fullname'] = $fullname;
-    $_SESSION['user_type'] = ($usertype ?? '');
-    $_SESSION['domain'] = ($domainname ?? '');
-    $_SESSION['global_filter'] = '(' . $global_filter . ')';
-    $_SESSION['global_list'] = ($global_list ?? '');
-    $_SESSION['global_array'] = $filter;
-    $_SESSION['token'] = generateToken();
-    $_SESSION['formtoken'] = generateToken();
-    // Initialize login expiry in users table for newly logged in user
-    updateLoginExpiry($myusername);
-    $redirect_url = 'index.php';
-    if (isset($_SESSION['REQUEST_URI'])) {
-        $redirect_url = $_SESSION['REQUEST_URI'];
-        unset($_SESSION['REQUEST_URI']);
-    }
-    header('Location: ' . str_replace('&amp;', '&', sanitizeInput($redirect_url)));
-} else {
-    header('Location: /login.php?error=baduser');
-    logFailedLogin($myusername);
+session_regenerate_id(true);
+$_SESSION['myusername'] = $myusername;
+$_SESSION['fullname'] = $fullname;
+$_SESSION['user_type'] = $usertype;
+$_SESSION['domain'] = ($domainname ?? '');
+$_SESSION['global_filter'] = '(' . $global_filter . ')';
+$_SESSION['global_list'] = ($global_list ?? '');
+$_SESSION['global_array'] = $filter;
+$_SESSION['token'] = generateToken();
+$_SESSION['formtoken'] = generateToken();
+$redirect_url = 'index.php';
+if (isset($_SESSION['REQUEST_URI'])) {
+    $redirect_url = $_SESSION['REQUEST_URI'];
+    unset($_SESSION['REQUEST_URI']);
 }
+header('Location: ' . str_replace('&amp;', '&', sanitizeInput($redirect_url)));
 
 // close any DB connections
 dbclose();

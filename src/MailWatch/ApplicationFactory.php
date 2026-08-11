@@ -39,10 +39,14 @@ use MailWatch\Shared\Presentation\TemplateRenderer;
 use MailWatch\SpamSettings\Application\GetSpamSettingsSnapshot;
 use MailWatch\SpamSettings\Http\SpamSettingsController;
 use MailWatch\SpamSettings\Infrastructure\Database\DbalSpamSettingsGateway;
+use MailWatch\Users\Application\AuthenticateUser;
 use MailWatch\Users\Application\ManageLocalAccounts;
 use MailWatch\Users\Application\ManageOwnProfile;
 use MailWatch\Users\Application\ManageSavedFilters;
+use MailWatch\Users\Infrastructure\Authentication\ImapCredentialVerifier;
+use MailWatch\Users\Infrastructure\Authentication\LdapCredentialVerifier;
 use MailWatch\Users\Infrastructure\Database\DbalAccountAdministrationGateway;
+use MailWatch\Users\Infrastructure\Database\DbalLoginAccountGateway;
 use MailWatch\Users\Infrastructure\Database\DbalSavedFilterAdministrationGateway;
 use MailWatch\Users\Infrastructure\Database\DbalUserProfileGateway;
 
@@ -133,6 +137,26 @@ final readonly class ApplicationFactory
         return new ManageLocalAccounts(
             new DbalAccountAdministrationGateway(self::databaseConnection()),
             new NativePasswordHasher(),
+        );
+    }
+
+    public static function userAuthentication(): AuthenticateUser
+    {
+        $providers = [];
+        if (\defined('USE_LDAP') && true === USE_LDAP) {
+            $providers[] = new LdapCredentialVerifier();
+        }
+        if (\defined('USE_IMAP') && true === USE_IMAP) {
+            $providers[] = new ImapCredentialVerifier();
+        }
+        $passwords = new NativePasswordHasher();
+
+        return new AuthenticateUser(
+            new DbalLoginAccountGateway(self::databaseConnection()),
+            $passwords,
+            $passwords,
+            $providers,
+            \defined('SESSION_TIMEOUT') ? (int)SESSION_TIMEOUT : null,
         );
     }
 
