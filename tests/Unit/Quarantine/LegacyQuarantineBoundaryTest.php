@@ -7,19 +7,27 @@ namespace App\Tests\Unit\Quarantine;
 use PHPUnit\Framework\TestCase;
 
 /**
- * The quarantine operations own effects — files, mail, the learner, XML-RPC —
- * but no longer own their data. Every maillog read and write goes through the
- * gateway, so that the scope of a signed-in account is a bound parameter
- * rather than a SQL fragment carried in the session.
+ * What the quarantine operations may still do for themselves.
+ *
+ * Their data is gone: every maillog read and write goes through the gateway,
+ * so the scope of a signed-in account is a bound parameter rather than a SQL
+ * fragment carried in the session. Their storage is gone too: the quarantine
+ * tree is read and pruned through a port. Mail delivery, the SpamAssassin
+ * learner and XML-RPC dispatch are still theirs, and are the rest of this
+ * boundary.
  */
-final class LegacyQuarantineSqlBoundaryTest extends TestCase
+final class LegacyQuarantineBoundaryTest extends TestCase
 {
     private const OPERATIONS = [
+        'quarantine_list' => ['function quarantine_list(', 'function quarantine_storage('],
         'quarantine_list_items' => ['function quarantine_list_items(', 'function quarantine_release('],
         'quarantine_release' => ['function quarantine_release(', 'function quarantine_learn('],
         'quarantine_learn' => ['function quarantine_learn(', 'function quarantine_delete('],
         'quarantine_delete' => ['function quarantine_delete(', 'function fixMessageId('],
     ];
+
+    /** The operations that no longer reach the filesystem at all. */
+    private const WITHOUT_STORAGE_ACCESS = ['quarantine_list', 'quarantine_list_items', 'quarantine_delete'];
 
     public function testTheQuarantineOperationsContainNoSql(): void
     {
@@ -33,6 +41,31 @@ final class LegacyQuarantineSqlBoundaryTest extends TestCase
             self::assertStringNotContainsString('FROM' . "\n  maillog", $body, $name);
             self::assertStringNotContainsString('global_' . 'filter', $body, $name);
         }
+    }
+
+    public function testTheOperationsDoNotOpenTheQuarantineThemselves(): void
+    {
+        foreach (self::WITHOUT_STORAGE_ACCESS as $name) {
+            $body = self::functionSource(...self::OPERATIONS[$name]);
+
+            foreach (['opendir' . '(', 'readdir' . '(', 'closedir' . '(', 'unlink' . '(', 'shell_exec' . '('] as $call) {
+                self::assertStringNotContainsString($call, $body, $name);
+            }
+            self::assertStringContainsString('quarantine_storage()', $body, $name);
+        }
+    }
+
+    public function testLearningRunsThroughTheLearnerPortAndItsActions(): void
+    {
+        $body = self::functionSource(...self::OPERATIONS['quarantine_learn']);
+
+        self::assertStringContainsString('quarantineLearner()', $body);
+        self::assertStringContainsString('LearnAction::tryFrom(', $body);
+        self::assertStringContainsString('LearningVerdict::of(', $body);
+        self::assertStringNotContainsString('exec' . '(', $body);
+        self::assertStringNotContainsString('SA_DIR', $body);
+        self::assertStringNotContainsString('SA_PREFS', $body);
+        self::assertStringNotContainsString('SA_MAXSIZE', $body);
     }
 
     public function testTheLookupAuthorisesThroughTheMessageScope(): void
