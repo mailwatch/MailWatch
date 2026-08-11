@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MailWatch\MailLog\Http;
 
+use MailWatch\MailLog\Application\IngestionResult;
+use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Domain\MailLogEntry;
 use MailWatch\Shared\Http\JsonResponse;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
@@ -19,13 +21,10 @@ final readonly class MessageController
         'mcpblacklisted' => 'mcpblocklisted',
     ];
 
-    /**
-     * @param \Closure(): object $connectDatabase
-     */
     public function __construct(
         private ApiConfiguration $configuration,
         private ApiKeyAuthenticator $authenticator,
-        private \Closure $connectDatabase,
+        private IngestMailLog $ingestMailLog,
     ) {
     }
 
@@ -58,76 +57,17 @@ final readonly class MessageController
         }
 
         $idempotencyKey = $this->idempotencyKey($mailLogEntry);
-        $database = ($this->connectDatabase)();
-        $statement = $database->prepare(
-            'INSERT INTO maillog (timestamp, id, size, from_address, from_domain, to_address, to_domain, subject, clientip, archive, isspam, ishighspam, issaspam, isrblspam, spamallowlisted, spamblocklisted, sascore, spamreport, virusinfected, nameinfected, otherinfected, report, ismcp, ishighmcp, issamcp, mcpallowlisted, mcpblocklisted, mcpsascore, mcpreport, hostname, date, time, headers, quarantined, rblspamreport, token, messageid, ingestion_id)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        );
-        if (!$statement) {
-            $database->close();
-            JsonResponse::send(500, ['error' => 'Failed to prepare statement']);
-        }
-
-        $statement->bind_param(
-            'ssisssssssiiiiiidsiiisiiiiidsssssissss',
-            $mailLogEntry->timestamp,
-            $mailLogEntry->id,
-            $mailLogEntry->size,
-            $mailLogEntry->from,
-            $mailLogEntry->from_domain,
-            $mailLogEntry->to,
-            $mailLogEntry->to_domain,
-            $mailLogEntry->subject,
-            $mailLogEntry->clientip,
-            $mailLogEntry->archiveplaces,
-            $mailLogEntry->isspam,
-            $mailLogEntry->ishigh,
-            $mailLogEntry->issaspam,
-            $mailLogEntry->isrblspam,
-            $mailLogEntry->spamallowlisted,
-            $mailLogEntry->spamblocklisted,
-            $mailLogEntry->sascore,
-            $mailLogEntry->spamreport,
-            $mailLogEntry->virusinfected,
-            $mailLogEntry->nameinfected,
-            $mailLogEntry->otherinfected,
-            $mailLogEntry->reports,
-            $mailLogEntry->ismcp,
-            $mailLogEntry->ishighmcp,
-            $mailLogEntry->issamcp,
-            $mailLogEntry->mcpallowlisted,
-            $mailLogEntry->mcpblocklisted,
-            $mailLogEntry->mcpsascore,
-            $mailLogEntry->mcpreport,
-            $mailLogEntry->hostname,
-            $mailLogEntry->date,
-            $mailLogEntry->time,
-            $mailLogEntry->headers,
-            $mailLogEntry->quarantined,
-            $mailLogEntry->rblspamreport,
-            $mailLogEntry->token,
-            $mailLogEntry->messageid,
-            $idempotencyKey,
-        );
-
-        $status = 500;
-        $body = ['error' => 'Failed to insert data'];
         try {
-            if ($statement->execute()) {
-                $status = 201;
-                $body = ['success' => 'Data inserted successfully'];
-            }
-        } catch (\mysqli_sql_exception $exception) {
-            if (1062 === $exception->getCode() && null !== $idempotencyKey) {
-                $status = 200;
-                $body = ['success' => 'Data already inserted', 'duplicate' => true];
-            }
+            $result = $this->ingestMailLog->ingest($mailLogEntry, $idempotencyKey);
         } catch (\Throwable) {
+            JsonResponse::send(500, ['error' => 'Failed to insert data']);
         }
 
-        $statement->close();
-        $database->close();
-        JsonResponse::send($status, $body);
+        if (IngestionResult::Duplicate === $result) {
+            JsonResponse::send(200, ['success' => 'Data already inserted', 'duplicate' => true]);
+        }
+
+        JsonResponse::send(201, ['success' => 'Data inserted successfully']);
     }
 
     /**

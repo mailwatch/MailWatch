@@ -15,8 +15,12 @@ use MailWatch\Antivirus\Http\AntivirusStatusController;
 use MailWatch\Antivirus\Http\FSecureStatusController;
 use MailWatch\Antivirus\Http\StatusController;
 use MailWatch\Antivirus\Infrastructure\AntivirusScannerRegistry;
+use MailWatch\Lists\Application\GetAllowBlockListSnapshot;
 use MailWatch\Lists\Http\AllowBlockListController;
+use MailWatch\Lists\Infrastructure\Database\DbalAllowBlockListGateway;
+use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Http\MessageController;
+use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
 use MailWatch\Shared\Application\Port\CommandRunner;
 use MailWatch\Shared\Http\PageGuard;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
@@ -26,7 +30,9 @@ use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 use MailWatch\Shared\Infrastructure\System\ShellCommandRunner;
 use MailWatch\Shared\Presentation\PageLayout;
 use MailWatch\Shared\Presentation\TemplateRenderer;
+use MailWatch\SpamSettings\Application\GetSpamSettingsSnapshot;
 use MailWatch\SpamSettings\Http\SpamSettingsController;
+use MailWatch\SpamSettings\Infrastructure\Database\DbalSpamSettingsGateway;
 
 final readonly class ApplicationFactory
 {
@@ -55,7 +61,7 @@ final readonly class ApplicationFactory
         return new MessageController(
             $this->apiConfiguration,
             $this->apiKeyAuthenticator(),
-            $this->databaseConnector(),
+            new IngestMailLog(new DbalMailLogGateway(self::databaseConnection())),
         );
     }
 
@@ -64,7 +70,7 @@ final readonly class ApplicationFactory
         return new AllowBlockListController(
             $this->apiConfiguration,
             $this->apiKeyAuthenticator(),
-            $this->databaseConnector(),
+            new GetAllowBlockListSnapshot(new DbalAllowBlockListGateway(self::databaseConnection())),
         );
     }
 
@@ -73,7 +79,7 @@ final readonly class ApplicationFactory
         return new SpamSettingsController(
             $this->apiConfiguration,
             $this->apiKeyAuthenticator(),
-            $this->databaseConnector(),
+            new GetSpamSettingsSnapshot(new DbalSpamSettingsGateway(self::databaseConnection())),
         );
     }
 
@@ -134,8 +140,8 @@ final readonly class ApplicationFactory
     /**
      * The DBAL connection, built from the constants conf.php already defines.
      *
-     * Nothing serves a request through it yet: the gateways arrive next, and
-     * for now it exists so the migrator can reach the configured database.
+     * The connection is shared by the migrator and the DBAL gateways. Legacy
+     * page scripts still use Database while their own slices are extracted.
      */
     public static function databaseConnection(): Connection
     {
@@ -196,13 +202,5 @@ final readonly class ApplicationFactory
     private static function projectDirectory(): string
     {
         return \dirname(__DIR__, 2);
-    }
-
-    /**
-     * @return \Closure(): object
-     */
-    private function databaseConnector(): \Closure
-    {
-        return static fn(): object => \Database::connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
     }
 }

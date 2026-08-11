@@ -43,7 +43,6 @@ if (null !== $_mailWatchRoute && \MailWatch\Shared\Http\RouteType::Redirect === 
 
 if (null !== $_mailWatchRoute && \MailWatch\Shared\Http\RouteType::Api === $_mailWatchRoute->type) {
     require_once $_mailWatchApplicationRoot . '/mailscanner/conf.php';
-    require_once $_mailWatchApplicationRoot . '/mailscanner/Database.php';
 
     if (!defined('API_KEY') || !is_string(API_KEY) || '' === API_KEY) {
         if ('messages' === $_mailWatchRoute->handler) {
@@ -56,6 +55,12 @@ if (null !== $_mailWatchRoute && \MailWatch\Shared\Http\RouteType::Api === $_mai
 
     try {
         $_mailWatchApplicationFactory = \MailWatch\ApplicationFactory::create();
+        $_mailWatchController = match ($_mailWatchRoute->handler) {
+            'messages' => $_mailWatchApplicationFactory->messageController(),
+            'allow-block-list' => $_mailWatchApplicationFactory->allowBlockListController(),
+            'spam-settings' => $_mailWatchApplicationFactory->spamSettingsController(),
+            default => throw new \LogicException('Unrouted API handler: ' . $_mailWatchRoute->handler),
+        };
     } catch (\MailWatch\Shared\Infrastructure\Configuration\InvalidConfiguration) {
         if ('messages' === $_mailWatchRoute->handler) {
             \MailWatch\Shared\Http\JsonResponse::send(500, ['error' => 'Invalid API configuration']);
@@ -64,12 +69,6 @@ if (null !== $_mailWatchRoute && \MailWatch\Shared\Http\RouteType::Api === $_mai
         \MailWatch\Shared\Http\JsonResponse::error(500, 'invalid_configuration', 'Invalid API configuration');
     }
 
-    $_mailWatchController = match ($_mailWatchRoute->handler) {
-        'messages' => $_mailWatchApplicationFactory->messageController(),
-        'allow-block-list' => $_mailWatchApplicationFactory->allowBlockListController(),
-        'spam-settings' => $_mailWatchApplicationFactory->spamSettingsController(),
-        default => throw new \LogicException('Unrouted API handler: ' . $_mailWatchRoute->handler),
-    };
     $_mailWatchController->handle();
 }
 
