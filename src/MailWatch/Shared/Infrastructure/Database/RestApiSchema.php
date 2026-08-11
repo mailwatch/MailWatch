@@ -79,8 +79,8 @@ final class RestApiSchema
         $table->addColumn('fullname', Types::STRING, ['length' => 255, 'default' => '']);
         $table->addColumn('type', Types::STRING, ['length' => 1, 'default' => 'U']);
         $table->addColumn('quarantine_report', Types::BOOLEAN, ['notnull' => false, 'default' => false]);
-        $table->addColumn('spamscore', Types::FLOAT, ['notnull' => false, 'default' => 0]);
-        $table->addColumn('highspamscore', Types::FLOAT, ['notnull' => false, 'default' => 0]);
+        $table->addColumn('spamscore', Types::SMALLFLOAT, ['notnull' => false, 'default' => 0]);
+        $table->addColumn('highspamscore', Types::SMALLFLOAT, ['notnull' => false, 'default' => 0]);
         $table->addColumn('noscan', Types::BOOLEAN, ['notnull' => false, 'default' => false]);
         $table->addColumn('quarantine_rcpt', Types::STRING, ['length' => 60, 'notnull' => false]);
         $table->addColumn('resetid', Types::STRING, ['length' => 32, 'notnull' => false]);
