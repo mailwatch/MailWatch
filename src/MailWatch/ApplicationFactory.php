@@ -38,6 +38,8 @@ use MailWatch\Shared\Presentation\TemplateRenderer;
 use MailWatch\SpamSettings\Application\GetSpamSettingsSnapshot;
 use MailWatch\SpamSettings\Http\SpamSettingsController;
 use MailWatch\SpamSettings\Infrastructure\Database\DbalSpamSettingsGateway;
+use MailWatch\Users\Application\ManageSavedFilters;
+use MailWatch\Users\Infrastructure\Database\DbalSavedFilterAdministrationGateway;
 
 final readonly class ApplicationFactory
 {
@@ -103,6 +105,13 @@ final readonly class ApplicationFactory
     {
         return new ManageAllowBlockLists(
             new DbalListAdministrationGateway(self::databaseConnection()),
+        );
+    }
+
+    public static function savedFilterAdministration(): ManageSavedFilters
+    {
+        return new ManageSavedFilters(
+            new DbalSavedFilterAdministrationGateway(self::databaseConnection()),
         );
     }
 
