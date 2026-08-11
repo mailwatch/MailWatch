@@ -2807,14 +2807,19 @@ function ldap_build_uri($host, $port)
  * @param string $username
  * @param string $password
  *
- * @return string|null
+ * @return \MailWatch\Users\Domain\ExternalIdentity|null
  */
 function ldap_authenticate($username, $password)
 {
     $username = ldap_escape(strtolower($username), '', LDAP_ESCAPE_DN);
     if ('' !== $username && '' !== $password) {
         $ldap_uri = ldap_build_uri(LDAP_HOST, LDAP_PORT);
-        $ds = ldap_connect($ldap_uri) or exit(__('ldpaauth103') . ' ' . $ldap_uri);
+        $ds = ldap_connect($ldap_uri);
+        if (false === $ds) {
+            throw new \MailWatch\Users\Application\AuthenticationProviderUnavailable(
+                __('ldpaauth103') . ' ' . $ldap_uri
+            );
+        }
 
         $ldap_protocol_version = 3;
         if (defined('LDAP_PROTOCOL_VERSION')) {
@@ -2829,7 +2834,7 @@ function ldap_authenticate($username, $password)
 
         $bindResult = @ldap_bind($ds, LDAP_USER, LDAP_PASS);
         if (false === $bindResult) {
-            exit(ldap_print_error($ds));
+            throw new \MailWatch\Users\Application\AuthenticationProviderUnavailable(ldap_print_error($ds));
         }
 
         // search for $user in LDAP directory
@@ -2838,7 +2843,7 @@ function ldap_authenticate($username, $password)
         if (false === $ldap_search_results) {
             @trigger_error(__('ldapnoresult03') . ' "' . $username . '"');
 
-            exit(__('ldpaauth203'));
+            throw new \MailWatch\Users\Application\AuthenticationProviderUnavailable(__('ldpaauth203'));
         }
         if (1 > ldap_count_entries($ds, $ldap_search_results)) {
             @trigger_error(__('ldapresultnodata03') . ' "' . $username . '"');
@@ -2852,7 +2857,10 @@ function ldap_authenticate($username, $password)
         }
 
         if ($ldap_search_results) {
-            $result = ldap_get_entries($ds, $ldap_search_results) or exit(__('ldpaauth303'));
+            $result = ldap_get_entries($ds, $ldap_search_results);
+            if (false === $result) {
+                throw new \MailWatch\Users\Application\AuthenticationProviderUnavailable(__('ldpaauth303'));
+            }
             ldap_free_result($ldap_search_results);
             if (isset($result[0])) {
                 if (in_array('group', array_values($result[0]['objectclass']), true)) {
@@ -2905,25 +2913,19 @@ function ldap_authenticate($username, $password)
                         return null;
                     }
 
-                    $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($email));
-                    $sth = dbquery($sql);
-                    if (0 === $sth->num_rows) {
-                        $sql = sprintf(
-                            "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                            quote_smart($email),
-                            quote_smart($result[0]['cn'][0])
-                        );
-                        dbquery($sql);
-                    }
-
-                    return $email;
+                    return new \MailWatch\Users\Domain\ExternalIdentity(
+                        (string)$email,
+                        (string)($result[0]['cn'][0] ?? $email),
+                        \MailWatch\Users\Domain\AuthenticationSource::Ldap,
+                        true,
+                    );
                 }
 
                 if (49 === ldap_errno($ds)) {
                     // LDAP_INVALID_CREDENTIALS
                     return null;
                 }
-                exit(ldap_print_error($ds));
+                throw new \MailWatch\Users\Application\AuthenticationProviderUnavailable(ldap_print_error($ds));
             }
         }
     }
@@ -3030,7 +3032,7 @@ function ldap_get_conf_truefalse($entry)
  * @param string $username
  * @param string $password
  *
- * @return string|null
+ * @return \MailWatch\Users\Domain\ExternalIdentity|null
  */
 function imap_authenticate($username, $password)
 {
@@ -3066,20 +3068,14 @@ function imap_authenticate($username, $password)
             return null;
         }
 
-        if (defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true) {
-            $sql = sprintf('SELECT username FROM users WHERE username = %s', quote_smart($username));
-            $sth = dbquery($sql);
-            if (0 === $sth->num_rows) {
-                $sql = sprintf(
-                    "REPLACE INTO users (username, fullname, type, password) VALUES (%s, %s,'U',NULL)",
-                    quote_smart($username),
-                    quote_smart($username)
-                );
-                dbquery($sql);
-            }
-        }
+        imap_close($mbox);
 
-        return $username;
+        return new \MailWatch\Users\Domain\ExternalIdentity(
+            $username,
+            $username,
+            \MailWatch\Users\Domain\AuthenticationSource::Imap,
+            defined('IMAP_AUTOCREATE_VALID_USER') && IMAP_AUTOCREATE_VALID_USER === true,
+        );
     }
 
     return null;
@@ -4026,23 +4022,6 @@ function xmlrpc_wrapper($host, $msg)
     $client->setSSLVerifyHost(0);
 
     return $client->send($msg, 0, $method);
-}
-
-function updateUserPasswordHash($user, $hash)
-{
-    $sqlCheckLenght = "SELECT CHARACTER_MAXIMUM_LENGTH AS passwordfieldlength FROM information_schema.columns WHERE column_name = 'password' AND table_name = 'users'";
-    $passwordFiledLengthResult = dbquery($sqlCheckLenght);
-    $passwordFiledLength = (int)Database::mysqli_result($passwordFiledLengthResult, 0, 'passwordfieldlength');
-
-    if ($passwordFiledLength < 255) {
-        $sqlUpdateFieldLength = 'ALTER TABLE `users` CHANGE `password` `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL';
-        dbquery($sqlUpdateFieldLength);
-        audit_log(sprintf(__('auditlogquareleased03', true) . ' ', $passwordFiledLength));
-    }
-
-    $sqlUpdateHash = "UPDATE `users` SET `password` = '$hash' WHERE `users`.`username` = '$user'";
-    dbquery($sqlUpdateHash);
-    audit_log(__('auditlogupdateuser03', true) . ' ' . $user);
 }
 
 /**
