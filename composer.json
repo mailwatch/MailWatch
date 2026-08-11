@@ -46,5 +46,8 @@
         "exclude-from-classmap": [
             "/tests/fixtures/"
         ]
+    },
+    "scripts": {
+        "schema-verify": "php tools/verify-rest-api-schema.php"
     }
 }

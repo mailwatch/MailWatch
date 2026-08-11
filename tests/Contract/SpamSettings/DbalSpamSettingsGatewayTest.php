@@ -16,10 +16,8 @@ final class DbalSpamSettingsGatewayTest extends TestCase
     protected function setUp(): void
     {
         $this->connection = ContractStore::connection();
-        ContractStore::dropTables($this->connection, ['users']);
-        $this->connection->executeStatement(
-            'CREATE TABLE users (username TEXT, spamscore REAL, highspamscore REAL, noscan INTEGER)'
-        );
+        ContractStore::dropTables($this->connection, ['user_filters', 'users', 'allowlist', 'blocklist']);
+        ContractStore::createRestApiSchema($this->connection);
         $fixture = json_decode(
             (string)file_get_contents(dirname(__DIR__, 2) . '/fixtures/api/spam-settings-v1.json'),
             true,
@@ -33,7 +31,7 @@ final class DbalSpamSettingsGatewayTest extends TestCase
 
     protected function tearDown(): void
     {
-        ContractStore::dropTables($this->connection, ['users']);
+        ContractStore::dropTables($this->connection, ['user_filters', 'users', 'allowlist', 'blocklist']);
         $this->connection->close();
     }
 

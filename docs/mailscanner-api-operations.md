@@ -252,6 +252,24 @@ A healthy response is `200` with `ETag` and `X-Request-ID` headers and a body
 whose `contract` field is `mailwatch.allow-block-list.v1`. Run this from a gateway
 rather than from a workstation, so it exercises the same network path.
 
+### Checking the REST API database schema
+
+After an install or upgrade, verify the four tables used by the two snapshot
+APIs. Message ingestion has its own canonical `maillog` migration and contract
+tests.
+
+```bash
+composer schema-verify
+```
+
+The check reads the database configured in `mailscanner/conf.php` and makes no
+changes. A successful result confirms the required columns, types, nullability,
+primary keys and indexes for `allowlist`, `blocklist`, `user_filters` and
+`users`. A reported mismatch means the Doctrine migrations have not completed
+or the schema has drifted; do not work around it by editing a table by hand.
+Follow the database procedure in [UPGRADING.md](../UPGRADING.md) and rerun the
+check.
+
 ## Defaults reference
 
 | Setting | Default | Where |
