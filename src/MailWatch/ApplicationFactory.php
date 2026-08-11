@@ -16,8 +16,10 @@ use MailWatch\Antivirus\Http\FSecureStatusController;
 use MailWatch\Antivirus\Http\StatusController;
 use MailWatch\Antivirus\Infrastructure\AntivirusScannerRegistry;
 use MailWatch\Lists\Application\GetAllowBlockListSnapshot;
+use MailWatch\Lists\Application\ManageAllowBlockLists;
 use MailWatch\Lists\Http\AllowBlockListController;
 use MailWatch\Lists\Infrastructure\Database\DbalAllowBlockListGateway;
+use MailWatch\Lists\Infrastructure\Database\DbalListAdministrationGateway;
 use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Http\MessageController;
 use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
@@ -95,6 +97,13 @@ final readonly class ApplicationFactory
     public static function apiTelemetry(): ApiTelemetry
     {
         return new ApiTelemetry(new ErrorLogLogger());
+    }
+
+    public static function listAdministration(): ManageAllowBlockLists
+    {
+        return new ManageAllowBlockLists(
+            new DbalListAdministrationGateway(self::databaseConnection()),
+        );
     }
 
     /**
