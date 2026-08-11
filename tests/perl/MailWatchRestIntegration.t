@@ -22,9 +22,18 @@ my $mailwatch_directory = File::Spec->catdir($temporary_directory, 'mailscanner'
 my $vendor_directory = File::Spec->catdir($temporary_directory, 'vendor');
 my $public_directory = File::Spec->catdir($temporary_directory, 'public_html');
 my $fixture_path = File::Spec->catfile($temporary_directory, 'fixture.json');
-my $capture_path = File::Spec->catfile($temporary_directory, 'insert.json');
+my $database_path = File::Spec->catfile($temporary_directory, 'mailwatch.sqlite');
+my $database_loader_path = File::Spec->catfile($temporary_directory, 'DatabaseConfigurationLoader.php');
+my $database_helper = File::Spec->catfile(
+    $project_root,
+    'tests',
+    'fixtures',
+    'api',
+    'IntegrationDatabase.php',
+);
 my $server_log_path = File::Spec->catfile($temporary_directory, 'server.log');
 my $api_key = 'perl-php-integration-api-key';
+my $php_binary = $ENV{PHP_BINARY} // 'php';
 my $server_pid;
 
 END {
@@ -42,13 +51,28 @@ copy(
     File::Spec->catfile($public_directory, 'index.php'),
 ) or die "Unable to copy the public front controller: $!";
 write_file(
-    File::Spec->catfile($vendor_directory, 'autoload.php'),
-    "<?php\nrequire " . php_string(File::Spec->catfile($project_root, 'vendor', 'autoload.php')) . ";\n",
+    $database_loader_path,
+    <<'PHP',
+<?php
+
+declare(strict_types=1);
+
+namespace MailWatch\Shared\Infrastructure\Database;
+
+final class DatabaseConfigurationLoader
+{
+    public function load(): DatabaseConfiguration
+    {
+        return DatabaseConfiguration::fromDsn('sqlite:///' . TEST_DATABASE_PATH);
+    }
+}
+PHP
 );
-copy(
-    File::Spec->catfile($project_root, 'tests', 'fixtures', 'api', 'IntegrationDatabase.php'),
-    File::Spec->catfile($mailwatch_directory, 'Database.php'),
-) or die "Unable to copy the integration database: $!";
+write_file(
+    File::Spec->catfile($vendor_directory, 'autoload.php'),
+    "<?php\nrequire " . php_string(File::Spec->catfile($project_root, 'vendor', 'autoload.php')) . ";\n"
+        . 'require ' . php_string($database_loader_path) . ";\n",
+);
 
 my $list_fixture = read_json_fixture('allow-block-list-v1.json');
 my $spam_fixture = read_json_fixture('spam-settings-v1.json');
@@ -61,8 +85,7 @@ write_file(
         'define(\'API_KEY\', ' . php_string($api_key) . ');',
         'define(\'API_MAX_PAYLOAD_BYTES\', 1048576);',
         'define(\'API_MAX_SNAPSHOT_BYTES\', 5242880);',
-        'define(\'TEST_FIXTURE_PATH\', ' . php_string($fixture_path) . ');',
-        'define(\'TEST_CAPTURE_PATH\', ' . php_string($capture_path) . ');',
+        'define(\'TEST_DATABASE_PATH\', ' . php_string($database_path) . ');',
         'define(\'DB_HOST\', \'test\');',
         'define(\'DB_USER\', \'test\');',
         'define(\'DB_PASS\', \'test\');',
@@ -71,6 +94,8 @@ write_file(
         '',
     ),
 );
+system($php_binary, $database_helper, 'create', $database_path, $fixture_path) == 0
+    or die "Unable to create the integration database";
 
 my $port_socket = IO::Socket::INET->new(
     LocalAddr => '127.0.0.1',
@@ -90,9 +115,9 @@ subtest 'the Perl client delivers a message to the PHP ingestion endpoint' => su
     my $message = read_json_fixture('logmail-v1.json');
 
     ok($client->send_api_message($message), 'the real HTTP request succeeds');
-    ok(-f $capture_path, 'the PHP endpoint reaches its persistence boundary');
+    my $insert = integration_database_row();
+    ok(defined $insert, 'the PHP endpoint reaches its DBAL persistence boundary');
 
-    my $insert = decode_json(read_file($capture_path));
     is($insert->{id}, 'fixture-message-001', 'the message id crosses the Perl/PHP boundary');
     is($insert->{spamallowlisted}, 1, 'the endpoint maps the legacy allowlist field');
     like(
@@ -184,7 +209,7 @@ subtest 'a message is spooled during an outage and replayed after recovery' => s
     ok($outage_client->replay_api_spool(), 'the queue is replayed after the API recovers');
     is(scalar queued_messages($spool_directory), 0, 'the delivered message is removed from the queue');
     is(
-        decode_json(read_file($capture_path))->{id},
+        integration_database_row()->{id},
         'fixture-outage-message-001',
         'the recovered endpoint receives the queued message',
     );
@@ -232,6 +257,16 @@ sub queued_messages {
     closedir $handle;
 
     return @queued;
+}
+
+sub integration_database_row {
+    open my $output, '-|', $php_binary, $database_helper, 'last', $database_path
+        or die "Unable to read the integration database: $!";
+    local $/;
+    my $json = <$output>;
+    close $output or die "The integration database reader failed";
+
+    return decode_json($json);
 }
 
 sub read_json_fixture {

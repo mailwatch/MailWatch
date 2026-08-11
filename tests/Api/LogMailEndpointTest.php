@@ -2,7 +2,12 @@
 
 namespace App\Tests\Api;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\Schema;
+use MailWatch\Migrations\Version20260803090000;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 final class LogMailEndpointTest extends TestCase
 {
@@ -13,7 +18,7 @@ final class LogMailEndpointTest extends TestCase
 
     private static string $temporaryDirectory;
     private static string $baseUrl;
-    private static string $capturePath;
+    private static string $databasePath;
     private static string $serverLogPath;
 
     public static function setUpBeforeClass(): void
@@ -36,9 +41,15 @@ final class LogMailEndpointTest extends TestCase
         if (!mkdir($vendorDirectory, 0o700) && !is_dir($vendorDirectory)) {
             throw new \RuntimeException('Unable to create the Composer test directory');
         }
+        $databaseConfigurationLoader = self::$temporaryDirectory . '/DatabaseConfigurationLoader.php';
+        file_put_contents($databaseConfigurationLoader, self::databaseConfigurationLoaderStub());
         file_put_contents(
             $vendorDirectory . '/autoload.php',
-            sprintf("<?php\nrequire %s;\n", var_export($projectRoot . '/vendor/autoload.php', true))
+            sprintf(
+                "<?php\nrequire %s;\nrequire %s;\n",
+                var_export($projectRoot . '/vendor/autoload.php', true),
+                var_export($databaseConfigurationLoader, true)
+            )
         );
         copy($projectRoot . '/public_html/index.php', $publicDirectory . '/index.php');
         file_put_contents($mailScannerDirectory . '/index.php', "<?php\necho 'dispatched-home-page';\n");
@@ -46,16 +57,16 @@ final class LogMailEndpointTest extends TestCase
         file_put_contents($publicDirectory . '/.htaccess', "private-server-configuration\n");
         file_put_contents($publicDirectory . '/style.css', "/* directly-served-static-file */\n");
 
-        self::$capturePath = self::$temporaryDirectory . '/insert.json';
+        self::$databasePath = self::$temporaryDirectory . '/mailwatch.sqlite';
         file_put_contents(
             $mailScannerDirectory . '/conf.php',
             sprintf(
-                "<?php\ndefine('API_KEY', %s);\ndefine('API_MAX_PAYLOAD_BYTES', 4096);\ndefine('TEST_CAPTURE_PATH', %s);\ndefine('DB_HOST', 'test');\ndefine('DB_USER', 'test');\ndefine('DB_PASS', 'test');\ndefine('DB_NAME', 'test');\ndefine('DB_PORT', 3306);\n",
+                "<?php\ndefine('API_KEY', %s);\ndefine('API_MAX_PAYLOAD_BYTES', 4096);\ndefine('TEST_DATABASE_PATH', %s);\ndefine('DB_HOST', 'test');\ndefine('DB_USER', 'test');\ndefine('DB_PASS', 'test');\ndefine('DB_NAME', 'test');\ndefine('DB_PORT', 3306);\n",
                 var_export(self::API_KEY, true),
-                var_export(self::$capturePath, true)
+                var_export(self::$databasePath, true)
             )
         );
-        file_put_contents($mailScannerDirectory . '/Database.php', self::databaseStub());
+        self::createDatabase();
 
         $socket = stream_socket_server('tcp://127.0.0.1:0', $errorCode, $errorMessage);
         if (false === $socket) {
@@ -393,6 +404,7 @@ final class LogMailEndpointTest extends TestCase
             ['success' => 'Data already inserted', 'duplicate' => true],
             $duplicateResponse['json']
         );
+        self::assertSame(1, $this->storedRowsWithIdempotencyKey($idempotencyKey));
     }
 
     /**
@@ -462,12 +474,23 @@ final class LogMailEndpointTest extends TestCase
      */
     private function capturedInsert(): array
     {
-        return json_decode(
-            (string)file_get_contents(self::$capturePath),
-            true,
-            512,
-            JSON_THROW_ON_ERROR
+        $insert = $this->databaseConnection()->fetchAssociative(
+            'SELECT
+                timestamp, id, size, from_address AS "from", from_domain,
+                to_address AS "to", to_domain, subject, clientip, archive AS archiveplaces,
+                isspam, ishighspam AS ishigh, issaspam, isrblspam, spamallowlisted,
+                spamblocklisted, sascore, spamreport, virusinfected, nameinfected,
+                otherinfected, report AS reports, ismcp, ishighmcp, issamcp,
+                mcpallowlisted, mcpblocklisted, mcpsascore, mcpreport, hostname,
+                date, time, headers, quarantined, rblspamreport, token, messageid,
+                ingestion_id
+             FROM maillog
+             ORDER BY maillog_id DESC
+             LIMIT 1'
         );
+        self::assertIsArray($insert);
+
+        return $insert;
     }
 
     /**
@@ -499,65 +522,45 @@ final class LogMailEndpointTest extends TestCase
         throw new \RuntimeException('The PHP test server did not start');
     }
 
-    private static function databaseStub(): string
+    private function storedRowsWithIdempotencyKey(string $idempotencyKey): int
+    {
+        return (int)$this->databaseConnection()->fetchOne(
+            'SELECT COUNT(*) FROM maillog WHERE ingestion_id = ?',
+            [$idempotencyKey]
+        );
+    }
+
+    private static function createDatabase(): void
+    {
+        $connection = self::databaseConnection();
+        $schema = new Schema();
+        (new Version20260803090000($connection, new NullLogger()))->up($schema);
+        $connection->createSchemaManager()->createSchemaObjects($schema);
+        $connection->close();
+    }
+
+    private static function databaseConnection(): Connection
+    {
+        return DriverManager::getConnection([
+            'driver' => 'pdo_sqlite',
+            'path' => self::$databasePath,
+        ]);
+    }
+
+    private static function databaseConfigurationLoaderStub(): string
     {
         return <<<'PHP'
             <?php
 
-            final class Database
+            declare(strict_types=1);
+
+            namespace MailWatch\Shared\Infrastructure\Database;
+
+            final class DatabaseConfigurationLoader
             {
-                public static function connect(...$arguments): object
+                public function load(): DatabaseConfiguration
                 {
-                    return new class {
-                        public function prepare(string $query): object
-                        {
-                            return new class {
-                                private array $values = [];
-
-                                public function bind_param(string $types, &...$values): void
-                                {
-                                    if ('ssisssssssiiiiiidsiiisiiiiidsssssissss' !== $types) {
-                                        throw new LogicException('Unexpected bind parameter types: ' . $types);
-                                    }
-                                    if (strlen($types) !== count($values)) {
-                                        throw new LogicException('Bind parameter count does not match its type declaration');
-                                    }
-                                    $this->values = &$values;
-                                }
-
-                                public function execute(): bool
-                                {
-                                    $fields = [
-                                        'timestamp', 'id', 'size', 'from', 'from_domain', 'to', 'to_domain', 'subject',
-                                        'clientip', 'archiveplaces', 'isspam', 'ishigh', 'issaspam', 'isrblspam',
-                                        'spamallowlisted', 'spamblocklisted', 'sascore', 'spamreport', 'virusinfected',
-                                        'nameinfected', 'otherinfected', 'reports', 'ismcp', 'ishighmcp', 'issamcp',
-                                        'mcpallowlisted', 'mcpblocklisted', 'mcpsascore', 'mcpreport', 'hostname',
-                                        'date', 'time', 'headers', 'quarantined', 'rblspamreport', 'token', 'messageid',
-                                        'ingestion_id',
-                                    ];
-                                    $insert = array_combine($fields, $this->values);
-                                    if (null !== $insert['ingestion_id'] && is_file(TEST_CAPTURE_PATH)) {
-                                        $existing = json_decode(file_get_contents(TEST_CAPTURE_PATH), true, 512, JSON_THROW_ON_ERROR);
-                                        if ($insert['ingestion_id'] === ($existing['ingestion_id'] ?? null)) {
-                                            throw new mysqli_sql_exception('Duplicate entry', 1062);
-                                        }
-                                    }
-                                    file_put_contents(TEST_CAPTURE_PATH, json_encode($insert, JSON_THROW_ON_ERROR));
-
-                                    return true;
-                                }
-
-                                public function close(): void
-                                {
-                                }
-                            };
-                        }
-
-                        public function close(): void
-                        {
-                        }
-                    };
+                    return DatabaseConfiguration::fromDsn('sqlite:///' . TEST_DATABASE_PATH);
                 }
             }
             PHP;

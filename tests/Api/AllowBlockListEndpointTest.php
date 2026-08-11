@@ -2,6 +2,8 @@
 
 namespace App\Tests\Api;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use PHPUnit\Framework\TestCase;
 
 final class AllowBlockListEndpointTest extends TestCase
@@ -13,6 +15,7 @@ final class AllowBlockListEndpointTest extends TestCase
 
     private static string $temporaryDirectory;
     private static string $baseUrl;
+    private static string $databasePath;
 
     public static function setUpBeforeClass(): void
     {
@@ -33,21 +36,27 @@ final class AllowBlockListEndpointTest extends TestCase
         if (!mkdir($vendorDirectory, 0o700) && !is_dir($vendorDirectory)) {
             throw new \RuntimeException('Unable to create the Composer test directory');
         }
+        $databaseConfigurationLoader = self::$temporaryDirectory . '/DatabaseConfigurationLoader.php';
+        file_put_contents($databaseConfigurationLoader, self::databaseConfigurationLoaderStub());
         file_put_contents(
             $vendorDirectory . '/autoload.php',
-            sprintf("<?php\nrequire %s;\n", var_export($projectRoot . '/vendor/autoload.php', true))
+            sprintf(
+                "<?php\nrequire %s;\nrequire %s;\n",
+                var_export($projectRoot . '/vendor/autoload.php', true),
+                var_export($databaseConfigurationLoader, true)
+            )
         );
         copy($projectRoot . '/public_html/index.php', $publicDirectory . '/index.php');
-        copy($projectRoot . '/tests/fixtures/api/allow-block-list-v1.json', self::$temporaryDirectory . '/fixture.json');
+        self::$databasePath = self::$temporaryDirectory . '/mailwatch.sqlite';
         file_put_contents(
             $mailScannerDirectory . '/conf.php',
             sprintf(
-                "<?php\ndefine('API_KEY', %s);\ndefine('API_MAX_SNAPSHOT_BYTES', 5242880);\ndefine('TEST_FIXTURE_PATH', %s);\ndefine('DB_HOST', 'test');\ndefine('DB_USER', 'test');\ndefine('DB_PASS', 'test');\ndefine('DB_NAME', 'test');\ndefine('DB_PORT', 3306);\n",
+                "<?php\ndefine('API_KEY', %s);\ndefine('API_MAX_SNAPSHOT_BYTES', 5242880);\ndefine('TEST_DATABASE_PATH', %s);\ndefine('DB_HOST', 'test');\ndefine('DB_USER', 'test');\ndefine('DB_PASS', 'test');\ndefine('DB_NAME', 'test');\ndefine('DB_PORT', 3306);\n",
                 var_export(self::API_KEY, true),
-                var_export(self::$temporaryDirectory . '/fixture.json', true),
+                var_export(self::$databasePath, true),
             )
         );
-        file_put_contents($mailScannerDirectory . '/Database.php', self::databaseStub());
+        self::createDatabase();
 
         $socket = stream_socket_server('tcp://127.0.0.1:0', $errorCode, $errorMessage);
         if (false === $socket) {
@@ -206,54 +215,52 @@ final class AllowBlockListEndpointTest extends TestCase
         throw new \RuntimeException('The PHP test server did not start');
     }
 
-    private static function databaseStub(): string
+    private static function createDatabase(): void
+    {
+        $connection = self::databaseConnection();
+        $connection->executeStatement('CREATE TABLE allowlist (to_address TEXT, from_address TEXT)');
+        $connection->executeStatement('CREATE TABLE blocklist (to_address TEXT, from_address TEXT)');
+        $connection->executeStatement('CREATE TABLE user_filters (username TEXT, filter TEXT, active TEXT)');
+
+        $fixture = json_decode(
+            (string)file_get_contents(dirname(__DIR__) . '/fixtures/api/allow-block-list-v1.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+        foreach (['allowlist', 'blocklist'] as $table) {
+            foreach ($fixture[$table] as $entry) {
+                $connection->insert($table, $entry);
+            }
+        }
+        foreach ($fixture['user_filters'] as $filter) {
+            $connection->insert('user_filters', $filter);
+        }
+        $connection->close();
+    }
+
+    private static function databaseConnection(): Connection
+    {
+        return DriverManager::getConnection([
+            'driver' => 'pdo_sqlite',
+            'path' => self::$databasePath,
+        ]);
+    }
+
+    private static function databaseConfigurationLoaderStub(): string
     {
         return <<<'PHP'
             <?php
 
-            final class Database
+            declare(strict_types=1);
+
+            namespace MailWatch\Shared\Infrastructure\Database;
+
+            final class DatabaseConfigurationLoader
             {
-                public static function connect(...$arguments): object
+                public function load(): DatabaseConfiguration
                 {
-                    return new class {
-                        public function query(string $query): object
-                        {
-                            $fixture = json_decode(file_get_contents(TEST_FIXTURE_PATH), true, 512, JSON_THROW_ON_ERROR);
-                            $table = str_contains($query, 'FROM allowlist') ? 'allowlist' : 'blocklist';
-                            $rows = $fixture[$table];
-                            foreach ($fixture['user_filters'] as $filter) {
-                                foreach ($fixture[$table] as $entry) {
-                                    if (strtolower($entry['to_address']) === strtolower($filter['username'])) {
-                                        $rows[] = [
-                                            'to_address' => $filter['filter'],
-                                            'from_address' => $entry['from_address'],
-                                        ];
-                                    }
-                                }
-                            }
-
-                            return new class($rows) {
-                                private int $offset = 0;
-
-                                public function __construct(private array $rows)
-                                {
-                                }
-
-                                public function fetch_assoc(): ?array
-                                {
-                                    return $this->rows[$this->offset++] ?? null;
-                                }
-
-                                public function free(): void
-                                {
-                                }
-                            };
-                        }
-
-                        public function close(): void
-                        {
-                        }
-                    };
+                    return DatabaseConfiguration::fromDsn('sqlite:///' . TEST_DATABASE_PATH);
                 }
             }
             PHP;

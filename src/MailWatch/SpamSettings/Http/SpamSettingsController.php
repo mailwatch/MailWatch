@@ -7,18 +7,16 @@ namespace MailWatch\SpamSettings\Http;
 use MailWatch\Shared\Http\JsonResponse;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
+use MailWatch\SpamSettings\Application\GetSpamSettingsSnapshot;
 
 final readonly class SpamSettingsController
 {
     private const CONTRACT = 'mailwatch.spam-settings.v1';
 
-    /**
-     * @param \Closure(): object $connectDatabase
-     */
     public function __construct(
         private ApiConfiguration $configuration,
         private ApiKeyAuthenticator $authenticator,
-        private \Closure $connectDatabase,
+        private GetSpamSettingsSnapshot $getSnapshot,
     ) {
     }
 
@@ -40,49 +38,11 @@ final readonly class SpamSettingsController
         }
 
         try {
-            $database = ($this->connectDatabase)();
-            $result = $database->query(
-                'SELECT username, spamscore, highspamscore, noscan
-                 FROM users
-                 WHERE spamscore > 0 OR highspamscore > 0 OR noscan > 0',
-            );
-            if (false === $result) {
-                throw new \RuntimeException('Unable to read spam settings snapshot');
-            }
-
-            $spamScores = [];
-            $highSpamScores = [];
-            $noScan = [];
-            while ($row = $result->fetch_assoc()) {
-                $username = strtolower((string)($row['username'] ?? ''));
-                $spamScore = (float)($row['spamscore'] ?? 0);
-                $highSpamScore = (float)($row['highspamscore'] ?? 0);
-                $noScanValue = (int)($row['noscan'] ?? 0);
-
-                if ($spamScore > 0) {
-                    $spamScores[$username] = $spamScore;
-                }
-                if ($highSpamScore > 0) {
-                    $highSpamScores[$username] = $highSpamScore;
-                }
-                if ($noScanValue > 0) {
-                    $noScan[] = $username;
-                }
-            }
-            $result->free();
-            $database->close();
+            $snapshotData = $this->getSnapshot->get()->toArray();
         } catch (\Throwable) {
             JsonResponse::error(500, 'snapshot_unavailable', 'Snapshot unavailable', $headers);
         }
 
-        ksort($spamScores, SORT_STRING);
-        ksort($highSpamScores, SORT_STRING);
-        sort($noScan, SORT_STRING);
-        $snapshotData = [
-            'spam_scores' => (object)$spamScores,
-            'high_spam_scores' => (object)$highSpamScores,
-            'no_scan' => $noScan,
-        ];
         $snapshotVersion = hash(
             'sha256',
             json_encode($snapshotData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),

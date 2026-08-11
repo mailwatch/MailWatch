@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MailWatch\Lists\Http;
 
+use MailWatch\Lists\Application\GetAllowBlockListSnapshot;
 use MailWatch\Shared\Http\JsonResponse;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
@@ -12,13 +13,10 @@ final readonly class AllowBlockListController
 {
     private const CONTRACT = 'mailwatch.allow-block-list.v1';
 
-    /**
-     * @param \Closure(): object $connectDatabase
-     */
     public function __construct(
         private ApiConfiguration $configuration,
         private ApiKeyAuthenticator $authenticator,
-        private \Closure $connectDatabase,
+        private GetAllowBlockListSnapshot $getSnapshot,
     ) {
     }
 
@@ -40,18 +38,11 @@ final readonly class AllowBlockListController
         }
 
         try {
-            $database = ($this->connectDatabase)();
-            $allowlist = $this->loadSnapshot($database, 'allowlist');
-            $blocklist = $this->loadSnapshot($database, 'blocklist');
-            $database->close();
+            $snapshotData = $this->getSnapshot->get()->toArray();
         } catch (\Throwable) {
             JsonResponse::error(500, 'snapshot_unavailable', 'Snapshot unavailable', $headers);
         }
 
-        $snapshotData = [
-            'allowlist' => $allowlist,
-            'blocklist' => $blocklist,
-        ];
         $snapshotVersion = hash(
             'sha256',
             json_encode($snapshotData, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
@@ -83,38 +74,5 @@ final readonly class AllowBlockListController
         }
 
         JsonResponse::send(200, $response, $headers);
-    }
-
-    /**
-     * @return list<array{to_address: string, from_address: string}>
-     */
-    private function loadSnapshot(object $database, string $table): array
-    {
-        $query = "SELECT to_address, from_address FROM {$table}
-                  UNION ALL
-                  SELECT user_filters.filter AS to_address, {$table}.from_address
-                  FROM {$table}
-                  INNER JOIN user_filters ON {$table}.to_address = user_filters.username";
-        $result = $database->query($query);
-        if (false === $result) {
-            throw new \RuntimeException('Unable to read list snapshot');
-        }
-
-        $entries = [];
-        while ($row = $result->fetch_assoc()) {
-            $entries[] = [
-                'to_address' => strtolower((string)($row['to_address'] ?? '')),
-                'from_address' => strtolower((string)($row['from_address'] ?? '')),
-            ];
-        }
-        $result->free();
-
-        usort(
-            $entries,
-            static fn(array $left, array $right): int => [$left['to_address'], $left['from_address']]
-                <=> [$right['to_address'], $right['from_address']],
-        );
-
-        return $entries;
     }
 }
