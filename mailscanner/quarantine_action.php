@@ -72,28 +72,47 @@ function simple_html_result($status)
 <?php
 }
 
-if (!isset($_GET['id'])) {
+if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? '')) {
+    exit(__('dievalidate99'));
+}
+if (!isset($_POST['id'])) {
     exit(__('dienoid57'));
 }
-if (!isset($_GET['action'])) {
+if (!isset($_POST['action'])) {
     exit(__('dienoaction57'));
 }
-
-$id = deepSanitizeInput($_GET['id'], 'url');
-if (false === $id || !validateInput($id, 'msgid')) {
+if (false === checkToken($_POST['token'] ?? '')
+    || false === checkFormToken('/quarantine_action.php form token', $_POST['formtoken'] ?? '')) {
+    header('Location: login.php?error=pagetimeout');
     exit;
 }
 
+$id = deepSanitizeInput($_POST['id'], 'url');
+if (false === $id || !validateInput($id, 'msgid')) {
+    exit;
+}
+$action = deepSanitizeInput($_POST['action'], 'url');
+if (!in_array($action, ['release', 'delete', 'learn'], true)) {
+    exit(__('dieuaction57') . ' ' . sanitizeInput($action));
+}
+
 $list = quarantine_list_items($id, false, $_SESSION['global_filter']);
+if (!is_array($list)) {
+    exit((string)$list);
+}
 if (0 === count($list)) {
     exit(__('diemnf57'));
 }
+$quarantineAccess = \MailWatch\ApplicationFactory::quarantineAccess((string)$_SESSION['user_type']);
+$dangerous = [] !== array_filter(
+    $list,
+    static fn(mixed $item): bool => is_array($item) && 'Y' === ($item['dangerous'] ?? 'N'),
+);
 
-switch ($_GET['action']) {
+switch ($action) {
     case 'release':
-        if (false === checkToken($_GET['token'])) {
-            header('Location: login.php?error=pagetimeout');
-            exit;
+        if (!$quarantineAccess->canRelease($dangerous)) {
+            exit(__('permdenied60'));
         }
         $result = '';
         if (1 === count($list)) {
@@ -107,7 +126,7 @@ switch ($_GET['action']) {
             }
         }
 
-        if (isset($_GET['html'])) {
+        if (isset($_POST['html'])) {
             // Display success
             simple_html_start();
             simple_html_result($result);
@@ -116,57 +135,19 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
-        if (false === checkToken($_GET['token'])) {
-            header('Location: login.php?error=pagetimeout');
-            exit;
-        }
         $status = [];
-        if (isset($_GET['html'])) {
-            if (!isset($_GET['confirm'])) {
-                // Dislay an 'Are you sure' dialog
-                simple_html_start(); ?>
-                <table width="100%" height="100%">
-                    <tr>
-                        <td align="center" valign="middle">
-                            <table>
-                                <tr>
-                                    <th><?php echo __('delete57'); ?></th>
-                                </tr>
-                                <tr>
-                                    <td align="center">
-                                        <a href="quarantine_action.php?token=<?php echo $_SESSION['token']; ?>&amp;id=<?php echo $id; ?>&amp;action=delete&amp;html=true&amp;confirm=true"><?php echo __('yes57'); ?></a>
-                                        &nbsp;&nbsp;
-                                        <a href="javascript:void(0)" onClick="javascript:window.close()"><?php echo __('no57'); ?></a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-                <?php
-                simple_html_end();
-            } else {
-                simple_html_start();
-                for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                    $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
-                }
-                $status = implode('<br/>', $status);
-                simple_html_result($status);
-                simple_html_end();
-            }
-        } else {
-            // Delete
-            for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
-            }
+        for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
+            $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
+        }
+        if (isset($_POST['html'])) {
+            simple_html_start();
+            simple_html_result(implode('<br/>', $status));
+            simple_html_end();
         }
         break;
 
     case 'learn':
         break;
-
-    default:
-        exit(__('dieuaction57') . ' ' . sanitizeInput($_GET['action']));
 }
 
 dbclose();

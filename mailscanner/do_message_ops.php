@@ -53,6 +53,7 @@ echo ' </tr>' . "\n";
 
 // Iterate through the POST variables
 unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
+$quarantineAccess = \MailWatch\ApplicationFactory::quarantineAccess((string)$_SESSION['user_type']);
 if (!empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', (string)$k, $Regs)) {
@@ -103,18 +104,26 @@ if (!empty($_POST)) {
                 $itemnum = [$num];
                 echo '<td>';
                 if ('release' === $type) {
-                    $quarantined = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
-                    if (is_array($quarantined)) {
-                        $to = $quarantined[0]['to'];
-                        echo quarantine_release(
-                            $quarantined,
-                            $itemnum,
-                            $to,
-                            RPC_ONLY,
-                            $_SESSION['global_filter']
-                        );
+                    $dangerous = [] !== array_filter(
+                        $items,
+                        static fn(mixed $item): bool => is_array($item) && 'Y' === ($item['dangerous'] ?? 'N'),
+                    );
+                    if (!$quarantineAccess->canRelease($dangerous)) {
+                        echo __('permdenied60');
                     } else {
-                        echo $quarantined;
+                        $quarantined = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
+                        if (is_array($quarantined)) {
+                            $to = $quarantined[0]['to'];
+                            echo quarantine_release(
+                                $quarantined,
+                                $itemnum,
+                                $to,
+                                RPC_ONLY,
+                                $_SESSION['global_filter']
+                            );
+                        } else {
+                            echo $quarantined;
+                        }
                     }
                 } else {
                     echo quarantine_learn(

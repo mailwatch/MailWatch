@@ -376,6 +376,7 @@ flush();
 $quarantinedir = get_conf_var('QuarantineDir');
 $quarantined = quarantine_list_items($url_id, RPC_ONLY, $_SESSION['global_filter']);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
+    $quarantineAccess = \MailWatch\ApplicationFactory::quarantineAccess((string)$_SESSION['user_type']);
     echo "<br>\n";
 
     if (isset($_POST['submit']) && 'submit' === deepSanitizeInput($_POST['submit'], 'url')) {
@@ -409,6 +410,20 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                     exit;
                 }
                 $arrid2[] = $id2;
+            }
+            $containsDangerousContent = false;
+            foreach ($arrid2 as $itemId) {
+                if (!isset($quarantined[$itemId])) {
+                    exit(__('dievalidate99'));
+                }
+                $containsDangerousContent = $containsDangerousContent
+                    || 'Y' === ($quarantined[$itemId]['dangerous'] ?? 'N');
+            }
+            if (!$quarantineAccess->canRelease($containsDangerousContent)
+                || (isset($_POST['alt_recpt_yn'])
+                    && 'y' === deepSanitizeInput($_POST['alt_recpt_yn'], 'url')
+                    && !$quarantineAccess->canUseAlternateRecipient($containsDangerousContent))) {
+                exit(__('permdenied60'));
             }
             $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY, $_SESSION['global_filter']);
         }
@@ -506,11 +521,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             // Don't allow message to be released if it is marked as 'dangerous'
             // Currently this only applies to messages that contain viruses.
             // visible only to Administrators and Domain Admin only if DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS is enabled
-            if (
-                'A' === $_SESSION['user_type']
-                || (defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
-                || 'Y' !== $item['dangerous']
-            ) {
+            if ($quarantineAccess->canRelease('Y' === $item['dangerous'])) {
                 echo '  <td align="center" class="' . $tdclass . '"><input class="noprint" type="checkbox" name="release[]" value="' . $item['id'] . '"></td>' . "\n";
             } else {
                 echo '<td class="' . $tdclass . '">&nbsp;&nbsp;</td>' . "\n";
@@ -530,18 +541,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo '  <td>' . $item['type'] . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
             // Domain admins can view the file only if enabled
-            if (
-                (
-                    'N' === $item['dangerous']
-                    || 'A' === $_SESSION['user_type']
-                    || (
-                        defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS')
-                        && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS
-                        && 'D' === $_SESSION['user_type']
-                        && 'Y' === $item['dangerous']
-                    )
-                ) && str_contains((string)$item['type'], 'message/rfc822')
-            ) {
+            if ($quarantineAccess->canView('Y' === $item['dangerous'])
+                && str_contains((string)$item['type'], 'message/rfc822')) {
                 echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
                     substr((string)$item['path'], strlen((string)$quarantinedir) + 1) .
                     '</a></td>' . "\n";
@@ -558,18 +559,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo ' </tr>' . "\n";
         }
         echo ' <tr class="noprint">' . "\n";
-        if ('A' === $_SESSION['user_type']
-            || (
-                'D' === $_SESSION['user_type']
-                && (
-                    0 === $is_dangerous
-                    || (
-                        defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS')
-                        && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS
-                    )
-                )
-            )
-        ) {
+        if ($quarantineAccess->canUseAlternateRecipient(0 < $is_dangerous)) {
             echo '  <td colspan="6"><input type="checkbox" name="alt_recpt_yn" value="y">&nbsp;' . __('altrecip04') . '&nbsp;<input type="TEXT" name="alt_recpt" size="100"></td>' . "\n";
         } else {
             echo '  <td colspan="6">&nbsp;</td>' . "\n";

@@ -35,9 +35,33 @@ html_start(__('msgviewer06'), 0, false, false);
 ?>
     <SCRIPT type="application/javascript">
         <!--
-        function do_action(id, token, action) {
-            ActionString = "quarantine_action.php?token=" + token + "&id=" + id + "&action=" + action + "&html=true";
-            DoActionWindow = window.open(ActionString, '', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=no, width=900, height=150');
+        function do_action(id, action) {
+            if (action === "delete" && !window.confirm(<?php echo json_encode(__('delete57') . '?'); ?>)) {
+                return;
+            }
+            var target = "quarantine-action";
+            window.open("", target, "toolbar=no,directories=no,location=no,status=no,menubar=no,resizable=no,scrollbars=no,width=900,height=150");
+            var form = document.createElement("form");
+            form.method = "post";
+            form.action = "quarantine_action.php";
+            form.target = target;
+            var values = {
+                token: <?php echo json_encode((string)$_SESSION['token']); ?>,
+                formtoken: <?php echo json_encode(generateFormToken('/quarantine_action.php form token')); ?>,
+                id: id,
+                action: action,
+                html: "true"
+            };
+            Object.keys(values).forEach(function (name) {
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = name;
+                input.value = values[name];
+                form.appendChild(input);
+            });
+            document.body.appendChild(form);
+            form.submit();
+            form.remove();
         }
         -->
     </SCRIPT>
@@ -67,6 +91,13 @@ audit_log(sprintf(__('auditlog06', true), $message_id));
 if ($message->token !== deepSanitizeInput($_GET['token'], 'url') && false === checkToken($_GET['token'])) {
     header('Location: login.php?error=pagetimeout');
     exit;
+}
+$dangerous = 0 < (int)$message->virusinfected
+    || 0 < (int)$message->nameinfected
+    || 0 < (int)$message->otherinfected;
+$quarantineAccess = \MailWatch\ApplicationFactory::quarantineAccess((string)$_SESSION['user_type']);
+if (!$quarantineAccess->canView($dangerous)) {
+    exit(__('permdenied60'));
 }
 
 $using_rpc = false;
@@ -181,17 +212,12 @@ foreach ($header_fields as $field) {
     }
 }
 
-if (
-    ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected)
-    || 'A' === $_SESSION['user_type']
-    || (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
-) {
-    lazy(
-        __('actions06'),
-        "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','release')\">" . __('releasemsg06') . "</a> | <a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','" . $_SESSION['token'] . "','delete')\">" . __('deletemsg06') . '</a>',
-        false
-    );
+$actions = [];
+if ($quarantineAccess->canRelease($dangerous)) {
+    $actions[] = "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','release')\">" . __('releasemsg06') . '</a>';
 }
+$actions[] = "<a href=\"javascript:void(0)\" onclick=\"do_action('" . $message->id . "','delete')\">" . __('deletemsg06') . '</a>';
+lazy(__('actions06'), implode(' | ', $actions), false);
 
 foreach ($mime_struct as $part) {
     $type = $part->ctype_primary ?? 'undefined';
@@ -242,13 +268,7 @@ foreach ($mime_struct as $part) {
                 echo $filename;
             }
 
-            if (
-                ('0' === $message->virusinfected && '0' === $message->nameinfected && '0' === $message->otherinfected)
-                || 'A' === $_SESSION['user_type']
-                || (defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS') && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS && 'D' === $_SESSION['user_type'])
-            ) {
-                echo ' <a href="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
-            }
+            echo ' <a href="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '">Download</a>';
 
             echo '  </td>';
 

@@ -23,6 +23,7 @@ use MailWatch\Lists\Infrastructure\Database\DbalListAdministrationGateway;
 use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Http\MessageController;
 use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
+use MailWatch\Quarantine\Domain\QuarantineAccess;
 use MailWatch\Shared\Application\Port\CommandRunner;
 use MailWatch\Shared\Http\ApiRequestContext;
 use MailWatch\Shared\Http\ApiTelemetry;
@@ -157,6 +158,17 @@ final readonly class ApplicationFactory
             $passwords,
             $providers,
             \defined('SESSION_TIMEOUT') ? (int)SESSION_TIMEOUT : null,
+        );
+    }
+
+    public static function quarantineAccess(string $role): QuarantineAccess
+    {
+        return new QuarantineAccess(
+            $role,
+            \defined('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS')
+                && true === DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS,
+            \defined('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS')
+                && true === DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS,
         );
     }
 
