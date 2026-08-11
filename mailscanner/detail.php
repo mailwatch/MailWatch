@@ -374,7 +374,8 @@ echo "</table>\n";
 flush();
 
 $quarantinedir = get_conf_var('QuarantineDir');
-$quarantined = quarantine_list_items($url_id, RPC_ONLY, $_SESSION['global_filter']);
+$messageScope = \MailWatch\ApplicationFactory::quarantineMessageScope($_SESSION);
+$quarantined = quarantine_list_items($url_id, RPC_ONLY, $messageScope);
 if (is_array($quarantined) && (count($quarantined) > 0)) {
     $quarantineAccess = \MailWatch\ApplicationFactory::quarantineAccess((string)$_SESSION['user_type']);
     echo "<br>\n";
@@ -425,7 +426,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                     && !$quarantineAccess->canUseAlternateRecipient($containsDangerousContent))) {
                 exit(__('permdenied60'));
             }
-            $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY, $_SESSION['global_filter']);
+            $status[] = quarantine_release($quarantined, $arrid2, $to, RPC_ONLY, $messageScope);
         }
         // sa-learn
         if (isset($_POST['learn'])) {
@@ -445,7 +446,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             if (!validateInput($type, 'salearnops')) {
                 exit(__('dievalidate99'));
             }
-            $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY, $_SESSION['global_filter']);
+            $status[] = quarantine_learn($quarantined, $arrid2, $type, RPC_ONLY, $messageScope);
         }
         // Delete
         if (isset($_POST['delete'])) {
@@ -461,7 +462,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 }
                 $arrid2[] = $id2;
             }
-            $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY, $_SESSION['global_filter']);
+            $status[] = quarantine_delete($quarantined, $arrid2, RPC_ONLY, $messageScope);
         }
         echo '<table border="0" cellpadding="1" cellspacing="1" width="100%" class="maildetail">' . "\n";
         echo ' <tr>' . "\n";

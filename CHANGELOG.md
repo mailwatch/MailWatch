@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Security
+- Bind the message identifier and the account's authorisation scope as query parameters in the quarantine operations, closing an SQL injection reachable through the XML-RPC quarantine methods
+
 ### Added
 - Add `logmail` API endpoint for programmatic mail log ingestion
 - Add HTTP client support in `MailWatch.pm` for sending data to the MailWatch API

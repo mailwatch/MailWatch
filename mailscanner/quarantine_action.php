@@ -96,7 +96,8 @@ if (!in_array($action, ['release', 'delete', 'learn'], true)) {
     exit(__('dieuaction57') . ' ' . sanitizeInput($action));
 }
 
-$list = quarantine_list_items($id, false, $_SESSION['global_filter']);
+$messageScope = \MailWatch\ApplicationFactory::quarantineMessageScope($_SESSION);
+$list = quarantine_list_items($id, false, $messageScope);
 if (!is_array($list)) {
     exit((string)$list);
 }
@@ -117,11 +118,11 @@ switch ($action) {
         $result = '';
         if (1 === count($list)) {
             $to = $list[0]['to'];
-            $result = quarantine_release($list, [0], $to, false, $_SESSION['global_filter']);
+            $result = quarantine_release($list, [0], $to, false, $messageScope);
         } else {
             for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
                 if (preg_match('/message\/rfc822/', (string)$list[$i]['type'])) {
-                    $result = quarantine_release($list, [$i], $list[$i]['to'], false, $_SESSION['global_filter']);
+                    $result = quarantine_release($list, [$i], $list[$i]['to'], false, $messageScope);
                 }
             }
         }
@@ -137,7 +138,7 @@ switch ($action) {
     case 'delete':
         $status = [];
         for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-            $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
+            $status[] = quarantine_delete($list, [$i], false, $messageScope);
         }
         if (isset($_POST['html'])) {
             simple_html_start();

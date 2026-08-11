@@ -3355,63 +3355,42 @@ function is_local($host): bool
 }
 
 /**
- * @param string      $msgid
- * @param bool|false  $rpc_only
- * @param string|null $global_filter
+ * @param string     $msgid
+ * @param bool|false $rpc_only
  *
  * @return array|mixed|string
  */
-function quarantine_list_items($msgid, $rpc_only = false, $global_filter = null)
+function quarantine_list_items($msgid, $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null)
 {
-    $sql = "
-SELECT
-  hostname,
-  DATE_FORMAT(date,'%Y%m%d') AS date,
-  id,
-  to_address,
-  CASE WHEN isspam>0 THEN 'Y' ELSE 'N' END AS isspam,
-  CASE WHEN nameinfected>0 THEN 'Y' ELSE 'N' END AS nameinfected,
-  CASE WHEN virusinfected>0 THEN 'Y' ELSE 'N' END AS virusinfected,
-  CASE WHEN otherinfected>0 THEN 'Y' ELSE 'N' END AS otherinfected
- FROM
-  maillog
- WHERE
-  id = '$msgid'";
-    if (null !== $global_filter) {
-        $sql .= "
- AND
- ($global_filter)";
-    }
-    $sth = dbquery($sql);
-    $rows = $sth->num_rows;
-    if ($rows <= 0) {
+    $message = \MailWatch\ApplicationFactory::quarantineMessages()->messageInScope(
+        (string)$msgid,
+        $scope ?? \MailWatch\Quarantine\Domain\MessageScope::unrestricted()
+    );
+    if (null === $message) {
         exit(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
     }
-    $row = $sth->fetch_object();
-    if (!$rpc_only && is_local($row->hostname)) {
+    if (!$rpc_only && is_local($message->hostname)) {
         $quarantinedir = get_conf_var('QuarantineDir');
-        $quarantine = $quarantinedir . '/' . $row->date . '/' . $row->id;
-        $spam = $quarantinedir . '/' . $row->date . '/spam/' . $row->id;
-        $nonspam = $quarantinedir . '/' . $row->date . '/nonspam/' . $row->id;
-        $mcp = $quarantinedir . '/' . $row->date . '/mcp/' . $row->id;
-        $infected = 'N';
-        if ('Y' === $row->virusinfected || 'Y' === $row->nameinfected || 'Y' === $row->otherinfected) {
-            $infected = 'Y';
-        }
+        $quarantine = $quarantinedir . '/' . $message->storageDate . '/' . $message->id;
+        $spam = $quarantinedir . '/' . $message->storageDate . '/spam/' . $message->id;
+        $nonspam = $quarantinedir . '/' . $message->storageDate . '/nonspam/' . $message->id;
+        $mcp = $quarantinedir . '/' . $message->storageDate . '/mcp/' . $message->id;
+        $infected = $message->dangerous ? 'Y' : 'N';
+        $isspam = $message->spam ? 'Y' : 'N';
         $quarantined = [];
         $count = 0;
         foreach ([$nonspam, $spam, $mcp] as $category) {
             if (file_exists($category) && is_readable($category)) {
                 $quarantined[$count]['id'] = $count;
-                $quarantined[$count]['host'] = $row->hostname;
-                $quarantined[$count]['msgid'] = $row->id;
-                $quarantined[$count]['to'] = $row->to_address;
+                $quarantined[$count]['host'] = $message->hostname;
+                $quarantined[$count]['msgid'] = $message->id;
+                $quarantined[$count]['to'] = $message->recipients;
                 $quarantined[$count]['file'] = 'message';
                 $quarantined[$count]['type'] = 'message/rfc822';
                 $quarantined[$count]['path'] = $category;
                 $quarantined[$count]['md5'] = md5($category);
                 $quarantined[$count]['dangerous'] = $infected;
-                $quarantined[$count]['isspam'] = $row->isspam;
+                $quarantined[$count]['isspam'] = $isspam;
                 ++$count;
             }
         }
@@ -3421,9 +3400,9 @@ SELECT
             while (false !== ($f = readdir($d))) {
                 if ('..' !== $f && '.' !== $f) {
                     $quarantined[$count]['id'] = $count;
-                    $quarantined[$count]['host'] = $row->hostname;
-                    $quarantined[$count]['msgid'] = $row->id;
-                    $quarantined[$count]['to'] = $row->to_address;
+                    $quarantined[$count]['host'] = $message->hostname;
+                    $quarantined[$count]['msgid'] = $message->id;
+                    $quarantined[$count]['to'] = $message->recipients;
                     $quarantined[$count]['file'] = $f;
                     $file = escapeshellarg($quarantine . '/' . $f);
                     $type = ltrim(rtrim(shell_exec('/usr/bin/file -bi ' . $file)));
@@ -3435,7 +3414,7 @@ SELECT
                     $quarantined[$count]['path'] = $quarantine . '/' . $f;
                     $quarantined[$count]['md5'] = md5($quarantine . '/' . $f);
                     $quarantined[$count]['dangerous'] = $infected;
-                    $quarantined[$count]['isspam'] = $row->isspam;
+                    $quarantined[$count]['isspam'] = $isspam;
                     ++$count;
                 }
             }
@@ -3446,13 +3425,13 @@ SELECT
     }
 
     // Host is remote call quarantine_list_items by RPC
-    debug("Calling quarantine_list_items on $row->hostname by XML-RPC");
+    debug("Calling quarantine_list_items on {$message->hostname} by XML-RPC");
     // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
     // if(DEBUG) { $client->setDebug(1); }
     // $parameters = array($input);
     // $msg = new xmlrpcmsg('quarantine_list_items',$parameters);
     $msg = new xmlrpcmsg('quarantine_list_items', [new xmlrpcval($msgid)]);
-    $rsp = xmlrpc_wrapper($row->hostname, $msg); // $client->send($msg);
+    $rsp = xmlrpc_wrapper($message->hostname, $msg); // $client->send($msg);
     if (0 === $rsp->faultCode()) {
         $response = php_xmlrpc_decode($rsp->value());
     } else {
@@ -3463,19 +3442,18 @@ SELECT
 }
 
 /**
- * @param array       $list
- * @param array       $num
- * @param string      $to
- * @param bool|false  $rpc_only
- * @param string|null $global_filter
+ * @param array      $list
+ * @param array      $num
+ * @param string     $to
+ * @param bool|false $rpc_only
  */
-function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter = null): string
+function quarantine_release($list, $num, $to, $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null): string
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
 
-    $new = quarantine_list_items($list[0]['msgid'], false, $global_filter);
+    $new = quarantine_list_items($list[0]['msgid'], false, $scope);
     $list = &$new;
 
     // Check for [-1], indicating just to release message itself, regardless of its item position
@@ -3532,8 +3510,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
                 global $error;
                 $error = true;
             } else {
-                $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
-                dbquery($sql);
+                \MailWatch\ApplicationFactory::quarantineMessages()->markReleased((string)$list[0]['msgid']);
                 $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
                 audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
             }
@@ -3549,8 +3526,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
                 debug($cmd . $list[$val]['path']);
                 exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
                 if (0 === $retval) {
-                    $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
-                    dbquery($sql);
+                    \MailWatch\ApplicationFactory::quarantineMessages()->markReleased((string)$list[0]['msgid']);
                     $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
                     audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
                 } else {
@@ -3601,18 +3577,16 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
 }
 
 /**
- * @param bool|false  $rpc_only
- * @param string|null $global_filter
+ * @param bool|false $rpc_only
  *
  * @return string
  */
-function quarantine_learn($list, $num, $type, bool $rpc_only = false, $global_filter = null)
+function quarantine_learn($list, $num, $type, bool $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null)
 {
-    dbconn();
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
-    $new = quarantine_list_items($list[0]['msgid'], false, $global_filter);
+    $new = quarantine_list_items($list[0]['msgid'], false, $scope);
     $list = &$new;
 
     // Check for [-1], indicating just to release message itself, regardless of its item position
@@ -3664,10 +3638,9 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, $global_fi
                     // TODO handle this case
                     $isfp = null;
             }
-            if (null !== $isfp) {
-                $sql = 'UPDATE maillog SET isfp=' . $isfp . ', isfn=' . $isfn . " WHERE id='"
-                    . safe_value($list[$val]['msgid']) . "'";
-            }
+            // Recorded only once the learner has actually run, and only for a
+            // type that carries a verdict.
+            $recordVerdict = null !== $isfp;
 
             if (true === $use_spamassassin) {
                 // Run SpamAssassin to report or revoke spam/ham
@@ -3678,9 +3651,12 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, $global_fi
                 );
                 if (0 === $retval) {
                     // Command succeeded - update the database accordingly
-                    if (isset($sql)) {
-                        debug("Learner - running SQL: $sql");
-                        dbquery($sql);
+                    if ($recordVerdict) {
+                        \MailWatch\ApplicationFactory::quarantineMessages()->recordLearningVerdict(
+                            (string)$list[$val]['msgid'],
+                            '1' === $isfp,
+                            '1' === $isfn
+                        );
                     }
                     $status[] = __('spamassassin03') . ' ' . implode(', ', $output_array);
                     switch ($learn_type) {
@@ -3717,9 +3693,12 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, $global_fi
 
                 if (0 === $retval) {
                     // Command succeeded - update the database accordingly
-                    if (isset($sql)) {
-                        debug("Learner - running SQL: $sql");
-                        dbquery($sql);
+                    if ($recordVerdict) {
+                        \MailWatch\ApplicationFactory::quarantineMessages()->recordLearningVerdict(
+                            (string)$list[$val]['msgid'],
+                            '1' === $isfp,
+                            '1' === $isfn
+                        );
                     }
                     $status[] = __('salearn03') . ' ' . implode(', ', $output_array);
                     audit_log(sprintf(__('auditlogspamtrained03', true), $list[$val]['msgid']) . ' ' . $learn_type);
@@ -3740,8 +3719,10 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, $global_fi
                     $numeric_type = 1;
                 }
                 if (isset($numeric_type)) {
-                    $sql = "UPDATE `maillog` SET salearn = '$numeric_type' WHERE id = '" . safe_value($list[$val]['msgid']) . "'";
-                    dbquery($sql);
+                    \MailWatch\ApplicationFactory::quarantineMessages()->recordLearnedClass(
+                        (string)$list[$val]['msgid'],
+                        $numeric_type
+                    );
                 }
             }
         }
@@ -3782,18 +3763,17 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, $global_fi
 }
 
 /**
- * @param bool|false  $rpc_only
- * @param string|null $global_filter
+ * @param bool|false $rpc_only
  *
  * @return string
  */
-function quarantine_delete($list, $num, $rpc_only = false, $global_filter = null)
+function quarantine_delete($list, $num, $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
     }
 
-    $new = quarantine_list_items($list[0]['msgid'], false, $global_filter);
+    $new = quarantine_list_items($list[0]['msgid'], false, $scope);
     $list = &$new;
 
     if (!$rpc_only && is_local($list[0]['host'])) {
@@ -3801,7 +3781,9 @@ function quarantine_delete($list, $num, $rpc_only = false, $global_filter = null
         foreach ($num as $val) {
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
-                dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
+                \MailWatch\ApplicationFactory::quarantineMessages()->clearQuarantineLocation(
+                    (string)$list[$val]['msgid']
+                );
                 audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
             } else {
                 $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];

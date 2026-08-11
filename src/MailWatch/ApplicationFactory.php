@@ -23,7 +23,10 @@ use MailWatch\Lists\Infrastructure\Database\DbalListAdministrationGateway;
 use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Http\MessageController;
 use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
+use MailWatch\Quarantine\Application\QuarantineMessageGateway;
+use MailWatch\Quarantine\Domain\MessageScope;
 use MailWatch\Quarantine\Domain\QuarantineAccess;
+use MailWatch\Quarantine\Infrastructure\Database\DbalQuarantineMessageGateway;
 use MailWatch\Shared\Application\Port\CommandRunner;
 use MailWatch\Shared\Http\ApiRequestContext;
 use MailWatch\Shared\Http\ApiTelemetry;
@@ -158,6 +161,44 @@ final readonly class ApplicationFactory
             $passwords,
             $providers,
             \defined('SESSION_TIMEOUT') ? (int)SESSION_TIMEOUT : null,
+        );
+    }
+
+    /**
+     * The gateway is kept for the request because the legacy pages ask for it
+     * once per message inside their bulk loops, and a fresh instance would mean
+     * a fresh database connection each time round.
+     */
+    public static function quarantineMessages(): QuarantineMessageGateway
+    {
+        static $gateway = null;
+
+        return $gateway ??= new DbalQuarantineMessageGateway(self::databaseConnection());
+    }
+
+    /**
+     * The scope of maillog rows the signed-in account may act on.
+     *
+     * The session list was escaped on the way in, for the SQL fragment the
+     * login used to build; the escaping is undone here so that a bound
+     * parameter carries the address itself.
+     *
+     * @param array<string, mixed> $session
+     */
+    public static function quarantineMessageScope(array $session): MessageScope
+    {
+        $filters = [];
+        foreach ((array)($session['global_array'] ?? []) as $filter) {
+            if (\is_string($filter)) {
+                $filters[] = stripslashes($filter);
+            }
+        }
+
+        return MessageScope::forAccount(
+            stripslashes((string)($session['myusername'] ?? '')),
+            (string)($session['user_type'] ?? ''),
+            $filters,
+            \defined('FILTER_TO_ONLY') && true === FILTER_TO_ONLY,
         );
     }
 

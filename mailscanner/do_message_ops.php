@@ -54,6 +54,7 @@ echo ' </tr>' . "\n";
 // Iterate through the POST variables
 unset($_POST['SUBMIT'], $_POST['token'], $_POST['formtoken']);
 $quarantineAccess = \MailWatch\ApplicationFactory::quarantineAccess((string)$_SESSION['user_type']);
+$messageScope = \MailWatch\ApplicationFactory::quarantineMessageScope($_SESSION);
 if (!empty($_POST)) {
     foreach ($_POST as $k => $v) {
         if (preg_match('/^OPT-(.+)$/', (string)$k, $Regs)) {
@@ -87,7 +88,7 @@ if (!empty($_POST)) {
             default:
                 continue 2; // continue with next foreach loop
         }
-        $items = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
+        $items = quarantine_list_items($id, RPC_ONLY, $messageScope);
         echo '<tr>' . "\n";
         echo '<td><a href="detail.php?token=' . $_SESSION['token'] . '&amp;id=' . $id . '">' . $id . '</a></td>';
         echo '<td>' . $type . '</td>';
@@ -111,7 +112,7 @@ if (!empty($_POST)) {
                     if (!$quarantineAccess->canRelease($dangerous)) {
                         echo __('permdenied60');
                     } else {
-                        $quarantined = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
+                        $quarantined = quarantine_list_items($id, RPC_ONLY, $messageScope);
                         if (is_array($quarantined)) {
                             $to = $quarantined[0]['to'];
                             echo quarantine_release(
@@ -119,7 +120,7 @@ if (!empty($_POST)) {
                                 $itemnum,
                                 $to,
                                 RPC_ONLY,
-                                $_SESSION['global_filter']
+                                $messageScope
                             );
                         } else {
                             echo $quarantined;
@@ -131,7 +132,7 @@ if (!empty($_POST)) {
                         $itemnum,
                         $type,
                         RPC_ONLY,
-                        $_SESSION['global_filter']
+                        $messageScope
                     );
                 }
                 echo '</td>' . "\n";
