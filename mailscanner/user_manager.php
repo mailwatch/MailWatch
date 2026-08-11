@@ -536,94 +536,132 @@ function userFilter()
         return $tokentest;
     }
 
-    if (is_string($user = getUserById())) {
-        return $user;
+    $targetId = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+    if ($targetId < 1) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
     }
 
-    if (is_string($membertest = testSameDomainMembership($user->username, 'filter'))) {
-        return $membertest;
-    }
+    $administration = \MailWatch\ApplicationFactory::savedFilterAdministration();
+    $actorUsername = stripslashes((string)$_SESSION['myusername']);
+    $actorRole = (string)$_SESSION['user_type'];
+    $actorDomain = (string)($_SESSION['domain'] ?? '');
+    $superDomainAdministrators = defined('ENABLE_SUPER_DOMAIN_ADMINS')
+        && true === ENABLE_SUPER_DOMAIN_ADMINS;
 
-    if (is_string($permissiontest = testPermissions($user->username, $user->type, ''))) {
-        return $permissiontest;
-    }
-
-    $getFilter = '';
-    if (isset($_POST['filter'])) {
-        if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
+    $operation = (string)($_POST['filter_operation'] ?? '');
+    if ('' !== $operation) {
+        if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'] ?? '')) {
             header('Location: login.php?error=pagetimeout');
             exit;
         }
-        $getFilter = deepSanitizeInput($_POST['filter'], 'url');
-        if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
-            $getFilter = '';
+
+        $filter = deepSanitizeInput($_POST['filter'] ?? '', 'url');
+        if (!validateInput($filter, 'email') && !validateInput($filter, 'host')) {
+            return getHtmlMessage(__('dievalidate99'), 'error');
+        }
+
+        try {
+            if ('add' === $operation) {
+                $active = deepSanitizeInput($_POST['active'] ?? '', 'url');
+                if (!validateInput($active, 'yn')) {
+                    return getHtmlMessage(__('dievalidate99'), 'error');
+                }
+                $administration->add(
+                    $actorUsername,
+                    $actorRole,
+                    $actorDomain,
+                    $targetId,
+                    $superDomainAdministrators,
+                    new \MailWatch\Users\Domain\SavedFilter(stripslashes($filter), 'Y' === $active),
+                );
+            } elseif ('delete' === $operation) {
+                $administration->delete(
+                    $actorUsername,
+                    $actorRole,
+                    $actorDomain,
+                    $targetId,
+                    $superDomainAdministrators,
+                    stripslashes($filter),
+                );
+            } elseif ('toggle' === $operation) {
+                $administration->toggle(
+                    $actorUsername,
+                    $actorRole,
+                    $actorDomain,
+                    $targetId,
+                    $superDomainAdministrators,
+                    stripslashes($filter),
+                );
+            } else {
+                return getHtmlMessage(__('dievalidate99'), 'error');
+            }
+        } catch (\MailWatch\Users\Application\UnknownLocalAccount) {
+            audit_log(sprintf(__('auditlogunknownuser12'), $actorUsername, $targetId));
+
+            return getHtmlMessage(__('accessunknownuser12'), 'error');
+        } catch (\MailWatch\Users\Application\SavedFilterAccessDenied) {
+            return getHtmlMessage(__('erroradminforbidden12'), 'error');
         }
     }
 
-    if (isset($_POST['new']) && '' !== $getFilter) {
-        $getActive = deepSanitizeInput($_POST['active'], 'url');
-        if (!validateInput($getActive, 'yn')) {
-            return getHtmlMessage(__('dievalidate99'), 'error');
-        }
-        $sql = "INSERT INTO user_filters (username, filter, active) VALUES ('" . safe_value(stripslashes((string)$user->username)) . "','" . safe_value(stripslashes($getFilter)) . "','" . safe_value($getActive) . "')";
-        dbquery($sql);
-        if (DEBUG === true) {
-            echo $sql;
-        }
+    try {
+        $overview = $administration->overview(
+            $actorUsername,
+            $actorRole,
+            $actorDomain,
+            $targetId,
+            $superDomainAdministrators,
+        );
+    } catch (\MailWatch\Users\Application\UnknownLocalAccount) {
+        audit_log(sprintf(__('auditlogunknownuser12'), $actorUsername, $targetId));
+
+        return getHtmlMessage(__('accessunknownuser12'), 'error');
+    } catch (\MailWatch\Users\Application\SavedFilterAccessDenied) {
+        return getHtmlMessage(__('erroradminforbidden12'), 'error');
     }
 
-    if (isset($_GET['delete'], $_GET['filter'])) {
-        $getFilter = deepSanitizeInput($_GET['filter'], 'url');
-        if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
-            return getHtmlMessage(__('dievalidate99'), 'error');
-        }
-        $sql = "DELETE FROM user_filters WHERE username='" . safe_value(stripslashes((string)$user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
-        dbquery($sql);
-        if (DEBUG === true) {
-            echo $sql;
-        }
-    }
-    if (isset($_GET['change_state'], $_GET['filter'])) {
-        $getFilter = deepSanitizeInput($_GET['filter'], 'url');
-        if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
-            return getHtmlMessage(__('dievalidate99'), 'error');
-        }
-        $sql = "SELECT active FROM user_filters WHERE username='" . safe_value(stripslashes((string)$user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
-        $result = dbquery($sql);
-        $row = $result->fetch_row();
-        $active = 'Y';
-        if ('Y' === $row[0]) {
-            $active = 'N';
-        }
-        $sql = "UPDATE user_filters SET active='" . $active . "' WHERE username='" . safe_value(stripslashes((string)$user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
-        dbquery($sql);
-    }
-    $sql = "SELECT filter, CASE WHEN active='Y' THEN '" . __('yes12') . "' ELSE '" . __('no12') . "' END AS active, CONCAT('<a href=\"javascript:delete_filter\(\'" . safe_value($user->id) . "\',',QUOTE(filter),'\)\">" . __('delete12') . "</a>&nbsp;&nbsp;<a href=\"javascript:change_state(\'" . safe_value($user->id) . "\',',QUOTE(filter),')\">" . __('toggle12') . "</a>') AS actions FROM user_filters WHERE username='" . safe_value(stripslashes((string)$user->username)) . "'";
-    $result = dbquery($sql);
-    $returnString = '<FORM METHOD="POST" ACTION="user_manager.php">' . PHP_EOL;
-    $returnString .= '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">' . PHP_EOL;
-    $returnString .= '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . PHP_EOL;
-    $returnString .= '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $user->id . '">' . PHP_EOL;
-    $returnString .= '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php filter token') . '">' . PHP_EOL;
+    $token = htmlspecialchars((string)$_SESSION['token'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $formToken = htmlspecialchars(generateFormToken('/user_manager.php filter token'), ENT_QUOTES, 'UTF-8');
+    $confirmation = htmlspecialchars(
+        'return confirm(' . json_encode(__('sure12'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) . ');',
+        ENT_QUOTES | ENT_SUBSTITUTE,
+        'UTF-8',
+    );
+    $hiddenFields = static fn(int $id, string $filter = ''): string => '<INPUT TYPE="HIDDEN" NAME="action" VALUE="filters">'
+        . '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $token . '">'
+        . '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $id . '">'
+        . ('' === $filter ? '' : '<INPUT TYPE="HIDDEN" NAME="filter" VALUE="' . $filter . '">')
+        . '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . $formToken . '">';
 
-    $returnString .= '<INPUT TYPE="hidden" NAME="new" VALUE="true">' . PHP_EOL;
-    $returnString .= '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . PHP_EOL;
-    $returnString .= ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . $user->username . '</TH></TR>' . PHP_EOL;
+    $returnString = '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . PHP_EOL;
+    $returnString .= ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' '
+        . htmlspecialchars($overview->account->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</TH></TR>' . PHP_EOL;
     $returnString .= ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . '</TH></TR>' . PHP_EOL;
-    while ($row = $result->fetch_object()) {
-        $returnString .= ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD> ';
-        if ('D' === $_SESSION['user_type'] && stripslashes((string)$user->username) === stripslashes((string)$_SESSION['myusername'])) {
-            $returnString .= '<TD>' . __('nofilteraction12') . '</TD></TR>' . PHP_EOL;
+    foreach ($overview->filters as $savedFilter) {
+        $filter = htmlspecialchars($savedFilter->value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $returnString .= ' <TR><TD>' . $filter . '</TD><TD>'
+            . ($savedFilter->active ? __('yes12') : __('no12')) . '</TD><TD>';
+        if (!$overview->canMutate) {
+            $returnString .= __('nofilteraction12');
         } else {
-            $returnString .= '<TD>' . $row->actions . '</TD></TR>' . PHP_EOL;
+            $returnString .= '<FORM METHOD="POST" ACTION="user_manager.php">'
+                . $hiddenFields($overview->account->id, $filter)
+                . '<BUTTON TYPE="SUBMIT" NAME="filter_operation" VALUE="delete" ONCLICK="' . $confirmation . '">' . __('delete12') . '</BUTTON>&nbsp;&nbsp;'
+                . '<BUTTON TYPE="SUBMIT" NAME="filter_operation" VALUE="toggle" ONCLICK="' . $confirmation . '">' . __('toggle12') . '</BUTTON>'
+                . '</FORM>';
         }
-    }
-    // Prevent domain admins from altering their own filters
-    if ('A' === $_SESSION['user_type'] || ('D' === $_SESSION['user_type'] && stripslashes((string)$user->username) !== stripslashes((string)$_SESSION['myusername']))) {
-        $returnString .= ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><INPUT TYPE="submit" VALUE="' . __('add12') . '"></TD></TR>' . PHP_EOL;
+        $returnString .= '</TD></TR>' . PHP_EOL;
     }
     $returnString .= '</TABLE><BR>' . PHP_EOL;
-    $returnString .= '</FORM>' . PHP_EOL;
+
+    if ($overview->canMutate) {
+        $returnString .= '<FORM METHOD="POST" ACTION="user_manager.php">' . PHP_EOL;
+        $returnString .= $hiddenFields($overview->account->id) . PHP_EOL;
+        $returnString .= '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . PHP_EOL;
+        $returnString .= ' <TR><TD><INPUT TYPE="text" NAME="filter"></TD><TD><SELECT NAME="active"><OPTION VALUE="Y">' . __('yes12') . '<OPTION VALUE="N">' . __('no12') . '</SELECT></TD><TD><BUTTON TYPE="submit" NAME="filter_operation" VALUE="add">' . __('add12') . '</BUTTON></TD></TR>' . PHP_EOL;
+        $returnString .= '</TABLE><BR>' . PHP_EOL;
+        $returnString .= '</FORM>' . PHP_EOL;
+    }
 
     return $returnString;
 }
@@ -752,24 +790,6 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
                 window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=delete&id=" + id;
             } else {
                 window.location = "?token=" + "<?php echo $_SESSION['token']; ?>";
-            }
-        }
-
-        function delete_filter(id, filter) {
-            var yesno = confirm("<?php echo __('sure12'); ?>");
-            if (yesno === true) {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id + "&filter=" + filter + "&delete=true";
-            } else {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id;
-            }
-        }
-
-        function change_state(id, filter) {
-            var yesno = confirm("<?php echo __('sure12'); ?>");
-            if (yesno === true) {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id + "&filter=" + filter + "&change_state=true";
-            } else {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=filters&id=" + id;
             }
         }
 
@@ -906,8 +926,6 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
     echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" name="action" value="' . __('update12') . '"></td></tr>' . PHP_EOL;
     echo '</table></form><br>' . PHP_EOL;
-    $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
-    $result = dbquery($sql);
 } else {
     if (false === checkToken($_POST['token'])
         || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
