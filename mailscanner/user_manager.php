@@ -118,7 +118,7 @@ function testValidUser($username, $usertype, $oldUsername)
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
 
-    if ('' === $_POST['password']) {
+    if ('' === $oldUsername && '' === $_POST['password']) {
         return getHtmlMessage(__('errorpwdreq12'), 'error');
     }
 
@@ -128,10 +128,6 @@ function testValidUser($username, $usertype, $oldUsername)
 
     if ('' === $username) {
         return getHtmlMessage(__('erroruserreq12'), 'error');
-    }
-
-    if (stripslashes($oldUsername) !== stripslashes($username) && checkForExistingUser($username)) {
-        return getHtmlMessage(sprintf(__('userexists12'), sanitizeInput(stripslashes($username))), 'error');
     }
 
     return true;
@@ -150,6 +146,119 @@ function testToken()
     }
 
     return true;
+}
+
+/**
+ * @return int|string
+ */
+function requestedUserId()
+{
+    if (isset($_POST['id'])) {
+        $uid = (int)$_POST['id'];
+    } elseif (isset($_GET['id'])) {
+        $uid = (int)$_GET['id'];
+    } else {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    }
+
+    $uid = deepSanitizeInput($uid, 'num');
+    if (!is_numeric($uid) || (int)$uid < 1) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    }
+
+    return (int)$uid;
+}
+
+/**
+ * @return \MailWatch\Users\Domain\AccountProfile|string
+ */
+function submittedAccountProfile($username, $type)
+{
+    if (!isset($_POST['fullname'], $_POST['spamscore'], $_POST['highspamscore'], $_POST['timeout'], $_POST['quarantine_rcpt'])) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
+    }
+
+    $fullName = deepSanitizeInput($_POST['fullname'], 'string');
+    if (!validateInput($fullName, 'general')) {
+        $fullName = '';
+    }
+    if (!validateInput($type, 'type')) {
+        $type = 'U';
+    }
+    $spamScore = deepSanitizeInput($_POST['spamscore'], 'float');
+    if (!validateInput($spamScore, 'float')) {
+        $spamScore = '0';
+    }
+    $highSpamScore = deepSanitizeInput($_POST['highspamscore'], 'float');
+    if (!validateInput($highSpamScore, 'float')) {
+        $highSpamScore = '0';
+    }
+    $timeout = deepSanitizeInput($_POST['timeout'], 'num');
+    if (!validateInput($timeout, 'timeout')) {
+        $timeout = '-1';
+    }
+    $quarantineRecipient = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
+    if (!validateInput($quarantineRecipient, 'user')) {
+        $quarantineRecipient = '';
+    }
+
+    return new \MailWatch\Users\Domain\AccountProfile(
+        stripslashes((string)$username),
+        (string)$fullName,
+        (string)$type,
+        isset($_POST['quarantine_report']),
+        (float)$spamScore,
+        (float)$highSpamScore,
+        isset($_POST['noscan']),
+        stripslashes((string)$quarantineRecipient),
+        (int)$timeout,
+    );
+}
+
+/**
+ * @return string
+ */
+function accountAdministrationError(\Throwable $exception, $targetId = 0)
+{
+    if ($exception instanceof \MailWatch\Users\Application\UnknownLocalAccount) {
+        audit_log(sprintf(__('auditlogunknownuser12'), $_SESSION['myusername'], $targetId));
+
+        return getHtmlMessage(__('accessunknownuser12'), 'error');
+    }
+    if ($exception instanceof \MailWatch\Users\Application\AccountDomainAccessDenied) {
+        $suffix = null === $exception->domain ? 'nodomainforbidden12' : 'domainforbidden12';
+        $message = __('error' . $exception->operation . $suffix);
+        if (null !== $exception->domain) {
+            $message = sprintf($message, $exception->domain);
+        }
+
+        return getHtmlMessage($message, 'error');
+    }
+    if ($exception instanceof \MailWatch\Users\Application\AccountRoleAssignmentDenied) {
+        return getHtmlMessage(__('errortypesetforbidden12'), 'error');
+    }
+    if ($exception instanceof \MailWatch\Users\Application\OwnAccountDeletionDenied) {
+        return getHtmlMessage(__('errordeleteself12'), 'error');
+    }
+    if ($exception instanceof \MailWatch\Users\Application\DuplicateLocalAccount) {
+        return getHtmlMessage(sprintf(__('userexists12'), sanitizeInput($exception->username)), 'error');
+    }
+
+    return getHtmlMessage(__('erroradminforbidden12'), 'error');
+}
+
+/**
+ * @return array<string, string>
+ */
+function accountTypeLabels()
+{
+    return [
+        'A' => __('admin12', true),
+        'D' => __('domainadmin12', true),
+        'U' => __('user12', true),
+        'R' => __('user12', true),
+        'H' => __('user12', true),
+    ];
 }
 
 function getUserById($additionalFields = false)
@@ -178,7 +287,7 @@ function getUserById($additionalFields = false)
 /**
  * @param string           $loggedinUserType  Type of logged in User accessing (A, D, U, or R)
  * @param string           $action            'edit' or 'new'
- * @param string           $uid
+ * @param string|int       $uid
  * @param string           $lastlogin
  * @param string           $username
  * @param string           $fullname
@@ -207,19 +316,24 @@ function printUserFormular(
     $spamscore = '0',
     $highspamscore = '0'
 ) {
+    $escape = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $username = $escape($username);
+    $fullname = $escape($fullname);
+    $quarantine_rcpt = $escape($quarantine_rcpt);
+    $timeout = $escape($timeout);
+    $spamscore = $escape($spamscore);
+    $highspamscore = $escape($highspamscore);
     $returnString = '<div id="formerror" class="hidden"></div>';
     $returnString .= '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . PHP_EOL;
-    $returnString .= '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . PHP_EOL;
+    $returnString .= '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $escape($_SESSION['token']) . '">' . PHP_EOL;
     if ('edit' === $action) {
-        $returnString .= '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $uid . '">' . PHP_EOL;
+        $returnString .= '<INPUT TYPE="HIDDEN" NAME="id" VALUE="' . $escape($uid) . '">' . PHP_EOL;
         $formheader = __('edituser12') . ' ' . $username;
-        $password = 'XXXXXXXX';
     } else {
         $formheader = __('newuser12');
-        $password = '';
     }
-    $returnString .= '<INPUT TYPE="HIDDEN" NAME="action" VALUE="' . $action . '">' . PHP_EOL;
-    $returnString .= '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php ' . $action . ' token') . '">' . PHP_EOL;
+    $returnString .= '<INPUT TYPE="HIDDEN" ID="account-action" NAME="action" VALUE="' . $escape($action) . '">' . PHP_EOL;
+    $returnString .= '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . $escape(generateFormToken('/user_manager.php ' . $action . ' token')) . '">' . PHP_EOL;
     $returnString .= '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . PHP_EOL;
     $returnString .= ' <TR><TD CLASS="heading" COLSPAN="2" ALIGN="CENTER">' . $formheader . '</TD></TR>' . PHP_EOL;
     if (!defined('ALLOW_NO_USER_DOMAIN') || !ALLOW_NO_USER_DOMAIN) {
@@ -230,8 +344,8 @@ function printUserFormular(
     }
     $returnString .= ' <TR><TD CLASS="heading">' . __('username0212') . '</TD><TD><INPUT TYPE="TEXT" ID="username" NAME="username" VALUE="' . $username . '"></TD></TR>' . PHP_EOL;
     $returnString .= ' <TR><TD CLASS="heading">' . __('name12') . '</TD><TD><INPUT TYPE="TEXT" NAME="fullname" VALUE="' . $fullname . '"></TD></TR>' . PHP_EOL;
-    $returnString .= ' <TR><TD CLASS="heading">' . __('password12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="password" NAME="password" VALUE="' . $password . '"></TD></TR>' . PHP_EOL;
-    $returnString .= ' <TR><TD CLASS="heading">' . __('retypepassword12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="retypepassword" NAME="password1" VALUE="' . $password . '"></TD></TR>' . PHP_EOL;
+    $returnString .= ' <TR><TD CLASS="heading">' . __('password12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="password" NAME="password" VALUE="" AUTOCOMPLETE="new-password"></TD></TR>' . PHP_EOL;
+    $returnString .= ' <TR><TD CLASS="heading">' . __('retypepassword12') . '</TD><TD><INPUT TYPE="PASSWORD" ID="retypepassword" NAME="password1" VALUE="" AUTOCOMPLETE="new-password"></TD></TR>' . PHP_EOL;
     $returnString .= ' <TR><TD CLASS="heading">' . __('usertype12') . '</TD>
 <TD>
 <SELECT NAME="type">' .
@@ -255,92 +369,10 @@ function printUserFormular(
     return $returnString;
 }
 
-function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
-{
-    if (!isset($_POST['fullname'], $_POST['spamscore'], $_POST['highspamscore'], $_POST['timeout'], $_POST['quarantine_rcpt'])) {
-        return getHtmlMessage(__('dievalidate99'), 'error');
-    }
-    $n_fullname = deepSanitizeInput($_POST['fullname'], 'string');
-    if (!validateInput($n_fullname, 'general')) {
-        $n_fullname = '';
-    }
-    $n_password = safe_value(password_hash((string)$_POST['password'], PASSWORD_DEFAULT));
-
-    if (!validateInput($n_type, 'type')) {
-        $n_type = 'U';
-    }
-    $spamscore = deepSanitizeInput($_POST['spamscore'], 'float');
-    if (!validateInput($spamscore, 'float')) {
-        $spamscore = '0';
-    }
-    $highspamscore = deepSanitizeInput($_POST['highspamscore'], 'float');
-    if (!validateInput($highspamscore, 'float')) {
-        $highspamscore = '0';
-    }
-    $timeout = deepSanitizeInput($_POST['timeout'], 'num');
-    if (!validateInput($timeout, 'timeout')) {
-        $timeout = '-1';
-    }
-    $n_quarantine_report = '1';
-    if (!isset($_POST['quarantine_report'])) {
-        $n_quarantine_report = '0';
-    }
-    $noscan = '0';
-    if (!isset($_POST['noscan'])) {
-        $noscan = '1';
-    }
-    $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
-    if (!validateInput($quarantine_rcpt, 'user')) {
-        $quarantine_rcpt = '';
-    }
-
-    $type = [];
-    $type['A'] = __('admin12', true);
-    $type['D'] = __('domainadmin12', true);
-    $type['U'] = __('user12', true);
-    $type['R'] = __('user12', true);
-    if (-1 === $uid) {// new user
-        $sql = "INSERT INTO users (username, fullname, password, type, quarantine_report, login_timeout, spamscore, highspamscore, noscan, quarantine_rcpt)
-                        VALUES ('" . safe_value(stripslashes((string)$n_username)) . "','$n_fullname','$n_password','$n_type','$n_quarantine_report','$timeout','$spamscore','$highspamscore','$noscan','" . safe_value(stripslashes($quarantine_rcpt)) . "')";
-        dbquery($sql);
-        audit_log(__(
-            'auditlog0112',
-            true
-        ) . ' ' . $type[$n_type] . " '" . $n_username . "' (" . $n_fullname . ') ' . __(
-            'auditlog0212',
-            true
-        ));
-
-        return getHtmlMessage(sprintf(__('usercreated12'), stripslashes((string)$n_username)), 'success');
-    }
-
-    if ('XXXXXXXX' !== $_POST['password']) {// Password reset required
-        $sql = "UPDATE users SET username='" . safe_value(stripslashes((string)$n_username)) . "', fullname='$n_fullname', password='$n_password', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
-    } else {
-        $sql = "UPDATE users SET username='" . safe_value(stripslashes((string)$n_username)) . "', fullname='$n_fullname', type='$n_type', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='" . safe_value(stripslashes($quarantine_rcpt)) . "', login_timeout='$timeout' WHERE id='$uid'";
-    }
-    dbquery($sql);
-    // Update user_filters if username was changed
-    if (stripslashes((string)$oldUsername) !== stripslashes((string)$n_username)) {
-        $sql = "UPDATE user_filters SET username='" . safe_value(stripslashes((string)$n_username)) . "' WHERE username = '" . safe_value(stripslashes((string)$oldUsername)) . "'";
-        dbquery($sql);
-    }
-    if ($oldType !== $n_type) {
-        audit_log(
-            __('auditlog0312', true) . " '" . $n_username . "' (" . $n_fullname . ') ' . __(
-                'auditlogfrom12',
-                true
-            ) . ' ' . $type[$oldType] . ' ' . __('auditlogto12', true) . ' ' . $type[$n_type]
-        );
-    }
-
-    return getHtmlMessage(sprintf(__('useredited12'), stripslashes((string)$oldUsername)), 'success');
-}
-
 /**
  * @param string $userType
  *
- * @return bool|string
+ * @return string
  */
 function newUser($userType)
 {
@@ -370,54 +402,78 @@ function newUser($userType)
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
 
-    if (is_string($membertest = testSameDomainMembership($username, 'create'))) {
-        return $membertest;
-    }
-
-    if (is_string($permissiontest = testPermissions($username, $n_type, ''))) {
-        return $permissiontest;
-    }
-
     if (is_string($validuser = testValidUser($username, $n_type, ''))) {
         return $validuser;
     }
 
-    return storeUser($username, $n_type, -1, '', '');
+    $profile = submittedAccountProfile($username, $n_type);
+    if (is_string($profile)) {
+        return $profile;
+    }
+
+    try {
+        \MailWatch\ApplicationFactory::localAccountAdministration()->create(
+            stripslashes((string)$_SESSION['myusername']),
+            (string)$_SESSION['user_type'],
+            (string)($_SESSION['domain'] ?? ''),
+            defined('ENABLE_SUPER_DOMAIN_ADMINS') && true === ENABLE_SUPER_DOMAIN_ADMINS,
+            $profile,
+            (string)$_POST['password'],
+        );
+    } catch (\MailWatch\Users\Application\AccountAdministrationException $exception) {
+        return accountAdministrationError($exception);
+    }
+
+    $types = accountTypeLabels();
+    audit_log(
+        __('auditlog0112', true) . ' ' . $types[$profile->role] . " '" . $profile->username . "' ("
+        . $profile->fullName . ') ' . __('auditlog0212', true)
+    );
+
+    return getHtmlMessage(sprintf(__('usercreated12'), $profile->username), 'success');
 }
 
 /**
  * @param string $userType
  *
- * @return bool|object|stdClass|string
+ * @return string
  */
 function editUser($userType)
 {
     if (is_string($tokentest = testToken())) {
         return $tokentest;
     }
-    // if editing user is domain admin check if he tries to edit a user from the same domain. if we do the update we also have to check the new username
-    // Validate id
-    if (is_string($user = getUserById(true))) {
-        return $user;
+
+    $uid = requestedUserId();
+    if (is_string($uid)) {
+        return $uid;
     }
 
-    if (is_string($membertest = testSameDomainMembership($user->username, 'edit'))) {
-        return $membertest;
+    $administration = \MailWatch\ApplicationFactory::localAccountAdministration();
+    $actorUsername = stripslashes((string)$_SESSION['myusername']);
+    $actorRole = (string)$_SESSION['user_type'];
+    $actorDomain = (string)($_SESSION['domain'] ?? '');
+    $superDomainAdministrators = defined('ENABLE_SUPER_DOMAIN_ADMINS')
+        && true === ENABLE_SUPER_DOMAIN_ADMINS;
+
+    try {
+        $user = $administration->account(
+            $actorUsername,
+            $actorRole,
+            $actorDomain,
+            $superDomainAdministrators,
+            $uid,
+        );
+    } catch (\MailWatch\Users\Application\UnknownLocalAccount $exception) {
+        return accountAdministrationError($exception, $uid);
+    } catch (\MailWatch\Users\Application\AccountAdministrationException $exception) {
+        return accountAdministrationError($exception, $uid);
     }
 
     if (!isset($_POST['submit'])) {
-        $quarantine_report = '';
-        if (1 === (int)$user->quarantine_report) {
-            $quarantine_report = 'checked="checked"';
-        }
-        $noscan = '';
-        if (0 === (int)$user->noscan) {
-            $noscan = 'checked="checked"';
-        }
-        $timeout = '';
-        if ('-1' !== $user->login_timeout) {
-            $timeout = $user->login_timeout;
-        }
+        $quarantine_report = $user->quarantineReport ? 'checked="checked"' : '';
+        $noscan = $user->scanForSpam ? 'checked="checked"' : '';
+        $timeout = -1 === $user->loginTimeout ? '' : $user->loginTimeout;
 
         $types = [];
         if ('A' === $userType) {
@@ -427,7 +483,7 @@ function editUser($userType)
         $types['U'] = '';
         $types['R'] = '';
 
-        $timestamp = (int)$user->last_login;
+        $timestamp = $user->lastLogin;
         $lastlogin = __('never12');
         if ($timestamp >= 0) {
             if (defined('DATE_FORMAT')) {
@@ -442,7 +498,7 @@ function editUser($userType)
             }
             $lastlogin = date($dateformat . ' ' . $timeformat, $timestamp);
         }
-        $types[$user->type] = 'SELECTED';
+        $types[$user->role] = 'SELECTED';
 
         return printUserFormular(
             $userType,
@@ -450,14 +506,14 @@ function editUser($userType)
             $user->id,
             $lastlogin,
             $user->username,
-            $user->fullname,
+            $user->fullName,
             $types,
             $timeout,
             $quarantine_report,
-            $user->quarantine_rcpt,
+            $user->quarantineRecipient,
             $noscan,
-            $user->spamscore,
-            $user->highspamscore
+            $user->spamScore,
+            $user->highSpamScore
         );
     }
 
@@ -480,19 +536,41 @@ function editUser($userType)
         return getHtmlMessage(__('dievalidate99'), 'error');
     }
 
-    if (is_string($membertest = testSameDomainMembership($username, 'to'))) {
-        return $membertest;
-    }
-
-    if (is_string($permissiontest = testPermissions($username, $n_type, $user->type))) {
-        return $permissiontest;
-    }
-
     if (is_string($validusertest = testValidUser($username, $n_type, $user->username))) {
         return $validusertest;
     }
 
-    return storeUser($username, $n_type, $user->id, $user->username, $user->type);
+    $profile = submittedAccountProfile($username, $n_type);
+    if (is_string($profile)) {
+        return $profile;
+    }
+
+    try {
+        $previous = $administration->update(
+            $actorUsername,
+            $actorRole,
+            $actorDomain,
+            $superDomainAdministrators,
+            $uid,
+            $profile,
+            isset($_POST['password']) ? (string)$_POST['password'] : null,
+        );
+    } catch (\MailWatch\Users\Application\UnknownLocalAccount $exception) {
+        return accountAdministrationError($exception, $uid);
+    } catch (\MailWatch\Users\Application\AccountAdministrationException $exception) {
+        return accountAdministrationError($exception, $uid);
+    }
+
+    if ($previous->role !== $profile->role) {
+        $types = accountTypeLabels();
+        audit_log(
+            __('auditlog0312', true) . " '" . $profile->username . "' (" . $profile->fullName . ') '
+            . __('auditlogfrom12', true) . ' ' . $types[$previous->role] . ' '
+            . __('auditlogto12', true) . ' ' . $types[$profile->role]
+        );
+    }
+
+    return getHtmlMessage(sprintf(__('useredited12'), $previous->username), 'success');
 }
 
 /**
@@ -504,24 +582,30 @@ function deleteUser()
         return $tokentest;
     }
 
-    if (is_string($user = getUserById())) {
-        return $user;
+    if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? '')
+        || false === checkFormToken('/user_manager.php delete token', $_POST['formtoken'] ?? '')) {
+        return getHtmlMessage(__('dievalidate99'), 'error');
     }
 
-    if (is_string($membertest = testSameDomainMembership($user->username, 'delete'))) {
-        return $membertest;
+    $uid = requestedUserId();
+    if (is_string($uid)) {
+        return $uid;
     }
 
-    if ('D' === $_SESSION['user_type'] && 'U' !== $user->type) {
-        return getHtmlMessage(__('erroradminforbidden12'), 'error');
+    try {
+        $user = \MailWatch\ApplicationFactory::localAccountAdministration()->delete(
+            stripslashes((string)$_SESSION['myusername']),
+            (string)$_SESSION['user_type'],
+            (string)($_SESSION['domain'] ?? ''),
+            defined('ENABLE_SUPER_DOMAIN_ADMINS') && true === ENABLE_SUPER_DOMAIN_ADMINS,
+            $uid,
+        );
+    } catch (\MailWatch\Users\Application\UnknownLocalAccount $exception) {
+        return accountAdministrationError($exception, $uid);
+    } catch (\MailWatch\Users\Application\AccountAdministrationException $exception) {
+        return accountAdministrationError($exception, $uid);
     }
 
-    if ($_SESSION['myusername'] === $user->username) {
-        return getHtmlMessage(__('errordeleteself12'), 'error');
-    }
-
-    $sql = "DELETE u,f FROM users u LEFT JOIN user_filters f ON u.username = f.username WHERE u.username='" . safe_value(stripslashes((string)$user->username)) . "'";
-    dbquery($sql);
     audit_log(sprintf(__('auditlog0412', true), $user->username));
 
     return getHtmlMessage(sprintf(__('userdeleted12'), $user->username), 'success');
@@ -752,6 +836,7 @@ function logoutUser()
             var error = "";
             var username = document.getElementById("username");
             var pass0 = document.getElementById("password");
+            var action = document.getElementById("account-action");
             username.classList.remove("inputerror");
             pass0.classList.remove("inputerror");
             if (username.value === "") {
@@ -759,7 +844,7 @@ function logoutUser()
                 username.classList.add("inputerror");
                 valid = false;
             }
-            if (pass0.value === "") {
+            if (action !== null && action.value === "new" && pass0.value === "") {
                 error = error + "<?php echo __('errorpwdreq12'); ?><br>";
                 pass0.classList.add("inputerror");
                 valid = false;
@@ -790,9 +875,24 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
         function delete_user(id, name) {
             var yesno = confirm("<?php echo ' ' . __('areusuredel12') . ' '; ?>" + name + "<?php echo __('questionmark12'); ?>");
             if (yesno === true) {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>" + "&action=delete&id=" + id;
-            } else {
-                window.location = "?token=" + "<?php echo $_SESSION['token']; ?>";
+                var form = document.createElement("form");
+                form.method = "post";
+                form.action = "user_manager.php";
+                var values = {
+                    token: <?php echo json_encode((string)$_SESSION['token']); ?>,
+                    formtoken: <?php echo json_encode(generateFormToken('/user_manager.php delete token')); ?>,
+                    action: "delete",
+                    id: id
+                };
+                Object.keys(values).forEach(function (key) {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = key;
+                    input.value = values[key];
+                    form.appendChild(input);
+                });
+                document.body.appendChild(form);
+                form.submit();
             }
         }
 

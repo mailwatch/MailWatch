@@ -39,8 +39,10 @@ use MailWatch\Shared\Presentation\TemplateRenderer;
 use MailWatch\SpamSettings\Application\GetSpamSettingsSnapshot;
 use MailWatch\SpamSettings\Http\SpamSettingsController;
 use MailWatch\SpamSettings\Infrastructure\Database\DbalSpamSettingsGateway;
+use MailWatch\Users\Application\ManageLocalAccounts;
 use MailWatch\Users\Application\ManageOwnProfile;
 use MailWatch\Users\Application\ManageSavedFilters;
+use MailWatch\Users\Infrastructure\Database\DbalAccountAdministrationGateway;
 use MailWatch\Users\Infrastructure\Database\DbalSavedFilterAdministrationGateway;
 use MailWatch\Users\Infrastructure\Database\DbalUserProfileGateway;
 
@@ -122,6 +124,14 @@ final readonly class ApplicationFactory
     {
         return new ManageOwnProfile(
             new DbalUserProfileGateway(self::databaseConnection()),
+            new NativePasswordHasher(),
+        );
+    }
+
+    public static function localAccountAdministration(): ManageLocalAccounts
+    {
+        return new ManageLocalAccounts(
+            new DbalAccountAdministrationGateway(self::databaseConnection()),
             new NativePasswordHasher(),
         );
     }
