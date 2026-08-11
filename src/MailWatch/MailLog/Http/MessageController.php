@@ -7,12 +7,16 @@ namespace MailWatch\MailLog\Http;
 use MailWatch\MailLog\Application\IngestionResult;
 use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Domain\MailLogEntry;
+use MailWatch\Shared\Http\ApiRequestContext;
+use MailWatch\Shared\Http\ApiTelemetry;
 use MailWatch\Shared\Http\JsonResponse;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 
 final readonly class MessageController
 {
+    private const ENDPOINT = 'messages';
+
     /** @var array<string, string> */
     private const RENAMED_FIELDS = [
         'spamwhitelisted' => 'spamallowlisted',
@@ -25,19 +29,26 @@ final readonly class MessageController
         private ApiConfiguration $configuration,
         private ApiKeyAuthenticator $authenticator,
         private IngestMailLog $ingestMailLog,
+        private ApiRequestContext $request,
+        private ApiTelemetry $telemetry,
     ) {
     }
 
     public function handle(): never
     {
+        $startedAt = hrtime(true);
+        $headers = $this->request->responseHeaders();
+
         if ('POST' !== ($_SERVER['REQUEST_METHOD'] ?? null)) {
-            JsonResponse::send(405, ['error' => 'Method Not Allowed']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'method_not_allowed', 405);
+            JsonResponse::send(405, ['error' => 'Method Not Allowed'], $headers);
         }
         if (!$this->authenticator->isAuthorized($_SERVER['HTTP_X_MAILWATCH_API_KEY'] ?? null)) {
-            JsonResponse::send(401, ['error' => 'Unauthorized']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'unauthorized', 401);
+            JsonResponse::send(401, ['error' => 'Unauthorized'], $headers);
         }
 
-        $data = $this->readPayload();
+        $data = $this->readPayload($headers);
         foreach (self::RENAMED_FIELDS as $previousField => $currentField) {
             if (array_key_exists($previousField, $data) && !array_key_exists($currentField, $data)) {
                 $data[$currentField] = $data[$previousField];
@@ -47,57 +58,71 @@ final readonly class MessageController
         try {
             $mailLogEntry = new MailLogEntry($data);
         } catch (\InvalidArgumentException) {
-            JsonResponse::send(400, ['error' => 'Invalid data']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'invalid_data', 400);
+            JsonResponse::send(400, ['error' => 'Invalid data'], $headers);
         }
         if (!$mailLogEntry->isValid()) {
-            JsonResponse::send(400, ['error' => 'Invalid data']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'invalid_data', 400);
+            JsonResponse::send(400, ['error' => 'Invalid data'], $headers);
         }
         foreach ($mailLogEntry->observations() as $observation) {
-            error_log('MailWatch logmail compatibility observation: ' . $observation);
+            $this->telemetry->observation($this->request, self::ENDPOINT, $observation);
         }
 
-        $idempotencyKey = $this->idempotencyKey($mailLogEntry);
+        $idempotencyKey = $this->idempotencyKey($mailLogEntry, $headers);
         try {
             $result = $this->ingestMailLog->ingest($mailLogEntry, $idempotencyKey);
-        } catch (\Throwable) {
-            JsonResponse::send(500, ['error' => 'Failed to insert data']);
+        } catch (\Throwable $exception) {
+            $this->telemetry->failed($this->request, self::ENDPOINT, 'ingestion_failed', 500, $exception);
+            JsonResponse::send(500, ['error' => 'Failed to insert data'], $headers);
         }
 
         if (IngestionResult::Duplicate === $result) {
-            JsonResponse::send(200, ['success' => 'Data already inserted', 'duplicate' => true]);
+            $this->telemetry->completed($this->request, self::ENDPOINT, 'duplicate', 200, $startedAt);
+            JsonResponse::send(200, ['success' => 'Data already inserted', 'duplicate' => true], $headers);
         }
 
-        JsonResponse::send(201, ['success' => 'Data inserted successfully']);
+        $this->telemetry->completed($this->request, self::ENDPOINT, 'inserted', 201, $startedAt);
+        JsonResponse::send(201, ['success' => 'Data inserted successfully'], $headers);
     }
 
     /**
+     * @param list<string> $headers
+     *
      * @return array<string, mixed>
      */
-    private function readPayload(): array
+    private function readPayload(array $headers): array
     {
         $maxPayloadBytes = $this->configuration->maxPayloadBytes();
         if (isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > $maxPayloadBytes) {
-            JsonResponse::send(413, ['error' => 'Payload Too Large']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'payload_too_large', 413);
+            JsonResponse::send(413, ['error' => 'Payload Too Large'], $headers);
         }
 
         $json = file_get_contents('php://input', false, null, 0, $maxPayloadBytes + 1);
         if (false === $json || strlen($json) > $maxPayloadBytes) {
-            JsonResponse::send(413, ['error' => 'Payload Too Large']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'payload_too_large', 413);
+            JsonResponse::send(413, ['error' => 'Payload Too Large'], $headers);
         }
 
         try {
             $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException) {
-            JsonResponse::send(400, ['error' => 'Invalid JSON']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'invalid_json', 400);
+            JsonResponse::send(400, ['error' => 'Invalid JSON'], $headers);
         }
         if (!is_array($data) || array_is_list($data)) {
-            JsonResponse::send(400, ['error' => 'Invalid data']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'invalid_data', 400);
+            JsonResponse::send(400, ['error' => 'Invalid data'], $headers);
         }
 
         return $data;
     }
 
-    private function idempotencyKey(MailLogEntry $entry): ?string
+    /**
+     * @param list<string> $headers
+     */
+    private function idempotencyKey(MailLogEntry $entry, array $headers): ?string
     {
         $receivedKey = $_SERVER['HTTP_IDEMPOTENCY_KEY'] ?? null;
         if (!is_string($receivedKey)) {
@@ -112,7 +137,8 @@ final readonly class MessageController
             || '' === $entry->token
             || !hash_equals($expectedKey, $idempotencyKey)
         ) {
-            JsonResponse::send(400, ['error' => 'Invalid idempotency key']);
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'invalid_idempotency_key', 400);
+            JsonResponse::send(400, ['error' => 'Invalid idempotency key'], $headers);
         }
 
         return $idempotencyKey;

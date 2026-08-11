@@ -42,31 +42,56 @@ if (null !== $_mailWatchRoute && \MailWatch\Shared\Http\RouteType::Redirect === 
 }
 
 if (null !== $_mailWatchRoute && \MailWatch\Shared\Http\RouteType::Api === $_mailWatchRoute->type) {
+    $_mailWatchRequestContext = \MailWatch\Shared\Http\ApiRequestContext::fromServer($_SERVER);
+    $_mailWatchTelemetry = \MailWatch\ApplicationFactory::apiTelemetry();
+    $_mailWatchApiHeaders = $_mailWatchRequestContext->responseHeaders();
     require_once $_mailWatchApplicationRoot . '/mailscanner/conf.php';
 
     if (!defined('API_KEY') || !is_string(API_KEY) || '' === API_KEY) {
+        $_mailWatchTelemetry->failed(
+            $_mailWatchRequestContext,
+            $_mailWatchRoute->handler,
+            'invalid_configuration',
+            401,
+        );
         if ('messages' === $_mailWatchRoute->handler) {
             $_mailWatchMessage = defined('API_KEY') ? 'Unauthorized' : 'Unauthorized - Set an API KEY to use this API';
-            \MailWatch\Shared\Http\JsonResponse::send(401, ['error' => $_mailWatchMessage]);
+            \MailWatch\Shared\Http\JsonResponse::send(401, ['error' => $_mailWatchMessage], $_mailWatchApiHeaders);
         }
 
-        \MailWatch\Shared\Http\JsonResponse::error(401, 'unauthorized', 'Unauthorized');
+        \MailWatch\Shared\Http\JsonResponse::error(401, 'unauthorized', 'Unauthorized', $_mailWatchApiHeaders);
     }
 
     try {
         $_mailWatchApplicationFactory = \MailWatch\ApplicationFactory::create();
         $_mailWatchController = match ($_mailWatchRoute->handler) {
-            'messages' => $_mailWatchApplicationFactory->messageController(),
-            'allow-block-list' => $_mailWatchApplicationFactory->allowBlockListController(),
-            'spam-settings' => $_mailWatchApplicationFactory->spamSettingsController(),
+            'messages' => $_mailWatchApplicationFactory->messageController($_mailWatchRequestContext, $_mailWatchTelemetry),
+            'allow-block-list' => $_mailWatchApplicationFactory->allowBlockListController($_mailWatchRequestContext, $_mailWatchTelemetry),
+            'spam-settings' => $_mailWatchApplicationFactory->spamSettingsController($_mailWatchRequestContext, $_mailWatchTelemetry),
             default => throw new \LogicException('Unrouted API handler: ' . $_mailWatchRoute->handler),
         };
-    } catch (\MailWatch\Shared\Infrastructure\Configuration\InvalidConfiguration) {
+    } catch (\MailWatch\Shared\Infrastructure\Configuration\InvalidConfiguration $exception) {
+        $_mailWatchTelemetry->failed(
+            $_mailWatchRequestContext,
+            $_mailWatchRoute->handler,
+            'invalid_configuration',
+            500,
+            $exception,
+        );
         if ('messages' === $_mailWatchRoute->handler) {
-            \MailWatch\Shared\Http\JsonResponse::send(500, ['error' => 'Invalid API configuration']);
+            \MailWatch\Shared\Http\JsonResponse::send(
+                500,
+                ['error' => 'Invalid API configuration'],
+                $_mailWatchApiHeaders,
+            );
         }
 
-        \MailWatch\Shared\Http\JsonResponse::error(500, 'invalid_configuration', 'Invalid API configuration');
+        \MailWatch\Shared\Http\JsonResponse::error(
+            500,
+            'invalid_configuration',
+            'Invalid API configuration',
+            $_mailWatchApiHeaders,
+        );
     }
 
     $_mailWatchController->handle();

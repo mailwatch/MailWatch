@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace MailWatch\Lists\Http;
 
 use MailWatch\Lists\Application\GetAllowBlockListSnapshot;
+use MailWatch\Shared\Http\ApiRequestContext;
+use MailWatch\Shared\Http\ApiTelemetry;
 use MailWatch\Shared\Http\JsonResponse;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
@@ -12,34 +14,43 @@ use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 final readonly class AllowBlockListController
 {
     private const CONTRACT = 'mailwatch.allow-block-list.v1';
+    private const ENDPOINT = 'allow-block-list';
 
     public function __construct(
         private ApiConfiguration $configuration,
         private ApiKeyAuthenticator $authenticator,
         private GetAllowBlockListSnapshot $getSnapshot,
+        private ApiRequestContext $request,
+        private ApiTelemetry $telemetry,
     ) {
     }
 
     public function handle(): never
     {
+        $startedAt = hrtime(true);
         $headers = [
+            ...$this->request->responseHeaders(),
             'Cache-Control: private, no-cache',
             'X-MailWatch-Contract: ' . self::CONTRACT,
         ];
 
         if ('GET' !== ($_SERVER['REQUEST_METHOD'] ?? null)) {
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'method_not_allowed', 405);
             JsonResponse::error(405, 'method_not_allowed', 'Method Not Allowed', [...$headers, 'Allow: GET']);
         }
         if (!$this->authenticator->isAuthorized($_SERVER['HTTP_X_MAILWATCH_API_KEY'] ?? null)) {
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'unauthorized', 401);
             JsonResponse::error(401, 'unauthorized', 'Unauthorized', $headers);
         }
         if ('1' !== ($_SERVER['HTTP_X_MAILWATCH_CONTRACT_VERSION'] ?? '1')) {
+            $this->telemetry->rejected($this->request, self::ENDPOINT, 'unsupported_contract_version', 406);
             JsonResponse::error(406, 'unsupported_contract_version', 'Unsupported contract version', $headers);
         }
 
         try {
             $snapshotData = $this->getSnapshot->get()->toArray();
-        } catch (\Throwable) {
+        } catch (\Throwable $exception) {
+            $this->telemetry->failed($this->request, self::ENDPOINT, 'snapshot_unavailable', 500, $exception);
             JsonResponse::error(500, 'snapshot_unavailable', 'Snapshot unavailable', $headers);
         }
 
@@ -54,6 +65,7 @@ final readonly class AllowBlockListController
         if (is_string($ifNoneMatch)) {
             $validators = array_map('trim', explode(',', $ifNoneMatch));
             if (in_array('*', $validators, true) || in_array($etag, $validators, true)) {
+                $this->telemetry->completed($this->request, self::ENDPOINT, 'not_modified', 304, $startedAt);
                 JsonResponse::empty(304, $headers);
             }
         }
@@ -65,6 +77,12 @@ final readonly class AllowBlockListController
             ...$snapshotData,
         ];
         if (strlen(json_encode($response, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)) > $this->configuration->maxSnapshotBytes()) {
+            $this->telemetry->failed(
+                $this->request,
+                self::ENDPOINT,
+                'snapshot_too_large',
+                500,
+            );
             JsonResponse::error(
                 500,
                 'snapshot_too_large',
@@ -73,6 +91,7 @@ final readonly class AllowBlockListController
             );
         }
 
+        $this->telemetry->completed($this->request, self::ENDPOINT, 'snapshot', 200, $startedAt);
         JsonResponse::send(200, $response, $headers);
     }
 }

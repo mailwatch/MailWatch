@@ -4,6 +4,7 @@
 ### Added
 - Add `logmail` API endpoint for programmatic mail log ingestion
 - Add HTTP client support in `MailWatch.pm` for sending data to the MailWatch API
+- Add correlated structured logging to all MailScanner REST requests
 - `$logging_ip` in MailWatchConf.pm sets the address of the MailWatch.pm logging child, for MailScanner in a FreeBSD jail without its own loopback (#333)
 
 ### Changed

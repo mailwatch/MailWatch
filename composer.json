@@ -9,6 +9,7 @@
         "ext-pdo_mysql": "*",
         "doctrine/dbal": "^4.4",
         "doctrine/migrations": "^3.9",
+        "psr/log": "^3",
         "twig/twig": "^3"
     },
     "require-dev": {

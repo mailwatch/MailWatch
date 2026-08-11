@@ -116,12 +116,13 @@ final class SpamSettingsEndpointTest extends TestCase
 
     public function testItReturnsOnlyTheEffectiveSpamSettings(): void
     {
-        $response = $this->request('GET', self::API_KEY);
+        $response = $this->request('GET', self::API_KEY, requestId: 'spam-settings-request-123');
 
         self::assertSame(200, $response['status']);
         self::assertSame('mailwatch.spam-settings.v1', $response['json']['contract']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $response['json']['snapshot_version']);
         self::assertSame('mailwatch.spam-settings.v1', $response['headers']['x-mailwatch-contract']);
+        self::assertSame('spam-settings-request-123', $response['headers']['x-request-id']);
         self::assertSame('"' . $response['json']['snapshot_version'] . '"', $response['headers']['etag']);
         self::assertEquals(3.5, $response['json']['spam_scores']['recipient@example.com']);
         self::assertEquals(7.0, $response['json']['high_spam_scores']['recipient@example.com']);
@@ -154,7 +155,8 @@ final class SpamSettingsEndpointTest extends TestCase
         string $method,
         ?string $apiKey = null,
         ?string $etag = null,
-        string $contractVersion = '1'
+        string $contractVersion = '1',
+        ?string $requestId = null,
     ): array {
         $headers = ['X-MailWatch-Contract-Version: ' . $contractVersion];
         if (null !== $apiKey) {
@@ -162,6 +164,9 @@ final class SpamSettingsEndpointTest extends TestCase
         }
         if (null !== $etag) {
             $headers[] = 'If-None-Match: ' . $etag;
+        }
+        if (null !== $requestId) {
+            $headers[] = 'X-Request-ID: ' . $requestId;
         }
         $context = stream_context_create([
             'http' => [

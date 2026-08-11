@@ -22,10 +22,13 @@ use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Http\MessageController;
 use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
 use MailWatch\Shared\Application\Port\CommandRunner;
+use MailWatch\Shared\Http\ApiRequestContext;
+use MailWatch\Shared\Http\ApiTelemetry;
 use MailWatch\Shared\Http\PageGuard;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfiguration;
 use MailWatch\Shared\Infrastructure\Configuration\ApiConfigurationLoader;
 use MailWatch\Shared\Infrastructure\Database\DatabaseConfigurationLoader;
+use MailWatch\Shared\Infrastructure\Logging\ErrorLogLogger;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
 use MailWatch\Shared\Infrastructure\System\ShellCommandRunner;
 use MailWatch\Shared\Presentation\PageLayout;
@@ -56,31 +59,42 @@ final readonly class ApplicationFactory
         return new ApiKeyAuthenticator($this->apiConfiguration);
     }
 
-    public function messageController(): MessageController
+    public function messageController(ApiRequestContext $request, ApiTelemetry $telemetry): MessageController
     {
         return new MessageController(
             $this->apiConfiguration,
             $this->apiKeyAuthenticator(),
             new IngestMailLog(new DbalMailLogGateway(self::databaseConnection())),
+            $request,
+            $telemetry,
         );
     }
 
-    public function allowBlockListController(): AllowBlockListController
+    public function allowBlockListController(ApiRequestContext $request, ApiTelemetry $telemetry): AllowBlockListController
     {
         return new AllowBlockListController(
             $this->apiConfiguration,
             $this->apiKeyAuthenticator(),
             new GetAllowBlockListSnapshot(new DbalAllowBlockListGateway(self::databaseConnection())),
+            $request,
+            $telemetry,
         );
     }
 
-    public function spamSettingsController(): SpamSettingsController
+    public function spamSettingsController(ApiRequestContext $request, ApiTelemetry $telemetry): SpamSettingsController
     {
         return new SpamSettingsController(
             $this->apiConfiguration,
             $this->apiKeyAuthenticator(),
             new GetSpamSettingsSnapshot(new DbalSpamSettingsGateway(self::databaseConnection())),
+            $request,
+            $telemetry,
         );
+    }
+
+    public static function apiTelemetry(): ApiTelemetry
+    {
+        return new ApiTelemetry(new ErrorLogLogger());
     }
 
     /**

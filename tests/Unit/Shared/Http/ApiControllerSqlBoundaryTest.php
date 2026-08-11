@@ -28,6 +28,7 @@ final class ApiControllerSqlBoundaryTest extends TestCase
         );
         self::assertStringNotContainsString('mysqli', $source);
         self::assertStringNotContainsString('Doctrine\\DBAL', $source);
+        self::assertStringNotContainsString('error_log(', $source, 'API controllers must use structured telemetry');
     }
 
     /**
