@@ -6,6 +6,7 @@ namespace MailWatch\Users\Infrastructure\Database;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Types\Types;
 use MailWatch\Users\Application\AccountAdministrationGateway;
 use MailWatch\Users\Domain\AccountProfile;
 use MailWatch\Users\Domain\AccountSummary;
@@ -13,6 +14,19 @@ use MailWatch\Users\Domain\ManagedAccount;
 
 final readonly class DbalAccountAdministrationGateway implements AccountAdministrationGateway
 {
+    /**
+     * The boolean columns name their type so that DBAL converts them for the
+     * platform. Left undeclared, a false is bound as a string and reaches
+     * MySQL and MariaDB as '', which their strict mode rejects for the
+     * TINYINT(1) these columns are.
+     *
+     * @var array<string, string>
+     */
+    private const VALUE_TYPES = [
+        'quarantine_report' => Types::BOOLEAN,
+        'noscan' => Types::BOOLEAN,
+    ];
+
     public function __construct(private Connection $connection)
     {
     }
@@ -90,7 +104,11 @@ final readonly class DbalAccountAdministrationGateway implements AccountAdminist
 
     public function create(AccountProfile $profile, string $passwordHash): void
     {
-        $this->connection->insert('users', $this->values($profile) + ['password' => $passwordHash]);
+        $this->connection->insert(
+            'users',
+            $this->values($profile) + ['password' => $passwordHash],
+            self::VALUE_TYPES,
+        );
     }
 
     public function update(
@@ -103,7 +121,7 @@ final readonly class DbalAccountAdministrationGateway implements AccountAdminist
             if (null !== $passwordHash) {
                 $values['password'] = $passwordHash;
             }
-            $connection->update('users', $values, ['id' => $target->id]);
+            $connection->update('users', $values, ['id' => $target->id], self::VALUE_TYPES);
 
             if ($target->username !== $profile->username) {
                 $connection->update(
