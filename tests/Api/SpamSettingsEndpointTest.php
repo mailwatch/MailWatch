@@ -4,6 +4,8 @@ namespace App\Tests\Api;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\Schema;
+use MailWatch\Shared\Infrastructure\Database\RestApiSchema;
 use PHPUnit\Framework\TestCase;
 
 final class SpamSettingsEndpointTest extends TestCase
@@ -218,9 +220,9 @@ final class SpamSettingsEndpointTest extends TestCase
     private static function createDatabase(): void
     {
         $connection = self::databaseConnection();
-        $connection->executeStatement(
-            'CREATE TABLE users (username TEXT, spamscore REAL, highspamscore REAL, noscan INTEGER)'
-        );
+        $schema = new Schema();
+        RestApiSchema::define($schema);
+        $connection->createSchemaManager()->createSchemaObjects($schema);
         $fixture = json_decode(
             (string)file_get_contents(dirname(__DIR__) . '/fixtures/api/spam-settings-v1.json'),
             true,

@@ -16,10 +16,8 @@ final class DbalAllowBlockListGatewayTest extends TestCase
     protected function setUp(): void
     {
         $this->connection = ContractStore::connection();
-        ContractStore::dropTables($this->connection, ['user_filters', 'allowlist', 'blocklist']);
-        $this->connection->executeStatement('CREATE TABLE allowlist (to_address TEXT, from_address TEXT)');
-        $this->connection->executeStatement('CREATE TABLE blocklist (to_address TEXT, from_address TEXT)');
-        $this->connection->executeStatement('CREATE TABLE user_filters (username TEXT, filter TEXT, active TEXT)');
+        ContractStore::dropTables($this->connection, ['user_filters', 'users', 'allowlist', 'blocklist']);
+        ContractStore::createRestApiSchema($this->connection);
 
         $fixture = json_decode(
             (string)file_get_contents(dirname(__DIR__, 2) . '/fixtures/api/allow-block-list-v1.json'),
@@ -39,7 +37,7 @@ final class DbalAllowBlockListGatewayTest extends TestCase
 
     protected function tearDown(): void
     {
-        ContractStore::dropTables($this->connection, ['user_filters', 'allowlist', 'blocklist']);
+        ContractStore::dropTables($this->connection, ['user_filters', 'users', 'allowlist', 'blocklist']);
         $this->connection->close();
     }
 

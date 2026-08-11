@@ -256,11 +256,11 @@ CREATE TABLE IF NOT EXISTS `sa_rules` (
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE KEY,
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
   `fullname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
-  `type` enum('A','D','U','R','H') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'U',
+  `type` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'U',
   `quarantine_report` tinyint(1) DEFAULT '0',
   `spamscore` float DEFAULT '0',
   `highspamscore` float DEFAULT '0',
@@ -272,7 +272,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `login_expiry` bigint(20) DEFAULT '-1',
   `last_login` bigint(20) DEFAULT '-1',
   `login_timeout` smallint(5) DEFAULT '-1',
-  PRIMARY KEY (`username`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_username_uniq` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 -- --------------------------------------------------------
@@ -286,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `user_filters` (
   `username` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
   `filter` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
   `verify_key` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
-  `active` enum('N','Y') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT 'N',
+  `active` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT 'N',
   PRIMARY KEY (`id`),
   KEY `user_filters_username_idx` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;

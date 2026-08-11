@@ -6,7 +6,9 @@ namespace App\Tests\Support;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\Schema;
 use MailWatch\Shared\Infrastructure\Database\DatabaseConfiguration;
+use MailWatch\Shared\Infrastructure\Database\RestApiSchema;
 
 final class ContractStore
 {
@@ -34,5 +36,12 @@ final class ContractStore
                 $schemaManager->dropTable($table);
             }
         }
+    }
+
+    public static function createRestApiSchema(Connection $connection): void
+    {
+        $schema = new Schema();
+        RestApiSchema::define($schema);
+        $connection->createSchemaManager()->createSchemaObjects($schema);
     }
 }

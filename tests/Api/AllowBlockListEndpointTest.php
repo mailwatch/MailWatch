@@ -4,6 +4,8 @@ namespace App\Tests\Api;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\Schema;
+use MailWatch\Shared\Infrastructure\Database\RestApiSchema;
 use PHPUnit\Framework\TestCase;
 
 final class AllowBlockListEndpointTest extends TestCase
@@ -223,9 +225,9 @@ final class AllowBlockListEndpointTest extends TestCase
     private static function createDatabase(): void
     {
         $connection = self::databaseConnection();
-        $connection->executeStatement('CREATE TABLE allowlist (to_address TEXT, from_address TEXT)');
-        $connection->executeStatement('CREATE TABLE blocklist (to_address TEXT, from_address TEXT)');
-        $connection->executeStatement('CREATE TABLE user_filters (username TEXT, filter TEXT, active TEXT)');
+        $schema = new Schema();
+        RestApiSchema::define($schema);
+        $connection->createSchemaManager()->createSchemaObjects($schema);
 
         $fixture = json_decode(
             (string)file_get_contents(dirname(__DIR__) . '/fixtures/api/allow-block-list-v1.json'),

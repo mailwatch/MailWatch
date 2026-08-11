@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Schema;
 use MailWatch\Migrations\Version20260803090000;
+use MailWatch\Shared\Infrastructure\Database\RestApiSchema;
 use Psr\Log\NullLogger;
 
 require dirname(__DIR__, 3) . '/vendor/autoload.php';
@@ -41,13 +42,8 @@ function createDatabase(Connection $connection, string $fixturePath): void
 
     $schema = new Schema();
     (new Version20260803090000($connection, new NullLogger()))->up($schema);
+    RestApiSchema::define($schema);
     $connection->createSchemaManager()->createSchemaObjects($schema);
-    $connection->executeStatement('CREATE TABLE allowlist (to_address TEXT, from_address TEXT)');
-    $connection->executeStatement('CREATE TABLE blocklist (to_address TEXT, from_address TEXT)');
-    $connection->executeStatement('CREATE TABLE user_filters (username TEXT, filter TEXT, active TEXT)');
-    $connection->executeStatement(
-        'CREATE TABLE users (username TEXT, spamscore REAL, highspamscore REAL, noscan INTEGER)'
-    );
 
     $fixture = json_decode((string)file_get_contents($fixturePath), true, 512, JSON_THROW_ON_ERROR);
     foreach (['allowlist', 'blocklist'] as $table) {
