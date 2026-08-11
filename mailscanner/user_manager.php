@@ -729,6 +729,9 @@ function logoutUser()
         function checkPasswords() {
             var pass0 = document.getElementById("password");
             var pass1 = document.getElementById("retypepassword");
+            if (pass0 === null || pass1 === null) {
+                return true;
+            }
             pass0.classList.remove("inputerror");
             pass1.classList.remove("inputerror");
             if (pass0.value !== pass1.value) {
@@ -891,41 +894,54 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
           username';
     dbtable($sql, __('usermgnt12'));
 } elseif (!isset($_POST['submit'])) {
-    $sql = "SELECT id, username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value(stripslashes((string)$_SESSION['myusername'])) . "'";
-    $result = dbquery($sql);
-    $row = $result->fetch_object();
-    $quarantine_report = '';
-    if (1 === (int)$row->quarantine_report) {
-        $quarantine_report = 'checked="checked"';
+    $authenticationSource = \MailWatch\Users\Domain\AuthenticationSource::fromSession(
+        true === ($_SESSION['user_ldap'] ?? false),
+        true === ($_SESSION['user_imap'] ?? false),
+    );
+
+    try {
+        $overview = \MailWatch\ApplicationFactory::ownProfileAdministration()->overview(
+            stripslashes((string)$_SESSION['myusername']),
+            $authenticationSource,
+        );
+    } catch (\MailWatch\Users\Application\UnknownLocalAccount) {
+        echo getHtmlMessage(__('accessunknownuser12'), 'error');
+        $overview = null;
     }
 
-    $noscan = '';
-    if (0 === (int)$row->noscan) {
-        $noscan = 'checked="checked"';
+    if (null !== $overview) {
+        $profile = $overview->profile;
+        $quarantineReport = $profile->quarantineReport ? 'checked="checked"' : '';
+        $scanForSpam = $profile->scanForSpam ? 'checked="checked"' : '';
+        $token = htmlspecialchars((string)$_SESSION['token'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $formToken = htmlspecialchars(generateFormToken('/user_manager.php user token'), ENT_QUOTES, 'UTF-8');
+        $username = htmlspecialchars($profile->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $fullName = htmlspecialchars($profile->fullName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $quarantineRecipient = htmlspecialchars($profile->quarantineRecipient, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        echo '<div id="formerror" class="hidden"></div>';
+        echo '<form method="post" action="user_manager.php" onsubmit="return checkPasswords();">' . PHP_EOL;
+        echo '<input type="hidden" name="token" value="' . $token . '">' . PHP_EOL;
+        echo '<input type="hidden" name="action" value="edit">' . PHP_EOL;
+        echo '<input type="hidden" name="id" value="' . $profile->id . '">' . PHP_EOL;
+        echo '<input type="hidden" name="submit" value="true">' . PHP_EOL;
+        echo '<input type="hidden" name="formtoken" value="' . $formToken . '">' . PHP_EOL;
+        echo '<table class="mail useredit" border="0" cellpadding="1" cellspacing="1">' . PHP_EOL;
+        echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $username . '</td></tr>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $username . '</td></tr>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $fullName . '</td></tr>' . PHP_EOL;
+        if ($overview->authenticationSource->canChangePassword()) {
+            echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="" autocomplete="new-password"></td></tr>' . PHP_EOL;
+            echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="" autocomplete="new-password"></td></tr>' . PHP_EOL;
+        }
+        echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantineReport . '> <span class="font-1em">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $quarantineRecipient . '"><br><span class="font-1em">' . __('overrec12') . '</span></td>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" ' . $scanForSpam . '> <span class="font-1em">' . __('scanforspam212') . '</span></td></tr>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $profile->spamScore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $profile->highSpamScore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
+        echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" name="action" value="' . __('update12') . '"></td></tr>' . PHP_EOL;
+        echo '</table></form><br>' . PHP_EOL;
     }
-    $s[$row->type] = 'selected';
-    echo '<div id="formerror" class="hidden"></div>';
-    echo '<form method="post" action="user_manager.php" onsubmit="return checkPasswords();">' . PHP_EOL;
-    echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . PHP_EOL;
-    echo '<input type="hidden" name="action" value="edit">' . PHP_EOL;
-    echo '<input type="hidden" name="id" value="' . $row->id . '">' . PHP_EOL;
-    echo '<input type="hidden" name="submit" value="true">' . PHP_EOL;
-    echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token') . '">' . PHP_EOL;
-    echo '<table class="mail useredit" border="0" cellpadding="1" cellspacing="1">' . PHP_EOL;
-    echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . stripslashes((string)$_SESSION['myusername']) . '</td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . PHP_EOL;
-    if (true !== $_SESSION['user_ldap'] && true !== $_SESSION['user_imap']) {
-        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
-        echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
-    }
-    echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span class="font-1em">' . __('overrec12') . '</span></td>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" ' . $noscan . '> <span class="font-1em">' . __('scanforspam212') . '</span></td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
-    echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" name="action" value="' . __('update12') . '"></td></tr>' . PHP_EOL;
-    echo '</table></form><br>' . PHP_EOL;
 } else {
     if (false === checkToken($_POST['token'])
         || false === checkFormToken('/user_manager.php user token', $_POST['formtoken'])) {
@@ -954,11 +970,7 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     } elseif (isset($_POST['password'], $_POST['password1']) && ($_POST['password'] !== $_POST['password1'])) {
         echo getHtmlMessage(__('errorpass12'), 'error');
     } else {
-        $username = safe_value(stripslashes((string)$_SESSION['myusername']));
-        $n_password = null;
-        if (isset($_POST['password'])) {
-            $n_password = safe_value($_POST['password']);
-        }
+        $username = stripslashes((string)$_SESSION['myusername']);
         $spamscore = deepSanitizeInput($_POST['spamscore'], 'float');
         if (!validateInput($spamscore, 'float')) {
             $spamscore = '0';
@@ -967,32 +979,38 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
         if (!validateInput($highspamscore, 'float')) {
             $highspamscore = '0';
         }
-        $n_quarantine_report = '1';
-        if (!isset($_POST['quarantine_report'])) {
-            $n_quarantine_report = '0';
-        }
-        $noscan = '0';
-        if (!isset($_POST['noscan'])) {
-            $noscan = '1';
-        }
         $quarantine_rcpt = deepSanitizeInput($_POST['quarantine_rcpt'], 'string');
         if ('' !== $quarantine_rcpt && !validateInput($quarantine_rcpt, 'user')) {
             exit(getHtmlMessage(__('dievalidate99'), 'error'));
         }
 
-        if (isset($_POST['password']) && 'XXXXXXXX' !== $_POST['password']) {
-            // Password reset required
-            $password = password_hash((string)$n_password, PASSWORD_DEFAULT);
-            $sql = "UPDATE users SET password='" . $password . "', quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
-            dbquery($sql);
-        } else {
-            $sql = "UPDATE users SET quarantine_report='$n_quarantine_report', spamscore='$spamscore', highspamscore='$highspamscore', noscan='$noscan', quarantine_rcpt='$quarantine_rcpt' WHERE username='$username'";
-            dbquery($sql);
-        }
+        $authenticationSource = \MailWatch\Users\Domain\AuthenticationSource::fromSession(
+            true === ($_SESSION['user_ldap'] ?? false),
+            true === ($_SESSION['user_imap'] ?? false),
+        );
 
-        // Audit
-        audit_log(sprintf(__('auditlog0512', true), $username));
-        echo getHtmlMessage(__('savedsettings12'), 'success');
+        try {
+            \MailWatch\ApplicationFactory::ownProfileAdministration()->update(
+                $username,
+                $authenticationSource,
+                new \MailWatch\Users\Domain\ProfilePreferences(
+                    isset($_POST['quarantine_report']),
+                    (float)$spamscore,
+                    (float)$highspamscore,
+                    isset($_POST['noscan']),
+                    stripslashes($quarantine_rcpt),
+                ),
+                isset($_POST['password']) ? (string)$_POST['password'] : null,
+            );
+
+            // Audit
+            audit_log(sprintf(__('auditlog0512', true), $username));
+            echo getHtmlMessage(__('savedsettings12'), 'success');
+        } catch (\MailWatch\Users\Application\UnknownLocalAccount) {
+            echo getHtmlMessage(__('accessunknownuser12'), 'error');
+        } catch (\MailWatch\Users\Application\ProfilePasswordChangeDenied) {
+            echo getHtmlMessage(__('erroradminforbidden12'), 'error');
+        }
     }
 }
 // Add footer

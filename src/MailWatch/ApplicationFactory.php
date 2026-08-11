@@ -32,14 +32,17 @@ use MailWatch\Shared\Infrastructure\Configuration\ApiConfigurationLoader;
 use MailWatch\Shared\Infrastructure\Database\DatabaseConfigurationLoader;
 use MailWatch\Shared\Infrastructure\Logging\ErrorLogLogger;
 use MailWatch\Shared\Infrastructure\Security\ApiKeyAuthenticator;
+use MailWatch\Shared\Infrastructure\Security\NativePasswordHasher;
 use MailWatch\Shared\Infrastructure\System\ShellCommandRunner;
 use MailWatch\Shared\Presentation\PageLayout;
 use MailWatch\Shared\Presentation\TemplateRenderer;
 use MailWatch\SpamSettings\Application\GetSpamSettingsSnapshot;
 use MailWatch\SpamSettings\Http\SpamSettingsController;
 use MailWatch\SpamSettings\Infrastructure\Database\DbalSpamSettingsGateway;
+use MailWatch\Users\Application\ManageOwnProfile;
 use MailWatch\Users\Application\ManageSavedFilters;
 use MailWatch\Users\Infrastructure\Database\DbalSavedFilterAdministrationGateway;
+use MailWatch\Users\Infrastructure\Database\DbalUserProfileGateway;
 
 final readonly class ApplicationFactory
 {
@@ -112,6 +115,14 @@ final readonly class ApplicationFactory
     {
         return new ManageSavedFilters(
             new DbalSavedFilterAdministrationGateway(self::databaseConnection()),
+        );
+    }
+
+    public static function ownProfileAdministration(): ManageOwnProfile
+    {
+        return new ManageOwnProfile(
+            new DbalUserProfileGateway(self::databaseConnection()),
+            new NativePasswordHasher(),
         );
     }
 
