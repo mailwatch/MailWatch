@@ -113,8 +113,7 @@ if (0 !== $missingConfigEntries['needed']['count']) {
 // Set PHP path to use local PEAR modules only
 set_include_path(
     '.' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/pear' . PATH_SEPARATOR .
-    MAILWATCH_HOME . '/lib/xmlrpc'
+    MAILWATCH_HOME . '/lib/pear'
 );
 
 // ForceUTF8
@@ -150,9 +149,14 @@ date_default_timezone_set(TIME_ZONE);
 if (!function_exists('xml_parser_create') && (!ini_get('enable_dl') || true !== @dl('xml.so'))) {
     exit(__('phpxmlnotloaded03'));
 }
-require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
-require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
-require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
+// The compatibility layer of phpxmlrpc 4, which declares the same global
+// names the pages and rpcserver.php have always used. Upstream marks it
+// deprecated: it is here so that a maintained library replaces the vendored
+// 3.0.0.beta without touching a line of protocol code, and it goes when the
+// REST replacement of section 12 does.
+require_once \dirname(__DIR__) . '/vendor/phpxmlrpc/phpxmlrpc/lib/xmlrpc.inc';
+require_once \dirname(__DIR__) . '/vendor/phpxmlrpc/phpxmlrpc/lib/xmlrpcs.inc';
+require_once \dirname(__DIR__) . '/vendor/phpxmlrpc/phpxmlrpc/lib/xmlrpc_wrappers.inc';
 
 include __DIR__ . '/postfix.inc.php';
 include __DIR__ . '/msmail.inc.php';
@@ -3809,7 +3813,7 @@ function is_rpc_client_allowed()
 }
 
 /**
- * @return xmlrpcresp
+ * @return \PhpXmlRpc\Response
  */
 function xmlrpc_wrapper($host, $msg)
 {
@@ -3834,7 +3838,11 @@ function xmlrpc_wrapper($host, $msg)
     $client->setSSLVerifyPeer(false);
     $client->setSSLVerifyHost(0);
 
-    return $client->send($msg, 0, $method);
+    $response = $client->send($msg, 0, $method);
+
+    // The client answers with an array only when it is given several requests
+    // at once, which no caller here does.
+    return \is_array($response) ? reset($response) : $response;
 }
 
 /**

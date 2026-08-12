@@ -11,6 +11,7 @@
 - Add correlated structured logging to all MailScanner REST requests
 
 ### Changed
+- Replace the bundled `phpxmlrpc` 3.0.0.beta with the maintained `phpxmlrpc/phpxmlrpc` 4.x from Composer; node-to-node RPC keeps the same wire format, and the deprecation notices the bundled copy emitted on PHP 8.2 and later are gone
 - Move the three REST APIs from legacy `mysqli` access to Doctrine DBAL without changing their versioned contracts
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
 - Standardised database charset to utf8mb4 with unicode_520_ci collation
@@ -22,6 +23,7 @@
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
+- `ext-xml` is now a declared requirement rather than a suggestion; it was already mandatory at runtime
 - The minimal supported MySQL version is now 5.7.42
 - The minimal supported MariaDB version is now 10.4.34
 
