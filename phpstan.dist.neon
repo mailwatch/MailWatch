@@ -33,9 +33,9 @@ parameters:
 	    - mailscanner/lib/request/Requests/Hooks.php
 	    - mailscanner/lib/request/Requests/Session.php
 	    - mailscanner/lib/request/Requests/Exception.php
-	    - mailscanner/lib/xmlrpc/xmlrpc.inc
-	    - mailscanner/lib/xmlrpc/xmlrpc_wrappers.inc
-	    - mailscanner/lib/xmlrpc/xmlrpcs.inc
+	    - vendor/phpxmlrpc/phpxmlrpc/lib/xmlrpc.inc
+	    - vendor/phpxmlrpc/phpxmlrpc/lib/xmlrpc_wrappers.inc
+	    - vendor/phpxmlrpc/phpxmlrpc/lib/xmlrpcs.inc
 	    - mailscanner/lib/IPSet.php
 	bootstrapFiles:
 	    - mailscanner/conf.php.example
