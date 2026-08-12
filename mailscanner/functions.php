@@ -3334,6 +3334,21 @@ function quarantine_storage(): \MailWatch\Quarantine\Application\QuarantineStora
     return \MailWatch\ApplicationFactory::quarantineStorage((string)get_conf_var('QuarantineDir'));
 }
 
+/**
+ * The covering message a released item travels in.
+ *
+ * Built here rather than in the factory because the subject and body go
+ * through the vendored encoding fix-up, which is not autoloaded.
+ */
+function quarantine_release_notice(): \MailWatch\Quarantine\Domain\ReleaseNotice
+{
+    return new \MailWatch\Quarantine\Domain\ReleaseNotice(
+        MAILWATCH_FROM_ADDR,
+        \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT),
+        \ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY)
+    );
+}
+
 function is_local($host): bool
 {
     $host = strtolower((string)$host);
@@ -3428,81 +3443,36 @@ function quarantine_release($list, $num, $to, $rpc_only = false, ?\MailWatch\Qua
     }
 
     if (!$rpc_only && is_local($list[0]['host'])) {
-        if (!QUARANTINE_USE_SENDMAIL) {
-            // Load in the required PEAR modules
-            require_once __DIR__ . '/lib/pear/PEAR.php';
-            require_once __DIR__ . '/lib/pear/Mail.php';
-            require_once __DIR__ . '/lib/pear/Mail/mime.php';
-            require_once __DIR__ . '/lib/pear/Mail/smtp.php';
-
-            $hdrs = ['From' => MAILWATCH_FROM_ADDR, 'Subject' => \ForceUTF8\Encoding::toUTF8(QUARANTINE_SUBJECT), 'Date' => date('r')];
-            $mailMimeParams = [
-                'eol' => "\r\n",
-                'html_charset' => 'UTF-8',
-                'text_charset' => 'UTF-8',
-                'head_charset' => 'UTF-8',
-            ];
-            $mime = new Mail_mime($mailMimeParams);
-            $mime->setTXTBody(\ForceUTF8\Encoding::toUTF8(QUARANTINE_MSG_BODY));
-            // Loop through each selected file and attach them to the mail
-            foreach ($num as $val) {
-                // If the message is of rfc822 type then set it as Quoted printable
-                if (preg_match('/message\/rfc822/', (string)$list[$val]['type'])) {
-                    $mime->addAttachment($list[$val]['path'], 'message/rfc822', 'Original Message', true, '');
-                } else {
-                    // Default is base64 encoded
-                    $mime->addAttachment($list[$val]['path'], $list[$val]['type'], $list[$val]['file'], true);
-                }
-            }
-            $mail_param = ['host' => MAILWATCH_MAIL_HOST, 'port' => MAILWATCH_MAIL_PORT];
-            if (defined('MAILWATCH_SMTP_HOSTNAME')) {
-                $mail_param['localhost'] = MAILWATCH_SMTP_HOSTNAME;
-            }
-            $body = $mime->get();
-            $hdrs = $mime->headers($hdrs);
-            $mail = new Mail_smtp($mail_param);
-
-            $m_result = $mail->send(stripslashes($to), $hdrs, $body);
-            if ($m_result instanceof \PEAR_Error) {
-                // Error
-                $status = __('releaseerror03') . ' (' . $m_result->getMessage() . ')';
-                global $error;
-                $error = true;
-            } else {
-                \MailWatch\ApplicationFactory::quarantineMessages()->markReleased((string)$list[0]['msgid']);
-                $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
-                audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
-            }
-
-            return $status;
-        }
-
-        // Use sendmail to release message
-        // We can only release message/rfc822 files in this way.
-        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg(stripslashes($to)) . ' < ';
+        $parts = [];
         foreach ($num as $val) {
-            if (preg_match('/message\/rfc822/', (string)$list[$val]['type'])) {
-                debug($cmd . $list[$val]['path']);
-                exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
-                if (0 === $retval) {
-                    \MailWatch\ApplicationFactory::quarantineMessages()->markReleased((string)$list[0]['msgid']);
-                    $status = __('releasemessage03') . ' ' . str_replace(',', ', ', stripslashes($to));
-                    audit_log(sprintf(__('auditlogquareleased03', true), $list[$val]['msgid']) . ' ' . $to);
-                } else {
-                    $status = __('releaseerrorcode03') . ' ' . $retval . ' ' . __('returnedfrom03') . "\n" . implode(
-                        "\n",
-                        $output_array
-                    );
-                    global $error;
-                    $error = true;
-                }
-
-                return $status;
+            if (!isset($list[$val]['path'])) {
+                continue;
             }
+            $parts[] = new \MailWatch\Quarantine\Domain\QuarantineItem(
+                (string)$list[$val]['file'],
+                (string)$list[$val]['path'],
+                (string)$list[$val]['type'],
+            );
         }
 
-        // No message/rfc822 type found
-        return __('releaseerror03') . ' (No valid message found)';
+        $recipients = stripslashes($to);
+        $outcome = \MailWatch\ApplicationFactory::quarantineReleaser(quarantine_release_notice())
+            ->release($recipients, $parts);
+
+        if ($outcome->delivered) {
+            \MailWatch\ApplicationFactory::quarantineMessages()->markReleased((string)$list[0]['msgid']);
+            audit_log(sprintf(__('auditlogquareleased03', true), $list[0]['msgid']) . ' ' . $to);
+
+            return __('releasemessage03') . ' ' . str_replace(',', ', ', $recipients);
+        }
+
+        global $error;
+        $error = true;
+
+        return null === $outcome->exitCode
+            ? __('releaseerror03') . ' (' . implode(' ', $outcome->detail) . ')'
+            : __('releaseerrorcode03') . ' ' . $outcome->exitCode . ' ' . __('returnedfrom03') . "\n"
+                . implode("\n", $outcome->detail);
     }
 
     // Host is remote - handle by RPC
