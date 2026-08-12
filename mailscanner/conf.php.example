@@ -259,6 +259,11 @@ define('RPC_ONLY', false);
 // define('RPC_PORT', 80);
 // RPC over SSL? (defaults to port 443 unless RPC_PORT is supplied).
 // define('RPC_SSL', true);
+// Verify the other node's TLS certificate when RPC runs over SSL. Set this to
+// false if your nodes use self-signed certificates: without verification the
+// connection is protected against eavesdropping but not against an attacker
+// placing themselves between the nodes.
+define('RPC_VERIFY_PEER', true);
 // Enter the remote servers as space separated list where rpc call shall be executed at (eg. for postfix queue).
 // define('RPC_REMOTE_SERVER', 'other.example.com 10.0.0.2');
 

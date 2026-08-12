@@ -74,6 +74,7 @@ parameters:
 	    RESOLVE_IP_ON_DISPLAY: bool
 	    RPC_ONLY: bool
 	    RPC_SSL: bool
+	    RPC_VERIFY_PEER: bool
 	    SHOW_DOC: bool
 	    SHOW_MORE_INFO_ON_REPORT_GRAPH: bool
 	    SHOW_SFVERSION: bool

@@ -3,6 +3,7 @@
 ## Unreleased
 ### Security
 - Bind the message identifier and the account's authorisation scope as query parameters in the quarantine operations, closing an SQL injection reachable through the XML-RPC quarantine methods
+- Verify the other node's TLS certificate on quarantine RPC calls, which 1.2 disabled unconditionally; set `RPC_VERIFY_PEER` to `false` to keep the previous behaviour with self-signed certificates (see [UPGRADING.md](UPGRADING.md))
 
 ### Added
 - Add `logmail` API endpoint for programmatic mail log ingestion

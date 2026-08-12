@@ -3398,21 +3398,15 @@ function quarantine_list_items($msgid, $rpc_only = false, ?\MailWatch\Quarantine
         return $quarantined;
     }
 
-    // Host is remote call quarantine_list_items by RPC
+    // The message is held on another node, which owns the operation.
     debug("Calling quarantine_list_items on {$message->hostname} by XML-RPC");
-    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$row->hostname,80);
-    // if(DEBUG) { $client->setDebug(1); }
-    // $parameters = array($input);
-    // $msg = new xmlrpcmsg('quarantine_list_items',$parameters);
-    $msg = new xmlrpcmsg('quarantine_list_items', [new xmlrpcval($msgid)]);
-    $rsp = xmlrpc_wrapper($message->hostname, $msg); // $client->send($msg);
-    if (0 === $rsp->faultCode()) {
-        $response = php_xmlrpc_decode($rsp->value());
-    } else {
-        $response = 'XML-RPC Error: ' . $rsp->faultString();
-    }
 
-    return $response;
+    try {
+        return \MailWatch\ApplicationFactory::quarantineRemoteNode()
+            ->items($message->hostname, (string)$msgid);
+    } catch (\MailWatch\Quarantine\Application\RemoteQuarantineFailure $failure) {
+        return 'XML-RPC Error: ' . $failure->getMessage();
+    }
 }
 
 /**
@@ -3475,31 +3469,14 @@ function quarantine_release($list, $num, $to, $rpc_only = false, ?\MailWatch\Qua
                 . implode("\n", $outcome->detail);
     }
 
-    // Host is remote - handle by RPC
+    // The message is held on another node, which owns the operation.
     debug('Calling quarantine_release on ' . $list[0]['host'] . ' by XML-RPC');
-    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-    // Convert input parameters
-    $list_output = [];
-    foreach ($list as $list_array) {
-        $list_struct = array_map(static function($val) {
-            return new xmlrpcval($val);
-        }, $list_array);
-        $list_output[] = new xmlrpcval($list_struct, 'struct');
-    }
-    $num_output = array_map(static function($val) {
-        return new xmlrpcval($val);
-    }, $num);
-    // Build input parameters
-    $param1 = new xmlrpcval($list_output, 'array');
-    $param2 = new xmlrpcval($num_output, 'array');
-    $param3 = new xmlrpcval($to, 'string');
-    $parameters = [$param1, $param2, $param3];
-    $msg = new xmlrpcmsg('quarantine_release', $parameters);
-    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
-    if (0 === $rsp->faultCode()) {
-        $response = php_xmlrpc_decode($rsp->value());
-    } else {
-        $response = 'XML-RPC Error: ' . $rsp->faultString();
+
+    try {
+        $response = \MailWatch\ApplicationFactory::quarantineRemoteNode()
+            ->release((string)$list[0]['host'], $list, $num, $to);
+    } catch (\MailWatch\Quarantine\Application\RemoteQuarantineFailure $failure) {
+        $response = 'XML-RPC Error: ' . $failure->getMessage();
     }
 
     return $response . ' (RPC)';
@@ -3578,33 +3555,14 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, ?\MailWatc
         return implode("\n", $status);
     }
 
-    // Call by RPC
+    // The message is held on another node, which owns the operation.
     debug('Calling quarantine_learn on ' . $list[0]['host'] . ' by XML-RPC');
-    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-    // Convert input parameters
-    $list_output = [];
-    foreach ($list as $list_array) {
-        $list_struct = [];
-        foreach ($list_array as $key => $val) {
-            $list_struct[$key] = new xmlrpcval($val);
-        }
-        $list_output[] = new xmlrpcval($list_struct, 'struct');
-    }
-    $num_output = [];
-    foreach ($num as $key => $val) {
-        $num_output[$key] = new xmlrpcval($val);
-    }
-    // Build input parameters
-    $param1 = new xmlrpcval($list_output, 'array');
-    $param2 = new xmlrpcval($num_output, 'array');
-    $param3 = new xmlrpcval($type, 'string');
-    $parameters = [$param1, $param2, $param3];
-    $msg = new xmlrpcmsg('quarantine_learn', $parameters);
-    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
-    if (0 === $rsp->faultCode()) {
-        $response = php_xmlrpc_decode($rsp->value());
-    } else {
-        $response = 'XML-RPC Error: ' . $rsp->faultString();
+
+    try {
+        $response = \MailWatch\ApplicationFactory::quarantineRemoteNode()
+            ->learn((string)$list[0]['host'], $list, $num, $action->value);
+    } catch (\MailWatch\Quarantine\Application\RemoteQuarantineFailure $failure) {
+        $response = 'XML-RPC Error: ' . $failure->getMessage();
     }
 
     return $response . ' (RPC)';
@@ -3644,32 +3602,14 @@ function quarantine_delete($list, $num, $rpc_only = false, ?\MailWatch\Quarantin
         return implode("\n", $status);
     }
 
-    // Call by RPC
+    // The message is held on another node, which owns the operation.
     debug('Calling quarantine_delete on ' . $list[0]['host'] . ' by XML-RPC');
-    // $client = new xmlrpc_client(constant('RPC_RELATIVE_PATH').'/rpcserver.php',$list[0]['host'],80);
-    // Convert input parameters
-    $list_output = [];
-    foreach ($list as $list_array) {
-        $list_struct = [];
-        foreach ($list_array as $key => $val) {
-            $list_struct[$key] = new xmlrpcval($val);
-        }
-        $list_output[] = new xmlrpcval($list_struct, 'struct');
-    }
-    $num_output = [];
-    foreach ($num as $key => $val) {
-        $num_output[$key] = new xmlrpcval($val);
-    }
-    // Build input parameters
-    $param1 = new xmlrpcval($list_output, 'array');
-    $param2 = new xmlrpcval($num_output, 'array');
-    $parameters = [$param1, $param2];
-    $msg = new xmlrpcmsg('quarantine_delete', $parameters);
-    $rsp = xmlrpc_wrapper($list[0]['host'], $msg); // $client->send($msg);
-    if (0 === $rsp->faultCode()) {
-        $response = php_xmlrpc_decode($rsp->value());
-    } else {
-        $response = 'XML-RPC Error: ' . $rsp->faultString();
+
+    try {
+        $response = \MailWatch\ApplicationFactory::quarantineRemoteNode()
+            ->delete((string)$list[0]['host'], $list, $num);
+    } catch (\MailWatch\Quarantine\Application\RemoteQuarantineFailure $failure) {
+        $response = 'XML-RPC Error: ' . $failure->getMessage();
     }
 
     return $response . ' (RPC)';
