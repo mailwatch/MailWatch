@@ -24,11 +24,15 @@ use MailWatch\MailLog\Application\IngestMailLog;
 use MailWatch\MailLog\Http\MessageController;
 use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
 use MailWatch\Quarantine\Application\QuarantineMessageGateway;
+use MailWatch\Quarantine\Application\QuarantineReleaser;
 use MailWatch\Quarantine\Application\QuarantineStorage;
 use MailWatch\Quarantine\Application\SpamLearner;
 use MailWatch\Quarantine\Domain\MessageScope;
 use MailWatch\Quarantine\Domain\QuarantineAccess;
+use MailWatch\Quarantine\Domain\ReleaseNotice;
 use MailWatch\Quarantine\Infrastructure\Database\DbalQuarantineMessageGateway;
+use MailWatch\Quarantine\Infrastructure\Mail\SendmailQuarantineReleaser;
+use MailWatch\Quarantine\Infrastructure\Mail\SmtpQuarantineReleaser;
 use MailWatch\Quarantine\Infrastructure\Storage\FilesystemQuarantineStorage;
 use MailWatch\Quarantine\Infrastructure\System\CommandLineSpamLearner;
 use MailWatch\Shared\Application\Port\CommandRunner;
@@ -58,6 +62,8 @@ use MailWatch\Users\Infrastructure\Database\DbalAccountAdministrationGateway;
 use MailWatch\Users\Infrastructure\Database\DbalLoginAccountGateway;
 use MailWatch\Users\Infrastructure\Database\DbalSavedFilterAdministrationGateway;
 use MailWatch\Users\Infrastructure\Database\DbalUserProfileGateway;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 
 final readonly class ApplicationFactory
 {
@@ -189,6 +195,46 @@ final readonly class ApplicationFactory
     public static function quarantineStorage(string $quarantineDirectory): QuarantineStorage
     {
         return new FilesystemQuarantineStorage($quarantineDirectory, self::commandRunner());
+    }
+
+    /**
+     * How a released message leaves MailWatch.
+     *
+     * The covering message comes from the caller because its text is still
+     * put through the vendored encoding fix-up that lives on the legacy side.
+     */
+    public static function quarantineReleaser(ReleaseNotice $notice): QuarantineReleaser
+    {
+        if (\defined('QUARANTINE_USE_SENDMAIL') && true === QUARANTINE_USE_SENDMAIL) {
+            return new SendmailQuarantineReleaser(
+                new SymfonyProcessRunner(),
+                $notice,
+                \defined('QUARANTINE_SENDMAIL_PATH') ? (string)QUARANTINE_SENDMAIL_PATH : '/usr/sbin/sendmail',
+            );
+        }
+
+        return new SmtpQuarantineReleaser(self::mailTransport(), $notice);
+    }
+
+    /**
+     * The submission server every outgoing MailWatch message goes through.
+     *
+     * Shared deliberately: the quarantine report and the password reset still
+     * open their own PEAR connection to the same host, and this is what they
+     * will use when their own slices are extracted.
+     */
+    public static function mailTransport(): TransportInterface
+    {
+        $transport = new EsmtpTransport(
+            \defined('MAILWATCH_MAIL_HOST') ? (string)MAILWATCH_MAIL_HOST : 'localhost',
+            \defined('MAILWATCH_MAIL_PORT') ? (int)MAILWATCH_MAIL_PORT : 25,
+        );
+
+        if (\defined('MAILWATCH_SMTP_HOSTNAME')) {
+            $transport->setLocalDomain((string)MAILWATCH_SMTP_HOSTNAME);
+        }
+
+        return $transport;
     }
 
     /**

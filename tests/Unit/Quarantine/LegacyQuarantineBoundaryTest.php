@@ -55,6 +55,27 @@ final class LegacyQuarantineBoundaryTest extends TestCase
         }
     }
 
+    public function testReleasingGoesThroughTheReleaserAndCarriesNoTransportOfItsOwn(): void
+    {
+        $body = self::functionSource(...self::OPERATIONS['quarantine_release']);
+
+        self::assertStringContainsString('quarantineReleaser(', $body);
+        self::assertStringContainsString('$outcome->delivered', $body);
+        foreach ([
+            'Mail_smtp',
+            'Mail_mime',
+            'PEAR_Error',
+            'require_once',
+            'exec' . '(',
+            'escapeshellarg' . '(',
+            'QUARANTINE_USE_SENDMAIL',
+            'QUARANTINE_SENDMAIL_PATH',
+            'MAILWATCH_MAIL_HOST',
+        ] as $legacy) {
+            self::assertStringNotContainsString($legacy, $body);
+        }
+    }
+
     public function testLearningRunsThroughTheLearnerPortAndItsActions(): void
     {
         $body = self::functionSource(...self::OPERATIONS['quarantine_learn']);
