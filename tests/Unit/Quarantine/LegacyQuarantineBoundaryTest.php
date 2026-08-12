@@ -55,6 +55,24 @@ final class LegacyQuarantineBoundaryTest extends TestCase
         }
     }
 
+    public function testTheOperationsSpeakToAnotherNodeThroughOnePort(): void
+    {
+        foreach (self::OPERATIONS as $name => [$start, $end]) {
+            $body = self::functionSource($start, $end);
+
+            foreach (['xmlrpcval', 'xmlrpcmsg', 'xmlrpc_wrapper' . '(', 'php_xmlrpc_decode', 'faultCode'] as $call) {
+                self::assertStringNotContainsString($call, $body, $name);
+            }
+        }
+
+        foreach (['quarantine_list_items', 'quarantine_release', 'quarantine_learn', 'quarantine_delete'] as $name) {
+            $body = self::functionSource(...self::OPERATIONS[$name]);
+
+            self::assertStringContainsString('quarantineRemoteNode()', $body, $name);
+            self::assertStringContainsString('RemoteQuarantineFailure', $body, $name);
+        }
+    }
+
     public function testReleasingGoesThroughTheReleaserAndCarriesNoTransportOfItsOwn(): void
     {
         $body = self::functionSource(...self::OPERATIONS['quarantine_release']);

@@ -26,6 +26,7 @@ use MailWatch\MailLog\Infrastructure\Database\DbalMailLogGateway;
 use MailWatch\Quarantine\Application\QuarantineMessageGateway;
 use MailWatch\Quarantine\Application\QuarantineReleaser;
 use MailWatch\Quarantine\Application\QuarantineStorage;
+use MailWatch\Quarantine\Application\RemoteQuarantineNode;
 use MailWatch\Quarantine\Application\SpamLearner;
 use MailWatch\Quarantine\Domain\MessageScope;
 use MailWatch\Quarantine\Domain\QuarantineAccess;
@@ -33,6 +34,7 @@ use MailWatch\Quarantine\Domain\ReleaseNotice;
 use MailWatch\Quarantine\Infrastructure\Database\DbalQuarantineMessageGateway;
 use MailWatch\Quarantine\Infrastructure\Mail\SendmailQuarantineReleaser;
 use MailWatch\Quarantine\Infrastructure\Mail\SmtpQuarantineReleaser;
+use MailWatch\Quarantine\Infrastructure\Rpc\XmlRpcQuarantineNode;
 use MailWatch\Quarantine\Infrastructure\Storage\FilesystemQuarantineStorage;
 use MailWatch\Quarantine\Infrastructure\System\CommandLineSpamLearner;
 use MailWatch\Shared\Application\Port\CommandRunner;
@@ -195,6 +197,29 @@ final readonly class ApplicationFactory
     public static function quarantineStorage(string $quarantineDirectory): QuarantineStorage
     {
         return new FilesystemQuarantineStorage($quarantineDirectory, self::commandRunner());
+    }
+
+    /**
+     * The quarantine of another MailScanner node.
+     *
+     * Port and scheme follow the page script's own precedence: SSL_ONLY wins,
+     * then RPC_SSL, and a configured RPC_PORT applies to either.
+     *
+     * Certificate verification defaults to on. An installation whose nodes
+     * carry self-signed certificates says so with RPC_VERIFY_PEER.
+     */
+    public static function quarantineRemoteNode(): RemoteQuarantineNode
+    {
+        $secure = (\defined('SSL_ONLY') && true === SSL_ONLY)
+            || (\defined('RPC_SSL') && true === RPC_SSL);
+
+        return new XmlRpcQuarantineNode(
+            \defined('RPC_RELATIVE_PATH') ? (string)RPC_RELATIVE_PATH : '',
+            \defined('RPC_PORT') ? RPC_PORT : ($secure ? 443 : 80),
+            $secure ? 'https' : 'http',
+            \defined('DEBUG') && true === DEBUG,
+            !\defined('RPC_VERIFY_PEER') || false !== RPC_VERIFY_PEER,
+        );
     }
 
     /**

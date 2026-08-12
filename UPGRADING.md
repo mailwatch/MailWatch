@@ -102,3 +102,26 @@ canonical definition.
 
 The old paths answer with a permanent redirect. Custom links and bookmarks keep
 working, but should be updated: the redirects are removed in a later release.
+
+### Node-to-node RPC now verifies TLS certificates
+
+Quarantine operations on a message held by another MailScanner node are sent to
+that node over RPC. When that RPC runs over SSL, MailWatch 1.2 disabled
+certificate verification unconditionally, so the connection resisted
+eavesdropping but not an attacker placed between the nodes. Verification is now
+on by default.
+
+This affects you only if all three are true: you run more than one node, RPC
+goes over SSL (`RPC_SSL` or `SSL_ONLY`), and the certificates are self-signed or
+issued by an authority the web server does not trust. Releasing or deleting a
+message held on another node then fails with an `XML-RPC Error` naming the
+certificate.
+
+Either install certificates the nodes trust, or keep the previous behaviour by
+adding to `conf.php`:
+
+```php
+define('RPC_VERIFY_PEER', false);
+```
+
+Installations where RPC runs over plain HTTP are unaffected.
