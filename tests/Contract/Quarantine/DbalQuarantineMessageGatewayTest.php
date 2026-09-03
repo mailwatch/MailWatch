@@ -9,7 +9,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Types;
 use MailWatch\Migrations\Version20260803090000;
-use MailWatch\Quarantine\Domain\MessageScope;
+use MailWatch\Shared\Domain\MessageScope;
 use MailWatch\Quarantine\Infrastructure\Database\DbalQuarantineMessageGateway;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;

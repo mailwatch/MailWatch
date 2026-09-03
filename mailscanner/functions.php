@@ -3292,11 +3292,11 @@ function hide_options_sql($quarantinePage, $userType)
  *
  * @return array|mixed|string
  */
-function quarantine_list_items($msgid, $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null)
+function quarantine_list_items($msgid, $rpc_only = false, ?\MailWatch\Shared\Domain\MessageScope $scope = null)
 {
     $message = \MailWatch\ApplicationFactory::quarantineMessages()->messageInScope(
         (string)$msgid,
-        $scope ?? \MailWatch\Quarantine\Domain\MessageScope::unrestricted()
+        $scope ?? \MailWatch\Shared\Domain\MessageScope::unrestricted()
     );
     if (null === $message) {
         exit(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
@@ -3375,7 +3375,7 @@ function quarantine_release_allowed($list)
  * @param string     $to
  * @param bool|false $rpc_only
  */
-function quarantine_release($list, $num, $to, $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null): string
+function quarantine_release($list, $num, $to, $rpc_only = false, ?\MailWatch\Shared\Domain\MessageScope $scope = null): string
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
@@ -3447,7 +3447,7 @@ function quarantine_release($list, $num, $to, $rpc_only = false, ?\MailWatch\Qua
  *
  * @return string
  */
-function quarantine_learn($list, $num, $type, bool $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null)
+function quarantine_learn($list, $num, $type, bool $rpc_only = false, ?\MailWatch\Shared\Domain\MessageScope $scope = null)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';
@@ -3533,7 +3533,7 @@ function quarantine_learn($list, $num, $type, bool $rpc_only = false, ?\MailWatc
  *
  * @return string
  */
-function quarantine_delete($list, $num, $rpc_only = false, ?\MailWatch\Quarantine\Domain\MessageScope $scope = null)
+function quarantine_delete($list, $num, $rpc_only = false, ?\MailWatch\Shared\Domain\MessageScope $scope = null)
 {
     if (!is_array($list) || !isset($list[0]['msgid'])) {
         return 'Invalid argument';

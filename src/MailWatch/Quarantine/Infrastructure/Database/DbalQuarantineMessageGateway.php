@@ -8,13 +8,14 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Types\Types;
 use MailWatch\Quarantine\Application\QuarantineMessageGateway;
-use MailWatch\Quarantine\Domain\MessageScope;
 use MailWatch\Quarantine\Domain\QuarantinedMessage;
+use MailWatch\Shared\Domain\MessageScope;
+use MailWatch\Shared\Infrastructure\Database\MessageScopePredicate;
 
 final readonly class DbalQuarantineMessageGateway implements QuarantineMessageGateway
 {
     private const SELECT = 'SELECT id, hostname, date, to_address, isspam, nameinfected, virusinfected, otherinfected'
-        . ' FROM maillog WHERE id = ?';
+        . ' FROM maillog WHERE id = :id';
 
     public function __construct(private Connection $connection)
     {
@@ -22,11 +23,11 @@ final readonly class DbalQuarantineMessageGateway implements QuarantineMessageGa
 
     public function messageInScope(string $messageId, MessageScope $scope): ?QuarantinedMessage
     {
-        [$predicate, $parameters] = $this->scopePredicate($scope);
+        [$predicate, $parameters] = MessageScopePredicate::build($scope);
 
         $row = $this->connection->fetchAssociative(
             self::SELECT . ' AND ' . $predicate,
-            [$messageId, ...$parameters],
+            ['id' => $messageId, ...$parameters],
         );
 
         if (false === $row) {
@@ -81,55 +82,6 @@ final readonly class DbalQuarantineMessageGateway implements QuarantineMessageGa
     public function clearQuarantineLocation(string $messageId): void
     {
         $this->connection->update('maillog', ['quarantined' => null], ['id' => $messageId]);
-    }
-
-    /**
-     * The scope as a bound WHERE fragment.
-     *
-     * @return array{string, list<string>}
-     */
-    private function scopePredicate(MessageScope $scope): array
-    {
-        if ($scope->isUnrestricted()) {
-            return ['1 = 1', []];
-        }
-
-        $clauses = [];
-        $parameters = [];
-
-        foreach ($scope->addresses() as $address) {
-            // The recipient column holds a comma-separated list, so the address
-            // can sit alone, first, last or in the middle. The patterns are the
-            // ones the login used to write, including their treatment of % and
-            // _ inside an address as wildcards rather than as characters.
-            $clauses[] = 'LOWER(to_address) = ? OR LOWER(to_address) LIKE ?'
-                . ' OR LOWER(to_address) LIKE ? OR LOWER(to_address) LIKE ?';
-            $parameters[] = $address;
-            $parameters[] = $address . ',%';
-            $parameters[] = '%,' . $address;
-            $parameters[] = '%,' . $address . ',%';
-
-            if ($scope->includesSender()) {
-                $clauses[] = 'LOWER(from_address) = ?';
-                $parameters[] = $address;
-            }
-        }
-
-        foreach ($scope->domains() as $domain) {
-            $clauses[] = 'LOWER(to_domain) = ?';
-            $parameters[] = $domain;
-
-            if ($scope->includesSender()) {
-                $clauses[] = 'LOWER(from_domain) = ?';
-                $parameters[] = $domain;
-            }
-        }
-
-        if ([] === $clauses) {
-            return ['1 = 0', []];
-        }
-
-        return ['(' . implode(' OR ', $clauses) . ')', $parameters];
     }
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Quarantine\Domain;
 
-use MailWatch\Quarantine\Domain\MessageScope;
+use MailWatch\Shared\Domain\MessageScope;
 use PHPUnit\Framework\TestCase;
 
 final class MessageScopeTest extends TestCase
