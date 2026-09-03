@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MailWatch\Quarantine\Domain;
+namespace MailWatch\Shared\Domain;
 
 /**
  * The maillog rows one signed-in account may reach.

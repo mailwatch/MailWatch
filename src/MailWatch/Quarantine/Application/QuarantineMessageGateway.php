@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace MailWatch\Quarantine\Application;
 
-use MailWatch\Quarantine\Domain\MessageScope;
 use MailWatch\Quarantine\Domain\QuarantinedMessage;
+use MailWatch\Shared\Domain\MessageScope;
 
 /**
  * Everything the quarantine operations need from maillog.
