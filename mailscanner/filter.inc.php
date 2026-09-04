@@ -199,9 +199,7 @@ WHERE
     /**
      * mtalog stores an instant in UTC, while the filter names a calendar day in
      * the display zone. The day becomes the half-open UTC interval that
-     * contains it, so the comparison is between instants and needs neither
-     * CONVERT_TZ() nor MySQL's time zone tables - which most installations
-     * have never loaded.
+     * contains it, so the comparison is between instants.
      *
      * The pattern operators are dropped: they used to match the digits of a
      * formatted date, and against an instant they mean nothing.
@@ -213,15 +211,12 @@ WHERE
      */
     private static function mtalogDateCondition($operator, $day)
     {
-        try {
-            $start = new DateTimeImmutable($day . ' 00:00:00', new DateTimeZone(TIME_ZONE));
-        } catch (Exception) {
+        $interval = mailwatch_datetime_formatter()->utcInterval($day);
+        if (null === $interval) {
             return '';
         }
 
-        $utc = new DateTimeZone('UTC');
-        $from = $start->setTimezone($utc)->format('Y-m-d H:i:s');
-        $to = $start->modify('+1 day')->setTimezone($utc)->format('Y-m-d H:i:s');
+        [$from, $to] = $interval;
 
         switch ($operator) {
             case '=':

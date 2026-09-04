@@ -96,11 +96,14 @@ if ('A' !== $_SESSION['user_type']) {
             }
         }
     }
-    if ('' !== $startDate) {
-        $auditFilter .= ' AND a.timestamp >= "' . safe_value($startDate) . ' 00:00:00"';
+    // audit_log.timestamp holds UTC; each chosen day becomes the UTC interval
+    // that contains it in the display zone, and the bounds are compared as
+    // instants.
+    if ('' !== $startDate && null !== ($interval = mailwatch_datetime_formatter()->utcInterval($startDate))) {
+        $auditFilter .= ' AND a.timestamp >= "' . $interval[0] . '"';
     }
-    if ('' !== $endDate) {
-        $auditFilter .= ' AND a.timestamp <= "' . safe_value($endDate) . ' 23:59:59"';
+    if ('' !== $endDate && null !== ($interval = mailwatch_datetime_formatter()->utcInterval($endDate))) {
+        $auditFilter .= ' AND a.timestamp < "' . $interval[1] . '"';
     }
     if ('' !== $username) {
         $auditFilter .= ' AND b.username = "' . safe_value($username) . '"';
