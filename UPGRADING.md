@@ -89,6 +89,29 @@ migrations, and verify the REST API tables. A migration-only clean installer
 will replace this transitional path when the remaining legacy tables have a
 canonical definition.
 
+### Points in time are stored as UTC
+
+MailWatch 2.0 stores every instant as UTC and converts it to `TIME_ZONE` for
+display. Two migrations move the existing rows:
+
+- `maillog.timestamp`, `maillog.last_update` and `audit_log.timestamp` change
+  from MySQL `TIMESTAMP` to `DATETIME`. `TIMESTAMP` already held UTC, so the
+  values do not change; only the column type does. On a large `maillog` the
+  conversion rebuilds the table.
+- `mtalog.timestamp` was always a `DATETIME` written in the database server's
+  own zone. The migration shifts the existing rows to UTC by reading them in
+  the server's current zone (`@@global.time_zone`), so run it on the same
+  server, or one configured with the same zone, that wrote them. Stop the MTA
+  log processor for the duration: it is one `UPDATE` over the whole table.
+  The hour that repeats when daylight saving ends is ambiguous and is read
+  as its first occurrence.
+
+Calendar days are named in `TIME_ZONE`: "today" on the status page, the
+quarantine report window and the date ranges of the reports are computed by
+MailWatch, not by the database. `maillog.date` keeps the calendar day of the
+host that received the message, so `TIME_ZONE` should be that host's zone,
+as it was in 1.2.
+
 ### The antivirus status pages have new paths
 
 | Now | Was |

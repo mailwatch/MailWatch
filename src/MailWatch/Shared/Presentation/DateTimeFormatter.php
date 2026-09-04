@@ -81,6 +81,49 @@ final readonly class DateTimeFormatter
         return '' === $date ? '' : $date . $separator . $this->time($utc);
     }
 
+    /**
+     * The calendar day, in the display zone, that lies $daysAgo days before
+     * today, as 'Y-m-d'.
+     *
+     * maillog.date holds the calendar day of the host that received the
+     * message. The display zone stands in for that host's zone, as the
+     * database server's zone did before the session was pinned to UTC: with
+     * the session pinned, CURRENT_DATE() names the UTC day and no longer
+     * matches the column.
+     */
+    public function calendarDay(int $daysAgo = 0, ?\DateTimeImmutable $now = null): string
+    {
+        $today = ($now ?? new \DateTimeImmutable('now'))->setTimezone($this->displayZone);
+
+        return $today->modify(sprintf('-%d days', $daysAgo))->format('Y-m-d');
+    }
+
+    /**
+     * The half-open UTC interval [from, to) that contains the calendar day
+     * named in the display zone, as two 'Y-m-d H:i:s' strings ready to be
+     * compared with a stored instant. The comparison is then between
+     * instants and needs neither CONVERT_TZ() nor MySQL's time zone tables,
+     * which most installations have never loaded. Null when the day does not
+     * parse.
+     *
+     * @return array{string, string}|null
+     */
+    public function utcInterval(string $day): ?array
+    {
+        try {
+            $start = new \DateTimeImmutable($day . ' 00:00:00', $this->displayZone);
+        } catch (\Exception) {
+            return null;
+        }
+
+        $utc = new \DateTimeZone('UTC');
+
+        return [
+            $start->setTimezone($utc)->format('Y-m-d H:i:s'),
+            $start->modify('+1 day')->setTimezone($utc)->format('Y-m-d H:i:s'),
+        ];
+    }
+
     private function render(?string $utc, string $pattern): string
     {
         if (null === $utc || '' === trim($utc) || str_starts_with($utc, '0000-00-00')) {

@@ -365,8 +365,11 @@ class GraphGenerator
         // get the values from the sql result and assign them to the correct time scale part
         $count = isset($this->data['xaxis']) ? count($this->data['xaxis']) : 0;
         for ($i = 0; $i < $count; ++$i) {
-            // get the value from data and add it to the corresponding hour
-            $time = new DateTime($this->data['xaxis'][$i]);
+            // The column holds UTC and the connection reads it literally; the
+            // scale was built in the default zone, so the instant moves there
+            // before it is placed.
+            $time = new DateTime($this->data['xaxis'][$i], new DateTimeZone('UTC'));
+            $time->setTimezone($now->getTimezone());
             // recheck if the entry is inside the value range
             if ($time >= $oldest && $time < $now) {
                 $convertedData[$time->format($format)] += $this->data[$column][$i];

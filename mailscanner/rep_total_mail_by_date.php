@@ -232,11 +232,20 @@ while ($row = $result->fetch_object()) {
 $data_total_unknown_users = [];
 $data_total_rbl = [];
 $data_total_unresolveable = [];
+// The labels are the calendar days of maillog.date; the first row of a day
+// wins when a short DATE_FORMAT makes two days share a label.
+$labelIndex = [];
+foreach ($data_labels as $index => $label) {
+    $labelIndex[$label] ??= $index;
+}
 while ($row1 = $result1->fetch_object()) {
     // mtalog holds an instant per second, so a day is many rows: the label is
-    // the local day it falls in, and the counts of that day are added up.
+    // the day it falls in, rendered in the display zone - the same zone that
+    // stands in for the receiving host's calendar day in maillog.date - and
+    // the counts of that day are added up.
     $label = mailwatch_datetime_formatter()->date($row1->timestamp);
-    if (is_numeric($key = array_search($label, $data_labels, true))) {
+    if (isset($labelIndex[$label])) {
+        $key = $labelIndex[$label];
         switch (true) {
             case 'unknown_user' === $row1->type:
                 $data_total_unknown_users[$key] = ($data_total_unknown_users[$key] ?? 0) + $row1->count;

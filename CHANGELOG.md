@@ -15,7 +15,7 @@
 - Move the three REST APIs from legacy `mysqli` access to Doctrine DBAL without changing their versioned contracts
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)
 - Standardised database charset to utf8mb4 with unicode_520_ci collation
-- Points in time are stored as UTC and converted for display; the database session is pinned to `+00:00` and dates are formatted in PHP rather than by SQL
+- Points in time are stored as UTC and converted for display; the database session is pinned to `+00:00`, dates are formatted in PHP rather than by SQL, and calendar-day comparisons ("today", a report's date range) are made in `TIME_ZONE` rather than by the database. The MTA log rows written before the upgrade are moved from the server's zone to UTC by a migration (see [UPGRADING.md](UPGRADING.md))
 - `MailWatch.pm` sends the message timestamp as an ISO 8601 instant, and no longer sends `date` and `time`: both are derived from its offset
 
 ### Fixed

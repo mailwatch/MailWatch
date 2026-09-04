@@ -84,6 +84,36 @@ final class DateTimeFormatterTest extends TestCase
         self::assertSame('', $this->formatter('UTC')->dateTime($value));
     }
 
+    public function testNamesTodayInTheDisplayZone(): void
+    {
+        $lateEvening = new \DateTimeImmutable('2026-01-15 23:30:00', new \DateTimeZone('UTC'));
+
+        self::assertSame('2026-01-16', $this->formatter('Europe/Rome')->calendarDay(0, $lateEvening));
+        self::assertSame('2026-01-15', $this->formatter('America/New_York')->calendarDay(0, $lateEvening));
+        self::assertSame('2026-01-08', $this->formatter('America/New_York')->calendarDay(7, $lateEvening));
+    }
+
+    public function testTurnsADayIntoTheUtcIntervalThatContainsIt(): void
+    {
+        $formatter = $this->formatter('Europe/Rome');
+
+        self::assertSame(['2026-01-14 23:00:00', '2026-01-15 23:00:00'], $formatter->utcInterval('2026-01-15'));
+        self::assertSame(['2026-07-14 22:00:00', '2026-07-15 22:00:00'], $formatter->utcInterval('2026-07-15'));
+    }
+
+    public function testTheIntervalOfTheDayClocksMoveForwardIsAnHourShort(): void
+    {
+        self::assertSame(
+            ['2026-03-28 23:00:00', '2026-03-29 22:00:00'],
+            $this->formatter('Europe/Rome')->utcInterval('2026-03-29'),
+        );
+    }
+
+    public function testRejectsADayThatDoesNotParse(): void
+    {
+        self::assertNull($this->formatter('UTC')->utcInterval('not a day'));
+    }
+
     private function formatter(string $zone): DateTimeFormatter
     {
         return new DateTimeFormatter('%d/%m/%y', '%H:%i:%s', new \DateTimeZone($zone));

@@ -194,7 +194,7 @@ WHERE
  a.quarantined = 1
 " . ($useToFilter ? 'AND ((to_address RLIKE %s) OR (to_domain =%s)) ' : '') . '
 AND
- a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . QUARANTINE_REPORT_DAYS . ' DAY)';
+ a.date >= "' . mailwatch_datetime_formatter()->calendarDay((int)QUARANTINE_REPORT_DAYS) . '"';
 
         // Hide high spam/mcp from users if enabled
         if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {

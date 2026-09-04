@@ -802,7 +802,7 @@ function printTodayStatistics()
  FROM
   maillog
  WHERE
-  date = CURRENT_DATE()
+  date = "' . mailwatch_datetime_formatter()->calendarDay() . '"
  AND
   ' . $_SESSION['global_filter'] . '
 ';
@@ -1444,7 +1444,7 @@ FROM
 WHERE
  virusinfected>0
 AND
- date = CURRENT_DATE()
+ date = "' . mailwatch_datetime_formatter()->calendarDay() . '"
 ';
     $result = dbquery($sql);
     $virus_array = [];
