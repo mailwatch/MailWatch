@@ -70,14 +70,14 @@ function testSameDomainMembership($username, $method)
     $filter_domain = [];
     for ($i = 0; $i < $result->num_rows; ++$i) {
         $filter = $result->fetch_row();
-        $filter_domain[] = $filter[0];
+        $filter_domain[] = strtolower($filter[0]);
     }
     if ('D' === $_SESSION['user_type'] && 1 === count($parts) && '' !== $_SESSION['domain']) {
         return getHtmlMessage(__('error' . $method . 'nodomainforbidden12'), 'error');
     }
 
-    if ('D' === $_SESSION['user_type'] && 2 === count($parts) && ($parts[1] !== $_SESSION['domain'] && false === in_array(
-        $parts[1],
+    if ('D' === $_SESSION['user_type'] && 2 === count($parts) && (strtolower($parts[1]) !== strtolower($_SESSION['domain']) && false === in_array(
+        strtolower($parts[1]),
         $filter_domain,
         true
     ))) {
@@ -561,6 +561,12 @@ function userFilter()
         return $permissiontest;
     }
 
+    // Domain admins get their own filters from an administrator
+    if ('D' === $_SESSION['user_type'] && stripslashes($user->username) === stripslashes($_SESSION['myusername'])
+        && (isset($_POST['filter']) || isset($_GET['delete']) || isset($_GET['change_state']))) {
+        return getHtmlMessage(__('nofilteraction12'), 'error');
+    }
+
     $getFilter = '';
     if (isset($_POST['filter'])) {
         if (false === checkFormToken('/user_manager.php filter token', $_POST['formtoken'])) {
@@ -570,6 +576,14 @@ function userFilter()
         $getFilter = deepSanitizeInput($_POST['filter'], 'url');
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
             $getFilter = '';
+        }
+    }
+
+    if ('' !== $getFilter) {
+        // A filter may only point into the domains the domain admin manages
+        $filterParts = explode('@', $getFilter);
+        if (is_string($membertest = testSameDomainMembership('user@' . end($filterParts), 'filter'))) {
+            return $membertest;
         }
     }
 
@@ -600,6 +614,10 @@ function userFilter()
         $getFilter = deepSanitizeInput($_GET['filter'], 'url');
         if (!validateInput($getFilter, 'email') && !validateInput($getFilter, 'host')) {
             return getHtmlMessage(__('dievalidate99'), 'error');
+        }
+        $filterParts = explode('@', $getFilter);
+        if (is_string($membertest = testSameDomainMembership('user@' . end($filterParts), 'filter'))) {
+            return $membertest;
         }
         $sql = "SELECT active FROM user_filters WHERE username='" . safe_value(stripslashes($user->username)) . "' AND filter='" . safe_value(stripslashes($getFilter)) . "'";
         $result = dbquery($sql);
