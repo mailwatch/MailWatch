@@ -356,7 +356,7 @@ function newUser($userType)
         . $profile->fullName . ') ' . __('auditlog0212', true)
     );
 
-    return getHtmlMessage(sprintf(__('usercreated12'), $profile->username), 'success');
+    return getHtmlMessage(sprintf(__('usercreated12'), htmlspecialchars($profile->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')), 'success');
 }
 
 /**
@@ -496,7 +496,7 @@ function editUser($userType)
         );
     }
 
-    return getHtmlMessage(sprintf(__('useredited12'), $previous->username), 'success');
+    return getHtmlMessage(sprintf(__('useredited12'), htmlspecialchars($previous->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')), 'success');
 }
 
 /**
@@ -534,7 +534,7 @@ function deleteUser()
 
     audit_log(sprintf(__('auditlog0412', true), $user->username));
 
-    return getHtmlMessage(sprintf(__('userdeleted12'), htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false)), 'success');
+    return getHtmlMessage(sprintf(__('userdeleted12'), htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')), 'success');
 }
 
 /**
@@ -759,7 +759,7 @@ function logoutUser()
         return accountAdministrationError($exception, $uid);
     }
 
-    return getHtmlMessage(sprintf(__('userloggedout12'), htmlspecialchars(stripslashes((string)$user->username), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false)), 'success');
+    return getHtmlMessage(sprintf(__('userloggedout12'), htmlspecialchars(stripslashes((string)$user->username), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')), 'success');
 }
 
 /**

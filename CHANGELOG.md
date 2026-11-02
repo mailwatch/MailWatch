@@ -4,6 +4,7 @@
 ### Security
 - Bind the message identifier and the account's authorisation scope as query parameters in the quarantine operations, closing an SQL injection reachable through the XML-RPC quarantine methods
 - Verify the other node's TLS certificate on quarantine RPC calls, which 1.2 disabled unconditionally; set `RPC_VERIFY_PEER` to `false` to keep the previous behaviour with self-signed certificates (see [UPGRADING.md](UPGRADING.md))
+- Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)
 
 ### Added
 - Add `logmail` API endpoint for programmatic mail log ingestion
@@ -72,7 +73,6 @@
 
 ## 1.2.28
 ### Security
-- Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)
 - Escape untrusted e-mail, MTA and request data in message details, the message viewer, mail queues, reports, lists, the audit log and quarantine reports; serve message parts sandboxed and as downloads (GHSA-jcgr-2839-3jc7)
 
 ### Fixed
