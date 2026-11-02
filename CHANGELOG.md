@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.28
 ### Security
 - Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)
 - Escape untrusted e-mail, MTA and request data in message details, the message viewer, mail queues, reports, lists, the audit log and quarantine reports; serve message parts sandboxed and as downloads (GHSA-jcgr-2839-3jc7)
