@@ -104,7 +104,9 @@ if (isset($_POST) && !empty($_POST)) {
                 echo '<td>';
                 if ('release' === $type) {
                     $quarantined = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
-                    if (is_array($quarantined)) {
+                    if (!quarantine_release_allowed($quarantined)) {
+                        echo __('dievalidate99');
+                    } elseif (is_array($quarantined)) {
                         $to = $quarantined[0]['to'];
                         echo nl2br(htmlspecialchars((string)quarantine_release(
                             $quarantined,

@@ -54,7 +54,9 @@ if (file_exists(__DIR__ . '/conf.php')) {
             $output[] = __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359');
         } else {
             $row = $result->fetch_assoc();
-            if ($row['uid'] === $token) {
+            if ($row['uid'] === $token && !quarantine_release_allowed(quarantine_list_items($mid))) {
+                $output[] = __('notallowed59');
+            } elseif ($row['uid'] === $token) {
                 $list = quarantine_list_items($mid);
                 $result = '';
                 // quarantine_release() sets $error when sending fails

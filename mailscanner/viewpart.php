@@ -48,7 +48,7 @@ if (!validateInput($message_id, 'msgid')) {
 // See if message is local
 dbconn(); // required db link for mysql_real_escape_string
 $result = dbquery(
-    "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date FROM maillog WHERE id='" .
+    "SELECT hostname, DATE_FORMAT(date,'%Y%m%d') AS date, virusinfected, nameinfected, otherinfected FROM maillog WHERE id='" .
     $message_id . "' AND "
     . $_SESSION['global_filter']
 );
@@ -56,6 +56,11 @@ $message_data = $result->fetch_object();
 
 if (!$message_data) {
     exit(__('mess58') . " '" . $message_id . "' " . __('notfound58') . "\n");
+}
+
+if (($message_data->virusinfected > 0 || $message_data->nameinfected > 0 || $message_data->otherinfected > 0)
+    && !dangerous_content_allowed('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS')) {
+    exit(__('dievalidate99'));
 }
 
 if (RPC_ONLY || !is_local($message_data->hostname)) {

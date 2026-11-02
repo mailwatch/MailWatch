@@ -3646,6 +3646,41 @@ SELECT
 }
 
 /**
+ * Infected content is handled only by administrators, and by domain admins when $option is enabled.
+ *
+ * @param string $option DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS or DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS
+ *
+ * @return bool
+ */
+function dangerous_content_allowed($option)
+{
+    if (!isset($_SESSION['user_type'])) {
+        return false;
+    }
+
+    return 'A' === $_SESSION['user_type']
+        || ('D' === $_SESSION['user_type'] && defined($option) && true === constant($option));
+}
+
+/**
+ * @param array|string $list items from quarantine_list_items()
+ *
+ * @return bool
+ */
+function quarantine_release_allowed($list)
+{
+    if (is_array($list)) {
+        foreach ($list as $item) {
+            if (isset($item['dangerous']) && 'Y' === $item['dangerous']) {
+                return dangerous_content_allowed('DOMAINADMIN_CAN_RELEASE_DANGEROUS_CONTENTS');
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
  * @param array       $list
  * @param array       $num
  * @param string      $to

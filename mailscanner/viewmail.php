@@ -61,6 +61,10 @@ $message = $result->fetch_object();
 if (empty($message)) {
     exit(__('mess06') . " '" . $message_id . "' " . __('notfound06') . "\n");
 }
+if (($message->virusinfected > 0 || $message->nameinfected > 0 || $message->otherinfected > 0)
+    && !dangerous_content_allowed('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS')) {
+    exit(__('dievalidate99'));
+}
 
 audit_log(sprintf(__('auditlog06', true), $message_id));
 

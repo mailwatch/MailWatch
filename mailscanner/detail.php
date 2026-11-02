@@ -388,6 +388,9 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
         $status = [];
         // Release
         if (isset($_POST['release'])) {
+            if (!quarantine_release_allowed($quarantined)) {
+                exit(__('dievalidate99'));
+            }
             // Send to the original recipient(s) or to an alternate address
             if (isset($_POST['alt_recpt_yn']) && 'y' === deepSanitizeInput($_POST['alt_recpt_yn'], 'url')) {
                 $to = deepSanitizeInput($_POST['alt_recpt'], 'string');

@@ -95,6 +95,9 @@ switch ($_GET['action']) {
             header('Location: login.php?error=pagetimeout');
             exit;
         }
+        if (!quarantine_release_allowed($list)) {
+            exit(__('dievalidate99'));
+        }
         $result = '';
         if (1 === count($list)) {
             $to = $list[0]['to'];
