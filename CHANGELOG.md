@@ -10,6 +10,7 @@
 - rpcserver.php runs again on PHP 5.6
 - An auto-release link that fails to release the message reports the error and stays usable
 - Passwords that contain quotes or backslashes work the same whether an administrator or the user sets them
+- Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
 
 ## 1.2.28
 ### Security

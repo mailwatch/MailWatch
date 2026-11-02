@@ -349,7 +349,7 @@ ORDER BY a.date DESC, a.time DESC';
      * @param string $to_domain
      * @param bool   $sendEmptyReports
      *
-     * @return true if all reports were send successfully; false if one or more reports could not be send
+     * @return int|bool 0 if there was nothing to send, true if all reports were sent, false if one or more failed
      */
     private static function send_reports_for_user($username, $type, $email, $to_address, $to_domain, $sendEmptyReports = false)
     {
@@ -357,7 +357,7 @@ ORDER BY a.date DESC, a.time DESC';
         // Get any additional reports required
         $filters = array_merge([$to_address], self::return_user_filters($username));
         if (QUARANTINE_FILTERS_COMBINED === false) {
-            $sendResult = false;
+            $sendResult = 0;
 
             if ('A' === $type) {
                 $list_for = gethostname();
@@ -385,7 +385,9 @@ ORDER BY a.date DESC, a.time DESC';
                     self::dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
 
                     if (true === $sendEmptyReports || count($quarantined) > 0) {
-                        $sendResult = self::send_quarantine_email($email, $list_for, $quarantined);
+                        $sent = self::send_quarantine_email($email, $list_for, $quarantined);
+                        // one failed filter makes the whole user fail
+                        $sendResult = false !== $sendResult && $sent;
                     }
                     unset($quarantined);
                 }
@@ -437,7 +439,7 @@ ORDER BY a.date DESC, a.time DESC';
 
             unset($quarantined, $quarantine_list);
 
-            return false;
+            return 0;
         }
     }
 
@@ -483,9 +485,9 @@ ORDER BY a.date DESC, a.time DESC';
         if ('' != $to_address || '' != $to_domain) {
             // Qualify to email addresses only search among multiple recipients
             if (preg_match('/\S+@\S+/', $to_address)) {
-                $result = dbquery(sprintf(self::get_report_sql(), quote_smart('(^|,)' . $to_address . '(,|$)'), quote_smart($to_domain)));
+                $result = dbquery(sprintf(self::get_report_sql(), quote_smart('(^|,)' . preg_quote($to_address) . '(,|$)'), quote_smart($to_domain)));
             } else {
-                $result = dbquery(sprintf(self::get_report_sql(), quote_smart($to_address), quote_smart($to_domain)));
+                $result = dbquery(sprintf(self::get_report_sql(), quote_smart(preg_quote($to_address)), quote_smart($to_domain)));
             }
         } else {
             $result = dbquery(sprintf(self::get_report_sql(false)));
