@@ -3559,7 +3559,7 @@ SELECT
  FROM
   maillog
  WHERE
-  id = '$msgid'";
+  id = '" . safe_value($msgid) . "'";
     if (null !== $global_filter) {
         $sql .= "
  AND

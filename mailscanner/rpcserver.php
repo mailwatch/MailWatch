@@ -28,66 +28,15 @@
 require_once __DIR__ . '/functions.php';
 ini_set('memory_limit', (string) MEMORY_LIMIT);
 
-function rpc_get_quarantine($msg)
-{
-    global $xmlrpcerruser;
-    $input = php_xmlrpc_decode(array_shift($msg->params));
-    if (is_string($input)) {
-        $input = strtolower($input);
-        $quarantinedir = get_conf_var('QuarantineDir');
-        $item = [];
-        $output = [];
-        if ('/' === $input) {
-            // Return top-level directory
-            if ($d = @opendir($quarantinedir)) {
-                while (false !== ($f = readdir($d))) {
-                    if ('.' !== $f && '..' !== $f) {
-                        $item[] = $f;
-                    }
-                }
-                if (count($item) > 0) {
-                    // Sort in reverse chronological order
-                    arsort($item);
-                }
-                closedir($d);
-            }
-            foreach ($item as $items) {
-                $output[] = new xmlrpcval($items);
-            }
-        } else {
-            switch (true) {
-                case is_dir($quarantinedir . $input):
-                    $d = @opendir($quarantinedir . $input);
-                    while (false !== ($f = readdir($d))) {
-                        if ('.' !== $f && '..' !== $f) {
-                            $item[] = $f;
-                        }
-                    }
-                    if (count($item) > 0) {
-                        asort($item);
-                    }
-                    closedir($d);
-                    foreach ($item as $items) {
-                        $output[] = new xmlrpcval($items);
-                    }
-                    break;
-                case is_file($quarantinedir . $input):
-                    return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir$input is a file.");
-            }
-        }
-
-        return new xmlrpcresp(new xmlrpcval($output, 'array'));
-    }
-
-    return new xmlrpcresp(0, $xmlrpcerruser + 1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
-}
-
 function rpc_return_quarantined_file($msg)
 {
     global $xmlrpcerruser;
     dbconn();
     $input = php_xmlrpc_decode(array_shift($msg->params));
-    $input = preg_replace('[\.\/|\.\.\/]', '', $input);
+    // the id becomes part of a file path
+    if (!is_string($input) || !validateInput($input, 'msgid')) {
+        return new xmlrpcresp(0, $xmlrpcerruser + 1, __('dievalidate99'));
+    }
     $date = @database::mysqli_result(
         dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . safe_value($input) . "'"),
         0
@@ -272,11 +221,6 @@ function rpc_postfix_queues()
 $xmlrpc_internalencoding = 'UTF-8';
 
 $s = new xmlrpc_server([
-        'get_quarantine' => [
-            'function' => 'rpc_get_quarantine',
-            'signature' => [['array', 'string']],
-            'docstring' => 'This service returns a listing of files in the relative quarantine directory.',
-        ],
         'return_quarantined_file' => [
             'function' => 'rpc_return_quarantined_file',
             'signature' => [['base64', 'string']],

@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Security
+- Fix SQL injection in message table sorting and report filters, enforce domain admin filter scope, allow/block list recipients and dangerous content rules on the server, and stop the own settings form from setting the password to "xxxxxxxx"; upgrade.php lists the users with that password; quote values and stop evaluating database output in the LDAP sync; validate message ids in the RPC server (GHSA-fx6j-399x-49w7)
+
 ### Added
 - upgrade.php reports user, filter, audit log and list rows that hold markup left by the stored XSS fixed in 1.2.28, without changing them
 - Failed logins are limited per client IP address and username (`LOGIN_MAX_FAILURES`, `LOGIN_LOCKOUT_MINUTES`); the new `login_failures` table is created by upgrade.php, and logins work as before until it exists
