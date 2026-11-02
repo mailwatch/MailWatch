@@ -39,21 +39,21 @@ $filter = html_start(__('totalmaillasthours36'), 0, false, true);
 $graphgenerator = new GraphGenerator();
 $graphgenerator->sqlQuery = '
  SELECT
-  timestamp AS xaxis,
-  1 as total_mail,
-  virusinfected AS total_virus,
-  isspam AS total_spam,
-  size AS total_size
+  MAX(timestamp) AS xaxis,
+  COUNT(*) AS total_mail,
+  SUM(virusinfected) AS total_virus,
+  SUM(isspam) AS total_spam,
+  SUM(size) AS total_size
  FROM
   maillog
  WHERE
   1=1
  AND
   timestamp BETWEEN (NOW() - INTERVAL 24 HOUR) AND NOW()
-' . $filter->CreateSQL() . '
- ORDER BY
-  timestamp DESC
-';
+' . $filter->CreateSQL() . "
+ GROUP BY
+  DATE_FORMAT(timestamp, '%Y-%m-%d %H')
+";
 
 $graphgenerator->tableColumns = [
     'time' => __('hours36'),

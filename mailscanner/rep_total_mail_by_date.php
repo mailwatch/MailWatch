@@ -129,9 +129,7 @@ WHERE
 AND
  type<>'relay'
 GROUP BY
- timestamp, type
-ORDER BY
- timestamp
+ xaxis, type
 ";
 
 $sqlColumns = [

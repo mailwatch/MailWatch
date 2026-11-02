@@ -281,13 +281,15 @@ class GraphGenerator
     protected function convertViruses($column)
     {
         $viruses = [];
-        foreach ($this->data[$column] as $report) {
+        foreach ($this->data[$column] as $i => $report) {
             $virus = getVirus($report);
             if (null !== $virus) {
+                // rows grouped in SQL carry their count in 'reportcount'
+                $hits = isset($this->data['reportcount'][$i]) ? (int)$this->data['reportcount'][$i] : 1;
                 if (isset($viruses[$virus])) {
-                    ++$viruses[$virus];
+                    $viruses[$virus] += $hits;
                 } else {
-                    $viruses[$virus] = 1;
+                    $viruses[$virus] = $hits;
                 }
             }
         }

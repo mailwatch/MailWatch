@@ -38,13 +38,16 @@ $filter = html_start(__('sarulehits37'), 0, false, true);
 $sql = '
  SELECT
   spamreport,
-  isspam
+  isspam,
+  COUNT(*) AS reportcount
  FROM
   maillog
  WHERE
   spamreport IS NOT NULL
  AND spamreport != ""
-' . $filter->CreateSQL();
+' . $filter->CreateSQL() . '
+ GROUP BY
+  spamreport, isspam';
 
 $result = dbquery($sql);
 if (!$result->num_rows > 0) {
@@ -83,9 +86,9 @@ while ($row = $result->fetch_object()) {
             $score = $regs[2];
         }
         if (isset($sa_array[$rule]['total'])) {
-            ++$sa_array[$rule]['total'];
+            $sa_array[$rule]['total'] += $row->reportcount;
         } else {
-            $sa_array[$rule]['total'] = 1;
+            $sa_array[$rule]['total'] = (int)$row->reportcount;
         }
 
         if (!isset($sa_array[$rule]['score'])) {
@@ -101,9 +104,9 @@ while ($row = $result->fetch_object()) {
         }
 
         if ('0' !== $row->isspam) {
-            ++$sa_array[$rule]['spam'];
+            $sa_array[$rule]['spam'] += $row->reportcount;
         } else {
-            ++$sa_array[$rule]['not-spam'];
+            $sa_array[$rule]['not-spam'] += $row->reportcount;
         }
     }
 }

@@ -125,8 +125,9 @@ foreach ($scanners as $vscanner) {
 
 $sql = "
 SELECT
- DATE_FORMAT(timestamp, '" . DATE_FORMAT . ' ' . TIME_FORMAT . '\') as timestamp,
- report
+ DATE_FORMAT(MIN(timestamp), '" . DATE_FORMAT . ' ' . TIME_FORMAT . '\') as first_seen,
+ report,
+ COUNT(*) AS reportcount
 FROM
  maillog
 WHERE
@@ -134,8 +135,10 @@ WHERE
 AND
  report IS NOT NULL
 ' . $filter->CreateSQL() . '
+GROUP BY
+ report
 ORDER BY
- date ASC, time ASC';
+ MIN(timestamp) ASC';
 
 $result = dbquery($sql);
 if (!($result->num_rows > 0)) {
@@ -149,13 +152,13 @@ while ($row = $result->fetch_object()) {
         if (preg_match($vals['regexp'], $row->report, $virus_report)) {
             $virus = $virus_report['virus'];
             if (!isset($virus_array[$virus])) {
-                $virus_array[$virus]['first_seen'] = $row->timestamp;
+                $virus_array[$virus]['first_seen'] = $row->first_seen;
                 $virus_array[$virus]['scanner'] = $vals['name'];
             }
             if (isset($virus_array[$virus]['count'])) {
-                ++$virus_array[$virus]['count'];
+                $virus_array[$virus]['count'] += $row->reportcount;
             } else {
-                $virus_array[$virus]['count'] = 1;
+                $virus_array[$virus]['count'] = (int)$row->reportcount;
             }
         }
     }
