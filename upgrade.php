@@ -285,7 +285,8 @@ function find_stored_markup($table, $idColumn, $columns)
     // the sanitizer encodes < and > but keeps quotes, so a payload breaks out of an attribute
     $pattern = "[<>\"]|javascript:|[[:space:]/'\"]on[a-z]+[[:space:]]*=";
     $found = array();
-    if (!check_table_exists($table)) {
+    // older schemas get the id column later in the upgrade
+    if (!check_table_exists($table) || !check_column_exists($table, $idColumn)) {
         return $found;
     }
     foreach ($columns as $column) {
