@@ -58,6 +58,12 @@ MYSQL_PASS="secret"
 
 TEMPFILE="$(mktemp)"
 
+# Quote a value for SQL: double backslashes and single quotes
+sql_quote() {
+	local VALUE="${1//\\/\\\\}"
+	printf "'%s'" "${VALUE//\'/\'\'}"
+}
+
 LDAP_USERS="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" \
 		"(&
 		  (objectClass=user)
@@ -99,24 +105,25 @@ for USER in ${LDAP_USERS}; do
 	GROUP_ALIASES="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" \
 		"(&(objectClass=group)(proxyAddresses=*)(member=$DN))" \
 		"proxyAddresses" | sed -n '1 {h;$!d}; ${x;s/\n //g;p}; /^ /{H;d}; /^ /!{x;s/\n //g;p}' | sed -ne "s/^proxyAddresses: [sS][mM][tT][pP]:\(.*\)/\1/p")"
-	eval $(echo "SELECT type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username = '$USER';" |
-		mysql -B -N --host="$MYSQL_HOST" --port="$MYSQL_PORT" --user="$MYSQL_USER" --password="$MYSQL_PASS" "$MYSQL_NAME" |
-		sed -e "s/\(\S*\)\s\(\S*\)\s\(\S*\)\s\(\S*\)\s\(\S*\)\s\(\S*\)/TYPE=\1 REPORT=\2 SPAMSCORE=\"\3\" HIGHSPAMSCORE=\"\4\" NOSCAN=\"\5\" RECIPIENT=\"\6\"/")
-	USER="$(echo "$USER" | sed -e "s/@/\\\@/g")"
+	# Read the stored settings as plain fields, never as shell code
+	IFS=$'\t' read -r TYPE REPORT SPAMSCORE HIGHSPAMSCORE NOSCAN RECIPIENT < <(echo "SELECT type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username = $(sql_quote "$USER");" |
+		mysql -B -N -r --host="$MYSQL_HOST" --port="$MYSQL_PORT" --user="$MYSQL_USER" --password="$MYSQL_PASS" "$MYSQL_NAME")
 	[ -n "$TYPE" ] || TYPE="U"
 	[ -n "$REPORT" ] || REPORT="0"
 	[ -n "$SPAMSCORE" ] || SPAMSCORE="0"
 	[ -n "$HIGHSPAMSCORE" ] || HIGHSPAMSCORE="0"
 	[ -n "$NOSCAN" ] || NOSCAN="0"
-	[ -n "$RECIPIENT" ] || RECIPIENT="NULL"
-	[ "$RECIPIENT" != "NULL" ] && RECIPIENT="'$RECIPIENT'"
-	RECIPIENT="$(echo "$RECIPIENT" | sed -e "s/@/\\\@/g")"
+	if [ -z "$RECIPIENT" ] || [ "$RECIPIENT" == "NULL" ]; then
+		RECIPIENT="NULL"
+	else
+		RECIPIENT="$(sql_quote "$RECIPIENT")"
+	fi
 	echo "REPLACE INTO users (username, password, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt)
-	VALUES ('$USER', NULL, '$FULLNAME', '$TYPE', $REPORT, $SPAMSCORE, $HIGHSPAMSCORE, $NOSCAN, $RECIPIENT);" >> "$TEMPFILE"
-	echo "DELETE FROM user_filters WHERE username = '$USER';" >> "$TEMPFILE"
+	VALUES ($(sql_quote "$USER"), NULL, $(sql_quote "$FULLNAME"), $(sql_quote "$TYPE"), $(sql_quote "$REPORT"), $(sql_quote "$SPAMSCORE"), $(sql_quote "$HIGHSPAMSCORE"), $(sql_quote "$NOSCAN"), $RECIPIENT);" >> "$TEMPFILE"
+	echo "DELETE FROM user_filters WHERE username = $(sql_quote "$USER");" >> "$TEMPFILE"
 	for ALIAS in ${ALIASES} ${GROUP_ALIASES}; do
-		ALIAS="$(echo "$ALIAS" | sed -e "s/\(.*\)/\L\1/" -e "s/@/\\\@/g")"
-		echo "INSERT INTO user_filters (username, filter, active) VALUES ('$USER', '$ALIAS', 'Y');" >> "$TEMPFILE"
+		ALIAS="$(echo "$ALIAS" | sed -e "s/\(.*\)/\L\1/")"
+		echo "INSERT INTO user_filters (username, filter, active) VALUES ($(sql_quote "$USER"), $(sql_quote "$ALIAS"), 'Y');" >> "$TEMPFILE"
 	done
 done
 MYSQL_USERS="$(echo "SELECT username FROM users WHERE password IS NULL;" |
@@ -138,8 +145,8 @@ for USER in ${MYSQL_USERS}; do
 	fi
 	DN="$(echo "$DN" | sed -e "s/\\\,/\\\\\\\\,/g")"
 	if [ "$DN" == "" ]; then
-		echo "DELETE FROM user_filters WHERE username = '$USER';" >> "$TEMPFILE"
-		echo "DELETE FROM users WHERE username = '$USER';" >> "$TEMPFILE"
+		echo "DELETE FROM user_filters WHERE username = $(sql_quote "$USER");" >> "$TEMPFILE"
+		echo "DELETE FROM users WHERE username = $(sql_quote "$USER");" >> "$TEMPFILE"
 	fi
 done
 
