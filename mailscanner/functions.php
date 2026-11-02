@@ -2073,8 +2073,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     // Ordering
     $orderby = null;
     $orderdir = '';
-    if (isset($_GET['orderby'])) {
-        $orderby = sanitizeInput($_GET['orderby']);
+    if (isset($_GET['orderby']) && is_string($_GET['orderby']) && validateInput($_GET['orderby'], 'orderby')) {
+        $orderby = $_GET['orderby'];
         switch (strtoupper($_GET['orderdir'])) {
             case 'A':
                 $orderdir = 'ASC';
@@ -4670,7 +4670,7 @@ function validateInput($input, $type)
             }
             break;
         case 'orderby':
-            if (preg_match('/^(datetime|from_address|to_address|subject|size|sascore|clientip)$/', $input)) {
+            if (preg_match('/^(datetime|from_address|to_address|subject|size|sascore|mcpsascore|clientip)$/', $input)) {
                 return true;
             }
             break;
