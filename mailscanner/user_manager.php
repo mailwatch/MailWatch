@@ -213,6 +213,13 @@ function printUserFormular(
     $spamscore = '0',
     $highspamscore = '0'
 ) {
+    // stored values already carry entities (e.g. &amp;), only quotes need encoding
+    $escape = static function($value) {
+        return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
+    };
+    $username = $escape($username);
+    $fullname = $escape($fullname);
+    $quarantine_rcpt = $escape($quarantine_rcpt);
     $returnString = '<div id="formerror" class="hidden"></div>';
     $returnString .= '<FORM METHOD="POST" ACTION="user_manager.php" ONSUBMIT="return validateForm();" AUTOCOMPLETE="off">' . PHP_EOL;
     $returnString .= '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . PHP_EOL;
@@ -317,7 +324,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
             true
         ));
 
-        return getHtmlMessage(sprintf(__('usercreated12'), stripslashes($n_username)), 'success');
+        return getHtmlMessage(sprintf(__('usercreated12'), htmlspecialchars(stripslashes($n_username), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false)), 'success');
     }
 
     if ('XXXXXXXX' !== $_POST['password']) {// Password reset required
@@ -340,7 +347,7 @@ function storeUser($n_username, $n_type, $uid, $oldUsername = '', $oldType = '')
         );
     }
 
-    return getHtmlMessage(sprintf(__('useredited12'), stripslashes($oldUsername)), 'success');
+    return getHtmlMessage(sprintf(__('useredited12'), htmlspecialchars(stripslashes($oldUsername), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false)), 'success');
 }
 
 /**
@@ -530,7 +537,7 @@ function deleteUser()
     dbquery($sql);
     audit_log(sprintf(__('auditlog0412', true), $user->username));
 
-    return getHtmlMessage(sprintf(__('userdeleted12'), $user->username), 'success');
+    return getHtmlMessage(sprintf(__('userdeleted12'), htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false)), 'success');
 }
 
 /**
@@ -689,7 +696,7 @@ function logoutUser()
         echo $sql;
     }
 
-    return getHtmlMessage(sprintf(__('userloggedout12'), stripslashes($user->username)), 'success');
+    return getHtmlMessage(sprintf(__('userloggedout12'), htmlspecialchars(stripslashes($user->username), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false)), 'success');
 }
 
 ?>
@@ -841,41 +848,57 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
         }
     }
 
-    $sql = "
-        SELECT
-          username AS '" . safe_value(__('username12')) . "',
-          fullname AS '" . safe_value(__('fullname12')) . "',
-        CASE
-          WHEN type = 'A' THEN '" . __('admin12') . "'
-          WHEN type = 'D' THEN '" . __('domainadmin12') . "'
-          WHEN type = 'U' THEN '" . __('user12') . "'
-          WHEN type = 'R' THEN '" . __('userregex12') . "'
-        ELSE
-          '" . __('unknowtype12') . "'
-        END AS '" . safe_value(__('type12')) . "',
-        CASE
-          WHEN noscan = 1 THEN '" . __('noshort12') . "'
-          WHEN noscan = 0 THEN '" . __('yesshort12') . "'
-        ELSE
-          '" . __('yesshort12') . "'
-        END AS '" . safe_value(__('spamcheck12')) . "',
-          spamscore AS '" . safe_value(__('spamscore12')) . "',
-          highspamscore AS '" . safe_value(__('spamhscore12')) . "',
-        CASE
-          WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN '" . safe_value(__('yes12')) . "'
-        ELSE 
-          '" . safe_value(__('no12')) . "'
-        END AS '" . safe_value(__('loggedin12')) . "',
-        CASE
-WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:logout_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('logout12')) . "</a>')
-        ELSE
-          CONCAT('<a href=\"?token=" . $_SESSION['token'] . "&amp;action=edit&amp;id=',id,'\">" . safe_value(__('edit12')) . "</a>&nbsp;&nbsp;<a href=\"javascript:delete_user(\'',id,'\',',QUOTE(username),')\">" . safe_value(__('delete12')) . '</a>&nbsp;&nbsp;<a href="?token=' . $_SESSION['token'] . "&amp;action=filters&amp;id=',id,'\">" . safe_value(__('filters12')) . "</a>')
-        END AS '" . safe_value(__('action12')) . "'
-        FROM
-          users " . $domainAdminUserDomainFilter . ' 
-        ORDER BY
-          username';
-    dbtable($sql, __('usermgnt12'));
+    $sql = 'SELECT id, username, fullname, type, noscan, spamscore, highspamscore, login_expiry FROM users ' . $domainAdminUserDomainFilter . ' ORDER BY username';
+    $result = dbquery($sql);
+    if (0 === $result->num_rows) {
+        echo __('norowfound03') . "\n";
+    } else {
+        // stored values may already carry entities (e.g. &amp;), only quotes need encoding
+        $escape = static function($value) {
+            return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
+        };
+        // the hex flags keep the name inert both as a JS string and inside the onclick attribute;
+        // invalid UTF-8 encodes as null, which is still valid JS
+        $jsString = static function($value) {
+            return htmlspecialchars(
+                json_encode(stripslashes((string)$value), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_PARTIAL_OUTPUT_ON_ERROR),
+                ENT_QUOTES,
+                'UTF-8'
+            );
+        };
+        $types = ['A' => __('admin12'), 'D' => __('domainadmin12'), 'U' => __('user12'), 'R' => __('userregex12')];
+        $headings = ['username12', 'fullname12', 'type12', 'spamcheck12', 'spamscore12', 'spamhscore12', 'loggedin12', 'action12'];
+        echo '<table cellspacing="1" width="100%" class="mail">' . "\n";
+        echo '<tr><th colspan=' . count($headings) . '>' . __('usermgnt12') . '</th></tr>' . "\n";
+        echo ' <tr>' . "\n";
+        foreach ($headings as $heading) {
+            echo '  <th>' . __($heading) . '</th>' . "\n";
+        }
+        echo ' </tr>' . "\n";
+        $now = time();
+        while ($row = $result->fetch_object()) {
+            $id = (int)$row->id;
+            $loggedIn = (int)$row->login_expiry > $now || 0 === (int)$row->login_expiry;
+            $actions = '<a href="?token=' . $_SESSION['token'] . '&amp;action=edit&amp;id=' . $id . '">' . __('edit12') . '</a>&nbsp;&nbsp;'
+                . '<a href="#" onclick="delete_user(' . $id . ', ' . $jsString($row->username) . '); return false;">' . __('delete12') . '</a>&nbsp;&nbsp;'
+                . '<a href="?token=' . $_SESSION['token'] . '&amp;action=filters&amp;id=' . $id . '">' . __('filters12') . '</a>';
+            if ($loggedIn) {
+                $actions .= '&nbsp;&nbsp;<a href="#" onclick="logout_user(' . $id . ', ' . $jsString($row->username) . '); return false;">' . __('logout12') . '</a>';
+            }
+            echo ' <tr class="table-background">' . "\n";
+            echo '  <td>' . $escape($row->username) . '</td>' . "\n";
+            echo '  <td>' . $escape($row->fullname) . '</td>' . "\n";
+            echo '  <td>' . (isset($types[$row->type]) ? $types[$row->type] : __('unknowtype12')) . '</td>' . "\n";
+            echo '  <td>' . (1 === (int)$row->noscan ? __('noshort12') : __('yesshort12')) . '</td>' . "\n";
+            echo '  <td>' . $escape($row->spamscore) . '</td>' . "\n";
+            echo '  <td>' . $escape($row->highspamscore) . '</td>' . "\n";
+            echo '  <td>' . ($loggedIn ? __('yes12') : __('no12')) . '</td>' . "\n";
+            echo '  <td>' . $actions . '</td>' . "\n";
+            echo ' </tr>' . "\n";
+        }
+        echo '</table>' . "\n";
+    }
+    echo '<br>' . "\n";
 } elseif (!isset($_POST['submit'])) {
     $sql = "SELECT id, username, fullname, type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username='" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
     $result = dbquery($sql);
@@ -898,15 +921,19 @@ WHEN login_expiry > " . time() . " OR login_expiry = 0 THEN CONCAT('<a href=\"?t
     echo '<input type="hidden" name="submit" value="true">' . PHP_EOL;
     echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/user_manager.php user token') . '">' . PHP_EOL;
     echo '<table class="mail useredit" border="0" cellpadding="1" cellspacing="1">' . PHP_EOL;
-    echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $row->username . '</td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . stripslashes($_SESSION['myusername']) . '</td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $_SESSION['fullname'] . '</td></tr>' . PHP_EOL;
+    // stored values may already carry entities (e.g. &amp;), only quotes need encoding
+    $escape = static function($value) {
+        return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
+    };
+    echo ' <tr><td class="heading" colspan=2 align="center">' . __('edituser12') . ' ' . $escape($row->username) . '</td></tr>' . PHP_EOL;
+    echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $escape(stripslashes($_SESSION['myusername'])) . '</td></tr>' . PHP_EOL;
+    echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $escape($_SESSION['fullname']) . '</td></tr>' . PHP_EOL;
     if (true !== $_SESSION['user_ldap'] && true !== $_SESSION['user_imap']) {
         echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
         echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
     }
     echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . PHP_EOL;
-    echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $row->quarantine_rcpt . '"><br><span class="font-1em">' . __('overrec12') . '</span></td>' . PHP_EOL;
+    echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $escape($row->quarantine_rcpt) . '"><br><span class="font-1em">' . __('overrec12') . '</span></td>' . PHP_EOL;
     echo ' <tr><td class="heading">' . __('scanforspam12') . '</td><td><input type="checkbox" name="noscan" value="on" ' . $noscan . '> <span class="font-1em">' . __('scanforspam212') . '</span></td></tr>' . PHP_EOL;
     echo ' <tr><td class="heading">' . __('pontspam12') . '</td><td><input type="text" name="spamscore" value="' . $row->spamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
     echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
