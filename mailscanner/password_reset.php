@@ -300,7 +300,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 <?php if (file_exists(__DIR__ . '/conf.php')) {
                     if ('' !== $fields) {
                         ?>
-                        <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo sanitizeInput($_SERVER['PHP_SELF']); ?>" autocomplete="off">
+                        <form name="pwdresetform" class="pwdresetform" method="post" action="<?php echo htmlspecialchars($_SERVER['SCRIPT_NAME'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" autocomplete="off">
                             <fieldset>
                                 <?php if (isset($_GET['error']) || '' !== $errors) {
                                     ?>
@@ -319,8 +319,8 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                         }
                         if ('stage2' === $fields) {
                             ?>
-                                    <input type="hidden" name="email" value="<?php echo $email; ?>">
-                                    <input type="hidden" name="uid" value="<?php echo $uid; ?>">
+                                    <input type="hidden" name="email" value="<?php echo htmlspecialchars((string)$email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+                                    <input type="hidden" name="uid" value="<?php echo htmlspecialchars((string)$uid, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
                                     <p><label for="pwd1"><?php echo __('01pwd63'); ?></label></p>
                                     <p><input name="pwd1" type="password" id="pwd1" autocomplete="off" autofocus></p>
                                     <p><label for="pwd2"><?php echo __('02pwd63'); ?></label></p>

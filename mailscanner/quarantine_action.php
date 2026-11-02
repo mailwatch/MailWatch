@@ -110,7 +110,7 @@ switch ($_GET['action']) {
         if (isset($_GET['html'])) {
             // Display success
             simple_html_start();
-            simple_html_result($result);
+            simple_html_result(nl2br(htmlspecialchars((string)$result, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')));
             simple_html_end();
         }
         break;
@@ -148,7 +148,7 @@ switch ($_GET['action']) {
             } else {
                 simple_html_start();
                 for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                    $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
+                    $status[] = nl2br(htmlspecialchars((string)quarantine_delete($list, [$i], false, $_SESSION['global_filter']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
                 }
                 $status = implode('<br/>', $status);
                 simple_html_result($status);

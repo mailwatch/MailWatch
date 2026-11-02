@@ -55,7 +55,8 @@ function postfixmailq()
     exec('mailq', $output);
     if (null !== $output && '' !== $output) {
         foreach ($output as $row) {
-            echo $row . "\n";
+            // the queue listing carries envelope senders and remote SMTP replies
+            echo htmlspecialchars($row, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "\n";
         }
     }
 }

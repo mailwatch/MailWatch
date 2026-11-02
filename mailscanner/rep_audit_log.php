@@ -136,9 +136,9 @@ if ('A' !== $_SESSION['user_type']) {
       <div class="caption head">' . __('filter33') . '</div>
       <div class="row"><div class="cell head">' . __('startdate33') . '</div><div class="cell data"><input name="startDate" type="text" placeholder="YYYY-MM-DD" value="' . $startDate . '"/></div></div>
       <div class="row"><div class="cell head">' . __('enddate33') . '</div><div class="cell data"><input name="endDate" type="text" placeholder="YYYY-MM-DD" value="' . $endDate . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('user33') . '</div><div class="cell data"><input name="username" type="text" value="' . $username . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('user33') . '</div><div class="cell data"><input name="username" type="text" value="' . htmlspecialchars($username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '"/></div></div>
       <div class="row"><div class="cell head">' . __('ipaddress33') . '</div><div class="cell data"><input name="ipaddress" type="text" value="' . $ipaddress . '"/></div></div>
-      <div class="row"><div class="cell head">' . __('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . $actions . '"/></div></div>
+      <div class="row"><div class="cell head">' . __('action33') . '</div><div class="cell data"><input name="actions" type="text" value="' . htmlspecialchars($actions, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '"/></div></div>
       <div class="row"><div class="cell head"></div><div class="cell head"><button type="submit">' . __('applyfilter33') . '</button></div></div>
     </div>
   </form>

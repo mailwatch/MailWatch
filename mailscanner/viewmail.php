@@ -220,7 +220,7 @@ foreach ($mime_struct as $key => $part) {
 
             if (property_exists($part, 'd_parameters')) {
                 if (isset($part->d_parameters['filename'])) {
-                    echo $part->d_parameters['filename'];
+                    echo htmlspecialchars((string)$part->d_parameters['filename'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                 } else {
                     echo __('nonameattachment06');
                 }
@@ -239,7 +239,7 @@ foreach ($mime_struct as $key => $part) {
                     }
                     $filename .= '.bin';
                 }
-                echo $filename;
+                echo htmlspecialchars((string)$filename, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             }
 
             if (

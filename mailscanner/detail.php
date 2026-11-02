@@ -131,12 +131,12 @@ $row = $result->fetch_array();
 if ($result->num_rows > 1) {
     error_log('WARNING: multiple mails existed for id ' . $url_id . ' only first result displayed to user');
 }
-$listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . $row[__('receivedfrom04')] . '&amp;from=' . $row[__('from04')] . '&amp;to=' . $row[__('to04')];
+$listurl = 'lists.php?token=' . $_SESSION['token'] . '&amp;host=' . urlencode((string)$row[__('receivedfrom04')]) . '&amp;from=' . urlencode((string)$row[__('from04')]) . '&amp;to=' . urlencode((string)$row[__('to04')]);
 for ($f = 0; $f < $result->field_count; ++$f) {
     $fieldInfo = $result->fetch_field_direct($f);
     $fieldn = $fieldInfo->name;
     if ($fieldn === __('receivedfrom04')) {
-        $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . $row[$f] . '</td>';
+        $output = '<table class="sa_rules_report" width="100%" cellspacing=0 cellpadding=0><tr><td>' . htmlspecialchars((string)$row[$f], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>';
         if (LISTS) {
             $output .= '<td class="noprint" align="right">[<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=w">' . __('addwl04') . '</a>&nbsp;|&nbsp;<a class="nowrap" href="' . $listurl . '&amp;type=h&amp;list=b">' . __('addbl04') . '</a>]</td>';
         }
@@ -171,7 +171,7 @@ for ($f = 0; $f < $result->field_count; ++$f) {
                 }
                 // Reverse lookup on address. Possibly need to remove it.
                 elseif (($host = gethostbyaddr($relay)) !== $relay) {
-                    $output .= " <td>$host</td>\n";
+                    $output .= ' <td>' . htmlspecialchars($host, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "</td>\n";
                 } else {
                     $output .= ' <td>' . __('reversefailed04') . "</td>\n";
                 }
@@ -230,13 +230,15 @@ for ($f = 0; $f < $result->field_count; ++$f) {
         $row[$f] = formatSize($row[$f]);
     }
     if ($fieldn === __('msgheaders04')) {
-        $row[$f] = nl2br(
-            str_replace(["\n", "\t"], ['<br>', '&nbsp; &nbsp; &nbsp;'], htmlentities($row[$f], ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE))
-        );
-        if (function_exists('iconv_mime_decode')) {
-            $row[$f] = iconv_mime_decode(utf8_decode($row[$f]), 2, 'UTF-8');
+        // decode before escaping: encoded words may carry markup
+        $lines = explode("\n", (string)$row[$f]);
+        foreach ($lines as $i => $line) {
+            if (function_exists('iconv_mime_decode')) {
+                $line = (string)iconv_mime_decode(utf8_decode($line), 2, 'UTF-8');
+            }
+            $lines[$i] = htmlentities($line, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE, 'UTF-8');
         }
-        $row[$f] = preg_replace("/<br \/>/", '<br>', $row[$f]);
+        $row[$f] = str_replace("\t", '&nbsp; &nbsp; &nbsp;', implode('<br>', $lines));
     }
     if ($fieldn === __('saautolearn04')) {
         if (($autolearn = sa_autolearn($row[$f])) !== false) {
@@ -352,15 +354,16 @@ if (false !== $sth1 && $sth1->num_rows > 0) {
     echo "   </tr>\n";
     while ($row = $sth1->fetch_row()) {
         echo '    <tr>' . "\n";
-        echo '     <td class="detail" align="left">' . $row[0] . '</td>' . "\n"; // Date/Time
-        echo '     <td class="detail" align="left">' . $row[1] . '</td>' . "\n"; // Relayed by
+        // MTA log fields carry remote SMTP replies
+        echo '     <td class="detail" align="left">' . htmlspecialchars((string)$row[0], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Date/Time
+        echo '     <td class="detail" align="left">' . htmlspecialchars((string)$row[1], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Relayed by
         if (($lhost = @gethostbyaddr($row[2])) !== $row[2]) {
-            echo '     <td class="detail" align="left">' . $lhost . '</td>' . "\n"; // Relayed to
+            echo '     <td class="detail" align="left">' . htmlspecialchars((string)$lhost, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Relayed to
         } else {
-            echo '     <td class="detail" align="left">' . $row[2], '</td>' . "\n";
+            echo '     <td class="detail" align="left">' . htmlspecialchars((string)$row[2], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), '</td>' . "\n";
         }
-        echo '     <td class="detail">' . $row[3] . '</td>' . "\n"; // Delay
-        echo '     <td class="detail">' . $row[4] . '</td>' . "\n"; // Status
+        echo '     <td class="detail">' . htmlspecialchars((string)$row[3], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Delay
+        echo '     <td class="detail">' . htmlspecialchars((string)$row[4], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Status
         echo '    </tr>' . "\n";
     }
     echo "  </table>\n";
@@ -454,7 +457,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             echo '  <td class="heading" width="150" align="right" valign="top">' . __('resultmsg04') . ':</td>' . "\n";
             echo '  <td class="detail">' . "\n";
             foreach ($status as $key => $val) {
-                echo "  $val<br>\n";
+                echo '  ' . nl2br(htmlspecialchars((string)$val, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')) . "<br>\n";
             }
             echo "  </td>\n";
             echo " </tr>\n";
@@ -523,8 +526,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             } else {
                 echo '   <td>&nbsp;&nbsp;</td>' . "\n";
             }
-            echo '  <td>' . $item['file'] . '</td>' . "\n";
-            echo '  <td>' . $item['type'] . '</td>' . "\n";
+            echo '  <td>' . htmlspecialchars($item['file'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
+            echo '  <td>' . htmlspecialchars($item['type'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
             // Domain admins can view the file only if enabled
             if (
@@ -535,10 +538,10 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
                 ) && preg_match('!message/rfc822!', $item['type'])
             ) {
                 echo '  <td><a href="viewmail.php?token=' . $_SESSION['token'] . '&amp;id=' . $item['msgid'] . '">' .
-                    substr($item['path'], strlen($quarantinedir) + 1) .
+                    htmlspecialchars(substr($item['path'], strlen($quarantinedir) + 1), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') .
                     '</a></td>' . "\n";
             } else {
-                echo '  <td>' . substr($item['path'], strlen($quarantinedir) + 1) . "</td>\n";
+                echo '  <td>' . htmlspecialchars(substr($item['path'], strlen($quarantinedir) + 1), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "</td>\n";
             }
             if ('Y' === $item['dangerous']) {
                 $dangerous = $yes;

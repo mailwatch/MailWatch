@@ -139,14 +139,10 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                                 ++$output[$msgid]['attempts'];
                                             }
                                             $output[$msgid]['lastattempttime'] = $Regs[1];
-                                            $output[$msgid]['message'] = htmlentities($Regs[2]);
+                                            $output[$msgid]['message'] = $Regs[2];
                                         }
-                                        $output[$msgid]['message'] .= nl2br($line);
-                                        $output[$msgid]['message'] = preg_replace(
-                                            "/<br \/>/",
-                                            '<br>',
-                                            $output[$msgid]['message']
-                                        );
+                                        // stored as plain text, the web UI escapes it
+                                        $output[$msgid]['message'] .= $line;
                                     }
                                 }
                                 fclose($fh);

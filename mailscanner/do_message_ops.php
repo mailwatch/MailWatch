@@ -106,24 +106,24 @@ if (isset($_POST) && !empty($_POST)) {
                     $quarantined = quarantine_list_items($id, RPC_ONLY, $_SESSION['global_filter']);
                     if (is_array($quarantined)) {
                         $to = $quarantined[0]['to'];
-                        echo quarantine_release(
+                        echo nl2br(htmlspecialchars((string)quarantine_release(
                             $quarantined,
                             $itemnum,
                             $to,
                             RPC_ONLY,
                             $_SESSION['global_filter']
-                        );
+                        )));
                     } else {
                         echo $quarantined;
                     }
                 } else {
-                    echo quarantine_learn(
+                    echo nl2br(htmlspecialchars((string)quarantine_learn(
                         $items,
                         $itemnum,
                         $type,
                         RPC_ONLY,
                         $_SESSION['global_filter']
-                    );
+                    )));
                 }
                 echo '</td>' . "\n";
             }

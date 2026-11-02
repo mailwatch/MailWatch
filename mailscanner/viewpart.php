@@ -125,7 +125,10 @@ if (isset($_GET['part'])) {
  */
 function decode_structure($structure)
 {
-    $type = $structure->ctype_primary . '/' . $structure->ctype_secondary;
+    // message parts are attacker controlled: never let them run script or submit forms in our origin
+    header('Content-Security-Policy: sandbox');
+    header('X-Content-Type-Options: nosniff');
+    $type = strtolower($structure->ctype_primary . '/' . $structure->ctype_secondary);
     switch ($type) {
         case 'text/plain':
             /*
@@ -202,12 +205,9 @@ function decode_structure($structure)
             break;
         default:
             header('Content-Type: ' . $structure->headers['content-type']);
-            // in case of missing Content-Disposition use a standard one
-            if (isset($structure->headers['content-disposition'])) {
-                header('Content-Disposition: ' . $structure->headers['content-disposition']);
-            } else {
-                header('Content-Disposition: attachment; filename="attachment.bin"');
-            }
+            // always download: an inline part (HTML, SVG) would render in our origin
+            $filename = preg_replace('/[^\p{L}\p{N} ._-]/u', '_', isset($structure->d_parameters['filename']) ? (string)$structure->d_parameters['filename'] : '');
+            header('Content-Disposition: attachment; filename="' . ('' === $filename ? 'attachment.bin' : $filename) . '"');
             echo $structure->body;
             break;
     }

@@ -597,9 +597,9 @@ ORDER BY a.date DESC, a.time DESC';
             $h1 .= sprintf(
                 self::$html_content,
                 $qitem['datetime'],
-                $qitem['to'],
-                $qitem['from'],
-                $qitem['subject'],
+                htmlspecialchars($qitem['to'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                htmlspecialchars($qitem['from'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                htmlspecialchars($qitem['subject'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
                 $qitem['reason'],
                 $links
             );

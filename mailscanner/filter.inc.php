@@ -145,7 +145,7 @@ class Filter
                     $this->TranslateColumn($val[0]) . ' ' . $this->TranslateOperator($val[1]) .
                     ' "' . stripslashes(
                         $val[2]
-                    ) . '"</td><td align="right"><a href="' . sanitizeInput($_SERVER['PHP_SELF']) . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
+                    ) . '"</td><td align="right"><a href="' . htmlspecialchars($_SERVER['SCRIPT_NAME'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '?token=' . $_SESSION['token'] . '&amp;action=remove&amp;column=' . $key . '">' . __('remove09') . '</a></td></tr>' . "\n";
             }
         } else {
             echo '<tr><td colspan="2">' . __('none09') . '</td></tr>' . "\n";
@@ -248,7 +248,7 @@ WHERE
     public function DisplayForm()
     {
         // Form
-        $return = '<form method="post" action="' . sanitizeInput($_SERVER['PHP_SELF']) . '">' . "\n";
+        $return = '<form method="post" action="' . htmlspecialchars($_SERVER['SCRIPT_NAME'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">' . "\n";
 
         // Table
         $return .= '<table width="100%">' . "\n";
@@ -386,7 +386,9 @@ WHERE
         $return = '<select name="filter">' . "\n";
         $return .= ' <option value="_none_">' . __('none09') . '</option>' . "\n";
         while ($row = $sth->fetch_array()) {
-            $return .= ' <option value="' . $row[0] . '">' . $row[0] . '</option>' . "\n";
+            // the stored name already carries entities (e.g. &amp;), only quotes need encoding
+            $name = htmlspecialchars((string)$row[0], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
+            $return .= ' <option value="' . $name . '">' . $name . '</option>' . "\n";
         }
         $return .= '</select>' . "\n";
 

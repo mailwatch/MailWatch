@@ -69,9 +69,9 @@ class GraphGenerator
         printPieGraph("' . $chartId . '", {
           chartTitle :  "' . $this->graphTitle . '",
           chartId : "' . $chartId . '",
-          chartLabels : ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"],
+          chartLabels : ' . $this->jsStrings($this->data[$this->graphColumns['labelColumn']]) . ',
           chartNumericData : [' . implode(', ', $this->data[$this->graphColumns['dataNumericColumn']]) . '],
-          chartFormattedData : ["' . implode('", "', $this->data[$this->graphColumns['dataFormattedColumn']]) . '"],
+          chartFormattedData : ' . $this->jsStrings($this->data[$this->graphColumns['dataFormattedColumn']]) . ',
         });
       </script>
       <br>';
@@ -119,7 +119,7 @@ class GraphGenerator
                 $numericDataName = $this->graphColumns['dataNumericColumns'][$i][$j];
                 $formattedDataName = $this->graphColumns['dataFormattedColumns'][$i][$j];
                 $numericData .= '[' . implode(', ', $this->data[$numericDataName]) . '],';
-                $formattedData .= '["' . implode('", "', $this->data[$formattedDataName]) . '"],';
+                $formattedData .= $this->jsStrings($this->data[$formattedDataName]) . ',';
             }
             $numericData .= '],' . "\n";
             $formattedData .= '],' . "\n";
@@ -135,7 +135,7 @@ class GraphGenerator
         printLineGraph("' . $chartId . '",  {
           chartTitle : "' . $this->graphTitle . '",
           chartId : "' . $chartId . '",
-          chartLabels : ["' . implode('", "', $this->data[$this->graphColumns['labelColumn']]) . '"],
+          chartLabels : ' . $this->jsStrings($this->data[$this->graphColumns['labelColumn']]) . ',
           chartNumericData : [' . $numericData . '],
           chartFormattedData : [' . $formattedData . '],
           xAxeDescription : "' . $this->graphColumns['xAxeDescription'] . '",
@@ -379,6 +379,19 @@ class GraphGenerator
     }
 
     /**
+     * Encodes values (addresses, virus names: attacker controlled) as a JS string array safe inside a script block.
+     *
+     * @return string
+     */
+    protected function jsStrings(array $values)
+    {
+        return json_encode(
+            array_map('strval', array_values($values)),
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_PARTIAL_OUTPUT_ON_ERROR
+        );
+    }
+
+    /**
      * Prints a html table with the columns defined by $this->tableColumns using the data in $this->data if $this->printTable is true.
      *
      * @return void
@@ -399,7 +412,7 @@ class GraphGenerator
         for ($i = 0; $i < $this->numResult; ++$i) {
             echo '    <tr>' . "\n";
             foreach ($this->tableColumns as $columnName => $columnTitle) {
-                echo '     <td>' . $this->data[$columnName][$i] . '</td>' . "\n";
+                echo '     <td>' . htmlspecialchars((string)$this->data[$columnName][$i], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
             }
             echo '    </tr>' . "\n";
         }

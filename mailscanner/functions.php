@@ -395,7 +395,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     echo '</table>' . "\n";
     echo '<table cellspacing="1" class="mail">' . "\n";
     echo '<tr><td class="heading" align="center">' . __('cuser03') . '</td><td class="heading" align="center">' . __('cst03') . '</td></tr>' . "\n";
-    echo '<tr><td>' . $_SESSION['fullname'] . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
+    echo '<tr><td>' . htmlspecialchars((string)$_SESSION['fullname'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</td><td><span id="clock">&nbsp;</span></td></tr>' . "\n";
     echo '</table>' . "\n";
     echo '</td>' . "\n";
 
@@ -2387,6 +2387,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             }
                             $row[$f] .= " ($host)";
                         }
+                        $row[$f] = htmlspecialchars($row[$f], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                         break;
                     case 'to_address':
                         $row[$f] = htmlentities($row[$f]);
@@ -2483,7 +2484,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                         if ($hostname === $row[$f]) {
                             $row[$f] = __('hostfailed03');
                         } else {
-                            $row[$f] = $hostname;
+                            $row[$f] = htmlspecialchars($hostname, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                         }
                         break;
                     case 'released':
@@ -2525,6 +2526,10 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             }
                         }
                         $row[$f] = $status;
+                        break;
+                    default:
+                        // e.g. the mail queue 'message' column carries remote SMTP replies
+                        $row[$f] = nl2br(htmlspecialchars((string)$row[$f], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
                         break;
                 }
             }
@@ -2749,10 +2754,11 @@ function dbtable($sql, $title = null, $pager = false, $operations = false)
         while ($row = $sth->fetch_row()) {
             echo ' <tr class="table-background">' . "\n";
             for ($f = 0; $f < $fields; ++$f) {
+                // cells are plain data (audit log entries carry request input); stored values may already hold entities
                 echo '  <td>' . preg_replace(
                     "/,([^\s])/",
                     ', $1',
-                    $row[$f]
+                    htmlspecialchars((string)$row[$f], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false)
                 ) . '</td>' . "\n";
             }
             echo ' </tr>' . "\n";

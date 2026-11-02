@@ -320,9 +320,9 @@ function build_table($sql, $list)
         $table_html .= ' </tr>' . "\n";
         while ($row = $sth->fetch_row()) {
             $table_html .= ' <tr>' . "\n";
-            $table_html .= '  <td>' . $row[1] . '</td>' . "\n";
-            $table_html .= '  <td>' . $row[2] . '</td>' . "\n";
-            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . $row[2] . '&amp;list=' . $list . '">' . __('delete07') . '</a></td>' . "\n";
+            $table_html .= '  <td>' . htmlspecialchars($row[1], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</td>' . "\n";
+            $table_html .= '  <td>' . htmlspecialchars($row[2], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</td>' . "\n";
+            $table_html .= '  <td><a href="lists.php?token=' . $_SESSION['token'] . '&amp;submit=delete&amp;listid=' . $row[0] . '&amp;to=' . urlencode($row[2]) . '&amp;list=' . $list . '">' . __('delete07') . '</a></td>' . "\n";
             $table_html .= ' </tr>' . "\n";
         }
         $table_html .= '</table>' . "\n";
@@ -341,7 +341,7 @@ echo '
  </tr>
  <tr>
   <td class="heading">' . __('from07') . '</td>
-  <td><input type="text" name="from" size=50 value="' . $from . '"></td>
+  <td><input type="text" name="from" size=50 value="' . htmlspecialchars($from, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '"></td>
  </tr>
  <tr>
   <td class="heading">' . __('to07') . '</td>';
@@ -349,34 +349,34 @@ echo '<INPUT TYPE="HIDDEN" NAME="token" VALUE="' . $_SESSION['token'] . '">' . "
 echo '<INPUT TYPE="HIDDEN" NAME="formtoken" VALUE="' . generateFormToken('/lists.php list token') . '">' . "\n";
 switch ($_SESSION['user_type']) {
     case 'A':
-        echo '<td><input type="text" name="to" size=22 value="' . stripslashes($touser) . '">@<input type="text" name="domain" size=25 value="' . $to_domain . '"></td>';
+        echo '<td><input type="text" name="to" size=22 value="' . htmlspecialchars(stripslashes($touser), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '">@<input type="text" name="domain" size=25 value="' . htmlspecialchars($to_domain, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '"></td>';
         break;
     case 'U':
         echo '<td> <select name="to">';
         foreach ($to_user_filter as $to_user_selection) {
             if ($touser === $to_user_selection) {
-                echo '<option selected>' . stripslashes($to_user_selection) . '</option>';
+                echo '<option selected>' . htmlspecialchars(stripslashes($to_user_selection), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</option>';
             } else {
-                echo '<option>' . stripslashes($to_user_selection) . '</option>';
+                echo '<option>' . htmlspecialchars(stripslashes($to_user_selection), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</option>';
             }
         }
         echo '</select>@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
             if ($to_domain === $to_domain_selection) {
-                echo '<option selected>' . $to_domain_selection . '</option>';
+                echo '<option selected>' . htmlspecialchars($to_domain_selection, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</option>';
             } else {
-                echo '<option>' . $to_domain_selection . '</option>';
+                echo '<option>' . htmlspecialchars($to_domain_selection, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</option>';
             }
         }
         echo '</td>';
         break;
     case 'D':
-        echo '<td><input type="text" name="to" size=22 value="' . stripslashes($touser) . '">@<select name="domain">';
+        echo '<td><input type="text" name="to" size=22 value="' . htmlspecialchars(stripslashes($touser), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '">@<select name="domain">';
         foreach ($to_domain_filter as $to_domain_selection) {
             if ($to_domain === $to_domain_selection) {
-                echo '<option selected>' . $to_domain_selection . '</option>';
+                echo '<option selected>' . htmlspecialchars($to_domain_selection, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</option>';
             } else {
-                echo '<option>' . $to_domain_selection . '</option>';
+                echo '<option>' . htmlspecialchars($to_domain_selection, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</option>';
             }
         }
         break;
