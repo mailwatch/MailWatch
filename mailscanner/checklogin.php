@@ -57,6 +57,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = html_entity_decode($_POST['myusername']);
     $mypassword = $_POST['mypassword'];
 }
+$plainPassword = $mypassword;
 
 $_SESSION['user_ldap'] = false;
 $_SESSION['user_imap'] = false;
@@ -110,21 +111,23 @@ if (
        exit;
     }
 
-    if (!password_verify($mypassword, $passwordInDb)) {
-        if (!hash_equals(md5($mypassword), $passwordInDb)) {
-            header('Location: login.php?error=baduser');
-            logFailedLogin($myusername);
-            exit;
+    // Passwords saved by users themselves used to be hashed in their SQL-escaped form
+    $matchedPassword = null;
+    foreach (array_unique([$plainPassword, $mypassword]) as $candidate) {
+        if (password_verify($candidate, $passwordInDb) || hash_equals(md5($candidate), $passwordInDb)) {
+            $matchedPassword = $candidate;
+            break;
         }
+    }
+    if (null === $matchedPassword) {
+        header('Location: login.php?error=baduser');
+        logFailedLogin($myusername);
+        exit;
+    }
 
-        $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
+    if ($matchedPassword !== $plainPassword || password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
+        $newPasswordHash = password_hash($plainPassword, PASSWORD_DEFAULT);
         updateUserPasswordHash($myusername, $newPasswordHash);
-    } else {
-        // upgraded password is valid, continue as normal
-        if (password_needs_rehash($passwordInDb, PASSWORD_DEFAULT)) {
-            $newPasswordHash = password_hash($mypassword, PASSWORD_DEFAULT);
-            updateUserPasswordHash($myusername, $newPasswordHash);
-        }
     }
 }
 

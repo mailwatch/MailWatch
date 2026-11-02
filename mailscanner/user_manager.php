@@ -971,7 +971,7 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
     } else {
         $username = safe_value(stripslashes($_SESSION['myusername']));
         if (isset($_POST['password'])) {
-            $n_password = safe_value($_POST['password']);
+            $n_password = $_POST['password'];
         }
         $spamscore = deepSanitizeInput($_POST['spamscore'], 'float');
         if (!validateInput($spamscore, 'float')) {
