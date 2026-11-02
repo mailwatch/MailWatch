@@ -148,6 +148,7 @@ $myusername = safe_value(stripslashes($_SESSION['myusername']));
 // Validate input against the user type
 $to_user_filter = [];
 $to_domain_filter = [];
+$user_filter = [];
 $to_address = '';
 switch ($_SESSION['user_type']) {
     case 'U': // User
@@ -158,9 +159,9 @@ switch ($_SESSION['user_type']) {
         while ($row = $result1->fetch_assoc()) {
             $filter[] = $row['filter'];
         }
-        $user_filter = [];
         foreach ($filter as $user_filter_check) {
-            if (preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $user_filter_check)) {
+            // domain filters do not fill the selects below, but their entries stay manageable
+            if (preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $user_filter_check) || false === strpos($user_filter_check, '@')) {
                 $user_filter[] = $user_filter_check;
             }
         }
@@ -209,6 +210,24 @@ switch (true) {
         break;
 }
 
+// Users manage their own addresses, domain admins the addresses of their domains
+$canManageRecipient = function ($address) use ($user_filter, $to_domain_filter) {
+    $address = strtolower(stripslashes($address));
+    switch ($_SESSION['user_type']) {
+        case 'A':
+            return true;
+        case 'U':
+            return in_array($address, array_map('strtolower', array_map('stripslashes', $user_filter)), true);
+        case 'D':
+            $parts = explode('@', $address);
+            $domains = array_map('strtolower', $to_domain_filter);
+
+            return in_array(end($parts), $domains, true) || in_array($address, $domains, true);
+    }
+
+    return false;
+};
+
 // Submitted
 if ('add' === $url_submit) {
     if (false === checkToken($_POST['token'])) {
@@ -226,6 +245,9 @@ if ('add' === $url_submit) {
     }
     if (empty($from)) {
         $errors[] = __('error072');
+    }
+    if (!$canManageRecipient($to_address)) {
+        $errors[] = __('dievalidate99');
     }
 
     $to_domain = strtolower($url_domain);
@@ -272,28 +294,16 @@ if ('delete' === $url_submit) {
             break;
     }
 
-    $sqlfrom = "SELECT from_address FROM $list WHERE id='$id'";
+    $sqlfrom = "SELECT from_address, to_address FROM $list WHERE id='$id'";
     $result = dbquery($sqlfrom);
     $row = $result->fetch_array();
-    $from_address = $row['from_address'];
-
-    switch ($_SESSION['user_type']) {
-        case 'U':
-            $sql = "DELETE FROM $list WHERE id='$id' AND to_address='$to_address'";
-            audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
-            break;
-        case 'D':
-            $sql = "DELETE FROM $list WHERE id='$id' AND to_domain='$to_domain'";
-            audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
-            break;
-        case 'A':
-            $sql = "DELETE FROM $list WHERE id='$id'";
-            audit_log(sprintf(__('auditlogremoved07', true), $from_address, $to_address, $listi18));
-            break;
+    // Check the stored recipient, not the one in the request
+    if ($row && $canManageRecipient($row['to_address'])) {
+        dbquery("DELETE FROM $list WHERE id='$id'");
+        audit_log(sprintf(__('auditlogremoved07', true), $row['from_address'], $row['to_address'], $listi18));
+    } else {
+        $errors[] = __('dievalidate99');
     }
-
-    $id = safe_value($url_id);
-    dbquery($sql);
     $to_domain = '';
     $touser = '';
     $from = '';
