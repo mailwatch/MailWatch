@@ -11,6 +11,7 @@
 - An auto-release link that fails to release the message reports the error and stays usable
 - Passwords that contain quotes or backslashes work the same whether an administrator or the user sets them
 - Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
+- upgrade.php checks the `user_filters.username` column itself before resizing it
 
 ## 1.2.28
 ### Security

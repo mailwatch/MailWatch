@@ -563,7 +563,7 @@ if ($link) {
     } else {
         echo color(' ALREADY DONE', 'lightgreen') . PHP_EOL;
     }
-    unset($audit_log_user_info);
+    unset($audit_log_ipaddr_info);
 
     // Table blacklist
     echo pad(' - Fix schema for id field in `blacklist` table');
@@ -597,7 +597,7 @@ if ($link) {
     }
 
     echo pad(' - Fix schema for username field in `user_filters` table');
-    $user_filters_username_info = getColumnInfo('users', 'username');
+    $user_filters_username_info = getColumnInfo('user_filters', 'username');
     if ($user_filters_username_info['Type'] !== 'varchar(191)') {
         $sql = "ALTER TABLE user_filters CHANGE username username VARCHAR(191) NOT NULL DEFAULT ''";
         executeQuery($sql);
