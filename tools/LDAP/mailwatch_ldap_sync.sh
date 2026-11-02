@@ -68,6 +68,13 @@ LDAP_USERS="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x 
 		sed -ne "s/^proxyAddresses: SMTP:\(.*\)/\1/p" |
 		grep -Ev "DiscoverySearchMailbox|FederatedEmail|SystemMailbox" | sort)"
 
+# An unreachable directory returns no users: stop instead of removing them all
+if [ -z "$LDAP_USERS" ]; then
+	echo "No users found in LDAP, nothing changed" >&2
+	rm -f "$TEMPFILE"
+	exit 1
+fi
+
 [ -f "$TEMPFILE" ] && rm -f "$TEMPFILE"
 for USER in ${LDAP_USERS}; do
 	unset DN FULLNAME ALIASES GROUP_ALIASES TYPE REPORT SPAMSCORE HIGHSPAMSCORE NOSCAN RECIPIENT RESULT
@@ -120,7 +127,9 @@ MYSQL_USERS="$(echo "SELECT username FROM users WHERE password IS NULL;" |
 		--skip-column-names "$MYSQL_NAME")"
 for USER in ${MYSQL_USERS}; do
 	unset DN RESULT
-	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" "(proxyAddresses=SMTP:$USER)" "dn" | sed -n '1 {h;$!d}; ${x;s/\n //g;p}; /^ /{H;d}; /^ /!{x;s/\n //g;p}')"
+	# Keep the user when the lookup itself fails, delete only when LDAP answers without a match
+	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" "(proxyAddresses=SMTP:$USER)" "dn")" || continue
+	RESULT="$(echo "$RESULT" | sed -n '1 {h;$!d}; ${x;s/\n //g;p}; /^ /{H;d}; /^ /!{x;s/\n //g;p}')"
 	echo "$RESULT" | grep -qs "dn:: "
 	if [ "$?" -eq "0" ]; then
 		DN="$(echo "$RESULT" | sed -ne "s/^dn:: \(.*\)/\1/p" | base64 -d)"
