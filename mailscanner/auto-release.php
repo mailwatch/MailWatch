@@ -57,6 +57,8 @@ if (file_exists(__DIR__ . '/conf.php')) {
             if ($row['uid'] === $token) {
                 $list = quarantine_list_items($mid);
                 $result = '';
+                // quarantine_release() sets $error when sending fails
+                $error = false;
                 if (1 === count($list)) {
                     $to = $list[0]['to'];
                     $result = quarantine_release($list, [0], $to);
@@ -68,14 +70,19 @@ if (file_exists(__DIR__ . '/conf.php')) {
                         }
                     }
                 }
-                // success
-                $output[] = __('msgreleased59');
-                // cleanup
-                $releaseID = $row['id'];
-                $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
-                $result = dbquery($query, false);
-                if (!$result) {
-                    dbg('ERROR cleaning up database... ' . database::$link->error);
+                if (true === $error || !is_string($result) || '' === $result || 0 === strpos($result, 'XML-RPC Error')) {
+                    // keep the token so the link can be used again
+                    dbg('Auto-release of ' . $mid . ' failed: ' . print_r($result, true));
+                    $output[] = __('dberror59');
+                } else {
+                    $output[] = __('msgreleased59');
+                    // cleanup
+                    $releaseID = $row['id'];
+                    $query = "DELETE FROM autorelease WHERE id = '$releaseID'";
+                    $result = dbquery($query, false);
+                    if (!$result) {
+                        dbg('ERROR cleaning up database... ' . database::$link->error);
+                    }
                 }
             } else {
                 $output[] = __('tokenmismatch59');
