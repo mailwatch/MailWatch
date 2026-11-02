@@ -384,27 +384,28 @@ if ($link) {
     }
 
     echo pad(' - Look for stored XSS payloads');
+    // lists are scanned under both names: the rename to allowlist/blocklist runs later
     $markupTables = [
-        'users' => ['id', ['username', 'fullname', 'quarantine_rcpt']],
-        'saved_filters' => ['id', ['name', 'value', 'username']],
-        'user_filters' => ['id', ['username', 'filter']],
-        'audit_log' => ['id', ['user', 'action']],
-        'whitelist' => ['id', ['to_address', 'to_domain', 'from_address']],
-        'blacklist' => ['id', ['to_address', 'to_domain', 'from_address']],
-        'allowlist' => ['id', ['to_address', 'to_domain', 'from_address']],
-        'blocklist' => ['id', ['to_address', 'to_domain', 'from_address']],
+        'users' => ['username', 'fullname', 'quarantine_rcpt'],
+        'saved_filters' => ['name', 'value', 'username'],
+        'user_filters' => ['username', 'filter'],
+        'audit_log' => ['user', 'action'],
+        'whitelist' => ['to_address', 'to_domain', 'from_address'],
+        'blacklist' => ['to_address', 'to_domain', 'from_address'],
+        'allowlist' => ['to_address', 'to_domain', 'from_address'],
+        'blocklist' => ['to_address', 'to_domain', 'from_address'],
     ];
     $markupFound = [];
-    foreach ($markupTables as $table => $definition) {
-        foreach (find_stored_markup($table, $definition[0], $definition[1]) as $column => $ids) {
-            $markupFound[] = 'Stored XSS check: ' . count($ids) . ' row(s) in `' . $table . '`.`' . $column . '` contain markup, review ' . $definition[0] . ' ' . implode(', ', array_slice($ids, 0, 20)) . (count($ids) > 20 ? ', ...' : '');
+    foreach ($markupTables as $table => $columns) {
+        foreach (find_stored_markup($table, 'id', $columns) as $column => $ids) {
+            $markupFound[] = 'Stored XSS check: ' . count($ids) . ' row(s) in `' . $table . '`.`' . $column . '` contain markup, review id ' . implode(', ', array_slice($ids, 0, 20)) . (count($ids) > 20 ? ', ...' : '');
         }
     }
-    if (0 === count($markupFound)) {
+    if ([] === $markupFound) {
         echo color(' NOTHING FOUND', 'lightgreen') . PHP_EOL;
     } else {
         echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
-        $errors = array_merge(is_array($errors) ? $errors : [], $markupFound);
+        array_push($errors, ...$markupFound);
     }
 
     echo pad(' - Look for passwords left as the form placeholder');
