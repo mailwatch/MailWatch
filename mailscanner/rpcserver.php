@@ -335,7 +335,7 @@ if (is_rpc_client_allowed()) {
     $s->service();
 } else {
     global $xmlrpcerruser;
-    $client_addr = $_SERVER['REMOTE_ADDR'] ?? '';
+    $client_addr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
     $output = new xmlrpcresp(0, $xmlrpcerruser + 1, __('client160') . " {$client_addr} " . __('client260'));
     echo $output->serialize();
 }
