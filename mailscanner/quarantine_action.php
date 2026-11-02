@@ -147,9 +147,8 @@ switch ($_GET['action']) {
                 simple_html_end();
             } else {
                 simple_html_start();
-                for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                    $status[] = nl2br(htmlspecialchars((string)quarantine_delete($list, [$i], false, $_SESSION['global_filter']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
-                }
+                // one call for all items: the item indexes shift once a file is gone
+                $status[] = nl2br(htmlspecialchars((string)quarantine_delete($list, array_keys($list), false, $_SESSION['global_filter']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
                 $status = implode('<br/>', $status);
                 simple_html_result($status);
                 simple_html_end();
@@ -160,9 +159,7 @@ switch ($_GET['action']) {
                 exit;
             }
             // Delete
-            for ($i = 0, $countList = count($list); $i < $countList; ++$i) {
-                $status[] = quarantine_delete($list, [$i], false, $_SESSION['global_filter']);
-            }
+            $status[] = quarantine_delete($list, array_keys($list), false, $_SESSION['global_filter']);
         }
         break;
 

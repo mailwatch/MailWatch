@@ -4,6 +4,9 @@
 ### Added
 - upgrade.php reports user, filter, audit log and list rows that hold markup left by the stored XSS fixed in 1.2.28, without changing them
 
+### Fixed
+- Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
+
 ## 1.2.28
 ### Security
 - Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)

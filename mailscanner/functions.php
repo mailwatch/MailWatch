@@ -3972,13 +3972,16 @@ function quarantine_delete($list, $num, $rpc_only = false, $global_filter = null
         foreach ($num as $key => $val) {
             if (@unlink($list[$val]['path'])) {
                 $status[] = 'Delete: deleted file ' . $list[$val]['path'];
-                dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . $list[$val]['msgid'] . "'");
                 audit_log(__('auditlogdelqua03', true) . ' ' . $list[$val]['path']);
             } else {
                 $status[] = __('auditlogdelerror03') . ' ' . $list[$val]['path'];
                 global $error;
                 $error = true;
             }
+        }
+        // the message leaves the quarantine only when none of its files is left
+        if ([] === quarantine_list_items($list[0]['msgid'], false, $global_filter)) {
+            dbquery("UPDATE maillog SET quarantined=NULL WHERE id='" . safe_value($list[0]['msgid']) . "'");
         }
 
         return implode("\n", $status);
