@@ -30,6 +30,7 @@
 - The Postfix process count on the status page counts only the master and its children (#1036)
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
 - Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
+- tools/LDAP/mailwatch_ldap_sync.sh no longer deletes the imported users when the directory cannot be reached
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -49,7 +50,6 @@
 
 ### Fixed
 - Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
-- tools/LDAP/mailwatch_ldap_sync.sh no longer deletes the imported users when the directory cannot be reached
 - An auto-release link that fails to release the message reports the error and stays usable
 - Passwords that contain quotes or backslashes work the same whether an administrator or the user sets them
 - Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
