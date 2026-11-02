@@ -271,6 +271,38 @@ function getColumnInfo($table, $column)
 }
 
 /**
+ * Lists rows whose columns hold markup that may be a stored XSS payload (GHSA-mr3r-q523-6cvf, GHSA-jcgr-2839-3jc7).
+ * Read only: the rows are evidence of an attack and output escaping already makes them inert.
+ *
+ * @param string $table
+ * @param string $idColumn
+ * @param array  $columns
+ * @return array column name => list of row ids
+ */
+function find_stored_markup($table, $idColumn, $columns)
+{
+    global $link;
+    // the sanitizer encodes < and > but keeps quotes, so a payload breaks out of an attribute
+    $pattern = "[<>\"]|javascript:|[[:space:]/'\"]on[a-z]+[[:space:]]*=";
+    $found = array();
+    if (!check_table_exists($table)) {
+        return $found;
+    }
+    foreach ($columns as $column) {
+        if (!check_column_exists($table, $column)) {
+            continue;
+        }
+        $sql = 'SELECT `' . $idColumn . '` FROM `' . $table . '` WHERE `' . $column . "` REGEXP '" . $link->real_escape_string($pattern) . "'";
+        $result = $link->query($sql);
+        while ($row = $result->fetch_row()) {
+            $found[$column][] = $row[0];
+        }
+    }
+
+    return $found;
+}
+
+/**
  * @param string $string
  * @param string $color
  * @return string
@@ -391,6 +423,28 @@ if ($link) {
         executeQuery($sql);
     } else {
         echo color(' No known security issues', 'lightgreen') . PHP_EOL;
+    }
+
+    echo pad(' - Look for stored XSS payloads');
+    $markupTables = array(
+        'users' => array('id', array('username', 'fullname', 'quarantine_rcpt')),
+        'saved_filters' => array('id', array('name', 'value', 'username')),
+        'user_filters' => array('id', array('username', 'filter')),
+        'audit_log' => array('id', array('user', 'action')),
+        'whitelist' => array('id', array('to_address', 'to_domain', 'from_address')),
+        'blacklist' => array('id', array('to_address', 'to_domain', 'from_address')),
+    );
+    $markupFound = array();
+    foreach ($markupTables as $table => $definition) {
+        foreach (find_stored_markup($table, $definition[0], $definition[1]) as $column => $ids) {
+            $markupFound[] = 'Stored XSS check: ' . count($ids) . ' row(s) in `' . $table . '`.`' . $column . '` contain markup, review ' . $definition[0] . ' ' . implode(', ', array_slice($ids, 0, 20)) . (count($ids) > 20 ? ', ...' : '');
+        }
+    }
+    if (0 === count($markupFound)) {
+        echo color(' NOTHING FOUND', 'lightgreen') . PHP_EOL;
+    } else {
+        echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
+        $errors = array_merge(is_array($errors) ? $errors : array(), $markupFound);
     }
 
     echo PHP_EOL;

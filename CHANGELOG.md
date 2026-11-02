@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+### Added
+- upgrade.php reports user, filter, audit log and list rows that hold markup left by the stored XSS fixed in 1.2.28, without changing them
 
 ## 1.2.28
 ### Security
