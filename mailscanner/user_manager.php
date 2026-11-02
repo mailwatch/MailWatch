@@ -929,8 +929,8 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
     echo ' <tr><td class="heading">' . __('username0212') . '</td><td>' . $escape(stripslashes($_SESSION['myusername'])) . '</td></tr>' . PHP_EOL;
     echo ' <tr><td class="heading">' . __('name12') . '</td><td>' . $escape($_SESSION['fullname']) . '</td></tr>' . PHP_EOL;
     if (true !== $_SESSION['user_ldap'] && true !== $_SESSION['user_imap']) {
-        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
-        echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="xxxxxxxx" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('password12') . '</td><td><input type="password" id="password" name="password" value="XXXXXXXX" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
+        echo ' <tr><td class="heading">' . __('retypepassword12') . '</td><td><input type="password" id="retypepassword" name="password1" value="XXXXXXXX" AUTOCOMPLETE="off"></td></tr>' . PHP_EOL;
     }
     echo ' <tr><td class="heading">' . __('quarrep12') . '</td><td><input type="checkbox" name="quarantine_report" value="on" ' . $quarantine_report . '> <span class="font-1em">' . __('senddaily12') . '</span> <button type="submit" name="action" value="sendReportNow">' . __('sendReportNow12') . '</button></td></tr>' . PHP_EOL;
     echo ' <tr><td class="heading">' . __('quarreprec12') . '</td><td><input type="text" name="quarantine_rcpt" value="' . $escape($row->quarantine_rcpt) . '"><br><span class="font-1em">' . __('overrec12') . '</span></td>' . PHP_EOL;

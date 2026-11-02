@@ -448,6 +448,26 @@ if ($link) {
         $errors = array_merge(is_array($errors) ? $errors : array(), $markupFound);
     }
 
+    echo pad(' - Look for passwords left as the form placeholder');
+    // up to 1.2.28 saving the own settings form stored the placeholder as the new password
+    $placeholderUsers = array();
+    if (check_table_exists('users')) {
+        $result = $link->query('SELECT username, password FROM users WHERE password IS NOT NULL');
+        while ($row = $result->fetch_row()) {
+            if (md5('xxxxxxxx') === $row[1] || password_verify('xxxxxxxx', $row[1])) {
+                $placeholderUsers[] = $row[0];
+            }
+        }
+    }
+    if (0 === count($placeholderUsers)) {
+        echo color(' NOTHING FOUND', 'lightgreen') . PHP_EOL;
+    } else {
+        echo ' ' . color('WARNING', 'yellow') . PHP_EOL;
+        $errors = array_merge(is_array($errors) ? $errors : array(), array(
+            'Password check: ' . count($placeholderUsers) . ' user(s) have the password "xxxxxxxx", set a new password for ' . implode(', ', array_slice($placeholderUsers, 0, 20)) . (count($placeholderUsers) > 20 ? ', ...' : ''),
+        ));
+    }
+
     echo PHP_EOL;
 
     // Drop geoip table
