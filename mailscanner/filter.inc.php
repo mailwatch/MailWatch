@@ -220,13 +220,31 @@ WHERE
         } elseif ('IS NULL' === $val[1] || 'IS NOT NULL' === $val[1]) {
             // Handle NULL and NOT NULL's
             return "AND\n $val[0] $val[1]\n";
-        } elseif ('' !== $val[2] && '!' === $val[2][0]) {
+        } elseif ('' !== $val[2] && '!' === $val[2][0] && self::isDateFunction(substr($val[2], 1))) {
             // Allow !<sql_function>
             return "AND\n $val[0] $val[1] " . substr($val[2], 1) . "\n";
         } else {
             // Regular string
             return "AND\n $val[0] $val[1] '$val[2]'\n";
         }
+    }
+
+    /**
+     * Only date functions, optionally shifted by an interval, reach the SQL unquoted.
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    public static function isDateFunction($value)
+    {
+        $function = '(CURRENT_DATE|CURDATE|CURRENT_TIMESTAMP|NOW|UTC_DATE|UTC_TIMESTAMP)\(\)';
+        $interval = 'INTERVAL\s+\d{1,5}\s+(MINUTE|HOUR|DAY|WEEK|MONTH|YEAR)';
+
+        return 1 === preg_match(
+            '/^\s*(' . $function . '(\s*[-+]\s*' . $interval . ')?|DATE_(SUB|ADD)\(\s*' . $function . '\s*,\s*' . $interval . '\s*\))\s*$/i',
+            $value
+        );
     }
 
     /**
