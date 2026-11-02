@@ -543,8 +543,8 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
             } else {
                 echo '   <td>&nbsp;&nbsp;</td>' . "\n";
             }
-            echo '  <td>' . htmlspecialchars($item['file'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
-            echo '  <td>' . htmlspecialchars($item['type'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
+            echo '  <td>' . htmlspecialchars((string)$item['file'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
+            echo '  <td>' . htmlspecialchars((string)$item['type'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
             // If the file is in message/rfc822 format and isn't dangerous - create a link to allow it to be viewed
             // Domain admins can view the file only if enabled
             if ($quarantineAccess->canView('Y' === $item['dangerous'])

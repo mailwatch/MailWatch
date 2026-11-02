@@ -2222,7 +2222,7 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
                             }
                             $row[$f] .= " ($host)";
                         }
-                        $row[$f] = htmlspecialchars($row[$f], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                        $row[$f] = htmlspecialchars((string)$row[$f], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                         break;
                     case 'to_address':
                         $row[$f] = htmlentities((string)$row[$f]);

@@ -5,6 +5,7 @@
 - Bind the message identifier and the account's authorisation scope as query parameters in the quarantine operations, closing an SQL injection reachable through the XML-RPC quarantine methods
 - Verify the other node's TLS certificate on quarantine RPC calls, which 1.2 disabled unconditionally; set `RPC_VERIFY_PEER` to `false` to keep the previous behaviour with self-signed certificates (see [UPGRADING.md](UPGRADING.md))
 - Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)
+- Escape untrusted e-mail, MTA and request data in message details, the message viewer, mail queues, reports, the audit log and quarantine reports; serve message parts sandboxed and as downloads (GHSA-jcgr-2839-3jc7)
 
 ### Added
 - Add `logmail` API endpoint for programmatic mail log ingestion
@@ -70,13 +71,6 @@
 - The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
 - The password reset form checks that the reset link has not expired when the new password is submitted too
 - The password reset request gives the same answer whether the address exists or not, sends no new e-mail while a recent link is still valid, and is limited per client IP address
-
-## 1.2.28
-### Security
-- Escape untrusted e-mail, MTA and request data in message details, the message viewer, mail queues, reports, lists, the audit log and quarantine reports; serve message parts sandboxed and as downloads (GHSA-jcgr-2839-3jc7)
-
-### Fixed
-- Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
 
 ## 1.2.27
 ### Security

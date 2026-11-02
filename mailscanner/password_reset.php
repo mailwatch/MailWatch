@@ -330,8 +330,8 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                         }
                         if ('stage2' === $fields) {
                             ?>
-                                    <input type="hidden" name="email" value="<?php echo htmlspecialchars((string)$email, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
-                                    <input type="hidden" name="uid" value="<?php echo htmlspecialchars((string)$uid, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+                                    <input type="hidden" name="email" value="<?php echo htmlspecialchars((string)($email ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
+                                    <input type="hidden" name="uid" value="<?php echo htmlspecialchars((string)($uid ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
                                     <p><label for="pwd1"><?php echo __('01pwd63'); ?></label></p>
                                     <p><input name="pwd1" type="password" id="pwd1" autocomplete="off" autofocus></p>
                                     <p><label for="pwd2"><?php echo __('02pwd63'); ?></label></p>

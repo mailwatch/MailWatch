@@ -115,15 +115,16 @@ if (!empty($_POST)) {
                         $quarantined = quarantine_list_items($id, RPC_ONLY, $messageScope);
                         if (is_array($quarantined)) {
                             $to = $quarantined[0]['to'];
+                            // results embed SMTP and sa-learn replies
                             echo nl2br(htmlspecialchars((string)quarantine_release(
                                 $quarantined,
                                 $itemnum,
                                 $to,
                                 RPC_ONLY,
                                 $messageScope
-                            )));
+                            ), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
                         } else {
-                            echo $quarantined;
+                            echo nl2br(htmlspecialchars((string)$quarantined, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
                         }
                     }
                 } else {
@@ -133,7 +134,7 @@ if (!empty($_POST)) {
                         $type,
                         RPC_ONLY,
                         $messageScope
-                    )));
+                    ), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
                 }
                 echo '</td>' . "\n";
             }
