@@ -279,7 +279,7 @@ ORDER BY a.date DESC, a.time DESC';
                 // Make sure we have a destination address
                 if (false !== $email && '' !== $email) {
                     $sendResult = self::send_reports_for_user($user->username, $user->type, $email, $to_address, $to_domain, $sendEmptyReports);
-                    if (false === $sendResult) {
+                    if (0 === $sendResult) {
                         ++$num_empty_reports;
                     } elseif ($sendResult) {
                         ++$num_successfull_reports;
