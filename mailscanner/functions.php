@@ -48,6 +48,7 @@ if (!file_exists(__DIR__ . '/conf.php') || !is_readable(__DIR__ . '/conf.php')) 
 }
 require_once __DIR__ . '/conf.php';
 require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/conf_parser.inc.php';
 
 // more secure session cookies
 ini_set('session.use_cookies', '1');
@@ -1740,37 +1741,6 @@ function get_conf_var($name, $force = false)
 }
 
 /**
- * @param string $conf_dir
- *
- * @return array
- */
-function parse_conf_dir($conf_dir)
-{
-    if (!realpath($conf_dir)) {
-        $conf_dir = rtrim(MS_CONFIG_DIR, '/') . '/' . ltrim($conf_dir, '/');
-    }
-
-    $array_output1 = [];
-    if ($dh = opendir($conf_dir)) {
-        while (($file = readdir($dh)) !== false) {
-            // ignore subfolders and hidden files so that it doesn't throw an error when parsing files
-            if (strlen($file) > 0 && '.' !== substr($file, 0, 1) && is_file($conf_dir . $file)) {
-                $file_name = $conf_dir . $file;
-                if (!is_array($array_output1)) {
-                    $array_output1 = parse_conf_file($file_name);
-                } else {
-                    $array_output2 = parse_conf_file($file_name);
-                    $array_output1 = array_merge($array_output1, $array_output2);
-                }
-            }
-        }
-        closedir($dh);
-    }
-
-    return $array_output1;
-}
-
-/**
  * @param string $name
  * @param bool   $force
  *
@@ -1849,76 +1819,6 @@ function get_conf_include_folder($force = false)
     }
 
     exit(__('dienoconfigval103') . ' include ' . __('dienoconfigval203') . ' ' . $msconfig . "\n");
-}
-
-/**
- * Parse conf files.
- *
- * @param string $name
- *
- * @return array
- */
-function parse_conf_file($name)
-{
-    static $conf_file_cache;
-    if (null !== $conf_file_cache && isset($conf_file_cache[$name])) {
-        return $conf_file_cache[$name];
-    }
-
-    // check if file can be read
-    if (!is_file($name) || !is_readable($name)) {
-        $exitString = __('dienomsconf03');
-        if (defined('DEBUG') && DEBUG === true) {
-            $exitString .= ' (' . $name . ')';
-        }
-        exit($exitString);
-    }
-
-    $array_output = [];
-    $var = [];
-    // open each file and read it
-    $fileContent = array_filter(
-        file($name, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES),
-        function ($value) {
-            return !('#' === $value[0]);
-        }
-    );
-
-    foreach ($fileContent as $line) {
-        // echo "line: ".$line."\n"; // only use for troubleshooting lines
-
-        // find all lines that match
-        if (preg_match("/^(?P<name>[^#].+[^\s*$])\s*=\s*(?P<value>[^#]*)/", $line, $regs)) {
-            // Strip trailing comments
-            $regs['value'] = preg_replace('/#.*$/', '', $regs['value']);
-
-            // store %var% variables
-            if (preg_match('/%.+%/', $regs['name'])) {
-                $var[$regs['name']] = $regs['value'];
-            }
-
-            // expand %var% variables
-            if (preg_match('/(%[^%]+%)/', $regs['value'], $matches)) {
-                array_shift($matches);
-                foreach ($matches as $varname) {
-                    $regs['value'] = str_replace($varname, $var[$varname], $regs['value']);
-                }
-            }
-
-            // Remove any html entities from the code
-            $key = htmlentities($regs['name']);
-            // $string = htmlentities($regs['value']);
-            $string = $regs['value'];
-
-            // Stuff all of the data to an array
-            $array_output[$key] = $string;
-        }
-    }
-    unset($fileContent);
-
-    $conf_file_cache[$name] = $array_output;
-
-    return $conf_file_cache[$name];
 }
 
 function get_primary_scanner()
