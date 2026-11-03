@@ -154,10 +154,16 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             if ($_POST['pwd1'] === $_POST['pwd2']) {
                 // passwords match, now we need to store them
                 // first, check form hasn't been modified
-                $sql = "SELECT resetid FROM users WHERE username = '$email'";
+                $sql = "SELECT resetid, resetexpire FROM users WHERE username = '$email'";
                 $result = dbquery($sql);
                 $row = $result->fetch_array();
-                if ($row['resetid'] === $uid) {
+                if ($row['resetid'] === $uid && $row['resetexpire'] < time()) {
+                    // the form can be posted without opening the link again
+                    audit_log(sprintf(__('auditlogexpired63', true), $email));
+                    $errors = '<p class="pwdreseterror">' . __('resetexpired63') . '
+                        <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+                    $showpage = true;
+                } elseif ($row['resetid'] === $uid) {
                     require_once MAILWATCH_HOME . '/lib/password.php';
                     $password = $link->real_escape_string(password_hash($_POST['pwd1'], PASSWORD_DEFAULT));
                     $lastreset = time();
