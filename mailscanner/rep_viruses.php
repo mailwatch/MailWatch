@@ -156,11 +156,7 @@ while ($row = $result->fetch_object()) {
                 $virus_array[$virus]['first_seen'] = mailwatch_datetime_formatter()->dateTime($row->timestamp);
                 $virus_array[$virus]['scanner'] = $vals['name'];
             }
-            if (isset($virus_array[$virus]['count'])) {
-                $virus_array[$virus]['count'] += $row->reportcount;
-            } else {
-                $virus_array[$virus]['count'] = (int)$row->reportcount;
-            }
+            $virus_array[$virus]['count'] = ($virus_array[$virus]['count'] ?? 0) + (int)$row->reportcount;
         }
     }
 }

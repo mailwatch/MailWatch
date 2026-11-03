@@ -123,9 +123,10 @@ $sql = "
 ';
 
 // Fetch MTA stats
+// Count per 15 minutes of UTC: every TIME_ZONE offset is a multiple of 15 minutes, so each group falls in one display hour and day.
 $sql1 = '
 SELECT
- timestamp,
+ MIN(timestamp) AS timestamp,
  type,
  count(*) as count
 FROM
@@ -136,7 +137,7 @@ WHERE
 AND
  type<>'relay'
 GROUP BY
- timestamp, type
+ FLOOR(UNIX_TIMESTAMP(timestamp) / 900), type
 ";
 
 $sqlColumns = [

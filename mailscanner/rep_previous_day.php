@@ -37,9 +37,10 @@ require __DIR__ . '/login.function.php';
 $filter = html_start(__('totalmaillasthours36'), 0, false, true);
 
 $graphgenerator = new GraphGenerator();
+// Count per 15 minutes of UTC: every TIME_ZONE offset is a multiple of 15 minutes, so each group falls in one display hour and day.
 $graphgenerator->sqlQuery = '
  SELECT
-  MAX(timestamp) AS xaxis,
+  MIN(timestamp) AS xaxis,
   COUNT(*) AS total_mail,
   SUM(virusinfected) AS total_virus,
   SUM(isspam) AS total_spam,
@@ -50,10 +51,10 @@ $graphgenerator->sqlQuery = '
   1=1
  AND
   timestamp BETWEEN (NOW() - INTERVAL 24 HOUR) AND NOW()
-' . $filter->CreateSQL() . "
+' . $filter->CreateSQL() . '
  GROUP BY
-  DATE_FORMAT(timestamp, '%Y-%m-%d %H')
-";
+  FLOOR(UNIX_TIMESTAMP(timestamp) / 900)
+';
 
 $graphgenerator->tableColumns = [
     'time' => __('hours36'),

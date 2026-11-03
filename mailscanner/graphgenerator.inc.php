@@ -287,12 +287,7 @@ class GraphGenerator
             $virus = getVirus($report);
             if (null !== $virus) {
                 // rows grouped in SQL carry their count in 'reportcount'
-                $hits = isset($this->data['reportcount'][$i]) ? (int)$this->data['reportcount'][$i] : 1;
-                if (isset($viruses[$virus])) {
-                    $viruses[$virus] += $hits;
-                } else {
-                    $viruses[$virus] = $hits;
-                }
+                $viruses[$virus] = ($viruses[$virus] ?? 0) + (int)($this->data['reportcount'][$i] ?? 1);
             }
         }
         arsort($viruses);

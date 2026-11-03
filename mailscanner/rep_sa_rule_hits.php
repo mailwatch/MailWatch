@@ -102,9 +102,9 @@ while ($row = $result->fetch_object()) {
         }
 
         if ('0' !== $row->isspam) {
-            $sa_array[$rule]['spam'] += $row->reportcount;
+            $sa_array[$rule]['spam'] += (int)$row->reportcount;
         } else {
-            $sa_array[$rule]['not-spam'] += $row->reportcount;
+            $sa_array[$rule]['not-spam'] += (int)$row->reportcount;
         }
     }
 }
