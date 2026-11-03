@@ -6,6 +6,7 @@
 - Verify the other node's TLS certificate on quarantine RPC calls, which 1.2 disabled unconditionally; set `RPC_VERIFY_PEER` to `false` to keep the previous behaviour with self-signed certificates (see [UPGRADING.md](UPGRADING.md))
 - Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)
 - Escape untrusted e-mail, MTA and request data in message details, the message viewer, mail queues, reports, the audit log and quarantine reports; serve message parts sandboxed and as downloads (GHSA-jcgr-2839-3jc7)
+- Fix SQL injection in message table sorting and report filters, limit the filters a domain admin assigns and the allow/block list recipients a domain admin adds to the domains they manage, and enforce the dangerous content rules on auto-release links; upgrade.php lists the users left with the password "xxxxxxxx" by the 1.2 own settings form; validate message ids in the RPC server and drop the unused `get_quarantine` RPC method; quote values and stop evaluating database output in the LDAP sync (GHSA-fx6j-399x-49w7)
 
 ### Added
 - Failed logins are limited per client IP address and username (`LOGIN_MAX_FAILURES`, `LOGIN_LOCKOUT_MINUTES`); the new `login_failures` table comes from a database migration, and logins work as before until it exists
@@ -53,9 +54,6 @@
 - The minimal supported MariaDB version is now 10.4.34
 
 ## 1.2.29
-### Security
-- Fix SQL injection in message table sorting and report filters, enforce domain admin filter scope, allow/block list recipients and dangerous content rules on the server, and stop the own settings form from setting the password to "xxxxxxxx"; upgrade.php lists the users with that password; quote values and stop evaluating database output in the LDAP sync; validate message ids in the RPC server (GHSA-fx6j-399x-49w7)
-
 ### Fixed
 - Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 - An auto-release link that fails to release the message reports the error and stays usable
