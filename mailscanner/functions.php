@@ -267,7 +267,7 @@ function getVirusRegex($scanner = null)
  */
 function mailwatch_version()
 {
-    return '1.2.28';
+    return '1.2.29';
 }
 
 /**
