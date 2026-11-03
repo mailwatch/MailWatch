@@ -45,9 +45,7 @@ $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 // mtalog gets only the date filters and no domain restriction: its counts cover the whole server,
 // so show them to administrators and only when every active filter is on the date
 $showMtaColumns = SHOW_MORE_INFO_ON_REPORT_GRAPH === true && 'A' === $_SESSION['user_type']
-    && [] === array_filter($filter->item, function($item) {
-        return 'date' !== $item[0];
-    });
+    && [] === array_filter($filter->item, static fn(array $item): bool => 'date' !== $item[0]);
 
 $graphgenerator = new GraphGenerator();
 // SQL query to pull the data from maillog

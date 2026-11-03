@@ -55,6 +55,7 @@
 - The MailScanner configuration page expands `%var%` variables of MailScanner.conf in the values of the conf dir files again
 - `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
 - The total mail by date report runs its maillog query once instead of twice
+- The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -65,7 +66,6 @@
 ## 1.2.29
 ### Fixed
 - The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting (#1169)
-- The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
 
 ## 1.2.27
 ### Security
