@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!/usr/bin/php -q
 <?php
 
 /**
@@ -26,10 +26,14 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Edit if you changed webapp directory from default
-$pathToFunctions = __DIR__ . '/../../mailscanner/functions.php';
+// Auto-detect functions.php relative to this script, with fallback to default path
+$pathToFunctions = dirname(dirname(__DIR__)) . '/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
-    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 3) . PHP_EOL);
+    // Edit if you changed webapp directory from default
+    $pathToFunctions = '/var/www/html/mailscanner/functions.php';
+}
+if (!@is_file($pathToFunctions)) {
+    exit('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path' . PHP_EOL);
 }
 require $pathToFunctions;
 

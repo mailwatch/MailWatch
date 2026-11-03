@@ -35,6 +35,10 @@
  */
 function geoip_update_download($extract_dir, $eol)
 {
+    if (!defined('MAXMIND_LICENSE_KEY')) {
+        return __('geoipnokey15');
+    }
+
     require_once __DIR__ . '/lib/request/Requests.php';
     Requests::register_autoloader();
 
@@ -104,7 +108,7 @@ function geoip_update_download($extract_dir, $eol)
 
                 // remove auth and hooks from redirect request
                 $hooks = new Requests_Hooks();
-                $hooks->register('requests.before_redirect', function(&$location, &$req_headers, &$req_data, &$options) {
+                $hooks->register('requests.before_redirect', function(&$location, &$req_headers, &$req_data, &$options): void {
                     $options['auth'] = false;
                     $options['hooks'] = new Requests_Hooks();
                 });
