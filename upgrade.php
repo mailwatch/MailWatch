@@ -740,8 +740,17 @@ if ($link) {
 
     // Cleanup orphaned user_filters
     echo pad(' - Cleanup orphaned user_filters');
-    $sql = 'DELETE FROM user_filters WHERE username NOT IN (SELECT username FROM users)';
-    executeQuery($sql);
+    // delete by primary key: a DELETE with a subquery on users is unsafe for statement based replication
+    $orphanIds = array();
+    $result = $link->query('SELECT uf.id FROM user_filters uf LEFT JOIN users u ON u.username = uf.username WHERE u.username IS NULL');
+    while ($row = $result->fetch_row()) {
+        $orphanIds[] = (int)$row[0];
+    }
+    if (0 === count($orphanIds)) {
+        echo color(' NOTHING FOUND', 'lightgreen') . PHP_EOL;
+    } else {
+        executeQuery('DELETE FROM user_filters WHERE id IN (' . implode(',', $orphanIds) . ')');
+    }
 
     // Add new column and index to audit_log table
     echo pad(' - Add id field and primary key to `audit_log` table');
