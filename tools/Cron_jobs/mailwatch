@@ -15,15 +15,18 @@ to_syslog() {
 }
 
 # Quarantine Maintenance
-test -x /usr/local/bin/mailwatch_quarantine_maint.php || exit 0
-/usr/local/bin/mailwatch_quarantine_maint.php --clean
+if [ -x /usr/local/bin/mailwatch_quarantine_maint.php ]; then
+    /usr/local/bin/mailwatch_quarantine_maint.php --clean
+fi
 
 # Quarantine report
-test -x /usr/local/bin/mailwatch_quarantine_report.php || exit 0
-/usr/local/bin/mailwatch_quarantine_report.php 2>&1 | to_syslog quarantine-report
+if [ -x /usr/local/bin/mailwatch_quarantine_report.php ]; then
+    /usr/local/bin/mailwatch_quarantine_report.php 2>&1 | to_syslog quarantine-report
+fi
 
 # Clean MailWatch DB
-test -x /usr/local/bin/mailwatch_db_clean.php || exit 0
-/usr/local/bin/mailwatch_db_clean.php 2>&1 | to_syslog db-clean
+if [ -x /usr/local/bin/mailwatch_db_clean.php ]; then
+    /usr/local/bin/mailwatch_db_clean.php 2>&1 | to_syslog db-clean
+fi
 
 exit 0

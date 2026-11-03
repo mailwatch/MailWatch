@@ -26,6 +26,7 @@
 - The daily and monthly cron jobs send the report, database cleanup and GeoIP update output to syslog instead of discarding it
 - mailwatch_db_clean.php deletes all the expired maillog, mtalog and audit log rows in batches instead of the first batch only
 - mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
+- The daily cron job runs the database cleanup even when the quarantine maintenance or report script is not installed
 
 ## 1.2.28
 ### Security
