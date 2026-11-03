@@ -73,7 +73,7 @@ if (file_exists(__DIR__ . '/conf.php')) {
             } elseif ($row['uid'] === $token) {
                 $result = '';
                 // quarantine_release() sets $error when sending fails
-                $error = false;
+                $GLOBALS['error'] = false;
                 if (1 === count($list)) {
                     $to = $list[0]['to'];
                     $result = quarantine_release($list, [0], $to);
@@ -85,9 +85,9 @@ if (file_exists(__DIR__ . '/conf.php')) {
                         }
                     }
                 }
-                if (true === $error || !is_string($result) || '' === $result || 0 === strpos($result, 'XML-RPC Error')) {
+                if (true === $GLOBALS['error'] || '' === $result || str_starts_with($result, 'XML-RPC Error')) {
                     // keep the token so the link can be used again
-                    dbg('Auto-release of ' . $mid . ' failed: ' . print_r($result, true));
+                    dbg('Auto-release of ' . $mid . ' failed: ' . $result);
                     $output[] = __('dberror59');
                 } else {
                     $output[] = __('msgreleased59');
