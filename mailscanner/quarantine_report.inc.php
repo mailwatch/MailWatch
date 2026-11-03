@@ -162,7 +162,7 @@ AND
 </table>';
     }
 
-    private static function get_report_sql($useToFilter = true)
+    private static function get_report_sql($userType, $useToFilter = true)
     {
         $report_sql = "
 SELECT
@@ -197,7 +197,7 @@ WHERE
 AND
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . QUARANTINE_REPORT_DAYS . ' DAY)';
 
-        $report_sql .= hide_options_sql(false, 'U');
+        $report_sql .= hide_options_sql(false, $userType);
 
         $report_sql .= '
 ORDER BY a.date DESC, a.time DESC';
@@ -324,7 +324,7 @@ ORDER BY a.date DESC, a.time DESC';
                 $list_for = gethostname();
 
                 self::dbg(" ==== Building list for $list_for");
-                $quarantined = self::return_quarantine_list_array('', '');
+                $quarantined = self::return_quarantine_list_array('', '', $type);
                 self::dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
 
                 if (true === $sendEmptyReports || count($quarantined) > 0) {
@@ -342,7 +342,7 @@ ORDER BY a.date DESC, a.time DESC';
                     }
 
                     self::dbg(" ==== Building list for $list_for");
-                    $quarantined = self::return_quarantine_list_array($filter, $filter_domain);
+                    $quarantined = self::return_quarantine_list_array($filter, $filter_domain, $type);
                     self::dbg(' ==== Found ' . count($quarantined) . ' quarantined e-mails');
 
                     if (true === $sendEmptyReports || count($quarantined) > 0) {
@@ -364,7 +364,7 @@ ORDER BY a.date DESC, a.time DESC';
                 $list_for = gethostname();
 
                 self::dbg(" ==== Building list for $list_for");
-                $quarantined[] = self::return_quarantine_list_array('', '');
+                $quarantined[] = self::return_quarantine_list_array('', '', $type);
                 $quarantine_list[] = $list_for;
 
                 self::dbg(' ==== Found ' . count($quarantined[0]) . ' quarantined e-mails');
@@ -379,7 +379,7 @@ ORDER BY a.date DESC, a.time DESC';
                     }
 
                     self::dbg(" ==== Building list for $list_for");
-                    $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain);
+                    $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain, $type);
 
                     self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
                     if (count($tmp_quarantined) > 0) {
@@ -438,20 +438,21 @@ ORDER BY a.date DESC, a.time DESC';
     /**
      * @param string $to_address
      * @param string $to_domain
+     * @param string $userType   A, D or U: the HIDE_* options apply to this user type
      *
      * @return array
      */
-    private static function return_quarantine_list_array($to_address, $to_domain)
+    private static function return_quarantine_list_array($to_address, $to_domain, $userType)
     {
         if ('' != $to_address || '' != $to_domain) {
             // Qualify to email addresses only search among multiple recipients
             if (preg_match('/\S+@\S+/', $to_address)) {
-                $result = dbquery(sprintf(self::get_report_sql(), quote_smart('(^|,)' . preg_quote($to_address) . '(,|$)'), quote_smart($to_domain)));
+                $result = dbquery(sprintf(self::get_report_sql($userType), quote_smart('(^|,)' . preg_quote($to_address) . '(,|$)'), quote_smart($to_domain)));
             } else {
-                $result = dbquery(sprintf(self::get_report_sql(), quote_smart(preg_quote($to_address)), quote_smart($to_domain)));
+                $result = dbquery(sprintf(self::get_report_sql($userType), quote_smart(preg_quote($to_address)), quote_smart($to_domain)));
             }
         } else {
-            $result = dbquery(sprintf(self::get_report_sql(false)));
+            $result = dbquery(sprintf(self::get_report_sql($userType, false)));
         }
         $rows = $result->num_rows;
         $array = [];

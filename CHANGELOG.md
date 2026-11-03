@@ -17,6 +17,7 @@
 - The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
 - mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
 - mailwatch_sendmail_queue.php keeps the last queue snapshot when a queue directory cannot be read, instead of failing on PHP 8
+- `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
 
 ## 1.2.28
 ### Security
