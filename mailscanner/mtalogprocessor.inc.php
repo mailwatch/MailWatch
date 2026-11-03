@@ -148,11 +148,22 @@ abstract class MtaLogProcessor
     public function follow($file)
     {
         $size = filesize($file);
-        $lines = 1;
+        $inode = fileinode($file);
         while (true) {
             dbconn();
             clearstatcache();
-            $currentSize = filesize($file);
+            $currentSize = @filesize($file);
+            $currentInode = @fileinode($file);
+            if (false === $currentSize || false === $currentInode) {
+                // the log is being rotated
+                sleep(1);
+                continue;
+            }
+            if ($currentInode !== $inode || $currentSize < $size) {
+                // rotated or truncated: read the new file from the start
+                $inode = $currentInode;
+                $size = 0;
+            }
             if ($size === $currentSize) {
                 sleep(1);
                 continue;
@@ -164,13 +175,20 @@ abstract class MtaLogProcessor
             }
             fseek($fh, $size);
 
-            while ($line = fgets($fh)) {
+            $start = $size;
+            while (false !== ($line = fgets($fh))) {
+                if ("\n" !== substr($line, -1)) {
+                    // the MTA is still writing this line, read it again next time
+                    break;
+                }
                 $this->processLine($line);
-                ++$lines;
+                $size += strlen($line);
             }
             fclose($fh);
             dbclose();
-            $size = $currentSize;
+            if ($start === $size) {
+                sleep(1);
+            }
         }
     }
 

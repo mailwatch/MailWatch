@@ -18,6 +18,7 @@
 - mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
 - mailwatch_sendmail_queue.php keeps the last queue snapshot when a queue directory cannot be read, instead of failing on PHP 8
 - `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
+- The Postfix relay scripts keep following the mail log across rotation and truncation, read each line once and wait for lines still being written
 
 ## 1.2.28
 ### Security
