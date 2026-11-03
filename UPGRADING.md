@@ -148,3 +148,45 @@ define('RPC_VERIFY_PEER', false);
 ```
 
 Installations where RPC runs over plain HTTP are unaffected.
+
+### Failed logins are limited
+
+MailWatch now locks out a client IP address and username pair after too many
+failed logins. The counters live in the new `login_failures` table, created by
+the migration `Version20261103120000` (the `migrate` step above runs it). Until
+the table exists, logins work as before, without the limit.
+
+Two optional `conf.php` constants set the limit; these are the defaults:
+
+```php
+define('LOGIN_MAX_FAILURES', 5);
+define('LOGIN_LOCKOUT_MINUTES', 15);
+```
+
+Set `LOGIN_MAX_FAILURES` to `0` to disable the limit. Behind a reverse proxy,
+list it in `TRUSTED_PROXIES`, or every client shares the proxy's address and
+one attacker locks everybody out. `mailwatch_db_clean.php` removes the expired
+counters.
+
+Password reset requests now give the same answer whether the address exists or
+not, and are limited per client IP address with the same counters.
+
+### Users left with the password "xxxxxxxx"
+
+The 1.2 own settings form could save the literal placeholder `xxxxxxxx` as the
+password. `upgrade.php` lists the accounts whose password is still that value:
+set a new password for each of them.
+
+### The database cleanup no longer runs OPTIMIZE TABLE by default
+
+`DB_CLEAN_OPTIMIZE` now defaults to `false`: on large InnoDB tables `OPTIMIZE
+TABLE` rebuilds the table and can block it for a long time, while InnoDB reuses
+the freed space anyway. Add `define('DB_CLEAN_OPTIMIZE', true);` to `conf.php`
+to keep the previous behaviour.
+
+### Updated scripts outside the web root
+
+Copy again the cron jobs (`tools/Cron_jobs/`), the Postfix relay scripts
+(`tools/Postfix_relay/`), the Sendmail/Exim queue script and the LDAP sync
+script to where you installed them. The cron jobs now send their output to
+syslog (tag `mailwatch-<job>`) instead of discarding it.
