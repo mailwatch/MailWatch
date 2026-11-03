@@ -108,31 +108,32 @@ if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) {
         dbquery('DELETE LOW_PRIORITY FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
     } else {
         // With batching: first collect msg_ids to delete in batches, then delete from mtalog_ids
-        do {
-            // Get a batch of msg_ids to delete
+        while (true) {
+            // Get a batch of rows to delete
             $result = dbquery(
-                'SELECT msg_id FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY) LIMIT ' . $batchSize
+                'SELECT mtalog_id, msg_id FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY) LIMIT ' . $batchSize
             );
 
             if (0 === $result->num_rows) {
                 break;
             }
 
-            $msgIds = array();
+            $rowIds = [];
+            $msgIds = [];
             while ($row = $result->fetch_assoc()) {
+                $rowIds[] = (int)$row['mtalog_id'];
                 if (null !== $row['msg_id']) {
-                    $msgIds[] = "'" . addslashes($row['msg_id']) . "'";
+                    $msgIds[] = "'" . safe_value($row['msg_id']) . "'";
                 }
             }
 
+            // Delete from mtalog_ids first
             if (!empty($msgIds)) {
-                $msgIdList = implode(',', $msgIds);
-                // Delete from mtalog_ids first
-                dbquery('DELETE FROM mtalog_ids WHERE smtp_id IN (' . $msgIdList . ')');
-                // Then delete from mtalog
-                dbquery('DELETE LOW_PRIORITY FROM mtalog WHERE msg_id IN (' . $msgIdList . ')');
+                dbquery('DELETE FROM mtalog_ids WHERE smtp_id IN (' . implode(',', array_unique($msgIds)) . ')');
             }
-        } while ($result->num_rows > 0);
+            // Then delete the selected rows only: msg_id is not unique (NOQUEUE) and can be NULL
+            dbquery('DELETE LOW_PRIORITY FROM mtalog WHERE mtalog_id IN (' . implode(',', $rowIds) . ')');
+        }
     }
     $optimize_mtalog_id = ', mtalog_ids';
 } else {

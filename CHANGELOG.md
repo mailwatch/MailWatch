@@ -22,6 +22,7 @@
 - The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting
 - The daily and monthly cron jobs send the report, database cleanup and GeoIP update output to syslog instead of discarding it
 - mailwatch_db_clean.php deletes all the expired maillog, mtalog and audit log rows in batches instead of the first batch only
+- mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
 
 ## 1.2.28
 ### Security
