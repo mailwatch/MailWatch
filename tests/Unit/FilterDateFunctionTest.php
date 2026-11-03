@@ -1,41 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../../mailscanner/filter.inc.php';
 
-class FilterDateFunctionTest extends TestCase
+final class FilterDateFunctionTest extends TestCase
 {
-    /**
-     * @dataProvider provideDateFunctions
-     */
-    public function testAcceptsDateFunctions($value)
+    #[DataProvider('provideDateFunctions')]
+    public function testAcceptsDateFunctions(string $value): void
     {
-        $this->assertTrue(\Filter::isDateFunction($value), $value);
+        self::assertTrue(\Filter::isDateFunction($value), $value);
     }
 
-    public function provideDateFunctions()
+    /** @return list<array{string}> */
+    public static function provideDateFunctions(): array
     {
         return [
             ['CURRENT_DATE()'],
             ['curdate()'],
+            ['UTC_TIMESTAMP()'],
             ['NOW() - INTERVAL 7 DAY'],
             ['CURDATE()+INTERVAL 1 MONTH'],
             ['DATE_SUB(CURDATE(), INTERVAL 30 DAY)'],
         ];
     }
 
-    /**
-     * @dataProvider provideOtherExpressions
-     */
-    public function testRejectsOtherExpressions($value)
+    #[DataProvider('provideOtherExpressions')]
+    public function testRejectsOtherExpressions(string $value): void
     {
-        $this->assertFalse(\Filter::isDateFunction($value), $value);
+        self::assertFalse(\Filter::isDateFunction($value), $value);
     }
 
-    public function provideOtherExpressions()
+    /** @return list<array{string}> */
+    public static function provideOtherExpressions(): array
     {
         return [
             [''],
