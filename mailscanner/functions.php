@@ -1040,7 +1040,7 @@ function dbquery($sql, $printError = true)
  *
  * @param string $sql
  *
- * @return mysqli_result|bool
+ * @return mysqli_result
  */
 function dbquery_reconnect($sql)
 {
