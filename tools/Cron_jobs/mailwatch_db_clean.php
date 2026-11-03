@@ -69,14 +69,14 @@ function deleteInBatches(string $table, string $whereClause, int $batchSize): in
         // No batching - delete all in one query
         dbquery("DELETE LOW_PRIORITY FROM {$table} WHERE {$whereClause}");
 
-        return dbconn()->affected_rows;
+        return (int)dbconn()->affected_rows;
     }
 
     // Delete in batches
     do {
         // DELETE returns true, not a result: the count is on the connection
         dbquery("DELETE LOW_PRIORITY FROM {$table} WHERE {$whereClause} LIMIT {$batchSize}");
-        $deleted = dbconn()->affected_rows;
+        $deleted = (int)dbconn()->affected_rows;
         $totalDeleted += $deleted;
     } while ($deleted > 0);
 
