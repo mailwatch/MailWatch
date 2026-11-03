@@ -41,6 +41,7 @@
 - mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
 - The daily cron job runs the database cleanup even when the quarantine maintenance or report script is not installed
 - The GeoIP update through wget works without an account ID, with a proxy and with an account ID together, and over an https proxy
+- Passwords with quotes or backslashes that users set themselves before 1.3 work again, and are rehashed in their plain form at the next login
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -58,7 +59,6 @@
 ### Fixed
 - Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 - An auto-release link that fails to release the message reports the error and stays usable
-- Passwords that contain quotes or backslashes work the same whether an administrator or the user sets them
 - Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
 - upgrade.php checks the `user_filters.username` column itself before resizing it
 - The previous day, virus, top virus, SpamAssassin rule hits and total mail by date reports count in the database instead of loading every message

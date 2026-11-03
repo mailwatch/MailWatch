@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Users\Application;
 
 use MailWatch\Shared\Application\Port\PasswordHasher;
 use MailWatch\Shared\Application\Port\PasswordVerifier;
+use MailWatch\Shared\Infrastructure\Security\NativePasswordHasher;
 use MailWatch\Users\Application\AuthenticateUser;
 use MailWatch\Users\Application\EmptyPassword;
 use MailWatch\Users\Application\ExternalCredentialVerifier;
@@ -118,6 +119,34 @@ final class AuthenticateUserTest extends TestCase
 
         self::assertTrue($result->passwordHashUpgraded);
         self::assertSame([['local@example.test', 'new:secret']], $gateway->passwordUpdates);
+    }
+
+    public function testPasswordsHashedInTheirSqlEscapedFormAreAcceptedAndRehashed(): void
+    {
+        $gateway = new RecordingLoginAccountGateway();
+        $gateway->accounts['local@example.test'] = self::account(
+            'local@example.test',
+            password_hash('it\\\'s \\"x\\\\', PASSWORD_DEFAULT),
+        );
+        $native = new NativePasswordHasher();
+
+        $result = (new AuthenticateUser($gateway, $native, $native, [], 600))
+            ->authenticate('local@example.test', 'it\'s "x\\', 1000);
+
+        self::assertTrue($result->passwordHashUpgraded);
+        self::assertCount(1, $gateway->passwordUpdates);
+        self::assertTrue(password_verify('it\'s "x\\', $gateway->passwordUpdates[0][1]));
+    }
+
+    public function testLegacyMd5OfTheSqlEscapedFormIsAccepted(): void
+    {
+        $gateway = new RecordingLoginAccountGateway();
+        $gateway->accounts['local@example.test'] = self::account('local@example.test', md5("o\\'k"));
+
+        $result = self::authenticator($gateway)->authenticate('local@example.test', "o'k", 1000);
+
+        self::assertTrue($result->passwordHashUpgraded);
+        self::assertSame([['local@example.test', "new:o'k"]], $gateway->passwordUpdates);
     }
 
     public function testInvalidLocalCredentialsAreRejected(): void

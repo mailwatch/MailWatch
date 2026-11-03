@@ -44,20 +44,40 @@ final readonly class AuthenticateUser
         }
 
         $passwordHash = $account->passwordHash;
-        $passwordHashUpgraded = false;
-        if ($this->passwordVerifier->verify($password, $passwordHash)) {
-            if ($this->passwordVerifier->needsRehash($passwordHash)) {
-                $this->gateway->updatePasswordHash($account->username, $this->passwordHasher->hash($password));
-                $passwordHashUpgraded = true;
+        // Passwords saved by users themselves used to be hashed in their SQL-escaped form
+        foreach (array_unique([$password, self::sqlEscaped($password)]) as $candidate) {
+            $modern = $this->passwordVerifier->verify($candidate, $passwordHash);
+            if (!$modern && !hash_equals(md5($candidate), $passwordHash)) {
+                continue;
             }
-        } elseif (hash_equals(md5($password), $passwordHash)) {
-            $this->gateway->updatePasswordHash($account->username, $this->passwordHasher->hash($password));
-            $passwordHashUpgraded = true;
-        } else {
-            throw new InvalidCredentials();
+
+            $passwordHashUpgraded = !$modern
+                || $candidate !== $password
+                || $this->passwordVerifier->needsRehash($passwordHash);
+            if ($passwordHashUpgraded) {
+                $this->gateway->updatePasswordHash($account->username, $this->passwordHasher->hash($password));
+            }
+
+            return $this->successfulLogin($account, AuthenticationSource::Database, $now, $passwordHashUpgraded);
         }
 
-        return $this->successfulLogin($account, AuthenticationSource::Database, $now, $passwordHashUpgraded);
+        throw new InvalidCredentials();
+    }
+
+    /**
+     * The form mysqli::real_escape_string() gave a password before it was hashed.
+     */
+    private static function sqlEscaped(string $password): string
+    {
+        return strtr($password, [
+            '\\' => '\\\\',
+            "\0" => '\\0',
+            "\n" => '\\n',
+            "\r" => '\\r',
+            "'" => "\\'",
+            '"' => '\\"',
+            "\x1a" => '\\Z',
+        ]);
     }
 
     private function externalLogin(ExternalIdentity $identity, int $now): AuthenticatedUser
