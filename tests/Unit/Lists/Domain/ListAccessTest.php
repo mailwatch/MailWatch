@@ -33,6 +33,9 @@ final class ListAccessTest extends TestCase
         self::assertTrue($access->canAdd('recipient@delegated.example.test', 'delegated.example.test'));
         self::assertTrue($access->canView(new ListEntry(1, 'sender', 'recipient@example.test', 'example.test')));
         self::assertFalse($access->canAdd('recipient@other.test', 'other.test'));
+        self::assertTrue($access->canAdd('Example.test', 'example.test'));
+        self::assertFalse($access->canAdd('victim@other.test', 'example.test'));
+        self::assertFalse($access->canAdd('other.test', 'example.test'));
     }
 
     public function testAdministratorsAreUnrestrictedAndUnsupportedRolesHaveNoListAccess(): void

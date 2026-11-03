@@ -48,11 +48,7 @@ final readonly class ListAccess
         }
 
         if ('D' === $role) {
-            $domain = str_contains($normalizedUsername, '@')
-                ? substr($normalizedUsername, (int)strrpos($normalizedUsername, '@') + 1)
-                : $normalizedUsername;
-
-            return new self($role, [], [], self::normalize([...$filters, $domain]));
+            return new self($role, [], [], self::normalize([...$filters, self::domainOf($normalizedUsername)]));
         }
 
         return new self($role, [], [], []);
@@ -96,9 +92,18 @@ final readonly class ListAccess
         return match ($this->role) {
             'A' => true,
             'U' => in_array(strtolower($toAddress), $this->selectableAddresses, true),
-            'D' => in_array(strtolower($toDomain), $this->domains, true),
+            // MailScanner matches on to_address, so the address itself must be in a managed domain
+            'D' => in_array(strtolower($toDomain), $this->domains, true)
+                && in_array(self::domainOf(strtolower($toAddress)), $this->domains, true),
             default => false,
         };
+    }
+
+    private static function domainOf(string $address): string
+    {
+        $separator = strrpos($address, '@');
+
+        return false === $separator ? $address : substr($address, $separator + 1);
     }
 
     /**
