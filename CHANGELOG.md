@@ -39,6 +39,7 @@
 - The daily and monthly cron jobs send the report, database cleanup and GeoIP update output to syslog instead of discarding it
 - mailwatch_db_clean.php deletes all the expired maillog, mtalog and audit log rows in batches instead of the first batch only
 - mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
+- The daily cron job runs the database cleanup even when the quarantine maintenance or report script is not installed
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -64,7 +65,6 @@
 - The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
 - `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
 - The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting (#1169)
-- The daily cron job runs the database cleanup even when the quarantine maintenance or report script is not installed
 - The GeoIP update through wget works without an account ID, with a proxy and with an account ID together, and over an https proxy
 - The total mail by date report runs its maillog query once instead of twice
 - The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
