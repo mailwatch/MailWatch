@@ -54,6 +54,7 @@ final readonly class ManageSavedFilters
             $actorDomain,
             $targetId,
             $superDomainAdministrators,
+            $filter->value,
         );
         $this->gateway->add($target->username, $filter);
     }
@@ -91,6 +92,7 @@ final readonly class ManageSavedFilters
             $actorDomain,
             $targetId,
             $superDomainAdministrators,
+            $filter,
         );
 
         return $this->gateway->toggle($target->username, $filter);
@@ -102,6 +104,7 @@ final readonly class ManageSavedFilters
         string $actorDomain,
         int $targetId,
         bool $superDomainAdministrators,
+        ?string $assignedFilter = null,
     ): LocalAccount {
         [$target, $access] = $this->targetAndAccess(
             $actorUsername,
@@ -111,7 +114,8 @@ final readonly class ManageSavedFilters
             $superDomainAdministrators,
         );
 
-        if (!$access->canMutate($target)) {
+        if (!$access->canMutate($target)
+            || (null !== $assignedFilter && !$access->canAssign($assignedFilter))) {
             throw new SavedFilterAccessDenied();
         }
 

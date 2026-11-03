@@ -49,6 +49,26 @@ final readonly class SavedFilterAccess
             && ('A' === $this->actorRole || !$this->sameAccount($target));
     }
 
+    /**
+     * A filter widens what the target account sees, so it may only point into
+     * the domains the actor manages.
+     */
+    public function canAssign(string $filter): bool
+    {
+        if ('A' === $this->actorRole) {
+            return true;
+        }
+
+        if ('D' !== $this->actorRole) {
+            return false;
+        }
+
+        $separator = strrpos($filter, '@');
+        $filterDomain = false === $separator ? $filter : substr($filter, $separator + 1);
+
+        return '' !== $filterDomain && in_array(strtolower($filterDomain), $this->managedDomains(), true);
+    }
+
     private function sameAccount(LocalAccount $target): bool
     {
         return 0 === strcasecmp($this->actorUsername, $target->username);
@@ -61,9 +81,12 @@ final readonly class SavedFilterAccess
             return '' === $this->actorDomain;
         }
 
-        $targetDomain = strtolower(substr($username, $separator + 1));
-        $domains = array_map('strtolower', [...$this->delegatedDomains, $this->actorDomain]);
+        return in_array(strtolower(substr($username, $separator + 1)), $this->managedDomains(), true);
+    }
 
-        return in_array($targetDomain, $domains, true);
+    /** @return list<string> */
+    private function managedDomains(): array
+    {
+        return array_map('strtolower', [...$this->delegatedDomains, $this->actorDomain]);
     }
 }

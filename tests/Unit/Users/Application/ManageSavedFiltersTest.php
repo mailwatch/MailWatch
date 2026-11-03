@@ -53,6 +53,30 @@ final class ManageSavedFiltersTest extends TestCase
         );
     }
 
+    public function testItRejectsFiltersOutsideTheDomainAdministratorsDomains(): void
+    {
+        $gateway = new RecordingSavedFilterGateway();
+        $gateway->accounts[2] = new LocalAccount(2, 'user@example.test', 'U');
+        $gateway->filters['user@example.test'] = [new SavedFilter('outside.test', false)];
+        $manager = new ManageSavedFilters($gateway);
+
+        try {
+            $manager->add('manager@example.test', 'D', 'example.test', 2, false, new SavedFilter('outside.test', true));
+            self::fail('A filter outside the managed domains was added');
+        } catch (SavedFilterAccessDenied) {
+        }
+
+        try {
+            $manager->toggle('manager@example.test', 'D', 'example.test', 2, false, 'outside.test');
+            self::fail('A filter outside the managed domains was toggled');
+        } catch (SavedFilterAccessDenied) {
+        }
+
+        self::assertFalse($gateway->filters['user@example.test'][0]->active);
+        $manager->add('manager@example.test', 'D', 'example.test', 2, false, new SavedFilter('alias@example.test', true));
+        self::assertCount(2, $gateway->filters['user@example.test']);
+    }
+
     public function testItDispatchesAuthorizedMutationsToPersistence(): void
     {
         $gateway = new RecordingSavedFilterGateway();

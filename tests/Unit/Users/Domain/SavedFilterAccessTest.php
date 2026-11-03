@@ -59,4 +59,17 @@ final class SavedFilterAccessTest extends TestCase
         self::assertTrue($access->canMutate(new LocalAccount(1, 'user', 'U')));
         self::assertFalse($access->canView(new LocalAccount(2, 'user@example.test', 'U')));
     }
+
+    public function testDomainAdministratorsCanAssignOnlyFiltersInTheDomainsTheyManage(): void
+    {
+        $access = new SavedFilterAccess('manager@example.test', 'D', 'example.test', ['delegated.test'], false);
+
+        self::assertTrue($access->canAssign('alias@Example.test'));
+        self::assertTrue($access->canAssign('DELEGATED.test'));
+        self::assertFalse($access->canAssign('outside.test'));
+        self::assertFalse($access->canAssign('victim@outside.test'));
+        self::assertFalse($access->canAssign('sub.example.test'));
+        self::assertTrue((new SavedFilterAccess('root', 'A', '', [], false))->canAssign('outside.test'));
+        self::assertFalse((new SavedFilterAccess('user@example.test', 'U', 'example.test', [], false))->canAssign('example.test'));
+    }
 }
