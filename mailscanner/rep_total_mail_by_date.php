@@ -42,6 +42,13 @@ $date_format = "'" . DATE_FORMAT . "'";
 // Check if MCP is enabled
 $is_MCP_enabled = get_conf_truefalse('mcpchecks');
 
+// mtalog gets only the date filters and no domain restriction: its counts cover the whole server,
+// so show them to administrators and only when every active filter is on the date
+$showMtaColumns = SHOW_MORE_INFO_ON_REPORT_GRAPH === true && 'A' === $_SESSION['user_type']
+    && [] === array_filter($filter->item, function($item) {
+        return 'date' !== $item[0];
+    });
+
 $graphgenerator = new GraphGenerator();
 // SQL query to pull the data from maillog
 $sql = "
@@ -203,9 +210,6 @@ if (empty($data)) {
     exit;
 }
 
-// Connecting to the DB and running the query
-$result1 = dbquery($sql1);
-
 $data_labels = $data['xaxis'];
 $data_total_mail = $data['total_mail'];
 $data_total_virii = $data['total_virus'];
@@ -221,7 +225,8 @@ $data_total_size = $data['total_size'];
 $data_total_unknown_users = [];
 $data_total_rbl = [];
 $data_total_unresolveable = [];
-while ($row1 = $result1->fetch_object()) {
+$result1 = $showMtaColumns ? dbquery($sql1) : false;
+while ($result1 && $row1 = $result1->fetch_object()) {
     if (is_numeric($key = array_search($row1->xaxis, $data_labels, true))) {
         switch (true) {
             case 'unknown_user' === $row1->type:
@@ -250,7 +255,7 @@ if (true === $is_MCP_enabled) {
     echo "  <TH colspan='2'>" . __('mcp49') . '</TH>' . "\n";
 }
 echo "  <TH rowspan='2'>" . __('volume49') . '</TH>' . "\n";
-if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+if ($showMtaColumns) {
     echo "  <TH rowspan='2'>" . __('unknoweusers49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('resolve49') . '</TH>' . "\n";
     echo "  <TH rowspan='2'>" . __('rbl49') . '</TH>' . "\n";
@@ -286,7 +291,7 @@ for ($i = 0, $count_data_total_mail = count($data_total_mail); $i < $count_data_
         echo " <TD bgcolor='#ffffff' ALIGN=\"RIGHT\">" . suppress_zeros(number_format($data_total_mcp[$i] / $data_total_mail[$i] * 100, 1)) . '</TD>' . "\n";
     }
     echo ' <TD ALIGN="RIGHT">' . formatSize($data_total_size[$i]) . '</TD>' . "\n";
-    if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+    if ($showMtaColumns) {
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unknown_users[$i]) ? $data_total_unknown_users[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_unresolveable[$i]) ? $data_total_unresolveable[$i] : 0)) . '</TD>' . "\n";
         echo ' <TD ALIGN="CENTER">' . suppress_zeros(number_format(isset($data_total_rbl[$i]) ? $data_total_rbl[$i] : 0)) . '</TD>' . "\n";
@@ -317,7 +322,7 @@ if (true === $is_MCP_enabled) {
     echo ' <TH nowrap ALIGN="RIGHT">' . number_format(mailwatch_array_sum($data_total_mcp) / mailwatch_array_sum($data_total_mail) * 100, 0) . "%</TH>\n";
 }
 echo ' <TH ALIGN="RIGHT">' . formatSize(mailwatch_array_sum($data_total_size)) . '</TH>' . "\n";
-if (SHOW_MORE_INFO_ON_REPORT_GRAPH === true) {
+if ($showMtaColumns) {
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unknown_users)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_unresolveable)) . '</TH>' . "\n";
     echo ' <TH ALIGN="CENTER">' . number_format(mailwatch_array_sum($data_total_rbl)) . '</TH>' . "\n";

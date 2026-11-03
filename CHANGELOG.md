@@ -29,6 +29,7 @@
 - The daily cron job runs the database cleanup even when the quarantine maintenance or report script is not installed
 - The GeoIP update through wget works without an account ID, with a proxy and with an account ID together, and over an https proxy
 - The total mail by date report runs its maillog query once instead of twice
+- The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
 
 ## 1.2.28
 ### Security
