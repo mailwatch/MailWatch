@@ -1667,60 +1667,6 @@ function formatSize($size, $precision = 2)
 }
 
 /**
- * @param array $data_in
- * @param array $info_out
- */
-function format_report_volume(&$data_in, &$info_out)
-{
-    // Measures
-    $kb = 1024;
-    $mb = 1024 * $kb;
-    $gb = 1024 * $mb;
-    $tb = 1024 * $gb;
-
-    // Copy the data to a temporary variable
-    $temp = $data_in;
-
-    // Work out the average size of values in the array
-    $count = count($temp);
-    $sum = array_sum($temp);
-    $average = $sum / $count;
-
-    // Work out the largest value in the array
-    arsort($temp);
-    array_pop($temp);
-
-    // Calculate the correct display size for the average value
-    if ($average < $kb) {
-        $info_out['formula'] = 1;
-        $info_out['shortdesc'] = 'b';
-        $info_out['longdesc'] = 'Bytes';
-    } elseif ($average < $mb) {
-        $info_out['formula'] = $kb;
-        $info_out['shortdesc'] = 'Kb';
-        $info_out['longdesc'] = 'Kilobytes';
-    } elseif ($average < $gb) {
-        $info_out['formula'] = $mb;
-        $info_out['shortdesc'] = 'Mb';
-        $info_out['longdesc'] = 'Megabytes';
-    } elseif ($average < $tb) {
-        $info_out['formula'] = $gb;
-        $info_out['shortdesc'] = 'Gb';
-        $info_out['longdesc'] = 'Gigabytes';
-    } else {
-        $info_out['formula'] = $tb;
-        $info_out['shortdesc'] = 'Tb';
-        $info_out['longdesc'] = 'Terabytes';
-    }
-
-    // Modify the original data accordingly
-    $num_data_in = count($data_in);
-    for ($i = 0; $i < $num_data_in; ++$i) {
-        $data_in[$i] /= $info_out['formula'];
-    }
-}
-
-/**
  * @param string $input
  * @param int    $maxlen
  *
