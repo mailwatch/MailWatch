@@ -5,16 +5,25 @@
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
 # Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
+# Send the output to syslog, or discard it where logger is missing
+to_syslog() {
+    if command -v logger >/dev/null 2>&1; then
+        logger -t "mailwatch-$1"
+    else
+        cat >/dev/null
+    fi
+}
+
 # Quarantine Maintenance
 test -x /usr/local/bin/mailwatch_quarantine_maint.php || exit 0
 /usr/local/bin/mailwatch_quarantine_maint.php --clean
 
 # Quarantine report
 test -x /usr/local/bin/mailwatch_quarantine_report.php || exit 0
-/usr/local/bin/mailwatch_quarantine_report.php >/dev/null 2>&1
+/usr/local/bin/mailwatch_quarantine_report.php 2>&1 | to_syslog quarantine-report
 
 # Clean MailWatch DB
 test -x /usr/local/bin/mailwatch_db_clean.php || exit 0
-/usr/local/bin/mailwatch_db_clean.php >/dev/null 2>&1
+/usr/local/bin/mailwatch_db_clean.php 2>&1 | to_syslog db-clean
 
 exit 0
