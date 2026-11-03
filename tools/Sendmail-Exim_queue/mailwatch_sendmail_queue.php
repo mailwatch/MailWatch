@@ -235,8 +235,12 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                     }
                 }
             }
+            closedir($dh);
+        } else {
+            // an unreadable queue is not an empty one: keep the last snapshot
+            echo 'Unable to read queue directory "' . $queuedir . '", ' . $table_name . ' not updated.' . "\n";
+            continue;
         }
-        closedir($dh);
         // Get our hostname
         $sys_hostname = rtrim(gethostname());
         // Replace the rows in one transaction, so the web UI never sees a half-filled queue

@@ -16,6 +16,7 @@
 - The MailScanner rules editor opens empty rules files on PHP 8
 - The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
 - mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
+- mailwatch_sendmail_queue.php keeps the last queue snapshot when a queue directory cannot be read, instead of failing on PHP 8
 
 ## 1.2.28
 ### Security
