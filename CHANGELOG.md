@@ -27,6 +27,7 @@
 - mailwatch_db_clean.php deletes all the expired maillog, mtalog and audit log rows in batches instead of the first batch only
 - mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
 - The daily cron job runs the database cleanup even when the quarantine maintenance or report script is not installed
+- The GeoIP update through wget works without an account ID, with a proxy and with an account ID together, and over an https proxy
 
 ## 1.2.28
 ### Security

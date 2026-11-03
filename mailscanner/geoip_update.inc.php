@@ -133,22 +133,23 @@ function geoip_update_download($extract_dir, $eol)
         ob_flush();
         flush();
     } elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-        // wget
-        $proxyString = '';
+        // wget, each argument quoted on its own
+        $command = 'wget';
         if (USE_PROXY) {
+            // the download is https, wget ignores http_proxy for it
+            $proxy = PROXY_SERVER . ':' . PROXY_PORT;
+            $command .= ' -e use_proxy=on -e ' . escapeshellarg('http_proxy=' . $proxy) . ' -e ' . escapeshellarg('https_proxy=' . $proxy);
             if (PROXY_USER !== '') {
-                $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
-            } else {
-                $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
+                $command .= ' --proxy-user=' . escapeshellarg(PROXY_USER) . ' --proxy-password=' . escapeshellarg(PROXY_PASS);
             }
         }
-
         if (defined('MAXMIND_ACCOUNT_ID')) {
-            $wget_basic_auth = sprintf('--user=%s --password=%s', MAXMIND_ACCOUNT_ID, MAXMIND_LICENSE_KEY);
-            $command = escapeshellcmd('wget ' . $wget_basic_auth . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination']);
+            $command .= ' --user=' . escapeshellarg(MAXMIND_ACCOUNT_ID) . ' --password=' . escapeshellarg(MAXMIND_LICENSE_KEY);
+            $command .= ' ' . escapeshellarg($files_base_url . $file['path']);
         } else {
-            $command = escapeshellcmd('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination']);
+            $command .= ' ' . escapeshellarg($files_base_url . $file['legacy_path']);
         }
+        $command .= ' -O ' . escapeshellarg($file['destination']);
 
         exec($command, $output_wget, $retval_wget);
         if ($retval_wget > 0) {
