@@ -88,7 +88,7 @@ if ('A' !== $_SESSION['user_type']) {
 
     // Read the file into a variable, so that each function doesn't
     // need to do it themselves.
-    $file_contents = Read_File($full_filename, filesize($full_filename));
+    $file_contents = Read_File($full_filename);
 
     // This will get populated later by a function (I need it to find
     // the end of the comments @ the top of the file)
@@ -103,7 +103,7 @@ if ('A' !== $_SESSION['user_type']) {
 
         list($bytes_written, $status_message) = Process_Form($file_contents, $short_filename);
         // Re-read the file after processing
-        $file_contents = Read_File($full_filename, $bytes_written);
+        $file_contents = Read_File($full_filename);
     }
 
     // The form always gets displayed, even if it was submitted, so
@@ -730,16 +730,9 @@ function Process_Form($file_contents, $short_filename)
     return [$bytes, $status_msg];
 }
 
-function Read_File($filename, $size)
+function Read_File($filename)
 {
-    // Read contents of file
-    $fh = fopen($filename, 'rb');
-    // Read contents into string
-    $returnvalue = fread($fh, $size);
-    // Close file
-    fclose($fh);
-
-    return $returnvalue;
+    return file_get_contents($filename);
 }
 
 /**
