@@ -25,6 +25,7 @@
  */
 
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/loginthrottle.inc.php';
 
 // Check if LDAP is enabled, if so, prevent usage
 if (USE_LDAP === true) {
@@ -69,18 +70,29 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             if (!validateInput($email, 'email')) {
                 exit;
             }
+            // the same answer whatever happens, so that the page does not tell which users exist
+            $message = '<p>' . __('resetrequested63') . '</p>
+                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
+            $showpage = true;
+            // one counter per client IP for all the requests, whatever the address
+            $throttleLocked = login_throttle_is_locked('#password-reset');
+            login_throttle_record_failure('#password-reset');
+            list(, $lockoutSeconds) = login_throttle_limits();
+
             $sql = "SELECT * FROM users WHERE username = '$email'";
             $result = dbquery($sql);
-            if (1 !== $result->num_rows) {
+            if ($throttleLocked) {
+                // too many requests from this client: send nothing
+            } elseif (1 !== $result->num_rows) {
                 // user not found
-                $errors = '<p class="pwdreseterror">' . __('usernotfound63') . '</p>
-                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                 audit_log(sprintf(__('auditlogunf63', true), $email));
-                $showpage = true;
             } else {
                 // user found, now check type of user
                 $row = $result->fetch_assoc();
-                if ('U' === $row['type']) {
+                if ('U' === $row['type'] && $row['resetexpire'] > time()
+                    && $row['resetexpire'] - 60 * 60 * RESET_LINK_EXPIRE > time() - $lockoutSeconds) {
+                    // the link sent a short while ago is still valid: do not send another one
+                } elseif ('U' === $row['type']) {
                     // user type is user, password reset allowed
                     $rand = get_random_string(16);
                     $resetexpire = time() + 60 * 60 * RESET_LINK_EXPIRE;
@@ -128,16 +140,10 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                         exit('Error Sending email: ' . $isSent);
                     }
 
-                    $message = '<p>' . __('01emailsuccess63') . '</p>
-                    <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
                     audit_log(sprintf(__('auditlogreserreqested63', true), $email));
-                    $showpage = true;
                 } else {
                     // password reset not allowed
                     audit_log(sprintf(__('auditlogresetdenied63', true), $email));
-                    $errors = '<p class="pwdreseterror">' . __('resetnotallowed63') . '</p>';
-                    $errors .= '<div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
-                    $showpage = true;
                 }
             }
         } elseif ('stage2Submit' === $_POST['Submit']) {

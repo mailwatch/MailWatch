@@ -32,6 +32,7 @@
 - The total mail by date report runs its maillog query once instead of twice
 - The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
 - The password reset form checks that the reset link has not expired when the new password is submitted too
+- The password reset request gives the same answer whether the address exists or not, sends no new e-mail while a recent link is still valid, and is limited per client IP address
 
 ## 1.2.28
 ### Security
