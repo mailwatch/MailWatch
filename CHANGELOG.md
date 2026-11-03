@@ -31,6 +31,7 @@
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
 - Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
 - tools/LDAP/mailwatch_ldap_sync.sh no longer deletes the imported users when the directory cannot be reached
+- mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -57,7 +58,6 @@
 - The previous day, virus, top virus, SpamAssassin rule hits and total mail by date reports count in the database instead of loading every message
 - The MailScanner rules editor opens empty rules files on PHP 8
 - The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
-- mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
 - mailwatch_sendmail_queue.php keeps the last queue snapshot when a queue directory cannot be read, instead of failing on PHP 8
 - `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
 - The Postfix relay scripts keep following the mail log across rotation and truncation, read each line once and wait for lines still being written
