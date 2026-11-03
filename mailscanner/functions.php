@@ -3259,12 +3259,10 @@ function is_local($host): bool
  *
  * @param bool   $quarantinePage true on the quarantine pages, which apply the options only with HIDE_APPLY_QUARANTINE
  * @param string $userType       A, D or U
- *
- * @return string
  */
-function hide_options_sql($quarantinePage, $userType)
+function hide_options_sql(bool $quarantinePage, string $userType): string
 {
-    if (true === $quarantinePage && !(defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true)) {
+    if ($quarantinePage && !(defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true)) {
         return '';
     }
 
@@ -3274,7 +3272,7 @@ function hide_options_sql($quarantinePage, $userType)
         $sql .= ' AND ishighspam=0 AND COALESCE(ishighmcp,0)=0';
     }
     // Quarantine reports hide non-spam from everyone, the quarantine pages only from regular users
-    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && (false === $quarantinePage || 'U' === $userType)) {
+    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && (!$quarantinePage || 'U' === $userType)) {
         $sql .= ' AND isspam>0';
     }
     // Hide unknown (clean) messages from everyone
