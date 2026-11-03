@@ -482,8 +482,9 @@ function printServiceStatus()
                 $running = $yes;
                 $masterpid = explode(' ', trim($masterproc[0]));
                 $childproc = [];
-                exec(sprintf('ps ax -j | grep %s | grep -v grep', $masterpid[0]), $childproc);
-                $procs = count($childproc) . ' ' . __('procs03');
+                // the master and its children: grepping the pid also matched any other number containing it
+                exec(sprintf('pgrep -P %d', $masterpid[0]), $childproc);
+                $procs = count($childproc) + 1 . ' ' . __('procs03');
             } else {
                 $running = $no;
                 $procs = '0 ' . __('procs03');
