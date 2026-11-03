@@ -13,30 +13,14 @@ mailwatch_milter_relay.php
 
 Verify if the 2 files are executable. If not, use "chmod +x" to correct this problem.
 
-Note about mailwatch_postfix_relay.php: 
+Note about mailwatch_postfix_relay.php and mailwatch_milter_relay.php:
 
-The script have two options, run it once per hour with '--refresh' or tail the log continuously.
+The scripts have two options, run them with '--refresh' to process the whole log once,
+or without arguments to process the log and then tail it continuously.
 
-The 'mailwatch-postfix-relay' cron use the '--refresh' method.
-
-Example of script for the 'tail' method.
-
-----------------------------------
-#!/bin/bash
-
-# @asuweb
-
-if ps -C php -o args h | grep mailwatch_postfix_relay.php
-then true ## mailwatch_postfix_relay.php running
-else /usr/bin/php -q /usr/local/bin/mailwatch_postfix_relay.php > /dev/null &
-fi
-if ps -C php -o args h | grep mailwatch_milter_relay.php
-then true ## mailwatch_milter_relay.php running
-else /usr/bin/php -q /usr/local/bin/mailwatch_milter_relay.php > /dev/null &
-fi
-----------------------------------
-
-And you run it from cron every hour.
+The 'mailwatch-milter-relay' cron uses the tail method: every hour it starts the scripts
+again only if they are not running. Use '--refresh' only for a one-off reprocessing
+of the log, e.g. after a logrotate, as it rereads the whole file.
 
 ATTENTION:
 
