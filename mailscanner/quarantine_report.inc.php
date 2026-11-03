@@ -162,7 +162,7 @@ AND
 </table>';
     }
 
-    private static function get_report_sql($userType, $useToFilter = true)
+    private static function get_report_sql(string $userType, bool $useToFilter = true)
     {
         $report_sql = "
 SELECT
@@ -440,7 +440,7 @@ ORDER BY a.date DESC, a.time DESC';
      *
      * @return array
      */
-    private static function return_quarantine_list_array($to_address, $to_domain, $userType)
+    private static function return_quarantine_list_array($to_address, $to_domain, string $userType)
     {
         if ('' != $to_address || '' != $to_domain) {
             // Qualify to email addresses only search among multiple recipients
