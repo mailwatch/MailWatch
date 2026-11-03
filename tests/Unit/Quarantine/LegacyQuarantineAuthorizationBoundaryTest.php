@@ -39,6 +39,11 @@ final class LegacyQuarantineAuthorizationBoundaryTest extends TestCase
             '->canRelease($dangerous)',
             self::legacySource('do_message_ops.php'),
         );
+
+        self::assertStringContainsString(
+            "quarantineAccess('')->canRelease(\$dangerous)",
+            self::legacySource('auto-release.php'),
+        );
     }
 
     private static function legacySource(string $file): string

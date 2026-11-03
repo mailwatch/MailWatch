@@ -62,10 +62,15 @@ if (file_exists(__DIR__ . '/conf.php')) {
             $output[] = __('msgnotfound259') . htmlentities($mid) . ' ' . __('msgnotfound359');
         } else {
             $row = $result->fetch_assoc();
-            if ($row['uid'] === $token && !quarantine_release_allowed(quarantine_list_items($mid))) {
+            $list = $row['uid'] === $token ? quarantine_list_items($mid) : [];
+            // a release link carries no session, so it never releases dangerous content
+            $dangerous = is_array($list) && [] !== array_filter(
+                $list,
+                static fn(mixed $item): bool => is_array($item) && 'Y' === ($item['dangerous'] ?? 'N'),
+            );
+            if ($row['uid'] === $token && (!is_array($list) || !\MailWatch\ApplicationFactory::quarantineAccess('')->canRelease($dangerous))) {
                 $output[] = __('notallowed59');
             } elseif ($row['uid'] === $token) {
-                $list = quarantine_list_items($mid);
                 $result = '';
                 // quarantine_release() sets $error when sending fails
                 $error = false;
