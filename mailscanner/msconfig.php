@@ -53,10 +53,14 @@ if ('A' !== $_SESSION['user_type']) {
 
     // Display the information from the configuration files
     foreach ($array_output as $out_key => $value) {
-        // expand %var% variables
-        if (preg_match('/(%.+%)/', $value, $match)) {
-            $value = preg_replace('/%.+%/', $var[$match[1]], $value);
-        }
+        // %var% definitions are ordinary entries, the conf dir files can use those of MailScanner.conf
+        $value = preg_replace_callback(
+            '/%[^%\s]+%/',
+            function($match) use ($array_output) {
+                return isset($array_output[$match[0]]) ? $array_output[$match[0]] : $match[0];
+            },
+            $value
+        );
 
         // See if parameter is a rules file
         if (@is_file($value) && @is_readable($value) && !@is_executable($value)) {

@@ -14,6 +14,7 @@
 - upgrade.php checks the `user_filters.username` column itself before resizing it
 - The previous day, virus, top virus, SpamAssassin rule hits and total mail by date reports count in the database instead of loading every message
 - The MailScanner rules editor opens empty rules files on PHP 8
+- The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
 
 ## 1.2.28
 ### Security
