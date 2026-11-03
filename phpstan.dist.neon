@@ -156,6 +156,8 @@ parameters:
 	    DB_PORT: int
 	    FROMTO_MAXLEN: int
 	    LDAP_PROTOCOL_VERSION: int
+	    LOGIN_LOCKOUT_MINUTES: int
+	    LOGIN_MAX_FAILURES: int
 	    MAX_RESULTS: int
 	    MSRE_RELOAD_INTERVAL: int
 	    QUARANTINE_DAYS_TO_KEEP: int

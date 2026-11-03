@@ -26,7 +26,6 @@
  */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/loginthrottle.inc.php';
 disableBrowserCache();
 
 if (isset($_POST['token'])) {
@@ -56,9 +55,11 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $myusername = html_entity_decode((string)$_POST['myusername']);
     $mypassword = $_POST['mypassword'];
 }
+
+$loginThrottle = \MailWatch\ApplicationFactory::loginThrottle();
+$clientIp = getHTTPClientIP();
 // checked before LDAP and IMAP too, so that the directory servers do not get the guesses either
-$throttleUsername = $myusername;
-if (login_throttle_is_locked($throttleUsername)) {
+if ($loginThrottle->isLocked($clientIp, (string)$myusername, time())) {
     header('Location: /login.php?error=toomanyattempts');
     logFailedLogin($myusername);
     exit;
@@ -73,16 +74,17 @@ try {
 } catch (\MailWatch\Users\Application\EmptyPassword) {
     header('Location: /login.php?error=emptypassword');
     logFailedLogin($myusername);
-    login_throttle_record_failure($throttleUsername);
+    $loginThrottle->recordFailure($clientIp, (string)$myusername, time());
     exit;
 } catch (\MailWatch\Users\Application\InvalidCredentials) {
     header('Location: /login.php?error=baduser');
     logFailedLogin($myusername);
-    login_throttle_record_failure($throttleUsername);
+    $loginThrottle->recordFailure($clientIp, (string)$myusername, time());
     exit;
 } catch (\MailWatch\Users\Application\AuthenticationProviderUnavailable $exception) {
     exit($exception->getMessage());
 }
+$loginThrottle->clear($clientIp, (string)$myusername);
 
 $account = $authenticated->account;
 $myusername = $account->username;
@@ -145,7 +147,6 @@ $_SESSION['global_list'] = ($global_list ?? '');
 $_SESSION['global_array'] = $filter;
 $_SESSION['token'] = generateToken();
 $_SESSION['formtoken'] = generateToken();
-login_throttle_clear($throttleUsername);
 $redirect_url = 'index.php';
 if (isset($_SESSION['REQUEST_URI'])) {
     $redirect_url = $_SESSION['REQUEST_URI'];

@@ -335,7 +335,7 @@ define('DOMAINADMIN_CAN_SEE_DANGEROUS_CONTENTS', false);
 
 // Failed logins (and password reset requests) allowed from one IP address for one username
 // before that IP address has to wait LOGIN_LOCKOUT_MINUTES. Set to 0 to disable the limit.
-// It needs the login_failures table created by upgrade.php: without it there is no limit.
+// It needs the login_failures table created by the database migrations: without it there is no limit.
 define('LOGIN_MAX_FAILURES', 5);
 define('LOGIN_LOCKOUT_MINUTES', 15);
 

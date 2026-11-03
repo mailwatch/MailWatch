@@ -58,10 +58,13 @@ use MailWatch\Users\Application\AuthenticateUser;
 use MailWatch\Users\Application\ManageLocalAccounts;
 use MailWatch\Users\Application\ManageOwnProfile;
 use MailWatch\Users\Application\ManageSavedFilters;
+use MailWatch\Users\Application\ThrottleLogins;
+use MailWatch\Users\Domain\LoginThrottlePolicy;
 use MailWatch\Users\Infrastructure\Authentication\ImapCredentialVerifier;
 use MailWatch\Users\Infrastructure\Authentication\LdapCredentialVerifier;
 use MailWatch\Users\Infrastructure\Database\DbalAccountAdministrationGateway;
 use MailWatch\Users\Infrastructure\Database\DbalLoginAccountGateway;
+use MailWatch\Users\Infrastructure\Database\DbalLoginFailureGateway;
 use MailWatch\Users\Infrastructure\Database\DbalSavedFilterAdministrationGateway;
 use MailWatch\Users\Infrastructure\Database\DbalUserProfileGateway;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
@@ -174,6 +177,17 @@ final readonly class ApplicationFactory
             $passwords,
             $providers,
             \defined('SESSION_TIMEOUT') ? (int)SESSION_TIMEOUT : null,
+        );
+    }
+
+    public static function loginThrottle(): ThrottleLogins
+    {
+        return new ThrottleLogins(
+            new DbalLoginFailureGateway(self::databaseConnection()),
+            new LoginThrottlePolicy(
+                \defined('LOGIN_MAX_FAILURES') ? (int)LOGIN_MAX_FAILURES : 5,
+                (\defined('LOGIN_LOCKOUT_MINUTES') ? (int)LOGIN_LOCKOUT_MINUTES : 15) * 60,
+            ),
         );
     }
 

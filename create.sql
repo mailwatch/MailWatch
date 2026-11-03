@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS `inq` (
 --
 
 CREATE TABLE IF NOT EXISTS `login_failures` (
-  `ip` varchar(45) CHARACTER SET ascii NOT NULL,
-  `username_hash` char(40) CHARACTER SET ascii NOT NULL,
+  `ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `username_hash` char(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `failures` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `last_failure` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ip`,`username_hash`),
