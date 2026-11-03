@@ -138,6 +138,12 @@ $sqlColumns = [
     'total_size',
     'total_virus',
     'total_spam',
+    // the table below reads these too
+    'total_lowspam',
+    'total_highspam',
+    'total_mcp',
+    'total_blocked',
+    'total_clean',
 ];
 $valueConversion = [
     'total_size' => 'scale',
@@ -169,7 +175,6 @@ $types = [
 ];
 
 if (true === $is_MCP_enabled) {
-    $sqlColumns[] = 'total_mcp';
     $types[0][] = 'bar';
     $graphColumns['dataLabels'][0][] = __('barmcp49');
     $graphColumns['dataNumericColumns'][0][] = 'total_mcp';
@@ -192,28 +197,25 @@ $graphgenerator->settings['maxTicks'] = 10;
 $graphgenerator->printLineGraph();
 
 // ///////////////////////////////////////Generate Table //////////////////////////////////
-// Must be one or more row
-$result = dbquery($sql);
-if (!$result->num_rows > 0) {
-    exit(__('diemysql99') . "\n");
+// The graph already read the rows and printed the error when there are none
+$data = $graphgenerator->getData();
+if (empty($data)) {
+    exit;
 }
 
 // Connecting to the DB and running the query
 $result1 = dbquery($sql1);
 
-// pulling the data in variables
-while ($row = $result->fetch_object()) {
-    $data_labels[] = $row->xaxis;
-    $data_total_mail[] = $row->total_mail;
-    $data_total_virii[] = $row->total_virus;
-    $data_total_blocked[] = $row->total_blocked;
-    $data_total_spam[] = $row->total_spam;
-    $data_total_lowspam[] = $row->total_lowspam;
-    $data_total_highspam[] = $row->total_highspam;
-    $data_total_mcp[] = $row->total_mcp;
-    $data_total_clean[] = $row->total_clean;
-    $data_total_size[] = $row->total_size;
-}
+$data_labels = $data['xaxis'];
+$data_total_mail = $data['total_mail'];
+$data_total_virii = $data['total_virus'];
+$data_total_blocked = $data['total_blocked'];
+$data_total_spam = $data['total_spam'];
+$data_total_lowspam = $data['total_lowspam'];
+$data_total_highspam = $data['total_highspam'];
+$data_total_mcp = $data['total_mcp'];
+$data_total_clean = $data['total_clean'];
+$data_total_size = $data['total_size'];
 
 // Merge in MTA data
 $data_total_unknown_users = [];

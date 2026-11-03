@@ -45,6 +45,16 @@ class GraphGenerator
     }
 
     /**
+     * Rows read by the last graph, in format $data[columnname][rowid].
+     *
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
      * @return void
      */
     public function printPieGraph()
