@@ -143,6 +143,13 @@ if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) {
 // Clean the audit log
 deleteInBatches('audit_log', 'timestamp < (NOW() - INTERVAL ' . AUDIT_DAYS_TO_KEEP . ' DAY)', $batchSize);
 
+// Clean the expired login failures, the table exists once upgrade.php has run
+$tablecheck = dbquery("SHOW TABLES LIKE 'login_failures'");
+if ($tablecheck->num_rows > 0) {
+    $lockoutMinutes = defined('LOGIN_LOCKOUT_MINUTES') ? (int)LOGIN_LOCKOUT_MINUTES : 15;
+    dbquery('DELETE FROM login_failures WHERE last_failure < ' . (time() - $lockoutMinutes * 60));
+}
+
 // Optimize tables (optional - can be slow on large InnoDB tables)
 if ($runOptimize) {
     dbquery('OPTIMIZE TABLE maillog, mtalog, audit_log' . $optimize_mtalog_id);

@@ -41,6 +41,7 @@ return [
     'forgottenpwd01' => 'Passwort vergessen?',
     'sessiontimeout01' => 'Ihre Sitzung ist abgelaufen.',
     'pagetimeout01' => 'Die Anmelde-Seite ist abgelaufen <br>Bitte versuchen Sie es erneut',
+    'toomanyattempts01' => 'Zu viele fehlgeschlagene Anmeldeversuche <br>Bitte versuchen Sie es später erneut',
     'pagetimeoutreload01' => 'Die Seite ist abgelaufen<br>Bitte Seite neu laden',
 
     // 03-funtions.php

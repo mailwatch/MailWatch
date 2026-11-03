@@ -41,6 +41,7 @@ return [
     'forgottenpwd01' => 'Esqueceu sua senha?',
     'sessiontimeout01' => 'Sua sessão expirou.',
     'pagetimeout01' => 'Login page timed out <br>Please try again',
+    'toomanyattempts01' => 'Muitas tentativas de login sem sucesso <br>Tente novamente mais tarde',
     'pagetimeoutreload01' => 'Page timed out<br>Please reload the page',
 
     // 03-funtions.php

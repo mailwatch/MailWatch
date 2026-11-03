@@ -43,6 +43,7 @@ return [
     'forgottenpwd01' => 'Şifremi Unuttum?',
     'sessiontimeout01' => 'Oturumunuz zaman aşımına uğradı.',
     'pagetimeout01' => 'Giriş sayfası zaman aşımına uğradı <br>Lütfen tekrar deneyin',
+    'toomanyattempts01' => 'Çok fazla başarısız giriş denemesi <br>Lütfen daha sonra tekrar deneyin',
     'pagetimeoutreload01' => 'Sayfa zaman aşımına uğradı<br>Lütfen sayfayı yenileyin',
 
     // 03-functions.php

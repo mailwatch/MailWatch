@@ -41,6 +41,7 @@ return [
     'forgottenpwd01' => 'パスワードを忘れました？',
     'sessiontimeout01' => 'セッションはタイムアウトしました。',
     'pagetimeout01' => 'Login page timed out <br>Please try again',
+    'toomanyattempts01' => 'ログインの失敗が多すぎます<br>しばらくしてから再度お試しください',
     'pagetimeoutreload01' => 'Page timed out<br>Please reload the page',
 
     // 03-functions.php

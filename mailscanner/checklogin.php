@@ -28,6 +28,7 @@
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/password.php';
 require_once __DIR__ . '/lib/hash_equals.php';
+require_once __DIR__ . '/loginthrottle.inc.php';
 disableBrowserCache();
 
 if (isset($_POST['token'])) {
@@ -58,6 +59,13 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
     $mypassword = $_POST['mypassword'];
 }
 $plainPassword = $mypassword;
+// checked before LDAP and IMAP too, so that the directory servers do not get the guesses either
+$throttleUsername = $myusername;
+if (login_throttle_is_locked($throttleUsername)) {
+    header('Location: login.php?error=toomanyattempts');
+    logFailedLogin($myusername);
+    exit;
+}
 
 $_SESSION['user_ldap'] = false;
 $_SESSION['user_imap'] = false;
@@ -83,6 +91,7 @@ if (defined('USE_LDAP')
     } else {
         header('Location: login.php?error=emptypassword');
         logFailedLogin($myusername);
+        login_throttle_record_failure($throttleUsername);
         exit;
     }
 }
@@ -97,6 +106,7 @@ if (0 === $usercount) {
     dbclose();
     header('Location: login.php?error=baduser');
     logFailedLogin($myusername);
+    login_throttle_record_failure($throttleUsername);
     exit;
 }
 
@@ -105,10 +115,11 @@ if (
     && (false === $_SESSION['user_imap'])
 ) {
     $passwordInDb = database::mysqli_result($result, 0, 'password');
-    if(!is_string($passwordInDb)) {
-       header('Location: login.php?error=baduser');
-       logFailedLogin($myusername);
-       exit;
+    if (!is_string($passwordInDb)) {
+        header('Location: login.php?error=baduser');
+        logFailedLogin($myusername);
+        login_throttle_record_failure($throttleUsername);
+        exit;
     }
 
     // Passwords saved by users themselves used to be hashed in their SQL-escaped form
@@ -122,6 +133,7 @@ if (
     if (null === $matchedPassword) {
         header('Location: login.php?error=baduser');
         logFailedLogin($myusername);
+        login_throttle_record_failure($throttleUsername);
         exit;
     }
 
@@ -193,6 +205,7 @@ if (1 === $usercount) {
     $_SESSION['formtoken'] = generateToken();
     // Initialize login expiry in users table for newly logged in user
     updateLoginExpiry($myusername);
+    login_throttle_clear($throttleUsername);
     $redirect_url = 'index.php';
     if (isset($_SESSION['REQUEST_URI'])) {
         $redirect_url = $_SESSION['REQUEST_URI'];
@@ -202,6 +215,7 @@ if (1 === $usercount) {
 } else {
     header('Location: login.php?error=baduser');
     logFailedLogin($myusername);
+    login_throttle_record_failure($throttleUsername);
 }
 
 // close any DB connections

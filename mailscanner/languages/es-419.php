@@ -41,6 +41,7 @@ return [
     'forgottenpwd01' => 'Olvió la contraseña?',
     'sessiontimeout01' => 'Su sesión ha expirado',
     'pagetimeout01' => 'Tiempo de espera agotado <br>Intente nuevamente',
+    'toomanyattempts01' => 'Demasiados intentos fallidos de inicio de sesión <br>Intente nuevamente más tarde',
 
     // 03-functions.php
     'jumpmessage03' => 'Ir al mensaje:',

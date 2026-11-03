@@ -3,6 +3,7 @@
 ## Unreleased
 ### Added
 - upgrade.php reports user, filter, audit log and list rows that hold markup left by the stored XSS fixed in 1.2.28, without changing them
+- Failed logins are limited per client IP address and username (`LOGIN_MAX_FAILURES`, `LOGIN_LOCKOUT_MINUTES`); the new `login_failures` table is created by upgrade.php, and logins work as before until it exists
 
 ### Changed
 - `DB_CLEAN_OPTIMIZE` defaults to false: mailwatch_db_clean.php runs OPTIMIZE TABLE only when it is set to true

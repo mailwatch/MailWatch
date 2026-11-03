@@ -106,6 +106,9 @@ if (file_exists(__DIR__ . '/conf.php')) {
             case 'pagetimeout':
                 $error = __('pagetimeout01');
                 break;
+            case 'toomanyattempts':
+                $error = __('toomanyattempts01');
+                break;
         }
         echo '
                 <p class="loginerror">' . $error . '</p>';

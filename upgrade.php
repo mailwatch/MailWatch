@@ -496,6 +496,22 @@ if ($link) {
         executeQuery($sql);
     }
 
+    // Add login_failures table if not exist (1.2.29)
+    echo pad(' - Add login_failures table to `' . DB_NAME . '` database');
+    if (true === check_table_exists('login_failures')) {
+        echo color(' ALREADY EXIST', 'lightgreen') . PHP_EOL;
+    } else {
+        $sql = 'CREATE TABLE IF NOT EXISTS login_failures (
+            ip VARCHAR(45) CHARACTER SET ascii NOT NULL,
+            username_hash CHAR(40) CHARACTER SET ascii NOT NULL,
+            failures INT(10) UNSIGNED NOT NULL DEFAULT 0,
+            last_failure BIGINT(20) NOT NULL DEFAULT 0,
+            PRIMARY KEY (ip, username_hash),
+            KEY login_failures_last_failure (last_failure)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
+        executeQuery($sql);
+    }
+
     // Update users table schema for password-reset feature
     echo pad(' - Add resetid, resetexpire and lastreset fields in `users` table');
     if (false === check_column_exists('users', 'resetid')) {

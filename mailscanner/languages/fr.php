@@ -41,6 +41,7 @@ return [
     'forgottenpwd01' => 'Mot de passe perdu ?',
     'sessiontimeout01' => 'Votre session a expiré.',
     'pagetimeout01' => 'La connexion à la page a expirée.<br>Veuillez réessayer.',
+    'toomanyattempts01' => 'Trop de tentatives de connexion échouées.<br>Veuillez réessayer plus tard.',
     'pagetimeoutreload01' => 'La connexion à la page a expirée.<br>Veuillez recharger la page.',
 
     // 03-functions.php

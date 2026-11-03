@@ -84,6 +84,21 @@ CREATE TABLE IF NOT EXISTS `inq` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `login_failures`
+--
+
+CREATE TABLE IF NOT EXISTS `login_failures` (
+  `ip` varchar(45) CHARACTER SET ascii NOT NULL,
+  `username_hash` char(40) CHARACTER SET ascii NOT NULL,
+  `failures` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `last_failure` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ip`,`username_hash`),
+  KEY `login_failures_last_failure` (`last_failure`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `maillog`
 --
 
