@@ -44,6 +44,7 @@
 - The GeoIP update through wget works without an account ID, with a proxy and with an account ID together, and over an https proxy
 - Passwords with quotes or backslashes that users set themselves before 1.3 work again, and are rehashed in their plain form at the next login
 - The password reset form checks that the reset link has not expired when the new password is submitted too
+- The password reset request gives the same answer whether the address exists or not, sends no new e-mail while a recent link is still valid, and is limited per client IP address
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -67,7 +68,6 @@
 - The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting (#1169)
 - The total mail by date report runs its maillog query once instead of twice
 - The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
-- The password reset request gives the same answer whether the address exists or not, sends no new e-mail while a recent link is still valid, and is limited per client IP address
 
 ## 1.2.27
 ### Security

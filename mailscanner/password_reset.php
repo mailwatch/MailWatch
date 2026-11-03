@@ -25,7 +25,6 @@
  */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/loginthrottle.inc.php';
 
 // Check if LDAP is enabled, if so, prevent usage
 if (USE_LDAP === true) {
@@ -75,9 +74,10 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                     <div class="pwdresetButton"><a href="login.php" class="loginButton">' . __('login01') . '</a></div>';
             $showpage = true;
             // one counter per client IP for all the requests, whatever the address
-            $throttleLocked = login_throttle_is_locked('#password-reset');
-            login_throttle_record_failure('#password-reset');
-            list(, $lockoutSeconds) = login_throttle_limits();
+            $resetThrottle = \MailWatch\ApplicationFactory::loginThrottle();
+            $clientIp = getHTTPClientIP();
+            $throttleLocked = $resetThrottle->isLocked($clientIp, '#password-reset', time());
+            $resetThrottle->recordFailure($clientIp, '#password-reset', time());
 
             $sql = "SELECT * FROM users WHERE username = '$email'";
             $result = dbquery($sql);
@@ -89,8 +89,8 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
             } else {
                 // user found, now check type of user
                 $row = $result->fetch_assoc();
-                if ('U' === $row['type'] && $row['resetexpire'] > time()
-                    && $row['resetexpire'] - 60 * 60 * RESET_LINK_EXPIRE > time() - $lockoutSeconds) {
+                if ('U' === $row['type'] && (int)$row['resetexpire'] > time()
+                    && (int)$row['resetexpire'] - 60 * 60 * RESET_LINK_EXPIRE > time() - $resetThrottle->lockoutSeconds()) {
                     // the link sent a short while ago is still valid: do not send another one
                 } elseif ('U' === $row['type']) {
                     // user type is user, password reset allowed
