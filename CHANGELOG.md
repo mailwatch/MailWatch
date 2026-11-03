@@ -24,6 +24,7 @@
 - Standardised database charset to utf8mb4 with unicode_520_ci collation
 - Points in time are stored as UTC and converted for display; the database session is pinned to `+00:00`, dates are formatted in PHP rather than by SQL, and calendar-day comparisons ("today", a report's date range) are made in `TIME_ZONE` rather than by the database. The MTA log rows written before the upgrade are moved from the server's zone to UTC by a migration (see [UPGRADING.md](UPGRADING.md))
 - `MailWatch.pm` sends the message timestamp as an ISO 8601 instant, and no longer sends `date` and `time`: both are derived from its offset
+- `DB_CLEAN_OPTIMIZE` defaults to false: mailwatch_db_clean.php runs OPTIMIZE TABLE only when it is set to true
 
 ### Fixed
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
@@ -51,9 +52,6 @@
 
 ### Added
 - Failed logins are limited per client IP address and username (`LOGIN_MAX_FAILURES`, `LOGIN_LOCKOUT_MINUTES`); the new `login_failures` table is created by upgrade.php, and logins work as before until it exists
-
-### Changed
-- `DB_CLEAN_OPTIMIZE` defaults to false: mailwatch_db_clean.php runs OPTIMIZE TABLE only when it is set to true
 
 ### Fixed
 - Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
