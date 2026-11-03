@@ -41,48 +41,7 @@ if (!isset($_GET['dir'])) {
         foreach ($dates as $date) {
             $sql = 'SELECT id FROM maillog WHERE ' . $_SESSION['global_filter'] . " AND date='$date' AND quarantined=1";
 
-            // Hide high spam/mcp from regular users if enabled
-            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
-                $sql .= '
-    AND
-     ishighspam=0
-    AND
-     COALESCE(ishighmcp,0)=0';
-            }
-
-            // Hide non-spam from regular users if enabled
-            if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
-                $sql .= '
-    AND 
-     isspam>0';
-            }
-
-            // Hide unknown (clean) messages if enabled
-            if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true) {
-                $sql .= '
-    AND
-    (
-     virusinfected>0
-     OR
-     nameinfected>0
-     OR
-     otherinfected>0
-     OR
-     ishighspam>0
-     OR
-     isrblspam>0
-     OR
-     spamblacklisted>0
-     OR
-     ismcp>0
-     OR
-     ishighmcp>0
-     OR
-     issamcp>0
-     OR
-     isspam>0
-    )';
-            }
+            $sql .= hide_options_sql(true, $_SESSION['user_type']);
 
             $result = dbquery($sql);
             $rowcnt = $result->num_rows;
@@ -178,48 +137,7 @@ AND
 AND
  quarantined = 1";
 
-        // Hide high spam/mcp from regular users if enabled
-        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
-            $sql .= '
-    AND
-     ishighspam=0
-    AND
-     COALESCE(ishighmcp,0)=0';
-        }
-
-        // Hide non-spam from regular users if enabled
-        if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
-            $sql .= '
-    AND 
-     isspam>0';
-        }
-
-        // Hide unknown (clean) messages if enabled
-        if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true) {
-            $sql .= '
-    AND
-    (
-     virusinfected>0
-     OR
-     nameinfected>0
-     OR
-     otherinfected>0
-     OR
-     ishighspam>0
-     OR
-     isrblspam>0
-     OR
-     spamblacklisted>0
-     OR
-     ismcp>0
-     OR
-     ishighmcp>0
-     OR
-     issamcp>0
-     OR
-     isspam>0
-    )';
-        }
+        $sql .= hide_options_sql(true, $_SESSION['user_type']);
 
         $sql .= '
 ORDER BY
@@ -271,48 +189,7 @@ ORDER BY
   AND
    BINARY id IN ($msg_ids)";
 
-            // Hide high spam/mcp from regular users if enabled
-            if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
-                $sql .= '
-    AND
-     ishighspam=0
-    AND
-     COALESCE(ishighmcp,0)=0';
-            }
-
-            // Hide non-spam from regular users if enabled
-            if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true && 'U' === $_SESSION['user_type']) {
-                $sql .= '
-    AND 
-     isspam>0';
-            }
-
-            // Hide unknown (clean) messages if enabled
-            if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true && defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true) {
-                $sql .= '
-    AND
-    (
-     virusinfected>0
-     OR
-     nameinfected>0
-     OR
-     otherinfected>0
-     OR
-     ishighspam>0
-     OR
-     isrblspam>0
-     OR
-     spamblacklisted>0
-     OR
-     ismcp>0
-     OR
-     ishighmcp>0
-     OR
-     issamcp>0
-     OR
-     isspam>0
-    )';
-            }
+            $sql .= hide_options_sql(true, $_SESSION['user_type']);
 
             $sql .= '
   ORDER BY

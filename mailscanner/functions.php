@@ -3526,6 +3526,38 @@ function is_local($host)
 }
 
 /**
+ * SQL conditions for the HIDE_* options of conf.php.
+ *
+ * @param bool   $quarantinePage true on the quarantine pages, which apply the options only with HIDE_APPLY_QUARANTINE
+ * @param string $userType       A, D or U
+ *
+ * @return string
+ */
+function hide_options_sql($quarantinePage, $userType)
+{
+    if (true === $quarantinePage && !(defined('HIDE_APPLY_QUARANTINE') && HIDE_APPLY_QUARANTINE === true)) {
+        return '';
+    }
+
+    $sql = '';
+    // Hide high spam/mcp from regular users
+    if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true && 'U' === $userType) {
+        $sql .= ' AND ishighspam=0 AND COALESCE(ishighmcp,0)=0';
+    }
+    // Quarantine reports hide non-spam from everyone, the quarantine pages only from regular users
+    if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true && (false === $quarantinePage || 'U' === $userType)) {
+        $sql .= ' AND isspam>0';
+    }
+    // Hide unknown (clean) messages from everyone
+    if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
+        $sql .= ' AND (virusinfected>0 OR nameinfected>0 OR otherinfected>0 OR ishighspam>0 OR isrblspam>0'
+            . ' OR spamblacklisted>0 OR ismcp>0 OR ishighmcp>0 OR issamcp>0 OR isspam>0)';
+    }
+
+    return $sql;
+}
+
+/**
  * @param string      $msgid
  * @param bool|false  $rpc_only
  * @param string|null $global_filter

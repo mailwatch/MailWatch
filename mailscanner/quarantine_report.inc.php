@@ -197,46 +197,7 @@ WHERE
 AND
  a.date >= DATE_SUB(CURRENT_DATE(), INTERVAL ' . QUARANTINE_REPORT_DAYS . ' DAY)';
 
-        // Hide high spam/mcp from users if enabled
-        if (defined('HIDE_HIGH_SPAM') && HIDE_HIGH_SPAM === true) {
-            $report_sql .= '
-    AND
-     ishighspam=0
-    AND
-     COALESCE(ishighmcp,0)=0';
-        }
-
-        if (defined('HIDE_NON_SPAM') && HIDE_NON_SPAM === true) {
-            $report_sql .= '
-    AND
-    isspam>0';
-        }
-
-        if (defined('HIDE_UNKNOWN') && HIDE_UNKNOWN === true) {
-            $report_sql .= '
-    AND
-    (
-    virusinfected>0
-    OR
-    nameinfected>0
-    OR
-    otherinfected>0
-    OR
-    ishighspam>0
-    OR
-    isrblspam>0
-    OR
-    spamblacklisted>0
-    OR
-    ismcp>0
-    OR
-    ishighmcp>0
-    OR
-    issamcp>0
-    OR
-    isspam>0
-    )';
-        }
+        $report_sql .= hide_options_sql(false, 'U');
 
         $report_sql .= '
 ORDER BY a.date DESC, a.time DESC';
