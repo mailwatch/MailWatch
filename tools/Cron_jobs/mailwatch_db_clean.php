@@ -100,16 +100,16 @@ if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) {
         // No batching - delete all in one query using subquery
         dbquery(
             'DELETE FROM mtalog_ids WHERE smtp_id IN (
-                SELECT msg_id FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)
+                SELECT msg_id FROM mtalog WHERE timestamp < (UTC_TIMESTAMP() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)
             )'
         );
-        dbquery('DELETE LOW_PRIORITY FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
+        dbquery('DELETE LOW_PRIORITY FROM mtalog WHERE timestamp < (UTC_TIMESTAMP() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)');
     } else {
         // With batching: first collect msg_ids to delete in batches, then delete from mtalog_ids
         while (true) {
             // Get a batch of rows to delete
             $result = dbquery(
-                'SELECT mtalog_id, msg_id FROM mtalog WHERE timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY) LIMIT ' . $batchSize
+                'SELECT mtalog_id, msg_id FROM mtalog WHERE timestamp < (UTC_TIMESTAMP() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY) LIMIT ' . $batchSize
             );
 
             if (0 === $result->num_rows) {
@@ -135,7 +135,7 @@ if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) {
     }
     $optimize_mtalog_id = ', mtalog_ids';
 } else {
-    deleteInBatches('mtalog', 'timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)', $batchSize);
+    deleteInBatches('mtalog', 'timestamp < (UTC_TIMESTAMP() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)', $batchSize);
 }
 
 // Clean the audit log
