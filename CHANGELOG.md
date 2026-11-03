@@ -15,6 +15,7 @@
 - The previous day, virus, top virus, SpamAssassin rule hits and total mail by date reports count in the database instead of loading every message
 - The MailScanner rules editor opens empty rules files on PHP 8
 - The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
+- mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
 
 ## 1.2.28
 ### Security

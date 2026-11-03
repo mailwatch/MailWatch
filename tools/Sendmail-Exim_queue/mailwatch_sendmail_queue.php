@@ -239,6 +239,9 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
         closedir($dh);
         // Get our hostname
         $sys_hostname = rtrim(gethostname());
+        // Replace the rows in one transaction, so the web UI never sees a half-filled queue
+        $link = dbconn();
+        $link->begin_transaction();
         // Drop everything from the table first
         dbquery('DELETE FROM ' . $table_name . " WHERE hostname='" . $sys_hostname . "'");
         if (!empty($output)) {
@@ -285,6 +288,7 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                 dbquery($sql);
             }
         }
+        $link->commit();
     }
     // Unlock the file
     flock($fl, LOCK_UN);
