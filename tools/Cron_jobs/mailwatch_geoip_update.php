@@ -42,179 +42,14 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
     exit($error_message);
 }
 
-require_once MAILWATCH_HOME . '/lib/request/Requests.php';
-Requests::register_autoloader();
-
-ob_start();
-echo __('downfile15') . "\n";
-
-$files_base_url = 'https://download.maxmind.com';
-$file = [
-    'description' => __('geoip15'),
-    'path' => '/geoip/databases/GeoLite2-Country/download?suffix=tar.gz',
-    'legacy_path' => '/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=' . MAXMIND_LICENSE_KEY,
-    'destination' => MAILWATCH_HOME . '/temp/GeoLite2-Country.tar.gz',
-    'destinationFileName' => 'GeoLite2-Country.mmdb',
-];
+require_once MAILWATCH_HOME . '/geoip_update.inc.php';
 
 $extract_dir = MAILWATCH_HOME . '/temp/';
 
-// Clean-up from last run
-if (file_exists($file['destination'])) {
-    unlink($file['destination']);
-    @unlink(substr($file['destination'], 0, -3));
-}
-ob_flush();
-flush();
-
-if (file_exists($file['destination'])) {
-    $error_message = __('message752') . "\n";
-    $error_message .= __('message852') . " $extract_dir" . '.';
-    exit($error_message);
-}
-
-if (!is_writable($extract_dir) || !is_readable($extract_dir)) {
-    // Unable to read or write to the directory
-    exit(__('norread52') . ' ' . $extract_dir . ' ' . __('directory52') . ".\n");
-}
-
-if (function_exists('fsockopen') || extension_loaded('curl')) {
-    $requestSession = new Requests_Session($files_base_url . '/');
-    $requestSession->options['useragent'] = 'MailWatch/' . mailwatch_version();
-
-    if (USE_PROXY === true) {
-        if (PROXY_USER !== '') {
-            $requestSession->options['proxy']['authentication'] = [
-                PROXY_SERVER . ':' . PROXY_PORT,
-                PROXY_USER,
-                PROXY_PASS,
-            ];
-        } else {
-            $requestSession->options['proxy']['authentication'] = [
-                PROXY_SERVER . ':' . PROXY_PORT,
-            ];
-        }
-
-        switch (PROXY_TYPE) {
-            case 'HTTP':
-            case 'CURLPROXY_HTTP': // BC for old constant name
-                // $requestProxy = new Requests_Proxy_HTTP($requestProxyParams);
-                $requestSession->options['proxy']['type'] = 'HTTP';
-                break;
-            case 'SOCKS5':
-            case 'CURLPROXY_SOCKS5': // BC for old constant name
-                $requestSession->options['proxy']['type'] = 'SOCKS5';
-                break;
-            default:
-                exit(__('dieproxy52'));
-        }
-    }
-
-    try {
-        $requestSession->options['filename'] = $file['destination'];
-        if (defined('MAXMIND_ACCOUNT_ID')) {
-            // use basic auth
-            $requestSession->options['auth'] = new Requests_Auth_Basic([MAXMIND_ACCOUNT_ID, MAXMIND_LICENSE_KEY]);
-
-            // remove auth and hooks from redirect request
-            $hooks = new Requests_Hooks();
-            $hooks->register('requests.before_redirect', function (
-                &$location,
-                &$req_headers,
-                &$req_data,
-                &$options
-            ) {
-                $options['auth'] = false;
-                $options['hooks'] = new Requests_Hooks();
-            });
-            $requestSession->options['hooks'] = $hooks;
-            $result = $requestSession->get($file['path']);
-        } else {
-            $result = $requestSession->get($file['legacy_path']);
-        }
-        $result->throw_for_status();
-        if (true === $result->success) {
-            echo $file['description'] . ' ' . __('downok52') . "\n";
-        }
-    } catch (Requests_Exception $e) {
-        echo sprintf('%s %s%s %s', __('downbad52'), $file['description'], __('colon99'), $e->getMessage());
-        if (file_exists($file['destination'])) {
-            echo sprintf(' (%s)', strip_tags(file_get_contents($file['destination'])));
-        }
-        exit;
-    }
-
-    ob_flush();
-    flush();
-
-    echo __('downokunpack52') . "\n";
-    ob_flush();
-    flush();
-} elseif (!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))), true)) {
-    // wget
-    $proxyString = '';
-    if (USE_PROXY) {
-        if (PROXY_USER !== '') {
-            $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT . ' --proxy-user=' . PROXY_USER . ' --proxy-password=' . PROXY_PASS;
-        } else {
-            $proxyString = '-e use_proxy=on -e http_proxy=' . PROXY_SERVER . ':' . PROXY_PORT;
-        }
-    }
-
-    if (defined('MAXMIND_ACCOUNT_ID')) {
-        $wget_basic_auth = sprintf('--user=%s --password=%s', MAXMIND_ACCOUNT_ID, MAXMIND_LICENSE_KEY);
-        $command = escapeshellcmd('wget ' . $wget_basic_auth . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination']);
-    } else {
-        $command = escapeshellcmd('wget ' . $proxyString . ' -N ' . $files_base_url . $file['path'] . ' -O ' . $file['destination']);
-    }
-
-    $result = exec(
-        $command,
-        $output_wget,
-        $retval_wget
-    );
-    if ($retval_wget > 0) {
-        echo __('downbad52') . ' ' . $file['description'] . "\n";
-        exit;
-    } else {
-        echo $file['description'] . ' ' . __('downok52') . "\n";
-    }
-} else {
-    $error_message = __('message352') . "\n" . __('message452');
-    exit($error_message);
-}
-
-// Extract files
-echo "\n";
-if (class_exists('PharData')) {
-    $p = new PharData($file['destination']);
-    $p->decompress();
-    $phar = new PharData(substr($file['destination'], 0, -3));
-    $phar->extractTo($extract_dir, null, true);
-    echo $file['description'] . ' ' . __('unpackok15') . "\n";
-    unlink($file['destination']);
-    unlink(substr($file['destination'], 0, -3));
-
-    foreach (new DirectoryIterator($extract_dir) as $item) {
-        if ($item->isDot()) {
-            continue;
-        }
-
-        if ($item->isDir()) {
-            $extractedFolder = $item->getFilename();
-            if (rename(
-                $extract_dir . $extractedFolder . '/' . $file['destinationFileName'],
-                $extract_dir . $file['destinationFileName']
-            )) {
-                array_map('unlink', glob($extract_dir . $extractedFolder . '/*'));
-                rmdir($extract_dir . $extractedFolder);
-            }
-        }
-    }
-} else {
-    // Unable to extract the file correctly
-    $error_message = __('message552') . "\n" . __('message652');
-    exit($error_message);
+ob_start();
+$result = geoip_update_download($extract_dir, "\n");
+if (true !== $result) {
+    exit($result . "\n");
 }
 
 // Apply MailWatch rights on files from the last run
@@ -228,7 +63,7 @@ if (is_file('/etc/sudoers.d/mailwatch')) {
         exit(__('nofind52') . '.' . "\n");
     }
 
-    $path = $extract_dir . $file['destinationFileName'];
+    $path = $extract_dir . 'GeoLite2-Country.mmdb';
     passthru("chown $mwUID.$mwUID $path", $retval_chown);
     if ($retval_chown > 0) {
         exit(__('nofindowner52') . ' ' . $extract_dir . "\n");
