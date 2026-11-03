@@ -163,7 +163,7 @@ if (defined('PWD_RESET') && PWD_RESET === true) {
                 $sql = "SELECT resetid, resetexpire FROM users WHERE username = '$email'";
                 $result = dbquery($sql);
                 $row = $result->fetch_array();
-                if ($row['resetid'] === $uid && $row['resetexpire'] < time()) {
+                if ($row['resetid'] === $uid && (int)$row['resetexpire'] < time()) {
                     // the form can be posted without opening the link again
                     audit_log(sprintf(__('auditlogexpired63', true), $email));
                     $errors = '<p class="pwdreseterror">' . __('resetexpired63') . '
