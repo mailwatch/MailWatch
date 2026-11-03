@@ -207,7 +207,7 @@ $graphgenerator->printLineGraph();
 // ///////////////////////////////////////Generate Table //////////////////////////////////
 // The graph already read the rows and printed the error when there are none
 $data = $graphgenerator->getData();
-if (empty($data)) {
+if ([] === $data) {
     exit;
 }
 

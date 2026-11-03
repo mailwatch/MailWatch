@@ -46,10 +46,8 @@ class GraphGenerator
 
     /**
      * Rows read by the last graph, in format $data[columnname][rowid].
-     *
-     * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
