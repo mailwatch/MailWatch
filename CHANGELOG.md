@@ -49,6 +49,7 @@
 - Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 - An auto-release link that fails to release the message reports the error and stays usable
 - Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
+- upgrade.php checks the `user_filters.username` column itself before resizing it
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -58,7 +59,6 @@
 
 ## 1.2.29
 ### Fixed
-- upgrade.php checks the `user_filters.username` column itself before resizing it
 - The previous day, virus, top virus, SpamAssassin rule hits and total mail by date reports count in the database instead of loading every message
 - The MailScanner rules editor opens empty rules files on PHP 8
 - The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
