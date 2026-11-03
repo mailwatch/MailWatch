@@ -180,7 +180,7 @@ function process_sql()
             $to = safe_value($idqueue[$i][3]);
             $smtp_id = safe_value($idqueue[$i][0]);
 
-            $result = dbquery("SELECT id from `maillog` where messageid='" . $message_id . "' and to_address LIKE '%" . $to . "%' LIMIT 1;");
+            $result = dbquery_reconnect("SELECT id from `maillog` where messageid='" . $message_id . "' and to_address LIKE '%" . $to . "%' LIMIT 1;");
             @$smtpd_id = $result->fetch_row()[0];
 
             if (DEBUG_MILTER === true) {
@@ -189,7 +189,7 @@ function process_sql()
 
             // Find correllating ids and update table, drop from queue
             if (isset($smtpd_id) && $smtpd_id !== $smtp_id) {
-                dbquery("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
+                dbquery_reconnect("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
                 array_splice($idqueue, $i, 1);
                 --$i;
                 $idcount = count($idqueue);

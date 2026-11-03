@@ -134,11 +134,11 @@ abstract class MtaLogProcessor
 
         if (null !== $_type) {
             if (preg_match('/^\d+$/', $_delay)) {
-                dbquery(
+                dbquery_reconnect(
                     "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status',SEC_TO_TIME('$_delay'),'$_to')"
                 );
             } else {
-                dbquery(
+                dbquery_reconnect(
                     "REPLACE INTO mtalog (`timestamp`,`host`,`type`,`msg_id`,`relay`,`dsn`,`status`,`delay`,`to_address`) VALUES (FROM_UNIXTIME('$_timestamp'),'$_host','$_type','$_msg_id','$_relay','$_dsn','$_status','$_delay','$_to')"
                 );
             }
@@ -150,7 +150,6 @@ abstract class MtaLogProcessor
         $size = filesize($file);
         $inode = fileinode($file);
         while (true) {
-            dbconn();
             clearstatcache();
             $currentSize = @filesize($file);
             $currentInode = @fileinode($file);
@@ -185,7 +184,6 @@ abstract class MtaLogProcessor
                 $size += strlen($line);
             }
             fclose($fh);
-            dbclose();
             if ($start === $size) {
                 sleep(1);
             }

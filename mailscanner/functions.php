@@ -1084,6 +1084,40 @@ function dbquery($sql, $printError = true)
 }
 
 /**
+ * dbquery() for the long running relay daemons: when MySQL restarts, wait for it and run the query again.
+ *
+ * @param string $sql
+ *
+ * @return mysqli_result|bool
+ */
+function dbquery_reconnect($sql)
+{
+    while (true) {
+        try {
+            return dbquery($sql);
+        } catch (mysqli_sql_exception $e) {
+            // 1053: server shutting down, 2002: unreachable, 2006: gone away, 2013: connection lost
+            if (!in_array($e->getCode(), [1053, 2002, 2006, 2013], true)) {
+                throw $e;
+            }
+            // drop the dead link and wait until a new one can be opened, dbconn() would exit
+            database::$link = null;
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+            while (true) {
+                sleep(5);
+                try {
+                    $probe = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+                    $probe->close();
+                    break;
+                } catch (mysqli_sql_exception $probeError) {
+                    // still down
+                }
+            }
+        }
+    }
+}
+
+/**
  * @param mysqli $link
  * @param string $sql
  */
