@@ -54,7 +54,7 @@ if (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
 $batchSize = defined('DB_CLEAN_BATCH_SIZE') ? (int) DB_CLEAN_BATCH_SIZE : 10000;
 
 // Whether to run OPTIMIZE TABLE after cleanup
-$runOptimize = !defined('DB_CLEAN_OPTIMIZE') || DB_CLEAN_OPTIMIZE === true;
+$runOptimize = defined('DB_CLEAN_OPTIMIZE') && true === DB_CLEAN_OPTIMIZE;
 
 /**
  * Delete rows in batches to avoid long table locks

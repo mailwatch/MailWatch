@@ -161,9 +161,9 @@ define('AUDIT_DAYS_TO_KEEP', 60);
 // Number of rows to delete per batch (reduces table locking on large databases)
 // Set to 0 to disable batching and delete all rows in a single query
 define('DB_CLEAN_BATCH_SIZE', 10000);
-// Run OPTIMIZE TABLE after cleanup (can be slow on large InnoDB tables)
-// Set to false if you run OPTIMIZE separately or don't need it
-define('DB_CLEAN_OPTIMIZE', true);
+// Run OPTIMIZE TABLE after cleanup: it rebuilds the tables and can block them for a long time on large InnoDB
+// databases, which reuse the freed space anyway. Set to true only if you need the disk space back
+define('DB_CLEAN_OPTIMIZE', false);
 
 // Show Software Version tab (only Admins can see it).
 define('SHOW_SFVERSION', true);

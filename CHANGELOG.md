@@ -4,6 +4,9 @@
 ### Added
 - upgrade.php reports user, filter, audit log and list rows that hold markup left by the stored XSS fixed in 1.2.28, without changing them
 
+### Changed
+- `DB_CLEAN_OPTIMIZE` defaults to false: mailwatch_db_clean.php runs OPTIMIZE TABLE only when it is set to true
+
 ### Fixed
 - Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 - tools/LDAP/mailwatch_ldap_sync.sh no longer deletes the imported users when the directory cannot be reached
