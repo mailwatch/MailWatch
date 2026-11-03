@@ -46,6 +46,7 @@
 - Passwords with quotes or backslashes that users set themselves before 1.3 work again, and are rehashed in their plain form at the next login
 - The password reset form checks that the reset link has not expired when the new password is submitted too
 - The password reset request gives the same answer whether the address exists or not, sends no new e-mail while a recent link is still valid, and is limited per client IP address
+- Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 
 ### Compatibility
 - The minimal PHP version is now 8.3.
@@ -55,7 +56,6 @@
 
 ## 1.2.29
 ### Fixed
-- Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 - An auto-release link that fails to release the message reports the error and stays usable
 - Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
 - upgrade.php checks the `user_filters.username` column itself before resizing it
