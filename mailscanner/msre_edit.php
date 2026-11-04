@@ -216,7 +216,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
             $rule_part['1target'],
             $rule_part['2and'],
             $rule_part['3and_direction'],
-            $rule_part['4and_target']
+            $rule_part['4and_target'],
         ) = $old_rule_part;
 
         // Clean out whitespace from the rule parts

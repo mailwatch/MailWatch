@@ -127,7 +127,7 @@ require_once __DIR__ . '/lib/htmlpurifier/HTMLPurifier.standalone.php';
 // Enforce SSL if SSL_ONLY=true
 if (PHP_SAPI !== 'cli' && SSL_ONLY && !empty($_SERVER['PHP_SELF'])) {
     // Is the connection secure?
-    $is_ssl = !empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] === '1');
+    $is_ssl = !empty($_SERVER['HTTPS']) && ('on' === $_SERVER['HTTPS'] || '1' === $_SERVER['HTTPS']);
     // Force SSL with a redirect to https:// if not already using SSL
     if (!$is_ssl) {
         header('Location: https://' . sanitizeInput($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
@@ -252,9 +252,9 @@ function getVirusRegex($scanner = null)
         case 'trend':
             $regex = '/Found virus (?P<virus>\S+) in file (?P<file>\S+)/';
             break;
-        // default:
-        // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
-        // break;
+            // default:
+            // die("<B>" . __('dieerror03') . "</B><BR>\n&nbsp;" . __('diescanner03' . "\n");
+            // break;
     }
 
     return $regex;
@@ -325,11 +325,10 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
     if (true === checkLoginExpiry($_SESSION['myusername'])) {
         header('Location: logout.php?error=timeout');
         exit;
-    } else {
-        if (0 === $refresh) {
-            // User is moving about on non-refreshing pages, keep session alive
-            updateLoginExpiry($_SESSION['myusername']);
-        }
+    }
+    if (0 === $refresh) {
+        // User is moving about on non-refreshing pages, keep session alive
+        updateLoginExpiry($_SESSION['myusername']);
     }
 
     if (DEBUG) {
@@ -654,7 +653,7 @@ function printMTAQueue()
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('inbound03') . '</a></td><td align="right">' . $inq2 . '</td></tr>' . "\n";
             echo '    <tr><td colspan="2"><a href="postfixmailq.php">Postfix ' . __('outbound03') . '</a></td><td align="right">' . $outq2 . '</td></tr>' . "\n";
         }
-        // Else use MAILQ from conf.php which is for Sendmail or Exim
+    // Else use MAILQ from conf.php which is for Sendmail or Exim
     } elseif (defined('MAILQ') && MAILQ === true && !DISTRIBUTED_SETUP) {
         if ('exim' === get_conf_var('MTA')) {
             $inq = exec('sudo ' . EXIM_QUEUE_IN . ' 2>&1');
@@ -997,8 +996,7 @@ function updateClock() {
   // Convert an hours component of "0" to "12"
   currentHours = ( currentHours === 0 ) ? 12 : currentHours;
 ';
-    }
-    else {
+    } else {
         echo '
   // also pad the hours with leading zeros, if required (24h time format)
   currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
@@ -1372,12 +1370,12 @@ function format_spam_report($spamreport)
             // french
             'requis',
         ];
-        array_walk($notRulesLines, function ($value) {
+        array_walk($notRulesLines, function($value) {
             return preg_quote($value, '/');
         });
         $notRulesLinesRegex = '(' . implode('|', $notRulesLines) . ')';
 
-        $sa_rules = array_filter($sa_rules, function ($val) use ($notRulesLinesRegex) {
+        $sa_rules = array_filter($sa_rules, function($val) use ($notRulesLinesRegex) {
             return 0 === preg_match("/$notRulesLinesRegex/i", $val);
         });
 
@@ -1665,7 +1663,7 @@ function formatSize($size, $precision = 2)
     $base = log($size) / log(1024);
     $suffixes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
 
-    return round(pow(1024, $base - floor($base)), $precision) . $suffixes[(int)floor($base)];
+    return round(1024 ** ($base - floor($base)), $precision) . $suffixes[(int)floor($base)];
 }
 
 /**
@@ -2842,17 +2840,19 @@ function address_filter_sql($addresses, $type)
  * If the host doesn't already include a protocol, it will be prefixed with "ldaps://" when the port is "636",
  * otherwise with "ldap://". If the URI doesn't already contain a port, the port is appended.
  *
- * @param string     $host The LDAP host.
- * @param int|string $port The LDAP port.
- * @return string The constructed LDAP URI.
+ * @param string     $host the LDAP host
+ * @param int|string $port the LDAP port
+ *
+ * @return string the constructed LDAP URI
  */
-function ldap_build_uri($host, $port) {
+function ldap_build_uri($host, $port)
+{
     // Convert the port to a string immediately
     $portStr = (string)$port;
 
     // If the host doesn't already start with "ldap://" or "ldaps://", prepend the appropriate protocol
-    if (stripos($host, 'ldap://') !== 0 && stripos($host, 'ldaps://') !== 0) {
-        $protocol = ($portStr === '636') ? 'ldaps://' : 'ldap://';
+    if (0 !== stripos($host, 'ldap://') && 0 !== stripos($host, 'ldaps://')) {
+        $protocol = ('636' === $portStr) ? 'ldaps://' : 'ldap://';
         $host = $protocol . $host;
     }
 
@@ -2944,7 +2944,7 @@ function ldap_authenticate($username, $password)
                     $user .= LDAP_BIND_SUFFIX;
                 }
                 if (!defined('LDAP_BIND_PREFIX') && !defined('LDAP_BIND_SUFFIX')) {
-                    $user=$result[0]['dn'];
+                    $user = $result[0]['dn'];
                 }
 
                 if (!isset($result[0][LDAP_EMAIL_FIELD])) {
@@ -3600,10 +3600,10 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
     $list = &$new;
 
     // Check for [-1], indicating just to release message itself, regardless of its item position
-    if ($num[0] === -1) {
+    if (-1 === $num[0]) {
         $num = [0];
         // Locate message in items
-        for ($index=0;$index<count($list);$index++) {
+        for ($index = 0; $index < count($list); ++$index) {
             if (preg_match('/message\/rfc822/', $list[$index]['type'])) {
                 $num = [$index];
                 break;
@@ -3736,10 +3736,10 @@ function quarantine_learn($list, $num, $type, $rpc_only = false, $global_filter 
     $list = &$new;
 
     // Check for [-1], indicating just to release message itself, regardless of its item position
-    if ($num[0] === -1) {
+    if (-1 === $num[0]) {
         $num = [0];
         // Locate message in items
-        for ($index=0;$index<count($list);$index++) {
+        for ($index = 0; $index < count($list); ++$index) {
             if (preg_match('/message\/rfc822/', $list[$index]['type'])) {
                 $num = [$index];
                 break;
@@ -4516,7 +4516,7 @@ function ip_in_range($ip, $net = false, $privateLocal = false)
 
 /**
  * @param string|int|float $input
- * @param string $type
+ * @param string           $type
  *
  * @return string|false
  */
@@ -4561,7 +4561,7 @@ function deepSanitizeInput($input, $type)
 
 /**
  * @param string|int|float|bool $input
- * @param string $type
+ * @param string                $type
  *
  * @return bool
  */
@@ -4827,7 +4827,7 @@ function updateLoginExpiry($myusername)
         } else {
             $expiry_val = (time() + 600);
         }
-        // If set, use the individual timeout
+    // If set, use the individual timeout
     } elseif ('0' === $login_timeout) {
         $expiry_val = 0;
     } else {
@@ -5061,7 +5061,7 @@ function getHTTPClientIP()
 
         // the last entry should be the real client ip
         return array_pop($ips);
-    } else {
-        return $remote_addr;
     }
+
+    return $remote_addr;
 }

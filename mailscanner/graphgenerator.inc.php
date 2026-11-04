@@ -230,7 +230,7 @@ class GraphGenerator
     protected function convertNumber($column)
     {
         $this->data[$column . 'conv'] = array_map(
-            function ($val) {
+            function($val) {
                 return number_format($val);
             },
             $this->data[$column]

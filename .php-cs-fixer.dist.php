@@ -11,7 +11,8 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR2' => true,
         '@Symfony' => true,
-        '@PHP54Migration' => true,
+        '@PHP5x4Migration' => true,
+        '@PHP5x6Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
         'concat_space' => ['spacing' => 'one'],
         'cast_spaces' => ['space' => 'none'],
@@ -23,5 +24,7 @@ return (new PhpCsFixer\Config())
         'phpdoc_no_package' => false,
         'phpdoc_separation' => ['groups' => [['ORM\\*'], ['Assert\\*'], ['Serializer\\*']]],
         'fully_qualified_strict_types' => false,
+        // PHP 5.6 compatibility: trailing commas in arguments and parameters need PHP 7.3 and 8.0
+        'trailing_comma_in_multiline' => ['elements' => ['arrays']],
     ])
 ;

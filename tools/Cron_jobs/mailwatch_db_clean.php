@@ -51,7 +51,7 @@ if (!defined('AUDIT_DAYS_TO_KEEP') || AUDIT_DAYS_TO_KEEP < 1) {
 }
 
 // Batch size for DELETE operations (reduces table locking on large databases)
-$batchSize = defined('DB_CLEAN_BATCH_SIZE') ? (int) DB_CLEAN_BATCH_SIZE : 10000;
+$batchSize = defined('DB_CLEAN_BATCH_SIZE') ? (int)DB_CLEAN_BATCH_SIZE : 10000;
 
 // Whether to run OPTIMIZE TABLE after cleanup
 $runOptimize = defined('DB_CLEAN_OPTIMIZE') && true === DB_CLEAN_OPTIMIZE;

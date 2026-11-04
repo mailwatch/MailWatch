@@ -211,7 +211,7 @@ switch (true) {
 }
 
 // Users manage their own addresses, domain admins the addresses of their domains
-$canManageRecipient = function ($address) use ($user_filter, $to_domain_filter) {
+$canManageRecipient = function($address) use ($user_filter, $to_domain_filter) {
     $address = strtolower(stripslashes($address));
     switch ($_SESSION['user_type']) {
         case 'A':

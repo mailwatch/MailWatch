@@ -223,7 +223,7 @@ ORDER BY a.date DESC, a.time DESC';
             ini_set('html_errors', 'off');
             ini_set('display_errors', 'on');
             ini_set('implicit_flush', 'false');
-            ini_set('error_reporting', (string) E_ALL);
+            ini_set('error_reporting', (string)E_ALL);
         } else {
             require_once __DIR__ . '/lib/pear/Mail.php';
             require_once __DIR__ . '/lib/pear/Mail/smtp.php';
@@ -355,53 +355,52 @@ ORDER BY a.date DESC, a.time DESC';
             }
 
             return $sendResult;
-        } else {
-            // combined
-            $quarantine_list = [];
-            $quarantined = [];
+        }
+        // combined
+        $quarantine_list = [];
+        $quarantined = [];
 
-            if ('A' === $type) {
-                $list_for = gethostname();
+        if ('A' === $type) {
+            $list_for = gethostname();
+
+            self::dbg(" ==== Building list for $list_for");
+            $quarantined[] = self::return_quarantine_list_array('', '', $type);
+            $quarantine_list[] = $list_for;
+
+            self::dbg(' ==== Found ' . count($quarantined[0]) . ' quarantined e-mails');
+        } else {
+            foreach ($filters as $filter) {
+                if ('D' === $type) {
+                    $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
+                    $list_for = $filter_domain;
+                } else {
+                    $filter_domain = $to_domain;
+                    $list_for = $filter;
+                }
 
                 self::dbg(" ==== Building list for $list_for");
-                $quarantined[] = self::return_quarantine_list_array('', '', $type);
-                $quarantine_list[] = $list_for;
+                $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain, $type);
 
-                self::dbg(' ==== Found ' . count($quarantined[0]) . ' quarantined e-mails');
-            } else {
-                foreach ($filters as $filter) {
-                    if ('D' === $type) {
-                        $filter_domain = preg_match('/(\S+)@(\S+)/', $filter, $split) ? $split[2] : $filter;
-                        $list_for = $filter_domain;
-                    } else {
-                        $filter_domain = $to_domain;
-                        $list_for = $filter;
-                    }
-
-                    self::dbg(" ==== Building list for $list_for");
-                    $tmp_quarantined = self::return_quarantine_list_array($filter, $filter_domain, $type);
-
-                    self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
-                    if (count($tmp_quarantined) > 0) {
-                        $quarantined[] = $tmp_quarantined;
-                        $quarantine_list[] = $list_for;
-                    }
+                self::dbg(' ==== Found ' . count($tmp_quarantined) . ' quarantined e-mails');
+                if (count($tmp_quarantined) > 0) {
+                    $quarantined[] = $tmp_quarantined;
+                    $quarantine_list[] = $list_for;
                 }
             }
-            if (count($quarantined) > 0) {
-                $quarantined = call_user_func_array('array_merge', $quarantined);
-            }
-
-            if (true === $sendEmptyReports || count($quarantined) > 0) {
-                $list = implode(', ', $quarantine_list);
-
-                return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
-            }
-
-            unset($quarantined, $quarantine_list);
-
-            return 0;
         }
+        if (count($quarantined) > 0) {
+            $quarantined = call_user_func_array('array_merge', $quarantined);
+        }
+
+        if (true === $sendEmptyReports || count($quarantined) > 0) {
+            $list = implode(', ', $quarantine_list);
+
+            return self::send_quarantine_email($email, $list, self::quarantine_sort($quarantined));
+        }
+
+        unset($quarantined, $quarantine_list);
+
+        return 0;
     }
 
     /**
@@ -612,7 +611,7 @@ ORDER BY a.date DESC, a.time DESC';
     private static function quarantine_sort($q)
     {
         $key = 'timestamp';
-        usort($q, function ($a, $b) use (&$key) {
+        usort($q, function($a, $b) use (&$key) {
             return strtotime($a[$key]) - strtotime($b[$key]);
         });
 

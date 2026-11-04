@@ -89,22 +89,22 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^(\d{10,}) \d+$/', $line, $match):
                                             $ctime = getdate((int)$match[1]);
                                             $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
-                                                (string) $ctime['mon'],
+                                                (string)$ctime['mon'],
                                                 2,
                                                 '0',
                                                 STR_PAD_LEFT
-                                            ) . '-' . str_pad((string) $ctime['mday'], 2, '0', STR_PAD_LEFT);
+                                            ) . '-' . str_pad((string)$ctime['mday'], 2, '0', STR_PAD_LEFT);
                                             $output[$msgid]['ctime'] = str_pad(
-                                                (string) $ctime['hours'],
+                                                (string)$ctime['hours'],
                                                 2,
                                                 '0',
                                                 STR_PAD_LEFT
                                             ) . ':' . str_pad(
-                                                (string) $ctime['minutes'],
+                                                (string)$ctime['minutes'],
                                                 2,
                                                 '0',
                                                 STR_PAD_LEFT
-                                            ) . ':' . str_pad((string) $ctime['seconds'], 2, '0', STR_PAD_LEFT);
+                                            ) . ':' . str_pad((string)$ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
                                         case preg_match('/^\d{3}I Message-ID: <(.+)>$/', $line, $match):
                                             $output[$msgid]['messageid'] = $match[1];
@@ -186,22 +186,22 @@ if (false !== $fl && flock($fl, LOCK_EX + LOCK_NB)) {
                                         case preg_match('/^T(.+)$/', $line, $match):
                                             $ctime = getdate((int)$match[1]);
                                             $output[$msgid]['cdate'] = $ctime['year'] . '-' . str_pad(
-                                                (string) $ctime['mon'],
+                                                (string)$ctime['mon'],
                                                 2,
                                                 '0',
                                                 STR_PAD_LEFT
-                                            ) . '-' . str_pad((string) $ctime['mday'], 2, '0', STR_PAD_LEFT);
+                                            ) . '-' . str_pad((string)$ctime['mday'], 2, '0', STR_PAD_LEFT);
                                             $output[$msgid]['ctime'] = str_pad(
-                                                 (string) $ctime['hours'],
+                                                (string)$ctime['hours'],
                                                 2,
                                                 '0',
                                                 STR_PAD_LEFT
                                             ) . ':' . str_pad(
-                                                (string) $ctime['minutes'],
+                                                (string)$ctime['minutes'],
                                                 2,
                                                 '0',
                                                 STR_PAD_LEFT
-                                            ) . ':' . str_pad((string) $ctime['seconds'], 2, '0', STR_PAD_LEFT);
+                                            ) . ':' . str_pad((string)$ctime['seconds'], 2, '0', STR_PAD_LEFT);
                                             break;
                                         case preg_match('/^P(.+)$/', $line, $match):
                                             $output[$msgid]['priority'] = $match[1];
