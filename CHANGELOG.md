@@ -4,19 +4,15 @@
 ### Security
 - Bind the message identifier and the account's authorisation scope as query parameters in the quarantine operations, closing an SQL injection reachable through the XML-RPC quarantine methods
 - Verify the other node's TLS certificate on quarantine RPC calls, which 1.2 disabled unconditionally; set `RPC_VERIFY_PEER` to `false` to keep the previous behaviour with self-signed certificates (see [UPGRADING.md](UPGRADING.md))
-- Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)
-- Escape untrusted e-mail, MTA and request data in message details, the message viewer, mail queues, reports, the audit log and quarantine reports; serve message parts sandboxed and as downloads (GHSA-jcgr-2839-3jc7)
-- Fix SQL injection in message table sorting and report filters, limit the filters a domain admin assigns and the allow/block list recipients a domain admin adds to the domains they manage, and enforce the dangerous content rules on auto-release links; upgrade.php lists the users left with the password "xxxxxxxx" by the 1.2 own settings form; validate message ids in the RPC server and drop the unused `get_quarantine` RPC method; quote values and stop evaluating database output in the LDAP sync (GHSA-fx6j-399x-49w7)
 
 ### Added
-- Failed logins are limited per client IP address and username (`LOGIN_MAX_FAILURES`, `LOGIN_LOCKOUT_MINUTES`); the new `login_failures` table comes from a database migration, and logins work as before until it exists
-- upgrade.php reports user, filter, audit log and list rows that hold markup left by the stored XSS fixed in 1.2.28, without changing them
 - Add `logmail` API endpoint for programmatic mail log ingestion
 - Add HTTP client support in `MailWatch.pm` for sending data to the MailWatch API
 - Add correlated structured logging to all MailScanner REST requests
 - `$logging_ip` in MailWatchConf.pm sets the address of the MailWatch.pm logging child, for MailScanner in a FreeBSD jail without its own loopback (#333)
 
 ### Changed
+- The `login_failures` table of the failed login limit comes from a database migration instead of upgrade.php
 - The message detail page resolves the relay and MTA log addresses only when `RESOLVE_IP_ON_DISPLAY` is true, as the message listing already did: with the default false it no longer waits for addresses that do not resolve (#1039)
 - The milter relay cron tails the mail log and restarts the relay scripts only when they are not running, instead of rereading the whole log every hour (#1265)
 - The tools INSTALL files link the scripts in /usr/local/bin instead of copying them, so that they find functions.php in the MailWatch directory
@@ -26,17 +22,45 @@
 - Standardised database charset to utf8mb4 with unicode_520_ci collation
 - Points in time are stored as UTC and converted for display; the database session is pinned to `+00:00`, dates are formatted in PHP rather than by SQL, and calendar-day comparisons ("today", a report's date range) are made in `TIME_ZONE` rather than by the database. The MTA log rows written before the upgrade are moved from the server's zone to UTC by a migration (see [UPGRADING.md](UPGRADING.md))
 - `MailWatch.pm` sends the message timestamp as an ISO 8601 instant, and no longer sends `date` and `time`: both are derived from its offset
-- `DB_CLEAN_OPTIMIZE` defaults to false: mailwatch_db_clean.php runs OPTIMIZE TABLE only when it is set to true
 
 ### Fixed
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
 - The Postfix process count on the status page counts only the master and its children (#1036)
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
 - The browser no longer fills in a saved password in the password fields of the user settings form (#383)
-- Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
+- Passwords with quotes or backslashes that users set themselves before 1.3 work again, and are rehashed in their plain form at the next login
+
+### Compatibility
+- The minimal PHP version is now 8.3.
+- `ext-xml` is now a declared requirement rather than a suggestion; it was already mandatory at runtime
+- The minimal supported MySQL version is now 5.7.42
+- The minimal supported MariaDB version is now 10.4.34
+
+## 1.2.29
+### Security
+- Fix SQL injection in message table sorting and report filters, enforce domain admin filter scope, allow/block list recipients and dangerous content rules on the server, and stop the own settings form from setting the password to "xxxxxxxx"; upgrade.php lists the users with that password; quote values and stop evaluating database output in the LDAP sync; validate message ids in the RPC server (GHSA-fx6j-399x-49w7)
+
+### Added
+- upgrade.php reports user, filter, audit log and list rows that hold markup left by the stored XSS fixed in 1.2.28, without changing them
+- Failed logins are limited per client IP address and username (`LOGIN_MAX_FAILURES`, `LOGIN_LOCKOUT_MINUTES`); the new `login_failures` table is created by upgrade.php, and logins work as before until it exists
+
+### Changed
+- `DB_CLEAN_OPTIMIZE` defaults to false: mailwatch_db_clean.php runs OPTIMIZE TABLE only when it is set to true
+
+### Fixed
+- Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
 - tools/LDAP/mailwatch_ldap_sync.sh no longer deletes the imported users when the directory cannot be reached
+- rpcserver.php runs again on PHP 5.6
+- An auto-release link that fails to release the message reports the error and stays usable
+- Passwords that contain quotes or backslashes work the same whether an administrator or the user sets them
+- Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
+- upgrade.php checks the `user_filters.username` column itself before resizing it
+- The previous day, virus, top virus, SpamAssassin rule hits and total mail by date reports count in the database instead of loading every message
+- The MailScanner rules editor opens empty rules files on PHP 8
+- The MailScanner configuration page expands `%var%` variables instead of using an undefined variable
 - mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
 - mailwatch_sendmail_queue.php keeps the last queue snapshot when a queue directory cannot be read, instead of failing on PHP 8
+- `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
 - The Postfix relay scripts keep following the mail log across rotation and truncation, read each line once and wait for lines still being written
 - The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting (#1169)
 - The daily and monthly cron jobs send the report, database cleanup and GeoIP update output to syslog instead of discarding it
@@ -44,25 +68,18 @@
 - mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
 - The daily cron job runs the database cleanup even when the quarantine maintenance or report script is not installed
 - The GeoIP update through wget works without an account ID, with a proxy and with an account ID together, and over an https proxy
-- Passwords with quotes or backslashes that users set themselves before 1.3 work again, and are rehashed in their plain form at the next login
-- The password reset form checks that the reset link has not expired when the new password is submitted too
-- The password reset request gives the same answer whether the address exists or not, sends no new e-mail while a recent link is still valid, and is limited per client IP address
-- Deleting a quarantined message with several files removes all of them, and the message leaves the quarantine only once no file is left
-- An auto-release link that fails to release the message reports the error and stays usable
-- Quarantine reports match recipient addresses exactly, and users with nothing in quarantine count as empty reports instead of failures
-- upgrade.php checks the `user_filters.username` column itself before resizing it
-- The previous day, virus, top virus, SpamAssassin rule hits and total mail by date reports count in the database instead of loading every message
-- The MailScanner rules editor opens empty rules files on PHP 8
-- The MailScanner configuration page expands `%var%` variables of MailScanner.conf in the values of the conf dir files again
-- `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
 - The total mail by date report runs its maillog query once instead of twice
 - The total mail by date report shows the server-wide MTA columns only to administrators, and only when every active filter is on the date
+- The password reset form checks that the reset link has not expired when the new password is submitted too
+- The password reset request gives the same answer whether the address exists or not, sends no new e-mail while a recent link is still valid, and is limited per client IP address
 
-### Compatibility
-- The minimal PHP version is now 8.3.
-- `ext-xml` is now a declared requirement rather than a suggestion; it was already mandatory at runtime
-- The minimal supported MySQL version is now 5.7.42
-- The minimal supported MariaDB version is now 10.4.34
+## 1.2.28
+### Security
+- Escape user management output to prevent stored XSS by domain administrators (GHSA-mr3r-q523-6cvf)
+- Escape untrusted e-mail, MTA and request data in message details, the message viewer, mail queues, reports, lists, the audit log and quarantine reports; serve message parts sandboxed and as downloads (GHSA-jcgr-2839-3jc7)
+
+### Fixed
+- Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
 
 ## 1.2.27
 ### Security
