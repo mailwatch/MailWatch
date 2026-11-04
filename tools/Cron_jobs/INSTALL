@@ -10,12 +10,13 @@ Copy and rename the file 'mailwatch.cron.monthly' into /etc/cron.monthly/mailwat
 
 # cp tools/Cron_jobs/mailwatch.cron.monthly /etc/cron.monthly/mailwatch
 
-Copy in /usr/local/bin the following files:
+Link in /usr/local/bin the following files, so that they find functions.php in the MailWatch directory they come from
+(adjust /opt/mailwatch to your installation path; a copy uses /var/www/html/mailscanner/ instead):
 
-mailwatch_db_clean.php
-mailwatch_quarantine_maint.php
-mailwatch_quarantine_report.php
-mailwatch_geoip_update.php
+# ln -s /opt/mailwatch/tools/Cron_jobs/mailwatch_db_clean.php /usr/local/bin/
+# ln -s /opt/mailwatch/tools/Cron_jobs/mailwatch_quarantine_maint.php /usr/local/bin/
+# ln -s /opt/mailwatch/tools/Cron_jobs/mailwatch_quarantine_report.php /usr/local/bin/
+# ln -s /opt/mailwatch/tools/Cron_jobs/mailwatch_geoip_update.php /usr/local/bin/
 
 Verify if the 4 files are executable. If not, use "chmod +x" to correct this problem.
 
