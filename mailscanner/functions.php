@@ -1096,8 +1096,8 @@ function dbquery_reconnect($sql)
         try {
             return dbquery($sql);
         } catch (mysqli_sql_exception $e) {
-            // 1053: server shutting down, 2002: unreachable, 2006: gone away, 2013: connection lost
-            if (!in_array($e->getCode(), [1053, 2002, 2006, 2013], true)) {
+            // 1047: Galera node not ready, 1053: server shutting down, 2002: unreachable, 2006: gone away, 2013: connection lost
+            if (!in_array($e->getCode(), [1047, 1053, 2002, 2006, 2013], true)) {
                 throw $e;
             }
             // drop the dead link and wait until a new one can be opened, dbconn() would exit

@@ -41,7 +41,7 @@
 - mailwatch_sendmail_queue.php keeps the last queue snapshot when a queue directory cannot be read, instead of failing on PHP 8
 - `HIDE_HIGH_SPAM` hides high spam only from regular users in quarantine reports too, as documented: administrators and domain administrators see it again
 - The Postfix relay scripts keep following the mail log across rotation and truncation, read each line once and wait for lines still being written
-- The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting
+- The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting (#1169)
 - The daily and monthly cron jobs send the report, database cleanup and GeoIP update output to syslog instead of discarding it
 - mailwatch_db_clean.php deletes all the expired maillog, mtalog and audit log rows in batches instead of the first batch only
 - mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
