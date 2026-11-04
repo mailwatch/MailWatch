@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * MailWatch for MailScanner
  * Copyright (C) 2003-2011  Steve Freegard (steve@freegard.name)
  * Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
@@ -101,7 +101,11 @@ function parse_conf_file($name)
             }
 
             // expand %var% variables, leave the undefined ones as they are
-            $regs['value'] = preg_replace_callback('/%[^%]+%/', fn($matches) => $var[$matches[0]] ?? $matches[0], $regs['value']);
+            $regs['value'] = preg_replace_callback(
+                '/%[^%]+%/',
+                fn($matches) => $var[$matches[0]] ?? $matches[0],
+                (string)$regs['value']
+            );
 
             // Remove any html entities from the code
             $key = htmlentities($regs['name']);

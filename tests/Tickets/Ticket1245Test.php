@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Tickets;
 
 use PHPUnit\Framework\TestCase;
@@ -9,25 +11,25 @@ require_once __DIR__ . '/../../mailscanner/conf_parser.inc.php';
 /**
  * %var% defined in MailScanner.conf must be expanded in the conf.d files too.
  */
-class Ticket1245Test extends TestCase
+final class Ticket1245Test extends TestCase
 {
-    private $dir;
+    private string $dir;
 
     protected function setUp(): void
     {
         $this->dir = sys_get_temp_dir() . '/mailwatch_1245_' . bin2hex(random_bytes(4));
-        mkdir($this->dir . '/conf.d', 0777, true);
+        mkdir($this->dir . '/conf.d', 0o777, true);
     }
 
     protected function tearDown(): void
     {
-        array_map('unlink', glob($this->dir . '/conf.d/*'));
+        array_map(unlink(...), glob($this->dir . '/conf.d/*'));
         rmdir($this->dir . '/conf.d');
         unlink($this->dir . '/MailScanner.conf');
         rmdir($this->dir);
     }
 
-    public function testExpandsVariablesAcrossFiles()
+    public function testExpandsVariablesAcrossFiles(): void
     {
         // var names are unique per test because the parser keeps them for the whole request
         file_put_contents($this->dir . '/MailScanner.conf', "%t1-org% = ACME\n%t1-rules% = /etc/MailScanner/rules\n");
@@ -40,7 +42,7 @@ class Ticket1245Test extends TestCase
         $this->assertSame('/etc/MailScanner/rules/x.rules /etc/MailScanner/rules/y.rules', trim($conf['Rules']));
     }
 
-    public function testLeavesUndefinedVariablesUnchanged()
+    public function testLeavesUndefinedVariablesUnchanged(): void
     {
         file_put_contents($this->dir . '/MailScanner.conf', "Max Children = 5\n");
         file_put_contents($this->dir . '/conf.d/a.conf', "Unknown = %t2-undefined%/file\n");
@@ -50,7 +52,7 @@ class Ticket1245Test extends TestCase
         $this->assertSame('%t2-undefined%/file', trim($conf['Unknown']));
     }
 
-    private function parse()
+    private function parse(): array
     {
         return array_merge(
             parse_conf_file($this->dir . '/MailScanner.conf'),
