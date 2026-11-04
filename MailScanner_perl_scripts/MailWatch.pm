@@ -6,7 +6,7 @@
 #
 #   Custom Module MailWatch
 #
-#   Version 1.8
+#   Version 1.9
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
@@ -47,7 +47,7 @@ use Sys::Syslog;
 use vars qw($VERSION);
 
 ### The package version, both in 1.23 style *and* usable by MakeMaker:
-$VERSION = '1.8';
+$VERSION = '1.9';
 
 # Trace settings - uncomment this to debug
 #DBI->trace(2,'/tmp/dbitrace.log');
@@ -55,7 +55,6 @@ $VERSION = '1.8';
 my ($dbh);
 my ($sth);
 my ($hostname) = hostname;
-my $loop = inet_aton("127.0.0.1");
 my $server_port = 11553;
 my $timeout = 3600;
 my ($SQLversion);
@@ -69,6 +68,11 @@ my ($db_name) = mailwatch_get_db_name();
 my ($db_host) = mailwatch_get_db_host();
 my ($db_user) = mailwatch_get_db_user();
 my ($db_pass) = mailwatch_get_db_password();
+# the logging child listens on this address and accepts connections only from it
+my $logging_ip = defined &mailwatch_get_logging_ip ? mailwatch_get_logging_ip() : '127.0.0.1';
+# an invalid address falls back to the loopback instead of breaking the logging
+my $loop = inet_aton($logging_ip) || inet_aton('127.0.0.1');
+my $loop_ip = inet_ntoa($loop);
 
 my $RunInForeground;
 
@@ -234,7 +238,7 @@ sub ListenForMessages {
         # and let another process try.
         alarm $timeout;
         # Make sure we"re only receiving local connections
-        if ($dotted_quad ne "127.0.0.1") {
+        if ($dotted_quad ne $loop_ip) {
             LogMessage('warn', "Error: unexpected connection from $dotted_quad");
             close CLIENT;
             next;
