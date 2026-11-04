@@ -719,7 +719,7 @@ if ($link) {
     while ($row = $result->fetch_row()) {
         $orphanIds[] = (int)$row[0];
     }
-    if (0 === count($orphanIds)) {
+    if ([] === $orphanIds) {
         echo color(' NOTHING FOUND', 'lightgreen') . PHP_EOL;
     } else {
         executeQuery('DELETE FROM user_filters WHERE id IN (' . implode(',', $orphanIds) . ')');
