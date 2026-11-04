@@ -21,16 +21,15 @@ my ($api_spool_replay_limit) = 10;
 # Change the values below for the connection to the local MailWatch logging child
 my ($local_logger_max_retries) = 3;
 my ($local_logger_retry_delay) = 5;
+# Change the value below only if the logging connections do not come from 127.0.0.1,
+# e.g. in a FreeBSD jail without its own loopback: set it to the IPv4 address of the jail
+my ($logging_ip) = '127.0.0.1';
 
 # Change the value below for SQLSpamSettings.pm (default = 15)
 my ($ss_refresh_time) = 15;       # Time in minutes before lists are refreshed
 
 # Change the value below for SQLAllowBlockList.pm (default = 15)
 my ($abl_refresh_time) = 15;      # Time in minutes before lists are refreshed
-
-# Change the value below for MailWatch.pm only if the logging connections do not come from 127.0.0.1,
-# e.g. in a FreeBSD jail without its own loopback: set it to the IPv4 address of the jail
-my ($logging_ip) = '127.0.0.1';
 
 
 ###############################
@@ -47,9 +46,9 @@ sub mailwatch_get_api_spool_max_messages { return $api_spool_max_messages };
 sub mailwatch_get_api_spool_replay_limit { return $api_spool_replay_limit };
 sub mailwatch_get_local_logger_max_retries { return $local_logger_max_retries };
 sub mailwatch_get_local_logger_retry_delay { return $local_logger_retry_delay };
+sub mailwatch_get_logging_ip { return $logging_ip };
 
 sub mailwatch_get_ABL_refresh_time { return $abl_refresh_time };
 sub mailwatch_get_SS_refresh_time { return $ss_refresh_time };
-sub mailwatch_get_logging_ip { return $logging_ip };
 
 1;

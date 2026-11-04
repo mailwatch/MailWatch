@@ -82,7 +82,9 @@ my $local_logger_retry_delay = defined &mailwatch_get_local_logger_retry_delay
     ? mailwatch_get_local_logger_retry_delay()
     : 5;
 # the logging child listens on this address and accepts connections only from it
-my $logging_ip = defined &mailwatch_get_logging_ip ? mailwatch_get_logging_ip() : '127.0.0.1';
+my $logging_ip = defined &mailwatch_get_logging_ip
+    ? mailwatch_get_logging_ip()
+    : '127.0.0.1';
 # an invalid address falls back to the loopback instead of breaking the logging
 my $loop = inet_aton($logging_ip) || inet_aton('127.0.0.1');
 my $loop_ip = inet_ntoa($loop);
