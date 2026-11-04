@@ -32,6 +32,7 @@
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
 - The Postfix process count on the status page counts only the master and its children (#1036)
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
+- The browser no longer fills in a saved password in the password fields of the user settings form (#383)
 - Fixed daily MTA rejection counts on rep_total_mail_by_date.php being overwritten instead of summed, showing only the last row of each day
 - tools/LDAP/mailwatch_ldap_sync.sh no longer deletes the imported users when the directory cannot be reached
 - mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
