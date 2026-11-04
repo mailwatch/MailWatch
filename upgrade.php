@@ -30,9 +30,11 @@ if (PHP_SAPI !== 'cli') {
     header('Content-type: text/plain');
 }
 
-// Edit if you changed webapp directory from default and not using command line argument to define it
-$pathToFunctions = '/var/www/html/mailscanner/functions.php';
-//$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+// Auto-detect functions.php relative to this script, with fallback to the default path; a command line argument overrides both
+$pathToFunctions = __DIR__ . '/mailscanner/functions.php';
+if (!@is_file($pathToFunctions)) {
+    $pathToFunctions = '/var/www/html/mailscanner/functions.php';
+}
 
 $cli_options = getopt('', array('skip-user-confirm'));
 
@@ -48,7 +50,7 @@ if (isset($argv) && count($argv) > 1) {
 }
 
 if (!@is_file($pathToFunctions)) {
-    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": edit ' . __FILE__ . ' and set the right path on line ' . (__LINE__ - 17) . PHP_EOL);
+    die('Error: Cannot find functions.php file in "' . $pathToFunctions . '": pass the right path as argument, e.g. php ' . __FILE__ . ' /path/to/mailscanner/functions.php' . PHP_EOL);
 }
 
 require_once $pathToFunctions;
