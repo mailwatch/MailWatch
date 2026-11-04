@@ -1,6 +1,17 @@
 # Changelog
 
 ## Unreleased
+### Added
+- `$logging_ip` in MailWatchConf.pm sets the address of the MailWatch.pm logging child, for MailScanner in a FreeBSD jail without its own loopback (#333)
+
+### Changed
+- The message detail page resolves the relay and MTA log addresses only when `RESOLVE_IP_ON_DISPLAY` is true, as the message listing already did: with the default false it no longer waits for addresses that do not resolve (#1039)
+- The milter relay cron tails the mail log and restarts the relay scripts only when they are not running, instead of rereading the whole log every hour (#1265)
+
+### Fixed
+- `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
+- The Postfix process count on the status page counts only the master and its children (#1036)
+- upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
 
 ## 1.2.29
 ### Security
@@ -70,6 +81,8 @@
 - Fixed Message-ID extraction stripping angle brackets required by RFC 5322
 - Fixed the wrong variable check for mtalogprocessor.inc.php in mailwatch_postfix_relay.php
 - Fixed broken HTML page on failure to run SpamAssassin Lint tool
+- A wrong LDAP password or an empty password in the database no longer causes an error 500 at login (#1323)
+- The header clock shows AM/PM only with the 12-hour time format, and pads the hours with the 24-hour format (#1322)
 
 ## 1.2.25
 ### Changed
@@ -88,10 +101,11 @@
 - Update htmlpurifier library to 4.17.0
 - Avoid usage of the deprecated utf8_encode function in the viewpart
 - Better Linux OS recognition
+- The LDAP login uses the DN found by the search when no username prefix or suffix is set (#1313)
 
 ### Compatibility
 - The minimal PHP version is now 5.6.
-- Migrate MailScanner perl script to DBD:MariaDB
+- Migrate MailScanner perl script to DBD:MariaDB (#1300)
 - Update GeoIP to support authentication by account id+license key
 
 ### Fixes

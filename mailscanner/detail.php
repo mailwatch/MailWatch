@@ -169,8 +169,10 @@ for ($f = 0; $f < $result->field_count; ++$f) {
                 } elseif (true === $isLocalNetwork) {
                     $output .= ' <td>' . __('localhost04') . "</td>\n";
                 }
-                // Reverse lookup on address. Possibly need to remove it.
-                elseif (($host = gethostbyaddr($relay)) !== $relay) {
+                // Reverse lookup on address, slow when the address does not resolve
+                elseif (!(defined('RESOLVE_IP_ON_DISPLAY') && RESOLVE_IP_ON_DISPLAY === true)) {
+                    $output .= " <td></td>\n";
+                } elseif (($host = gethostbyaddr($relay)) !== $relay) {
                     $output .= ' <td>' . htmlspecialchars($host, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "</td>\n";
                 } else {
                     $output .= ' <td>' . __('reversefailed04') . "</td>\n";
@@ -357,7 +359,7 @@ if (false !== $sth1 && $sth1->num_rows > 0) {
         // MTA log fields carry remote SMTP replies
         echo '     <td class="detail" align="left">' . htmlspecialchars((string)$row[0], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Date/Time
         echo '     <td class="detail" align="left">' . htmlspecialchars((string)$row[1], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Relayed by
-        if (($lhost = @gethostbyaddr($row[2])) !== $row[2]) {
+        if (defined('RESOLVE_IP_ON_DISPLAY') && RESOLVE_IP_ON_DISPLAY === true && ($lhost = @gethostbyaddr($row[2])) !== $row[2]) {
             echo '     <td class="detail" align="left">' . htmlspecialchars((string)$lhost, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n"; // Relayed to
         } else {
             echo '     <td class="detail" align="left">' . htmlspecialchars((string)$row[2], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), '</td>' . "\n";
