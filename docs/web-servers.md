@@ -86,7 +86,7 @@ Enable `mod_rewrite`, then configure the virtual host:
     </Directory>
 
     <FilesMatch \.php$>
-        SetHandler "proxy:unix:/run/php/php8.3-fpm.sock|fcgi://localhost/"
+        SetHandler "proxy:unix:/run/php/php8.5-fpm.sock|fcgi://localhost/"
     </FilesMatch>
 </VirtualHost>
 ```
@@ -113,7 +113,7 @@ server {
         try_files $uri =404;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.5-fpm.sock;
     }
 
     location ~ /\. {
@@ -132,7 +132,7 @@ mailwatch.example.com {
     root * /var/www/mailwatch/public_html
     encode zstd gzip
 
-    php_fastcgi unix//run/php/php8.3-fpm.sock
+    php_fastcgi unix//run/php/php8.5-fpm.sock
     file_server {
         hide .htaccess js/Chart.js/.htaccess
     }

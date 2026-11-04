@@ -31,7 +31,7 @@
 - Passwords with quotes or backslashes that users set themselves before 1.3 work again, and are rehashed in their plain form at the next login
 
 ### Compatibility
-- The minimal PHP version is now 8.3.
+- The minimal PHP version is now 8.5.12.
 - `ext-xml` is now a declared requirement rather than a suggestion; it was already mandatory at runtime
 - The minimal supported MySQL version is now 5.7.42
 - The minimal supported MariaDB version is now 10.4.34

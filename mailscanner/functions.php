@@ -26,12 +26,7 @@
  */
 
 // Set error level (some distro's have php.ini set to E_ALL)
-if (PHP_VERSION_ID < 50300) {
-    error_reporting(E_ALL);
-} else {
-    // E_DEPRECATED added in PHP 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
-}
+error_reporting(E_ALL & ~E_DEPRECATED);
 
 if (extension_loaded('uopz') && !(ini_get('uopz.disable') || ini_get('uopz.exit'))) {
     // uopz works at opcode level and disables exit calls

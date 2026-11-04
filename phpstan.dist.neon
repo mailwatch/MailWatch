@@ -3,7 +3,7 @@ includes:
 
 parameters:
 	level: 5
-	phpVersion: 80300
+	phpVersion: 80512
 	tmpDir: %currentWorkingDirectory%/.phpstan-cache
 	paths:
 	    - src

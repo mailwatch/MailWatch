@@ -24,7 +24,7 @@ on:
 
 jobs:
   phpstan:
-    name: "PHP: 8.3 | PHPStan"
+    name: "PHP: 8.5 | PHPStan"
 
     runs-on: "ubuntu-latest"
 
@@ -35,7 +35,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           coverage: none
 
       # Install dependencies and handle caching in one go.

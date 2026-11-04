@@ -302,12 +302,12 @@ if (!array_key_exists('skip-user-confirm', $cli_options)) {
 }
 
 // Minimal PHP version check (placed after banner)
-echo pad('Checking minimal PHP version >= 8.1');
-if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 80100) {
+echo pad('Checking minimal PHP version >= 8.5.12');
+if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 80512) {
     echo color(' OK', 'green') . PHP_EOL;
 } else {
     echo color(' ERROR', 'red') . PHP_EOL;
-    echo 'ERROR: PHP version ' . PHP_VERSION . ' detected. Minimum required is 8.1. Upgrade aborted.' . PHP_EOL;
+    echo 'ERROR: PHP version ' . PHP_VERSION . ' detected. Minimum required is 8.5.12. Upgrade aborted.' . PHP_EOL;
     exit(1);
 }
 
