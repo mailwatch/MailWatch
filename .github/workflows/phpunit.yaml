@@ -23,11 +23,17 @@ jobs:
   test:
     name: "PHP: ${{ matrix.php-version }} | PHPUnit"
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       fail-fast: false
       matrix:
         php-version: ['8.5']
+        experimental: [false]
+        include:
+          # PHP 8.6 nightly: reports regressions early without failing the run
+          - php-version: '8.6'
+            experimental: true
 
     steps:
       - name: Checkout code
