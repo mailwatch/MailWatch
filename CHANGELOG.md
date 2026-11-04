@@ -38,7 +38,7 @@
 - mailwatch_sendmail_queue.php replaces the queue rows in one transaction, so the queue pages never show it half filled
 - mailwatch_sendmail_queue.php keeps the last queue snapshot when a queue directory cannot be read, instead of failing on PHP 8
 - The Postfix relay scripts keep following the mail log across rotation and truncation, read each line once and wait for lines still being written
-- The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting
+- The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting (#1169)
 - The daily and monthly cron jobs send the report, database cleanup and GeoIP update output to syslog instead of discarding it
 - mailwatch_db_clean.php deletes all the expired maillog, mtalog and audit log rows in batches instead of the first batch only
 - mailwatch_db_clean.php on Postfix deletes only expired mtalog rows, no longer removes recent NOQUEUE rejections and no longer loops forever on rows without a queue id
@@ -63,10 +63,6 @@
 - `ext-xml` is now a declared requirement rather than a suggestion; it was already mandatory at runtime
 - The minimal supported MySQL version is now 5.7.42
 - The minimal supported MariaDB version is now 10.4.34
-
-## 1.2.29
-### Fixed
-- The Postfix and Sendmail relay scripts wait for MySQL and continue when the database restarts, instead of exiting (#1169)
 
 ## 1.2.27
 ### Security
