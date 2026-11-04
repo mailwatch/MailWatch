@@ -11,7 +11,7 @@ Copy and rename the file 'mailwatch.cron.monthly' into /etc/cron.monthly/mailwat
 # cp tools/Cron_jobs/mailwatch.cron.monthly /etc/cron.monthly/mailwatch
 
 Link in /usr/local/bin the following files, so that they find functions.php in the MailWatch directory they come from
-(adjust /opt/mailwatch to your installation path; a copy uses /var/www/html/mailscanner/ instead):
+(adjust /opt/mailwatch to your installation path; a copy cannot find it):
 
 # ln -s /opt/mailwatch/tools/Cron_jobs/mailwatch_db_clean.php /usr/local/bin/
 # ln -s /opt/mailwatch/tools/Cron_jobs/mailwatch_quarantine_maint.php /usr/local/bin/

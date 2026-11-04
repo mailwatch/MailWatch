@@ -19,7 +19,7 @@
 ### Changed
 - The message detail page resolves the relay and MTA log addresses only when `RESOLVE_IP_ON_DISPLAY` is true, as the message listing already did: with the default false it no longer waits for addresses that do not resolve (#1039)
 - The milter relay cron tails the mail log and restarts the relay scripts only when they are not running, instead of rereading the whole log every hour (#1265)
-- The tools INSTALL files link the scripts in /usr/local/bin instead of copying them, so that they find functions.php in the MailWatch directory without editing
+- The tools INSTALL files link the scripts in /usr/local/bin instead of copying them, so that they find functions.php in the MailWatch directory
 - Replace the bundled `phpxmlrpc` 3.0.0.beta with the maintained `phpxmlrpc/phpxmlrpc` 4.x from Composer; node-to-node RPC keeps the same wire format, and the deprecation notices the bundled copy emitted on PHP 8.2 and later are gone
 - Move the three REST APIs from legacy `mysqli` access to Doctrine DBAL without changing their versioned contracts
 - Rename terminology from "whitelist/blacklist" to "allowlist/blocklist" throughout the application (database tables, columns, Perl modules, UI) (#1186)

@@ -7,7 +7,7 @@ Optional files for Postfix MTA
 Copy the 'mailwatch-postfix-relay' cron file into /etc/cron.hourly/
 
 Link in /usr/local/bin the following files, so that they find functions.php in the MailWatch directory they come from
-(adjust /opt/mailwatch to your installation path; a copy uses /var/www/html/mailscanner/ instead):
+(adjust /opt/mailwatch to your installation path; a copy cannot find it):
 
 # ln -s /opt/mailwatch/tools/Postfix_relay/mailwatch_postfix_relay.php /usr/local/bin/
 # ln -s /opt/mailwatch/tools/Postfix_relay/mailwatch_mailscanner_relay.php /usr/local/bin/
