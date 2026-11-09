@@ -14,6 +14,7 @@
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
 - The Postfix process count on the status page counts only the master and its children (#1036)
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
+- No PHP 8.2-8.5 deprecation messages from the bundled XML-RPC library and the `E_STRICT` error level in the web pages and cron jobs (#1327)
 
 ## 1.2.29
 ### Security

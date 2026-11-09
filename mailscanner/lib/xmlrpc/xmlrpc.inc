@@ -602,7 +602,7 @@ function xmlrpc_ee($parser, $name, $rebuild_xmlrpcvals = true)
                         $GLOBALS['_xh']['value'] = 'ERROR_NON_NUMERIC_FOUND';
                     } else {
                         // it's ok, add it on
-                        $GLOBALS['_xh']['value'] = (double)$GLOBALS['_xh']['ac'];
+                        $GLOBALS['_xh']['value'] = (float)$GLOBALS['_xh']['ac'];
                     }
                 } else {
                     // we have an I4/INT
@@ -1509,18 +1509,24 @@ class xmlrpc_client
         {
             $this->errstr = 'no response';
             $resp = new xmlrpcresp(0, $GLOBALS['xmlrpcerr']['curl_fail'], $GLOBALS['xmlrpcstr']['curl_fail'] . ': ' . curl_error($curl));
-            curl_close($curl);
+            if (PHP_VERSION_ID < 80000) {
+                curl_close($curl);
+            }
             if ($keepalive) {
                 $this->xmlrpc_curl_handle = null;
             }
         } else {
             if (!$keepalive) {
-                curl_close($curl);
+                if (PHP_VERSION_ID < 80000) {
+                    curl_close($curl);
+                }
             }
             $resp =& $msg->parseResponse($result, true, $this->return_type);
             // if we got back a 302, we can not reuse the curl handle for later calls
             if ($resp->faultCode() == $GLOBALS['xmlrpcerr']['http_error'] && $keepalive) {
-                curl_close($curl);
+                if (PHP_VERSION_ID < 80000) {
+                    curl_close($curl);
+                }
                 $this->xmlrpc_curl_handle = null;
             }
         }
@@ -2337,7 +2343,9 @@ class xmlrpcmsg
             }
             error_log($errstr);
             $r = new xmlrpcresp(0, $GLOBALS['xmlrpcerr']['invalid_return'], $GLOBALS['xmlrpcstr']['invalid_return'] . ' (' . $errstr . ')');
-            xml_parser_free($parser);
+            if (PHP_VERSION_ID < 80000) {
+                xml_parser_free($parser);
+            }
             if ($this->debug) {
                 print $errstr;
             }
@@ -2346,7 +2354,9 @@ class xmlrpcmsg
             $r->raw_data = $raw_data;
             return $r;
         }
-        xml_parser_free($parser);
+        if (PHP_VERSION_ID < 80000) {
+            xml_parser_free($parser);
+        }
         // second error check: xml well formed but not xml-rpc compliant
         if ($GLOBALS['_xh']['isf'] > 1) {
             if ($this->debug) {
@@ -2610,19 +2620,19 @@ class xmlrpcval
             case 1:
                 switch ($typ) {
                     case $GLOBALS['xmlrpcBase64']:
-                        $rs .= "<${typ}>" . base64_encode($val) . "</${typ}>";
+                        $rs .= "<{$typ}>" . base64_encode($val) . "</{$typ}>";
                         break;
                     case $GLOBALS['xmlrpcBoolean']:
-                        $rs .= "<${typ}>" . ($val ? '1' : '0') . "</${typ}>";
+                        $rs .= "<{$typ}>" . ($val ? '1' : '0') . "</{$typ}>";
                         break;
                     case $GLOBALS['xmlrpcString']:
                         // G. Giunta 2005/2/13: do NOT use htmlentities, since
                         // it will produce named html entities, which are invalid xml
-                        $rs .= "<${typ}>" . xmlrpc_encode_entitites($val, $GLOBALS['xmlrpc_internalencoding'], $charset_encoding) . "</${typ}>";
+                        $rs .= "<{$typ}>" . xmlrpc_encode_entitites($val, $GLOBALS['xmlrpc_internalencoding'], $charset_encoding) . "</{$typ}>";
                         break;
                     case $GLOBALS['xmlrpcInt']:
                     case $GLOBALS['xmlrpcI4']:
-                        $rs .= "<${typ}>" . (int)$val . "</${typ}>";
+                        $rs .= "<{$typ}>" . (int)$val . "</{$typ}>";
                         break;
                     case $GLOBALS['xmlrpcDouble']:
                         // avoid using standard conversion of float to string because it is locale-dependent,
@@ -2630,18 +2640,18 @@ class xmlrpcval
                         // sprintf('%F') could be most likely ok but it fails eg. on 2e-14.
                         // The code below tries its best at keeping max precision while avoiding exp notation,
                         // but there is of course no limit in the number of decimal places to be used...
-                        $rs .= "<${typ}>" . preg_replace('/\\.?0+$/', '', number_format((double)$val, 128, '.', '')) . "</${typ}>";
+                        $rs .= "<{$typ}>" . preg_replace('/\\.?0+$/', '', number_format((float)$val, 128, '.', '')) . "</{$typ}>";
                         break;
                     case $GLOBALS['xmlrpcDateTime']:
                         if (is_string($val)) {
-                            $rs .= "<${typ}>${val}</${typ}>";
+                            $rs .= "<{$typ}>{$val}</{$typ}>";
                         } else if ($val instanceof \DateTime) {
-                            $rs .= "<${typ}>" . $val->format('Ymd\TH:i:s') . "</${typ}>";
+                            $rs .= "<{$typ}>" . $val->format('Ymd\TH:i:s') . "</{$typ}>";
                         } else if (is_int($val)) {
-                            $rs .= "<${typ}>" . strftime('%Y%m%dT%H:%M:%S', $val) . "</${typ}>";
+                            $rs .= "<{$typ}>" . strftime('%Y%m%dT%H:%M:%S', $val) . "</{$typ}>";
                         } else {
                             // not really a good idea here: but what shall we output anyway? left for backward compat...
-                            $rs .= "<${typ}>${val}</${typ}>";
+                            $rs .= "<{$typ}>{$val}</{$typ}>";
                         }
                         break;
                     case $GLOBALS['xmlrpcNull']:
@@ -2654,7 +2664,7 @@ class xmlrpcval
                     default:
                         // no standard type value should arrive here, but provide a possibility
                         // for xmlrpcvals of unknown type...
-                        $rs .= "<${typ}>${val}</${typ}>";
+                        $rs .= "<{$typ}>{$val}</{$typ}>";
                 }
                 break;
             case 3:
@@ -3184,10 +3194,14 @@ function php_xmlrpc_decode_xml($xml_val, $options = array())
             xml_error_string(xml_get_error_code($parser)),
             xml_get_current_line_number($parser), xml_get_current_column_number($parser));
         error_log($errstr);
-        xml_parser_free($parser);
+        if (PHP_VERSION_ID < 80000) {
+            xml_parser_free($parser);
+        }
         return false;
     }
-    xml_parser_free($parser);
+    if (PHP_VERSION_ID < 80000) {
+        xml_parser_free($parser);
+    }
     if ($GLOBALS['_xh']['isf'] > 1) // test that $GLOBALS['_xh']['value'] is an obj, too???
     {
         error_log($GLOBALS['_xh']['isf_reason']);

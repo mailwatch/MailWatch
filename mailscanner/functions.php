@@ -29,8 +29,8 @@
 if (PHP_VERSION_ID < 50300) {
     error_reporting(E_ALL);
 } else {
-    // E_DEPRECATED added in PHP 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_STRICT);
+    // E_DEPRECATED added in PHP 5.3; 2048 is E_STRICT, whose constant is deprecated since PHP 8.4
+    error_reporting(E_ALL & ~E_DEPRECATED & ~2048);
 }
 
 if (extension_loaded('uopz') && !(ini_get('uopz.disable') || ini_get('uopz.exit'))) {

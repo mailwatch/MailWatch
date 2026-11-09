@@ -171,8 +171,8 @@ $_xmlrpcs_multicall_sdoc = array(array('list of response structs, where each str
 function _xmlrpcs_multicall_error($err)
 {
     if (is_string($err)) {
-        $str = $GLOBALS['xmlrpcstr']["multicall_${err}"];
-        $code = $GLOBALS['xmlrpcerr']["multicall_${err}"];
+        $str = $GLOBALS['xmlrpcstr']["multicall_{$err}"];
+        $code = $GLOBALS['xmlrpcerr']["multicall_{$err}"];
     } else {
         $code = $err->faultCode();
         $str = $err->faultString();
@@ -334,7 +334,7 @@ function _xmlrpcs_errorHandler($errcode, $errstring, $filename = null, $lineno =
     }
 
     //if($errcode != E_NOTICE && $errcode != E_WARNING && $errcode != E_USER_NOTICE && $errcode != E_USER_WARNING)
-    if ($errcode != E_STRICT) {
+    if ($errcode != 2048) { // E_STRICT, deprecated constant since PHP 8.4
         $GLOBALS['_xmlrpcs_occurred_errors'] .= $errstring . "\n";
     }
     // Try to avoid as much as possible disruption to the previous error handling
@@ -674,7 +674,7 @@ class xmlrpc_server
             }
         }
         if (isset($wanted)) {
-            return array(0, "Wanted ${wanted}, got ${got} at param ${pno}");
+            return array(0, "Wanted {$wanted}, got {$got} at param {$pno}");
         }
 
         return array(0, 'No method signature matches number of parameters');
@@ -853,14 +853,20 @@ class xmlrpc_server
                 sprintf('XML error: %s at line %d, column %d',
                     xml_error_string(xml_get_error_code($parser)),
                     xml_get_current_line_number($parser), xml_get_current_column_number($parser)));
-            xml_parser_free($parser);
+            if (PHP_VERSION_ID < 80000) {
+                xml_parser_free($parser);
+            }
         } elseif ($GLOBALS['_xh']['isf']) {
-            xml_parser_free($parser);
+            if (PHP_VERSION_ID < 80000) {
+                xml_parser_free($parser);
+            }
             $r = new xmlrpcresp(0,
                 $GLOBALS['xmlrpcerr']['invalid_request'],
                 $GLOBALS['xmlrpcstr']['invalid_request'] . ' ' . $GLOBALS['_xh']['isf_reason']);
         } else {
-            xml_parser_free($parser);
+            if (PHP_VERSION_ID < 80000) {
+                xml_parser_free($parser);
+            }
             // small layering violation in favor of speed and memory usage:
             // we should allow the 'execute' method handle this, but in the
             // most common scenario (xmlrpcvals type server with some methods
@@ -925,7 +931,7 @@ class xmlrpc_server
                 return new xmlrpcresp(
                     0,
                     $GLOBALS['xmlrpcerr']['incorrect_params'],
-                    $GLOBALS['xmlrpcstr']['incorrect_params'] . ": ${errstr}"
+                    $GLOBALS['xmlrpcstr']['incorrect_params'] . ": {$errstr}"
                 );
             }
         }
@@ -982,7 +988,7 @@ class xmlrpc_server
                         // mimic EPI behaviour: if we get an array that looks like an error, make it
                         // an eror response
                         if (is_array($r) && array_key_exists('faultCode', $r) && array_key_exists('faultString', $r)) {
-                            $r = new xmlrpcresp(0, (integer)$r['faultCode'], (string)$r['faultString']);
+                            $r = new xmlrpcresp(0, (int)$r['faultCode'], (string)$r['faultString']);
                         } else {
                             // functions using EPI api should NOT return resp objects,
                             // so make sure we encode the return type correctly
