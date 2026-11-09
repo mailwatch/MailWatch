@@ -26,6 +26,8 @@
  */
 
 require_once __DIR__ . '/functions.php';
+// before the $xmlrpc_internalencoding override below, which loading the library would reset
+mailwatch_load_xmlrpc(true);
 ini_set('memory_limit', (string)MEMORY_LIMIT);
 
 function rpc_return_quarantined_file($msg)

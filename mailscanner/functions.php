@@ -147,13 +147,31 @@ if (PHP_SAPI !== 'cli') {
 // set default timezone
 date_default_timezone_set(TIME_ZONE);
 
-// XML-RPC
-if (!function_exists('xml_parser_create') && (!ini_get('enable_dl') || true !== @dl('xml.so'))) {
-    exit(__('phpxmlnotloaded03'));
+// XML-RPC client: loaded on first use, only distributed setups need it (rpcserver.php loads the server itself)
+spl_autoload_register(function($class) {
+    if (!in_array(strtolower($class), ['xmlrpc_client', 'xmlrpcmsg', 'xmlrpcresp', 'xmlrpcval'], true)) {
+        return;
+    }
+    mailwatch_load_xmlrpc();
+});
+
+/**
+ * Load the XML-RPC library, stopping when the xml extension is missing.
+ *
+ * @param bool $server also load the server classes
+ *
+ * @return void
+ */
+function mailwatch_load_xmlrpc($server = false)
+{
+    if (!function_exists('xml_parser_create') && (!ini_get('enable_dl') || true !== @dl('xml.so'))) {
+        exit(__('phpxmlnotloaded03'));
+    }
+    require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
+    if ($server) {
+        require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
+    }
 }
-require_once __DIR__ . '/lib/xmlrpc/xmlrpc.inc';
-require_once __DIR__ . '/lib/xmlrpc/xmlrpcs.inc';
-require_once __DIR__ . '/lib/xmlrpc/xmlrpc_wrappers.inc';
 
 include __DIR__ . '/postfix.inc.php';
 include __DIR__ . '/msmail.inc.php';

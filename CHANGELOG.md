@@ -9,6 +9,7 @@
 - The milter relay cron tails the mail log and restarts the relay scripts only when they are not running, instead of rereading the whole log every hour (#1265)
 - upgrade.php finds functions.php next to itself, as the tools scripts do, and falls back to `/var/www/html/mailscanner/` only when it is not there: it no longer needs editing when MailWatch is not installed in the default path
 - The tools INSTALL files link the scripts in /usr/local/bin instead of copying them, so that they find functions.php in the MailWatch directory without editing
+- The XML-RPC library is loaded only when a distributed setup talks to another MailWatch server, and the PHP xml extension is required only then
 
 ### Fixed
 - `%var%` variables defined in MailScanner.conf are expanded in the conf.d files too (#1245)
