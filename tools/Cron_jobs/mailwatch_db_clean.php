@@ -26,6 +26,14 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// exit('message') ends with status 0: report a failure to cron, unless the script gets to the end of its work
+$db_clean_done = false;
+register_shutdown_function(function() {
+    if (!$GLOBALS['db_clean_done']) {
+        exit(1);
+    }
+});
+
 // Auto-detect functions.php relative to this script, with fallback to default path
 $pathToFunctions = dirname(dirname(__DIR__)) . '/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
@@ -91,12 +99,10 @@ function deleteInBatches($table, $whereClause, $batchSize)
 deleteInBatches('maillog', 'timestamp < (NOW() - INTERVAL ' . RECORD_DAYS_TO_KEEP . ' DAY)', $batchSize);
 
 // Cleaning the mta_log and optionally the mta_log_id table
-$sqlcheck = "SHOW TABLES LIKE 'mtalog_ids'";
-$tablecheck = dbquery($sqlcheck);
-$mta = get_conf_var('mta');
+// Only the Postfix and MSMilter relays fill mtalog_ids: ask the data, not the MTA of the MailScanner configuration,
+// that this host may not have (DISTRIBUTED_SETUP)
 $optimize_mtalog_id = '';
-if (('postfix' === $mta || 'msmail' === $mta) && $tablecheck->num_rows > 0) {
-    // version for postfix with mtalog_ids enabled
+if (dbquery('SELECT 1 FROM mtalog_ids LIMIT 1')->num_rows > 0) {
     // Delete mtalog_ids entries that reference old mtalog records, then delete from mtalog
     if ($batchSize <= 0) {
         // No batching - delete all in one query using subquery
@@ -154,3 +160,5 @@ if ($tablecheck->num_rows > 0) {
 if ($runOptimize) {
     dbquery('OPTIMIZE TABLE maillog, mtalog, audit_log' . $optimize_mtalog_id);
 }
+
+$db_clean_done = true;

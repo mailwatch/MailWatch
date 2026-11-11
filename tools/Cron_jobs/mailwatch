@@ -5,6 +5,9 @@
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
 # Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
+# A script piped to syslog fails the pipeline when it fails
+set -o pipefail
+
 # Send the output to syslog, or discard it where logger is missing
 to_syslog() {
     if command -v logger >/dev/null 2>&1; then
@@ -14,19 +17,22 @@ to_syslog() {
     fi
 }
 
+# Run every job, then report a failure to cron if any of them failed
+status=0
+
 # Quarantine Maintenance
 if [ -x /usr/local/bin/mailwatch_quarantine_maint.php ]; then
-    /usr/local/bin/mailwatch_quarantine_maint.php --clean
+    /usr/local/bin/mailwatch_quarantine_maint.php --clean || status=1
 fi
 
 # Quarantine report
 if [ -x /usr/local/bin/mailwatch_quarantine_report.php ]; then
-    /usr/local/bin/mailwatch_quarantine_report.php 2>&1 | to_syslog quarantine-report
+    /usr/local/bin/mailwatch_quarantine_report.php 2>&1 | to_syslog quarantine-report || status=1
 fi
 
 # Clean MailWatch DB
 if [ -x /usr/local/bin/mailwatch_db_clean.php ]; then
-    /usr/local/bin/mailwatch_db_clean.php 2>&1 | to_syslog db-clean
+    /usr/local/bin/mailwatch_db_clean.php 2>&1 | to_syslog db-clean || status=1
 fi
 
-exit 0
+exit $status

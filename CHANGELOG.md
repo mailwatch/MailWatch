@@ -18,6 +18,9 @@
 - No PHP 8.2-8.5 deprecation messages from the bundled XML-RPC library and the `E_STRICT` error level in the web pages and cron jobs (#1327)
 - Messages over 10 MB open from another MailWatch server over XML-RPC, instead of failing with `XML error: No memory` (#1151)
 - mailwatch_quarantine_maint.php cleans and reconciles the quarantine of its own host when `DISTRIBUTED_SETUP` is true, instead of doing nothing, and ends with a failure status whenever it stops on an error (#1327)
+- mailwatch_db_clean.php, mailwatch_geoip_update.php, mailwatch_quarantine_report.php and mailwatch_update_sarules.php end with a failure status whenever they stop on an error; mailwatch_quarantine_report.php also when a report cannot be sent (#1327)
+- The daily and monthly cron wrappers end with a failure status when one of their scripts fails, after running all of them (#1327)
+- mailwatch_db_clean.php cleans the `mtalog_ids` table whenever it holds rows, also when `DISTRIBUTED_SETUP` is true, instead of only when the local MailScanner configuration names Postfix or MSMilter as MTA (#1327)
 
 ## 1.2.29
 ### Security

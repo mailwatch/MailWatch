@@ -26,6 +26,14 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// exit('message') ends with status 0: report a failure to cron, unless the script gets to the end of its work
+$quarantine_report_done = false;
+register_shutdown_function(function() {
+    if (!$GLOBALS['quarantine_report_done']) {
+        exit(1);
+    }
+});
+
 // Auto-detect functions.php relative to this script, with fallback to default path
 $pathToFunctions = dirname(dirname(__DIR__)) . '/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
@@ -46,7 +54,9 @@ if (isset($argv) && count($argv) > 1) {
 $report = new Quarantine_Report();
 $requirements_met = Quarantine_Report::check_quarantine_report_requirements();
 if (true === $requirements_met) {
-    $report->send_quarantine_reports($usersForReport);
+    $result = $report->send_quarantine_reports($usersForReport);
+    // -2: no user asks for a report
+    $quarantine_report_done = -2 === $result || (is_array($result) && 0 === $result['failed']);
 } else {
     echo $requirements_met;
 }

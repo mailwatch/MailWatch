@@ -26,6 +26,14 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// exit('message') ends with status 0: report a failure to cron, unless the script gets to the end of its work
+$geoip_update_done = false;
+register_shutdown_function(function() {
+    if (!$GLOBALS['geoip_update_done']) {
+        exit(1);
+    }
+});
+
 // Auto-detect functions.php relative to this script, with fallback to default path
 $pathToFunctions = dirname(dirname(__DIR__)) . '/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
@@ -75,3 +83,4 @@ if (is_file('/etc/sudoers.d/mailwatch')) {
 echo __('processok52') . "\n\n";
 ob_flush();
 flush();
+$geoip_update_done = true;

@@ -5,6 +5,9 @@
 # Copyright (C) 2011  Garrod Alwood (garrod.alwood@lorodoes.com)
 # Copyright (C) 2014-2021  MailWatch Team (https://github.com/mailwatch/1.2.0/graphs/contributors)
 
+# A script piped to syslog fails the pipeline when it fails
+set -o pipefail
+
 # Send the output to syslog, or discard it where logger is missing
 to_syslog() {
     if command -v logger >/dev/null 2>&1; then
@@ -20,6 +23,5 @@ UPDATEMAXDELAY=3600
 
 test -x /usr/local/bin/mailwatch_geoip_update.php || exit 0
 sleep $[( $RANDOM % $UPDATEMAXDELAY )+1]s
+# The exit status of the update is the exit status of this script
 /usr/local/bin/mailwatch_geoip_update.php 2>&1 | to_syslog geoip-update
-
-exit 0
