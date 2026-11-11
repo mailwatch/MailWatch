@@ -3,6 +3,7 @@
 ## Unreleased
 ### Security
 - Clearing the SpamAssassin Bayes database requires the form token of the Bayes page; any page could make an administrator's browser clear it with a forged POST
+- The rules file page shows only files inside `%etc-dir%` and `%report-dir%`; an administrator could read any file the web server can read, `conf.php` included
 
 ### Added
 - `$logging_ip` in MailWatchConf.pm sets the address of the MailWatch.pm logging child, for MailScanner in a FreeBSD jail without its own loopback (#333)

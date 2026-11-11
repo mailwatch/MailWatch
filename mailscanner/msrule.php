@@ -35,30 +35,45 @@ if ('A' !== $_SESSION['user_type']) {
     html_start(__('rules30'));
 
     // Limit accessible files to the ones in MailScanner etc directory or reports directory
-    $MailscannerRepDir = realpath(get_conf_var('%report-dir%'));
-    $MailscannerEtcDir = realpath(get_conf_var('%etc-dir%'));
-    if (!isset($_GET['file'])) {
-        $FilePath = false;
-    } else {
+    $allowedDirs = [];
+    foreach (['%etc-dir%', '%report-dir%'] as $confVar) {
+        $value = (string)get_conf_var($confVar);
+        // an empty or missing folder allows nothing: realpath('') is the current folder, false an empty prefix
+        $dir = '' === $value ? false : realpath($value);
+        if (false !== $dir && is_dir($dir)) {
+            $allowedDirs[] = rtrim($dir, '/') . '/';
+        }
+    }
+    $FilePath = false;
+    if (isset($_GET['file']) && is_string($_GET['file']) && false === strpos($_GET['file'], "\0")) {
         $FilePath = realpath(sanitizeInput($_GET['file']));
     }
+    $allowed = false;
+    if (false !== $FilePath && is_file($FilePath)) {
+        foreach ($allowedDirs as $dir) {
+            // the trailing slash keeps a sibling such as /etc/MailScannerX out
+            if (0 === strpos($FilePath, $dir)) {
+                $allowed = true;
+            }
+        }
+    }
 
-    if (false === $FilePath || (0 !== strpos($FilePath, $MailscannerEtcDir) && 0 !== strpos($FilePath, $MailscannerRepDir))) {
+    if (!$allowed) {
         // Directory Traversal
         echo __('dirblocked30') . "\n";
     } else {
         echo '<table cellspacing="1" class="maildetail" width="100%">' . "\n";
-        echo '<tr><td class="heading">' . __('file30') . ' ' . $FilePath . '</td></tr>' . "\n";
+        echo '<tr><td class="heading">' . __('file30') . ' ' . htmlspecialchars($FilePath) . '</td></tr>' . "\n";
         echo '<tr><td><pre>' . "\n";
         if ($fh = @fopen($FilePath, 'rb')) {
             while (!feof($fh)) {
                 $line = rtrim(fgets($fh, 4096));
                 if (isset($_GET['strip_comments']) && $_GET['strip_comments']) {
                     if (!preg_match('/^#/', $line) && !preg_match('/^$/', $line)) {
-                        echo $line . "\n";
+                        echo htmlspecialchars($line) . "\n";
                     }
                 } else {
-                    echo $line . "\n";
+                    echo htmlspecialchars($line) . "\n";
                 }
             }
             fclose($fh);
