@@ -1991,7 +1991,8 @@ function db_colorised_table($sql, $table_heading = false, $pager = false, $order
     $orderby = null;
     $orderdir = '';
     if (isset($_GET['orderby']) && is_string($_GET['orderby']) && validateInput($_GET['orderby'], 'orderby')) {
-        $orderby = $_GET['orderby'];
+        // The date column is a formatted string aliased as datetime; sort by the stored timestamp instead.
+        $orderby = 'datetime' === $_GET['orderby'] ? 'timestamp' : $_GET['orderby'];
         switch (strtoupper($_GET['orderdir'])) {
             case 'A':
                 $orderdir = 'ASC';
