@@ -17,6 +17,7 @@
 - upgrade.php deletes the orphaned user filters by id, which is safe for statement based replication (#825)
 - No PHP 8.2-8.5 deprecation messages from the bundled XML-RPC library and the `E_STRICT` error level in the web pages and cron jobs (#1327)
 - Messages over 10 MB open from another MailWatch server over XML-RPC, instead of failing with `XML error: No memory` (#1151)
+- mailwatch_quarantine_maint.php cleans and reconciles the quarantine of its own host when `DISTRIBUTED_SETUP` is true, instead of doing nothing, and ends with a failure status whenever it stops on an error (#1327)
 
 ## 1.2.29
 ### Security

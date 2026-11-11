@@ -26,6 +26,14 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// exit('message') ends with status 0: report a failure to cron, unless the script gets to the end of its work
+$quarantine_maint_done = false;
+register_shutdown_function(function() {
+    if (!$GLOBALS['quarantine_maint_done']) {
+        exit(1);
+    }
+});
+
 // Auto-detect functions.php relative to this script, with fallback to default path
 $pathToFunctions = dirname(dirname(__DIR__)) . '/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {
@@ -53,9 +61,25 @@ if (0 === $required_constant_missing_count) {
     ini_set('display_errors', 'on');
     ini_set('implicit_flush', 'false');
 
+    /**
+     * The quarantine is on this host: read the local MailScanner configuration, also when DISTRIBUTED_SETUP is true.
+     *
+     * @return string
+     */
+    function quarantine_dir()
+    {
+        $quarantine = get_conf_var('QuarantineDir', true);
+        if (!is_string($quarantine) || !is_dir($quarantine) || !is_readable($quarantine)) {
+            fwrite(STDERR, __('diequarantine303') . ' "' . $quarantine . '"' . "\n");
+            exit(1);
+        }
+
+        return $quarantine;
+    }
+
     function quarantine_reconcile()
     {
-        $quarantine = get_conf_var('QuarantineDir');
+        $quarantine = quarantine_dir();
         $d = dir($quarantine) or exit(php_errormsg());
         while (false !== ($f = $d->read())) {
             if (preg_match('/^\d{8}$/', $f) && is_array($array = quarantine_list_dir($f))) {
@@ -68,8 +92,12 @@ if (0 === $required_constant_missing_count) {
         }
     }
 
+    /**
+     * @return bool false when a directory could not be deleted
+     */
     function quarantine_clean()
     {
+        $deleted = true;
         $oldestspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP . ' days'));
         if (defined('QUARANTINE_DAYS_TO_KEEP_NONSPAM')) {
             $oldestnonspam = date('U', strtotime('-' . QUARANTINE_DAYS_TO_KEEP_NONSPAM . ' days'));
@@ -77,7 +105,7 @@ if (0 === $required_constant_missing_count) {
             // if QUARANTINE_DAYS_TO_KEEP_NONSPAM not defined: fallback to QUARANTINE_DAYS_TO_KEEP
             $oldestnonspam = $oldestspam;
         }
-        $quarantine = get_conf_var('QuarantineDir');
+        $quarantine = quarantine_dir();
 
         $d = dir($quarantine) or exit(php_errormsg());
         while (false !== ($f = $d->read())) {
@@ -109,12 +137,15 @@ if (0 === $required_constant_missing_count) {
                     dbg('Deleting: ' . escapeshellarg($quarantine . '/' . $f));
                     exec('rm -rf ' . escapeshellarg($quarantine . '/' . $f), $output, $return);
                     if ($return > 0) {
-                        echo __('error62') . " $output\n";
+                        echo __('error62') . ' ' . implode("\n", $output) . "\n";
+                        $deleted = false;
                     }
                 }
             }
         }
         $d->close();
+
+        return $deleted;
     }
 
     function quarantine_date_to_unixtime($dirname)
@@ -135,7 +166,7 @@ if (0 === $required_constant_missing_count) {
 
     function quarantine_list_dir($dir)
     {
-        $dir = get_conf_var('QuarantineDir') . "/$dir";
+        $dir = quarantine_dir() . "/$dir";
         $spam = "$dir/spam";
         $nonspam = "$dir/nonspam";
         $mcp = "$dir/mcp";
@@ -193,11 +224,12 @@ if (0 === $required_constant_missing_count) {
     if (1 !== $_SERVER['argc'] && $_SERVER['argc'] <= 2) {
         switch ($_SERVER['argv'][1]) {
             case '--clean':
-                quarantine_clean();
+                $quarantine_maint_done = quarantine_clean();
                 break;
             case '--reconsile': // deprecated option
             case '--reconcile':
                 quarantine_reconcile();
+                $quarantine_maint_done = true;
                 break;
             default:
                 exit('Usage: ' . $_SERVER['argv'][0] . ' [--clean] [--reconcile]' . "\n");
