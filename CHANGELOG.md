@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Security
+- Clearing the SpamAssassin Bayes database requires the form token of the Bayes page; any page could make an administrator's browser clear it with a forged POST
+
 ### Added
 - `$logging_ip` in MailWatchConf.pm sets the address of the MailWatch.pm logging child, for MailScanner in a FreeBSD jail without its own loopback (#333)
 

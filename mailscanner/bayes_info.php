@@ -36,6 +36,12 @@ if ('A' !== $_SESSION['user_type']) {
     exit;
 }
 
+// Clearing destroys what SpamAssassin has learned: only the form of this page may ask for it
+if (isset($_POST['clear']) && (!isset($_POST['formtoken']) || false === checkFormToken('/bayes_info.php form token', $_POST['formtoken']))) {
+    header('Location: login.php?error=pagetimeout');
+    exit;
+}
+
 // Start the header code and Title
 html_start(__('spamassassinbayesdatabaseinfo18'), 0, false, false);
 
@@ -148,6 +154,7 @@ if ('A' === $_SESSION['user_type']) {
     echo '<form method="post" action="bayes_info.php" onsubmit="return confirm(\'' . __('clearmessage18') . '\');" >' . "\n";
     echo '<input type="submit" value="' . __('cleardbbayes18') . '">' . "\n";
     echo '<input type="hidden" name="clear" value="true">' . "\n";
+    echo '<input type="hidden" name="formtoken" value="' . generateFormToken('/bayes_info.php form token') . '">' . "\n";
     echo '</form>' . "\n";
     echo '</div>' . "\n";
     echo '<br>' . "\n";
