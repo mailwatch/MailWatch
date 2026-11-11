@@ -2331,8 +2331,17 @@ class xmlrpcmsg
         xml_set_character_data_handler($parser, 'xmlrpc_cd');
         xml_set_default_handler($parser, 'xmlrpc_dh');
 
+        // MailWatch: libxml2 rejects more than 10 MB of text in one xml_parse()
+        // call ("No memory"), so feed the parser 4 MB at a time, as phpxmlrpc 4 does.
+        $len = strlen($data);
+        $offset = 0;
+        do {
+            $parsed = xml_parse($parser, substr($data, $offset, 4194304), $data !== '' && $offset + 4194304 >= $len);
+            $offset += 4194304;
+        } while ($parsed && $offset < $len);
+
         // first error check: xml not well formed
-        if (!xml_parse($parser, $data, $data !== '')) {
+        if (!$parsed) {
             // thanks to Peter Kocks <peter.kocks@baygate.com>
             if ((xml_get_current_line_number($parser)) == 1) {
                 $errstr = 'XML error at line 1, check URL';
