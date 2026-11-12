@@ -92,7 +92,7 @@ if (RPC_ONLY || !is_local($message->hostname)) {
 } else {
     // build filename path
     $date = DateTime::createFromFormat('Y-m-d', $message->date)->format('Ymd');
-    $quarantine_dir = get_conf_var('QuarantineDir');
+    $quarantine_dir = get_conf_var('QuarantineDir', true);
     $filename = '';
     switch (true) {
         case file_exists($quarantine_dir . '/' . $date . '/nonspam/' . $message_id):

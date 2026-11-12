@@ -3492,7 +3492,7 @@ SELECT
     }
     $row = $sth->fetch_object();
     if (!$rpc_only && is_local($row->hostname)) {
-        $quarantinedir = get_conf_var('QuarantineDir');
+        $quarantinedir = get_conf_var('QuarantineDir', true);
         $quarantine = $quarantinedir . '/' . $row->date . '/' . $row->id;
         $spam = $quarantinedir . '/' . $row->date . '/spam/' . $row->id;
         $nonspam = $quarantinedir . '/' . $row->date . '/nonspam/' . $row->id;

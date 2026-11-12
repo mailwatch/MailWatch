@@ -25,6 +25,7 @@
 - mailwatch_db_clean.php, mailwatch_geoip_update.php, mailwatch_quarantine_report.php and mailwatch_update_sarules.php end with a failure status whenever they stop on an error; mailwatch_quarantine_report.php also when a report cannot be sent (#1327)
 - The daily and monthly cron wrappers end with a failure status when one of their scripts fails, after running all of them (#1327)
 - mailwatch_db_clean.php cleans the `mtalog_ids` table whenever it holds rows, also when `DISTRIBUTED_SETUP` is true, instead of only when the local MailScanner configuration names Postfix or MSMilter as MTA (#1327)
+- In a distributed setup the web interface can view and release the messages quarantined on another MailScanner host: the host read its quarantine directory as empty when its own `DISTRIBUTED_SETUP` was true (#1327)
 
 ## 1.2.29
 ### Security

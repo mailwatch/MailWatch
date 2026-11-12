@@ -43,7 +43,7 @@ function rpc_return_quarantined_file($msg)
         dbquery("SELECT DATE_FORMAT(date,'%Y%m%d') FROM maillog where id='" . safe_value($input) . "'"),
         0
     );
-    $qdir = get_conf_var('QuarantineDir');
+    $qdir = get_conf_var('QuarantineDir', true);
     $file = null;
     switch (true) {
         case file_exists($qdir . '/' . $date . '/nonspam/' . $input):
@@ -60,7 +60,7 @@ function rpc_return_quarantined_file($msg)
             break;
     }
 
-    $quarantinedir = get_conf_var('QuarantineDir');
+    $quarantinedir = get_conf_var('QuarantineDir', true);
     switch (true) {
         case !is_string($file):
             return new xmlrpcresp(0, $xmlrpcerruser + 1, __('paratype160') . ' ' . gettype($file) . ' ' . __('paratyper260'));
