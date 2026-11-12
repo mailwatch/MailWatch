@@ -85,7 +85,7 @@ if (0 === $required_constant_missing_count) {
             if (preg_match('/^\d{8}$/', $f) && is_array($array = quarantine_list_dir($f))) {
                 foreach ($array as $id) {
                     dbg("Updating: $id");
-                    $sql = "UPDATE maillog SET quarantined=1 WHERE id='$id'";
+                    $sql = "UPDATE maillog SET quarantined=1 WHERE id='" . safe_value($id) . "'";
                     dbquery($sql);
                 }
             }
@@ -126,11 +126,11 @@ if (0 === $required_constant_missing_count) {
                     dbg("Processing directory $f: found " . count($array) . ' records to delete');
                     foreach ($array as $id) {
                         // Update the quarantine flag
-                        $sql = "UPDATE maillog SET quarantined = NULL WHERE id='$id'";
+                        $sql = "UPDATE maillog SET quarantined = NULL WHERE id='" . safe_value($id) . "'";
                         dbquery($sql);
                         // If auto quarantine release is enabled, remove from autorelease table when quarantined email expires
                         if (defined('AUTO_RELEASE') && AUTO_RELEASE === true) {
-                            $sql = "DELETE FROM autorelease WHERE msg_id = '$id'";
+                            $sql = "DELETE FROM autorelease WHERE msg_id = '" . safe_value($id) . "'";
                             dbquery($sql);
                         }
                     }

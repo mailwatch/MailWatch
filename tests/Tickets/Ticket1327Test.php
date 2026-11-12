@@ -58,6 +58,18 @@ class Ticket1327Test extends TestCase
         $this->assertSame(["UPDATE maillog SET quarantined=1 WHERE id='3ABC-STORED'"], $this->queries());
     }
 
+    public function testReconcileEscapesTheMessageIdsReadFromTheQuarantine()
+    {
+        mkdir($this->dir . '/quarantine/' . date('Ymd') . "/nonspam/4ABC'X", 0777, true);
+        $this->writeFunctions($this->dir . '/quarantine');
+
+        list($status, $output) = $this->runScript(['--reconcile']);
+
+        $this->assertSame('', $output);
+        $this->assertSame(0, $status);
+        $this->assertSame(["UPDATE maillog SET quarantined=1 WHERE id='4ABC\\'X'"], $this->queries());
+    }
+
     public function testFailsWhenTheQuarantineDirectoryCannotBeOpened()
     {
         $this->writeFunctions($this->dir . '/missing');
@@ -172,6 +184,11 @@ function get_conf_var($name, $force = false)
     }
 
     return ' . var_export($quarantineDir, true) . ';
+}
+
+function safe_value($value)
+{
+    return addslashes($value);
 }
 
 function dbquery($sql)

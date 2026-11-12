@@ -1372,7 +1372,7 @@ function format_spam_report($spamreport)
         $sa_rules = explode(', ', $sa_rules[0]);
         // Check to make sure a check was actually run
         if ('Message larger than max testing size' === $sa_rules[0] || 'timed out' === $sa_rules[0]) {
-            return $sa_rules[0];
+            return htmlspecialchars($sa_rules[0], ENT_QUOTES, 'UTF-8', false);
         }
 
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
@@ -1414,11 +1414,11 @@ function format_spam_report($spamreport)
             ) . '</table>' . "\n";
         }
 
-        return $spamreport;
+        return htmlspecialchars($spamreport, ENT_QUOTES, 'UTF-8', false);
     }
 
     // Regular expression did not match, return unmodified report instead
-    return $spamreport;
+    return htmlspecialchars($spamreport, ENT_QUOTES, 'UTF-8', false);
 }
 
 /**
@@ -1434,13 +1434,15 @@ function get_sa_rule_desc($rule)
         $rule = $regs[1];
         $rule_score = $regs[2];
     }
-    $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
+    $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='" . safe_value($rule) . "'");
     $row = $result->fetch_object();
+    // descriptions are stored with entities already: do not encode them twice
+    $rule_score = htmlspecialchars($rule_score, ENT_QUOTES, 'UTF-8', false);
     if ($row && $row->rule && $row->rule_desc) {
-        return '<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n";
+        return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($row->rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>' . htmlspecialchars($row->rule_desc, ENT_QUOTES, 'UTF-8', false) . '</td></tr>' . "\n";
     }
 
-    return "<tr><td>$rule_score</td><td>$rule</td><td>&nbsp;</td></tr>";
+    return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>&nbsp;</td></tr>';
 }
 
 /**
@@ -1450,7 +1452,7 @@ function get_sa_rule_desc($rule)
  */
 function return_sa_rule_desc($rule)
 {
-    $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='$rule'");
+    $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='" . safe_value($rule) . "'");
     $row = $result->fetch_object();
     if ($row) {
         return htmlentities($row->rule_desc);
@@ -1477,7 +1479,7 @@ function format_mcp_report($mcpreport)
         $sa_rules = explode(', ', $sa_rules[0]);
         // Check to make sure a check was actually run
         if ('Message larger than max testing size' === $sa_rules[0] || 'timed out' === $sa_rules[0]) {
-            return $sa_rules[0];
+            return htmlspecialchars($sa_rules[0], ENT_QUOTES, 'UTF-8', false);
         }
         // Get rid of the 'score=', 'required' and 'autolearn=' lines
         foreach (['score=', 'required', 'autolearn='] as $val) {
@@ -1497,11 +1499,11 @@ function format_mcp_report($mcpreport)
             ) . '</table>' . "\n";
         }
 
-        return $mcpreport;
+        return htmlspecialchars($mcpreport, ENT_QUOTES, 'UTF-8', false);
     }
 
     // Regular expression did not match, return unmodified report instead
-    return $mcpreport;
+    return htmlspecialchars($mcpreport, ENT_QUOTES, 'UTF-8', false);
 }
 
 /**
@@ -1514,13 +1516,14 @@ function get_mcp_rule_desc($rule)
     if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
         list($rule, $rule_score) = $regs;
     }
-    $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
+    $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='" . safe_value($rule) . "'");
     $row = $result->fetch_object();
+    $rule_score = htmlspecialchars($rule_score, ENT_QUOTES, 'UTF-8', false);
     if ($row && $row->rule && $row->rule_desc) {
-        return '<tr><td>' . $rule_score . '</td><td>' . $row->rule . '</td><td>' . $row->rule_desc . '</td></tr>' . "\n";
+        return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($row->rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>' . htmlspecialchars($row->rule_desc, ENT_QUOTES, 'UTF-8', false) . '</td></tr>' . "\n";
     }
 
-    return '<tr><td>' . $rule_score . '<td>' . $rule . '</td><td>&nbsp;</td></tr>' . "\n";
+    return '<tr><td>' . $rule_score . '<td>' . htmlspecialchars($rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>&nbsp;</td></tr>' . "\n";
 }
 
 /**
@@ -1528,10 +1531,10 @@ function get_mcp_rule_desc($rule)
  */
 function return_mcp_rule_desc($rule)
 {
-    $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='$rule'");
+    $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='" . safe_value($rule) . "'");
     $row = $result->fetch_object();
     if ($row) {
-        return $row->rule_desc;
+        return htmlspecialchars($row->rule_desc, ENT_QUOTES, 'UTF-8', false);
     }
 
     return false;
@@ -3395,7 +3398,7 @@ function quarantine_list($input = '/')
                 $d = @opendir($dir);
                 while (false !== ($f = readdir($d))) {
                     if ('.' !== $f && '..' !== $f) {
-                        $item[] = "'$f'";
+                        $item[] = "'" . safe_value($f) . "'";
                     }
                 }
                 closedir($d);

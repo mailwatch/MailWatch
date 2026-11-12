@@ -961,7 +961,7 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
     echo ' <tr><td class="heading">' . __('hpontspam12') . '</td><td><input type="text" name="highspamscore" value="' . $row->highspamscore . '" size="4"> <span class="font-1em">0=' . __('usedefault12') . '</span></td></tr>' . PHP_EOL;
     echo '<tr><td class="heading">' . __('action_0212') . '</td><td><input type="reset" value="' . __('reset12') . '">&nbsp;&nbsp;<input type="submit" name="action" value="' . __('update12') . '"></td></tr>' . PHP_EOL;
     echo '</table></form><br>' . PHP_EOL;
-    $sql = "SELECT filter, active FROM user_filters WHERE username='" . $row->username . "'";
+    $sql = "SELECT filter, active FROM user_filters WHERE username='" . safe_value($row->username) . "'";
     $result = dbquery($sql);
 } else {
     if (false === checkToken($_POST['token'])

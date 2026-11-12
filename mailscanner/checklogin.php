@@ -152,7 +152,8 @@ $result_userfilter = dbquery($sql_userfilter);
 
 $filter[] = $myusername;
 while ($row = $result_userfilter->fetch_array()) {
-    $filter[] = $row['filter'];
+    // stored unescaped, like $myusername above they end up inside quotes in every filter clause
+    $filter[] = safe_value($row['filter']);
 }
 
 $global_filter = address_filter_sql($filter, $usertype);
