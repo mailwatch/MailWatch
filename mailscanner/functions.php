@@ -55,6 +55,8 @@ ini_set('session.use_cookies', '1');
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
 ini_set('session.use_trans_sid', '0');
+// PHP 7.3+; older versions ignore the unknown setting. Lax still sends the cookie on links from mail clients
+ini_set('session.cookie_samesite', 'Lax');
 
 $session_cookie_secure = false;
 if (SSL_ONLY === true) {
@@ -140,6 +142,8 @@ if (PHP_SAPI !== 'cli') {
     header('X-XSS-Protection: 1; mode=block');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
+    // the URLs carry the session token: never send them to another site
+    header('Referrer-Policy: same-origin');
     unset($session_cookie_secure);
     session_start();
 }
