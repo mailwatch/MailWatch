@@ -228,8 +228,10 @@ define('DISPLAY_VIRUS_REPORT', true);
 // two different fields are OR'd together.
 define('FILTER_TO_ONLY', false);
 
-// Set this to true to hide things that won't work correctly if you have
-// a distributed set of MailScanners logging to a single database.
+// Set this to true on a host that does not run MailScanner and shows the messages
+// of the MailScanner hosts logging to the same database: MailWatch then hides
+// what needs a local MailScanner and does not read MailScanner.conf. Keep it
+// false on every host that runs MailScanner, also when it is one of several.
 define('DISTRIBUTED_SETUP', false);
 
 // PHP memory limit when viewing details and attachments of messages

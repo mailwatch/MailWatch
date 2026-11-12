@@ -21,4 +21,6 @@ This document presumes that you will have a server acting as a database with PHP
 
 6)  On each MailWatch system set RPC_ALLOWED_CLIENTS in conf.php to a list of IP addresses of each MailWatch system.
 
-7) (Optional) If you want a combined display of the number of mails in the mail queues also set RPC_REMOTE_SERVER in conf.php
+7)  Set DISTRIBUTED_SETUP in conf.php to true on the database server if it runs MailWatch but not MailScanner, and leave it false on each MailScanner gateway.
+
+8) (Optional) If you want a combined display of the number of mails in the mail queues also set RPC_REMOTE_SERVER in conf.php
