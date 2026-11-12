@@ -1171,8 +1171,12 @@ function sanitizeInput($string)
 {
     $config = HTMLPurifier_Config::createDefault();
     $cachePath = rtrim(sys_get_temp_dir(), '/') . '/MailWatch';
-    if (is_dir($cachePath) || mkdir($cachePath)) {
+    // HTMLPurifier unserialize()s the cache files: use only a folder of this user, closed to the other local users
+    if (function_exists('posix_geteuid') && (is_dir($cachePath) || @mkdir($cachePath, 0700))
+        && !is_link($cachePath) && fileowner($cachePath) === posix_geteuid() && @chmod($cachePath, 0700)) {
         $config->set('Cache.SerializerPath', $cachePath);
+    } else {
+        $config->set('Cache.DefinitionImpl', null);
     }
     $purifier = new HTMLPurifier($config);
 
