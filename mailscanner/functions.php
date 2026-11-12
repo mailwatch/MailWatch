@@ -1497,7 +1497,7 @@ function format_mcp_report($mcpreport)
         }
         // Return the result as an html formatted string
         if (count($output_array) > 0) {
-            return '<table class="sa_rules_report" cellspacing="2" width="100%">"."<tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
+            return '<table class="sa_rules_report" cellspacing="2" width="100%"><tr><th>' . __('score03') . '</th><th>' . __('matrule03') . '</th><th>' . __('description03') . '</th></tr>' . implode(
                 "\n",
                 $output_array
             ) . '</table>' . "\n";
@@ -1518,7 +1518,8 @@ function get_mcp_rule_desc($rule)
     // Check if SA scoring is enabled
     $rule_score = '';
     if (preg_match('/^(.+) (.+)$/', $rule, $regs)) {
-        list($rule, $rule_score) = $regs;
+        $rule = $regs[1];
+        $rule_score = $regs[2];
     }
     $result = dbquery("SELECT rule, rule_desc FROM mcp_rules WHERE rule='" . safe_value($rule) . "'");
     $row = $result->fetch_object();
@@ -1527,7 +1528,7 @@ function get_mcp_rule_desc($rule)
         return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($row->rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>' . htmlspecialchars($row->rule_desc, ENT_QUOTES, 'UTF-8', false) . '</td></tr>' . "\n";
     }
 
-    return '<tr><td>' . $rule_score . '<td>' . htmlspecialchars($rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>&nbsp;</td></tr>' . "\n";
+    return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>&nbsp;</td></tr>' . "\n";
 }
 
 /**

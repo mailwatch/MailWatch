@@ -30,6 +30,7 @@
 - mailwatch_db_clean.php cleans the `mtalog_ids` table whenever it holds rows, also when `DISTRIBUTED_SETUP` is true, instead of only when the local MailScanner configuration names Postfix or MSMilter as MTA (#1327)
 - In a distributed setup the web interface can view and release the messages quarantined on another MailScanner host: the host read its quarantine directory as empty when its own `DISTRIBUTED_SETUP` was true (#1327)
 - A user whose address or user filter contains an apostrophe, such as `o'brien@example.com`, can log in instead of getting an SQL error
+- The MCP report on the message detail page shows the score, the name and the description of each rule; it showed the rule name in the score column and no description
 
 ## 1.2.29
 ### Security
