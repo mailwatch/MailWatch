@@ -32,10 +32,15 @@ require __DIR__ . '/login.function.php';
 if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
 } else {
+    if (isset($_POST['run']) && (!isset($_POST['formtoken']) || false === checkFormToken('/mcp_rules_update.php form token', $_POST['formtoken']))) {
+        header('Location: login.php?error=pagetimeout');
+        exit;
+    }
     html_start(__('mcpruledesc26'), 0, false, false);
 
     echo '<form method="post" action="mcp_rules_update.php" >' . "\n";
     echo '<input type="hidden" name="run" value="true">' . "\n";
+    echo '<input type="hidden" name="formtoken" value="' . generateFormToken('/mcp_rules_update.php form token') . '">' . "\n";
     echo '<table class="boxtable" width="100%">' . "\n";
     echo ' <tr>' . "\n";
     echo '  <td>' . "\n";

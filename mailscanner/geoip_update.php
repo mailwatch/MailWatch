@@ -36,6 +36,11 @@ if ('A' !== $_SESSION['user_type']) {
     exit;
 }
 
+if (isset($_POST['run']) && (!isset($_POST['formtoken']) || false === checkFormToken('/geoip_update.php form token', $_POST['formtoken']))) {
+    header('Location: login.php?error=pagetimeout');
+    exit;
+}
+
 html_start(__('geoipupdate15'), 0, false, false);
 
 if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxmind')) {
@@ -44,6 +49,7 @@ if (!defined('MAXMIND_LICENSE_KEY') || !validateInput(MAXMIND_LICENSE_KEY, 'maxm
 } elseif (!isset($_POST['run'])) {
     echo '<form method="POST" action="geoip_update.php">
             <input type="hidden" name="run" value="true">
+            <input type="hidden" name="formtoken" value="' . generateFormToken('/geoip_update.php form token') . '">
             <table class="boxtable" width="100%">
             <tr><th>';
     echo __('updategeoip15');

@@ -661,6 +661,10 @@ function userFilter()
 
 function sendReport()
 {
+    if (is_string($tokentest = testToken())) {
+        return $tokentest;
+    }
+
     include_once __DIR__ . '/quarantine_report.inc.php';
     $requirementsCheck = Quarantine_Report::check_quarantine_report_requirements();
     if (true !== $requirementsCheck) {

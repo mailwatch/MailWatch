@@ -32,6 +32,10 @@ require __DIR__ . '/login.function.php';
 if ('A' !== $_SESSION['user_type']) {
     header('Location: index.php');
 } else {
+    if (isset($_POST['run']) && (!isset($_POST['formtoken']) || false === checkFormToken('/sa_rules_update.php form token', $_POST['formtoken']))) {
+        header('Location: login.php?error=pagetimeout');
+        exit;
+    }
     html_start(__('saruldesupdate13'), 0, false, false);
     echo '<table class="boxtable" style="width: 100%">';
     echo '<tr><th>' . __('updatesadesc13') . '</th></tr>';
@@ -47,7 +51,8 @@ if ('A' !== $_SESSION['user_type']) {
     <form method="post" action="sa_rules_update.php">
     <div>' . "\n";
     echo '<input type="submit" value="' . __('input13') . '"><br><br>';
-    echo '<input type="hidden" name="run" value="true">
+    echo '<input type="hidden" name="run" value="true">' . "\n";
+    echo '<input type="hidden" name="formtoken" value="' . generateFormToken('/sa_rules_update.php form token') . '">
     </div>
     </form>
     </td>';
