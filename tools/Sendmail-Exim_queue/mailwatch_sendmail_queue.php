@@ -26,6 +26,11 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// a server-side tool: never run it through the web server
+if (PHP_SAPI !== 'cli') {
+    exit('This script runs only from the command line' . "\n");
+}
+
 // Auto-detect functions.php relative to this script, with fallback to default path
 $pathToFunctions = dirname(dirname(__DIR__)) . '/mailscanner/functions.php';
 if (!@is_file($pathToFunctions)) {

@@ -25,6 +25,11 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+// a server-side tool: never run it through the web server
+if (PHP_SAPI !== 'cli') {
+    exit('This script runs only from the command line' . "\n");
+}
+
 /**
  * This script is a more verbose version of the ldap_authenticate function from functions.php from MW 1.2.7
  * which is used to login LDAP users.
