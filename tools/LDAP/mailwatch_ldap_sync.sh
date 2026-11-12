@@ -56,7 +56,11 @@ MYSQL_PASS="secret"
 
 ##################### DON'T TOUCH ANYTHING BELOW THIS LINE #####################
 
+# mktemp creates the files readable by this user only; keep them until the script ends
 TEMPFILE="$(mktemp)"
+LDAP_PASSFILE="$(mktemp)"
+MYSQL_CNF="$(mktemp)"
+trap 'rm -f "$TEMPFILE" "$LDAP_PASSFILE" "$MYSQL_CNF"' EXIT
 
 # Quote a value for SQL: double backslashes and single quotes
 sql_quote() {
@@ -64,7 +68,16 @@ sql_quote() {
 	printf "'%s'" "${VALUE//\'/\'\'}"
 }
 
-LDAP_USERS="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" \
+# Pass the passwords in files, not on the command line where every local user can read them
+printf '%s' "$LDAP_PASS" > "$LDAP_PASSFILE"
+MYSQL_PASS_QUOTED="${MYSQL_PASS//\\/\\\\}"
+printf '[client]\nhost="%s"\nport=%s\nuser="%s"\npassword="%s"\n' "$MYSQL_HOST" "$MYSQL_PORT" "$MYSQL_USER" "${MYSQL_PASS_QUOTED//\"/\\\"}" > "$MYSQL_CNF"
+
+mysql_run() {
+	mysql --defaults-extra-file="$MYSQL_CNF" "$@" "$MYSQL_NAME"
+}
+
+LDAP_USERS="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -y "$LDAP_PASSFILE" -x -b "$LDAP_BASE" \
 		"(&
 		  (objectClass=user)
 		  (proxyAddresses=*)
@@ -77,15 +90,13 @@ LDAP_USERS="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x 
 # An unreachable directory returns no users: stop instead of removing them all
 if [ -z "$LDAP_USERS" ]; then
 	echo "No users found in LDAP, nothing changed" >&2
-	rm -f "$TEMPFILE"
 	exit 1
 fi
 
-[ -f "$TEMPFILE" ] && rm -f "$TEMPFILE"
 for USER in ${LDAP_USERS}; do
 	unset DN FULLNAME ALIASES GROUP_ALIASES TYPE REPORT SPAMSCORE HIGHSPAMSCORE NOSCAN RECIPIENT RESULT
 	USER="$(echo "$USER" | sed -e "s/\(.*\)/\L\1/")"
-	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" \
+	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -y "$LDAP_PASSFILE" -x -b "$LDAP_BASE" \
 		"(proxyAddresses=SMTP:$USER)" \
 		"dn" "displayName" "proxyAddresses" | sed -n '1 {h;$!d}; ${x;s/\n //g;p}; /^ /{H;d}; /^ /!{x;s/\n //g;p}')"
 	echo "$RESULT" | grep -qs "dn:: "
@@ -102,12 +113,12 @@ for USER in ${LDAP_USERS}; do
 		FULLNAME="$(echo "$RESULT" | sed -ne "s/^displayName: \(.*\)/\1/p")"
 	fi
 	ALIASES="$(echo "$RESULT" | sed -ne "s/^proxyAddresses: smtp:\(.*\)/\1/p")"
-	GROUP_ALIASES="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" \
+	GROUP_ALIASES="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -y "$LDAP_PASSFILE" -x -b "$LDAP_BASE" \
 		"(&(objectClass=group)(proxyAddresses=*)(member=$DN))" \
 		"proxyAddresses" | sed -n '1 {h;$!d}; ${x;s/\n //g;p}; /^ /{H;d}; /^ /!{x;s/\n //g;p}' | sed -ne "s/^proxyAddresses: [sS][mM][tT][pP]:\(.*\)/\1/p")"
 	# Read the stored settings as plain fields, never as shell code
 	IFS=$'\t' read -r TYPE REPORT SPAMSCORE HIGHSPAMSCORE NOSCAN RECIPIENT < <(echo "SELECT type, quarantine_report, spamscore, highspamscore, noscan, quarantine_rcpt FROM users WHERE username = $(sql_quote "$USER");" |
-		mysql -B -N -r --host="$MYSQL_HOST" --port="$MYSQL_PORT" --user="$MYSQL_USER" --password="$MYSQL_PASS" "$MYSQL_NAME")
+		mysql_run -B -N -r)
 	[ -n "$TYPE" ] || TYPE="U"
 	[ -n "$REPORT" ] || REPORT="0"
 	[ -n "$SPAMSCORE" ] || SPAMSCORE="0"
@@ -127,15 +138,11 @@ for USER in ${LDAP_USERS}; do
 	done
 done
 MYSQL_USERS="$(echo "SELECT username FROM users WHERE password IS NULL;" |
-	mysql --host "$MYSQL_HOST" \
-		--port="$MYSQL_PORT" \
-		--user="$MYSQL_USER" \
-		--password="$MYSQL_PASS" \
-		--skip-column-names "$MYSQL_NAME")"
+	mysql_run --skip-column-names)"
 for USER in ${MYSQL_USERS}; do
 	unset DN RESULT
 	# Keep the user when the lookup itself fails, delete only when LDAP answers without a match
-	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -w "$LDAP_PASS" -x -b "$LDAP_BASE" "(proxyAddresses=SMTP:$USER)" "dn")" || continue
+	RESULT="$(ldapsearch -LLL -H "$LDAP_URI" -D "$LDAP_USER" -y "$LDAP_PASSFILE" -x -b "$LDAP_BASE" "(proxyAddresses=SMTP:$USER)" "dn")" || continue
 	RESULT="$(echo "$RESULT" | sed -n '1 {h;$!d}; ${x;s/\n //g;p}; /^ /{H;d}; /^ /!{x;s/\n //g;p}')"
 	echo "$RESULT" | grep -qs "dn:: "
 	if [ "$?" -eq "0" ]; then
@@ -150,9 +157,4 @@ for USER in ${MYSQL_USERS}; do
 	fi
 done
 
-mysql --host="$MYSQL_HOST" --port="$MYSQL_PORT" --user="$MYSQL_USER" --password="$MYSQL_PASS" "$MYSQL_NAME" < "$TEMPFILE"
-RETVAL="$?"
-
-rm -f "$TEMPFILE"
-
-exit "$RETVAL"
+mysql_run < "$TEMPFILE"
