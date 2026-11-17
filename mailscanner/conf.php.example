@@ -254,6 +254,9 @@ define('RPC_ONLY', false);
 // define('RPC_PORT', 80);
 // RPC over SSL? (defaults to port 443 unless RPC_PORT is supplied).
 // define('RPC_SSL', true);
+// Verify the certificate of the other MailWatch servers on RPC over SSL? Set it to false only when they use
+// self-signed certificates. The default is false in this release and becomes true in the next release.
+define('RPC_VERIFY_PEER', false);
 // Enter the remote servers as space separated list where rpc call shall be executed at (eg. for postfix queue).
 // define('RPC_REMOTE_SERVER', 'other.example.com 10.0.0.2');
 

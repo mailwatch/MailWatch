@@ -6,6 +6,7 @@
 - The rules file page shows only files inside `%etc-dir%` and `%report-dir%`; an administrator could read any file the web server can read, `conf.php` included
 
 ### Added
+- `RPC_VERIFY_PEER` in conf.php verifies the certificates of the other MailWatch servers on RPC over SSL; it defaults to false and becomes true in the next release, and upgrade.php reports it when missing
 - `$logging_ip` in MailWatchConf.pm sets the address of the MailWatch.pm logging child, for MailScanner in a FreeBSD jail without its own loopback (#333)
 
 ### Changed

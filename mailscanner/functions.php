@@ -4196,8 +4196,10 @@ function xmlrpc_wrapper($host, $msg)
     if (DEBUG) {
         $client->setDebug(1);
     }
-    $client->setSSLVerifyPeer(0);
-    $client->setSSLVerifyHost(0);
+    // off unless RPC_VERIFY_PEER is true, for nodes with self-signed certificates; true by default from the next release
+    $verify = defined('RPC_VERIFY_PEER') && true === constant('RPC_VERIFY_PEER');
+    $client->setSSLVerifyPeer($verify ? 1 : 0);
+    $client->setSSLVerifyHost($verify ? 2 : 0);
 
     return $client->send($msg, 0, $method);
 }
@@ -4345,6 +4347,7 @@ function checkConfVariables()
         'RPC_PORT' => ['description' => 'needed if RPC_ONLY mode is enabled'],
         'RPC_SSL' => ['description' => 'needed if RPC_ONLY mode is enabled'],
         'RPC_REMOTE_SERVER' => ['description' => 'needed to show number of mails in postfix queues on remote server (RPC)'],
+        'RPC_VERIFY_PEER' => ['description' => 'without it the certificates of the other MailWatch servers are not verified on RPC over SSL; set it to true, the default from the next release'],
         'VIRUS_REGEX' => ['description' => 'needed in distributed setup'],
         'LDAP_BIND_PREFIX' => ['description' => 'needed when using LDAP authentication'],
         'LDAP_BIND_SUFFIX' => ['description' => 'needed when using LDAP authentication'],
