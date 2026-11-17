@@ -3698,8 +3698,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
         $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg(stripslashes($to)) . ' < ';
         foreach ($num as $key => $val) {
             if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
-                debug($cmd . $list[$val]['path']);
-                exec($cmd . $list[$val]['path'] . ' 2>&1', $output_array, $retval);
+                debug($cmd . escapeshellarg($list[$val]['path']));
+                exec($cmd . escapeshellarg($list[$val]['path']) . ' 2>&1', $output_array, $retval);
                 if (0 === $retval) {
                     $sql = "UPDATE maillog SET released = '1' WHERE id = '" . safe_value($list[0]['msgid']) . "'";
                     dbquery($sql);
@@ -3822,7 +3822,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false, $global_filter 
             if (true === $use_spamassassin) {
                 // Run SpamAssassin to report or revoke spam/ham
                 exec(
-                    SA_DIR . 'spamassassin -p ' . SA_PREFS . ' ' . $learn_type . ' < ' . $list[$val]['path'] . ' 2>&1',
+                    SA_DIR . 'spamassassin -p ' . SA_PREFS . ' ' . $learn_type . ' < ' . escapeshellarg($list[$val]['path']) . ' 2>&1',
                     $output_array,
                     $retval
                 );
@@ -3860,7 +3860,7 @@ function quarantine_learn($list, $num, $type, $rpc_only = false, $global_filter 
                 }
 
                 exec(
-                    SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . $list[$val]['path'] . $max_size_option . ' 2>&1',
+                    SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --' . $learn_type . ' --file ' . escapeshellarg($list[$val]['path']) . $max_size_option . ' 2>&1',
                     $output_array,
                     $retval
                 );
