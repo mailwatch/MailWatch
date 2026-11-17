@@ -65,7 +65,7 @@ function getHtmlMessage($value, $type)
 function testSameDomainMembership($username, $method)
 {
     $parts = explode('@', $username);
-    $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+    $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "' AND active = 'Y'";
     $result = dbquery($sql);
     $filter_domain = [];
     for ($i = 0; $i < $result->num_rows; ++$i) {
@@ -860,7 +860,7 @@ if ('A' === $_SESSION['user_type'] || 'D' === $_SESSION['user_type']) {
             // if the domain admin has no domain set we assume he should see only users that has no domain set (no mail as username)
             $domainAdminUserDomainFilter = 'WHERE username NOT LIKE "%@%" AND type <> "A"';
         } else {
-            $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "'";
+            $sql = "SELECT filter FROM user_filters WHERE username = '" . safe_value(stripslashes($_SESSION['myusername'])) . "' AND active = 'Y'";
             $result = dbquery($sql);
             $domainAdminUserDomainFilter = 'WHERE (username LIKE "%@' . $_SESSION['domain'] . '" AND type <> "A")';
             for ($i = 0; $i < $result->num_rows; ++$i) {

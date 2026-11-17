@@ -6,6 +6,7 @@
 - The LDAP login searches the directory for the username as typed: `*`, `(` and `)` were not escaped, so a pattern such as `jdo*` found the entry of `jdoe@example.com` and had a failed login count of its own
 - Learning spam or ham and releasing with `QUARANTINE_USE_SENDMAIL` work on quarantined files whose name contains spaces or shell characters: the file path went to the shell unquoted
 - The virus report shows virus and scanner names that contain `<` or `&` as text instead of markup
+- A disabled filter of a domain administrator no longer lets them manage the users of that domain, as it no longer shows its messages
 
 ## 1.2.30
 ### Security
