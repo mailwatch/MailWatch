@@ -196,11 +196,11 @@ echo '</TR>';
 
 // Write the data in table
 for ($i = 0, $count_data_names = count($data_names); $i < $count_data_names; ++$i) {
-    echo "<TR BGCOLOR=\"#EBEBEB\">
- <TD>$data_names[$i]</TD>
- <TD>$data_scanner[$i]</TD>
- <TD ALIGN=\"RIGHT\">$data_first_seen[$i]</TD>
- <TD ALIGN=\"RIGHT\">" . number_format($data[$i]) . "</TD>
+    echo '<TR BGCOLOR="#EBEBEB">
+ <TD>' . htmlspecialchars($data_names[$i], ENT_QUOTES, 'UTF-8') . '</TD>
+ <TD>' . htmlspecialchars($data_scanner[$i], ENT_QUOTES, 'UTF-8') . '</TD>
+ <TD ALIGN="RIGHT">' . htmlspecialchars($data_first_seen[$i], ENT_QUOTES, 'UTF-8') . '</TD>
+ <TD ALIGN="RIGHT">' . number_format($data[$i]) . "</TD>
 </TR>\n";
 }
 
