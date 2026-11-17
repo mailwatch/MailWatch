@@ -28,6 +28,29 @@ class LoginThrottleTest extends TestCase
         ];
     }
 
+    /**
+     * @runInSeparateProcess
+     *
+     * @preserveGlobalState disabled
+     */
+    public function testUsernameIsTheStoredUsernameOfTheAccountItSelects()
+    {
+        require __DIR__ . '/fixtures/loginthrottle_users_stub.php';
+
+        $this->assertSame('admin', login_throttle_username("A\u{200B}dmin"));
+        $this->assertSame("o'brien@example.com", login_throttle_username("O'Brien@Example.com"));
+        $this->assertSame('nobody@example.com', login_throttle_username('nobody@example.com'));
+        $this->assertSame(login_throttle_user_hash('admin'), login_throttle_user_hash(login_throttle_username("a\u{200B}dmin")));
+    }
+
+    public function testLoginCountsOnTheStoredUsername()
+    {
+        $this->assertStringContainsString(
+            '$throttleUsername = login_throttle_username($myusername);',
+            file_get_contents(__DIR__ . '/../mailscanner/checklogin.php')
+        );
+    }
+
     public function testUserHashIgnoresCaseAndSpaces()
     {
         $this->assertSame(login_throttle_user_hash('User@Example.com'), login_throttle_user_hash(' user@example.com'));

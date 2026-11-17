@@ -69,6 +69,25 @@ function login_throttle_user_hash($username)
 }
 
 /**
+ * The users table compares usernames with a collation that ignores case, accents and some characters, so
+ * 'ádmin' or 'admin' with a zero width space log into the account 'admin': they count on its stored username.
+ *
+ * @param string $username as typed on the login form
+ *
+ * @return string the stored username of the local account it selects, or $username when there is none
+ */
+function login_throttle_username($username)
+{
+    $result = dbquery("SELECT username FROM users WHERE username = '" . safe_value($username) . "'");
+    if (false === $result || 0 === $result->num_rows) {
+        return $username;
+    }
+    $row = $result->fetch_assoc();
+
+    return (string)$row['username'];
+}
+
+/**
  * @param string $sql
  *
  * @return mysqli_result|bool false when the login_failures table does not exist

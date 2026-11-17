@@ -61,7 +61,7 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
 }
 $plainPassword = $mypassword;
 // checked before LDAP and IMAP too, so that the directory servers do not get the guesses either
-$throttleUsername = $myusername;
+$throttleUsername = login_throttle_username($myusername);
 if (login_throttle_is_locked($throttleUsername)) {
     header('Location: login.php?error=toomanyattempts');
     logFailedLogin($myusername);

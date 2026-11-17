@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+### Fixed
+- The failed login limit counts every spelling that logs into the same account, such as `ádmin` or `admin` with a zero width space for `admin`, on that account; each spelling had a count of its own
 
 ## 1.2.30
 ### Security
