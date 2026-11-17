@@ -1,10 +1,12 @@
 # Changelog
 
 ## Unreleased
+
+## 1.2.30
 ### Security
-- Clearing the SpamAssassin Bayes database requires the form token of the Bayes page; any page could make an administrator's browser clear it with a forged POST
-- The rules file page shows only files inside `%etc-dir%` and `%report-dir%`; an administrator could read any file the web server can read, `conf.php` included
-- Updating the SpamAssassin and MCP rule descriptions and the GeoIP database requires the form token of their page, sending a quarantine report from the user manager the session token, and logging in through the login form the token of the login page
+- Clearing the SpamAssassin Bayes database requires the form token of the Bayes page; any page could make an administrator's browser clear it with a forged POST (GHSA-38p7-jrhq-2prq)
+- The rules file page shows only files inside `%etc-dir%` and `%report-dir%`; an administrator could read any file the web server can read, `conf.php` included (GHSA-38p7-jrhq-2prq)
+- Updating the SpamAssassin and MCP rule descriptions and the GeoIP database requires the form token of their page, sending a quarantine report from the user manager the session token, and logging in through the login form the token of the login page (GHSA-38p7-jrhq-2prq)
 - mailwatch_ldap_sync.sh no longer passes the LDAP and MySQL passwords on the command line, where other local users could see them in the process list while the commands start
 
 ### Added
