@@ -9,6 +9,11 @@ If you're using the RPM-based MailScanner install:
 # chmod +x /usr/local/bin/msre_reload.sh
 
 It is used by the MSRE cron job to restart MailScanner after a rule has been edited.
+The rule editor leaves the file .msre_reload in the rules folder (MSRE_RULESET_DIR),
+and the script restarts MailScanner when it finds it. If MSRE_RULESET_DIR is not
+/etc/MailScanner/rules, pass the folder to the script in msre_reload.crontab:
+
+*/5 * * * *	root	/usr/local/bin/msre_reload.sh /path/to/rules
 
 If you've used a source-based install of MailScanner, you'll need to create a msre_reload.sh
 script which reloads mailscanner in your environment.

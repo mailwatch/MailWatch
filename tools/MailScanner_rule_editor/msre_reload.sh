@@ -19,12 +19,14 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-if [ -e /tmp/msre_reload ];
+# Pass the rules folder (MSRE_RULESET_DIR in conf.php) when it is not the default
+TRIGGER="${1:-/etc/MailScanner/rules}/.msre_reload"
+if [ -e "$TRIGGER" ];
 then
     if [ -e /etc/init.d/mailscanner ]; then
         /etc/init.d/mailscanner restart >/dev/null
     else
         systemctl restart mailscanner
     fi
-    rm -f /tmp/msre_reload
+    rm -f "$TRIGGER"
 fi

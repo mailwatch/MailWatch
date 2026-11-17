@@ -714,10 +714,10 @@ function Process_Form($file_contents, $short_filename)
     // Schedule a reload of mailscanner's stuff. We can't do an immediate
     // reload w/out giving the webserver user rights to run the MailScanner
     // startup/reload script, and that could be a bad idea.
-    // So instead, I schedule a reload with the msre_reload.cron cron job
+    // So instead, I leave a trigger in the rules folder for the msre_reload cron job
     $status_msg .= '<span class="status">' . "\n";
     $status_msg .= __('schedureloadmw55');
-    $fh = fopen('/tmp/msre_reload', 'wb');
+    $fh = fopen(MSRE_RULESET_DIR . '/.msre_reload', 'wb');
     // We don't need to write to the file, just it existing is enough
     if (!$fh) {
         $status_msg .= '<span class="error">' . __('error0155') . '</span><br>' . "\n";
