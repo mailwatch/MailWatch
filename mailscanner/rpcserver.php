@@ -63,9 +63,9 @@ function rpc_return_quarantined_file($msg)
     $quarantinedir = get_conf_var('QuarantineDir', true);
     switch (true) {
         case !is_string($file):
-            return new xmlrpcresp(0, $xmlrpcerruser + 1, __('paratype160') . ' ' . gettype($file) . ' ' . __('paratyper260'));
+            return new xmlrpcresp(0, $xmlrpcerruser + 1, __('paratype160') . ' ' . gettype($file) . ' ' . __('paratype260'));
         case !is_file($quarantinedir . '/' . $file):
-            return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir/$" . __('notfile60'));
+            return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir/$file " . __('notfile60'));
         case !is_readable($quarantinedir . '/' . $file):
             return new xmlrpcresp(0, $xmlrpcerruser + 1, "$quarantinedir/$file" . __('colon99') . ' ' . __('permdenied60'));
         default:
@@ -81,19 +81,30 @@ function rpc_quarantine_list_items($msg)
     global $xmlrpcerruser;
     $input = php_xmlrpc_decode(array_shift($msg->params));
     if (!is_string($input)) {
-        return new xmlrpcresp(0, $xmlrpcerruser + 1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratyper260'));
+        return new xmlrpcresp(0, $xmlrpcerruser + 1, __('paratype160') . ' ' . gettype($input) . ' ' . __('paratype260'));
+    }
+    // quarantine_list_items() ends the request with plain text for an unknown message
+    if (!validateInput($input, 'msgid')) {
+        return new xmlrpcresp(0, $xmlrpcerruser + 1, __('dievalidate99'));
+    }
+    dbconn();
+    $found = dbquery("SELECT id FROM maillog WHERE id='" . safe_value($input) . "'");
+    if (!$found || $found->num_rows <= 0) {
+        return new xmlrpcresp(0, $xmlrpcerruser + 1, __('dievalidate99'));
     }
     $return = quarantine_list_items($input);
+    if (!is_array($return)) {
+        return new xmlrpcresp(0, $xmlrpcerruser + 1, (string)$return);
+    }
     $output = [];
-    $struct = [];
     foreach ($return as $array) {
+        $struct = [];
         foreach ($array as $key => $val) {
             $struct[$key] = new xmlrpcval($val);
         }
         $output[] = new xmlrpcval($struct, 'struct');
     }
 
-    // var_dump($output);
     return new xmlrpcresp(new xmlrpcval($output, 'array'));
 }
 
@@ -130,7 +141,7 @@ function rpc_sophos_status()
 {
     $output = shell_exec(MS_LIB_DIR . 'wrapper/sophos-wrapper /usr/local/Sophos -v');
 
-    return new xmlrpcresp(new xmlrpcval($output, 'string'));
+    return new xmlrpcresp(new xmlrpcval(is_string($output) ? $output : '', 'string'));
 }
 
 function rpc_get_conf_var($msg)
@@ -146,22 +157,26 @@ function rpc_get_conf_var($msg)
 
 function rpc_dump_mailscanner_conf()
 {
-    $fh = fopen(MS_CONFIG_DIR . 'MailScanner.conf', 'rb');
+    global $xmlrpcerruser;
+    $fh = @fopen(MS_CONFIG_DIR . 'MailScanner.conf', 'rb');
+    if (false === $fh) {
+        return new xmlrpcresp(0, $xmlrpcerruser + 1, MS_CONFIG_DIR . 'MailScanner.conf ' . __('notfile60'));
+    }
     $output = [];
-    while (!feof($fh)) {
-        $line = rtrim(fgets($fh, 4096));
+    $var = [];
+    while (false !== ($line = fgets($fh, 4096))) {
+        $line = rtrim($line);
         if (preg_match('/^([^#].+) = ([^#].*)/', $line, $regs)) {
             // Strip trailing comments
             $regs[2] = preg_replace('/#.*$/', '', $regs[2]);
             // store %var% variables
-            $var = [];
-            if (preg_match('/%.+%/', $regs[1])) {
-                $var[$regs[1]] = $regs[2];
+            if (preg_match('/^%.+%$/', $regs[1])) {
+                $var[$regs[1]] = trim($regs[2]);
             }
-            // expand %var% variables
-            if (preg_match('/(%.+%)/', $regs[2], $match)) {
-                $regs[2] = preg_replace('/%.+%/', $var[$match[1]], $regs[2]);
-            }
+            // expand the %var% variables defined above
+            $regs[2] = preg_replace_callback('/%[^%\s]+%/', function($match) use ($var) {
+                return isset($var[$match[0]]) ? $var[$match[0]] : $match[0];
+            }, $regs[2]);
             $output[$regs[1]] = new xmlrpcval($regs[2]);
         }
     }
@@ -174,8 +189,8 @@ function rpc_bayes_info()
 {
     $fh = popen(SA_DIR . 'sa-learn -p ' . SA_PREFS . ' --dump magic', 'r');
     $output = [];
-    while (!feof($fh)) {
-        $line = rtrim(fgets($fh, 4096));
+    while (false !== $fh && false !== ($line = fgets($fh, 4096))) {
+        $line = rtrim($line);
         if (preg_match('/\S+\s+\S+\s+(\S+)\s+\S+\s+non-token data: (.+)/', $line, $regs)) {
             switch ($regs[2]) {
                 case 'nspam':
@@ -205,7 +220,9 @@ function rpc_bayes_info()
             }
         }
     }
-    pclose($fh);
+    if (false !== $fh) {
+        pclose($fh);
+    }
 
     return new xmlrpcresp(new xmlrpcval($output, 'struct'));
 }
@@ -271,7 +288,7 @@ $s = new xmlrpc_server([
     ],
     'postfix_queues' => [
         'function' => 'rpc_postfix_queues',
-        'signature' => [['array']],
+        'signature' => [['struct']],
         'docstring' => 'This service returns the number of mails in incoming/outgoing postfix queue.',
     ],
 ], false);

@@ -62,7 +62,7 @@ class Ticket1327RpcServerTest extends TestCase
         $response = $this->call('return_quarantined_file', '1A2B3C4D5E.A1B2C');
 
         $this->assertStringContainsString('<name>faultCode</name>', $response);
-        $this->assertStringContainsString('paratype160 NULL paratyper260', $response);
+        $this->assertStringContainsString('paratype160 NULL paratype260', $response);
     }
 
     private function call($method, $argument)
