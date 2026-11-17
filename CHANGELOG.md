@@ -3,6 +3,7 @@
 ## Unreleased
 ### Fixed
 - The failed login limit counts every spelling that logs into the same account, such as `ádmin` or `admin` with a zero width space for `admin`, on that account; each spelling had a count of its own
+- The LDAP login searches the directory for the username as typed: `*`, `(` and `)` were not escaped, so a pattern such as `jdo*` found the entry of `jdoe@example.com` and had a failed login count of its own
 
 ## 1.2.30
 ### Security

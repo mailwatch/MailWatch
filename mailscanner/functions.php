@@ -2904,7 +2904,7 @@ function ldap_build_uri($host, $port)
  */
 function ldap_authenticate($username, $password)
 {
-    $username = ldap_escape(strtolower($username), '', LDAP_ESCAPE_DN);
+    $username = ldap_escape(strtolower($username), '', LDAP_ESCAPE_FILTER);
     if ('' !== $username && '' !== $password) {
         $ldap_uri = ldap_build_uri(LDAP_HOST, LDAP_PORT);
         $ds = ldap_connect($ldap_uri) or exit(__('ldpaauth103') . ' ' . $ldap_uri);
