@@ -57,6 +57,8 @@ my ($sth);
 my ($hostname) = hostname;
 my $server_port = 11553;
 my $timeout = 3600;
+# Inserts of one message tried before it is dropped; InitDB already waits for a database that is down
+my $max_insert_attempts = 3;
 my ($SQLversion);
 
 # Get database information from 00MailWatchConf.pm
@@ -258,9 +260,11 @@ sub ListenForMessages {
 
         next unless defined $$message{id};
 
-        # Set up a loop to prevent loss of logging, up to $timeout
+        # Set up a loop to prevent loss of logging, up to $max_insert_attempts
         # Prevents loss of logging to database due to temporary failure
+        my $attempts = 0;
         while(1) {
+            $attempts++;
 
             # Log message
             eval {$sth->execute(
@@ -306,6 +310,11 @@ sub ListenForMessages {
             # Something went wrong
             if ($@ || !$sth) {
                 LogMessage('warn', "$$message{id}: Cannot insert row: $sth->errstr");
+                if ($attempts >= $max_insert_attempts) {
+                    # the same row fails again on a working connection: skip it so the next messages are logged
+                    LogMessage('err', "$$message{id}: Not logged to MailWatch SQL after $attempts attempts");
+                    last;
+                }
                 close(SERVER);
                 # Bind the port so another instance can't spawn
                 if (BindPort() == 1) {
@@ -328,6 +337,14 @@ sub ListenForMessages {
         $message = undef;
 
     }
+}
+
+# The infected counters go into signed tinyint columns, which refuse more than 127 in strict SQL mode:
+# MailScanner counts one per blocked attachment, and a message may have hundreds
+sub TinyintCount {
+    my $count = shift;
+
+    return (defined $count && $count =~ /^\d+$/ && $count > 127) ? 127 : $count;
 }
 
 sub EndMailWatchLogging {
@@ -527,9 +544,9 @@ sub MailWatchLogging {
     $msg{mcpblacklisted} = $message->{mcpblacklisted};
     $msg{mcpsascore} = $mcpsascore;
     $msg{mcpreport} = fix_latin($mcpreport);
-    $msg{virusinfected} = $message->{virusinfected};
-    $msg{nameinfected} = $message->{nameinfected};
-    $msg{otherinfected} = $message->{otherinfected};
+    $msg{virusinfected} = TinyintCount($message->{virusinfected});
+    $msg{nameinfected} = TinyintCount($message->{nameinfected});
+    $msg{otherinfected} = TinyintCount($message->{otherinfected});
     $msg{reports} = fix_latin($reports);
     $msg{hostname} = $hostname;
     $msg{date} = $date;

@@ -7,6 +7,7 @@
 - Learning spam or ham and releasing with `QUARANTINE_USE_SENDMAIL` work on quarantined files whose name contains spaces or shell characters: the file path went to the shell unquoted
 - The virus report shows virus and scanner names that contain `<` or `&` as text instead of markup
 - A disabled filter of a domain administrator no longer lets them manage the users of that domain, as it no longer shows its messages
+- MailWatch.pm logs messages with more than 127 blocked attachments, and drops a message whose row still cannot be inserted after 3 attempts instead of retrying it for up to an hour while the next messages wait
 
 ## 1.2.30
 ### Security
