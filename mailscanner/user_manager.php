@@ -639,10 +639,10 @@ function userFilter()
 
     $returnString .= '<INPUT TYPE="hidden" NAME="new" VALUE="true">' . PHP_EOL;
     $returnString .= '<TABLE CLASS="mail" BORDER="0" CELLPADDING="1" CELLSPACING="1">' . PHP_EOL;
-    $returnString .= ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . $user->username . '</TH></TR>' . PHP_EOL;
+    $returnString .= ' <TR><TH COLSPAN=3>' . __('userfilter12') . ' ' . htmlspecialchars($user->username, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</TH></TR>' . PHP_EOL;
     $returnString .= ' <TR><TH>' . __('filter12') . '</TH><TH>' . __('active12') . '</TH><TH>' . __('action12') . '</TH></TR>' . PHP_EOL;
     while ($row = $result->fetch_object()) {
-        $returnString .= ' <TR><TD>' . $row->filter . '</TD><TD>' . $row->active . '</TD> ';
+        $returnString .= ' <TR><TD>' . htmlspecialchars($row->filter, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false) . '</TD><TD>' . $row->active . '</TD> ';
         if ('D' === $_SESSION['user_type'] && stripslashes($user->username) === stripslashes($_SESSION['myusername'])) {
             $returnString .= '<TD>' . __('nofilteraction12') . '</TD></TR>' . PHP_EOL;
         } else {
