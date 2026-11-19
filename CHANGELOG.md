@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+### Security
+- Releasing with `QUARANTINE_USE_SENDMAIL` passes the recipient to sendmail after `--`: an alternate recipient starting with `-` was read as a sendmail option, which any logged in user could set on a message of their quarantine
+
 ### Fixed
 - The failed login limit counts every spelling that logs into the same account, such as `ádmin` or `admin` with a zero width space for `admin`, on that account; each spelling had a count of its own
 - The LDAP login searches the directory for the username as typed: `*`, `(` and `)` were not escaped, so a pattern such as `jdo*` found the entry of `jdoe@example.com` and had a failed login count of its own

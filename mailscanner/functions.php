@@ -3695,7 +3695,8 @@ function quarantine_release($list, $num, $to, $rpc_only = false, $global_filter 
 
         // Use sendmail to release message
         // We can only release message/rfc822 files in this way.
-        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' ' . escapeshellarg(stripslashes($to)) . ' < ';
+        // -- ends the options: a recipient starting with - is an address, not a sendmail option
+        $cmd = QUARANTINE_SENDMAIL_PATH . ' -i -f ' . MAILWATCH_FROM_ADDR . ' -- ' . escapeshellarg(stripslashes($to)) . ' < ';
         foreach ($num as $key => $val) {
             if (preg_match('/message\/rfc822/', $list[$val]['type'])) {
                 debug($cmd . escapeshellarg($list[$val]['path']));
