@@ -179,6 +179,7 @@ function mailwatch_load_xmlrpc($server = false)
 
 include __DIR__ . '/postfix.inc.php';
 include __DIR__ . '/msmail.inc.php';
+require_once __DIR__ . '/quarantine_items.inc.php';
 
 function getVirusRegex($scanner = null)
 {
@@ -3467,16 +3468,16 @@ SELECT
         exit(__('diequarantine103') . " $msgid " . __('diequarantine103') . "\n");
     }
     $row = $sth->fetch_object();
+    $infected = 'N';
+    if ('Y' === $row->virusinfected || 'Y' === $row->nameinfected || 'Y' === $row->otherinfected) {
+        $infected = 'Y';
+    }
     if (!$rpc_only && is_local($row->hostname)) {
         $quarantinedir = get_conf_var('QuarantineDir', true);
         $quarantine = $quarantinedir . '/' . $row->date . '/' . $row->id;
         $spam = $quarantinedir . '/' . $row->date . '/spam/' . $row->id;
         $nonspam = $quarantinedir . '/' . $row->date . '/nonspam/' . $row->id;
         $mcp = $quarantinedir . '/' . $row->date . '/mcp/' . $row->id;
-        $infected = 'N';
-        if ('Y' === $row->virusinfected || 'Y' === $row->nameinfected || 'Y' === $row->otherinfected) {
-            $infected = 'Y';
-        }
         $quarantined = [];
         $count = 0;
         foreach ([$nonspam, $spam, $mcp] as $category) {
@@ -3533,7 +3534,7 @@ SELECT
     $msg = new xmlrpcmsg('quarantine_list_items', [new xmlrpcval($msgid)]);
     $rsp = xmlrpc_wrapper($row->hostname, $msg); // $client->send($msg);
     if (0 === $rsp->faultCode()) {
-        $response = php_xmlrpc_decode($rsp->value());
+        $response = quarantine_remote_items(php_xmlrpc_decode($rsp->value()), $row, $infected);
     } else {
         $response = 'XML-RPC Error: ' . $rsp->faultString();
     }

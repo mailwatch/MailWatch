@@ -583,7 +583,7 @@ if (is_array($quarantined) && (count($quarantined) > 0)) {
 } else {
     // Error??
     if (!is_array($quarantined)) {
-        echo '<br>' . $quarantined . '';
+        echo '<br>' . htmlspecialchars((string)$quarantined, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }
 

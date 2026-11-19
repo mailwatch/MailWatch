@@ -93,7 +93,7 @@ if (isset($_POST) && !empty($_POST)) {
         if (empty($items)) {
             echo '<td class="error">' . __('diemnf21') . '</td>' . "\n";
         } elseif (is_string($items)) {
-            echo '<td class="error">' . $items . '</td>' . "\n";
+            echo '<td class="error">' . htmlspecialchars($items, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</td>' . "\n";
         } else {
             if (count($items) > 0) {
                 // Originally this was 0, which assumed entire message was first item
@@ -116,7 +116,7 @@ if (isset($_POST) && !empty($_POST)) {
                             $_SESSION['global_filter']
                         )));
                     } else {
-                        echo $quarantined;
+                        echo htmlspecialchars((string)$quarantined, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                     }
                 } else {
                     echo nl2br(htmlspecialchars((string)quarantine_learn(
