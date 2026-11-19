@@ -435,6 +435,22 @@ ORDER BY a.date DESC, a.time DESC';
     }
 
     /**
+     * Regular expression for one filter among the comma separated recipients of a message.
+     * It matches whole addresses and whole domains, as the filters of the web pages do: mail.it is not gmail.it.
+     *
+     * @param string $filter   address, or domain for a domain admin
+     * @param string $userType A, D or U
+     *
+     * @return string
+     */
+    public static function recipient_regex($filter, $userType)
+    {
+        $isDomain = 'D' === $userType && !preg_match('/\S+@\S+/', $filter);
+
+        return ($isDomain ? '@' : '(^|,)') . preg_quote($filter) . '(,|$)';
+    }
+
+    /**
      * @param string $to_address
      * @param string $to_domain
      * @param string $userType   A, D or U: the HIDE_* options apply to this user type
@@ -444,12 +460,7 @@ ORDER BY a.date DESC, a.time DESC';
     private static function return_quarantine_list_array($to_address, $to_domain, $userType)
     {
         if ('' != $to_address || '' != $to_domain) {
-            // Qualify to email addresses only search among multiple recipients
-            if (preg_match('/\S+@\S+/', $to_address)) {
-                $result = dbquery(sprintf(self::get_report_sql($userType), quote_smart('(^|,)' . preg_quote($to_address) . '(,|$)'), quote_smart($to_domain)));
-            } else {
-                $result = dbquery(sprintf(self::get_report_sql($userType), quote_smart(preg_quote($to_address)), quote_smart($to_domain)));
-            }
+            $result = dbquery(sprintf(self::get_report_sql($userType), quote_smart(self::recipient_regex($to_address, $userType)), quote_smart($to_domain)));
         } else {
             $result = dbquery(sprintf(self::get_report_sql($userType, false)));
         }
