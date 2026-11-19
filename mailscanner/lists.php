@@ -283,6 +283,7 @@ if ('delete' === $url_submit) {
         exit;
     }
     $id = $url_id;
+    $row = null;
     switch ($url_list) {
         case 'w':
             $list = 'whitelist';
@@ -292,11 +293,16 @@ if ('delete' === $url_submit) {
             $list = 'blacklist';
             $listi18 = __('bl07');
             break;
+        default:
+            // no list in the request: nothing to look up
+            $list = null;
     }
 
-    $sqlfrom = "SELECT from_address, to_address FROM $list WHERE id='$id'";
-    $result = dbquery($sqlfrom);
-    $row = $result->fetch_array();
+    if (null !== $list) {
+        $sqlfrom = "SELECT from_address, to_address FROM $list WHERE id='$id'";
+        $result = dbquery($sqlfrom);
+        $row = $result->fetch_array();
+    }
     // Check the stored recipient, not the one in the request
     if ($row && $canManageRecipient($row['to_address'])) {
         dbquery("DELETE FROM $list WHERE id='$id'");

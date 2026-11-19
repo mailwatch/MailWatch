@@ -63,8 +63,10 @@ if ('A' !== $_SESSION['user_type']) {
         );
 
         // See if parameter is a rules file
-        if (@is_file($value) && @is_readable($value) && !@is_executable($value)) {
-            $value = '<a href="msrule.php?file=' . $value . '">' . $value . '</A>';
+        $file = $value;
+        $value = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        if (@is_file($file) && @is_readable($file) && !@is_executable($file)) {
+            $value = '<a href="msrule.php?file=' . rawurlencode($file) . '">' . $value . '</A>';
         }
 
         // Change newline charactors to <br />

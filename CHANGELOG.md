@@ -5,6 +5,8 @@
 - Releasing with `QUARANTINE_USE_SENDMAIL` passes the recipient to sendmail after `--`: an alternate recipient starting with `-` was read as a sendmail option, which any logged in user could set on a message of their quarantine
 - The quarantine report of a domain administrator lists only the messages for the whole domain of each filter: the report of `mail.it` also listed the messages of `gmail.it`, with their release links
 - The filter page of a user shows a username or a filter that contains `<` or `&` as text instead of markup
+- The message viewer shows the HTML body in a sandboxed frame: a link in the message opens inside the frame without scripts and forms, and no longer opens new windows
+- The sort links of the message lists, the rule editor, the MailScanner configuration page and the milter queue viewer escape the request parameters, file contents and file names they show
 
 ### Fixed
 - The failed login limit counts every spelling that logs into the same account, such as `ádmin` or `admin` with a zero width space for `admin`, on that account; each spelling had a count of its own

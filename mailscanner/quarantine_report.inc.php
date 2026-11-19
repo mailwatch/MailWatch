@@ -493,7 +493,7 @@ ORDER BY a.date DESC, a.time DESC';
     {
         $id = $qitem['id'];
         $rand = $qitem['rand'];
-        $result = dbquery("INSERT INTO autorelease (msg_id,uid) VALUES ('$id','$rand')", false);
+        $result = dbquery('INSERT INTO autorelease (msg_id,uid) VALUES (' . quote_smart($id) . ',' . quote_smart($rand) . ')', false);
         if (!$result) {
             self::dbg(' ==== Error generating auto_release....skipping...');
             audit_log('Quarantine_Report: Error generating auto_release for msg_id ' . $id . ', uid' . $rand);
@@ -513,7 +513,7 @@ ORDER BY a.date DESC, a.time DESC';
     {
         // function checks if message already has an autorelease entry
         $id = $qitem['id'];
-        $result = dbquery("SELECT * FROM autorelease WHERE msg_id = '$id'", false);
+        $result = dbquery('SELECT * FROM autorelease WHERE msg_id = ' . quote_smart($id), false);
         if (!$result) {
             self::dbg(' === Error checking if msg_id already exists.....skipping....');
         } else {

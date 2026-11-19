@@ -55,6 +55,7 @@ if (isset($_GET['error'])) {
     $loginerror = deepSanitizeInput($_GET['error'], 'url');
     if (false === validateInput($loginerror, 'loginerror')) {
         header('Location: login.php');
+        exit;
     }
     header('Location: login.php?error=' . $loginerror);
 } else {

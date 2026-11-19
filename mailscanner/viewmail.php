@@ -210,7 +210,7 @@ foreach ($mime_struct as $key => $part) {
         case 'text/html':
             echo ' <tr>' . "\n";
             echo '  <td colspan="2">' . "\n";
-            echo '   <iframe frameborder=0 width="100%" height=300 src="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
+            echo '   <iframe sandbox frameborder=0 width="100%" height=300 src="viewpart.php?token=' . $_SESSION['token'] . '&amp;id=' . $message_id . '&amp;part=' . $part->mime_id . '"></iframe>' . "\n";
             echo '  </td>' . "\n";
             echo ' </tr>' . "\n";
             break;

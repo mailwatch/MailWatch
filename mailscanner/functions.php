@@ -1886,51 +1886,15 @@ function translateQuarantineDate($date, $format = 'dmy')
 }
 
 /**
- * @return string|false
- */
-function subtract_get_vars($preserve)
-{
-    if (is_array($_GET)) {
-        $output = [];
-        foreach ($_GET as $k => $v) {
-            if (strtolower($k) !== strtolower($preserve)) {
-                $output[] = "$k=$v";
-            }
-        }
-        if (count($output) > 0) {
-            $output = implode('&amp;', $output);
-
-            return '&amp;' . $output;
-        }
-
-        return false;
-    }
-
-    return false;
-}
-
-/**
  * @param string[] $preserve
  *
- * @return string|false
+ * @return string|false the other parameters of the request, encoded for an href attribute
  */
 function subtract_multi_get_vars($preserve)
 {
-    if (is_array($_GET)) {
-        $output = [];
-        foreach ($_GET as $k => $v) {
-            if (!in_array($k, $preserve, true)) {
-                $output[] = "$k=$v";
-            }
-        }
-        if (count($output) > 0) {
-            $output = implode('&amp;', $output);
+    $output = http_build_query(array_diff_key($_GET, array_flip($preserve)), '', '&amp;');
 
-            return '&amp;' . $output;
-        }
-    }
-
-    return false;
+    return '' !== $output ? '&amp;' . $output : false;
 }
 
 /**

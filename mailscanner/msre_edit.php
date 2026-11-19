@@ -149,7 +149,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
     TRH_Single(sprintf(__('contentsof55'), $short_filename), 'colspan="' . MSRE_COLUMNS . '"');
 
     // Display the file contents
-    TR_Single("<pre>$file_contents</pre>", 'colspan="' . MSRE_COLUMNS . '"');
+    TR_Single('<pre>' . htmlspecialchars((string)$file_contents, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</pre>', 'colspan="' . MSRE_COLUMNS . '"');
 
     // Now grab any lines in the file that aren't comments.
     $ruleset = [];
@@ -322,6 +322,9 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
         ];
 
         foreach ($rule_part as $key => $value) {
+            // the rule parts go into value attributes; the direction keywords are looked up in the raw value
+            $rawValue = $value;
+            $value = htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             $part_name = 'rule' . $rule_count . '_' . preg_replace("/\d/", '', $key);
             // Depending on what part it is, we may need to do something
             // special, like create a select or checkbox.
@@ -365,7 +368,7 @@ function Show_Form($status_msg, $short_filename, $file_contents, $CONF_ruleset_k
                     $select_html .= '>' . "\n" . '<option value=""></option>';
                     foreach ($CONF_ruleset_keyword as $current_kw) {
                         $select_html .= '<option value="' . $current_kw . '"';
-                        $match = strtolower(preg_replace('/#DISABLED#/', '', $value));
+                        $match = strtolower(preg_replace('/#DISABLED#/', '', (string)$rawValue));
                         $kw = '';
                         // Use MailScanner's direction-matching rules
                         if (preg_match('/and/', $match)) {
