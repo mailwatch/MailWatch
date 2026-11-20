@@ -1418,6 +1418,17 @@ function format_spam_report($spamreport)
 }
 
 /**
+ * @param string $description
+ *
+ * @return string
+ */
+function sa_rule_desc_html($description)
+{
+    // sa_rules_update.php stores HTML5 entities (&colon;, &percnt;): only the HTML5 table keeps them from being encoded twice
+    return htmlspecialchars($description, ENT_QUOTES | ENT_HTML5, 'UTF-8', false);
+}
+
+/**
  * @param string $rule
  *
  * @return string
@@ -1432,10 +1443,9 @@ function get_sa_rule_desc($rule)
     }
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='" . safe_value($rule) . "'");
     $row = $result->fetch_object();
-    // descriptions are stored with entities already: do not encode them twice
     $rule_score = htmlspecialchars($rule_score, ENT_QUOTES, 'UTF-8', false);
     if ($row && $row->rule && $row->rule_desc) {
-        return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($row->rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>' . htmlspecialchars($row->rule_desc, ENT_QUOTES, 'UTF-8', false) . '</td></tr>' . "\n";
+        return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($row->rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>' . sa_rule_desc_html($row->rule_desc) . '</td></tr>' . "\n";
     }
 
     return '<tr><td>' . $rule_score . '</td><td>' . htmlspecialchars($rule, ENT_QUOTES, 'UTF-8', false) . '</td><td>&nbsp;</td></tr>';
@@ -1451,7 +1461,7 @@ function return_sa_rule_desc($rule)
     $result = dbquery("SELECT rule, rule_desc FROM sa_rules WHERE rule='" . safe_value($rule) . "'");
     $row = $result->fetch_object();
     if ($row) {
-        return htmlentities($row->rule_desc);
+        return sa_rule_desc_html($row->rule_desc);
     }
 
     return false;
