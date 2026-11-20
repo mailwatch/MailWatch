@@ -48,7 +48,6 @@ function findBestTickCount(valueCount, minCount, maxCount) {
 function autoSkipTick(value, index, valueCount, bestTick, gridFactor) {
   //second condition is to prevent ticks close to the end overlapping
   if((index % bestTick.val <= bestTick.match && valueCount-bestTick.val-index >= 0)|| index == valueCount-1) {
-  console.log(index);
     //label and grid line
     return value;
   } else {
