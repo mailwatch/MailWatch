@@ -59,8 +59,9 @@ function doit($input)
     $lines = 1;
     while ($line = fgets($fp, 2096)) {
         if (preg_match('/^.*MailScanner.*: Requeue: (\S+\.\S+) to (\S+)\s$/', $line, $explode)) {
-            $smtpd_id = $explode[1];
-            $smtp_id = $explode[2];
+            // the log line is not authenticated: anything matching the pattern lands in the query
+            $smtpd_id = safe_value($explode[1]);
+            $smtp_id = safe_value($explode[2]);
             dbquery_reconnect("REPLACE INTO `mtalog_ids` VALUES ('" . $smtpd_id . "','" . $smtp_id . "')");
         }
         ++$lines;
