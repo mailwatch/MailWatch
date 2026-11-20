@@ -339,16 +339,7 @@ function html_start($title, $refresh = 0, $cacheable = true, $report = false)
         }
     }
 
-    // Check for a privilege change
-    if (true === checkPrivilegeChange($_SESSION['myusername'])) {
-        header('Location: logout.php?error=timeout');
-        exit;
-    }
-
-    if (true === checkLoginExpiry($_SESSION['myusername'])) {
-        header('Location: logout.php?error=timeout');
-        exit;
-    }
+    logoutOnSessionChange();
     if (0 === $refresh) {
         // User is moving about on non-refreshing pages, keep session alive
         updateLoginExpiry($_SESSION['myusername']);
@@ -4837,6 +4828,18 @@ function updateLoginExpiry($myusername)
     $result = dbquery($sql);
 
     return $result;
+}
+
+/**
+ * Sends the user to the logout page when the login expired, was ended by an administrator
+ * or the user type changed since the login.
+ */
+function logoutOnSessionChange()
+{
+    if (true === checkPrivilegeChange($_SESSION['myusername']) || true === checkLoginExpiry($_SESSION['myusername'])) {
+        header('Location: logout.php?error=timeout');
+        exit;
+    }
 }
 
 /**

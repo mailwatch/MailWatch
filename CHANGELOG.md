@@ -9,6 +9,7 @@
 - The message viewer shows the HTML body in a sandboxed frame: a link in the message opens inside the frame without scripts and forms, and no longer opens new windows
 - The sort links of the message lists, the rule editor, the MailScanner configuration page and the milter queue viewer escape the request parameters, file contents and file names they show
 - mailwatch_mailscanner_relay.php escapes the queue ids it reads from the mail log before storing them: a line that matched its pattern went into the SQL query unescaped
+- Deleting and releasing from the quarantine actions and opening a message part end the session when the login expired, an administrator logged the user out or changed their user type, as every other page already did
 
 ### Fixed
 - The failed login limit counts every spelling that logs into the same account, such as `ádmin` or `admin` with a zero width space for `admin`, on that account; each spelling had a count of its own

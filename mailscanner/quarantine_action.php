@@ -32,6 +32,8 @@
 require_once __DIR__ . '/functions.php';
 
 require __DIR__ . '/login.function.php';
+// this page does not call html_start(), which runs the same check
+logoutOnSessionChange();
 
 function simple_html_start()
 {

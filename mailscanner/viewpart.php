@@ -29,6 +29,8 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/lib/pear/Mail/mimeDecode.php';
 
 require __DIR__ . '/login.function.php';
+// this page does not call html_start(), which runs the same check
+logoutOnSessionChange();
 
 ini_set('memory_limit', (string)MEMORY_LIMIT);
 
